@@ -55,6 +55,7 @@ const KenBurnsImage: React.FC<{ src: string; duration: number }> = ({ src, durat
           height: "100%",
           objectFit: "cover",
           transform: `scale(${scale}) translate(${tx}px, ${ty}px)`,
+          filter: "saturate(1.35) brightness(1.18) contrast(1.05)",
         }}
       />
     </AbsoluteFill>
