@@ -5,6 +5,9 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const compId = process.argv[2] || "unique-marketing";
+const outFile = process.argv[3] || "/mnt/documents/unique-marketing-v2.mp4";
+
 const bundled = await bundle({
   entryPoint: path.resolve(__dirname, "../src/index.ts"),
   webpackOverride: (config) => config,
@@ -18,7 +21,7 @@ const browser = await openBrowser("chrome", {
 
 const composition = await selectComposition({
   serveUrl: bundled,
-  id: "main",
+  id: compId,
   puppeteerInstance: browser,
 });
 
@@ -26,11 +29,11 @@ await renderMedia({
   composition,
   serveUrl: bundled,
   codec: "h264",
-  outputLocation: "/mnt/documents/brand-battle-hero.mp4",
+  outputLocation: outFile,
   puppeteerInstance: browser,
-  muted: true,
+  muted: false,
   concurrency: 1,
 });
 
 await browser.close({ silent: false });
-console.log("Done!");
+console.log("Done:", outFile);
