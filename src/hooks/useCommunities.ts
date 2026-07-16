@@ -21,16 +21,22 @@ export const useCommunities = () => {
   });
 
   // P1 — realtime so member_count and new communities propagate.
+  // Unique channel name per mount avoids "cannot add postgres_changes callbacks
+  // after subscribe()" when StrictMode / concurrent renders reuse a shared name.
   useEffect(() => {
+    const channelName = `communities-feed-${Math.random().toString(36).slice(2, 10)}`;
     const channel = supabase
-      .channel("communities-feed")
+      .channel(channelName)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "communities" },
         () => qc.invalidateQueries({ queryKey: ["communities"] }),
-      )
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+      );
+    channel.subscribe();
+    return () => {
+      // Fire and forget; removeChannel is async but we don't need to await it.
+      void supabase.removeChannel(channel);
+    };
   }, [qc]);
 
   const createCommunity = useMutation({
