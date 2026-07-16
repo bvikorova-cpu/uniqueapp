@@ -2,6 +2,7 @@ import React from "react";
 import {
   AbsoluteFill,
   Audio,
+  Img,
   Sequence,
   interpolate,
   spring,
@@ -19,111 +20,82 @@ type Scene = {
   from: number;
   duration: number;
   caption: string;
-  emoji: string;
-  gradient: [string, string, string];
-  accent: string;
+  image: string;
+  tint: string;
 };
 
 const SCENES: Scene[] = [
-  { from: 0, duration: 27, caption: "This is Unique", emoji: "✨", gradient: ["#1a0033", "#4c1d95", "#831843"], accent: "#f9a8d4" },
-  { from: 27, duration: 58, caption: "One app.\nEndless possibilities.", emoji: "🌍", gradient: ["#0f172a", "#7e22ce", "#db2777"], accent: "#fbcfe8" },
-  { from: 85, duration: 55, caption: "Share your voice\non the Wall", emoji: "💬", gradient: ["#312e81", "#9333ea", "#ec4899"], accent: "#f5d0fe" },
-  { from: 140, duration: 47, caption: "Find real love\nin Dating", emoji: "💖", gradient: ["#500724", "#be185d", "#f472b6"], accent: "#fce7f3" },
-  { from: 187, duration: 52, caption: "Let your kids\nlearn, safely", emoji: "🧸", gradient: ["#1e3a8a", "#7c3aed", "#f59e0b"], accent: "#fef3c7" },
-  { from: 239, duration: 89, caption: "Show your talent.\nWin real prizes\nin Megatalent.", emoji: "🏆", gradient: ["#422006", "#a16207", "#facc15"], accent: "#fef9c3" },
-  { from: 328, duration: 47, caption: "Create with AI\nin seconds", emoji: "🎨", gradient: ["#083344", "#0e7490", "#a855f7"], accent: "#e9d5ff" },
-  { from: 375, duration: 76, caption: "Sell your skills.\nBuy from your\nneighbors.", emoji: "🛍️", gradient: ["#064e3b", "#059669", "#84cc16"], accent: "#d9f99d" },
-  { from: 451, duration: 63, caption: "Stream music.\nEarn from\nevery play.", emoji: "🎧", gradient: ["#450a0a", "#b91c1c", "#f97316"], accent: "#fed7aa" },
-  { from: 514, duration: 56, caption: "Heal your mind.\nMove your body.", emoji: "🧘", gradient: ["#022c22", "#047857", "#a3e635"], accent: "#ecfccb" },
-  { from: 570, duration: 61, caption: "No ads chasing you.\nNo data games.", emoji: "🛡️", gradient: ["#020617", "#334155", "#7c3aed"], accent: "#c4b5fd" },
-  { from: 631, duration: 58, caption: "Just people.\nCreators.\nDreamers.", emoji: "🫶", gradient: ["#3b0764", "#9333ea", "#f472b6"], accent: "#fbcfe8" },
-  { from: 689, duration: 54, caption: "Built in Europe.\nMade for you.", emoji: "🇪🇺", gradient: ["#0c4a6e", "#1d4ed8", "#facc15"], accent: "#fef3c7" },
-  { from: 743, duration: 157, caption: "Welcome to Unique", emoji: "✨", gradient: ["#1a0033", "#7e22ce", "#ec4899"], accent: "#fbcfe8" },
+  { from: 0, duration: 27, caption: "This is Unique", image: "01-intro.jpg", tint: "rgba(20,0,40,0.35)" },
+  { from: 27, duration: 58, caption: "One app.\nEndless possibilities.", image: "02-world.jpg", tint: "rgba(0,0,20,0.4)" },
+  { from: 85, duration: 55, caption: "Share your voice\non the Wall", image: "03-wall.jpg", tint: "rgba(30,0,40,0.45)" },
+  { from: 140, duration: 47, caption: "Find real love\nin Dating", image: "04-dating.jpg", tint: "rgba(40,0,20,0.35)" },
+  { from: 187, duration: 52, caption: "Let your kids\nlearn, safely", image: "05-kids.jpg", tint: "rgba(20,10,40,0.4)" },
+  { from: 239, duration: 89, caption: "Show your talent.\nWin real prizes\nin Megatalent.", image: "06-megatalent.jpg", tint: "rgba(20,10,0,0.35)" },
+  { from: 328, duration: 47, caption: "Create with AI\nin seconds", image: "07-ai.jpg", tint: "rgba(0,10,30,0.4)" },
+  { from: 375, duration: 76, caption: "Sell your skills.\nBuy from your\nneighbors.", image: "08-market.jpg", tint: "rgba(10,20,10,0.45)" },
+  { from: 451, duration: 63, caption: "Stream music.\nEarn from\nevery play.", image: "09-music.jpg", tint: "rgba(30,0,0,0.4)" },
+  { from: 514, duration: 56, caption: "Heal your mind.\nMove your body.", image: "10-health.jpg", tint: "rgba(0,20,20,0.4)" },
+  { from: 570, duration: 61, caption: "No ads chasing you.\nNo data games.", image: "11-privacy.jpg", tint: "rgba(10,0,30,0.5)" },
+  { from: 631, duration: 58, caption: "Just people.\nCreators.\nDreamers.", image: "12-people.jpg", tint: "rgba(30,10,40,0.45)" },
+  { from: 689, duration: 54, caption: "Made for the world.\nMade for you.", image: "13-worldwide.jpg", tint: "rgba(10,0,30,0.45)" },
+  { from: 743, duration: 157, caption: "Welcome to Unique", image: "14-outro.jpg", tint: "rgba(20,0,40,0.5)" },
 ];
 
-const AnimatedBg: React.FC<{ colors: [string, string, string] }> = ({ colors }) => {
+const KenBurnsImage: React.FC<{ src: string; duration: number }> = ({ src, duration }) => {
   const frame = useCurrentFrame();
-  const shift = Math.sin(frame / 40) * 15;
-  return (
-    <AbsoluteFill
-      style={{
-        background: `radial-gradient(circle at 50% ${30 + shift}%, ${colors[2]} 0%, ${colors[1]} 40%, ${colors[0]} 100%)`,
-      }}
-    />
-  );
-};
-
-const Grain: React.FC = () => (
-  <AbsoluteFill style={{ opacity: 0.08, mixBlendMode: "overlay",
-    backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>\")",
-  }} />
-);
-
-const FloatingOrbs: React.FC<{ color: string }> = ({ color }) => {
-  const frame = useCurrentFrame();
-  const orbs = [
-    { x: 0.15, y: 0.2, size: 220, speed: 1 },
-    { x: 0.8, y: 0.15, size: 160, speed: 1.4 },
-    { x: 0.75, y: 0.85, size: 260, speed: 0.7 },
-    { x: 0.2, y: 0.75, size: 180, speed: 1.2 },
-  ];
+  const scale = interpolate(frame, [0, duration], [1.08, 1.22], { extrapolateRight: "clamp" });
+  const tx = interpolate(frame, [0, duration], [-10, 10], { extrapolateRight: "clamp" });
+  const ty = interpolate(frame, [0, duration], [-8, 8], { extrapolateRight: "clamp" });
   return (
     <AbsoluteFill>
-      {orbs.map((o, i) => {
-        const dx = Math.sin(frame / (30 * o.speed) + i) * 40;
-        const dy = Math.cos(frame / (35 * o.speed) + i) * 40;
-        return (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              left: `${o.x * 100}%`,
-              top: `${o.y * 100}%`,
-              width: o.size,
-              height: o.size,
-              transform: `translate(-50%,-50%) translate(${dx}px, ${dy}px)`,
-              borderRadius: "50%",
-              background: `radial-gradient(circle, ${color}55 0%, ${color}00 70%)`,
-              filter: "blur(20px)",
-            }}
-          />
-        );
-      })}
+      <Img
+        src={staticFile(`images/marketing/${src}`)}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          transform: `scale(${scale}) translate(${tx}px, ${ty}px)`,
+        }}
+      />
     </AbsoluteFill>
   );
 };
 
-const SceneCard: React.FC<Scene> = ({ duration, caption, emoji, gradient, accent }) => {
+const SceneCard: React.FC<Scene> = ({ duration, caption, image, tint }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   const enter = spring({ frame, fps, config: { damping: 18, stiffness: 130 } });
-  const exit = interpolate(frame, [duration - 12, duration], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const exit = interpolate(frame, [duration - 12, duration], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
   const opacity = enter * (1 - exit);
   const y = interpolate(enter, [0, 1], [40, 0]);
-  const emojiScale = spring({ frame: frame - 4, fps, config: { damping: 8, stiffness: 140 } });
-  const emojiFloat = Math.sin(frame / 20) * 12;
 
   const lines = caption.split("\n");
 
   return (
     <AbsoluteFill>
-      <AnimatedBg colors={gradient} />
-      <FloatingOrbs color={accent} />
-      <Grain />
+      <KenBurnsImage src={image} duration={duration} />
+      {/* dark tint for contrast */}
+      <AbsoluteFill style={{ backgroundColor: tint }} />
+      {/* bottom gradient for legibility */}
+      <AbsoluteFill
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%)",
+        }}
+      />
 
-      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", padding: 80 }}>
-        <div
-          style={{
-            fontSize: 340,
-            transform: `scale(${emojiScale}) translateY(${emojiFloat}px)`,
-            filter: `drop-shadow(0 20px 60px ${accent}88)`,
-            marginBottom: 40,
-          }}
-        >
-          {emoji}
-        </div>
-
+      <AbsoluteFill
+        style={{
+          alignItems: "center",
+          justifyContent: "flex-end",
+          padding: 80,
+          paddingBottom: 220,
+        }}
+      >
         <div
           style={{
             opacity,
@@ -135,7 +107,7 @@ const SceneCard: React.FC<Scene> = ({ duration, caption, emoji, gradient, accent
             lineHeight: 1.1,
             color: "white",
             letterSpacing: "-0.03em",
-            textShadow: `0 6px 40px rgba(0,0,0,0.5)`,
+            textShadow: "0 6px 40px rgba(0,0,0,0.7)",
           }}
         >
           {lines.map((l, i) => {
@@ -154,40 +126,44 @@ const SceneCard: React.FC<Scene> = ({ duration, caption, emoji, gradient, accent
   );
 };
 
-const Outro: React.FC = () => {
+const Outro: React.FC<{ image: string; duration: number }> = ({ image, duration }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const scale = spring({ frame, fps, config: { damping: 12, stiffness: 100 } });
   const urlOp = interpolate(frame, [30, 55], [0, 1], { extrapolateRight: "clamp" });
   return (
-    <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
-      <div
-        style={{
-          fontFamily: display.fontFamily,
-          fontSize: 380,
-          transform: `scale(${scale})`,
-          background: "linear-gradient(180deg, #fff 0%, #fbcfe8 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          textShadow: "0 0 80px rgba(236,72,153,0.6)",
-          lineHeight: 1,
-        }}
-      >
-        Unique
-      </div>
-      <div
-        style={{
-          marginTop: 30,
-          opacity: urlOp,
-          fontFamily: body.fontFamily,
-          fontWeight: 700,
-          fontSize: 72,
-          color: "white",
-          letterSpacing: "0.05em",
-        }}
-      >
-        uniqueapp.fun
-      </div>
+    <AbsoluteFill>
+      <KenBurnsImage src={image} duration={duration} />
+      <AbsoluteFill style={{ backgroundColor: "rgba(10,0,30,0.55)" }} />
+      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
+        <div
+          style={{
+            fontFamily: display.fontFamily,
+            fontSize: 380,
+            transform: `scale(${scale})`,
+            background: "linear-gradient(180deg, #fff 0%, #fbcfe8 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textShadow: "0 0 80px rgba(236,72,153,0.6)",
+            lineHeight: 1,
+          }}
+        >
+          Unique
+        </div>
+        <div
+          style={{
+            marginTop: 30,
+            opacity: urlOp,
+            fontFamily: body.fontFamily,
+            fontWeight: 700,
+            fontSize: 72,
+            color: "white",
+            letterSpacing: "0.05em",
+          }}
+        >
+          uniqueapp.fun
+        </div>
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
@@ -198,12 +174,7 @@ export const UniqueMarketing: React.FC = () => {
       {SCENES.map((s, i) => (
         <Sequence key={i} from={s.from} durationInFrames={s.duration}>
           {i === SCENES.length - 1 ? (
-            <AbsoluteFill>
-              <AnimatedBg colors={s.gradient} />
-              <FloatingOrbs color={s.accent} />
-              <Grain />
-              <Outro />
-            </AbsoluteFill>
+            <Outro image={s.image} duration={s.duration} />
           ) : (
             <SceneCard {...s} />
           )}
