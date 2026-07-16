@@ -228,15 +228,6 @@ const Feed = () => {
           seen.add(k);
           return true;
         });
-        // Skip state update on background refresh if the first page is unchanged
-        // — avoids Virtuoso re-render / flicker when nothing new arrived.
-        if (!loadMore && prev.length === deduped.length) {
-          let same = true;
-          for (let i = 0; i < deduped.length; i++) {
-            if (prev[i]?.data?.id !== deduped[i]?.data?.id) { same = false; break; }
-          }
-          if (same) return prev;
-        }
         return deduped;
       });
 
