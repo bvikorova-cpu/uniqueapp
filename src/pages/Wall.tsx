@@ -73,30 +73,15 @@ type FeedItem = WallFeedItem;
 const Feed = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
-  const [feedEnhancementsReady, setFeedEnhancementsReady] = useState(false);
-  const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(
-    feedEnhancementsReady ? user?.id : null,
-  );
-  // Hydrate first page instantly from localStorage cache (stale-while-revalidate)
-  const CACHE_KEY = "wall_feed_cache_v1";
-  const CACHE_FRESH_MS = 60 * 1000; // skip network refetch if cache is <60s old
-  const cached = useMemo(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(CACHE_KEY) : null;
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (Date.now() - (parsed.t || 0) > 1000 * 60 * 60 * 24) return null; // 24h TTL
-      return parsed;
-    } catch { return null; }
-  }, []);
-  const cacheAgeMs = cached?.t ? Date.now() - cached.t : Infinity;
-  const cacheIsFresh = cacheAgeMs < CACHE_FRESH_MS && (cached?.feedItems?.length ?? 0) > 0;
-  const [posts, setPosts] = useState<Post[]>(cached?.posts || []);
-  const [reposts, setReposts] = useState<Repost[]>(cached?.reposts || []);
-  const [feedItems, setFeedItems] = useState<FeedItem[]>(cached?.feedItems || []);
+  const feedEnhancementsReady = true;
+  const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(user?.id);
+  const cacheIsFresh = false;
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [reposts, setReposts] = useState<Repost[]>([]);
+  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
 
-  const [loading, setLoading] = useState(!(cached?.feedItems?.length));
-  const wallStats = useWallStats(user?.id, feedEnhancementsReady);
+  const [loading, setLoading] = useState(true);
+  const wallStats = useWallStats(user?.id, true);
 
   const [loadingMore, setLoadingMore] = useState(false);
   const [feedError, setFeedError] = useState<string | null>(null);
@@ -243,15 +228,6 @@ const Feed = () => {
           seen.add(k);
           return true;
         });
-        // Skip state update on background refresh if the first page is unchanged
-        // — avoids Virtuoso re-render / flicker when nothing new arrived.
-        if (!loadMore && prev.length === deduped.length) {
-          let same = true;
-          for (let i = 0; i < deduped.length; i++) {
-            if (prev[i]?.data?.id !== deduped[i]?.data?.id) { same = false; break; }
-          }
-          if (same) return prev;
-        }
         return deduped;
       });
 
@@ -259,17 +235,8 @@ const Feed = () => {
         lastCursor.current = newItems[newItems.length - 1].data.created_at;
       }
 
-      // Persist first page for instant paint on next mount.
-      if (!loadMore) {
-        try {
-          localStorage.setItem(CACHE_KEY, JSON.stringify({
-            t: Date.now(),
-            posts: postsWithProfiles.slice(0, POSTS_PER_PAGE),
-            reposts: repostsWithData.slice(0, POSTS_PER_PAGE),
-            feedItems: newItems.slice(0, POSTS_PER_PAGE),
-          }));
-        } catch { /* quota exceeded — ignore */ }
-      }
+      // (removed: localStorage cache — was causing stale/slow first paint)
+
 
     } catch (error: any) {
       setFeedError(error?.message || "Failed to load posts");
@@ -286,27 +253,8 @@ const Feed = () => {
     }
   }, [toast]);
 
-  useEffect(() => {
-    if (feedEnhancementsReady) return;
-    if (loading && feedItems.length === 0) return;
+  // (removed: deferred enhancement gating — enhancements always ready now)
 
-    const schedule = (callback: () => void): number => {
-      const requestIdle = (window as any).requestIdleCallback as
-        | ((cb: () => void, opts?: { timeout?: number }) => number)
-        | undefined;
-      if (typeof requestIdle === "function") return requestIdle(callback, { timeout: 1800 });
-      return window.setTimeout(callback, 900);
-    };
-
-    const cancel = (id: number) => {
-      const cancelIdle = (window as any).cancelIdleCallback as ((handle: number) => void) | undefined;
-      if (typeof cancelIdle === "function") cancelIdle(id);
-      else window.clearTimeout(id);
-    };
-
-    const id = schedule(() => setFeedEnhancementsReady(true));
-    return () => cancel(id);
-  }, [feedEnhancementsReady, feedItems.length, loading]);
 
   const fetchSavedPosts = async () => {
     if (!user) return;
