@@ -5,6 +5,7 @@ import { errorResponse, handleCors, successResponse } from "../_shared/response.
 import { createStripeClient, getStripeCustomer } from "../_shared/stripe.ts";
 import { RATE_LIMITS, withRateLimit } from "../_shared/rateLimit.ts";
 import { getFeeRate } from "../_shared/feeRates.ts";
+import { withIdempotency } from "../_shared/idempotency.ts";
 
 const log = createLogger("CREATE-CHECKOUT");
 
