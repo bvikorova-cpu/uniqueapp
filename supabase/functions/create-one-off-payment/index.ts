@@ -75,4 +75,5 @@ async function handler(req: Request): Promise<Response> {
       status,
     });
   }
-});
+}
+
