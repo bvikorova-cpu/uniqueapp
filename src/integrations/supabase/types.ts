@@ -3026,6 +3026,51 @@ export type Database = {
         }
         Relationships: []
       }
+      async_jobs: {
+        Row: {
+          attempts: number
+          created_at: string
+          id: number
+          last_error: string | null
+          locked_at: string | null
+          locked_by: string | null
+          max_attempts: number
+          payload: Json
+          queue_name: string
+          run_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          id?: number
+          last_error?: string | null
+          locked_at?: string | null
+          locked_by?: string | null
+          max_attempts?: number
+          payload?: Json
+          queue_name: string
+          run_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          id?: number
+          last_error?: string | null
+          locked_at?: string | null
+          locked_by?: string | null
+          max_attempts?: number
+          payload?: Json
+          queue_name?: string
+          run_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ats_candidate_notes: {
         Row: {
           application_id: string
@@ -29916,6 +29961,36 @@ export type Database = {
           updated_at?: string
           user_id?: string
           xp?: number
+        }
+        Relationships: []
+      }
+      idempotency_keys: {
+        Row: {
+          created_at: string
+          expires_at: string
+          key: string
+          response_body: Json | null
+          response_status: number | null
+          scope: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          key: string
+          response_body?: Json | null
+          response_status?: number | null
+          scope: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          key?: string
+          response_body?: Json | null
+          response_status?: number | null
+          scope?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -66725,10 +66800,15 @@ export type Database = {
         Returns: Json
       }
       cleanup_expired_cache: { Args: never; Returns: number }
+      cleanup_idempotency_keys: { Args: never; Returns: undefined }
       cleanup_log_tables: { Args: never; Returns: undefined }
       cleanup_old_jobs: { Args: never; Returns: number }
       cleanup_rate_limit_buckets: { Args: never; Returns: undefined }
       cleanup_rate_limits: { Args: never; Returns: undefined }
+      complete_async_job: {
+        Args: { _error?: string; _id: number; _success: boolean }
+        Returns: undefined
+      }
       complete_auction_buyout: {
         Args: {
           p_auction_id: string
@@ -66932,6 +67012,29 @@ export type Database = {
         Returns: number
       }
       delete_auction_if_safe: { Args: { p_auction_id: string }; Returns: Json }
+      dequeue_async_jobs: {
+        Args: { _batch?: number; _queue: string; _worker: string }
+        Returns: {
+          attempts: number
+          created_at: string
+          id: number
+          last_error: string | null
+          locked_at: string | null
+          locked_by: string | null
+          max_attempts: number
+          payload: Json
+          queue_name: string
+          run_at: string
+          status: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "async_jobs"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       dispatch_push: {
         Args: { _payload: Json; _user_ids: string[] }
         Returns: undefined
@@ -66948,6 +67051,10 @@ export type Database = {
       edu_is_study_group_member: {
         Args: { _group_id: string; _user_id: string }
         Returns: boolean
+      }
+      enqueue_async_job: {
+        Args: { _payload: Json; _queue: string; _run_at?: string }
+        Returns: number
       }
       ensure_free_tier_credits: {
         Args: never
@@ -67404,6 +67511,7 @@ export type Database = {
       get_or_create_iq_referral_code: { Args: never; Returns: string }
       get_or_create_megatalent_referral_code: { Args: never; Returns: string }
       get_or_pick_daily_deal: { Args: never; Returns: string }
+      get_perf_stats: { Args: never; Returns: Json }
       get_post_memories: {
         Args: { _limit?: number; _user_id: string }
         Returns: {

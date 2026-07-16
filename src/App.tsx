@@ -561,6 +561,7 @@ const AdminEngagement = lazy(() => import("@/pages/admin/AdminEngagement"));
 const AdminMonetagStats = lazy(() => import("@/pages/admin/AdminMonetagStats"));
 const GlobalRewardedAd = lazy(() => import("@/components/ads/GlobalRewardedAd"));
 const AdminVitals = lazy(() => import("@/pages/admin/AdminVitals"));
+const AdminPerformance = lazy(() => import("@/pages/admin/AdminPerformance"));
 const AdminEdgeMonitoring = lazy(() => import("@/pages/admin/AdminEdgeMonitoring"));
 const AdminEdgeTester = lazy(() => import("@/pages/admin/AdminEdgeTester"));
 const AdminButtonTester = lazy(() => import("@/pages/admin/AdminButtonTester"));
@@ -1136,6 +1137,7 @@ const App = () => {
                         <Route path="/admin/engagement" element={<ProtectedRoute requireAdmin={true}><AdminEngagement /></ProtectedRoute>} />
                         <Route path="/admin/monetag-stats" element={<ProtectedRoute requireAdmin={true}><AdminMonetagStats /></ProtectedRoute>} />
                         <Route path="/admin/vitals" element={<ProtectedRoute requireAdmin={true}><AdminVitals /></ProtectedRoute>} />
+                        <Route path="/admin/performance" element={<ProtectedRoute requireAdmin={true}><AdminPerformance /></ProtectedRoute>} />
                         <Route path="/admin/edge-monitoring" element={<ProtectedRoute requireAdmin={true}><AdminEdgeMonitoring /></ProtectedRoute>} />
                         <Route path="/admin/edge-tester" element={<ProtectedRoute requireAdmin={true}><AdminEdgeTester /></ProtectedRoute>} />
                         <Route path="/admin/button-tester" element={<ProtectedRoute requireAdmin={true}><AdminButtonTester /></ProtectedRoute>} />
