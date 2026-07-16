@@ -3048,4 +3048,5 @@ async function handler(req: Request): Promise<Response> {
     log("ERROR", { message: error instanceof Error ? error.message : String(error) });
     return errorResponse(error);
   }
-});
+}
+
