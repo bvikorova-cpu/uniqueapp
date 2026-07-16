@@ -73,30 +73,15 @@ type FeedItem = WallFeedItem;
 const Feed = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
-  const [feedEnhancementsReady, setFeedEnhancementsReady] = useState(false);
-  const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(
-    feedEnhancementsReady ? user?.id : null,
-  );
-  // Hydrate first page instantly from localStorage cache (stale-while-revalidate)
-  const CACHE_KEY = "wall_feed_cache_v1";
-  const CACHE_FRESH_MS = 60 * 1000; // skip network refetch if cache is <60s old
-  const cached = useMemo(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(CACHE_KEY) : null;
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (Date.now() - (parsed.t || 0) > 1000 * 60 * 60 * 24) return null; // 24h TTL
-      return parsed;
-    } catch { return null; }
-  }, []);
-  const cacheAgeMs = cached?.t ? Date.now() - cached.t : Infinity;
-  const cacheIsFresh = cacheAgeMs < CACHE_FRESH_MS && (cached?.feedItems?.length ?? 0) > 0;
-  const [posts, setPosts] = useState<Post[]>(cached?.posts || []);
-  const [reposts, setReposts] = useState<Repost[]>(cached?.reposts || []);
-  const [feedItems, setFeedItems] = useState<FeedItem[]>(cached?.feedItems || []);
+  const feedEnhancementsReady = true;
+  const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(user?.id);
+  const cacheIsFresh = false;
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [reposts, setReposts] = useState<Repost[]>([]);
+  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
 
-  const [loading, setLoading] = useState(!(cached?.feedItems?.length));
-  const wallStats = useWallStats(user?.id, feedEnhancementsReady);
+  const [loading, setLoading] = useState(true);
+  const wallStats = useWallStats(user?.id, true);
 
   const [loadingMore, setLoadingMore] = useState(false);
   const [feedError, setFeedError] = useState<string | null>(null);
