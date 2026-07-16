@@ -253,27 +253,8 @@ const Feed = () => {
     }
   }, [toast]);
 
-  useEffect(() => {
-    if (feedEnhancementsReady) return;
-    if (loading && feedItems.length === 0) return;
+  // (removed: deferred enhancement gating — enhancements always ready now)
 
-    const schedule = (callback: () => void): number => {
-      const requestIdle = (window as any).requestIdleCallback as
-        | ((cb: () => void, opts?: { timeout?: number }) => number)
-        | undefined;
-      if (typeof requestIdle === "function") return requestIdle(callback, { timeout: 1800 });
-      return window.setTimeout(callback, 900);
-    };
-
-    const cancel = (id: number) => {
-      const cancelIdle = (window as any).cancelIdleCallback as ((handle: number) => void) | undefined;
-      if (typeof cancelIdle === "function") cancelIdle(id);
-      else window.clearTimeout(id);
-    };
-
-    const id = schedule(() => setFeedEnhancementsReady(true));
-    return () => cancel(id);
-  }, [feedEnhancementsReady, feedItems.length, loading]);
 
   const fetchSavedPosts = async () => {
     if (!user) return;
