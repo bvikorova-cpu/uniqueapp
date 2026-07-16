@@ -85,7 +85,7 @@ const SceneCard: React.FC<Scene> = ({ duration, caption, image, tint }) => {
       <AbsoluteFill
         style={{
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%)",
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.65) 100%)",
         }}
       />
 
