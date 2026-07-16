@@ -25,20 +25,20 @@ type Scene = {
 };
 
 const SCENES: Scene[] = [
-  { from: 0, duration: 27, caption: "This is Unique", image: "01-intro.jpg", tint: "rgba(20,0,40,0.35)" },
-  { from: 27, duration: 58, caption: "One app.\nEndless possibilities.", image: "02-world.jpg", tint: "rgba(0,0,20,0.4)" },
-  { from: 85, duration: 55, caption: "Share your voice\non the Wall", image: "03-wall.jpg", tint: "rgba(30,0,40,0.45)" },
-  { from: 140, duration: 47, caption: "Find real love\nin Dating", image: "04-dating.jpg", tint: "rgba(40,0,20,0.35)" },
-  { from: 187, duration: 52, caption: "Let your kids\nlearn, safely", image: "05-kids.jpg", tint: "rgba(20,10,40,0.4)" },
-  { from: 239, duration: 89, caption: "Show your talent.\nWin real prizes\nin Megatalent.", image: "06-megatalent.jpg", tint: "rgba(20,10,0,0.35)" },
-  { from: 328, duration: 47, caption: "Create with AI\nin seconds", image: "07-ai.jpg", tint: "rgba(0,10,30,0.4)" },
-  { from: 375, duration: 76, caption: "Sell your skills.\nBuy from your\nneighbors.", image: "08-market.jpg", tint: "rgba(10,20,10,0.45)" },
-  { from: 451, duration: 63, caption: "Stream music.\nEarn from\nevery play.", image: "09-music.jpg", tint: "rgba(30,0,0,0.4)" },
-  { from: 514, duration: 56, caption: "Heal your mind.\nMove your body.", image: "10-health.jpg", tint: "rgba(0,20,20,0.4)" },
-  { from: 570, duration: 61, caption: "No ads chasing you.\nNo data games.", image: "11-privacy.jpg", tint: "rgba(10,0,30,0.5)" },
-  { from: 631, duration: 58, caption: "Just people.\nCreators.\nDreamers.", image: "12-people.jpg", tint: "rgba(30,10,40,0.45)" },
-  { from: 689, duration: 54, caption: "Made for the world.\nMade for you.", image: "13-worldwide.jpg", tint: "rgba(10,0,30,0.45)" },
-  { from: 743, duration: 157, caption: "Welcome to Unique", image: "14-outro.jpg", tint: "rgba(20,0,40,0.5)" },
+  { from: 0, duration: 27, caption: "This is Unique", image: "01-intro.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 27, duration: 58, caption: "One app.\nEndless possibilities.", image: "02-world.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 85, duration: 55, caption: "Share your voice\non the Wall", image: "03-wall.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 140, duration: 47, caption: "Find real love\nin Dating", image: "04-dating.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 187, duration: 52, caption: "Let your kids\nlearn, safely", image: "05-kids.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 239, duration: 89, caption: "Show your talent.\nWin real prizes\nin Megatalent.", image: "06-megatalent.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 328, duration: 47, caption: "Create with AI\nin seconds", image: "07-ai.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 375, duration: 76, caption: "Sell your skills.\nBuy from your\nneighbors.", image: "08-market.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 451, duration: 63, caption: "Stream music.\nEarn from\nevery play.", image: "09-music.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 514, duration: 56, caption: "Heal your mind.\nMove your body.", image: "10-health.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 570, duration: 61, caption: "No ads chasing you.\nNo data games.", image: "11-privacy.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 631, duration: 58, caption: "Just people.\nCreators.\nDreamers.", image: "12-people.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 689, duration: 54, caption: "Made for the world.\nMade for you.", image: "13-worldwide.jpg", tint: "rgba(0,0,0,0)" },
+  { from: 743, duration: 157, caption: "Welcome to Unique", image: "14-outro.jpg", tint: "rgba(0,0,0,0)" },
 ];
 
 const KenBurnsImage: React.FC<{ src: string; duration: number }> = ({ src, duration }) => {
@@ -55,6 +55,7 @@ const KenBurnsImage: React.FC<{ src: string; duration: number }> = ({ src, durat
           height: "100%",
           objectFit: "cover",
           transform: `scale(${scale}) translate(${tx}px, ${ty}px)`,
+          filter: "saturate(1.35) brightness(1.18) contrast(1.05)",
         }}
       />
     </AbsoluteFill>
@@ -84,7 +85,7 @@ const SceneCard: React.FC<Scene> = ({ duration, caption, image, tint }) => {
       <AbsoluteFill
         style={{
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%)",
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.65) 100%)",
         }}
       />
 
@@ -134,7 +135,7 @@ const Outro: React.FC<{ image: string; duration: number }> = ({ image, duration 
   return (
     <AbsoluteFill>
       <KenBurnsImage src={image} duration={duration} />
-      <AbsoluteFill style={{ backgroundColor: "rgba(10,0,30,0.55)" }} />
+      <AbsoluteFill style={{ backgroundColor: "rgba(10,0,30,0.3)" }} />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
         <div
           style={{
