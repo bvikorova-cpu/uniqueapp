@@ -635,6 +635,41 @@ const Feed = () => {
               <SearchBar />
               <HeroRewardedAd sectionKey="page_wall" />
 
+              {/* Moved up: user search, tools, notes, stories */}
+              <UserSearch />
+
+              <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 flex flex-wrap gap-2">
+                <SpacesDialog />
+                <GroupChatDialog />
+                <CommunitiesDialog />
+                <CloseFriendsDialog />
+                <details className="group inline-block">
+                  <summary className="list-none cursor-pointer inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors">
+                    More tools
+                  </summary>
+                  <div className="mt-2 flex flex-wrap gap-2 p-2 rounded-lg bg-background/50 border border-white/10">
+                    <MutedUsersDialog />
+                    <MutedKeywordsDialog />
+                    <SavedSearchesDialog />
+                    <FollowedTopicsDialog />
+                    <ModerationQueueDialog />
+                    <CreatorSubscriptionDialog />
+                    <CreatorFundDialog />
+                    <DailyLoginRewardDialog />
+                    <CreatorWebhooksDialog />
+                    <AccessibilityFieldsDialog />
+                    <OfflineStatusIndicator />
+                  </div>
+                </details>
+              </div>
+
+              <NotesBar />
+
+              <div className="glass-card rounded-2xl p-3 backdrop-blur-xl border border-white/10">
+                <StoriesBar />
+              </div>
+
+
 
 
               {/* Hub Tabs */}
