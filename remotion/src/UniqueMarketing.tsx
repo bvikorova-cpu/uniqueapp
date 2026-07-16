@@ -135,7 +135,7 @@ const Outro: React.FC<{ image: string; duration: number }> = ({ image, duration 
   return (
     <AbsoluteFill>
       <KenBurnsImage src={image} duration={duration} />
-      <AbsoluteFill style={{ backgroundColor: "rgba(10,0,30,0.55)" }} />
+      <AbsoluteFill style={{ backgroundColor: "rgba(10,0,30,0.3)" }} />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
         <div
           style={{
