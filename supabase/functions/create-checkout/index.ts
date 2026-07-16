@@ -5,6 +5,7 @@ import { errorResponse, handleCors, successResponse } from "../_shared/response.
 import { createStripeClient, getStripeCustomer } from "../_shared/stripe.ts";
 import { RATE_LIMITS, withRateLimit } from "../_shared/rateLimit.ts";
 import { getFeeRate } from "../_shared/feeRates.ts";
+import { withIdempotency } from "../_shared/idempotency.ts";
 
 const log = createLogger("CREATE-CHECKOUT");
 
@@ -335,7 +336,14 @@ serve(async (req) => {
   const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.checkout, corsHeaders);
   if (rateLimitResponse) return rateLimitResponse;
 
+  return await withIdempotency(req, "create-checkout", () => handler(req));
+});
+
+async function handler(req: Request): Promise<Response> {
   try {
+    const body = await req.json();
+    const stripe = createStripeClient();
+    const origin = normalizeOrigin(req.headers.get("origin"));
     const body = await req.json();
     const stripe = createStripeClient();
     const origin = normalizeOrigin(req.headers.get("origin"));
@@ -3040,4 +3048,5 @@ serve(async (req) => {
     log("ERROR", { message: error instanceof Error ? error.message : String(error) });
     return errorResponse(error);
   }
-});
+}
+
