@@ -340,10 +340,10 @@ serve(async (req) => {
 });
 
 async function handler(req: Request): Promise<Response> {
-  const stripe = createStripeClient();
-  const origin = normalizeOrigin(req.headers.get("origin"));
   try {
     const body = await req.json();
+    const stripe = createStripeClient();
+    const origin = normalizeOrigin(req.headers.get("origin"));
     const body = await req.json();
     const stripe = createStripeClient();
     const origin = normalizeOrigin(req.headers.get("origin"));
