@@ -716,9 +716,8 @@ const Feed = () => {
                         </details>
                       </div>
 
-                      <WallCinematicHero totalPosts={wallStats.postsToday} totalUsers={wallStats.activeUsers} totalLikes={wallStats.interactionsToday} streak={wallStats.streak} />
-
                       <NotesBar />
+
 
                       <div className="glass-card rounded-2xl p-3 backdrop-blur-xl border border-white/10">
                         <StoriesBar />
