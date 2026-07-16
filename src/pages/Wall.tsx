@@ -611,7 +611,15 @@ const Feed = () => {
             )}
 
             <div className="max-w-3xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
-              {/* Prominent How it works — always visible at the top of the Wall */}
+              {/* Cinematic hero video + stats — always at the very top of the Wall */}
+              <WallCinematicHero
+                totalPosts={wallStats.postsToday}
+                totalUsers={wallStats.activeUsers}
+                totalLikes={wallStats.interactionsToday}
+                streak={wallStats.streak}
+              />
+
+              {/* Prominent How it works — right below the hero */}
               <HowItWorksButton
                 title="Wall"
                 intro="The Wall is your social feed. Here's what every button and feature does — so nothing on this page is a mystery."
@@ -619,6 +627,7 @@ const Feed = () => {
                 variant="compact"
                 className="w-full h-11 justify-center gap-2 border-2 border-primary/50 bg-gradient-to-r from-primary/20 via-accent/15 to-primary/20 text-primary hover:bg-primary/25 shadow-md"
               />
+
 
               {/* Hub Tabs */}
               <div className="relative">
