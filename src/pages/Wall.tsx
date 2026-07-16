@@ -731,15 +731,10 @@ const Feed = () => {
                         <StoriesBar />
                       </div>
 
-                      <div className="flex justify-end">
-                        <AchievementsBadge />
-                      </div>
-
-                      <SearchBar />
                       <SmartSuggestionsCard />
-                      <HeroRewardedAd sectionKey="page_wall" />
 
                     </div>
+
                   )}
                 </>
               )}
