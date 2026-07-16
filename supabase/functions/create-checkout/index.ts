@@ -336,7 +336,14 @@ serve(async (req) => {
   const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.checkout, corsHeaders);
   if (rateLimitResponse) return rateLimitResponse;
 
+  return await withIdempotency(req, "create-checkout", () => handler(req));
+});
+
+async function handler(req: Request): Promise<Response> {
+  const stripe = createStripeClient();
+  const origin = normalizeOrigin(req.headers.get("origin"));
   try {
+    const body = await req.json();
     const body = await req.json();
     const stripe = createStripeClient();
     const origin = normalizeOrigin(req.headers.get("origin"));
