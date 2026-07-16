@@ -628,6 +628,14 @@ const Feed = () => {
                 className="w-full h-11 justify-center gap-2 border-2 border-primary/50 bg-gradient-to-r from-primary/20 via-accent/15 to-primary/20 text-primary hover:bg-primary/25 shadow-md"
               />
 
+              {/* Quick access — right under stats hero */}
+              <div className="flex justify-end">
+                <AchievementsBadge />
+              </div>
+              <SearchBar />
+              <HeroRewardedAd sectionKey="page_wall" />
+
+
 
               {/* Hub Tabs */}
               <div className="relative">
