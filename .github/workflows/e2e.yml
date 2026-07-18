@@ -9,6 +9,10 @@ on:
     - cron: '0 2 * * *'  # 02:00 UTC denne
   workflow_dispatch:
 
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   playwright:
     name: Playwright E2E
