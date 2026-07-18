@@ -50,9 +50,9 @@ jobs:
           E2E_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
           CRAWLER_SHARDS: ${{ github.event.inputs.shards || 12 }}
           CRAWLER_SHARD_INDEX: ${{ matrix.shard }}
-          CRAWLER_ROUTE_LIMIT: ${{ github.event.inputs.route_limit || 0 }}
-          CRAWLER_CLICKS_PER_ROUTE: 30
-          CRAWLER_ROUTE_TIMEOUT: 20_000
+          CRAWLER_ROUTE_LIMIT: ${{ github.event.inputs.route_limit || 150 }}
+          CRAWLER_CLICKS_PER_ROUTE: 15
+          CRAWLER_ROUTE_TIMEOUT: 12000
         run: |
           bunx playwright test \
             e2e/crawler/all-buttons-crawler.spec.ts \
