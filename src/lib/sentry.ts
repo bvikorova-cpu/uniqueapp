@@ -7,6 +7,29 @@ const ENV = (import.meta.env.MODE as string) || "development";
 
 let initialized = false;
 
+const STACK_OVERFLOW_RE = /Maximum call stack size exceeded/i;
+
+// Install global handlers immediately (independent of Sentry init) so the
+// upstream @supabase/phoenix recursion during realtime unsubscribe doesn't
+// bubble as an unhandled rejection / error and doesn't reach Sentry at all.
+if (typeof window !== "undefined") {
+  window.addEventListener("unhandledrejection", (ev) => {
+    const reason: any = ev.reason;
+    const msg = String(reason?.message ?? reason ?? "");
+    const stack = String(reason?.stack ?? "");
+    if (STACK_OVERFLOW_RE.test(msg) || STACK_OVERFLOW_RE.test(stack)) {
+      ev.preventDefault();
+    }
+  });
+  window.addEventListener("error", (ev) => {
+    const msg = String(ev.message ?? "");
+    const stack = String((ev.error as any)?.stack ?? "");
+    if (STACK_OVERFLOW_RE.test(msg) || STACK_OVERFLOW_RE.test(stack)) {
+      ev.preventDefault();
+    }
+  });
+}
+
 export function initSentry() {
   if (initialized) return;
   if (!DSN) {
@@ -38,9 +61,17 @@ export function initSentry() {
       /Maximum call stack size exceeded/i,
     ],
     beforeSend(event, hint) {
+      const orig = hint?.originalException as any;
+      // Extra guard: drop any event whose message/stack contains the
+      // upstream stack-overflow signature, in case ignoreErrors misses it
+      // (e.g. reason is a plain object without a `message` field).
+      const msg = String(orig?.message ?? "");
+      const stack = String(orig?.stack ?? "");
+      if (STACK_OVERFLOW_RE.test(msg) || STACK_OVERFLOW_RE.test(stack)) {
+        return null;
+      }
       // Normalise Supabase/PostgREST error objects ({code,details,hint,message})
       // so they become readable Sentry events instead of "Object captured…".
-      const orig = hint?.originalException as any;
       if (
         orig &&
         typeof orig === "object" &&
@@ -48,12 +79,12 @@ export function initSentry() {
         "message" in orig &&
         ("code" in orig || "details" in orig || "hint" in orig)
       ) {
-        const msg = String(orig.message || "Supabase error");
+        const m = String(orig.message || "Supabase error");
         event.exception = {
           values: [
             {
               type: `SupabaseError${orig.code ? `(${orig.code})` : ""}`,
-              value: msg,
+              value: m,
             },
           ],
         };
