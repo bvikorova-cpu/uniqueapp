@@ -18,7 +18,7 @@ jobs:
   crawl:
     name: Crawl shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 330
     strategy:
       fail-fast: false
       matrix:
