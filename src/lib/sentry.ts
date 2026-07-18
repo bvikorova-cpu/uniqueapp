@@ -7,6 +7,29 @@ const ENV = (import.meta.env.MODE as string) || "development";
 
 let initialized = false;
 
+const STACK_OVERFLOW_RE = /Maximum call stack size exceeded/i;
+
+// Install global handlers immediately (independent of Sentry init) so the
+// upstream @supabase/phoenix recursion during realtime unsubscribe doesn't
+// bubble as an unhandled rejection / error and doesn't reach Sentry at all.
+if (typeof window !== "undefined") {
+  window.addEventListener("unhandledrejection", (ev) => {
+    const reason: any = ev.reason;
+    const msg = String(reason?.message ?? reason ?? "");
+    const stack = String(reason?.stack ?? "");
+    if (STACK_OVERFLOW_RE.test(msg) || STACK_OVERFLOW_RE.test(stack)) {
+      ev.preventDefault();
+    }
+  });
+  window.addEventListener("error", (ev) => {
+    const msg = String(ev.message ?? "");
+    const stack = String((ev.error as any)?.stack ?? "");
+    if (STACK_OVERFLOW_RE.test(msg) || STACK_OVERFLOW_RE.test(stack)) {
+      ev.preventDefault();
+    }
+  });
+}
+
 export function initSentry() {
   if (initialized) return;
   if (!DSN) {
