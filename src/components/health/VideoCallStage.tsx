@@ -61,6 +61,7 @@ export default function VideoCallStage({ appointmentId }: Props) {
       };
 
       const channel = supabase.channel(`video:${data.room_id}`);
+      channelRef.current = channel;
       pc.onicecandidate = (e) => {
         if (e.candidate)
           channel.send({ type: "broadcast", event: "ice", payload: e.candidate.toJSON() });
