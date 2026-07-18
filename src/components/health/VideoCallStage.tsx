@@ -18,6 +18,7 @@ export default function VideoCallStage({ appointmentId }: Props) {
   const remoteRef = useRef<HTMLVideoElement>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const [role, setRole] = useState<"doctor" | "patient" | null>(null);
   const [status, setStatus] = useState<"idle" | "joining" | "in_call" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +32,10 @@ export default function VideoCallStage({ appointmentId }: Props) {
     pcRef.current = null;
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
   }
 
   async function join() {
@@ -56,6 +61,7 @@ export default function VideoCallStage({ appointmentId }: Props) {
       };
 
       const channel = supabase.channel(`video:${data.room_id}`);
+      channelRef.current = channel;
       pc.onicecandidate = (e) => {
         if (e.candidate)
           channel.send({ type: "broadcast", event: "ice", payload: e.candidate.toJSON() });
