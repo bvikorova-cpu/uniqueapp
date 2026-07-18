@@ -66802,6 +66802,7 @@ export type Database = {
       cleanup_expired_cache: { Args: never; Returns: number }
       cleanup_idempotency_keys: { Args: never; Returns: undefined }
       cleanup_log_tables: { Args: never; Returns: undefined }
+      cleanup_old_call_signals: { Args: never; Returns: undefined }
       cleanup_old_jobs: { Args: never; Returns: number }
       cleanup_rate_limit_buckets: { Args: never; Returns: undefined }
       cleanup_rate_limits: { Args: never; Returns: undefined }
