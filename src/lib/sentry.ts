@@ -33,6 +33,9 @@ export function initSentry() {
       "Object captured as promise rejection",
       "Failed to fetch dynamically imported module",
       /Failed to send a request to the Edge Function/i,
+      // Upstream recursion in @supabase/phoenix triggered by rapid
+      // realtime channel unsubscribe; ignored to avoid Sentry spam.
+      /Maximum call stack size exceeded/i,
     ],
     beforeSend(event, hint) {
       // Normalise Supabase/PostgREST error objects ({code,details,hint,message})
