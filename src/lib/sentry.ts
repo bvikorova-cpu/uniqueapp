@@ -30,10 +30,36 @@ export function initSentry() {
     ignoreErrors: [
       "ResizeObserver loop",
       "Non-Error promise rejection captured",
+      "Object captured as promise rejection",
       "Failed to fetch dynamically imported module",
       /Failed to send a request to the Edge Function/i,
     ],
+    beforeSend(event, hint) {
+      // Normalise Supabase/PostgREST error objects ({code,details,hint,message})
+      // so they become readable Sentry events instead of "Object captured…".
+      const orig = hint?.originalException as any;
+      if (
+        orig &&
+        typeof orig === "object" &&
+        !(orig instanceof Error) &&
+        "message" in orig &&
+        ("code" in orig || "details" in orig || "hint" in orig)
+      ) {
+        const msg = String(orig.message || "Supabase error");
+        event.exception = {
+          values: [
+            {
+              type: `SupabaseError${orig.code ? `(${orig.code})` : ""}`,
+              value: msg,
+            },
+          ],
+        };
+        event.extra = { ...(event.extra || {}), supabase: orig };
+      }
+      return event;
+    },
   });
+
   initialized = true;
 }
 
