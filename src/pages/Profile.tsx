@@ -428,18 +428,27 @@ const Profile = () => {
   useEffect(() => {
     if (!currentUserId || !userId || currentUserId === userId) return;
     (async () => {
-      const { data: friendshipData } = await supabase
-        .from("friendships")
-        .select("*")
-        .or(`and(user_id.eq.${currentUserId},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${currentUserId})`)
-        .maybeSingle();
+      try {
+        const { data: friendshipData, error: fErr } = await supabase
+          .from("friendships")
+          .select("*")
+          .or(`and(user_id.eq.${currentUserId},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${currentUserId})`)
+          .maybeSingle();
 
-      if (friendshipData) {
-        if (friendshipData.status === "accepted") setFriendshipStatus("accepted");
-        else if (friendshipData.user_id === currentUserId) setFriendshipStatus("pending_sent");
-        else setFriendshipStatus("pending_received");
+        if (fErr) {
+          console.warn("[Profile] friendship lookup failed", fErr);
+          return;
+        }
+        if (friendshipData) {
+          if (friendshipData.status === "accepted") setFriendshipStatus("accepted");
+          else if (friendshipData.user_id === currentUserId) setFriendshipStatus("pending_sent");
+          else setFriendshipStatus("pending_received");
+        }
+      } catch (err) {
+        console.warn("[Profile] friendship lookup threw", err);
       }
     })();
+
   }, [currentUserId, userId]);
 
 
