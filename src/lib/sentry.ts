@@ -61,9 +61,17 @@ export function initSentry() {
       /Maximum call stack size exceeded/i,
     ],
     beforeSend(event, hint) {
+      const orig = hint?.originalException as any;
+      // Extra guard: drop any event whose message/stack contains the
+      // upstream stack-overflow signature, in case ignoreErrors misses it
+      // (e.g. reason is a plain object without a `message` field).
+      const msg = String(orig?.message ?? "");
+      const stack = String(orig?.stack ?? "");
+      if (STACK_OVERFLOW_RE.test(msg) || STACK_OVERFLOW_RE.test(stack)) {
+        return null;
+      }
       // Normalise Supabase/PostgREST error objects ({code,details,hint,message})
       // so they become readable Sentry events instead of "Object captured…".
-      const orig = hint?.originalException as any;
       if (
         orig &&
         typeof orig === "object" &&
@@ -71,12 +79,12 @@ export function initSentry() {
         "message" in orig &&
         ("code" in orig || "details" in orig || "hint" in orig)
       ) {
-        const msg = String(orig.message || "Supabase error");
+        const m = String(orig.message || "Supabase error");
         event.exception = {
           values: [
             {
               type: `SupabaseError${orig.code ? `(${orig.code})` : ""}`,
-              value: msg,
+              value: m,
             },
           ],
         };
