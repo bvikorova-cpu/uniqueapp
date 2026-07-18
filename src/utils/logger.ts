@@ -36,6 +36,9 @@ async function persistLog(severity: Severity, payload: LogPayload): Promise<void
   try {
     if (isButtonTesterFrame) return;
 
+    // Skip noisy upstream recursion from @supabase/phoenix realtime.
+    if (/Maximum call stack size exceeded/i.test(payload.message)) return;
+
     const key = `${severity}:${payload.message}`;
     if (shouldThrottle(key)) return;
 
