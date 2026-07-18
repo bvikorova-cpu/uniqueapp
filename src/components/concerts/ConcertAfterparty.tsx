@@ -45,6 +45,23 @@ export const ConcertAfterparty = ({ onBack }: Props) => {
   ]);
   const [newMessage, setNewMessage] = useState("");
   const { toast } = useToast();
+  const channelRef = useRef<RealtimeChannel | null>(null);
+
+  // Subscribe to the active room's channel; clean up on room change / unmount to prevent leaks.
+  useEffect(() => {
+    if (!activeRoom) return;
+    const channel = supabase.channel("afterparty-" + activeRoom);
+    channel
+      .on("broadcast", { event: "message" }, ({ payload }) => {
+        setMessages(prev => [...prev, payload as ChatMessage]);
+      })
+      .subscribe();
+    channelRef.current = channel;
+    return () => {
+      supabase.removeChannel(channel);
+      channelRef.current = null;
+    };
+  }, [activeRoom]);
 
   const sendMessage = () => {
     if (!newMessage.trim()) return;
@@ -57,8 +74,8 @@ export const ConcertAfterparty = ({ onBack }: Props) => {
     setMessages(prev => [...prev, msg]);
     setNewMessage("");
 
-    // Broadcast via Supabase realtime
-    supabase.channel("afterparty-" + activeRoom).send({
+    // Reuse the already-subscribed channel instead of creating a new one per send.
+    channelRef.current?.send({
       type: "broadcast",
       event: "message",
       payload: msg,
@@ -68,11 +85,6 @@ export const ConcertAfterparty = ({ onBack }: Props) => {
   const joinRoom = (id: string) => {
     setActiveRoom(id);
     toast({ title: "Welcome to the Afterparty! 🎉", description: "You're now in the exclusive post-concert hangout" });
-
-    const channel = supabase.channel("afterparty-" + id);
-    channel.on("broadcast", { event: "message" }, ({ payload }) => {
-      setMessages(prev => [...prev, payload as ChatMessage]);
-    }).subscribe();
   };
 
   if (activeRoom) {
