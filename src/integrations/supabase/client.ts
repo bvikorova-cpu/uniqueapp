@@ -22,6 +22,24 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 });
 
 // ---------------------------------------------------------------------------
+// Safety wrapper around removeChannel: an upstream recursion in
+// @supabase/phoenix can throw "Maximum call stack size exceeded" during
+// rapid unsubscribe (see Sentry). Swallow it so it doesn't bubble up as
+// an unhandled rejection and spam error logs / Sentry.
+// ---------------------------------------------------------------------------
+const _origRemoveChannel = supabase.removeChannel.bind(supabase);
+(supabase as any).removeChannel = (channel: any) => {
+  try {
+    return _origRemoveChannel(channel);
+  } catch (e: any) {
+    if (e && /Maximum call stack size exceeded/i.test(String(e?.message))) {
+      return Promise.resolve("ok" as const);
+    }
+    throw e;
+  }
+};
+
+// ---------------------------------------------------------------------------
 // Edge function consolidation: transparently rewrites legacy proxy function
 // names to their universal router equivalents (generate-gift-message,
 // create-checkout, verify-payment). The 179 proxy functions previously hosted
