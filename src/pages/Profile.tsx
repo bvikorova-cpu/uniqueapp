@@ -389,26 +389,35 @@ const Profile = () => {
     let cancelled = false;
 
     (async () => {
-      const { data: postsData } = await tracedQuery("posts.initial", () =>
-        supabase
-          .from("posts")
-          .select(`*, media (*)`)
-          .eq("user_id", userId)
-          .order("created_at", { ascending: false })
-          .limit(PROFILE_POSTS_PAGE_SIZE),
-      );
+      try {
+        const { data: postsData, error: postsErr } = await tracedQuery("posts.initial", () =>
+          supabase
+            .from("posts")
+            .select(`*, media (*)`)
+            .eq("user_id", userId)
+            .order("created_at", { ascending: false })
+            .limit(PROFILE_POSTS_PAGE_SIZE),
+        );
+        if (postsErr) {
+          console.warn("[Profile] posts.initial failed", postsErr);
+          return;
+        }
 
-      if (cancelled) return;
-      const postsWithProfiles = (postsData || []).map((post) => ({
-        ...post,
-        profiles: {
-          id: profile.id,
-          full_name: profile.full_name,
-          avatar_url: profile.avatar_url,
-        },
-      }));
-      setPosts(postsWithProfiles);
+        if (cancelled) return;
+        const postsWithProfiles = (postsData || []).map((post) => ({
+          ...post,
+          profiles: {
+            id: profile.id,
+            full_name: profile.full_name,
+            avatar_url: profile.avatar_url,
+          },
+        }));
+        setPosts(postsWithProfiles);
+      } catch (err) {
+        console.warn("[Profile] posts.initial threw", err);
+      }
     })();
+
 
     return () => {
       cancelled = true;
