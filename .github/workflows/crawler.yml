@@ -14,6 +14,11 @@ on:
   schedule:
     - cron: "0 3 * * 0" # Sundays 03:00 UTC
 
+# Prevent stacking: a new run cancels any in-progress or queued run.
+concurrency:
+  group: crawler-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   crawl:
     name: Crawl shard ${{ matrix.shard }}
@@ -21,6 +26,7 @@ jobs:
     timeout-minutes: 330
     strategy:
       fail-fast: false
+      max-parallel: 3   # cap Supabase load — was 12 concurrent shards hammering prod
       matrix:
         shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     steps:
