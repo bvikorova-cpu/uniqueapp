@@ -8,9 +8,9 @@ on:
         required: false
         default: "12"
       route_limit:
-        description: "Max routes per shard (0 = auto)"
+        description: "Max routes per shard (0 = all)"
         required: false
-        default: "0"
+        default: "150"
   schedule:
     - cron: "0 3 * * 0" # Sundays 03:00 UTC
 
