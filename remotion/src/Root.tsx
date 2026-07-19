@@ -46,6 +46,14 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="challenges-film"
+      component={ChallengesFilm}
+      durationInFrames={CHALLENGES_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
 
 
     {VERSIONS.map((v) => (
