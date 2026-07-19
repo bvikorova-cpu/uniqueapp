@@ -2,7 +2,10 @@ import { Composition } from "remotion";
 import { PropertyVideo } from "./PropertyVideo";
 import { UniqueMarketing } from "./UniqueMarketing";
 import { UniqueMarketingV } from "./UniqueMarketingV";
+import { HomeMarketing, HOME_DURATION } from "./HomeMarketing";
 import { VERSIONS } from "./versions";
+
+
 
 const TOTAL = 8 * 112 + 4; // 900
 
@@ -24,6 +27,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="home-marketing"
+      component={HomeMarketing}
+      durationInFrames={HOME_DURATION}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
+
     {VERSIONS.map((v) => (
       <Composition
         key={v.id}
