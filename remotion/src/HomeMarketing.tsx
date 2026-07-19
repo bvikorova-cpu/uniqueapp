@@ -249,16 +249,23 @@ const SceneTagline: React.FC<{ duration: number }> = ({ duration }) => {
 /*  Scene 3 — Module grid                                                      */
 /* -------------------------------------------------------------------------- */
 
-const MODULES: { label: string; emoji: string; color: string }[] = [
-  { label: "Wall", emoji: "📱", color: "#8b5cf6" },
-  { label: "Dating", emoji: "💗", color: "#ec4899" },
-  { label: "Kids", emoji: "🧸", color: "#f59e0b" },
-  { label: "Megatalent", emoji: "🏆", color: "#fbbf24" },
-  { label: "AI Studio", emoji: "✨", color: "#a855f7" },
-  { label: "Marketplace", emoji: "🛍️", color: "#10b981" },
-  { label: "Music", emoji: "🎵", color: "#3b82f6" },
-  { label: "Health", emoji: "💪", color: "#ef4444" },
+type ModuleDef = { label: string; color: string; icon: React.ReactNode };
+const I = (d: string) => (
+  <svg viewBox="0 0 24 24" width="60" height="60" fill="none" stroke="white" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+    <path d={d} />
+  </svg>
+);
+const MODULES: ModuleDef[] = [
+  { label: "Wall", color: "#8b5cf6", icon: I("M4 5h16v14H4zM4 9h16M8 5v14") },
+  { label: "Dating", color: "#ec4899", icon: I("M12 21s-7-4.5-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-7 10-7 10z".replace(/^M12 21s-7-4.5-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-7 10-7 10z/, "M12 21s-7-4.5-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-7 10-7 10z")) },
+  { label: "Kids", color: "#f59e0b", icon: I("M12 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8zM4 22c0-4 4-6 8-6s8 2 8 6") },
+  { label: "Megatalent", color: "#fbbf24", icon: I("M8 21h8M12 17v4M6 4h12v4a6 6 0 0 1-12 0zM4 6h2v2a2 2 0 0 1-2-2zM20 6h-2v2a2 2 0 0 0 2-2z") },
+  { label: "AI Studio", color: "#a855f7", icon: I("M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2zM19 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1z") },
+  { label: "Marketplace", color: "#10b981", icon: I("M3 7h18l-2 12H5zM8 7V5a4 4 0 0 1 8 0v2") },
+  { label: "Music", color: "#3b82f6", icon: I("M9 18V5l12-2v13M9 18a3 3 0 1 1-3-3 3 3 0 0 1 3 3zM21 16a3 3 0 1 1-3-3 3 3 0 0 1 3 3z") },
+  { label: "Health", color: "#ef4444", icon: I("M22 12h-4l-3 8-6-16-3 8H2") },
 ];
+
 
 const SceneModules: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
