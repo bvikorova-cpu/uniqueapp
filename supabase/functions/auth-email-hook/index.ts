@@ -139,7 +139,7 @@ interface SupabaseEmailPayload {
   }
 }
 
-function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data']): string {
+function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data'], recipient?: string): string {
   // IMPORTANT: Do NOT use Supabase's /auth/v1/verify?token=... GET link.
   // Corporate/free mail scanners (Yandex, Outlook Safe Links, Gmail preview, etc.)
   // pre-fetch links in emails, which consumes the one-time OTP before the user
@@ -171,10 +171,20 @@ function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data']): st
   try { origin = new URL(base).origin } catch { /* keep as-is */ }
 
   const params = new URLSearchParams({
-    token_hash: emailData.token_hash,
     type: action,
     next: emailData.redirect_to || '/',
+    via: 'unique-hook-v2',
   })
+
+  // token_hash is the scanner-safe Supabase format. Keep token + email as a
+  // fallback because some Auth payload variants only include the raw OTP token.
+  if (emailData.token_hash) {
+    params.set('token_hash', emailData.token_hash)
+  } else if (emailData.token) {
+    params.set('token', emailData.token)
+    if (recipient) params.set('email', recipient)
+  }
+
   return `${origin}${route}?${params.toString()}`
 }
 
@@ -244,7 +254,6 @@ async function handleWebhook(req: Request): Promise<Response> {
     )
   }
 
-  const confirmationUrl = buildConfirmationUrl(payload.email_data)
   const recipient = payload.user?.email
   if (!recipient) {
     console.error('Missing recipient email in webhook payload')
@@ -253,6 +262,7 @@ async function handleWebhook(req: Request): Promise<Response> {
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
+  const confirmationUrl = buildConfirmationUrl(payload.email_data, recipient)
 
   const templateProps = {
     siteName: SITE_NAME,
@@ -313,7 +323,23 @@ async function handleWebhook(req: Request): Promise<Response> {
     console.warn('Could not write email_send_log', { error: (logError as Error).message })
   }
 
-  console.log('Auth email sent', { emailType, recipient, messageId })
+  let linkHost = 'unknown'
+  let linkPath = 'unknown'
+  try {
+    const parsed = new URL(confirmationUrl)
+    linkHost = parsed.host
+    linkPath = parsed.pathname
+  } catch { /* ignore */ }
+
+  console.log('Auth email sent', {
+    emailType,
+    recipient,
+    messageId,
+    linkHost,
+    linkPath,
+    scannerSafe: confirmationUrl.includes('token_hash=') || confirmationUrl.includes('token='),
+    hookVersion: 'unique-hook-v2',
+  })
 
   return new Response(
     JSON.stringify({ success: true, sent: true }),

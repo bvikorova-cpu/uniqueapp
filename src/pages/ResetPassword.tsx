@@ -48,6 +48,7 @@ const ResetPassword = () => {
       const url = new URL(window.location.href);
       const code = url.searchParams.get("code");
       const tokenHash = url.searchParams.get("token_hash");
+      const token = url.searchParams.get("token");
       const type = url.searchParams.get("type");
       const errorDesc = url.searchParams.get("error_description") || (hash.includes("error") ? hash : null);
 
@@ -66,6 +67,17 @@ const ResetPassword = () => {
         // OTP link: ?token_hash=...&type=recovery
         if (tokenHash && type === "recovery") {
           const { error } = await supabase.auth.verifyOtp({ type: "recovery", token_hash: tokenHash });
+          if (error) throw error;
+          if (!cancelled) { setRecoveryReady(true); setChecking(false); }
+          window.history.replaceState({}, "", url.pathname);
+          return;
+        }
+
+        // Fallback OTP flow: ?token=...&type=recovery — kept for payloads that
+        // do not include token_hash in the custom auth email hook.
+        if (token && type === "recovery") {
+          const email = url.searchParams.get("email") || "";
+          const { error } = await supabase.auth.verifyOtp({ type: "recovery", token, email });
           if (error) throw error;
           if (!cancelled) { setRecoveryReady(true); setChecking(false); }
           window.history.replaceState({}, "", url.pathname);
