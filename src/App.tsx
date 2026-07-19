@@ -133,6 +133,7 @@ import NotFound from "./pages/NotFound";
 // All other pages - lazy loaded
 import {
   ResetPassword,
+  AuthCallback,
   Profile,
   EditProfile,
   Settings,
