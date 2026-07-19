@@ -42,7 +42,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
     <AbsoluteFill>
       <AbsoluteFill style={{ transform: `scale(${kb})` }}>
         <Img
-          src={staticFile("arena/01-battle.jpg")}
+          src={staticFile("fundraising/01-hub.jpg")}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
         <AbsoluteFill style={{ backgroundColor: "rgba(5,0,20,0.62)" }} />
@@ -88,7 +88,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             textTransform: "uppercase",
           }}
         >
-          Brand Arena
+          Fundraising
         </div>
       </AbsoluteFill>
     </AbsoluteFill>
@@ -135,7 +135,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             color: "rgba(255,255,255,0.82)",
           }}
         >
-          Brands battle.
+          Small gifts.
         </div>
         <div
           style={{
@@ -152,7 +152,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Fans decide.
+          Big change.
         </div>
         <div
           style={{
@@ -166,7 +166,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             maxWidth: 900,
           }}
         >
-          The world's first fan-powered brand arena.
+          Every donation. Every dream. Every life changed.
         </div>
       </AbsoluteFill>
     </AbsoluteFill>
@@ -419,7 +419,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             maxWidth: 900,
           }}
         >
-          Battle · Sponsor · Win
+          Give · Help · Change lives
         </div>
       </AbsoluteFill>
     </AbsoluteFill>
@@ -432,7 +432,7 @@ const MODULES: Module[] = [
     title: "Brands go head-to-head.",
     subtitle: "Live 1v1 brand duels judged by real fans in real time.",
     perks: ["Weekly featured battles", "Fan votes decide winners", "Live leaderboards & rewards"],
-    image: "arena/01-battle.jpg",
+    image: "fundraising/01-hub.jpg",
     accent: "#f43f5e",
     accent2: "#fbbf24",
   },
@@ -470,11 +470,11 @@ const PROMISE = 90;
 const MODULE_DUR = 110;
 const OUTRO = 130;
 
-export const ARENA_DURATION = INTRO + PROMISE + MODULES.length * MODULE_DUR + OUTRO;
+export const FUNDRAISING_DURATION = INTRO + PROMISE + MODULES.length * MODULE_DUR + OUTRO;
 
-export const ArenaFilm: React.FC = () => {
+export const FundraisingFilm: React.FC = () => {
   const frame = useCurrentFrame();
-  const total = ARENA_DURATION;
+  const total = FUNDRAISING_DURATION;
   const musicVolume = (f: number) => {
     const fadeIn = interpolate(f, [0, 20], [0, 0.7], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
     const fadeOut = interpolate(f, [total - 40, total - 5], [0.7, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
