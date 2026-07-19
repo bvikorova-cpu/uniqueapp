@@ -5,6 +5,7 @@ import { UniqueMarketingV } from "./UniqueMarketingV";
 import { HomeMarketing, HOME_DURATION } from "./HomeMarketing";
 import { HomeMarketingVertical, HOME_V_DURATION } from "./HomeMarketingVertical";
 import { ChallengesFilm, CHALLENGES_DURATION } from "./ChallengesFilm";
+import { DiscoverFilm, DISCOVER_DURATION } from "./DiscoverFilm";
 
 import { VERSIONS } from "./versions";
 
