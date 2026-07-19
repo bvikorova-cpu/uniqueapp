@@ -7,6 +7,7 @@ import { HomeMarketingVertical, HOME_V_DURATION } from "./HomeMarketingVertical"
 import { ChallengesFilm, CHALLENGES_DURATION } from "./ChallengesFilm";
 import { DiscoverFilm, DISCOVER_DURATION } from "./DiscoverFilm";
 import { KidsFilm, KIDS_DURATION } from "./KidsFilm";
+import { LearningFilm, LEARNING_DURATION } from "./LearningFilm";
 
 import { VERSIONS } from "./versions";
 
@@ -72,6 +73,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="learning-film"
+      component={LearningFilm}
+      durationInFrames={LEARNING_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+
 
 
 
