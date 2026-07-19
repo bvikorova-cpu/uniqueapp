@@ -548,7 +548,7 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
   return (
     <div className="fixed inset-0 bg-black">
       {topOverlay && (
-        <div className="absolute top-0 inset-x-0 z-30 pt-3 px-4 flex items-center justify-center text-white pointer-events-none">
+        <div className="absolute top-0 inset-x-0 z-[60] pt-[calc(4rem+env(safe-area-inset-top))] px-4 flex items-center justify-center text-white pointer-events-none">
           <div className="pointer-events-auto">{topOverlay}</div>
         </div>
       )}
