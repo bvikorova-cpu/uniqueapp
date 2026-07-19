@@ -178,9 +178,12 @@ function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data'], rec
 
   // token_hash is the scanner-safe Supabase format. Keep token + email as a
   // fallback because some Auth payload variants only include the raw OTP token.
-  if (emailData.token_hash) params.set('token_hash', emailData.token_hash)
-  if (emailData.token) params.set('token', emailData.token)
-  if (recipient) params.set('email', recipient)
+  if (emailData.token_hash) {
+    params.set('token_hash', emailData.token_hash)
+  } else if (emailData.token) {
+    params.set('token', emailData.token)
+    if (recipient) params.set('email', recipient)
+  }
 
   return `${origin}${route}?${params.toString()}`
 }
