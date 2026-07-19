@@ -487,7 +487,7 @@ const MODULES: Module[] = [
     title: "Your Feed.",
     subtitle: "Share moments. Follow the people you love.",
     perks: ["Posts, photos & videos", "Likes, comments & shares", "Real-time global feed"],
-    iconPath: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+    image: "discover/01-wall.jpg",
     accent: "#8b5cf6",
     accent2: "#ec4899",
   },
@@ -496,8 +496,7 @@ const MODULES: Module[] = [
     title: "Play & Win.",
     subtitle: "Hundreds of arcade, puzzle and brain games.",
     perks: ["Solo & multiplayer", "Daily tournaments", "Earn XP and prizes"],
-    iconPath:
-      "M6 12h4M8 10v4M15 13h.01M18 11h.01M17 5H7a5 5 0 0 0-5 5v4a5 5 0 0 0 5 5c1.5 0 2.5-.7 3.2-1.6l1.3-1.7a1 1 0 0 1 1.6 0l1.3 1.7C15.5 18.3 16.5 19 18 19a4 4 0 0 0 4-4v-4a5 5 0 0 0-5-5z",
+    image: "discover/02-games.jpg",
     accent: "#22d3ee",
     accent2: "#8b5cf6",
   },
@@ -506,8 +505,7 @@ const MODULES: Module[] = [
     title: "Find a Job.",
     subtitle: "Local & remote gigs. Hire top talent fast.",
     perks: ["Post jobs in minutes", "Verified applicants", "Chat & hire in-app"],
-    iconPath:
-      "M20 7h-4V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z M10 5h4v2h-4z",
+    image: "discover/03-work.jpg",
     accent: "#a78bfa",
     accent2: "#7c3aed",
   },
@@ -516,8 +514,7 @@ const MODULES: Module[] = [
     title: "Get Noticed.",
     subtitle: "Boost your business to thousands in seconds.",
     perks: ["Targeted geo-ads", "Smart budget control", "Live performance stats"],
-    iconPath:
-      "M3 11l14-6v14L3 13v-2z M3 11v2 M8 20l-1-4 M17 9a3 3 0 0 1 0 6",
+    image: "discover/04-promotions.jpg",
     accent: "#f59e0b",
     accent2: "#ef4444",
   },
@@ -526,8 +523,7 @@ const MODULES: Module[] = [
     title: "Book Anything.",
     subtitle: "Salons, doctors, tables, rides — all in one tap.",
     perks: ["Instant reservations", "Smart reminders", "Cancel or reschedule anytime"],
-    iconPath:
-      "M8 2v4 M16 2v4 M3 8h18 M5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z",
+    image: "discover/05-booking.jpg",
     accent: "#10b981",
     accent2: "#14b8a6",
   },
@@ -536,8 +532,7 @@ const MODULES: Module[] = [
     title: "Get Help.",
     subtitle: "Trusted pros for every job, big or small.",
     perks: ["Rated professionals", "Secure escrow payments", "Reviews you can trust"],
-    iconPath:
-      "M6 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z M6 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z M20 4L8.12 15.88 M14.47 14.48L20 20 M8.12 8.12L12 12",
+    image: "discover/06-services.jpg",
     accent: "#ec4899",
     accent2: "#f43f5e",
   },
@@ -546,8 +541,7 @@ const MODULES: Module[] = [
     title: "Earn Perks.",
     subtitle: "Turn everyday moments into real rewards.",
     perks: ["Daily streaks & bonuses", "Level up your profile", "Redeem for real prizes"],
-    iconPath:
-      "M8 21h8 M12 17v4 M7 4h10v4a5 5 0 0 1-10 0V4z M17 4h3v2a3 3 0 0 1-3 3 M7 4H4v2a3 3 0 0 0 3 3",
+    image: "discover/07-rewards.jpg",
     accent: "#fbbf24",
     accent2: "#f59e0b",
   },
@@ -556,8 +550,7 @@ const MODULES: Module[] = [
     title: "Become a Star.",
     subtitle: "Global talent contest. €10,000 prize pool every quarter.",
     perks: ["Compete across 30+ categories", "Live voting & watch parties", "Real cash payouts"],
-    iconPath:
-      "M2 20h20 M3 8l4 4 5-8 5 8 4-4-2 10H5L3 8z",
+    image: "discover/08-megatalent.jpg",
     accent: "#c084fc",
     accent2: "#ec4899",
   },
