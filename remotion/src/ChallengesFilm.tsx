@@ -309,6 +309,14 @@ const ChallengeScene: React.FC<{
     extrapolateRight: "clamp",
   });
 
+  const tagOp = interpolate(frame, [46, 70], [0, 1], {
+    extrapolateRight: "clamp",
+  });
+  const tagY = interpolate(frame, [46, 70], [24, 0], {
+    extrapolateRight: "clamp",
+  });
+
+
   return (
     <AbsoluteFill style={{ opacity: 1 - exit }}>
       <KenBurns src={staticFile(backdrop)} duration={duration} darken={0.4} />
