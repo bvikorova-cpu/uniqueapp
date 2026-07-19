@@ -320,7 +320,23 @@ async function handleWebhook(req: Request): Promise<Response> {
     console.warn('Could not write email_send_log', { error: (logError as Error).message })
   }
 
-  console.log('Auth email sent', { emailType, recipient, messageId })
+  let linkHost = 'unknown'
+  let linkPath = 'unknown'
+  try {
+    const parsed = new URL(confirmationUrl)
+    linkHost = parsed.host
+    linkPath = parsed.pathname
+  } catch { /* ignore */ }
+
+  console.log('Auth email sent', {
+    emailType,
+    recipient,
+    messageId,
+    linkHost,
+    linkPath,
+    scannerSafe: confirmationUrl.includes('token_hash=') || confirmationUrl.includes('token='),
+    hookVersion: 'unique-hook-v2',
+  })
 
   return new Response(
     JSON.stringify({ success: true, sent: true }),
