@@ -194,52 +194,70 @@ type Module = {
   title: string;
   subtitle: string;
   perks: string[];
-  iconPath: string;
+  image: string;
   accent: string;
   accent2: string;
 };
 
 const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mod }) => {
   const frame = useCurrentFrame();
-  const exit = interpolate(frame, [duration - 20, duration], [0, 1], {
+  const enter = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
+  const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const shellOp = enter * (1 - exit);
+
+  const kbScale = interpolate(frame, [0, duration], [1.1, 1.28], { extrapolateRight: "clamp" });
+  const kbX = interpolate(frame, [0, duration], [-20, 20]);
+  const kbY = interpolate(frame, [0, duration], [-14, 14]);
+
   const badgeOp = interpolate(frame, [4, 22], [0, 1], { extrapolateRight: "clamp" });
   const badgeY = interpolate(frame, [4, 22], [-40, 0], { extrapolateRight: "clamp" });
-  const iconS = spring({ frame: frame - 6, fps: FPS, config: { damping: 12, stiffness: 130 } });
-  const titleOp = interpolate(frame, [16, 38], [0, 1], { extrapolateRight: "clamp" });
-  const titleY = interpolate(frame, [16, 38], [50, 0], { extrapolateRight: "clamp" });
-  const subOp = interpolate(frame, [30, 52], [0, 1], { extrapolateRight: "clamp" });
-  const subY = interpolate(frame, [30, 52], [30, 0], { extrapolateRight: "clamp" });
-
-  // Slow pan on background gradient
-  const px = interpolate(frame, [0, duration], [0, 40]);
-  const py = interpolate(frame, [0, duration], [0, -30]);
+  const titleOp = interpolate(frame, [14, 36], [0, 1], { extrapolateRight: "clamp" });
+  const titleY = interpolate(frame, [14, 36], [60, 0], { extrapolateRight: "clamp" });
+  const subOp = interpolate(frame, [28, 50], [0, 1], { extrapolateRight: "clamp" });
+  const subY = interpolate(frame, [28, 50], [30, 0], { extrapolateRight: "clamp" });
 
   return (
-    <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
+    <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: shellOp }}>
+      <AbsoluteFill>
+        <Img
+          src={staticFile(mod.image)}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transform: `scale(${kbScale}) translate(${kbX}px, ${kbY}px)`,
+            filter: "saturate(1.15) contrast(1.05)",
+          }}
+        />
+      </AbsoluteFill>
+
       <AbsoluteFill
         style={{
-          background: `radial-gradient(circle at ${30 + px * 0.1}% ${30 + py * 0.1}%, ${mod.accent}55, transparent 55%), radial-gradient(circle at ${70 - px * 0.1}% ${75 + py * 0.1}%, ${mod.accent2}55, transparent 55%)`,
+          background: `linear-gradient(160deg, ${mod.accent}33 0%, transparent 40%, ${mod.accent2}55 100%)`,
+          mixBlendMode: "screen",
         }}
       />
+
       <AbsoluteFill
         style={{
           background:
-            "radial-gradient(circle at 50% 100%, rgba(0,0,0,0.6), transparent 60%)",
+            "linear-gradient(180deg, rgba(7,3,15,0.75) 0%, rgba(7,3,15,0.15) 22%, rgba(7,3,15,0) 45%, rgba(7,3,15,0.35) 62%, rgba(7,3,15,0.92) 100%)",
         }}
       />
+
       <AbsoluteFill
         style={{
           alignItems: "center",
-          justifyContent: "flex-start",
+          justifyContent: "space-between",
           flexDirection: "column",
           padding: 80,
-          paddingTop: 200,
+          paddingTop: 160,
+          paddingBottom: 180,
         }}
       >
-        {/* Badge */}
         <div
           style={{
             opacity: badgeOp,
@@ -259,146 +277,115 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
           {mod.badge}
         </div>
 
-        {/* Icon medallion */}
-        <div
-          style={{
-            marginTop: 70,
-            width: 280,
-            height: 280,
-            borderRadius: 86,
-            background: `linear-gradient(135deg, ${mod.accent} 0%, ${mod.accent2} 100%)`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transform: `scale(${iconS}) rotate(${(1 - iconS) * -25}deg)`,
-            boxShadow: `0 30px 80px -20px ${mod.accent}dd, inset 0 4px 20px rgba(255,255,255,0.25)`,
-          }}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            width="160"
-            height="160"
-            fill="none"
-            stroke="white"
-            strokeWidth={1.8}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <div
+            style={{
+              opacity: titleOp,
+              transform: `translateY(${titleY}px)`,
+              fontFamily: body.fontFamily,
+              fontWeight: 900,
+              fontSize: 160,
+              lineHeight: 1,
+              color: BRAND.white,
+              letterSpacing: "-0.035em",
+              textShadow: "0 8px 40px rgba(0,0,0,0.75)",
+              textAlign: "center",
+            }}
           >
-            <path d={mod.iconPath} />
-          </svg>
-        </div>
+            {mod.title}
+          </div>
 
-        {/* Title */}
-        <div
-          style={{
-            marginTop: 70,
-            opacity: titleOp,
-            transform: `translateY(${titleY}px)`,
-            fontFamily: body.fontFamily,
-            fontWeight: 900,
-            fontSize: 170,
-            lineHeight: 1,
-            color: BRAND.white,
-            letterSpacing: "-0.035em",
-            textShadow: "0 8px 40px rgba(0,0,0,0.55)",
-            textAlign: "center",
-          }}
-        >
-          {mod.title}
-        </div>
+          <div
+            style={{
+              marginTop: 28,
+              opacity: subOp,
+              transform: `translateY(${subY}px)`,
+              fontFamily: body.fontFamily,
+              fontWeight: 600,
+              fontSize: 42,
+              color: "rgba(255,255,255,0.94)",
+              textAlign: "center",
+              maxWidth: 900,
+              lineHeight: 1.25,
+              textShadow: "0 4px 20px rgba(0,0,0,0.85)",
+            }}
+          >
+            {mod.subtitle}
+          </div>
 
-        {/* Subtitle */}
-        <div
-          style={{
-            marginTop: 30,
-            opacity: subOp,
-            transform: `translateY(${subY}px)`,
-            fontFamily: body.fontFamily,
-            fontWeight: 600,
-            fontSize: 44,
-            color: "rgba(255,255,255,0.92)",
-            textAlign: "center",
-            maxWidth: 900,
-            lineHeight: 1.25,
-            textShadow: "0 4px 20px rgba(0,0,0,0.7)",
-          }}
-        >
-          {mod.subtitle}
-        </div>
-
-        {/* Perks list */}
-        <div
-          style={{
-            marginTop: 60,
-            display: "flex",
-            flexDirection: "column",
-            gap: 20,
-            width: "88%",
-          }}
-        >
-          {mod.perks.map((p, i) => {
-            const delay = 46 + i * 12;
-            const s = spring({
-              frame: frame - delay,
-              fps: FPS,
-              config: { damping: 15, stiffness: 130 },
-            });
-            const x = interpolate(s, [0, 1], [-80, 0]);
-            return (
-              <div
-                key={p}
-                style={{
-                  opacity: s,
-                  transform: `translateX(${x}px)`,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 24,
-                  padding: "22px 32px",
-                  borderRadius: 28,
-                  background: "rgba(255,255,255,0.1)",
-                  border: `1px solid ${mod.accent}66`,
-                  boxShadow: `0 10px 40px -20px ${mod.accent}aa`,
-                }}
-              >
+          <div
+            style={{
+              marginTop: 44,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+              width: "88%",
+            }}
+          >
+            {mod.perks.map((p, i) => {
+              const delay = 44 + i * 10;
+              const s = spring({
+                frame: frame - delay,
+                fps: FPS,
+                config: { damping: 15, stiffness: 130 },
+              });
+              const x = interpolate(s, [0, 1], [-60, 0]);
+              return (
                 <div
+                  key={p}
                   style={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 16,
-                    background: `linear-gradient(135deg, ${mod.accent}, ${mod.accent2})`,
+                    opacity: s,
+                    transform: `translateX(${x}px)`,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
+                    gap: 20,
+                    padding: "18px 26px",
+                    borderRadius: 22,
+                    background: "rgba(7,3,15,0.55)",
+                    border: `1px solid ${mod.accent}66`,
+                    boxShadow: `0 10px 40px -20px ${mod.accent}aa`,
                   }}
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="30"
-                    height="30"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth={3}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 14,
+                      background: `linear-gradient(135deg, ${mod.accent}, ${mod.accent2})`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
                   >
-                    <path d="M5 12l5 5L20 7" />
-                  </svg>
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="26"
+                      height="26"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth={3}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M5 12l5 5L20 7" />
+                    </svg>
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: body.fontFamily,
+                      fontWeight: 700,
+                      fontSize: 36,
+                      color: BRAND.white,
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    {p}
+                  </div>
                 </div>
-                <div
-                  style={{
-                    fontFamily: body.fontFamily,
-                    fontWeight: 700,
-                    fontSize: 40,
-                    color: BRAND.white,
-                    letterSpacing: "-0.01em",
-                  }}
-                >
-                  {p}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </AbsoluteFill>
     </AbsoluteFill>
