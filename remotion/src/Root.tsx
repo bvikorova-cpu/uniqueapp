@@ -8,6 +8,7 @@ import { ChallengesFilm, CHALLENGES_DURATION } from "./ChallengesFilm";
 import { DiscoverFilm, DISCOVER_DURATION } from "./DiscoverFilm";
 import { KidsFilm, KIDS_DURATION } from "./KidsFilm";
 import { LearningFilm, LEARNING_DURATION } from "./LearningFilm";
+import { ArenaFilm, ARENA_DURATION } from "./ArenaFilm";
 
 import { VERSIONS } from "./versions";
 
@@ -81,6 +82,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="arena-film"
+      component={ArenaFilm}
+      durationInFrames={ARENA_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+
 
 
 
