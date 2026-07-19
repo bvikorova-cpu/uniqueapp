@@ -73,6 +73,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="learning-film"
+      component={LearningFilm}
+      durationInFrames={LEARNING_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+
 
 
 
