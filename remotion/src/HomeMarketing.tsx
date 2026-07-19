@@ -257,7 +257,7 @@ const I = (d: string) => (
 );
 const MODULES: ModuleDef[] = [
   { label: "Wall", color: "#8b5cf6", icon: I("M4 5h16v14H4zM4 9h16M8 5v14") },
-  { label: "Dating", color: "#ec4899", icon: I("M12 21s-7-4.5-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-7 10-7 10z".replace(/^M12 21s-7-4.5-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-7 10-7 10z/, "M12 21s-7-4.5-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-7 10-7 10z")) },
+  { label: "Dating", color: "#ec4899", icon: I("M12 21s-7-4.5-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-7 10-7 10z") },
   { label: "Kids", color: "#f59e0b", icon: I("M12 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8zM4 22c0-4 4-6 8-6s8 2 8 6") },
   { label: "Megatalent", color: "#fbbf24", icon: I("M8 21h8M12 17v4M6 4h12v4a6 6 0 0 1-12 0zM4 6h2v2a2 2 0 0 1-2-2zM20 6h-2v2a2 2 0 0 0 2-2z") },
   { label: "AI Studio", color: "#a855f7", icon: I("M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2zM19 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1z") },
