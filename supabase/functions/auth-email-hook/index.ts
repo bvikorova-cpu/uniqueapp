@@ -171,10 +171,16 @@ function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data']): st
   try { origin = new URL(base).origin } catch { /* keep as-is */ }
 
   const params = new URLSearchParams({
-    token_hash: emailData.token_hash,
     type: action,
     next: emailData.redirect_to || '/',
+    via: 'unique-hook-v2',
   })
+
+  // token_hash is the scanner-safe Supabase format. Keep token + email as a
+  // fallback because some Auth payload variants only include the raw OTP token.
+  if (emailData.token_hash) params.set('token_hash', emailData.token_hash)
+  if (emailData.token) params.set('token', emailData.token)
+
   return `${origin}${route}?${params.toString()}`
 }
 
