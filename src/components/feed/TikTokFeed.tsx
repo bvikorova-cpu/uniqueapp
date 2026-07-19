@@ -367,6 +367,17 @@ function VideoCard({ short, active, muted, onToggleMute }: {
           <span className="text-xs font-semibold drop-shadow">Share</span>
         </button>
 
+        {isOwner && (
+          <button
+            onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
+            className="flex flex-col items-center gap-1 active:scale-90 transition-transform"
+            aria-label="Delete video"
+          >
+            <Trash2 className="w-10 h-10 drop-shadow-lg text-red-500" strokeWidth={1.5} />
+            <span className="text-xs font-semibold drop-shadow text-red-400">Delete</span>
+          </button>
+        )}
+
         <button onClick={(e) => { e.stopPropagation(); onToggleMute(); }} className="active:scale-90 transition-transform">
           {muted ? <VolumeX className="w-6 h-6 drop-shadow-lg" /> : <Volume2 className="w-6 h-6 drop-shadow-lg" />}
         </button>
