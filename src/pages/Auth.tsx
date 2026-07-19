@@ -20,11 +20,36 @@ import { Captcha } from "@/components/Captcha";
 
 const MIN_AGE = 16;
 const MIN_PASSWORD_LENGTH = 10;
+const RESET_EMAIL_COOLDOWN_SECONDS = 15 * 60;
 // Bump these when the legal text changes — the new value is captured in gdpr_consent_audit.
 const PRIVACY_POLICY_VERSION = "2026-01-15";
 const TERMS_OF_USE_VERSION = "2026-01-15";
 
 const calculateAge = (birthDate: Date): number => differenceInYears(new Date(), birthDate);
+
+const resetCooldownKey = (email: string) => `unique:password-reset:${email}`;
+
+const getResetCooldownSeconds = (email: string): number => {
+  try {
+    const until = Number(localStorage.getItem(resetCooldownKey(email)) || 0);
+    return Math.max(0, Math.ceil((until - Date.now()) / 1000));
+  } catch {
+    return 0;
+  }
+};
+
+const setResetCooldown = (email: string, seconds = RESET_EMAIL_COOLDOWN_SECONDS) => {
+  try {
+    localStorage.setItem(resetCooldownKey(email), String(Date.now() + seconds * 1000));
+  } catch {
+    // Ignore storage issues; server-side limits still protect the endpoint.
+  }
+};
+
+const isEmailRateLimitError = (message?: string | null): boolean => {
+  const msg = (message || "").toLowerCase();
+  return msg.includes("rate limit") || msg.includes("email rate") || msg.includes("429");
+};
 
 const passwordStrengthError = (pwd: string): string | null => {
   if (pwd.length < MIN_PASSWORD_LENGTH) return `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`;
@@ -62,6 +87,7 @@ const Auth = () => {
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [unconfirmedEmail, setUnconfirmedEmail] = useState<string | null>(null);
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [resetCooldown, setResetCooldownState] = useState(0);
   const [signupPassword, setSignupPassword] = useState("");
   const [signupPhone, setSignupPhone] = useState("");
 
@@ -108,6 +134,14 @@ const Auth = () => {
     const t = setTimeout(() => setResendCooldown((s) => s - 1), 1000);
     return () => clearTimeout(t);
   }, [resendCooldown]);
+
+  // Password reset cooldown ticker — prevents repeated reset email attempts
+  // that hit Supabase's hourly auth-email cap.
+  useEffect(() => {
+    if (resetCooldown <= 0) return;
+    const t = setTimeout(() => setResetCooldownState((s) => Math.max(0, s - 1)), 1000);
+    return () => clearTimeout(t);
+  }, [resetCooldown]);
 
   const handleResendConfirmation = async () => {
     if (!unconfirmedEmail || resendCooldown > 0) return;
@@ -288,6 +322,18 @@ const Auth = () => {
     const formData = new FormData(e.currentTarget);
     const email = ((formData.get("email") as string) || "").trim().toLowerCase();
 
+    const remaining = getResetCooldownSeconds(email);
+    if (remaining > 0) {
+      setResetCooldownState(remaining);
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Reset email recently requested",
+        description: `Please wait ${Math.ceil(remaining / 60)} minute${remaining > 60 ? "s" : ""} before requesting another link.`,
+      });
+      return;
+    }
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
@@ -295,12 +341,20 @@ const Auth = () => {
     setLoading(false);
 
     if (error) {
+      if (isEmailRateLimitError(error.message)) {
+        setResetCooldown(email, RESET_EMAIL_COOLDOWN_SECONDS);
+        setResetCooldownState(RESET_EMAIL_COOLDOWN_SECONDS);
+      }
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error.message,
+        title: isEmailRateLimitError(error.message) ? "Too many email requests" : "Error",
+        description: isEmailRateLimitError(error.message)
+          ? "Please wait a while before requesting another password reset email. Your previous link may still arrive."
+          : error.message,
       });
     } else {
+      setResetCooldown(email, RESET_EMAIL_COOLDOWN_SECONDS);
+      setResetCooldownState(RESET_EMAIL_COOLDOWN_SECONDS);
       toast({
         title: "Password reset link sent!",
         description: "Check your email for the reset link.",
@@ -425,9 +479,14 @@ const Auth = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Sending..." : "Send reset link"}
+                <Button type="submit" className="w-full" disabled={loading || resetCooldown > 0}>
+                  {loading ? "Sending..." : resetCooldown > 0 ? `Try again in ${Math.ceil(resetCooldown / 60)}m` : "Send reset link"}
                 </Button>
+                {resetCooldown > 0 && (
+                  <p className="text-sm text-muted-foreground text-center">
+                    A reset link was already requested. Please check your inbox and spam folder before trying again.
+                  </p>
+                )}
               </form>
             </div>
           ) : (
