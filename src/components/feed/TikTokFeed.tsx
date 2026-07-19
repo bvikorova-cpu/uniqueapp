@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useRef, useState, useCallback, ReactNode } from "react";
-import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play, Send, MoreVertical, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play, Send, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -317,30 +317,6 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         </div>
       )}
 
-      {/* Top-right menu (owner only) */}
-      {isOwner && (
-        <div className="absolute top-3 right-3 z-30">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                onClick={(e) => e.stopPropagation()}
-                className="w-10 h-10 rounded-full bg-black/40 backdrop-blur flex items-center justify-center text-white active:scale-90"
-                aria-label="Video options"
-              >
-                <MoreVertical className="w-5 h-5" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-              <DropdownMenuItem
-                className="text-red-600 focus:text-red-600"
-                onClick={() => setConfirmDelete(true)}
-              >
-                <Trash2 className="w-4 h-4 mr-2" /> Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      )}
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
@@ -390,6 +366,17 @@ function VideoCard({ short, active, muted, onToggleMute }: {
           <Share2 className="w-10 h-10 drop-shadow-lg" strokeWidth={1.5} />
           <span className="text-xs font-semibold drop-shadow">Share</span>
         </button>
+
+        {isOwner && (
+          <button
+            onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
+            className="flex flex-col items-center gap-1 active:scale-90 transition-transform"
+            aria-label="Delete video"
+          >
+            <Trash2 className="w-10 h-10 drop-shadow-lg text-red-500" strokeWidth={1.5} />
+            <span className="text-xs font-semibold drop-shadow text-red-400">Delete</span>
+          </button>
+        )}
 
         <button onClick={(e) => { e.stopPropagation(); onToggleMute(); }} className="active:scale-90 transition-transform">
           {muted ? <VolumeX className="w-6 h-6 drop-shadow-lg" /> : <Volume2 className="w-6 h-6 drop-shadow-lg" />}
