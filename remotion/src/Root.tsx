@@ -91,6 +91,14 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="fundraising-film"
+      component={FundraisingFilm}
+      durationInFrames={FUNDRAISING_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
 
 
 
