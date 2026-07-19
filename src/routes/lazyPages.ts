@@ -16,6 +16,7 @@ export const SecuritySettings = lazy(() => import("@/pages/SecuritySettings"));
 export const SearchResults = lazy(() => import("@/pages/SearchResults"));
 export const Messenger = lazy(() => import("@/pages/Messenger"));
 export const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
+export const AuthCallback = lazy(() => import("@/pages/AuthCallback"));
 export const PostDetail = lazy(() => import("@/pages/PostDetail"));
 export const Index = lazy(() => import("@/pages/Index"));
 
