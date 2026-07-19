@@ -87,8 +87,9 @@ export function SectionVideoPreview({
             loop
             playsInline
             autoPlay
-            preload="metadata"
+            preload="auto"
             aria-label={label}
+            onLoadedData={() => setIsReady(true)}
             onCanPlay={() => setIsReady(true)}
             className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
               isReady ? "opacity-100" : "opacity-0"
