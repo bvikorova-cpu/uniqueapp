@@ -140,17 +140,44 @@ interface SupabaseEmailPayload {
 }
 
 function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data']): string {
-  // Build the same URL Supabase would send in its default email.
-  // For external/BYO Supabase projects, the site_url in the payload is the configured
-  // site URL (usually the app URL). The verification endpoint lives on the Supabase
-  // project URL, so we use SUPABASE_URL from the edge function env as the base.
-  const supabaseUrl = Deno.env.get('SUPABASE_URL')
-  if (!supabaseUrl) {
-    // Fallback: if env is missing, use the site_url from the payload.
-    return `${emailData.site_url}/auth/v1/verify?token=${encodeURIComponent(emailData.token)}&type=${encodeURIComponent(emailData.email_action_type)}&redirect_to=${encodeURIComponent(emailData.redirect_to)}`
+  // IMPORTANT: Do NOT use Supabase's /auth/v1/verify?token=... GET link.
+  // Corporate/free mail scanners (Yandex, Outlook Safe Links, Gmail preview, etc.)
+  // pre-fetch links in emails, which consumes the one-time OTP before the user
+  // ever clicks it -> user sees "invalid/expired link".
+  //
+  // Instead we send the user directly to our app with token_hash + type in the
+  // query string. Our page then calls supabase.auth.verifyOtp({ token_hash, type })
+  // via POST from JS, which link scanners do not trigger.
+  const siteUrl = (emailData.site_url || '').replace(/\/+$/, '')
+  const action = emailData.email_action_type
+
+  // Landing route per action type — must exist in the SPA.
+  const routeByAction: Record<string, string> = {
+    recovery: '/reset-password',
+    signup: '/auth/callback',
+    invite: '/auth/callback',
+    magiclink: '/auth/callback',
+    email_change: '/auth/callback',
+    email_change_new: '/auth/callback',
+    reauthentication: '/auth/callback',
   }
-  return `${supabaseUrl}/auth/v1/verify?token=${encodeURIComponent(emailData.token)}&type=${encodeURIComponent(emailData.email_action_type)}&redirect_to=${encodeURIComponent(emailData.redirect_to)}`
+  const route = routeByAction[action] ?? '/auth/callback'
+
+  // Prefer redirect_to if the Supabase project passed one, else site_url.
+  const base = (emailData.redirect_to || siteUrl).replace(/\/+$/, '')
+  // Strip any path from redirect_to to keep behavior predictable — we always
+  // land on our own route.
+  let origin = base
+  try { origin = new URL(base).origin } catch { /* keep as-is */ }
+
+  const params = new URLSearchParams({
+    token_hash: emailData.token_hash,
+    type: action,
+    next: emailData.redirect_to || '/',
+  })
+  return `${origin}${route}?${params.toString()}`
 }
+
 
 async function stableEmailToken(...parts: Array<string | undefined>): Promise<string> {
   const input = parts.filter(Boolean).join(':')
