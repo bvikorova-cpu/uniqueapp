@@ -35,22 +35,60 @@ const ResetPassword = () => {
   useEffect(() => {
     let cancelled = false;
 
-    const hash = window.location.hash || "";
-    const isRecoveryHash = hash.includes("type=recovery");
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (cancelled) return;
-      if (event === "PASSWORD_RECOVERY") {
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
         setRecoveryReady(true);
         setChecking(false);
       }
     });
 
-    // If we didn't arrive via the recovery hash, block immediately.
-    if (!isRecoveryHash) {
-      setChecking(false);
-      setRecoveryReady(false);
-    }
+    (async () => {
+      const hash = window.location.hash || "";
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+      const tokenHash = url.searchParams.get("token_hash");
+      const type = url.searchParams.get("type");
+      const errorDesc = url.searchParams.get("error_description") || (hash.includes("error") ? hash : null);
+
+      try {
+        if (errorDesc && !code && !tokenHash) throw new Error(errorDesc);
+
+        // PKCE flow: ?code=...
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+          if (error) throw error;
+          if (!cancelled) { setRecoveryReady(true); setChecking(false); }
+          window.history.replaceState({}, "", url.pathname);
+          return;
+        }
+
+        // OTP link: ?token_hash=...&type=recovery
+        if (tokenHash && type === "recovery") {
+          const { error } = await supabase.auth.verifyOtp({ type: "recovery", token_hash: tokenHash });
+          if (error) throw error;
+          if (!cancelled) { setRecoveryReady(true); setChecking(false); }
+          window.history.replaceState({}, "", url.pathname);
+          return;
+        }
+
+        // Legacy hash flow: #access_token=...&type=recovery — supabase-js auto-parses.
+        if (hash.includes("type=recovery")) return; // wait for PASSWORD_RECOVERY event
+
+        // Already-authenticated recovery session (e.g. after refresh)
+        const { data } = await supabase.auth.getSession();
+        if (data.session && !cancelled) {
+          setRecoveryReady(true);
+          setChecking(false);
+          return;
+        }
+
+        if (!cancelled) { setChecking(false); setRecoveryReady(false); }
+      } catch (err: any) {
+        console.error("[reset-password] recovery link error:", err);
+        if (!cancelled) { setChecking(false); setRecoveryReady(false); }
+      }
+    })();
 
     return () => {
       cancelled = true;
