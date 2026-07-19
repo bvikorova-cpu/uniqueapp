@@ -9,6 +9,7 @@ import { DiscoverFilm, DISCOVER_DURATION } from "./DiscoverFilm";
 import { KidsFilm, KIDS_DURATION } from "./KidsFilm";
 import { LearningFilm, LEARNING_DURATION } from "./LearningFilm";
 import { ArenaFilm, ARENA_DURATION } from "./ArenaFilm";
+import { FundraisingFilm, FUNDRAISING_DURATION } from "./FundraisingFilm";
 
 import { VERSIONS } from "./versions";
 
