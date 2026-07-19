@@ -177,9 +177,8 @@ async function handleWebhook(req: Request): Promise<Response> {
   let payload: SupabaseEmailPayload
   try {
     // Supabase Auth hooks use the Standard Webhooks spec (Svix).
-    // Strip the v1,whsec_ prefix before verifying.
-    const secret = hookSecret.replace(/^v1,whsec_/, '')
-    const wh = new Webhook(secret)
+    // The secret is provided in the format v1,whsec_... by the Supabase dashboard.
+    const wh = new Webhook(hookSecret)
     payload = wh.verify(rawBody, headers) as SupabaseEmailPayload
   } catch (error) {
     console.error('Invalid Supabase webhook signature', { error: (error as Error).message })
