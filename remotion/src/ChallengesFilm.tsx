@@ -416,6 +416,27 @@ const ChallengeScene: React.FC<{
           {subtitle}
         </div>
 
+        {/* Tagline */}
+        <div
+          style={{
+            marginTop: 22,
+            opacity: tagOp,
+            transform: `translateY(${tagY}px)`,
+            fontFamily: body.fontFamily,
+            fontWeight: 500,
+            fontStyle: "italic",
+            fontSize: 34,
+            color: "rgba(255,255,255,0.82)",
+            textAlign: "center",
+            maxWidth: 940,
+            lineHeight: 1.3,
+            textShadow: "0 4px 20px rgba(0,0,0,0.7)",
+          }}
+        >
+          {tagline}
+        </div>
+
+
         {/* Perks list */}
         <div
           style={{
