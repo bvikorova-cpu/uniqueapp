@@ -3,6 +3,8 @@ import { PropertyVideo } from "./PropertyVideo";
 import { UniqueMarketing } from "./UniqueMarketing";
 import { UniqueMarketingV } from "./UniqueMarketingV";
 import { HomeMarketing, HOME_DURATION } from "./HomeMarketing";
+import { HomeMarketingVertical, HOME_V_DURATION } from "./HomeMarketingVertical";
+
 import { VERSIONS } from "./versions";
 
 
