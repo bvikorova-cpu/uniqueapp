@@ -27,6 +27,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="home-marketing"
+      component={HomeMarketing}
+      durationInFrames={HOME_DURATION}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
+
     {VERSIONS.map((v) => (
       <Composition
         key={v.id}
