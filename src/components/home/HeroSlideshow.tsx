@@ -48,7 +48,7 @@ export function HeroSlideshow() {
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
           className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
           style={{ filter: "brightness(1.02) saturate(1.1)" }}
         />
