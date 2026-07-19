@@ -139,7 +139,7 @@ interface SupabaseEmailPayload {
   }
 }
 
-function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data']): string {
+function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data'], recipient?: string): string {
   // IMPORTANT: Do NOT use Supabase's /auth/v1/verify?token=... GET link.
   // Corporate/free mail scanners (Yandex, Outlook Safe Links, Gmail preview, etc.)
   // pre-fetch links in emails, which consumes the one-time OTP before the user
@@ -180,6 +180,7 @@ function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data']): st
   // fallback because some Auth payload variants only include the raw OTP token.
   if (emailData.token_hash) params.set('token_hash', emailData.token_hash)
   if (emailData.token) params.set('token', emailData.token)
+  if (recipient) params.set('email', recipient)
 
   return `${origin}${route}?${params.toString()}`
 }
@@ -250,7 +251,6 @@ async function handleWebhook(req: Request): Promise<Response> {
     )
   }
 
-  const confirmationUrl = buildConfirmationUrl(payload.email_data)
   const recipient = payload.user?.email
   if (!recipient) {
     console.error('Missing recipient email in webhook payload')
@@ -259,6 +259,7 @@ async function handleWebhook(req: Request): Promise<Response> {
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
+  const confirmationUrl = buildConfirmationUrl(payload.email_data, recipient)
 
   const templateProps = {
     siteName: SITE_NAME,
