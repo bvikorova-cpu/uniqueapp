@@ -28,6 +28,32 @@ import { NotificationSettings } from "@/components/settings/NotificationSettings
 import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 import { WatchAdButton } from "@/components/ads/WatchAdButton";
 
+const RESET_EMAIL_COOLDOWN_SECONDS = 15 * 60;
+
+const resetCooldownKey = (email: string) => `unique:password-reset:${email.toLowerCase()}`;
+
+const getResetCooldownSeconds = (email: string): number => {
+  try {
+    const until = Number(localStorage.getItem(resetCooldownKey(email)) || 0);
+    return Math.max(0, Math.ceil((until - Date.now()) / 1000));
+  } catch {
+    return 0;
+  }
+};
+
+const setResetCooldown = (email: string, seconds = RESET_EMAIL_COOLDOWN_SECONDS) => {
+  try {
+    localStorage.setItem(resetCooldownKey(email), String(Date.now() + seconds * 1000));
+  } catch {
+    // Server-side limits still protect email sending.
+  }
+};
+
+const isEmailRateLimitError = (message?: string | null): boolean => {
+  const msg = (message || "").toLowerCase();
+  return msg.includes("rate limit") || msg.includes("email rate") || msg.includes("429");
+};
+
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -42,13 +68,29 @@ export default function Settings() {
       sonnerToast.error("No email on account");
       return;
     }
+    const remaining = getResetCooldownSeconds(user.email);
+    if (remaining > 0) {
+      sonnerToast.error("Reset email already requested", {
+        description: `Please wait ${Math.ceil(remaining / 60)} minute${remaining > 60 ? "s" : ""} before requesting another link.`,
+      });
+      return;
+    }
     setChangingPassword(true);
     const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
-      redirectTo: `${window.location.origin}/auth?reset=true`,
+      redirectTo: `${window.location.origin}/reset-password`,
     });
     setChangingPassword(false);
-    if (error) sonnerToast.error(error.message);
-    else sonnerToast.success(`Password reset link sent to ${user.email}`);
+    if (error) {
+      if (isEmailRateLimitError(error.message)) setResetCooldown(user.email);
+      sonnerToast.error(isEmailRateLimitError(error.message) ? "Too many email requests" : error.message, {
+        description: isEmailRateLimitError(error.message)
+          ? "Please wait a while before requesting another password reset email."
+          : undefined,
+      });
+    } else {
+      setResetCooldown(user.email);
+      sonnerToast.success(`Password reset link sent to ${user.email}`);
+    }
   };
 
   const { data: user } = useQuery({
