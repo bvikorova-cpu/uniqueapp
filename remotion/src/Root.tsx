@@ -100,6 +100,14 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="aitools-film"
+      component={AIToolsFilm}
+      durationInFrames={AITOOLS_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
 
 
 
