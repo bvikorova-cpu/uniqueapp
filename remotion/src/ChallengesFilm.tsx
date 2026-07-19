@@ -721,6 +721,7 @@ const EcoScene: React.FC<{ duration: number }> = ({ duration }) => (
     badge="Eco Challenge"
     title="Save the Planet."
     subtitle="Small daily actions. Real climate impact."
+    tagline="A global fight against climate change and pollution — one green deed at a time."
     iconPath={ECO_ICON}
     perks={[
       { label: "Daily eco missions" },
@@ -739,6 +740,7 @@ const HealthScene: React.FC<{ duration: number }> = ({ duration }) => (
     badge="Health Challenge"
     title="Move. Sleep. Thrive."
     subtitle="Fitness, mindfulness & nutrition — every single day."
+    tagline="A global fight against overweight and obesity — one healthy step at a time."
     iconPath={HEART_ICON}
     perks={[
       { label: "Steps · workouts · streaks" },
@@ -748,23 +750,196 @@ const HealthScene: React.FC<{ duration: number }> = ({ duration }) => (
   />
 );
 
+/* ---------- Scene: Global Movement (replaces prize) ---------- */
+
+const SceneMovement: React.FC<{ duration: number }> = ({ duration }) => {
+  const frame = useCurrentFrame();
+  const exit = interpolate(frame, [duration - 22, duration], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const s1 = spring({ frame, fps: FPS, config: { damping: 14, stiffness: 110 } });
+  const s2 = spring({
+    frame: frame - 16,
+    fps: FPS,
+    config: { damping: 14, stiffness: 110 },
+  });
+  const s3 = spring({
+    frame: frame - 34,
+    fps: FPS,
+    config: { damping: 15, stiffness: 110 },
+  });
+  const s4 = spring({
+    frame: frame - 54,
+    fps: FPS,
+    config: { damping: 15, stiffness: 110 },
+  });
+
+  const stats = [
+    { big: "2", small: "missions,\none movement" },
+    { big: "195", small: "countries welcome" },
+    { big: "∞", small: "green & healthy steps" },
+  ];
+
+  return (
+    <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
+      <AbsoluteFill
+        style={{
+          background:
+            "radial-gradient(circle at 30% 30%, rgba(16,185,129,0.4), transparent 55%), radial-gradient(circle at 70% 70%, rgba(236,72,153,0.4), transparent 55%), radial-gradient(circle at 50% 100%, rgba(139,92,246,0.35), transparent 60%)",
+        }}
+      />
+      <AbsoluteFill
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          padding: 80,
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            opacity: s1,
+            transform: `translateY(${(1 - s1) * 30}px)`,
+            fontFamily: body.fontFamily,
+            fontWeight: 700,
+            fontSize: 50,
+            color: "rgba(255,255,255,0.85)",
+            letterSpacing: "0.28em",
+            textTransform: "uppercase",
+          }}
+        >
+          Join the Movement
+        </div>
+        <div
+          style={{
+            marginTop: 32,
+            opacity: s2,
+            transform: `scale(${0.85 + s2 * 0.15})`,
+            fontFamily: body.fontFamily,
+            fontWeight: 900,
+            fontSize: 170,
+            lineHeight: 0.95,
+            letterSpacing: "-0.04em",
+            background: `linear-gradient(90deg, ${BRAND.green} 0%, ${BRAND.amber} 50%, ${BRAND.pink} 100%)`,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textShadow: "0 0 80px rgba(236,72,153,0.4)",
+          }}
+        >
+          One world.
+          <br />One team.
+        </div>
+        <div
+          style={{
+            marginTop: 40,
+            opacity: s3,
+            transform: `translateY(${(1 - s3) * 30}px)`,
+            fontFamily: body.fontFamily,
+            fontWeight: 600,
+            fontSize: 42,
+            color: "rgba(255,255,255,0.9)",
+            maxWidth: 940,
+            lineHeight: 1.3,
+          }}
+        >
+          A global community turning tiny habits into
+          <br />a greener, healthier planet.
+        </div>
+
+        <div
+          style={{
+            marginTop: 70,
+            display: "flex",
+            gap: 30,
+            opacity: s4,
+            transform: `translateY(${(1 - s4) * 40}px)`,
+          }}
+        >
+          {stats.map((st) => (
+            <div
+              key={st.big}
+              style={{
+                padding: "28px 30px",
+                borderRadius: 32,
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                minWidth: 260,
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: body.fontFamily,
+                  fontWeight: 900,
+                  fontSize: 110,
+                  lineHeight: 1,
+                  background: `linear-gradient(180deg, ${BRAND.white} 0%, #fbcfe8 100%)`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                {st.big}
+              </div>
+              <div
+                style={{
+                  marginTop: 10,
+                  fontFamily: body.fontFamily,
+                  fontWeight: 600,
+                  fontSize: 26,
+                  color: "rgba(255,255,255,0.85)",
+                  whiteSpace: "pre-line",
+                  lineHeight: 1.25,
+                }}
+              >
+                {st.small}
+              </div>
+            </div>
+          ))}
+        </div>
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+};
+
 const SCENES: SceneDef[] = [
   { from: 0, duration: 130, component: SceneIntro },
   { from: 130, duration: 100, component: ScenePromise },
   { from: 230, duration: 220, component: EcoScene },
   { from: 450, duration: 220, component: HealthScene },
-  { from: 670, duration: 110, component: ScenePrize },
+  { from: 670, duration: 110, component: SceneMovement },
   { from: 780, duration: 120, component: SceneOutro },
 ];
 
 export const ChallengesFilm: React.FC = () => {
+  const frame = useCurrentFrame();
+  const total = CHALLENGES_DURATION;
+  // fade music in/out at the boundaries
+  const musicVolume = (f: number) => {
+    const fadeIn = interpolate(f, [0, 20], [0, 0.7], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    });
+    const fadeOut = interpolate(f, [total - 40, total - 5], [0.7, 0], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    });
+    return Math.min(fadeIn, fadeOut);
+  };
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep }}>
+      <Audio
+        src={staticFile("challenges/audio/bg.mp3")}
+        volume={(f) => musicVolume(f)}
+      />
       {SCENES.map((s, i) => (
         <Sequence key={i} from={s.from} durationInFrames={s.duration}>
           <s.component duration={s.duration} />
         </Sequence>
       ))}
+      {/* keep frame in scope to avoid unused-var lints in strict builds */}
+      <span style={{ display: "none" }}>{frame}</span>
     </AbsoluteFill>
   );
 };
+
