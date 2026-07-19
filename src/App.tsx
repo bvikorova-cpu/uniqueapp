@@ -697,7 +697,7 @@ const App = () => {
                     <GlobalAnnouncementBanner />
                   </Suspense>
                   {/* GlobalRewardedAd removed — Watch Ad now only renders below the hero on each page via <HeroRewardedAd /> */}
-                  <main id="main-content" className="flex-1">
+                  <main id="main-content" className="flex-1 pt-16 pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0">
                     <GlobalPaymentCleanup />
                     <GameAdGateHost />
 
