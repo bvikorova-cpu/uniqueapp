@@ -5,6 +5,7 @@ import { UniqueMarketingV } from "./UniqueMarketingV";
 import { HomeMarketing, HOME_DURATION } from "./HomeMarketing";
 import { HomeMarketingVertical, HOME_V_DURATION } from "./HomeMarketingVertical";
 import { ChallengesFilm, CHALLENGES_DURATION } from "./ChallengesFilm";
+import { DiscoverFilm, DISCOVER_DURATION } from "./DiscoverFilm";
 
 import { VERSIONS } from "./versions";
 
@@ -50,6 +51,14 @@ export const RemotionRoot = () => (
       id="challenges-film"
       component={ChallengesFilm}
       durationInFrames={CHALLENGES_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+    <Composition
+      id="discover-film"
+      component={DiscoverFilm}
+      durationInFrames={DISCOVER_DURATION}
       fps={30}
       width={1080}
       height={1920}
