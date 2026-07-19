@@ -260,6 +260,7 @@ const ChallengeScene: React.FC<{
   badge: string;
   title: string;
   subtitle: string;
+  tagline: string;
   perks: Perk[];
   iconPath: string; // svg path d
 }> = ({
@@ -270,9 +271,11 @@ const ChallengeScene: React.FC<{
   badge,
   title,
   subtitle,
+  tagline,
   perks,
   iconPath,
 }) => {
+
   const frame = useCurrentFrame();
   const exit = interpolate(frame, [duration - 22, duration], [0, 1], {
     extrapolateLeft: "clamp",
