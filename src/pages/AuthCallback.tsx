@@ -23,7 +23,9 @@ export default function AuthCallback() {
     let cancelled = false;
     (async () => {
       const tokenHash = params.get("token_hash");
+      const token = params.get("token");
       const type = params.get("type");
+      const email = params.get("email") || "";
       const code = params.get("code");
       const next = params.get("next") || "/";
       const errDesc = params.get("error_description");
@@ -37,6 +39,13 @@ export default function AuthCallback() {
         } else if (tokenHash && type) {
           const { error } = await supabase.auth.verifyOtp({
             token_hash: tokenHash,
+            type: type as any,
+          });
+          if (error) throw error;
+        } else if (token && type) {
+          const { error } = await supabase.auth.verifyOtp({
+            token,
+            email,
             type: type as any,
           });
           if (error) throw error;
