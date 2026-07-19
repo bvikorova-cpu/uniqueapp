@@ -11,6 +11,7 @@ import { LearningFilm, LEARNING_DURATION } from "./LearningFilm";
 import { ArenaFilm, ARENA_DURATION } from "./ArenaFilm";
 import { FundraisingFilm, FUNDRAISING_DURATION } from "./FundraisingFilm";
 import { AIToolsFilm, AITOOLS_DURATION } from "./AIToolsFilm";
+import { MysticalFilm, MYSTICAL_DURATION } from "./MysticalFilm";
 
 import { VERSIONS } from "./versions";
 
@@ -108,6 +109,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="mystical-film"
+      component={MysticalFilm}
+      durationInFrames={MYSTICAL_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+
 
 
 
