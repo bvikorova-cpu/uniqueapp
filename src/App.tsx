@@ -844,6 +844,7 @@ const App = () => {
                        <Route path="/status" element={<StatusPage />} />
                         <Route path="/auth" element={<Auth />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
+                        <Route path="/auth/callback" element={<AuthCallback />} />
                         <Route path="/terms" element={<Terms />} />
                         <Route path="/legal/terms" element={<Navigate to="/terms" replace />} />
                         <Route path="/legal/privacy" element={<LegalPrivacy />} />
