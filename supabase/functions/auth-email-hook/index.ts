@@ -152,6 +152,15 @@ function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data']): st
   return `${supabaseUrl}/auth/v1/verify?token=${encodeURIComponent(emailData.token)}&type=${encodeURIComponent(emailData.email_action_type)}&redirect_to=${encodeURIComponent(emailData.redirect_to)}`
 }
 
+async function stableEmailToken(...parts: Array<string | undefined>): Promise<string> {
+  const input = parts.filter(Boolean).join(':')
+  const bytes = new TextEncoder().encode(input)
+  const digest = await crypto.subtle.digest('SHA-256', bytes)
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('')
+}
+
 async function handleWebhook(req: Request): Promise<Response> {
   const apiKey = Deno.env.get('LOVABLE_API_KEY')
   if (!apiKey) {
@@ -235,6 +244,7 @@ async function handleWebhook(req: Request): Promise<Response> {
   })
 
   const messageId = crypto.randomUUID()
+  const unsubscribeToken = await stableEmailToken(SENDER_DOMAIN, recipient, payload.user?.id, emailType)
 
   try {
     await sendLovableEmail(
@@ -247,6 +257,7 @@ async function handleWebhook(req: Request): Promise<Response> {
         text,
         purpose: 'transactional',
         idempotency_key: messageId,
+        unsubscribe_token: unsubscribeToken,
       },
       { apiKey }
     )
