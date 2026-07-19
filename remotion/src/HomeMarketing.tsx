@@ -348,7 +348,7 @@ const SceneModules: React.FC<{ duration: number }> = ({ duration }) => {
                   boxShadow: `0 15px 40px -10px ${m.color}aa`,
                 }}
               >
-                {m.emoji}
+                {m.icon}
               </div>
               <div
                 style={{
