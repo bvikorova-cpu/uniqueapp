@@ -2,7 +2,10 @@ import { Composition } from "remotion";
 import { PropertyVideo } from "./PropertyVideo";
 import { UniqueMarketing } from "./UniqueMarketing";
 import { UniqueMarketingV } from "./UniqueMarketingV";
+import { HomeMarketing, HOME_DURATION } from "./HomeMarketing";
 import { VERSIONS } from "./versions";
+
+
 
 const TOTAL = 8 * 112 + 4; // 900
 
