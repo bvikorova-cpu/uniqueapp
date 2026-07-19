@@ -11,6 +11,7 @@ import { LearningFilm, LEARNING_DURATION } from "./LearningFilm";
 import { ArenaFilm, ARENA_DURATION } from "./ArenaFilm";
 import { FundraisingFilm, FUNDRAISING_DURATION } from "./FundraisingFilm";
 import { AIToolsFilm, AITOOLS_DURATION } from "./AIToolsFilm";
+import { MysticalFilm, MYSTICAL_DURATION } from "./MysticalFilm";
 
 import { VERSIONS } from "./versions";
 
