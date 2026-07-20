@@ -89,6 +89,12 @@ const Feed = () => {
   // pagination uses lastCursor ref (keyset), no page state needed
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
+  const [verifiedOnly, setVerifiedOnly] = useState<boolean>(() => {
+    try { return localStorage.getItem("wall.verifiedOnly") === "1"; } catch { return false; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem("wall.verifiedOnly", verifiedOnly ? "1" : "0"); } catch {}
+  }, [verifiedOnly]);
   const [searchParams, setSearchParams] = useSearchParams();
   const VALID_VIEWS = ["feed", "ai-tools", "streaks", "ranks", "badges", "challenges"] as const;
   const urlTab = searchParams.get("tab") ?? "feed";
@@ -504,10 +510,23 @@ const Feed = () => {
       item.type === "post"
         ? (item.data as Post).created_at
         : (item.data as Repost).created_at;
+    const tierOf = (item: FeedItem): string | null => {
+      const p: any = item.type === "post" ? item.data : (item.data as any).profiles;
+      const tier = item.type === "post" ? (item.data as any).profiles?.verification_tier : p?.verification_tier;
+      return tier || null;
+    };
+    const tierRank = (t: string | null) =>
+      t === "pro" ? 3 : t === "plus" ? 2 : t === "verified" ? 1 : 0;
     const scoreOf = (item: FeedItem) => {
       const p = item.type === "post" ? (item.data as Post) : (item.data as Repost).original_post;
       return (p?.likes_count ?? 0) * 3 + (p?.comments_count ?? 0) * 2 + (p?.shares_count ?? 0) + (p?.reposts_count ?? 0);
     };
+
+    // "Verified only" filter — applies across every tab.
+    if (verifiedOnly) {
+      filtered = filtered.filter((item) => tierRank(tierOf(item)) > 0);
+    }
+
 
     if (feedTab === "friends") {
       const allowed = new Set(friendIds);
@@ -549,8 +568,23 @@ const Feed = () => {
       });
     }
 
+    // Verified priority: for "for-you", "latest" and "following" bring verified
+    // items to the top while preserving relative chronological order.
+    if (feedTab === "for-you" || feedTab === "latest" || feedTab === "following") {
+      filtered = filtered
+        .map((item, i) => ({ item, i }))
+        .sort((a, b) => {
+          const tr = tierRank(tierOf(b.item)) - tierRank(tierOf(a.item));
+          if (tr !== 0) return tr;
+          const td = new Date(createdAtOf(b.item)).getTime() - new Date(createdAtOf(a.item)).getTime();
+          if (td !== 0) return td;
+          return a.i - b.i;
+        })
+        .map(({ item }) => item);
+    }
+
     return filtered;
-  }, [feedItems, searchQuery, feedTab, friendIds, followingIds]);
+  }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly]);
 
 
   const location = useLocation();
@@ -696,7 +730,25 @@ const Feed = () => {
 
               {activeView === "feed" && (
                 <>
-                  <SmartFeedTabs activeTab={feedTab} onTabChange={setFeedTab} />
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex-1 min-w-0">
+                      <SmartFeedTabs activeTab={feedTab} onTabChange={setFeedTab} />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setVerifiedOnly((v) => !v)}
+                      aria-pressed={verifiedOnly}
+                      title={verifiedOnly ? "Showing only verified users" : "Show only verified users"}
+                      className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap border transition-all ${
+                        verifiedOnly
+                          ? "bg-gradient-to-r from-amber-400 to-yellow-600 text-white border-transparent shadow-md shadow-amber-500/30"
+                          : "bg-accent/30 text-muted-foreground hover:text-foreground border-white/5 hover:bg-accent/50"
+                      }`}
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Verified only
+                    </button>
+                  </div>
 
                   <div className="space-y-3 sm:space-y-4">
                     {/* Realtime "new posts" banner */}

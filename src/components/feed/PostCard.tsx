@@ -642,11 +642,28 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
     return "border-l-purple-500";
   };
 
+  const verifiedTier = post.profiles?.verification_tier as
+    | "verified"
+    | "plus"
+    | "pro"
+    | null
+    | undefined;
+  const verifiedRing =
+    verifiedTier === "pro"
+      ? "ring-2 ring-purple-400/60 shadow-lg shadow-purple-500/20"
+      : verifiedTier === "plus"
+      ? "ring-2 ring-pink-400/60 shadow-lg shadow-pink-500/20"
+      : verifiedTier === "verified"
+      ? "ring-2 ring-amber-400/60 shadow-lg shadow-amber-500/20"
+      : "";
+
   return (
-    <div 
-      className={`glass-post-card overflow-hidden group hover:scale-[1.01] transition-all duration-500 border-l-4 ${getAccentColor()} cursor-pointer`}
+    <div
+      data-verified-tier={verifiedTier || "none"}
+      className={`glass-post-card overflow-hidden group hover:scale-[1.01] transition-all duration-500 border-l-4 ${getAccentColor()} cursor-pointer ${verifiedRing}`}
       onClick={() => navigate(`/post/${post.id}`)}
     >
+
       {/* Media First - Pinterest Style (with sensitive blur + carousel for multi-image) */}
       {post.media && post.media.length > 0 && (
         <SensitiveOverlay isSensitive={post.is_sensitive} reason={post.sensitive_reason}>
