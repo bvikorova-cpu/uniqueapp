@@ -201,10 +201,12 @@ export default function CouncilTab({ isMember }: { isMember: boolean }) {
             const t = tallies.get(p.id) ?? { up: 0, down: 0, mine: null };
             const memberScore = t.up - t.down;
             const totalVotes = t.up + t.down;
-            // Weighted display: members 30%, owner 70% (owner decision reflected in status)
             const memberPct = totalVotes > 0 ? Math.round((t.up / totalVotes) * 100) : 0;
             const weightedAdvisory = totalVotes > 0 ? Math.round(memberPct * 0.3) : 0;
             const meta = STATUS_META[p.status];
+            const closed = new Date(p.voting_closes_at).getTime() <= Date.now();
+            const hasVoted = t.mine != null;
+            const canVote = isMember && p.status === "open" && !closed && !hasVoted;
             return (
               <div key={p.id} className="rounded-2xl border border-[#d4af37]/20 bg-gradient-to-b from-[#0e0b06] to-[#050403] p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -223,19 +225,26 @@ export default function CouncilTab({ isMember }: { isMember: boolean }) {
                   </div>
 
                   {isMember && p.status === "open" && (
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => castVote(p.id, 1)}
-                        className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs ${t.mine === 1 ? "border-[#d4af37] bg-[#d4af37]/20 text-[#f7e7b0]" : "border-[#d4af37]/25 text-[#c9bfa4] hover:border-[#d4af37]/60"}`}
-                      >
-                        <ThumbsUp className="h-3.5 w-3.5" /> {t.up}
-                      </button>
-                      <button
-                        onClick={() => castVote(p.id, -1)}
-                        className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs ${t.mine === -1 ? "border-red-400 bg-red-500/15 text-red-200" : "border-[#d4af37]/25 text-[#c9bfa4] hover:border-red-400/60"}`}
-                      >
-                        <ThumbsDown className="h-3.5 w-3.5" /> {t.down}
-                      </button>
+                    <div className="flex flex-col items-end gap-1">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => castVote(p, 1)}
+                          disabled={!canVote}
+                          className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50 ${t.mine === 1 ? "border-[#d4af37] bg-[#d4af37]/20 text-[#f7e7b0]" : "border-[#d4af37]/25 text-[#c9bfa4] hover:border-[#d4af37]/60"}`}
+                        >
+                          <ThumbsUp className="h-3.5 w-3.5" /> {t.up}
+                        </button>
+                        <button
+                          onClick={() => castVote(p, -1)}
+                          disabled={!canVote}
+                          className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50 ${t.mine === -1 ? "border-red-400 bg-red-500/15 text-red-200" : "border-[#d4af37]/25 text-[#c9bfa4] hover:border-red-400/60"}`}
+                        >
+                          <ThumbsDown className="h-3.5 w-3.5" /> {t.down}
+                        </button>
+                      </div>
+                      <div className="text-[10px] uppercase tracking-[0.25em] text-[#c9bfa4]/60">
+                        {closed ? "Voting closed" : hasVoted ? "Vote final · one per member" : formatRemaining(p.voting_closes_at)}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -251,6 +260,7 @@ export default function CouncilTab({ isMember }: { isMember: boolean }) {
                     Owner · <span className="text-[#f7e7b0]">70%</span> final
                   </div>
                 </div>
+
 
                 {isAdmin && p.status === "open" && (
                   <div className="mt-4 flex flex-wrap gap-2">
