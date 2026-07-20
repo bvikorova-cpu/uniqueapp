@@ -67,10 +67,15 @@ serve(async (req) => {
 
     const priceId = (session.line_items?.data?.[0]?.price as any)?.id || metadata.price_id;
     const TIER_BY_PRICE: Record<string, string> = {
+      "price_1TvEcCGaXSfGtYFtpISbqkdD": "verified",
+      "price_1TvEcEGaXSfGtYFtEHzujgoE": "plus",
+      "price_1TvEcFGaXSfGtYFtc8kKfh5M": "pro",
+      // Legacy price IDs — still honored for existing customers.
       "price_1TvDqrGaXSfGtYFt2g1n3Nuv": "verified",
       "price_1TvDqsGaXSfGtYFtSyfF7vjE": "plus",
       "price_1TvDqsGaXSfGtYFt6boV1wed": "pro",
     };
+
     const tier = TIER_BY_PRICE[priceId] || metadata.tier;
     if (!tier || !["verified", "plus", "pro"].includes(tier)) {
       throw new Error("Unrecognized verification price");
@@ -105,9 +110,10 @@ serve(async (req) => {
 
     const creditGrants: Record<string, number> = {
       verified: 50,
-      plus: 200,
-      pro: 10000,
+      plus: 100,
+      pro: 150,
     };
+
     const creditsToGrant = creditGrants[tier] || 0;
 
     // Update profile (only service_role can change verification_tier due to trigger)

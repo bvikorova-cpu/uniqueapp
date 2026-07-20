@@ -13,7 +13,7 @@ const TIERS = [
   {
     key: "verified",
     name: "Unique Verified",
-    price: "9.99",
+    price: "15",
     period: "one-time",
     badge: "Verified",
     icon: Shield,
@@ -31,7 +31,7 @@ const TIERS = [
   {
     key: "plus",
     name: "Unique Plus",
-    price: "4.99",
+    price: "40",
     period: "month",
     badge: "Plus",
     icon: Crown,
@@ -41,7 +41,7 @@ const TIERS = [
     features: [
       "Everything in Verified",
       "Sparkling Plus badge",
-      "200 AI credits every month",
+      "100 AI credits every month",
       "Top feed priority for your posts",
       "Exclusive filters & stickers",
       "Early access to new features",
@@ -50,7 +50,7 @@ const TIERS = [
   {
     key: "pro",
     name: "Unique Pro",
-    price: "14.99",
+    price: "150",
     period: "month",
     badge: "Pro",
     icon: Star,
@@ -59,7 +59,7 @@ const TIERS = [
     features: [
       "Everything in Plus",
       "Ultimate Pro badge with crown",
-      "Unlimited AI credits*",
+      "150 AI credits every month",
       "Highest feed priority",
       "Custom profile branding",
       "Personal account manager",
@@ -67,6 +67,7 @@ const TIERS = [
     ],
   },
 ];
+
 
 export default function Verified() {
   const { t } = useTranslation();

@@ -16,14 +16,19 @@ const log = (step: string, details?: unknown) => {
 
 type Tier = "verified" | "plus" | "pro";
 const PRICE_BY_TIER: Record<"plus" | "pro", string> = {
-  plus: "price_1TvDqsGaXSfGtYFtSyfF7vjE",
-  pro: "price_1TvDqsGaXSfGtYFt6boV1wed",
+  plus: "price_1TvEcEGaXSfGtYFtEHzujgoE",
+  pro: "price_1TvEcFGaXSfGtYFtc8kKfh5M",
 };
 const TIER_BY_PRICE: Record<string, Tier> = {
+  "price_1TvEcCGaXSfGtYFtpISbqkdD": "verified",
+  "price_1TvEcEGaXSfGtYFtEHzujgoE": "plus",
+  "price_1TvEcFGaXSfGtYFtc8kKfh5M": "pro",
+  // Legacy price IDs
   "price_1TvDqrGaXSfGtYFt2g1n3Nuv": "verified",
   "price_1TvDqsGaXSfGtYFtSyfF7vjE": "plus",
   "price_1TvDqsGaXSfGtYFt6boV1wed": "pro",
 };
+
 
 type Action = "downgrade" | "cancel" | "resume" | "cancel_now";
 

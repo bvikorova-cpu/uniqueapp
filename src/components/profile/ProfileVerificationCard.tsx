@@ -23,7 +23,7 @@ const TIERS: Array<{
   {
     key: "verified",
     name: "Verified",
-    price: "9.99",
+    price: "15",
     period: "one-time",
     icon: Shield,
     accent: "from-amber-400 to-yellow-600",
@@ -32,22 +32,23 @@ const TIERS: Array<{
   {
     key: "plus",
     name: "Plus",
-    price: "4.99",
+    price: "40",
     period: "/mo",
     icon: Crown,
     accent: "from-pink-500 to-rose-600",
     popular: true,
-    highlights: ["Everything in Verified", "200 AI credits / mo", "Top feed priority"],
+    highlights: ["Everything in Verified", "100 AI credits / mo", "Top feed priority"],
   },
   {
     key: "pro",
     name: "Pro",
-    price: "14.99",
+    price: "150",
     period: "/mo",
     icon: Star,
     accent: "from-purple-500 to-fuchsia-600",
-    highlights: ["Everything in Plus", "Unlimited AI*", "Personal manager"],
+    highlights: ["Everything in Plus", "150 AI credits / mo", "Personal manager"],
   },
+
 ];
 
 const RANK: Record<string, number> = { none: 0, verified: 1, plus: 2, pro: 3 };
