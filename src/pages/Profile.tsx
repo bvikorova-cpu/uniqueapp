@@ -703,6 +703,10 @@ const Profile = () => {
           deferExtras={extendedReady}
         />
 
+        {/* Unique Verified / Plus / Pro — direct upgrade on own profile */}
+        {currentUserId === userId && <ProfileVerificationCard />}
+
+
         {/* XP breakdown — visible on every profile so the source of XP is clear */}
         <XpBreakdown
           xp={stats.xp}
