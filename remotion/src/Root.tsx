@@ -21,6 +21,7 @@ import { MarketplacesFilm, MARKETPLACES_DURATION } from "./MarketplacesFilm";
 import { LearningGrowthFilm, LEARNINGGROWTH_DURATION } from "./LearningGrowthFilm";
 import { AccountFilm, ACCOUNT_DURATION } from "./AccountFilm";
 import { UniAssistantFilm, UNIASSISTANT_DURATION } from "./UniAssistantFilm";
+import { VerifiedFilm, VERIFIED_DURATION } from "./VerifiedFilm";
 
 import { VERSIONS } from "./versions";
 
@@ -198,6 +199,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="verified-film"
+      component={VerifiedFilm}
+      durationInFrames={VERIFIED_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+
 
 
 
