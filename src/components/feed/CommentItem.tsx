@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { CommentReactionPicker } from "./CommentReactionPicker";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
 import { VoiceCommentPlayer } from "@/components/wall/VoiceCommentPlayer";
+import { VerifiedBadge, getVerifiedRingClass } from "@/components/verified/VerifiedBadge";
 import { MapPin, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -37,15 +38,18 @@ export const CommentItem = ({
       
       <div className={`${depth > 0 ? "ml-6 border-l-2 border-border/30 pl-2" : ""}`}>
       <div className="flex gap-2 p-2 rounded-lg hover:bg-accent/5 transition-colors">
-        <Avatar className="h-7 w-7 flex-shrink-0">
+        <Avatar className={`h-7 w-7 flex-shrink-0 ${getVerifiedRingClass(comment.profiles?.verification_tier)}`}>
           <AvatarImage src={comment.profiles?.avatar_url || undefined} />
           <AvatarFallback className="text-xs">
             {comment.profiles?.full_name?.charAt(0) || "U"}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold">
-            {comment.profiles?.full_name || "User"}
+          <p className="text-xs font-semibold flex items-center gap-1 flex-wrap">
+            <span className="truncate">{comment.profiles?.full_name || "User"}</span>
+            {comment.profiles?.verification_tier && (
+              <VerifiedBadge tier={comment.profiles.verification_tier} size="sm" showLabel={false} />
+            )}
           </p>
           
           {/* Feeling & Location */}
