@@ -12,7 +12,19 @@ type Proposal = {
   status: "open" | "approved" | "vetoed" | "implemented";
   owner_note: string | null;
   created_at: string;
+  voting_closes_at: string;
 };
+
+function formatRemaining(iso: string): string {
+  const ms = new Date(iso).getTime() - Date.now();
+  if (ms <= 0) return "Voting closed";
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  if (d > 0) return `Closes in ${d}d ${h}h`;
+  if (h > 0) return `Closes in ${h}h ${m}m`;
+  return `Closes in ${m}m`;
+}
 
 type VoteRow = { proposal_id: string; voter_id: string; vote: number };
 
@@ -89,18 +101,21 @@ export default function CouncilTab({ isMember }: { isMember: boolean }) {
     setTitle(""); setDesc(""); setShowForm(false);
   };
 
-  const castVote = async (proposalId: string, vote: 1 | -1) => {
+  const castVote = async (proposal: Proposal, vote: 1 | -1) => {
     if (!user) return;
-    const existing = tallies.get(proposalId)?.mine;
-    if (existing === vote) {
-      const { error } = await supabase.from("exclusive_proposal_votes")
-        .delete().eq("proposal_id", proposalId).eq("voter_id", user.id);
-      if (error) toast.error(error.message);
+    const existing = tallies.get(proposal.id)?.mine;
+    if (existing != null) {
+      toast.error("You have already voted on this proposal. Votes are final.");
+      return;
+    }
+    if (new Date(proposal.voting_closes_at).getTime() <= Date.now()) {
+      toast.error("Voting for this proposal has closed.");
       return;
     }
     const { error } = await supabase.from("exclusive_proposal_votes")
-      .upsert({ proposal_id: proposalId, voter_id: user.id, vote }, { onConflict: "proposal_id,voter_id" });
+      .insert({ proposal_id: proposal.id, voter_id: user.id, vote });
     if (error) toast.error(error.message);
+    else toast.success(vote === 1 ? "Vote recorded: Approve" : "Vote recorded: Reject");
   };
 
   const ownerDecide = async (p: Proposal, status: Proposal["status"]) => {
@@ -186,10 +201,12 @@ export default function CouncilTab({ isMember }: { isMember: boolean }) {
             const t = tallies.get(p.id) ?? { up: 0, down: 0, mine: null };
             const memberScore = t.up - t.down;
             const totalVotes = t.up + t.down;
-            // Weighted display: members 30%, owner 70% (owner decision reflected in status)
             const memberPct = totalVotes > 0 ? Math.round((t.up / totalVotes) * 100) : 0;
             const weightedAdvisory = totalVotes > 0 ? Math.round(memberPct * 0.3) : 0;
             const meta = STATUS_META[p.status];
+            const closed = new Date(p.voting_closes_at).getTime() <= Date.now();
+            const hasVoted = t.mine != null;
+            const canVote = isMember && p.status === "open" && !closed && !hasVoted;
             return (
               <div key={p.id} className="rounded-2xl border border-[#d4af37]/20 bg-gradient-to-b from-[#0e0b06] to-[#050403] p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -208,19 +225,26 @@ export default function CouncilTab({ isMember }: { isMember: boolean }) {
                   </div>
 
                   {isMember && p.status === "open" && (
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => castVote(p.id, 1)}
-                        className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs ${t.mine === 1 ? "border-[#d4af37] bg-[#d4af37]/20 text-[#f7e7b0]" : "border-[#d4af37]/25 text-[#c9bfa4] hover:border-[#d4af37]/60"}`}
-                      >
-                        <ThumbsUp className="h-3.5 w-3.5" /> {t.up}
-                      </button>
-                      <button
-                        onClick={() => castVote(p.id, -1)}
-                        className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs ${t.mine === -1 ? "border-red-400 bg-red-500/15 text-red-200" : "border-[#d4af37]/25 text-[#c9bfa4] hover:border-red-400/60"}`}
-                      >
-                        <ThumbsDown className="h-3.5 w-3.5" /> {t.down}
-                      </button>
+                    <div className="flex flex-col items-end gap-1">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => castVote(p, 1)}
+                          disabled={!canVote}
+                          className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50 ${t.mine === 1 ? "border-[#d4af37] bg-[#d4af37]/20 text-[#f7e7b0]" : "border-[#d4af37]/25 text-[#c9bfa4] hover:border-[#d4af37]/60"}`}
+                        >
+                          <ThumbsUp className="h-3.5 w-3.5" /> {t.up}
+                        </button>
+                        <button
+                          onClick={() => castVote(p, -1)}
+                          disabled={!canVote}
+                          className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50 ${t.mine === -1 ? "border-red-400 bg-red-500/15 text-red-200" : "border-[#d4af37]/25 text-[#c9bfa4] hover:border-red-400/60"}`}
+                        >
+                          <ThumbsDown className="h-3.5 w-3.5" /> {t.down}
+                        </button>
+                      </div>
+                      <div className="text-[10px] uppercase tracking-[0.25em] text-[#c9bfa4]/60">
+                        {closed ? "Voting closed" : hasVoted ? "Vote final · one per member" : formatRemaining(p.voting_closes_at)}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -236,6 +260,7 @@ export default function CouncilTab({ isMember }: { isMember: boolean }) {
                     Owner · <span className="text-[#f7e7b0]">70%</span> final
                   </div>
                 </div>
+
 
                 {isAdmin && p.status === "open" && (
                   <div className="mt-4 flex flex-wrap gap-2">
