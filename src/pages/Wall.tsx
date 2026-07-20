@@ -216,6 +216,13 @@ const Feed = () => {
           new Date(b.data.created_at).getTime() - new Date(a.data.created_at).getTime()
       );
 
+      // Tag each item with its page index — used by the sort to preserve
+      // page order across infinite scroll so Verified priority doesn't shuffle
+      // items above the fold when a new page arrives.
+      newItems.forEach((it) => {
+        (it as any)._page = currentPage;
+      });
+
       if (loadMore) {
         setPosts((prev) => {
           const seen = new Set(prev.map((p) => p.id));
@@ -244,6 +251,7 @@ const Feed = () => {
 
       if (newItems.length > 0) {
         lastCursor.current = newItems[newItems.length - 1].data.created_at;
+        pageIndexRef.current = currentPage;
       }
 
       // (removed: localStorage cache — was causing stale/slow first paint)
