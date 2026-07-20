@@ -110,9 +110,10 @@ serve(async (req) => {
 
     const creditGrants: Record<string, number> = {
       verified: 50,
-      plus: 200,
-      pro: 10000,
+      plus: 100,
+      pro: 150,
     };
+
     const creditsToGrant = creditGrants[tier] || 0;
 
     // Update profile (only service_role can change verification_tier due to trigger)
