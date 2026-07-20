@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, Crown, Star, Sparkles, Check, ArrowRight, RefreshCw } from "lucide-react";
+import { Shield, Crown, Star, Sparkles, Check, ArrowRight, ArrowDown, RefreshCw, X, RotateCcw } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -103,7 +104,38 @@ export function ProfileVerificationCard() {
   const expiresAt = live?.expiresAt ?? null;
   const status = live?.status ?? (isSubscribed ? "active" : "none");
 
+  const manageSubscription = async (
+    action: "downgrade" | "cancel" | "resume" | "cancel_now",
+    targetTier?: "plus" | "pro",
+  ) => {
+    if (!user) return;
+    const key: TierKey = targetTier ?? (effectiveTier as TierKey);
+    setProcessing(key);
+    try {
+      const { data, error } = await supabase.functions.invoke("manage-verification", {
+        body: { action, target_tier: targetTier },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success(
+        action === "downgrade"
+          ? `Downgraded to ${targetTier?.toUpperCase()} with pro-rata credit.`
+          : action === "cancel"
+          ? "Subscription will cancel at period end."
+          : action === "resume"
+          ? "Subscription resumed."
+          : "Subscription cancelled.",
+      );
+      await fetchLive();
+    } catch (e: any) {
+      toast.error(e?.message || "Action failed.");
+    } finally {
+      setProcessing(null);
+    }
+  };
+
   const startCheckout = async (tier: TierKey) => {
+
     if (!user) {
       navigate("/auth", { state: { returnTo: `/verified?tier=${tier}` } });
       return;
@@ -212,38 +244,74 @@ export function ProfileVerificationCard() {
                   </li>
                 ))}
               </ul>
-              <Button
-                size="sm"
-                variant={tier.popular || isUpgrade ? "default" : "outline"}
-                className={`w-full font-semibold ${
-                  tier.popular || isUpgrade
-                    ? "bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0"
-                    : ""
-                }`}
-                disabled={disabled}
-                onClick={() => startCheckout(tier.key)}
-              >
-                {processing === tier.key ? (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 animate-spin" />
-                    Redirecting…
-                  </span>
-                ) : isCurrent ? (
-                  "Current"
-                ) : isIncluded ? (
-                  "Included"
-                ) : isUpgrade ? (
-                  <span className="inline-flex items-center gap-1">
-                    Upgrade <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
-                ) : (
-                  `Get ${tier.name}`
-                )}
-              </Button>
+              {(() => {
+                const isDowngrade = rank < currentRank && rank > 0 && tier.key !== "verified";
+                const canceling = status === "canceling";
+                // Special case: when on this exact tier and it's a recurring plan, show cancel/resume
+                if (isCurrent && (tier.key === "plus" || tier.key === "pro")) {
+                  return (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full font-semibold"
+                      disabled={!!processing}
+                      onClick={() => void manageSubscription(canceling ? "resume" : "cancel")}
+                    >
+                      {processing === (tier.key as TierKey) ? (
+                        <span className="inline-flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                          Working…
+                        </span>
+                      ) : canceling ? (
+                        <span className="inline-flex items-center gap-1"><RotateCcw className="w-3.5 h-3.5" /> Resume</span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1"><X className="w-3.5 h-3.5" /> Cancel at period end</span>
+                      )}
+                    </Button>
+                  );
+                }
+                return (
+                  <Button
+                    size="sm"
+                    variant={tier.popular || isUpgrade ? "default" : "outline"}
+                    className={`w-full font-semibold ${
+                      tier.popular || isUpgrade
+                        ? "bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0"
+                        : ""
+                    }`}
+                    disabled={(isCurrent || isIncluded || !!processing) && !isDowngrade}
+                    onClick={() =>
+                      isDowngrade
+                        ? void manageSubscription("downgrade", tier.key as "plus")
+                        : startCheckout(tier.key)
+                    }
+                  >
+                    {processing === tier.key ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                        Working…
+                      </span>
+                    ) : isCurrent ? (
+                      "Current"
+                    ) : isDowngrade ? (
+                      <span className="inline-flex items-center gap-1"><ArrowDown className="w-3.5 h-3.5" /> Downgrade</span>
+                    ) : isIncluded ? (
+                      "Included"
+                    ) : isUpgrade ? (
+                      <span className="inline-flex items-center gap-1">Upgrade <ArrowRight className="w-3.5 h-3.5" /></span>
+                    ) : (
+                      `Get ${tier.name}`
+                    )}
+                  </Button>
+                );
+              })()}
             </div>
           );
         })}
       </div>
+
+
+
 
       <button
         type="button"
