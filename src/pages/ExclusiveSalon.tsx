@@ -21,44 +21,60 @@ type Seat = {
 function Floor() {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-      <circleGeometry args={[8, 64]} />
-      <meshStandardMaterial color="#0b0908" roughness={0.35} metalness={0.6} />
+      <circleGeometry args={[9, 96]} />
+      <meshStandardMaterial color="#e8dcc4" roughness={0.25} metalness={0.15} />
     </mesh>
   );
 }
 
 function Rug() {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.001, 0]} receiveShadow>
-      <circleGeometry args={[3.6, 64]} />
-      <meshStandardMaterial color="#3a0d1a" roughness={0.9} />
-    </mesh>
+    <group>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]} receiveShadow>
+        <circleGeometry args={[3.8, 96]} />
+        <meshStandardMaterial color="#6b4423" roughness={0.95} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.004, 0]} receiveShadow>
+        <ringGeometry args={[3.4, 3.55, 96]} />
+        <meshStandardMaterial color="#c9a24a" metalness={0.4} roughness={0.5} />
+      </mesh>
+    </group>
   );
 }
 
 function Table() {
   return (
     <group position={[0, 0.45, 0]}>
-      {/* top */}
+      {/* wood top */}
       <mesh castShadow receiveShadow position={[0, 0.35, 0]}>
-        <cylinderGeometry args={[1.1, 1.1, 0.08, 64]} />
-        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.15} />
+        <cylinderGeometry args={[1.15, 1.15, 0.09, 96]} />
+        <meshStandardMaterial color="#3a1f14" metalness={0.25} roughness={0.35} />
+      </mesh>
+      {/* brass inlay */}
+      <mesh position={[0, 0.401, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[1.05, 1.12, 96]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.95} roughness={0.15} emissive="#3a2600" emissiveIntensity={0.3} />
       </mesh>
       {/* pedestal */}
       <mesh castShadow position={[0, 0, 0]}>
-        <cylinderGeometry args={[0.18, 0.28, 0.7, 32]} />
-        <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.3} />
+        <cylinderGeometry args={[0.22, 0.34, 0.7, 32]} />
+        <meshStandardMaterial color="#2a1810" metalness={0.4} roughness={0.5} />
       </mesh>
       <mesh castShadow position={[0, -0.4, 0]}>
-        <cylinderGeometry args={[0.55, 0.55, 0.06, 32]} />
-        <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.3} />
+        <cylinderGeometry args={[0.6, 0.6, 0.08, 48]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
       </mesh>
       {/* candle */}
-      <mesh position={[0, 0.5, 0]} castShadow>
-        <cylinderGeometry args={[0.05, 0.05, 0.16, 16]} />
-        <meshStandardMaterial color="#f5e6c8" emissive="#f5b041" emissiveIntensity={0.4} />
+      <mesh position={[0, 0.52, 0]} castShadow>
+        <cylinderGeometry args={[0.05, 0.05, 0.18, 16]} />
+        <meshStandardMaterial color="#f5e6c8" emissive="#ffb060" emissiveIntensity={0.5} />
       </mesh>
-      <pointLight position={[0, 0.75, 0]} intensity={1.4} distance={4} color="#ffb060" castShadow />
+      {/* flame */}
+      <mesh position={[0, 0.66, 0]}>
+        <sphereGeometry args={[0.05, 12, 12]} />
+        <meshBasicMaterial color="#ffd88a" />
+      </mesh>
+      <pointLight position={[0, 0.78, 0]} intensity={2.2} distance={5} color="#ffb060" castShadow />
     </group>
   );
 }
