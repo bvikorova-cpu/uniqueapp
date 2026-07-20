@@ -12,7 +12,19 @@ type Proposal = {
   status: "open" | "approved" | "vetoed" | "implemented";
   owner_note: string | null;
   created_at: string;
+  voting_closes_at: string;
 };
+
+function formatRemaining(iso: string): string {
+  const ms = new Date(iso).getTime() - Date.now();
+  if (ms <= 0) return "Voting closed";
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  if (d > 0) return `Closes in ${d}d ${h}h`;
+  if (h > 0) return `Closes in ${h}h ${m}m`;
+  return `Closes in ${m}m`;
+}
 
 type VoteRow = { proposal_id: string; voter_id: string; vote: number };
 
