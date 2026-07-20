@@ -137,6 +137,9 @@ const Feed = () => {
   const fetchInFlight = useRef(false);
   const lastCursor = useRef<string | null>(null);
   const feedItemsCountRef = useRef(feedItems.length);
+  // Stable page counter — items get tagged with their page so Verified priority
+  // reorders WITHIN a page but never moves items across pages during infinite scroll.
+  const pageIndexRef = useRef(0);
 
   useEffect(() => {
     feedItemsCountRef.current = feedItems.length;
@@ -152,9 +155,11 @@ const Feed = () => {
         if (feedItemsCountRef.current === 0) setLoading(true);
         setFeedError(null);
         lastCursor.current = null;
+        pageIndexRef.current = 0;
         setHasMore(true);
       }
 
+      const currentPage = loadMore ? pageIndexRef.current + 1 : 0;
       const cursor = loadMore ? lastCursor.current : null;
 
       // Single-RPC fetch: posts + reposts + profiles + media + original_posts in 1 round-trip.
