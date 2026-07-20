@@ -219,6 +219,40 @@ export function ProfileVerificationCard() {
         </div>
       </div>
 
+      {showRenew && lastTier && (
+        <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3">
+          <div className="flex items-start gap-2 min-w-0">
+            <Zap className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+            <div className="text-xs sm:text-sm">
+              <div className="font-semibold text-amber-800 dark:text-amber-200">
+                Your {lastTier.toUpperCase()} membership expired
+              </div>
+              <div className="text-amber-700/80 dark:text-amber-300/80">
+                Renew now to restore your badge, feed priority and AI credits.
+              </div>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            className="bg-gradient-to-r from-amber-500 to-pink-500 hover:opacity-90 text-white border-0 font-semibold shrink-0"
+            disabled={!!processing}
+            onClick={() => startCheckout(lastTier)}
+          >
+            {processing === lastTier ? (
+              <span className="inline-flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 animate-spin" /> Redirecting…
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1">
+                Renew {lastTier.toUpperCase()} <ArrowRight className="w-3.5 h-3.5" />
+              </span>
+            )}
+          </Button>
+        </div>
+      )}
+
+
+
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {TIERS.map((tier) => {
