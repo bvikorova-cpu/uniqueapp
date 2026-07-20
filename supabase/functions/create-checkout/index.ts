@@ -395,6 +395,28 @@ async function handler(req: Request): Promise<Response> {
       return successResponse({ url: session.url, mode });
     }
 
+    // ─── UNIQUE EXCLUSIVE — €100,000 lifetime membership ───
+    // Body: { product: "exclusive" }
+    if (body.product === "exclusive") {
+      if (!userId) {
+        return new Response(JSON.stringify({ error: "Authentication required for Exclusive." }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const EXCLUSIVE_PRICE_ID = "price_1TvJNIGaXSfGtYFte8LM0ZxP";
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: EXCLUSIVE_PRICE_ID, quantity: 1 }],
+        mode: "payment",
+        success_url: `${origin}/exclusive?success=true&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/exclusive?canceled=true`,
+        metadata: { user_id: userId, module: "exclusive", price_id: EXCLUSIVE_PRICE_ID },
+      });
+      return successResponse({ url: session.url, mode: "payment" });
+    }
+
     // ─── PET TRANSLATOR CHECKOUT ROUTER ───
     // Handles both subscription plans and one-off purchases via priceId.
     // Body: { product: "pet", priceId: "price_..." }
