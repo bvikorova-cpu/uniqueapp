@@ -373,9 +373,10 @@ async function handler(req: Request): Promise<Response> {
     // ─── UNIQUE VERIFICATION / TIER CHECKOUT ROUTER ───
     // Body: { product: "verification", tier: "verified" | "plus" | "pro" }
     const VERIFICATION_PRICE_IDS: Record<string, string> = {
-      verified: "price_1TvDqrGaXSfGtYFt2g1n3Nuv", // Unique Verified — €9.99 one-time
-      plus:     "price_1TvDqsGaXSfGtYFtSyfF7vjE", // Unique Plus — €4.99/mo
-      pro:      "price_1TvDqsGaXSfGtYFt6boV1wed", // Unique Pro — €14.99/mo
+      verified: "price_1TvEcCGaXSfGtYFtpISbqkdD", // Unique Verified — €15 one-time
+      plus:     "price_1TvEcEGaXSfGtYFtEHzujgoE", // Unique Plus — €40/mo (100 credits)
+      pro:      "price_1TvEcFGaXSfGtYFtc8kKfh5M", // Unique Pro — €150/mo (150 credits)
+
     };
     if (body.product === "verification" && VERIFICATION_PRICE_IDS[body.tier]) {
       const tier = String(body.tier);
