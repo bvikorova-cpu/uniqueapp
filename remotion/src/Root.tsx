@@ -13,6 +13,7 @@ import { FundraisingFilm, FUNDRAISING_DURATION } from "./FundraisingFilm";
 import { AIToolsFilm, AITOOLS_DURATION } from "./AIToolsFilm";
 import { MysticalFilm, MYSTICAL_DURATION } from "./MysticalFilm";
 import { SocialFilm, SOCIAL_DURATION } from "./SocialFilm";
+import { HealthFilm, HEALTH_DURATION } from "./HealthFilm";
 
 import { VERSIONS } from "./versions";
 
@@ -126,6 +127,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="health-film"
+      component={HealthFilm}
+      durationInFrames={HEALTH_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+
 
 
 
