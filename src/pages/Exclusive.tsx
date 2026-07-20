@@ -53,14 +53,25 @@ export default function Exclusive() {
   const startCheckout = async () => {
     if (!user) { navigate("/auth?redirect=/exclusive"); return; }
     setLoading(true);
+    // Open tab synchronously to avoid popup blockers on mobile Safari
+    const tab = window.open("about:blank", "_blank");
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: { product: "exclusive" },
       });
-      if (error) throw error;
-      if (data?.url) window.location.href = data.url;
-      else throw new Error("No checkout URL returned");
+      console.log("[exclusive checkout]", { data, error });
+      const url = (data as any)?.url;
+      if (url) {
+        if (tab) tab.location.href = url;
+        else window.location.href = url;
+        return;
+      }
+      if (tab) tab.close();
+      const msg = (error as any)?.message || (data as any)?.error || "No checkout URL returned";
+      throw new Error(msg);
     } catch (e) {
+      if (tab && !tab.closed) tab.close();
+      console.error("[exclusive checkout] failed", e);
       toast.error((e as Error).message || "Checkout failed");
     } finally {
       setLoading(false);
