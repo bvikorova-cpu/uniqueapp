@@ -199,6 +199,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="verified-film"
+      component={VerifiedFilm}
+      durationInFrames={VERIFIED_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+
 
 
 
