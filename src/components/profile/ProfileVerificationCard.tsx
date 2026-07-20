@@ -125,6 +125,15 @@ export function ProfileVerificationCard() {
     }
   };
 
+  const expiryLabel =
+    expiresAt && effectiveTier !== "verified" && effectiveTier !== "none"
+      ? new Date(expiresAt).toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      : null;
+
   return (
     <div className="mb-4 rounded-2xl border border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 p-4 sm:p-6 shadow-sm">
       <div className="flex items-start justify-between gap-3 mb-4 flex-wrap">
@@ -134,13 +143,34 @@ export function ProfileVerificationCard() {
             {isSubscribed ? "Your Unique membership" : "Get Unique Verified"}
           </h3>
         </div>
-        {isSubscribed && (
-          <div className="inline-flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Current:</span>
-            <VerifiedBadge tier={verificationTier as TierKey} size="sm" />
-          </div>
-        )}
+        <div className="inline-flex items-center gap-2 text-sm">
+          {isSubscribed && (
+            <>
+              <span className="text-muted-foreground">Current:</span>
+              <VerifiedBadge tier={effectiveTier as TierKey} size="sm" />
+              {status === "canceling" && (
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 text-[10px] font-semibold">
+                  Cancels {expiryLabel ?? "soon"}
+                </span>
+              )}
+              {status === "active" && expiryLabel && (
+                <span className="text-xs text-muted-foreground">renews {expiryLabel}</span>
+              )}
+            </>
+          )}
+          <button
+            type="button"
+            onClick={() => void fetchLive()}
+            disabled={checking}
+            title="Re-check status from Stripe"
+            className="p-1 rounded-md hover:bg-accent/40 text-muted-foreground disabled:opacity-50"
+            aria-label="Refresh from Stripe"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${checking ? "animate-spin" : ""}`} />
+          </button>
+        </div>
       </div>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {TIERS.map((tier) => {
