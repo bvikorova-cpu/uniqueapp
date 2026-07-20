@@ -40,6 +40,7 @@ export default function Exclusive() {
   const [loading, setLoading] = useState(false);
   const [isMember, setIsMember] = useState<boolean | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [tab, setTab] = useState<"rooms" | "council">("rooms");
 
   const success = params.get("success") === "true";
   const canceled = params.get("canceled") === "true";
