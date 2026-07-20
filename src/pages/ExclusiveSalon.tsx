@@ -123,11 +123,11 @@ function Chair({
         <meshStandardMaterial color={leather} roughness={0.55} metalness={0.05} />
       </mesh>
       {/* rolled arms */}
-      <mesh castShadow position={[0.44, 0.82, 0]}>
-        <cylinderGeometry args={[0.11, 0.11, 0.95, 20]} rotation={[Math.PI/2,0,0] as any} />
+      <mesh castShadow position={[0.44, 0.82, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.11, 0.11, 0.95, 20]} />
         <meshStandardMaterial color={leather} roughness={0.55} />
       </mesh>
-      <mesh castShadow position={[-0.44, 0.82, 0]}>
+      <mesh castShadow position={[-0.44, 0.82, 0]} rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.11, 0.11, 0.95, 20]} />
         <meshStandardMaterial color={leather} roughness={0.55} />
       </mesh>
