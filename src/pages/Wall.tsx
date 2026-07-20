@@ -510,10 +510,23 @@ const Feed = () => {
       item.type === "post"
         ? (item.data as Post).created_at
         : (item.data as Repost).created_at;
+    const tierOf = (item: FeedItem): string | null => {
+      const p: any = item.type === "post" ? item.data : (item.data as any).profiles;
+      const tier = item.type === "post" ? (item.data as any).profiles?.verification_tier : p?.verification_tier;
+      return tier || null;
+    };
+    const tierRank = (t: string | null) =>
+      t === "pro" ? 3 : t === "plus" ? 2 : t === "verified" ? 1 : 0;
     const scoreOf = (item: FeedItem) => {
       const p = item.type === "post" ? (item.data as Post) : (item.data as Repost).original_post;
       return (p?.likes_count ?? 0) * 3 + (p?.comments_count ?? 0) * 2 + (p?.shares_count ?? 0) + (p?.reposts_count ?? 0);
     };
+
+    // "Verified only" filter — applies across every tab.
+    if (verifiedOnly) {
+      filtered = filtered.filter((item) => tierRank(tierOf(item)) > 0);
+    }
+
 
     if (feedTab === "friends") {
       const allowed = new Set(friendIds);
