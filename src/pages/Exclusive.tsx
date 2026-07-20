@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Crown, Newspaper, MessagesSquare, Handshake, Lock, Sparkles, Loader2, ArrowRight, Gavel } from "lucide-react";
 import CouncilTab from "@/components/exclusive/CouncilTab";
+import WhyJoin from "@/components/exclusive/WhyJoin";
 
 const CARDS = [
   {
@@ -200,6 +201,9 @@ export default function Exclusive() {
             );
           })}
         </div>
+
+        {/* Why join — benefits */}
+        {!isMember && <WhyJoin />}
 
         {/* Checkout gate for non-members */}
         {!isMember && isMember !== null && (
