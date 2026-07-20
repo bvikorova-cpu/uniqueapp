@@ -21,44 +21,60 @@ type Seat = {
 function Floor() {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-      <circleGeometry args={[8, 64]} />
-      <meshStandardMaterial color="#0b0908" roughness={0.35} metalness={0.6} />
+      <circleGeometry args={[9, 96]} />
+      <meshStandardMaterial color="#e8dcc4" roughness={0.25} metalness={0.15} />
     </mesh>
   );
 }
 
 function Rug() {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.001, 0]} receiveShadow>
-      <circleGeometry args={[3.6, 64]} />
-      <meshStandardMaterial color="#3a0d1a" roughness={0.9} />
-    </mesh>
+    <group>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]} receiveShadow>
+        <circleGeometry args={[3.8, 96]} />
+        <meshStandardMaterial color="#6b4423" roughness={0.95} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.004, 0]} receiveShadow>
+        <ringGeometry args={[3.4, 3.55, 96]} />
+        <meshStandardMaterial color="#c9a24a" metalness={0.4} roughness={0.5} />
+      </mesh>
+    </group>
   );
 }
 
 function Table() {
   return (
     <group position={[0, 0.45, 0]}>
-      {/* top */}
+      {/* wood top */}
       <mesh castShadow receiveShadow position={[0, 0.35, 0]}>
-        <cylinderGeometry args={[1.1, 1.1, 0.08, 64]} />
-        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.15} />
+        <cylinderGeometry args={[1.15, 1.15, 0.09, 96]} />
+        <meshStandardMaterial color="#3a1f14" metalness={0.25} roughness={0.35} />
+      </mesh>
+      {/* brass inlay */}
+      <mesh position={[0, 0.401, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[1.05, 1.12, 96]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.95} roughness={0.15} emissive="#3a2600" emissiveIntensity={0.3} />
       </mesh>
       {/* pedestal */}
       <mesh castShadow position={[0, 0, 0]}>
-        <cylinderGeometry args={[0.18, 0.28, 0.7, 32]} />
-        <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.3} />
+        <cylinderGeometry args={[0.22, 0.34, 0.7, 32]} />
+        <meshStandardMaterial color="#2a1810" metalness={0.4} roughness={0.5} />
       </mesh>
       <mesh castShadow position={[0, -0.4, 0]}>
-        <cylinderGeometry args={[0.55, 0.55, 0.06, 32]} />
-        <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.3} />
+        <cylinderGeometry args={[0.6, 0.6, 0.08, 48]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
       </mesh>
       {/* candle */}
-      <mesh position={[0, 0.5, 0]} castShadow>
-        <cylinderGeometry args={[0.05, 0.05, 0.16, 16]} />
-        <meshStandardMaterial color="#f5e6c8" emissive="#f5b041" emissiveIntensity={0.4} />
+      <mesh position={[0, 0.52, 0]} castShadow>
+        <cylinderGeometry args={[0.05, 0.05, 0.18, 16]} />
+        <meshStandardMaterial color="#f5e6c8" emissive="#ffb060" emissiveIntensity={0.5} />
       </mesh>
-      <pointLight position={[0, 0.75, 0]} intensity={1.4} distance={4} color="#ffb060" castShadow />
+      {/* flame */}
+      <mesh position={[0, 0.66, 0]}>
+        <sphereGeometry args={[0.05, 12, 12]} />
+        <meshBasicMaterial color="#ffd88a" />
+      </mesh>
+      <pointLight position={[0, 0.78, 0]} intensity={2.2} distance={5} color="#ffb060" castShadow />
     </group>
   );
 }
@@ -83,12 +99,13 @@ function Chair({
   const rotY = -angle + Math.PI / 2;
   const occupied = !!seat.occupant;
 
-  const color = occupied ? (isMine ? "#d4af37" : "#7a1f2b") : isHovered ? "#b8892a" : "#2b1a10";
-  const emissive = isMine ? "#5a3a00" : "#000000";
+  // Warm cognac leather palette; brass when 'mine', muted when free
+  const leather = occupied ? (isMine ? "#c9962b" : "#6b2a1e") : isHovered ? "#8a3a2a" : "#5a2418";
+  const emissive = isMine ? "#3a2600" : "#1a0800";
 
   return (
     <group position={[x, 0, z]} rotation={[0, rotY, 0]}>
-      {/* seat cushion */}
+      {/* seat cushion (tufted look via slight scale) */}
       <mesh
         castShadow
         receiveShadow
@@ -97,28 +114,28 @@ function Chair({
         onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; }}
         onClick={(e) => { e.stopPropagation(); onClick(); }}
       >
-        <boxGeometry args={[0.9, 0.18, 0.9]} />
-        <meshStandardMaterial color={color} emissive={emissive} emissiveIntensity={0.25} roughness={0.6} />
+        <boxGeometry args={[0.95, 0.22, 0.95]} />
+        <meshStandardMaterial color={leather} emissive={emissive} emissiveIntensity={0.15} roughness={0.55} metalness={0.05} />
       </mesh>
-      {/* back */}
-      <mesh castShadow position={[0, 1.1, -0.4]}>
-        <boxGeometry args={[0.9, 1.1, 0.15]} />
-        <meshStandardMaterial color={color} roughness={0.6} />
+      {/* back — taller wingback silhouette */}
+      <mesh castShadow position={[0, 1.25, -0.42]}>
+        <boxGeometry args={[0.95, 1.4, 0.18]} />
+        <meshStandardMaterial color={leather} roughness={0.55} metalness={0.05} />
       </mesh>
-      {/* arms */}
-      <mesh castShadow position={[0.42, 0.75, 0]}>
-        <boxGeometry args={[0.12, 0.4, 0.9]} />
-        <meshStandardMaterial color={color} roughness={0.6} />
+      {/* rolled arms */}
+      <mesh castShadow position={[0.44, 0.82, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.11, 0.11, 0.95, 20]} />
+        <meshStandardMaterial color={leather} roughness={0.55} />
       </mesh>
-      <mesh castShadow position={[-0.42, 0.75, 0]}>
-        <boxGeometry args={[0.12, 0.4, 0.9]} />
-        <meshStandardMaterial color={color} roughness={0.6} />
+      <mesh castShadow position={[-0.44, 0.82, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.11, 0.11, 0.95, 20]} />
+        <meshStandardMaterial color={leather} roughness={0.55} />
       </mesh>
-      {/* legs */}
+      {/* brass legs */}
       {[[0.35, 0.15, 0.35],[ -0.35,0.15, 0.35],[0.35,0.15,-0.35],[-0.35,0.15,-0.35]].map((p, i) => (
         <mesh key={i} position={p as [number,number,number]} castShadow>
           <cylinderGeometry args={[0.05, 0.05, 0.5, 12]} />
-          <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
+          <meshStandardMaterial color="#d4af37" metalness={0.95} roughness={0.15} />
         </mesh>
       ))}
 
@@ -132,10 +149,10 @@ function Chair({
           {/* torso */}
           <mesh castShadow position={[0, -0.55, 0]}>
             <cylinderGeometry args={[0.28, 0.36, 0.7, 20]} />
-            <meshStandardMaterial color="#0a0a0a" roughness={0.7} />
+            <meshStandardMaterial color="#1a1410" roughness={0.6} />
           </mesh>
           <Html position={[0, 0.55, 0]} center distanceFactor={8}>
-            <div className="px-2 py-1 rounded-full bg-black/70 backdrop-blur text-[10px] tracking-wide text-amber-200 border border-amber-500/40 whitespace-nowrap">
+            <div className="px-2 py-1 rounded-full bg-[#1a0f08]/80 backdrop-blur text-[10px] tracking-wide text-amber-100 border border-amber-500/40 whitespace-nowrap">
               {seat.occupant?.name}
             </div>
           </Html>
@@ -144,8 +161,8 @@ function Chair({
 
       {/* Seat number label */}
       {!occupied && (
-        <Html position={[0, 1.3, 0]} center distanceFactor={10}>
-          <div className="px-2 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-200 text-[10px] uppercase tracking-widest">
+        <Html position={[0, 1.5, 0]} center distanceFactor={10}>
+          <div className="px-2 py-1 rounded-md bg-amber-100/10 border border-amber-300/40 text-amber-100 text-[10px] uppercase tracking-widest">
             Seat {seat.index + 1}
           </div>
         </Html>
@@ -155,35 +172,54 @@ function Chair({
 }
 
 function Room() {
-  // dim ambient room walls (circular)
-  const wallRef = useRef<THREE.Mesh>(null);
-  useFrame(({ clock }) => {
-    if (wallRef.current) {
-      const m = wallRef.current.material as THREE.MeshStandardMaterial;
-      m.emissiveIntensity = 0.05 + Math.sin(clock.getElapsedTime() * 0.5) * 0.02;
-    }
-  });
   return (
     <group>
-      <mesh ref={wallRef} position={[0, 3, 0]}>
-        <cylinderGeometry args={[8, 8, 6, 64, 1, true]} />
+      {/* warm ivory walls */}
+      <mesh position={[0, 3, 0]}>
+        <cylinderGeometry args={[9, 9, 6.5, 96, 1, true]} />
         <meshStandardMaterial
-          color="#1a0f0a"
-          emissive="#3a0d1a"
-          emissiveIntensity={0.06}
+          color="#c9a878"
+          emissive="#3a2410"
+          emissiveIntensity={0.12}
           side={THREE.BackSide}
-          roughness={1}
+          roughness={0.85}
         />
       </mesh>
-      {/* Chandelier hint */}
-      <mesh position={[0, 5.2, 0]}>
-        <sphereGeometry args={[0.15, 16, 16]} />
-        <meshStandardMaterial color="#f5b041" emissive="#f5b041" emissiveIntensity={2} />
+      {/* dark wood wainscoting */}
+      <mesh position={[0, 0.9, 0]}>
+        <cylinderGeometry args={[8.98, 8.98, 1.8, 96, 1, true]} />
+        <meshStandardMaterial color="#2a1810" side={THREE.BackSide} roughness={0.7} metalness={0.1} />
       </mesh>
-      <pointLight position={[0, 5, 0]} intensity={2} distance={12} color="#ffb060" />
+      {/* ceiling */}
+      <mesh position={[0, 6.25, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[9, 96]} />
+        <meshStandardMaterial color="#1a1008" side={THREE.BackSide} roughness={0.9} />
+      </mesh>
+      {/* Chandelier */}
+      <mesh position={[0, 5.4, 0]}>
+        <sphereGeometry args={[0.22, 24, 24]} />
+        <meshStandardMaterial color="#ffd88a" emissive="#ffb060" emissiveIntensity={2.5} />
+      </mesh>
+      {[0, 1, 2, 3, 4, 5].map((i) => {
+        const a = (i / 6) * Math.PI * 2;
+        return (
+          <mesh key={i} position={[Math.cos(a) * 0.55, 5.25, Math.sin(a) * 0.55]}>
+            <sphereGeometry args={[0.09, 16, 16]} />
+            <meshStandardMaterial color="#ffd88a" emissive="#ffb060" emissiveIntensity={2} />
+          </mesh>
+        );
+      })}
+      <pointLight position={[0, 5, 0]} intensity={3} distance={14} color="#ffc98a" />
+
+      {/* Fireplace-like warm rim lights around the room */}
+      <pointLight position={[6, 1.6, 4]} intensity={0.9} distance={10} color="#ff8a3a" />
+      <pointLight position={[-6, 1.6, -4]} intensity={0.9} distance={10} color="#ff8a3a" />
+      <pointLight position={[-5, 1.6, 5]} intensity={0.7} distance={9} color="#ffb060" />
+      <pointLight position={[5, 1.6, -5]} intensity={0.7} distance={9} color="#ffb060" />
     </group>
   );
 }
+
 
 function SalonScene({
   seats,
@@ -197,10 +233,11 @@ function SalonScene({
   const [hovered, setHovered] = useState<number | null>(null);
   return (
     <>
-      <color attach="background" args={["#08050a"]} />
-      <fog attach="fog" args={["#08050a", 8, 22]} />
-      <ambientLight intensity={0.15} />
-      <Environment preset="night" />
+      <color attach="background" args={["#1a0e07"]} />
+      <fog attach="fog" args={["#2a1810", 9, 22]} />
+      <ambientLight intensity={0.45} color="#ffd8a8" />
+      <hemisphereLight args={["#ffd8a8", "#3a1f10", 0.4]} />
+      <Environment preset="apartment" />
       <Room />
       <Floor />
       <Rug />
@@ -301,7 +338,7 @@ export default function ExclusiveSalon() {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#08050a] text-amber-100">
+    <div className="fixed inset-0 bg-gradient-to-b from-[#2a1810] via-[#1a0e07] to-[#0f0805] text-amber-100">
       {/* Top bar */}
       <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-between px-4 sm:px-6 py-3 bg-gradient-to-b from-black/80 to-transparent">
         <Link to="/exclusive" className="flex items-center gap-2 text-amber-200/80 hover:text-amber-100 text-sm">
