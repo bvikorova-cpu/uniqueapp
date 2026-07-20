@@ -603,8 +603,9 @@ serve(async (req) => {
                     .eq("id", userId);
                   if (upErr) throw new Error(`profile update: ${upErr.message}`);
 
-                  const creditGrants: Record<string, number> = { verified: 50, plus: 200, pro: 10000 };
+                  const creditGrants: Record<string, number> = { verified: 50, plus: 100, pro: 150 };
                   const creditsToGrant = creditGrants[tier] || 0;
+
                   if (creditsToGrant > 0) {
                     const { data: creditRow } = await supabase
                       .from("ai_credits")
