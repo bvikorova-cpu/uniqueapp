@@ -22995,6 +22995,72 @@ export type Database = {
           },
         ]
       }
+      exclusive_connection_interests: {
+        Row: {
+          created_at: string
+          from_user: string
+          id: string
+          note: string | null
+          to_user: string
+        }
+        Insert: {
+          created_at?: string
+          from_user: string
+          id?: string
+          note?: string | null
+          to_user: string
+        }
+        Update: {
+          created_at?: string
+          from_user?: string
+          id?: string
+          note?: string | null
+          to_user?: string
+        }
+        Relationships: []
+      }
+      exclusive_connection_profiles: {
+        Row: {
+          bio: string | null
+          created_at: string
+          expertise: string[]
+          id: string
+          interests: string[]
+          is_active: boolean
+          pseudonym: string
+          region: string | null
+          seeking: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          expertise?: string[]
+          id?: string
+          interests?: string[]
+          is_active?: boolean
+          pseudonym: string
+          region?: string | null
+          seeking?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          expertise?: string[]
+          id?: string
+          interests?: string[]
+          is_active?: boolean
+          pseudonym?: string
+          region?: string | null
+          seeking?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       exclusive_feed_posts: {
         Row: {
           author_id: string
@@ -67436,6 +67502,10 @@ export type Database = {
       }
       erf: { Args: { x: number }; Returns: number }
       evaluate_xp_bets: { Args: never; Returns: number }
+      exclusive_is_matched: {
+        Args: { _a: string; _b: string }
+        Returns: boolean
+      }
       expire_auctions: { Args: never; Returns: number }
       expire_featured_listings: { Args: never; Returns: undefined }
       expire_old_job_listings: { Args: never; Returns: number }
