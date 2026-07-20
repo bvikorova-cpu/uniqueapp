@@ -3,7 +3,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Crown, Newspaper, MessagesSquare, Handshake, Lock, Sparkles, Loader2, ArrowRight } from "lucide-react";
+import { Crown, Newspaper, MessagesSquare, Handshake, Lock, Sparkles, Loader2, ArrowRight, Gavel } from "lucide-react";
+import CouncilTab from "@/components/exclusive/CouncilTab";
 
 const CARDS = [
   {
