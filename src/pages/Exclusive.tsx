@@ -202,6 +202,9 @@ export default function Exclusive() {
           })}
         </div>
 
+        {/* Why join — benefits */}
+        {!isMember && <WhyJoin />}
+
         {/* Checkout gate for non-members */}
         {!isMember && isMember !== null && (
           <div
