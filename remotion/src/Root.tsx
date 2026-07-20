@@ -17,6 +17,7 @@ import { HealthFilm, HEALTH_DURATION } from "./HealthFilm";
 import { SportsFilm, SPORTS_DURATION } from "./SportsFilm";
 import { EntertainmentFilm, ENTERTAINMENT_DURATION } from "./EntertainmentFilm";
 import { InfluKingFilm, INFLUKING_DURATION } from "./InfluKingFilm";
+import { MarketplacesFilm, MARKETPLACES_DURATION } from "./MarketplacesFilm";
 
 import { VERSIONS } from "./versions";
 
@@ -162,6 +163,17 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="marketplaces-film"
+      component={MarketplacesFilm}
+      durationInFrames={MARKETPLACES_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+
+
+
 
 
 
