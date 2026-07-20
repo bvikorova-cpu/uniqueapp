@@ -162,6 +162,7 @@ import {
   Subscription,
   Verified,
   Exclusive,
+  ExclusiveSalon,
   
   PremiumStore,
   Premium,
