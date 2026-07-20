@@ -213,38 +213,68 @@ export function ProfileVerificationCard() {
                   </li>
                 ))}
               </ul>
-              <Button
-                size="sm"
-                variant={tier.popular || isUpgrade ? "default" : "outline"}
-                className={`w-full font-semibold ${
-                  tier.popular || isUpgrade
-                    ? "bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0"
-                    : ""
-                }`}
-                disabled={disabled}
-                onClick={() => startCheckout(tier.key)}
-              >
-                {processing === tier.key ? (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 animate-spin" />
-                    Redirecting…
-                  </span>
-                ) : isCurrent ? (
-                  "Current"
-                ) : isIncluded ? (
-                  "Included"
-                ) : isUpgrade ? (
-                  <span className="inline-flex items-center gap-1">
-                    Upgrade <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
-                ) : (
-                  `Get ${tier.name}`
-                )}
-              </Button>
-            </div>
-          );
-        })}
-      </div>
+              {(() => {
+                const isDowngrade = rank < currentRank && rank > 0 && tier.key !== "verified";
+                const canceling = status === "canceling";
+                // Special case: when on this exact tier and it's a recurring plan, show cancel/resume
+                if (isCurrent && (tier.key === "plus" || tier.key === "pro")) {
+                  return (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full font-semibold"
+                      disabled={!!processing}
+                      onClick={() => void manageSubscription(canceling ? "resume" : "cancel")}
+                    >
+                      {processing === (tier.key as TierKey) ? (
+                        <span className="inline-flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                          Working…
+                        </span>
+                      ) : canceling ? (
+                        <span className="inline-flex items-center gap-1"><RotateCcw className="w-3.5 h-3.5" /> Resume</span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1"><X className="w-3.5 h-3.5" /> Cancel at period end</span>
+                      )}
+                    </Button>
+                  );
+                }
+                return (
+                  <Button
+                    size="sm"
+                    variant={tier.popular || isUpgrade ? "default" : "outline"}
+                    className={`w-full font-semibold ${
+                      tier.popular || isUpgrade
+                        ? "bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white border-0"
+                        : ""
+                    }`}
+                    disabled={(isCurrent || isIncluded || !!processing) && !isDowngrade}
+                    onClick={() =>
+                      isDowngrade
+                        ? void manageSubscription("downgrade", tier.key as "plus")
+                        : startCheckout(tier.key)
+                    }
+                  >
+                    {processing === tier.key ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                        Working…
+                      </span>
+                    ) : isCurrent ? (
+                      "Current"
+                    ) : isDowngrade ? (
+                      <span className="inline-flex items-center gap-1"><ArrowDown className="w-3.5 h-3.5" /> Downgrade</span>
+                    ) : isIncluded ? (
+                      "Included"
+                    ) : isUpgrade ? (
+                      <span className="inline-flex items-center gap-1">Upgrade <ArrowRight className="w-3.5 h-3.5" /></span>
+                    ) : (
+                      `Get ${tier.name}`
+                    )}
+                  </Button>
+                );
+              })()}
+
 
       <button
         type="button"
