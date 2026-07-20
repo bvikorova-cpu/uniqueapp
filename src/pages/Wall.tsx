@@ -730,7 +730,25 @@ const Feed = () => {
 
               {activeView === "feed" && (
                 <>
-                  <SmartFeedTabs activeTab={feedTab} onTabChange={setFeedTab} />
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex-1 min-w-0">
+                      <SmartFeedTabs activeTab={feedTab} onTabChange={setFeedTab} />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setVerifiedOnly((v) => !v)}
+                      aria-pressed={verifiedOnly}
+                      title={verifiedOnly ? "Showing only verified users" : "Show only verified users"}
+                      className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap border transition-all ${
+                        verifiedOnly
+                          ? "bg-gradient-to-r from-amber-400 to-yellow-600 text-white border-transparent shadow-md shadow-amber-500/30"
+                          : "bg-accent/30 text-muted-foreground hover:text-foreground border-white/5 hover:bg-accent/50"
+                      }`}
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Verified only
+                    </button>
+                  </div>
 
                   <div className="space-y-3 sm:space-y-4">
                     {/* Realtime "new posts" banner */}
