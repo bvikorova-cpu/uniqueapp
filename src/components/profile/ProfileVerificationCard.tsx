@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, Crown, Star, Sparkles, Check, ArrowRight, RefreshCw } from "lucide-react";
+import { Shield, Crown, Star, Sparkles, Check, ArrowRight, ArrowDown, RefreshCw, X, RotateCcw } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
