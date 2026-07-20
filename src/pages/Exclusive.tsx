@@ -250,6 +250,10 @@ export default function Exclusive() {
             </button>
           </div>
         )}
+        </>
+        )}
+
+
 
         <div className="mt-12 text-center text-[10px] uppercase tracking-[0.5em] text-[#d4af37]/60">
           Unique · Exclusive · MMXXVI
