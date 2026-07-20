@@ -164,7 +164,7 @@ export default function Exclusive() {
 
           <div className="mt-8 grid gap-4 border-t border-[#d4af37]/15 pt-6 md:grid-cols-3">
             {[
-              ["Membership", "Lifetime"],
+              ["Billing", "Monthly"],
               ["Seats", "Strictly limited"],
               ["Vetting", "Manual review"],
             ].map(([k, v]) => (
@@ -199,10 +199,10 @@ export default function Exclusive() {
         <div className="mt-14 rounded-xl border border-[#d4af37]/15 bg-black/40 p-6">
           <div className="mb-3 text-[10px] uppercase tracking-[0.5em] text-[#d4af37]">How it works</div>
           <ol className="space-y-3 text-sm text-[#c9bfa4]/85">
-            <li><span className="text-[#f7e7b0]">1. Request initiation.</span> Pay the €100,000 initiation via secure Stripe checkout.</li>
+            <li><span className="text-[#f7e7b0]">1. Subscribe.</span> Start your €100,000 / month membership via secure Stripe checkout.</li>
             <li><span className="text-[#f7e7b0]">2. Instant activation.</span> On payment confirmation your account is upgraded to Exclusive — Onyx badge, private routes, and lounge access unlock immediately.</li>
             <li><span className="text-[#f7e7b0]">3. Concierge intake.</span> Your dedicated concierge reaches out within 24 hours to tailor your access, invitations, and privacy settings.</li>
-            <li><span className="text-[#f7e7b0]">4. Lifetime.</span> Membership never expires. It is non-transferable and can be revoked only for violations of the members' code.</li>
+            <li><span className="text-[#f7e7b0]">4. Cancel anytime.</span> Membership renews monthly and can be canceled from your account. Access continues until the end of the current billing period.</li>
           </ol>
         </div>
 
