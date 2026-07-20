@@ -747,7 +747,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         {/* Author Info */}
         <div className="flex items-center gap-3">
           <Avatar 
-            className="h-10 w-10 ring-2 ring-primary/10 cursor-pointer hover:ring-primary/30 transition-all"
+            className={`h-10 w-10 cursor-pointer transition-all ${verifiedRing || "ring-2 ring-primary/10 hover:ring-primary/30"}`}
             onClick={(e) => handleUserClick(e, post.user_id)}
           >
             <AvatarImage src={post.profiles?.avatar_url || undefined} />
@@ -993,15 +993,18 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             {/* Preview of original post */}
             <div className="border rounded-lg p-4 bg-muted/30">
               <div className="flex items-center gap-2 mb-2">
-                <Avatar className="h-8 w-8">
+                <Avatar className={`h-8 w-8 ${verifiedRing}`}>
                   <AvatarImage src={post.profiles?.avatar_url || undefined} />
                   <AvatarFallback className="text-xs">
                     {post.profiles?.full_name?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-sm font-semibold">
-                    {post.profiles?.full_name || "User"}
+                  <p className="text-sm font-semibold flex items-center gap-1 flex-wrap">
+                    <span>{post.profiles?.full_name || "User"}</span>
+                    {post.profiles?.verification_tier && (
+                      <VerifiedBadge tier={post.profiles.verification_tier} size="sm" showLabel={false} />
+                    )}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {formatDistanceToNow(new Date(post.created_at), {
