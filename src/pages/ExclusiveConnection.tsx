@@ -133,7 +133,7 @@ export default function ExclusiveConnection() {
         setCheckingMember(false);
         return;
       }
-      const { data } = await (supabase as any).rpc("is_exclusive_member", { _user_id: user.id });
+      const { data } = await (supabase as any).rpc("is_exclusive_member", { _uid: user.id });
       setIsMember(!!data);
       setCheckingMember(false);
     })();
