@@ -27,7 +27,7 @@ import { ReportDialog } from "@/components/wall/ReportDialog";
 import { PinButton } from "@/components/wall/PinButton";
 import { FollowButton } from "@/components/wall/FollowButton";
 import { VerifiedFounderBadge, isVerifiedFounder } from "@/components/wall/VerifiedFounderBadge";
-import { VerifiedBadge } from "@/components/verified/VerifiedBadge";
+import { VerifiedBadge, getVerifiedRingClass } from "@/components/verified/VerifiedBadge";
 import { ProductCard } from "@/components/wall/ProductCard";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
 import { CommentItem } from "./CommentItem";
@@ -648,14 +648,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
     | "pro"
     | null
     | undefined;
-  const verifiedRing =
-    verifiedTier === "pro"
-      ? "ring-2 ring-purple-400/60 shadow-lg shadow-purple-500/20"
-      : verifiedTier === "plus"
-      ? "ring-2 ring-pink-400/60 shadow-lg shadow-pink-500/20"
-      : verifiedTier === "verified"
-      ? "ring-2 ring-amber-400/60 shadow-lg shadow-amber-500/20"
-      : "";
+  const verifiedRing = getVerifiedRingClass(verifiedTier);
 
   return (
     <div
