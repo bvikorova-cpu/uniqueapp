@@ -104,7 +104,38 @@ export function ProfileVerificationCard() {
   const expiresAt = live?.expiresAt ?? null;
   const status = live?.status ?? (isSubscribed ? "active" : "none");
 
+  const manageSubscription = async (
+    action: "downgrade" | "cancel" | "resume" | "cancel_now",
+    targetTier?: "plus" | "pro",
+  ) => {
+    if (!user) return;
+    const key: TierKey = targetTier ?? (effectiveTier as TierKey);
+    setProcessing(key);
+    try {
+      const { data, error } = await supabase.functions.invoke("manage-verification", {
+        body: { action, target_tier: targetTier },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success(
+        action === "downgrade"
+          ? `Downgraded to ${targetTier?.toUpperCase()} with pro-rata credit.`
+          : action === "cancel"
+          ? "Subscription will cancel at period end."
+          : action === "resume"
+          ? "Subscription resumed."
+          : "Subscription cancelled.",
+      );
+      await fetchLive();
+    } catch (e: any) {
+      toast.error(e?.message || "Action failed.");
+    } finally {
+      setProcessing(null);
+    }
+  };
+
   const startCheckout = async (tier: TierKey) => {
+
     if (!user) {
       navigate("/auth", { state: { returnTo: `/verified?tier=${tier}` } });
       return;
