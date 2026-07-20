@@ -582,11 +582,15 @@ const Feed = () => {
     }
 
     // Verified priority: for "for-you", "latest" and "following" bring verified
-    // items to the top while preserving relative chronological order.
+    // items to the top WITHIN each page. Items keep their page bucket so
+    // infinite scroll never reshuffles already-visible posts when new pages load.
     if (feedTab === "for-you" || feedTab === "latest" || feedTab === "following") {
+      const pageOf = (it: FeedItem) => (it as any)._page ?? 0;
       filtered = filtered
         .map((item, i) => ({ item, i }))
         .sort((a, b) => {
+          const pd = pageOf(a.item) - pageOf(b.item);
+          if (pd !== 0) return pd;
           const tr = tierRank(tierOf(b.item)) - tierRank(tierOf(a.item));
           if (tr !== 0) return tr;
           const td = new Date(createdAtOf(b.item)).getTime() - new Date(createdAtOf(a.item)).getTime();
