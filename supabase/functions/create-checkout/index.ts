@@ -344,9 +344,6 @@ async function handler(req: Request): Promise<Response> {
     const body = await req.json();
     const stripe = createStripeClient();
     const origin = normalizeOrigin(req.headers.get("origin"));
-    const body = await req.json();
-    const stripe = createStripeClient();
-    const origin = normalizeOrigin(req.headers.get("origin"));
 
     // Donations support guest checkout — auth is optional
     const isDonation = body.product === "campaign_donation" || body.product === "campaign-donation";
