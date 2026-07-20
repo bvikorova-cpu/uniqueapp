@@ -18,6 +18,7 @@ import { SportsFilm, SPORTS_DURATION } from "./SportsFilm";
 import { EntertainmentFilm, ENTERTAINMENT_DURATION } from "./EntertainmentFilm";
 import { InfluKingFilm, INFLUKING_DURATION } from "./InfluKingFilm";
 import { MarketplacesFilm, MARKETPLACES_DURATION } from "./MarketplacesFilm";
+import { LearningGrowthFilm, LEARNINGGROWTH_DURATION } from "./LearningGrowthFilm";
 
 import { VERSIONS } from "./versions";
 
@@ -171,6 +172,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="learninggrowth-film"
+      component={LearningGrowthFilm}
+      durationInFrames={LEARNINGGROWTH_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+
 
 
 
