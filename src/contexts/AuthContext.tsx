@@ -26,27 +26,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [verificationTier, setVerificationTier] = useState<VerificationTier>('none');
+  const [expiryTimer, setExpiryTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
+
+  // Apply a tier + expiry, and schedule an automatic client-side downgrade
+  // at the exact expiry moment so the badge disappears without a refresh.
+  const applyTier = (tier: VerificationTier, expiresAt: string | null) => {
+    setExpiryTimer((prev) => {
+      if (prev) clearTimeout(prev);
+      return null;
+    });
+
+    if (tier === 'none') {
+      setVerificationTier('none');
+      return;
+    }
+
+    if (expiresAt) {
+      const ms = new Date(expiresAt).getTime() - Date.now();
+      if (ms <= 0) {
+        setVerificationTier('none');
+        return;
+      }
+      // setTimeout max ~24.8 days; clamp to that.
+      const delay = Math.min(ms, 2_147_000_000);
+      const timer = setTimeout(() => setVerificationTier('none'), delay);
+      setExpiryTimer(timer);
+    }
+    setVerificationTier(tier);
+  };
 
   const fetchVerification = async (currentUserId?: string) => {
     const uid = currentUserId ?? user?.id;
     if (!uid) {
-      setVerificationTier('none');
+      applyTier('none', null);
       return;
     }
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('verification_tier')
+        .select('verification_tier, verification_expires_at')
         .eq('id', uid)
         .single();
       if (!error && data?.verification_tier) {
-        setVerificationTier(data.verification_tier as VerificationTier);
+        applyTier(
+          data.verification_tier as VerificationTier,
+          (data as any).verification_expires_at ?? null,
+        );
       } else {
-        setVerificationTier('none');
+        applyTier('none', null);
       }
     } catch {
-      setVerificationTier('none');
+      applyTier('none', null);
     }
   };
 
@@ -72,17 +103,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Clear any pending expiry timer on unmount.
+  useEffect(() => {
+    return () => {
+      if (expiryTimer) clearTimeout(expiryTimer);
+    };
+  }, [expiryTimer]);
+
   useEffect(() => {
     if (!user?.id) return;
     const channel = supabase
       .channel('profile-verification')
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` }, (payload) => {
-        const newTier = (payload.new as any)?.verification_tier;
-        if (newTier) setVerificationTier(newTier as VerificationTier);
+        const newTier = (payload.new as any)?.verification_tier as VerificationTier | undefined;
+        const newExpiry = (payload.new as any)?.verification_expires_at as string | null | undefined;
+        if (newTier) applyTier(newTier, newExpiry ?? null);
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [user?.id]);
+
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
