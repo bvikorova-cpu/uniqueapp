@@ -15,10 +15,15 @@ const log = (step: string, details?: unknown) => {
 
 type Tier = "verified" | "plus" | "pro";
 const TIER_BY_PRICE: Record<string, Tier> = {
+  "price_1TvEcCGaXSfGtYFtpISbqkdD": "verified",
+  "price_1TvEcEGaXSfGtYFtEHzujgoE": "plus",
+  "price_1TvEcFGaXSfGtYFtc8kKfh5M": "pro",
+  // Legacy price IDs — still honored for existing customers.
   "price_1TvDqrGaXSfGtYFt2g1n3Nuv": "verified",
   "price_1TvDqsGaXSfGtYFtSyfF7vjE": "plus",
   "price_1TvDqsGaXSfGtYFt6boV1wed": "pro",
 };
+
 const TIER_RANK: Record<Tier | "none", number> = { none: 0, verified: 1, plus: 2, pro: 3 };
 
 serve(async (req) => {
