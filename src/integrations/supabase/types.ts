@@ -22995,6 +22995,45 @@ export type Database = {
           },
         ]
       }
+      exclusive_members: {
+        Row: {
+          amount_paid_cents: number
+          created_at: string
+          currency: string
+          id: string
+          joined_at: string
+          metadata: Json
+          status: string
+          stripe_payment_intent: string | null
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_paid_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          joined_at?: string
+          metadata?: Json
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_paid_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          joined_at?: string
+          metadata?: Json
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       explorer_achievements: {
         Row: {
           achievement_code: string

@@ -161,6 +161,7 @@ import {
   MegatalentBattleResults,
   Subscription,
   Verified,
+  Exclusive,
   
   PremiumStore,
   Premium,
@@ -867,6 +868,7 @@ const App = () => {
                         <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
                         <Route path="/subscription" element={<Subscription />} />
                         <Route path="/verified" element={<Verified />} />
+                        <Route path="/exclusive" element={<Exclusive />} />
                         <Route path="/pricing" element={<Navigate to="/subscription" replace />} />
                         <Route path="/plans" element={<Navigate to="/subscription" replace />} />
                         <Route path="/upgrade" element={<Navigate to="/subscription" replace />} />
