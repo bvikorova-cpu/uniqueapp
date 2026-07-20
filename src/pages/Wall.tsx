@@ -581,24 +581,10 @@ const Feed = () => {
       });
     }
 
-    // Verified priority: for "for-you", "latest" and "following" bring verified
-    // items to the top WITHIN each page. Items keep their page bucket so
-    // infinite scroll never reshuffles already-visible posts when new pages load.
-    if (feedTab === "for-you" || feedTab === "latest" || feedTab === "following") {
-      const pageOf = (it: FeedItem) => (it as any)._page ?? 0;
-      filtered = filtered
-        .map((item, i) => ({ item, i }))
-        .sort((a, b) => {
-          const pd = pageOf(a.item) - pageOf(b.item);
-          if (pd !== 0) return pd;
-          const tr = tierRank(tierOf(b.item)) - tierRank(tierOf(a.item));
-          if (tr !== 0) return tr;
-          const td = new Date(createdAtOf(b.item)).getTime() - new Date(createdAtOf(a.item)).getTime();
-          if (td !== 0) return td;
-          return a.i - b.i;
-        })
-        .map(({ item }) => item);
-    }
+    // Verified priority is now enforced server-side inside `get_wall_feed`
+    // (ORDER BY tier_rank DESC, created_at DESC within each page). The client
+    // just renders the order returned by the RPC — no re-sort needed.
+
 
     return filtered;
   }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly]);
