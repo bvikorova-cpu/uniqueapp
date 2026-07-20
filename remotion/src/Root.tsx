@@ -16,6 +16,7 @@ import { SocialFilm, SOCIAL_DURATION } from "./SocialFilm";
 import { HealthFilm, HEALTH_DURATION } from "./HealthFilm";
 import { SportsFilm, SPORTS_DURATION } from "./SportsFilm";
 import { EntertainmentFilm, ENTERTAINMENT_DURATION } from "./EntertainmentFilm";
+import { InfluKingFilm, INFLUKING_DURATION } from "./InfluKingFilm";
 
 import { VERSIONS } from "./versions";
 
@@ -153,6 +154,15 @@ export const RemotionRoot = () => (
       width={1080}
       height={1920}
     />
+    <Composition
+      id="influking-film"
+      component={InfluKingFilm}
+      durationInFrames={INFLUKING_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+
 
 
 
