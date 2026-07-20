@@ -104,6 +104,22 @@ export function ProfileVerificationCard() {
   const expiresAt = live?.expiresAt ?? null;
   const status = live?.status ?? (isSubscribed ? "active" : "none");
 
+  // Remember the last active tier so we can offer a one-click Renew after auto-expiry.
+  const LAST_KEY = "unique.lastVerifiedTier";
+  useEffect(() => {
+    if (effectiveTier !== "none") {
+      try { localStorage.setItem(LAST_KEY, effectiveTier); } catch { /* ignore */ }
+    }
+  }, [effectiveTier]);
+  const lastTier = ((): TierKey | null => {
+    try {
+      const v = localStorage.getItem(LAST_KEY);
+      return v === "verified" || v === "plus" || v === "pro" ? v : null;
+    } catch { return null; }
+  })();
+  const showRenew = user && effectiveTier === "none" && !!lastTier;
+
+
   const manageSubscription = async (
     action: "downgrade" | "cancel" | "resume" | "cancel_now",
     targetTier?: "plus" | "pro",
