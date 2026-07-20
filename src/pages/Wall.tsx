@@ -137,6 +137,9 @@ const Feed = () => {
   const fetchInFlight = useRef(false);
   const lastCursor = useRef<string | null>(null);
   const feedItemsCountRef = useRef(feedItems.length);
+  // Stable page counter — items get tagged with their page so Verified priority
+  // reorders WITHIN a page but never moves items across pages during infinite scroll.
+  const pageIndexRef = useRef(0);
 
   useEffect(() => {
     feedItemsCountRef.current = feedItems.length;
@@ -152,9 +155,11 @@ const Feed = () => {
         if (feedItemsCountRef.current === 0) setLoading(true);
         setFeedError(null);
         lastCursor.current = null;
+        pageIndexRef.current = 0;
         setHasMore(true);
       }
 
+      const currentPage = loadMore ? pageIndexRef.current + 1 : 0;
       const cursor = loadMore ? lastCursor.current : null;
 
       // Single-RPC fetch: posts + reposts + profiles + media + original_posts in 1 round-trip.
@@ -211,6 +216,13 @@ const Feed = () => {
           new Date(b.data.created_at).getTime() - new Date(a.data.created_at).getTime()
       );
 
+      // Tag each item with its page index — used by the sort to preserve
+      // page order across infinite scroll so Verified priority doesn't shuffle
+      // items above the fold when a new page arrives.
+      newItems.forEach((it) => {
+        (it as any)._page = currentPage;
+      });
+
       if (loadMore) {
         setPosts((prev) => {
           const seen = new Set(prev.map((p) => p.id));
@@ -239,6 +251,7 @@ const Feed = () => {
 
       if (newItems.length > 0) {
         lastCursor.current = newItems[newItems.length - 1].data.created_at;
+        pageIndexRef.current = currentPage;
       }
 
       // (removed: localStorage cache — was causing stale/slow first paint)
@@ -569,11 +582,15 @@ const Feed = () => {
     }
 
     // Verified priority: for "for-you", "latest" and "following" bring verified
-    // items to the top while preserving relative chronological order.
+    // items to the top WITHIN each page. Items keep their page bucket so
+    // infinite scroll never reshuffles already-visible posts when new pages load.
     if (feedTab === "for-you" || feedTab === "latest" || feedTab === "following") {
+      const pageOf = (it: FeedItem) => (it as any)._page ?? 0;
       filtered = filtered
         .map((item, i) => ({ item, i }))
         .sort((a, b) => {
+          const pd = pageOf(a.item) - pageOf(b.item);
+          if (pd !== 0) return pd;
           const tr = tierRank(tierOf(b.item)) - tierRank(tierOf(a.item));
           if (tr !== 0) return tr;
           const td = new Date(createdAtOf(b.item)).getTime() - new Date(createdAtOf(a.item)).getTime();
