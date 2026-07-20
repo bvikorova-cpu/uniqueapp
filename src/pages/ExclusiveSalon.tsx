@@ -338,7 +338,7 @@ export default function ExclusiveSalon() {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#08050a] text-amber-100">
+    <div className="fixed inset-0 bg-gradient-to-b from-[#2a1810] via-[#1a0e07] to-[#0f0805] text-amber-100">
       {/* Top bar */}
       <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-between px-4 sm:px-6 py-3 bg-gradient-to-b from-black/80 to-transparent">
         <Link to="/exclusive" className="flex items-center gap-2 text-amber-200/80 hover:text-amber-100 text-sm">
