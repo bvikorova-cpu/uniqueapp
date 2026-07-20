@@ -153,6 +153,26 @@ export default function Exclusive() {
           )}
         </div>
 
+        {/* Tabs */}
+        <div className="mt-8 inline-flex rounded-full border border-[#d4af37]/25 bg-black/30 p-1 text-xs uppercase tracking-[0.25em]">
+          <button
+            onClick={() => setTab("rooms")}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 ${tab === "rooms" ? "bg-[#d4af37]/20 text-[#f7e7b0]" : "text-[#c9bfa4]/70 hover:text-[#f7e7b0]"}`}
+          >
+            <Crown className="h-3.5 w-3.5" /> Rooms
+          </button>
+          <button
+            onClick={() => setTab("council")}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 ${tab === "council" ? "bg-[#d4af37]/20 text-[#f7e7b0]" : "text-[#c9bfa4]/70 hover:text-[#f7e7b0]"}`}
+          >
+            <Gavel className="h-3.5 w-3.5" /> Council
+          </button>
+        </div>
+
+        {tab === "council" ? (
+          <CouncilTab isMember={!!isMember} />
+        ) : (
+        <>
         {/* 3 cards */}
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {CARDS.map(({ key, icon: Icon, title, tagline, desc, href }) => {
