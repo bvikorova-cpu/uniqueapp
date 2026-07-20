@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors, Diamond } from "lucide-react";
 import { useTheme } from "next-themes";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import MessagesBell from "@/components/messenger/MessagesBell";
@@ -73,6 +73,7 @@ const Navbar = () => {
     { path: "/services-hub", label: "Services", icon: Scissors },
     { path: "/rewards", label: "Rewards", icon: Trophy },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
+    { path: "/exclusive", label: "Exclusive", icon: Diamond, premium: true, badge: "€100k" },
   ];
 
   const challengeServices = [
@@ -339,7 +340,7 @@ const Navbar = () => {
                     {item.label}
                     {item.premium && (
                       <Badge variant="secondary" className="ml-1 bg-gold text-gold-foreground">
-                        Premium
+                        {(item as any).badge || "Premium"}
                       </Badge>
                     )}
                   </Button>
@@ -656,7 +657,7 @@ const Navbar = () => {
                     {item.label}
                     {isPremium && (
                       <Badge variant="secondary" className="ml-auto bg-gold text-gold-foreground text-[10px]">
-                        Premium
+                        {(item as any).badge || "Premium"}
                       </Badge>
                     )}
                   </Button>
