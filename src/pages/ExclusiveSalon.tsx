@@ -220,36 +220,6 @@ function Room() {
   );
 }
 
-function Room() {
-  // dim ambient room walls (circular)
-  const wallRef = useRef<THREE.Mesh>(null);
-  useFrame(({ clock }) => {
-    if (wallRef.current) {
-      const m = wallRef.current.material as THREE.MeshStandardMaterial;
-      m.emissiveIntensity = 0.05 + Math.sin(clock.getElapsedTime() * 0.5) * 0.02;
-    }
-  });
-  return (
-    <group>
-      <mesh ref={wallRef} position={[0, 3, 0]}>
-        <cylinderGeometry args={[8, 8, 6, 64, 1, true]} />
-        <meshStandardMaterial
-          color="#1a0f0a"
-          emissive="#3a0d1a"
-          emissiveIntensity={0.06}
-          side={THREE.BackSide}
-          roughness={1}
-        />
-      </mesh>
-      {/* Chandelier hint */}
-      <mesh position={[0, 5.2, 0]}>
-        <sphereGeometry args={[0.15, 16, 16]} />
-        <meshStandardMaterial color="#f5b041" emissive="#f5b041" emissiveIntensity={2} />
-      </mesh>
-      <pointLight position={[0, 5, 0]} intensity={2} distance={12} color="#ffb060" />
-    </group>
-  );
-}
 
 function SalonScene({
   seats,
