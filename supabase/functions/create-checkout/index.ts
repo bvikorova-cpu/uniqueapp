@@ -278,6 +278,7 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   quantum_entanglement: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
   challenge_pro: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
   challenge_top: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
+  exclusive: { success: "/exclusive?success=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/exclusive?canceled=true" },
 };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
@@ -2744,6 +2745,7 @@ async function handler(req: Request): Promise<Response> {
         emotion_market:          { amount: 499,  mode: "payment",      name: "Emotion Market" },
         employer_subscription:   { amount: 4999, mode: "subscription", name: "Employer Subscription" },
         escape_room:             { amount: 999,  mode: "payment",      name: "Escape Room Access" },
+        exclusive:                { amount: 10000000, mode: "subscription", name: "Unique Exclusive — €100,000 / month" },
         f1:                      { amount: 1999, mode: "subscription", name: "F1 Premium" },
         fashion_marketplace:     { amount: 999,  mode: "payment",      name: "Fashion Marketplace" },
         future_face:             { amount: 999,  mode: "subscription", name: "Future Face Premium" },

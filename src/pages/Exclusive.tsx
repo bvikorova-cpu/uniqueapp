@@ -58,7 +58,13 @@ export default function Exclusive() {
     const tab = window.open("about:blank", "_blank");
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: "exclusive" },
+        body: {
+          product: "exclusive",
+          productName: "Unique Exclusive — €100,000 / month",
+          amount: 10000000,
+          mode: "subscription",
+          interval: "month",
+        },
       });
       console.log("[exclusive checkout]", { data, error });
       const url = (data as any)?.url;
