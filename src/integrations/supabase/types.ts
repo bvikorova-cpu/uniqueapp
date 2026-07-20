@@ -23084,6 +23084,7 @@ export type Database = {
           status: string
           title: string
           updated_at: string
+          voting_closes_at: string
         }
         Insert: {
           author_id: string
@@ -23096,6 +23097,7 @@ export type Database = {
           status?: string
           title: string
           updated_at?: string
+          voting_closes_at?: string
         }
         Update: {
           author_id?: string
@@ -23108,6 +23110,7 @@ export type Database = {
           status?: string
           title?: string
           updated_at?: string
+          voting_closes_at?: string
         }
         Relationships: []
       }
