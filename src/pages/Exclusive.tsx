@@ -49,6 +49,7 @@ export default function Exclusive() {
   }, [success, canceled, setParams]);
 
   const priceLabel = useMemo(() => "€100,000", []);
+  const priceSuffix = "/ month";
 
   const startCheckout = async () => {
     if (!user) { navigate("/auth?redirect=/exclusive"); return; }
@@ -129,9 +130,12 @@ export default function Exclusive() {
         >
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
-              <div className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37]">Initiation</div>
-              <div className="mt-2 font-serif text-6xl text-[#f7e7b0] md:text-7xl">{priceLabel}</div>
-              <div className="mt-1 text-sm text-[#c9bfa4]/70">One-time · Lifetime membership · Non-transferable</div>
+              <div className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37]">Membership</div>
+              <div className="mt-2 flex items-baseline gap-2 font-serif text-6xl text-[#f7e7b0] md:text-7xl">
+                {priceLabel}
+                <span className="text-lg font-normal tracking-widest text-[#c9bfa4]/70 md:text-xl">{priceSuffix}</span>
+              </div>
+              <div className="mt-1 text-sm text-[#c9bfa4]/70">Monthly subscription · Cancel anytime · Non-transferable</div>
             </div>
 
             {isMember === null ? (
