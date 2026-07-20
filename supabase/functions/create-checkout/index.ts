@@ -370,6 +370,30 @@ async function handler(req: Request): Promise<Response> {
     }
     const customerId = await getStripeCustomer(stripe, email);
 
+    // ─── UNIQUE VERIFICATION / TIER CHECKOUT ROUTER ───
+    // Body: { product: "verification", tier: "verified" | "plus" | "pro" }
+    const VERIFICATION_PRICE_IDS: Record<string, string> = {
+      verified: "price_1TvDqrGaXSfGtYFt2g1n3Nuv", // Unique Verified — €9.99 one-time
+      plus:     "price_1TvDqsGaXSfGtYFtSyfF7vjE", // Unique Plus — €4.99/mo
+      pro:      "price_1TvDqsGaXSfGtYFt6boV1wed", // Unique Pro — €14.99/mo
+    };
+    if (body.product === "verification" && VERIFICATION_PRICE_IDS[body.tier]) {
+      const tier = String(body.tier);
+      const priceId = VERIFICATION_PRICE_IDS[tier];
+      const price = await stripe.prices.retrieve(priceId);
+      const mode: "subscription" | "payment" = price.recurring ? "subscription" : "payment";
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: priceId, quantity: 1 }],
+        mode,
+        success_url: `${origin}/verified?success=true&tier=${tier}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/verified?canceled=true&tier=${tier}`,
+        metadata: { user_id: userId ?? "", module: "verification", tier, price_id: priceId },
+      });
+      return successResponse({ url: session.url, mode });
+    }
+
     // ─── PET TRANSLATOR CHECKOUT ROUTER ───
     // Handles both subscription plans and one-off purchases via priceId.
     // Body: { product: "pet", priceId: "price_..." }

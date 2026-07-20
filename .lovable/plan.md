@@ -1,76 +1,76 @@
-## Fáza 5b — plán (4 body + oprava platenia)
+## Verified + Tiered Subscription ("Unique Verified") na Unique
 
-### 🔧 A) Oprava platenia (hneď, malý fix)
+### Cieľ
+Na Unique pridať overovací program s 3 tierami, zlatým trblietavým odznakom (nie modrá fajka) a reálnymi benefitmi — podobne ako Meta Verified, ale plne integrované do existujúcej predplatiteľskej infraštruktúry Unique.
 
-**Root cause (2 problémy):**
-1. `useLearningContent.purchaseContent` posiela `{ contentId, contentType, title, price }`, ale `create-checkout` číta `body.amount` (v centoch) — takže Stripe by účtoval default **€19.99** namiesto skutočnej ceny (napr. €199).
-2. Toast "Failed to send request" = FunctionsFetchError. Najpravdepodobnejšie: session expirovala počas kliknutia (JWT rejected na gateway), alebo network fail. Client wrapper aj proxy fungujú (overené `curl`om — endpoint živý).
+### Tierová štruktúra
 
-**Fix:**
-- `useLearningContent.ts`: pridať `amount: Math.round(price * 100)`, `productName: title`, a pred invoke znova volať `supabase.auth.getSession()` s auto-refresh (`getUser()`).
-- Ak session neplatný → jasný toast "Prihlás sa znova" + presmerovanie na `/auth`.
-- Zachytávať `FunctionsFetchError` zvlášť a ukázať "Skontroluj internet / prihlásenie".
+| Tier | Názov | Cena (EUR) | Typ | Zlatý odznak | Hlavné benefity |
+|------|-------|------------|-----|--------------|-----------------|
+| 1 | **Unique Verified** | 9,99 € jednorázovo | One-time | `verified` | Zlatý odznak na profile, priorita vo Wall feede, +50 AI kreditov, VIP support, overený profil proti falošným účtom |
+| 2 | **Unique Plus** | 4,99 € / mesiac | Subscription | `plus` | Všetko z Verified + "Plus" odznak, +200 kreditov/mes., vynikajúca viditeľnosť, exkluzívne funkcie (napr. skryté náhľady, priority DM) |
+| 3 | **Unique Pro** | 14,99 € / mesiac | Subscription | `pro` | Všetko z Plus + "Pro" odznak, neobmedzené AI kredity, top priorita vo feede, custom branding, osobný account manager |
 
----
+### Čo sa postaví
 
-### 📚 B) 4 hlavné body (Phase 5b) pre 40 kurzov
+#### 1. Databáza (migrácie)
+- Rozšíriť `profiles` o `verification_tier` (`none`, `verified`, `plus`, `pro`) a `verification_expires_at` (pre subscription tiers).
+- Ponechať existujúce `is_verified` ako `verification_tier != 'none'`.
+- Rozšíriť enum `subscription_tier` o `verified` (one-time), `plus`, `pro`.
+- Vytvoriť tabuľku `verification_benefits_log` pre audit uplatňovania benefitov (kredity, feed priority, atď.).
+- GRANT + RLS policies na nové stĺpce/tabuľky.
 
-#### 1. **Video knižnica per lekcia** (najväčšia hodnota)
-- Nová akcia `videos` v `module-course-exam` edge function: pre danú lekciu AI (Gemini) vygeneruje 2× kurátorské YouTube search-query stringy (napr. `"cinematic lighting portrait tutorial site:youtube.com"`).
-- Cachne do novej tabuľky `module_course_lesson_videos` (lesson_key → [{title, query, embed_url}]).
-- Alternatíva bez YouTube API: použijeme YouTube search-embed URL `https://www.youtube.com/embed?listType=search&list={query}` (bez API kľúča, funguje priamo v iframe).
-- `CourseCurriculumDialog` dostane pod každou lekciou 1–2 rozbaľovacie video panely.
+#### 2. Stripe produkty a ceny
+- Vytvoriť 3 Stripe products s price IDs:
+  - `prod_unique_verified` (€9.99 one-time)
+  - `prod_unique_plus` (€4.99 / mesiac)
+  - `prod_unique_pro` (€14.99 / mesiac)
+- Uložiť price IDs do edge-function config mapy.
 
-#### 2. **Progress tracking per lekcia**
-- Nová tabuľka `education_lesson_progress` (user_id, course_key, lesson_key, completed_at) + RLS + GRANT.
-- Checkbox "Mark lesson complete" v `CourseCurriculumDialog`.
-- Progress bar hore v dialógu (X/18 lekcií hotových).
-- **Exam zamknutý, kým nie je hotových ≥ 80 % lekcií** (namiesto len "purchased").
+#### 3. Edge functions
+- Rozšíriť `create-checkout/index.ts` o routing pre `verified`, `plus`, `pro`.
+- Rozšíriť `check-subscription/index.ts` o tieto 3 tiery.
+- Vytvoriť novú edge function `verify-payment-callback` (alebo rozšíriť existujúcu), ktorá po úspešnej platbe aktualizuje `profiles.verification_tier` a pri subscription nastaví `verification_expires_at`.
+- Pridať webhook handler, ktorý pri subscription cancellation/payment failure zníži tier na `none`/`verified` podľa typu.
 
-#### 3. **Downloadable workbook PDF**
-- Nová akcia `workbook` v edge function: vygeneruje celý sylabus (18 lekcií, key points, cvičenia, final project) ako A4 PDF cez `pdf-lib`, uloží do bucketu `certificates` (existuje), vráti URL.
-- Tlačidlo "Download Workbook PDF" v curriculum dialógu (unlocked po zaplatení).
+#### 4. Frontend komponenty
+- **VerifiedBadge**: zlatý trblietavý SVG odznak s 3 variantami (`verified`, `plus`, `pro`). Použijeť na profile, Wall posts, komentáre, Messenger.
+- **VerificationPage**: nová stránka `/verified` s 3 tier cards, cenami, benefit listami, porovnávacou tabuľkou a tlačítkami na platbu.
+- **SubscriptionBadge**: integrovať odznak do existujúcej Subscription stránky.
+- **ProfileHeader update**: zobraziť zlatý odznak pri mene používateľa.
+- **WallFeed priority**: upraviť feed query, aby priorizovala `plus`/`pro` a pridala zlatý odznak k postom overených používateľov.
 
-#### 4. **Practical exercise submission + AI feedback**
-- Nová tabuľka `education_exercise_submissions` (user_id, course_key, lesson_key, submission_text, ai_feedback, score).
-- Textarea "Submit your exercise" pod každou lekciou (unlocked po zaplatení).
-- Nová akcia `feedback` v edge function: AI (Gemini) posúdi text vs. cvičenie a vráti štruktúrovaný feedback (silné stránky, návrhy, skóre 0–100). **0 kreditov** (kurz už zaplatený).
-- Feedback sa uloží a zobrazí, môže sa upravovať a resubmittnúť.
+#### 5. AuthContext / globálny stav
+- Pridať `verificationTier` do `AuthContext`.
+- Po prihlásení / session refresh načítať z `profiles` stĺpce `verification_tier`, `verification_expires_at`, `is_verified`.
+- Exponovať helper `hasTier('verified' | 'plus' | 'pro')` pre UI a gating.
 
----
+#### 6. Benefity — reálne funkcie
+- **Extra kredity**: trigger po úspešnej platbe pripíše kredity do `ai_credits` (50/200/nestíhajúco).
+- **Feed priority**: Wall feed query zoradí najprv `pro`, potom `plus`, potom `verified`, potom ostatní (vnútri časového rámca).
+- **VIP support**: zobraziť prioritu pri podpore / otváraní support ticketu.
+- **Exkluzívne funkcie**: gating pre „priority DM", „verified-only badge v profile", „custom profile theme color" (pro).
+- **Anti-fake**: verified status sa dá stratiť pri závažnom porušení pravidiel (admin flag).
 
-### 🗂️ Technický rozpis súborov
+#### 7. Admin / bezpečnosť
+- Admin panel: zoznam overených používateľov, možnosť odobrať odznak (manuálne + dôvod).
+- RLS: používateľ môže čítať `verification_tier` všetkých profilov (public info), ale upravovať len vlastný (a to len cez edge function po overenej platbe).
+- Rate limiting na checkout volania.
 
-**DB migrácie (1 migrácia, 2 tabuľky):**
-- `education_lesson_progress` + RLS + GRANT
-- `education_exercise_submissions` + RLS + GRANT
-- (`module_course_lesson_videos` cache — voliteľné, môže zdieľať `module_course_content_cache`)
+### Design
+- Svetlý režim (podľa memory: default light mode).
+- Zlatá gradientová paleta: `#fbbf24` → `#f59e0b` → `#d97706`.
+- Trblietavý efekt cez CSS keyframe shimmer (pre SVG badge, nie CSS animácie na kritických cestách).
+- Čisté, elegantné karty podobné obrázku — ale Unique branding, nie Meta kópia.
 
-**Edge function** `supabase/functions/module-course-exam/index.ts`:
-- Pridať akcie: `videos`, `workbook`, `feedback`, `progress_get`, `progress_set`
+### Testovanie
+- Playwright E2E: zobrazenie `/verified`, checkout redirect, zobrazenie odznaku po návrate.
+- Unit test pre `hasTier` helper.
+- Edge function test pre checkout routing a tier aktualizáciu.
 
-**Frontend:**
-- `src/lib/moduleCourseApi.ts` — pridať `videos()`, `workbook()`, `feedback()`, `progress()`, `markLessonComplete()`
-- `src/components/courses/CourseCurriculumDialog.tsx` — pridať progress bar, checkboxy, video paneli, exercise textarea, workbook download
-- `src/components/courses/CourseAcademicActions.tsx` — `unlocked` zmeniť na 2-fázové: `purchased` (curriculum+videos+workbook+exercises) vs `readyForExam` (>=80 % lekcií hotových)
-- `src/hooks/useLearningContent.ts` — oprava platenia (amount, session refresh, error handling)
+### Nezaradené do rozsahu
+- Žiadne fyzické produkty, iba digitálne overenie/subscription.
+- Neprepisujeme existujúce `basic`/`premium`/`business` subscription tiers — tieto 3 nové tiery fungujú paralelne a dopĺňajú ich.
 
----
-
-### ⚠️ Poctivé upozornenia
-- **Video kvalita**: YouTube search-embed hrá reálne videá, ale konkrétne video volí YouTube algoritmus (nie my). AI dodá dobré vyhľadávacie frázy → relevantné výsledky, no nie sme kurátori každého jedného videa. Na 100 % kurátorstvo by sme potrebovali YouTube Data API kľúč a manuálnu validáciu.
-- **Rozsah**: 40 kurzov × 18 lekcií = **720 lekcií**. AI vygeneruje sylabus/videá on-demand pri prvom otvorení a cachne — nie všetko naraz. Prvý user daného kurzu čaká ~30 s, ďalší okamžite.
-- **Kredity**: cvičenia s AI feedbackom sú **zdarma** pre zaplatených userov (rovnako ako curriculum a exam). Náklady znášame my z LOVABLE_API_KEY.
-
----
-
-### 🎯 Poradie realizácie (v 1 dávke)
-1. Migrácia DB (2 tabuľky + RLS + GRANT)
-2. Rozšírenie `module-course-exam/index.ts` (videos, workbook, feedback, progress)
-3. `moduleCourseApi.ts` — nové metódy
-4. `CourseCurriculumDialog.tsx` — kompletný redesign s tabmi (Curriculum | Videos | Exercises | Workbook)
-5. `CourseAcademicActions.tsx` — logika `readyForExam`
-6. `useLearningContent.ts` — payment fix
-7. Verifikácia: `tsgo`, curl na jednu akciu, screenshot curriculum dialógu
-
-**Odhad**: veľká zmena, ~6-8 súborov, jedna migrácia. Idem na to naraz. Potvrď "áno" a začnem.
+### Odhadovaná veľkosť
+Stredne veľká feature: 8-10 nových/súvisiacich súborov, 2-3 migrácie, 2 edge function updaty, 5-6 frontend komponentov. Potrebná je Stripe konfigurácia produktov.

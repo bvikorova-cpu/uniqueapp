@@ -47340,6 +47340,8 @@ export type Database = {
           updated_at: string
           user_type: string | null
           username: string | null
+          verification_expires_at: string | null
+          verification_tier: Database["public"]["Enums"]["verification_tier"]
           website: string | null
         }
         Insert: {
@@ -47412,6 +47414,8 @@ export type Database = {
           updated_at?: string
           user_type?: string | null
           username?: string | null
+          verification_expires_at?: string | null
+          verification_tier?: Database["public"]["Enums"]["verification_tier"]
           website?: string | null
         }
         Update: {
@@ -47484,6 +47488,8 @@ export type Database = {
           updated_at?: string
           user_type?: string | null
           username?: string | null
+          verification_expires_at?: string | null
+          verification_tier?: Database["public"]["Enums"]["verification_tier"]
           website?: string | null
         }
         Relationships: []
@@ -62555,6 +62561,36 @@ export type Database = {
         }
         Relationships: []
       }
+      verification_benefits_log: {
+        Row: {
+          benefit_type: string
+          created_at: string
+          credits_granted: number | null
+          id: string
+          metadata: Json | null
+          tier: string
+          user_id: string
+        }
+        Insert: {
+          benefit_type: string
+          created_at?: string
+          credits_granted?: number | null
+          id?: string
+          metadata?: Json | null
+          tier: string
+          user_id: string
+        }
+        Update: {
+          benefit_type?: string
+          created_at?: string
+          credits_granted?: number | null
+          id?: string
+          metadata?: Json | null
+          tier?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       verified_users: {
         Row: {
           badge_type: string
@@ -66085,6 +66121,10 @@ export type Database = {
           total_reviews: number | null
           user_type: string | null
           username: string | null
+          verification_expires_at: string | null
+          verification_tier:
+            | Database["public"]["Enums"]["verification_tier"]
+            | null
           website: string | null
         }
         Insert: {
@@ -66123,6 +66163,10 @@ export type Database = {
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
+          verification_expires_at?: string | null
+          verification_tier?:
+            | Database["public"]["Enums"]["verification_tier"]
+            | null
           website?: string | null
         }
         Update: {
@@ -66161,6 +66205,10 @@ export type Database = {
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
+          verification_expires_at?: string | null
+          verification_tier?:
+            | Database["public"]["Enums"]["verification_tier"]
+            | null
           website?: string | null
         }
         Relationships: []
@@ -68619,7 +68667,14 @@ export type Database = {
         | "teaching"
         | "creative"
         | "other"
-      subscription_tier: "free" | "basic" | "premium" | "business"
+      subscription_tier:
+        | "free"
+        | "basic"
+        | "premium"
+        | "business"
+        | "verified"
+        | "plus"
+        | "pro"
       talent_category:
         | "drawing"
         | "funny_video"
@@ -68664,6 +68719,7 @@ export type Database = {
         | "approved"
         | "rejected"
         | "requires_resubmission"
+      verification_tier: "none" | "verified" | "plus" | "pro"
       violation_type:
         | "violence"
         | "hate_speech"
@@ -69003,7 +69059,15 @@ export const Constants = {
         "creative",
         "other",
       ],
-      subscription_tier: ["free", "basic", "premium", "business"],
+      subscription_tier: [
+        "free",
+        "basic",
+        "premium",
+        "business",
+        "verified",
+        "plus",
+        "pro",
+      ],
       talent_category: [
         "drawing",
         "funny_video",
@@ -69050,6 +69114,7 @@ export const Constants = {
         "rejected",
         "requires_resubmission",
       ],
+      verification_tier: ["none", "verified", "plus", "pro"],
       violation_type: [
         "violence",
         "hate_speech",

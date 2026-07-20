@@ -263,6 +263,7 @@ export const CreatorStudio = lazy(() => import("@/pages/CreatorStudio"));
 
 // Membership & Subscriptions
 export const Subscription = lazy(() => import("@/pages/Subscription"));
+export const Verified = lazy(() => import("@/pages/Verified"));
 
 export const MembershipCommunity = lazy(() => import("@/pages/MembershipCommunity"));
 export const CommunityDetail = lazy(() => import("@/pages/CommunityDetail"));

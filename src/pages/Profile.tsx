@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, ArrowLeft, Briefcase, Brain, Package, Sparkles, Users, UserPlus, UserCheck, Gift } from "lucide-react";
+import { VerifiedBadge } from "@/components/verified/VerifiedBadge";
 // FreeTierBalanceWidget import removed — paid-only model
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -103,6 +104,7 @@ interface Profile {
   profile_music_url?: string | null;
   profile_music_title?: string | null;
   bio_translations?: any;
+  verification_tier?: string | null;
 }
 
 interface Post {
@@ -285,7 +287,7 @@ const Profile = () => {
         const profileRes = await tracedQuery("public_profiles", () =>
           supabase
             .from("public_profiles")
-            .select("id, full_name, avatar_url, bio, location, website, interests, occupation, company, headline, username, social_links, open_to_work, open_to_work_details, profile_music_url, profile_music_title")
+            .select("id, full_name, avatar_url, bio, location, website, interests, occupation, company, headline, username, social_links, open_to_work, open_to_work_details, profile_music_url, profile_music_title, verification_tier")
             .eq("id", userId)
             .maybeSingle(),
         );

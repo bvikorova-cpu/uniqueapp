@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Edit, MapPin, Briefcase, Sparkles, TrendingUp, Users, Trophy, Zap } from "lucide-react";
 import { lazy, ReactNode, Suspense } from "react";
+import { VerifiedBadge } from "@/components/verified/VerifiedBadge";
 
 const VerifiedFounderBadge = lazy(() =>
   import("@/components/wall/VerifiedFounderBadge").then((m) => ({ default: m.VerifiedFounderBadge })),
@@ -23,6 +24,7 @@ interface ProfileHeroProps {
     occupation: string | null;
     company: string | null;
     location: string | null;
+    verification_tier?: "verified" | "plus" | "pro" | null;
   };
   userId?: string;
   currentUserId: string | null;
@@ -88,7 +90,7 @@ export const ProfileHero = ({
 
           {/* Name + meta */}
           <div className="flex-1 min-w-0 text-center sm:text-left">
-            <div className="flex justify-center sm:justify-start mb-2">
+            <div className="flex justify-center sm:justify-start mb-2 gap-2 flex-wrap">
               {deferExtras && (
                 <Suspense fallback={null}>
                   <VerifiedFounderBadge
@@ -98,6 +100,9 @@ export const ProfileHero = ({
                     size="md"
                   />
                 </Suspense>
+              )}
+              {profile.verification_tier && (
+                <VerifiedBadge tier={profile.verification_tier} size="md" />
               )}
             </div>
 

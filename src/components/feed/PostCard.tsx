@@ -27,6 +27,7 @@ import { ReportDialog } from "@/components/wall/ReportDialog";
 import { PinButton } from "@/components/wall/PinButton";
 import { FollowButton } from "@/components/wall/FollowButton";
 import { VerifiedFounderBadge, isVerifiedFounder } from "@/components/wall/VerifiedFounderBadge";
+import { VerifiedBadge } from "@/components/verified/VerifiedBadge";
 import { ProductCard } from "@/components/wall/ProductCard";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
 import { CommentItem } from "./CommentItem";
@@ -756,6 +757,9 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                 userName={post.profiles?.full_name || ""} 
                 size="sm"
               />
+              {post.profiles?.verification_tier && (
+                <VerifiedBadge tier={post.profiles.verification_tier} size="sm" />
+              )}
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>
