@@ -568,8 +568,23 @@ const Feed = () => {
       });
     }
 
+    // Verified priority: for "for-you", "latest" and "following" bring verified
+    // items to the top while preserving relative chronological order.
+    if (feedTab === "for-you" || feedTab === "latest" || feedTab === "following") {
+      filtered = filtered
+        .map((item, i) => ({ item, i }))
+        .sort((a, b) => {
+          const tr = tierRank(tierOf(b.item)) - tierRank(tierOf(a.item));
+          if (tr !== 0) return tr;
+          const td = new Date(createdAtOf(b.item)).getTime() - new Date(createdAtOf(a.item)).getTime();
+          if (td !== 0) return td;
+          return a.i - b.i;
+        })
+        .map(({ item }) => item);
+    }
+
     return filtered;
-  }, [feedItems, searchQuery, feedTab, friendIds, followingIds]);
+  }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly]);
 
 
   const location = useLocation();
