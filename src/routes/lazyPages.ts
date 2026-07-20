@@ -267,6 +267,7 @@ export const Verified = lazy(() => import("@/pages/Verified"));
 export const Exclusive = lazy(() => import("@/pages/Exclusive"));
 export const ExclusiveFeed = lazy(() => import("@/pages/ExclusiveFeed"));
 export const ExclusiveForum = lazy(() => import("@/pages/ExclusiveForum"));
+export const ExclusiveConnection = lazy(() => import("@/pages/ExclusiveConnection"));
 
 
 export const MembershipCommunity = lazy(() => import("@/pages/MembershipCommunity"));
