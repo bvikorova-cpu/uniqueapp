@@ -67612,6 +67612,7 @@ export type Database = {
           full_name: string
           id: string
           username: string
+          verification_tier: string
         }[]
       }
       get_psychology_stats: {
