@@ -51,13 +51,57 @@ const TIERS: Array<{
 
 const RANK: Record<string, number> = { none: 0, verified: 1, plus: 2, pro: 3 };
 
+type StripeStatus = "none" | "active" | "canceling" | "expired";
+type LiveState = {
+  tier: TierKey | "none";
+  status: StripeStatus;
+  expiresAt: string | null;
+};
+
 export function ProfileVerificationCard() {
   const { user, verificationTier } = useAuth();
   const navigate = useNavigate();
   const [processing, setProcessing] = useState<TierKey | null>(null);
+  const [live, setLive] = useState<LiveState | null>(null);
+  const [checking, setChecking] = useState(false);
 
-  const currentRank = RANK[verificationTier ?? "none"] ?? 0;
+  const fetchLive = async () => {
+    if (!user) return;
+    setChecking(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("check-verification", {});
+      if (error) throw error;
+      if (data && typeof data.tier === "string") {
+        setLive({
+          tier: data.tier,
+          status: (data.status ?? "none") as StripeStatus,
+          expiresAt: data.expires_at ?? null,
+        });
+      }
+    } catch (e: any) {
+      // Non-fatal: fall back to AuthContext tier
+      console.warn("check-verification failed", e?.message);
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  useEffect(() => {
+    void fetchLive();
+    // Re-check when the tab regains focus (user often returns from Stripe here).
+    const onFocus = () => void fetchLive();
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
+  const effectiveTier: TierKey | "none" = (live?.tier ?? verificationTier ?? "none") as
+    | TierKey
+    | "none";
+  const currentRank = RANK[effectiveTier] ?? 0;
   const isSubscribed = currentRank > 0;
+  const expiresAt = live?.expiresAt ?? null;
+  const status = live?.status ?? (isSubscribed ? "active" : "none");
 
   const startCheckout = async (tier: TierKey) => {
     if (!user) {
