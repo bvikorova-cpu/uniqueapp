@@ -26,7 +26,7 @@ const PILLARS = [
 const BENEFITS = [
   { icon: Sparkles, title: "Insider Feed", desc: "Off-market deals, pre-IPO whispers, cultural intel — curated by humans, never by an algorithm." },
   { icon: Handshake, title: "Double-blind Introductions", desc: "Matched by intent and capital, not by name. Both sides consent before identities unlock." },
-  { icon: MessagesIcon, title: "Silent Forum", desc: "Encrypted mastermind room. Ask anything under a pseudonym. Nothing leaves." },
+  { icon: MessagesSquare, title: "Silent Forum", desc: "Encrypted mastermind room. Ask anything under a pseudonym. Nothing leaves." },
   { icon: Phone, title: "24/7 AI Concierge", desc: "Instant answers on travel, legal, tax, art, real estate — trained on private wealth playbooks." },
   { icon: Plane, title: "Global Doors Open", desc: "Priority access to closed events, private clubs, yachts, chalets and hard-to-book restaurants." },
   { icon: Briefcase, title: "Deal Flow", desc: "Members-only pipeline of ventures, real estate and collectibles. Co-invest with peers." },
@@ -38,11 +38,6 @@ const BENEFITS = [
   { icon: Clock, title: "White-glove Onboarding", desc: "A dedicated human walks you through your first 30 days. Concierge on day one." },
 ];
 
-// small alias so we don't collide with lucide's MessageSquare naming above
-function MessagesIcon(props: any) {
-  const { MessagesSquare } = require("lucide-react");
-  return <MessagesSquare {...props} />;
-}
 
 export default function WhyJoin() {
   return (
