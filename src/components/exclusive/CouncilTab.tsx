@@ -101,18 +101,21 @@ export default function CouncilTab({ isMember }: { isMember: boolean }) {
     setTitle(""); setDesc(""); setShowForm(false);
   };
 
-  const castVote = async (proposalId: string, vote: 1 | -1) => {
+  const castVote = async (proposal: Proposal, vote: 1 | -1) => {
     if (!user) return;
-    const existing = tallies.get(proposalId)?.mine;
-    if (existing === vote) {
-      const { error } = await supabase.from("exclusive_proposal_votes")
-        .delete().eq("proposal_id", proposalId).eq("voter_id", user.id);
-      if (error) toast.error(error.message);
+    const existing = tallies.get(proposal.id)?.mine;
+    if (existing != null) {
+      toast.error("You have already voted on this proposal. Votes are final.");
+      return;
+    }
+    if (new Date(proposal.voting_closes_at).getTime() <= Date.now()) {
+      toast.error("Voting for this proposal has closed.");
       return;
     }
     const { error } = await supabase.from("exclusive_proposal_votes")
-      .upsert({ proposal_id: proposalId, voter_id: user.id, vote }, { onConflict: "proposal_id,voter_id" });
+      .insert({ proposal_id: proposal.id, voter_id: user.id, vote });
     if (error) toast.error(error.message);
+    else toast.success(vote === 1 ? "Vote recorded: Approve" : "Vote recorded: Reject");
   };
 
   const ownerDecide = async (p: Proposal, status: Proposal["status"]) => {
