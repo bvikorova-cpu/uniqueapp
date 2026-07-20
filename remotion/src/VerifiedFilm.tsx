@@ -432,12 +432,12 @@ const TIERS: Tier[] = [
     badge: "Verified",
     title: "Verified.",
     price: "€15 / mo",
-    subtitle: "Prove you're real. Get the blue check next to your name across the whole app.",
-    perks: ["Sky-blue check badge", "Feed priority", "Higher search visibility"],
+    subtitle: "Prove you're real. Get the gold check next to your name across the whole app.",
+    perks: ["Golden check badge", "Feed priority", "Higher search visibility"],
     image: "verified/01-verified.jpg",
-    color: "#38bdf8",
-    color2: "#0ea5e9",
-    ringColor: "rgba(56,189,248,0.9)",
+    color: "#fbbf24",
+    color2: "#f59e0b",
+    ringColor: "rgba(251,191,36,0.9)",
   },
   {
     badge: "Verified Plus",
@@ -454,13 +454,14 @@ const TIERS: Tier[] = [
     badge: "Verified Pro",
     title: "Pro.",
     price: "€150 / mo · +150 credits",
-    subtitle: "Top tier. Gold badge, glowing ring, 150 AI credits and official-partner status across Unique.",
-    perks: ["Golden partner badge", "150 bonus AI credits", "Official partner status", "Max feed priority"],
+    subtitle: "Top tier. Purple crown badge, glowing ring, 150 AI credits and official-partner status across Unique.",
+    perks: ["Royal purple partner badge", "150 bonus AI credits", "Official partner status", "Max feed priority"],
     image: "verified/03-pro.jpg",
-    color: "#fbbf24",
-    color2: "#f59e0b",
-    ringColor: "rgba(251,191,36,0.9)",
+    color: "#a855f7",
+    color2: "#7e22ce",
+    ringColor: "rgba(168,85,247,0.9)",
   },
+
 ];
 
 const INTRO = 130;
