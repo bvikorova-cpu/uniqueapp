@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFollowCounts } from "@/hooks/useFollow";
 import { ProfileHero } from "@/components/profile/ProfileHero";
+import { ProfileVerificationCard } from "@/components/profile/ProfileVerificationCard";
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
 import {
   finishMeTrace,
