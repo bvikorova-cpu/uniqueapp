@@ -570,6 +570,86 @@ serve(async (req) => {
             }
           }
 
+          // ── Unique Verified: apply badge tier on successful checkout ──
+          // Mirrors apply-verification: idempotent via verification_benefits_log(session_id).
+          if (session.metadata?.module === "verification") {
+            try {
+              const userId = session.metadata?.user_id;
+              const tier = session.metadata?.tier as "verified" | "plus" | "pro" | undefined;
+              const priceId = session.metadata?.price_id ?? null;
+              if (userId && tier && ["verified", "plus", "pro"].includes(tier)) {
+                // Idempotency: skip if this session already applied.
+                const { data: existingLog } = await supabase
+                  .from("verification_benefits_log")
+                  .select("id")
+                  .eq("user_id", userId)
+                  .eq("benefit_type", "verification_purchase")
+                  .eq("metadata->>session_id", session.id)
+                  .maybeSingle();
+                if (existingLog) {
+                  log("verification webhook duplicate", { user: userId, session: session.id });
+                } else {
+                  const monthsToAdd = tier === "verified" ? 12 : 1;
+                  const expiresAt = new Date();
+                  expiresAt.setMonth(expiresAt.getMonth() + monthsToAdd);
+                  if (tier === "verified") expiresAt.setFullYear(expiresAt.getFullYear() + 100);
+
+                  const { error: upErr } = await supabase
+                    .from("profiles")
+                    .update({
+                      verification_tier: tier,
+                      verification_expires_at: expiresAt.toISOString(),
+                    })
+                    .eq("id", userId);
+                  if (upErr) throw new Error(`profile update: ${upErr.message}`);
+
+                  const creditGrants: Record<string, number> = { verified: 50, plus: 200, pro: 10000 };
+                  const creditsToGrant = creditGrants[tier] || 0;
+                  if (creditsToGrant > 0) {
+                    const { data: creditRow } = await supabase
+                      .from("ai_credits")
+                      .select("balance")
+                      .eq("user_id", userId)
+                      .maybeSingle();
+                    const newBalance = (creditRow?.balance ?? 0) + creditsToGrant;
+                    await supabase.from("ai_credits").upsert(
+                      { user_id: userId, balance: newBalance, updated_at: new Date().toISOString() },
+                      { onConflict: "user_id" },
+                    );
+                    await supabase.from("ai_credits_ledger").insert({
+                      user_id: userId,
+                      amount: creditsToGrant,
+                      balance_after: newBalance,
+                      transaction_type: "verification_grant",
+                      description: `Unique ${tier} verification bonus (webhook)`,
+                    });
+                  }
+
+                  await supabase.from("verification_benefits_log").insert({
+                    user_id: userId,
+                    benefit_type: "verification_purchase",
+                    tier,
+                    credits_granted: creditsToGrant,
+                    metadata: {
+                      session_id: session.id,
+                      price_id: priceId,
+                      payment_status: session.payment_status,
+                      source: "stripe_webhook",
+                    },
+                  });
+
+                  log("verification applied via webhook", { user: userId, tier, session: session.id });
+                }
+              } else {
+                log("verification webhook missing fields", {
+                  user: userId, tier, session: session.id,
+                });
+              }
+            } catch (vErr) {
+              log("verification webhook error", { err: (vErr as Error).message });
+            }
+          }
+
           // ── Brand Battle Arena sponsorship activation ──
           // Flips brand_sponsors.subscription_status from 'pending' → 'active'
           // and stamps subscription id + period dates from Stripe.
