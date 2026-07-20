@@ -99,12 +99,13 @@ function Chair({
   const rotY = -angle + Math.PI / 2;
   const occupied = !!seat.occupant;
 
-  const color = occupied ? (isMine ? "#d4af37" : "#7a1f2b") : isHovered ? "#b8892a" : "#2b1a10";
-  const emissive = isMine ? "#5a3a00" : "#000000";
+  // Warm cognac leather palette; brass when 'mine', muted when free
+  const leather = occupied ? (isMine ? "#c9962b" : "#6b2a1e") : isHovered ? "#8a3a2a" : "#5a2418";
+  const emissive = isMine ? "#3a2600" : "#1a0800";
 
   return (
     <group position={[x, 0, z]} rotation={[0, rotY, 0]}>
-      {/* seat cushion */}
+      {/* seat cushion (tufted look via slight scale) */}
       <mesh
         castShadow
         receiveShadow
@@ -113,28 +114,28 @@ function Chair({
         onPointerOut={() => { setHovered(false); document.body.style.cursor = "auto"; }}
         onClick={(e) => { e.stopPropagation(); onClick(); }}
       >
-        <boxGeometry args={[0.9, 0.18, 0.9]} />
-        <meshStandardMaterial color={color} emissive={emissive} emissiveIntensity={0.25} roughness={0.6} />
+        <boxGeometry args={[0.95, 0.22, 0.95]} />
+        <meshStandardMaterial color={leather} emissive={emissive} emissiveIntensity={0.15} roughness={0.55} metalness={0.05} />
       </mesh>
-      {/* back */}
-      <mesh castShadow position={[0, 1.1, -0.4]}>
-        <boxGeometry args={[0.9, 1.1, 0.15]} />
-        <meshStandardMaterial color={color} roughness={0.6} />
+      {/* back — taller wingback silhouette */}
+      <mesh castShadow position={[0, 1.25, -0.42]}>
+        <boxGeometry args={[0.95, 1.4, 0.18]} />
+        <meshStandardMaterial color={leather} roughness={0.55} metalness={0.05} />
       </mesh>
-      {/* arms */}
-      <mesh castShadow position={[0.42, 0.75, 0]}>
-        <boxGeometry args={[0.12, 0.4, 0.9]} />
-        <meshStandardMaterial color={color} roughness={0.6} />
+      {/* rolled arms */}
+      <mesh castShadow position={[0.44, 0.82, 0]}>
+        <cylinderGeometry args={[0.11, 0.11, 0.95, 20]} rotation={[Math.PI/2,0,0] as any} />
+        <meshStandardMaterial color={leather} roughness={0.55} />
       </mesh>
-      <mesh castShadow position={[-0.42, 0.75, 0]}>
-        <boxGeometry args={[0.12, 0.4, 0.9]} />
-        <meshStandardMaterial color={color} roughness={0.6} />
+      <mesh castShadow position={[-0.44, 0.82, 0]}>
+        <cylinderGeometry args={[0.11, 0.11, 0.95, 20]} />
+        <meshStandardMaterial color={leather} roughness={0.55} />
       </mesh>
-      {/* legs */}
+      {/* brass legs */}
       {[[0.35, 0.15, 0.35],[ -0.35,0.15, 0.35],[0.35,0.15,-0.35],[-0.35,0.15,-0.35]].map((p, i) => (
         <mesh key={i} position={p as [number,number,number]} castShadow>
           <cylinderGeometry args={[0.05, 0.05, 0.5, 12]} />
-          <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
+          <meshStandardMaterial color="#d4af37" metalness={0.95} roughness={0.15} />
         </mesh>
       ))}
 
@@ -148,10 +149,10 @@ function Chair({
           {/* torso */}
           <mesh castShadow position={[0, -0.55, 0]}>
             <cylinderGeometry args={[0.28, 0.36, 0.7, 20]} />
-            <meshStandardMaterial color="#0a0a0a" roughness={0.7} />
+            <meshStandardMaterial color="#1a1410" roughness={0.6} />
           </mesh>
           <Html position={[0, 0.55, 0]} center distanceFactor={8}>
-            <div className="px-2 py-1 rounded-full bg-black/70 backdrop-blur text-[10px] tracking-wide text-amber-200 border border-amber-500/40 whitespace-nowrap">
+            <div className="px-2 py-1 rounded-full bg-[#1a0f08]/80 backdrop-blur text-[10px] tracking-wide text-amber-100 border border-amber-500/40 whitespace-nowrap">
               {seat.occupant?.name}
             </div>
           </Html>
@@ -160,12 +161,61 @@ function Chair({
 
       {/* Seat number label */}
       {!occupied && (
-        <Html position={[0, 1.3, 0]} center distanceFactor={10}>
-          <div className="px-2 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-200 text-[10px] uppercase tracking-widest">
+        <Html position={[0, 1.5, 0]} center distanceFactor={10}>
+          <div className="px-2 py-1 rounded-md bg-amber-100/10 border border-amber-300/40 text-amber-100 text-[10px] uppercase tracking-widest">
             Seat {seat.index + 1}
           </div>
         </Html>
       )}
+    </group>
+  );
+}
+
+function Room() {
+  return (
+    <group>
+      {/* warm ivory walls */}
+      <mesh position={[0, 3, 0]}>
+        <cylinderGeometry args={[9, 9, 6.5, 96, 1, true]} />
+        <meshStandardMaterial
+          color="#c9a878"
+          emissive="#3a2410"
+          emissiveIntensity={0.12}
+          side={THREE.BackSide}
+          roughness={0.85}
+        />
+      </mesh>
+      {/* dark wood wainscoting */}
+      <mesh position={[0, 0.9, 0]}>
+        <cylinderGeometry args={[8.98, 8.98, 1.8, 96, 1, true]} />
+        <meshStandardMaterial color="#2a1810" side={THREE.BackSide} roughness={0.7} metalness={0.1} />
+      </mesh>
+      {/* ceiling */}
+      <mesh position={[0, 6.25, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[9, 96]} />
+        <meshStandardMaterial color="#1a1008" side={THREE.BackSide} roughness={0.9} />
+      </mesh>
+      {/* Chandelier */}
+      <mesh position={[0, 5.4, 0]}>
+        <sphereGeometry args={[0.22, 24, 24]} />
+        <meshStandardMaterial color="#ffd88a" emissive="#ffb060" emissiveIntensity={2.5} />
+      </mesh>
+      {[0, 1, 2, 3, 4, 5].map((i) => {
+        const a = (i / 6) * Math.PI * 2;
+        return (
+          <mesh key={i} position={[Math.cos(a) * 0.55, 5.25, Math.sin(a) * 0.55]}>
+            <sphereGeometry args={[0.09, 16, 16]} />
+            <meshStandardMaterial color="#ffd88a" emissive="#ffb060" emissiveIntensity={2} />
+          </mesh>
+        );
+      })}
+      <pointLight position={[0, 5, 0]} intensity={3} distance={14} color="#ffc98a" />
+
+      {/* Fireplace-like warm rim lights around the room */}
+      <pointLight position={[6, 1.6, 4]} intensity={0.9} distance={10} color="#ff8a3a" />
+      <pointLight position={[-6, 1.6, -4]} intensity={0.9} distance={10} color="#ff8a3a" />
+      <pointLight position={[-5, 1.6, 5]} intensity={0.7} distance={9} color="#ffb060" />
+      <pointLight position={[5, 1.6, -5]} intensity={0.7} distance={9} color="#ffb060" />
     </group>
   );
 }
