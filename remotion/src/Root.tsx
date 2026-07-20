@@ -21,6 +21,7 @@ import { MarketplacesFilm, MARKETPLACES_DURATION } from "./MarketplacesFilm";
 import { LearningGrowthFilm, LEARNINGGROWTH_DURATION } from "./LearningGrowthFilm";
 import { AccountFilm, ACCOUNT_DURATION } from "./AccountFilm";
 import { UniAssistantFilm, UNIASSISTANT_DURATION } from "./UniAssistantFilm";
+import { VerifiedFilm, VERIFIED_DURATION } from "./VerifiedFilm";
 
 import { VERSIONS } from "./versions";
 
