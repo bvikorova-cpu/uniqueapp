@@ -42,6 +42,7 @@ export interface ProfileBasic {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  verification_tier?: "verified" | "plus" | "pro" | null;
 }
 
 // ==================== POSTS ====================

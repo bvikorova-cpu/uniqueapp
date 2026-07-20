@@ -63,6 +63,11 @@ const TIER_PRODUCTS: Record<string, string[]> = {
   coloring:      ["prod_UO5XctMmRHmIpM"],
   wellness:      ["prod_UO5XctMmRHmIpM"],
   crystal:       ["prod_UXTyxI4d06YsU6"],
+
+  // Unique verification tiers (also checked against active Stripe subscriptions)
+  verified: ["prod_Uv3ypuicAkRhPQ"],
+  plus:     ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ"],
+  pro:      ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ", "prod_Uv3yBGmooRzvPf"],
 };
 
 serve(async (req) => {
@@ -95,6 +100,36 @@ serve(async (req) => {
       return json({ subscribed: false, tier, reason: "invalid-auth" }, 200);
     }
     const user = userData.user;
+
+    // ─── UNIQUE VERIFICATION TIER CHECK (DB-first) ───
+    // Reads the profile verification_tier so one-time Verified payments also
+    // grant access, even when Stripe has no active subscription.
+    const verificationTiers = new Set(["verification", "verified", "plus", "pro"]);
+    if (verificationTiers.has(tier)) {
+      const profileRes = await supabaseClient
+        .from("profiles")
+        .select("verification_tier, verification_expires_at")
+        .eq("id", user.id)
+        .single();
+      const profileTier = (profileRes.data?.verification_tier as string) ?? "none";
+      const expiresAt = profileRes.data?.verification_expires_at;
+      const now = new Date();
+      const notExpired = !expiresAt || new Date(expiresAt) > now;
+      const tierRank: Record<string, number> = { none: 0, verified: 1, plus: 2, pro: 3 };
+      const requestedRank = tierRank[tier] ?? 0;
+      const userRank = tierRank[profileTier] ?? 0;
+      const hasAccess = notExpired && userRank >= requestedRank;
+
+      if (hasAccess || tier === "verification") {
+        return json({
+          subscribed: hasAccess,
+          tier: profileTier,
+          product_id: null,
+          subscription_end: expiresAt,
+          verification: true,
+        }, 200);
+      }
+    }
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });

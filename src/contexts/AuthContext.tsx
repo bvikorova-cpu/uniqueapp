@@ -7,6 +7,7 @@ import { usePresenceHeartbeat } from '@/hooks/usePresenceHeartbeat';
 import { getPendingReturnTo } from '@/lib/pendingAction';
 // WelcomeCreditsDialog removed — paid-only model (no free tier)
 
+export type VerificationTier = 'none' | 'verified' | 'plus' | 'pro';
 
 interface AuthContextType {
   user: User | null;
@@ -15,6 +16,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   loading: boolean;
+  verificationTier: VerificationTier;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,7 +25,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [verificationTier, setVerificationTier] = useState<VerificationTier>('none');
   const navigate = useNavigate();
+
+  const fetchVerification = async (currentUserId?: string) => {
+    const uid = currentUserId ?? user?.id;
+    if (!uid) {
+      setVerificationTier('none');
+      return;
+    }
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('verification_tier')
+        .eq('id', uid)
+        .single();
+      if (!error && data?.verification_tier) {
+        setVerificationTier(data.verification_tier as VerificationTier);
+      } else {
+        setVerificationTier('none');
+      }
+    } catch {
+      setVerificationTier('none');
+    }
+  };
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -31,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        if (session?.user?.id) fetchVerification(session.user.id);
         setLoading(false);
       }
     );
@@ -39,11 +65,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user?.id) fetchVerification(session.user.id);
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const channel = supabase
+      .channel('profile-verification')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` }, (payload) => {
+        const newTier = (payload.new as any)?.verification_tier;
+        if (newTier) setVerificationTier(newTier as VerificationTier);
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user?.id]);
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
@@ -87,7 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, signUp, signIn, signOut, loading }}>
+    <AuthContext.Provider value={{ user, session, signUp, signIn, signOut, loading, verificationTier }}>
       <IdleLogoutMount />
       <PresenceMount userId={user?.id ?? null} />
       {children}
