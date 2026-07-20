@@ -22995,6 +22995,77 @@ export type Database = {
           },
         ]
       }
+      exclusive_feed_posts: {
+        Row: {
+          author_id: string
+          body: string
+          category: string
+          created_at: string
+          id: string
+          is_pinned: boolean
+          link_url: string | null
+          published_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          category: string
+          created_at?: string
+          id?: string
+          is_pinned?: boolean
+          link_url?: string | null
+          published_at?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_pinned?: boolean
+          link_url?: string | null
+          published_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      exclusive_feed_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exclusive_feed_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "exclusive_feed_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exclusive_members: {
         Row: {
           amount_paid_cents: number
