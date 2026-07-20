@@ -1,4 +1,4 @@
-import { Crown, Shield, Handshake, Globe2, Gem, Gavel, Eye, Plane, Briefcase, Sparkles, Lock, Phone, TrendingUp, Users, Heart, Scale, Clock, Key } from "lucide-react";
+import { Crown, Shield, Handshake, Globe2, Gem, Gavel, Eye, Plane, Briefcase, Sparkles, Lock, Phone, TrendingUp, Users, Heart, Scale, Clock, Key, MessagesSquare } from "lucide-react";
 
 const PILLARS = [
   {
