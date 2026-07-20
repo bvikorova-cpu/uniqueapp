@@ -233,10 +233,11 @@ function SalonScene({
   const [hovered, setHovered] = useState<number | null>(null);
   return (
     <>
-      <color attach="background" args={["#08050a"]} />
-      <fog attach="fog" args={["#08050a", 8, 22]} />
-      <ambientLight intensity={0.15} />
-      <Environment preset="night" />
+      <color attach="background" args={["#1a0e07"]} />
+      <fog attach="fog" args={["#2a1810", 9, 22]} />
+      <ambientLight intensity={0.45} color="#ffd8a8" />
+      <hemisphereLight args={["#ffd8a8", "#3a1f10", 0.4]} />
+      <Environment preset="apartment" />
       <Room />
       <Floor />
       <Rug />
