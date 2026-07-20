@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, Crown, Star, Sparkles, Check, ArrowRight } from "lucide-react";
+import { Shield, Crown, Star, Sparkles, Check, ArrowRight, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -51,13 +51,57 @@ const TIERS: Array<{
 
 const RANK: Record<string, number> = { none: 0, verified: 1, plus: 2, pro: 3 };
 
+type StripeStatus = "none" | "active" | "canceling" | "expired";
+type LiveState = {
+  tier: TierKey | "none";
+  status: StripeStatus;
+  expiresAt: string | null;
+};
+
 export function ProfileVerificationCard() {
   const { user, verificationTier } = useAuth();
   const navigate = useNavigate();
   const [processing, setProcessing] = useState<TierKey | null>(null);
+  const [live, setLive] = useState<LiveState | null>(null);
+  const [checking, setChecking] = useState(false);
 
-  const currentRank = RANK[verificationTier ?? "none"] ?? 0;
+  const fetchLive = async () => {
+    if (!user) return;
+    setChecking(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("check-verification", {});
+      if (error) throw error;
+      if (data && typeof data.tier === "string") {
+        setLive({
+          tier: data.tier,
+          status: (data.status ?? "none") as StripeStatus,
+          expiresAt: data.expires_at ?? null,
+        });
+      }
+    } catch (e: any) {
+      // Non-fatal: fall back to AuthContext tier
+      console.warn("check-verification failed", e?.message);
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  useEffect(() => {
+    void fetchLive();
+    // Re-check when the tab regains focus (user often returns from Stripe here).
+    const onFocus = () => void fetchLive();
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
+  const effectiveTier: TierKey | "none" = (live?.tier ?? verificationTier ?? "none") as
+    | TierKey
+    | "none";
+  const currentRank = RANK[effectiveTier] ?? 0;
   const isSubscribed = currentRank > 0;
+  const expiresAt = live?.expiresAt ?? null;
+  const status = live?.status ?? (isSubscribed ? "active" : "none");
 
   const startCheckout = async (tier: TierKey) => {
     if (!user) {
@@ -81,6 +125,15 @@ export function ProfileVerificationCard() {
     }
   };
 
+  const expiryLabel =
+    expiresAt && effectiveTier !== "verified" && effectiveTier !== "none"
+      ? new Date(expiresAt).toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      : null;
+
   return (
     <div className="mb-4 rounded-2xl border border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 p-4 sm:p-6 shadow-sm">
       <div className="flex items-start justify-between gap-3 mb-4 flex-wrap">
@@ -90,13 +143,34 @@ export function ProfileVerificationCard() {
             {isSubscribed ? "Your Unique membership" : "Get Unique Verified"}
           </h3>
         </div>
-        {isSubscribed && (
-          <div className="inline-flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Current:</span>
-            <VerifiedBadge tier={verificationTier as TierKey} size="sm" />
-          </div>
-        )}
+        <div className="inline-flex items-center gap-2 text-sm">
+          {isSubscribed && (
+            <>
+              <span className="text-muted-foreground">Current:</span>
+              <VerifiedBadge tier={effectiveTier as TierKey} size="sm" />
+              {status === "canceling" && (
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 text-[10px] font-semibold">
+                  Cancels {expiryLabel ?? "soon"}
+                </span>
+              )}
+              {status === "active" && expiryLabel && (
+                <span className="text-xs text-muted-foreground">renews {expiryLabel}</span>
+              )}
+            </>
+          )}
+          <button
+            type="button"
+            onClick={() => void fetchLive()}
+            disabled={checking}
+            title="Re-check status from Stripe"
+            className="p-1 rounded-md hover:bg-accent/40 text-muted-foreground disabled:opacity-50"
+            aria-label="Refresh from Stripe"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${checking ? "animate-spin" : ""}`} />
+          </button>
+        </div>
       </div>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {TIERS.map((tier) => {
