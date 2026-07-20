@@ -651,6 +651,34 @@ serve(async (req) => {
             }
           }
 
+          // ── Unique Exclusive: €100k lifetime membership ──
+          if (session.metadata?.module === "exclusive") {
+            try {
+              const userId = session.metadata?.user_id;
+              if (userId && session.payment_status === "paid") {
+                const pi = typeof session.payment_intent === "string"
+                  ? session.payment_intent
+                  : session.payment_intent?.id ?? null;
+                const { error: exErr } = await supabase
+                  .from("exclusive_members")
+                  .upsert({
+                    user_id: userId,
+                    stripe_session_id: session.id,
+                    stripe_payment_intent: pi,
+                    amount_paid_cents: session.amount_total ?? 10000000,
+                    currency: session.currency ?? "eur",
+                    status: "active",
+                    metadata: { source: "stripe_webhook" },
+                  }, { onConflict: "user_id" });
+                if (exErr) throw new Error(`exclusive upsert: ${exErr.message}`);
+                log("exclusive membership granted", { user: userId, session: session.id });
+              }
+            } catch (exErr) {
+              log("exclusive webhook error", { err: (exErr as Error).message });
+            }
+          }
+
+
           // ── Brand Battle Arena sponsorship activation ──
           // Flips brand_sponsors.subscription_status from 'pending' → 'active'
           // and stamps subscription id + period dates from Stripe.
