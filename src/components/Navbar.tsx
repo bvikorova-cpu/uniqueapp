@@ -340,7 +340,7 @@ const Navbar = () => {
                     {item.label}
                     {item.premium && (
                       <Badge variant="secondary" className="ml-1 bg-gold text-gold-foreground">
-                        Premium
+                        {(item as any).badge || "Premium"}
                       </Badge>
                     )}
                   </Button>
