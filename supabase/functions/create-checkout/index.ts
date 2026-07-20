@@ -404,17 +404,20 @@ async function handler(req: Request): Promise<Response> {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      const EXCLUSIVE_PRICE_ID = "price_1TvJNIGaXSfGtYFte8LM0ZxP";
+      const EXCLUSIVE_PRICE_ID = "price_1TvKozGaXSfGtYFtBc5ZV6td"; // €100,000 / month
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: EXCLUSIVE_PRICE_ID, quantity: 1 }],
-        mode: "payment",
+        mode: "subscription",
         success_url: `${origin}/exclusive?success=true&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/exclusive?canceled=true`,
         metadata: { user_id: userId, module: "exclusive", price_id: EXCLUSIVE_PRICE_ID },
+        subscription_data: {
+          metadata: { user_id: userId, module: "exclusive" },
+        },
       });
-      return successResponse({ url: session.url, mode: "payment" });
+      return successResponse({ url: session.url, mode: "subscription" });
     }
 
     // ─── PET TRANSLATOR CHECKOUT ROUTER ───
