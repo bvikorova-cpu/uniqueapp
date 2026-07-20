@@ -73,6 +73,7 @@ const Navbar = () => {
     { path: "/services-hub", label: "Services", icon: Scissors },
     { path: "/rewards", label: "Rewards", icon: Trophy },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
+    { path: "/exclusive", label: "Exclusive", icon: Diamond, premium: true, badge: "€100k" },
   ];
 
   const challengeServices = [
