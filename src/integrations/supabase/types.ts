@@ -23040,6 +23040,77 @@ export type Database = {
         }
         Relationships: []
       }
+      exclusive_proposal_votes: {
+        Row: {
+          created_at: string
+          id: string
+          proposal_id: string
+          vote: number
+          voter_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          proposal_id: string
+          vote: number
+          voter_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          proposal_id?: string
+          vote?: number
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exclusive_proposal_votes_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "exclusive_proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exclusive_proposals: {
+        Row: {
+          author_id: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          description: string
+          id: string
+          owner_note: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          description: string
+          id?: string
+          owner_note?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          description?: string
+          id?: string
+          owner_note?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       explorer_achievements: {
         Row: {
           achievement_code: string
@@ -68041,6 +68112,7 @@ export type Database = {
         Returns: boolean
       }
       is_current_user_whitelisted: { Args: never; Returns: boolean }
+      is_exclusive_member: { Args: { _uid: string }; Returns: boolean }
       is_following: {
         Args: { _follower: string; _target: string }
         Returns: boolean
