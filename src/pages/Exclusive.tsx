@@ -3,7 +3,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Crown, Newspaper, MessagesSquare, Handshake, Lock, Sparkles, Loader2, ArrowRight } from "lucide-react";
+import { Crown, Newspaper, MessagesSquare, Handshake, Lock, Sparkles, Loader2, ArrowRight, Gavel } from "lucide-react";
+import CouncilTab from "@/components/exclusive/CouncilTab";
 
 const CARDS = [
   {
@@ -39,6 +40,7 @@ export default function Exclusive() {
   const [loading, setLoading] = useState(false);
   const [isMember, setIsMember] = useState<boolean | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [tab, setTab] = useState<"rooms" | "council">("rooms");
 
   const success = params.get("success") === "true";
   const canceled = params.get("canceled") === "true";
@@ -151,6 +153,26 @@ export default function Exclusive() {
           )}
         </div>
 
+        {/* Tabs */}
+        <div className="mt-8 inline-flex rounded-full border border-[#d4af37]/25 bg-black/30 p-1 text-xs uppercase tracking-[0.25em]">
+          <button
+            onClick={() => setTab("rooms")}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 ${tab === "rooms" ? "bg-[#d4af37]/20 text-[#f7e7b0]" : "text-[#c9bfa4]/70 hover:text-[#f7e7b0]"}`}
+          >
+            <Crown className="h-3.5 w-3.5" /> Rooms
+          </button>
+          <button
+            onClick={() => setTab("council")}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 ${tab === "council" ? "bg-[#d4af37]/20 text-[#f7e7b0]" : "text-[#c9bfa4]/70 hover:text-[#f7e7b0]"}`}
+          >
+            <Gavel className="h-3.5 w-3.5" /> Council
+          </button>
+        </div>
+
+        {tab === "council" ? (
+          <CouncilTab isMember={!!isMember} />
+        ) : (
+        <>
         {/* 3 cards */}
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {CARDS.map(({ key, icon: Icon, title, tagline, desc, href }) => {
@@ -228,6 +250,10 @@ export default function Exclusive() {
             </button>
           </div>
         )}
+        </>
+        )}
+
+
 
         <div className="mt-12 text-center text-[10px] uppercase tracking-[0.5em] text-[#d4af37]/60">
           Unique · Exclusive · MMXXVI
