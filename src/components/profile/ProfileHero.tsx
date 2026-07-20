@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Edit, MapPin, Briefcase, Sparkles, TrendingUp, Users, Trophy, Zap } from "lucide-react";
 import { lazy, ReactNode, Suspense } from "react";
-import { VerifiedBadge } from "@/components/verified/VerifiedBadge";
+import { VerifiedBadge, getVerifiedRingClass, TIER_META, normalizeTier } from "@/components/verified/VerifiedBadge";
 
 const VerifiedFounderBadge = lazy(() =>
   import("@/components/wall/VerifiedFounderBadge").then((m) => ({ default: m.VerifiedFounderBadge })),
@@ -77,16 +77,36 @@ export const ProfileHero = ({
       <div className="relative z-10 px-5 sm:px-8 pt-8 pb-6">
         {/* Top: Avatar + Name + Actions */}
         <div className="flex flex-col sm:flex-row sm:items-end gap-5 sm:gap-7">
-          {/* Avatar with glow */}
-          <div className="relative shrink-0 mx-auto sm:mx-0">
-            <div className="absolute -inset-2 bg-gradient-to-tr from-amber-400/40 via-violet-400/30 to-pink-400/30 rounded-full blur-xl opacity-70" />
-            <Avatar className="relative h-28 w-28 sm:h-36 sm:w-36 ring-4 ring-amber-300/40 ring-offset-4 ring-offset-black/40">
-              <AvatarImage src={profile.avatar_url || undefined} className="object-cover" />
-              <AvatarFallback className="text-4xl bg-gradient-to-br from-amber-500/30 to-violet-500/30 font-black text-white">
-                {initial}
-              </AvatarFallback>
-            </Avatar>
-          </div>
+          {/* Avatar with tier-aware glow + ring */}
+          {(() => {
+            const tier = normalizeTier(profile.verification_tier);
+            const meta = TIER_META[tier];
+            const glow =
+              tier === "pro"
+                ? "from-purple-400/50 via-fuchsia-400/40 to-violet-500/40"
+                : tier === "plus"
+                ? "from-pink-400/50 via-rose-400/40 to-pink-500/40"
+                : tier === "verified"
+                ? "from-amber-400/50 via-yellow-300/40 to-amber-500/40"
+                : "from-amber-400/40 via-violet-400/30 to-pink-400/30";
+            const avatarRing = tier === "none"
+              ? "ring-4 ring-amber-300/40"
+              : `ring-4 ${meta.ringClass.replace("ring-2", "")} ${meta.glowClass}`;
+            return (
+              <div
+                className="relative shrink-0 mx-auto sm:mx-0"
+                title={meta.tooltip || undefined}
+              >
+                <div className={`absolute -inset-2 bg-gradient-to-tr ${glow} rounded-full blur-xl opacity-80`} />
+                <Avatar className={`relative h-28 w-28 sm:h-36 sm:w-36 ${avatarRing} ring-offset-4 ring-offset-black/40`}>
+                  <AvatarImage src={profile.avatar_url || undefined} className="object-cover" />
+                  <AvatarFallback className="text-4xl bg-gradient-to-br from-amber-500/30 to-violet-500/30 font-black text-white">
+                    {initial}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+            );
+          })()}
 
           {/* Name + meta */}
           <div className="flex-1 min-w-0 text-center sm:text-left">
