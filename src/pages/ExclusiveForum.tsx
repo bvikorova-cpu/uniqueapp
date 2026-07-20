@@ -6,6 +6,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { toast } from "sonner";
 import {
   ArrowLeft,
+  Flag,
   Loader2,
   Lock,
   MessageSquare,
@@ -13,6 +14,7 @@ import {
   Plus,
   Send,
   Shield,
+  ShieldAlert,
   Trash2,
   X,
 } from "lucide-react";
@@ -42,6 +44,17 @@ type Reply = {
   created_at: string;
 };
 
+type Report = {
+  id: string;
+  reporter_id: string;
+  target_type: "thread" | "reply";
+  target_id: string;
+  reason: string;
+  details: string | null;
+  status: "pending" | "resolved" | "dismissed";
+  created_at: string;
+};
+
 const CATEGORIES = [
   { key: "general", label: "General" },
   { key: "deals", label: "Deals" },
@@ -49,6 +62,15 @@ const CATEGORIES = [
   { key: "geopolitics", label: "Geopolitics" },
   { key: "culture", label: "Culture" },
   { key: "philanthropy", label: "Philanthropy" },
+] as const;
+
+const REPORT_REASONS = [
+  "Harassment or personal attack",
+  "Doxxing / identity reveal",
+  "Spam or promotion",
+  "Illegal content",
+  "Off-topic / low quality",
+  "Other",
 ] as const;
 
 const PSEUDO_PREFIX = ["Onyx", "Vellum", "Silent", "Obsidian", "Golden", "Quiet", "Marble", "Cinder", "Ivory", "Ember"];
@@ -78,6 +100,18 @@ export default function ExclusiveForum() {
   const [replyBody, setReplyBody] = useState("");
   const [replyPseudonym, setReplyPseudonym] = useState(rollPseudonym());
   const [replySubmitting, setReplySubmitting] = useState(false);
+
+  const [reportTarget, setReportTarget] = useState<
+    { type: "thread" | "reply"; id: string; preview: string } | null
+  >(null);
+  const [reportReason, setReportReason] = useState<string>(REPORT_REASONS[0]);
+  const [reportDetails, setReportDetails] = useState("");
+  const [reportSubmitting, setReportSubmitting] = useState(false);
+
+  const [moderationOpen, setModerationOpen] = useState(false);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [reportsLoading, setReportsLoading] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
     if (!user) {
@@ -126,6 +160,50 @@ export default function ExclusiveForum() {
     };
   }, [isMember]);
 
+  // Admin: track pending report count as a live badge
+  useEffect(() => {
+    if (!isAdmin) return;
+    const refreshPending = async () => {
+      const { count } = await supabase
+        .from("exclusive_forum_reports")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "pending");
+      setPendingCount(count ?? 0);
+    };
+    refreshPending();
+    const channel = supabase
+      .channel("exclusive-forum-reports")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "exclusive_forum_reports" },
+        () => {
+          refreshPending();
+          if (moderationOpen) loadReports();
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAdmin, moderationOpen]);
+
+  const loadReports = async () => {
+    setReportsLoading(true);
+    const { data } = await supabase
+      .from("exclusive_forum_reports")
+      .select("*")
+      .order("status", { ascending: true })
+      .order("created_at", { ascending: false })
+      .limit(200);
+    setReports((data ?? []) as Report[]);
+    setReportsLoading(false);
+  };
+
+  const openModeration = () => {
+    setModerationOpen(true);
+    loadReports();
+  };
+
   const filtered = useMemo(
     () => (category === "all" ? threads : threads.filter((t) => t.category === category)),
     [threads, category],
@@ -172,6 +250,15 @@ export default function ExclusiveForum() {
     setReplies((data ?? []) as Reply[]);
   };
 
+  const reloadReplies = async (threadId: string) => {
+    const { data } = await supabase
+      .from("exclusive_forum_replies")
+      .select("*")
+      .eq("thread_id", threadId)
+      .order("created_at", { ascending: true });
+    setReplies((data ?? []) as Reply[]);
+  };
+
   const sendReply = async () => {
     if (!user || !openThread) return;
     const b = replyBody.trim();
@@ -189,12 +276,7 @@ export default function ExclusiveForum() {
       return;
     }
     setReplyBody("");
-    const { data } = await supabase
-      .from("exclusive_forum_replies")
-      .select("*")
-      .eq("thread_id", openThread.id)
-      .order("created_at", { ascending: true });
-    setReplies((data ?? []) as Reply[]);
+    await reloadReplies(openThread.id);
     loadThreads();
   };
 
@@ -219,6 +301,61 @@ export default function ExclusiveForum() {
     if (!confirm("Delete this thread?")) return;
     await supabase.from("exclusive_forum_threads").delete().eq("id", t.id);
     if (openThread?.id === t.id) setOpenThread(null);
+    loadThreads();
+  };
+
+  const deleteReply = async (r: Reply) => {
+    if (!confirm("Delete this reply?")) return;
+    await supabase.from("exclusive_forum_replies").delete().eq("id", r.id);
+    if (openThread) await reloadReplies(openThread.id);
+    loadThreads();
+  };
+
+  const openReport = (type: "thread" | "reply", id: string, preview: string) => {
+    setReportTarget({ type, id, preview });
+    setReportReason(REPORT_REASONS[0]);
+    setReportDetails("");
+  };
+
+  const submitReport = async () => {
+    if (!user || !reportTarget) return;
+    setReportSubmitting(true);
+    const { error } = await supabase.from("exclusive_forum_reports").insert({
+      reporter_id: user.id,
+      target_type: reportTarget.type,
+      target_id: reportTarget.id,
+      reason: reportReason,
+      details: reportDetails.trim().slice(0, 1000) || null,
+    });
+    setReportSubmitting(false);
+    if (error) {
+      if (/duplicate|unique/i.test(error.message)) {
+        toast.info("You already reported this — a moderator will review it.");
+      } else {
+        toast.error(error.message);
+      }
+      return;
+    }
+    toast.success("Reported. Thank you.");
+    setReportTarget(null);
+  };
+
+  const resolveReport = async (
+    id: string,
+    status: "resolved" | "dismissed",
+  ) => {
+    await supabase
+      .from("exclusive_forum_reports")
+      .update({ status, resolved_by: user?.id ?? null, resolved_at: new Date().toISOString() })
+      .eq("id", id);
+    loadReports();
+  };
+
+  const removeReportedTarget = async (r: Report) => {
+    if (!confirm(`Delete this ${r.target_type}?`)) return;
+    const table = r.target_type === "thread" ? "exclusive_forum_threads" : "exclusive_forum_replies";
+    await supabase.from(table).delete().eq("id", r.target_id);
+    await resolveReport(r.id, "resolved");
     loadThreads();
   };
 
@@ -257,12 +394,27 @@ export default function ExclusiveForum() {
           <Link to="/exclusive" className="inline-flex items-center gap-2 text-neutral-400 hover:text-amber-400 text-sm">
             <ArrowLeft className="h-4 w-4" /> Exclusive
           </Link>
-          <button
-            onClick={() => setComposerOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 text-black text-sm font-medium hover:bg-amber-400"
-          >
-            <Plus className="h-4 w-4" /> New thread
-          </button>
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <button
+                onClick={openModeration}
+                className="relative inline-flex items-center gap-2 px-3 py-2 rounded-full border border-neutral-800 text-neutral-300 hover:text-amber-400 hover:border-amber-500/40 text-xs"
+              >
+                <ShieldAlert className="h-4 w-4" /> Moderation
+                {pendingCount > 0 && (
+                  <span className="ml-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-semibold">
+                    {pendingCount}
+                  </span>
+                )}
+              </button>
+            )}
+            <button
+              onClick={() => setComposerOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 text-black text-sm font-medium hover:bg-amber-400"
+            >
+              <Plus className="h-4 w-4" /> New thread
+            </button>
+          </div>
         </div>
 
         <div className="mb-6">
@@ -291,13 +443,16 @@ export default function ExclusiveForum() {
         ) : (
           <div className="space-y-3">
             {filtered.map((t) => (
-              <button
+              <div
                 key={t.id}
-                onClick={() => openThreadPanel(t)}
-                className="w-full text-left border border-neutral-900 hover:border-amber-500/40 bg-neutral-950/60 rounded-2xl p-5 transition-colors"
+                className="group border border-neutral-900 hover:border-amber-500/40 bg-neutral-950/60 rounded-2xl p-5 transition-colors"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
+                  <button
+                    type="button"
+                    onClick={() => openThreadPanel(t)}
+                    className="text-left min-w-0 flex-1"
+                  >
                     <div className="flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-wider text-neutral-500 mb-1">
                       {t.is_pinned && (
                         <span className="inline-flex items-center gap-1 text-amber-400">
@@ -314,14 +469,26 @@ export default function ExclusiveForum() {
                     </div>
                     <h3 className="text-lg font-serif text-amber-50 truncate">{t.title}</h3>
                     <p className="text-neutral-400 text-sm mt-1 line-clamp-2">{t.body}</p>
-                  </div>
-                  <div className="text-right shrink-0 text-xs text-neutral-500">
-                    <div className="text-amber-400 text-sm font-medium">{t.reply_count}</div>
-                    <div>replies</div>
-                    <div className="mt-2">{formatDistanceToNow(new Date(t.last_activity_at), { addSuffix: true })}</div>
+                  </button>
+                  <div className="flex flex-col items-end gap-2 shrink-0 text-xs text-neutral-500">
+                    <div className="text-right">
+                      <div className="text-amber-400 text-sm font-medium">{t.reply_count}</div>
+                      <div>replies</div>
+                      <div className="mt-2">{formatDistanceToNow(new Date(t.last_activity_at), { addSuffix: true })}</div>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openReport("thread", t.id, t.title);
+                      }}
+                      className="opacity-0 group-hover:opacity-100 inline-flex items-center gap-1 text-neutral-500 hover:text-red-400 transition-opacity"
+                      title="Report thread"
+                    >
+                      <Flag className="h-3 w-3" /> Report
+                    </button>
                   </div>
                 </div>
-              </button>
+              </div>
             ))}
           </div>
         )}
@@ -411,19 +578,27 @@ export default function ExclusiveForum() {
               <button onClick={() => setOpenThread(null)} className="text-neutral-500 hover:text-neutral-200">
                 <ArrowLeft className="h-5 w-5" />
               </button>
-              {isAdmin && (
-                <div className="flex items-center gap-2 text-xs">
-                  <button onClick={() => togglePinned(openThread)} className="px-2 py-1 rounded border border-neutral-800 hover:text-amber-400">
-                    {openThread.is_pinned ? "Unpin" : "Pin"}
-                  </button>
-                  <button onClick={() => toggleLocked(openThread)} className="px-2 py-1 rounded border border-neutral-800 hover:text-amber-400">
-                    {openThread.is_locked ? "Unlock" : "Lock"}
-                  </button>
-                  <button onClick={() => deleteThread(openThread)} className="px-2 py-1 rounded border border-red-900/60 text-red-400 hover:bg-red-900/20 inline-flex items-center gap-1">
-                    <Trash2 className="h-3 w-3" /> Delete
-                  </button>
-                </div>
-              )}
+              <div className="flex items-center gap-2 text-xs">
+                <button
+                  onClick={() => openReport("thread", openThread.id, openThread.title)}
+                  className="px-2 py-1 rounded border border-neutral-800 hover:text-red-400 hover:border-red-900/60 inline-flex items-center gap-1"
+                >
+                  <Flag className="h-3 w-3" /> Report
+                </button>
+                {isAdmin && (
+                  <>
+                    <button onClick={() => togglePinned(openThread)} className="px-2 py-1 rounded border border-neutral-800 hover:text-amber-400">
+                      {openThread.is_pinned ? "Unpin" : "Pin"}
+                    </button>
+                    <button onClick={() => toggleLocked(openThread)} className="px-2 py-1 rounded border border-neutral-800 hover:text-amber-400">
+                      {openThread.is_locked ? "Unlock" : "Lock"}
+                    </button>
+                    <button onClick={() => deleteThread(openThread)} className="px-2 py-1 rounded border border-red-900/60 text-red-400 hover:bg-red-900/20 inline-flex items-center gap-1">
+                      <Trash2 className="h-3 w-3" /> Delete
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
 
             <div className="mb-6">
@@ -440,8 +615,26 @@ export default function ExclusiveForum() {
               ) : (
                 replies.map((r) => (
                   <div key={r.id} className="border border-neutral-900 rounded-xl p-4 bg-black/40">
-                    <div className="text-[11px] text-neutral-500 mb-1">
-                      {r.pseudonym} · {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="text-[11px] text-neutral-500">
+                        {r.pseudonym} · {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px]">
+                        <button
+                          onClick={() => openReport("reply", r.id, r.body.slice(0, 60))}
+                          className="text-neutral-500 hover:text-red-400 inline-flex items-center gap-1"
+                        >
+                          <Flag className="h-3 w-3" /> Report
+                        </button>
+                        {isAdmin && (
+                          <button
+                            onClick={() => deleteReply(r)}
+                            className="text-red-400 hover:text-red-300 inline-flex items-center gap-1"
+                          >
+                            <Trash2 className="h-3 w-3" /> Delete
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <p className="text-neutral-200 text-sm whitespace-pre-wrap">{r.body}</p>
                   </div>
@@ -487,6 +680,141 @@ export default function ExclusiveForum() {
                     <Send className="h-4 w-4" /> Send
                   </button>
                 </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Report modal */}
+      {reportTarget && (
+        <div className="fixed inset-0 z-[60] bg-black/85 grid place-items-center p-4" onClick={() => setReportTarget(null)}>
+          <div
+            className="w-full max-w-md bg-neutral-950 border border-neutral-800 rounded-2xl p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-serif text-amber-100 inline-flex items-center gap-2">
+                <Flag className="h-4 w-4 text-red-400" /> Report {reportTarget.type}
+              </h2>
+              <button onClick={() => setReportTarget(null)} className="text-neutral-500 hover:text-neutral-200">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <p className="text-xs text-neutral-500 mb-4 line-clamp-2">"{reportTarget.preview}"</p>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="text-[11px] uppercase tracking-wider text-neutral-500">Reason</label>
+                <select
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2 text-sm"
+                >
+                  {REPORT_REASONS.map((r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[11px] uppercase tracking-wider text-neutral-500">Details (optional)</label>
+                <textarea
+                  value={reportDetails}
+                  onChange={(e) => setReportDetails(e.target.value)}
+                  rows={4}
+                  maxLength={1000}
+                  placeholder="Give the moderator context…"
+                  className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2 text-sm resize-none"
+                />
+              </div>
+              <div className="flex items-center justify-between pt-1">
+                <p className="text-[11px] text-neutral-500 inline-flex items-center gap-1">
+                  <Shield className="h-3 w-3" /> Anonymous to the reported member.
+                </p>
+                <button
+                  onClick={submitReport}
+                  disabled={reportSubmitting}
+                  className="px-4 py-2 rounded-full bg-red-500 text-white text-sm font-medium disabled:opacity-50"
+                >
+                  {reportSubmitting ? "Sending…" : "Submit report"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin moderation panel */}
+      {isAdmin && moderationOpen && (
+        <div className="fixed inset-0 z-[55] bg-black/85 flex justify-end" onClick={() => setModerationOpen(false)}>
+          <div
+            className="w-full max-w-xl h-full overflow-y-auto bg-neutral-950 border-l border-neutral-800 p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-serif text-amber-100 inline-flex items-center gap-2">
+                <ShieldAlert className="h-5 w-5 text-red-400" /> Moderation queue
+              </h2>
+              <button onClick={() => setModerationOpen(false)} className="text-neutral-500 hover:text-neutral-200">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {reportsLoading ? (
+              <div className="grid place-items-center py-12">
+                <Loader2 className="h-5 w-5 animate-spin text-amber-500" />
+              </div>
+            ) : reports.length === 0 ? (
+              <p className="text-neutral-500 text-sm">No reports yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {reports.map((r) => (
+                  <div key={r.id} className="border border-neutral-900 rounded-xl p-4 bg-black/40">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-[11px] uppercase tracking-wider text-neutral-500">
+                        {r.target_type} · {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
+                      </div>
+                      <span
+                        className={`text-[10px] uppercase px-2 py-0.5 rounded-full border ${
+                          r.status === "pending"
+                            ? "border-red-900/60 text-red-400"
+                            : r.status === "resolved"
+                              ? "border-emerald-900/60 text-emerald-400"
+                              : "border-neutral-800 text-neutral-500"
+                        }`}
+                      >
+                        {r.status}
+                      </span>
+                    </div>
+                    <div className="text-sm text-amber-100 mb-1">{r.reason}</div>
+                    {r.details && <p className="text-xs text-neutral-400 whitespace-pre-wrap mb-2">{r.details}</p>}
+                    <p className="text-[11px] text-neutral-600 mb-3">Target id: {r.target_id}</p>
+
+                    {r.status === "pending" && (
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          onClick={() => removeReportedTarget(r)}
+                          className="px-3 py-1.5 rounded border border-red-900/60 text-red-400 hover:bg-red-900/20 text-xs inline-flex items-center gap-1"
+                        >
+                          <Trash2 className="h-3 w-3" /> Delete {r.target_type}
+                        </button>
+                        <button
+                          onClick={() => resolveReport(r.id, "resolved")}
+                          className="px-3 py-1.5 rounded border border-emerald-900/60 text-emerald-400 hover:bg-emerald-900/20 text-xs"
+                        >
+                          Mark resolved
+                        </button>
+                        <button
+                          onClick={() => resolveReport(r.id, "dismissed")}
+                          className="px-3 py-1.5 rounded border border-neutral-800 text-neutral-400 hover:text-neutral-200 text-xs"
+                        >
+                          Dismiss
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </div>
