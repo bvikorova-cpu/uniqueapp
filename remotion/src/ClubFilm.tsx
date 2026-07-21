@@ -24,6 +24,8 @@ const BRAND = {
   pink: "#ec4899",
   gold: "#fbbf24",
   goldDeep: "#f59e0b",
+  goldLight: "#fde68a",
+  goldSoft: "rgba(253,230,138,0.94)",
 };
 
 const Crown: React.FC<{ size: number; glow: string }> = ({ size, glow }) => (
@@ -76,7 +78,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
         <div style={{
           marginTop: 50, opacity: wordOp, transform: `translateY(${wordY}px)`,
           fontFamily: display.fontFamily, fontSize: 260, lineHeight: 1,
-          background: `linear-gradient(180deg, ${BRAND.white} 0%, #fde68a 100%)`,
+          background: `linear-gradient(180deg, #fde68a 0%, ${BRAND.gold} 100%)`,
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
           textShadow: "0 0 80px rgba(251,191,36,0.55)", letterSpacing: "-0.02em",
         }}>
@@ -93,7 +95,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
         <div style={{
           marginTop: 30, opacity: tagOp,
           fontFamily: body.fontFamily, fontWeight: 700, fontSize: 40,
-          color: "rgba(255,255,255,0.9)", textAlign: "center", maxWidth: 900,
+          color: BRAND.goldLight, textAlign: "center", maxWidth: 900,
         }}>
           Join the movement that supports good.
         </div>
@@ -156,7 +158,7 @@ const HeroScene: React.FC<{ duration: number; cfg: SceneCfg }> = ({ duration, cf
           padding: "18px 44px", borderRadius: 999,
           background: `linear-gradient(90deg, ${cfg.color}, ${cfg.color2})`,
           fontFamily: body.fontFamily, fontWeight: 900, fontSize: 32,
-          color: BRAND.white, letterSpacing: "0.22em", textTransform: "uppercase",
+          color: BRAND.goldLight, letterSpacing: "0.22em", textTransform: "uppercase",
           boxShadow: `0 15px 50px -15px ${cfg.color}cc`,
           opacity: enter, transform: `translateY(${(1 - enter) * -30}px)`,
         }}>
@@ -167,7 +169,7 @@ const HeroScene: React.FC<{ duration: number; cfg: SceneCfg }> = ({ duration, cf
           <div style={{
             opacity: titleOp, transform: `translateY(${titleY}px)`,
             fontFamily: body.fontFamily, fontWeight: 900, fontSize: 140, lineHeight: 1,
-            background: `linear-gradient(180deg, ${BRAND.white} 0%, ${cfg.color} 100%)`,
+            background: `linear-gradient(180deg, ${BRAND.goldLight} 0%, ${BRAND.gold} 100%)`,
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
             letterSpacing: "-0.035em", textShadow: "0 8px 40px rgba(0,0,0,0.75)", textAlign: "center",
           }}>
@@ -179,7 +181,7 @@ const HeroScene: React.FC<{ duration: number; cfg: SceneCfg }> = ({ duration, cf
               padding: "16px 44px", borderRadius: 999,
               background: `linear-gradient(90deg, ${cfg.color}, ${cfg.color2})`,
               fontFamily: body.fontFamily, fontWeight: 900, fontSize: 58,
-              color: BRAND.white, letterSpacing: "-0.02em",
+              color: BRAND.goldLight, letterSpacing: "-0.02em",
               boxShadow: `0 20px 60px -15px ${cfg.color}cc`,
             }}>
               {cfg.price}
@@ -188,7 +190,7 @@ const HeroScene: React.FC<{ duration: number; cfg: SceneCfg }> = ({ duration, cf
           <div style={{
             marginTop: 26, opacity: subOp,
             fontFamily: body.fontFamily, fontWeight: 600, fontSize: 40,
-            color: "rgba(255,255,255,0.94)", textAlign: "center", maxWidth: 1000,
+            color: BRAND.goldSoft, textAlign: "center", maxWidth: 1000,
             lineHeight: 1.25, textShadow: "0 4px 20px rgba(0,0,0,0.85)",
           }}>
             {cfg.subtitle}
@@ -217,7 +219,7 @@ const HeroScene: React.FC<{ duration: number; cfg: SceneCfg }> = ({ duration, cf
                   </div>
                   <div style={{
                     fontFamily: body.fontFamily, fontWeight: 700, fontSize: 32,
-                    color: BRAND.white, letterSpacing: "-0.01em",
+                    color: BRAND.goldLight, letterSpacing: "-0.01em",
                   }}>
                     {p}
                   </div>
@@ -270,7 +272,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
         <div style={{
           marginTop: 24, fontFamily: display.fontFamily, fontSize: 200, lineHeight: 1,
           opacity: wordS, transform: `translateY(${(1 - wordS) * 30}px)`,
-          background: `linear-gradient(180deg, ${BRAND.white} 0%, #fde68a 100%)`,
+          background: `linear-gradient(180deg, #fde68a 0%, ${BRAND.gold} 100%)`,
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
           textShadow: "0 0 60px rgba(251,191,36,0.55)",
         }}>
@@ -279,7 +281,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
         <div style={{
           marginTop: 24, opacity: urlOp,
           fontFamily: body.fontFamily, fontWeight: 700, fontSize: 60,
-          color: BRAND.white, letterSpacing: "0.05em",
+          color: BRAND.goldLight, letterSpacing: "0.05em",
         }}>
           uniqueapp.fun/club
         </div>
