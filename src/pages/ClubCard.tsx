@@ -14,7 +14,7 @@ import { ShippingStatusCard } from "@/components/club/ShippingStatusCard";
 export default function ClubCard() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { membership, loading, isMember } = useClubMembership();
+  const { membership, loading, isMember, refresh } = useClubMembership();
   const [flipped, setFlipped] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
   const [exporting, setExporting] = useState<null | "png" | "pdf">(null);
