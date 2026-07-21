@@ -80,36 +80,13 @@ interface ProgressiveOnboardingProps {
 export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true);
   const [showBetaNotice, setShowBetaNotice] = useState(false);
-  const isLovablePreview = typeof window !== "undefined" &&
-    (window.location.hostname.includes("lovableproject.com") || window.location.hostname.includes("lovable.app"));
 
   useEffect(() => {
-    if (isLovablePreview) {
-      setHasSeenOnboarding(true);
-      setIsVisible(false);
-      return;
-    }
-
-    const pathname = window.location.pathname;
-    const shouldShowOnboarding = pathname === "/" || pathname === "/index";
-
-    if (!shouldShowOnboarding) {
-      setHasSeenOnboarding(true);
-      return;
-    }
-
-    const seen = localStorage.getItem("onboarding_completed");
-    if (!seen) {
-      // Delay showing onboarding to allow page to load
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-
+    localStorage.setItem("onboarding_completed", "true");
     setHasSeenOnboarding(true);
+    setIsVisible(false);
   }, []);
 
   const handleNext = () => {
@@ -147,7 +124,7 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
   const step = onboardingSteps[currentStep];
 
   const shouldShowOnboarding =
-    !isLovablePreview && !hasSeenOnboarding && isVisible && !showBetaNotice;
+    !hasSeenOnboarding && isVisible && !showBetaNotice;
 
   return (
     <>
