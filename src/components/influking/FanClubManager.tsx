@@ -11,7 +11,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft, Crown, Users, Star, Lock, Unlock, Plus, Loader2, Heart,
   DollarSign, Sparkles, Trash2, FileText,
+  ChevronDown, ChevronUp,
 } from "lucide-react";
+import FanClubMembersCard from "./FanClubMembersCard";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
@@ -43,6 +45,7 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
   const { toast } = useToast();
   const qc = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
+  const [expandedMembers, setExpandedMembers] = useState<Record<string, boolean>>({});
   const [postDialogClub, setPostDialogClub] = useState<FanClubRow | null>(null);
   const [newClub, setNewClub] = useState<{ name: string; description: string; tier: Tier; perks: string }>({
     name: "", description: "", tier: "bronze", perks: "",
@@ -226,6 +229,13 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
                         onClick={() => setPostDialogClub(club)}>
                         <FileText className="h-3 w-3" /> Post
                       </Button>
+                      <Button size="sm" variant="outline" className="gap-1"
+                        onClick={() => setExpandedMembers((s) => ({ ...s, [club.id]: !s[club.id] }))}>
+                        <Users className="h-3 w-3" />
+                        {expandedMembers[club.id]
+                          ? <ChevronUp className="h-3 w-3" />
+                          : <ChevronDown className="h-3 w-3" />}
+                      </Button>
                       <Button size="sm" variant="outline" onClick={() => toggleActive.mutate(club)}>
                         {club.is_active ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
                       </Button>
@@ -237,6 +247,15 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
                         <Trash2 className="h-3 w-3 text-destructive" />
                       </Button>
                     </div>
+                    {expandedMembers[club.id] && (
+                      <div className="pt-3">
+                        <FanClubMembersCard
+                          fanClubId={club.id}
+                          fanClubName={club.name}
+                          tier={club.tier}
+                        />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
