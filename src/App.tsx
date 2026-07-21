@@ -42,6 +42,7 @@ const GiftHistory = lazy(() => import("@/pages/GiftHistory"));
 const Club = lazy(() => import("@/pages/Club"));
 const ClubCheckout = lazy(() => import("@/pages/ClubCheckout"));
 const ClubCard = lazy(() => import("@/pages/ClubCard"));
+const Subscriptions = lazy(() => import("@/pages/Subscriptions"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
