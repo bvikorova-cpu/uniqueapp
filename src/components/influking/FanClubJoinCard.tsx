@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Star, Sparkles, Lock, Loader2, CheckCircle2, XCircle, RotateCcw, ArrowLeftRight } from "lucide-react";
+import { Crown, Star, Sparkles, Lock, Loader2, CheckCircle2, XCircle, RotateCcw, ArrowLeftRight, CreditCard, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
 
