@@ -45,6 +45,7 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
   const { toast } = useToast();
   const qc = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
+  const [expandedMembers, setExpandedMembers] = useState<Record<string, boolean>>({});
   const [postDialogClub, setPostDialogClub] = useState<FanClubRow | null>(null);
   const [newClub, setNewClub] = useState<{ name: string; description: string; tier: Tier; perks: string }>({
     name: "", description: "", tier: "bronze", perks: "",
