@@ -835,6 +835,8 @@ const App = () => {
                         <Route path="/influ-king/ppv/:id" element={<PPVPost />} />
                         <Route path="/paid-message/success" element={<PaidMessageSuccess />} />
                         <Route path="/paid-message/canceled" element={<PaidMessageSuccess />} />
+                        <Route path="/gift/success" element={<GiftSuccess />} />
+                        <Route path="/gift/canceled" element={<GiftSuccess />} />
                         <Route path="/auction" element={<Auction />} />
                         <Route path="/my-auctions" element={<ProtectedRoute><MyAuctions /></ProtectedRoute>} />
                         <Route path="/ai-generation" element={<AIGeneration />} />
