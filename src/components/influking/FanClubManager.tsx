@@ -11,7 +11,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft, Crown, Users, Star, Lock, Unlock, Plus, Loader2, Heart,
   DollarSign, Sparkles, Trash2, FileText,
+  ChevronDown, ChevronUp,
 } from "lucide-react";
+import FanClubMembersCard from "./FanClubMembersCard";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
