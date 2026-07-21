@@ -64,6 +64,9 @@ export function ClubMembershipCard() {
           </div>
         </div>
       </Link>
+      <p className="text-center text-sm font-semibold px-3 py-2 bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+        A unique card for unique people.
+      </p>
 
       <div className="p-3 flex gap-2 flex-wrap">
         <Button asChild size="sm" variant="default" className="flex-1 min-w-[120px]">
