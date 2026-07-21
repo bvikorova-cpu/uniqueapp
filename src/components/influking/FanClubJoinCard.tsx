@@ -201,19 +201,32 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
                 {active ? (
                   <div className="space-y-1">
                     <Badge className="bg-green-500/10 text-green-600 border-green-500/30 w-full justify-center gap-1">
-                      <CheckCircle2 className="h-3 w-3" /> Active member
+                      <CheckCircle2 className="h-3 w-3" /> Active tier
                     </Badge>
-                    {!membership?.cancel_at_period_end ? (
+                    {membership?.cancel_at_period_end ? (
+                      <>
+                        <p className="text-[10px] text-muted-foreground text-center">
+                          Ends {membership.current_period_end?.slice(0, 10)}
+                        </p>
+                        <Button size="sm" variant="secondary" className="w-full text-xs h-7"
+                          onClick={() => resume.mutate(c.id)} disabled={resume.isPending}>
+                          <RotateCcw className="h-3 w-3 mr-1" /> Resume
+                        </Button>
+                      </>
+                    ) : (
                       <Button size="sm" variant="ghost" className="w-full text-xs h-7"
                         onClick={() => cancel.mutate(c.id)} disabled={cancel.isPending}>
-                        <XCircle className="h-3 w-3 mr-1" /> Cancel
+                        <XCircle className="h-3 w-3 mr-1" /> Cancel at period end
                       </Button>
-                    ) : (
-                      <p className="text-[10px] text-muted-foreground text-center">
-                        Ends {membership.current_period_end?.slice(0, 10)}
-                      </p>
                     )}
                   </div>
+                ) : activeMembership && !activeMembership.cancel_at_period_end ? (
+                  <Button size="sm" variant="outline" className="w-full gap-1"
+                    onClick={() => swap.mutate({ from_fan_club_id: activeMembership.fan_club_id, to_fan_club_id: c.id })}
+                    disabled={swap.isPending}>
+                    {swap.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <ArrowLeftRight className="h-3 w-3" />}
+                    Switch to this tier
+                  </Button>
                 ) : (
                   <Button size="sm" className="w-full gap-1"
                     onClick={() => checkout.mutate(c.id)}
