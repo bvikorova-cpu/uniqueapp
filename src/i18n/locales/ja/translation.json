@@ -1374,6 +1374,10 @@
       "audience": {
         "label": "オーディエンス分析",
         "description": "属性と行動"
+      },
+      "ppv": {
+        "label": "PPV Posts",
+        "description": "Lock premium content behind a one-time price"
       }
     }
   }

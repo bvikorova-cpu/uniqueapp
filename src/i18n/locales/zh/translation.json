@@ -1374,6 +1374,10 @@
       "audience": {
         "label": "受众洞察",
         "description": "人口统计与兴趣"
+      },
+      "ppv": {
+        "label": "PPV Posts",
+        "description": "Lock premium content behind a one-time price"
       }
     }
   }

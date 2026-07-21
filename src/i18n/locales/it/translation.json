@@ -1374,6 +1374,10 @@
       "audience": {
         "label": "Insights pubblico",
         "description": "Demografia e interessi"
+      },
+      "ppv": {
+        "label": "PPV Posts",
+        "description": "Lock premium content behind a one-time price"
       }
     }
   }

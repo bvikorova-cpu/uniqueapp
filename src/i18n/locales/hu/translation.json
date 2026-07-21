@@ -1374,6 +1374,10 @@
       "audience": {
         "label": "Közönség betekintés",
         "description": "Demográfia és érdeklődés"
+      },
+      "ppv": {
+        "label": "PPV Posts",
+        "description": "Lock premium content behind a one-time price"
       }
     }
   }
