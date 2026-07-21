@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "Lingua"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "Sali in cima",
+      "subtitle": "Domina il feed, fai crescere il tuo impero e monetizza con strumenti IA.",
+      "stat_influencers": "Influencer",
+      "stat_followers": "Follower",
+      "stat_likes": "Mi piace totali",
+      "stat_views": "Visualizzazioni totali",
+      "play": "Riproduci",
+      "pause": "Pausa",
+      "mute": "Muto",
+      "unmute": "Audio"
+    },
+    "login_required_title": "Accesso richiesto",
+    "login_required_desc": "Accedi per usare Influ-King",
+    "login_button": "Accedi",
+    "add_post": "Aggiungi post",
+    "become_influencer": "Diventa influencer",
+    "my_earnings": "I miei guadagni",
+    "my_profile": "Il mio profilo",
+    "delete_profile": "Elimina profilo",
+    "tools_heading": "Strumenti per influencer",
+    "ai_powered_badge": "Con IA",
+    "what_is_title": "Cos'è Influ-King?",
+    "what_is_desc": "Influ-King è la tua piattaforma per costruire la carriera da influencer.",
+    "how_to_title": "Come iniziare:",
+    "tools": {
+      "content_planner": {
+        "label": "Pianificatore IA",
+        "description": "Calendario intelligente"
+      },
+      "collab": {
+        "label": "Matchmaker collab",
+        "description": "Trova partner"
+      },
+      "fan_club": {
+        "label": "Gestore fan club",
+        "description": "Crea fan club a pagamento"
+      },
+      "brand_deals": {
+        "label": "Cerca brand deal",
+        "description": "Sfoglia sponsorizzazioni"
+      },
+      "analytics": {
+        "label": "Analisi engagement",
+        "description": "Traccia crescita e viste"
+      },
+      "hashtags": {
+        "label": "Generatore hashtag IA",
+        "description": "Hashtag virali"
+      },
+      "challenges": {
+        "label": "Sfide settimanali",
+        "description": "Vinci crediti e badge"
+      },
+      "thumbnails": {
+        "label": "Creatore miniature IA",
+        "description": "Miniature accattivanti"
+      },
+      "publisher": {
+        "label": "Publisher multi-piattaforma",
+        "description": "Pubblica su più reti"
+      },
+      "audience": {
+        "label": "Insights pubblico",
+        "description": "Demografia e interessi"
+      }
+    }
   }
 }

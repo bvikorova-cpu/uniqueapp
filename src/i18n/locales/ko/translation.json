@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "언어"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "정상에 오르세요",
+      "subtitle": "피드를 지배하고 제국을 키우고 AI 도구로 영향력을 수익화하세요.",
+      "stat_influencers": "인플루언서",
+      "stat_followers": "팔로워",
+      "stat_likes": "총 좋아요",
+      "stat_views": "총 조회수",
+      "play": "재생",
+      "pause": "일시정지",
+      "mute": "음소거",
+      "unmute": "음소거 해제"
+    },
+    "login_required_title": "로그인 필요",
+    "login_required_desc": "Influ-King을 사용하려면 로그인하세요",
+    "login_button": "로그인",
+    "add_post": "게시물 추가",
+    "become_influencer": "인플루언서 되기",
+    "my_earnings": "내 수익",
+    "my_profile": "내 프로필",
+    "delete_profile": "프로필 삭제",
+    "tools_heading": "인플루언서 도구",
+    "ai_powered_badge": "AI 기반",
+    "what_is_title": "Influ-King이란?",
+    "what_is_desc": "Influ-King은 인플루언서 커리어를 구축하는 플랫폼입니다.",
+    "how_to_title": "시작하는 방법:",
+    "tools": {
+      "content_planner": {
+        "label": "AI 콘텐츠 플래너",
+        "description": "스마트 캘린더"
+      },
+      "collab": {
+        "label": "협업 매칭",
+        "description": "파트너 찾기"
+      },
+      "fan_club": {
+        "label": "팬클럽 매니저",
+        "description": "유료 팬클럽 생성"
+      },
+      "brand_deals": {
+        "label": "브랜드 딜 찾기",
+        "description": "스폰서 기회"
+      },
+      "analytics": {
+        "label": "참여 분석",
+        "description": "성장, 좋아요, 조회수"
+      },
+      "hashtags": {
+        "label": "AI 해시태그 생성기",
+        "description": "바이럴 해시태그"
+      },
+      "challenges": {
+        "label": "주간 챌린지",
+        "description": "크레딧과 배지 획득"
+      },
+      "thumbnails": {
+        "label": "AI 썸네일 제작",
+        "description": "매력적인 썸네일"
+      },
+      "publisher": {
+        "label": "멀티 플랫폼 게시",
+        "description": "여러 네트워크에 게시"
+      },
+      "audience": {
+        "label": "오디언스 인사이트",
+        "description": "인구통계와 관심사"
+      }
+    }
   }
 }

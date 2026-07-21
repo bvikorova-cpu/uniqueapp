@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "言語"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "頂点へ登れ",
+      "subtitle": "フィードを支配し、帝国を築き、AIツールで影響力を収益化しよう。",
+      "stat_influencers": "インフルエンサー",
+      "stat_followers": "フォロワー",
+      "stat_likes": "総いいね",
+      "stat_views": "総視聴回数",
+      "play": "再生",
+      "pause": "一時停止",
+      "mute": "ミュート",
+      "unmute": "ミュート解除"
+    },
+    "login_required_title": "ログインが必要",
+    "login_required_desc": "Influ-Kingを使うにはログインが必要です",
+    "login_button": "ログイン",
+    "add_post": "投稿を追加",
+    "become_influencer": "インフルエンサーになる",
+    "my_earnings": "収益",
+    "my_profile": "マイプロフィール",
+    "delete_profile": "プロフィール削除",
+    "tools_heading": "インフルエンサーツール",
+    "ai_powered_badge": "AI搭載",
+    "what_is_title": "Influ-Kingとは？",
+    "what_is_desc": "Influ-Kingはインフルエンサーとしてのキャリアを築くためのプラットフォームです。",
+    "how_to_title": "始め方：",
+    "tools": {
+      "content_planner": {
+        "label": "AIコンテンツプランナー",
+        "description": "スマートなカレンダー"
+      },
+      "collab": {
+        "label": "コラボマッチメーカー",
+        "description": "パートナーを見つける"
+      },
+      "fan_club": {
+        "label": "ファンクラブ管理",
+        "description": "有料ファンクラブ作成"
+      },
+      "brand_deals": {
+        "label": "ブランド案件検索",
+        "description": "スポンサー機会"
+      },
+      "analytics": {
+        "label": "エンゲージメント分析",
+        "description": "成長と視聴を追跡"
+      },
+      "hashtags": {
+        "label": "AIハッシュタグ生成",
+        "description": "バイラルなハッシュタグ"
+      },
+      "challenges": {
+        "label": "週間チャレンジ",
+        "description": "クレジットとバッジ獲得"
+      },
+      "thumbnails": {
+        "label": "AIサムネイル作成",
+        "description": "目を引くサムネイル"
+      },
+      "publisher": {
+        "label": "マルチ配信",
+        "description": "複数ネットワークに投稿"
+      },
+      "audience": {
+        "label": "オーディエンス分析",
+        "description": "属性と行動"
+      }
+    }
   }
 }

@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "语言"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "登上巅峰",
+      "subtitle": "掌控信息流，扩展帝国，用AI工具变现你的影响力。",
+      "stat_influencers": "网红",
+      "stat_followers": "粉丝",
+      "stat_likes": "总点赞",
+      "stat_views": "总观看",
+      "play": "播放",
+      "pause": "暂停",
+      "mute": "静音",
+      "unmute": "取消静音"
+    },
+    "login_required_title": "需要登录",
+    "login_required_desc": "登录以使用 Influ-King",
+    "login_button": "登录",
+    "add_post": "添加帖子",
+    "become_influencer": "成为网红",
+    "my_earnings": "我的收益",
+    "my_profile": "我的资料",
+    "delete_profile": "删除资料",
+    "tools_heading": "网红工具",
+    "ai_powered_badge": "AI驱动",
+    "what_is_title": "什么是 Influ-King？",
+    "what_is_desc": "Influ-King 是打造网红职业的平台。",
+    "how_to_title": "如何开始：",
+    "tools": {
+      "content_planner": {
+        "label": "AI 内容规划",
+        "description": "智能日历"
+      },
+      "collab": {
+        "label": "合作配对",
+        "description": "寻找合作伙伴"
+      },
+      "fan_club": {
+        "label": "粉丝俱乐部管理",
+        "description": "创建付费粉丝俱乐部"
+      },
+      "brand_deals": {
+        "label": "品牌合作查找",
+        "description": "浏览赞助机会"
+      },
+      "analytics": {
+        "label": "互动分析",
+        "description": "追踪增长与观看"
+      },
+      "hashtags": {
+        "label": "AI 话题标签生成",
+        "description": "病毒式标签"
+      },
+      "challenges": {
+        "label": "每周挑战",
+        "description": "赢取积分与徽章"
+      },
+      "thumbnails": {
+        "label": "AI 缩略图制作",
+        "description": "吸睛缩略图"
+      },
+      "publisher": {
+        "label": "多平台发布",
+        "description": "同时发布到多个网络"
+      },
+      "audience": {
+        "label": "受众洞察",
+        "description": "人口统计与兴趣"
+      }
+    }
   }
 }

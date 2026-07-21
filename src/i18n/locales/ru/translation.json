@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "Язык"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "Поднимись на вершину",
+      "subtitle": "Управляй лентой, строй империю и монетизируй влияние с AI-инструментами.",
+      "stat_influencers": "Инфлюенсеры",
+      "stat_followers": "Подписчики",
+      "stat_likes": "Всего лайков",
+      "stat_views": "Всего просмотров",
+      "play": "Играть",
+      "pause": "Пауза",
+      "mute": "Без звука",
+      "unmute": "Со звуком"
+    },
+    "login_required_title": "Требуется вход",
+    "login_required_desc": "Войдите, чтобы использовать Influ-King",
+    "login_button": "Войти",
+    "add_post": "Добавить пост",
+    "become_influencer": "Стать инфлюенсером",
+    "my_earnings": "Мои доходы",
+    "my_profile": "Мой профиль",
+    "delete_profile": "Удалить профиль",
+    "tools_heading": "Инструменты инфлюенсера",
+    "ai_powered_badge": "На основе ИИ",
+    "what_is_title": "Что такое Influ-King?",
+    "what_is_desc": "Influ-King — платформа для построения карьеры инфлюенсера.",
+    "how_to_title": "С чего начать:",
+    "tools": {
+      "content_planner": {
+        "label": "AI планировщик контента",
+        "description": "Умный календарь"
+      },
+      "collab": {
+        "label": "Подбор коллабораций",
+        "description": "Найди партнёров"
+      },
+      "fan_club": {
+        "label": "Менеджер фан-клуба",
+        "description": "Платные фан-клубы"
+      },
+      "brand_deals": {
+        "label": "Поиск брендов",
+        "description": "Спонсорские предложения"
+      },
+      "analytics": {
+        "label": "Аналитика вовлечённости",
+        "description": "Рост, лайки и просмотры"
+      },
+      "hashtags": {
+        "label": "AI генератор хэштегов",
+        "description": "Вирусные хэштеги"
+      },
+      "challenges": {
+        "label": "Еженедельные челленджи",
+        "description": "Кредиты и значки"
+      },
+      "thumbnails": {
+        "label": "AI создатель превью",
+        "description": "Яркие миниатюры"
+      },
+      "publisher": {
+        "label": "Мульти-платформенный публикатор",
+        "description": "Публикация в разных сетях"
+      },
+      "audience": {
+        "label": "Аналитика аудитории",
+        "description": "Демография и интересы"
+      }
+    }
   }
 }

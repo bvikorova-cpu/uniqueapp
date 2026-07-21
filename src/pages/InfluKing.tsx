@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,17 +68,17 @@ const CATEGORIES = [
   "Lifestyle", "Business", "Art & Design",
 ];
 
-const TOOLS = [
-  { id: "content-planner" as const, icon: Brain, label: "AI Content Planner", description: "Smart AI-powered content calendar", color: "text-primary", bg: "bg-primary/10", paid: true },
-  { id: "collab" as const, icon: Handshake, label: "Collab Matchmaker", description: "Find collaboration partners", color: "text-pink-500", bg: "bg-pink-500/10", paid: false },
-  { id: "fan-club" as const, icon: Crown, label: "Fan Club Manager", description: "Create exclusive paid fan clubs", color: "text-amber-500", bg: "bg-amber-500/10", paid: false },
-  { id: "brand-deals" as const, icon: Briefcase, label: "Brand Deal Finder", description: "Browse sponsorship opportunities", color: "text-emerald-500", bg: "bg-emerald-500/10", paid: false },
-  { id: "analytics" as const, icon: BarChart3, label: "Engagement Analytics", description: "Track growth, likes & views over time", color: "text-cyan-500", bg: "bg-cyan-500/10", paid: false },
-  { id: "hashtags" as const, icon: Hash, label: "AI Hashtag Generator", description: "Generate viral hashtags for reach", color: "text-indigo-500", bg: "bg-indigo-500/10", paid: true },
-  { id: "challenges" as const, icon: Trophy, label: "Weekly Challenges", description: "Compete and win credits & badges", color: "text-orange-500", bg: "bg-orange-500/10", paid: false },
-  { id: "thumbnails" as const, icon: Image, label: "AI Thumbnail Creator", description: "Generate eye-catching thumbnails", color: "text-rose-500", bg: "bg-rose-500/10", paid: true },
-  { id: "publisher" as const, icon: Share2, label: "Cross-Platform Publisher", description: "Publish to multiple networks at once", color: "text-violet-500", bg: "bg-violet-500/10", paid: false },
-  { id: "audience" as const, icon: PieChart, label: "Audience Insights", description: "Demographics, behavior & interests", color: "text-teal-500", bg: "bg-teal-500/10", paid: false },
+const TOOL_DEFS = [
+  { id: "content-planner" as const, icon: Brain, tKey: "content_planner", color: "text-primary", bg: "bg-primary/10", paid: true },
+  { id: "collab" as const, icon: Handshake, tKey: "collab", color: "text-pink-500", bg: "bg-pink-500/10", paid: false },
+  { id: "fan-club" as const, icon: Crown, tKey: "fan_club", color: "text-amber-500", bg: "bg-amber-500/10", paid: false },
+  { id: "brand-deals" as const, icon: Briefcase, tKey: "brand_deals", color: "text-emerald-500", bg: "bg-emerald-500/10", paid: false },
+  { id: "analytics" as const, icon: BarChart3, tKey: "analytics", color: "text-cyan-500", bg: "bg-cyan-500/10", paid: false },
+  { id: "hashtags" as const, icon: Hash, tKey: "hashtags", color: "text-indigo-500", bg: "bg-indigo-500/10", paid: true },
+  { id: "challenges" as const, icon: Trophy, tKey: "challenges", color: "text-orange-500", bg: "bg-orange-500/10", paid: false },
+  { id: "thumbnails" as const, icon: Image, tKey: "thumbnails", color: "text-rose-500", bg: "bg-rose-500/10", paid: true },
+  { id: "publisher" as const, icon: Share2, tKey: "publisher", color: "text-violet-500", bg: "bg-violet-500/10", paid: false },
+  { id: "audience" as const, icon: PieChart, tKey: "audience", color: "text-teal-500", bg: "bg-teal-500/10", paid: false },
 ];
 
 const InfluKing = () => {
@@ -85,6 +86,12 @@ const InfluKing = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const { t } = useTranslation();
+  const TOOLS = TOOL_DEFS.map((td) => ({
+    ...td,
+    label: t(`influking.tools.${td.tKey}.label`),
+    description: t(`influking.tools.${td.tKey}.description`),
+  }));
   const [activeView, setActiveView] = useState<InfluKingView>("hub");
   const [selectedInfluencer, setSelectedInfluencer] = useState<InfluencerProfile | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -332,11 +339,11 @@ const InfluKing = () => {
       <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center">
         <Card className="max-w-md w-full">
           <CardHeader>
-            <CardTitle>Login Required</CardTitle>
-            <CardDescription>You need to log in to access Influ-King</CardDescription>
+            <CardTitle>{t("influking.login_required_title")}</CardTitle>
+            <CardDescription>{t("influking.login_required_desc")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full" onClick={() => window.location.href = "/auth"}>Log In</Button>
+            <Button className="w-full" onClick={() => window.location.href = "/auth"}>{t("influking.login_button")}</Button>
           </CardContent>
         </Card>
       </div>
@@ -413,7 +420,7 @@ const InfluKing = () => {
             <>
               <Dialog open={showPostDialog} onOpenChange={setShowPostDialog}>
                 <DialogTrigger asChild>
-                  <Button size="lg" className="gap-2"><Plus className="h-5 w-5" /> Add Post</Button>
+                  <Button size="lg" className="gap-2"><Plus className="h-5 w-5" /> {t("influking.add_post")}</Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
@@ -452,8 +459,8 @@ const InfluKing = () => {
                 </DialogContent>
               </Dialog>
               <GoLiveButton influencerId={myProfile.id} />
-              <Button variant="outline" onClick={() => navigate("/influencer/earnings")}>My Earnings</Button>
-              <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>My Profile</Button>
+              <Button variant="outline" onClick={() => navigate("/influencer/earnings")}>{t("influking.my_earnings")}</Button>
+              <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>{t("influking.my_profile")}</Button>
               <Button variant="destructive" size="sm" onClick={async () => {
                 if (!confirm('Delete your influencer profile? This is irreversible.')) return;
                 const { error } = await supabase.from('influencer_profiles').delete().eq('id', myProfile.id).eq('user_id', user.id);
@@ -462,12 +469,12 @@ const InfluKing = () => {
                   queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
                   toast({ title: "Profile Deleted" });
                 }
-              }}>Delete Profile</Button>
+              }}>{t("influking.delete_profile")}</Button>
             </>
           ) : (
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
               <DialogTrigger asChild>
-                <Button size="lg" className="gap-2"><Star className="h-5 w-5" /> Become an Influencer</Button>
+                <Button size="lg" className="gap-2"><Star className="h-5 w-5" /> {t("influking.become_influencer")}</Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
@@ -519,7 +526,7 @@ const InfluKing = () => {
         {/* Tools Grid */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-8">
           <h2 className="text-xl font-black mb-4 flex items-center gap-2">
-            <Crown className="h-5 w-5 text-amber-500" /> Influencer Tools
+            <Crown className="h-5 w-5 text-amber-500" /> {t("influking.tools_heading")}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {TOOLS.map((tool, i) => (
@@ -533,7 +540,7 @@ const InfluKing = () => {
                     </div>
                     <h3 className="font-bold text-sm mb-1">{tool.label}</h3>
                     <p className="text-[10px] text-muted-foreground">{tool.description}</p>
-                    {tool.paid && <Badge className="mt-2 text-[9px] bg-primary/20 text-primary border-primary/30">AI Powered</Badge>}
+                    {tool.paid && <Badge className="mt-2 text-[9px] bg-primary/20 text-primary border-primary/30">{t("influking.ai_powered_badge")}</Badge>}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -546,17 +553,13 @@ const InfluKing = () => {
           <Card className="max-w-4xl mx-auto mb-8 backdrop-blur-xl bg-card/80 border-primary/10">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-amber-500" /> What is Influ-King?
+                <Star className="h-5 w-5 text-amber-500" /> {t("influking.what_is_title")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-muted-foreground">
-                <strong className="text-foreground">Influ-King</strong> is your ultimate platform to build and grow your influencer career.
-                Create your professional profile, share engaging content, attract followers, and climb the leaderboard
-                to become a TOP influencer recognized worldwide.
-              </p>
+              <p className="text-muted-foreground">{t("influking.what_is_desc")}</p>
               <div className="space-y-3">
-                <h4 className="font-semibold">How to Get Started:</h4>
+                <h4 className="font-semibold">{t("influking.how_to_title")}</h4>
                 <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
                   <li><strong className="text-foreground">Create Your Profile</strong> – Set up your professional influencer profile with bio, photos, and social media links.</li>
                   <li><strong className="text-foreground">Share Content</strong> – Post photos and videos to engage your audience.</li>

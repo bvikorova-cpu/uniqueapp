@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "Language"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "Rise to the Top",
+      "subtitle": "Rule the feed, grow your empire, and monetize your influence with AI-powered tools and real-time analytics.",
+      "stat_influencers": "Influencers",
+      "stat_followers": "Followers",
+      "stat_likes": "Total Likes",
+      "stat_views": "Total Views",
+      "play": "Play",
+      "pause": "Pause",
+      "mute": "Mute",
+      "unmute": "Unmute"
+    },
+    "login_required_title": "Login Required",
+    "login_required_desc": "You need to log in to access Influ-King",
+    "login_button": "Log In",
+    "add_post": "Add Post",
+    "become_influencer": "Become an Influencer",
+    "my_earnings": "My Earnings",
+    "my_profile": "My Profile",
+    "delete_profile": "Delete Profile",
+    "tools_heading": "Influencer Tools",
+    "ai_powered_badge": "AI Powered",
+    "what_is_title": "What is Influ-King?",
+    "what_is_desc": "Influ-King is your ultimate platform to build and grow your influencer career. Create your professional profile, share engaging content, attract followers, and climb the leaderboard to become a TOP influencer recognized worldwide.",
+    "how_to_title": "How to Get Started:",
+    "tools": {
+      "content_planner": {
+        "label": "AI Content Planner",
+        "description": "Smart AI-powered content calendar"
+      },
+      "collab": {
+        "label": "Collab Matchmaker",
+        "description": "Find collaboration partners"
+      },
+      "fan_club": {
+        "label": "Fan Club Manager",
+        "description": "Create exclusive paid fan clubs"
+      },
+      "brand_deals": {
+        "label": "Brand Deal Finder",
+        "description": "Browse sponsorship opportunities"
+      },
+      "analytics": {
+        "label": "Engagement Analytics",
+        "description": "Track growth, likes & views over time"
+      },
+      "hashtags": {
+        "label": "AI Hashtag Generator",
+        "description": "Generate viral hashtags for reach"
+      },
+      "challenges": {
+        "label": "Weekly Challenges",
+        "description": "Compete and win credits & badges"
+      },
+      "thumbnails": {
+        "label": "AI Thumbnail Creator",
+        "description": "Generate eye-catching thumbnails"
+      },
+      "publisher": {
+        "label": "Cross-Platform Publisher",
+        "description": "Publish to multiple networks at once"
+      },
+      "audience": {
+        "label": "Audience Insights",
+        "description": "Demographics, behavior & interests"
+      }
+    }
   }
 }

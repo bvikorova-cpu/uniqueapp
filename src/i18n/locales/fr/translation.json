@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "Langue"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "Grimpez au sommet",
+      "subtitle": "Dominez le fil, construisez votre empire et monétisez votre influence avec l'IA.",
+      "stat_influencers": "Influenceurs",
+      "stat_followers": "Abonnés",
+      "stat_likes": "Likes totaux",
+      "stat_views": "Vues totales",
+      "play": "Lire",
+      "pause": "Pause",
+      "mute": "Muet",
+      "unmute": "Son"
+    },
+    "login_required_title": "Connexion requise",
+    "login_required_desc": "Connectez-vous pour accéder à Influ-King",
+    "login_button": "Se connecter",
+    "add_post": "Ajouter une publication",
+    "become_influencer": "Devenir influenceur",
+    "my_earnings": "Mes gains",
+    "my_profile": "Mon profil",
+    "delete_profile": "Supprimer le profil",
+    "tools_heading": "Outils pour influenceurs",
+    "ai_powered_badge": "Propulsé par l'IA",
+    "what_is_title": "Qu'est-ce qu'Influ-King ?",
+    "what_is_desc": "Influ-King est votre plateforme pour construire votre carrière d'influenceur.",
+    "how_to_title": "Comment commencer :",
+    "tools": {
+      "content_planner": {
+        "label": "Planificateur IA",
+        "description": "Calendrier de contenu intelligent"
+      },
+      "collab": {
+        "label": "Matchmaker collab",
+        "description": "Trouvez des partenaires"
+      },
+      "fan_club": {
+        "label": "Gestionnaire de fan-club",
+        "description": "Créez des fan-clubs payants"
+      },
+      "brand_deals": {
+        "label": "Chercheur d'accords",
+        "description": "Parcourez les sponsorings"
+      },
+      "analytics": {
+        "label": "Analytique d'engagement",
+        "description": "Suivez croissance et vues"
+      },
+      "hashtags": {
+        "label": "Générateur de hashtags IA",
+        "description": "Créez des hashtags viraux"
+      },
+      "challenges": {
+        "label": "Défis hebdomadaires",
+        "description": "Gagnez crédits et badges"
+      },
+      "thumbnails": {
+        "label": "Créateur de miniatures IA",
+        "description": "Miniatures accrocheuses"
+      },
+      "publisher": {
+        "label": "Publication multi-plateformes",
+        "description": "Publiez sur plusieurs réseaux"
+      },
+      "audience": {
+        "label": "Insights d'audience",
+        "description": "Démographie et intérêts"
+      }
+    }
   }
 }

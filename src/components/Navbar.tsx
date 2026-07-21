@@ -19,6 +19,7 @@ import { AICreditsBalanceWidget } from "@/components/ai-credits/AICreditsBalance
 // FreeTierBalanceWidget import removed — paid-only model
 import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 
 import megatalentLogo from "@/assets/megatalent-logo.png";
@@ -488,6 +489,8 @@ const Navbar = () => {
 
             {/* Theme Toggle — visible for all users */}
             <ThemeToggle />
+            <LanguageSwitcher />
+
 
 
             {user ? (
@@ -597,6 +600,7 @@ const Navbar = () => {
               </>
             )}
             <ThemeToggle className="h-8 w-8" />
+            <LanguageSwitcher compact className="h-8 w-8" />
             <Button
               variant="ghost"
               size="icon"
