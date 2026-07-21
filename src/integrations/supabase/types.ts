@@ -30915,6 +30915,116 @@ export type Database = {
           },
         ]
       }
+      influking_ppv_posts: {
+        Row: {
+          content_type: string
+          content_url: string
+          created_at: string
+          creator_id: string
+          currency: string
+          description: string | null
+          id: string
+          is_active: boolean
+          preview_url: string | null
+          price_cents: number
+          title: string
+          total_revenue_cents: number
+          total_unlocks: number
+          updated_at: string
+        }
+        Insert: {
+          content_type?: string
+          content_url: string
+          created_at?: string
+          creator_id: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          preview_url?: string | null
+          price_cents: number
+          title: string
+          total_revenue_cents?: number
+          total_unlocks?: number
+          updated_at?: string
+        }
+        Update: {
+          content_type?: string
+          content_url?: string
+          created_at?: string
+          creator_id?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          preview_url?: string | null
+          price_cents?: number
+          title?: string
+          total_revenue_cents?: number
+          total_unlocks?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      influking_ppv_unlocks: {
+        Row: {
+          amount_cents: number
+          buyer_id: string
+          created_at: string
+          creator_earnings_cents: number
+          creator_id: string
+          currency: string
+          id: string
+          platform_fee_cents: number
+          post_id: string
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          unlocked_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          buyer_id: string
+          created_at?: string
+          creator_earnings_cents: number
+          creator_id: string
+          currency?: string
+          id?: string
+          platform_fee_cents: number
+          post_id: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          unlocked_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          buyer_id?: string
+          created_at?: string
+          creator_earnings_cents?: number
+          creator_id?: string
+          currency?: string
+          id?: string
+          platform_fee_cents?: number
+          post_id?: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          unlocked_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influking_ppv_unlocks_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "influking_ppv_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       influking_weekly_challenges: {
         Row: {
           category: string
@@ -68322,6 +68432,10 @@ export type Database = {
       }
       has_phobia_access: {
         Args: { service_type_param: string; user_id_param: string }
+        Returns: boolean
+      }
+      has_ppv_unlock: {
+        Args: { _post_id: string; _user_id: string }
         Returns: boolean
       }
       has_reincarnation_access: {
