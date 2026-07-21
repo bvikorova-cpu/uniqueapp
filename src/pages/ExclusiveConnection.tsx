@@ -631,6 +631,20 @@ export default function ExclusiveConnection() {
                 >
                   Open private channel
                 </button>
+                <div className="mt-2 flex items-center justify-between text-[11px] text-white/40">
+                  <button
+                    onClick={() => setReportTarget({ userId: p.user_id, kind: "profile", pseudonym: p.pseudonym })}
+                    className="inline-flex items-center gap-1 hover:text-amber-300"
+                  >
+                    <Flag className="w-3 h-3" /> Report
+                  </button>
+                  <button
+                    onClick={() => blockUser(p.user_id)}
+                    className="inline-flex items-center gap-1 hover:text-red-300"
+                  >
+                    <Ban className="w-3 h-3" /> Block & unmatch
+                  </button>
+                </div>
               </div>
             ))}
           </div>
