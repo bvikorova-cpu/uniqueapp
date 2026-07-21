@@ -618,7 +618,13 @@ const Navbar = () => {
               </>
             )}
             <ThemeToggle className="h-8 w-8" />
-            <LanguageSwitcher compact className="h-8 w-8" />
+            <Link
+              to="/club"
+              aria-label="Unique Club"
+              className="inline-flex items-center justify-center h-8 w-8 rounded-full text-amber-950 bg-gradient-to-br from-amber-300 to-amber-500 shadow shadow-amber-500/30"
+            >
+              <Ticket className="h-4 w-4" />
+            </Link>
             <Button
               variant="ghost"
               size="icon"
