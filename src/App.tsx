@@ -750,6 +750,8 @@ const App = () => {
                         <Route path="/club" element={<Club />} />
                         <Route path="/club/checkout/:tier" element={<ClubCheckout />} />
                         <Route path="/club/card" element={<ClubCard />} />
+                        <Route path="/subscriptions" element={<ProtectedRoute><Subscriptions /></ProtectedRoute>} />
+                        <Route path="/billing" element={<Navigate to="/subscriptions" replace />} />
                         <Route path="/downloads" element={<Navigate to="/download" replace />} />
                         <Route path="/wall" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                         <Route path="/search" element={<SearchResults />} />
