@@ -403,6 +403,11 @@ const InfluKing = () => {
       <AudienceInsights onBack={() => setActiveView("hub")} />
     </div></div>
   );
+  if (activeView === "ppv") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
+      <PPVStudio onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
