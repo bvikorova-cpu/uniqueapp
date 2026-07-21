@@ -1,27 +1,51 @@
 import { motion } from "framer-motion";
 import { Heart, Zap } from "lucide-react";
-import { useState, useEffect } from "react";
-import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-const mockDonations = [
-  { donor: "A supporter", amount: 50, crisis: "Flood Relief — Manila" },
-  { donor: "Anonymous", amount: 25, crisis: "Fire Recovery — Athens" },
-  { donor: "A supporter", amount: 100, crisis: "Earthquake Aid — Istanbul" },
-  { donor: "Anonymous", amount: 10, crisis: "Tornado Relief — Oklahoma" },
-  { donor: "A supporter", amount: 75, crisis: "Wildfire Recovery — Lisbon" },
-];
+interface TickerDonation {
+  donor: string;
+  amount: number;
+  crisis: string;
+}
 
 export function CrisisImpactTicker() {
   const [current, setCurrent] = useState(0);
 
+  const { data: donations = [] } = useQuery({
+    queryKey: ["crisis-impact-ticker"],
+    queryFn: async (): Promise<TickerDonation[]> => {
+      const { data, error } = await supabase
+        .from("campaign_donations")
+        .select("amount, donor_name, is_anonymous, crisis_campaigns!inner(title, location)")
+        .eq("campaign_type", "crisis")
+        .eq("status", "completed")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (error) return [];
+      return (data ?? []).map((r: any) => ({
+        donor: r.is_anonymous ? "Anonymous" : (r.donor_name || "A supporter"),
+        amount: Math.round(Number(r.amount) || 0),
+        crisis: r.crisis_campaigns?.title
+          ? `${r.crisis_campaigns.title}${r.crisis_campaigns.location ? " — " + r.crisis_campaigns.location : ""}`
+          : "Crisis relief",
+      }));
+    },
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+  });
+
   useEffect(() => {
+    if (donations.length === 0) return;
     const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % mockDonations.length);
+      setCurrent((prev) => (prev + 1) % donations.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [donations.length]);
 
-  const donation = mockDonations[current];
+  if (donations.length === 0) return null;
+  const donation = donations[current % donations.length];
 
   return (
     <section className="py-4">
