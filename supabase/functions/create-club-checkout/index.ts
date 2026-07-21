@@ -44,56 +44,16 @@ serve(async (req) => {
     const origin = req.headers.get("origin") ?? "https://uniqueapp.fun";
     const signupPrice = tier === "digital" ? PRICES.digital_signup : PRICES.physical_signup;
 
-    // Two-phase Checkout: Subscription mode with a one-time add_invoice_item for the signup fee.
-    const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
-      line_items: [{ price: PRICES.monthly, quantity: 1 }],
-      subscription_data: {
-        metadata: {
-          product: "unique_club",
-          tier,
-          user_id: user.id,
-          referral_code: referralCode ?? "",
-        },
-      },
-      // Signup fee added to the first invoice
-      // @ts-ignore - Stripe supports invoice_item_data on Checkout
-      payment_method_collection: "always",
-      invoice_creation: undefined,
-      metadata: {
-        product: "unique_club",
-        tier,
-        user_id: user.id,
-        referral_code: referralCode ?? "",
-      },
-      // Ship physical address collection
-      ...(tier === "physical"
-        ? {
-            shipping_address_collection: {
-              allowed_countries: [
-                "SK","CZ","HU","AT","DE","PL","FR","IT","ES","NL","BE","IE","PT","SE","DK","FI","GR","RO","BG","HR","SI","LT","LV","EE","LU","MT","CY","GB","US","CA","AU","CH","NO"
-              ],
-            },
-          }
-        : {}),
-      // Add signup fee as line item too (subscription mode allows one-time line items alongside recurring)
-      // We push it as an extra line item.
-      success_url: `${origin}/club?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/club?canceled=1`,
-    });
-
-    // Attach one-off signup fee to first invoice via subscription_data.add_invoice_items
-    // (Stripe requires this — we recreate the session with proper structure)
-    // We'll do it correctly below in a second call if needed.
-    // For simplicity we now re-create with add_invoice_items included:
-    await stripe.checkout.sessions.expire(session.id).catch(() => {});
+    // Subscription mode with one-time signup fee as an extra line item (Stripe allows
+    // mixing one-time + recurring line items in subscription-mode Checkout).
     const finalSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: [{ price: PRICES.monthly, quantity: 1 }],
+      line_items: [
+        { price: PRICES.monthly, quantity: 1 },
+        { price: signupPrice, quantity: 1 },
+      ],
       subscription_data: {
         metadata: {
           product: "unique_club",
@@ -101,8 +61,6 @@ serve(async (req) => {
           user_id: user.id,
           referral_code: referralCode ?? "",
         },
-        // @ts-ignore
-        add_invoice_items: [{ price: signupPrice, quantity: 1 }],
       },
       metadata: {
         product: "unique_club",
@@ -123,6 +81,7 @@ serve(async (req) => {
       cancel_url: `${origin}/club?canceled=1`,
       allow_promotion_codes: true,
     });
+
 
     return new Response(JSON.stringify({ url: finalSession.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
