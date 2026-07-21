@@ -155,7 +155,20 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
     onError: (e: any) => toast({ title: "Swap failed", description: e.message, variant: "destructive" }),
   });
 
+  const openPortal = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke("billing-portal", {
+        body: { return_url: window.location.href },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      if ((data as any)?.url) window.open((data as any).url, "_blank");
+    },
+    onError: (e: any) => toast({ title: "Billing portal error", description: e.message, variant: "destructive" }),
+  });
+
   const activeMembership = memberships.find((m) => m.status === "active");
+  const hasAnyMembership = memberships.length > 0;
 
   if (isLoading) {
     return <div className="flex justify-center py-6"><Loader2 className="h-6 w-6 animate-spin" /></div>;
@@ -165,9 +178,24 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
   return (
     <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 flex-wrap">
           <Crown className="h-5 w-5 text-amber-500" />
-          {creatorName}'s Fan Clubs
+          <span>{creatorName}'s Fan Clubs</span>
+          {hasAnyMembership && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="ml-auto gap-1 h-8"
+              onClick={() => openPortal.mutate()}
+              disabled={openPortal.isPending}
+            >
+              {openPortal.isPending
+                ? <Loader2 className="h-3 w-3 animate-spin" />
+                : <CreditCard className="h-3 w-3" />}
+              Manage billing
+              <ExternalLink className="h-3 w-3 opacity-60" />
+            </Button>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3">
