@@ -34,6 +34,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
   const [challengeType, setChallengeType] = useState("posting");
   const [targetValue, setTargetValue] = useState("5");
   const [karmaReward, setKarmaReward] = useState("50");
+  const [creditReward, setCreditReward] = useState("5");
 
   const { data: challenges = [] } = useQuery({
     queryKey: ["forum-challenges"],
