@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCreatorPayouts, KIND_LABELS, type PayoutKind } from "@/hooks/useCreatorPayouts";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
 import { TaxExportCard } from "@/components/creator/TaxExportCard";
+import { PayoutRequestCard } from "@/components/creator/PayoutRequestCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
