@@ -80,6 +80,7 @@ const TOOL_DEFS = [
   { id: "thumbnails" as const, icon: Image, tKey: "thumbnails", color: "text-rose-500", bg: "bg-rose-500/10", paid: true },
   { id: "publisher" as const, icon: Share2, tKey: "publisher", color: "text-violet-500", bg: "bg-violet-500/10", paid: false },
   { id: "audience" as const, icon: PieChart, tKey: "audience", color: "text-teal-500", bg: "bg-teal-500/10", paid: false },
+  { id: "ppv" as const, icon: Lock, tKey: "ppv", color: "text-fuchsia-500", bg: "bg-fuchsia-500/10", paid: false },
 ];
 
 const InfluKing = () => {
