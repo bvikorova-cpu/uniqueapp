@@ -1333,6 +1333,9 @@ serve(async (req) => {
         // ── Megatalent: instantly sync subscription state so premium unlocks ──
         await syncMegatalentSubscription(supabase, stripe, sub);
 
+        // ── Fan Club: sync membership status (active / past_due / canceled) ──
+        await syncFanClubMembership(supabase, stripe, sub);
+
         // ── Brand sponsorship status sync (active / past_due / paused) ──
         try {
           const targetStatus =
