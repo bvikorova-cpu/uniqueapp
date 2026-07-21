@@ -27,7 +27,7 @@ export function useClubPublicMember(userId?: string | null) {
         .eq("user_id", userId!)
         .maybeSingle();
       if (error) return null;
-      return (data as PublicMember) ?? null;
+      return (data as unknown as PublicMember) ?? null;
     },
   });
 }
