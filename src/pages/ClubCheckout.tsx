@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Loader2, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, Loader2, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -46,14 +46,6 @@ export default function ClubCheckout() {
         if (cancelled) return;
 
         setCheckoutUrl(url);
-        const isEmbedded = (() => {
-          try {
-            return window.self !== window.top;
-          } catch {
-            return true;
-          }
-        })();
-        if (!isEmbedded) window.location.replace(url);
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "Checkout failed. Please try again.");
       }
@@ -81,11 +73,18 @@ export default function ClubCheckout() {
         {checkoutUrl && (
           <div className="mt-6 space-y-3">
             <Button asChild size="lg" className="h-12 w-full bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 text-base">
-              <a href={checkoutUrl} target="_top">
-                Tap to open Stripe <ArrowRight className="ml-2 h-4 w-4" />
+              <a href={checkoutUrl} target="_blank" rel="noopener noreferrer">
+                Open Stripe checkout <ExternalLink className="ml-2 h-4 w-4" />
               </a>
             </Button>
-            <p className="text-xs text-muted-foreground">If automatic redirect is blocked, tap the button above.</p>
+            <Button asChild variant="outline" size="lg" className="h-12 w-full text-base">
+              <a href={checkoutUrl} target="_self">
+                Open in this tab <ArrowRight className="ml-2 h-4 w-4" />
+              </a>
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              Checkout is ready. Tap the first button; if your browser blocks new tabs, use “Open in this tab”.
+            </p>
           </div>
         )}
 
