@@ -14,7 +14,6 @@ import {
   Truck,
   Percent,
   ArrowRight,
-  Loader2,
   Trophy,
   HandHeart,
 } from "lucide-react";
