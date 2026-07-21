@@ -629,7 +629,12 @@ const InfluKing = () => {
                     )}
                   </div>
                 </div>
-                <div className="mt-6">
+                <div className="mt-6 space-y-4">
+                  <FanClubJoinCard
+                    creatorId={selectedInfluencer.user_id}
+                    creatorName={selectedInfluencer.display_name}
+                  />
+                  <FanClubLockedFeed creatorId={selectedInfluencer.user_id} />
                   <h3 className="text-xl font-bold mb-4">Posts</h3>
                   {influencerPosts.length === 0 ? (
                     <p className="text-center text-muted-foreground py-8">No posts yet</p>
