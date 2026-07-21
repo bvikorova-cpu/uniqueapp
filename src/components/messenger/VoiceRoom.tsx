@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, Mic, MicOff, Headphones, Plus, Users, Volume2, Radio, Crown, Hand } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+
 interface VoiceRoomProps {
   onBack: () => void;
   userId: string;
@@ -19,38 +21,41 @@ interface Room {
   isLive: boolean;
 }
 
-const mockRooms: Room[] = [
-  {
-    id: "1", name: "Chill Lounge", topic: "Just hanging out & chatting", isLive: true,
-    participants: [
-      { id: "1", name: "Alex", isSpeaking: true, isHost: true },
-      { id: "2", name: "Sam", isSpeaking: false, isHost: false },
-      { id: "3", name: "Jordan", isSpeaking: true, isHost: false },
-    ],
-  },
-  {
-    id: "2", name: "Music Corner", topic: "Sharing new tracks", isLive: true,
-    participants: [
-      { id: "4", name: "Riley", isSpeaking: false, isHost: true },
-      { id: "5", name: "Taylor", isSpeaking: true, isHost: false },
-    ],
-  },
-  {
-    id: "3", name: "Gaming Talk", topic: "Latest game releases", isLive: false,
-    participants: [
-      { id: "6", name: "Morgan", isSpeaking: false, isHost: true },
-    ],
-  },
-];
-
 export const VoiceRoom = ({ onBack, userId }: VoiceRoomProps) => {
-  const [rooms, setRooms] = useState(mockRooms);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [activeRoom, setActiveRoom] = useState<Room | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [handRaised, setHandRaised] = useState(false);
   const [newRoomName, setNewRoomName] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const { data, error } = await supabase
+        .from("audio_spaces")
+        .select("id, title, description, host_id, status, listener_count, profiles:host_id(username, full_name)")
+        .in("status", ["live", "scheduled"])
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (error || !mounted) return;
+      setRooms((data ?? []).map((r: any) => ({
+        id: r.id,
+        name: r.title,
+        topic: r.description || "Live audio space",
+        isLive: r.status === "live",
+        participants: [{
+          id: r.host_id,
+          name: r.profiles?.username || r.profiles?.full_name || "Host",
+          isSpeaking: r.status === "live",
+          isHost: true,
+        }],
+      })));
+    })();
+    return () => { mounted = false; };
+  }, []);
+
 
   const joinRoom = (room: Room) => {
     setActiveRoom(room);
