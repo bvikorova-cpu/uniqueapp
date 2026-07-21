@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import clubCardPreview from "@/assets/club-card-preview.png.asset.json";
-import clubHeroVideo from "@/assets/unique-club.mp4.asset.json";
+import clubHeroVideo from "@/assets/unique-club-hero.mp4.asset.json";
 import { useClubMembership } from "@/hooks/useClubMembership";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
