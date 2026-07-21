@@ -95,6 +95,10 @@ export function getNotificationRoute(n: NotifLike): string {
     course_enrollment: "/education",
     course_completed: "/education/certificates",
     certificate_issued: "/education/certificates",
+
+    // Exclusive Connection
+    exclusive_match: "/exclusive/connection?tab=matches",
+    exclusive_channel_opened: "/messenger",
   };
 
   if (typeMap[t]) return typeMap[t];
