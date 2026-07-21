@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Crown, Star, Sparkles, Lock, Loader2, CheckCircle2, XCircle, RotateCcw, ArrowLeftRight, CreditCard, ExternalLink, AlertTriangle, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
+import { classifyVerifyResult, classifyVerifyError, type VerifyNotice } from "@/lib/fanclubVerifyStatus";
 
 const TIER_ICON = { bronze: Star, silver: Crown, gold: Sparkles } as const;
 const TIER_COLOR = {
@@ -80,10 +81,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
     enabled: !!user && clubs.length > 0,
   });
 
-  const [verifyMismatch, setVerifyMismatch] = useState<null | {
-    clubId: string | null;
-    reason: string;
-  }>(null);
+  const [verifyNotice, setVerifyNotice] = useState<null | { clubId: string | null; notice: VerifyNotice }>(null);
   const [verifying, setVerifying] = useState(false);
 
   const runVerify = async (clubId: string | null, opts?: { silent?: boolean }) => {
@@ -102,36 +100,35 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
       }>;
       const target = clubId
         ? memberships.find((m) => m.fan_club_id === clubId)
-        : memberships.find((m) => m.active);
+        : memberships.find((m) => m.active) ?? memberships[0];
 
       qc.invalidateQueries({ queryKey: ["my-fan-club-memberships"] });
       qc.invalidateQueries({ queryKey: ["fan-club-locked-posts"] });
 
-      if (!target || !target.active) {
-        const reason = !target
-          ? "Stripe has no matching subscription for your account yet."
-          : `Stripe reports status "${target.status}" — access is not active.`;
-        setVerifyMismatch({ clubId, reason });
+      const notice = classifyVerifyResult(target);
+
+      if (notice.kind === "active") {
+        setVerifyNotice(null);
         if (!opts?.silent) {
-          toast({
-            title: "Membership not confirmed",
-            description: reason,
-            variant: "destructive",
-          });
+          toast({ title: "🎉 Welcome to the Fan Club!", description: notice.reason });
         }
-        return false;
+        return true;
       }
 
-      setVerifyMismatch(null);
+      setVerifyNotice({ clubId, notice });
       if (!opts?.silent) {
-        toast({ title: "🎉 Welcome to the Fan Club!", description: "Exclusive content unlocked." });
+        toast({
+          title: notice.title,
+          description: notice.reason,
+          variant: notice.tone === "success" ? "default" : "destructive",
+        });
       }
-      return true;
+      return false;
     } catch (e: any) {
-      const reason = e?.message || "Could not reach Stripe. Please try again.";
-      setVerifyMismatch({ clubId, reason });
+      const notice = classifyVerifyError(e);
+      setVerifyNotice({ clubId, notice });
       if (!opts?.silent) {
-        toast({ title: "Verification failed", description: reason, variant: "destructive" });
+        toast({ title: notice.title, description: notice.reason, variant: "destructive" });
       }
       return false;
     } finally {
@@ -253,31 +250,50 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
           )}
         </CardTitle>
       </CardHeader>
-      {verifyMismatch && (
+      {verifyNotice && (
         <div className="px-6 pb-3">
-          <Alert variant="destructive">
+          <Alert
+            variant={verifyNotice.notice.tone === "error" ? "destructive" : "default"}
+            className={
+              verifyNotice.notice.tone === "warn"
+                ? "border-amber-500/40 bg-amber-500/10"
+                : verifyNotice.notice.tone === "success"
+                  ? "border-emerald-500/40 bg-emerald-500/10"
+                  : undefined
+            }
+          >
             <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Payment succeeded but access isn't active yet</AlertTitle>
+            <AlertTitle>{verifyNotice.notice.title}</AlertTitle>
             <AlertDescription className="space-y-2">
-              <p className="text-xs">{verifyMismatch.reason}</p>
-              <p className="text-xs opacity-80">
-                Stripe webhooks can take a few seconds. Click re-verify to sync now,
-                or open the billing portal to inspect the subscription.
-              </p>
+              <p className="text-xs">{verifyNotice.notice.reason}</p>
+              {verifyNotice.notice.portalSteps.length > 0 && (
+                <div className="rounded-md border border-border/50 bg-background/40 p-2">
+                  <p className="text-[11px] font-semibold mb-1 flex items-center gap-1">
+                    <CreditCard className="h-3 w-3" /> What to do in Billing Portal
+                  </p>
+                  <ol className="text-[11px] list-decimal ml-4 space-y-0.5 opacity-90">
+                    {verifyNotice.notice.portalSteps.map((s, i) => (
+                      <li key={i}>{s}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
               <div className="flex gap-2 flex-wrap pt-1">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="gap-1 h-7"
-                  onClick={() => runVerify(verifyMismatch.clubId)}
-                  disabled={verifying}
-                >
-                  {verifying
-                    ? <Loader2 className="h-3 w-3 animate-spin" />
-                    : <RefreshCw className="h-3 w-3" />}
-                  Re-verify with Stripe
-                </Button>
-                {hasAnyMembership && (
+                {verifyNotice.notice.showRetry && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="gap-1 h-7"
+                    onClick={() => runVerify(verifyNotice.clubId)}
+                    disabled={verifying}
+                  >
+                    {verifying
+                      ? <Loader2 className="h-3 w-3 animate-spin" />
+                      : <RefreshCw className="h-3 w-3" />}
+                    Re-verify with Stripe
+                  </Button>
+                )}
+                {verifyNotice.notice.showPortal && (
                   <Button
                     size="sm"
                     variant="outline"
@@ -287,13 +303,14 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
                   >
                     <CreditCard className="h-3 w-3" />
                     Open billing portal
+                    <ExternalLink className="h-3 w-3 opacity-60" />
                   </Button>
                 )}
                 <Button
                   size="sm"
                   variant="ghost"
                   className="h-7"
-                  onClick={() => setVerifyMismatch(null)}
+                  onClick={() => setVerifyNotice(null)}
                 >
                   Dismiss
                 </Button>

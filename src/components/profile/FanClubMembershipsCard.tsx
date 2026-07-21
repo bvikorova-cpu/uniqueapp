@@ -77,10 +77,52 @@ export const FanClubMembershipsCard = () => {
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       setLastVerifiedAt(new Date());
-      toast.success("Re-verified with Stripe.");
+
+      const memberships = ((data as any)?.memberships ?? []) as Array<{
+        fan_club_id: string;
+        active: boolean;
+        status: string;
+      }>;
+
+      if (fanClubId) {
+        const { classifyVerifyResult } = await import("@/lib/fanclubVerifyStatus");
+        const notice = classifyVerifyResult(memberships.find((m) => m.fan_club_id === fanClubId));
+        if (notice.kind === "active") {
+          toast.success(notice.title, { description: notice.reason });
+        } else {
+          const steps = notice.portalSteps.length
+            ? `\n\nBilling Portal: ${notice.portalSteps.join(" → ")}`
+            : "";
+          toast.error(notice.title, {
+            description: notice.reason + steps,
+            duration: 10000,
+            action: notice.showPortal
+              ? { label: "Open Portal", onClick: openBillingPortal }
+              : undefined,
+          });
+        }
+      } else {
+        const bad = memberships.filter((m) => !m.active);
+        if (bad.length === 0) {
+          toast.success("All memberships verified against Stripe.");
+        } else {
+          toast.warning(`${bad.length} membership${bad.length > 1 ? "s" : ""} need attention`, {
+            description: bad.map((m) => `• ${m.status}`).join("\n"),
+            duration: 10000,
+            action: { label: "Open Portal", onClick: openBillingPortal },
+          });
+        }
+      }
       await load();
     } catch (e: any) {
-      toast.error(e?.message || "Re-verify failed.");
+      const { classifyVerifyError } = await import("@/lib/fanclubVerifyStatus");
+      const notice = classifyVerifyError(e);
+      toast.error(notice.title, {
+        description: notice.reason,
+        action: notice.showPortal
+          ? { label: "Open Portal", onClick: openBillingPortal }
+          : undefined,
+      });
     } finally {
       setVerifying(null);
     }
