@@ -142,7 +142,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
           <CardContent className="pt-6 space-y-3">
             <Input placeholder="Challenge title..." value={title} onChange={(e) => setTitle(e.target.value)} />
             <Textarea placeholder="Description..." value={description} onChange={(e) => setDescription(e.target.value)} />
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <Select value={challengeType} onValueChange={setChallengeType}>
                 <SelectTrigger className="text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -152,7 +152,8 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
                 </SelectContent>
               </Select>
               <Input type="number" placeholder="Target" value={targetValue} onChange={(e) => setTargetValue(e.target.value)} className="text-xs" />
-              <Input type="number" placeholder="Karma" value={karmaReward} onChange={(e) => setKarmaReward(e.target.value)} className="text-xs" />
+              <Input type="number" placeholder="Karma reward" value={karmaReward} onChange={(e) => setKarmaReward(e.target.value)} className="text-xs" />
+              <Input type="number" placeholder="AI credits reward" value={creditReward} onChange={(e) => setCreditReward(e.target.value)} className="text-xs" />
             </div>
             <Button onClick={() => createChallenge.mutate()} disabled={!title.trim() || createChallenge.isPending} className="w-full">
               {createChallenge.isPending ? "Creating..." : "Launch Challenge"}
