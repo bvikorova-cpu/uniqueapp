@@ -106,6 +106,7 @@ function TagPicker({
 export default function ExclusiveConnection() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [checkingMember, setCheckingMember] = useState(true);
   const [isMember, setIsMember] = useState(false);
@@ -115,7 +116,13 @@ export default function ExclusiveConnection() {
   const [sent, setSent] = useState<Interest[]>([]);
   const [received, setReceived] = useState<Interest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"discover" | "matches" | "profile">("discover");
+  const initialTab = (searchParams.get("tab") as "discover" | "matches" | "profile") || "discover";
+  const [tab, setTab] = useState<"discover" | "matches" | "profile">(initialTab);
+
+  useEffect(() => {
+    const t = searchParams.get("tab");
+    if (t === "discover" || t === "matches" || t === "profile") setTab(t);
+  }, [searchParams]);
 
   // profile form state
   const [pseudonym, setPseudonym] = useState("");
