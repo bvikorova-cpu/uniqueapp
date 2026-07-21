@@ -540,7 +540,7 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/subscription" className="w-full cursor-pointer">
+                      <Link to="/subscriptions" className="w-full cursor-pointer">
                         <Crown className="h-4 w-4 mr-2" />
                         {"Subscription"}
                       </Link>
