@@ -66,6 +66,23 @@ export function ProfileVerificationCard() {
   const [processing, setProcessing] = useState<TierKey | null>(null);
   const [live, setLive] = useState<LiveState | null>(null);
   const [checking, setChecking] = useState(false);
+  const [openingPortal, setOpeningPortal] = useState(false);
+
+  const openBillingPortal = async () => {
+    setOpeningPortal(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("billing-portal", {
+        body: { return_url: window.location.href },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      if ((data as any)?.url) window.open((data as any).url, "_blank");
+    } catch (e: any) {
+      toast.error(e?.message || "Could not open billing portal.");
+    } finally {
+      setOpeningPortal(false);
+    }
+  };
 
   const fetchLive = async () => {
     if (!user) return;
