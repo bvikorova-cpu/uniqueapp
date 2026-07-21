@@ -76,6 +76,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
         challenge_type: challengeType,
         target_value: parseInt(targetValue),
         karma_reward: parseInt(karmaReward),
+        credit_reward: parseInt(creditReward) || 0,
         ends_at: endsAt,
       });
       if (error) throw error;
