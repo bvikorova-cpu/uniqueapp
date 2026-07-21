@@ -137,7 +137,7 @@ const Inner = () => {
       <AdminPageHeader
         icon={ShieldCheck}
         title="Fan Club Verify Audit"
-        description="Every call to fanclub-verify with outcome, timing, and error reason."
+        subtitle="Every call to fanclub-verify with outcome, timing, and error reason."
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
