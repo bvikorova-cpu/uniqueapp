@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Crown, Users, Heart, Eye, TrendingUp, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ interface InfluKingHeroProps {
 }
 
 const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalViews }: InfluKingHeroProps) => {
+  const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -41,10 +43,10 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
   };
 
   const stats = [
-    { icon: Users, label: "Influencers", value: totalInfluencers.toLocaleString(), color: "text-cyan-400" },
-    { icon: Heart, label: "Total Likes", value: totalLikes.toLocaleString(), color: "text-pink-400" },
-    { icon: Eye, label: "Total Views", value: totalViews.toLocaleString(), color: "text-emerald-400" },
-    { icon: TrendingUp, label: "Followers", value: totalFollowers.toLocaleString(), color: "text-amber-400" },
+    { icon: Users, label: t("influking.hero.stat_influencers"), value: totalInfluencers.toLocaleString(), color: "text-cyan-400" },
+    { icon: Heart, label: t("influking.hero.stat_likes"), value: totalLikes.toLocaleString(), color: "text-pink-400" },
+    { icon: Eye, label: t("influking.hero.stat_views"), value: totalViews.toLocaleString(), color: "text-emerald-400" },
+    { icon: TrendingUp, label: t("influking.hero.stat_followers"), value: totalFollowers.toLocaleString(), color: "text-amber-400" },
   ];
 
   return (
@@ -84,11 +86,11 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
       {/* Controls */}
       <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex gap-2 z-20">
         <Button size="icon" variant="ghost" onClick={togglePlay}
-          className="bg-black/40 hover:bg-black/60 text-white rounded-full h-9 w-9 sm:h-10 sm:w-10" aria-label={isPlaying ? "Pause" : "Play"}>
+          className="bg-black/40 hover:bg-black/60 text-white rounded-full h-9 w-9 sm:h-10 sm:w-10" aria-label={isPlaying ? t("influking.hero.pause") : t("influking.hero.play")}>
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
         </Button>
         <Button size="icon" variant="ghost" onClick={toggleMute}
-          className="bg-black/40 hover:bg-black/60 text-white rounded-full h-9 w-9 sm:h-10 sm:w-10" aria-label={isMuted ? "Unmute" : "Mute"}>
+          className="bg-black/40 hover:bg-black/60 text-white rounded-full h-9 w-9 sm:h-10 sm:w-10" aria-label={isMuted ? t("influking.hero.unmute") : t("influking.hero.mute")}>
           {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
         </Button>
       </div>
@@ -98,7 +100,7 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
           <div className="inline-flex items-center gap-2 mb-4 px-5 py-1.5 bg-amber-500/25 backdrop-blur-sm rounded-full border border-amber-400/40">
             <Crown className="h-4 w-4 text-amber-300" />
-            <span className="text-amber-200 font-semibold text-sm uppercase tracking-wider">Influ-King</span>
+            <span className="text-amber-200 font-semibold text-sm uppercase tracking-wider">{t("influking.hero.badge")}</span>
           </div>
         </motion.div>
 
@@ -114,7 +116,7 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
             backgroundClip: "text",
           }}
         >
-          Rise to the Top
+          {t("influking.hero.title")}
         </motion.h1>
 
         <motion.p
@@ -122,7 +124,7 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
           className="text-white/90 text-sm sm:text-base md:text-lg max-w-[38ch] mb-5 sm:mb-6 leading-relaxed"
           style={{ textShadow: "0 2px 8px rgba(0,0,0,0.8)" }}
         >
-          Rule the feed, grow your empire, and monetize your influence with AI-powered tools and real-time analytics.
+          {t("influking.hero.subtitle")}
         </motion.p>
 
         {/* Stats */}
