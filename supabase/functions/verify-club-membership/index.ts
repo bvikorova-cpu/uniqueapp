@@ -1,6 +1,12 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import {
+  CLUB_SIGNUP_AI_CREDITS,
+  CLUB_REFERRAL_CREDIT_EUR,
+  contributeToGoodFund,
+  grantClubAiCredits,
+} from "../_shared/club-perks.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,7 +37,7 @@ serve(async (req) => {
     });
 
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ["subscription", "customer", "shipping_details", "line_items"],
+      expand: ["subscription", "customer", "shipping_details", "line_items", "customer_details"],
     });
 
     if (session.payment_status !== "paid" && session.status !== "complete") {
@@ -52,8 +58,19 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Upsert membership
+    // Extract shipping + custom fields from Stripe
     const shipping = (session as any).shipping_details ?? null;
+    const customerDetails: any = (session as any).customer_details ?? {};
+    const customFields: any[] = (session as any).custom_fields ?? [];
+    const recipientField = customFields.find((f) => f.key === "recipient_name");
+    const noteField = customFields.find((f) => f.key === "delivery_note");
+    const recipientName = recipientField?.text?.value
+      ?? shipping?.name
+      ?? customerDetails?.name
+      ?? null;
+    const phone = customerDetails?.phone ?? shipping?.phone ?? null;
+    const shippingNote = noteField?.text?.value ?? null;
+
     const periodEnd = sub?.current_period_end
       ? new Date(sub.current_period_end * 1000).toISOString()
       : null;
@@ -64,72 +81,88 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle();
 
+    const updatePayload: Record<string, unknown> = {
+      tier,
+      status: "active",
+      stripe_customer_id: customerId,
+      stripe_subscription_id: sub?.id ?? null,
+      stripe_checkout_session_id: session.id,
+      current_period_end: periodEnd,
+      shipping_status: tier === "physical" ? "pending" : "not_applicable",
+      shipping_address: shipping,
+      ...(tier === "physical"
+        ? {
+            recipient_name: recipientName,
+            phone,
+            shipping_note: shippingNote,
+          }
+        : {}),
+    };
+
     let membershipId: string;
     if (existing) {
       const { error } = await admin
         .from("club_memberships")
-        .update({
-          tier,
-          status: "active",
-          stripe_customer_id: customerId,
-          stripe_subscription_id: sub?.id ?? null,
-          stripe_checkout_session_id: session.id,
-          current_period_end: periodEnd,
-          shipping_status: tier === "physical" ? "pending" : "not_applicable",
-          shipping_address: shipping,
-        })
-        .eq("id", existing.id);
+        .update(updatePayload)
+        .eq("id", (existing as any).id);
       if (error) throw error;
-      membershipId = existing.id;
+      membershipId = (existing as any).id;
     } else {
       const { data: inserted, error } = await admin
         .from("club_memberships")
-        .insert({
-          user_id: user.id,
-          tier,
-          status: "active",
-          stripe_customer_id: customerId,
-          stripe_subscription_id: sub?.id ?? null,
-          stripe_checkout_session_id: session.id,
-          current_period_end: periodEnd,
-          shipping_status: tier === "physical" ? "pending" : "not_applicable",
-          shipping_address: shipping,
-        })
+        .insert({ user_id: user.id, ...updatePayload })
         .select("id")
         .single();
       if (error) throw error;
-      membershipId = inserted.id;
+      membershipId = (inserted as any).id;
     }
 
-    // Contribution: 10% of amount_total (in cents) → good fund
+    // ── Perk 1: signup Good Fund contribution (10 % of amount_total) ─────────
     const amountTotal = session.amount_total ?? 0;
     const contributionEur = Math.round(amountTotal * 0.10) / 100;
     if (contributionEur > 0) {
-      await admin.from("club_good_fund_ledger").insert({
-        membership_id: membershipId,
-        amount_eur: contributionEur,
+      await contributeToGoodFund(admin, {
+        membershipId,
+        amountEur: contributionEur,
         source: "signup",
-        stripe_event_id: session.id,
+        stripeEventId: session.id,
       });
     }
 
-    // Referral credit
+    // ── Perk 2: welcome AI credits (idempotent per membership) ───────────────
+    await grantClubAiCredits(admin, {
+      userId: user.id,
+      membershipId,
+      perk: "signup_ai_credits",
+      periodKey: `signup:${membershipId}`,
+      amount: CLUB_SIGNUP_AI_CREDITS,
+      stripeEventId: session.id,
+    });
+
+    // ── Perk 3: referral reward (€5 credit to referrer) ──────────────────────
     if (referralCode) {
       const { data: refUser } = await admin
         .from("club_memberships")
         .select("user_id")
         .eq("id", referralCode)
         .maybeSingle();
-      if (refUser?.user_id && refUser.user_id !== user.id) {
-        await admin
+      if ((refUser as any)?.user_id && (refUser as any).user_id !== user.id) {
+        const referrerId = (refUser as any).user_id;
+        const { error: refErr } = await admin
           .from("club_referrals")
           .insert({
-            referrer_user_id: refUser.user_id,
+            referrer_user_id: referrerId,
             referred_membership_id: membershipId,
-            credit_awarded_eur: 5.0,
-          })
-          .then(() => {})
-          .catch(() => {});
+            credit_awarded_eur: CLUB_REFERRAL_CREDIT_EUR,
+          });
+        if (!refErr) {
+          await admin.from("notifications").insert({
+            user_id: referrerId,
+            type: "club_referral",
+            title: "🎁 +€5 referral credit",
+            message: "Someone joined the Unique VIP Club with your invite link.",
+          }).then(() => {}).catch(() => {});
+        }
       }
     }
 
@@ -145,3 +178,4 @@ serve(async (req) => {
     );
   }
 });
+
