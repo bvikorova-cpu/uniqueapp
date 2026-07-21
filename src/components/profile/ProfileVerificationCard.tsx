@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, Crown, Star, Sparkles, Check, ArrowRight, ArrowDown, RefreshCw, X, RotateCcw, Zap } from "lucide-react";
+import { Shield, Crown, Star, Sparkles, Check, ArrowRight, ArrowDown, RefreshCw, X, RotateCcw, Zap, CreditCard, ExternalLink } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -66,6 +66,23 @@ export function ProfileVerificationCard() {
   const [processing, setProcessing] = useState<TierKey | null>(null);
   const [live, setLive] = useState<LiveState | null>(null);
   const [checking, setChecking] = useState(false);
+  const [openingPortal, setOpeningPortal] = useState(false);
+
+  const openBillingPortal = async () => {
+    setOpeningPortal(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("billing-portal", {
+        body: { return_url: window.location.href },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      if ((data as any)?.url) window.open((data as any).url, "_blank");
+    } catch (e: any) {
+      toast.error(e?.message || "Could not open billing portal.");
+    } finally {
+      setOpeningPortal(false);
+    }
+  };
 
   const fetchLive = async () => {
     if (!user) return;
@@ -217,6 +234,24 @@ export function ProfileVerificationCard() {
           >
             <RefreshCw className={`w-3.5 h-3.5 ${checking ? "animate-spin" : ""}`} />
           </button>
+          {isSubscribed && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-8 gap-1 text-xs"
+              disabled={openingPortal}
+              onClick={() => void openBillingPortal()}
+              title="Manage payment methods, invoices and cancellation in Stripe"
+            >
+              {openingPortal ? (
+                <Sparkles className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <CreditCard className="w-3.5 h-3.5" />
+              )}
+              Manage billing
+              <ExternalLink className="w-3 h-3 opacity-60" />
+            </Button>
+          )}
         </div>
       </div>
 
