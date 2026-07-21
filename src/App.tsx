@@ -60,6 +60,7 @@ const DisneyCastleRedirect = () => {
 };
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
+import FanClubAutoResyncMount from "@/components/fanclub/FanClubAutoResyncMount";
 
 import { RealTimeNotificationsMount } from "@/components/notifications/RealTimeNotificationsMount";
 import PushNotificationsMount from "@/components/notifications/PushNotificationsMount";
@@ -670,8 +671,10 @@ const App = () => {
               <RealTimeNotificationsMount />
               <GlobalMessageChimeMount />
               <PushNotificationsMount />
+              <FanClubAutoResyncMount />
               <WelcomeOnboarding />
               <ComebackBonusModal />
+
             </Suspense>
             <AnimationProvider>
               <CurrencyProvider>
