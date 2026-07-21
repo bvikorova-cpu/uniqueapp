@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import clubCardPreview from "@/assets/club-card-preview.png.asset.json";
+import clubHeroVideo from "@/assets/unique-club.mp4.asset.json";
 import { useClubMembership } from "@/hooks/useClubMembership";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -110,8 +111,40 @@ export default function Club() {
         <meta name="description" content="Get your Unique Club membership card. €20 digital or €30 physical, then just €1.50/month. 15% off everything, 50 free AI credits monthly, and 10% of every payment supports good causes." />
       </Helmet>
 
+      {/* HERO VIDEO */}
+      <section className="px-4 pt-4">
+        <div className="relative w-full max-w-6xl mx-auto h-[280px] sm:h-[380px] md:h-[460px] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-amber-500/30">
+          <video
+            autoPlay muted loop playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: "saturate(1.15) brightness(1.05)" }}
+            src={clubHeroVideo.url}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="relative z-10 h-full flex flex-col justify-end p-4 sm:p-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="inline-block border-2 border-amber-400/50 bg-black/40 backdrop-blur-lg rounded-2xl px-5 py-3 sm:px-6 sm:py-4 self-start"
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <Crown className="h-4 w-4 text-amber-300" />
+                <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300">Unique Club · VIP</span>
+              </div>
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-white drop-shadow-lg">
+                Join the Club <span className="bg-gradient-to-r from-amber-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">that supports good</span>
+              </h1>
+              <p className="text-white/90 text-xs sm:text-base font-semibold mt-1 drop-shadow">
+                €20 or €30 · then just €1.50/month · 10% goes to good causes
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* HERO */}
-      <section className="relative overflow-hidden pt-16 pb-12 px-4">
+      <section className="relative overflow-hidden pt-10 pb-12 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
