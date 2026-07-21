@@ -18,12 +18,8 @@ const reminderTypes = [
   { id: "grooming", label: "Grooming", icon: Calendar, color: "text-purple-400" },
 ];
 
-const mockReminders = [
-  { type: "feeding", text: "Morning feeding — Max", time: "7:00 AM", active: true },
-  { type: "vaccination", text: "Rabies booster due", time: "Apr 20", active: true },
-  { type: "vet_visit", text: "Annual checkup", time: "May 5", active: true },
-  { type: "medication", text: "Flea treatment", time: "Monthly", active: false },
-];
+type Reminder = { type: string; text: string; time: string; active: boolean };
+const mockReminders: Reminder[] = [];
 
 export default function PetSmartReminders({ onBack }: { onBack: () => void }) {
   const [loading, setLoading] = useState(false);
