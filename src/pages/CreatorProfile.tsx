@@ -12,6 +12,7 @@ import { CreatorMediaUpload } from "@/components/creator/CreatorMediaUpload";
 import { CreatorContentPackForm } from "@/components/creator/CreatorContentPackForm";
 import { CreatorContentPacks } from "@/components/creator/CreatorContentPacks";
 import { SendCreatorGiftDialog } from "@/components/creator/SendCreatorGiftDialog";
+import { GiftWall } from "@/components/creator/GiftWall";
 import { CreatorProfileEditForm } from "@/components/creator/CreatorProfileEditForm";
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 import { CreatorLiveStreams } from "@/components/creator/CreatorLiveStreams";
