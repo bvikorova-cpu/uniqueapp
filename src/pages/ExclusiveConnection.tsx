@@ -556,6 +556,30 @@ export default function ExclusiveConnection() {
                         <Heart className="w-3.5 h-3.5" /> Express interest
                       </button>
                     )}
+
+                    <div className="mt-2 flex items-center justify-between text-[11px] text-white/40">
+                      <button
+                        onClick={() => setReportTarget({ userId: p.user_id, kind: "profile", pseudonym: p.pseudonym })}
+                        className="inline-flex items-center gap-1 hover:text-amber-300"
+                      >
+                        <Flag className="w-3 h-3" /> Report
+                      </button>
+                      <button
+                        onClick={() => blockUser(p.user_id)}
+                        className="inline-flex items-center gap-1 hover:text-red-300"
+                      >
+                        <Ban className="w-3 h-3" /> Block
+                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={() => adminDeleteProfile(p.user_id)}
+                          className="inline-flex items-center gap-1 text-red-300/80 hover:text-red-300"
+                          title="Admin: delete profile"
+                        >
+                          <ShieldCheck className="w-3 h-3" /> Remove
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}
