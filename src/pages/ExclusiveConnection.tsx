@@ -308,6 +308,92 @@ export default function ExclusiveConnection() {
     await load();
   };
 
+  const blockUser = async (targetUserId: string) => {
+    if (!user) return;
+    if (!window.confirm("Block this member? They will disappear from Discover and cannot exchange interest with you.")) return;
+    // Remove any existing interest either direction so the match dissolves.
+    await (supabase as any)
+      .from("exclusive_connection_interests")
+      .delete()
+      .or(`and(from_user.eq.${user.id},to_user.eq.${targetUserId}),and(from_user.eq.${targetUserId},to_user.eq.${user.id})`);
+    const { error } = await (supabase as any)
+      .from("exclusive_connection_blocks")
+      .insert({ blocker_user: user.id, blocked_user: targetUserId });
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Member blocked");
+    await load();
+  };
+
+  const unblockUser = async (targetUserId: string) => {
+    if (!user) return;
+    const { error } = await (supabase as any)
+      .from("exclusive_connection_blocks")
+      .delete()
+      .eq("blocker_user", user.id)
+      .eq("blocked_user", targetUserId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Unblocked");
+    await load();
+  };
+
+  const submitReport = async () => {
+    if (!user || !reportTarget) return;
+    setReportSubmitting(true);
+    const { error } = await (supabase as any).from("exclusive_connection_reports").insert({
+      reporter_user: user.id,
+      target_user: reportTarget.userId,
+      kind: reportTarget.kind,
+      interest_id: reportTarget.interestId ?? null,
+      reason: reportReason,
+      note: reportNote.trim().slice(0, 500) || null,
+    });
+    setReportSubmitting(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Report submitted for admin review");
+    setReportTarget(null);
+    setReportReason("Harassment");
+    setReportNote("");
+  };
+
+  const resolveReport = async (reportId: string, status: "resolved" | "dismissed") => {
+    if (!user) return;
+    const { error } = await (supabase as any)
+      .from("exclusive_connection_reports")
+      .update({ status, resolved_by: user.id, resolved_at: new Date().toISOString() })
+      .eq("id", reportId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(status === "resolved" ? "Resolved" : "Dismissed");
+    await loadReports();
+  };
+
+  const adminDeleteProfile = async (targetUserId: string) => {
+    if (!isAdmin) return;
+    if (!window.confirm("Delete this member's connection profile? They can create a new one.")) return;
+    const { error } = await (supabase as any)
+      .from("exclusive_connection_profiles")
+      .delete()
+      .eq("user_id", targetUserId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Profile removed");
+    await load();
+  };
+
+
   if (checkingMember) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
