@@ -29,45 +29,53 @@ export default function PetSocialNetwork() {
         </Button>
       </div>
 
-      <div className="space-y-3">
-        {mockPosts.map((post, i) => (
-          <motion.div key={post.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-            <Card className="bg-card/80 border-purple-500/10 hover:border-purple-500/30 transition-all">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                    {post.user.charAt(0)}
+      {mockPosts.length === 0 ? (
+        <Card className="bg-card/80 border-purple-500/10">
+          <CardContent className="p-8 text-center text-sm text-muted-foreground">
+            No pet posts yet. Be the first to share your pet's mood with the community!
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {mockPosts.map((post, i) => (
+            <motion.div key={post.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+              <Card className="bg-card/80 border-purple-500/10 hover:border-purple-500/30 transition-all">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                      {post.user.charAt(0)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-sm">{post.user}</span>
+                        <Badge variant="outline" className="text-[9px]">{post.badge}</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{post.pet}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-[10px]">{post.mood}</Badge>
+                        <Badge variant="outline" className="text-[10px]">
+                          <Star className="h-2.5 w-2.5 mr-0.5 text-yellow-500" /> {post.score}/100
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-4 mt-3">
+                        <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-pink-400 transition-colors">
+                          <Heart className="h-3.5 w-3.5" /> {post.likes}
+                        </button>
+                        <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-blue-400 transition-colors">
+                          <MessageCircle className="h-3.5 w-3.5" /> {post.comments}
+                        </button>
+                        <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-purple-400 transition-colors">
+                          <Share2 className="h-3.5 w-3.5" /> Share
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-bold text-sm">{post.user}</span>
-                      <Badge variant="outline" className="text-[9px]">{post.badge}</Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground">{post.pet}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-[10px]">{post.mood}</Badge>
-                      <Badge variant="outline" className="text-[10px]">
-                        <Star className="h-2.5 w-2.5 mr-0.5 text-yellow-500" /> {post.score}/100
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-4 mt-3">
-                      <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-pink-400 transition-colors">
-                        <Heart className="h-3.5 w-3.5" /> {post.likes}
-                      </button>
-                      <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-blue-400 transition-colors">
-                        <MessageCircle className="h-3.5 w-3.5" /> {post.comments}
-                      </button>
-                      <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-purple-400 transition-colors">
-                        <Share2 className="h-3.5 w-3.5" /> Share
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
     </>
     );
