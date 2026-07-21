@@ -79,7 +79,6 @@ export default function Club() {
   const { total, members } = useGoodFund();
   const { taken, total: foundingTotal } = useFoundingProgress();
   const [buying, setBuying] = useState<"digital" | "physical" | null>(null);
-  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
 
   // Verify checkout after redirect
@@ -112,22 +111,7 @@ export default function Club() {
       return;
     }
     setBuying(tier);
-    setCheckoutUrl(null);
-    try {
-      const url = await startCheckout(tier, { open: false });
-      setCheckoutUrl(url);
-      toast({
-        title: "Stripe checkout is ready",
-        description: "Tap the secure Stripe button that appeared on the screen.",
-      });
-      window.setTimeout(() => {
-        document.getElementById("club-checkout-ready")?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 50);
-    } catch (e: any) {
-      toast({ title: "Checkout failed", description: e.message, variant: "destructive" });
-    } finally {
-      setBuying(null);
-    }
+    navigate(`/club/checkout/${tier}`);
   }
 
   return (
@@ -304,40 +288,6 @@ export default function Club() {
               </div>
             </Card>
           </div>
-
-          {checkoutUrl && (
-            <Card id="club-checkout-ready" className="mt-6 border-2 border-amber-500 bg-amber-50 p-5 text-center shadow-xl dark:bg-amber-950/30">
-              <h3 className="text-lg font-black text-amber-700 dark:text-amber-300">
-                Stripe checkout is ready
-              </h3>
-              <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">
-                If your browser did not open Stripe automatically, tap this secure button.
-              </p>
-              <div className="mt-4 flex flex-col justify-center gap-3 sm:flex-row">
-                <Button asChild size="lg" className="bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500">
-                  <a href={checkoutUrl} target="_top">
-                    Open Stripe here <ArrowRight className="ml-2 h-4 w-4" />
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline">
-                  <a href={checkoutUrl} target="_blank" rel="noopener noreferrer">
-                    Open in new tab
-                  </a>
-                </Button>
-              </div>
-            </Card>
-          )}
-
-          {checkoutUrl && (
-            <div className="fixed inset-x-3 bottom-24 z-[80] rounded-2xl border-2 border-amber-400 bg-background/95 p-4 text-center shadow-2xl backdrop-blur md:hidden">
-              <p className="text-sm font-bold text-foreground">Stripe checkout is ready</p>
-              <Button asChild className="mt-3 h-12 w-full bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 text-base">
-                <a href={checkoutUrl} target="_top">
-                  Tap to open Stripe <ArrowRight className="ml-2 h-4 w-4" />
-                </a>
-              </Button>
-            </div>
-          )}
 
           <p className="text-center text-xs text-muted-foreground mt-6">
             Cancel any time from your billing portal. 10% of every payment goes to the Unique Good Fund.
