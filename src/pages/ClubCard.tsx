@@ -1,17 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Crown, RotateCw, Sparkles, Trophy } from "lucide-react";
+import { ArrowLeft, Crown, Download, FileDown, RotateCw, Trophy } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { useClubMembership } from "@/hooks/useClubMembership";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ClubCard() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { membership, loading, isMember } = useClubMembership();
   const [flipped, setFlipped] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
+  const [exporting, setExporting] = useState<null | "png" | "pdf">(null);
+  const frontRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
@@ -36,6 +42,40 @@ export default function ClubCard() {
   }
 
   const memberNum = String(membership.member_number).padStart(4, "0");
+
+  const handleExport = async (kind: "png" | "pdf") => {
+    if (!frontRef.current) return;
+    try {
+      setExporting(kind);
+      const canvas = await html2canvas(frontRef.current, {
+        backgroundColor: null,
+        scale: 3,
+        useCORS: true,
+      });
+      const dataUrl = canvas.toDataURL("image/png");
+      const filename = `unique-club-card-${memberNum}`;
+      if (kind === "png") {
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = `${filename}.png`;
+        a.click();
+      } else {
+        const pdf = new jsPDF({
+          orientation: "landscape",
+          unit: "mm",
+          format: [85.6, 53.98], // ISO/IEC 7810 ID-1 credit card
+        });
+        pdf.addImage(dataUrl, "PNG", 0, 0, 85.6, 53.98);
+        pdf.save(`${filename}.pdf`);
+      }
+      toast({ title: `Card saved as ${kind.toUpperCase()}`, description: "Enjoy your VIP membership ✨" });
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Export failed", description: "Please try again.", variant: "destructive" });
+    } finally {
+      setExporting(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-950 via-pink-950 to-amber-950 p-6 flex flex-col items-center pt-16">
@@ -119,12 +159,76 @@ export default function ClubCard() {
           <RotateCw className="h-4 w-4 mr-2" /> Flip card
         </Button>
         <Button
+          onClick={() => handleExport("png")}
+          disabled={exporting !== null}
+          className="bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 text-white"
+        >
+          <Download className="h-4 w-4 mr-2" />
+          {exporting === "png" ? "Preparing…" : "Download PNG"}
+        </Button>
+        <Button
+          onClick={() => handleExport("pdf")}
+          disabled={exporting !== null}
           variant="outline"
           className="text-white border-white/40 bg-white/10 hover:bg-white/20"
-          onClick={() => window.print()}
         >
-          <Sparkles className="h-4 w-4 mr-2" /> Save / Print
+          <FileDown className="h-4 w-4 mr-2" />
+          {exporting === "pdf" ? "Preparing…" : "Download PDF"}
         </Button>
+      </div>
+
+      {/* Hidden high-res capture surface (not flipped, positioned off-screen) */}
+      <div style={{ position: "fixed", left: "-10000px", top: 0, pointerEvents: "none" }} aria-hidden>
+        <div
+          ref={frontRef}
+          style={{
+            width: 856,
+            height: 540,
+            borderRadius: 48,
+            padding: 48,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            background:
+              "linear-gradient(135deg, #7c3aed 0%, #ec4899 45%, #f59e0b 100%)",
+            color: "white",
+            fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              <div style={{ fontSize: 18, letterSpacing: 4, textTransform: "uppercase", opacity: 0.75 }}>
+                Unique Club
+              </div>
+              <div style={{ fontFamily: "'Lobster Two', cursive", fontSize: 56, fontWeight: 700, lineHeight: 1 }}>
+                Unique
+              </div>
+            </div>
+            <div style={{ fontSize: 64 }}>👑</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 14, letterSpacing: 4, textTransform: "uppercase", opacity: 0.75 }}>
+              Member №
+            </div>
+            <div style={{ fontSize: 96, fontWeight: 900, letterSpacing: 6, lineHeight: 1 }}>
+              #{memberNum}
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", fontSize: 18 }}>
+            <div>
+              <div style={{ fontSize: 12, opacity: 0.7, textTransform: "uppercase", letterSpacing: 2 }}>Holder</div>
+              <div style={{ fontWeight: 600 }}>{email ?? "—"}</div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 12, opacity: 0.7, textTransform: "uppercase", letterSpacing: 2 }}>
+                {membership.tier === "physical" ? "Physical NFC" : "Digital"}
+              </div>
+              {membership.is_founding && (
+                <div style={{ color: "#fde047", fontWeight: 700, letterSpacing: 2 }}>★ FOUNDING</div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

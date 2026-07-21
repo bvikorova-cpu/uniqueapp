@@ -15,6 +15,7 @@ import { useFollowCounts } from "@/hooks/useFollow";
 import { ProfileHero } from "@/components/profile/ProfileHero";
 import { ProfileVerificationCard } from "@/components/profile/ProfileVerificationCard";
 import { FanClubMembershipsCard } from "@/components/profile/FanClubMembershipsCard";
+import { ClubMembershipCard } from "@/components/profile/ClubMembershipCard";
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
 import {
   finishMeTrace,
@@ -706,6 +707,7 @@ const Profile = () => {
 
         {/* Unique Verified / Plus / Pro — direct upgrade on own profile */}
         {currentUserId === userId && <ProfileVerificationCard />}
+        {currentUserId === userId && <ClubMembershipCard />}
         {currentUserId === userId && <FanClubMembershipsCard />}
 
 
