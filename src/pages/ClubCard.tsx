@@ -1,17 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Crown, RotateCw, Sparkles, Trophy } from "lucide-react";
+import { ArrowLeft, Crown, Download, FileDown, RotateCw, Trophy } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { useClubMembership } from "@/hooks/useClubMembership";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ClubCard() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { membership, loading, isMember } = useClubMembership();
   const [flipped, setFlipped] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
+  const [exporting, setExporting] = useState<null | "png" | "pdf">(null);
+  const frontRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
