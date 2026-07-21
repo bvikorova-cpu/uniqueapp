@@ -159,15 +159,15 @@ export default function ExclusiveConnection() {
         return;
       }
       const { data } = await (supabase as any).rpc("is_exclusive_member", { _uid: user.id });
-      setIsMember(!!data);
+      setIsMember(!!data || isAdmin);
       setCheckingMember(false);
     })();
-  }, [user]);
+  }, [user, isAdmin]);
 
   const load = async () => {
     if (!user || !isMember) return;
     setLoading(true);
-    const [{ data: mine }, { data: all }, { data: outgoing }, { data: incoming }] =
+    const [{ data: mine }, { data: all }, { data: outgoing }, { data: incoming }, { data: myBlocks }] =
       await Promise.all([
         supabase
           .from("exclusive_connection_profiles" as any)
@@ -188,11 +188,24 @@ export default function ExclusiveConnection() {
           .from("exclusive_connection_interests" as any)
           .select("*")
           .eq("to_user", user.id),
+        supabase
+          .from("exclusive_connection_blocks" as any)
+          .select("blocked_user")
+          .eq("blocker_user", user.id),
       ]);
     setMyProfile((mine as any) ?? null);
     setProfiles(((all as any) ?? []).filter((p: Profile) => p.user_id !== user.id));
     setSent(((outgoing as any) ?? []) as Interest[]);
     setReceived(((incoming as any) ?? []) as Interest[]);
+    setBlockedIds(new Set(((myBlocks as any) ?? []).map((r: any) => r.blocked_user)));
+
+    // best-effort: fetch who blocked me (only readable to admins under RLS)
+    const { data: blockedByRows } = await supabase
+      .from("exclusive_connection_blocks" as any)
+      .select("blocker_user")
+      .eq("blocked_user", user.id);
+    setBlockedByIds(new Set(((blockedByRows as any) ?? []).map((r: any) => r.blocker_user)));
+
     if (mine) {
       const p = mine as any;
       setPseudonym(p.pseudonym);
@@ -211,6 +224,21 @@ export default function ExclusiveConnection() {
   useEffect(() => {
     if (isMember) load();
   }, [isMember, user?.id]);
+
+  const loadReports = async () => {
+    if (!isAdmin) return;
+    const { data } = await supabase
+      .from("exclusive_connection_reports" as any)
+      .select("*")
+      .eq("status", "open")
+      .order("created_at", { ascending: false })
+      .limit(100);
+    setReports((data as any) ?? []);
+  };
+
+  useEffect(() => {
+    if (isAdmin && moderationOpen) loadReports();
+  }, [isAdmin, moderationOpen]);
 
   const sentSet = useMemo(() => new Set(sent.map((s) => s.to_user)), [sent]);
   const receivedSet = useMemo(() => new Set(received.map((r) => r.from_user)), [received]);
