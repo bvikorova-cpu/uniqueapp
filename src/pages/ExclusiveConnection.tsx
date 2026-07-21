@@ -723,9 +723,133 @@ export default function ExclusiveConnection() {
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save profile
             </button>
+
+            {blockedIds.size > 0 && (
+              <div className="pt-4 border-t border-white/10">
+                <div className="text-xs uppercase tracking-[0.2em] text-white/50 mb-3">
+                  Blocked members ({blockedIds.size})
+                </div>
+                <div className="space-y-2">
+                  {[...blockedIds].map((uid) => (
+                    <div key={uid} className="flex items-center justify-between text-xs text-white/60 border border-white/10 rounded-lg px-3 py-2">
+                      <span className="font-mono truncate">{uid.slice(0, 8)}…</span>
+                      <button
+                        onClick={() => unblockUser(uid)}
+                        className="text-amber-300 hover:text-amber-200"
+                      >
+                        Unblock
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      {/* Report modal */}
+      {reportTarget && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-neutral-950 border border-amber-500/30 rounded-2xl max-w-md w-full p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-serif text-amber-100 text-lg">Report {reportTarget.pseudonym}</h2>
+              <button onClick={() => setReportTarget(null)} className="text-white/40 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div>
+              <label className="text-[11px] uppercase tracking-widest text-white/50">Reason</label>
+              <select
+                value={reportReason}
+                onChange={(e) => setReportReason(e.target.value)}
+                className="mt-2 w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-400/60 outline-none"
+              >
+                <option>Harassment</option>
+                <option>Spam</option>
+                <option>Impersonation</option>
+                <option>Explicit content</option>
+                <option>Fraud / scam</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-[11px] uppercase tracking-widest text-white/50">Note (optional)</label>
+              <textarea
+                value={reportNote}
+                onChange={(e) => setReportNote(e.target.value)}
+                maxLength={500}
+                rows={3}
+                className="mt-2 w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-400/60 outline-none"
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setReportTarget(null)}
+                className="px-4 py-2 text-xs rounded-full border border-white/10 text-white/60 hover:border-white/30"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitReport}
+                disabled={reportSubmitting}
+                className="px-4 py-2 text-xs rounded-full bg-amber-400 text-black font-medium hover:bg-amber-300 disabled:opacity-50"
+              >
+                {reportSubmitting ? "Submitting…" : "Submit report"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin moderation drawer */}
+      {isAdmin && moderationOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start justify-end p-4">
+          <div className="bg-neutral-950 border border-red-500/30 rounded-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-auto">
+            <div className="flex items-center justify-between">
+              <h2 className="font-serif text-red-100 text-lg flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4" /> Moderation queue
+              </h2>
+              <button onClick={() => setModerationOpen(false)} className="text-white/40 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            {reports.length === 0 && (
+              <p className="text-sm text-white/50 py-10 text-center">No open reports.</p>
+            )}
+            {reports.map((r) => (
+              <div key={r.id} className="border border-white/10 rounded-lg p-4 space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-red-200 font-medium">{r.reason}</span>
+                  <span className="text-[10px] uppercase tracking-widest text-white/40">{r.kind}</span>
+                </div>
+                <div className="text-xs text-white/50">Target: <span className="font-mono">{r.target_user.slice(0, 8)}…</span></div>
+                {r.note && <p className="text-xs text-white/70 italic">"{r.note}"</p>}
+                <div className="flex gap-2 pt-2">
+                  <button
+                    onClick={() => adminDeleteProfile(r.target_user).then(() => resolveReport(r.id, "resolved"))}
+                    className="text-xs px-3 py-1.5 rounded-full bg-red-500/20 text-red-200 border border-red-500/40 hover:bg-red-500/30"
+                  >
+                    Remove profile
+                  </button>
+                  <button
+                    onClick={() => resolveReport(r.id, "resolved")}
+                    className="text-xs px-3 py-1.5 rounded-full border border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/10"
+                  >
+                    Resolve
+                  </button>
+                  <button
+                    onClick={() => resolveReport(r.id, "dismissed")}
+                    className="text-xs px-3 py-1.5 rounded-full border border-white/10 text-white/60 hover:border-white/30"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
