@@ -569,6 +569,7 @@ const AdminPerformance = lazy(() => import("@/pages/admin/AdminPerformance"));
 const AdminEdgeMonitoring = lazy(() => import("@/pages/admin/AdminEdgeMonitoring"));
 const AdminEdgeTester = lazy(() => import("@/pages/admin/AdminEdgeTester"));
 const AdminButtonTester = lazy(() => import("@/pages/admin/AdminButtonTester"));
+const AdminFanClubVerifyAudit = lazy(() => import("@/pages/admin/AdminFanClubVerifyAudit"));
 const AdminCrawler = lazy(() => import("@/pages/admin/AdminCrawler"));
 const BugReportsManager = lazy(() => import("@/pages/admin/BugReportsManager"));
 const ReportBug = lazy(() => import("@/pages/ReportBug"));
@@ -1150,6 +1151,7 @@ const App = () => {
                         <Route path="/admin/edge-monitoring" element={<ProtectedRoute requireAdmin={true}><AdminEdgeMonitoring /></ProtectedRoute>} />
                         <Route path="/admin/edge-tester" element={<ProtectedRoute requireAdmin={true}><AdminEdgeTester /></ProtectedRoute>} />
                         <Route path="/admin/button-tester" element={<ProtectedRoute requireAdmin={true}><AdminButtonTester /></ProtectedRoute>} />
+                        <Route path="/admin/fanclub-verify-audit" element={<ProtectedRoute requireAdmin={true}><AdminFanClubVerifyAudit /></ProtectedRoute>} />
                         <Route path="/admin/crawler" element={<ProtectedRoute requireAdmin={true}><AdminCrawler /></ProtectedRoute>} />
 
                         <Route path="/admin/bug-reports" element={<ProtectedRoute requireAdmin={true}><BugReportsManager /></ProtectedRoute>} />
