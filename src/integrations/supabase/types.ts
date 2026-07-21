@@ -10575,6 +10575,139 @@ export type Database = {
           },
         ]
       }
+      club_good_fund_ledger: {
+        Row: {
+          amount_eur: number
+          contributed_at: string
+          id: string
+          membership_id: string
+          source: string
+          stripe_event_id: string | null
+        }
+        Insert: {
+          amount_eur: number
+          contributed_at?: string
+          id?: string
+          membership_id: string
+          source: string
+          stripe_event_id?: string | null
+        }
+        Update: {
+          amount_eur?: number
+          contributed_at?: string
+          id?: string
+          membership_id?: string
+          source?: string
+          stripe_event_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_good_fund_ledger_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "club_memberships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_memberships: {
+        Row: {
+          canceled_at: string | null
+          card_pdf_url: string | null
+          created_at: string
+          current_period_end: string | null
+          id: string
+          is_founding: boolean
+          member_number: number
+          monthly_credits_granted_at: string | null
+          referred_by: string | null
+          shipping_address: Json | null
+          shipping_status: Database["public"]["Enums"]["club_shipping_status"]
+          started_at: string
+          status: Database["public"]["Enums"]["club_status"]
+          stripe_checkout_session_id: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          tier: Database["public"]["Enums"]["club_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          canceled_at?: string | null
+          card_pdf_url?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          is_founding?: boolean
+          member_number?: number
+          monthly_credits_granted_at?: string | null
+          referred_by?: string | null
+          shipping_address?: Json | null
+          shipping_status?: Database["public"]["Enums"]["club_shipping_status"]
+          started_at?: string
+          status?: Database["public"]["Enums"]["club_status"]
+          stripe_checkout_session_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier: Database["public"]["Enums"]["club_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          canceled_at?: string | null
+          card_pdf_url?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          is_founding?: boolean
+          member_number?: number
+          monthly_credits_granted_at?: string | null
+          referred_by?: string | null
+          shipping_address?: Json | null
+          shipping_status?: Database["public"]["Enums"]["club_shipping_status"]
+          started_at?: string
+          status?: Database["public"]["Enums"]["club_status"]
+          stripe_checkout_session_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: Database["public"]["Enums"]["club_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      club_referrals: {
+        Row: {
+          awarded_at: string
+          credit_awarded_eur: number
+          id: string
+          referred_membership_id: string
+          referrer_user_id: string
+        }
+        Insert: {
+          awarded_at?: string
+          credit_awarded_eur?: number
+          id?: string
+          referred_membership_id: string
+          referrer_user_id: string
+        }
+        Update: {
+          awarded_at?: string
+          credit_awarded_eur?: number
+          id?: string
+          referred_membership_id?: string
+          referrer_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_referrals_referred_membership_id_fkey"
+            columns: ["referred_membership_id"]
+            isOneToOne: true
+            referencedRelation: "club_memberships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coffee_achievements: {
         Row: {
           achievement_type: string | null
@@ -65657,6 +65790,30 @@ export type Database = {
         }
         Relationships: []
       }
+      club_public_members: {
+        Row: {
+          is_founding: boolean | null
+          member_number: number | null
+          started_at: string | null
+          tier: Database["public"]["Enums"]["club_tier"] | null
+          user_id: string | null
+        }
+        Insert: {
+          is_founding?: boolean | null
+          member_number?: number | null
+          started_at?: string | null
+          tier?: Database["public"]["Enums"]["club_tier"] | null
+          user_id?: string | null
+        }
+        Update: {
+          is_founding?: boolean | null
+          member_number?: number | null
+          started_at?: string | null
+          tier?: Database["public"]["Enums"]["club_tier"] | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       company_reviews_public: {
         Row: {
           advice: string | null
@@ -67833,6 +67990,21 @@ export type Database = {
           xp: number
         }[]
       }
+      get_club_founding_progress: {
+        Args: never
+        Returns: {
+          founding_taken: number
+          founding_total: number
+        }[]
+      }
+      get_club_good_fund_total: {
+        Args: never
+        Returns: {
+          contribution_count: number
+          member_count: number
+          total_eur: number
+        }[]
+      }
       get_confessions_feed: {
         Args: { _limit?: number; _offset?: number }
         Returns: {
@@ -68631,6 +68803,7 @@ export type Database = {
         Returns: boolean
       }
       is_challenge_pro: { Args: { _user_id: string }; Returns: boolean }
+      is_club_member: { Args: { _user_id: string }; Returns: boolean }
       is_community_moderator: {
         Args: { _community_id: string; _user_id: string }
         Returns: boolean
@@ -69183,6 +69356,13 @@ export type Database = {
         | "shoes"
         | "accessories"
         | "bags"
+      club_shipping_status:
+        | "not_applicable"
+        | "pending"
+        | "shipped"
+        | "delivered"
+      club_status: "active" | "past_due" | "canceled" | "pending"
+      club_tier: "digital" | "physical"
       content_status: "draft" | "generated" | "edited" | "published"
       content_type:
         | "social_post"
@@ -69563,6 +69743,14 @@ export const Constants = {
         "accessories",
         "bags",
       ],
+      club_shipping_status: [
+        "not_applicable",
+        "pending",
+        "shipped",
+        "delivered",
+      ],
+      club_status: ["active", "past_due", "canceled", "pending"],
+      club_tier: ["digital", "physical"],
       content_status: ["draft", "generated", "edited", "published"],
       content_type: [
         "social_post",
