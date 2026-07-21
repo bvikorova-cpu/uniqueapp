@@ -339,11 +339,11 @@ const InfluKing = () => {
       <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center">
         <Card className="max-w-md w-full">
           <CardHeader>
-            <CardTitle>Login Required</CardTitle>
-            <CardDescription>You need to log in to access Influ-King</CardDescription>
+            <CardTitle>{t("influking.login_required_title")}</CardTitle>
+            <CardDescription>{t("influking.login_required_desc")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full" onClick={() => window.location.href = "/auth"}>Log In</Button>
+            <Button className="w-full" onClick={() => window.location.href = "/auth"}>{t("influking.login_button")}</Button>
           </CardContent>
         </Card>
       </div>
@@ -420,7 +420,7 @@ const InfluKing = () => {
             <>
               <Dialog open={showPostDialog} onOpenChange={setShowPostDialog}>
                 <DialogTrigger asChild>
-                  <Button size="lg" className="gap-2"><Plus className="h-5 w-5" /> Add Post</Button>
+                  <Button size="lg" className="gap-2"><Plus className="h-5 w-5" /> {t("influking.add_post")}</Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
@@ -459,8 +459,8 @@ const InfluKing = () => {
                 </DialogContent>
               </Dialog>
               <GoLiveButton influencerId={myProfile.id} />
-              <Button variant="outline" onClick={() => navigate("/influencer/earnings")}>My Earnings</Button>
-              <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>My Profile</Button>
+              <Button variant="outline" onClick={() => navigate("/influencer/earnings")}>{t("influking.my_earnings")}</Button>
+              <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>{t("influking.my_profile")}</Button>
               <Button variant="destructive" size="sm" onClick={async () => {
                 if (!confirm('Delete your influencer profile? This is irreversible.')) return;
                 const { error } = await supabase.from('influencer_profiles').delete().eq('id', myProfile.id).eq('user_id', user.id);
@@ -469,12 +469,12 @@ const InfluKing = () => {
                   queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
                   toast({ title: "Profile Deleted" });
                 }
-              }}>Delete Profile</Button>
+              }}>{t("influking.delete_profile")}</Button>
             </>
           ) : (
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
               <DialogTrigger asChild>
-                <Button size="lg" className="gap-2"><Star className="h-5 w-5" /> Become an Influencer</Button>
+                <Button size="lg" className="gap-2"><Star className="h-5 w-5" /> {t("influking.become_influencer")}</Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
@@ -526,7 +526,7 @@ const InfluKing = () => {
         {/* Tools Grid */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-8">
           <h2 className="text-xl font-black mb-4 flex items-center gap-2">
-            <Crown className="h-5 w-5 text-amber-500" /> Influencer Tools
+            <Crown className="h-5 w-5 text-amber-500" /> {t("influking.tools_heading")}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {TOOLS.map((tool, i) => (
@@ -540,7 +540,7 @@ const InfluKing = () => {
                     </div>
                     <h3 className="font-bold text-sm mb-1">{tool.label}</h3>
                     <p className="text-[10px] text-muted-foreground">{tool.description}</p>
-                    {tool.paid && <Badge className="mt-2 text-[9px] bg-primary/20 text-primary border-primary/30">AI Powered</Badge>}
+                    {tool.paid && <Badge className="mt-2 text-[9px] bg-primary/20 text-primary border-primary/30">{t("influking.ai_powered_badge")}</Badge>}
                   </CardContent>
                 </Card>
               </motion.div>
