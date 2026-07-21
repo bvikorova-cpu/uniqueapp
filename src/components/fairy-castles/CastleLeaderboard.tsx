@@ -1,6 +1,18 @@
+import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Trophy, Medal, Crown, Flame } from "lucide-react";
+import { Trophy, Medal, Crown, Flame, Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
+interface LeaderboardRow {
+  user_id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  stamps: number;
+  xp: number;
+}
 
 interface LeaderboardEntry {
   rank: number;
@@ -8,16 +20,10 @@ interface LeaderboardEntry {
   stamps: number;
   xp: number;
   avatar: string;
+  isYou: boolean;
 }
 
-const mockLeaderboard: LeaderboardEntry[] = [
-  { rank: 1, name: "CastleMaster_22", stamps: 6, xp: 2450, avatar: "👸" },
-  { rank: 2, name: "FairyFan_UK", stamps: 6, xp: 2380, avatar: "🤴" },
-  { rank: 3, name: "MagicExplorer", stamps: 5, xp: 1920, avatar: "🧙" },
-  { rank: 4, name: "PrincessAdv", stamps: 5, xp: 1850, avatar: "👧" },
-  { rank: 5, name: "TourKing99", stamps: 4, xp: 1600, avatar: "👦" },
-  { rank: 6, name: "You", stamps: 0, xp: 0, avatar: "⭐" },
-];
+const AVATAR_EMOJIS = ["👸", "🤴", "🧙", "👧", "👦", "🧝", "🦸", "🧚", "🦄", "⭐"];
 
 const challenges = [
   { title: "Speed Runner 🏃", desc: "Complete any castle tour under 10 minutes", reward: "+50 XP" },
@@ -30,9 +36,43 @@ interface CastleLeaderboardProps {
 }
 
 export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
-  const leaderboard = mockLeaderboard.map(e =>
-    e.name === "You" ? { ...e, stamps: userStamps, xp: userStamps * 100 } : e
-  ).sort((a, b) => b.xp - a.xp).map((e, i) => ({ ...e, rank: i + 1 }));
+  const { user } = useAuth();
+
+  const { data: rows, isLoading } = useQuery({
+    queryKey: ["castle-leaderboard"],
+    queryFn: async (): Promise<LeaderboardRow[]> => {
+      const { data, error } = await supabase.rpc("get_castle_leaderboard", { limit_count: 10 });
+      if (error) throw error;
+      return (data ?? []) as LeaderboardRow[];
+    },
+    staleTime: 60_000,
+  });
+
+  const leaderboard = useMemo<LeaderboardEntry[]>(() => {
+    const base: LeaderboardEntry[] = (rows ?? []).map((r, i) => ({
+      rank: i + 1,
+      name: r.display_name || "Explorer",
+      stamps: Number(r.stamps) || 0,
+      xp: Number(r.xp) || 0,
+      avatar: AVATAR_EMOJIS[i % AVATAR_EMOJIS.length],
+      isYou: !!user && r.user_id === user.id,
+    }));
+
+    if (!base.some((e) => e.isYou)) {
+      base.push({
+        rank: base.length + 1,
+        name: "You",
+        stamps: userStamps,
+        xp: userStamps * 400,
+        avatar: "⭐",
+        isYou: true,
+      });
+    }
+
+    return base
+      .sort((a, b) => b.xp - a.xp || b.stamps - a.stamps)
+      .map((e, i) => ({ ...e, rank: i + 1 }));
+  }, [rows, user, userStamps]);
 
   return (
     <>
