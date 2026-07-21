@@ -125,6 +125,99 @@ async function syncMegatalentSubscription(
   }
 }
 
+/**
+ * Sync influencer_fan_club_members from a Stripe Subscription.
+ * Called on customer.subscription.created/updated/deleted and invoice.payment_succeeded.
+ * Idempotent — safe to call multiple times.
+ */
+async function syncFanClubMembership(
+  supabase: ReturnType<typeof createClient>,
+  stripe: Stripe,
+  sub: Stripe.Subscription,
+): Promise<void> {
+  const meta = (sub.metadata ?? {}) as Record<string, string>;
+  if (meta.type !== "fan_club") return;
+
+  const fanClubId = meta.fan_club_id;
+  let userId: string | null = meta.user_id || null;
+  const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id ?? null;
+
+  if (!fanClubId) {
+    log("fanclub: missing fan_club_id metadata", { sub: sub.id });
+    return;
+  }
+
+  // Resolve user_id via customer email if not in metadata
+  if (!userId && customerId) {
+    try {
+      const cust = await stripe.customers.retrieve(customerId);
+      if (!cust.deleted) {
+        const email = (cust as Stripe.Customer).email;
+        if (email) {
+          const { data: prof } = await supabase
+            .from("profiles").select("id").eq("email", email).maybeSingle();
+          userId = (prof as any)?.id ?? null;
+        }
+      }
+    } catch (e) {
+      log("fanclub: customer lookup failed", { err: (e as Error).message });
+    }
+  }
+  if (!userId) {
+    log("fanclub: no user_id resolvable, skipping", { sub: sub.id });
+    return;
+  }
+
+  // Map Stripe status → membership status
+  let status: "active" | "past_due" | "canceled" | "expired";
+  if (sub.status === "active" || sub.status === "trialing") status = "active";
+  else if (sub.status === "past_due" || sub.status === "unpaid") status = "past_due";
+  else if (sub.status === "canceled") status = "canceled";
+  else status = "expired";
+
+  const periodEnd = (sub as any).current_period_end
+    ? new Date((sub as any).current_period_end * 1000).toISOString()
+    : null;
+
+  const payload: Record<string, unknown> = {
+    fan_club_id: fanClubId,
+    user_id: userId,
+    status,
+    stripe_customer_id: customerId,
+    stripe_subscription_id: sub.id,
+    current_period_end: periodEnd,
+    cancel_at_period_end: !!sub.cancel_at_period_end,
+    updated_at: new Date().toISOString(),
+  };
+
+  const { error } = await supabase
+    .from("influencer_fan_club_members")
+    .upsert(payload, { onConflict: "fan_club_id,user_id" });
+  if (error) {
+    log("fanclub membership upsert failed", { err: error.message, sub: sub.id });
+  } else {
+    log("fanclub membership synced", { user: userId, club: fanClubId, status });
+  }
+
+  // Notify user on first activation only (no prior active row for this sub)
+  if (status === "active") {
+    try {
+      const { data: club } = await supabase
+        .from("influencer_fan_clubs")
+        .select("name")
+        .eq("id", fanClubId)
+        .maybeSingle();
+      await supabase.from("notifications").insert({
+        user_id: userId,
+        type: "fanclub_activated",
+        title: "Fan Club unlocked ✨",
+        message: `Your access to ${(club as any)?.name ?? "the fan club"} is active.`,
+        is_read: false,
+      });
+    } catch (_e) { /* best-effort */ }
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -563,6 +656,7 @@ serve(async (req) => {
               try {
                 const sub = await stripe.subscriptions.retrieve(subId);
                 await syncMegatalentSubscription(supabase, stripe, sub);
+                await syncFanClubMembership(supabase, stripe, sub);
                 log("megatalent unlocked via checkout.completed", { user: session.metadata?.user_id, sub: subId });
               } catch (e) {
                 log("megatalent checkout sync failed", { err: (e as Error).message });
@@ -1239,6 +1333,9 @@ serve(async (req) => {
         // ── Megatalent: instantly sync subscription state so premium unlocks ──
         await syncMegatalentSubscription(supabase, stripe, sub);
 
+        // ── Fan Club: sync membership status (active / past_due / canceled) ──
+        await syncFanClubMembership(supabase, stripe, sub);
+
         // ── Brand sponsorship status sync (active / past_due / paused) ──
         try {
           const targetStatus =
@@ -1334,6 +1431,9 @@ serve(async (req) => {
 
         // ── Megatalent: deactivate subscription row immediately ─────────────
         await syncMegatalentSubscription(supabase, stripe, sub);
+
+        // ── Fan Club: mark membership as canceled/expired ──
+        await syncFanClubMembership(supabase, stripe, sub);
 
         // ── Campaign donation: mark monthly donation subscription cancelled ──
         try {
@@ -1502,6 +1602,14 @@ serve(async (req) => {
           ? (inv as any).subscription
           : (inv as any).subscription?.id;
         if (!subId) break;
+
+        // ── Fan Club: renew current_period_end + flip past_due → active ──
+        try {
+          const subObj = await stripe.subscriptions.retrieve(subId);
+          await syncFanClubMembership(supabase, stripe, subObj);
+        } catch (e) {
+          log("fanclub invoice.paid sync failed", { err: (e as Error).message });
+        }
 
         // Mark any open dunning rows for this sub as recovered
         const { error: rErr } = await supabase
@@ -1853,6 +1961,7 @@ serve(async (req) => {
         const sub = event.data.object as Stripe.Subscription;
         // Sync megatalent (other modules use check-* funcs which read Stripe live)
         try { await syncMegatalentSubscription(supabase, stripe, sub); } catch (_) {}
+        try { await syncFanClubMembership(supabase, stripe, sub); } catch (_) {}
         try {
           const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
           if (!customerId) break;
