@@ -576,6 +576,9 @@ export default function CreatorProfile() {
             />
           )}
 
+          {/* Gift Wall - Public, realtime */}
+          <GiftWall creatorId={creator.user_id} creatorName={creator.display_name} />
+
           {/* Exclusive Content */}
           <ExclusivePostsList
             creatorId={creatorId!}
