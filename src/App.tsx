@@ -36,6 +36,7 @@ const ServiceBookingSuccess = lazy(() => import("@/pages/services/ServiceBooking
 const MyServiceBookings = lazy(() => import("@/pages/services/MyServiceBookings"));
 const ProviderSetup = lazy(() => import("@/pages/services/ProviderSetup"));
 const PPVPost = lazy(() => import("@/pages/PPVPost"));
+const PaidMessageSuccess = lazy(() => import("@/pages/PaidMessageSuccess"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
