@@ -2,9 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Play, Clock, Brain, TrendingUp, Eye, BarChart3 } from "lucide-react";
+import { ArrowLeft, Play, Clock, Brain, TrendingUp, Eye, BarChart3, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Replay {
@@ -19,15 +22,49 @@ interface Replay {
   avgSolveTime: string;
 }
 
-const mockReplays: Replay[] = [
-  { id: "1", roomName: "Haunted Asylum", completedAt: "2026-04-03", duration: "34:12", score: 92, puzzlesSolved: 8, totalPuzzles: 8, hintsUsed: 1, avgSolveTime: "4:16" },
-  { id: "2", roomName: "Ancient Tomb", completedAt: "2026-04-01", duration: "45:30", score: 78, puzzlesSolved: 6, totalPuzzles: 7, hintsUsed: 3, avgSolveTime: "6:30" },
-  { id: "3", roomName: "Neon Crypt", completedAt: "2026-03-28", duration: "28:45", score: 98, puzzlesSolved: 10, totalPuzzles: 10, hintsUsed: 0, avgSolveTime: "2:52" },
-  { id: "4", roomName: "Mystery Mansion", completedAt: "2026-03-25", duration: "52:18", score: 65, puzzlesSolved: 5, totalPuzzles: 8, hintsUsed: 5, avgSolveTime: "6:32" },
-];
+function fmtSec(sec: number | null | undefined): string {
+  if (!sec || sec <= 0) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
 
 export function RoomReplayView({ onBack }: { onBack: () => void }) {
+  const { user } = useAuth();
   const [selected, setSelected] = useState<Replay | null>(null);
+
+  const { data: replays = [], isLoading } = useQuery({
+    queryKey: ["escape-room-replays", user?.id],
+    enabled: !!user,
+    queryFn: async (): Promise<Replay[]> => {
+      const { data, error } = await supabase
+        .from("escape_room_sessions")
+        .select("id, room_id, completed_at, completion_time_seconds, score, hints_used, escape_rooms!inner(title)")
+        .eq("user_id", user!.id)
+        .eq("status", "completed")
+        .order("completed_at", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return (data ?? []).map((r: any) => {
+        const totalPuzzles = 8;
+        const puzzlesSolved = Math.round((Number(r.score) || 0) / 100 * totalPuzzles);
+        const dur = Number(r.completion_time_seconds) || 0;
+        return {
+          id: r.id,
+          roomName: r.escape_rooms?.title ?? "Escape Room",
+          completedAt: r.completed_at ? new Date(r.completed_at).toISOString().slice(0, 10) : "—",
+          duration: fmtSec(dur),
+          score: Number(r.score) || 0,
+          puzzlesSolved,
+          totalPuzzles,
+          hintsUsed: Number(r.hints_used) || 0,
+          avgSolveTime: fmtSec(puzzlesSolved > 0 ? Math.round(dur / puzzlesSolved) : 0),
+        };
+      });
+    },
+    staleTime: 30_000,
+  });
+
 
   if (selected) {
     return (
@@ -98,26 +135,34 @@ export function RoomReplayView({ onBack }: { onBack: () => void }) {
         </div>
       </motion.div>
 
-      <div className="grid gap-3">
-        {mockReplays.map((r, i) => (
-          <motion.div key={r.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-            <Card className="cursor-pointer hover:border-blue-500/30 transition-colors" onClick={() => setSelected(r)}>
-              <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold">{r.roomName}</h4>
-                  <p className="text-xs text-muted-foreground">{r.completedAt} · {r.duration}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge className={r.score >= 90 ? "bg-green-500/20 text-green-500" : r.score >= 70 ? "bg-amber-500/20 text-amber-500" : "bg-red-500/20 text-red-500"}>
-                    {r.score}/100
-                  </Badge>
-                  <BarChart3 className="w-4 h-4 text-muted-foreground" />
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-blue-500" /></div>
+      ) : replays.length === 0 ? (
+        <Card><CardContent className="p-8 text-center text-muted-foreground">
+          No completed rooms yet. Finish an escape room to see your replays here.
+        </CardContent></Card>
+      ) : (
+        <div className="grid gap-3">
+          {replays.map((r, i) => (
+            <motion.div key={r.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+              <Card className="cursor-pointer hover:border-blue-500/30 transition-colors" onClick={() => setSelected(r)}>
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold">{r.roomName}</h4>
+                    <p className="text-xs text-muted-foreground">{r.completedAt} · {r.duration}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge className={r.score >= 90 ? "bg-green-500/20 text-green-500" : r.score >= 70 ? "bg-amber-500/20 text-amber-500" : "bg-red-500/20 text-red-500"}>
+                      {r.score}/100
+                    </Badge>
+                    <BarChart3 className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

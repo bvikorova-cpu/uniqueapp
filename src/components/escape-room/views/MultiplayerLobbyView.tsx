@@ -3,43 +3,75 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Users, Copy, Plus, Crown, Clock, Gamepad2 } from "lucide-react";
+import { ArrowLeft, Users, Plus, Crown, Clock, Gamepad2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Lobby {
   id: string;
   name: string;
-  host: string;
+  host_id: string;
+  host_name: string;
   players: number;
-  maxPlayers: number;
+  max_players: number;
   room: string;
-  status: "waiting" | "starting" | "full";
+  status: "waiting" | "starting" | "full" | "closed";
+  invite_code: string;
 }
 
-const mockLobbies: Lobby[] = [
-  { id: "1", name: "Night Shift Crew", host: "ShadowMaster", players: 3, maxPlayers: 4, room: "Haunted Asylum", status: "waiting" },
-  { id: "2", name: "Puzzle Kings", host: "BrainTeaser", players: 4, maxPlayers: 4, room: "Ancient Tomb", status: "full" },
-  { id: "3", name: "First Timers", host: "NewbieNinja", players: 1, maxPlayers: 6, room: "Mystery Mansion", status: "waiting" },
-  { id: "4", name: "Speed Demons", host: "FlashEscape", players: 2, maxPlayers: 3, room: "Time Vault", status: "starting" },
-];
-
 export function MultiplayerLobbyView({ onBack }: { onBack: () => void }) {
+  const { user } = useAuth();
+  const qc = useQueryClient();
   const [lobbyName, setLobbyName] = useState("");
   const [maxPlayers, setMaxPlayers] = useState(4);
-  const [lobbies] = useState<Lobby[]>(mockLobbies);
 
-  const createLobby = () => {
+  const { data: lobbies = [], isLoading } = useQuery({
+    queryKey: ["escape-room-lobbies"],
+    queryFn: async (): Promise<Lobby[]> => {
+      const { data, error } = await supabase
+        .from("escape_room_lobbies")
+        .select("id, name, host_id, players, max_players, status, invite_code, escape_rooms(title), profiles!escape_room_lobbies_host_id_fkey(username, full_name)")
+        .neq("status", "closed")
+        .order("created_at", { ascending: false })
+        .limit(30);
+      if (error) throw error;
+      return (data ?? []).map((r: any) => ({
+        id: r.id,
+        name: r.name,
+        host_id: r.host_id,
+        host_name: r.profiles?.username || r.profiles?.full_name || "Host",
+        players: r.players,
+        max_players: r.max_players,
+        room: r.escape_rooms?.title || "Any room",
+        status: r.status,
+        invite_code: r.invite_code,
+      }));
+    },
+    refetchInterval: 10_000,
+  });
+
+  const createLobby = async () => {
+    if (!user) { toast.error("Sign in to create a lobby"); return; }
     if (!lobbyName.trim()) { toast.error("Enter a lobby name"); return; }
-    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    toast.success(`Lobby "${lobbyName}" created! Code: ${code}`);
-    navigator.clipboard.writeText(code);
+    const { data, error } = await supabase
+      .from("escape_room_lobbies")
+      .insert({ name: lobbyName.trim(), host_id: user.id, max_players: maxPlayers, players: 1 })
+      .select("invite_code")
+      .single();
+    if (error) { toast.error(error.message); return; }
+    toast.success(`Lobby "${lobbyName}" created! Code: ${data!.invite_code}`);
+    try { await navigator.clipboard.writeText(data!.invite_code); } catch {}
     setLobbyName("");
+    qc.invalidateQueries({ queryKey: ["escape-room-lobbies"] });
   };
 
-  const joinLobby = (lobby: Lobby) => {
+  const joinLobby = async (lobby: Lobby) => {
     if (lobby.status === "full") { toast.error("Lobby is full"); return; }
+    if (!user) { toast.error("Sign in to join"); return; }
     toast.success(`Joined "${lobby.name}"! Waiting for host to start...`);
   };
 
@@ -80,34 +112,42 @@ export function MultiplayerLobbyView({ onBack }: { onBack: () => void }) {
 
       {/* Active Lobbies */}
       <h3 className="text-lg font-bold mb-3">Active Lobbies</h3>
-      <div className="grid gap-3">
-        {lobbies.map((lobby, i) => (
-          <motion.div key={lobby.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
-            <Card className="hover:border-green-500/30 transition-colors">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-bold">{lobby.name}</h4>
-                    <Badge variant={lobby.status === "waiting" ? "secondary" : lobby.status === "starting" ? "default" : "destructive"} className="text-[10px]">
-                      {lobby.status === "waiting" && <Clock className="w-2.5 h-2.5 mr-0.5" />}
-                      {lobby.status}
-                    </Badge>
+      {isLoading ? (
+        <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-green-500" /></div>
+      ) : lobbies.length === 0 ? (
+        <Card><CardContent className="p-8 text-center text-muted-foreground">
+          No active lobbies right now — be the first to create one!
+        </CardContent></Card>
+      ) : (
+        <div className="grid gap-3">
+          {lobbies.map((lobby, i) => (
+            <motion.div key={lobby.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
+              <Card className="hover:border-green-500/30 transition-colors">
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-bold">{lobby.name}</h4>
+                      <Badge variant={lobby.status === "waiting" ? "secondary" : lobby.status === "starting" ? "default" : "destructive"} className="text-[10px]">
+                        {lobby.status === "waiting" && <Clock className="w-2.5 h-2.5 mr-0.5" />}
+                        {lobby.status}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Crown className="w-3 h-3" />{lobby.host_name} · {lobby.room} · <span className="font-mono">{lobby.invite_code}</span>
+                    </p>
                   </div>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Crown className="w-3 h-3" />{lobby.host} · {lobby.room}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-mono">{lobby.players}/{lobby.maxPlayers}</span>
-                  <Button size="sm" variant="outline" onClick={() => joinLobby(lobby)} disabled={lobby.status === "full"}>
-                    Join
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-mono">{lobby.players}/{lobby.max_players}</span>
+                    <Button size="sm" variant="outline" onClick={() => joinLobby(lobby)} disabled={lobby.status === "full"}>
+                      Join
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
     </>
   );

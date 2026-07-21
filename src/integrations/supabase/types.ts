@@ -22564,6 +22564,53 @@ export type Database = {
           },
         ]
       }
+      escape_room_lobbies: {
+        Row: {
+          created_at: string
+          host_id: string
+          id: string
+          invite_code: string
+          max_players: number
+          name: string
+          players: number
+          room_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          host_id: string
+          id?: string
+          invite_code?: string
+          max_players?: number
+          name: string
+          players?: number
+          room_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          host_id?: string
+          id?: string
+          invite_code?: string
+          max_players?: number
+          name?: string
+          players?: number
+          room_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escape_room_lobbies_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "escape_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       escape_room_puzzles: {
         Row: {
           created_at: string | null
@@ -22673,6 +22720,7 @@ export type Database = {
           started_at: string | null
           status: string
           team_name: string
+          user_id: string | null
         }
         Insert: {
           completed_at?: string | null
@@ -22685,6 +22733,7 @@ export type Database = {
           started_at?: string | null
           status: string
           team_name: string
+          user_id?: string | null
         }
         Update: {
           completed_at?: string | null
@@ -22697,6 +22746,7 @@ export type Database = {
           started_at?: string | null
           status?: string
           team_name?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -67741,6 +67791,17 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_arena_leaderboard: {
+        Args: { limit_count?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          earnings_cents: number
+          matches: number
+          user_id: string
+          wins: number
+        }[]
+      }
       get_auth_uid: { Args: never; Returns: string }
       get_battle_royale_available_payout: {
         Args: { _tournament_id: string }
@@ -68062,6 +68123,16 @@ export type Database = {
           last_tip_at: string
           total_amount_cents: number
           total_tips: number
+        }[]
+      }
+      get_multiverse_explorers: {
+        Args: { limit_count?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          specialty: string
+          universes: number
+          user_id: string
         }[]
       }
       get_my_brand_api_key: {
