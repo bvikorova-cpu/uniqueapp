@@ -7,13 +7,9 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const mockPosts = [
-  { id: 1, user: "PawMaster", pet: "Max (Golden Retriever)", mood: "Happy 😄", score: 95, likes: 234, comments: 18, badge: "Top Pet" },
-  { id: 2, user: "CatWhisperer", pet: "Luna (Siamese Cat)", mood: "Playful 🎾", score: 88, likes: 189, comments: 24, badge: "Cat Lover" },
-  { id: 3, user: "BirdTalker", pet: "Kiwi (Cockatiel)", mood: "Excited 🎵", score: 92, likes: 156, comments: 12, badge: "Bird Expert" },
-  { id: 4, user: "DogTrainer_Pro", pet: "Rex (German Shepherd)", mood: "Calm 😌", score: 97, likes: 312, comments: 45, badge: "Trainer" },
-  { id: 5, user: "FluffyLover", pet: "Mochi (Rabbit)", mood: "Content 🥰", score: 83, likes: 98, comments: 7, badge: "Newbie" },
-];
+import { Card as _EmptyCardType } from "@/components/ui/card";
+type PetPost = { id: string; user: string; pet: string; mood: string; score: number; likes: number; comments: number; badge: string };
+const mockPosts: PetPost[] = [];
 
 export default function PetSocialNetwork() {
   const navigate = useNavigate();
