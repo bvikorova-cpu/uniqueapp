@@ -55,6 +55,7 @@ serve(async (req) => {
         { price: signupPrice, quantity: 1 },
       ],
       subscription_data: {
+        trial_period_days: 30,
         metadata: {
           product: "unique_club",
           tier,
