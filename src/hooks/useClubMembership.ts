@@ -13,6 +13,12 @@ export interface ClubMembership {
   current_period_end: string | null;
   shipping_status: "not_applicable" | "pending" | "shipped" | "delivered";
   shipping_address: any;
+  recipient_name: string | null;
+  phone: string | null;
+  shipping_note: string | null;
+  tracking_number: string | null;
+  shipped_at: string | null;
+  delivered_at: string | null;
   card_pdf_url: string | null;
   started_at: string;
 }

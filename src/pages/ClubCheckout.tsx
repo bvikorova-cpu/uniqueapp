@@ -36,8 +36,14 @@ export default function ClubCheckout() {
           return;
         }
 
+        // Persist referral code across auth redirect via localStorage
+        const params = new URLSearchParams(window.location.search);
+        const refFromUrl = params.get("ref");
+        if (refFromUrl) localStorage.setItem("unique_club_ref", refFromUrl);
+        const referralCode = refFromUrl ?? localStorage.getItem("unique_club_ref") ?? "";
+
         const { data, error: invokeError } = await supabase.functions.invoke("create-club-checkout", {
-          body: { tier: selectedTier },
+          body: { tier: selectedTier, referralCode },
         });
         if (invokeError) throw invokeError;
 

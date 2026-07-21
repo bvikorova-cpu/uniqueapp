@@ -578,6 +578,7 @@ const AdminEdgeMonitoring = lazy(() => import("@/pages/admin/AdminEdgeMonitoring
 const AdminEdgeTester = lazy(() => import("@/pages/admin/AdminEdgeTester"));
 const AdminButtonTester = lazy(() => import("@/pages/admin/AdminButtonTester"));
 const AdminFanClubVerifyAudit = lazy(() => import("@/pages/admin/AdminFanClubVerifyAudit"));
+const AdminClubShipping = lazy(() => import("@/pages/admin/AdminClubShipping"));
 const AdminCrawler = lazy(() => import("@/pages/admin/AdminCrawler"));
 const BugReportsManager = lazy(() => import("@/pages/admin/BugReportsManager"));
 const ReportBug = lazy(() => import("@/pages/ReportBug"));
@@ -841,6 +842,7 @@ const App = () => {
                         <Route path="/employer-verification" element={<ProtectedRoute><EmployerVerification /></ProtectedRoute>} />
                         <Route path="/admin/verifications" element={<ProtectedRoute requireAdmin={true}><AdminVerifications /></ProtectedRoute>} />
                         <Route path="/admin/bazaar-trust" element={<ProtectedRoute requireAdmin={true}><AdminBazaarTrust /></ProtectedRoute>} />
+                        <Route path="/admin/club-shipping" element={<ProtectedRoute requireAdmin={true}><AdminClubShipping /></ProtectedRoute>} />
                         <Route path="/influ-king" element={<InfluKing />} />
                         <Route path="/influ-king/ppv/:id" element={<PPVPost />} />
                         <Route path="/paid-message/success" element={<PaidMessageSuccess />} />

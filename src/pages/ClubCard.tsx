@@ -9,11 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { ShippingStatusCard } from "@/components/club/ShippingStatusCard";
 
 export default function ClubCard() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { membership, loading, isMember } = useClubMembership();
+  const { membership, loading, isMember, refresh } = useClubMembership();
   const [flipped, setFlipped] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
   const [exporting, setExporting] = useState<null | "png" | "pdf">(null);
@@ -176,6 +177,13 @@ export default function ClubCard() {
           {exporting === "pdf" ? "Preparing…" : "Download PDF"}
         </Button>
       </div>
+
+      {membership.tier === "physical" && (
+        <div className="w-full max-w-md mt-6">
+          <ShippingStatusCard membership={membership} onUpdated={refresh} />
+        </div>
+      )}
+
 
       {/* Hidden high-res capture surface (not flipped, positioned off-screen) */}
       <div style={{ position: "fixed", left: "-10000px", top: 0, pointerEvents: "none" }} aria-hidden>
