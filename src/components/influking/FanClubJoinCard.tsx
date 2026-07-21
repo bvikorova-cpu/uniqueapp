@@ -222,6 +222,54 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
 
   const activeMembership = memberships.find((m) => m.status === "active");
   const hasAnyMembership = memberships.length > 0;
+  const [guideOpen, setGuideOpen] = useState(false);
+
+  // Pick the membership most likely to need guidance (broken > cancelling > active > none)
+  const guideMembership = (() => {
+    const broken = memberships.find((m) => ["past_due", "unpaid", "pending", "incomplete"].includes(m.status));
+    if (broken) return broken;
+    const cancelling = memberships.find((m) => m.status === "active" && m.cancel_at_period_end);
+    if (cancelling) return cancelling;
+    return activeMembership ?? memberships[0] ?? null;
+  })();
+
+  const guideNotice: VerifyNotice = (() => {
+    if (!guideMembership) {
+      return {
+        kind: "missing",
+        title: "How to subscribe and manage a Fan Club",
+        reason: "You don't have a membership yet. Once you subscribe, the Billing Portal is where you update your card, download invoices, or cancel.",
+        portalSteps: [
+          "Click Join on the tier you want — Stripe checkout opens in a new tab.",
+          "Complete payment (a card is required; SCA / 3-D Secure may prompt you).",
+          "You'll be redirected back — access unlocks the moment the webhook confirms.",
+          "Later, use Manage billing here to change card, download invoices, or cancel.",
+        ],
+        tone: "info",
+        showPortal: false,
+        showRetry: false,
+      };
+    }
+    if (guideMembership.status === "active" && guideMembership.cancel_at_period_end) {
+      return {
+        kind: "active",
+        title: "Cancellation scheduled — how to reverse it",
+        reason: `Access ends ${guideMembership.current_period_end?.slice(0, 10) ?? "at the end of the period"}. You can resume anytime before that date.`,
+        portalSteps: [
+          "Click Resume on the tier card to instantly cancel the pending cancellation.",
+          "Or open Billing Portal → your subscription → Renew subscription.",
+          "No new charge until the current period ends.",
+        ],
+        tone: "warn",
+        showPortal: true,
+        showRetry: false,
+      };
+    }
+    return classifyVerifyResult({
+      active: guideMembership.status === "active",
+      status: guideMembership.status,
+    });
+  })();
 
   if (isLoading) {
     return <div className="flex justify-center py-6"><Loader2 className="h-6 w-6 animate-spin" /></div>;
