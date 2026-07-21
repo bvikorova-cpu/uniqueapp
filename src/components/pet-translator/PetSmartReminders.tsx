@@ -83,7 +83,11 @@ export default function PetSmartReminders({ onBack }: { onBack: () => void }) {
         <Card className="bg-card/80 border-purple-500/20">
           <CardContent className="p-4 space-y-2">
             <h3 className="font-bold text-sm flex items-center gap-2 mb-3"><Clock className="h-4 w-4 text-purple-400" /> Active Reminders</h3>
-            {mockReminders.map((r, i) => {
+            {mockReminders.length === 0 ? (
+              <p className="text-xs text-muted-foreground text-center py-4">
+                No reminders yet — generate an AI care schedule below to get started.
+              </p>
+            ) : mockReminders.map((r, i) => {
               const rt = getIcon(r.type);
               return (
                 <div key={i} className={`flex items-center gap-3 p-2.5 rounded-lg border border-border/30 ${r.active ? "" : "opacity-50"}`}>
