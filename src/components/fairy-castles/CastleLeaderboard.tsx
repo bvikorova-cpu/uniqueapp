@@ -91,8 +91,18 @@ export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
         </div>
 
         <div className="space-y-2">
+          {isLoading && (
+            <div className="flex justify-center py-6">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          )}
+          {!isLoading && leaderboard.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Be the first to earn a castle stamp!
+            </p>
+          )}
           {leaderboard.map((entry, i) => {
-            const isYou = entry.name === "You";
+            const isYou = entry.isYou;
             const rankIcon = entry.rank === 1 ? <Crown className="h-4 w-4 text-amber-500" />
               : entry.rank === 2 ? <Medal className="h-4 w-4 text-gray-400" />
               : entry.rank === 3 ? <Medal className="h-4 w-4 text-amber-700" />
@@ -100,7 +110,7 @@ export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
 
             return (
               <motion.div
-                key={entry.name}
+                key={`${entry.name}-${i}`}
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -116,7 +126,7 @@ export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
                   <span className="text-xl">{entry.avatar}</span>
                   <div>
                     <p className={`text-sm font-semibold ${isYou ? "text-primary" : ""}`}>
-                      {entry.name} {isYou && "⬅️"}
+                      {isYou ? "You" : entry.name} {isYou && "⬅️"}
                     </p>
                     <p className="text-xs text-muted-foreground">{entry.stamps}/6 stamps</p>
                   </div>
