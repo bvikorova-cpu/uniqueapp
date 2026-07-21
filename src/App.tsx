@@ -1151,6 +1151,7 @@ const App = () => {
                         <Route path="/admin/edge-monitoring" element={<ProtectedRoute requireAdmin={true}><AdminEdgeMonitoring /></ProtectedRoute>} />
                         <Route path="/admin/edge-tester" element={<ProtectedRoute requireAdmin={true}><AdminEdgeTester /></ProtectedRoute>} />
                         <Route path="/admin/button-tester" element={<ProtectedRoute requireAdmin={true}><AdminButtonTester /></ProtectedRoute>} />
+                        <Route path="/admin/fanclub-verify-audit" element={<ProtectedRoute requireAdmin={true}><AdminFanClubVerifyAudit /></ProtectedRoute>} />
                         <Route path="/admin/crawler" element={<ProtectedRoute requireAdmin={true}><AdminCrawler /></ProtectedRoute>} />
 
                         <Route path="/admin/bug-reports" element={<ProtectedRoute requireAdmin={true}><BugReportsManager /></ProtectedRoute>} />
