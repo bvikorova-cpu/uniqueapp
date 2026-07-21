@@ -282,23 +282,86 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
         <CardTitle className="flex items-center gap-2 flex-wrap">
           <Crown className="h-5 w-5 text-amber-500" />
           <span>{creatorName}'s Fan Clubs</span>
-          {hasAnyMembership && (
+          <div className="ml-auto flex items-center gap-2 flex-wrap">
             <Button
               size="sm"
-              variant="outline"
-              className="ml-auto gap-1 h-8"
-              onClick={() => openPortal.mutate()}
-              disabled={openPortal.isPending}
+              variant="ghost"
+              className="gap-1 h-8"
+              onClick={() => setGuideOpen(true)}
+              title="Step-by-step guide to Billing Portal"
             >
-              {openPortal.isPending
-                ? <Loader2 className="h-3 w-3 animate-spin" />
-                : <CreditCard className="h-3 w-3" />}
-              Manage billing
-              <ExternalLink className="h-3 w-3 opacity-60" />
+              <BookOpen className="h-3 w-3" />
+              Guide
             </Button>
-          )}
+            {hasAnyMembership && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1 h-8"
+                onClick={() => openPortal.mutate()}
+                disabled={openPortal.isPending}
+              >
+                {openPortal.isPending
+                  ? <Loader2 className="h-3 w-3 animate-spin" />
+                  : <CreditCard className="h-3 w-3" />}
+                Manage billing
+                <ExternalLink className="h-3 w-3 opacity-60" />
+              </Button>
+            )}
+          </div>
         </CardTitle>
       </CardHeader>
+
+      <Dialog open={guideOpen} onOpenChange={setGuideOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-amber-500" />
+              {guideNotice.title}
+            </DialogTitle>
+            <DialogDescription>{guideNotice.reason}</DialogDescription>
+          </DialogHeader>
+
+          {guideNotice.portalSteps.length > 0 && (
+            <div className="rounded-md border bg-muted/30 p-3">
+              <p className="text-xs font-semibold mb-2 flex items-center gap-1">
+                <CreditCard className="h-3 w-3" /> Step by step
+              </p>
+              <ol className="text-sm list-decimal ml-5 space-y-1.5">
+                {guideNotice.portalSteps.map((s, i) => (
+                  <li key={i}>{s}</li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          <div className="text-[11px] text-muted-foreground border-t pt-2">
+            Current status:{" "}
+            <span className="font-mono">
+              {guideMembership
+                ? `${guideMembership.status}${guideMembership.cancel_at_period_end ? " (cancels at period end)" : ""}`
+                : "no membership"}
+            </span>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="ghost" onClick={() => setGuideOpen(false)}>Close</Button>
+            {hasAnyMembership && (
+              <Button
+                onClick={() => { setGuideOpen(false); openPortal.mutate(); }}
+                disabled={openPortal.isPending}
+                className="gap-1"
+              >
+                {openPortal.isPending
+                  ? <Loader2 className="h-3 w-3 animate-spin" />
+                  : <CreditCard className="h-3 w-3" />}
+                Open Billing Portal
+                <ExternalLink className="h-3 w-3 opacity-60" />
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {verifyNotice && (
         <div className="px-6 pb-3">
           <Alert
