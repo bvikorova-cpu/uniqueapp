@@ -23545,6 +23545,51 @@ export type Database = {
         }
         Relationships: []
       }
+      fanclub_verify_audit: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          email: string | null
+          error_message: string | null
+          fan_club_id: string | null
+          id: string
+          memberships_synced: number
+          outcome: string
+          status_summary: Json | null
+          stripe_customer_id: string | null
+          subscriptions_found: number
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          email?: string | null
+          error_message?: string | null
+          fan_club_id?: string | null
+          id?: string
+          memberships_synced?: number
+          outcome: string
+          status_summary?: Json | null
+          stripe_customer_id?: string | null
+          subscriptions_found?: number
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          email?: string | null
+          error_message?: string | null
+          fan_club_id?: string | null
+          id?: string
+          memberships_synced?: number
+          outcome?: string
+          status_summary?: Json | null
+          stripe_customer_id?: string | null
+          subscriptions_found?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       fashion_battle_entries: {
         Row: {
           ai_feedback: string | null
