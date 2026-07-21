@@ -1572,6 +1572,14 @@ serve(async (req) => {
           : (inv as any).subscription?.id;
         if (!customerId || !subId) { log("dunning skip: no cust/sub"); break; }
 
+        // ── Fan Club: immediately flip to past_due (don't wait for subscription.updated) ──
+        try {
+          const subObj = await stripe.subscriptions.retrieve(subId);
+          await syncFanClubMembership(supabase, stripe, subObj);
+        } catch (e) {
+          log("fanclub payment_failed sync failed", { err: (e as Error).message });
+        }
+
         // Resolve user_id via email
         let userId: string | null = null;
         let email: string | null = (inv as any).customer_email ?? null;
