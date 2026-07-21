@@ -1603,6 +1603,14 @@ serve(async (req) => {
           : (inv as any).subscription?.id;
         if (!subId) break;
 
+        // ── Fan Club: renew current_period_end + flip past_due → active ──
+        try {
+          const subObj = await stripe.subscriptions.retrieve(subId);
+          await syncFanClubMembership(supabase, stripe, subObj);
+        } catch (e) {
+          log("fanclub invoice.paid sync failed", { err: (e as Error).message });
+        }
+
         // Mark any open dunning rows for this sub as recovered
         const { error: rErr } = await supabase
           .from("dunning_events")
