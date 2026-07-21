@@ -12,16 +12,16 @@ export const SkillSwapTestimonials = () => {
     queryFn: async (): Promise<Testimonial[]> => {
       const { data } = await supabase
         .from("bazaar_seller_ratings")
-        .select("rating, comment, reviewer_id")
+        .select("rating, comment, buyer_id")
         .not("comment", "is", null)
         .gte("rating", 4)
         .order("created_at", { ascending: false })
         .limit(3);
-      const rows = (data ?? []) as Array<{ rating: number; comment: string | null; reviewer_id: string }>;
+      const rows = (data ?? []) as Array<{ rating: number; comment: string | null; buyer_id: string }>;
       return rows
         .filter((r) => (r.comment ?? "").trim().length > 0)
         .map((r) => ({
-          name: `User ${r.reviewer_id.slice(0, 4).toUpperCase()}`,
+          name: `User ${r.buyer_id.slice(0, 4).toUpperCase()}`,
           text: r.comment as string,
           rating: r.rating,
         }));
