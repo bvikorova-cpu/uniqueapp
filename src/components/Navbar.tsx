@@ -29,6 +29,7 @@ import { Age16Badge } from "@/components/Age16Badge";
 import GlobalSearch from "@/components/GlobalSearch";
 import { MobileCreditsPill } from "@/components/wall/MobileCreditsPill";
 import { useAuth } from "@/contexts/AuthContext";
+import { MemberBadge } from "@/components/club/MemberBadge";
 import { BetaTesterNotice } from "@/components/onboarding/BetaTesterNotice";
 
 const Navbar = () => {
