@@ -94,7 +94,13 @@ export const StorySequence = ({ onComplete, onBack }: StorySequenceProps) => {
     if (isCorrect) {
       const score = Math.max(100 - attempts * 20, 20);
       toast.success(`Excellent! Correct order! +${score} points`);
-      setTimeout(() => onComplete(score), 2000);
+      setTimeout(() => {
+        if (storyIndex + 1 < stories.length) {
+          setStoryIndex((i) => i + 1);
+        } else {
+          onComplete(score);
+        }
+      }, 1500);
     } else {
       toast.error("Wrong order! Try again.");
       setTimeout(() => {
