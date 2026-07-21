@@ -242,9 +242,13 @@ export default function ExclusiveConnection() {
 
   const sentSet = useMemo(() => new Set(sent.map((s) => s.to_user)), [sent]);
   const receivedSet = useMemo(() => new Set(received.map((r) => r.from_user)), [received]);
+  const visibleProfiles = useMemo(
+    () => profiles.filter((p) => !blockedIds.has(p.user_id) && !blockedByIds.has(p.user_id)),
+    [profiles, blockedIds, blockedByIds],
+  );
   const matches = useMemo(
-    () => profiles.filter((p) => sentSet.has(p.user_id) && receivedSet.has(p.user_id)),
-    [profiles, sentSet, receivedSet],
+    () => visibleProfiles.filter((p) => sentSet.has(p.user_id) && receivedSet.has(p.user_id)),
+    [visibleProfiles, sentSet, receivedSet],
   );
 
   const saveProfile = async () => {
