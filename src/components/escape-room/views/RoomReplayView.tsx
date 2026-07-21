@@ -135,26 +135,34 @@ export function RoomReplayView({ onBack }: { onBack: () => void }) {
         </div>
       </motion.div>
 
-      <div className="grid gap-3">
-        {mockReplays.map((r, i) => (
-          <motion.div key={r.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-            <Card className="cursor-pointer hover:border-blue-500/30 transition-colors" onClick={() => setSelected(r)}>
-              <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold">{r.roomName}</h4>
-                  <p className="text-xs text-muted-foreground">{r.completedAt} · {r.duration}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge className={r.score >= 90 ? "bg-green-500/20 text-green-500" : r.score >= 70 ? "bg-amber-500/20 text-amber-500" : "bg-red-500/20 text-red-500"}>
-                    {r.score}/100
-                  </Badge>
-                  <BarChart3 className="w-4 h-4 text-muted-foreground" />
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-blue-500" /></div>
+      ) : replays.length === 0 ? (
+        <Card><CardContent className="p-8 text-center text-muted-foreground">
+          No completed rooms yet. Finish an escape room to see your replays here.
+        </CardContent></Card>
+      ) : (
+        <div className="grid gap-3">
+          {replays.map((r, i) => (
+            <motion.div key={r.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+              <Card className="cursor-pointer hover:border-blue-500/30 transition-colors" onClick={() => setSelected(r)}>
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold">{r.roomName}</h4>
+                    <p className="text-xs text-muted-foreground">{r.completedAt} · {r.duration}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge className={r.score >= 90 ? "bg-green-500/20 text-green-500" : r.score >= 70 ? "bg-amber-500/20 text-amber-500" : "bg-red-500/20 text-red-500"}>
+                      {r.score}/100
+                    </Badge>
+                    <BarChart3 className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
