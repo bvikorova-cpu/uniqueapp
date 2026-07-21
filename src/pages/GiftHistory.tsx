@@ -40,12 +40,22 @@ export default function GiftHistory() {
       const { data, error } = await supabase
         .from("creator_gift_transactions")
         .select(
-          "id, creator_id, gift_id, amount, message, stripe_session_id, status, created_at, gift:creator_gifts(name, icon), creator:profiles!creator_gift_transactions_creator_id_fkey(username, display_name)",
+          "id, creator_id, gift_id, amount, message, stripe_session_id, status, created_at, gift:creator_gifts(name, icon)",
         )
         .eq("sender_id", auth.user.id)
         .order("created_at", { ascending: false })
         .limit(200);
-      if (!error && data) setRows(data as unknown as GiftRow[]);
+      let enriched = (data as unknown as GiftRow[]) ?? [];
+      if (!error && enriched.length) {
+        const ids = [...new Set(enriched.map((r) => r.creator_id))];
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id, username, display_name")
+          .in("id", ids);
+        const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
+        enriched = enriched.map((r) => ({ ...r, creator: map.get(r.creator_id) ?? null }));
+      }
+      setRows(enriched);
       setLoading(false);
     })();
 
