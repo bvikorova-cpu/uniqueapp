@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Star, Sparkles, Lock, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { Crown, Star, Sparkles, Lock, Loader2, CheckCircle2, XCircle, RotateCcw, ArrowLeftRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
 
@@ -127,6 +127,35 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
     },
     onError: (e: any) => toast({ title: "Cancel failed", description: e.message, variant: "destructive" }),
   });
+
+  const resume = useMutation({
+    mutationFn: async (fan_club_id: string) => {
+      const { error } = await supabase.functions.invoke("fanclub-resume", { body: { fan_club_id } });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["my-fan-club-memberships"] });
+      toast({ title: "Membership resumed" });
+    },
+    onError: (e: any) => toast({ title: "Resume failed", description: e.message, variant: "destructive" }),
+  });
+
+  const swap = useMutation({
+    mutationFn: async ({ from_fan_club_id, to_fan_club_id }: { from_fan_club_id: string; to_fan_club_id: string }) => {
+      const { error } = await supabase.functions.invoke("fanclub-swap", {
+        body: { from_fan_club_id, to_fan_club_id },
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["my-fan-club-memberships"] });
+      qc.invalidateQueries({ queryKey: ["fan-club-locked-posts"] });
+      toast({ title: "Tier changed", description: "Proration applied on your next invoice." });
+    },
+    onError: (e: any) => toast({ title: "Swap failed", description: e.message, variant: "destructive" }),
+  });
+
+  const activeMembership = memberships.find((m) => m.status === "active");
 
   if (isLoading) {
     return <div className="flex justify-center py-6"><Loader2 className="h-6 w-6 animate-spin" /></div>;
