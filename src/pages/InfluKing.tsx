@@ -30,9 +30,10 @@ import CrossPlatformPublisher from "@/components/influking/CrossPlatformPublishe
 import AudienceInsights from "@/components/influking/AudienceInsights";
 import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
 import { FanClubLockedFeed } from "@/components/influking/FanClubLockedFeed";
-import { BarChart3, Hash, Trophy, Image, Share2, PieChart } from "lucide-react";
+import PPVStudio from "@/components/influking/PPVStudio";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock } from "lucide-react";
 
-type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience";
+type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience" | "ppv";
 
 interface InfluencerProfile {
   id: string;
