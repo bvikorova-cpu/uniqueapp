@@ -1953,6 +1953,7 @@ serve(async (req) => {
         const sub = event.data.object as Stripe.Subscription;
         // Sync megatalent (other modules use check-* funcs which read Stripe live)
         try { await syncMegatalentSubscription(supabase, stripe, sub); } catch (_) {}
+        try { await syncFanClubMembership(supabase, stripe, sub); } catch (_) {}
         try {
           const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
           if (!customerId) break;
