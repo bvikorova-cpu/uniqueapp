@@ -86,6 +86,12 @@ const InfluKing = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const { t } = useTranslation();
+  const TOOLS = TOOL_DEFS.map((td) => ({
+    ...td,
+    label: t(`influking.tools.${td.tKey}.label`),
+    description: t(`influking.tools.${td.tKey}.description`),
+  }));
   const [activeView, setActiveView] = useState<InfluKingView>("hub");
   const [selectedInfluencer, setSelectedInfluencer] = useState<InfluencerProfile | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
