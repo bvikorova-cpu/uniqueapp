@@ -600,6 +600,7 @@ const Navbar = () => {
               </>
             )}
             <ThemeToggle className="h-8 w-8" />
+            <LanguageSwitcher compact className="h-8 w-8" />
             <Button
               variant="ghost"
               size="icon"
