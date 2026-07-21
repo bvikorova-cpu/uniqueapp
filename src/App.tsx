@@ -39,6 +39,8 @@ const PPVPost = lazy(() => import("@/pages/PPVPost"));
 const PaidMessageSuccess = lazy(() => import("@/pages/PaidMessageSuccess"));
 const GiftSuccess = lazy(() => import("@/pages/GiftSuccess"));
 const GiftHistory = lazy(() => import("@/pages/GiftHistory"));
+const Club = lazy(() => import("@/pages/Club"));
+const ClubCard = lazy(() => import("@/pages/ClubCard"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -743,6 +745,8 @@ const App = () => {
                         <Route path="/cert/:code" element={<EduCertVerify />} />
                         <Route path="/index" element={<Navigate to="/" replace />} />
                         <Route path="/download" element={<Download />} />
+                        <Route path="/club" element={<Club />} />
+                        <Route path="/club/card" element={<ClubCard />} />
                         <Route path="/downloads" element={<Navigate to="/download" replace />} />
                         <Route path="/wall" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                         <Route path="/search" element={<SearchResults />} />

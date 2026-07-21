@@ -17,6 +17,7 @@ import { Age16Badge } from "@/components/Age16Badge";
 import { HowItWorksTrust } from "@/components/trust/HowItWorksTrust";
 import { FoundingMembersBanner } from "@/components/founding/FoundingMembersBanner";
 import { InviteFriendsCallout } from "@/components/referral/InviteFriendsCallout";
+import { ClubHomepageBanner } from "@/components/club/ClubHomepageBanner";
 import { SectionVideoPreview } from "@/components/SectionVideoPreview";
 import { sectionVideos } from "@/components/sectionVideos";
 import {
@@ -363,6 +364,9 @@ const Index = () => {
             </div>
           ))}
         </div>
+
+        {/* ── Unique Club membership banner ─────────────── */}
+        <ClubHomepageBanner />
 
         {/* ── Founding Members programme (first 100) ───── */}
         <FoundingMembersBanner />

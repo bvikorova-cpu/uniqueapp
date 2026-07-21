@@ -1,76 +1,78 @@
-## Verified + Tiered Subscription ("Unique Verified") na Unique
+# 🎫 Unique Club — Membership Card
 
-### Cieľ
-Na Unique pridať overovací program s 3 tierami, zlatým trblietavým odznakom (nie modrá fajka) a reálnymi benefitmi — podobne ako Meta Verified, ale plne integrované do existujúcej predplatiteľskej infraštruktúry Unique.
+Big new platform-wide feature. Two tiers, one club, "supports good" positioning, and a magnetic perk stack so people buy "like candy".
 
-### Tierová štruktúra
+## Pricing
 
-| Tier | Názov | Cena (EUR) | Typ | Zlatý odznak | Hlavné benefity |
-|------|-------|------------|-----|--------------|-----------------|
-| 1 | **Unique Verified** | 9,99 € jednorázovo | One-time | `verified` | Zlatý odznak na profile, priorita vo Wall feede, +50 AI kreditov, VIP support, overený profil proti falošným účtom |
-| 2 | **Unique Plus** | 4,99 € / mesiac | Subscription | `plus` | Všetko z Verified + "Plus" odznak, +200 kreditov/mes., vynikajúca viditeľnosť, exkluzívne funkcie (napr. skryté náhľady, priority DM) |
-| 3 | **Unique Pro** | 14,99 € / mesiac | Subscription | `pro` | Všetko z Plus + "Pro" odznak, neobmedzené AI kredity, top priorita vo feede, custom branding, osobný account manager |
+| Tier | First payment | Monthly | What ships |
+|---|---|---|---|
+| 💎 Digital Card | €20 | €1.50/mo | Instant digital card in-app (PDF + Apple/Google Wallet pass) |
+| 🪪 Physical Card | €30 | €1.50/mo | Printed NFC-ready plastic card mailed to address + digital card |
 
-### Čo sa postaví
+- 10% of every membership fee → **Unique Good Fund** (public transparency counter on landing page) — this is the "supports good" hook.
+- Founding-member badge for first 1,000 sign-ups (permanent, shown on profile).
 
-#### 1. Databáza (migrácie)
-- Rozšíriť `profiles` o `verification_tier` (`none`, `verified`, `plus`, `pro`) a `verification_expires_at` (pre subscription tiers).
-- Ponechať existujúce `is_verified` ako `verification_tier != 'none'`.
-- Rozšíriť enum `subscription_tier` o `verified` (one-time), `plus`, `pro`.
-- Vytvoriť tabuľku `verification_benefits_log` pre audit uplatňovania benefitov (kredity, feed priority, atď.).
-- GRANT + RLS policies na nové stĺpce/tabuľky.
+## Member perks (the "sugar")
 
-#### 2. Stripe produkty a ceny
-- Vytvoriť 3 Stripe products s price IDs:
-  - `prod_unique_verified` (€9.99 one-time)
-  - `prod_unique_plus` (€4.99 / mesiac)
-  - `prod_unique_pro` (€14.99 / mesiac)
-- Uložiť price IDs do edge-function config mapy.
+1. **-15% on everything paid on Unique** — auto-applied at Stripe checkout (AI tools credits, Verified, Fan Club joins, Bazaar fees, Job listings, Concerts, Courses, PPV, Gifts).
+2. **+50 AI credits every month** for free (auto-topped on renewal).
+3. **Gold "Unique Club" ring** around avatar everywhere (site-wide badge).
+4. **Priority access** — early access to new modules 7 days before public launch.
+5. **Monthly member-only drop** — one exclusive perk each month (extra wheel spin, free coloring pack, exclusive livestream, etc.).
+6. **Refer-a-friend €5** — every friend who buys a card gives referrer €5 credit.
+7. **Founding 1,000 bonus** — permanent +2× vote weight in Megatalent + lifetime badge.
+8. **Physical card only** — laser-engraved member number + NFC that opens their public profile when tapped.
 
-#### 3. Edge functions
-- Rozšíriť `create-checkout/index.ts` o routing pre `verified`, `plus`, `pro`.
-- Rozšíriť `check-subscription/index.ts` o tieto 3 tiery.
-- Vytvoriť novú edge function `verify-payment-callback` (alebo rozšíriť existujúcu), ktorá po úspešnej platbe aktualizuje `profiles.verification_tier` a pri subscription nastaví `verification_expires_at`.
-- Pridať webhook handler, ktorý pri subscription cancellation/payment failure zníži tier na `none`/`verified` podľa typu.
+## Where it lives
 
-#### 4. Frontend komponenty
-- **VerifiedBadge**: zlatý trblietavý SVG odznak s 3 variantami (`verified`, `plus`, `pro`). Použijeť na profile, Wall posts, komentáre, Messenger.
-- **VerificationPage**: nová stránka `/verified` s 3 tier cards, cenami, benefit listami, porovnávacou tabuľkou a tlačítkami na platbu.
-- **SubscriptionBadge**: integrovať odznak do existujúcej Subscription stránky.
-- **ProfileHeader update**: zobraziť zlatý odznak pri mene používateľa.
-- **WallFeed priority**: upraviť feed query, aby priorizovala `plus`/`pro` a pridala zlatý odznak k postom overených používateľov.
+- New route `/club` — full launch landing page (hero, live good-fund counter, perks grid, pricing, founding-member progress bar, testimonials placeholder, FAQ, big CTAs).
+- Homepage banner (dismissible) driving to `/club`.
+- Profile card shows current membership + digital card + "Order physical card" button.
+- Header avatar gets gold ring if member.
+- `/club/card` — digital wallet view (front/back flip, download PDF, Add to Apple/Google Wallet).
 
-#### 5. AuthContext / globálny stav
-- Pridať `verificationTier` do `AuthContext`.
-- Po prihlásení / session refresh načítať z `profiles` stĺpce `verification_tier`, `verification_expires_at`, `is_verified`.
-- Exponovať helper `hasTier('verified' | 'plus' | 'pro')` pre UI a gating.
+## Database (single migration)
 
-#### 6. Benefity — reálne funkcie
-- **Extra kredity**: trigger po úspešnej platbe pripíše kredity do `ai_credits` (50/200/nestíhajúco).
-- **Feed priority**: Wall feed query zoradí najprv `pro`, potom `plus`, potom `verified`, potom ostatní (vnútri časového rámca).
-- **VIP support**: zobraziť prioritu pri podpore / otváraní support ticketu.
-- **Exkluzívne funkcie**: gating pre „priority DM", „verified-only badge v profile", „custom profile theme color" (pro).
-- **Anti-fake**: verified status sa dá stratiť pri závažnom porušení pravidiel (admin flag).
+- `club_memberships` — user_id, tier (`digital`|`physical`), status, member_number (auto seq), started_at, current_period_end, stripe_subscription_id, stripe_customer_id, is_founding, shipping_address jsonb (physical only), shipping_status (`pending`|`shipped`|`delivered`), card_pdf_url, referred_by, monthly_credits_granted_at.
+- `club_good_fund_ledger` — membership_id, amount_eur, contributed_at (append-only, used to compute live "supports good" total).
+- `club_referrals` — referrer_id, referred_membership_id, credit_awarded_eur, created_at.
+- RLS: user sees own membership; good-fund total exposed via `SECURITY DEFINER` RPC `get_club_good_fund_total()`; member_number + is_founding + tier readable by all (for badges) via view.
+- Founding-member trigger flips `is_founding=true` for first 1,000 rows.
+- `pg_cron` monthly job grants 50 AI credits per active member.
 
-#### 7. Admin / bezpečnosť
-- Admin panel: zoznam overených používateľov, možnosť odobrať odznak (manuálne + dôvod).
-- RLS: používateľ môže čítať `verification_tier` všetkých profilov (public info), ale upravovať len vlastný (a to len cez edge function po overenej platbe).
-- Rate limiting na checkout volania.
+## Stripe
 
-### Design
-- Svetlý režim (podľa memory: default light mode).
-- Zlatá gradientová paleta: `#fbbf24` → `#f59e0b` → `#d97706`.
-- Trblietavý efekt cez CSS keyframe shimmer (pre SVG badge, nie CSS animácie na kritických cestách).
-- Čisté, elegantné karty podobné obrázku — ale Unique branding, nie Meta kópia.
+- 4 products via `create_stripe_product_and_price`:
+  - `club_digital_signup` €20 one-off
+  - `club_physical_signup` €30 one-off
+  - `club_monthly` €1.50 recurring/month (shared)
+- Edge functions:
+  - `create-club-checkout` — creates Checkout with signup line item + subscription line item; collects shipping if physical.
+  - `verify-club-membership` — post-redirect; inserts membership row, records good-fund contribution, awards referral credit, generates PDF card, kicks off wallet-pass generation.
+  - `check-club-status` — polled on login (like Verified/Fan Club patterns).
+  - Extended `stripe-webhook` — on `invoice.paid` extends period + records €0.15 to good-fund + grants 50 credits; on `customer.subscription.deleted` marks canceled.
+  - `apply-club-discount` — helper used by every existing checkout function to auto-attach 15% coupon when caller is a member.
 
-### Testovanie
-- Playwright E2E: zobrazenie `/verified`, checkout redirect, zobrazenie odznaku po návrate.
-- Unit test pre `hasTier` helper.
-- Edge function test pre checkout routing a tier aktualizáciu.
+## Frontend files
 
-### Nezaradené do rozsahu
-- Žiadne fyzické produkty, iba digitálne overenie/subscription.
-- Neprepisujeme existujúce `basic`/`premium`/`business` subscription tiers — tieto 3 nové tiery fungujú paralelne a dopĺňajú ich.
+- `src/pages/Club.tsx` — landing page with live counter + founding-progress bar.
+- `src/pages/ClubCard.tsx` — flip-card digital card view.
+- `src/components/club/ClubHero.tsx`, `ClubPerks.tsx`, `ClubPricing.tsx`, `ClubGoodFundCounter.tsx`, `ClubFoundingProgress.tsx`, `ClubFAQ.tsx`.
+- `src/components/club/MemberBadge.tsx` — gold ring wrapper for avatars.
+- `src/components/club/OrderPhysicalCardDialog.tsx` — shipping form.
+- `src/components/club/HomepageClubBanner.tsx`.
+- `src/hooks/useClubMembership.ts` — status, `startCheckout(tier)`, `openBillingPortal()`.
+- i18n keys for EN + SK + HU (rest fall back to EN).
 
-### Odhadovaná veľkosť
-Stredne veľká feature: 8-10 nových/súvisiacich súborov, 2-3 migrácie, 2 edge function updaty, 5-6 frontend komponentov. Potrebná je Stripe konfigurácia produktov.
+## Marketing launch
+
+- Homepage banner + push notification to all users on release.
+- Add "Unique Club" section to existing A5 flyer next update.
+- Short Remotion video `unique-club.mp4` (skipped from this ticket, can render after code is live).
+
+## Out of scope for this ticket
+
+- Actual card printing/fulfillment integration (Printful / local printer) — we record the order + shipping address and expose a `/admin/club/shipping` queue with CSV export for you to hand off. Wire real printer API later.
+- Apple/Google Wallet `.pkpass` signing (needs Apple Developer cert) — first release ships PDF only; wallet button appears with "Coming soon".
+
+Ready to build all of the above end-to-end.
