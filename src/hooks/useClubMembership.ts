@@ -20,12 +20,12 @@ export interface ClubMembership {
 interface StartCheckoutOptions {
   referralCode?: string;
   targetWindow?: Window | null;
+  open?: boolean;
 }
 
-function openStripeCheckout(url: string, targetWindow?: Window | null) {
+export function openStripeCheckout(url: string, targetWindow?: Window | null) {
   if (targetWindow && !targetWindow.closed) {
     try {
-      targetWindow.opener = null;
       targetWindow.location.assign(url);
       targetWindow.focus();
       return;
@@ -78,7 +78,10 @@ export function useClubMembership() {
     if (error) throw error;
     const url = (data as any)?.url;
     if (!url) throw new Error("Stripe checkout URL was not returned.");
-    openStripeCheckout(url, options?.targetWindow);
+    if (options?.open !== false) {
+      openStripeCheckout(url, options?.targetWindow);
+    }
+    return url as string;
   }, []);
 
   const openBillingPortal = useCallback(async () => {
