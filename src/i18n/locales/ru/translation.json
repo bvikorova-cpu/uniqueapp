@@ -1378,6 +1378,10 @@
       "ppv": {
         "label": "PPV Posts",
         "description": "Lock premium content behind a one-time price"
+      },
+      "live": {
+        "label": "Go Live",
+        "description": "Start a live stream or browse currently live influencers"
       }
     }
   }

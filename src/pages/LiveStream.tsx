@@ -421,7 +421,7 @@ export default function LiveStream() {
   };
 
   // Stop streaming
-  const stopStreaming = () => {
+  const stopStreaming = async (opts?: { silent?: boolean }) => {
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach(track => track.stop());
       localStreamRef.current = null;
@@ -442,7 +442,28 @@ export default function LiveStream() {
     }
 
     setIsStreaming(false);
-    toast.info("Stream ended");
+
+    // Mark stream as ended in DB (only if current user is the streamer)
+    try {
+      if (stream && user && stream.influencer_id && stream.is_live) {
+        const { data: myInf } = await supabase
+          .from("influencer_profiles")
+          .select("id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (myInf?.id === stream.influencer_id) {
+          await supabase
+            .from("live_streams")
+            .update({ is_live: false, ended_at: new Date().toISOString() })
+            .eq("id", stream.id);
+          queryClient.invalidateQueries({ queryKey: ["stream", streamId] });
+        }
+      }
+    } catch (e) {
+      console.error("Failed to mark stream ended:", e);
+    }
+
+    if (!opts?.silent) toast.info("Stream ended");
   };
 
   // Auto-join as viewer if not influencer
@@ -527,7 +548,7 @@ export default function LiveStream() {
 
                   {user?.id === stream.influencer_profiles?.user_id && isStreaming && (
                     <div className="absolute bottom-4 right-4">
-                      <Button onClick={stopStreaming} variant="destructive" size="sm">
+                      <Button onClick={() => stopStreaming()} variant="destructive" size="sm">
                         <VideoOff className="h-4 w-4 mr-2" />
                         Stop Stream
                       </Button>

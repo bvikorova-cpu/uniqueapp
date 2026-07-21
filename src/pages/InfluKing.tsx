@@ -31,7 +31,7 @@ import AudienceInsights from "@/components/influking/AudienceInsights";
 import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
 import { FanClubLockedFeed } from "@/components/influking/FanClubLockedFeed";
 import PPVStudio from "@/components/influking/PPVStudio";
-import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock } from "lucide-react";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio } from "lucide-react";
 
 type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience" | "ppv";
 
@@ -81,6 +81,7 @@ const TOOL_DEFS = [
   { id: "publisher" as const, icon: Share2, tKey: "publisher", color: "text-violet-500", bg: "bg-violet-500/10", paid: false },
   { id: "audience" as const, icon: PieChart, tKey: "audience", color: "text-teal-500", bg: "bg-teal-500/10", paid: false },
   { id: "ppv" as const, icon: Lock, tKey: "ppv", color: "text-fuchsia-500", bg: "bg-fuchsia-500/10", paid: false },
+  { id: "live" as const, icon: Radio, tKey: "live", color: "text-red-500", bg: "bg-red-500/10", paid: false, external: "/live" as string },
 ];
 
 const InfluKing = () => {
@@ -540,7 +541,7 @@ const InfluKing = () => {
               <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5 + i * 0.08 }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                 <Card className="backdrop-blur-xl bg-card/80 border-primary/10 hover:border-primary/30 transition-all cursor-pointer group"
-                  onClick={() => setActiveView(tool.id)}>
+                  onClick={() => tool.id === "live" ? navigate("/live") : setActiveView(tool.id as InfluKingView)}>
                   <CardContent className="p-4 text-center">
                     <div className={`${tool.bg} rounded-xl p-3 w-fit mx-auto mb-2 group-hover:scale-110 transition-transform`}>
                       <tool.icon className={`h-6 w-6 ${tool.color}`} />
