@@ -24,6 +24,8 @@ const BRAND = {
   pink: "#ec4899",
   gold: "#fbbf24",
   goldDeep: "#f59e0b",
+  goldLight: "#fde68a",
+  goldSoft: "rgba(253,230,138,0.94)",
 };
 
 const Crown: React.FC<{ size: number; glow: string }> = ({ size, glow }) => (
