@@ -745,6 +745,8 @@ const App = () => {
                         <Route path="/cert/:code" element={<EduCertVerify />} />
                         <Route path="/index" element={<Navigate to="/" replace />} />
                         <Route path="/download" element={<Download />} />
+                        <Route path="/club" element={<Club />} />
+                        <Route path="/club/card" element={<ClubCard />} />
                         <Route path="/downloads" element={<Navigate to="/download" replace />} />
                         <Route path="/wall" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                         <Route path="/search" element={<SearchResults />} />
