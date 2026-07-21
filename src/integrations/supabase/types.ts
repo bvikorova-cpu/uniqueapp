@@ -10616,12 +10616,17 @@ export type Database = {
           card_pdf_url: string | null
           created_at: string
           current_period_end: string | null
+          delivered_at: string | null
           id: string
           is_founding: boolean
           member_number: number
           monthly_credits_granted_at: string | null
+          phone: string | null
+          recipient_name: string | null
           referred_by: string | null
+          shipped_at: string | null
           shipping_address: Json | null
+          shipping_note: string | null
           shipping_status: Database["public"]["Enums"]["club_shipping_status"]
           started_at: string
           status: Database["public"]["Enums"]["club_status"]
@@ -10629,6 +10634,7 @@ export type Database = {
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           tier: Database["public"]["Enums"]["club_tier"]
+          tracking_number: string | null
           updated_at: string
           user_id: string
         }
@@ -10637,12 +10643,17 @@ export type Database = {
           card_pdf_url?: string | null
           created_at?: string
           current_period_end?: string | null
+          delivered_at?: string | null
           id?: string
           is_founding?: boolean
           member_number?: number
           monthly_credits_granted_at?: string | null
+          phone?: string | null
+          recipient_name?: string | null
           referred_by?: string | null
+          shipped_at?: string | null
           shipping_address?: Json | null
+          shipping_note?: string | null
           shipping_status?: Database["public"]["Enums"]["club_shipping_status"]
           started_at?: string
           status?: Database["public"]["Enums"]["club_status"]
@@ -10650,6 +10661,7 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           tier: Database["public"]["Enums"]["club_tier"]
+          tracking_number?: string | null
           updated_at?: string
           user_id: string
         }
@@ -10658,12 +10670,17 @@ export type Database = {
           card_pdf_url?: string | null
           created_at?: string
           current_period_end?: string | null
+          delivered_at?: string | null
           id?: string
           is_founding?: boolean
           member_number?: number
           monthly_credits_granted_at?: string | null
+          phone?: string | null
+          recipient_name?: string | null
           referred_by?: string | null
+          shipped_at?: string | null
           shipping_address?: Json | null
+          shipping_note?: string | null
           shipping_status?: Database["public"]["Enums"]["club_shipping_status"]
           started_at?: string
           status?: Database["public"]["Enums"]["club_status"]
@@ -10671,10 +10688,52 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           tier?: Database["public"]["Enums"]["club_tier"]
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      club_perk_grants: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          membership_id: string | null
+          period_key: string
+          perk: string
+          stripe_event_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          membership_id?: string | null
+          period_key: string
+          perk: string
+          stripe_event_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          membership_id?: string | null
+          period_key?: string
+          perk?: string
+          stripe_event_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_perk_grants_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "club_memberships"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       club_referrals: {
         Row: {

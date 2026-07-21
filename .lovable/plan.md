@@ -1,78 +1,82 @@
-# 🎫 Unique Club — Membership Card
+# Complete Unique VIP Club — end-to-end
 
-Big new platform-wide feature. Two tiers, one club, "supports good" positioning, and a magnetic perk stack so people buy "like candy".
+Cieľ: každý kúsok Klubu, ktorý sľubuje karta, musí byť naozaj funkčný po zaplatení. Žiadne "coming soon".
 
-## Pricing
+## 1. Fyzická karta — kam a komu poslať
 
-| Tier | First payment | Monthly | What ships |
-|---|---|---|---|
-| 💎 Digital Card | €20 | €1.50/mo | Instant digital card in-app (PDF + Apple/Google Wallet pass) |
-| 🪪 Physical Card | €30 | €1.50/mo | Printed NFC-ready plastic card mailed to address + digital card |
+Aktuálne Stripe Checkout zbiera len adresu. Doplníme:
 
-- 10% of every membership fee → **Unique Good Fund** (public transparency counter on landing page) — this is the "supports good" hook.
-- Founding-member badge for first 1,000 sign-ups (permanent, shown on profile).
+- **`create-club-checkout`**: pridať `phone_number_collection.enabled = true`, `custom_fields` pre "Recipient name" (ak sa má poslať niekomu inému) + note pre kuriéra.
+- **`verify-club-membership`**: uložiť do `club_memberships.shipping_address` už rozšírený objekt (name, phone, note, address).
+- Nový edge fn **`update-club-shipping`**: umožniť členovi upraviť adresu/telefón kým je `shipping_status = 'pending'` (RLS-checked).
+- **UI**: na `/club/card` a v `ClubMembershipCard` (profil) pridať sekciu „Shipping" pre fyzických členov — zobraziť adresu, tel, status; „Edit shipping" dialog volá `update-club-shipping`.
+- Ak niekto omylom nevyplnil adresu pri Stripe (edge case), UI to detekuje a vyžiada doplnenie.
 
-## Member perks (the "sugar")
+## 2. Admin shipping queue
 
-1. **-15% on everything paid on Unique** — auto-applied at Stripe checkout (AI tools credits, Verified, Fan Club joins, Bazaar fees, Job listings, Concerts, Courses, PPV, Gifts).
-2. **+50 AI credits every month** for free (auto-topped on renewal).
-3. **Gold "Unique Club" ring** around avatar everywhere (site-wide badge).
-4. **Priority access** — early access to new modules 7 days before public launch.
-5. **Monthly member-only drop** — one exclusive perk each month (extra wheel spin, free coloring pack, exclusive livestream, etc.).
-6. **Refer-a-friend €5** — every friend who buys a card gives referrer €5 credit.
-7. **Founding 1,000 bonus** — permanent +2× vote weight in Megatalent + lifetime badge.
-8. **Physical card only** — laser-engraved member number + NFC that opens their public profile when tapped.
+- Nová stránka **`/admin/club/shipping`** (chránená `has_role('admin')`): tabuľka pending fyzických kariet — meno, tel, adresa, member #, dátum, akcie: „Mark shipped", „Mark delivered", CSV export pre tlačiareň.
+- Edge fn **`admin-update-club-shipping-status`** pre bezpečnú zmenu statusu.
 
-## Where it lives
+## 3. Perky sa musia zapnúť po platbe
 
-- New route `/club` — full launch landing page (hero, live good-fund counter, perks grid, pricing, founding-member progress bar, testimonials placeholder, FAQ, big CTAs).
-- Homepage banner (dismissible) driving to `/club`.
-- Profile card shows current membership + digital card + "Order physical card" button.
-- Header avatar gets gold ring if member.
-- `/club/card` — digital wallet view (front/back flip, download PDF, Add to Apple/Google Wallet).
+### 3a. +50 AI kreditov mesačne
+- Rozšíriť **`stripe-webhook`** o handler pre Club subscription:
+  - `invoice.paid` (product == unique_club) → predĺžiť `current_period_end`, `INSERT` €0.15 do `club_good_fund_ledger` (source='monthly'), pripísať **+50 AI credits** cez existujúci ledger (`ai_credits_ledger`) + notifikácia.
+  - `customer.subscription.deleted` / `unpaid` → `status='canceled'/'past_due'`.
+- **`verify-club-membership`**: hneď pri sign-up prideliť prvých **+50 AI kreditov** (nie čakať mesiac).
 
-## Database (single migration)
+### 3b. Automatická -15% zľava všade
+- Vytvoriť Stripe coupon **`UNIQUE_CLUB_15`** (percent_off=15, forever) a uložiť ID do secret `STRIPE_CLUB_COUPON_ID`.
+- Nový shared helper **`apply-club-discount`** (deno modul importovaný z ostatných checkoutov): vezme user_id → ak aktívny club member vráti `discounts: [{ coupon: STRIPE_CLUB_COUPON_ID }]`.
+- Wire do najviac používaných checkoutov: `create-ai-credits-checkout`, `create-verified-checkout`, `fanclub-checkout`, `create-bazaar-checkout`, `create-course-checkout`, `create-concert-ticket`, `create-ppv-checkout`, `create-gift-checkout`. Ostatné (menej frekventované) sa dopnú neskôr — každý invoke helperu je 1 riadok.
 
-- `club_memberships` — user_id, tier (`digital`|`physical`), status, member_number (auto seq), started_at, current_period_end, stripe_subscription_id, stripe_customer_id, is_founding, shipping_address jsonb (physical only), shipping_status (`pending`|`shipped`|`delivered`), card_pdf_url, referred_by, monthly_credits_granted_at.
-- `club_good_fund_ledger` — membership_id, amount_eur, contributed_at (append-only, used to compute live "supports good" total).
-- `club_referrals` — referrer_id, referred_membership_id, credit_awarded_eur, created_at.
-- RLS: user sees own membership; good-fund total exposed via `SECURITY DEFINER` RPC `get_club_good_fund_total()`; member_number + is_founding + tier readable by all (for badges) via view.
-- Founding-member trigger flips `is_founding=true` for first 1,000 rows.
-- `pg_cron` monthly job grants 50 AI credits per active member.
+### 3c. Zlatý ring, founding badge, member #
+- Už hotové (`MemberBadge`, DB trigger pre `is_founding`, `member_number` sekvencia).
 
-## Stripe
+### 3d. Refer-a-friend €5
+- Aktuálne `verify-club-membership` uloží referral, ale credit sa nikde neminie. Doplniť:
+  - `club_referrals.credit_awarded_eur` → prepočítať na Stripe customer balance (`stripe.customers.createBalanceTransaction`, amount negatívny = credit) pre referrera. Ak nemá customer, uložiť pending a aplikovať pri prvom checkoute.
+  - UI kartička „Your referral link" na `/club` s copy tlačidlom (link `?ref=<membership_id>`).
 
-- 4 products via `create_stripe_product_and_price`:
-  - `club_digital_signup` €20 one-off
-  - `club_physical_signup` €30 one-off
-  - `club_monthly` €1.50 recurring/month (shared)
-- Edge functions:
-  - `create-club-checkout` — creates Checkout with signup line item + subscription line item; collects shipping if physical.
-  - `verify-club-membership` — post-redirect; inserts membership row, records good-fund contribution, awards referral credit, generates PDF card, kicks off wallet-pass generation.
-  - `check-club-status` — polled on login (like Verified/Fan Club patterns).
-  - Extended `stripe-webhook` — on `invoice.paid` extends period + records €0.15 to good-fund + grants 50 credits; on `customer.subscription.deleted` marks canceled.
-  - `apply-club-discount` — helper used by every existing checkout function to auto-attach 15% coupon when caller is a member.
+### 3e. Priority access + monthly member drop
+- Zaviesť flag **`club_only_until: timestamptz`** na `feature_flags` — existujúci `useFeatureFlag` už môže vracať `enabled_for_club_only`. Rozšírime hook o `isClubMember` check. Prvý „monthly drop" (extra wheel spin) sa aktivuje jednoducho ako flag.
 
-## Frontend files
+## 4. Homepage banner + push
+- **`ClubHomepageBanner`** už existuje; overiť že sa zobrazuje non-členom (dismissible localStorage).
+- Push: použiť existujúci `send-push-notification` s cieľom „all non-members" — jednorazovo cez admin tool (mimo tejto úlohy).
 
-- `src/pages/Club.tsx` — landing page with live counter + founding-progress bar.
-- `src/pages/ClubCard.tsx` — flip-card digital card view.
-- `src/components/club/ClubHero.tsx`, `ClubPerks.tsx`, `ClubPricing.tsx`, `ClubGoodFundCounter.tsx`, `ClubFoundingProgress.tsx`, `ClubFAQ.tsx`.
-- `src/components/club/MemberBadge.tsx` — gold ring wrapper for avatars.
-- `src/components/club/OrderPhysicalCardDialog.tsx` — shipping form.
-- `src/components/club/HomepageClubBanner.tsx`.
-- `src/hooks/useClubMembership.ts` — status, `startCheckout(tier)`, `openBillingPortal()`.
-- i18n keys for EN + SK + HU (rest fall back to EN).
+## 5. DB migrácia
 
-## Marketing launch
+- `alter table club_memberships add column phone text, add column recipient_name text, add column shipping_note text;`
+- `create table club_perk_grants(user_id, perk, granted_at, period_start, period_end)` — audit že sme 50 kreditov naozaj pripísali za dané obdobie (idempotencia proti webhook duplicitám).
+- Rozšíriť `has_role('admin')` policy pre `club_memberships` update (shipping status).
 
-- Homepage banner + push notification to all users on release.
-- Add "Unique Club" section to existing A5 flyer next update.
-- Short Remotion video `unique-club.mp4` (skipped from this ticket, can render after code is live).
+## 6. Súbory (nové/upravené)
 
-## Out of scope for this ticket
+**Backend**
+- `supabase/functions/create-club-checkout/index.ts` — phone + custom fields
+- `supabase/functions/verify-club-membership/index.ts` — persist rozšírené shipping + first 50 credits + welcome notification
+- `supabase/functions/update-club-shipping/index.ts` — NEW
+- `supabase/functions/admin-update-club-shipping-status/index.ts` — NEW
+- `supabase/functions/stripe-webhook/index.ts` — Club invoice.paid / subscription.deleted vetvy
+- `supabase/functions/_shared/apply-club-discount.ts` — NEW helper
+- Wiring v: `create-ai-credits-checkout`, `create-verified-checkout`, `fanclub-checkout`, `create-bazaar-checkout`, `create-course-checkout`, `create-concert-ticket`, `create-ppv-checkout`, `create-gift-checkout`
 
-- Actual card printing/fulfillment integration (Printful / local printer) — we record the order + shipping address and expose a `/admin/club/shipping` queue with CSV export for you to hand off. Wire real printer API later.
-- Apple/Google Wallet `.pkpass` signing (needs Apple Developer cert) — first release ships PDF only; wallet button appears with "Coming soon".
+**Frontend**
+- `src/pages/ClubCard.tsx` — Shipping panel + Edit dialog
+- `src/components/profile/ClubMembershipCard.tsx` — shipping status chip
+- `src/pages/Club.tsx` — referral link card
+- `src/components/club/EditShippingDialog.tsx` — NEW
+- `src/pages/admin/AdminClubShipping.tsx` — NEW
+- Route pridať v `src/App.tsx` (lazy)
 
-Ready to build all of the above end-to-end.
+**DB**
+- Jedna migrácia (kolóny + audit tabuľka + GRANTs + RLS + admin policy).
+
+## 7. Out of scope
+
+- Skutočná integrácia s tlačiarňou / Printful (admin queue + CSV export je handoff).
+- Apple/Google Wallet .pkpass (Apple cert chýba).
+- Kompletné wire discountu do všetkých ~40 checkout funkcií — 8 top použitých teraz, zvyšok postupne.
+
+Po odsúhlasení idem stavať.
