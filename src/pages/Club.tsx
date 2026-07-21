@@ -251,9 +251,36 @@ export default function Club() {
                 </Button>
               </div>
             </div>
+
+            {/* Referral link */}
+            <div className="mt-6 pt-6 border-t border-amber-500/30">
+              <div className="text-sm font-semibold mb-1">🎁 Invite friends — earn €5 credit each</div>
+              <div className="flex gap-2">
+                <input
+                  readOnly
+                  value={`${window.location.origin}/club?ref=${membership.id}`}
+                  className="flex-1 text-xs px-3 py-2 rounded-md bg-white/70 dark:bg-black/30 border border-white/40"
+                  onFocus={(e) => e.currentTarget.select()}
+                />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/club?ref=${membership.id}`);
+                    toast({ title: "Referral link copied" });
+                  }}
+                >
+                  Copy
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                You get €5 credit whenever a friend joins the VIP Club through your link.
+              </p>
+            </div>
           </Card>
         </section>
       )}
+
 
       {/* PRICING */}
       {!isMember && (
