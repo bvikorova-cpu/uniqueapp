@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Crown, Star, Sparkles, Lock, Loader2, CheckCircle2, XCircle, RotateCcw, ArrowLeftRight, CreditCard, ExternalLink, AlertTriangle, RefreshCw } from "lucide-react";
+import { Crown, Star, Sparkles, Lock, Loader2, CheckCircle2, XCircle, RotateCcw, ArrowLeftRight, CreditCard, ExternalLink, AlertTriangle, RefreshCw, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { classifyVerifyResult, classifyVerifyError, type VerifyNotice } from "@/lib/fanclubVerifyStatus";
 
 const TIER_ICON = { bronze: Star, silver: Crown, gold: Sparkles } as const;
@@ -221,6 +222,54 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
 
   const activeMembership = memberships.find((m) => m.status === "active");
   const hasAnyMembership = memberships.length > 0;
+  const [guideOpen, setGuideOpen] = useState(false);
+
+  // Pick the membership most likely to need guidance (broken > cancelling > active > none)
+  const guideMembership = (() => {
+    const broken = memberships.find((m) => ["past_due", "unpaid", "pending", "incomplete"].includes(m.status));
+    if (broken) return broken;
+    const cancelling = memberships.find((m) => m.status === "active" && m.cancel_at_period_end);
+    if (cancelling) return cancelling;
+    return activeMembership ?? memberships[0] ?? null;
+  })();
+
+  const guideNotice: VerifyNotice = (() => {
+    if (!guideMembership) {
+      return {
+        kind: "missing",
+        title: "How to subscribe and manage a Fan Club",
+        reason: "You don't have a membership yet. Once you subscribe, the Billing Portal is where you update your card, download invoices, or cancel.",
+        portalSteps: [
+          "Click Join on the tier you want — Stripe checkout opens in a new tab.",
+          "Complete payment (a card is required; SCA / 3-D Secure may prompt you).",
+          "You'll be redirected back — access unlocks the moment the webhook confirms.",
+          "Later, use Manage billing here to change card, download invoices, or cancel.",
+        ],
+        tone: "info",
+        showPortal: false,
+        showRetry: false,
+      };
+    }
+    if (guideMembership.status === "active" && guideMembership.cancel_at_period_end) {
+      return {
+        kind: "active",
+        title: "Cancellation scheduled — how to reverse it",
+        reason: `Access ends ${guideMembership.current_period_end?.slice(0, 10) ?? "at the end of the period"}. You can resume anytime before that date.`,
+        portalSteps: [
+          "Click Resume on the tier card to instantly cancel the pending cancellation.",
+          "Or open Billing Portal → your subscription → Renew subscription.",
+          "No new charge until the current period ends.",
+        ],
+        tone: "warn",
+        showPortal: true,
+        showRetry: false,
+      };
+    }
+    return classifyVerifyResult({
+      active: guideMembership.status === "active",
+      status: guideMembership.status,
+    });
+  })();
 
   if (isLoading) {
     return <div className="flex justify-center py-6"><Loader2 className="h-6 w-6 animate-spin" /></div>;
@@ -233,23 +282,86 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
         <CardTitle className="flex items-center gap-2 flex-wrap">
           <Crown className="h-5 w-5 text-amber-500" />
           <span>{creatorName}'s Fan Clubs</span>
-          {hasAnyMembership && (
+          <div className="ml-auto flex items-center gap-2 flex-wrap">
             <Button
               size="sm"
-              variant="outline"
-              className="ml-auto gap-1 h-8"
-              onClick={() => openPortal.mutate()}
-              disabled={openPortal.isPending}
+              variant="ghost"
+              className="gap-1 h-8"
+              onClick={() => setGuideOpen(true)}
+              title="Step-by-step guide to Billing Portal"
             >
-              {openPortal.isPending
-                ? <Loader2 className="h-3 w-3 animate-spin" />
-                : <CreditCard className="h-3 w-3" />}
-              Manage billing
-              <ExternalLink className="h-3 w-3 opacity-60" />
+              <BookOpen className="h-3 w-3" />
+              Guide
             </Button>
-          )}
+            {hasAnyMembership && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1 h-8"
+                onClick={() => openPortal.mutate()}
+                disabled={openPortal.isPending}
+              >
+                {openPortal.isPending
+                  ? <Loader2 className="h-3 w-3 animate-spin" />
+                  : <CreditCard className="h-3 w-3" />}
+                Manage billing
+                <ExternalLink className="h-3 w-3 opacity-60" />
+              </Button>
+            )}
+          </div>
         </CardTitle>
       </CardHeader>
+
+      <Dialog open={guideOpen} onOpenChange={setGuideOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-amber-500" />
+              {guideNotice.title}
+            </DialogTitle>
+            <DialogDescription>{guideNotice.reason}</DialogDescription>
+          </DialogHeader>
+
+          {guideNotice.portalSteps.length > 0 && (
+            <div className="rounded-md border bg-muted/30 p-3">
+              <p className="text-xs font-semibold mb-2 flex items-center gap-1">
+                <CreditCard className="h-3 w-3" /> Step by step
+              </p>
+              <ol className="text-sm list-decimal ml-5 space-y-1.5">
+                {guideNotice.portalSteps.map((s, i) => (
+                  <li key={i}>{s}</li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          <div className="text-[11px] text-muted-foreground border-t pt-2">
+            Current status:{" "}
+            <span className="font-mono">
+              {guideMembership
+                ? `${guideMembership.status}${guideMembership.cancel_at_period_end ? " (cancels at period end)" : ""}`
+                : "no membership"}
+            </span>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="ghost" onClick={() => setGuideOpen(false)}>Close</Button>
+            {hasAnyMembership && (
+              <Button
+                onClick={() => { setGuideOpen(false); openPortal.mutate(); }}
+                disabled={openPortal.isPending}
+                className="gap-1"
+              >
+                {openPortal.isPending
+                  ? <Loader2 className="h-3 w-3 animate-spin" />
+                  : <CreditCard className="h-3 w-3" />}
+                Open Billing Portal
+                <ExternalLink className="h-3 w-3 opacity-60" />
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {verifyNotice && (
         <div className="px-6 pb-3">
           <Alert
