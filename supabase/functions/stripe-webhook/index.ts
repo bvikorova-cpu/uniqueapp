@@ -1541,6 +1541,23 @@ serve(async (req) => {
         // ── Fan Club: mark membership as canceled/expired ──
         await syncFanClubMembership(supabase, stripe, sub);
 
+        // ── Unique VIP Club: mark canceled ──────────────────────────────────
+        try {
+          const meta = (sub.metadata ?? {}) as Record<string, string>;
+          if (meta.product === "unique_club") {
+            await supabase
+              .from("club_memberships")
+              .update({
+                status: "canceled",
+                canceled_at: new Date().toISOString(),
+              })
+              .eq("stripe_subscription_id", sub.id);
+          }
+        } catch (e) {
+          log("club cancel handler error", { err: (e as Error).message });
+        }
+
+
         // ── Campaign donation: mark monthly donation subscription cancelled ──
         try {
           const nowIso = new Date().toISOString();
