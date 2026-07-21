@@ -190,31 +190,96 @@ async function syncFanClubMembership(
     updated_at: new Date().toISOString(),
   };
 
+  // Detect status transition for targeted notifications
+  const { data: prior } = await supabase
+    .from("influencer_fan_club_members")
+    .select("status")
+    .eq("fan_club_id", fanClubId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  const priorStatus = (prior as any)?.status ?? null;
+
   const { error } = await supabase
     .from("influencer_fan_club_members")
     .upsert(payload, { onConflict: "fan_club_id,user_id" });
+
+  const startedAt = Date.now();
   if (error) {
     log("fanclub membership upsert failed", { err: error.message, sub: sub.id });
-  } else {
-    log("fanclub membership synced", { user: userId, club: fanClubId, status });
-  }
-
-  // Notify user on first activation only (no prior active row for this sub)
-  if (status === "active") {
     try {
-      const { data: club } = await supabase
-        .from("influencer_fan_clubs")
-        .select("name")
-        .eq("id", fanClubId)
-        .maybeSingle();
-      await supabase.from("notifications").insert({
+      await supabase.from("fanclub_verify_audit").insert({
         user_id: userId,
-        type: "fanclub_activated",
-        title: "Fan Club unlocked ✨",
-        message: `Your access to ${(club as any)?.name ?? "the fan club"} is active.`,
-        is_read: false,
+        fan_club_id: fanClubId,
+        outcome: "webhook_sync_error",
+        error_message: `webhook:${sub.status}:${error.message}`,
+        stripe_customer_id: customerId,
+        subscriptions_found: 1,
+        memberships_synced: 0,
+        status_summary: { stripe_status: sub.status, mapped: status, prior: priorStatus },
+        duration_ms: Date.now() - startedAt,
       });
     } catch (_e) { /* best-effort */ }
+    return;
+  }
+  log("fanclub membership synced", { user: userId, club: fanClubId, status, prior: priorStatus });
+
+  // Audit entry for webhook-driven sync (visible in admin panel)
+  try {
+    await supabase.from("fanclub_verify_audit").insert({
+      user_id: userId,
+      fan_club_id: fanClubId,
+      outcome: priorStatus && priorStatus !== status ? "webhook_repair" : "webhook_sync",
+      error_message: null,
+      stripe_customer_id: customerId,
+      subscriptions_found: 1,
+      memberships_synced: 1,
+      status_summary: { stripe_status: sub.status, mapped: status, prior: priorStatus },
+      duration_ms: Date.now() - startedAt,
+    });
+  } catch (_e) { /* best-effort */ }
+
+  // Notify user on status transitions
+  const changed = priorStatus !== status;
+  if (!changed && status !== "active") return;
+
+  let clubName = "the fan club";
+  try {
+    const { data: club } = await supabase
+      .from("influencer_fan_clubs").select("name").eq("id", fanClubId).maybeSingle();
+    if ((club as any)?.name) clubName = (club as any).name;
+  } catch (_e) { /* ignore */ }
+
+  const notif = (type: string, title: string, message: string) =>
+    supabase.from("notifications").insert({
+      user_id: userId, type, title, message, related_id: fanClubId, is_read: false,
+    }).then(() => {}, () => {});
+
+  if (status === "active" && priorStatus !== "active") {
+    await notif(
+      "fanclub_activated",
+      priorStatus === "past_due" ? "Fan Club payment recovered ✅" : "Fan Club unlocked ✨",
+      priorStatus === "past_due"
+        ? `Your payment for ${clubName} went through. Access restored.`
+        : `Your access to ${clubName} is active.`,
+    );
+  } else if (status === "past_due" && priorStatus !== "past_due") {
+    await notif(
+      "fanclub_past_due",
+      "Fan Club payment failed ⚠️",
+      `We couldn't charge your card for ${clubName}. Open the Billing Portal to update your payment method — access pauses until the invoice is paid.`,
+    );
+  } else if (status === "canceled" && priorStatus !== "canceled") {
+    await notif(
+      "fanclub_canceled",
+      "Fan Club membership canceled",
+      `Your ${clubName} membership was canceled. You can rejoin anytime.`,
+    );
+  } else if (status === "expired" && priorStatus !== "expired") {
+    await notif(
+      "fanclub_expired",
+      "Fan Club access expired",
+      `Your ${clubName} membership has expired. Rejoin to restore access.`,
+    );
   }
 }
 
@@ -1506,6 +1571,14 @@ serve(async (req) => {
           ? (inv as any).subscription
           : (inv as any).subscription?.id;
         if (!customerId || !subId) { log("dunning skip: no cust/sub"); break; }
+
+        // ── Fan Club: immediately flip to past_due (don't wait for subscription.updated) ──
+        try {
+          const subObj = await stripe.subscriptions.retrieve(subId);
+          await syncFanClubMembership(supabase, stripe, subObj);
+        } catch (e) {
+          log("fanclub payment_failed sync failed", { err: (e as Error).message });
+        }
 
         // Resolve user_id via email
         let userId: string | null = null;
