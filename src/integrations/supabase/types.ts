@@ -67685,6 +67685,10 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_influencer_audience_insights: {
+        Args: { _influencer_id: string }
+        Returns: Json
+      }
       get_iq_competition_counts: {
         Args: never
         Returns: {
