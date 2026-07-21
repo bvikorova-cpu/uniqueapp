@@ -25,7 +25,7 @@ export function ClubHomepageBanner() {
                 </span>
               </div>
               <h3 className="text-lg md:text-2xl font-black leading-tight">
-                Join the Unique Club — from €20
+                Join the Unique VIP Club — from €20
               </h3>
               <p className="text-xs md:text-sm text-white/80 mt-1 flex items-center gap-1.5">
                 <HandHeart className="h-3.5 w-3.5 text-pink-300 shrink-0" />

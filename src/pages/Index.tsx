@@ -365,7 +365,7 @@ const Index = () => {
           ))}
         </div>
 
-        {/* ── Unique Club membership banner ─────────────── */}
+        {/* ── Unique VIP Club membership banner ─────────────── */}
         <ClubHomepageBanner />
 
         {/* ── Founding Members programme (first 100) ───── */}

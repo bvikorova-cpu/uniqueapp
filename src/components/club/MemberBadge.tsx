@@ -39,13 +39,13 @@ interface MemberBadgeProps {
   /** Extra ring thickness. Defaults to a subtle 2px gold halo. */
   size?: "sm" | "md" | "lg";
   className?: string;
-  /** Show tooltip on hover with the Unique Club label + member number. */
+  /** Show tooltip on hover with the Unique VIP Club label + member number. */
   withTooltip?: boolean;
   children: ReactNode;
 }
 
 /**
- * Wraps an <Avatar /> (or anything round) with the Unique Club gold ring.
+ * Wraps an <Avatar /> (or anything round) with the Unique VIP Club gold ring.
  * Renders children untouched when the user is not a club member so it is safe
  * to sprinkle throughout the app.
  */
@@ -75,7 +75,7 @@ export function MemberBadge({
         !founding && "shadow-[0_0_10px_rgba(245,158,11,0.35)]",
         className,
       )}
-      aria-label={founding ? "Unique Club — Founding Member" : "Unique Club Member"}
+      aria-label={founding ? "Unique VIP Club — Founding Member" : "Unique VIP Club Member"}
       data-club-tier={member.tier}
     >
       <span className="block rounded-full bg-background p-[1px]">{children}</span>
@@ -99,7 +99,7 @@ export function MemberBadge({
         <TooltipTrigger asChild>{ring}</TooltipTrigger>
         <TooltipContent side="top" className="text-xs">
           <div className="font-semibold">
-            {founding ? "🏆 Unique Club — Founding Member" : "🎫 Unique Club Member"}
+            {founding ? "🏆 Unique VIP Club — Founding Member" : "🎫 Unique VIP Club Member"}
           </div>
           <div className="text-muted-foreground">
             #{member.member_number.toString().padStart(4, "0")} · {member.tier === "physical" ? "Physical card" : "Digital card"}

@@ -133,12 +133,12 @@ export default function Subscriptions() {
         </AlertDescription>
       </Alert>
 
-      {/* Unique Club */}
+      {/* Unique VIP Club */}
       <Card className="mb-4">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Crown className="h-5 w-5 text-amber-500" />
-            Unique Club
+            Unique VIP Club
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -166,8 +166,8 @@ export default function Subscriptions() {
             </div>
           ) : (
             <div className="flex items-center justify-between gap-3 flex-wrap">
-              <p className="text-sm text-muted-foreground">You're not a Unique Club member yet.</p>
-              <Button size="sm" asChild><Link to="/club">Join the Club</Link></Button>
+              <p className="text-sm text-muted-foreground">You're not a Unique VIP Club member yet.</p>
+              <Button size="sm" asChild><Link to="/club">Join the VIP Club</Link></Button>
             </div>
           )}
         </CardContent>
