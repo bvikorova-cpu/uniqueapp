@@ -1725,6 +1725,58 @@ serve(async (req) => {
           log("fanclub invoice.paid sync failed", { err: (e as Error).message });
         }
 
+        // ── Unique VIP Club: renew + grant monthly perks (AI credits + good fund) ──
+        try {
+          const subObj = await stripe.subscriptions.retrieve(subId);
+          const meta = (subObj.metadata ?? {}) as Record<string, string>;
+          if (meta.product === "unique_club") {
+            const { CLUB_MONTHLY_AI_CREDITS, CLUB_MONTHLY_GOOD_FUND_EUR, contributeToGoodFund, grantClubAiCredits } =
+              await import("../_shared/club-perks.ts");
+
+            const { data: mem } = await supabase
+              .from("club_memberships")
+              .select("id, user_id")
+              .eq("stripe_subscription_id", subId)
+              .maybeSingle();
+
+            if (mem && (mem as any).user_id) {
+              const periodEndTs = (subObj as any).current_period_end
+                ? new Date((subObj as any).current_period_end * 1000).toISOString()
+                : null;
+              await supabase
+                .from("club_memberships")
+                .update({
+                  status: "active",
+                  current_period_end: periodEndTs,
+                  monthly_credits_granted_at: new Date().toISOString(),
+                })
+                .eq("id", (mem as any).id);
+
+              const periodKey = (inv as any).period_end
+                ? String((inv as any).period_end)
+                : inv.id ?? String(Date.now());
+
+              await grantClubAiCredits(supabase as any, {
+                userId: (mem as any).user_id,
+                membershipId: (mem as any).id,
+                perk: "monthly_ai_credits",
+                periodKey,
+                amount: CLUB_MONTHLY_AI_CREDITS,
+                stripeEventId: inv.id ?? undefined,
+              });
+              await contributeToGoodFund(supabase as any, {
+                membershipId: (mem as any).id,
+                amountEur: CLUB_MONTHLY_GOOD_FUND_EUR,
+                source: "monthly",
+                stripeEventId: inv.id ?? `${subId}:${periodKey}`,
+              });
+            }
+          }
+        } catch (e) {
+          log("club invoice.paid perks failed", { err: (e as Error).message });
+        }
+
+
         // Mark any open dunning rows for this sub as recovered
         const { error: rErr } = await supabase
           .from("dunning_events")
