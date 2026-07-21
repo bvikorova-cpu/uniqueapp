@@ -203,6 +203,10 @@ export default function CreatorPayouts() {
         </div>
 
         {/* Tax export */}
+        {/* Payout request */}
+        <PayoutRequestCard enabled={!!connectReady} onPaid={refetch} />
+
+        {/* Tax export */}
         <TaxExportCard />
 
         {/* History */}
