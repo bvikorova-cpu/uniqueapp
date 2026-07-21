@@ -253,6 +253,55 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
           )}
         </CardTitle>
       </CardHeader>
+      {verifyMismatch && (
+        <div className="px-6 pb-3">
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Payment succeeded but access isn't active yet</AlertTitle>
+            <AlertDescription className="space-y-2">
+              <p className="text-xs">{verifyMismatch.reason}</p>
+              <p className="text-xs opacity-80">
+                Stripe webhooks can take a few seconds. Click re-verify to sync now,
+                or open the billing portal to inspect the subscription.
+              </p>
+              <div className="flex gap-2 flex-wrap pt-1">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="gap-1 h-7"
+                  onClick={() => runVerify(verifyMismatch.clubId)}
+                  disabled={verifying}
+                >
+                  {verifying
+                    ? <Loader2 className="h-3 w-3 animate-spin" />
+                    : <RefreshCw className="h-3 w-3" />}
+                  Re-verify with Stripe
+                </Button>
+                {hasAnyMembership && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="gap-1 h-7"
+                    onClick={() => openPortal.mutate()}
+                    disabled={openPortal.isPending}
+                  >
+                    <CreditCard className="h-3 w-3" />
+                    Open billing portal
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-7"
+                  onClick={() => setVerifyMismatch(null)}
+                >
+                  Dismiss
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
       <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {clubs.map((c) => {
           const Icon = TIER_ICON[c.tier];
