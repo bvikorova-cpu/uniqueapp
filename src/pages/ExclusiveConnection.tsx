@@ -451,7 +451,12 @@ export default function ExclusiveConnection() {
                   ))}
                 </div>
                 <button
-                  onClick={() => navigate(`/messenger?to=${p.user_id}`)}
+                  onClick={async () => {
+                    try {
+                      await (supabase as any).rpc("notify_exclusive_channel_opened", { _other_user: p.user_id });
+                    } catch { /* non-blocking */ }
+                    navigate(`/messenger?to=${p.user_id}`);
+                  }}
                   className="w-full text-xs py-2 rounded-full bg-emerald-400 text-black font-medium hover:bg-emerald-300"
                 >
                   Open private channel
