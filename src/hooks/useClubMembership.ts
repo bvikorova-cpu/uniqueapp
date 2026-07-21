@@ -17,6 +17,33 @@ export interface ClubMembership {
   started_at: string;
 }
 
+interface StartCheckoutOptions {
+  referralCode?: string;
+  targetWindow?: Window | null;
+}
+
+function openStripeCheckout(url: string, targetWindow?: Window | null) {
+  if (targetWindow && !targetWindow.closed) {
+    try {
+      targetWindow.opener = null;
+      targetWindow.location.assign(url);
+      targetWindow.focus();
+      return;
+    } catch {
+      // Fall back to the current tab below.
+    }
+  }
+
+  try {
+    const opened = window.open(url, "_blank", "noopener,noreferrer");
+    if (opened) return;
+  } catch {
+    // Fall back to same-tab navigation below.
+  }
+
+  window.location.assign(url);
+}
+
 export function useClubMembership() {
   const [membership, setMembership] = useState<ClubMembership | null>(null);
   const [loading, setLoading] = useState(true);
@@ -44,12 +71,14 @@ export function useClubMembership() {
     refresh();
   }, [refresh]);
 
-  const startCheckout = useCallback(async (tier: ClubTier, referralCode?: string) => {
+  const startCheckout = useCallback(async (tier: ClubTier, options?: StartCheckoutOptions) => {
     const { data, error } = await supabase.functions.invoke("create-club-checkout", {
-      body: { tier, referralCode },
+      body: { tier, referralCode: options?.referralCode },
     });
     if (error) throw error;
-    if ((data as any)?.url) window.location.href = (data as any).url;
+    const url = (data as any)?.url;
+    if (!url) throw new Error("Stripe checkout URL was not returned.");
+    openStripeCheckout(url, options?.targetWindow);
   }, []);
 
   const openBillingPortal = useCallback(async () => {

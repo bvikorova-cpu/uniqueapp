@@ -105,15 +105,18 @@ export default function Club() {
   }, [searchParams, toast, refresh]);
 
   async function handleBuy(tier: "digital" | "physical") {
+    const stripeWindow = window.open("about:blank", "_blank");
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) {
+      stripeWindow?.close();
       navigate("/auth?redirect=/club");
       return;
     }
     setBuying(tier);
     try {
-      await startCheckout(tier);
+      await startCheckout(tier, { targetWindow: stripeWindow });
     } catch (e: any) {
+      stripeWindow?.close();
       toast({ title: "Checkout failed", description: e.message, variant: "destructive" });
       setBuying(null);
     }
