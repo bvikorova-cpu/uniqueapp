@@ -489,12 +489,12 @@ export default function ExclusiveConnection() {
               </div>
             )}
             <div className="grid md:grid-cols-2 gap-4">
-              {profiles.length === 0 && (
+              {visibleProfiles.length === 0 && (
                 <div className="col-span-full text-center py-20 text-white/40 text-sm">
                   No active profiles yet.
                 </div>
               )}
-              {profiles.map((p) => {
+              {visibleProfiles.map((p) => {
                 const isMatched = sentSet.has(p.user_id) && receivedSet.has(p.user_id);
                 const iSent = sentSet.has(p.user_id);
                 const theySent = receivedSet.has(p.user_id);
