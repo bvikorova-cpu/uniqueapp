@@ -74,12 +74,7 @@ serve(async (req) => {
             type: "creator_gift_received",
             title: "New gift received 🎁",
             message: `${senderName} sent you ${giftName} (${amountStr})${msgSuffix}`,
-            metadata: {
-              transaction_id: tx.id,
-              sender_id: tx.sender_id,
-              gift_id: tx.gift_id,
-              amount: tx.amount,
-            },
+            related_id: tx.id,
           });
         } catch (nerr) {
           console.error("[verify-creator-gift] notification failed", nerr);
