@@ -67,30 +67,38 @@ export const SetlistVoting = ({ onBack }: Props) => {
         <p className="text-muted-foreground text-sm mt-1">Vote for the songs you want to hear at the next live concert</p>
       </div>
 
-      <div className="space-y-3">
-        {songs.map((song, i) => (
-          <Card key={song.id} className={`hover:border-primary transition-all ${i === 0 ? "border-yellow-500/30 bg-yellow-500/5" : ""}`}>
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-black text-lg ${
-                i === 0 ? "bg-yellow-500/20 text-yellow-500" : i === 1 ? "bg-gray-300/20 text-gray-400" : i === 2 ? "bg-orange-500/20 text-orange-500" : "bg-muted text-muted-foreground"
-              }`}>
-                {i + 1}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold truncate">{song.title}</h3>
-                <p className="text-xs text-muted-foreground">{song.artist}</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-bold">{song.votes} votes</span>
-                <Button size="sm" variant={voted.includes(song.id) ? "secondary" : "default"}
-                  onClick={() => handleVote(song.id)} disabled={voted.includes(song.id)}>
-                  <ThumbsUp className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>
+      ) : songs.length === 0 ? (
+        <Card><CardContent className="p-8 text-center text-muted-foreground text-sm">
+          No song requests yet. Be the first to tip a request during a live concert!
+        </CardContent></Card>
+      ) : (
+        <div className="space-y-3">
+          {songs.map((song, i) => (
+            <Card key={song.id} className={`hover:border-primary transition-all ${i === 0 ? "border-yellow-500/30 bg-yellow-500/5" : ""}`}>
+              <CardContent className="flex items-center gap-4 p-4">
+                <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-black text-lg ${
+                  i === 0 ? "bg-yellow-500/20 text-yellow-500" : i === 1 ? "bg-gray-300/20 text-gray-400" : i === 2 ? "bg-orange-500/20 text-orange-500" : "bg-muted text-muted-foreground"
+                }`}>
+                  {i + 1}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold truncate">{song.title}</h3>
+                  <p className="text-xs text-muted-foreground">{song.artist}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-bold">{song.votes} votes</span>
+                  <Button size="sm" variant={voted.includes(song.id) ? "secondary" : "default"}
+                    onClick={() => handleVote(song.id)} disabled={voted.includes(song.id)}>
+                    <ThumbsUp className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
     </>
     );
