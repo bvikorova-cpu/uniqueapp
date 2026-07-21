@@ -2,9 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Play, Clock, Brain, TrendingUp, Eye, BarChart3 } from "lucide-react";
+import { ArrowLeft, Play, Clock, Brain, TrendingUp, Eye, BarChart3, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Replay {
@@ -19,15 +22,49 @@ interface Replay {
   avgSolveTime: string;
 }
 
-const mockReplays: Replay[] = [
-  { id: "1", roomName: "Haunted Asylum", completedAt: "2026-04-03", duration: "34:12", score: 92, puzzlesSolved: 8, totalPuzzles: 8, hintsUsed: 1, avgSolveTime: "4:16" },
-  { id: "2", roomName: "Ancient Tomb", completedAt: "2026-04-01", duration: "45:30", score: 78, puzzlesSolved: 6, totalPuzzles: 7, hintsUsed: 3, avgSolveTime: "6:30" },
-  { id: "3", roomName: "Neon Crypt", completedAt: "2026-03-28", duration: "28:45", score: 98, puzzlesSolved: 10, totalPuzzles: 10, hintsUsed: 0, avgSolveTime: "2:52" },
-  { id: "4", roomName: "Mystery Mansion", completedAt: "2026-03-25", duration: "52:18", score: 65, puzzlesSolved: 5, totalPuzzles: 8, hintsUsed: 5, avgSolveTime: "6:32" },
-];
+function fmtSec(sec: number | null | undefined): string {
+  if (!sec || sec <= 0) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
 
 export function RoomReplayView({ onBack }: { onBack: () => void }) {
+  const { user } = useAuth();
   const [selected, setSelected] = useState<Replay | null>(null);
+
+  const { data: replays = [], isLoading } = useQuery({
+    queryKey: ["escape-room-replays", user?.id],
+    enabled: !!user,
+    queryFn: async (): Promise<Replay[]> => {
+      const { data, error } = await supabase
+        .from("escape_room_sessions")
+        .select("id, room_id, completed_at, completion_time_seconds, score, hints_used, escape_rooms!inner(title)")
+        .eq("user_id", user!.id)
+        .eq("status", "completed")
+        .order("completed_at", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return (data ?? []).map((r: any) => {
+        const totalPuzzles = 8;
+        const puzzlesSolved = Math.round((Number(r.score) || 0) / 100 * totalPuzzles);
+        const dur = Number(r.completion_time_seconds) || 0;
+        return {
+          id: r.id,
+          roomName: r.escape_rooms?.title ?? "Escape Room",
+          completedAt: r.completed_at ? new Date(r.completed_at).toISOString().slice(0, 10) : "—",
+          duration: fmtSec(dur),
+          score: Number(r.score) || 0,
+          puzzlesSolved,
+          totalPuzzles,
+          hintsUsed: Number(r.hints_used) || 0,
+          avgSolveTime: fmtSec(puzzlesSolved > 0 ? Math.round(dur / puzzlesSolved) : 0),
+        };
+      });
+    },
+    staleTime: 30_000,
+  });
+
 
   if (selected) {
     return (
