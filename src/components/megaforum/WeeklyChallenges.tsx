@@ -191,6 +191,9 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
                         {expired ? "Ended" : `${daysLeft(challenge.ends_at)}d left`}
                       </Badge>
                       <p className="text-xs text-accent font-bold mt-1">+{challenge.karma_reward} karma</p>
+                      {challenge.credit_reward > 0 && (
+                        <p className="text-xs text-primary font-bold">+{challenge.credit_reward} AI credits</p>
+                      )}
                     </div>
                   </div>
 
