@@ -22995,6 +22995,30 @@ export type Database = {
           },
         ]
       }
+      exclusive_connection_blocks: {
+        Row: {
+          blocked_user: string
+          blocker_user: string
+          created_at: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          blocked_user: string
+          blocker_user: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          blocked_user?: string
+          blocker_user?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       exclusive_connection_interests: {
         Row: {
           created_at: string
@@ -23060,6 +23084,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      exclusive_connection_reports: {
+        Row: {
+          created_at: string
+          id: string
+          interest_id: string | null
+          kind: string
+          note: string | null
+          reason: string
+          reporter_user: string
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          target_user: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interest_id?: string | null
+          kind: string
+          note?: string | null
+          reason: string
+          reporter_user: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          target_user: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interest_id?: string | null
+          kind?: string
+          note?: string | null
+          reason?: string
+          reporter_user?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          target_user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exclusive_connection_reports_interest_id_fkey"
+            columns: ["interest_id"]
+            isOneToOne: false
+            referencedRelation: "exclusive_connection_interests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       exclusive_feed_posts: {
         Row: {

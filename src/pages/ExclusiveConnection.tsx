@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -14,6 +15,10 @@ import {
   EyeOff,
   Save,
   UserCircle2,
+  Flag,
+  Ban,
+  ShieldCheck,
+  X,
 } from "lucide-react";
 
 type Profile = {
@@ -107,6 +112,7 @@ export default function ExclusiveConnection() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { isAdmin } = useIsAdmin();
 
   const [checkingMember, setCheckingMember] = useState(true);
   const [isMember, setIsMember] = useState(false);
@@ -115,6 +121,8 @@ export default function ExclusiveConnection() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [sent, setSent] = useState<Interest[]>([]);
   const [received, setReceived] = useState<Interest[]>([]);
+  const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set());
+  const [blockedByIds, setBlockedByIds] = useState<Set<string>>(new Set()); // admin-only
   const [loading, setLoading] = useState(true);
   const initialTab = (searchParams.get("tab") as "discover" | "matches" | "profile") || "discover";
   const [tab, setTab] = useState<"discover" | "matches" | "profile">(initialTab);
@@ -134,6 +142,16 @@ export default function ExclusiveConnection() {
   const [isActive, setIsActive] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  // report modal state
+  const [reportTarget, setReportTarget] = useState<{ userId: string; kind: "profile" | "interest"; interestId?: string; pseudonym?: string } | null>(null);
+  const [reportReason, setReportReason] = useState("Harassment");
+  const [reportNote, setReportNote] = useState("");
+  const [reportSubmitting, setReportSubmitting] = useState(false);
+
+  // admin moderation
+  const [moderationOpen, setModerationOpen] = useState(false);
+  const [reports, setReports] = useState<any[]>([]);
+
   useEffect(() => {
     (async () => {
       if (!user) {
@@ -141,15 +159,15 @@ export default function ExclusiveConnection() {
         return;
       }
       const { data } = await (supabase as any).rpc("is_exclusive_member", { _uid: user.id });
-      setIsMember(!!data);
+      setIsMember(!!data || isAdmin);
       setCheckingMember(false);
     })();
-  }, [user]);
+  }, [user, isAdmin]);
 
   const load = async () => {
     if (!user || !isMember) return;
     setLoading(true);
-    const [{ data: mine }, { data: all }, { data: outgoing }, { data: incoming }] =
+    const [{ data: mine }, { data: all }, { data: outgoing }, { data: incoming }, { data: myBlocks }] =
       await Promise.all([
         supabase
           .from("exclusive_connection_profiles" as any)
@@ -170,11 +188,24 @@ export default function ExclusiveConnection() {
           .from("exclusive_connection_interests" as any)
           .select("*")
           .eq("to_user", user.id),
+        supabase
+          .from("exclusive_connection_blocks" as any)
+          .select("blocked_user")
+          .eq("blocker_user", user.id),
       ]);
     setMyProfile((mine as any) ?? null);
     setProfiles(((all as any) ?? []).filter((p: Profile) => p.user_id !== user.id));
     setSent(((outgoing as any) ?? []) as Interest[]);
     setReceived(((incoming as any) ?? []) as Interest[]);
+    setBlockedIds(new Set(((myBlocks as any) ?? []).map((r: any) => r.blocked_user)));
+
+    // best-effort: fetch who blocked me (only readable to admins under RLS)
+    const { data: blockedByRows } = await supabase
+      .from("exclusive_connection_blocks" as any)
+      .select("blocker_user")
+      .eq("blocked_user", user.id);
+    setBlockedByIds(new Set(((blockedByRows as any) ?? []).map((r: any) => r.blocker_user)));
+
     if (mine) {
       const p = mine as any;
       setPseudonym(p.pseudonym);
@@ -194,11 +225,30 @@ export default function ExclusiveConnection() {
     if (isMember) load();
   }, [isMember, user?.id]);
 
+  const loadReports = async () => {
+    if (!isAdmin) return;
+    const { data } = await supabase
+      .from("exclusive_connection_reports" as any)
+      .select("*")
+      .eq("status", "open")
+      .order("created_at", { ascending: false })
+      .limit(100);
+    setReports((data as any) ?? []);
+  };
+
+  useEffect(() => {
+    if (isAdmin && moderationOpen) loadReports();
+  }, [isAdmin, moderationOpen]);
+
   const sentSet = useMemo(() => new Set(sent.map((s) => s.to_user)), [sent]);
   const receivedSet = useMemo(() => new Set(received.map((r) => r.from_user)), [received]);
+  const visibleProfiles = useMemo(
+    () => profiles.filter((p) => !blockedIds.has(p.user_id) && !blockedByIds.has(p.user_id)),
+    [profiles, blockedIds, blockedByIds],
+  );
   const matches = useMemo(
-    () => profiles.filter((p) => sentSet.has(p.user_id) && receivedSet.has(p.user_id)),
-    [profiles, sentSet, receivedSet],
+    () => visibleProfiles.filter((p) => sentSet.has(p.user_id) && receivedSet.has(p.user_id)),
+    [visibleProfiles, sentSet, receivedSet],
   );
 
   const saveProfile = async () => {
@@ -258,6 +308,92 @@ export default function ExclusiveConnection() {
     await load();
   };
 
+  const blockUser = async (targetUserId: string) => {
+    if (!user) return;
+    if (!window.confirm("Block this member? They will disappear from Discover and cannot exchange interest with you.")) return;
+    // Remove any existing interest either direction so the match dissolves.
+    await (supabase as any)
+      .from("exclusive_connection_interests")
+      .delete()
+      .or(`and(from_user.eq.${user.id},to_user.eq.${targetUserId}),and(from_user.eq.${targetUserId},to_user.eq.${user.id})`);
+    const { error } = await (supabase as any)
+      .from("exclusive_connection_blocks")
+      .insert({ blocker_user: user.id, blocked_user: targetUserId });
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Member blocked");
+    await load();
+  };
+
+  const unblockUser = async (targetUserId: string) => {
+    if (!user) return;
+    const { error } = await (supabase as any)
+      .from("exclusive_connection_blocks")
+      .delete()
+      .eq("blocker_user", user.id)
+      .eq("blocked_user", targetUserId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Unblocked");
+    await load();
+  };
+
+  const submitReport = async () => {
+    if (!user || !reportTarget) return;
+    setReportSubmitting(true);
+    const { error } = await (supabase as any).from("exclusive_connection_reports").insert({
+      reporter_user: user.id,
+      target_user: reportTarget.userId,
+      kind: reportTarget.kind,
+      interest_id: reportTarget.interestId ?? null,
+      reason: reportReason,
+      note: reportNote.trim().slice(0, 500) || null,
+    });
+    setReportSubmitting(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Report submitted for admin review");
+    setReportTarget(null);
+    setReportReason("Harassment");
+    setReportNote("");
+  };
+
+  const resolveReport = async (reportId: string, status: "resolved" | "dismissed") => {
+    if (!user) return;
+    const { error } = await (supabase as any)
+      .from("exclusive_connection_reports")
+      .update({ status, resolved_by: user.id, resolved_at: new Date().toISOString() })
+      .eq("id", reportId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(status === "resolved" ? "Resolved" : "Dismissed");
+    await loadReports();
+  };
+
+  const adminDeleteProfile = async (targetUserId: string) => {
+    if (!isAdmin) return;
+    if (!window.confirm("Delete this member's connection profile? They can create a new one.")) return;
+    const { error } = await (supabase as any)
+      .from("exclusive_connection_profiles")
+      .delete()
+      .eq("user_id", targetUserId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Profile removed");
+    await load();
+  };
+
+
   if (checkingMember) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -306,7 +442,7 @@ export default function ExclusiveConnection() {
               two members express mutual interest.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center flex-wrap">
             {(["discover", "matches", "profile"] as const).map((t) => (
               <button
                 key={t}
@@ -320,6 +456,16 @@ export default function ExclusiveConnection() {
                 {t === "matches" ? `Matches (${matches.length})` : t}
               </button>
             ))}
+            {isAdmin && (
+              <button
+                onClick={() => setModerationOpen((v) => !v)}
+                className="px-3 py-2 text-xs uppercase tracking-widest rounded-full border border-red-400/40 text-red-200 hover:bg-red-400/10 flex items-center gap-1.5"
+                title="Admin moderation"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                Moderate
+              </button>
+            )}
           </div>
         </div>
 
@@ -343,12 +489,12 @@ export default function ExclusiveConnection() {
               </div>
             )}
             <div className="grid md:grid-cols-2 gap-4">
-              {profiles.length === 0 && (
+              {visibleProfiles.length === 0 && (
                 <div className="col-span-full text-center py-20 text-white/40 text-sm">
                   No active profiles yet.
                 </div>
               )}
-              {profiles.map((p) => {
+              {visibleProfiles.map((p) => {
                 const isMatched = sentSet.has(p.user_id) && receivedSet.has(p.user_id);
                 const iSent = sentSet.has(p.user_id);
                 const theySent = receivedSet.has(p.user_id);
@@ -410,6 +556,30 @@ export default function ExclusiveConnection() {
                         <Heart className="w-3.5 h-3.5" /> Express interest
                       </button>
                     )}
+
+                    <div className="mt-2 flex items-center justify-between text-[11px] text-white/40">
+                      <button
+                        onClick={() => setReportTarget({ userId: p.user_id, kind: "profile", pseudonym: p.pseudonym })}
+                        className="inline-flex items-center gap-1 hover:text-amber-300"
+                      >
+                        <Flag className="w-3 h-3" /> Report
+                      </button>
+                      <button
+                        onClick={() => blockUser(p.user_id)}
+                        className="inline-flex items-center gap-1 hover:text-red-300"
+                      >
+                        <Ban className="w-3 h-3" /> Block
+                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={() => adminDeleteProfile(p.user_id)}
+                          className="inline-flex items-center gap-1 text-red-300/80 hover:text-red-300"
+                          title="Admin: delete profile"
+                        >
+                          <ShieldCheck className="w-3 h-3" /> Remove
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}
@@ -461,6 +631,20 @@ export default function ExclusiveConnection() {
                 >
                   Open private channel
                 </button>
+                <div className="mt-2 flex items-center justify-between text-[11px] text-white/40">
+                  <button
+                    onClick={() => setReportTarget({ userId: p.user_id, kind: "profile", pseudonym: p.pseudonym })}
+                    className="inline-flex items-center gap-1 hover:text-amber-300"
+                  >
+                    <Flag className="w-3 h-3" /> Report
+                  </button>
+                  <button
+                    onClick={() => blockUser(p.user_id)}
+                    className="inline-flex items-center gap-1 hover:text-red-300"
+                  >
+                    <Ban className="w-3 h-3" /> Block & unmatch
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -539,9 +723,133 @@ export default function ExclusiveConnection() {
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save profile
             </button>
+
+            {blockedIds.size > 0 && (
+              <div className="pt-4 border-t border-white/10">
+                <div className="text-xs uppercase tracking-[0.2em] text-white/50 mb-3">
+                  Blocked members ({blockedIds.size})
+                </div>
+                <div className="space-y-2">
+                  {[...blockedIds].map((uid) => (
+                    <div key={uid} className="flex items-center justify-between text-xs text-white/60 border border-white/10 rounded-lg px-3 py-2">
+                      <span className="font-mono truncate">{uid.slice(0, 8)}…</span>
+                      <button
+                        onClick={() => unblockUser(uid)}
+                        className="text-amber-300 hover:text-amber-200"
+                      >
+                        Unblock
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      {/* Report modal */}
+      {reportTarget && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-neutral-950 border border-amber-500/30 rounded-2xl max-w-md w-full p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-serif text-amber-100 text-lg">Report {reportTarget.pseudonym}</h2>
+              <button onClick={() => setReportTarget(null)} className="text-white/40 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div>
+              <label className="text-[11px] uppercase tracking-widest text-white/50">Reason</label>
+              <select
+                value={reportReason}
+                onChange={(e) => setReportReason(e.target.value)}
+                className="mt-2 w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-400/60 outline-none"
+              >
+                <option>Harassment</option>
+                <option>Spam</option>
+                <option>Impersonation</option>
+                <option>Explicit content</option>
+                <option>Fraud / scam</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-[11px] uppercase tracking-widest text-white/50">Note (optional)</label>
+              <textarea
+                value={reportNote}
+                onChange={(e) => setReportNote(e.target.value)}
+                maxLength={500}
+                rows={3}
+                className="mt-2 w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-sm focus:border-amber-400/60 outline-none"
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setReportTarget(null)}
+                className="px-4 py-2 text-xs rounded-full border border-white/10 text-white/60 hover:border-white/30"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitReport}
+                disabled={reportSubmitting}
+                className="px-4 py-2 text-xs rounded-full bg-amber-400 text-black font-medium hover:bg-amber-300 disabled:opacity-50"
+              >
+                {reportSubmitting ? "Submitting…" : "Submit report"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin moderation drawer */}
+      {isAdmin && moderationOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start justify-end p-4">
+          <div className="bg-neutral-950 border border-red-500/30 rounded-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-auto">
+            <div className="flex items-center justify-between">
+              <h2 className="font-serif text-red-100 text-lg flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4" /> Moderation queue
+              </h2>
+              <button onClick={() => setModerationOpen(false)} className="text-white/40 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            {reports.length === 0 && (
+              <p className="text-sm text-white/50 py-10 text-center">No open reports.</p>
+            )}
+            {reports.map((r) => (
+              <div key={r.id} className="border border-white/10 rounded-lg p-4 space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-red-200 font-medium">{r.reason}</span>
+                  <span className="text-[10px] uppercase tracking-widest text-white/40">{r.kind}</span>
+                </div>
+                <div className="text-xs text-white/50">Target: <span className="font-mono">{r.target_user.slice(0, 8)}…</span></div>
+                {r.note && <p className="text-xs text-white/70 italic">"{r.note}"</p>}
+                <div className="flex gap-2 pt-2">
+                  <button
+                    onClick={() => adminDeleteProfile(r.target_user).then(() => resolveReport(r.id, "resolved"))}
+                    className="text-xs px-3 py-1.5 rounded-full bg-red-500/20 text-red-200 border border-red-500/40 hover:bg-red-500/30"
+                  >
+                    Remove profile
+                  </button>
+                  <button
+                    onClick={() => resolveReport(r.id, "resolved")}
+                    className="text-xs px-3 py-1.5 rounded-full border border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/10"
+                  >
+                    Resolve
+                  </button>
+                  <button
+                    onClick={() => resolveReport(r.id, "dismissed")}
+                    className="text-xs px-3 py-1.5 rounded-full border border-white/10 text-white/60 hover:border-white/30"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
