@@ -24996,6 +24996,7 @@ export type Database = {
         Row: {
           challenge_type: string
           created_at: string | null
+          credit_reward: number
           description: string
           ends_at: string
           id: string
@@ -25008,6 +25009,7 @@ export type Database = {
         Insert: {
           challenge_type?: string
           created_at?: string | null
+          credit_reward?: number
           description: string
           ends_at?: string
           id?: string
@@ -25020,6 +25022,7 @@ export type Database = {
         Update: {
           challenge_type?: string
           created_at?: string | null
+          credit_reward?: number
           description?: string
           ends_at?: string
           id?: string
