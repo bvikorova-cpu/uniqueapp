@@ -656,6 +656,7 @@ serve(async (req) => {
               try {
                 const sub = await stripe.subscriptions.retrieve(subId);
                 await syncMegatalentSubscription(supabase, stripe, sub);
+                await syncFanClubMembership(supabase, stripe, sub);
                 log("megatalent unlocked via checkout.completed", { user: session.metadata?.user_id, sub: subId });
               } catch (e) {
                 log("megatalent checkout sync failed", { err: (e as Error).message });
