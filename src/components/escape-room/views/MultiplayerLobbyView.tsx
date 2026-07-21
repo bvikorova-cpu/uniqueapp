@@ -148,4 +148,7 @@ export function MultiplayerLobbyView({ onBack }: { onBack: () => void }) {
           ))}
         </div>
       )}
+    </div>
+    </>
+  );
 }
