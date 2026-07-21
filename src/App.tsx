@@ -38,6 +38,7 @@ const ProviderSetup = lazy(() => import("@/pages/services/ProviderSetup"));
 const PPVPost = lazy(() => import("@/pages/PPVPost"));
 const PaidMessageSuccess = lazy(() => import("@/pages/PaidMessageSuccess"));
 const GiftSuccess = lazy(() => import("@/pages/GiftSuccess"));
+const GiftHistory = lazy(() => import("@/pages/GiftHistory"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -837,6 +838,7 @@ const App = () => {
                         <Route path="/paid-message/canceled" element={<PaidMessageSuccess />} />
                         <Route path="/gift/success" element={<GiftSuccess />} />
                         <Route path="/gift/canceled" element={<GiftSuccess />} />
+                        <Route path="/gift/history" element={<ProtectedRoute><GiftHistory /></ProtectedRoute>} />
                         <Route path="/auction" element={<Auction />} />
                         <Route path="/my-auctions" element={<ProtectedRoute><MyAuctions /></ProtectedRoute>} />
                         <Route path="/ai-generation" element={<AIGeneration />} />
