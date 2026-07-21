@@ -553,17 +553,13 @@ const InfluKing = () => {
           <Card className="max-w-4xl mx-auto mb-8 backdrop-blur-xl bg-card/80 border-primary/10">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-amber-500" /> What is Influ-King?
+                <Star className="h-5 w-5 text-amber-500" /> {t("influking.what_is_title")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-muted-foreground">
-                <strong className="text-foreground">Influ-King</strong> is your ultimate platform to build and grow your influencer career.
-                Create your professional profile, share engaging content, attract followers, and climb the leaderboard
-                to become a TOP influencer recognized worldwide.
-              </p>
+              <p className="text-muted-foreground">{t("influking.what_is_desc")}</p>
               <div className="space-y-3">
-                <h4 className="font-semibold">How to Get Started:</h4>
+                <h4 className="font-semibold">{t("influking.how_to_title")}</h4>
                 <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
                   <li><strong className="text-foreground">Create Your Profile</strong> – Set up your professional influencer profile with bio, photos, and social media links.</li>
                   <li><strong className="text-foreground">Share Content</strong> – Post photos and videos to engage your audience.</li>
