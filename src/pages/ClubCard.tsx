@@ -178,6 +178,13 @@ export default function ClubCard() {
         </Button>
       </div>
 
+      {membership.tier === "physical" && (
+        <div className="w-full max-w-md mt-6">
+          <ShippingStatusCard membership={membership} onUpdated={refresh} />
+        </div>
+      )}
+
+
       {/* Hidden high-res capture surface (not flipped, positioned off-screen) */}
       <div style={{ position: "fixed", left: "-10000px", top: 0, pointerEvents: "none" }} aria-hidden>
         <div
