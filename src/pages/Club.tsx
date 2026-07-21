@@ -297,7 +297,7 @@ export default function Club() {
               />
             </div>
             <p className="text-center text-xs text-muted-foreground mt-4 max-w-md">
-              Each member receives a unique serial number. Physical cards ship with NFC.
+              Physical cards ship with NFC — tap to open your Unique profile.
             </p>
           </div>
         </section>
