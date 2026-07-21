@@ -30123,6 +30123,142 @@ export type Database = {
           },
         ]
       }
+      influencer_fan_club_members: {
+        Row: {
+          cancel_at_period_end: boolean
+          created_at: string
+          current_period_end: string | null
+          fan_club_id: string
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscribed_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          fan_club_id: string
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscribed_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          fan_club_id?: string
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscribed_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_fan_club_members_fan_club_id_fkey"
+            columns: ["fan_club_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_fan_clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influencer_fan_club_posts: {
+        Row: {
+          body: string | null
+          created_at: string
+          creator_id: string
+          fan_club_id: string
+          id: string
+          media_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          creator_id: string
+          fan_club_id: string
+          id?: string
+          media_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          creator_id?: string
+          fan_club_id?: string
+          id?: string
+          media_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_fan_club_posts_fan_club_id_fkey"
+            columns: ["fan_club_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_fan_clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influencer_fan_clubs: {
+        Row: {
+          created_at: string
+          creator_id: string
+          currency: string
+          description: string | null
+          id: string
+          is_active: boolean
+          member_count: number
+          name: string
+          perks: Json
+          price_cents: number
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          member_count?: number
+          name: string
+          perks?: Json
+          price_cents: number
+          tier: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          member_count?: number
+          name?: string
+          perks?: Json
+          price_cents?: number
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       influencer_followers: {
         Row: {
           created_at: string | null

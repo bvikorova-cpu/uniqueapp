@@ -27,6 +27,8 @@ import WeeklyChallenges from "@/components/influking/WeeklyChallenges";
 import AIThumbnailCreator from "@/components/influking/AIThumbnailCreator";
 import CrossPlatformPublisher from "@/components/influking/CrossPlatformPublisher";
 import AudienceInsights from "@/components/influking/AudienceInsights";
+import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
+import { FanClubLockedFeed } from "@/components/influking/FanClubLockedFeed";
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart } from "lucide-react";
 
 type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience";

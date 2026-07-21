@@ -8,120 +8,141 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Crown, Users, Star, Lock, Unlock, Plus, Loader2, Heart, DollarSign, Sparkles } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import {
+  ArrowLeft, Crown, Users, Star, Lock, Unlock, Plus, Loader2, Heart,
+  DollarSign, Sparkles, Trash2, FileText,
+} from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 
-interface FanClubManagerProps {
-  onBack: () => void;
-}
+interface FanClubManagerProps { onBack: () => void; }
 
-interface FanClub {
+type Tier = "bronze" | "silver" | "gold";
+
+const TIER_CONFIG: Record<Tier, {
+  color: string; bg: string; border: string; price: number; icon: typeof Star;
+}> = {
+  bronze: { color: "text-orange-600", bg: "bg-orange-500/10", border: "border-orange-500/20", price: 4.99, icon: Star },
+  silver: { color: "text-gray-400",   bg: "bg-gray-500/10",   border: "border-gray-500/20",   price: 9.99, icon: Crown },
+  gold:   { color: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/20",  price: 19.99, icon: Sparkles },
+};
+
+interface FanClubRow {
   id: string;
   name: string;
-  description: string;
-  tier: "bronze" | "silver" | "gold";
-  price: number;
+  description: string | null;
+  tier: Tier;
+  price_cents: number;
   perks: string[];
-  memberCount: number;
+  member_count: number;
+  is_active: boolean;
 }
-
-const TIER_CONFIG = {
-  bronze: { color: "text-orange-600", bg: "bg-orange-500/10", border: "border-orange-500/20", price: 4.99, icon: Star },
-  silver: { color: "text-gray-400", bg: "bg-gray-500/10", border: "border-gray-500/20", price: 9.99, icon: Crown },
-  gold: { color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20", price: 19.99, icon: Sparkles },
-};
 
 const FanClubManager = ({ onBack }: FanClubManagerProps) => {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [newClub, setNewClub] = useState<{ name: string; description: string; tier: "bronze" | "silver" | "gold"; perks: string }>({ name: "", description: "", tier: "bronze", perks: "" });
+  const qc = useQueryClient();
+  const [showCreate, setShowCreate] = useState(false);
+  const [postDialogClub, setPostDialogClub] = useState<FanClubRow | null>(null);
+  const [newClub, setNewClub] = useState<{ name: string; description: string; tier: Tier; perks: string }>({
+    name: "", description: "", tier: "bronze", perks: "",
+  });
+  const [newPost, setNewPost] = useState({ title: "", body: "", media_url: "" });
 
-  const { data: myProfile } = useQuery({
-    queryKey: ["my-influencer-fanclub"],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-      const { data } = await supabase
-        .from("influencer_profiles")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      return data;
-    },
+  const { data: user } = useQuery({
+    queryKey: ["auth-user"],
+    queryFn: async () => (await supabase.auth.getUser()).data.user,
   });
 
-  const { data: fanClubs = [], isLoading } = useQuery({
-    queryKey: ["fan-clubs", myProfile?.id],
+  const { data: clubs = [], isLoading } = useQuery<FanClubRow[]>({
+    queryKey: ["influencer-fan-clubs", user?.id],
     queryFn: async () => {
-      if (!myProfile) return [];
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
-
-      // Using activity_feed as a lightweight storage for fan club data
       const { data, error } = await supabase
-        .from("activity_feed")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("activity_type", "fan_club_created")
+        .from("influencer_fan_clubs")
+        .select("id, name, description, tier, price_cents, perks, member_count, is_active")
+        .eq("creator_id", user.id)
         .order("created_at", { ascending: false });
-
       if (error) throw error;
-      return (data || []).map((item: any) => ({
-        id: item.id,
-        name: item.metadata?.name || "Unnamed Club",
-        description: item.metadata?.description || "",
-        tier: item.metadata?.tier || "bronze",
-        price: TIER_CONFIG[item.metadata?.tier as keyof typeof TIER_CONFIG]?.price || 4.99,
-        perks: item.metadata?.perks || [],
-        memberCount: item.metadata?.member_count || 0,
-      })) as FanClub[];
+      return (data ?? []).map((r: any) => ({
+        ...r,
+        perks: Array.isArray(r.perks) ? r.perks : [],
+      })) as FanClubRow[];
     },
-    enabled: !!myProfile,
+    enabled: !!user,
   });
 
   const createClub = useMutation({
     mutationFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-      if (!myProfile) throw new Error("Create your influencer profile first");
-
-      const perksArray = newClub.perks.split("\n").filter(p => p.trim());
-
-      const { error } = await supabase.from("activity_feed").insert({
-        user_id: user.id,
-        activity_type: "fan_club_created",
-        target_type: "fan_club",
-        target_id: myProfile.id,
-        metadata: {
-          name: newClub.name,
-          description: newClub.description,
-          tier: newClub.tier,
-          perks: perksArray,
-          member_count: 0,
-        },
+      const perks = newClub.perks.split("\n").map((s) => s.trim()).filter(Boolean);
+      const { error } = await supabase.from("influencer_fan_clubs").insert({
+        creator_id: user.id,
+        tier: newClub.tier,
+        name: newClub.name.trim(),
+        description: newClub.description.trim(),
+        price_cents: Math.round(TIER_CONFIG[newClub.tier].price * 100),
+        perks,
       });
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["fan-clubs"] });
-      setShowCreateDialog(false);
+      qc.invalidateQueries({ queryKey: ["influencer-fan-clubs"] });
+      setShowCreate(false);
       setNewClub({ name: "", description: "", tier: "bronze", perks: "" });
-      toast({ title: "✅ Fan Club Created!", description: "Your exclusive fan club is now live" });
+      toast({ title: "✅ Fan Club created", description: "Members can now subscribe via Stripe." });
     },
-    onError: (error: any) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+
+  const toggleActive = useMutation({
+    mutationFn: async (row: FanClubRow) => {
+      const { error } = await supabase
+        .from("influencer_fan_clubs")
+        .update({ is_active: !row.is_active })
+        .eq("id", row.id);
+      if (error) throw error;
     },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["influencer-fan-clubs"] }),
+  });
+
+  const removeClub = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("influencer_fan_clubs").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["influencer-fan-clubs"] });
+      toast({ title: "Fan Club deleted" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+
+  const createPost = useMutation({
+    mutationFn: async () => {
+      if (!user || !postDialogClub) throw new Error("Missing context");
+      const { error } = await supabase.from("influencer_fan_club_posts").insert({
+        fan_club_id: postDialogClub.id,
+        creator_id: user.id,
+        title: newPost.title.trim(),
+        body: newPost.body.trim(),
+        media_url: newPost.media_url.trim() || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setPostDialogClub(null);
+      setNewPost({ title: "", body: "", media_url: "" });
+      toast({ title: "🔒 Exclusive post published", description: "Only active members can view it." });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
   });
 
   return (
     <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-        <Button variant="ghost" onClick={onBack} className="gap-2 mb-4">
-          <ArrowLeft className="h-4 w-4" /> Back to Hub
-        </Button>
-      </motion.div>
+      <Button variant="ghost" onClick={onBack} className="gap-2 mb-2">
+        <ArrowLeft className="h-4 w-4" /> Back to Hub
+      </Button>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         className="flex items-center justify-between flex-wrap gap-4">
@@ -131,58 +152,60 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
           </div>
           <div>
             <h2 className="text-2xl font-black">Fan Club Manager</h2>
-            <p className="text-muted-foreground">Create exclusive paid fan clubs with tiered perks</p>
+            <p className="text-muted-foreground">
+              Real Stripe subscriptions · Locked exclusive posts · 85 % creator / 15 % platform
+            </p>
           </div>
         </div>
-        <Button onClick={() => setShowCreateDialog(true)} className="gap-2">
+        <Button onClick={() => setShowCreate(true)} className="gap-2">
           <Plus className="h-4 w-4" /> Create Fan Club
         </Button>
       </motion.div>
 
-      {!myProfile ? (
-        <Card className="p-12 text-center">
-          <Lock className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Create your influencer profile first to manage fan clubs</p>
-        </Card>
-      ) : isLoading ? (
+      {isLoading ? (
         <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
-      ) : fanClubs.length === 0 ? (
+      ) : clubs.length === 0 ? (
         <Card className="p-12 text-center backdrop-blur-xl bg-card/80 border-primary/10">
           <Heart className="h-16 w-16 mx-auto mb-4 text-muted-foreground/30" />
           <h3 className="text-xl font-bold mb-2">No Fan Clubs Yet</h3>
-          <p className="text-muted-foreground mb-4">Create your first exclusive fan club and start earning from your most loyal followers</p>
-          <Button onClick={() => setShowCreateDialog(true)} className="gap-2">
+          <p className="text-muted-foreground mb-4">
+            Launch your first tier and start earning monthly recurring revenue from your top fans.
+          </p>
+          <Button onClick={() => setShowCreate(true)} className="gap-2">
             <Plus className="h-4 w-4" /> Create Your First Club
           </Button>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {fanClubs.map((club, i) => {
-            const config = TIER_CONFIG[club.tier];
-            const TierIcon = config.icon;
+          {clubs.map((club, i) => {
+            const cfg = TIER_CONFIG[club.tier];
+            const Icon = cfg.icon;
             return (
               <motion.div key={club.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}>
-                <Card className={`backdrop-blur-xl bg-card/80 ${config.border} border hover:shadow-lg transition-all`}>
+                transition={{ delay: i * 0.05 }}>
+                <Card className={`backdrop-blur-xl bg-card/80 ${cfg.border} border hover:shadow-lg transition-all`}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <div className={`p-2 rounded-lg ${config.bg}`}>
-                        <TierIcon className={`h-6 w-6 ${config.color}`} />
+                      <div className={`p-2 rounded-lg ${cfg.bg}`}><Icon className={`h-6 w-6 ${cfg.color}`} /></div>
+                      <div className="flex gap-2 items-center">
+                        <Badge className={`${cfg.bg} ${cfg.color} border-none capitalize`}>{club.tier}</Badge>
+                        {!club.is_active && <Badge variant="outline">Inactive</Badge>}
                       </div>
-                      <Badge className={`${config.bg} ${config.color} border-none capitalize`}>{club.tier}</Badge>
                     </div>
                     <CardTitle className="text-lg mt-2">{club.name}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <p className="text-sm text-muted-foreground">{club.description}</p>
+                    <p className="text-sm text-muted-foreground min-h-[2.5rem]">{club.description}</p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1">
                         <Users className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">{club.memberCount} members</span>
+                        <span className="text-sm font-medium">{club.member_count} members</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4 text-green-500" />
-                        <span className="font-bold text-green-500">€{club.price}/mo</span>
+                        <span className="font-bold text-green-500">
+                          €{(club.price_cents / 100).toFixed(2)}/mo
+                        </span>
                       </div>
                     </div>
                     {club.perks.length > 0 && (
@@ -198,6 +221,22 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
                         )}
                       </div>
                     )}
+                    <div className="flex gap-2 pt-2">
+                      <Button size="sm" variant="secondary" className="flex-1 gap-1"
+                        onClick={() => setPostDialogClub(club)}>
+                        <FileText className="h-3 w-3" /> Post
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => toggleActive.mutate(club)}>
+                        {club.is_active ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
+                      </Button>
+                      <Button size="sm" variant="ghost"
+                        onClick={() => {
+                          if (confirm(`Delete "${club.name}"? Active subscribers keep access until period end.`))
+                            removeClub.mutate(club.id);
+                        }}>
+                        <Trash2 className="h-3 w-3 text-destructive" />
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -206,8 +245,8 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
         </div>
       )}
 
-      {/* Create Dialog */}
-      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+      {/* Create dialog */}
+      <Dialog open={showCreate} onOpenChange={setShowCreate}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -222,7 +261,8 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">Description</label>
-              <Textarea value={newClub.description} onChange={(e) => setNewClub({ ...newClub, description: e.target.value })}
+              <Textarea value={newClub.description}
+                onChange={(e) => setNewClub({ ...newClub, description: e.target.value })}
                 placeholder="What makes this club special?" rows={2} />
             </div>
             <div>
@@ -242,12 +282,38 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
             <div>
               <label className="text-sm font-medium mb-1 block">Perks (one per line)</label>
               <Textarea value={newClub.perks} onChange={(e) => setNewClub({ ...newClub, perks: e.target.value })}
-                placeholder="Early access to content&#10;Exclusive behind-the-scenes&#10;Monthly Q&A sessions" rows={4} />
+                placeholder={"Early access to content\nExclusive behind-the-scenes\nMonthly Q&A sessions"} rows={4} />
             </div>
-            <Button onClick={() => createClub.mutate()} disabled={createClub.isPending || !newClub.name.trim()}
-              className="w-full gap-2">
+            <Button onClick={() => createClub.mutate()}
+              disabled={createClub.isPending || !newClub.name.trim()} className="w-full gap-2">
               {createClub.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Crown className="h-4 w-4" />}
               {createClub.isPending ? "Creating..." : "Create Fan Club"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Exclusive post dialog */}
+      <Dialog open={!!postDialogClub} onOpenChange={(o) => !o && setPostDialogClub(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Lock className="h-5 w-5 text-primary" /> New Exclusive Post
+              {postDialogClub && <span className="text-sm text-muted-foreground">· {postDialogClub.name}</span>}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input placeholder="Title" value={newPost.title}
+              onChange={(e) => setNewPost({ ...newPost, title: e.target.value })} />
+            <Textarea rows={5} placeholder="Body — only active members can read this"
+              value={newPost.body} onChange={(e) => setNewPost({ ...newPost, body: e.target.value })} />
+            <Input placeholder="Optional media URL (image/video)"
+              value={newPost.media_url}
+              onChange={(e) => setNewPost({ ...newPost, media_url: e.target.value })} />
+            <Button onClick={() => createPost.mutate()}
+              disabled={createPost.isPending || !newPost.title.trim()} className="w-full gap-2">
+              {createPost.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
+              Publish to Members
             </Button>
           </div>
         </DialogContent>
