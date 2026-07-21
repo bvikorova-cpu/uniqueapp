@@ -1,33 +1,54 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useMemo, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ListMusic, ThumbsUp, Music } from "lucide-react";
+import { ArrowLeft, ThumbsUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
-
-const sampleSongs = [
-  { id: "1", title: "Bohemian Rhapsody", artist: "Cover", votes: 42 },
-  { id: "2", title: "Stairway to Heaven", artist: "Cover", votes: 38 },
-  { id: "3", title: "Hotel California", artist: "Cover", votes: 31 },
-  { id: "4", title: "Sweet Child O' Mine", artist: "Cover", votes: 27 },
-  { id: "5", title: "Wonderwall", artist: "Cover", votes: 24 },
-];
+interface Song { id: string; title: string; artist: string; votes: number; }
 
 export const SetlistVoting = ({ onBack }: Props) => {
-  const [songs, setSongs] = useState(sampleSongs);
+  const [localVotes, setLocalVotes] = useState<Record<string, number>>({});
   const [voted, setVoted] = useState<string[]>([]);
 
+  const { data: baseSongs = [], isLoading } = useQuery({
+    queryKey: ["setlist-voting-songs"],
+    queryFn: async (): Promise<Song[]> => {
+      const { data, error } = await supabase
+        .from("concert_song_requests")
+        .select("song_title, artist_name")
+        .eq("status", "completed")
+        .order("created_at", { ascending: false })
+        .limit(500);
+      if (error) return [];
+      const tally = new Map<string, Song>();
+      (data ?? []).forEach((r: any) => {
+        const key = `${(r.song_title || "").toLowerCase()}::${(r.artist_name || "").toLowerCase()}`;
+        const existing = tally.get(key);
+        if (existing) existing.votes += 1;
+        else tally.set(key, { id: key, title: r.song_title || "Untitled", artist: r.artist_name || "Unknown", votes: 1 });
+      });
+      return Array.from(tally.values()).sort((a, b) => b.votes - a.votes).slice(0, 20);
+    },
+    staleTime: 60_000,
+  });
+
+  const songs = useMemo(() =>
+    baseSongs
+      .map(s => ({ ...s, votes: s.votes + (localVotes[s.id] || 0) }))
+      .sort((a, b) => b.votes - a.votes),
+    [baseSongs, localVotes]);
+
   const handleVote = (songId: string) => {
-    if (voted.includes(songId)) {
-      toast.error("Already voted for this song");
-      return;
-    }
-    setSongs(prev => prev.map(s => s.id === songId ? { ...s, votes: s.votes + 1 } : s).sort((a, b) => b.votes - a.votes));
+    if (voted.includes(songId)) { toast.error("Already voted for this song"); return; }
+    setLocalVotes(prev => ({ ...prev, [songId]: (prev[songId] || 0) + 1 }));
     setVoted(prev => [...prev, songId]);
     toast.success("Vote recorded!");
   };
+
 
   return (
     <>
