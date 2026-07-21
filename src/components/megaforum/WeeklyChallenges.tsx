@@ -34,6 +34,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
   const [challengeType, setChallengeType] = useState("posting");
   const [targetValue, setTargetValue] = useState("5");
   const [karmaReward, setKarmaReward] = useState("50");
+  const [creditReward, setCreditReward] = useState("5");
 
   const { data: challenges = [] } = useQuery({
     queryKey: ["forum-challenges"],
@@ -75,6 +76,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
         challenge_type: challengeType,
         target_value: parseInt(targetValue),
         karma_reward: parseInt(karmaReward),
+        credit_reward: parseInt(creditReward) || 0,
         ends_at: endsAt,
       });
       if (error) throw error;
@@ -140,7 +142,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
           <CardContent className="pt-6 space-y-3">
             <Input placeholder="Challenge title..." value={title} onChange={(e) => setTitle(e.target.value)} />
             <Textarea placeholder="Description..." value={description} onChange={(e) => setDescription(e.target.value)} />
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <Select value={challengeType} onValueChange={setChallengeType}>
                 <SelectTrigger className="text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -150,7 +152,8 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
                 </SelectContent>
               </Select>
               <Input type="number" placeholder="Target" value={targetValue} onChange={(e) => setTargetValue(e.target.value)} className="text-xs" />
-              <Input type="number" placeholder="Karma" value={karmaReward} onChange={(e) => setKarmaReward(e.target.value)} className="text-xs" />
+              <Input type="number" placeholder="Karma reward" value={karmaReward} onChange={(e) => setKarmaReward(e.target.value)} className="text-xs" />
+              <Input type="number" placeholder="AI credits reward" value={creditReward} onChange={(e) => setCreditReward(e.target.value)} className="text-xs" />
             </div>
             <Button onClick={() => createChallenge.mutate()} disabled={!title.trim() || createChallenge.isPending} className="w-full">
               {createChallenge.isPending ? "Creating..." : "Launch Challenge"}
@@ -188,6 +191,9 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
                         {expired ? "Ended" : `${daysLeft(challenge.ends_at)}d left`}
                       </Badge>
                       <p className="text-xs text-accent font-bold mt-1">+{challenge.karma_reward} karma</p>
+                      {challenge.credit_reward > 0 && (
+                        <p className="text-xs text-primary font-bold">+{challenge.credit_reward} AI credits</p>
+                      )}
                     </div>
                   </div>
 
