@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Check, X } from "lucide-react";
+import { ArrowLeft, Check, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface StorySequenceProps {
@@ -10,27 +12,65 @@ interface StorySequenceProps {
   onBack: () => void;
 }
 
-const stories = [
-  {
-    title: "Little Red Riding Hood",
-    events: [
-      { id: 1, text: "Grandma was sick", order: 1 },
-      { id: 2, text: "Little Red Riding Hood walked through the forest", order: 2 },
-      { id: 3, text: "She met the wolf in the woods", order: 3 },
-      { id: 4, text: "The wolf ran to Grandma's house", order: 4 },
-      { id: 5, text: "The hunter saved Grandma", order: 5 },
-    ],
-  },
-];
+interface StoryEvent {
+  id: number;
+  text: string;
+  order: number;
+}
+
+interface StoryRow {
+  id: string;
+  title: string;
+  events: StoryEvent[];
+}
 
 export const StorySequence = ({ onComplete, onBack }: StorySequenceProps) => {
-  const [currentStory] = useState(stories[0]);
-  const [shuffledEvents, setShuffledEvents] = useState(
-    [...currentStory.events].sort(() => Math.random() - 0.5)
-  );
-  const [selectedEvents, setSelectedEvents] = useState<typeof currentStory.events>([]);
+  const { data: stories = [], isLoading } = useQuery({
+    queryKey: ["kids-story-sequences"],
+    queryFn: async (): Promise<StoryRow[]> => {
+      const { data, error } = await supabase
+        .from("kids_story_sequences")
+        .select("id, title, events")
+        .eq("is_active", true)
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return (data ?? []).map((r) => ({
+        id: r.id as string,
+        title: r.title as string,
+        events: (r.events as unknown as StoryEvent[]) ?? [],
+      }));
+    },
+    staleTime: 5 * 60_000,
+  });
+
+  const [storyIndex, setStoryIndex] = useState(0);
+  const currentStory = stories[storyIndex];
+  const [shuffledEvents, setShuffledEvents] = useState<StoryEvent[]>([]);
+  const [selectedEvents, setSelectedEvents] = useState<StoryEvent[]>([]);
   const [isChecked, setIsChecked] = useState(false);
   const [attempts, setAttempts] = useState(0);
+
+  useEffect(() => {
+    if (currentStory) {
+      setShuffledEvents([...currentStory.events].sort(() => Math.random() - 0.5));
+      setSelectedEvents([]);
+      setIsChecked(false);
+      setAttempts(0);
+    }
+  }, [currentStory?.id]);
+
+  if (isLoading || !currentStory) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        {isLoading ? (
+          <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
+        ) : (
+          <p className="text-muted-foreground">No stories available yet.</p>
+        )}
+      </div>
+    );
+  }
+
 
   const handleEventClick = (event: typeof currentStory.events[0]) => {
     if (isChecked) return;
@@ -54,7 +94,13 @@ export const StorySequence = ({ onComplete, onBack }: StorySequenceProps) => {
     if (isCorrect) {
       const score = Math.max(100 - attempts * 20, 20);
       toast.success(`Excellent! Correct order! +${score} points`);
-      setTimeout(() => onComplete(score), 2000);
+      setTimeout(() => {
+        if (storyIndex + 1 < stories.length) {
+          setStoryIndex((i) => i + 1);
+        } else {
+          onComplete(score);
+        }
+      }, 1500);
     } else {
       toast.error("Wrong order! Try again.");
       setTimeout(() => {

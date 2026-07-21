@@ -35376,6 +35376,42 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_story_sequences: {
+        Row: {
+          category: string
+          cover_url: string | null
+          created_at: string
+          difficulty: string
+          events: Json
+          id: string
+          is_active: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          cover_url?: string | null
+          created_at?: string
+          difficulty?: string
+          events: Json
+          id?: string
+          is_active?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          cover_url?: string | null
+          created_at?: string
+          difficulty?: string
+          events?: Json
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       kids_story_usage: {
         Row: {
           created_at: string
@@ -67725,6 +67761,16 @@ export type Database = {
       get_campaign_title: {
         Args: { _campaign_id: string; _campaign_type: string }
         Returns: string
+      }
+      get_castle_leaderboard: {
+        Args: { limit_count?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          stamps: number
+          user_id: string
+          xp: number
+        }[]
       }
       get_confessions_feed: {
         Args: { _limit?: number; _offset?: number }
