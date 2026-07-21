@@ -30753,6 +30753,89 @@ export type Database = {
           },
         ]
       }
+      influking_brand_deal_applications: {
+        Row: {
+          created_at: string
+          deal_id: string
+          id: string
+          pitch: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          id?: string
+          pitch: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          id?: string
+          pitch?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influking_brand_deal_applications_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "influking_brand_deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influking_brand_deals: {
+        Row: {
+          applicants: number
+          brand: string
+          budget: string
+          category: string
+          created_at: string
+          deadline: string
+          deal_type: string
+          description: string
+          generated_for: string | null
+          id: string
+          is_active: boolean
+          logo: string
+          requirements: string
+        }
+        Insert: {
+          applicants?: number
+          brand: string
+          budget: string
+          category: string
+          created_at?: string
+          deadline: string
+          deal_type: string
+          description: string
+          generated_for?: string | null
+          id?: string
+          is_active?: boolean
+          logo?: string
+          requirements: string
+        }
+        Update: {
+          applicants?: number
+          brand?: string
+          budget?: string
+          category?: string
+          created_at?: string
+          deadline?: string
+          deal_type?: string
+          description?: string
+          generated_for?: string | null
+          id?: string
+          is_active?: boolean
+          logo?: string
+          requirements?: string
+        }
+        Relationships: []
+      }
       influking_challenge_participants: {
         Row: {
           challenge_id: string
