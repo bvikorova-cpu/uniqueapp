@@ -13,9 +13,9 @@ export default function ClubCard() {
   const [flipped, setFlipped] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
 
-  useState(() => {
+  useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
-  });
+  }, []);
 
   if (loading) {
     return (
