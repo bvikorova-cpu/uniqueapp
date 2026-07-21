@@ -159,12 +159,76 @@ export default function ClubCard() {
           <RotateCw className="h-4 w-4 mr-2" /> Flip card
         </Button>
         <Button
+          onClick={() => handleExport("png")}
+          disabled={exporting !== null}
+          className="bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 text-white"
+        >
+          <Download className="h-4 w-4 mr-2" />
+          {exporting === "png" ? "Preparing…" : "Download PNG"}
+        </Button>
+        <Button
+          onClick={() => handleExport("pdf")}
+          disabled={exporting !== null}
           variant="outline"
           className="text-white border-white/40 bg-white/10 hover:bg-white/20"
-          onClick={() => window.print()}
         >
-          <Sparkles className="h-4 w-4 mr-2" /> Save / Print
+          <FileDown className="h-4 w-4 mr-2" />
+          {exporting === "pdf" ? "Preparing…" : "Download PDF"}
         </Button>
+      </div>
+
+      {/* Hidden high-res capture surface (not flipped, positioned off-screen) */}
+      <div style={{ position: "fixed", left: "-10000px", top: 0, pointerEvents: "none" }} aria-hidden>
+        <div
+          ref={frontRef}
+          style={{
+            width: 856,
+            height: 540,
+            borderRadius: 48,
+            padding: 48,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            background:
+              "linear-gradient(135deg, #7c3aed 0%, #ec4899 45%, #f59e0b 100%)",
+            color: "white",
+            fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              <div style={{ fontSize: 18, letterSpacing: 4, textTransform: "uppercase", opacity: 0.75 }}>
+                Unique Club
+              </div>
+              <div style={{ fontFamily: "'Lobster Two', cursive", fontSize: 56, fontWeight: 700, lineHeight: 1 }}>
+                Unique
+              </div>
+            </div>
+            <div style={{ fontSize: 64 }}>👑</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 14, letterSpacing: 4, textTransform: "uppercase", opacity: 0.75 }}>
+              Member №
+            </div>
+            <div style={{ fontSize: 96, fontWeight: 900, letterSpacing: 6, lineHeight: 1 }}>
+              #{memberNum}
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", fontSize: 18 }}>
+            <div>
+              <div style={{ fontSize: 12, opacity: 0.7, textTransform: "uppercase", letterSpacing: 2 }}>Holder</div>
+              <div style={{ fontWeight: 600 }}>{email ?? "—"}</div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 12, opacity: 0.7, textTransform: "uppercase", letterSpacing: 2 }}>
+                {membership.tier === "physical" ? "Physical NFC" : "Digital"}
+              </div>
+              {membership.is_founding && (
+                <div style={{ color: "#fde047", fontWeight: 700, letterSpacing: 2 }}>★ FOUNDING</div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
