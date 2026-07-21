@@ -80,18 +80,72 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
     enabled: !!user && clubs.length > 0,
   });
 
+  const [verifyMismatch, setVerifyMismatch] = useState<null | {
+    clubId: string | null;
+    reason: string;
+  }>(null);
+  const [verifying, setVerifying] = useState(false);
+
+  const runVerify = async (clubId: string | null, opts?: { silent?: boolean }) => {
+    setVerifying(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("fanclub-verify", {
+        body: { fan_club_id: clubId },
+      });
+      if (error) throw new Error(error.message || "Verification failed");
+      if ((data as any)?.error) throw new Error((data as any).error);
+
+      const memberships = ((data as any)?.memberships ?? []) as Array<{
+        fan_club_id: string;
+        active: boolean;
+        status: string;
+      }>;
+      const target = clubId
+        ? memberships.find((m) => m.fan_club_id === clubId)
+        : memberships.find((m) => m.active);
+
+      qc.invalidateQueries({ queryKey: ["my-fan-club-memberships"] });
+      qc.invalidateQueries({ queryKey: ["fan-club-locked-posts"] });
+
+      if (!target || !target.active) {
+        const reason = !target
+          ? "Stripe has no matching subscription for your account yet."
+          : `Stripe reports status "${target.status}" — access is not active.`;
+        setVerifyMismatch({ clubId, reason });
+        if (!opts?.silent) {
+          toast({
+            title: "Membership not confirmed",
+            description: reason,
+            variant: "destructive",
+          });
+        }
+        return false;
+      }
+
+      setVerifyMismatch(null);
+      if (!opts?.silent) {
+        toast({ title: "🎉 Welcome to the Fan Club!", description: "Exclusive content unlocked." });
+      }
+      return true;
+    } catch (e: any) {
+      const reason = e?.message || "Could not reach Stripe. Please try again.";
+      setVerifyMismatch({ clubId, reason });
+      if (!opts?.silent) {
+        toast({ title: "Verification failed", description: reason, variant: "destructive" });
+      }
+      return false;
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   // Post-checkout redirect handling
   useEffect(() => {
     const fanclubParam = params.get("fanclub");
     if (!fanclubParam) return;
     const clubId = params.get("fan_club_id");
     if (fanclubParam === "success" && user) {
-      supabase.functions.invoke("fanclub-verify", { body: { fan_club_id: clubId } })
-        .then(() => {
-          qc.invalidateQueries({ queryKey: ["my-fan-club-memberships"] });
-          qc.invalidateQueries({ queryKey: ["fan-club-locked-posts"] });
-          toast({ title: "🎉 Welcome to the Fan Club!", description: "Exclusive content unlocked." });
-        });
+      runVerify(clubId);
     } else if (fanclubParam === "canceled") {
       toast({ title: "Checkout canceled", variant: "destructive" });
     }
