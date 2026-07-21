@@ -130,7 +130,7 @@ export default function Club() {
             >
               <div className="flex items-center gap-2 mb-1">
                 <Crown className="h-4 w-4 text-amber-300" />
-                <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300">Unique VIP Club · VIP</span>
+                <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300">Unique VIP Club</span>
               </div>
               <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-white drop-shadow-lg">
                 Join the VIP Club <span className="bg-gradient-to-r from-amber-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">that supports good</span>

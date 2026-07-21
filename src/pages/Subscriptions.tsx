@@ -167,7 +167,7 @@ export default function Subscriptions() {
           ) : (
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <p className="text-sm text-muted-foreground">You're not a Unique VIP Club member yet.</p>
-              <Button size="sm" asChild><Link to="/club">Join the Club</Link></Button>
+              <Button size="sm" asChild><Link to="/club">Join the VIP Club</Link></Button>
             </div>
           )}
         </CardContent>
