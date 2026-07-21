@@ -111,9 +111,11 @@ export default function Club() {
       return;
     }
     setBuying(tier);
+    const stripeWindow = window.open("about:blank", "_blank", "noopener,noreferrer");
     try {
-      await startCheckout(tier);
+      await startCheckout(tier, { targetWindow: stripeWindow });
     } catch (e: any) {
+      stripeWindow?.close();
       toast({ title: "Checkout failed", description: e.message, variant: "destructive" });
       setBuying(null);
     }
