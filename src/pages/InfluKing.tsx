@@ -30,9 +30,10 @@ import CrossPlatformPublisher from "@/components/influking/CrossPlatformPublishe
 import AudienceInsights from "@/components/influking/AudienceInsights";
 import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
 import { FanClubLockedFeed } from "@/components/influking/FanClubLockedFeed";
-import { BarChart3, Hash, Trophy, Image, Share2, PieChart } from "lucide-react";
+import PPVStudio from "@/components/influking/PPVStudio";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock } from "lucide-react";
 
-type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience";
+type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience" | "ppv";
 
 interface InfluencerProfile {
   id: string;
@@ -79,6 +80,7 @@ const TOOL_DEFS = [
   { id: "thumbnails" as const, icon: Image, tKey: "thumbnails", color: "text-rose-500", bg: "bg-rose-500/10", paid: true },
   { id: "publisher" as const, icon: Share2, tKey: "publisher", color: "text-violet-500", bg: "bg-violet-500/10", paid: false },
   { id: "audience" as const, icon: PieChart, tKey: "audience", color: "text-teal-500", bg: "bg-teal-500/10", paid: false },
+  { id: "ppv" as const, icon: Lock, tKey: "ppv", color: "text-fuchsia-500", bg: "bg-fuchsia-500/10", paid: false },
 ];
 
 const InfluKing = () => {
@@ -399,6 +401,11 @@ const InfluKing = () => {
   if (activeView === "audience") return (
     <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
       <AudienceInsights onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "ppv") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
+      <PPVStudio onBack={() => setActiveView("hub")} />
     </div></div>
   );
 

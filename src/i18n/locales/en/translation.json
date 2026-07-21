@@ -1374,6 +1374,10 @@
       "audience": {
         "label": "Audience Insights",
         "description": "Demographics, behavior & interests"
+      },
+      "ppv": {
+        "label": "PPV Posts",
+        "description": "Lock premium content behind a one-time price"
       }
     }
   }
