@@ -43,6 +43,40 @@ export default function ClubCard() {
 
   const memberNum = String(membership.member_number).padStart(4, "0");
 
+  const handleExport = async (kind: "png" | "pdf") => {
+    if (!frontRef.current) return;
+    try {
+      setExporting(kind);
+      const canvas = await html2canvas(frontRef.current, {
+        backgroundColor: null,
+        scale: 3,
+        useCORS: true,
+      });
+      const dataUrl = canvas.toDataURL("image/png");
+      const filename = `unique-club-card-${memberNum}`;
+      if (kind === "png") {
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = `${filename}.png`;
+        a.click();
+      } else {
+        const pdf = new jsPDF({
+          orientation: "landscape",
+          unit: "mm",
+          format: [85.6, 53.98], // ISO/IEC 7810 ID-1 credit card
+        });
+        pdf.addImage(dataUrl, "PNG", 0, 0, 85.6, 53.98);
+        pdf.save(`${filename}.pdf`);
+      }
+      toast({ title: `Card saved as ${kind.toUpperCase()}`, description: "Enjoy your VIP membership ✨" });
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Export failed", description: "Please try again.", variant: "destructive" });
+    } finally {
+      setExporting(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-950 via-pink-950 to-amber-950 p-6 flex flex-col items-center pt-16">
       <Button variant="ghost" className="text-white self-start mb-4" onClick={() => navigate("/club")}>
