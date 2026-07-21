@@ -694,7 +694,7 @@ const App = () => {
                 <Sonner />
                 <Suspense fallback={null}>
                   <FloatingAssistantDock>
-                    <GoogleTranslateWidget docked />
+                    {/* GoogleTranslateWidget removed — Google translate service was unreliable */}
                     <UniAssistant docked />
                     {/* LiveChatWidget removed — Uni voice+text AI assistant replaces it */}
                   </FloatingAssistantDock>
