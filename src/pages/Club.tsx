@@ -37,7 +37,7 @@ import { Helmet } from "react-helmet-async";
 const PERKS = [
   { icon: Percent, title: "-15% everywhere on Unique", desc: "Auto-applied to every AI credit pack, Verified badge, Fan Club, Bazaar fee, job listing, concert, course, PPV, and gift." },
   { icon: Zap, title: "+50 AI credits every month", desc: "Free credits topped up automatically on each renewal — burn them on any Unique AI tool." },
-  { icon: Crown, title: "Gold Unique Club ring", desc: "Your avatar gets a glowing gold ring everywhere on the platform. Everyone sees you're part of the club." },
+  { icon: Crown, title: "Gold Unique VIP Club ring", desc: "Your avatar gets a glowing gold ring everywhere on the platform. Everyone sees you're part of the club." },
   { icon: Sparkles, title: "Priority access to new modules", desc: "You get every new Unique module 7 days before the public launch." },
   { icon: Gift, title: "Member-only monthly drop", desc: "One exclusive perk every single month — extra wheel spin, free coloring pack, private livestream, and more." },
   { icon: Users, title: "Refer-a-friend €5 credit", desc: "Every friend who joins the club with your link earns you €5 in Unique credits. Forever." },
@@ -92,7 +92,7 @@ export default function Club() {
         if (error) throw error;
         if ((data as any)?.status === "active") {
           toast({
-            title: "🎉 Welcome to the Unique Club!",
+            title: "🎉 Welcome to the Unique VIP Club!",
             description: "Your card is active. Gold ring unlocked. 15% discount active platform-wide.",
           });
           refresh();
@@ -107,8 +107,8 @@ export default function Club() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-pink-50 to-amber-50 dark:from-purple-950 dark:via-pink-950 dark:to-amber-950 pb-24">
       <Helmet>
-        <title>Unique Club — Join the movement that supports good</title>
-        <meta name="description" content="Get your Unique Club membership card. €20 digital or €30 physical, then just €1.50/month. 15% off everything, 50 free AI credits monthly, and 10% of every payment supports good causes." />
+        <title>Unique VIP Club — Join the movement that supports good</title>
+        <meta name="description" content="Get your Unique VIP Club membership card. €20 digital or €30 physical, then just €1.50/month. 15% off everything, 50 free AI credits monthly, and 10% of every payment supports good causes." />
       </Helmet>
 
       {/* HERO VIDEO */}
@@ -130,10 +130,10 @@ export default function Club() {
             >
               <div className="flex items-center gap-2 mb-1">
                 <Crown className="h-4 w-4 text-amber-300" />
-                <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300">Unique Club · VIP</span>
+                <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300">Unique VIP Club · VIP</span>
               </div>
               <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-white drop-shadow-lg">
-                Join the Club <span className="bg-gradient-to-r from-amber-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">that supports good</span>
+                Join the VIP Club <span className="bg-gradient-to-r from-amber-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">that supports good</span>
               </h1>
               <p className="text-white/90 text-xs sm:text-base font-semibold mt-1 drop-shadow">
                 €20 or €30 · then just €1.50/month · 10% goes to good causes
@@ -153,7 +153,7 @@ export default function Club() {
           >
             <Crown className="h-4 w-4 text-amber-500" />
             <span className="text-xs font-bold uppercase tracking-widest text-amber-700 dark:text-amber-300">
-              Unique Club · New
+              Unique VIP Club · New
             </span>
           </motion.div>
 
@@ -164,7 +164,7 @@ export default function Club() {
             className="text-5xl md:text-7xl font-black leading-tight"
           >
             <span className="bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 bg-clip-text text-transparent">
-              Join the Club
+              Join the VIP Club
             </span>
             <br />
             <span className="text-foreground">that supports good.</span>

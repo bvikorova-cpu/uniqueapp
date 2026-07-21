@@ -492,7 +492,7 @@ const Navbar = () => {
             <ThemeToggle />
             <Link
               to="/club"
-              aria-label="Unique Club"
+              aria-label="Unique VIP Club"
               className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full text-xs font-bold text-amber-950 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 hover:from-amber-200 hover:to-amber-400 shadow-md shadow-amber-500/30 transition-all"
             >
               <Ticket className="h-4 w-4" />
@@ -549,7 +549,7 @@ const Navbar = () => {
                       <Link to="/club" className="w-full cursor-pointer">
                         <Ticket className="h-4 w-4 mr-2 text-amber-500" />
                         <span className="bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent font-semibold">
-                          Unique Club
+                          Unique VIP Club
                         </span>
                       </Link>
                     </DropdownMenuItem>
@@ -620,7 +620,7 @@ const Navbar = () => {
             <ThemeToggle className="h-8 w-8" />
             <Link
               to="/club"
-              aria-label="Unique Club"
+              aria-label="Unique VIP Club"
               className="inline-flex items-center justify-center h-8 w-8 rounded-full text-amber-950 bg-gradient-to-br from-amber-300 to-amber-500 shadow shadow-amber-500/30"
             >
               <Ticket className="h-4 w-4" />

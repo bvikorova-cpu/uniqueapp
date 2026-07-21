@@ -15,8 +15,8 @@ export default function ClubCheckout() {
   const [error, setError] = useState<string | null>(null);
 
   const label = useMemo(() => {
-    if (tier === "physical") return "Physical Unique Club Card";
-    return "Digital Unique Club Card";
+    if (tier === "physical") return "Physical Unique VIP Club Card";
+    return "Digital Unique VIP Club Card";
   }, [tier]);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ export default function ClubCheckout() {
 
         <Button asChild variant="ghost" className="mt-6">
           <Link to="/club">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Unique Club
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Unique VIP Club
           </Link>
         </Button>
       </Card>

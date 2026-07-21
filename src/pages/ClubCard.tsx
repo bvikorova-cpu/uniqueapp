@@ -36,7 +36,7 @@ export default function ClubCard() {
       <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-4">
         <Crown className="h-16 w-16 text-muted-foreground" />
         <h1 className="text-2xl font-black">No membership yet</h1>
-        <Button onClick={() => navigate("/club")}>Join the Unique Club</Button>
+        <Button onClick={() => navigate("/club")}>Join the Unique VIP Club</Button>
       </div>
     );
   }
@@ -83,7 +83,7 @@ export default function ClubCard() {
         <ArrowLeft className="h-4 w-4 mr-2" /> Back
       </Button>
 
-      <h1 className="text-3xl font-black text-white mb-2">Your Unique Club Card</h1>
+      <h1 className="text-3xl font-black text-white mb-2">Your Unique VIP Club Card</h1>
       <p className="text-white/70 mb-8 text-sm">Tap the card to flip</p>
 
       <div className="perspective-1000 w-full max-w-md" style={{ perspective: 1000 }}>
@@ -105,7 +105,7 @@ export default function ClubCard() {
           >
             <div className="flex justify-between items-start">
               <div>
-                <div className="text-white/70 text-xs uppercase tracking-widest">Unique Club</div>
+                <div className="text-white/70 text-xs uppercase tracking-widest">Unique VIP Club</div>
                 <div className="text-white text-2xl font-black" style={{ fontFamily: "Lobster Two, cursive" }}>
                   Unique
                 </div>
@@ -148,7 +148,7 @@ export default function ClubCard() {
               <div>Renews: {membership.current_period_end ? new Date(membership.current_period_end).toLocaleDateString() : "—"}</div>
             </div>
             <div className="text-white/60 text-[10px] leading-tight">
-              This card entitles the holder to all Unique Club benefits. Powered by love, supporting good causes. uniqueapp.fun
+              This card entitles the holder to all Unique VIP Club benefits. Powered by love, supporting good causes. uniqueapp.fun
             </div>
           </div>
         </motion.div>
@@ -198,7 +198,7 @@ export default function ClubCard() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>
               <div style={{ fontSize: 18, letterSpacing: 4, textTransform: "uppercase", opacity: 0.75 }}>
-                Unique Club
+                Unique VIP Club
               </div>
               <div style={{ fontFamily: "'Lobster Two', cursive", fontSize: 56, fontWeight: 700, lineHeight: 1 }}>
                 Unique

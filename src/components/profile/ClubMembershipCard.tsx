@@ -20,7 +20,7 @@ export function ClubMembershipCard() {
           <div className="flex-1 min-w-0">
             <div className="font-bold">Become a VIP</div>
             <div className="text-xs text-muted-foreground">
-              Join the Unique Club — support good, unlock perks.
+              Join the Unique VIP Club — support good, unlock perks.
             </div>
           </div>
           <Button asChild size="sm" className="bg-gradient-to-r from-amber-500 to-pink-500">
