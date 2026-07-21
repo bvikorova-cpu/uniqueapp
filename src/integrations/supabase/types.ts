@@ -68538,6 +68538,10 @@ export type Database = {
         Returns: boolean
       }
       mt_unlock_user_achievements: { Args: never; Returns: Json }
+      notify_exclusive_channel_opened: {
+        Args: { _other_user: string }
+        Returns: undefined
+      }
       open_mystery_box: { Args: { p_user_box_id: string }; Returns: Json }
       payout_requires_review: {
         Args: {

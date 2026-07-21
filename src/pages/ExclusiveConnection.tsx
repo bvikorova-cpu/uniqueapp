@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -106,6 +106,7 @@ function TagPicker({
 export default function ExclusiveConnection() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [checkingMember, setCheckingMember] = useState(true);
   const [isMember, setIsMember] = useState(false);
@@ -115,7 +116,13 @@ export default function ExclusiveConnection() {
   const [sent, setSent] = useState<Interest[]>([]);
   const [received, setReceived] = useState<Interest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"discover" | "matches" | "profile">("discover");
+  const initialTab = (searchParams.get("tab") as "discover" | "matches" | "profile") || "discover";
+  const [tab, setTab] = useState<"discover" | "matches" | "profile">(initialTab);
+
+  useEffect(() => {
+    const t = searchParams.get("tab");
+    if (t === "discover" || t === "matches" || t === "profile") setTab(t);
+  }, [searchParams]);
 
   // profile form state
   const [pseudonym, setPseudonym] = useState("");
@@ -444,7 +451,12 @@ export default function ExclusiveConnection() {
                   ))}
                 </div>
                 <button
-                  onClick={() => navigate(`/messenger?to=${p.user_id}`)}
+                  onClick={async () => {
+                    try {
+                      await (supabase as any).rpc("notify_exclusive_channel_opened", { _other_user: p.user_id });
+                    } catch { /* non-blocking */ }
+                    navigate(`/messenger?to=${p.user_id}`);
+                  }}
                   className="w-full text-xs py-2 rounded-full bg-emerald-400 text-black font-medium hover:bg-emerald-300"
                 >
                   Open private channel
