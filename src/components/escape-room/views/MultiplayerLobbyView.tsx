@@ -112,35 +112,40 @@ export function MultiplayerLobbyView({ onBack }: { onBack: () => void }) {
 
       {/* Active Lobbies */}
       <h3 className="text-lg font-bold mb-3">Active Lobbies</h3>
-      <div className="grid gap-3">
-        {lobbies.map((lobby, i) => (
-          <motion.div key={lobby.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
-            <Card className="hover:border-green-500/30 transition-colors">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-bold">{lobby.name}</h4>
-                    <Badge variant={lobby.status === "waiting" ? "secondary" : lobby.status === "starting" ? "default" : "destructive"} className="text-[10px]">
-                      {lobby.status === "waiting" && <Clock className="w-2.5 h-2.5 mr-0.5" />}
-                      {lobby.status}
-                    </Badge>
+      {isLoading ? (
+        <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-green-500" /></div>
+      ) : lobbies.length === 0 ? (
+        <Card><CardContent className="p-8 text-center text-muted-foreground">
+          No active lobbies right now — be the first to create one!
+        </CardContent></Card>
+      ) : (
+        <div className="grid gap-3">
+          {lobbies.map((lobby, i) => (
+            <motion.div key={lobby.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
+              <Card className="hover:border-green-500/30 transition-colors">
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-bold">{lobby.name}</h4>
+                      <Badge variant={lobby.status === "waiting" ? "secondary" : lobby.status === "starting" ? "default" : "destructive"} className="text-[10px]">
+                        {lobby.status === "waiting" && <Clock className="w-2.5 h-2.5 mr-0.5" />}
+                        {lobby.status}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Crown className="w-3 h-3" />{lobby.host_name} · {lobby.room} · <span className="font-mono">{lobby.invite_code}</span>
+                    </p>
                   </div>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Crown className="w-3 h-3" />{lobby.host} · {lobby.room}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-mono">{lobby.players}/{lobby.maxPlayers}</span>
-                  <Button size="sm" variant="outline" onClick={() => joinLobby(lobby)} disabled={lobby.status === "full"}>
-                    Join
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-    </>
-  );
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-mono">{lobby.players}/{lobby.max_players}</span>
+                    <Button size="sm" variant="outline" onClick={() => joinLobby(lobby)} disabled={lobby.status === "full"}>
+                      Join
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      )}
 }
