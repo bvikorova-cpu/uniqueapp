@@ -1432,6 +1432,9 @@ serve(async (req) => {
         // ── Megatalent: deactivate subscription row immediately ─────────────
         await syncMegatalentSubscription(supabase, stripe, sub);
 
+        // ── Fan Club: mark membership as canceled/expired ──
+        await syncFanClubMembership(supabase, stripe, sub);
+
         // ── Campaign donation: mark monthly donation subscription cancelled ──
         try {
           const nowIso = new Date().toISOString();
