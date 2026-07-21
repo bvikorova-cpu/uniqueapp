@@ -539,6 +539,14 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
+                      <Link to="/club" className="w-full cursor-pointer">
+                        <Ticket className="h-4 w-4 mr-2 text-amber-500" />
+                        <span className="bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent font-semibold">
+                          Unique Club
+                        </span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link to="/premium" className="w-full cursor-pointer">
                         <Crown className="h-4 w-4 mr-2 text-primary" />
                         UniqueApp Premium
