@@ -76,6 +76,21 @@ serve(async (req) => {
                 "SK","CZ","HU","AT","DE","PL","FR","IT","ES","NL","BE","IE","PT","SE","DK","FI","GR","RO","BG","HR","SI","LT","LV","EE","LU","MT","CY","GB","US","CA","AU","CH","NO"
               ],
             },
+            phone_number_collection: { enabled: true },
+            custom_fields: [
+              {
+                key: "recipient_name",
+                label: { type: "custom", custom: "Recipient full name (as printed on the card)" },
+                type: "text",
+                optional: false,
+              },
+              {
+                key: "delivery_note",
+                label: { type: "custom", custom: "Delivery note (buzzer, floor…)" },
+                type: "text",
+                optional: true,
+              },
+            ],
           }
         : {}),
       success_url: `${origin}/club?session_id={CHECKOUT_SESSION_ID}`,
