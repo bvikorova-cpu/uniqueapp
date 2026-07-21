@@ -234,6 +234,24 @@ export function ProfileVerificationCard() {
           >
             <RefreshCw className={`w-3.5 h-3.5 ${checking ? "animate-spin" : ""}`} />
           </button>
+          {isSubscribed && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-8 gap-1 text-xs"
+              disabled={openingPortal}
+              onClick={() => void openBillingPortal()}
+              title="Manage payment methods, invoices and cancellation in Stripe"
+            >
+              {openingPortal ? (
+                <Sparkles className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <CreditCard className="w-3.5 h-3.5" />
+              )}
+              Manage billing
+              <ExternalLink className="w-3 h-3 opacity-60" />
+            </Button>
+          )}
         </div>
       </div>
 
