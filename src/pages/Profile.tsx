@@ -706,6 +706,7 @@ const Profile = () => {
 
         {/* Unique Verified / Plus / Pro — direct upgrade on own profile */}
         {currentUserId === userId && <ProfileVerificationCard />}
+        {currentUserId === userId && <ClubMembershipCard />}
         {currentUserId === userId && <FanClubMembershipsCard />}
 
 
