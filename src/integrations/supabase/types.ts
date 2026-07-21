@@ -16828,6 +16828,8 @@ export type Database = {
           id: string
           is_enabled: boolean | null
           price_per_message: number | null
+          shoutout_enabled: boolean | null
+          shoutout_price: number | null
           updated_at: string
         }
         Insert: {
@@ -16837,6 +16839,8 @@ export type Database = {
           id?: string
           is_enabled?: boolean | null
           price_per_message?: number | null
+          shoutout_enabled?: boolean | null
+          shoutout_price?: number | null
           updated_at?: string
         }
         Update: {
@@ -16846,6 +16850,8 @@ export type Database = {
           id?: string
           is_enabled?: boolean | null
           price_per_message?: number | null
+          shoutout_enabled?: boolean | null
+          shoutout_price?: number | null
           updated_at?: string
         }
         Relationships: []
@@ -16889,6 +16895,8 @@ export type Database = {
           platform_fee: number
           replied_at: string | null
           reply: string | null
+          reply_video_url: string | null
+          request_type: string
           sender_id: string
           status: string | null
           stripe_session_id: string | null
@@ -16904,6 +16912,8 @@ export type Database = {
           platform_fee: number
           replied_at?: string | null
           reply?: string | null
+          reply_video_url?: string | null
+          request_type?: string
           sender_id: string
           status?: string | null
           stripe_session_id?: string | null
@@ -16919,6 +16929,8 @@ export type Database = {
           platform_fee?: number
           replied_at?: string | null
           reply?: string | null
+          reply_video_url?: string | null
+          request_type?: string
           sender_id?: string
           status?: string | null
           stripe_session_id?: string | null

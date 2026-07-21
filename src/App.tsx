@@ -36,6 +36,7 @@ const ServiceBookingSuccess = lazy(() => import("@/pages/services/ServiceBooking
 const MyServiceBookings = lazy(() => import("@/pages/services/MyServiceBookings"));
 const ProviderSetup = lazy(() => import("@/pages/services/ProviderSetup"));
 const PPVPost = lazy(() => import("@/pages/PPVPost"));
+const PaidMessageSuccess = lazy(() => import("@/pages/PaidMessageSuccess"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -831,6 +832,8 @@ const App = () => {
                         <Route path="/admin/bazaar-trust" element={<ProtectedRoute requireAdmin={true}><AdminBazaarTrust /></ProtectedRoute>} />
                         <Route path="/influ-king" element={<InfluKing />} />
                         <Route path="/influ-king/ppv/:id" element={<PPVPost />} />
+                        <Route path="/paid-message/success" element={<PaidMessageSuccess />} />
+                        <Route path="/paid-message/canceled" element={<PaidMessageSuccess />} />
                         <Route path="/auction" element={<Auction />} />
                         <Route path="/my-auctions" element={<ProtectedRoute><MyAuctions /></ProtectedRoute>} />
                         <Route path="/ai-generation" element={<AIGeneration />} />
