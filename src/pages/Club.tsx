@@ -73,7 +73,7 @@ export default function Club() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { membership, isMember, isFounding, loading, openBillingPortal, refresh } =
+  const { membership, isMember, isFounding, openBillingPortal, refresh } =
     useClubMembership();
   const { total, members } = useGoodFund();
   const { taken, total: foundingTotal } = useFoundingProgress();
