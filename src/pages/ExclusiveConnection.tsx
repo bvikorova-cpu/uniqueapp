@@ -112,6 +112,7 @@ export default function ExclusiveConnection() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { isAdmin } = useIsAdmin();
 
   const [checkingMember, setCheckingMember] = useState(true);
   const [isMember, setIsMember] = useState(false);
@@ -120,6 +121,8 @@ export default function ExclusiveConnection() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [sent, setSent] = useState<Interest[]>([]);
   const [received, setReceived] = useState<Interest[]>([]);
+  const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set());
+  const [blockedByIds, setBlockedByIds] = useState<Set<string>>(new Set()); // admin-only
   const [loading, setLoading] = useState(true);
   const initialTab = (searchParams.get("tab") as "discover" | "matches" | "profile") || "discover";
   const [tab, setTab] = useState<"discover" | "matches" | "profile">(initialTab);
@@ -138,6 +141,16 @@ export default function ExclusiveConnection() {
   const [bio, setBio] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  // report modal state
+  const [reportTarget, setReportTarget] = useState<{ userId: string; kind: "profile" | "interest"; interestId?: string; pseudonym?: string } | null>(null);
+  const [reportReason, setReportReason] = useState("Harassment");
+  const [reportNote, setReportNote] = useState("");
+  const [reportSubmitting, setReportSubmitting] = useState(false);
+
+  // admin moderation
+  const [moderationOpen, setModerationOpen] = useState(false);
+  const [reports, setReports] = useState<any[]>([]);
 
   useEffect(() => {
     (async () => {
