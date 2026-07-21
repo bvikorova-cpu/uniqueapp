@@ -46,7 +46,14 @@ export default function ClubCheckout() {
         if (cancelled) return;
 
         setCheckoutUrl(url);
-        window.location.replace(url);
+        const isEmbedded = (() => {
+          try {
+            return window.self !== window.top;
+          } catch {
+            return true;
+          }
+        })();
+        if (!isEmbedded) window.location.replace(url);
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "Checkout failed. Please try again.");
       }

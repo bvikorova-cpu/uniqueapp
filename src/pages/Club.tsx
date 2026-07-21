@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Crown,
@@ -78,7 +78,6 @@ export default function Club() {
     useClubMembership();
   const { total, members } = useGoodFund();
   const { taken, total: foundingTotal } = useFoundingProgress();
-  const [buying, setBuying] = useState<"digital" | "physical" | null>(null);
   const [verifying, setVerifying] = useState(false);
 
   // Verify checkout after redirect
@@ -103,16 +102,6 @@ export default function Club() {
       )
       .finally(() => setVerifying(false));
   }, [searchParams, toast, refresh]);
-
-  async function handleBuy(tier: "digital" | "physical") {
-    const { data: u } = await supabase.auth.getUser();
-    if (!u.user) {
-      navigate("/auth?redirect=/club");
-      return;
-    }
-    setBuying(tier);
-    navigate(`/club/checkout/${tier}`);
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-pink-50 to-amber-50 dark:from-purple-950 dark:via-pink-950 dark:to-amber-950 pb-24">
@@ -251,11 +240,11 @@ export default function Club() {
                   <div className="text-sm text-muted-foreground">once, then €1.50/month</div>
                 </div>
                 <Button
+                  asChild
                   className="w-full h-12 text-base bg-gradient-to-r from-purple-500 to-pink-500"
-                  onClick={() => handleBuy("digital")}
-                  disabled={!!buying || verifying}
+                  disabled={verifying}
                 >
-                  {buying === "digital" ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Get Digital Card <ArrowRight className="h-4 w-4 ml-2" /></>}
+                  <Link to="/club/checkout/digital">Get Digital Card <ArrowRight className="h-4 w-4 ml-2" /></Link>
                 </Button>
               </div>
             </Card>
@@ -276,11 +265,11 @@ export default function Club() {
                   <div className="text-sm text-muted-foreground">once, then €1.50/month</div>
                 </div>
                 <Button
+                  asChild
                   className="w-full h-12 text-base bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500"
-                  onClick={() => handleBuy("physical")}
-                  disabled={!!buying || verifying}
+                  disabled={verifying}
                 >
-                  {buying === "physical" ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Order Physical Card <ArrowRight className="h-4 w-4 ml-2" /></>}
+                  <Link to="/club/checkout/physical">Order Physical Card <ArrowRight className="h-4 w-4 ml-2" /></Link>
                 </Button>
                 <p className="text-xs text-muted-foreground mt-3">
                   Includes digital card + all perks.
@@ -386,20 +375,20 @@ export default function Club() {
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
               <Button
+                asChild
                 size="lg"
                 variant="secondary"
-                onClick={() => handleBuy("digital")}
-                disabled={!!buying || verifying}
+                disabled={verifying}
               >
-                Digital · €20
+                <Link to="/club/checkout/digital">Digital · €20</Link>
               </Button>
               <Button
+                asChild
                 size="lg"
                 className="bg-amber-400 text-black hover:bg-amber-300"
-                onClick={() => handleBuy("physical")}
-                disabled={!!buying || verifying}
+                disabled={verifying}
               >
-                Physical · €30
+                <Link to="/club/checkout/physical">Physical · €30</Link>
               </Button>
             </div>
           </Card>
