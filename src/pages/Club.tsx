@@ -280,6 +280,25 @@ export default function Club() {
           <p className="text-center text-xs text-muted-foreground mt-6">
             Cancel any time from your billing portal. 10% of every payment goes to the Unique Good Fund.
           </p>
+
+          {/* Card preview */}
+          <div className="mt-12 flex flex-col items-center">
+            <h3 className="text-lg md:text-xl font-bold text-center mb-4 text-muted-foreground">
+              This is what your VIP card looks like
+            </h3>
+            <div className="relative max-w-md w-full">
+              <div className="absolute -inset-4 bg-gradient-to-br from-amber-500/30 via-pink-500/30 to-purple-500/30 blur-2xl rounded-3xl" />
+              <img
+                src={clubCardPreview.url}
+                alt="Unique VIP Club Card preview"
+                className="relative w-full rounded-2xl shadow-2xl ring-1 ring-amber-500/30"
+                loading="lazy"
+              />
+            </div>
+            <p className="text-center text-xs text-muted-foreground mt-4 max-w-md">
+              Each member receives a unique serial number. Physical cards ship with NFC.
+            </p>
+          </div>
         </section>
       )}
 
