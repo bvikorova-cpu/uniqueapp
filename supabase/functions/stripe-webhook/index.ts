@@ -394,6 +394,47 @@ serve(async (req) => {
           log("mt session handler error", { err: (e as Error).message });
         }
 
+        // ── Creator Gift: safety net if user closes tab before verify-creator-gift.
+        //    Idempotent via `.eq("status","pending")` — notification insert
+        //    only fires on the transition, so duplicates are impossible even
+        //    if verify-creator-gift ran first.
+        try {
+          const gKind = session.metadata?.kind as string | undefined;
+          const gTxId = session.metadata?.transaction_id as string | undefined;
+          if (gKind === "creator_gift" && gTxId && session.payment_status === "paid") {
+            const { data: updated, error: updErr } = await supabase
+              .from("creator_gift_transactions")
+              .update({ status: "paid", stripe_session_id: session.id })
+              .eq("id", gTxId)
+              .eq("status", "pending")
+              .select("id, sender_id, creator_id, gift_id, amount, message")
+              .maybeSingle();
+            if (!updErr && updated) {
+              const [{ data: sender }, { data: gift }] = await Promise.all([
+                supabase.from("profiles").select("username, display_name").eq("id", updated.sender_id).maybeSingle(),
+                updated.gift_id
+                  ? supabase.from("creator_gifts").select("name, icon").eq("id", updated.gift_id).maybeSingle()
+                  : Promise.resolve({ data: null as any }),
+              ]);
+              const senderName = (sender as any)?.display_name || (sender as any)?.username || "Someone";
+              const giftName = (gift as any)?.name ? `${(gift as any).icon ?? "🎁"} ${(gift as any).name}` : "a gift";
+              const amountStr = `€${Number(updated.amount).toFixed(2)}`;
+              const msgSuffix = updated.message ? ` — "${String(updated.message).slice(0, 140)}"` : "";
+              await supabase.from("notifications").insert({
+                user_id: updated.creator_id,
+                type: "creator_gift_received",
+                title: "New gift received 🎁",
+                message: `${senderName} sent you ${giftName} (${amountStr})${msgSuffix}`,
+                related_id: updated.id,
+              });
+              log("creator_gift marked paid via webhook", { id: updated.id });
+            }
+          }
+        } catch (e) {
+          log("creator_gift webhook handler error", { err: (e as Error).message });
+        }
+
+
         if (session.payment_status === "paid") {
           // ── Tutoring credits auto-activation (safety net if user closes tab
           //    before frontend redirect runs `tutoring-add-credits`) ─────────
