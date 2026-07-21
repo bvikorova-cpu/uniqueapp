@@ -30753,6 +30753,136 @@ export type Database = {
           },
         ]
       }
+      influking_challenge_participants: {
+        Row: {
+          challenge_id: string
+          id: string
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          id?: string
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          id?: string
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influking_challenge_participants_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "influking_weekly_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influking_challenge_submissions: {
+        Row: {
+          challenge_id: string
+          created_at: string
+          id: string
+          note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reward_credits_granted: number
+          status: string
+          submission_url: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reward_credits_granted?: number
+          status?: string
+          submission_url: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reward_credits_granted?: number
+          status?: string
+          submission_url?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influking_challenge_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "influking_weekly_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influking_weekly_challenges: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string
+          difficulty: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          participants_count: number
+          reward_badge: string | null
+          reward_credits: number
+          starts_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          difficulty?: string
+          ends_at: string
+          id?: string
+          is_active?: boolean
+          participants_count?: number
+          reward_badge?: string | null
+          reward_credits?: number
+          starts_at?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          difficulty?: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean
+          participants_count?: number
+          reward_badge?: string | null
+          reward_credits?: number
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       instructor_payout_history: {
         Row: {
           amount: number
