@@ -442,7 +442,7 @@ export default function ExclusiveConnection() {
               two members express mutual interest.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center flex-wrap">
             {(["discover", "matches", "profile"] as const).map((t) => (
               <button
                 key={t}
@@ -456,6 +456,16 @@ export default function ExclusiveConnection() {
                 {t === "matches" ? `Matches (${matches.length})` : t}
               </button>
             ))}
+            {isAdmin && (
+              <button
+                onClick={() => setModerationOpen((v) => !v)}
+                className="px-3 py-2 text-xs uppercase tracking-widest rounded-full border border-red-400/40 text-red-200 hover:bg-red-400/10 flex items-center gap-1.5"
+                title="Admin moderation"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                Moderate
+              </button>
+            )}
           </div>
         </div>
 
