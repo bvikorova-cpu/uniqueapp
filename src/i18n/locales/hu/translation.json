@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "Nyelv"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "Kerülj a csúcsra",
+      "subtitle": "Urald a feedet, építsd birodalmad és monetizáld hatásodat AI eszközökkel.",
+      "stat_influencers": "Influencerek",
+      "stat_followers": "Követők",
+      "stat_likes": "Összes kedvelés",
+      "stat_views": "Összes megtekintés",
+      "play": "Lejátszás",
+      "pause": "Szünet",
+      "mute": "Némítás",
+      "unmute": "Hang be"
+    },
+    "login_required_title": "Bejelentkezés szükséges",
+    "login_required_desc": "Jelentkezz be az Influ-King használatához",
+    "login_button": "Bejelentkezés",
+    "add_post": "Bejegyzés hozzáadása",
+    "become_influencer": "Legyél influencer",
+    "my_earnings": "Bevételeim",
+    "my_profile": "Profilom",
+    "delete_profile": "Profil törlése",
+    "tools_heading": "Influencer eszközök",
+    "ai_powered_badge": "AI alapú",
+    "what_is_title": "Mi az Influ-King?",
+    "what_is_desc": "Az Influ-King a platformod, ahol felépíted influencer karriered.",
+    "how_to_title": "Hogyan kezdj neki:",
+    "tools": {
+      "content_planner": {
+        "label": "AI tartalomtervező",
+        "description": "Okos naptár"
+      },
+      "collab": {
+        "label": "Kollab párosító",
+        "description": "Találj partnereket"
+      },
+      "fan_club": {
+        "label": "Rajongói klub kezelő",
+        "description": "Fizetős rajongói klubok"
+      },
+      "brand_deals": {
+        "label": "Brand deal kereső",
+        "description": "Szponzorációk"
+      },
+      "analytics": {
+        "label": "Elköteleződés analitika",
+        "description": "Növekedés és megtekintések"
+      },
+      "hashtags": {
+        "label": "AI hashtag generátor",
+        "description": "Virális hashtagek"
+      },
+      "challenges": {
+        "label": "Heti kihívások",
+        "description": "Nyerj kreditet és jelvényt"
+      },
+      "thumbnails": {
+        "label": "AI thumbnail készítő",
+        "description": "Figyelemfelkeltő miniatűrök"
+      },
+      "publisher": {
+        "label": "Multi-platform közzététel",
+        "description": "Több hálózaton egyszerre"
+      },
+      "audience": {
+        "label": "Közönség betekintés",
+        "description": "Demográfia és érdeklődés"
+      }
+    }
   }
 }

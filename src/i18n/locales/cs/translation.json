@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "Jazyk"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "Vystup na vrchol",
+      "subtitle": "Ovládni feed, vybuduj své impérium a zpeněž svůj vliv s AI nástroji.",
+      "stat_influencers": "Influenceři",
+      "stat_followers": "Sledující",
+      "stat_likes": "Celkem lajků",
+      "stat_views": "Celkem zhlédnutí",
+      "play": "Přehrát",
+      "pause": "Pauza",
+      "mute": "Ztlumit",
+      "unmute": "Zapnout zvuk"
+    },
+    "login_required_title": "Vyžadováno přihlášení",
+    "login_required_desc": "Pro přístup do Influ-King se musíš přihlásit",
+    "login_button": "Přihlásit se",
+    "add_post": "Přidat příspěvek",
+    "become_influencer": "Staň se influencerem",
+    "my_earnings": "Mé výdělky",
+    "my_profile": "Můj profil",
+    "delete_profile": "Smazat profil",
+    "tools_heading": "Nástroje pro influencery",
+    "ai_powered_badge": "Poháněno AI",
+    "what_is_title": "Co je Influ-King?",
+    "what_is_desc": "Influ-King je tvá platforma pro budování a růst kariéry influencera.",
+    "how_to_title": "Jak začít:",
+    "tools": {
+      "content_planner": {
+        "label": "AI plánovač obsahu",
+        "description": "Chytrý kalendář obsahu"
+      },
+      "collab": {
+        "label": "Hledač spoluprací",
+        "description": "Najdi partnery pro spolupráci"
+      },
+      "fan_club": {
+        "label": "Správce fanklubu",
+        "description": "Vytvoř exkluzivní placený fanklub"
+      },
+      "brand_deals": {
+        "label": "Vyhledávač brand dealů",
+        "description": "Procházej sponzorské příležitosti"
+      },
+      "analytics": {
+        "label": "Analytika interakcí",
+        "description": "Sleduj růst, lajky a zhlédnutí"
+      },
+      "hashtags": {
+        "label": "AI generátor hashtagů",
+        "description": "Vytvoř virální hashtagy"
+      },
+      "challenges": {
+        "label": "Týdenní výzvy",
+        "description": "Soutěž a vyhrávej kredity a odznaky"
+      },
+      "thumbnails": {
+        "label": "AI tvůrce náhledů",
+        "description": "Vytvoř poutavé náhledy"
+      },
+      "publisher": {
+        "label": "Multi-platformový publisher",
+        "description": "Publikuj na více sítí najednou"
+      },
+      "audience": {
+        "label": "Přehled publika",
+        "description": "Demografie, chování a zájmy"
+      }
+    }
   }
 }

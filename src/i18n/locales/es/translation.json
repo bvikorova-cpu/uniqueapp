@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "Idioma"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "Sube a la cima",
+      "subtitle": "Domina el feed, haz crecer tu imperio y monetiza tu influencia con herramientas de IA.",
+      "stat_influencers": "Influencers",
+      "stat_followers": "Seguidores",
+      "stat_likes": "Me gusta totales",
+      "stat_views": "Vistas totales",
+      "play": "Reproducir",
+      "pause": "Pausar",
+      "mute": "Silenciar",
+      "unmute": "Activar sonido"
+    },
+    "login_required_title": "Inicio de sesión requerido",
+    "login_required_desc": "Debes iniciar sesión para acceder a Influ-King",
+    "login_button": "Iniciar sesión",
+    "add_post": "Añadir publicación",
+    "become_influencer": "Convertirse en influencer",
+    "my_earnings": "Mis ganancias",
+    "my_profile": "Mi perfil",
+    "delete_profile": "Eliminar perfil",
+    "tools_heading": "Herramientas de influencer",
+    "ai_powered_badge": "Con IA",
+    "what_is_title": "¿Qué es Influ-King?",
+    "what_is_desc": "Influ-King es tu plataforma para construir y hacer crecer tu carrera de influencer.",
+    "how_to_title": "Cómo empezar:",
+    "tools": {
+      "content_planner": {
+        "label": "Planificador de contenido IA",
+        "description": "Calendario inteligente"
+      },
+      "collab": {
+        "label": "Emparejador de colaboraciones",
+        "description": "Encuentra socios"
+      },
+      "fan_club": {
+        "label": "Gestor de fan club",
+        "description": "Crea fan clubs exclusivos de pago"
+      },
+      "brand_deals": {
+        "label": "Buscador de acuerdos",
+        "description": "Explora oportunidades de patrocinio"
+      },
+      "analytics": {
+        "label": "Analítica de interacción",
+        "description": "Sigue el crecimiento y las vistas"
+      },
+      "hashtags": {
+        "label": "Generador de hashtags IA",
+        "description": "Genera hashtags virales"
+      },
+      "challenges": {
+        "label": "Retos semanales",
+        "description": "Compite y gana créditos e insignias"
+      },
+      "thumbnails": {
+        "label": "Creador de miniaturas IA",
+        "description": "Genera miniaturas atractivas"
+      },
+      "publisher": {
+        "label": "Publicador multiplataforma",
+        "description": "Publica en varias redes"
+      },
+      "audience": {
+        "label": "Insights de audiencia",
+        "description": "Demografía y comportamiento"
+      }
+    }
   }
 }

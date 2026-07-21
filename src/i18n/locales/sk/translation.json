@@ -1303,5 +1303,78 @@
     "report_bug": "Nahlásiť chybu",
     "start_exploring": "Začať objavovať",
     "thanks": "Ďakujeme za tvoju trpezlivosť a že si súčasťou Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "Jazyk"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "Vystúp na vrchol",
+      "subtitle": "Ovládni feed, buduj svoju ríšu a speňaž svoj vplyv s AI nástrojmi a analytikou v reálnom čase.",
+      "stat_influencers": "Influenceri",
+      "stat_followers": "Sledovatelia",
+      "stat_likes": "Celkové páči sa",
+      "stat_views": "Celkové zobrazenia",
+      "play": "Prehrať",
+      "pause": "Pozastaviť",
+      "mute": "Stlmiť",
+      "unmute": "Zapnúť zvuk"
+    },
+    "login_required_title": "Vyžaduje sa prihlásenie",
+    "login_required_desc": "Pre prístup do Influ-King sa musíš prihlásiť",
+    "login_button": "Prihlásiť sa",
+    "add_post": "Pridať príspevok",
+    "become_influencer": "Staň sa influencerom",
+    "my_earnings": "Moje zárobky",
+    "my_profile": "Môj profil",
+    "delete_profile": "Zmazať profil",
+    "tools_heading": "Nástroje pre influencerov",
+    "ai_powered_badge": "Poháňané AI",
+    "what_is_title": "Čo je Influ-King?",
+    "what_is_desc": "Influ-King je tvoja platforma na budovanie a rast influencerskej kariéry. Vytvor si profesionálny profil, zdieľaj obsah, získavaj sledovateľov a stúpaj v rebríčku.",
+    "how_to_title": "Ako začať:",
+    "tools": {
+      "content_planner": {
+        "label": "AI plánovač obsahu",
+        "description": "Inteligentný kalendár obsahu"
+      },
+      "collab": {
+        "label": "Hľadač spoluprác",
+        "description": "Nájdi partnerov na spoluprácu"
+      },
+      "fan_club": {
+        "label": "Správca fan klubu",
+        "description": "Vytvor exkluzívne platené fan kluby"
+      },
+      "brand_deals": {
+        "label": "Vyhľadávač brand dealov",
+        "description": "Prehľadávaj sponzorské príležitosti"
+      },
+      "analytics": {
+        "label": "Analytika interakcií",
+        "description": "Sleduj rast, páči sa a zobrazenia"
+      },
+      "hashtags": {
+        "label": "AI generátor hashtagov",
+        "description": "Vytvor virálne hashtagy pre dosah"
+      },
+      "challenges": {
+        "label": "Týždenné výzvy",
+        "description": "Súťaž a vyhrávaj kredity a odznaky"
+      },
+      "thumbnails": {
+        "label": "AI tvorca náhľadov",
+        "description": "Vytvor pútavé náhľadové obrázky"
+      },
+      "publisher": {
+        "label": "Multi-platformový publisher",
+        "description": "Publikuj na viacero sietí naraz"
+      },
+      "audience": {
+        "label": "Prehľady publika",
+        "description": "Demografia, správanie a záujmy"
+      }
+    }
   }
 }

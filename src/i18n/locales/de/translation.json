@@ -1303,5 +1303,78 @@
     "report_bug": "Report a bug",
     "start_exploring": "Start exploring",
     "thanks": "Thank you for your patience and for being part of Unique. 💜"
+  },
+  "languageSwitcher": {
+    "label": "Sprache"
+  },
+  "influking": {
+    "hero": {
+      "badge": "Influ-King",
+      "title": "Steig an die Spitze",
+      "subtitle": "Beherrsche den Feed, baue dein Imperium und monetarisiere deinen Einfluss mit KI-Tools.",
+      "stat_influencers": "Influencer",
+      "stat_followers": "Follower",
+      "stat_likes": "Gesamt-Likes",
+      "stat_views": "Gesamt-Aufrufe",
+      "play": "Abspielen",
+      "pause": "Pause",
+      "mute": "Stumm",
+      "unmute": "Ton an"
+    },
+    "login_required_title": "Anmeldung erforderlich",
+    "login_required_desc": "Melde dich an, um Influ-King zu nutzen",
+    "login_button": "Anmelden",
+    "add_post": "Beitrag hinzufügen",
+    "become_influencer": "Werde Influencer",
+    "my_earnings": "Meine Einnahmen",
+    "my_profile": "Mein Profil",
+    "delete_profile": "Profil löschen",
+    "tools_heading": "Influencer-Tools",
+    "ai_powered_badge": "KI-gestützt",
+    "what_is_title": "Was ist Influ-King?",
+    "what_is_desc": "Influ-King ist deine Plattform, um deine Influencer-Karriere aufzubauen und auszubauen.",
+    "how_to_title": "So legst du los:",
+    "tools": {
+      "content_planner": {
+        "label": "KI-Content-Planer",
+        "description": "Smarter Content-Kalender"
+      },
+      "collab": {
+        "label": "Kollab-Matchmaker",
+        "description": "Finde Kooperationspartner"
+      },
+      "fan_club": {
+        "label": "Fanclub-Manager",
+        "description": "Erstelle exklusive bezahlte Fanclubs"
+      },
+      "brand_deals": {
+        "label": "Brand-Deal-Finder",
+        "description": "Sponsoring-Angebote durchsuchen"
+      },
+      "analytics": {
+        "label": "Engagement-Analytik",
+        "description": "Wachstum, Likes und Views verfolgen"
+      },
+      "hashtags": {
+        "label": "KI-Hashtag-Generator",
+        "description": "Virale Hashtags erstellen"
+      },
+      "challenges": {
+        "label": "Wöchentliche Challenges",
+        "description": "Wettbewerb um Credits und Abzeichen"
+      },
+      "thumbnails": {
+        "label": "KI-Thumbnail-Ersteller",
+        "description": "Auffällige Thumbnails erstellen"
+      },
+      "publisher": {
+        "label": "Multi-Plattform-Publisher",
+        "description": "Auf mehreren Netzwerken posten"
+      },
+      "audience": {
+        "label": "Zielgruppen-Insights",
+        "description": "Demografie und Interessen"
+      }
+    }
   }
 }
