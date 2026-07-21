@@ -490,7 +490,14 @@ const Navbar = () => {
 
             {/* Theme Toggle — visible for all users */}
             <ThemeToggle />
-            <LanguageSwitcher />
+            <Link
+              to="/club"
+              aria-label="Unique Club"
+              className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full text-xs font-bold text-amber-950 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 hover:from-amber-200 hover:to-amber-400 shadow-md shadow-amber-500/30 transition-all"
+            >
+              <Ticket className="h-4 w-4" />
+              <span>Club</span>
+            </Link>
 
 
 
