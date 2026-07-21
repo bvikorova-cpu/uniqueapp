@@ -329,7 +329,10 @@ export default function Club() {
                 loading="lazy"
               />
             </div>
-            <p className="text-center text-xs text-muted-foreground mt-4 max-w-md">
+            <p className="text-center text-base md:text-lg font-semibold mt-6 max-w-md bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+              A unique card for unique people.
+            </p>
+            <p className="text-center text-xs text-muted-foreground mt-3 max-w-md">
               Physical cards ship with NFC — tap to open your Unique profile.
             </p>
           </div>
