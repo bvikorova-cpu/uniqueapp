@@ -31,7 +31,7 @@ import AudienceInsights from "@/components/influking/AudienceInsights";
 import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
 import { FanClubLockedFeed } from "@/components/influking/FanClubLockedFeed";
 import PPVStudio from "@/components/influking/PPVStudio";
-import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock } from "lucide-react";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio } from "lucide-react";
 
 type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience" | "ppv";
 
