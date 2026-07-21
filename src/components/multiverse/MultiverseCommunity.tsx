@@ -1,25 +1,40 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Users, MessageSquare, Star } from "lucide-react";
+import { ArrowLeft, Users, MessageSquare, Star, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MultiverseCommunityProps {
   onBack: () => void;
 }
 
-const mockExplorers = [
-  { name: "QuantumDrifter", universes: 12, bestScore: 94, specialty: "Career Paths" },
-  { name: "ParallelPioneer", universes: 8, bestScore: 88, specialty: "Relationships" },
-  { name: "RealityWeaver", universes: 15, bestScore: 91, specialty: "Adventure Lives" },
-  { name: "DimensionHopper", universes: 6, bestScore: 79, specialty: "Creative Arts" },
-  { name: "CosmicNavigator", universes: 20, bestScore: 97, specialty: "Technology" },
-  { name: "TimelineShifter", universes: 10, bestScore: 85, specialty: "Business" },
-];
+interface ExplorerRow {
+  user_id: string;
+  display_name: string;
+  avatar_url: string | null;
+  universes: number;
+  specialty: string | null;
+}
 
 const MultiverseCommunity = ({ onBack }: MultiverseCommunityProps) => {
+  const { data: explorers = [], isLoading } = useQuery({
+    queryKey: ["multiverse-explorers"],
+    queryFn: async (): Promise<ExplorerRow[]> => {
+      const { data, error } = await supabase.rpc("get_multiverse_explorers", { limit_count: 12 });
+      if (error) throw error;
+      return ((data ?? []) as any[]).map((r) => ({
+        user_id: r.user_id,
+        display_name: r.display_name,
+        avatar_url: r.avatar_url,
+        universes: Number(r.universes) || 0,
+        specialty: r.specialty,
+      }));
+    },
+    staleTime: 60_000,
+  });
   return (
     <>
       <FloatingHowItWorks
