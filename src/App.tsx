@@ -670,7 +670,8 @@ const App = () => {
               <RealTimeNotificationsMount />
               <GlobalMessageChimeMount />
               <PushNotificationsMount />
-              <WelcomeOnboarding />
+              <FanClubAutoResyncMount />
+
               <ComebackBonusModal />
             </Suspense>
             <AnimationProvider>
