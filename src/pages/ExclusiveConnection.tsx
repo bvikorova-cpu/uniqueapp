@@ -11,6 +11,8 @@ import {
   Heart,
   HeartOff,
   Sparkles,
+  Eye,
+  EyeOff,
   Save,
   UserCircle2,
   Flag,
