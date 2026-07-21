@@ -1374,6 +1374,10 @@
       "audience": {
         "label": "Přehled publika",
         "description": "Demografie, chování a zájmy"
+      },
+      "ppv": {
+        "label": "PPV Posts",
+        "description": "Lock premium content behind a one-time price"
       }
     }
   }

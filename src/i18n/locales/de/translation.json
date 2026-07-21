@@ -1374,6 +1374,10 @@
       "audience": {
         "label": "Zielgruppen-Insights",
         "description": "Demografie und Interessen"
+      },
+      "ppv": {
+        "label": "PPV Posts",
+        "description": "Lock premium content behind a one-time price"
       }
     }
   }

@@ -1374,6 +1374,10 @@
       "audience": {
         "label": "오디언스 인사이트",
         "description": "인구통계와 관심사"
+      },
+      "ppv": {
+        "label": "PPV Posts",
+        "description": "Lock premium content behind a one-time price"
       }
     }
   }

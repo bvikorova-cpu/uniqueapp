@@ -1374,6 +1374,10 @@
       "audience": {
         "label": "Аналитика аудитории",
         "description": "Демография и интересы"
+      },
+      "ppv": {
+        "label": "PPV Posts",
+        "description": "Lock premium content behind a one-time price"
       }
     }
   }
