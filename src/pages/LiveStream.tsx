@@ -548,7 +548,7 @@ export default function LiveStream() {
 
                   {user?.id === stream.influencer_profiles?.user_id && isStreaming && (
                     <div className="absolute bottom-4 right-4">
-                      <Button onClick={stopStreaming} variant="destructive" size="sm">
+                      <Button onClick={() => stopStreaming()} variant="destructive" size="sm">
                         <VideoOff className="h-4 w-4 mr-2" />
                         Stop Stream
                       </Button>
