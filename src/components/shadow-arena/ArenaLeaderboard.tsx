@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
-import { Trophy, Crown, Ghost, Skull } from "lucide-react";
+import { Trophy, Crown, Ghost, Skull, Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const tiers = [
@@ -13,19 +15,30 @@ function getTier(wins: number) {
   return tiers.find(t => wins >= t.min) || tiers[tiers.length - 1];
 }
 
-interface LeaderEntry {
-  rank: number;
-  name: string;
+interface LeaderRow {
+  user_id: string;
+  display_name: string;
   wins: number;
-  earnings: number;
-  streak: number;
+  matches: number;
+  earnings_cents: number;
 }
 
-// Placeholder — replace with real data from supabase
-const mockLeaders: LeaderEntry[] = [];
-
 export function ArenaLeaderboard() {
-  const leaders = mockLeaders;
+  const { data: leaders = [], isLoading } = useQuery({
+    queryKey: ["arena-leaderboard"],
+    queryFn: async (): Promise<LeaderRow[]> => {
+      const { data, error } = await supabase.rpc("get_arena_leaderboard", { limit_count: 20 });
+      if (error) throw error;
+      return ((data ?? []) as any[]).map((r) => ({
+        user_id: r.user_id,
+        display_name: r.display_name,
+        wins: Number(r.wins) || 0,
+        matches: Number(r.matches) || 0,
+        earnings_cents: Number(r.earnings_cents) || 0,
+      }));
+    },
+    staleTime: 60_000,
+  });
 
   return (
 <div className="rounded-2xl border border-purple-900/30 bg-gradient-to-br from-purple-950/20 via-card/30 to-red-950/20 p-6 mb-8">
