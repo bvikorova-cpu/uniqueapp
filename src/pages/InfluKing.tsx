@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,17 +68,17 @@ const CATEGORIES = [
   "Lifestyle", "Business", "Art & Design",
 ];
 
-const TOOLS = [
-  { id: "content-planner" as const, icon: Brain, label: "AI Content Planner", description: "Smart AI-powered content calendar", color: "text-primary", bg: "bg-primary/10", paid: true },
-  { id: "collab" as const, icon: Handshake, label: "Collab Matchmaker", description: "Find collaboration partners", color: "text-pink-500", bg: "bg-pink-500/10", paid: false },
-  { id: "fan-club" as const, icon: Crown, label: "Fan Club Manager", description: "Create exclusive paid fan clubs", color: "text-amber-500", bg: "bg-amber-500/10", paid: false },
-  { id: "brand-deals" as const, icon: Briefcase, label: "Brand Deal Finder", description: "Browse sponsorship opportunities", color: "text-emerald-500", bg: "bg-emerald-500/10", paid: false },
-  { id: "analytics" as const, icon: BarChart3, label: "Engagement Analytics", description: "Track growth, likes & views over time", color: "text-cyan-500", bg: "bg-cyan-500/10", paid: false },
-  { id: "hashtags" as const, icon: Hash, label: "AI Hashtag Generator", description: "Generate viral hashtags for reach", color: "text-indigo-500", bg: "bg-indigo-500/10", paid: true },
-  { id: "challenges" as const, icon: Trophy, label: "Weekly Challenges", description: "Compete and win credits & badges", color: "text-orange-500", bg: "bg-orange-500/10", paid: false },
-  { id: "thumbnails" as const, icon: Image, label: "AI Thumbnail Creator", description: "Generate eye-catching thumbnails", color: "text-rose-500", bg: "bg-rose-500/10", paid: true },
-  { id: "publisher" as const, icon: Share2, label: "Cross-Platform Publisher", description: "Publish to multiple networks at once", color: "text-violet-500", bg: "bg-violet-500/10", paid: false },
-  { id: "audience" as const, icon: PieChart, label: "Audience Insights", description: "Demographics, behavior & interests", color: "text-teal-500", bg: "bg-teal-500/10", paid: false },
+const TOOL_DEFS = [
+  { id: "content-planner" as const, icon: Brain, tKey: "content_planner", color: "text-primary", bg: "bg-primary/10", paid: true },
+  { id: "collab" as const, icon: Handshake, tKey: "collab", color: "text-pink-500", bg: "bg-pink-500/10", paid: false },
+  { id: "fan-club" as const, icon: Crown, tKey: "fan_club", color: "text-amber-500", bg: "bg-amber-500/10", paid: false },
+  { id: "brand-deals" as const, icon: Briefcase, tKey: "brand_deals", color: "text-emerald-500", bg: "bg-emerald-500/10", paid: false },
+  { id: "analytics" as const, icon: BarChart3, tKey: "analytics", color: "text-cyan-500", bg: "bg-cyan-500/10", paid: false },
+  { id: "hashtags" as const, icon: Hash, tKey: "hashtags", color: "text-indigo-500", bg: "bg-indigo-500/10", paid: true },
+  { id: "challenges" as const, icon: Trophy, tKey: "challenges", color: "text-orange-500", bg: "bg-orange-500/10", paid: false },
+  { id: "thumbnails" as const, icon: Image, tKey: "thumbnails", color: "text-rose-500", bg: "bg-rose-500/10", paid: true },
+  { id: "publisher" as const, icon: Share2, tKey: "publisher", color: "text-violet-500", bg: "bg-violet-500/10", paid: false },
+  { id: "audience" as const, icon: PieChart, tKey: "audience", color: "text-teal-500", bg: "bg-teal-500/10", paid: false },
 ];
 
 const InfluKing = () => {
