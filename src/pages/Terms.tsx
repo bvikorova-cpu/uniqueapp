@@ -103,14 +103,60 @@ const Terms = () => {
               <p><strong>5.4.</strong> Platform and payment processor fees are deducted before payout.</p>
             </LegalSection>
 
-            <LegalSection id="creator" number="§6" title="Creator Obligations">
-              <p><strong>6.1.</strong> Comply with all tax obligations in your jurisdiction.</p>
-              <p><strong>6.2.</strong> Complete KYC verification before payouts.</p>
-              <p><strong>6.3.</strong> Honor all obligations to subscribers and customers.</p>
-              <p><strong>6.4.</strong> Comply with the <Link to="/legal/community" className="text-amber-400 underline">Community Guidelines</Link>.</p>
+            <LegalSection id="fees" number="§6" title="Platform Fees & Commissions">
+              <p><strong>6.1.</strong> UNIQUE applies transparent commissions per module. Rates are shown below and mirror the values enforced server-side in <code>platform_commission_settings</code>. Stripe processing fees (typ. 1.5–2.9% + €0.25) are additionally deducted before payout.</p>
+
+              <h3>Marketplaces & sales</h3>
+              <ul>
+                <li><strong>Bazaar</strong> — 10% platform / 90% seller</li>
+                <li><strong>Marketplace, Collectibles, Crystals, Home Decor</strong> — 15% / 85%</li>
+                <li><strong>Auctions, Antiques, Coupons</strong> — 10% / 90%</li>
+                <li><strong>Property listings</strong> — 5% / 95%</li>
+              </ul>
+
+              <h3>Services & bookings</h3>
+              <ul>
+                <li><strong>Service Orders (general)</strong> — 15% / 85%</li>
+                <li><strong>Healthcare bookings (Doctors, Wellness)</strong> — 15% / 85% (incl. 24h refund window)</li>
+                <li><strong>Phobia sessions</strong> — 0% (free entry module)</li>
+              </ul>
+
+              <h3>Creators & fans</h3>
+              <ul>
+                <li><strong>Creator Subscriptions & Fan Club</strong> — 15% / 85%</li>
+                <li><strong>Tip Jar</strong> — 10% / 90%</li>
+                <li><strong>PPV posts & Paid DMs</strong> — 15% / 85%</li>
+                <li><strong>Brand Collaborations</strong> — 20% / 80% (escrow-held)</li>
+                <li><strong>Megatalent</strong> — 20% / 80% + fixed €5 referrer bonus on Premium/TOP subs</li>
+              </ul>
+
+              <h3>Peer-to-peer & community</h3>
+              <ul>
+                <li><strong>Skill Swap</strong> — 0% commission. Access via <strong>€1 lifetime entry</strong> or <strong>€1/month</strong> subscription.</li>
+                <li><strong>Job Portal</strong> — 0% commission (listing-based)</li>
+              </ul>
+
+              <h3>Memberships</h3>
+              <ul>
+                <li><strong>Unique VIP Club</strong> — €20 digital / €30 physical signup + €1.50/month. <strong>10%</strong> of every VIP payment is routed to the <em>Unique Good Fund</em>.</li>
+                <li><strong>Unique Verified</strong> — €15 / €40 / €150 monthly tiers (no revenue share; platform product).</li>
+                <li><strong>Challenge TOP</strong> — €5/month (platform product).</li>
+              </ul>
+
+              <h3>AI Credits</h3>
+              <p>Credits are non-refundable consumables purchased in EUR via Stripe. New accounts receive 10 free credits; +10 free credits are granted monthly on the 1st (Europe/Bratislava). AI tools cost 1–5 credits per use depending on the module.</p>
+
+              <p className="text-xs mt-4"><strong>6.2.</strong> Commissions may be adjusted with 30 days' notice via in-app banner and email. The live rate at the moment of transaction always applies. <strong>6.3.</strong> Refund handling is governed by the <Link to="/legal/refund" className="text-amber-400 underline">Refund Policy</Link>.</p>
             </LegalSection>
 
-            <LegalSection id="prohibited" number="§7" title="Prohibited Conduct">
+            <LegalSection id="creator" number="§7" title="Creator Obligations">
+              <p><strong>7.1.</strong> Comply with all tax obligations in your jurisdiction.</p>
+              <p><strong>7.2.</strong> Complete KYC verification before payouts.</p>
+              <p><strong>7.3.</strong> Honor all obligations to subscribers and customers.</p>
+              <p><strong>7.4.</strong> Comply with the <Link to="/legal/community" className="text-amber-400 underline">Community Guidelines</Link>.</p>
+            </LegalSection>
+
+            <LegalSection id="prohibited" number="§8" title="Prohibited Conduct">
               <ul>
                 <li>Illegal content of any kind.</li>
                 <li>Harassment, hate speech, threats, or incitement to violence.</li>
@@ -122,36 +168,37 @@ const Terms = () => {
               </ul>
             </LegalSection>
 
-            <LegalSection id="ip" number="§8" title="Intellectual Property">
-              <p><strong>8.1.</strong> The UNIQUE brand, code, and design are owned exclusively by the Operator.</p>
-              <p><strong>8.2.</strong> AI-generated content is owned by the User who generated it (subject to §4).</p>
-              <p><strong>8.3.</strong> DMCA notices are handled per the <Link to="/legal/community" className="text-amber-400 underline">DMCA Policy</Link>.</p>
+            <LegalSection id="ip" number="§9" title="Intellectual Property">
+              <p><strong>9.1.</strong> The UNIQUE brand, code, and design are owned exclusively by the Operator.</p>
+              <p><strong>9.2.</strong> AI-generated content is owned by the User who generated it (subject to §4).</p>
+              <p><strong>9.3.</strong> DMCA notices are handled per the <Link to="/legal/community" className="text-amber-400 underline">DMCA Policy</Link>.</p>
             </LegalSection>
 
-            <LegalSection id="termination" number="§9" title="Termination">
-              <p><strong>9.1.</strong> You may delete your account anytime in Settings.</p>
-              <p><strong>9.2.</strong> We may terminate accounts that breach these terms.</p>
-              <p><strong>9.3.</strong> Pending payouts above minimum threshold are processed within 30 days of termination.</p>
+            <LegalSection id="termination" number="§10" title="Termination">
+              <p><strong>10.1.</strong> You may delete your account anytime in Settings.</p>
+              <p><strong>10.2.</strong> We may terminate accounts that breach these terms.</p>
+              <p><strong>10.3.</strong> Pending payouts above minimum threshold are processed within 30 days of termination.</p>
             </LegalSection>
 
-            <LegalSection id="liability" number="§10" title="Limitation of Liability">
-              <p><strong>10.1.</strong> The platform is provided "as is" without warranties.</p>
-              <p><strong>10.2.</strong> Maximum aggregate liability is limited to fees paid in the past 12 months.</p>
-              <p><strong>10.3.</strong> No liability for indirect, consequential, or punitive damages.</p>
+            <LegalSection id="liability" number="§11" title="Limitation of Liability">
+              <p><strong>11.1.</strong> The platform is provided "as is" without warranties.</p>
+              <p><strong>11.2.</strong> Maximum aggregate liability is limited to fees paid in the past 12 months.</p>
+              <p><strong>11.3.</strong> No liability for indirect, consequential, or punitive damages.</p>
             </LegalSection>
 
-            <LegalSection id="law" number="§11" title="Governing Law & Disputes">
-              <p><strong>11.1.</strong> UNIQUE operates as a global platform and complies with international standards including GDPR (EU), CCPA (California), UK Data Protection Act, LGPD (Brazil), PIPEDA (Canada), and equivalent privacy and consumer protection laws worldwide.</p>
-              <p><strong>11.2.</strong> Disputes are first addressed through good-faith negotiation, then through binding arbitration under the rules of the International Chamber of Commerce (ICC), with proceedings conducted online in English.</p>
-              <p><strong>11.3.</strong> Mandatory consumer protection rights granted to you by the laws of your country of residence are not affected by these terms.</p>
-              <p><strong>11.4.</strong> Where local law requires, users may also bring claims in the competent courts of their country of residence.</p>
+            <LegalSection id="law" number="§12" title="Governing Law & Disputes">
+              <p><strong>12.1.</strong> UNIQUE operates as a global platform and complies with international standards including GDPR (EU), CCPA (California), UK Data Protection Act, LGPD (Brazil), PIPEDA (Canada), and equivalent privacy and consumer protection laws worldwide.</p>
+              <p><strong>12.2.</strong> Disputes are first addressed through good-faith negotiation, then through binding arbitration under the rules of the International Chamber of Commerce (ICC), with proceedings conducted online in English.</p>
+              <p><strong>12.3.</strong> Mandatory consumer protection rights granted to you by the laws of your country of residence are not affected by these terms.</p>
+              <p><strong>12.4.</strong> Where local law requires, users may also bring claims in the competent courts of their country of residence.</p>
             </LegalSection>
 
-            <LegalSection id="changes" number="§12" title="Changes to Terms">
-              <p><strong>12.1.</strong> We may update these terms at any time.</p>
-              <p><strong>12.2.</strong> Material changes notified by email and in-app banner 30 days before effect.</p>
-              <p><strong>12.3.</strong> Continued use after effective date constitutes acceptance.</p>
+            <LegalSection id="changes" number="§13" title="Changes to Terms">
+              <p><strong>13.1.</strong> We may update these terms at any time.</p>
+              <p><strong>13.2.</strong> Material changes notified by email and in-app banner 30 days before effect.</p>
+              <p><strong>13.3.</strong> Continued use after effective date constitutes acceptance.</p>
             </LegalSection>
+
 
             <AcceptanceTracker documentType="terms" documentTitle="UNIQUE Platform Terms & Conditions" />
           </main>
