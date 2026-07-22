@@ -59,9 +59,18 @@ serve(async (req) => {
     );
 
     // Extract shipping + custom fields from Stripe
-    const shipping = (session as any).shipping_details ?? null;
-    const customerDetails: any = (session as any).customer_details ?? {};
-    const customFields: any[] = (session as any).custom_fields ?? [];
+    type ShippingDetails = { name?: string | null; phone?: string | null } & Record<string, unknown>;
+    type CustomerDetails = { name?: string | null; phone?: string | null } & Record<string, unknown>;
+    type CustomField = { key: string; text?: { value?: string | null } };
+    type SessionExtras = {
+      shipping_details?: ShippingDetails | null;
+      customer_details?: CustomerDetails | null;
+      custom_fields?: CustomField[] | null;
+    };
+    const extras = session as unknown as SessionExtras;
+    const shipping = extras.shipping_details ?? null;
+    const customerDetails = extras.customer_details ?? {};
+    const customFields: CustomField[] = extras.custom_fields ?? [];
     const recipientField = customFields.find((f) => f.key === "recipient_name");
     const noteField = customFields.find((f) => f.key === "delivery_note");
     const recipientName = recipientField?.text?.value
@@ -79,7 +88,7 @@ serve(async (req) => {
       .from("club_memberships")
       .select("id, is_founding, member_number")
       .eq("user_id", user.id)
-      .maybeSingle();
+      .maybeSingle<{ id: string; is_founding: boolean; member_number: number }>();
 
     const updatePayload: Record<string, unknown> = {
       tier,
@@ -104,18 +113,19 @@ serve(async (req) => {
       const { error } = await admin
         .from("club_memberships")
         .update(updatePayload)
-        .eq("id", (existing as any).id);
+        .eq("id", existing.id);
       if (error) throw error;
-      membershipId = (existing as any).id;
+      membershipId = existing.id;
     } else {
       const { data: inserted, error } = await admin
         .from("club_memberships")
         .insert({ user_id: user.id, ...updatePayload })
         .select("id")
-        .single();
+        .single<{ id: string }>();
       if (error) throw error;
-      membershipId = (inserted as any).id;
+      membershipId = inserted.id;
     }
+
 
     // ── Perk 1: signup Good Fund contribution (10 % of amount_total) ─────────
     const amountTotal = session.amount_total ?? 0;
@@ -145,9 +155,9 @@ serve(async (req) => {
         .from("club_memberships")
         .select("user_id")
         .eq("id", referralCode)
-        .maybeSingle();
-      if ((refUser as any)?.user_id && (refUser as any).user_id !== user.id) {
-        const referrerId = (refUser as any).user_id;
+        .maybeSingle<{ user_id: string }>();
+      if (refUser?.user_id && refUser.user_id !== user.id) {
+        const referrerId = refUser.user_id;
         const { error: refErr } = await admin
           .from("club_referrals")
           .insert({

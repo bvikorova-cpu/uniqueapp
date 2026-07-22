@@ -285,7 +285,7 @@ const Auth = () => {
     if (error) {
       // Detect transient backend outages (Supabase auth/DB timeouts, 5xx, network).
       const msg = (error.message || "").toLowerCase();
-      const status = (error as any).status as number | undefined;
+      const status = (error as { status?: number } | null)?.status;
       const isUnavailable =
         status === 0 ||
         status === 408 ||
