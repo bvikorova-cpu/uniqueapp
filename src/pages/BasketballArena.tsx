@@ -57,7 +57,7 @@ const useLiveStats = () => {
         supabase.from("basketball_matches").select("id", { count: "exact", head: true }),
         supabase.from("basketball_leagues").select("id", { count: "exact", head: true }).eq("status", "open"),
       ]);
-      setStats({ totalPlayers: p || 0, totalMatches: m || 0, activeLeagues: l || 0, onlineManagers: Math.floor(Math.random() * 50) + 10 });
+      setStats({ totalPlayers: p || 0, totalMatches: m || 0, activeLeagues: l || 0, onlineManagers: 0 });
     };
     load();
     const iv = setInterval(load, 60000);

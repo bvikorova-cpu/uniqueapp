@@ -75,7 +75,7 @@ const AICompanions = () => {
         totalChats: convos.count || 0,
         totalMessages: msgs.count || 0,
         companions: characters.length,
-        streak: Math.floor(Math.random() * 7) + 1,
+        streak: 0,
       });
     } catch (e) { console.error(e); }
   };
