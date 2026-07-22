@@ -131,6 +131,23 @@ serve(async (req) => {
       }
     }
 
+    // ─── SKILL SWAP LIFETIME ENTRY CHECK (DB-first, one-time €1 fee) ───
+    if (tier === "skill_swap") {
+      const { data: member } = await supabaseClient
+        .from("skill_swap_members")
+        .select("purchased_at")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      return json({
+        subscribed: !!member,
+        tier,
+        product_id: null,
+        subscription_end: null,
+        purchased_at: member?.purchased_at ?? null,
+        lifetime: true,
+      }, 200);
+    }
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     if (customers.data.length === 0) {
