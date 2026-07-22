@@ -56347,6 +56347,27 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_swap_members: {
+        Row: {
+          amount_paid_cents: number
+          purchased_at: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_paid_cents?: number
+          purchased_at?: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_paid_cents?: number
+          purchased_at?: string
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       skill_swap_messages: {
         Row: {
           created_at: string | null
