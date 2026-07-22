@@ -38,9 +38,10 @@ const WIRED_ATTRS = [
   /\sonClick\s*=/,
   /\sonMouseDown\s*=/,
   /\sonPointerDown\s*=/,
-  /\sasChild(\s|=|\/|>)/,
+  /\sasChild\b/,
   /\stype\s*=\s*["']submit["']/,
   /\sform\s*=/,
+  /\sdisabled\b/, // intentionally non-interactive
   /\{\.\.\.\w+\}/, // spread props — assume wired
 ];
 
