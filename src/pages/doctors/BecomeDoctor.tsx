@@ -215,7 +215,7 @@ export default function BecomeDoctor() {
     <>
       <Helmet>
         <title>Become a Doctor · Unique Health</title>
-        <meta name="description" content="Register as a verified doctor on Unique and accept paid video consultations in EUR." />
+        <meta name="description" content="Register as a verified doctor on Unique and accept paid appointments in EUR." />
       </Helmet>
       <Navbar />
       <main className="container mx-auto max-w-2xl space-y-6 px-4 py-8 pt-24">
