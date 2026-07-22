@@ -125,18 +125,21 @@ export function ManageBookingPanel() {
               />
             </div>
             <div>
-              <Label>Consultation duration</Label>
+              <Label>Slot length</Label>
               <Select
                 value={String(profile.consultation_duration_min)}
                 onValueChange={(v) => setProfile({ ...profile, consultation_duration_min: Number(v) })}
               >
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {[15, 20, 30, 45, 60].map((m) => (
-                    <SelectItem key={m} value={String(m)}>{m} minutes</SelectItem>
+                  {[10, 15, 20, 30, 45, 60, 90].map((m) => (
+                    <SelectItem key={m} value={String(m)}>Every {m} minutes</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Patients will see slots at this cadence (e.g. 14:00, 14:15, 14:30…).
+              </p>
             </div>
             <div>
               <Label>Price (EUR)</Label>
