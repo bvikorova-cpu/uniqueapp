@@ -52033,6 +52033,36 @@ export type Database = {
         }
         Relationships: []
       }
+      route_404_events: {
+        Row: {
+          id: string
+          occurred_at: string
+          path: string
+          redirected_to: string | null
+          referrer: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          occurred_at?: string
+          path: string
+          redirected_to?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          occurred_at?: string
+          path?: string
+          redirected_to?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       routine_entries: {
         Row: {
           created_at: string | null
