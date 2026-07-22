@@ -215,7 +215,7 @@ export default function BecomeDoctor() {
     <>
       <Helmet>
         <title>Become a Doctor · Unique Health</title>
-        <meta name="description" content="Register as a verified doctor on Unique and accept paid video consultations in EUR." />
+        <meta name="description" content="Register as a verified doctor on Unique and accept paid appointments in EUR." />
       </Helmet>
       <Navbar />
       <main className="container mx-auto max-w-2xl space-y-6 px-4 py-8 pt-24">
@@ -376,10 +376,20 @@ export default function BecomeDoctor() {
                       onChange={(e) => setForm({ ...form, consultation_price_cents: Math.round(Number(e.target.value) * 100) })} />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="dur">Duration (min)</Label>
-                    <Input id="dur" type="number" min={10} step="5"
+                    <Label htmlFor="dur">Slot length (min)</Label>
+                    <select
+                      id="dur"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                       value={form.consultation_duration_min}
-                      onChange={(e) => setForm({ ...form, consultation_duration_min: Number(e.target.value) })} />
+                      onChange={(e) => setForm({ ...form, consultation_duration_min: Number(e.target.value) })}
+                    >
+                      {[10, 15, 20, 30, 45, 60, 90].map((m) => (
+                        <option key={m} value={m}>{m} minutes</option>
+                      ))}
+                    </select>
+                    <p className="text-[11px] text-muted-foreground">
+                      Determines slot cadence (e.g. 14:00, 14:15, 14:30…).
+                    </p>
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="tz">Timezone</Label>

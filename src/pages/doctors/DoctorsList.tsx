@@ -73,7 +73,7 @@ export default function DoctorsList() {
                 <Stethoscope className="w-8 h-8 text-primary" /> Find a Doctor
               </h1>
               <p className="text-muted-foreground">
-                Book a paid video/consultation with a verified doctor.
+                Book an in-person or remote appointment with a verified doctor.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">

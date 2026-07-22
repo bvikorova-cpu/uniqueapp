@@ -81,7 +81,7 @@ export default function DoctorDashboard() {
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                Create your provider profile to start accepting paid video consultations in EUR.
+                Create your provider profile to start accepting paid appointments in EUR.
               </p>
               <Button asChild>
                 <Link to="/doctors/apply">Become a doctor</Link>
