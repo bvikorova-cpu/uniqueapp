@@ -90,6 +90,8 @@ export function useClubMembership() {
       setMembership(data?.membership ?? null);
     } catch (e) {
       console.error("[useClubMembership]", e);
+      const { reportError } = await import("@/lib/errorReporter");
+      void reportError(e, { source: "club.check-status" });
       setMembership(null);
     } finally {
       setLoading(false);
