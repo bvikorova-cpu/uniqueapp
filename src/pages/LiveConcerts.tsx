@@ -23,7 +23,7 @@ import { SetlistVoting } from "@/components/concerts/SetlistVoting";
 import { MerchStore } from "@/components/concerts/MerchStore";
 import { ConcertNotifications } from "@/components/concerts/ConcertNotifications";
 import { ConcertHowItWorks } from "@/components/concerts/ConcertHowItWorks";
-import { MusicianRegistration } from "@/components/musician/MusicianRegistration";
+
 import { SongRequests } from "@/components/concerts/SongRequests";
 import { MultiCamera } from "@/components/concerts/MultiCamera";
 import { FanBadges } from "@/components/concerts/FanBadges";
@@ -35,7 +35,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "browse" | "gifts" | "artists" | "leaderboard" | "replay" | 
-  "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" | "musician" |
+  "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" |
   "song-requests" | "multi-camera" | "fan-badges" | "stories" | "collectibles" | "afterparty";
 
 const tools = [
@@ -57,7 +57,7 @@ const tools = [
   { id: "stories" as ViewType, icon: Sparkles, title: "Concert Stories", description: "15s highlights from live performances", color: "violet" },
   { id: "collectibles" as ViewType, icon: Ticket, title: "Collectible Tickets", description: "Limited edition digital collectibles", color: "emerald", badge: "New" },
   { id: "afterparty" as ViewType, icon: Users, title: "Afterparty", description: "Exclusive post-concert hangout rooms", color: "red" },
-  { id: "musician" as ViewType, icon: Music, title: "Become a Musician", description: "Register as an artist & start performing", color: "violet", badge: "Join" },
+  
   { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Learn about the concert platform", color: "cyan" },
 ];
 
@@ -116,9 +116,6 @@ const LiveConcerts = () => {
       case "stories": return <ConcertStories onBack={goBack} />;
       case "collectibles": return <CollectibleTickets onBack={goBack} />;
       case "afterparty": return <ConcertAfterparty onBack={goBack} />;
-      case "musician":
-        navigate("/musician-dashboard");
-        return null;
       default: return null;
     }
   };

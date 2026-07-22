@@ -229,7 +229,7 @@ export const LiveStream = lazy(() => import("@/pages/LiveStream"));
 export const LiveStreamList = lazy(() => import("@/pages/LiveStreamList"));
 export const Stories = lazy(() => import("@/pages/Stories"));
 export const LiveConcerts = lazy(() => import("@/pages/LiveConcerts"));
-export const MusicianDashboard = lazy(() => import("@/pages/MusicianDashboard"));
+
 export const ConcertWatch = lazy(() => import("@/pages/ConcertWatch"));
 
 // Sports & Betting

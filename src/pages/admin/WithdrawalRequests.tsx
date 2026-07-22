@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CampaignWithdrawalManagement } from "@/components/fundraising/CampaignWithdrawalManagement";
 import { CampaignPayoutReviews } from "@/components/admin/CampaignPayoutReviews";
-import { MusicianWithdrawalManagement } from "@/components/musician/MusicianWithdrawalManagement";
+
 import { ChefWithdrawalManagement } from "@/components/masterchef/ChefWithdrawalManagement";
 import { AdminAuctionWithdrawals } from "@/components/auction/AdminAuctionWithdrawals";
 import { AdminReferralWithdrawals } from "@/components/referral/AdminReferralWithdrawals";
@@ -23,9 +23,8 @@ export default function WithdrawalRequests() {
         />
         <AdminGlassCard className="p-4 sm:p-6">
           <Tabs defaultValue="campaign-payouts" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-6 gap-1 h-auto">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-1 h-auto">
               <TabsTrigger value="campaign-payouts">⭐ Campaign Payouts</TabsTrigger>
-              <TabsTrigger value="musicians">Musicians</TabsTrigger>
               <TabsTrigger value="chefs">KitchenStars</TabsTrigger>
               <TabsTrigger value="campaigns">Campaigns (legacy)</TabsTrigger>
               <TabsTrigger value="auctions">Auctions</TabsTrigger>
@@ -33,9 +32,6 @@ export default function WithdrawalRequests() {
             </TabsList>
             <TabsContent value="campaign-payouts" className="mt-6">
               <CampaignPayoutReviews />
-            </TabsContent>
-            <TabsContent value="musicians" className="mt-6">
-              <MusicianWithdrawalManagement />
             </TabsContent>
             <TabsContent value="chefs" className="mt-6">
               <ChefWithdrawalManagement />

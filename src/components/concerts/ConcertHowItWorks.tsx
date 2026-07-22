@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Sparkles, Users, Music, Ticket, Gift, Zap, DollarSign, MessageCircle, TrendingUp } from "lucide-react";
-import { MusicianRegistration } from "@/components/musician/MusicianRegistration";
+
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
@@ -80,8 +80,7 @@ export const ConcertHowItWorks = ({ onBack }: Props) => {
           </div>
           <div className="bg-primary/10 rounded-lg p-6 text-center">
             <h4 className="text-lg font-black mb-2">Ready to Get Started?</h4>
-            <p className="text-sm text-muted-foreground mb-4">Join as a fan or register as a musician today!</p>
-            <MusicianRegistration />
+            <p className="text-sm text-muted-foreground">Browse upcoming concerts and join as a fan today!</p>
           </div>
         </CardContent>
       </Card>
