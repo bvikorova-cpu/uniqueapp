@@ -2,49 +2,12 @@
   {
     "route": "/",
     "index": 0,
-    "loadedUrl": "https://www.uniqueapp.fun/",
-    "durationMs": 10649,
+    "loadedUrl": "http://localhost:8080/",
+    "durationMs": 44604,
     "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/assets-v1/5c2ca0eb-dbde-4135-bcb2-0cf62515f7b2/home-hero.mp4",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/auth/v1/user",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/assets-v1/afc6553b-e1a7-4af4-b60d-5a0786d7d9b8/wall-hero.mp4",
-        "status": 0
-      }
-    ],
-    "elementsFound": 162,
-    "clicksAttempted": 5,
+    "failedResponses": [],
+    "elementsFound": 45,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -52,21 +15,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
         "label": "Challenges",
-        "ok": true
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
         "label": "Wall",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/wall"
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -75,11 +90,19 @@
   {
     "route": "/__e2e/anonymous-date-matches",
     "index": 1,
-    "loadedUrl": "https://www.uniqueapp.fun/__e2e/anonymous-date-matches",
-    "durationMs": 6265,
+    "loadedUrl": "http://localhost:8080/__e2e/anonymous-date-matches",
+    "durationMs": 43822,
     "pageErrors": [],
     "failedResponses": [
       {
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
+        "status": 0
+      },
+      {
+        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
+        "status": 0
+      },
+      {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
         "status": 0
       },
@@ -88,60 +111,12 @@
         "status": 0
       },
       {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       }
     ],
-    "elementsFound": 46,
-    "clicksAttempted": 3,
+    "elementsFound": 47,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -149,13 +124,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -164,8 +199,8 @@
   {
     "route": "/__preview/ad",
     "index": 2,
-    "loadedUrl": "https://www.uniqueapp.fun/__preview/ad",
-    "durationMs": 6170,
+    "loadedUrl": "http://localhost:8080/__preview/ad",
+    "durationMs": 43752,
     "pageErrors": [],
     "failedResponses": [
       {
@@ -173,7 +208,7 @@
         "status": 0
       },
       {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -181,56 +216,16 @@
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
         "status": 0
       }
     ],
-    "elementsFound": 48,
-    "clicksAttempted": 3,
+    "elementsFound": 47,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -238,13 +233,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -253,8 +308,8 @@
   {
     "route": "/about",
     "index": 3,
-    "loadedUrl": "https://www.uniqueapp.fun/about",
-    "durationMs": 7971,
+    "loadedUrl": "http://localhost:8080/about",
+    "durationMs": 45031,
     "pageErrors": [],
     "failedResponses": [
       {
@@ -262,35 +317,7 @@
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/assets-v1/627e790a-9127-472e-8222-126195fd606e/about-platform-hero.mp4",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -298,32 +325,16 @@
         "status": 0
       },
       {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       }
     ],
-    "elementsFound": 542,
-    "clicksAttempted": 3,
+    "elementsFound": 541,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -331,13 +342,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -346,40 +417,12 @@
   {
     "route": "/about-platform",
     "index": 4,
-    "loadedUrl": "https://www.uniqueapp.fun/about-platform",
-    "durationMs": 8110,
+    "loadedUrl": "http://localhost:8080/about-platform",
+    "durationMs": 45008,
     "pageErrors": [],
     "failedResponses": [
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -391,12 +434,16 @@
         "status": 0
       },
       {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
+        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
+        "status": 0
+      },
+      {
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       }
     ],
-    "elementsFound": 542,
-    "clicksAttempted": 3,
+    "elementsFound": 541,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -404,13 +451,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -419,12 +526,12 @@
   {
     "route": "/account/billing",
     "index": 5,
-    "loadedUrl": "https://www.uniqueapp.fun/account/billing",
-    "durationMs": 6462,
+    "loadedUrl": "http://localhost:8080/account/billing",
+    "durationMs": 43862,
     "pageErrors": [],
     "failedResponses": [
       {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -436,52 +543,16 @@
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/assets-v1/2f7ade06-af16-452e-8038-99261cb2df30/subscription-hero.mp4",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/ai_usage_history?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gte.2026-07-01T00%3A00%3A00.000Z",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/bazaar_items?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gte.2026-07-01T00%3A00%3A00.000Z",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       }
     ],
-    "elementsFound": 83,
-    "clicksAttempted": 3,
+    "elementsFound": 45,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -489,13 +560,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -504,8 +635,8 @@
   {
     "route": "/account/credits",
     "index": 6,
-    "loadedUrl": "https://www.uniqueapp.fun/account/credits",
-    "durationMs": 6196,
+    "loadedUrl": "http://localhost:8080/account/credits",
+    "durationMs": 43841,
     "pageErrors": [],
     "failedResponses": [
       {
@@ -513,11 +644,11 @@
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/notifications?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&order=created_at.desc&limit=50",
+        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/check-dunning",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -525,72 +656,12 @@
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/subscriptions?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&status=eq.active&order=created_at.desc&limit=1",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/conversation_participants?select=conversation_id%2Clast_read_at&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_roles?select=role&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&role=eq.admin",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/conversation_participants?select=conversation_id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/free_tier_credits?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/ai_credits?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/notifications?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&order=created_at.desc&limit=20",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/notifications?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&order=created_at.desc&limit=20",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       }
     ],
-    "elementsFound": 53,
-    "clicksAttempted": 3,
+    "elementsFound": 52,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -598,13 +669,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -613,8 +744,8 @@
   {
     "route": "/account/parental",
     "index": 7,
-    "loadedUrl": "https://www.uniqueapp.fun/account/parental",
-    "durationMs": 6702,
+    "loadedUrl": "http://localhost:8080/account/parental",
+    "durationMs": 44184,
     "pageErrors": [],
     "failedResponses": [
       {
@@ -622,7 +753,11 @@
         "status": 0
       },
       {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
+        "status": 0
+      },
+      {
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -630,76 +765,12 @@
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/kids_science_experiments?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/kids_reading_sessions?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/kids_drawings?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/kids_homework?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/kids_stories?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/kids_parental_gate_log?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/kids_stories?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/kids_parental_gate_log?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/kids_reading_sessions?select=id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
         "status": 0
       }
     ],
-    "elementsFound": 46,
-    "clicksAttempted": 3,
+    "elementsFound": 68,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -707,13 +778,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -722,36 +853,12 @@
   {
     "route": "/account/subscriptions",
     "index": 8,
-    "loadedUrl": "https://www.uniqueapp.fun/account/subscriptions",
-    "durationMs": 6278,
+    "loadedUrl": "http://localhost:8080/account/subscriptions",
+    "durationMs": 43711,
     "pageErrors": [],
     "failedResponses": [
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -763,28 +870,16 @@
         "status": 0
       },
       {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
+        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
         "status": 0
       }
     ],
-    "elementsFound": 49,
-    "clicksAttempted": 3,
+    "elementsFound": 48,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -792,13 +887,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -807,8 +962,8 @@
   {
     "route": "/account/verification",
     "index": 9,
-    "loadedUrl": "https://www.uniqueapp.fun/account/verification",
-    "durationMs": 6346,
+    "loadedUrl": "http://localhost:8080/account/verification",
+    "durationMs": 43683,
     "pageErrors": [],
     "failedResponses": [
       {
@@ -816,7 +971,11 @@
         "status": 0
       },
       {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
+        "status": 0
+      },
+      {
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -824,56 +983,12 @@
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
         "status": 0
       }
     ],
-    "elementsFound": 48,
-    "clicksAttempted": 3,
+    "elementsFound": 47,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -881,13 +996,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -896,8 +1071,8 @@
   {
     "route": "/admin",
     "index": 10,
-    "loadedUrl": "https://www.uniqueapp.fun/admin",
-    "durationMs": 6351,
+    "loadedUrl": "http://localhost:8080/admin",
+    "durationMs": 44171,
     "pageErrors": [],
     "failedResponses": [
       {
@@ -905,75 +1080,15 @@
         "status": 0
       },
       {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
+        "status": 0
+      },
+      {
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/instructor_profiles?select=*",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/assets-v1/c40cd8a2-575d-499a-8992-8b9855ef1421/admin-hero.mp4",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/sports_tipsters?select=*",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/transactions?select=*",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/corporate_inquiries?select=*",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/brand_campaigns?select=*",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/auctions?select=*",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/fundraising_campaigns?select=*",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/admin-anomaly-detector",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/comedians?select=*",
         "status": 0
       },
       {
@@ -981,8 +1096,8 @@
         "status": 0
       }
     ],
-    "elementsFound": 36,
-    "clicksAttempted": 3,
+    "elementsFound": 35,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -990,13 +1105,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -1005,24 +1180,20 @@
   {
     "route": "/admin-image-editor",
     "index": 11,
-    "loadedUrl": "https://www.uniqueapp.fun/admin-image-editor",
-    "durationMs": 6266,
+    "loadedUrl": "http://localhost:8080/admin-image-editor",
+    "durationMs": 43834,
     "pageErrors": [],
     "failedResponses": [
       {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/conversation_participants?select=conversation_id%2Clast_read_at&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
+        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/ai_credits?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/free_tier_credits?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -1031,67 +1202,11 @@
       },
       {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/conversation_participants?select=conversation_id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/global_announcements?select=*&is_active=eq.true&order=created_at.desc&limit=1",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_roles?select=role&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&role=eq.admin",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/conversation_participants?select=conversation_id%2Clast_read_at&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/notifications?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&order=created_at.desc&limit=20",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_roles?select=role&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&role=eq.admin",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/notifications?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&order=created_at.desc&limit=20",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/check-dunning",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/notifications?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&order=created_at.desc&limit=50",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/conversation_participants?select=conversation_id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/conversation_participants?select=conversation_id%2Clast_read_at&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/ai_credits?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
         "status": 0
       }
     ],
-    "elementsFound": 46,
-    "clicksAttempted": 3,
+    "elementsFound": 45,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -1099,13 +1214,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -1114,12 +1289,12 @@
   {
     "route": "/admin/affiliate-tiers",
     "index": 12,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/affiliate-tiers",
-    "durationMs": 6060,
+    "loadedUrl": "http://localhost:8080/admin/affiliate-tiers",
+    "durationMs": 43680,
     "pageErrors": [],
     "failedResponses": [
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/notifications?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&order=created_at.desc&limit=20",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -1131,76 +1306,16 @@
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/notifications?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&order=created_at.desc&limit=50",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_roles?select=role&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&role=eq.admin",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/global_announcements?select=*&is_active=eq.true&order=created_at.desc&limit=1",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/notifications?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&order=created_at.desc&limit=20",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/conversation_participants?select=conversation_id%2Clast_read_at&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/ai_credits?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/conversation_participants?select=conversation_id&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_roles?select=role&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&role=eq.admin",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/conversation_participants?select=conversation_id%2Clast_read_at&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/free_tier_credits?select=*&user_id=eq.a8f98c5c-3ce8-4928-bfaf-061a700411c6",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/check-dunning",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       }
     ],
-    "elementsFound": 36,
-    "clicksAttempted": 3,
+    "elementsFound": 35,
+    "clicksAttempted": 15,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -1208,13 +1323,73 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Work",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Promotions",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Booking",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Services",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -1223,36 +1398,18 @@
   {
     "route": "/admin/audit-log",
     "index": 13,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/audit-log",
-    "durationMs": 6749,
-    "pageErrors": [],
+    "loadedUrl": "http://localhost:8080/admin/audit-log",
+    "durationMs": 21211,
+    "pageErrors": [
+      "goto_or_crawl:page.waitForTimeout: Target page, context or browser has been closed"
+    ],
     "failedResponses": [
       {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
         "status": 0
       },
       {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       },
       {
@@ -1260,36 +1417,16 @@
         "status": 0
       },
       {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
         "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
         "status": 0
       },
       {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
+        "url": "https://o4511735315824640.ingest.de.sentry.io/api/4511735343218768/envelope/?sentry_version=7&sentry_key=3981c8b4b6894f475b4fd5d727ff9d2a&sentry_client=sentry.javascript.react%2F10.65.0",
         "status": 0
       }
     ],
-    "elementsFound": 46,
-    "clicksAttempted": 3,
+    "elementsFound": 45,
+    "clicksAttempted": 8,
     "clicks": [
       {
         "label": "Skip to main content",
@@ -1297,13 +1434,33 @@
         "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       },
       {
-        "label": "Translate page",
+        "label": "Open Uni — voice AI assistant (like Siri)",
         "ok": true
       },
       {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
+        "label": "Beta",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Challenges",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Wall",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
+      },
+      {
+        "label": "Games",
+        "ok": false,
+        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
       }
     ],
     "ok": false,
@@ -1312,968 +1469,481 @@
   {
     "route": "/admin/battle-royale-payouts",
     "index": 14,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/battle-royale-payouts",
-    "durationMs": 6933,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/battle-royale-payouts",
+    "durationMs": 4,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 42,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00014__admin_battle_royale_payouts.png"
   },
   {
     "route": "/admin/bazaar-trust",
     "index": 15,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/bazaar-trust",
-    "durationMs": 6487,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/bazaar-trust",
+    "durationMs": 12,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 39,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00015__admin_bazaar_trust.png"
   },
   {
     "route": "/admin/brand-campaigns",
     "index": 16,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/brand-campaigns",
-    "durationMs": 6733,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/brand-campaigns",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 42,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00016__admin_brand_campaigns.png"
   },
   {
     "route": "/admin/brand-moderation",
     "index": 17,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/brand-moderation",
-    "durationMs": 7036,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/brand-moderation",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 46,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00017__admin_brand_moderation.png"
   },
   {
     "route": "/admin/button-tester",
     "index": 18,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/button-tester",
-    "durationMs": 6269,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/button-tester",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 37,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00018__admin_button_tester.png"
   },
   {
     "route": "/admin/campaign-approvals",
     "index": 19,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/campaign-approvals",
-    "durationMs": 6662,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/campaign-approvals",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 40,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00019__admin_campaign_approvals.png"
   },
   {
     "route": "/admin/campaign-withdrawals",
     "index": 20,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/campaign-withdrawals",
-    "durationMs": 6813,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/campaign-withdrawals",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 48,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00020__admin_campaign_withdrawals.png"
   },
   {
     "route": "/admin/cohort-retention",
     "index": 21,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/cohort-retention",
-    "durationMs": 7047,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/cohort-retention",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 41,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00021__admin_cohort_retention.png"
   },
   {
     "route": "/admin/comedy-payouts",
     "index": 22,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/comedy-payouts",
-    "durationMs": 7026,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/comedy-payouts",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 41,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00022__admin_comedy_payouts.png"
   },
   {
     "route": "/admin/contest-periods",
     "index": 23,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/contest-periods",
-    "durationMs": 6320,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/contest-periods",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 45,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00023__admin_contest_periods.png"
   },
   {
     "route": "/admin/corporate-inquiries",
     "index": 24,
-    "loadedUrl": "https://www.uniqueapp.fun/admin/corporate-inquiries",
-    "durationMs": 6424,
-    "pageErrors": [],
-    "failedResponses": [
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.2188a934-2e79-4184-a800-95038e30aa7b&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T10%3A26%3A04.885%2B00%3A00",
-        "status": 0
-      },
-      {
-        "url": "https://translate.googleapis.com/element/log?hasfast=true&authuser=0&format=json",
-        "status": 0
-      },
-      {
-        "url": "https://www.uniqueapp.fun/__l5e/trackevents",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/user_online_status?on_conflict=user_id",
-        "status": 0
-      },
-      {
-        "url": "https://jufrdzeonywluwutvyxz.supabase.co/rest/v1/messages?select=id&conversation_id=eq.1e9d7728-1734-4ec5-a3e2-f7e877f32109&sender_id=neq.a8f98c5c-3ce8-4928-bfaf-061a700411c6&created_at=gt.2026-06-23T09%3A57%3A07.767%2B00%3A00",
-        "status": 0
-      }
+    "loadedUrl": "/admin/corporate-inquiries",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
     ],
-    "elementsFound": 42,
-    "clicksAttempted": 3,
-    "clicks": [
-      {
-        "label": "Skip to main content",
-        "ok": false,
-        "reason": "click_error:locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:visible, a[role=button]:visible, a"
-      },
-      {
-        "label": "Translate page",
-        "ok": true
-      },
-      {
-        "label": "Unique\n16+",
-        "ok": true,
-        "navigatedTo": "https://www.uniqueapp.fun/"
-      }
-    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
     "ok": false,
     "screenshot": "e2e/crawler-report/screenshots/00024__admin_corporate_inquiries.png"
+  },
+  {
+    "route": "/admin/coupon-disputes",
+    "index": 25,
+    "loadedUrl": "/admin/coupon-disputes",
+    "durationMs": 3,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00025__admin_coupon_disputes.png"
+  },
+  {
+    "route": "/admin/credits-ledger",
+    "index": 26,
+    "loadedUrl": "/admin/credits-ledger",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00026__admin_credits_ledger.png"
+  },
+  {
+    "route": "/admin/dating-moderation",
+    "index": 27,
+    "loadedUrl": "/admin/dating-moderation",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00027__admin_dating_moderation.png"
+  },
+  {
+    "route": "/admin/disputes",
+    "index": 28,
+    "loadedUrl": "/admin/disputes",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00028__admin_disputes.png"
+  },
+  {
+    "route": "/admin/doctor-verifications",
+    "index": 29,
+    "loadedUrl": "/admin/doctor-verifications",
+    "durationMs": 3,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00029__admin_doctor_verifications.png"
+  },
+  {
+    "route": "/admin/dunning",
+    "index": 30,
+    "loadedUrl": "/admin/dunning",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00030__admin_dunning.png"
+  },
+  {
+    "route": "/admin/edge-monitoring",
+    "index": 31,
+    "loadedUrl": "/admin/edge-monitoring",
+    "durationMs": 5,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00031__admin_edge_monitoring.png"
+  },
+  {
+    "route": "/admin/edge-tester",
+    "index": 32,
+    "loadedUrl": "/admin/edge-tester",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00032__admin_edge_tester.png"
+  },
+  {
+    "route": "/admin/engagement",
+    "index": 33,
+    "loadedUrl": "/admin/engagement",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00033__admin_engagement.png"
+  },
+  {
+    "route": "/admin/error-logs",
+    "index": 34,
+    "loadedUrl": "/admin/error-logs",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00034__admin_error_logs.png"
+  },
+  {
+    "route": "/admin/founders",
+    "index": 35,
+    "loadedUrl": "/admin/founders",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00035__admin_founders.png"
+  },
+  {
+    "route": "/admin/fundraising-moderation",
+    "index": 36,
+    "loadedUrl": "/admin/fundraising-moderation",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00036__admin_fundraising_moderation.png"
+  },
+  {
+    "route": "/admin/image-editor",
+    "index": 37,
+    "loadedUrl": "/admin/image-editor",
+    "durationMs": 1,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00037__admin_image_editor.png"
+  },
+  {
+    "route": "/admin/influencer-payouts",
+    "index": 38,
+    "loadedUrl": "/admin/influencer-payouts",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00038__admin_influencer_payouts.png"
+  },
+  {
+    "route": "/admin/insurance-claims",
+    "index": 39,
+    "loadedUrl": "/admin/insurance-claims",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00039__admin_insurance_claims.png"
+  },
+  {
+    "route": "/admin/iq",
+    "index": 40,
+    "loadedUrl": "/admin/iq",
+    "durationMs": 4,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00040__admin_iq.png"
+  },
+  {
+    "route": "/admin/iq-analytics",
+    "index": 41,
+    "loadedUrl": "/admin/iq-analytics",
+    "durationMs": 4,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00041__admin_iq_analytics.png"
+  },
+  {
+    "route": "/admin/kitchenstars-payouts",
+    "index": 42,
+    "loadedUrl": "/admin/kitchenstars-payouts",
+    "durationMs": 5,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00042__admin_kitchenstars_payouts.png"
+  },
+  {
+    "route": "/admin/kyc",
+    "index": 43,
+    "loadedUrl": "/admin/kyc",
+    "durationMs": 4,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00043__admin_kyc.png"
+  },
+  {
+    "route": "/admin/masterchef-payouts",
+    "index": 44,
+    "loadedUrl": "/admin/masterchef-payouts",
+    "durationMs": 3,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00044__admin_masterchef_payouts.png"
+  },
+  {
+    "route": "/admin/megatalent-moderation",
+    "index": 45,
+    "loadedUrl": "/admin/megatalent-moderation",
+    "durationMs": 2,
+    "pageErrors": [
+      "goto_or_crawl:page.goto: Target page, context or browser has been closed"
+    ],
+    "failedResponses": [],
+    "elementsFound": 0,
+    "clicksAttempted": 0,
+    "clicks": [],
+    "ok": false,
+    "screenshot": "e2e/crawler-report/screenshots/00045__admin_megatalent_moderation.png"
   }
 ]
