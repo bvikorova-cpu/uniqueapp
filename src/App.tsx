@@ -1149,6 +1149,7 @@ const App = () => {
                         <Route path="/instructor-earnings" element={<ProtectedRoute><InstructorEarnings /></ProtectedRoute>} />
                         <Route path="/admin/withdrawals" element={<ProtectedRoute requireAdmin={true}><AdminWithdrawals /></ProtectedRoute>} />
                         <Route path="/admin/error-logs" element={<ProtectedRoute requireAdmin={true}><AdminErrorLogs /></ProtectedRoute>} />
+                        <Route path="/admin/route-errors" element={<ProtectedRoute requireAdmin={true}><AdminRouteErrors /></ProtectedRoute>} />
                         <Route path="/admin/audit-log" element={<ProtectedRoute requireAdmin={true}><AdminAuditLog /></ProtectedRoute>} />
                         <Route path="/admin/security-scan" element={<ProtectedRoute requireAdmin={true}><AdminSecurityScan /></ProtectedRoute>} />
                         <Route path="/admin/smoke-test" element={<ProtectedRoute requireAdmin={true}><AdminSmokeTest /></ProtectedRoute>} />
