@@ -63,6 +63,10 @@ export default function CourseDetailPage() {
   const [selectedLiveLesson, setSelectedLiveLesson] = useState<any>(null);
 
   useEffect(() => {
+    if (!courseId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(courseId)) {
+      setLoading(false);
+      return;
+    }
     loadCourseDetails();
   }, [courseId]);
 

@@ -22,7 +22,13 @@ const CompanionChat = () => {
   const [messagesLimit, setMessagesLimit] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
   useEffect(() => {
+    if (!conversationId || !UUID_RE.test(conversationId)) {
+      navigate("/companions");
+      return;
+    }
     loadConversation();
     loadMessages();
     loadMessageLimits();

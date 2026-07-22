@@ -719,9 +719,9 @@ export default function AboutPlatform() {
               <Badge variant="outline" className="text-[10px]">{favoriteSections.length}</Badge>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
-              {favoriteSections.map(({ section, category }) => (
+              {favoriteSections.map(({ section, category }, fIdx) => (
                 <Link
-                  key={`${category.id}-${section.path}`}
+                  key={`${category.id}-${fIdx}-${section.path}`}
                   to={section.path}
                   className="group flex flex-col items-center gap-1.5 p-3 rounded-xl border border-primary/30 bg-card/60 backdrop-blur-sm hover:bg-primary/10 hover:border-primary/60 transition-all"
                 >
@@ -752,12 +752,12 @@ export default function AboutPlatform() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {cat.sections.map((section) => {
+                {cat.sections.map((section, sIdx) => {
                   const isOpen = !!expanded[section.path];
                   const hasMore = !!(section.details || section.pricing || (section.capabilities && section.capabilities.length));
                   return (
                   <motion.div
-                    key={`${cat.id}-${section.path}`}
+                    key={`${cat.id}-${sIdx}-${section.path}`}
                     initial={{ opacity: 0, y: 12 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}

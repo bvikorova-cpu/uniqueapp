@@ -81,9 +81,12 @@ export default function LiveStream() {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
   }, []);
 
+  const isValidStreamId = !!streamId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(streamId);
+
   // Fetch stream details
   const { data: stream } = useQuery({
     queryKey: ["stream", streamId],
+    enabled: isValidStreamId,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("live_streams")
@@ -106,6 +109,7 @@ export default function LiveStream() {
   // Fetch messages with realtime updates
   const { data: messages = [] } = useQuery({
     queryKey: ["stream-messages", streamId],
+    enabled: isValidStreamId,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("stream_messages")
