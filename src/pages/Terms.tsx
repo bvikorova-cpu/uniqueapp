@@ -40,7 +40,7 @@ const Terms = () => {
           subtitle="The complete legal agreement between you and UNIQUE — a global platform serving creators and users worldwide. Every section, every clause, every safeguard designed to protect creators, users, and the platform across all jurisdictions."
           effectiveDate="January 20, 2026"
           stats={[
-            { label: "Sections", value: "12", icon: <FileText className="w-3 h-3" /> },
+            { label: "Sections", value: "13", icon: <FileText className="w-3 h-3" /> },
             { label: "Edition", value: "V2.0", icon: <Shield className="w-3 h-3" /> },
             { label: "Reach", value: "Global", icon: <Scale className="w-3 h-3" /> },
             { label: "Audit", value: "Logged", icon: <Lock className="w-3 h-3" /> },
