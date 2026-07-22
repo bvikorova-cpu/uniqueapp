@@ -17,7 +17,7 @@ import { format, differenceInYears } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AuthReferralBanner } from "@/components/referral/AuthReferralBanner";
 import { Captcha } from "@/components/Captcha";
-import { SocialAuth } from "@/components/auth/SocialAuth";
+
 
 const MIN_AGE = 16;
 const MIN_PASSWORD_LENGTH = 10;
@@ -497,19 +497,6 @@ const Auth = () => {
                 <TabsTrigger value="signup">{"Sign Up"}</TabsTrigger>
               </TabsList>
 
-              <div className="mt-4">
-                <SocialAuth />
-                <div className="relative my-4">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground">
-                      or with password
-                    </span>
-                  </div>
-                </div>
-              </div>
 
               <TabsContent value="login">
                 <form onSubmit={handleSignIn} className="space-y-4">
