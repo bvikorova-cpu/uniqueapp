@@ -17,6 +17,7 @@ import { format, differenceInYears } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AuthReferralBanner } from "@/components/referral/AuthReferralBanner";
 import { Captcha } from "@/components/Captcha";
+import { SocialAuth } from "@/components/auth/SocialAuth";
 
 const MIN_AGE = 16;
 const MIN_PASSWORD_LENGTH = 10;
