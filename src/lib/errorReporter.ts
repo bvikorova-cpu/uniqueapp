@@ -68,7 +68,7 @@ export async function reportError(err: unknown, opts: ReportOptions = {}) {
       opts.user_id ??
       (await supabase.auth.getUser()).data.user?.id ??
       null;
-    await supabase.from("client_error_events").insert({
+    const row = {
       level: opts.level ?? "error",
       source,
       message: message.slice(0, 2000),
@@ -76,9 +76,11 @@ export async function reportError(err: unknown, opts: ReportOptions = {}) {
       url: typeof window !== "undefined" ? window.location.href : null,
       route: typeof window !== "undefined" ? window.location.pathname : null,
       user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
-      context: opts.context ?? null,
+      context: (opts.context ?? null) as unknown,
       user_id: uid,
-    });
+    };
+    // Types may be stale until Supabase typegen refreshes; cast safely.
+    await supabase.from("client_error_events" as never).insert(row as never);
   } catch {
     /* swallow — never let reporter throw */
   }
