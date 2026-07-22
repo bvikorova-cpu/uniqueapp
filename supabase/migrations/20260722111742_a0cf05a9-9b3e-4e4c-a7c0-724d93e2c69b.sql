@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.get_iq_public_profile(text) TO anon;

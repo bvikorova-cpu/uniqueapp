@@ -87,9 +87,10 @@ export default function MedicalDetail() {
   const predefinedAmounts = [5, 10, 25, 50, 100];
 
   useEffect(() => {
+    if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return;
     fetchCampaign();
     fetchDonations();
-    
+
     // Check for successful donation
     const sessionId = searchParams.get('session_id');
     if (searchParams.get('donation') === 'success' && sessionId) {
