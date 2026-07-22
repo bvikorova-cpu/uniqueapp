@@ -11,8 +11,6 @@ const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
 // LiveChatWidget removed from dock — Uni voice+text assistant replaces it
 const BazaarCreate = lazy(() => import("@/pages/BazaarCreate"));
 const BazaarSavedSearches = lazy(() => import("@/pages/BazaarSavedSearches"));
-const MusicUpload = lazy(() => import("@/pages/MusicUpload"));
-const MusicRoyalties = lazy(() => import("@/pages/MusicRoyalties"));
 const InvestmentPortfolio = lazy(() => import("@/pages/InvestmentPortfolio"));
 const SkillsMarketplace = lazy(() => import("@/pages/SkillsMarketplace"));
 const SkillsMarketplaceCreate = lazy(() => import("@/pages/SkillsMarketplaceCreate"));
@@ -324,7 +322,6 @@ import {
   ComedyLiveShow,
   ComedyLiveViewer,
   LiveConcerts,
-  MusicianDashboard,
   ConcertWatch,
   
   ContentStudio,
@@ -997,8 +994,6 @@ const App = () => {
                         <Route path="/promotions/success" element={<PromotionsSuccess />} />
                         <Route path="/promotions/mine" element={<MyPromotions />} />
                         <Route path="/bazaar/saved-searches" element={<BazaarSavedSearches />} />
-                        <Route path="/music/upload" element={<MusicUpload />} />
-                        <Route path="/music/royalties" element={<MusicRoyalties />} />
                         <Route path="/investment/portfolio" element={<InvestmentPortfolio />} />
                         <Route path="/lie-detector" element={<LieDetector />} />
                         <Route path="/verify-report" element={<VerifyReport />} />
@@ -1352,7 +1347,7 @@ const App = () => {
                         {/* Live Concerts */}
                         <Route path="/live-concerts" element={<LiveConcerts />} />
                         <Route path="/concert-watch/:id" element={<ProtectedRoute><ConcertWatch /></ProtectedRoute>} />
-                        <Route path="/musician-dashboard" element={<ProtectedRoute><MusicianDashboard /></ProtectedRoute>} />
+                        
                         <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
                         <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
                         <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
