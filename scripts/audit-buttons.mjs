@@ -69,19 +69,18 @@ function scanFile(file) {
 
     if (WIRED_ATTRS.some((r) => r.test(attrs))) continue;
 
-    // Check parent line for trigger wrappers (rough heuristic — look at
-    // the previous non-empty line).
-    let parentLine = "";
-    for (let i = lineNo - 2; i >= Math.max(0, lineNo - 4); i--) {
-      const l = lines[i]?.trim();
-      if (!l) continue;
-      parentLine = l;
-      break;
+    // Look at up to 6 preceding non-empty lines for a trigger wrapper.
+    let context = "";
+    for (let i = lineNo - 2; i >= Math.max(0, lineNo - 7); i--) {
+      const l = lines[i];
+      if (l == null) continue;
+      context = l + "\n" + context;
     }
-    if (TRIGGER_PARENTS.some((t) => parentLine.includes(`<${t}`))) continue;
+    if (TRIGGER_PARENTS.some((t) => context.includes(`<${t}`))) continue;
 
-    // Ignore <Button> wrapped as child of Link — link handles nav
-    if (parentLine.includes("<Link ") || parentLine.includes("<a ")) continue;
+    // Same-line or ancestor <a>/<Link> wrapper — link handles nav
+    const sameLine = lines[lineNo - 1] ?? "";
+    if (/<Link\b|<a\s/.test(sameLine) || /<Link\b|<a\s/.test(context)) continue;
 
     const snippet = tag.replace(/\s+/g, " ").slice(0, 120);
     hits.push({ file: path.relative(ROOT, file), line: lineNo, snippet });
