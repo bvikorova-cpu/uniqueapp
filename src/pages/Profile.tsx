@@ -16,6 +16,7 @@ import { ProfileHero } from "@/components/profile/ProfileHero";
 import { ProfileVerificationCard } from "@/components/profile/ProfileVerificationCard";
 import { FanClubMembershipsCard } from "@/components/profile/FanClubMembershipsCard";
 import { ClubMembershipCard } from "@/components/profile/ClubMembershipCard";
+import { BillingOverviewCard } from "@/components/profile/BillingOverviewCard";
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
 import {
   finishMeTrace,
