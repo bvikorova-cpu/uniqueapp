@@ -1,15 +1,14 @@
 ---
-name: Skill Swap €1 lifetime entry
-description: One-time €1 entry fee for Skill Swap access. No monthly subscription, 0% commission on swaps.
+name: Skill Swap €1/month subscription
+description: One euro per month Stripe subscription for Skill Swap access. No commission on swaps.
 type: feature
 ---
 # Skill Swap monetization
 
-- **Model**: One-time €1 entry fee → lifetime access. No monthly subscription. No commission (0%).
-- **Product key**: `skill_swap` in `create-checkout` → mode: `payment`, amount: 100 cents.
-- **Membership table**: `public.skill_swap_members(user_id PK, purchased_at, stripe_session_id, amount_paid_cents)`.
-- **Access check**: `check-subscription` with `tier: "skill_swap"` reads `skill_swap_members` DB row (Stripe subscription lookup is skipped).
-- **Verify endpoint**: `verify-skill-swap-entry` — called by `SkillSwap.tsx` after Stripe redirect (`?entry=success&session_id=...`), retrieves the session, confirms `payment_status=paid`, upserts membership row.
-- **Frontend hook**: `useSkillSwap` unchanged (still uses `check-skill-swap-subscription` proxy → `check-subscription` tier `skill_swap`).
-- **Success URL**: `/skill-swap?entry=success&session_id={CHECKOUT_SESSION_ID}` (DEFAULT_PATHS entry).
-- **UI copy**: "€1 one-time entry • Lifetime access • 0% commission".
+- **Model**: €1/month Stripe subscription. Cancel anytime. 0% commission on swaps.
+- **Product key**: `skill_swap` in `create-checkout` → mode: `subscription`, amount: 100 cents, interval: `month`.
+- **Access check**: `check-subscription` with `tier: "skill_swap"` uses the generic Stripe subscriptions path (no DB special-case).
+- **Frontend hook**: `useSkillSwap` reads `subscribed`/`subscription_end` from `check-subscription` (via proxy `check-skill-swap-subscription`).
+- **Success URL**: `/skill-swap?subscribed=true&session_id={CHECKOUT_SESSION_ID}` — page shows a toast and refreshes membership state.
+- **Legacy**: The `skill_swap_members` table + `verify-skill-swap-entry` function are unused for new signups (kept only for historic lifetime members). Do not reintroduce lifetime pricing.
+- **UI copy**: "€1/month • Cancel anytime • 0% commission on swaps".
