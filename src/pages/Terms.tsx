@@ -12,14 +12,16 @@ const SECTIONS: Section[] = [
   { id: "registration", title: "3. Registration & Age (16+)" },
   { id: "content", title: "4. User Content & Licenses" },
   { id: "payments", title: "5. Payments & Credits" },
-  { id: "creator", title: "6. Creator Obligations" },
-  { id: "prohibited", title: "7. Prohibited Conduct" },
-  { id: "ip", title: "8. Intellectual Property" },
-  { id: "termination", title: "9. Termination" },
-  { id: "liability", title: "10. Limitation of Liability" },
-  { id: "law", title: "11. Governing Law" },
-  { id: "changes", title: "12. Changes to Terms" },
+  { id: "fees", title: "6. Platform Fees & Commissions" },
+  { id: "creator", title: "7. Creator Obligations" },
+  { id: "prohibited", title: "8. Prohibited Conduct" },
+  { id: "ip", title: "9. Intellectual Property" },
+  { id: "termination", title: "10. Termination" },
+  { id: "liability", title: "11. Limitation of Liability" },
+  { id: "law", title: "12. Governing Law" },
+  { id: "changes", title: "13. Changes to Terms" },
 ];
+
 
 const LEGAL_PAGES = [
   { to: "/legal/privacy", icon: Lock, title: "Privacy & Cookies", desc: "GDPR, data we collect, cookies" },
