@@ -323,34 +323,22 @@ export default function SkillSwap() {
     if (v && valid.includes(v as ViewType)) setActiveView(v as ViewType);
   }, [searchParams]);
 
-  // Verify one-time €1 entry fee after Stripe redirect
+  // Refresh subscription state after Stripe redirect
   useEffect(() => {
-    const entry = searchParams.get("entry");
-    const sessionId = searchParams.get("session_id");
-    if (entry === "success" && sessionId) {
+    const subscribed = searchParams.get("subscribed");
+    if (subscribed === "true") {
       (async () => {
-        try {
-          const { data, error } = await supabase.functions.invoke("verify-skill-swap-entry", {
-            body: { sessionId },
-          });
-          if (error) throw error;
-          if (data?.subscribed) {
-            toast.success("Welcome to Skill Swap! Lifetime access unlocked 🎉");
-            await checkSubscription();
-          } else {
-            toast.error("Payment not confirmed yet. Please refresh in a moment.");
-          }
-        } catch (e: any) {
-          toast.error(e?.message || "Could not verify entry payment");
-        } finally {
-          const url = new URL(window.location.href);
-          url.searchParams.delete("entry");
-          url.searchParams.delete("session_id");
-          window.history.replaceState({}, "", url.toString());
-        }
+        // Give Stripe a moment to propagate the subscription
+        await new Promise((r) => setTimeout(r, 1500));
+        await checkSubscription();
+        toast.success("Welcome to Skill Swap! €1/month access unlocked 🎉");
+        const url = new URL(window.location.href);
+        url.searchParams.delete("subscribed");
+        url.searchParams.delete("session_id");
+        window.history.replaceState({}, "", url.toString());
       })();
-    } else if (entry === "canceled") {
-      toast.info("Entry payment canceled");
+    } else if (subscribed === "canceled") {
+      toast.info("Subscription canceled");
     }
   }, [searchParams]);
 
