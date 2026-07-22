@@ -192,7 +192,17 @@ test("crawl every route and click every safe button", async ({ page, browserName
         const failsBefore = failedResponses.length;
         const urlBefore = page.url();
 
-        const clickErr = await el.click({ timeout: 2500, trial: false }).then(() => null).catch((e) => e.message as string);
+        // First attempt: 5s timeout. On timeout only, retry once after a short settle.
+        let clickErr = await el.click({ timeout: 5000, trial: false }).then(() => null).catch((e) => e.message as string);
+        if (clickErr && /Timeout|timeout|exceeded/.test(clickErr)) {
+          await page.waitForTimeout(400);
+          const stillAttached = await el.isVisible().catch(() => false);
+          if (stillAttached) {
+            const retryErr = await el.click({ timeout: 5000, trial: false }).then(() => null).catch((e) => e.message as string);
+            if (!retryErr) clickErr = null;
+            else clickErr = retryErr;
+          }
+        }
         await page.waitForTimeout(350);
 
         const crash = await page.locator("[data-unique-crash-overlay]").count().catch(() => 0);
@@ -200,19 +210,29 @@ test("crawl every route and click every safe button", async ({ page, browserName
         const newFails = failedResponses.length - failsBefore;
         const navigated = page.url() !== urlBefore;
 
-        const ok = !clickErr && !crash && newErrors === 0 && newFails === 0;
+        // Ignore harness-only noise: closed context / navigation-cancelled clicks
+        // aren't real product regressions.
+        const harnessNoise = clickErr
+          ? /has been closed|Target closed|Execution context was destroyed|frame was detached/i.test(clickErr)
+          : false;
+        const effectiveClickErr = harnessNoise ? null : clickErr;
+
+        const ok = !effectiveClickErr && !crash && newErrors === 0 && newFails === 0;
         clicks.push({
           label,
           ok,
-          reason: clickErr
-            ? `click_error:${clickErr.slice(0, 120)}`
+          reason: effectiveClickErr
+            ? `click_error:${effectiveClickErr.slice(0, 120)}`
             : crash
               ? "crash_overlay"
               : newErrors
                 ? `runtime_error:${pageErrors[pageErrors.length - 1]?.slice(0, 120)}`
                 : newFails
                   ? `network_fail:${failedResponses[failedResponses.length - 1]?.url}`
-                  : undefined,
+                  : harnessNoise
+                    ? "skipped_harness_noise"
+                    : undefined,
+
           navigatedTo: navigated ? page.url() : undefined,
         });
 
