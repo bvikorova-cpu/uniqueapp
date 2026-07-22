@@ -721,7 +721,7 @@ export default function AboutPlatform() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
               {favoriteSections.map(({ section, category }) => (
                 <Link
-                  key={section.path}
+                  key={`${category.id}-${section.path}`}
                   to={section.path}
                   className="group flex flex-col items-center gap-1.5 p-3 rounded-xl border border-primary/30 bg-card/60 backdrop-blur-sm hover:bg-primary/10 hover:border-primary/60 transition-all"
                 >
