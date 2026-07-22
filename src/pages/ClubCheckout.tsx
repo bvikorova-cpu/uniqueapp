@@ -53,6 +53,8 @@ export default function ClubCheckout() {
 
         setCheckoutUrl(url);
       } catch (e: any) {
+        const { reportError } = await import("@/lib/errorReporter");
+        void reportError(e, { source: "stripe.club.checkout", context: { tier: selectedTier } });
         if (!cancelled) setError(e?.message ?? "Checkout failed. Please try again.");
       }
     }
