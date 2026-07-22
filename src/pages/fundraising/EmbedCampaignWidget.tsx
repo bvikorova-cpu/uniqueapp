@@ -38,7 +38,11 @@ export default function EmbedCampaignWidget() {
   useEffect(() => {
     (async () => {
       const table = tableByType[campaignType || ""];
-      if (!table || !campaignId) { setLoading(false); return; }
+      const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!table || !campaignId || !UUID_RE.test(campaignId)) {
+        setLoading(false);
+        return;
+      }
       const { data } = await supabase
         .from(table as any)
         .select("*")
