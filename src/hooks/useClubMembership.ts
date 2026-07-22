@@ -3,6 +3,21 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type ClubTier = "digital" | "physical";
 
+export interface ClubShippingAddressFields {
+  line1?: string | null;
+  line2?: string | null;
+  city?: string | null;
+  postal_code?: string | null;
+  state?: string | null;
+  country?: string | null;
+}
+
+export interface ClubShippingAddress extends ClubShippingAddressFields {
+  name?: string | null;
+  phone?: string | null;
+  address?: ClubShippingAddressFields | null;
+}
+
 export interface ClubMembership {
   id: string;
   user_id: string;
@@ -12,7 +27,7 @@ export interface ClubMembership {
   is_founding: boolean;
   current_period_end: string | null;
   shipping_status: "not_applicable" | "pending" | "shipped" | "delivered";
-  shipping_address: Record<string, unknown> | null;
+  shipping_address: ClubShippingAddress | null;
   recipient_name: string | null;
   phone: string | null;
   shipping_note: string | null;
