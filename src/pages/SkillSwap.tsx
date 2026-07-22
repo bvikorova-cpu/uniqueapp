@@ -323,34 +323,22 @@ export default function SkillSwap() {
     if (v && valid.includes(v as ViewType)) setActiveView(v as ViewType);
   }, [searchParams]);
 
-  // Verify one-time €1 entry fee after Stripe redirect
+  // Refresh subscription state after Stripe redirect
   useEffect(() => {
-    const entry = searchParams.get("entry");
-    const sessionId = searchParams.get("session_id");
-    if (entry === "success" && sessionId) {
+    const subscribed = searchParams.get("subscribed");
+    if (subscribed === "true") {
       (async () => {
-        try {
-          const { data, error } = await supabase.functions.invoke("verify-skill-swap-entry", {
-            body: { sessionId },
-          });
-          if (error) throw error;
-          if (data?.subscribed) {
-            toast.success("Welcome to Skill Swap! Lifetime access unlocked 🎉");
-            await checkSubscription();
-          } else {
-            toast.error("Payment not confirmed yet. Please refresh in a moment.");
-          }
-        } catch (e: any) {
-          toast.error(e?.message || "Could not verify entry payment");
-        } finally {
-          const url = new URL(window.location.href);
-          url.searchParams.delete("entry");
-          url.searchParams.delete("session_id");
-          window.history.replaceState({}, "", url.toString());
-        }
+        // Give Stripe a moment to propagate the subscription
+        await new Promise((r) => setTimeout(r, 1500));
+        await checkSubscription();
+        toast.success("Welcome to Skill Swap! €1/month access unlocked 🎉");
+        const url = new URL(window.location.href);
+        url.searchParams.delete("subscribed");
+        url.searchParams.delete("session_id");
+        window.history.replaceState({}, "", url.toString());
       })();
-    } else if (entry === "canceled") {
-      toast.info("Entry payment canceled");
+    } else if (subscribed === "canceled") {
+      toast.info("Subscription canceled");
     }
   }, [searchParams]);
 
@@ -791,9 +779,9 @@ export default function SkillSwap() {
                     <div className="flex items-center gap-3">
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                       <div>
-                        <p className="font-bold text-sm">Lifetime Access Active</p>
+                        <p className="font-bold text-sm">Skill Swap Membership Active</p>
                         <p className="text-xs text-muted-foreground">
-                          One-time €1 entry paid • Full access forever • 0% commission on swaps
+                          €1/month • Full access • 0% commission on swaps • Cancel anytime
                         </p>
                       </div>
                     </div>
@@ -809,8 +797,8 @@ export default function SkillSwap() {
                       </div>
                       <div>
                         <h2 className="text-2xl font-black">Join Skill Swap</h2>
-                        <div className="text-4xl font-black text-primary mt-2">€1<span className="text-base font-medium text-muted-foreground"> one-time entry</span></div>
-                        <p className="text-xs text-muted-foreground mt-1">Lifetime access • No monthly fees • 0% commission</p>
+                        <div className="text-4xl font-black text-primary mt-2">€1<span className="text-base font-medium text-muted-foreground">/month</span></div>
+                        <p className="text-xs text-muted-foreground mt-1">Cancel anytime • 0% commission on swaps</p>
                       </div>
                       <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
                         {[
@@ -825,7 +813,7 @@ export default function SkillSwap() {
                         ))}
                       </div>
                       <Button onClick={handleSubscribe} size="lg" className="w-full max-w-md">
-                        <Sparkles className="mr-2 h-4 w-4" /> Pay €1 & Unlock Forever
+                        <Sparkles className="mr-2 h-4 w-4" /> Subscribe €1/month
                       </Button>
                     </div>
                   </Card>
