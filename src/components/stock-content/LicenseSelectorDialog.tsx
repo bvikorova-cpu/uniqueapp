@@ -112,7 +112,7 @@ export function LicenseSelectorDialog({ open, onOpenChange, item, onSelect }: Li
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full" size="sm">Select</Button>
+                <Button className="w-full" size="sm" onClick={(e) => { e.stopPropagation(); onSelect(lic.type, lic.price); }}>Select</Button>
               </Card>
             );
           })}

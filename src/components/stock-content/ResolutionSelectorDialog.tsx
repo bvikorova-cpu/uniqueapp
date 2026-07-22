@@ -72,7 +72,7 @@ export function ResolutionSelectorDialog({ open, onOpenChange, basePrice, resolu
                     <span>{Math.round(mult * 100)}% of base price</span>
                   </li>
                 </ul>
-                <Button className="w-full" size="sm">Select</Button>
+                <Button className="w-full" size="sm" onClick={(e) => { e.stopPropagation(); onSelect(k, price); }}>Select</Button>
               </Card>
             );
           })}

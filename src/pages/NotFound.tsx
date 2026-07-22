@@ -2,6 +2,7 @@ import { useLocation, Link, Navigate } from "react-router-dom";
 import { useEffect, useMemo } from "react";
 import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 // Legacy / alias paths that should redirect to the canonical premium page
 // instead of showing a 404. Keep keys lowercase.
@@ -74,6 +75,27 @@ const NotFound = () => {
       console.info(`Redirecting legacy path ${location.pathname} → ${redirectTo}`);
     } else {
       console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+    }
+
+    // Report the miss to Supabase so admins can see recurring bad paths.
+    // Dedupe per session so a reload loop doesn't spam the table.
+    try {
+      const key = `unique:404-logged:${location.pathname}`;
+      if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(key)) return;
+      if (typeof sessionStorage !== "undefined") sessionStorage.setItem(key, "1");
+
+      void (async () => {
+        const { data: { user } } = await supabase.auth.getUser().catch(() => ({ data: { user: null } as any }));
+        await supabase.from("route_404_events").insert({
+          path: location.pathname,
+          referrer: typeof document !== "undefined" ? document.referrer || null : null,
+          redirected_to: redirectTo,
+          user_id: user?.id ?? null,
+          user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
+        });
+      })();
+    } catch {
+      // Never let 404 telemetry break the fallback page.
     }
   }, [location.pathname, redirectTo]);
 
