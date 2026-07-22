@@ -46,7 +46,7 @@ import sleepingBeauty8 from "@/assets/fairy-castles/panoramas/sleeping-beauty-8.
 import sleepingBeauty9 from "@/assets/fairy-castles/panoramas/sleeping-beauty-9.jpg";
 import sleepingBeauty10 from "@/assets/fairy-castles/panoramas/sleeping-beauty-10.jpg";
 
-// Le Château de la Belle au Bois Dormant (Paris) - 10 rooms
+// Belle Sleeping Castle (City) - 10 rooms
 import parisBelle1 from "@/assets/fairy-castles/panoramas/paris-belle-1.jpg";
 import parisBelle2 from "@/assets/fairy-castles/panoramas/paris-belle-2.jpg";
 import parisBelle3 from "@/assets/fairy-castles/panoramas/paris-belle-3.jpg";
@@ -58,7 +58,7 @@ import parisBelle8 from "@/assets/fairy-castles/panoramas/paris-belle-8.jpg";
 import parisBelle9 from "@/assets/fairy-castles/panoramas/paris-belle-9.jpg";
 import parisBelle10 from "@/assets/fairy-castles/panoramas/paris-belle-10.jpg";
 
-// Cinderella Castle (Tokyo) - 10 rooms
+// Cinderella Castle (City) - 10 rooms
 import tokyoCinderella1 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-1.jpg";
 import tokyoCinderella2 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-2.jpg";
 import tokyoCinderella3 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-3.jpg";
@@ -157,7 +157,7 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) { const meshRef = us
       'sleeping-beauty-9': sleepingBeauty9,
       'sleeping-beauty-10': sleepingBeauty10,
       
-      // Paris Belle (Enchanted Park Paris) - 10 rooms
+      // Belle Castle (Enchanted Park City) - 10 rooms
       'paris-belle-1': parisBelle1,
       'paris-belle-2': parisBelle2,
       'paris-belle-3': parisBelle3,

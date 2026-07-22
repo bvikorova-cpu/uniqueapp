@@ -68,7 +68,7 @@ export const GIFT_CATALOG = [
   { type: "love_potion", emoji: "🧪", label: "Love Potion", value: 35, category: "romantic", description: "Magical elixir" },
   { type: "diamond_ring", emoji: "💎", label: "Diamond Ring", value: 150, category: "romantic", description: "Eternal bond" },
   { type: "moonlit_dinner", emoji: "🌙", label: "Moonlit Dinner", value: 85, category: "romantic", description: "Romantic evening" },
-  { type: "paris_getaway", emoji: "🗼", label: "Paris Getaway", value: 200, category: "romantic", description: "City of love" },
+  { type: "city_getaway", emoji: "🗼", label: "City Getaway", value: 200, category: "romantic", description: "City of love" },
   { type: "sunset_beach", emoji: "🌅", label: "Sunset Beach", value: 95, category: "romantic", description: "Romantic sunset" },
   
   // Sweets category (5-100 credits)

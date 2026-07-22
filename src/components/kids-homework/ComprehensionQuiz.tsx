@@ -31,7 +31,7 @@ function generateQuizQuestions(subject: string): Array<{ question: string; optio
       { question: "Which sentence is correct?", options: ["They're going.", "Their going.", "There going.", "Thier going."], correct: 0 },
     ],
     history: [
-      { question: "Where were the ancient pyramids built?", options: ["Greece", "Egypt", "Rome", "China"], correct: 1 },
+      { question: "Where were the ancient pyramids built?", options: ["Greece", "North Africa", "Rome", "China"], correct: 1 },
       { question: "Who was the first president of the USA?", options: ["Lincoln", "Jefferson", "Washington", "Adams"], correct: 2 },
       { question: "What year did WWII end?", options: ["1943", "1944", "1945", "1946"], correct: 2 },
     ],

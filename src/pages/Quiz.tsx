@@ -137,7 +137,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "How many players does a football team have on the field?", options: ["9", "10", "11", "12"], correct: 2 },
     { question: "Which sport does Roger Federer play?", options: ["Tennis", "Badminton", "Squash", "Table tennis"], correct: 0 },
     { question: "How many rings does the Olympic symbol have?", options: ["3", "4", "5", "6"], correct: 2 },
-    { question: "Where were the 2024 Olympics held?", options: ["Tokyo", "Paris", "Los Angeles", "Brisbane"], correct: 1 },
+    { question: "What is the hardest natural substance on Earth?", options: ["Gold", "Iron", "Diamond", "Ruby"], correct: 2 },
     { question: "How often are the Summer Olympic Games held?", options: ["Every 2 years", "Every 3 years", "Every 4 years", "Every 5 years"], correct: 2 },
   ],
   movies: [
@@ -162,16 +162,16 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Which dish is typical for Italy?", options: ["Paella", "Risotto", "Sushi", "Curry"], correct: 1 }
   ],
   travel: [
-    { question: "What is the capital of France?", options: ["Lyon", "Marseille", "Paris", "Nice"], correct: 2 },
+    { question: "What is the largest ocean on Earth?", options: ["Atlantic", "Indian", "Arctic", "Pacific"], correct: 3 },
     { question: "On which continent is Egypt?", options: ["Asia", "Africa", "Europe", "Australia"], correct: 1 },
     { question: "Which country has the most inhabitants?", options: ["India", "China", "USA", "Indonesia"], correct: 1 },
-    { question: "Where is the Eiffel Tower located?", options: ["London", "Rome", "Paris", "Madrid"], correct: 2 },
+    { question: "What do bees collect from flowers?", options: ["Nectar", "Dew", "Rain", "Sap"], correct: 0 },
     { question: "Which country has the shape of a boot?", options: ["Greece", "Spain", "Italy", "Portugal"], correct: 2 },
   ],
   fashion: [
     { question: "Which brand has the 'swoosh' logo?", options: ["Adidas", "Nike", "Puma", "Reebok"], correct: 1 },
     { question: "Who is the founder of Chanel?", options: ["Christian Dior", "Coco Chanel", "Yves Saint Laurent", "Giorgio Armani"], correct: 1 },
-    { question: "In which city is Fashion Week held first in the year?", options: ["Paris", "Milan", "New York", "London"], correct: 2 },
+    { question: "What is the main gas in Earth's atmosphere?", options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], correct: 2 },
     { question: "What does 'haute couture' mean?", options: ["Cheap fashion", "High fashion", "Sportswear", "Casual wear"], correct: 1 },
     { question: "Which color is classic for Tiffany jewelry?", options: ["Pink", "Blue", "Green", "Purple"], correct: 1 },
   ],
@@ -184,7 +184,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
   ],
   cars: [
     { question: "Which brand makes the Mustang model?", options: ["Chevrolet", "Ford", "Dodge", "Chrysler"], correct: 1 },
-    { question: "What does BMW stand for?", options: ["Berlin Motor Works", "Bavarian Motor Works", "British Motor Works", "Belgian Motor Works"], correct: 1 },
+    { question: "What does BMW stand for?", options: ["Brand Motor Works", "Bavarian Motor Works", "British Motor Works", "Belgian Motor Works"], correct: 1 },
     { question: "What is the largest planet in our solar system?", options: ["Earth", "Mars", "Jupiter", "Saturn"], correct: 2 },
     { question: "What powers an electric car?", options: ["Gasoline", "Diesel", "Electricity", "Hydrogen"], correct: 2 },
     { question: "Which brand has a logo with four rings?", options: ["BMW", "Mercedes", "Audi", "Volkswagen"], correct: 2 },

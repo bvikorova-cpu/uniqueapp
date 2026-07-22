@@ -194,7 +194,7 @@ export default function SportsAdmin() {
                     onChange={(e) =>
                       setFormData({ ...formData, home_team: e.target.value })
                     }
-                    placeholder="e.g. Real Madrid"
+                    placeholder="e.g. Team A"
                   />
                 </div>
 
@@ -206,7 +206,7 @@ export default function SportsAdmin() {
                     onChange={(e) =>
                       setFormData({ ...formData, away_team: e.target.value })
                     }
-                    placeholder="e.g. Barcelona"
+                    placeholder="e.g. City"
                   />
                 </div>
 

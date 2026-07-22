@@ -45,7 +45,7 @@ export const AIFoodExplorer = ({ onBack }: Props) => {
           <CardTitle className="flex items-center gap-2"><UtensilsCrossed className="w-6 h-6 text-orange-500" />AI Food Explorer<span className="text-xs bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded-full ml-2">3 Credits</span></CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Input placeholder="Location (e.g., Bangkok, Rome, Mexico City)" value={form.location} onChange={e => setForm({...form, location: e.target.value})} />
+          <Input placeholder="Location (e.g., City, City, City)" value={form.location} onChange={e => setForm({...form, location: e.target.value})} />
           <div className="grid grid-cols-2 gap-3">
             <Select value={form.diet} onValueChange={v => setForm({...form, diet: v})}>
               <SelectTrigger><SelectValue /></SelectTrigger>

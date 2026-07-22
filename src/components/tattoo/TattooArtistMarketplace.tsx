@@ -10,9 +10,9 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 const ARTISTS = [
-  { id: 1, name: "Marcus Steele", specialty: "Realistic & Portrait", rating: 4.9, reviews: 342, location: "London, UK", hourlyRate: 180, avatar: "MS", styles: ["Realistic", "Portrait", "Color"], portfolio: 89, verified: true },
+  { id: 1, name: "Marcus Steele", specialty: "Realistic & Portrait", rating: 4.9, reviews: 342, location: "City, Country", hourlyRate: 180, avatar: "MS", styles: ["Realistic", "Portrait", "Color"], portfolio: 89, verified: true },
   { id: 2, name: "Yuki Tanaka", specialty: "Japanese Traditional", rating: 4.8, reviews: 275, location: "Tokyo, Japan", hourlyRate: 200, avatar: "YT", styles: ["Japanese", "Traditional", "Irezumi"], portfolio: 124, verified: true },
-  { id: 3, name: "Elena Vasquez", specialty: "Watercolor & Fine Line", rating: 5.0, reviews: 198, location: "Barcelona, Spain", hourlyRate: 150, avatar: "EV", styles: ["Watercolor", "Fine Line", "Minimalist"], portfolio: 67, verified: true },
+  { id: 3, name: "Elena Vasquez", specialty: "Watercolor & Fine Line", rating: 5.0, reviews: 198, location: "City, Country", hourlyRate: 150, avatar: "EV", styles: ["Watercolor", "Fine Line", "Minimalist"], portfolio: 67, verified: true },
   { id: 4, name: "Dmitri Volkov", specialty: "Blackwork & Geometric", rating: 4.7, reviews: 412, location: "Global", hourlyRate: 160, avatar: "DV", styles: ["Blackwork", "Geometric", "Dotwork"], portfolio: 156, verified: false },
   { id: 5, name: "Priya Sharma", specialty: "Neo-Traditional", rating: 4.9, reviews: 231, location: "Mumbai, India", hourlyRate: 120, avatar: "PS", styles: ["Neo-Traditional", "Color", "Illustrative"], portfolio: 93, verified: true },
   { id: 6, name: "James Carter", specialty: "Biomechanical", rating: 4.8, reviews: 167, location: "New York, USA", hourlyRate: 220, avatar: "JC", styles: ["Biomechanical", "Surrealist", "3D"], portfolio: 78, verified: true },
