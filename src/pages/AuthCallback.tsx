@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import type { EmailOtpType } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,14 +40,14 @@ export default function AuthCallback() {
         } else if (tokenHash && type) {
           const { error } = await supabase.auth.verifyOtp({
             token_hash: tokenHash,
-            type: type as any,
+            type: type as EmailOtpType,
           });
           if (error) throw error;
         } else if (token && type) {
           const { error } = await supabase.auth.verifyOtp({
             token,
             email,
-            type: type as any,
+            type: type as EmailOtpType,
           });
           if (error) throw error;
         } else {
@@ -66,10 +67,11 @@ export default function AuthCallback() {
             navigate("/", { replace: true });
           }
         }
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (cancelled) return;
         console.error("[auth-callback]", e);
-        setError(e?.message || "This link is invalid or has expired.");
+        const message = e instanceof Error ? e.message : "This link is invalid or has expired.";
+        setError(message);
         setWorking(false);
       }
     })();

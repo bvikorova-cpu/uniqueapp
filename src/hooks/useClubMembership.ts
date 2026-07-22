@@ -3,6 +3,21 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type ClubTier = "digital" | "physical";
 
+export interface ClubShippingAddressFields {
+  line1?: string | null;
+  line2?: string | null;
+  city?: string | null;
+  postal_code?: string | null;
+  state?: string | null;
+  country?: string | null;
+}
+
+export interface ClubShippingAddress extends ClubShippingAddressFields {
+  name?: string | null;
+  phone?: string | null;
+  address?: ClubShippingAddressFields | null;
+}
+
 export interface ClubMembership {
   id: string;
   user_id: string;
@@ -12,7 +27,7 @@ export interface ClubMembership {
   is_founding: boolean;
   current_period_end: string | null;
   shipping_status: "not_applicable" | "pending" | "shipped" | "delivered";
-  shipping_address: any;
+  shipping_address: ClubShippingAddress | null;
   recipient_name: string | null;
   phone: string | null;
   shipping_note: string | null;
@@ -21,6 +36,14 @@ export interface ClubMembership {
   delivered_at: string | null;
   card_pdf_url: string | null;
   started_at: string;
+}
+
+interface CheckClubStatusResponse {
+  membership: ClubMembership | null;
+}
+
+interface CheckoutUrlResponse {
+  url?: string;
 }
 
 interface StartCheckoutOptions {
@@ -62,9 +85,9 @@ export function useClubMembership() {
         setMembership(null);
         return;
       }
-      const { data, error } = await supabase.functions.invoke("check-club-status");
+      const { data, error } = await supabase.functions.invoke<CheckClubStatusResponse>("check-club-status");
       if (error) throw error;
-      setMembership((data as any)?.membership ?? null);
+      setMembership(data?.membership ?? null);
     } catch (e) {
       console.error("[useClubMembership]", e);
       setMembership(null);
@@ -78,22 +101,22 @@ export function useClubMembership() {
   }, [refresh]);
 
   const startCheckout = useCallback(async (tier: ClubTier, options?: StartCheckoutOptions) => {
-    const { data, error } = await supabase.functions.invoke("create-club-checkout", {
+    const { data, error } = await supabase.functions.invoke<CheckoutUrlResponse>("create-club-checkout", {
       body: { tier, referralCode: options?.referralCode },
     });
     if (error) throw error;
-    const url = (data as any)?.url;
+    const url = data?.url;
     if (!url) throw new Error("Stripe checkout URL was not returned.");
     if (options?.open !== false) {
       openStripeCheckout(url, options?.targetWindow);
     }
-    return url as string;
+    return url;
   }, []);
 
   const openBillingPortal = useCallback(async () => {
-    const { data, error } = await supabase.functions.invoke("billing-portal");
+    const { data, error } = await supabase.functions.invoke<CheckoutUrlResponse>("billing-portal");
     if (error) throw error;
-    if ((data as any)?.url) window.location.href = (data as any).url;
+    if (data?.url) window.location.href = data.url;
   }, []);
 
   const isMember = membership?.status === "active";

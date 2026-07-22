@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useIdleLogout } from '@/hooks/useIdleLogout';
@@ -9,15 +9,21 @@ import { getPendingReturnTo } from '@/lib/pendingAction';
 
 export type VerificationTier = 'none' | 'verified' | 'plus' | 'pro';
 
+type ProfileVerificationRow = {
+  verification_tier: VerificationTier | null;
+  verification_expires_at: string | null;
+};
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error: AuthError | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   loading: boolean;
   verificationTier: VerificationTier;
 }
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -67,11 +73,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .from('profiles')
         .select('verification_tier, verification_expires_at')
         .eq('id', uid)
-        .single();
+        .single<ProfileVerificationRow>();
       if (!error && data?.verification_tier) {
         applyTier(
           data.verification_tier as VerificationTier,
-          (data as any).verification_expires_at ?? null,
+          data.verification_expires_at ?? null,
         );
       } else {
         applyTier('none', null);
@@ -80,6 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       applyTier('none', null);
     }
   };
+
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -115,9 +122,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const channel = supabase
       .channel('profile-verification')
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` }, (payload) => {
-        const newTier = (payload.new as any)?.verification_tier as VerificationTier | undefined;
-        const newExpiry = (payload.new as any)?.verification_expires_at as string | null | undefined;
-        if (newTier) applyTier(newTier, newExpiry ?? null);
+        const row = payload.new as Partial<ProfileVerificationRow> | null;
+        const newTier = row?.verification_tier ?? undefined;
+        const newExpiry = row?.verification_expires_at ?? null;
+        if (newTier) applyTier(newTier, newExpiry);
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };

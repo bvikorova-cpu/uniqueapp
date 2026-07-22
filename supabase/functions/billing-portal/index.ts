@@ -34,9 +34,10 @@ serve(async (req) => {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (e: any) {
-    console.error("[billing-portal]", e?.message);
-    return new Response(JSON.stringify({ error: e?.message ?? "error" }), {
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "error";
+    console.error("[billing-portal]", message);
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
