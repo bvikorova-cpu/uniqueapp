@@ -779,9 +779,9 @@ export default function SkillSwap() {
                     <div className="flex items-center gap-3">
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                       <div>
-                        <p className="font-bold text-sm">Lifetime Access Active</p>
+                        <p className="font-bold text-sm">Skill Swap Membership Active</p>
                         <p className="text-xs text-muted-foreground">
-                          One-time €1 entry paid • Full access forever • 0% commission on swaps
+                          €1/month • Full access • 0% commission on swaps • Cancel anytime
                         </p>
                       </div>
                     </div>
@@ -797,8 +797,8 @@ export default function SkillSwap() {
                       </div>
                       <div>
                         <h2 className="text-2xl font-black">Join Skill Swap</h2>
-                        <div className="text-4xl font-black text-primary mt-2">€1<span className="text-base font-medium text-muted-foreground"> one-time entry</span></div>
-                        <p className="text-xs text-muted-foreground mt-1">Lifetime access • No monthly fees • 0% commission</p>
+                        <div className="text-4xl font-black text-primary mt-2">€1<span className="text-base font-medium text-muted-foreground">/month</span></div>
+                        <p className="text-xs text-muted-foreground mt-1">Cancel anytime • 0% commission on swaps</p>
                       </div>
                       <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
                         {[
@@ -813,7 +813,7 @@ export default function SkillSwap() {
                         ))}
                       </div>
                       <Button onClick={handleSubscribe} size="lg" className="w-full max-w-md">
-                        <Sparkles className="mr-2 h-4 w-4" /> Pay €1 & Unlock Forever
+                        <Sparkles className="mr-2 h-4 w-4" /> Subscribe €1/month
                       </Button>
                     </div>
                   </Card>
