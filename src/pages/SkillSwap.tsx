@@ -791,10 +791,9 @@ export default function SkillSwap() {
                     <div className="flex items-center gap-3">
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                       <div>
-                        <p className="font-bold text-sm">Premium Active</p>
+                        <p className="font-bold text-sm">Lifetime Access Active</p>
                         <p className="text-xs text-muted-foreground">
-                          {subscription.subscriptionEnd && `Valid until ${new Date(subscription.subscriptionEnd).toLocaleDateString()}`}
-                          {" • "}Full access to all features
+                          One-time €1 entry paid • Full access forever • 0% commission on swaps
                         </p>
                       </div>
                     </div>
