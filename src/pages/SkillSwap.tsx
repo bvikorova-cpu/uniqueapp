@@ -215,7 +215,7 @@ const HOW_IT_WORKS = [
 export default function SkillSwap() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { subscription, loading, createCheckout } = useSkillSwap();
+  const { subscription, loading, createCheckout, checkSubscription } = useSkillSwap();
   const [offerings, setOfferings] = useState<SkillOffering[]>([]);
   const [totalOfferings, setTotalOfferings] = useState(0);
   const [showEditDialog, setShowEditDialog] = useState(false);
