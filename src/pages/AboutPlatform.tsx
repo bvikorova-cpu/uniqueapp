@@ -444,6 +444,55 @@ const CATEGORIES: Category[] = [
       { path: "/fundraising/talent", title: "Talent Sponsorship (10%)", icon: Star, blurb: "Sponsor emerging talent — highest creator support.", features: ["Talent matching", "Recurring", "Approval flow", "Stripe Connect", "Mentorship", "Progress reports"], details: "Sponsor emerging talent — recurring or one-time funding for creators, athletes, artists pursuing their craft. Includes mentorship matching, approval flow for sponsors and detailed progress reports from talents. 10% covers full creator support stack.", pricing: "10% platform fee (covers full support) • Stripe fees separate", capabilities: ["Talent matching algorithm", "Recurring sponsorship", "Sponsor approval flow", "Mentorship matching", "Progress report templates", "Stripe Connect to talent", "Sponsor dashboard", "Public sponsor wall"] },
     ],
   },
+  {
+    id: "membership",
+    title: "Membership & Identity",
+    icon: Crown,
+    accent: "text-yellow-500",
+    intro: "Premium memberships, verified identity and subscription management — the paid backbone of Unique.",
+    sections: [
+      {
+        path: "/club", title: "Unique VIP Club", icon: Crown,
+        blurb: "Digital or physical membership card with lifetime perks, AI credits and Good Fund support.",
+        features: ["Digital €20 / Physical €30", "€1.50/mo recurring", "Founding 1,000 status", "10% Good Fund", "Monthly AI credits", "Gold ring badge"],
+        details: "Join the Unique VIP Club with a one-time entry fee (€20 digital, €30 physical shipped card) plus €1.50/month recurring. 10% of every payment funds the Unique Good Fund supporting community causes. Members get monthly AI credits, exclusive badges, priority support and a gold-ring MemberBadge visible across the platform. The first 1,000 members get permanent Founding status.",
+        pricing: "€20 (digital) or €30 (physical) entry + €1.50/mo • 30-day trial on recurring • 10% to Good Fund",
+        capabilities: ["Digital or shipped physical card", "Gold-ring MemberBadge everywhere", "Founding 1,000 lifetime badge", "Monthly AI credit drops", "Shipping address management", "Referral rewards (€5 credit)", "Good Fund contribution tracking", "Stripe Billing Portal access"],
+      },
+      {
+        path: "/verified", title: "Unique Verified", icon: Shield,
+        blurb: "Three verification tiers with colored rings, boosted reach and creator perks.",
+        features: ["Blue €15/mo", "Gold €40/mo", "Purple €150/mo", "Auto-renewal control", "Boosted reach", "Priority support"],
+        details: "Get verified on Unique with three tiers. Blue (€15/mo) confirms real identity. Gold (€40/mo) adds creator perks and boosted reach. Purple (€150/mo) is the enterprise/celebrity tier with full white-glove support. Each tier shows a distinct colored ring on your avatar. Auto-renewal with in-app cancel and instant renewal after expiration.",
+        pricing: "Blue €15/mo • Gold €40/mo • Purple €150/mo • Cancel anytime",
+        capabilities: ["Three colored ring tiers", "Identity verification", "Boosted feed reach (Gold+)", "Priority support (Purple)", "Auto-renewal via Stripe", "One-click renewal after expiry", "Verified-only rooms access", "Anti-impersonation shield"],
+      },
+      {
+        path: "/subscriptions", title: "Subscription Manager", icon: Wallet,
+        blurb: "Manage every subscription — Club, Verified, Fan Clubs, hub premiums — from one dashboard.",
+        features: ["All subscriptions in one view", "Cancel or change plan", "Invoice history", "Stripe Billing Portal", "Renewal reminders", "Payment method update"],
+        details: "Central dashboard for every recurring payment on Unique — VIP Club, Verified tiers, Fan Club memberships, Skill Swap, hub premiums (Wellness, Fit & Slim, Nutrition, Escape Rooms). Cancel, change plan, update payment method or download invoices directly from your account. Powered by the Stripe Customer Billing Portal.",
+        pricing: "Free to manage • Underlying subscriptions billed by each product",
+        capabilities: ["Unified subscription list", "One-click cancel", "Plan upgrade / downgrade", "Invoice PDF downloads", "Payment method updates", "Renewal reminder emails", "Failed-payment recovery", "Stripe Billing Portal deep-link"],
+      },
+      {
+        path: "/creators", title: "Creators & Fan Clubs", icon: Star,
+        blurb: "Real Stripe-powered Fan Club subscriptions with tiered locked content and creator payouts.",
+        features: ["85% to creator / 15% platform", "Tiered locked content", "PPV posts", "Paid DMs", "Gift Wall", "Auto membership sync"],
+        details: "Discover creators and subscribe to their Fan Club tiers via real Stripe subscriptions. Creators build tiered content — public, subscriber-only, PPV posts, paid DMs. Live streaming status, weekly challenges, AI deal finder and audience insights included. Revenue split is 85% creator / 15% platform, with automated membership re-sync and Stripe Connect payouts to creators.",
+        pricing: "Subscription price set by creator • 85/15 split • Tips 90/10",
+        capabilities: ["Real Stripe subscriptions", "Multiple tier support", "PPV post unlocks", "Paid DMs", "Gift Wall with leaderboards", "Live streaming status", "Audience insight dashboard", "Stripe Connect creator payouts"],
+      },
+      {
+        path: "/doctors", title: "Doctor Bookings", icon: Activity,
+        blurb: "Book appointments with verified doctors — 85% payout, 24h refund window, no video calls required.",
+        features: ["Appointment booking only", "10-90 min slot lengths", "85% doctor payout", "15% platform fee", "24h refund window", "Verified doctors"],
+        details: "Book real appointments with verified doctors. Each doctor sets their own slot length (10 to 90 minutes) and availability. Patients pay upfront, doctors receive 85% via Stripe Connect after visit confirmation. 24-hour refund window before the appointment. This is appointment scheduling only — no video consultations required.",
+        pricing: "Appointment fee set by doctor • 15% platform fee • Refund up to 24h before visit",
+        capabilities: ["Verified doctor directory", "Availability calendar", "Slot length 10-90 min", "Stripe upfront payment", "Automated Stripe Connect payout", "24h refund policy", "Booking confirmation emails", "Doctor dashboard with earnings"],
+      },
+    ],
+  },
 ];
 
 const HERO_STATS = [
