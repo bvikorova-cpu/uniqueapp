@@ -279,6 +279,7 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   challenge_pro: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
   challenge_top: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
   exclusive: { success: "/exclusive?success=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/exclusive?canceled=true" },
+  skill_swap: { success: "/skill-swap?entry=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/skill-swap?entry=canceled" },
 };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
