@@ -96,7 +96,7 @@ export default function HorseRacing() {
     totalHorses: horses?.length || 0,
     totalRaces: horses?.reduce((sum, h) => sum + (h.total_races || 0), 0) || 0,
     activeRaces: races?.length || 0,
-    onlineTrainers: Math.floor(Math.random() * 50) + 10,
+    onlineTrainers: 0,
   };
 
   const renderDashboard = () => (

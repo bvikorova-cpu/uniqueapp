@@ -51,7 +51,7 @@ const CharacterArena = () => {
         totalCharacters: chars.count || 0,
         totalBattles: battles.count || 0,
         activeTournaments: tournaments.count || 0,
-        onlineWarriors: Math.floor(Math.random() * 500) + 100,
+        onlineWarriors: 0,
       };
     },
   });
