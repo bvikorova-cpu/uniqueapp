@@ -2,6 +2,7 @@ import { useLocation, Link, Navigate } from "react-router-dom";
 import { useEffect, useMemo } from "react";
 import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 // Legacy / alias paths that should redirect to the canonical premium page
 // instead of showing a 404. Keep keys lowercase.
