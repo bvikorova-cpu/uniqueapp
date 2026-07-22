@@ -5,10 +5,8 @@
 // inputs always yield the same result — no client-side RNG.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const OPPONENTS = [
   { name: "NeonWraith", power: 245 },
@@ -23,8 +21,7 @@ const PRIZES: Record<string, number> = { "1v1": 3.5, tournament: 30, survival: 1
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 // Deterministic RNG seeded by SHA-256 of the inputs. Returns a stream of
@@ -58,8 +55,7 @@ Deno.serve(async (req) => {
     if (!authHeader) return json({ error: "Not authenticated" }, 401);
 
     const auth = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData } = await auth.auth.getUser();
     const user = userData?.user;
     if (!user) return json({ error: "Not authenticated" }, 401);
@@ -123,16 +119,14 @@ Deno.serve(async (req) => {
 
     const { data: result, error } = await admin
       .from("holographic_battle_results")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         mode,
         opponent_name: opponent.name,
         outcome,
         user_power: userPower,
         opponent_power: opponent.power,
         rewards_eur: rewards,
-        stripe_session_id: sessionId,
-      })
+        stripe_session_id: sessionId })
       .select()
       .single();
     if (error) throw error;

@@ -117,8 +117,7 @@ export default function KitchenStarsBattles() {
           ? "Convert to JPG, PNG or WEBP before uploading."
           : looksLikeVideo
           ? "Convert to MP4, WEBM or MOV (H.264) before uploading."
-          : "Upload an image (JPG/PNG/WEBP, ≤8 MB) or a video (MP4/WEBM/MOV, ≤50 MB).",
-      };
+          : "Upload an image (JPG/PNG/WEBP, ≤8 MB) or a video (MP4/WEBM/MOV, ≤50 MB)." };
     }
 
     const max = isImage ? MAX_IMAGE : MAX_VIDEO;
@@ -130,8 +129,7 @@ export default function KitchenStarsBattles() {
         reason: `Your ${isImage ? "image" : "video"} is ${formatBytes(file.size)} — that's ${formatBytes(overBy)} over the ${isImage ? "8 MB" : "50 MB"} limit.`,
         suggestion: isImage
           ? "Compress with squoosh.app or tinypng.com, or resize to ≤2000px on the long edge."
-          : "Trim length, lower resolution to 720p, or re-encode at a lower bitrate (e.g. with HandBrake).",
-      };
+          : "Trim length, lower resolution to 720p, or re-encode at a lower bitrate (e.g. with HandBrake)." };
     }
 
     if (file.size === 0) {
@@ -148,8 +146,7 @@ export default function KitchenStarsBattles() {
       toast({
         title: "You already entered this battle",
         description: `Your dish "${existing.dish_title}" is already submitted. Each chef can submit only ONE dish per battle to keep voting fair. Wait for the next battle to compete again.`,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setEntryFor(null);
       return;
     }
@@ -195,20 +192,16 @@ export default function KitchenStarsBattles() {
       setUploading(false);
     }
 
-    const { error } = await supabase.from("kitchen_battle_participants").insert({
-      battle_id: battleId, user_id: userId, dish_title: dishTitle.trim(),
+    const { error } = await supabase.from("kitchen_battle_participants").insert({ battle_id: battleId, user_id: userId, dish_title: dishTitle.trim(),
       description: dishDesc.trim() || null, image_url: imageUrl, video_url: videoUrl,
-      media_type: mediaType, media_size: mediaSize, media_mime: mediaMime,
-    });
-    if (error) {
-      const isDup = (error as any).code === "23505" || /duplicate|unique/i.test(error.message);
+      media_type: mediaType, media_size: mediaSize, media_mime: mediaMime });
+    if (error) { const isDup = (error as any).code === "23505" || /duplicate|unique/i.test(error.message);
       toast({
         title: isDup ? "You already entered this battle" : "Error",
         description: isDup
           ? "Each chef can submit only ONE dish per battle. Refresh to see your existing entry."
           : error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       if (isDup) { setEntryFor(null); load(); }
       return;
     }
@@ -219,8 +212,7 @@ export default function KitchenStarsBattles() {
 
   const vote = async (battleId: string, participantId: string, voteType: "like" | "dislike") => {
     const { data, error } = await supabase.functions.invoke("kitchen-battle-vote", {
-      body: { battleId, participantId, voteType },
-    });
+      body: { battleId, participantId, voteType } });
     if (error || data?.error) {
       toast({ title: "Vote failed", description: error?.message || data?.error, variant: "destructive" });
       return;
@@ -233,9 +225,7 @@ export default function KitchenStarsBattles() {
     const key = `${battleId}:${participantId || ""}`;
     const content = (commentDraft[key] || "").trim();
     if (!content) return;
-    const { error } = await supabase.from("kitchen_battle_comments").insert({
-      battle_id: battleId, participant_id: participantId || null, user_id: userId, content,
-    });
+    const { error } = await supabase.from("kitchen_battle_comments").insert({ battle_id: battleId, participant_id: participantId || null, user_id: userId, content });
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     setCommentDraft(prev => ({ ...prev, [key]: "" }));
     load();

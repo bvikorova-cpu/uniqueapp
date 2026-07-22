@@ -49,8 +49,7 @@ export const CrystalTimerTool = () => {
       user_id: session.user.id,
       duration_seconds: elapsed,
       frequency_type: `${chakra.name} (${chakra.frequency} Hz)`,
-      chakra_focus: chakra.name,
-    });
+      chakra_focus: chakra.name });
     await (supabase as any).rpc("increment_crystal_stat", { p_user_id: session.user.id, p_stat: "meditations", p_value: 1 });
   };
 

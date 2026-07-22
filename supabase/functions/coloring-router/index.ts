@@ -2,23 +2,18 @@
 // AI actions deduct credits from coloring_credits.
 import { createClient } from "npm:@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const COST: Record<string, number> = {
-  "ai.colorByNumber": 5,
+const COST: Record<string, number> = { "ai.colorByNumber": 5,
   "ai.palette": 3,
   "ai.example": 3,
-  "ai.recolor": 4,
-};
+  "ai.recolor": 4 };
 
 function json(body: any, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 async function callAI(prompt: string, system?: string) {
@@ -32,9 +27,7 @@ async function callAI(prompt: string, system?: string) {
       messages: [
         ...(system ? [{ role: "system", content: system }] : []),
         { role: "user", content: prompt },
-      ],
-    }),
-  });
+      ] }) });
   if (res.status === 429) throw new Error("rate_limited");
   if (res.status === 402) throw new Error("credits_exhausted");
   if (!res.ok) throw new Error("ai_failed");
@@ -82,25 +75,21 @@ async function bumpStreak(supabase: any, userId: string, xpGain = 10) {
     badges = cur.badges ?? [];
     if (current === 7 && !badges.includes("week_warrior")) badges.push("week_warrior");
     if (current === 30 && !badges.includes("month_master")) badges.push("month_master");
-    await supabase.from("coloring_streaks").update({
-      current_streak: current,
+    await supabase.from("coloring_streaks").update({ current_streak: current,
       longest_streak: longest,
       last_painted_on: today,
       xp,
       level,
       badges,
-      updated_at: new Date().toISOString(),
-    }).eq("user_id", userId);
-  } else {
-    await supabase.from("coloring_streaks").insert({
+      updated_at: new Date().toISOString() }).eq("user_id", userId);
+  } else { await supabase.from("coloring_streaks").insert({
       user_id: userId,
       current_streak: 1,
       longest_streak: 1,
       last_painted_on: today,
       xp,
       level,
-      badges,
-    });
+      badges });
   }
   return { current_streak: current, longest_streak: longest, xp, level, badges };
 }
@@ -113,8 +102,7 @@ Deno.serve(async (req) => {
     const SUPABASE_SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const authHeader = req.headers.get("Authorization") ?? "";
     const userClient = createClient(SUPABASE_URL, SUPABASE_ANON, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE);
 
     const { data: { user } } = await userClient.auth.getUser();
@@ -181,8 +169,7 @@ Deno.serve(async (req) => {
           is_public: !!body.is_public,
           remix_of: body.remix_of ?? null,
           contest_id: body.contest_id ?? null,
-          license: body.license ?? "original",
-        };
+          license: body.license ?? "original" };
         const { data, error } = await admin.from("coloring_artworks").insert(insert).select().single();
         if (error) throw error;
         const streak = await bumpStreak(admin, user.id, 10);
@@ -291,23 +278,19 @@ Deno.serve(async (req) => {
             { id: "ocean", name: "Ocean waves", url: "https://cdn.pixabay.com/audio/2022/10/20/audio_b9b3a7c6bf.mp3" },
             { id: "forest", name: "Forest birds", url: "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3" },
             { id: "lofi", name: "Lo-fi calm", url: "https://cdn.pixabay.com/audio/2022/03/24/audio_07b2a04be3.mp3" },
-          ],
-        });
+          ] });
       }
       // 18. Print-on-demand — checkout
       case "pod.checkout": {
-        const { data: order, error } = await admin.from("coloring_pod_orders").insert({
-          user_id: user.id,
+        const { data: order, error } = await admin.from("coloring_pod_orders").insert({ user_id: user.id,
           artwork_id: body.artwork_id ?? null,
           product_type: body.product_type,
           amount_eur: body.amount_eur ?? 1900,
-          status: "pending",
-        }).select().single();
+          status: "pending" }).select().single();
         if (error) throw error;
         // Reuse generic create-checkout for credits/products
         const { data: chk, error: chkErr } = await admin.functions.invoke("create-checkout", {
-          body: { product_type: "coloring_pod", order_id: order.id, amount_eur: order.amount_eur },
-        });
+          body: { product_type: "coloring_pod", order_id: order.id, amount_eur: order.amount_eur } });
         if (chkErr) return json({ order, checkout_url: null, warning: "Configure POD checkout in create-checkout" });
         return json({ order, checkout_url: chk?.url ?? null });
       }

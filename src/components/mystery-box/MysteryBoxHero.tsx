@@ -23,14 +23,11 @@ const useLiveStats = () => {
         supabase.from("user_mystery_boxes").select("user_id", { count: "exact", head: true }).gte("purchased_at", since),
       ]);
       const boxesOpened = opened.count || 0;
-      return {
-        boxesOpened,
+      return { boxesOpened,
         activePlayers: recent.count || 0,
         legendaryDrops: rewards.count || 0,
-        jackpotPool: Math.round(boxesOpened * 0.25),
-      };
-    },
-  });
+        jackpotPool: Math.round(boxesOpened * 0.25) };
+    } });
   return data ?? { boxesOpened: 0, activePlayers: 0, legendaryDrops: 0, jackpotPool: 0 };
 };
 
@@ -94,12 +91,11 @@ export const MysteryBoxHero = () => {
 
             <h1
               className="text-4xl md:text-7xl font-black mb-3 leading-tight"
-              style={{
+              style={ {
                 background: "linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFF8DC 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                filter: "drop-shadow(0 0 30px rgba(255,215,0,0.4))",
-              }}
+                filter: "drop-shadow(0 0 30px rgba(255,215,0,0.4))" }}
             >
               Mystery Box
             </h1>

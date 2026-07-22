@@ -6,10 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  ArrowLeft, Briefcase, DollarSign, Users, Clock, CheckCircle,
-  Send, Loader2, Filter, Star, Sparkles,
-} from "lucide-react";
+import { ArrowLeft, Briefcase, DollarSign, Users, Clock, CheckCircle,
+  Send, Loader2, Filter, Star, Sparkles } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -45,12 +43,10 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
     queryKey: ["brand-deal-finder", "list"],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("brand-deal-finder", {
-        body: { action: "list" },
-      });
+        body: { action: "list" } });
       if (error) throw error;
       return data as { deals: BrandDeal[]; appliedDealIds: string[] };
-    },
-  });
+    } });
 
   const deals: BrandDeal[] = data?.deals ?? [];
   const appliedDealIds = new Set(data?.appliedDealIds ?? []);
@@ -58,8 +54,7 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
   const generate = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke("brand-deal-finder", {
-        body: { action: "generate" },
-      });
+        body: { action: "generate" } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       return data;
@@ -67,8 +62,7 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
     onSuccess: (d: any) => {
       toast({
         title: "✨ Fresh AI deals generated",
-        description: `${d.deals?.length ?? 0} matched to your profile. ${d.creditsRemaining ?? 0} credits left.`,
-      });
+        description: `${d.deals?.length ?? 0} matched to your profile. ${d.creditsRemaining ?? 0} credits left.` });
       qc.invalidateQueries({ queryKey: ["brand-deal-finder"] });
     },
     onError: (e: any) => {
@@ -77,21 +71,18 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
         toast({
           title: "Not enough credits",
           description: `You need ${GENERATE_COST} AI credits to generate.`,
-          variant: "destructive",
-        });
+          variant: "destructive" });
       } else {
         toast({ title: "Error", description: msg, variant: "destructive" });
       }
-    },
-  });
+    } });
 
   const applyForDeal = useMutation({
     mutationFn: async () => {
       if (!selectedDeal) throw new Error("Select a deal");
       if (pitch.trim().length < 20) throw new Error("Pitch must be at least 20 characters");
       const { data, error } = await supabase.functions.invoke("brand-deal-finder", {
-        body: { action: "apply", dealId: selectedDeal.id, pitch },
-      });
+        body: { action: "apply", dealId: selectedDeal.id, pitch } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
     },
@@ -101,20 +92,17 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
       setPitch("");
       qc.invalidateQueries({ queryKey: ["brand-deal-finder"] });
     },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   const filteredDeals = filterCategory ? deals.filter(d => d.category === filterCategory) : deals;
   const categories = [...new Set(deals.map(d => d.category))];
 
-  const typeColors: Record<string, string> = {
-    "Sponsored Post": "bg-blue-500/10 text-blue-500 border-blue-500/20",
+  const typeColors: Record<string, string> = { "Sponsored Post": "bg-blue-500/10 text-blue-500 border-blue-500/20",
     "Product Review": "bg-green-500/10 text-green-500 border-green-500/20",
     "Brand Ambassador": "bg-purple-500/10 text-purple-500 border-purple-500/20",
     "Challenge Campaign": "bg-pink-500/10 text-pink-500 border-pink-500/20",
     "Affiliate Partnership": "bg-amber-500/10 text-amber-500 border-amber-500/20",
-    "Sponsored Stream": "bg-red-500/10 text-red-500 border-red-500/20",
-  };
+    "Sponsored Stream": "bg-red-500/10 text-red-500 border-red-500/20" };
 
   return (
     <>

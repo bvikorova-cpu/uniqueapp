@@ -77,13 +77,11 @@ export function ExpertTips() {
 
       if (error) throw error;
       setPredictions((data as any) || []);
-    } catch (error: any) {
-      console.error('Error fetching predictions:', error);
+    } catch (error: any) { console.error('Error fetching predictions:', error);
       toast({
         title: "Error",
         description: getUserFriendlyErrorMessage(error, "Failed to load expert tips"),
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -114,19 +112,16 @@ export function ExpertTips() {
     try {
       setPurchasing(predictionId);
       const { data, error } = await supabase.functions.invoke('purchase-tip', {
-        body: { predictionId },
-      });
+        body: { predictionId } });
 
       if (error) throw error;
       if (data?.url) {
         window.open(data.url, '_blank');
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: getUserFriendlyErrorMessage(error, "Failed to purchase tip"),
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setPurchasing(null);
     }

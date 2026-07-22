@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -42,13 +40,11 @@ serve(async (req) => {
     const totalPoints = basePoints + timeBonus;
 
     // Save answer
-    await supabase.from("brain_duel_answers").insert({
-      match_id,
+    await supabase.from("brain_duel_answers").insert({ match_id,
       question_id,
       player_id: user.id,
       answer: answer || "timeout",
-      is_correct: isCorrect,
-    });
+      is_correct: isCorrect });
 
     // Update match score
     const { data: match } = await supabase
@@ -67,9 +63,7 @@ serve(async (req) => {
     const aiPoints = aiCorrect ? 100 + Math.floor(Math.random() * 80) : 0;
     const aiNewScore = (isPlayer1 ? match.player2_score : match.player1_score) + aiPoints;
 
-    const updateData: any = {
-      current_question_index: match.current_question_index + 1,
-    };
+    const updateData: any = { current_question_index: match.current_question_index + 1 };
     if (isPlayer1) {
       updateData.player1_score = newScore;
       updateData.player2_score = aiNewScore;
@@ -80,20 +74,16 @@ serve(async (req) => {
 
     await supabase.from("brain_duel_matches").update(updateData).eq("id", match_id);
 
-    return new Response(JSON.stringify({
-      is_correct: isCorrect,
+    return new Response(JSON.stringify({ is_correct: isCorrect,
       correct_answer: question.correct_answer,
       points_earned: totalPoints,
       new_score: newScore,
       opponent_score: aiNewScore,
-      ai_was_correct: aiCorrect,
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      ai_was_correct: aiCorrect }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("Submit answer error:", e);
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

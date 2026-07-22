@@ -75,8 +75,7 @@ export default function OrderConversation({ offeringId, orderId, otherUserId }: 
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages.length]);
 
-  const send = async () => {
-    if (!user) return;
+  const send = async () => { if (!user) return;
     const value = text.trim();
     if (value.length < 1) return;
     setSending(true);
@@ -84,8 +83,7 @@ export default function OrderConversation({ offeringId, orderId, otherUserId }: 
       offering_id: offeringId,
       sender_id: user.id,
       receiver_id: otherUserId,
-      message: value,
-    };
+      message: value };
     if (orderId) payload.order_id = orderId;
     const { error } = await supabase.from("marketplace_responses").insert(payload);
     setSending(false);

@@ -5,10 +5,8 @@ import { HeartPulse } from "lucide-react";
  * Bilingual-safe (EN default) "How it works" explainer required by
  * mem://preferences/how-it-works-coverage for every new health module.
  */
-export default function HowItWorksHealth({
-  title,
-  steps,
-}: {
+export default function HowItWorksHealth({ title,
+  steps }: {
   title: string;
   steps: string[];
 }) {

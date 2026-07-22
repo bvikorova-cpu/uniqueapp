@@ -43,12 +43,10 @@ export function StreakMultiplierCard() {
           description:
             missed > 0
               ? `You missed ${missed} day${missed === 1 ? "" : "s"}. Fresh start: 1 day 🔥 (+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"})`
-              : `Fresh start: 1 day 🔥 (+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"})`,
-        });
+              : `Fresh start: 1 day 🔥 (+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"})` });
       } else {
         toast.success(`+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"}`, {
-          description: `Streak: ${res.streak} days 🔥`,
-        });
+          description: `Streak: ${res.streak} days 🔥` });
       }
     }
   };

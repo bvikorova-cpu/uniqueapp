@@ -39,20 +39,16 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
+  DialogFooter } from "@/components/ui/dialog";
 import { WallPostActions } from "@/components/wall/WallPostActions";
 import { GroupRulesEditor } from "@/components/groups/GroupRulesEditor";
 import { GroupInsightsPanel } from "@/components/groups/GroupInsightsPanel";
@@ -93,12 +89,10 @@ export default function GroupDetail() {
     const next = !notifyEnabled;
     setNotifyEnabled(next);
     localStorage.setItem(`group-notify-${groupId}`, next ? "on" : "off");
-    toast({
-      title: next ? "Notifications enabled" : "Notifications muted",
+    toast({ title: next ? "Notifications enabled" : "Notifications muted",
       description: next
         ? "You'll be notified about new posts in this group."
-        : "You won't receive notifications from this group.",
-    });
+        : "You won't receive notifications from this group." });
   };
 
   const handleInvite = () => {
@@ -117,8 +111,7 @@ export default function GroupDetail() {
     setInviteEmail("");
     toast({
       title: "Invite ready",
-      description: `Email draft opened for ${email}.`,
-    });
+      description: `Email draft opened for ${email}.` });
   };
 
   const themeOptions = [
@@ -134,32 +127,27 @@ export default function GroupDetail() {
     localStorage.setItem(`group-theme-${groupId}`, id);
     toast({
       title: "Theme updated",
-      description: `Group theme set to ${id}.`,
-    });
+      description: `Group theme set to ${id}.` });
   };
 
   const toggleAchievements = () => {
     const next = !achievementsEnabled;
     setAchievementsEnabled(next);
     localStorage.setItem(`group-achievements-${groupId}`, next ? "on" : "off");
-    toast({
-      title: next ? "Achievements enabled" : "Achievements disabled",
+    toast({ title: next ? "Achievements enabled" : "Achievements disabled",
       description: next
         ? "Members can now earn badges for activity."
-        : "Achievements are turned off for this group.",
-    });
+        : "Achievements are turned off for this group." });
   };
 
   const toggleAnonymous = () => {
     const next = !anonymousEnabled;
     setAnonymousEnabled(next);
     localStorage.setItem(`group-anonymous-${groupId}`, next ? "on" : "off");
-    toast({
-      title: next ? "Anonymous posts enabled" : "Anonymous posts disabled",
+    toast({ title: next ? "Anonymous posts enabled" : "Anonymous posts disabled",
       description: next
         ? "Members can now post anonymously."
-        : "All posts will show authors.",
-    });
+        : "All posts will show authors." });
   };
 
   const { data: user } = useQuery({
@@ -167,8 +155,7 @@ export default function GroupDetail() {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: group, isLoading: isLoadingGroup } = useQuery({
     queryKey: ["group", groupId],
@@ -181,8 +168,7 @@ export default function GroupDetail() {
       if (error) throw error;
       return data;
     },
-    enabled: !!groupId,
-  });
+    enabled: !!groupId });
 
   const { data: membership } = useQuery({
     queryKey: ["group-membership", groupId, user?.id],
@@ -196,8 +182,7 @@ export default function GroupDetail() {
         .maybeSingle();
       return data;
     },
-    enabled: !!user && !!groupId,
-  });
+    enabled: !!user && !!groupId });
 
   const { data: members = [] } = useQuery({
     queryKey: ["group-members", groupId],
@@ -216,8 +201,7 @@ export default function GroupDetail() {
         .order("joined_at", { ascending: false });
       return data || [];
     },
-    enabled: !!groupId,
-  });
+    enabled: !!groupId });
 
   const { data: posts = [] } = useQuery({
     queryKey: ["group-posts", groupId],
@@ -236,8 +220,7 @@ export default function GroupDetail() {
         .order("created_at", { ascending: false });
       return data || [];
     },
-    enabled: !!groupId,
-  });
+    enabled: !!groupId });
 
   const joinMutation = useMutation({
     mutationFn: async () => {
@@ -254,8 +237,7 @@ export default function GroupDetail() {
       queryClient.invalidateQueries({ queryKey: ["group-membership"] });
       queryClient.invalidateQueries({ queryKey: ["group-members"] });
       toast({ title: "Joined group!" });
-    },
-  });
+    } });
 
   const leaveMutation = useMutation({
     mutationFn: async () => {
@@ -272,20 +254,17 @@ export default function GroupDetail() {
       queryClient.invalidateQueries({ queryKey: ["group-members"] });
       toast({ title: "Left group" });
       navigate("/wall/groups");
-    },
-  });
+    } });
 
   const createPostMutation = useMutation({
     mutationFn: async () => {
       if (!user || !groupId || !postContent.trim()) throw new Error("Invalid data");
       const { error } = await supabase
         .from("posts")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           content: postContent,
           group_id: groupId,
-          image_url: postImage || null,
-        } as any);
+          image_url: postImage || null } as any);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -296,8 +275,7 @@ export default function GroupDetail() {
     },
     onError: (error: Error) => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
-    },
-  });
+    } });
 
   const updateCoverMutation = useMutation({
     mutationFn: async (coverImage: string) => {
@@ -312,8 +290,7 @@ export default function GroupDetail() {
       setIsEditingCover(false);
       setNewCoverImage(undefined);
       toast({ title: "Cover image updated!" });
-    },
-  });
+    } });
 
   const removeMemberMutation = useMutation({
     mutationFn: async (userId: string) => {
@@ -327,8 +304,7 @@ export default function GroupDetail() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group-members"] });
       toast({ title: "Member removed" });
-    },
-  });
+    } });
 
   const makeAdminMutation = useMutation({
     mutationFn: async (userId: string) => {
@@ -342,8 +318,7 @@ export default function GroupDetail() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group-members"] });
       toast({ title: "Member promoted to admin!" });
-    },
-  });
+    } });
 
   const setRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: "admin" | "moderator" | "member" }) => {
@@ -357,8 +332,7 @@ export default function GroupDetail() {
     onSuccess: (_d, vars) => {
       queryClient.invalidateQueries({ queryKey: ["group-members"] });
       toast({ title: `Role set to ${vars.role}` });
-    },
-  });
+    } });
 
   // Loading state
   if (isLoadingGroup) {

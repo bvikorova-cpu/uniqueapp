@@ -37,15 +37,13 @@ export function initSentry() {
     console.info("[Sentry] disabled — set VITE_SENTRY_DSN to enable");
     return;
   }
-  Sentry.init({
-    dsn: DSN,
+  Sentry.init({ dsn: DSN,
     environment: ENV,
     integrations: [
       Sentry.browserTracingIntegration(),
       Sentry.replayIntegration({
         maskAllText: false,
-        blockAllMedia: false,
-      }),
+        blockAllMedia: false }),
     ],
     tracesSampleRate: ENV === "production" ? 0.1 : 1.0,
     replaysSessionSampleRate: 0.0,
@@ -84,15 +82,12 @@ export function initSentry() {
           values: [
             {
               type: `SupabaseError${orig.code ? `(${orig.code})` : ""}`,
-              value: m,
-            },
-          ],
-        };
+              value: m },
+          ] };
         event.extra = { ...(event.extra || {}), supabase: orig };
       }
       return event;
-    },
-  });
+    } });
 
   initialized = true;
 }

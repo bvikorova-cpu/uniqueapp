@@ -65,14 +65,12 @@ export function BulkUploadView({ onBack }: BulkUploadViewProps) {
 
         const { data: urlData } = supabase.storage.from("stock-content").getPublicUrl(filePath);
 
-        await supabase.from("stock_content" as any).insert({
-          user_id: user.id,
+        await supabase.from("stock_content" as any).insert({ user_id: user.id,
           title: updated[i].file.name.replace(/\.[^.]+$/, ""),
           file_url: urlData.publicUrl,
           file_type: "image",
           price: 0,
-          status: "draft",
-        } as any);
+          status: "draft" } as any);
 
         updated[i].status = "success";
         updated[i].progress = 100;
@@ -87,8 +85,7 @@ export function BulkUploadView({ onBack }: BulkUploadViewProps) {
     const errorCount = updated.filter(f => f.status === "error").length;
     toast({
       title: "Bulk Upload Complete",
-      description: `${successCount} uploaded successfully${errorCount ? `, ${errorCount} failed` : ""}`,
-    });
+      description: `${successCount} uploaded successfully${errorCount ? `, ${errorCount} failed` : ""}` });
     setUploading(false);
   };
 

@@ -50,15 +50,13 @@ export const useCreatorStudioStats = (userId?: string) => {
       const growth7d = b ? ((a - b) / b) * 100 : a > 0 ? 100 : 0;
 
       const series: { date: string; posts: number; likes: number; comments: number }[] = [];
-      for (let i = 29; i >= 0; i--) {
-        const d = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
+      for (let i = 29; i >= 0; i--) { const d = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
         const day = posts.filter((p: any) => p.created_at.slice(0, 10) === d);
         series.push({
           date: d,
           posts: day.length,
           likes: day.reduce((s: number, p: any) => s + (p.likes_count || 0), 0),
-          comments: day.reduce((s: number, p: any) => s + (p.comments_count || 0), 0),
-        });
+          comments: day.reduce((s: number, p: any) => s + (p.comments_count || 0), 0) });
       }
 
       const heat = Array(24).fill(0);
@@ -71,8 +69,7 @@ export const useCreatorStudioStats = (userId?: string) => {
         .sort((x: any, y: any) => (y.likes_count + y.comments_count) - (x.likes_count + x.comments_count))
         .slice(0, 5);
 
-      return {
-        totalPosts,
+      return { totalPosts,
         totalLikes,
         totalComments,
         totalViews,
@@ -81,8 +78,6 @@ export const useCreatorStudioStats = (userId?: string) => {
         growth7d,
         series,
         topPosts,
-        hourlyHeatmap: heat,
-      };
-    },
-  });
+        hourlyHeatmap: heat };
+    } });
 };

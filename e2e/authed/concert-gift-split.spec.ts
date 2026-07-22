@@ -18,8 +18,7 @@ import { test, expect } from "@playwright/test";
 const FAKE_CONCERT_ID = "00000000-0000-0000-0000-0000000000aa";
 const FAKE_MUSICIAN_USER_ID = "00000000-0000-0000-0000-0000000000bb";
 
-const FAKE_CONCERT_ROW = {
-  id: FAKE_CONCERT_ID,
+const FAKE_CONCERT_ROW = { id: FAKE_CONCERT_ID,
   title: "Split Verification Concert",
   description: "E2E — 80/20 split",
   status: "live",
@@ -31,9 +30,7 @@ const FAKE_CONCERT_ROW = {
   musician_profiles: {
     stage_name: "Split Artist",
     user_id: FAKE_MUSICIAN_USER_ID,
-    avatar_url: null,
-  },
-};
+    avatar_url: null } };
 
 // Same platform gifts we seeded in the DB — keep in sync with public.platform_gifts.
 const FAKE_GIFTS = [
@@ -49,8 +46,7 @@ function computeSplit(priceEur: number) {
 }
 
 test.describe("Concert gift 80/20 split", () => {
-  test("panel shows 80/20, click posts correct body, math is exact", async ({ page }) => {
-    // --- Intercept Supabase REST + RPC + edge function ---
+  test("panel shows 80/20, click posts correct body, math is exact", async ({ page }) => { // --- Intercept Supabase REST + RPC + edge function ---
     let sendGiftPayload: any = null;
     let sendGiftHit = 0;
 
@@ -58,25 +54,20 @@ test.describe("Concert gift 80/20 split", () => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify(true),
-      });
+        body: JSON.stringify(true) });
     });
 
-    await page.route("**/rest/v1/live_concert_streams*", async (route) => {
-      // Return the fake concert row for GET queries by id.
+    await page.route("**/rest/v1/live_concert_streams*", async (route) => { // Return the fake concert row for GET queries by id.
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify(FAKE_CONCERT_ROW),
-      });
+        body: JSON.stringify(FAKE_CONCERT_ROW) });
     });
 
-    await page.route("**/rest/v1/platform_gifts*", async (route) => {
-      await route.fulfill({
+    await page.route("**/rest/v1/platform_gifts*", async (route) => { await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify(FAKE_GIFTS),
-      });
+        body: JSON.stringify(FAKE_GIFTS) });
     });
 
     await page.route("**/functions/v1/send-concert-gift", async (route) => {
@@ -86,14 +77,11 @@ test.describe("Concert gift 80/20 split", () => {
       } catch {
         sendGiftPayload = null;
       }
-      await route.fulfill({
-        status: 200,
+      await route.fulfill({ status: 200,
         contentType: "application/json",
         body: JSON.stringify({
           url: "about:blank#stripe-mock",
-          session_id: "cs_test_split_verify",
-        }),
-      });
+          session_id: "cs_test_split_verify" }) });
     });
 
     // Block real navigation to about:blank redirect from window.location.href

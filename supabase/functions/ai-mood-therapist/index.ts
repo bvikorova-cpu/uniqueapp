@@ -1,8 +1,6 @@
 import { requireAiCredits } from "../_shared/credit-check.ts";
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+const corsHeaders = { 'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' }
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")
 
@@ -20,8 +18,7 @@ Deno.serve(async (req) => {
     if (!messages || !Array.isArray(messages)) {
       return new Response(JSON.stringify({ error: 'Messages array required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
     const DEFAULT_PROMPT = `You are the AI Mood Therapist for the Emotion Economy Network. You analyze users' emotional portfolios and provide investment advice for emotional assets.
@@ -35,25 +32,19 @@ Your expertise includes:
 
 Keep responses concise, engaging, and use emoji. Format advice with markdown. Be encouraging but realistic about emotional investments.`;
 
-    const systemMessage = {
-      role: 'system',
+    const systemMessage = { role: 'system',
       content: typeof systemPrompt === "string" && systemPrompt.trim().length > 0
         ? systemPrompt
-        : DEFAULT_PROMPT,
-    }
+        : DEFAULT_PROMPT }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+        'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: "gpt-4o-mini",
         messages: [systemMessage, ...messages.slice(-10)],
-        max_completion_tokens: 500,
-      }),
-    })
+        max_completion_tokens: 500 }) })
 
     const data = await response.json()
     const reply = data.choices?.[0]?.message?.content || 'I apologize, I could not process that. Please try again.'
@@ -61,15 +52,12 @@ Keep responses concise, engaging, and use emoji. Format advice with markdown. Be
     await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({
       reply,
-      choices: [{ message: { role: 'assistant', content: reply } }],
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+      choices: [{ message: { role: 'assistant', content: reply } }] }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   } catch (error) {
     console.error('AI Mood Therapist error:', error)
     return new Response(JSON.stringify({ error: 'Failed to process request' }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   }
 })

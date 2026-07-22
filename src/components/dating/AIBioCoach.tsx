@@ -30,8 +30,7 @@ export const AIBioCoach = ({ profile, onApply }: Props) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("dating-ai-coach", {
-        body: { action: "bio_coach", bio, profile },
-      });
+        body: { action: "bio_coach", bio, profile } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

@@ -22,15 +22,11 @@ type Period = "weekly" | "monthly" | "alltime";
 
 async function fetchLeaderboard(period: Period): Promise<LeaderboardEntry[]> {
   // Server-side aggregation via SECURITY DEFINER RPC — avoids pulling thousands of xp_events rows.
-  const { data: rows, error } = await (supabase as any).rpc("rewards_xp_leaderboard", {
-    _period: period,
-    _limit: 50,
-  });
+  const { data: rows, error } = await (supabase as any).rpc("rewards_xp_leaderboard", { _period: period,
+    _limit: 50 });
   if (error || !rows) return [];
-  const totals: { user_id: string; total: number }[] = (rows as any[]).map((r) => ({
-    user_id: r.user_id,
-    total: Number(r.total ?? 0),
-  }));
+  const totals: { user_id: string; total: number }[] = (rows as any[]).map((r) => ({ user_id: r.user_id,
+    total: Number(r.total ?? 0) }));
 
 
   if (totals.length === 0) return [];
@@ -62,18 +58,15 @@ async function fetchLeaderboard(period: Period): Promise<LeaderboardEntry[]> {
         level: pts?.level ?? 1,
         login_streak: pts?.login_streak ?? 0,
         badges: badgeCounts.get(t.user_id) ?? 0,
-        rank: i + 1,
-      };
+        rank: i + 1 };
     });
 }
 
 export default function RewardsXPLeaderboard() {
   const [period, setPeriod] = useState<Period>("alltime");
-  const { data: leaderboard = [], isLoading } = useQuery({
-    queryKey: ["rewards-xp-leaderboard", period],
+  const { data: leaderboard = [], isLoading } = useQuery({ queryKey: ["rewards-xp-leaderboard", period],
     queryFn: () => fetchLeaderboard(period),
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Crown className="h-5 w-5 text-amber-400" />;

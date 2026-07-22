@@ -28,8 +28,7 @@ export const usePostTemplates = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const createTemplate = useMutation({
     mutationFn: async ({ name, content, category, tags }: {
@@ -43,13 +42,11 @@ export const usePostTemplates = () => {
 
       const { data, error } = await supabase
         .from("post_templates")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           name,
           content,
           category,
-          tags: tags || [],
-        })
+          tags: tags || [] })
         .select()
         .single();
 
@@ -59,8 +56,7 @@ export const usePostTemplates = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-templates"] });
       toast({ title: "Template created!" });
-    },
-  });
+    } });
 
   const applyTemplate = useMutation({
     mutationFn: async (templateId: string) => {
@@ -82,13 +78,10 @@ export const usePostTemplates = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-templates"] });
-    },
-  });
+    } });
 
-  return {
-    templates: templates || [],
+  return { templates: templates || [],
     isLoading,
     createTemplate: createTemplate.mutate,
-    applyTemplate: applyTemplate.mutate,
-  };
+    applyTemplate: applyTemplate.mutate };
 };

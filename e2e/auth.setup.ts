@@ -27,13 +27,10 @@ const STATE_PATH = "e2e/.auth/authed-state.json";
 setup("authenticate", async ({ request }) => {
   const res = await request.post(
     `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
-    {
-      headers: {
+    { headers: {
         apikey: SUPABASE_ANON_KEY,
-        "Content-Type": "application/json",
-      },
-      data: { email: EMAIL, password: PASSWORD },
-    },
+        "Content-Type": "application/json" },
+      data: { email: EMAIL, password: PASSWORD } },
   );
   expect(res.ok(), `Supabase sign-in failed: ${res.status()} ${await res.text()}`).toBeTruthy();
   const session = await res.json();
@@ -41,16 +38,14 @@ setup("authenticate", async ({ request }) => {
   // supabase-js v2 stores the full session as a JSON string under the
   // sb-<ref>-auth-token key. Mirror that shape so the browser context wakes
   // up already authenticated.
-  const storedSession = {
-    access_token: session.access_token,
+  const storedSession = { access_token: session.access_token,
     refresh_token: session.refresh_token,
     expires_in: session.expires_in,
     expires_at: session.expires_at,
     token_type: session.token_type,
     user: session.user,
     provider_token: session.provider_token ?? null,
-    provider_refresh_token: session.provider_refresh_token ?? null,
-  };
+    provider_refresh_token: session.provider_refresh_token ?? null };
 
   const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:8080";
   const baseOrigin = new URL(baseURL).origin;
@@ -88,14 +83,12 @@ setup("authenticate", async ({ request }) => {
     { name: "gdpr_cookie_consent", value: new Date().toISOString() },
     {
       name: "gdpr_cookie_preferences",
-      value: JSON.stringify({ necessary: true, analytics: true, marketing: false, personalization: true }),
-    },
+      value: JSON.stringify({ necessary: true, analytics: true, marketing: false, personalization: true }) },
   ];
 
   const state = {
     cookies: [],
-    origins: Array.from(origins).map((origin) => ({ origin, localStorage: localStorageItems })),
-  };
+    origins: Array.from(origins).map((origin) => ({ origin, localStorage: localStorageItems })) };
 
   mkdirSync(dirname(STATE_PATH), { recursive: true });
   writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));

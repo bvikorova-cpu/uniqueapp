@@ -1,11 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -15,8 +13,7 @@ serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -62,12 +59,10 @@ serve(async (req) => {
       await supabase.from("admin_audit_log").insert({
         admin_id: user.id,
         action: "kyc_override",
-        details: { target_user_id: user_id, status, reason: rejection_reason },
-      }).then(() => {}, () => {});
+        details: { target_user_id: user_id, status, reason: rejection_reason } }).then(() => {}, () => {});
 
       return new Response(JSON.stringify({ success: true }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Default: list
@@ -79,13 +74,11 @@ serve(async (req) => {
     if (error) throw new Error(error.message);
 
     const list = rows ?? [];
-    const counts = {
-      verified: list.filter((r) => r.status === "verified").length,
+    const counts = { verified: list.filter((r) => r.status === "verified").length,
       pending: list.filter((r) => r.status === "pending").length,
       requires_input: list.filter((r) => r.status === "requires_input").length,
       rejected: list.filter((r) => r.status === "rejected").length,
-      unverified: list.filter((r) => r.status === "unverified").length,
-    };
+      unverified: list.filter((r) => r.status === "unverified").length };
 
     return new Response(
       JSON.stringify({ counts, rows: list }),
@@ -95,7 +88,6 @@ serve(async (req) => {
     const msg = e instanceof Error ? e.message : String(e);
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

@@ -14,9 +14,9 @@ SET
     ELSE interests
   END,
   location = CASE display_name
-    WHEN 'Sofia' THEN 'Bratislava, Slovakia'
-    WHEN 'Marek' THEN 'Košice, Slovakia'
-    WHEN 'Lucia' THEN 'Žilina, Slovakia'
+    WHEN 'Sofia' THEN 'City, Country'
+    WHEN 'Marek' THEN 'City, Country'
+    WHEN 'Lucia' THEN 'City, Country'
     ELSE location
   END
 WHERE display_name IN ('Sofia', 'Marek', 'Lucia');

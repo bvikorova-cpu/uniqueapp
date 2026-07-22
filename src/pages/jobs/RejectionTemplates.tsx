@@ -47,9 +47,7 @@ export default function RejectionTemplates() {
   const save = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user || !name.trim() || !subject.trim() || !body.trim()) return toast.error("Fill all fields");
-    const { error } = await (supabase as any).from("rejection_templates").insert({
-      employer_id: user.id, name, subject, body, is_default: list.length === 0,
-    });
+    const { error } = await (supabase as any).from("rejection_templates").insert({ employer_id: user.id, name, subject, body, is_default: list.length === 0 });
     if (error) return toast.error(error.message);
     toast.success("Template saved");
     setName(""); setSubject("Update on your application"); setBody(DEFAULT_TPL);

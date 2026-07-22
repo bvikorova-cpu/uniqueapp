@@ -23,8 +23,7 @@ export const CollaborationMatcherView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("megatalent-ai", {
-        body: { action: "collaboration_matcher", myTalent, lookingFor, description },
-      });
+        body: { action: "collaboration_matcher", myTalent, lookingFor, description } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

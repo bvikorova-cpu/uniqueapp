@@ -26,49 +26,38 @@ interface FeaturedBrandCardProps {
   isAuthenticated: boolean;
 }
 
-const TIER_COLORS: Record<string, string> = {
-  bronze: "from-amber-600 to-amber-800",
+const TIER_COLORS: Record<string, string> = { bronze: "from-amber-600 to-amber-800",
   silver: "from-gray-400 to-gray-600",
   gold: "from-yellow-400 to-yellow-600",
   platinum: "from-purple-400 to-purple-600",
-  enterprise: "from-amber-400 via-yellow-500 to-amber-600",
-};
+  enterprise: "from-amber-400 via-yellow-500 to-amber-600" };
 
-const RANK_STYLES = {
-  1: {
+const RANK_STYLES = { 1: {
     medal: "🥇",
     cardClass: "md:scale-105 shadow-2xl ring-2 ring-yellow-500/50",
     bgGradient: "from-yellow-500/15 to-amber-500/5",
     textColor: "text-yellow-500",
     label: "🏆 Current Leader",
-    glowColor: "shadow-yellow-500/20",
-  },
-  2: {
-    medal: "🥈",
+    glowColor: "shadow-yellow-500/20" },
+  2: { medal: "🥈",
     cardClass: "shadow-xl ring-1 ring-gray-400/30",
     bgGradient: "from-gray-400/10 to-gray-500/5",
     textColor: "text-gray-400",
     label: "Runner Up",
-    glowColor: "shadow-gray-400/10",
-  },
-  3: {
-    medal: "🥉",
+    glowColor: "shadow-gray-400/10" },
+  3: { medal: "🥉",
     cardClass: "shadow-lg ring-1 ring-amber-600/30",
     bgGradient: "from-amber-600/10 to-orange-500/5",
     textColor: "text-amber-600",
     label: "Bronze Medal",
-    glowColor: "shadow-amber-600/10",
-  },
-};
+    glowColor: "shadow-amber-600/10" } };
 
-export const FeaturedBrandCard = ({
-  sponsor,
+export const FeaturedBrandCard = ({ sponsor,
   rank,
   onVote,
   isVoting,
   canVote,
-  isAuthenticated,
-}: FeaturedBrandCardProps) => {
+  isAuthenticated }: FeaturedBrandCardProps) => {
   const rankStyle = RANK_STYLES[rank as keyof typeof RANK_STYLES];
   const tierColor = TIER_COLORS[sponsor.tier];
 

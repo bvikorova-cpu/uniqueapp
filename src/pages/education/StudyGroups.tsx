@@ -33,8 +33,7 @@ export default function StudyGroups() {
         .select("group_id, role, education_study_groups(*)")
         .eq("user_id", user.id);
       return (memberships ?? []).map((m: any) => ({ ...m.education_study_groups, role: m.role }));
-    },
-  });
+    } });
 
   const create = useMutation({
     mutationFn: async (p: { name: string; description: string; subject: string; is_private: boolean }) => {
@@ -49,8 +48,7 @@ export default function StudyGroups() {
       await supabase.from("education_study_group_members").insert({ group_id: g.id, user_id: user.id, role: "owner" });
       return g;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["study-groups"] }); toast.success("Group created"); },
-  });
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["study-groups"] }); toast.success("Group created"); } });
 
   const join = useMutation({
     mutationFn: async (code: string) => {
@@ -67,8 +65,7 @@ export default function StudyGroups() {
       return g;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["study-groups"] }); toast.success("Joined!"); },
-    onError: (e: any) => toast.error(e?.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e?.message ?? "Failed") });
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openJoin, setOpenJoin] = useState(false);

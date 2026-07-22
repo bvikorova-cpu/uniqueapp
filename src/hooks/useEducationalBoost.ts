@@ -108,12 +108,10 @@ export const useEducationalBoost = (posts: Post[]): TrendingPost[] => {
     return posts.map(post => {
       const { score, isEducational, boostApplied } = calculateEngagementScore(post);
       
-      return {
-        ...post,
+      return { ...post,
         engagementScore: score,
         isEducational,
-        boostApplied,
-      } as TrendingPost;
+        boostApplied } as TrendingPost;
     }).sort((a, b) => b.engagementScore - a.engagementScore);
   }, [posts]);
 };
@@ -136,11 +134,9 @@ export const useEducationalStats = (posts: Post[]) => {
       return acc + (score - baseScore);
     }, 0);
     
-    return {
-      educationalCount,
+    return { educationalCount,
       totalPosts,
       educationalPercentage: educationalPercentage.toFixed(1),
-      totalBoostApplied: totalBoostApplied.toFixed(0),
-    };
+      totalBoostApplied: totalBoostApplied.toFixed(0) };
   }, [posts]);
 };

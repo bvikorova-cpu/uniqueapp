@@ -16,38 +16,32 @@ export default function MasterChefDashboard() {
   const { subscribed, tier, loading: subscriptionLoading } = useMasterChefSubscription();
   const [giftDialogOpen, setGiftDialogOpen] = useState(false);
   const [selectedChef, setSelectedChef] = useState<{ id: string; name: string } | null>(null);
-  const [stats, setStats] = useState({
-    totalCompetitions: 0,
+  const [stats, setStats] = useState({ totalCompetitions: 0,
     wins: 0,
     totalVotes: 0,
     currentRank: "-",
     level: 1,
-    xp: 0,
-  });
+    xp: 0 });
 
   useEffect(() => {
     checkAuth();
   }, []);
 
-  useEffect(() => {
-    if (!subscriptionLoading && !subscribed) {
+  useEffect(() => { if (!subscriptionLoading && !subscribed) {
       toast({
         title: "Subscription Required",
         description: "You need an active KitchenStars subscription to access the dashboard",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/masterchef-subscription");
     }
   }, [subscribed, subscriptionLoading, navigate, toast]);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      toast({
+    if (!session) { toast({
         title: "Login Required",
         description: "Please sign in to continue",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/auth");
     }
   };

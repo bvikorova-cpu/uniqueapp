@@ -35,12 +35,10 @@ function ARPreviewButton({ designId }: { designId: string }) {
       if (data?.url) {
         window.open(data.url, '_blank');
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to create checkout",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -89,13 +87,11 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
     }
   };
 
-  const handleGenerateDesign = async () => {
-    if (!selectedImage || !roomType || !stylePreference) {
+  const handleGenerateDesign = async () => { if (!selectedImage || !roomType || !stylePreference) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -136,16 +132,13 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
 
       toast({
         title: "✨ Design Ready!",
-        description: `You have ${data.remainingDesigns} designs remaining`,
-      });
+        description: `You have ${data.remainingDesigns} designs remaining` });
 
-    } catch (error: any) {
-      console.error('Error:', error);
+    } catch (error: any) { console.error('Error:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to generate design",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

@@ -54,8 +54,7 @@ export function useRewardedAd() {
         _user_id: uid,
         _amount: XP_REWARD,
         _source: "rewarded_ad_view",
-        _ref_id: `${today}:${Date.now()}`,
-      });
+        _ref_id: `${today}:${Date.now()}` });
       if (error) {
         toast.error("Couldn't credit XP. Please retry.");
         return;

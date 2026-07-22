@@ -17,15 +17,13 @@ interface EarningsHeroProps {
  * Cinematic Earnings hero — Golden coins / cash flow theme.
  * Shared across /earnings + influencer/instructor/masterchef/comedian/course/escape-room.
  */
-export const EarningsHero = ({
-  title = "My Earnings",
+export const EarningsHero = ({ title = "My Earnings",
   subtitle = "Track every euro you make — payouts, forecasts, milestones.",
   totalEarnings,
   available,
   pending,
   paidOut,
-  badge = "Treasury Vault",
-}: EarningsHeroProps) => {
+  badge = "Treasury Vault" }: EarningsHeroProps) => {
   const fmt = (n: number) =>
     n > 0 ? `€${n.toLocaleString("en-US", { maximumFractionDigits: 2 })}` : "—";
 

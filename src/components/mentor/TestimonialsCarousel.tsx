@@ -6,34 +6,26 @@ import { Button } from "@/components/ui/button";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const testimonials = [
-  {
-    name: "Sarah K.",
+  { name: "Sarah K.",
     area: "Career Coach",
     avatar: "👩‍💼",
     rating: 5,
-    text: "The career mentor helped me land my dream job in 3 months. The daily check-ins kept me accountable.",
-  },
-  {
-    name: "Mike R.",
+    text: "The career mentor helped me land my dream job in 3 months. The daily check-ins kept me accountable." },
+  { name: "Mike R.",
     area: "Fitness Coach",
     avatar: "💪",
     rating: 5,
-    text: "Lost 15kg in 4 months following personalized workout plans. Best investment in my health!",
-  },
-  {
-    name: "Emily L.",
+    text: "Lost 15kg in 4 months following personalized workout plans. Best investment in my health!" },
+  { name: "Emily L.",
     area: "Mindset Coach",
     avatar: "🧘‍♀️",
     rating: 5,
-    text: "Completely changed how I handle stress. The mindset techniques are genuinely life-changing.",
-  },
-  {
-    name: "David T.",
+    text: "Completely changed how I handle stress. The mindset techniques are genuinely life-changing." },
+  { name: "David T.",
     area: "Relationships Coach",
     avatar: "❤️",
     rating: 5,
-    text: "Improved communication with my partner significantly. We're stronger than ever now.",
-  },
+    text: "Improved communication with my partner significantly. We're stronger than ever now." },
 ];
 
 export const TestimonialsCarousel = () => {

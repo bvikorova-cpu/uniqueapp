@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2 } from "lucide-react";
@@ -29,12 +27,10 @@ interface ReactionsDialogProps {
   reactionMeta: { type: string; emoji: string; label: string }[];
 }
 
-export const ReactionsDialog = ({
-  open,
+export const ReactionsDialog = ({ open,
   onOpenChange,
   reactions,
-  reactionMeta,
-}: ReactionsDialogProps) => {
+  reactionMeta }: ReactionsDialogProps) => {
   const navigate = useNavigate();
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [loading, setLoading] = useState(false);

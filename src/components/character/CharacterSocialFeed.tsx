@@ -25,8 +25,7 @@ export const CharacterSocialFeed = () => {
       const { data, error } = await supabase.from("characters").select("*").eq("user_id", user.id);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: posts } = useQuery({
     queryKey: ["character-posts"],
@@ -34,8 +33,7 @@ export const CharacterSocialFeed = () => {
       const { data, error } = await supabase.from("character_posts").select(`*, characters (name, image_url, category)`).order("created_at", { ascending: false }).limit(20);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const createPost = useMutation({
     mutationFn: async (data: { characterId: string; content: string }) => {
@@ -48,8 +46,7 @@ export const CharacterSocialFeed = () => {
       toast.success("Post created!"); setPostContent(""); setSelectedCharacter(null);
       queryClient.invalidateQueries({ queryKey: ["character-posts"] });
     },
-    onError: (error: Error) => toast.error(error.message || "Failed to create post"),
-  });
+    onError: (error: Error) => toast.error(error.message || "Failed to create post") });
 
   const likePost = useMutation({
     mutationFn: async (postId: string) => {
@@ -61,8 +58,7 @@ export const CharacterSocialFeed = () => {
         else throw error;
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["character-posts"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["character-posts"] }) });
 
   return (
     <>

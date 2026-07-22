@@ -47,18 +47,15 @@ export const KidsAcademyHero = () => {
           className="absolute text-2xl sm:text-3xl pointer-events-none select-none"
           style={{
             left: `${5 + (i * 10) % 90}%`,
-            top: `${8 + (i * 13) % 70}%`,
-          }}
-          animate={{
+            top: `${8 + (i * 13) % 70}%` }}
+          animate={ {
             y: [0, -12, 0],
             rotate: [0, i % 2 === 0 ? 8 : -8, 0],
-            opacity: [0.3, 0.6, 0.3],
-          }}
-          transition={{
+            opacity: [0.3, 0.6, 0.3] }}
+          transition={ {
             duration: 3 + i * 0.4,
             repeat: Infinity,
-            delay: i * 0.25,
-          }}
+            delay: i * 0.25 }}
         >
           {emoji}
         </motion.div>

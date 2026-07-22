@@ -1,25 +1,21 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { Undo2, Loader2 } from "lucide-react";
 import { useAdminRefund } from "@/hooks/useAdminRefund";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -40,15 +36,13 @@ interface Props {
  * Admin button that refunds a Stripe payment via `admin-refund-payment`.
  * Confirmation dialog with reason + optional partial amount + admin notes.
  */
-export function RefundButton({
-  paymentRecordId,
+export function RefundButton({ paymentRecordId,
   amount,
   allowPartial = true,
   onRefunded,
   size = "sm",
   variant = "destructive",
-  label = "Refund",
-}: Props) {
+  label = "Refund" }: Props) {
   const { refund, loading } = useAdminRefund();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState<"duplicate" | "fraudulent" | "requested_by_customer">(

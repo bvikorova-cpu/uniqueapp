@@ -60,9 +60,7 @@ Format as JSON array:
   "hasAED": true/false
 }]
 
-Make the results realistic for the given location. Include a mix of facility types. Sort by distance.`,
-        },
-      });
+Make the results realistic for the given location. Include a mix of facility types. Sort by distance.` } });
       if (error) throw error;
       const text = data?.message || data?.analysis || "";
       const jsonMatch = text.match(/\[[\s\S]*\]/);
@@ -77,13 +75,11 @@ Make the results realistic for the given location. Include a mix of facility typ
     }
   };
 
-  const typeColors: Record<string, string> = {
-    AED: "bg-red-100 text-red-700",
+  const typeColors: Record<string, string> = { AED: "bg-red-100 text-red-700",
     Pharmacy: "bg-green-100 text-green-700",
     Hospital: "bg-blue-100 text-blue-700",
     "Urgent Care": "bg-orange-100 text-orange-700",
-    "Fire Station": "bg-yellow-100 text-yellow-700",
-  };
+    "Fire Station": "bg-yellow-100 text-yellow-700" };
 
   const filteredResults = searchType === "all" ? results :
     searchType === "aed" ? results.filter(r => r.hasAED || r.type === "AED") :

@@ -33,8 +33,7 @@ export function AIStyleTransfer({ onColorOnline }: AIStyleTransferProps) {
     setIsGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke("coloring-ai-tools", {
-        body: { action: "style-transfer", description, style: selectedStyle },
-      });
+        body: { action: "style-transfer", description, style: selectedStyle } });
       if (error) throw new Error(data?.error || error.message);
       if (data?.error) throw new Error(data.error);
       setResultImage(data.imageUrl);

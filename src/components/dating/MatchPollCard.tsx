@@ -44,8 +44,7 @@ export const MatchPollCard = ({ matchId, userId }: { matchId: string; userId: st
     if (!question.trim() || clean.length < 2) { toast({ title: "Need question + 2 options", variant: "destructive" }); return; }
     const { error } = await (supabase as any).from("dating_polls").insert({
       match_id: matchId, author_id: userId, question: question.trim(),
-      options: clean.map(text => ({ text })),
-    });
+      options: clean.map(text => ({ text })) });
     if (error) { toast({ title: error.message, variant: "destructive" }); return; }
     setQuestion(""); setOpts(["", ""]); setOpen(false); load();
   };

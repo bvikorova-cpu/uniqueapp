@@ -15,11 +15,9 @@ interface MedicalDocumentsViewerProps {
  * Files are stored in Supabase Storage and accessed via signed URLs.
  * Sensitive personal data (patient ID, address) MUST be redacted before upload.
  */
-export function MedicalDocumentsViewer({
-  documents,
+export function MedicalDocumentsViewer({ documents,
   verified,
-  hospital,
-}: MedicalDocumentsViewerProps) {
+  hospital }: MedicalDocumentsViewerProps) {
   const docs = documents ?? [];
 
   if (docs.length === 0) {

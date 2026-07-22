@@ -37,8 +37,7 @@ export default function FutureFaceMultiAgeTimeline() {
       setLoading(years);
       try {
         const res = await supabase.functions.invoke("future-face-image", {
-          body: { action: "age_progression", sourceUrl, params: { years } },
-        });
+          body: { action: "age_progression", sourceUrl, params: { years } } });
         const data = throwIfInvokeError(res);
         setResults(prev => ({ ...prev, [years]: data.resultUrl }));
       } catch (err: any) {

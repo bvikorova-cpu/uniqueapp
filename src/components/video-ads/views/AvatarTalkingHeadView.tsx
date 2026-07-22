@@ -32,8 +32,7 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true); setPlan(null); setPortrait(null); setAudio(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {
-        body: { action: 'avatar_plan', product, audience, tone },
-      });
+        body: { action: 'avatar_plan', product, audience, tone } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Avatar Plan' }); return; }
       setPlan(data.result);
       toast.success(`Avatar plan prepared (${data.credits_used} CR)`);
@@ -46,8 +45,7 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
     setImgLoading(true); setPortrait(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-scenes', {
-        body: { scenes: [`Talking head portrait, photorealistic, professional lighting, eye contact with camera. ${plan.avatarDescription}. Background: ${plan.backgroundType}. Attire: ${plan.dressCode}.`], aspectRatio: '9:16' },
-      });
+        body: { scenes: [`Talking head portrait, photorealistic, professional lighting, eye contact with camera. ${plan.avatarDescription}. Background: ${plan.backgroundType}. Attire: ${plan.dressCode}.`], aspectRatio: '9:16' } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Avatar Portrait' }); return; }
       setPortrait(`data:image/png;base64,${data.frames[0].b64}`);
       toast.success(`Portrait created (${data.credits_used} CR)`);
@@ -60,8 +58,7 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
     setVoiceLoading(true); setAudio(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tts', {
-        body: { text: plan.scriptForAvatar, voiceId: plan.recommendedVoiceId },
-      });
+        body: { text: plan.scriptForAvatar, voiceId: plan.recommendedVoiceId } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Avatar Voice' }); return; }
       setAudio(`data:${data.mimeType};base64,${data.audioBase64}`);
       toast.success(`Voiceover created (${data.credits_used} CR)`);

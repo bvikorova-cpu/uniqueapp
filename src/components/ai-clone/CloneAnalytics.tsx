@@ -26,12 +26,10 @@ export function CloneAnalytics() {
         supabase.from("clone_dating_sessions").select("id", { count: "exact", head: true }).eq("status", "active"),
       ]);
 
-      setData({
-        totalClones: clonesRes.status === "fulfilled" ? (clonesRes.value as any).count || 0 : 0,
+      setData({ totalClones: clonesRes.status === "fulfilled" ? (clonesRes.value as any).count || 0 : 0,
         totalConversations: convsRes.status === "fulfilled" ? (convsRes.value as any).count || 0 : 0,
         activeSessions: sessionsRes.status === "fulfilled" ? (sessionsRes.value as any).count || 0 : 0,
-        avgResponseTime: "1.2s",
-      });
+        avgResponseTime: "1.2s" });
     };
     fetchAnalytics();
   }, []);

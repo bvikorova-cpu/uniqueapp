@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { usePostTemplates } from "@/hooks/usePostTemplates";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,11 +15,9 @@ interface PostTemplatesDialogProps {
   onSelectTemplate: (content: string) => void;
 }
 
-export const PostTemplatesDialog = ({
-  open,
+export const PostTemplatesDialog = ({ open,
   onOpenChange,
-  onSelectTemplate,
-}: PostTemplatesDialogProps) => {
+  onSelectTemplate }: PostTemplatesDialogProps) => {
   const { templates, applyTemplate, isLoading } = usePostTemplates();
   const [search, setSearch] = useState("");
 

@@ -32,8 +32,7 @@ export default function AISupplementAdvisor({ onBack }: Props) {
       return data;
     },
     onSuccess: (data) => { setResult(data.recommendations); toast.success("Supplement plan ready!"); },
-    onError: (e: any) => toast.error(e.message || "Error generating recommendations"),
-  });
+    onError: (e: any) => toast.error(e.message || "Error generating recommendations") });
 
   return (
     <>

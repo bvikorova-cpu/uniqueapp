@@ -42,10 +42,9 @@ const ContentStudioHero = () => {
         >
           <h1
             className="text-4xl md:text-6xl font-black text-white mb-4"
-            style={{
+            style={ {
               WebkitTextStroke: "1.5px rgba(255,255,255,0.3)",
-              textShadow: "0 4px 30px rgba(139,92,246,0.5)",
-            }}
+              textShadow: "0 4px 30px rgba(139,92,246,0.5)" }}
           >
             Premium{" "}
             <span className="bg-gradient-to-r from-purple-400 via-primary to-pink-400 bg-clip-text text-transparent">

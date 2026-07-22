@@ -152,9 +152,8 @@ export const BrainDuelStats = ({ userId }: BrainDuelStatsProps) => {
                           </span>
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          {formatDistanceToNow(new Date(match.created_at), {
-                            addSuffix: true,
-                          })}
+                          { formatDistanceToNow(new Date(match.created_at), {
+                            addSuffix: true })}
                         </div>
                       </div>
                       <div className="text-right">

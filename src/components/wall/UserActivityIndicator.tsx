@@ -7,21 +7,17 @@ interface UserActivityIndicatorProps {
   showStatus?: boolean;
 }
 
-export const UserActivityIndicator = ({
-  userId,
+export const UserActivityIndicator = ({ userId,
   className = "",
-  showStatus = false,
-}: UserActivityIndicatorProps) => {
+  showStatus = false }: UserActivityIndicatorProps) => {
   const { activity, isOnline } = useUserActivity(userId);
 
   if (!activity) return null;
 
-  const statusColors = {
-    online: "bg-green-500",
+  const statusColors = { online: "bg-green-500",
     away: "bg-yellow-500",
     busy: "bg-red-500",
-    offline: "bg-muted",
-  };
+    offline: "bg-muted" };
 
   const statusColor = statusColors[activity.status as keyof typeof statusColors] || "bg-muted";
 

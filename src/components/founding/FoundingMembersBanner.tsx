@@ -32,9 +32,7 @@ export function FoundingMembersBanner() {
     const res = await claim();
     setClaiming(false);
     if (res.ok && res.memberNumber) {
-      toast.success(`You are Founding Member #${res.memberNumber}!`, {
-        description: "+50 AI credits added to your account.",
-      });
+      toast.success(`You are Founding Member #${res.memberNumber}!`, { description: "+50 AI credits added to your account." });
     } else if (res.reason === "cohort_full") {
       toast.error("All 100 Founding Member slots are taken.");
     } else {

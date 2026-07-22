@@ -39,13 +39,11 @@ export default function MysteryBoxSimulator({ userId }: Props) {
     }
   };
 
-  const rarityColors: Record<string, string> = {
-    Common: "bg-gray-500/20 text-gray-300",
+  const rarityColors: Record<string, string> = { Common: "bg-gray-500/20 text-gray-300",
     Uncommon: "bg-green-500/20 text-green-400",
     Rare: "bg-blue-500/20 text-blue-400",
     Epic: "bg-purple-500/20 text-purple-400",
-    Legendary: "bg-amber-500/20 text-amber-400",
-  };
+    Legendary: "bg-amber-500/20 text-amber-400" };
 
   return (
     <>

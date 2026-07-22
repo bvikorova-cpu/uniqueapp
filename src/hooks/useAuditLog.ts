@@ -32,8 +32,7 @@ export const useAuditLog = () => {
     action,
     details = {},
     resourceType,
-    resourceId,
-  }: AuditLogEntry) => {
+    resourceId }: AuditLogEntry) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -46,12 +45,10 @@ export const useAuditLog = () => {
       const userAgent = navigator.userAgent;
       const timestamp = new Date().toISOString();
 
-      const logEntry = {
-        user_id: user.id,
+      const logEntry = { user_id: user.id,
         activity_type: action,
         points_earned: 0,
-        created_at: timestamp,
-      };
+        created_at: timestamp };
 
       // Store in activity_logs table (existing table)
       const { error } = await supabase
@@ -63,15 +60,13 @@ export const useAuditLog = () => {
       }
 
       // Also log to console for debugging
-      console.debug('Audit Log:', {
-        action,
+      console.debug('Audit Log:', { action,
         userId: user.id,
         resourceType,
         resourceId,
         details,
         userAgent,
-        timestamp,
-      });
+        timestamp });
 
     } catch (error) {
       console.error('Audit log error:', error);
@@ -94,10 +89,8 @@ export const useAuditLog = () => {
     return data;
   };
 
-  return {
-    logAction,
-    getRecentActivity,
-  };
+  return { logAction,
+    getRecentActivity };
 };
 
 export default useAuditLog;

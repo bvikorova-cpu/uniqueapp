@@ -60,11 +60,9 @@ export default function CourseLearning() {
 
     toast({
       title: "Module Completed! 🎉",
-      description: `You've completed module ${moduleIndex + 1}/${topics.length}`,
-    });
+      description: `You've completed module ${moduleIndex + 1}/${topics.length}` });
 
-    if (progressPercentage === 100 && !certificate) {
-      const cert = await generateCertificate(
+    if (progressPercentage === 100 && !certificate) { const cert = await generateCertificate(
         certificationId,
         "certification",
         certificationTitle,
@@ -74,8 +72,7 @@ export default function CourseLearning() {
       if (cert) {
         toast({
           title: "Congratulations! 🏆",
-          description: "Your certificate has been generated!",
-        });
+          description: "Your certificate has been generated!" });
       }
     }
 

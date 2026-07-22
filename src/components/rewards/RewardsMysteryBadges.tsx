@@ -79,9 +79,7 @@ export default function RewardsMysteryBadges() {
           action: "mystery_badges",
           current_badges: currentBadges,
           activity_history: `${activityHistory}\n\nACTIVE MYSTERY EVENTS: ${realEvents || "none"}`,
-          difficulty_preference: difficulty,
-        },
-      });
+          difficulty_preference: difficulty } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

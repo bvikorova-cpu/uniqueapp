@@ -20,8 +20,7 @@ const generateHeatmapData = () => {
         week: weeks - 1 - w,
         day: d,
         value: Math.random() > 0.3 ? Math.floor(Math.random() * 5) : 0,
-        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      });
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) });
     }
   }
   return data;

@@ -36,14 +36,12 @@ export const AntiqueSocialFeed = () => {
       .eq("is_public", true)
       .order("created_at", { ascending: false })
       .limit(20);
-    setPosts((data || []).map(d => ({
-      id: d.id,
+    setPosts((data || []).map(d => ({ id: d.id,
       image_url: d.image_url,
       caption: d.description || d.analysis_type + " analysis",
       user_id: d.user_id,
       likes: Math.floor(Math.random() * 50),
-      created_at: d.created_at || new Date().toISOString(),
-    })));
+      created_at: d.created_at || new Date().toISOString() })));
     setLoading(false);
   };
 
@@ -63,13 +61,11 @@ export const AntiqueSocialFeed = () => {
       if (error) throw error;
       const { data: { publicUrl } } = supabase.storage.from('antiques').getPublicUrl(fileName);
 
-      await supabase.from("antiques").insert({
-        user_id: user.id,
+      await supabase.from("antiques").insert({ user_id: user.id,
         image_url: publicUrl,
         analysis_type: "social",
         description: caption || "Shared antique find",
-        is_public: true,
-      });
+        is_public: true });
 
       toast.success("Posted to community feed!");
       setSelectedFile(null);

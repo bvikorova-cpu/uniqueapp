@@ -76,14 +76,12 @@ export const PersonalityTest = ({ onApply }: Props) => {
     } finally { setLoading(false); }
   };
 
-  const apply = () => {
-    if (!result) return;
+  const apply = () => { if (!result) return;
     onApply({
       interests: result.suggested_interests,
       tone: result.suggested_tone,
       archetype: result.archetype,
-      summary: result.summary,
-    });
+      summary: result.summary });
     toast({ title: "Applied to your profile", description: result.archetype });
     setOpen(false);
     setStep(0); setAnswers({}); setResult(null);

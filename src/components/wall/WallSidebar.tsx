@@ -64,8 +64,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -78,8 +77,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
         .single();
       return data;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   // Core Modules (The 10 requested modules from this task)
   const coreModules = [

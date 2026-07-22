@@ -14,8 +14,7 @@ interface MegaTalentTierInfo {
 }
 
 // Constants for tier benefits
-export const TIER_BENEFITS = {
-  premium: {
+export const TIER_BENEFITS = { premium: {
     price: 10,
     bonusVotes: 0,
     winChanceBoost: 0,
@@ -26,10 +25,8 @@ export const TIER_BENEFITS = {
       'Voting & commenting',
       'Prize eligibility',
       'Referral program (€5/month per friend)',
-    ],
-  },
-  top_premium: {
-    price: 15,
+    ] },
+  top_premium: { price: 15,
     bonusVotes: 0,
     winChanceBoost: 100,
     algorithmicBoost: true,
@@ -39,9 +36,7 @@ export const TIER_BENEFITS = {
       'Priority display in category',
       'Exclusive TOP Premium badge',
       'Referral program (€5/month per friend)',
-    ],
-  },
-} as const;
+    ] } } as const;
 
 // TOP Premium ranking multiplier. Real vote count is always shown to users;
 // this multiplier only affects ordering in the leaderboard.
@@ -86,15 +81,13 @@ export const useMegaTalentTier = (): MegaTalentTierInfo => {
   const isSubscribed = tier !== null;
   const tierBenefits = tier ? TIER_BENEFITS[tier] : null;
 
-  return {
-    tier,
+  return { tier,
     isSubscribed,
     bonusVotes: tierBenefits?.bonusVotes || 0,
     winChanceBoost: tierBenefits?.winChanceBoost || 0,
     hasAlgorithmicBoost: tierBenefits?.algorithmicBoost || false,
     loading,
-    refetch: fetchTier,
-  };
+    refetch: fetchTier };
 };
 
 // Total votes = real votes only. TOP Premium provides ranking boost, NOT extra fake votes.

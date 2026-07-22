@@ -112,8 +112,7 @@ async function safeGoto(page: Page, url: string) {
 
 test.describe.configure({ mode: "parallel" });
 
-test.describe("Master QA — critical flows", () => {
-  test.afterAll(async () => {
+test.describe("Master QA — critical flows", () => { test.afterAll(async () => {
     fs.writeFileSync(
       REPORT,
       JSON.stringify(
@@ -121,8 +120,7 @@ test.describe("Master QA — critical flows", () => {
           generatedAt: new Date().toISOString(),
           baseURL: process.env.PLAYWRIGHT_BASE_URL ?? null,
           results,
-          criticalConsoleErrors,
-        },
+          criticalConsoleErrors },
         null,
         2
       )
@@ -213,8 +211,7 @@ test.describe("Master QA — critical flows", () => {
     }
   });
 
-  test("5. Stripe create-checkout edge function is reachable", async ({ page }) => {
-    // We call the edge function directly (unauthenticated). Expected: 200 with
+  test("5. Stripe create-checkout edge function is reachable", async ({ page }) => { // We call the edge function directly (unauthenticated). Expected: 200 with
     // a checkout URL, or 401/403 (auth required) — both mean the function is
     // deployed and responding. 5xx or network error = broken money path.
     try {
@@ -224,25 +221,20 @@ test.describe("Master QA — critical flows", () => {
           headers: {
             "content-type": "application/json",
             apikey:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q",
-          },
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q" },
           data: { creditType: "ai_credits", credits: 30 },
-          timeout: 15_000,
-        }
+          timeout: 15_000 }
       );
       const status = res.status();
       if (status >= 500) throw new Error(`create-checkout returned ${status}`);
       results.push({
         name: "stripe-checkout-reachable",
         status: "pass",
-        detail: `HTTP ${status}`,
-      });
-    } catch (e: any) {
-      results.push({
+        detail: `HTTP ${status}` });
+    } catch (e: any) { results.push({
         name: "stripe-checkout-reachable",
         status: "fail",
-        detail: e.message,
-      });
+        detail: e.message });
       throw e;
     }
   });
@@ -306,8 +298,7 @@ test.describe("Master QA — critical flows", () => {
       results.push({
         name: "pwa-manifest",
         status: "pass",
-        detail: `${json.icons.length} icons`,
-      });
+        detail: `${json.icons.length} icons` });
     } catch (e: any) {
       results.push({ name: "pwa-manifest", status: "fail", detail: e.message });
       throw e;
@@ -319,8 +310,7 @@ test.describe("Master QA — critical flows", () => {
       results.push({
         name: "console-errors",
         status: "fail",
-        detail: `${criticalConsoleErrors.length} error(s); first: ${criticalConsoleErrors[0]}`,
-      });
+        detail: `${criticalConsoleErrors.length} error(s); first: ${criticalConsoleErrors[0]}` });
       throw new Error(
         `Critical console errors detected:\n` + criticalConsoleErrors.slice(0, 10).join("\n")
       );

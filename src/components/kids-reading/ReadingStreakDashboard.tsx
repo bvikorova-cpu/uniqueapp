@@ -10,12 +10,10 @@ interface Props {
   currentStreak: number;
 }
 
-export const ReadingStreakDashboard = ({
-  textsAnalyzed,
+export const ReadingStreakDashboard = ({ textsAnalyzed,
   wordsLearned,
   quizzesTaken,
-  currentStreak,
-}: Props) => {
+  currentStreak }: Props) => {
   const stats = [
     { label: "Texts Read", value: textsAnalyzed, icon: "📖", max: 50 },
     { label: "Words Learned", value: wordsLearned, icon: "🔤", max: 200 },

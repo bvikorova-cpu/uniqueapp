@@ -41,13 +41,11 @@ export const AIDreamJournal = ({ onBack }: Props) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast.error("Please sign in"); return; }
-      const { error } = await (supabase as any).from("psychology_dream_entries").insert({
-        user_id: user.id,
+      const { error } = await (supabase as any).from("psychology_dream_entries").insert({ user_id: user.id,
         title: title || "Untitled Dream",
         description: description.trim(),
         dream_type: dreamType,
-        vividness_score: vividness,
-      });
+        vividness_score: vividness });
       if (error) throw error;
       toast.success("Dream logged!");
       setTitle(""); setDescription(""); setVividness(5); setDreamType("Normal");
@@ -60,8 +58,7 @@ export const AIDreamJournal = ({ onBack }: Props) => {
     setAnalyzing(entryId);
     try {
       const { data, error } = await supabase.functions.invoke("psychology-ai", {
-        body: { action: "dream-analysis", dreamId: entryId, dreamText },
-      });
+        body: { action: "dream-analysis", dreamId: entryId, dreamText } });
       if (error) throw error;
       setSelectedAnalysis(data?.analysis || "No analysis available.");
       loadEntries();

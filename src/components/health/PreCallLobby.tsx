@@ -81,8 +81,7 @@ export default function PreCallLobby({ onJoin, joining, disabledReason }: Props)
     try {
       const s = await navigator.mediaDevices.getUserMedia({
         video: cameraId ? { deviceId: { exact: cameraId } } : true,
-        audio: micId ? { deviceId: { exact: micId } } : true,
-      });
+        audio: micId ? { deviceId: { exact: micId } } : true });
       streamRef.current = s;
       if (videoRef.current) videoRef.current.srcObject = s;
       attachMeter(s);

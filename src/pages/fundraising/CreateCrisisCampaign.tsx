@@ -22,8 +22,7 @@ const crisisTypes = [
   { value: 'other', label: '⚠️ Other Crisis' },
 ];
 
-export default function CreateCrisisCampaign() {
-  const navigate = useNavigate();
+export default function CreateCrisisCampaign() { const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadingProof, setUploadingProof] = useState(false);
@@ -39,8 +38,7 @@ export default function CreateCrisisCampaign() {
     images: [] as string[],
     video_url: '',
     expires_at: '',
-    proof_document_url: '',
-  });
+    proof_document_url: '' });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -51,12 +49,10 @@ export default function CreateCrisisCampaign() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in to upload images',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         return;
       }
 
@@ -65,8 +61,7 @@ export default function CreateCrisisCampaign() {
           toast({
             title: 'Error',
             description: `${file.name} is too large (max 5MB)`,
-            variant: 'destructive',
-          });
+            variant: 'destructive' });
           continue;
         }
 
@@ -89,30 +84,25 @@ export default function CreateCrisisCampaign() {
       setFormData({ ...formData, images: [...formData.images, ...uploadedUrls] });
       toast({
         title: 'Success',
-        description: `${uploadedUrls.length} image(s) uploaded`,
-      });
-    } catch (error) {
-      console.error('Error uploading images:', error);
+        description: `${uploadedUrls.length} image(s) uploaded` });
+    } catch (error) { console.error('Error uploading images:', error);
       toast({
         title: 'Error',
         description: 'Failed to upload images',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setUploading(false);
     }
   };
 
-  const handleProofUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleProofUpload = async (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
       toast({
         title: 'Error',
         description: 'File is too large (max 10MB)',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
@@ -120,12 +110,10 @@ export default function CreateCrisisCampaign() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         return;
       }
 
@@ -144,59 +132,47 @@ export default function CreateCrisisCampaign() {
 
       setFormData({ ...formData, proof_document_url: publicUrl });
 
-      toast({
-        title: 'Success',
-        description: 'Crisis documentation uploaded',
-      });
-    } catch (error) {
-      console.error('Error uploading proof:', error);
+      toast({ title: 'Success',
+        description: 'Crisis documentation uploaded' });
+    } catch (error) { console.error('Error uploading proof:', error);
       toast({
         title: 'Error',
         description: 'Failed to upload documentation',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setUploadingProof(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
     
     if (!formData.title || !formData.description || !formData.story || !formData.crisis_type || !formData.target_amount) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
-    if (!formData.proof_document_url) {
-      toast({
+    if (!formData.proof_document_url) { toast({
         title: 'Error',
         description: 'Crisis documentation/evidence is required for verification',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
-    if (!consentChecked) {
-      toast({
+    if (!consentChecked) { toast({
         title: 'Error',
         description: 'You must confirm the consent checkbox',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
     const targetAmount = parseFloat(formData.target_amount);
-    if (isNaN(targetAmount) || targetAmount < 100) {
-      toast({
+    if (isNaN(targetAmount) || targetAmount < 100) { toast({
         title: 'Error',
         description: 'Minimum target amount is €100',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
@@ -205,20 +181,17 @@ export default function CreateCrisisCampaign() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in to create a campaign',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         navigate('/auth');
         return;
       }
 
       const { data, error } = await supabase
         .from('crisis_campaigns')
-        .insert({
-          user_id: session.user.id,
+        .insert({ user_id: session.user.id,
           title: formData.title,
           description: formData.description,
           story: formData.story,
@@ -229,26 +202,21 @@ export default function CreateCrisisCampaign() {
           images: formData.images.length > 0 ? formData.images : null,
           video_url: formData.video_url || null,
           expires_at: formData.expires_at || null,
-          status: 'pending',
-        })
+          status: 'pending' })
         .select()
         .single();
 
       if (error) throw error;
 
-      toast({
-        title: 'Success!',
-        description: 'Your crisis relief campaign has been submitted for admin approval',
-      });
+      toast({ title: 'Success!',
+        description: 'Your crisis relief campaign has been submitted for admin approval' });
 
       navigate(`/fundraising/crisis/${data.id}/success?action=created`);
-    } catch (error) {
-      console.error('Error creating campaign:', error);
+    } catch (error) { console.error('Error creating campaign:', error);
       toast({
         title: 'Error',
         description: 'Failed to create campaign',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setCreating(false);
     }

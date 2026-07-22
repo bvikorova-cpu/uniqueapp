@@ -1,23 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
@@ -42,21 +38,17 @@ const SPORTS = [
   "Mixed Sports"
 ];
 
-export function TipsterRegistrationDialog({
-  open,
-  onOpenChange,
-}: TipsterRegistrationDialogProps) {
+export function TipsterRegistrationDialog({ open,
+  onOpenChange }: TipsterRegistrationDialogProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [hasPaid, setHasPaid] = useState(false);
   const [checkingSubscription, setCheckingSubscription] = useState(false);
-  const [formData, setFormData] = useState({
-    displayName: "",
+  const [formData, setFormData] = useState({ displayName: "",
     sport: "",
     bio: "",
-    tipPrice: "5",
-  });
+    tipPrice: "5" });
 
   // Check if user has active tipster subscription on dialog open
   const checkSubscription = async () => {
@@ -90,24 +82,20 @@ export function TipsterRegistrationDialog({
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Authentication required",
           description: "Please sign in to become a tipster",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
 
       // Check if user already has subscription
       const { data: subData } = await supabase.functions.invoke("check-tipster-subscription");
-      if (subData?.has_tipster_subscription) {
-        setHasPaid(true);
+      if (subData?.has_tipster_subscription) { setHasPaid(true);
         toast({
           title: "Subscription active",
-          description: "Please fill in your tipster details",
-        });
+          description: "Please fill in your tipster details" });
         return;
       }
 
@@ -118,10 +106,8 @@ export function TipsterRegistrationDialog({
 
       if (checkoutError) throw checkoutError;
 
-      toast({
-        title: "Redirecting to payment...",
-        description: "Pay 19.99 EUR to become a tipster",
-      });
+      toast({ title: "Redirecting to payment...",
+        description: "Pay 19.99 EUR to become a tipster" });
 
       // Redirect to Stripe checkout
       window.open(checkoutData.url, "_blank");
@@ -129,26 +115,22 @@ export function TipsterRegistrationDialog({
       // Start checking for successful payment
       const checkInterval = setInterval(async () => {
         const { data } = await supabase.functions.invoke("check-tipster-subscription");
-        if (data?.has_tipster_subscription) {
-          clearInterval(checkInterval);
+        if (data?.has_tipster_subscription) { clearInterval(checkInterval);
           setHasPaid(true);
           toast({
             title: "Payment successful!",
-            description: "Now fill in your tipster details",
-          });
+            description: "Now fill in your tipster details" });
         }
       }, 3000);
 
       // Clear interval after 5 minutes
       setTimeout(() => clearInterval(checkInterval), 300000);
       
-    } catch (error) {
-      console.error("Error creating checkout:", error);
+    } catch (error) { console.error("Error creating checkout:", error);
       toast({
         title: "Error",
         description: "Failed to create payment session. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -161,12 +143,10 @@ export function TipsterRegistrationDialog({
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Authentication required",
           description: "Please sign in to become a tipster",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
@@ -178,50 +158,40 @@ export function TipsterRegistrationDialog({
         .eq("user_id", user.id)
         .single();
 
-      if (existingTipster) {
-        toast({
+      if (existingTipster) { toast({
           title: "Already registered",
-          description: "You are already registered as a tipster",
-        });
+          description: "You are already registered as a tipster" });
         onOpenChange(false);
         return;
       }
 
       // Create active tipster profile (no approval needed since they paid)
-      const { error: insertError } = await supabase.from("sports_tipsters").insert({
-        user_id: user.id,
+      const { error: insertError } = await supabase.from("sports_tipsters").insert({ user_id: user.id,
         display_name: formData.displayName,
         sport_specialization: formData.sport,
         bio: formData.bio || null,
         tip_price: parseFloat(formData.tipPrice),
         status: "active",
-        subscription_price: 19.99,
-      });
+        subscription_price: 19.99 });
 
       if (insertError) throw insertError;
 
-      toast({
-        title: "Success!",
-        description: "You are now a tipster. Start creating and selling tips!",
-      });
+      toast({ title: "Success!",
+        description: "You are now a tipster. Start creating and selling tips!" });
 
       onOpenChange(false);
       navigate("/sports-predictor");
       
-      setFormData({
-        displayName: "",
+      setFormData({ displayName: "",
         sport: "",
         bio: "",
-        tipPrice: "5",
-      });
+        tipPrice: "5" });
       setHasPaid(false);
-    } catch (error) {
-      console.error("Error creating tipster profile:", error);
+    } catch (error) { console.error("Error creating tipster profile:", error);
       toast({
         title: "Error",
         description: "Failed to create profile. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

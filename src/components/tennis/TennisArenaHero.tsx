@@ -43,13 +43,12 @@ export function TennisArenaHero({ stats }: TennisArenaHeroProps) {
         <motion.h1
           initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}
           className="text-3xl md:text-5xl font-black mb-2"
-          style={{
+          style={ {
             WebkitTextStroke: "1.5px rgba(0,0,0,0.3)",
             textShadow: "0 0 30px rgba(132,204,22,0.6), 0 0 60px rgba(132,204,22,0.3)",
             background: "linear-gradient(135deg, #84cc16, #a3e635, #bef264)",
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
+            WebkitTextFillColor: "transparent" }}
         >
           🎾 Tennis Arena
         </motion.h1>

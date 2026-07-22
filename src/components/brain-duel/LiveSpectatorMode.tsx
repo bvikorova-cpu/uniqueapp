@@ -109,15 +109,12 @@ export const LiveSpectatorMode = () => {
         spectatorCounts[s.match_id] = (spectatorCounts[s.match_id] || 0) + 1;
       });
 
-      return matches.map(match => ({
-        ...match,
+      return matches.map(match => ({ ...match,
         player1_profile: profiles?.find(p => p.id === match.player1_id),
         player2_profile: profiles?.find(p => p.id === match.player2_id),
-        spectator_count: spectatorCounts[match.id] || 0,
-      }));
+        spectator_count: spectatorCounts[match.id] || 0 }));
     },
-    refetchInterval: 5000,
-  });
+    refetchInterval: 5000 });
 
   useEffect(() => {
     if (!selectedMatch) return;
@@ -137,10 +134,8 @@ export const LiveSpectatorMode = () => {
           .select('id, full_name, avatar_url')
           .in('id', userIds);
 
-        setChatMessages(data.map(msg => ({
-          ...msg,
-          profile: profiles?.find(p => p.id === msg.user_id),
-        })));
+        setChatMessages(data.map(msg => ({ ...msg,
+          profile: profiles?.find(p => p.id === msg.user_id) })));
       }
     };
 
@@ -176,8 +171,7 @@ export const LiveSpectatorMode = () => {
     onSuccess: (matchId) => {
       setSelectedMatch(matchId);
       toast({ title: 'Joined as spectator! 👀', description: 'You can now watch the match and chat' });
-    },
-  });
+    } });
 
   const sendMessage = useMutation({
     mutationFn: async () => {
@@ -187,8 +181,7 @@ export const LiveSpectatorMode = () => {
         .insert({ match_id: selectedMatch, user_id: userId, message: chatMessage, message_type: 'chat' });
       if (error) throw error;
     },
-    onSuccess: () => { setChatMessage(''); },
-  });
+    onSuccess: () => { setChatMessage(''); } });
 
   const sendGift = useMutation({
     mutationFn: async ({ gift, recipientId }: { gift: VirtualGift; recipientId: string }) => {
@@ -209,8 +202,7 @@ export const LiveSpectatorMode = () => {
     },
     onError: (error: Error) => {
       toast({ title: 'Failed to send gift', description: error.message, variant: 'destructive' });
-    },
-  });
+    } });
 
   const selectedMatchData = liveMatches?.find(m => m.id === selectedMatch);
 

@@ -108,8 +108,7 @@ const Megaforum = () => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as ForumPost[];
-    },
-  });
+    } });
 
   const { data: profiles = {} } = useQuery({
     queryKey: ["forumProfiles", posts.map(p => p.user_id)],
@@ -122,8 +121,7 @@ const Megaforum = () => {
       data?.forEach(p => { map[p.id] = p; });
       return map;
     },
-    enabled: posts.length > 0,
-  });
+    enabled: posts.length > 0 });
 
   const { data: comments = [] } = useQuery({
     queryKey: ["forumComments", selectedPost],
@@ -135,8 +133,7 @@ const Megaforum = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!selectedPost,
-  });
+    enabled: !!selectedPost });
 
   const { data: commentProfiles = {} } = useQuery({
     queryKey: ["commentProfiles", comments.map((c: any) => c.user_id)],
@@ -149,8 +146,7 @@ const Megaforum = () => {
       data?.forEach(p => { map[p.id] = p; });
       return map;
     },
-    enabled: comments.length > 0,
-  });
+    enabled: comments.length > 0 });
 
   const { data: likedPosts = [] } = useQuery({
     queryKey: ["forumLikedPosts", user?.id],
@@ -160,8 +156,7 @@ const Megaforum = () => {
       if (error) throw error;
       return data.map(l => l.post_id);
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: likedComments = [] } = useQuery({
     queryKey: ["forumLikedComments", user?.id],
@@ -171,20 +166,17 @@ const Megaforum = () => {
       if (error) throw error;
       return data.map(l => l.comment_id);
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const createPostMutation = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Must be logged in");
-      const { error } = await (supabase as any).from("forum_posts").insert([{
-        user_id: user.id,
+      const { error } = await (supabase as any).from("forum_posts").insert([{ user_id: user.id,
         title: newPostTitle,
         content: newPostContent,
         category: selectedCategory,
         tags: newPostTags,
-        is_markdown: useMarkdown,
-      }]);
+        is_markdown: useMarkdown }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -196,15 +188,12 @@ const Megaforum = () => {
     },
     onError: (error: any) => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
-    },
-  });
+    } });
 
   const addCommentMutation = useMutation({
     mutationFn: async (postId: string) => {
       if (!user) throw new Error("Must be logged in");
-      const { error } = await supabase.from("forum_comments").insert([{
-        post_id: postId, user_id: user.id, content: newComment,
-      }]);
+      const { error } = await supabase.from("forum_comments").insert([{ post_id: postId, user_id: user.id, content: newComment }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -212,8 +201,7 @@ const Megaforum = () => {
       queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
       setNewComment("");
       toast({ title: "Comment Added" });
-    },
-  });
+    } });
 
   const likeMutation = useMutation({
     mutationFn: async (postId: string) => {
@@ -228,8 +216,7 @@ const Megaforum = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
       queryClient.invalidateQueries({ queryKey: ["forumLikedPosts"] });
-    },
-  });
+    } });
 
   const likeCommentMutation = useMutation({
     mutationFn: async (commentId: string) => {
@@ -244,8 +231,7 @@ const Megaforum = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forumComments"] });
       queryClient.invalidateQueries({ queryKey: ["forumLikedComments"] });
-    },
-  });
+    } });
 
   const deletePostMutation = useMutation({
     mutationFn: async (postId: string) => {
@@ -255,8 +241,7 @@ const Megaforum = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
       toast({ title: "Post Deleted" });
-    },
-  });
+    } });
 
   const pinPostMutation = useMutation({
     mutationFn: async ({ postId, pin }: { postId: string; pin: boolean }) => {
@@ -266,8 +251,7 @@ const Megaforum = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
       toast({ title: "Post updated" });
-    },
-  });
+    } });
 
   const getTimeSince = (dateString: string) => {
     const diffInSeconds = Math.floor((Date.now() - new Date(dateString).getTime()) / 1000);

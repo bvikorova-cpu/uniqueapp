@@ -74,14 +74,12 @@ export const MessageScheduler = ({ onBack, userId }: MessageSchedulerProps) => {
       return;
     }
 
-    const newMsg: ScheduledMessage = {
-      id: Date.now().toString(),
+    const newMsg: ScheduledMessage = { id: Date.now().toString(),
       recipientName: selectedFriend.full_name || "User",
       recipientAvatar: selectedFriend.avatar_url || undefined,
       content: messageContent,
       scheduledFor,
-      status: "pending",
-    };
+      status: "pending" };
 
     setScheduledMessages(prev => [newMsg, ...prev]);
     setShowCreate(false);

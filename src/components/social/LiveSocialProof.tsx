@@ -18,18 +18,15 @@ interface LiveSocialProofProps {
   floor?: number;
 }
 
-export function LiveSocialProof({
-  channelKey,
+export function LiveSocialProof({ channelKey,
   recentActions = [],
   variant = "pill",
   className,
-  floor = 1,
-}: LiveSocialProofProps) {
+  floor = 1 }: LiveSocialProofProps) {
   const { user } = useAuth();
   const { count } = usePresenceChannel({
     channelKey,
-    user: user ? { id: user.id } : null,
-  });
+    user: user ? { id: user.id } : null });
   const display = Math.max(floor, count);
 
   const [actionIdx, setActionIdx] = useState(0);

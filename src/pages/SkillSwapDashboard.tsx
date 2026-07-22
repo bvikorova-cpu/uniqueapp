@@ -27,12 +27,10 @@ interface PopularSkill {
   request_count: number;
 }
 
-export default function SkillSwapDashboard() {
-  const navigate = useNavigate();
+export default function SkillSwapDashboard() { const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats>({
     totalExchanges: 0, averageRating: 0, totalReviews: 0,
-    activeOfferings: 0, pendingExchanges: 0, completedThisMonth: 0,
-  });
+    activeOfferings: 0, pendingExchanges: 0, completedThisMonth: 0 });
   const [popularSkills, setPopularSkills] = useState<PopularSkill[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -77,14 +75,12 @@ export default function SkillSwapDashboard() {
         })
       );
 
-      setStats({
-        totalExchanges: profile?.completed_exchanges || 0,
+      setStats({ totalExchanges: profile?.completed_exchanges || 0,
         averageRating: profile?.rating_average || 0,
         totalReviews: profile?.total_reviews || 0,
         activeOfferings: offeringsCount || 0,
         pendingExchanges: pendingCount || 0,
-        completedThisMonth: monthlyCount || 0,
-      });
+        completedThisMonth: monthlyCount || 0 });
       setPopularSkills(skillsWithCounts.sort((a, b) => b.request_count - a.request_count).slice(0, 5));
     } catch (error: any) {
       console.error('Error:', error);

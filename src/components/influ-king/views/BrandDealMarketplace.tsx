@@ -19,8 +19,7 @@ export default function BrandDealMarketplace({ onBack }: Props) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("influ-king-ai", {
-        body: { action: "brand-deals", niche: niche || "General", followers: Number(followers) },
-      });
+        body: { action: "brand-deals", niche: niche || "General", followers: Number(followers) } });
       if (error) throw error;
       setDeals(data.deals || []);
       toast.success("Brand deals found!");

@@ -1,17 +1,14 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const MODE_CONFIG: Record<string, { questions: number; credits: number; difficulty: string }> = {
   quick:    { questions: 5,  credits: 3,  difficulty: "beginner" },
   standard: { questions: 10, credits: 5,  difficulty: "intermediate" },
   ranked:   { questions: 15, credits: 8,  difficulty: "intermediate" },
-  blitz:    { questions: 20, credits: 10, difficulty: "advanced" },
-};
+  blitz:    { questions: 20, credits: 10, difficulty: "advanced" } };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -92,13 +89,11 @@ serve(async (req) => {
 
     const { data: created, error: createErr } = await svc
       .from("iq_duels")
-      .insert({
-        mode,
+      .insert({ mode,
         host_id: user.id,
         questions: shuffled,
         entry_fee: cfg.credits,
-        prize: cfg.credits * 2,
-      })
+        prize: cfg.credits * 2 })
       .select()
       .single();
     if (createErr) throw createErr;

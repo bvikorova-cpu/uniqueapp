@@ -2,30 +2,24 @@ import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const DIFFICULTIES = [
-  {
-    value: "easy",
+  { value: "easy",
     label: "Easy",
     emoji: "⭐",
     description: "Simple shapes, 3-4 steps",
     color: "from-green-500/20 to-emerald-500/20 border-green-500/30",
-    age: "Ages 4-6",
-  },
-  {
-    value: "medium",
+    age: "Ages 4-6" },
+  { value: "medium",
     label: "Medium",
     emoji: "⭐⭐",
     description: "More detail, 5-6 steps",
     color: "from-yellow-500/20 to-orange-500/20 border-yellow-500/30",
-    age: "Ages 7-9",
-  },
-  {
-    value: "hard",
+    age: "Ages 7-9" },
+  { value: "hard",
     label: "Hard",
     emoji: "⭐⭐⭐",
     description: "Complex shapes, 7+ steps",
     color: "from-red-500/20 to-pink-500/20 border-red-500/30",
-    age: "Ages 10+",
-  },
+    age: "Ages 10+" },
 ];
 
 interface Props {

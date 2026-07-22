@@ -71,8 +71,7 @@ export const TattooPainMap = ({ onBack }: Props) => {
     setDetails(null);
     try {
       const { data, error } = await supabase.functions.invoke("tattoo-ai-tools", {
-        body: { type: "pain_info", bodyPart: part.label, painLevel: part.pain },
-      });
+        body: { type: "pain_info", bodyPart: part.label, painLevel: part.pain } });
       if (error) throw error;
       setDetails(data);
       await refresh();

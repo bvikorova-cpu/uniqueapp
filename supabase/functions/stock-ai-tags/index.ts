@@ -1,8 +1,6 @@
 // AI Tag Suggester for Stock Content (OpenAI)
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 interface Body {
   imageDataUrl?: string;
@@ -17,15 +15,13 @@ Deno.serve(async (req) => {
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) {
       return new Response(JSON.stringify({ error: "OPENAI_API_KEY not configured" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { imageDataUrl, description, language = "en" }: Body = await req.json();
     if (!imageDataUrl && !description) {
       return new Response(JSON.stringify({ error: "Provide imageDataUrl or description" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const systemPrompt = `You are an expert stock-content metadata specialist. Analyze the input and produce SEO-optimized metadata for a stock photo / video / illustration marketplace.
@@ -51,28 +47,23 @@ Output language for human-readable fields: ${language}. Tags & keywords always i
       method: "POST",
       headers: {
         "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userContent },
-        ],
-      }),
-    });
+        ] }) });
 
     if (aiResp.status === 429) {
       return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again shortly." }), {
-        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (!aiResp.ok) {
       const txt = await aiResp.text();
       return new Response(JSON.stringify({ error: `OpenAI error: ${txt}` }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const aiData = await aiResp.json();
@@ -82,11 +73,9 @@ Output language for human-readable fields: ${language}. Tags & keywords always i
     catch { parsed = { title: "", category: "photography", tags: [], keywords: [], raw }; }
 
     return new Response(JSON.stringify({ result: parsed }), {
-      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -119,8 +119,7 @@ const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanE
 };
 CommandShortcut.displayName = "CommandShortcut";
 
-export {
-  Command,
+export { Command,
   CommandDialog,
   CommandInput,
   CommandList,
@@ -128,5 +127,4 @@ export {
   CommandGroup,
   CommandItem,
   CommandShortcut,
-  CommandSeparator,
-};
+  CommandSeparator };

@@ -39,13 +39,11 @@ export function AutoWithdrawSettings() {
     if (!user?.id) return;
     setSaving(true);
     const { error } = await supabase.from("auto_withdraw_settings").upsert(
-      {
-        user_id: user.id,
+      { user_id: user.id,
         enabled,
         threshold_eur: threshold,
         min_balance_eur: minBalance,
-        preferred_method: "stripe_connect",
-      },
+        preferred_method: "stripe_connect" },
       { onConflict: "user_id" },
     );
     setSaving(false);

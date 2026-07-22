@@ -49,11 +49,9 @@ export default function RewardsGuilds() {
     if (!user || !name.trim() || creating) return;
     setCreating(true);
     try {
-      const { data, error } = await supabase.rpc("create_guild" as any, {
-        _name: name.trim(),
+      const { data, error } = await supabase.rpc("create_guild" as any, { _name: name.trim(),
         _description: desc || null,
-        _emblem: emblem,
-      });
+        _emblem: emblem });
       if (error) return toast.error(error.message);
       const res = data as any;
       if (!res?.ok) return toast.error(res?.error ?? "Failed to create");

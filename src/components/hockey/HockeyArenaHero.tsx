@@ -43,13 +43,12 @@ export function HockeyArenaHero({ stats }: HockeyArenaHeroProps) {
         <motion.h1
           initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}
           className="text-3xl md:text-5xl font-black mb-2"
-          style={{
+          style={ {
             WebkitTextStroke: "1.5px rgba(0,0,0,0.3)",
             textShadow: "0 0 30px rgba(6,182,212,0.6), 0 0 60px rgba(6,182,212,0.3)",
             background: "linear-gradient(135deg, #06b6d4, #22d3ee, #67e8f9)",
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
+            WebkitTextFillColor: "transparent" }}
         >
           🏒 Hockey Arena
         </motion.h1>

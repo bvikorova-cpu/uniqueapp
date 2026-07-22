@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[KYC-CHECK] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
@@ -49,14 +47,12 @@ serve(async (req) => {
       );
     }
 
-    if (!row.stripe_verification_session_id || row.status === "verified") {
-      return new Response(
+    if (!row.stripe_verification_session_id || row.status === "verified") { return new Response(
         JSON.stringify({
           status: row.status,
           verified_name: row.verified_name,
           verified_at: row.verified_at,
-          rejection_reason: row.rejection_reason,
-        }),
+          rejection_reason: row.rejection_reason }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -108,11 +104,9 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({
-        status: newStatus,
+      JSON.stringify({ status: newStatus,
         verified_name: update.verified_name ?? row.verified_name,
-        rejection_reason: update.rejection_reason ?? row.rejection_reason,
-      }),
+        rejection_reason: update.rejection_reason ?? row.rejection_reason }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
@@ -120,7 +114,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

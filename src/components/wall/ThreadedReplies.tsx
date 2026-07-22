@@ -55,8 +55,7 @@ export function ThreadedReplies({ postId, commentId, depth = 0, maxDepth = 3 }: 
       const m = new Map((profs || []).map((p: any) => [p.id, p]));
       return rows.map((r: any) => ({ ...r, profiles: m.get(r.user_id) || { full_name: null, avatar_url: null } }));
     },
-    enabled: expanded,
-  });
+    enabled: expanded });
 
   const handleSubmitReply = async () => {
     if (!replyText.trim()) return;
@@ -70,12 +69,10 @@ export function ThreadedReplies({ postId, commentId, depth = 0, maxDepth = 3 }: 
         ? `> ${quotedReply.profiles?.full_name}: "${quotedReply.content.slice(0, 100)}"\n\n${replyText}`
         : replyText;
 
-      const { error } = await (supabase as any).from("comments").insert({
-        post_id: postId,
+      const { error } = await (supabase as any).from("comments").insert({ post_id: postId,
         user_id: user.id,
         content,
-        parent_comment_id: commentId,
-      });
+        parent_comment_id: commentId });
 
       if (error) throw error;
 

@@ -22,12 +22,10 @@ export function StoryConstellationMap({ stories, visitedStories }: StoryConstell
     { x: 15, y: 65 }, { x: 50, y: 75 }, { x: 85, y: 60 },
   ];
 
-  const nodes: StoryNode[] = stories.slice(0, 6).map((story, i) => ({
-    ...story,
+  const nodes: StoryNode[] = stories.slice(0, 6).map((story, i) => ({ ...story,
     visited: visitedStories.has(story.id),
     x: positions[i]?.x ?? 50,
-    y: positions[i]?.y ?? 50,
-  }));
+    y: positions[i]?.y ?? 50 }));
 
   // Draw constellation lines between adjacent stories
   const connections = [[0, 1], [1, 2], [0, 3], [3, 4], [4, 5], [2, 5], [1, 4]];

@@ -342,8 +342,7 @@ const PricingCards = () => {
       // Route through universal create-checkout with the per-service product key
       // so each tier is billed at its correct €/mode (one-time vs subscription).
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { product: productKey, module: 'dna_memory' },
-      });
+        body: { product: productKey, module: 'dna_memory' } });
       if (error) throw error;
       if (data?.url) {
         const w = window.open(data.url, "_blank", "noopener,noreferrer");

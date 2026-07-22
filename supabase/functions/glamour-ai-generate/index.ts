@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -25,12 +23,9 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
     const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } },
-    });
+      global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } } });
 
-    const { data: newBalance, error: spendErr } = await userClient.rpc("spend_glamour_coins", {
-      _amount: coinsCost,
-    });
+    const { data: newBalance, error: spendErr } = await userClient.rpc("spend_glamour_coins", { _amount: coinsCost });
 
     if (spendErr) {
       const msg = spendErr.message || "";
@@ -39,16 +34,14 @@ serve(async (req) => {
           JSON.stringify({
             error: "insufficient_glamour_coins",
             message: `Need ${coinsCost} Glamour Coins to use this tool.`,
-            coinsRequired: coinsCost,
-          }),
+            coinsRequired: coinsCost }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       console.error("spend_glamour_coins error:", spendErr);
       return new Response(JSON.stringify({ error: msg || "coin_deduction_failed" }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
@@ -63,9 +56,7 @@ serve(async (req) => {
           { role: "system", content: "You are a magical, creative AI assistant for Glamour World - a fun, girly platform. Be enthusiastic, creative, and detailed. Use emojis sparingly. Provide practical, actionable content." },
           { role: "user", content: prompt },
         ],
-        max_completion_tokens: 1500,
-      }),
-    });
+        max_completion_tokens: 1500 }) });
 
     const data = await response.json();
     const result = data.choices?.[0]?.message?.content || "No result generated";

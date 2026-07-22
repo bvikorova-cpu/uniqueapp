@@ -5,34 +5,26 @@ import { useState, useEffect } from "react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const testimonials = [
-  {
-    name: "Anna S.",
+  { name: "Anna S.",
     area: "Breathing Exercises",
     avatar: "🧘‍♀️",
     rating: 5,
-    text: "The 4-7-8 breathing technique completely transformed how I handle anxiety. I use it every night before sleep.",
-  },
-  {
-    name: "James R.",
+    text: "The 4-7-8 breathing technique completely transformed how I handle anxiety. I use it every night before sleep." },
+  { name: "James R.",
     area: "AI Coach",
     avatar: "💆",
     rating: 5,
-    text: "Having a 24/7 mindfulness coach is incredible. It helped me through some of my toughest days.",
-  },
-  {
-    name: "Lisa M.",
+    text: "Having a 24/7 mindfulness coach is incredible. It helped me through some of my toughest days." },
+  { name: "Lisa M.",
     area: "Nature Sounds",
     avatar: "🌿",
     rating: 5,
-    text: "The rain and ocean sounds help me fall asleep in minutes. My insomnia is basically gone now.",
-  },
-  {
-    name: "Tom K.",
+    text: "The rain and ocean sounds help me fall asleep in minutes. My insomnia is basically gone now." },
+  { name: "Tom K.",
     area: "Gratitude Journal",
     avatar: "📖",
     rating: 5,
-    text: "Writing gratitude entries daily with AI insights has genuinely shifted my perspective on life.",
-  },
+    text: "Writing gratitude entries daily with AI insights has genuinely shifted my perspective on life." },
 ];
 
 export const WellnessTestimonials = () => {

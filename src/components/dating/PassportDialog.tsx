@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const POPULAR = ["New York", "London", "Paris", "Tokyo", "Bali", "Barcelona", "Berlin", "Dubai", "Sydney", "Mexico City"];
+const POPULAR = ["City A", "City B", "City C", "City D", "City E", "City F", "City G", "City H", "City I", "City J"];
 
 interface Props {
   open: boolean; onOpenChange: (v: boolean) => void;
@@ -50,7 +50,7 @@ export const PassportDialog = ({ open, onOpenChange, userId, current, onSaved }:
           <DialogTitle className="flex items-center gap-2"><Globe2 className="h-5 w-5 text-primary" /> Passport</DialogTitle>
           <DialogDescription>Match with people anywhere in the world. Useful before you travel.</DialogDescription>
         </DialogHeader>
-        <Input placeholder="City (e.g. Tokyo)" value={city} onChange={(e) => setCity(e.target.value)} />
+        <Input placeholder="City (e.g. City)" value={city} onChange={(e) => setCity(e.target.value)} />
         <div className="flex flex-wrap gap-2">
           {POPULAR.map(c => (
             <Button key={c} variant="outline" size="sm" onClick={() => setCity(c)}>{c}</Button>

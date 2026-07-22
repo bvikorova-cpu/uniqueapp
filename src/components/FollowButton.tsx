@@ -9,12 +9,10 @@ interface FollowButtonProps {
   size?: "default" | "sm" | "lg" | "icon";
 }
 
-export const FollowButton = ({
-  currentUserId,
+export const FollowButton = ({ currentUserId,
   targetUserId,
   variant = "default",
-  size = "default",
-}: FollowButtonProps) => {
+  size = "default" }: FollowButtonProps) => {
   const { data: isFollowing, isLoading } = useIsFollowing(currentUserId, targetUserId);
   const followMutation = useFollowMutation();
   const unfollowMutation = useUnfollowMutation();

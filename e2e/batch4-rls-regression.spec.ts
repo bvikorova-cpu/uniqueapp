@@ -32,19 +32,16 @@ async function anonSelect(
     async ({ url, key, table, columns, limit }) => {
       const mod = await import("https://esm.sh/@supabase/supabase-js@2");
       const client = mod.createClient(url, key, {
-        auth: { persistSession: false, autoRefreshToken: false },
-      });
+        auth: { persistSession: false, autoRefreshToken: false } });
       await client.auth.signOut().catch(() => {});
       const { data, error, status } = await client
         .from(table)
         .select(columns)
         .limit(limit);
-      return {
-        status,
+      return { status,
         rows: data ?? [],
         errorCode: error?.code ?? null,
-        errorMessage: error?.message ?? null,
-      };
+        errorMessage: error?.message ?? null };
     },
     { url: SUPABASE_URL, key: SUPABASE_ANON_KEY, table, columns, limit },
   );
@@ -59,15 +56,12 @@ async function anonInsert(
     async ({ url, key, table, row }) => {
       const mod = await import("https://esm.sh/@supabase/supabase-js@2");
       const client = mod.createClient(url, key, {
-        auth: { persistSession: false, autoRefreshToken: false },
-      });
+        auth: { persistSession: false, autoRefreshToken: false } });
       const { data, error, status } = await client.from(table).insert(row).select();
-      return {
-        status,
+      return { status,
         rows: data ?? [],
         errorCode: error?.code ?? null,
-        errorMessage: error?.message ?? null,
-      };
+        errorMessage: error?.message ?? null };
     },
     { url: SUPABASE_URL, key: SUPABASE_ANON_KEY, table, row },
   );
@@ -104,25 +98,21 @@ test.describe("Batch 4 RLS — anon must NOT read other users' rows", () => {
     });
   }
 
-  test("family_relationships: anon INSERT is rejected", async ({ page }) => {
-    const fakeUid = "00000000-0000-0000-0000-000000000001";
+  test("family_relationships: anon INSERT is rejected", async ({ page }) => { const fakeUid = "00000000-0000-0000-0000-000000000001";
     const res = await anonInsert(page, "family_relationships", {
       user_id: fakeUid,
       related_user_id: "00000000-0000-0000-0000-000000000002",
       kind: "sibling",
       requested_by: fakeUid,
-      status: "pending",
-    });
+      status: "pending" });
     expect(res.errorCode, "anon must NOT be able to insert family rows").not.toBeNull();
   });
 
-  test("friendships: anon INSERT is rejected", async ({ page }) => {
-    const fakeUid = "00000000-0000-0000-0000-000000000001";
+  test("friendships: anon INSERT is rejected", async ({ page }) => { const fakeUid = "00000000-0000-0000-0000-000000000001";
     const res = await anonInsert(page, "friendships", {
       user_id: fakeUid,
       friend_id: "00000000-0000-0000-0000-000000000002",
-      status: "pending",
-    });
+      status: "pending" });
     expect(res.errorCode, "anon must NOT be able to insert friendships").not.toBeNull();
   });
 });

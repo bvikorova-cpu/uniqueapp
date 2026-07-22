@@ -22,8 +22,7 @@ export const useContentReports = (status?: ModerationStatus) => {
       const { data, error } = await query;
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 };
 
 export const useModerationQueue = () => {
@@ -38,20 +37,17 @@ export const useModerationQueue = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 };
 
 export const useUpdateReportStatus = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  return useMutation({
-    mutationFn: async ({
+  return useMutation({ mutationFn: async ({
       reportId,
       status,
-      resolutionNotes,
-    }: {
+      resolutionNotes }: {
       reportId: string;
       status: ModerationStatus;
       resolutionNotes?: string;
@@ -61,71 +57,55 @@ export const useUpdateReportStatus = () => {
 
       const { error } = await supabase
         .from("content_reports")
-        .update({
-          status,
+        .update({ status,
           assigned_to: user.id,
           resolution_notes: resolutionNotes,
-          resolved_at: status === "approved" || status === "deleted" ? new Date().toISOString() : null,
-        })
+          resolved_at: status === "approved" || status === "deleted" ? new Date().toISOString() : null })
         .eq("id", reportId);
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["content-reports"] });
-      toast({
-        title: "Report Updated",
-        description: "The report status has been updated.",
-      });
+      toast({ title: "Report Updated",
+        description: "The report status has been updated." });
     },
-    onError: (error: any) => {
-      toast({
+    onError: (error: any) => { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 };
 
 export const useShadowbanUser = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  return useMutation({
-    mutationFn: async ({
+  return useMutation({ mutationFn: async ({
       userId,
-      reason,
-    }: {
+      reason }: {
       userId: string;
       reason: string;
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("shadowbanned_users").insert({
-        user_id: userId,
+      const { error } = await supabase.from("shadowbanned_users").insert({ user_id: userId,
         shadowbanned_by: user.id,
-        reason,
-      });
+        reason });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shadowbanned-users"] });
-      toast({
-        title: "User Shadowbanned",
-        description: "The user has been shadowbanned.",
-      });
+      toast({ title: "User Shadowbanned",
+        description: "The user has been shadowbanned." });
     },
-    onError: (error: any) => {
-      toast({
+    onError: (error: any) => { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 };
 
 export const useRemoveShadowban = () => {
@@ -143,30 +123,23 @@ export const useRemoveShadowban = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shadowbanned-users"] });
-      toast({
-        title: "Shadowban Removed",
-        description: "The user's shadowban has been lifted.",
-      });
+      toast({ title: "Shadowban Removed",
+        description: "The user's shadowban has been lifted." });
     },
-    onError: (error: any) => {
-      toast({
+    onError: (error: any) => { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 };
 
 export const useWarnUser = () => {
   const { toast } = useToast();
 
-  return useMutation({
-    mutationFn: async ({
+  return useMutation({ mutationFn: async ({
       userId,
       reason,
-      relatedContentId,
-    }: {
+      relatedContentId }: {
       userId: string;
       reason: string;
       relatedContentId?: string;
@@ -174,44 +147,35 @@ export const useWarnUser = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("user_warnings").insert({
-        user_id: userId,
+      const { error } = await supabase.from("user_warnings").insert({ user_id: userId,
         issued_by: user.id,
         reason,
-        related_content_id: relatedContentId,
-      });
+        related_content_id: relatedContentId });
 
       if (error) throw error;
     },
-    onSuccess: () => {
-      toast({
+    onSuccess: () => { toast({
         title: "Warning Issued",
-        description: "The user has been warned.",
-      });
+        description: "The user has been warned." });
     },
-    onError: (error: any) => {
-      toast({
+    onError: (error: any) => { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 };
 
 export const useTakeModeratorAction = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  return useMutation({
-    mutationFn: async ({
+  return useMutation({ mutationFn: async ({
       userId,
       actionType,
       reason,
       relatedContentId,
       relatedReportId,
-      durationHours,
-    }: {
+      durationHours }: {
       userId: string;
       actionType: ModerationAction;
       reason: string;
@@ -222,8 +186,7 @@ export const useTakeModeratorAction = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("moderation_actions").insert({
-        moderator_id: user.id,
+      const { error } = await supabase.from("moderation_actions").insert({ moderator_id: user.id,
         user_id: userId,
         action_type: actionType,
         reason,
@@ -232,27 +195,21 @@ export const useTakeModeratorAction = () => {
         duration_hours: durationHours,
         expires_at: durationHours 
           ? new Date(Date.now() + durationHours * 60 * 60 * 1000).toISOString() 
-          : null,
-      });
+          : null });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["moderation-queue"] });
       queryClient.invalidateQueries({ queryKey: ["content-reports"] });
-      toast({
-        title: "Action Taken",
-        description: "The moderation action has been recorded.",
-      });
+      toast({ title: "Action Taken",
+        description: "The moderation action has been recorded." });
     },
-    onError: (error: any) => {
-      toast({
+    onError: (error: any) => { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 };
 
 export const useIsShadowbanned = (userId?: string) => {
@@ -271,8 +228,7 @@ export const useIsShadowbanned = (userId?: string) => {
       if (error) throw error;
       return !!data;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 };
 
 export const useShadowbannedUsers = () => {
@@ -287,6 +243,5 @@ export const useShadowbannedUsers = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 };

@@ -26,8 +26,7 @@ export function PrintExport() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       return data || [];
-    },
-  });
+    } });
 
   const handleExport = async () => {
     if (!selectedPage) return;
@@ -41,8 +40,7 @@ export function PrintExport() {
       const sizes: Record<string, { w: number; h: number }> = {
         a4: { w: 2480, h: 3508 },
         letter: { w: 2550, h: 3300 },
-        a3: { w: 3508, h: 4961 },
-      };
+        a3: { w: 3508, h: 4961 } };
       const size = sizes[paperSize] || sizes.a4;
 
       const canvas = document.createElement("canvas");

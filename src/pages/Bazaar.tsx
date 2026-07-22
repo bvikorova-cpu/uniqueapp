@@ -67,42 +67,34 @@ interface BazaarItem {
 }
 
 const aiTools = [
-  {
-    id: "price-estimator",
+  { id: "price-estimator",
     title: "AI Price Estimator",
     description: "Get fair market value for any item with detailed price analysis",
     icon: DollarSign,
     badge: "3 CR",
     gradient: "bg-gradient-to-r from-amber-500 to-orange-600",
-    features: ["Fair market value range", "Price comparison analysis", "Quick sale vs premium pricing"],
-  },
-  {
-    id: "listing-optimizer",
+    features: ["Fair market value range", "Price comparison analysis", "Quick sale vs premium pricing"] },
+  { id: "listing-optimizer",
     title: "AI Listing Optimizer",
     description: "Rewrite your listing for maximum engagement and conversions",
     icon: Wand2,
     badge: "3 CR",
     gradient: "bg-gradient-to-r from-orange-500 to-red-500",
-    features: ["SEO-optimized titles", "Compelling descriptions", "Photo & urgency tips"],
-  },
-  {
-    id: "buyer-match",
+    features: ["SEO-optimized titles", "Compelling descriptions", "Photo & urgency tips"] },
+  { id: "buyer-match",
     title: "AI Buyer Match",
     description: "Find ideal buyers based on item category and market data",
     icon: Target,
     badge: "4 CR",
     gradient: "bg-gradient-to-r from-yellow-500 to-amber-600",
-    features: ["Buyer persona profiles", "Target demographics", "Marketing angles"],
-  },
-  {
-    id: "fraud-detector",
+    features: ["Buyer persona profiles", "Target demographics", "Marketing angles"] },
+  { id: "fraud-detector",
     title: "AI Fraud Detector",
     description: "Verify listing authenticity and spot potential scams",
     icon: Shield,
     badge: "4 CR",
     gradient: "bg-gradient-to-r from-emerald-500 to-teal-600",
-    features: ["Trust score 0-100", "Red flag detection", "Verification checklist"],
-  },
+    features: ["Trust score 0-100", "Red flag detection", "Verification checklist"] },
 ];
 
 const Bazaar = () => {
@@ -124,11 +116,9 @@ const Bazaar = () => {
   const [selectedItem, setSelectedItem] = useState<BazaarItem | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [items, setItems] = useState<BazaarItem[]>([]);
-  const [formData, setFormData] = useState({
-    title: "", price: "", location: "", description: "",
+  const [formData, setFormData] = useState({ title: "", price: "", location: "", description: "",
     category: "electronics", condition: "Like New", listing_type: "sell",
-    brand: "", size: "", shipping_method: "personal", shipping_price: "0",
-  });
+    brand: "", size: "", shipping_method: "personal", shipping_price: "0" });
   const { toast } = useToast();
   const { limits, canCreateListing, calculateCommission } = useSubscription();
   const { isFavorite, toggle: toggleFavorite, ids: favoriteIds } = useBazaarFavorites(currentUserId);
@@ -162,8 +152,7 @@ const Bazaar = () => {
         const { data: { session } } = await supabase.auth.getSession();
         const { error } = await supabase.functions.invoke('verify-bazaar-order-payment', {
           body: { sessionId, orderId },
-          headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined,
-        });
+          headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined });
         if (error) throw error;
         toast({ title: "Order confirmed! 🎉", description: "Your order has been placed. The seller will ship it soon." });
         window.history.replaceState({}, '', window.location.pathname);
@@ -177,8 +166,7 @@ const Bazaar = () => {
         const { data: { session } } = await supabase.auth.getSession();
         const { error } = await supabase.functions.invoke('verify-bazaar-payment', {
           body: { sessionId, transactionId },
-          headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined,
-        });
+          headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined });
         if (error) throw error;
         toast({ title: "Payment successful! 🎉", description: "Your purchase was processed successfully." });
         window.history.replaceState({}, '', window.location.pathname);
@@ -331,22 +319,19 @@ const Bazaar = () => {
 
       const price = parseFloat(formData.price);
       const commission = calculateCommission(price);
-      const { error: insertError } = await supabase.from('bazaar_items').insert({
-        user_id: user.id, title: formData.title, price, location: formData.location,
+      const { error: insertError } = await supabase.from('bazaar_items').insert({ user_id: user.id, title: formData.title, price, location: formData.location,
         description: formData.description, category: formData.category,
         condition: formData.condition, listing_type: formData.listing_type,
         image_url: coverUrl, image_urls: uploadedUrls,
         brand: formData.brand || null,
         size: formData.size || null,
         shipping_method: formData.shipping_method,
-        shipping_price: formData.shipping_price ? Number(formData.shipping_price) : 0,
-      });
+        shipping_price: formData.shipping_price ? Number(formData.shipping_price) : 0 });
       if (insertError) throw insertError;
 
       toast({
         title: "Success",
-        description: commission > 0 ? `Listing added. On sale, a ${limits.commissionRate}% commission (€${commission.toFixed(2)}) will be charged` : "Listing added without commission",
-      });
+        description: commission > 0 ? `Listing added. On sale, a ${limits.commissionRate}% commission (€${commission.toFixed(2)}) will be charged` : "Listing added without commission" });
       setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Like New", listing_type: "sell", brand: "", size: "", shipping_method: "personal", shipping_price: "0" });
       photos.forEach((p) => URL.revokeObjectURL(p.preview));
       setPhotos([]); setIsDialogOpen(false); loadItems();
@@ -372,9 +357,7 @@ const Bazaar = () => {
     }
     setSendingMessage(true);
     try {
-      const { error } = await supabase.from('bazaar_messages').insert({
-        item_id: selectedItem.id, sender_id: currentUserId, receiver_id: selectedItem.user_id, message: contactMessage,
-      });
+      const { error } = await supabase.from('bazaar_messages').insert({ item_id: selectedItem.id, sender_id: currentUserId, receiver_id: selectedItem.user_id, message: contactMessage });
       if (error) throw error;
       toast({ title: "Success", description: "Message sent to seller" });
       setContactMessage(""); setIsContactDialogOpen(false);

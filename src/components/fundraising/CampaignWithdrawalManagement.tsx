@@ -6,13 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, X, DollarSign, Eye } from "lucide-react";
 import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -57,12 +55,10 @@ export function CampaignWithdrawalManagement() {
 
       if (error) throw error;
       setRequests((data as any) || []);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -73,31 +69,25 @@ export function CampaignWithdrawalManagement() {
 
     setProcessing(true);
     try {
-      const { error } = await supabase.functions.invoke('process-withdrawal-request', {
-        body: {
+      const { error } = await supabase.functions.invoke('process-withdrawal-request', { body: {
           withdrawalId: selectedRequest.id,
           action,
-          adminNotes: adminNotes || null,
-        },
-      });
+          adminNotes: adminNotes || null } });
 
       if (error) throw error;
 
       toast({
         title: "Success",
-        description: `Withdrawal request ${action}d successfully`,
-      });
+        description: `Withdrawal request ${action}d successfully` });
 
       setShowDetailsDialog(false);
       setSelectedRequest(null);
       setAdminNotes("");
       loadRequests();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setProcessing(false);
     }

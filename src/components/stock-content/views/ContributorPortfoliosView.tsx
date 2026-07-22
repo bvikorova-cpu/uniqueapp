@@ -58,13 +58,11 @@ export function ContributorPortfoliosView({ onBack }: Props) {
         .select("id, full_name, username, avatar_url, bio, location, website")
         .in("id", ids);
 
-      const merged: Contributor[] = (profs || []).map((p: any) => ({
-        ...p,
+      const merged: Contributor[] = (profs || []).map((p: any) => ({ ...p,
         total_items: byCreator[p.id].items,
         total_downloads: byCreator[p.id].downloads,
         total_revenue: byCreator[p.id].revenue,
-        cover_thumbs: byCreator[p.id].thumbs,
-      })).sort((a, b) => b.total_downloads - a.total_downloads);
+        cover_thumbs: byCreator[p.id].thumbs })).sort((a, b) => b.total_downloads - a.total_downloads);
 
       setList(merged);
       setLoading(false);

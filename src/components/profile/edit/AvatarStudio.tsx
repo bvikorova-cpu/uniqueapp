@@ -28,9 +28,7 @@ interface AvatarStudioProps {
   onGenerate: (style: string) => void;
 }
 
-export const AvatarStudio = ({
-  avatarUrl, fallback, uploading, generating, description, onDescriptionChange, onUpload, onGenerate,
-}: AvatarStudioProps) => {
+export const AvatarStudio = ({ avatarUrl, fallback, uploading, generating, description, onDescriptionChange, onUpload, onGenerate }: AvatarStudioProps) => {
   const [style, setStyle] = useState("realistic");
 
   return (

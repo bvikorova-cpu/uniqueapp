@@ -16,8 +16,7 @@ export const CoverImageUpload = ({ value, onChange, folder }: CoverImageUploadPr
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0];
     if (!file) return;
 
     // Validate file type
@@ -25,18 +24,15 @@ export const CoverImageUpload = ({ value, onChange, folder }: CoverImageUploadPr
       toast({
         title: "Invalid file type",
         description: "Please select an image file",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
     // Validate file size (10MB max)
-    if (file.size > 10 * 1024 * 1024) {
-      toast({
+    if (file.size > 10 * 1024 * 1024) { toast({
         title: "File too large",
         description: "Please select an image under 10MB",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -60,13 +56,11 @@ export const CoverImageUpload = ({ value, onChange, folder }: CoverImageUploadPr
 
       onChange(publicUrl);
       toast({ title: "Image uploaded!" });
-    } catch (error: any) {
-      console.error("Upload error:", error);
+    } catch (error: any) { console.error("Upload error:", error);
       toast({
         title: "Upload failed",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsUploading(false);
     }

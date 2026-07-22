@@ -79,12 +79,10 @@ const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps<"span"
 );
 BreadcrumbEllipsis.displayName = "BreadcrumbElipssis";
 
-export {
-  Breadcrumb,
+export { Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
-  BreadcrumbEllipsis,
-};
+  BreadcrumbEllipsis };

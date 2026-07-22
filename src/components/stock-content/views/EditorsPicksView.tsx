@@ -80,14 +80,12 @@ export function EditorsPicksView({ onBack }: Props) {
     if (!session) { toast.error("Log in"); return; }
     const weekStart = new Date();
     weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-    const { error } = await supabase.from("stock_editors_picks").insert({
-      content_item_id: newItemId.trim(),
+    const { error } = await supabase.from("stock_editors_picks").insert({ content_item_id: newItemId.trim(),
       editor_note: newNote.trim() || null,
       featured_by: session.user.id,
       position: picks.length,
       week_start: weekStart.toISOString().slice(0, 10),
-      status: newPublishOnline ? "online" : "draft",
-    } as any);
+      status: newPublishOnline ? "online" : "draft" } as any);
     if (error) { toast.error(error.message); return; }
     toast.success(newPublishOnline ? "Published online" : "Saved as draft");
     setNewItemId(""); setNewNote(""); setNewPublishOnline(false); load();
@@ -117,11 +115,9 @@ export function EditorsPicksView({ onBack }: Props) {
 
   const saveEdit = async () => {
     if (!editing) return;
-    const { error } = await supabase.from("stock_editors_picks").update({
-      editor_note: editNote.trim() || null,
+    const { error } = await supabase.from("stock_editors_picks").update({ editor_note: editNote.trim() || null,
       position: editPosition,
-      status: editStatus,
-    } as any).eq("id", editing.id);
+      status: editStatus } as any).eq("id", editing.id);
     if (error) { toast.error(error.message); return; }
     toast.success("Saved");
     setEditing(null); load();

@@ -7,14 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { CheckCircle2, ExternalLink, HandCoins, Loader2, ShieldCheck, XCircle } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -55,10 +53,8 @@ type Escrow = {
   paid_at: string | null;
 };
 
-function ApprovePayDialog({
-  app,
-  onSuccess,
-}: {
+function ApprovePayDialog({ app,
+  onSuccess }: {
   app: Application;
   onSuccess: () => void;
 }) {
@@ -73,8 +69,7 @@ function ApprovePayDialog({
       const eur = Number(amount);
       if (!Number.isFinite(eur) || eur < 1) throw new Error("Enter a valid amount in EUR");
       const { data, error } = await supabase.functions.invoke("brand-campaign-checkout", {
-        body: { applicationId: app.id, agreedEur: eur },
-      });
+        body: { applicationId: app.id, agreedEur: eur } });
       if (error) throw error;
       if (!data?.url) throw new Error("No checkout URL returned");
       window.open(data.url, "_blank");
@@ -85,8 +80,7 @@ function ApprovePayDialog({
       setOpen(false);
       onSuccess();
     },
-    onError: (e: any) => toast.error(e?.message ?? "Failed to start checkout"),
-  });
+    onError: (e: any) => toast.error(e?.message ?? "Failed to start checkout") });
 
   return (
     <>
@@ -154,10 +148,8 @@ function ApprovePayDialog({
   );
 }
 
-function ReleaseEscrowDialog({
-  escrow,
-  onSuccess,
-}: {
+function ReleaseEscrowDialog({ escrow,
+  onSuccess }: {
   escrow: Escrow;
   onSuccess: () => void;
 }) {
@@ -167,8 +159,7 @@ function ReleaseEscrowDialog({
   const mutation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke("brand-release-escrow", {
-        body: { escrowId: escrow.id, note },
-      });
+        body: { escrowId: escrow.id, note } });
       if (error) throw error;
       return data;
     },
@@ -177,8 +168,7 @@ function ReleaseEscrowDialog({
       setOpen(false);
       onSuccess();
     },
-    onError: (e: any) => toast.error(e?.message ?? "Failed to release escrow"),
-  });
+    onError: (e: any) => toast.error(e?.message ?? "Failed to release escrow") });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -222,10 +212,8 @@ function ReleaseEscrowDialog({
 export function BrandApplicationsManager() {
   const queryClient = useQueryClient();
 
-  const { data: user } = useQuery({
-    queryKey: ["auth-user"],
-    queryFn: async () => (await supabase.auth.getUser()).data.user,
-  });
+  const { data: user } = useQuery({ queryKey: ["auth-user"],
+    queryFn: async () => (await supabase.auth.getUser()).data.user });
 
   const { data: applications, isLoading } = useQuery({
     queryKey: ["brand-applications", user?.id],
@@ -252,8 +240,7 @@ export function BrandApplicationsManager() {
 
       if (error) throw error;
       return (data ?? []) as unknown as Application[];
-    },
-  });
+    } });
 
   const { data: escrows } = useQuery({
     queryKey: ["brand-escrows", user?.id],
@@ -266,8 +253,7 @@ export function BrandApplicationsManager() {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as Escrow[];
-    },
-  });
+    } });
 
   const rejectMutation = useMutation({
     mutationFn: async (applicationId: string) => {
@@ -281,8 +267,7 @@ export function BrandApplicationsManager() {
       toast.success("Application rejected");
       queryClient.invalidateQueries({ queryKey: ["brand-applications"] });
     },
-    onError: (e: any) => toast.error(e?.message ?? "Failed to reject"),
-  });
+    onError: (e: any) => toast.error(e?.message ?? "Failed to reject") });
 
   const refresh = () => {
     queryClient.invalidateQueries({ queryKey: ["brand-applications"] });

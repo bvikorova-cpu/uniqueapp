@@ -156,8 +156,7 @@ const MultiverseNetwork = () => {
               width: Math.random() * 2 + 1,
               height: Math.random() * 2 + 1,
               left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
+              top: `${Math.random() * 100}%` }}
             animate={{ opacity: [0.2, 0.8, 0.2] }}
             transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, delay: Math.random() * 3 }}
           />
@@ -192,11 +191,10 @@ const MultiverseNetwork = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 className="text-2xl font-black mb-6"
-                style={{
+                style={ {
                   background: 'linear-gradient(135deg, #c084fc, #22d3ee, #a78bfa)',
                   WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
+                  WebkitTextFillColor: 'transparent' }}
               >
                 Multiverse Tools
               </motion.h2>

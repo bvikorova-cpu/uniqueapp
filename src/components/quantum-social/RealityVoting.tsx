@@ -60,19 +60,15 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
         userVoted = (votes || []).some(v => v.voter_id === user.id);
       }
 
-      const versionVotes = (versions || []).map(v => ({
-        ...v,
-        votes: (votes || []).filter(vote => vote.chosen_version_id === v.id).length,
-      }));
+      const versionVotes = (versions || []).map(v => ({ ...v,
+        votes: (votes || []).filter(vote => vote.chosen_version_id === v.id).length }));
 
-      enriched.push({
-        id: post.id,
+      enriched.push({ id: post.id,
         base_content: post.base_content,
         is_collapsed: post.is_collapsed,
         versions: versionVotes,
         totalVotes: (votes || []).length,
-        userVoted,
-      });
+        userVoted });
     }
 
     setPosts(enriched);
@@ -88,11 +84,9 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
       return;
     }
 
-    const { error } = await supabase.from("quantum_reality_votes").insert([{
-      post_id: postId,
+    const { error } = await supabase.from("quantum_reality_votes").insert([{ post_id: postId,
       voter_id: user.id,
-      chosen_version_id: versionId,
-    }]);
+      chosen_version_id: versionId }]);
 
     if (error) {
       if (error.code === '23505') {

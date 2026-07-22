@@ -107,17 +107,14 @@ export default function KidsMagicLibrary() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data || []).map((r: any) => ({
-        id: r.id,
+      return (data || []).map((r: any) => ({ id: r.id,
         title: r.title,
         category: r.category || "story",
         story_content: r.story_text,
         illustration_url: r.illustration_url,
-        created_at: r.created_at,
-      })) as Story[];
+        created_at: r.created_at })) as Story[];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   // Fetch drawings from DB
   const { data: drawings = [] } = useQuery({
@@ -130,16 +127,13 @@ export default function KidsMagicLibrary() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data || []).map((r: any) => ({
-        id: r.id,
+      return (data || []).map((r: any) => ({ id: r.id,
         title: r.title || r.tutorial_topic || "Drawing",
         image_url: r.drawing_url,
         category: r.difficulty || "drawing",
-        created_at: r.created_at,
-      })) as Drawing[];
+        created_at: r.created_at })) as Drawing[];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   // Fetch characters
   const { data: characters = [] } = useQuery({
@@ -154,8 +148,7 @@ export default function KidsMagicLibrary() {
       if (error) throw error;
       return data as Character[];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   // Fetch coloring pages
   const { data: coloringPages = [] } = useQuery({
@@ -170,13 +163,11 @@ export default function KidsMagicLibrary() {
       if (error) throw error;
       return data as ColoringPage[];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
 
   // Build unified gallery items
-  const allItems = useMemo<GalleryItem[]>(() => {
-    const items: GalleryItem[] = [];
+  const allItems = useMemo<GalleryItem[]>(() => { const items: GalleryItem[] = [];
 
     stories.forEach((s) => {
       if (s.illustration_url) {
@@ -187,25 +178,21 @@ export default function KidsMagicLibrary() {
           category: "stories",
           type: "story",
           date: s.created_at,
-          subtitle: s.category,
-        });
+          subtitle: s.category });
       }
     });
 
-    drawings.forEach((d) => {
-      items.push({
+    drawings.forEach((d) => { items.push({
         id: d.id,
         title: d.title,
         imageUrl: d.image_url,
         category: "drawings",
         type: "drawing",
         date: d.created_at,
-        subtitle: d.category,
-      });
+        subtitle: d.category });
     });
 
-    characters.forEach((c) => {
-      if (c.image_url) {
+    characters.forEach((c) => { if (c.image_url) {
         items.push({
           id: c.id,
           title: c.name,
@@ -213,8 +200,7 @@ export default function KidsMagicLibrary() {
           category: "characters",
           type: "character",
           date: c.created_at,
-          subtitle: c.superpower,
-        });
+          subtitle: c.superpower });
       }
     });
 
@@ -226,8 +212,7 @@ export default function KidsMagicLibrary() {
         category: "coloring",
         type: "coloring",
         date: p.created_at,
-        subtitle: p.difficulty,
-      });
+        subtitle: p.difficulty });
     });
 
     return items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -248,14 +233,12 @@ export default function KidsMagicLibrary() {
     return items;
   }, [allItems, activeCategory, search, favorites]);
 
-  const counts: Record<GalleryCategory, number> = {
-    all: allItems.length,
+  const counts: Record<GalleryCategory, number> = { all: allItems.length,
     stories: allItems.filter((i) => i.category === "stories").length,
     drawings: allItems.filter((i) => i.category === "drawings").length,
     characters: allItems.filter((i) => i.category === "characters").length,
     coloring: allItems.filter((i) => i.category === "coloring").length,
-    favorites: favorites.length,
-  };
+    favorites: favorites.length };
 
   const toggleFavorite = useCallback(
     async (id: string) => {
@@ -303,24 +286,20 @@ export default function KidsMagicLibrary() {
   // Timeline items
   const timelineItems = useMemo(
     () =>
-      allItems.map((i) => ({
-        id: i.id,
+      allItems.map((i) => ({ id: i.id,
         title: i.title,
         type: i.type,
         date: i.date,
-        imageUrl: i.imageUrl,
-      })),
+        imageUrl: i.imageUrl })),
     [allItems]
   );
 
   // Lightbox items for current filter
-  const lightboxItems = filteredItems.map((i) => ({
-    id: i.id,
+  const lightboxItems = filteredItems.map((i) => ({ id: i.id,
     imageUrl: i.imageUrl,
     title: i.title,
     category: i.subtitle || i.category,
-    date: format(new Date(i.date), "MMM d, yyyy"),
-  }));
+    date: format(new Date(i.date), "MMM d, yyyy") }));
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50/80 via-pink-50/80 to-blue-50/80 dark:from-gray-900 dark:via-purple-950/50 dark:to-blue-950/50">

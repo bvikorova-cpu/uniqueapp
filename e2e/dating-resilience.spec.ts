@@ -90,8 +90,7 @@ test.describe("Dating: network outage & double-submit resilience", () => {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ url: "https://checkout.stripe.com/test_double" }),
-        });
+          body: JSON.stringify({ url: "https://checkout.stripe.com/test_double" }) });
       }
       return route.continue();
     });
@@ -154,8 +153,7 @@ test.describe("Dating: network outage & double-submit resilience", () => {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ message: "Cancelled" }),
-        });
+          body: JSON.stringify({ message: "Cancelled" }) });
       }
       return route.continue();
     });
@@ -193,8 +191,7 @@ test.describe("Dating webhook idempotency contract (HTTP-level)", () => {
     const body = JSON.stringify({
       id: "evt_test_dup",
       type: "checkout.session.completed",
-      data: { object: { id: "cs_test_dup", payment_status: "paid", metadata: { type: "dating_monthly", user_id: "00000000-0000-0000-0000-000000000000" } } },
-    });
+      data: { object: { id: "cs_test_dup", payment_status: "paid", metadata: { type: "dating_monthly", user_id: "00000000-0000-0000-0000-000000000000" } } } });
 
     // Fire 3 duplicate requests in parallel — webhook MUST reject them all
     // identically (signature missing) and never reach the DB write path.

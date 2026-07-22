@@ -14,14 +14,12 @@ export const useVotingStreak = () => {
     queryKey: ["voting-streak"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        return {
+      if (!user) { return {
           currentStreak: 0,
           longestStreak: 0,
           lastVoteDate: null,
           totalVotesCast: 0,
-          creditsEarned: 0,
-        };
+          creditsEarned: 0 };
       }
 
       const { data, error } = await supabase
@@ -30,23 +28,18 @@ export const useVotingStreak = () => {
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (error || !data) {
-        return {
+      if (error || !data) { return {
           currentStreak: 0,
           longestStreak: 0,
           lastVoteDate: null,
           totalVotesCast: 0,
-          creditsEarned: 0,
-        };
+          creditsEarned: 0 };
       }
 
-      return {
-        currentStreak: data.current_streak,
+      return { currentStreak: data.current_streak,
         longestStreak: data.longest_streak,
         lastVoteDate: data.last_vote_date,
         totalVotesCast: data.total_votes_cast,
-        creditsEarned: data.credits_earned,
-      };
-    },
-  });
+        creditsEarned: data.credits_earned };
+    } });
 };

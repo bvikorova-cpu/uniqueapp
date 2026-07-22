@@ -34,13 +34,11 @@ export function useUserLevel(userId?: string) {
       const total = row?.total_points ?? 0;
       const cur = row?.current_level_points ?? 0;
       const nextAt = POINTS_PER_LEVEL(level);
-      setData({
-        level,
+      setData({ level,
         totalPoints: total,
         currentLevelPoints: cur,
         nextLevelAt: nextAt,
-        progressPct: Math.min(100, Math.round((cur / nextAt) * 100)),
-      });
+        progressPct: Math.min(100, Math.round((cur / nextAt) * 100)) });
       setLoading(false);
     })();
     return () => { active = false; };

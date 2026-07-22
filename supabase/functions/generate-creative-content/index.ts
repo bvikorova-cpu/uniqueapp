@@ -1,13 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const CREDIT_COSTS: Record<string, number> = {
-  song_lyrics: 8,
+const CREDIT_COSTS: Record<string, number> = { song_lyrics: 8,
   screenplay: 15,
   theater_play: 12,
   novel_chapter: 10,
@@ -15,11 +12,9 @@ const CREDIT_COSTS: Record<string, number> = {
   standup: 8,
   podcast_script: 10,
   ad_copy: 6,
-  revision: 3,
-};
+  revision: 3 };
 
-const CATEGORY_PROMPTS: Record<string, string> = {
-  song_lyrics: `You are a professional songwriter with decades of experience writing hit songs. Create complete, professional song lyrics based on the user's input. Include:
+const CATEGORY_PROMPTS: Record<string, string> = { song_lyrics: `You are a professional songwriter with decades of experience writing hit songs. Create complete, professional song lyrics based on the user's input. Include:
 - Verse 1, Chorus, Verse 2, Chorus, Bridge, Final Chorus structure
 - Rhyme scheme and rhythm that flows naturally
 - Emotional depth and storytelling
@@ -65,8 +60,7 @@ const CATEGORY_PROMPTS: Record<string, string> = {
 - Attention-grabbing headline
 - Persuasive body copy
 - Clear call-to-action
-- Brand voice consistency`,
-};
+- Brand voice consistency` };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -138,16 +132,13 @@ serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
@@ -182,15 +173,13 @@ serve(async (req) => {
     // Save project
     const { data: project, error: projectError } = await supabase
       .from("creative_forge_projects")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         category,
         title,
         input_data: inputData,
         generated_content: generatedContent,
         style_reference: styleReference,
-        credits_used: creditCost,
-      })
+        credits_used: creditCost })
       .select()
       .single();
 
@@ -203,8 +192,7 @@ serve(async (req) => {
       user_id: user.id,
       usage_type: "creative_content",
       credits_used: creditCost,
-      description: `${category}${isRevision ? " (revision)" : ""}: ${title}`,
-    }).then(() => {}, (e) => console.error("usage log failed:", e));
+      description: `${category}${isRevision ? " (revision)" : ""}: ${title}` }).then(() => {}, (e) => console.error("usage log failed:", e));
 
     return new Response(JSON.stringify({ 
       content: generatedContent,
@@ -212,13 +200,11 @@ serve(async (req) => {
       creditsUsed: creditCost,
       creditsRemaining: currentCredits - creditCost
     }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error: any) {
     console.error("Error in generate-creative-content:", error);
     return new Response(JSON.stringify({ error: error.message || "Unknown error" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

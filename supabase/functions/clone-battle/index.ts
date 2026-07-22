@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const SCRIPTS = [
   "Round 1: Your clone opened with a devastating quantum-physics pun.\nRound 2: Knockout blow with a metaphor about AI consciousness.",
@@ -34,15 +32,13 @@ Deno.serve(async (req) => {
     const analysis = SCRIPTS[Math.floor(Math.random() * SCRIPTS.length)];
     const winnerName = winnerSide === "user" ? mine[0].clone_name : opponent.clone_name;
 
-    await admin.from("clone_battles").insert({
-      user_id: user.id,
+    await admin.from("clone_battles").insert({ user_id: user.id,
       user_clone_id: mine[0].id,
       opponent_clone_id: opponent.id,
       winner: winnerSide,
       user_clone_name: mine[0].clone_name,
       opponent_clone_name: opponent.clone_name,
-      analysis,
-    });
+      analysis });
 
     return new Response(JSON.stringify({ winner: winnerName, winnerSide, analysis }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } });

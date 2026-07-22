@@ -196,8 +196,7 @@ const VideoAdGenerator = () => {
     if (payment === "success" && sessionId) {
       (async () => {
         const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
-          body: { session_id: sessionId },
-        });
+          body: { session_id: sessionId } });
         if (error || data?.error) {
           toast.error("Could not verify payment — please contact support");
         } else if (data?.success) {

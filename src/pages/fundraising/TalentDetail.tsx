@@ -42,15 +42,13 @@ interface TalentCampaign {
   created_at: string;
 }
 
-const talentTypeLabels: Record<string, string> = {
-  music: '🎵 Music',
+const talentTypeLabels: Record<string, string> = { music: '🎵 Music',
   art: '🎨 Visual Arts',
   sports: '⚽ Sports',
   dance: '💃 Dance',
   acting: '🎭 Acting/Theater',
   writing: '✍️ Writing',
-  other: '⭐ Other Talent',
-};
+  other: '⭐ Other Talent' };
 
 export default function TalentDetail() {
   const { id } = useParams();
@@ -62,14 +60,12 @@ export default function TalentDetail() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
   }, []);
-  const [donationData, setDonationData] = useState({
-    amount: '',
+  const [donationData, setDonationData] = useState({ amount: '',
     isMonthly: false,
     isAnonymous: false,
     message: '',
     donorEmail: '',
-    donorName: '',
-  });
+    donorName: '' });
   useDonationReturn(() => fetchCampaign());
 
   useEffect(() => {
@@ -88,37 +84,31 @@ export default function TalentDetail() {
 
       if (error) throw error;
       setCampaign(data);
-    } catch (error) {
-      console.error('Error fetching campaign:', error);
+    } catch (error) { console.error('Error fetching campaign:', error);
       toast({
         title: 'Error',
         description: 'Failed to load campaign',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDonate = async () => {
-    const amount = parseFloat(donationData.amount);
+  const handleDonate = async () => { const amount = parseFloat(donationData.amount);
     if (isNaN(amount) || amount < 1) {
       toast({
         title: 'Error',
         description: 'Minimum sponsorship is €1',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
     if (!donationData.donorEmail && !donationData.donorName) {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'Please provide your email and name, or log in',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         return;
       }
     }
@@ -128,8 +118,7 @@ export default function TalentDetail() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
-      const { data, error } = await supabase.functions.invoke('create-campaign-donation', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('create-campaign-donation', { body: {
           campaignId: id,
           campaignType: 'talent',
           amount,
@@ -137,27 +126,21 @@ export default function TalentDetail() {
           isAnonymous: donationData.isAnonymous,
           message: donationData.message,
           donorEmail: donationData.donorEmail,
-          donorName: donationData.donorName,
-        },
-        headers: session ? { Authorization: `Bearer ${session.access_token}` } : {},
-      });
+          donorName: donationData.donorName },
+        headers: session ? { Authorization: `Bearer ${session.access_token}` } : {} });
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, '_blank');
+      if (data?.url) { window.open(data.url, '_blank');
         toast({
           title: 'Redirecting to payment',
-          description: 'Please complete your sponsorship in the new window',
-        });
+          description: 'Please complete your sponsorship in the new window' });
       }
-    } catch (error) {
-      console.error('Error creating sponsorship:', error);
+    } catch (error) { console.error('Error creating sponsorship:', error);
       toast({
         title: 'Error',
         description: 'Failed to process sponsorship',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setDonating(false);
     }

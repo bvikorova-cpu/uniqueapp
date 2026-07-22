@@ -19,8 +19,7 @@ export default function AIContentCalendar({ onBack }: Props) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("influ-king-ai", {
-        body: { action: "content-calendar", niche, days: Number(days) },
-      });
+        body: { action: "content-calendar", niche, days: Number(days) } });
       if (error) throw error;
       setPlan(data.calendar || []);
       toast.success("Content calendar generated!");

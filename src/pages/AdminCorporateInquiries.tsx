@@ -28,21 +28,17 @@ interface CorporateInquiry {
   updated_at: string;
 }
 
-const statusColors = {
-  pending: "bg-yellow-500",
+const statusColors = { pending: "bg-yellow-500",
   contacted: "bg-blue-500",
   in_progress: "bg-purple-500",
   completed: "bg-green-500",
-  cancelled: "bg-red-500",
-};
+  cancelled: "bg-red-500" };
 
-const statusLabels = {
-  pending: "Pending",
+const statusLabels = { pending: "Pending",
   contacted: "Contacted",
   in_progress: "In Progress",
   completed: "Completed",
-  cancelled: "Cancelled",
-};
+  cancelled: "Cancelled" };
 
 export default function AdminCorporateInquiries() {
   const { toast } = useToast();
@@ -71,12 +67,10 @@ export default function AdminCorporateInquiries() {
 
       if (error) throw error;
       setInquiries(data || []);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to fetch inquiries",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -91,27 +85,22 @@ export default function AdminCorporateInquiries() {
 
       if (error) throw error;
 
-      toast({
-        title: "Status updated",
-        description: "Inquiry status has been updated successfully",
-      });
+      toast({ title: "Status updated",
+        description: "Inquiry status has been updated successfully" });
 
       fetchInquiries();
       if (selectedInquiry?.id === inquiryId) {
         setSelectedInquiry({ ...selectedInquiry, status: newStatus });
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to update status",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
   const getPackageLabel = (packageType: string) => {
-    const labels: { [key: string]: string } = {
-      startup: "Startup (€15)",
+    const labels: { [key: string]: string } = { startup: "Startup (€15)",
       business: "Business (€30)",
       corporate_premium: "Corporate Premium (€60)",
       mini_restaurant: "Mini Restaurant (€5/mo)",
@@ -122,8 +111,7 @@ export default function AdminCorporateInquiries() {
       wedding_luxury: "Wedding Luxury (€80)",
       wedding_vip: "Wedding VIP (€150+)",
       event_organizer: "Event Organizer",
-      custom: "Custom Solution",
-    };
+      custom: "Custom Solution" };
     return labels[packageType] || packageType;
   };
 

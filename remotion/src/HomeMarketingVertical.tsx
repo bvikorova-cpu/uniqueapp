@@ -1,13 +1,11 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Img,
   Sequence,
   interpolate,
   spring,
   staticFile,
-  useCurrentFrame,
-} from "remotion";
+  useCurrentFrame } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
 
@@ -17,13 +15,11 @@ const body = loadBody("normal", { weights: ["500", "700", "900"] });
 const FPS = 30;
 export const HOME_V_DURATION = 600; // 20s
 
-const BRAND = {
-  purple: "#8b5cf6",
+const BRAND = { purple: "#8b5cf6",
   pink: "#ec4899",
   amber: "#fbbf24",
   bgDeep: "#0a0014",
-  white: "#ffffff",
-};
+  white: "#ffffff" };
 
 const Backdrop: React.FC = () => {
   const frame = useCurrentFrame();
@@ -38,14 +34,12 @@ const Backdrop: React.FC = () => {
           height: "100%",
           objectFit: "cover",
           transform: `scale(${scale}) translateY(${ty}px)`,
-          filter: "saturate(1.15) brightness(0.9)",
-        }}
+          filter: "saturate(1.15) brightness(0.9)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(ellipse at center, rgba(10,0,20,0) 0%, rgba(10,0,20,0.6) 100%)",
-        }}
+            "radial-gradient(ellipse at center, rgba(10,0,20,0) 0%, rgba(10,0,20,0.6) 100%)" }}
       />
     </AbsoluteFill>
   );
@@ -77,8 +71,7 @@ const Orbs: React.FC = () => {
               background: `radial-gradient(circle, ${o.c}aa 0%, transparent 65%)`,
               transform: `translate(${dx}px, ${dy}px)`,
               filter: "blur(20px)",
-              mixBlendMode: "screen",
-            }}
+              mixBlendMode: "screen" }}
           />
         );
       })}
@@ -89,10 +82,8 @@ const Orbs: React.FC = () => {
 const useEnterExit = (duration: number, exitLen = 18) => {
   const frame = useCurrentFrame();
   const enter = spring({ frame, fps: FPS, config: { damping: 18, stiffness: 130 } });
-  const exit = interpolate(frame, [duration - exitLen, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - exitLen, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return { enter, exit, opacity: enter * (1 - exit), frame };
 };
 
@@ -105,24 +96,20 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const wordY = interpolate(frame, [18, 42], [40, 0], { extrapolateRight: "clamp" });
   const tagOp = interpolate(frame, [50, 75], [0, 1], { extrapolateRight: "clamp" });
   const tagY = interpolate(frame, [50, 75], [20, 0], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 18, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill
-      style={{
+      style={ {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
-        opacity: 1 - exit,
-      }}
+        opacity: 1 - exit }}
     >
       <div
         style={{
           transform: `scale(${logoScale}) rotate(${logoRot}deg)`,
-          filter: "drop-shadow(0 20px 60px rgba(236,72,153,0.55))",
-        }}
+          filter: "drop-shadow(0 20px 60px rgba(236,72,153,0.55))" }}
       >
         <Img
           src={staticFile("home/logo.png")}
@@ -141,8 +128,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
           textShadow: "0 0 80px rgba(236,72,153,0.5)",
-          letterSpacing: "-0.02em",
-        }}
+          letterSpacing: "-0.02em" }}
       >
         Unique
       </div>
@@ -156,8 +142,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
           fontSize: 46,
           color: "rgba(255,255,255,0.92)",
           letterSpacing: "0.28em",
-          textTransform: "uppercase",
-        }}
+          textTransform: "uppercase" }}
       >
         Welcome Home
       </div>
@@ -174,15 +159,14 @@ const SceneTagline: React.FC<{ duration: number }> = ({ duration }) => {
   const l2y = interpolate(frame, [14, 30], [30, 0], { extrapolateRight: "clamp" });
   return (
     <AbsoluteFill
-      style={{
+      style={ {
         alignItems: "center",
         justifyContent: "center",
         opacity,
         color: BRAND.white,
         textAlign: "center",
         padding: 60,
-        flexDirection: "column",
-      }}
+        flexDirection: "column" }}
     >
       <div
         style={{
@@ -191,8 +175,7 @@ const SceneTagline: React.FC<{ duration: number }> = ({ duration }) => {
           fontFamily: body.fontFamily,
           fontWeight: 500,
           fontSize: 78,
-          color: "rgba(255,255,255,0.85)",
-        }}
+          color: "rgba(255,255,255,0.85)" }}
       >
         One home for
       </div>
@@ -209,8 +192,7 @@ const SceneTagline: React.FC<{ duration: number }> = ({ duration }) => {
           background: `linear-gradient(90deg, ${BRAND.amber} 0%, #fde68a 50%, ${BRAND.pink} 100%)`,
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
-          textShadow: "0 0 60px rgba(251,191,36,0.35)",
-        }}
+          textShadow: "0 0 60px rgba(251,191,36,0.35)" }}
       >
         everything you love.
       </div>
@@ -236,23 +218,20 @@ const MODULES: ModuleDef[] = [
   { label: "Health", color: "#ef4444", icon: I("M22 12h-4l-3 8-6-16-3 8H2") },
 ];
 
-const SceneModules: React.FC<{ duration: number }> = ({ duration }) => {
-  const frame = useCurrentFrame();
+const SceneModules: React.FC<{ duration: number }> = ({ duration }) => { const frame = useCurrentFrame();
   const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
     extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+    extrapolateRight: "clamp" });
   const titleOp = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
   const titleY = interpolate(frame, [0, 18], [-25, 0], { extrapolateRight: "clamp" });
   return (
     <AbsoluteFill
-      style={{
+      style={ {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
         opacity: 1 - exit,
-        padding: 60,
-      }}
+        padding: 60 }}
     >
       <div
         style={{
@@ -264,26 +243,23 @@ const SceneModules: React.FC<{ duration: number }> = ({ duration }) => {
           color: BRAND.white,
           letterSpacing: "-0.02em",
           marginBottom: 60,
-          textShadow: "0 6px 40px rgba(0,0,0,0.6)",
-        }}
+          textShadow: "0 6px 40px rgba(0,0,0,0.6)" }}
       >
         Explore your Home
       </div>
       <div
-        style={{
+        style={ {
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
           gap: 36,
-          width: "92%",
-        }}
+          width: "92%" }}
       >
         {MODULES.map((m, i) => {
           const delay = 12 + i * 5;
           const s = spring({
             frame: frame - delay,
             fps: FPS,
-            config: { damping: 14, stiffness: 140 },
-          });
+            config: { damping: 14, stiffness: 140 } });
           const y = interpolate(s, [0, 1], [80, 0]);
           return (
             <div
@@ -296,8 +272,7 @@ const SceneModules: React.FC<{ duration: number }> = ({ duration }) => {
                 borderRadius: 40,
                 padding: "44px 28px",
                 textAlign: "center",
-                boxShadow: `0 20px 60px -20px ${m.color}66`,
-              }}
+                boxShadow: `0 20px 60px -20px ${m.color}66` }}
             >
               <div
                 style={{
@@ -309,19 +284,17 @@ const SceneModules: React.FC<{ duration: number }> = ({ duration }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  boxShadow: `0 15px 40px -10px ${m.color}aa`,
-                }}
+                  boxShadow: `0 15px 40px -10px ${m.color}aa` }}
               >
                 {m.icon}
               </div>
               <div
-                style={{
+                style={ {
                   fontFamily: body.fontFamily,
                   fontWeight: 800,
                   fontSize: 46,
                   color: BRAND.white,
-                  letterSpacing: "-0.01em",
-                }}
+                  letterSpacing: "-0.01em" }}
               >
                 {m.label}
               </div>
@@ -346,27 +319,24 @@ const SceneStats: React.FC<{ duration: number }> = ({ duration }) => {
   const { opacity } = useEnterExit(duration);
   return (
     <AbsoluteFill
-      style={{
+      style={ {
         alignItems: "center",
         justifyContent: "center",
-        opacity,
-      }}
+        opacity }}
     >
       <div
-        style={{
+        style={ {
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
           gap: 80,
-          width: "88%",
-        }}
+          width: "88%" }}
       >
         {STATS.map((s, i) => {
           const delay = i * 6;
           const sp = spring({
             frame: frame - delay,
             fps: FPS,
-            config: { damping: 12, stiffness: 120 },
-          });
+            config: { damping: 12, stiffness: 120 } });
           const y = interpolate(sp, [0, 1], [60, 0]);
           return (
             <div key={s.label} style={{ opacity: sp, transform: `translateY(${y}px)`, textAlign: "center" }}>
@@ -380,21 +350,19 @@ const SceneStats: React.FC<{ duration: number }> = ({ duration }) => {
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   letterSpacing: "-0.04em",
-                  textShadow: "0 0 60px rgba(251,191,36,0.3)",
-                }}
+                  textShadow: "0 0 60px rgba(251,191,36,0.3)" }}
               >
                 {s.value}
               </div>
               <div
-                style={{
+                style={ {
                   marginTop: 12,
                   fontFamily: body.fontFamily,
                   fontWeight: 600,
                   fontSize: 42,
                   color: "rgba(255,255,255,0.85)",
                   letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                }}
+                  textTransform: "uppercase" }}
               >
                 {s.label}
               </div>
@@ -422,8 +390,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
           height: 280,
           borderRadius: 72,
           transform: `scale(${logoS})`,
-          filter: "drop-shadow(0 15px 50px rgba(236,72,153,0.55))",
-        }}
+          filter: "drop-shadow(0 15px 50px rgba(236,72,153,0.55))" }}
       />
       <div
         style={{
@@ -436,26 +403,24 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
           background: `linear-gradient(180deg, ${BRAND.white} 0%, #fbcfe8 100%)`,
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
-          textShadow: "0 0 60px rgba(236,72,153,0.45)",
-        }}
+          textShadow: "0 0 60px rgba(236,72,153,0.45)" }}
       >
         Unique
       </div>
       <div
-        style={{
+        style={ {
           marginTop: 40,
           opacity: urlOp,
           fontFamily: body.fontFamily,
           fontWeight: 700,
           fontSize: 78,
           color: BRAND.white,
-          letterSpacing: "0.05em",
-        }}
+          letterSpacing: "0.05em" }}
       >
         uniqueapp.fun
       </div>
       <div
-        style={{
+        style={ {
           marginTop: 24,
           opacity: tagOp,
           fontFamily: body.fontFamily,
@@ -464,8 +429,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
           color: "rgba(255,255,255,0.75)",
           letterSpacing: "0.22em",
           textTransform: "uppercase",
-          textAlign: "center",
-        }}
+          textAlign: "center" }}
       >
         Install PWA · 16+
       </div>

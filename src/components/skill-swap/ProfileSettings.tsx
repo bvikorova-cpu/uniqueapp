@@ -13,13 +13,11 @@ import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import heroVideo from "@/assets/skill-swap-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-export const ProfileSettings = () => {
-  const navigate = useNavigate();
+export const ProfileSettings = () => { const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState({
-    full_name: "", bio: "", location: "", skills_offered: [] as string[], skills_wanted: [] as string[],
-  });
+    full_name: "", bio: "", location: "", skills_offered: [] as string[], skills_wanted: [] as string[] });
   const [newSkillOffered, setNewSkillOffered] = useState("");
   const [newSkillWanted, setNewSkillWanted] = useState("");
 
@@ -41,9 +39,7 @@ export const ProfileSettings = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate('/auth'); return; }
-      const { error } = await supabase.from('profiles').update({
-        full_name: profile.full_name, bio: profile.bio, location: profile.location, skills_offered: profile.skills_offered, skills_wanted: profile.skills_wanted,
-      }).eq('id', session.user.id);
+      const { error } = await supabase.from('profiles').update({ full_name: profile.full_name, bio: profile.bio, location: profile.location, skills_offered: profile.skills_offered, skills_wanted: profile.skills_wanted }).eq('id', session.user.id);
       if (error) throw error;
       toast.success('Profile updated successfully!');
       navigate(`/skill-swap/profile/${session.user.id}`);

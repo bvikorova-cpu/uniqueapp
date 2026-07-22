@@ -189,16 +189,14 @@ export function ServeChallenge3D({ onBack }: { onBack: () => void }) {
     setGs(p => ({ ...p, phase: "shooting", shootTarget: [x, z] }));
   }, []);
 
-  const handleAnimDone = useCallback((inCourt: boolean) => {
-    setGs(p => {
+  const handleAnimDone = useCallback((inCourt: boolean) => { setGs(p => {
       const isAce = inCourt && (Math.abs(p.shootTarget[0]) > 3 || p.shootTarget[1] < -4);
       const isOver = p.round >= 10;
       return {
         ...p, phase: isOver ? "gameover" : "result",
         aces: p.aces + (inCourt ? 1 : 0),
         faults: p.faults + (inCourt ? 0 : 1),
-        lastResult: !inCourt ? "FAULT! 🚫" : isAce ? "ACE! 🎾🔥" : "IN! ✅",
-      };
+        lastResult: !inCourt ? "FAULT! 🚫" : isAce ? "ACE! 🎾🔥" : "IN! ✅" };
     });
   }, []);
 

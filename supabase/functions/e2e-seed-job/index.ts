@@ -1,11 +1,9 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, DELETE, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, DELETE, OPTIONS" };
 
 /**
  * E2E helper: create / delete a temporary job_listing for Playwright tests.
@@ -27,8 +25,7 @@ Deno.serve(async (req) => {
   if (!expected || provided !== expected) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   const admin = createClient(
@@ -62,8 +59,7 @@ Deno.serve(async (req) => {
         paid_status: "paid",
         published_at: new Date().toISOString(),
         expires_at: new Date(Date.now() + 7 * 86400_000).toISOString(),
-        slug,
-      };
+        slug };
 
       const { data, error } = await admin
         .from("job_listings")
@@ -73,8 +69,7 @@ Deno.serve(async (req) => {
 
       if (error) throw error;
       return new Response(JSON.stringify({ ok: true, ...data }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (req.method === "DELETE") {
@@ -82,8 +77,7 @@ Deno.serve(async (req) => {
       if (!body.id) {
         return new Response(JSON.stringify({ error: "id required" }), {
           status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       const { error } = await admin
         .from("job_listings")
@@ -91,21 +85,18 @@ Deno.serve(async (req) => {
         .eq("id", body.id);
       if (error) throw error;
       return new Response(JSON.stringify({ ok: true }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(
       JSON.stringify({ error: e instanceof Error ? e.message : String(e) }),
       {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
+        headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   }
 });

@@ -15,8 +15,7 @@ const FitnessWellness = () => {
   const [enrolling, setEnrolling] = useState<string | null>(null);
   const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+  useEffect(() => { const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
@@ -24,8 +23,7 @@ const FitnessWellness = () => {
         if (success) {
           toast({
             title: "Enrollment Successful! 🎉",
-            description: "You now have access to your fitness program.",
-          });
+            description: "You now have access to your fitness program." });
           window.history.replaceState({}, '', '/fitness-wellness');
         }
       });
@@ -101,12 +99,10 @@ const FitnessWellness = () => {
       if (sessionUrl) {
         { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; } }
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Enrollment Failed",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setEnrolling(null);
     }
   };
@@ -205,7 +201,7 @@ const FitnessWellness = () => {
                   </Button>
                 </div>
                 <CourseAcademicActions
-                  meta={{
+                  meta={ {
                     module_key: "fitness-wellness",
                     module_label: "Fitness & Wellness",
                     course_slug: program.id,
@@ -214,8 +210,7 @@ const FitnessWellness = () => {
                     level: program.level,
                     duration: program.duration,
                     price: program.price,
-                    skills: program.skills,
-                  }}
+                    skills: program.skills }}
                   unlocked={isPurchased(program.id, "fitness-program")}
                 />
               </div>

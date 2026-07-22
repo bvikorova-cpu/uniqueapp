@@ -17,7 +17,7 @@ BEGIN
   SELECT * INTO v_settings FROM public.free_tier_settings WHERE id = 1 LIMIT 1;
 
   v_current_month := to_char(
-    (now() AT TIME ZONE COALESCE(v_settings.timezone, 'Europe/Bratislava')),
+    (now() AT TIME ZONE COALESCE(v_settings.timezone, 'Europe/City')),
     'YYYY-MM'
   );
 

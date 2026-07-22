@@ -34,14 +34,11 @@ export const StorySequence = ({ onComplete, onBack }: StorySequenceProps) => {
         .eq("is_active", true)
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return (data ?? []).map((r) => ({
-        id: r.id as string,
+      return (data ?? []).map((r) => ({ id: r.id as string,
         title: r.title as string,
-        events: (r.events as unknown as StoryEvent[]) ?? [],
-      }));
+        events: (r.events as unknown as StoryEvent[]) ?? [] }));
     },
-    staleTime: 5 * 60_000,
-  });
+    staleTime: 5 * 60_000 });
 
   const [storyIndex, setStoryIndex] = useState(0);
   const currentStory = stories[storyIndex];

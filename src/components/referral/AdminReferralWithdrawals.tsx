@@ -43,33 +43,26 @@ export const AdminReferralWithdrawals = () => {
       );
 
       return requestsWithProfiles;
-    },
-  });
+    } });
 
   const processRequest = useMutation({
     mutationFn: async ({ requestId, action }: { requestId: string; action: string }) => {
       const { error } = await supabase.functions.invoke("process-referral-withdrawal", {
-        body: { requestId, action, adminNotes },
-      });
+        body: { requestId, action, adminNotes } });
       if (error) throw error;
     },
-    onSuccess: () => {
-      toast({
+    onSuccess: () => { toast({
         title: "Success",
-        description: "Withdrawal request processed successfully",
-      });
+        description: "Withdrawal request processed successfully" });
       setSelectedRequest(null);
       setAdminNotes("");
       queryClient.invalidateQueries({ queryKey: ["admin-referral-withdrawals"] });
     },
-    onError: (error: Error) => {
-      toast({
+    onError: (error: Error) => { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
   if (isLoading) {
     return (

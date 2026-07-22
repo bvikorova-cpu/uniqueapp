@@ -18,8 +18,7 @@ export function SeedContentPanel() {
     setBusy(target);
     try {
       const { data, error } = await supabase.functions.invoke("admin-seed-content", {
-        body: { target },
-      });
+        body: { target } });
       if (error) throw error;
       const r = (data as any)?.results ?? {};
       toast.success(
@@ -27,8 +26,7 @@ export function SeedContentPanel() {
         {
           description: Object.entries(r)
             .map(([k, v]) => `${k}: ${v}`)
-            .join(" · "),
-        }
+            .join(" · ") }
       );
     } catch (e: any) {
       toast.error(e.message || "Seed failed");

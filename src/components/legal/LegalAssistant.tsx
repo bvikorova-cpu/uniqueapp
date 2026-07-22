@@ -37,8 +37,7 @@ export const LegalAssistant = ({ documentType, documentText }: LegalAssistantPro
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("legal-ai", {
-        body: { mode: "qa", question: q, documentType, documentText },
-      });
+        body: { mode: "qa", question: q, documentType, documentText } });
       if (error) {
         const msg = (error as any)?.message ?? "";
         if (msg.includes("402") || msg.toLowerCase().includes("insufficient")) {

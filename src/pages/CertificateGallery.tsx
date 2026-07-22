@@ -5,16 +5,14 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Award, Calendar, Clock, Trophy, Trash2 } from "lucide-react";
 import { useUserCertificates, useDeleteCertificate } from "@/hooks/useCertificates";
 import { CastleCertificate } from "@/components/fairy-castles/CastleCertificate";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export default function CertificateGallery() {
   const navigate = useNavigate();
@@ -38,12 +36,10 @@ export default function CertificateGallery() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+  const formatDate = (dateString: string) => { return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
-      day: "numeric",
-    });
+      day: "numeric" });
   };
 
   const handleDelete = (certificateId: string) => {

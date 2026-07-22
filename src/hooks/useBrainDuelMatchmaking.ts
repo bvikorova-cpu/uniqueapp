@@ -15,13 +15,11 @@ interface MatchmakingState {
 export const useBrainDuelMatchmaking = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [state, setState] = useState<MatchmakingState>({
-    status: 'idle',
+  const [state, setState] = useState<MatchmakingState>({ status: 'idle',
     matchId: null,
     opponentId: null,
     opponentProfile: null,
-    error: null,
-  });
+    error: null });
   const [presenceChannel, setPresenceChannel] = useState<any>(null);
 
   // Initialize presence tracking
@@ -30,13 +28,9 @@ export const useBrainDuelMatchmaking = () => {
     if (!user) return;
 
     // Create a presence channel for matchmaking
-    const channel = supabase.channel(`matchmaking-${category}-${gameMode.id}`, {
-      config: {
+    const channel = supabase.channel(`matchmaking-${category}-${gameMode.id}`, { config: {
         presence: {
-          key: user.id,
-        },
-      },
-    });
+          key: user.id } } });
 
     channel
       .on('presence', { event: 'sync' }, () => {
@@ -54,15 +48,13 @@ export const useBrainDuelMatchmaking = () => {
           attemptMatch(key, category, gameMode);
         }
       })
-      .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
+      .subscribe(async (status) => { if (status === 'SUBSCRIBED') {
           await channel.track({
             user_id: user.id,
             searching: true,
             category,
             game_mode: gameMode.id,
-            online_at: new Date().toISOString(),
-          });
+            online_at: new Date().toISOString() });
         }
       });
 
@@ -72,16 +64,13 @@ export const useBrainDuelMatchmaking = () => {
 
   const attemptMatch = async (opponentId: string, category: string, gameMode: GameMode) => {
     try {
-      const { data, error } = await supabase.functions.invoke('brain-duel-matchmaking', {
-        body: { 
+      const { data, error } = await supabase.functions.invoke('brain-duel-matchmaking', { body: { 
           category,
           game_mode: gameMode.id,
           questions: gameMode.questions,
           time_per_question: gameMode.timePerQuestion,
           entry_cost: gameMode.entry,
-          win_reward: gameMode.reward,
-        },
-      });
+          win_reward: gameMode.reward } });
 
       if (error) throw error;
 
@@ -92,56 +81,46 @@ export const useBrainDuelMatchmaking = () => {
         .eq('id', data.match.player2_id || opponentId)
         .single();
 
-      setState(prev => ({
-        ...prev,
+      setState(prev => ({ ...prev,
         status: data.match.status === 'ready' ? 'ready' : 'found',
         matchId: data.match.id,
         opponentId: data.match.player2_id || opponentId,
-        opponentProfile: profile,
-      }));
+        opponentProfile: profile }));
 
       if (data.match.status === 'ready') {
         toast({
           title: 'Match found! 🎮',
-          description: `Playing against ${profile?.full_name || 'an opponent'}`,
-        });
+          description: `Playing against ${profile?.full_name || 'an opponent'}` });
       }
 
       return data.match;
     } catch (error: any) {
       setState(prev => ({ ...prev, error: error.message }));
-      toast({
-        title: 'Matchmaking error',
+      toast({ title: 'Matchmaking error',
         description: error.message,
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     }
   };
 
-  const startSearching = async (category: string, gameMode: GameMode) => {
-    setState({
+  const startSearching = async (category: string, gameMode: GameMode) => { setState({
       status: 'searching',
       matchId: null,
       opponentId: null,
       opponentProfile: null,
-      error: null,
-    });
+      error: null });
 
     // Initialize presence-based matchmaking
     const channel = await initPresence(category, gameMode);
 
     // Also call the edge function for database-based matchmaking
     try {
-      const { data, error } = await supabase.functions.invoke('brain-duel-matchmaking', {
-        body: { 
+      const { data, error } = await supabase.functions.invoke('brain-duel-matchmaking', { body: { 
           category,
           game_mode: gameMode.id,
           questions: gameMode.questions,
           time_per_question: gameMode.timePerQuestion,
           entry_cost: gameMode.entry,
-          win_reward: gameMode.reward,
-        },
-      });
+          win_reward: gameMode.reward } });
 
       if (error) throw error;
 
@@ -158,32 +137,25 @@ export const useBrainDuelMatchmaking = () => {
           .eq('id', opponentId)
           .single();
 
-        setState({
-          status: 'ready',
+        setState({ status: 'ready',
           matchId: data.match.id,
           opponentId,
           opponentProfile: profile,
-          error: null,
-        });
+          error: null });
 
         toast({
           title: 'Match found! 🎮',
-          description: `Playing against ${profile?.full_name || 'an opponent'}`,
-        });
-      } else {
-        // Waiting for opponent
+          description: `Playing against ${profile?.full_name || 'an opponent'}` });
+      } else { // Waiting for opponent
         setState(prev => ({
           ...prev,
-          matchId: data.match.id,
-        }));
+          matchId: data.match.id }));
       }
     } catch (error: any) {
       setState(prev => ({ ...prev, status: 'idle', error: error.message }));
-      toast({
-        title: 'Error',
+      toast({ title: 'Error',
         description: error.message,
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     }
   };
 
@@ -191,13 +163,11 @@ export const useBrainDuelMatchmaking = () => {
     if (presenceChannel) {
       supabase.removeChannel(presenceChannel);
     }
-    setState({
-      status: 'idle',
+    setState({ status: 'idle',
       matchId: null,
       opponentId: null,
       opponentProfile: null,
-      error: null,
-    });
+      error: null });
   }, [presenceChannel]);
 
   // Listen for match updates
@@ -212,8 +182,7 @@ export const useBrainDuelMatchmaking = () => {
           event: 'UPDATE',
           schema: 'public',
           table: 'brain_duel_matches',
-          filter: `id=eq.${state.matchId}`,
-        },
+          filter: `id=eq.${state.matchId}` },
         async (payload) => {
           if (payload.new.status === 'ready' && state.status === 'searching') {
             const { data: { user } } = await supabase.auth.getUser();
@@ -227,17 +196,14 @@ export const useBrainDuelMatchmaking = () => {
               .eq('id', opponentId)
               .single();
 
-            setState(prev => ({
-              ...prev,
+            setState(prev => ({ ...prev,
               status: 'ready',
               opponentId,
-              opponentProfile: profile,
-            }));
+              opponentProfile: profile }));
 
             toast({
               title: 'Match found! 🎮',
-              description: `Playing against ${profile?.full_name || 'an opponent'}`,
-            });
+              description: `Playing against ${profile?.full_name || 'an opponent'}` });
           } else if (payload.new.status === 'finished') {
             setState(prev => ({ ...prev, status: 'finished' }));
           }
@@ -259,11 +225,9 @@ export const useBrainDuelMatchmaking = () => {
     };
   }, [presenceChannel]);
 
-  return {
-    ...state,
+  return { ...state,
     startSearching,
     cancelSearch,
     isSearching: state.status === 'searching',
-    isReady: state.status === 'ready',
-  };
+    isReady: state.status === 'ready' };
 };

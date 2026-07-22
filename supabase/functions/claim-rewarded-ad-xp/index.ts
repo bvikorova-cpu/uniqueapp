@@ -1,10 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 // Unlimited daily views — users keep earning XP every time they watch.
 // Hitting a hard cap kills engagement, so we only track views for analytics.
@@ -20,8 +18,7 @@ Deno.serve(async (req) => {
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supabase = createClient(
@@ -40,8 +37,7 @@ Deno.serve(async (req) => {
     if (userErr || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const body = await req.json().catch(() => ({}));
@@ -49,8 +45,7 @@ Deno.serve(async (req) => {
     if (!sectionKey) {
       return new Response(JSON.stringify({ error: "section_key required" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const today = new Date().toISOString().split("T")[0];
@@ -92,20 +87,17 @@ Deno.serve(async (req) => {
             user_id: user.id,
             flag_date: today,
             view_count: (todayCount ?? 0) + 1,
-            reason: `Exceeded ${SUSPICIOUS_THRESHOLD} views/day`,
-          },
+            reason: `Exceeded ${SUSPICIOUS_THRESHOLD} views/day` },
           { onConflict: "user_id,flag_date" }
         );
     }
 
     const { error: insertErr } = await supabase
       .from("rewarded_ad_views")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         section_key: sectionKey,
         xp_awarded: XP_PER_VIEW,
-        view_date: today,
-      });
+        view_date: today });
     if (insertErr) {
       // 23505 = unique_violation → atomic 30s throttle hit (race-condition safe)
       const code = (insertErr as { code?: string }).code;
@@ -121,8 +113,7 @@ Deno.serve(async (req) => {
     const { error: rpcErr } = await supabase.rpc("add_user_points", {
       p_user_id: user.id,
       p_points: XP_PER_VIEW,
-      p_activity_type: `rewarded_ad_${sectionKey}`,
-    });
+      p_activity_type: `rewarded_ad_${sectionKey}` });
     if (rpcErr) console.error("add_user_points failed", rpcErr);
 
     // #9 Streak bonus — award once per day on the first view that completes a milestone
@@ -146,15 +137,13 @@ Deno.serve(async (req) => {
           await supabase.rpc("add_user_points", {
             p_user_id: user.id,
             p_points: streakBonus,
-            p_activity_type: `xp_streak_${streakDays}d`,
-          });
+            p_activity_type: `xp_streak_${streakDays}d` });
           await supabase.from("notifications").insert({
             user_id: user.id,
             title: `🔥 ${streakDays}-day streak!`,
             message: `You earned a +${streakBonus} XP streak bonus. Keep it up!`,
             type: "xp_streak_bonus",
-            is_read: false,
-          });
+            is_read: false });
         }
       }
     } catch (e) {
@@ -171,8 +160,7 @@ Deno.serve(async (req) => {
       }),
       {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (e) {
     console.error("claim-rewarded-ad-xp error", e);
@@ -180,8 +168,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }),
       {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

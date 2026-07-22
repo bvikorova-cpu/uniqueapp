@@ -170,15 +170,13 @@ export function FieldGoal3D({ onBack }: { onBack: () => void }) {
     setGs(p => ({ ...p, phase: "shooting", shootTarget: [x, y] }));
   }, []);
 
-  const handleAnimDone = useCallback((good: boolean) => {
-    setGs(p => {
+  const handleAnimDone = useCallback((good: boolean) => { setGs(p => {
       const isOver = p.round >= 5;
       return {
         ...p, phase: isOver ? "gameover" : "result",
         good: p.good + (good ? 1 : 0),
         missed: p.missed + (good ? 0 : 1),
-        lastResult: good ? "IT'S GOOD! 🏈🔥" : "NO GOOD! 😤",
-      };
+        lastResult: good ? "IT'S GOOD! 🏈🔥" : "NO GOOD! 😤" };
     });
   }, []);
 

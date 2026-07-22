@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 const PRICE_IDS: Record<string, string> = {
   standard: "price_1TqKzpGaXSfGtYFtuzWHg5tu", // 20€/mo
@@ -45,9 +43,7 @@ serve(async (req) => {
     if (listErr) throw listErr;
     if (!listing || listing.user_id !== user.id) throw new Error("Listing not found");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     const customerId = customers.data[0]?.id;
@@ -63,9 +59,7 @@ serve(async (req) => {
       cancel_url: `${origin}/promotions/new?canceled=1`,
       metadata: { listingId, tier, user_id: user.id, product: "promo_listing" },
       subscription_data: {
-        metadata: { listingId, tier, user_id: user.id, product: "promo_listing" },
-      },
-    });
+        metadata: { listingId, tier, user_id: user.id, product: "promo_listing" } } });
 
     await supabase
       .from("promo_listings")
@@ -74,13 +68,11 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

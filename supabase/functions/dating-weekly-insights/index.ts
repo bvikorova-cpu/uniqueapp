@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -55,12 +53,10 @@ Deno.serve(async (req) => {
         supabase.from("dating_swipes").select("id", { count: "exact", head: true })
           .eq("swiper_id", user.id).gte("created_at", from).lt("created_at", to),
       ]);
-      return {
-        likes: likes.count || 0,
+      return { likes: likes.count || 0,
         matches: matches.count || 0,
         messages: msgs.count || 0,
-        swipes: swipes.count || 0,
-      };
+        swipes: swipes.count || 0 };
     };
 
     const metrics = await agg(weekStartISO, new Date().toISOString());
@@ -90,9 +86,7 @@ Return JSON: { "summary": "1-2 sentences, warm, specific, mention biggest change
               { role: "system", content: "You are a friendly dating coach. Reply with JSON only." },
               { role: "user", content: prompt },
             ],
-            response_format: { type: "json_object" },
-          }),
-        });
+            response_format: { type: "json_object" } }) });
         if (r.ok) {
           const j = await r.json();
           const parsed = JSON.parse(j.choices[0].message.content);

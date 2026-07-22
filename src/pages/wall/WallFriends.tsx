@@ -62,8 +62,7 @@ export default function WallFriends() {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
     },
-    initialData: authUser ?? undefined,
-  });
+    initialData: authUser ?? undefined });
 
 
   // Global search across all profiles (debounced)
@@ -117,8 +116,7 @@ export default function WallFriends() {
         return true;
       });
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: requests = [], refetch: refetchRequests } = useQuery({
     queryKey: ["friend-requests", user?.id, friends.map(f => f.id).join(",")],
@@ -162,8 +160,7 @@ export default function WallFriends() {
         return { ...f, profile: profiles?.find((p: any) => p.id === f.user_id) || null, mutual_count: mutualCount };
       }) as FriendRequest[];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: suggestions = [] } = useQuery({
     queryKey: ["friend-suggestions", user?.id, friends.map(f => f.id).join(",")],
@@ -208,8 +205,7 @@ export default function WallFriends() {
         mutual_count: mutualCountMap[p.id] || 0
       })).sort((a: any, b: any) => b.mutual_count - a.mutual_count) as FriendSuggestion[];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: outgoing = [] } = useQuery({
     queryKey: ["friend-outgoing", user?.id],
@@ -225,13 +221,10 @@ export default function WallFriends() {
       const { data: profiles } = await publicProfiles()
         .select("id, full_name, avatar_url")
         .in("id", friendIds);
-      return friendships.map(f => ({
-        ...f,
-        profile: profiles?.find(p => p.id === f.friend_id) || null,
-      }));
+      return friendships.map(f => ({ ...f,
+        profile: profiles?.find(p => p.id === f.friend_id) || null }));
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const acceptMutation = useMutation({
     mutationFn: async (friendshipId: string) => {
@@ -260,17 +253,13 @@ export default function WallFriends() {
       const { error } = await supabase.from("friendships").delete().eq("id", friendshipId).eq("status", "pending");
       if (error) throw error;
     },
-    onSuccess: () => {
-      sonnerToast.success("Request cancelled", {
-        description: "Your friend request has been withdrawn",
-      });
+    onSuccess: () => { sonnerToast.success("Request cancelled", {
+        description: "Your friend request has been withdrawn" });
       queryClient.invalidateQueries({ queryKey: ["friend-outgoing"] });
       queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
     },
-    onError: () => {
-      sonnerToast.error("Failed to cancel request", {
-        description: "Please try again later",
-      });
+    onError: () => { sonnerToast.error("Failed to cancel request", {
+        description: "Please try again later" });
     }
   });
 

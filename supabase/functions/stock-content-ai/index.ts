@@ -1,9 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -59,8 +57,7 @@ serve(async (req) => {
         const response = await fetch(OPENAI_URL, {
           method: "POST",
           headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: OPENAI_MODEL, messages: [{ role: "system", content: systemPrompt }, ...messages] }),
-        });
+          body: JSON.stringify({ model: OPENAI_MODEL, messages: [{ role: "system", content: systemPrompt }, ...messages] }) });
         if (!response.ok) {
           const status = response.status;
           if (status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -69,8 +66,7 @@ serve(async (req) => {
         }
         const chatData = await response.json();
         return new Response(JSON.stringify({ result: chatData.choices?.[0]?.message?.content || "No response" }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       case "design-certificate":
@@ -162,15 +158,13 @@ serve(async (req) => {
 
       default:
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const fetchBody: any = {
       model: OPENAI_MODEL,
       messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
-      max_completion_tokens: 2000,
-    };
+      max_completion_tokens: 2000 };
     if (useJsonFormat) {
       fetchBody.response_format = { type: "json_object" };
     }
@@ -178,8 +172,7 @@ serve(async (req) => {
     const response = await fetch(OPENAI_URL, {
       method: "POST",
       headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify(fetchBody),
-    });
+      body: JSON.stringify(fetchBody) });
 
     if (!response.ok) {
       const status = response.status;
@@ -203,13 +196,11 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ result: content }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
   } catch (error) {
     console.error("content-ai-tools error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

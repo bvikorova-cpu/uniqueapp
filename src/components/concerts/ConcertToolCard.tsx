@@ -13,8 +13,7 @@ interface Props {
   badge?: string;
 }
 
-const colorMap: Record<string, string> = {
-  red: "bg-red-500/10 border-red-500/20 hover:border-red-500/40 text-red-500",
+const colorMap: Record<string, string> = { red: "bg-red-500/10 border-red-500/20 hover:border-red-500/40 text-red-500",
   violet: "bg-violet-500/10 border-violet-500/20 hover:border-violet-500/40 text-violet-500",
   blue: "bg-blue-500/10 border-blue-500/20 hover:border-blue-500/40 text-blue-500",
   amber: "bg-amber-500/10 border-amber-500/20 hover:border-amber-500/40 text-amber-500",
@@ -22,8 +21,7 @@ const colorMap: Record<string, string> = {
   emerald: "bg-emerald-500/10 border-emerald-500/20 hover:border-emerald-500/40 text-emerald-500",
   cyan: "bg-cyan-500/10 border-cyan-500/20 hover:border-cyan-500/40 text-cyan-500",
   indigo: "bg-indigo-500/10 border-indigo-500/20 hover:border-indigo-500/40 text-indigo-500",
-  orange: "bg-orange-500/10 border-orange-500/20 hover:border-orange-500/40 text-orange-500",
-};
+  orange: "bg-orange-500/10 border-orange-500/20 hover:border-orange-500/40 text-orange-500" };
 
 export const ConcertToolCard = ({ icon: Icon, title, description, color, onClick, index, badge }: Props) => {
   const c = colorMap[color] || colorMap.violet;

@@ -65,8 +65,7 @@ const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 test.describe("Edge function consolidation @smoke", () => {
   test("health-check reports all routers ok", async () => {
     const r = await fetch(`${SUPABASE_URL}/functions/v1/health-check`, {
-      headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
-    });
+      headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } });
     test.skip(r.status === 404, "health-check not deployed yet");
     const body = await r.json();
     expect(body.ok, `health-check failed: ${JSON.stringify(body.checks)}`).toBe(true);
@@ -81,8 +80,7 @@ test.describe("Edge function consolidation @smoke", () => {
       const r = await fetch(`${SUPABASE_URL}/functions/v1/${router}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
-        body: JSON.stringify({ action: "ping" }),
-      });
+        body: JSON.stringify({ action: "ping" }) });
       test.skip(!r.ok, `${router} unreachable (${r.status})`);
       const data = await r.json();
       expect(data.ok).toBe(true);
@@ -95,16 +93,14 @@ test.describe("job-redirect 301 server-side @smoke", () => {
   test("rejects malformed UUID with 400", async () => {
     const r = await fetch(`${SUPABASE_URL}/functions/v1/job-redirect?id=not-a-uuid`, {
       redirect: "manual",
-      headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
-    });
+      headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } });
     expect(r.status).toBe(400);
   });
 
   test("well-formed UUID returns 301/308 with /jobs/listing/ Location OR 404", async () => {
     const r = await fetch(`${SUPABASE_URL}/functions/v1/job-redirect?id=00000000-0000-0000-0000-000000000000`, {
       redirect: "manual",
-      headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
-    });
+      headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` } });
     expect([404, 301, 308]).toContain(r.status);
     if (r.status === 301 || r.status === 308) {
       expect(r.headers.get("location")).toMatch(/\/jobs\/listing\//);

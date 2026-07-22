@@ -19,34 +19,25 @@ interface BundlePackProps {
   popular?: boolean;
 }
 
-const TIER_STYLES: Record<string, { gradient: string; glow: string; ring: string; badge: string; text: string }> = {
-  starter: {
+const TIER_STYLES: Record<string, { gradient: string; glow: string; ring: string; badge: string; text: string }> = { starter: {
     gradient: "from-blue-500/15 via-cyan-500/10 to-blue-500/15",
     glow: "bg-blue-500/30",
     ring: "border-blue-500/40",
     badge: "from-blue-500 to-cyan-500",
-    text: "text-blue-300",
-  },
-  pro: {
-    gradient: "from-purple-500/20 via-pink-500/15 to-purple-500/20",
+    text: "text-blue-300" },
+  pro: { gradient: "from-purple-500/20 via-pink-500/15 to-purple-500/20",
     glow: "bg-purple-500/40",
     ring: "border-purple-500/50",
     badge: "from-purple-500 to-pink-500",
-    text: "text-purple-300",
-  },
-  legendary: {
-    gradient: "from-amber-500/20 via-orange-500/15 to-amber-500/20",
+    text: "text-purple-300" },
+  legendary: { gradient: "from-amber-500/20 via-orange-500/15 to-amber-500/20",
     glow: "bg-amber-500/40",
     ring: "border-amber-500/50",
     badge: "from-amber-500 to-orange-500",
-    text: "text-amber-300",
-  },
-};
+    text: "text-amber-300" } };
 
 /** Bundle pack — boost AOV with curated 3-5 item kits. */
-export const BundlePack = ({
-  tier, name, description, items, originalPrice, bundlePrice, onBuy, disabled, popular,
-}: BundlePackProps) => {
+export const BundlePack = ({ tier, name, description, items, originalPrice, bundlePrice, onBuy, disabled, popular }: BundlePackProps) => {
   const s = TIER_STYLES[tier];
   const savings = originalPrice - bundlePrice;
   const savingsPct = Math.round((savings / originalPrice) * 100);

@@ -15,30 +15,24 @@ interface CertificateGeneratorProps {
   score?: number;
 }
 
-export const CertificateGenerator = ({
-  userName,
+export const CertificateGenerator = ({ userName,
   courseName,
   completionDate,
   certificateNumber,
   instructorName,
-  score,
-}: CertificateGeneratorProps) => {
-  const certificateRef = useRef<HTMLDivElement>(null);
+  score }: CertificateGeneratorProps) => { const certificateRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
     if (!certificateRef.current) return;
 
     const canvas = await html2canvas(certificateRef.current, {
       scale: 2,
-      backgroundColor: "#ffffff",
-    });
+      backgroundColor: "#ffffff" });
 
     const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({
-      orientation: "landscape",
+    const pdf = new jsPDF({ orientation: "landscape",
       unit: "mm",
-      format: "a4",
-    });
+      format: "a4" });
 
     const imgWidth = 297;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;

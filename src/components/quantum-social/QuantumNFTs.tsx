@@ -23,21 +23,17 @@ interface QuantumNFT {
   created_at: string;
 }
 
-const RARITY_COLORS: Record<string, string> = {
-  common: "text-gray-400 border-gray-500/30",
+const RARITY_COLORS: Record<string, string> = { common: "text-gray-400 border-gray-500/30",
   uncommon: "text-emerald-400 border-emerald-500/30",
   rare: "text-cyan-400 border-cyan-500/30",
   epic: "text-violet-400 border-violet-500/30",
-  legendary: "text-amber-400 border-amber-500/30",
-};
+  legendary: "text-amber-400 border-amber-500/30" };
 
-const RARITY_GRADIENTS: Record<string, string> = {
-  common: "from-gray-500/10 to-gray-500/5",
+const RARITY_GRADIENTS: Record<string, string> = { common: "from-gray-500/10 to-gray-500/5",
   uncommon: "from-emerald-500/10 to-emerald-500/5",
   rare: "from-cyan-500/10 to-cyan-500/5",
   epic: "from-violet-500/10 to-violet-500/5",
-  legendary: "from-amber-500/10 to-amber-500/5",
-};
+  legendary: "from-amber-500/10 to-amber-500/5" };
 
 export function QuantumNFTs({ onBack }: { onBack: () => void }) {
   const [nfts, setNfts] = useState<QuantumNFT[]>([]);
@@ -80,9 +76,7 @@ export function QuantumNFTs({ onBack }: { onBack: () => void }) {
       const response = await supabase.functions.invoke("ai-mood-therapist", {
         body: {
           messages: [{ role: "user", content: `Generate a unique quantum signature hash and rarity assessment for a quantum NFT called "${mintName}" described as "${mintDesc}". Return ONLY a JSON object with fields: signature (a hex string), rarity (one of: common, uncommon, rare, epic, legendary based on creativity).` }],
-          systemPrompt: "You are a quantum NFT minting engine. Respond ONLY with valid JSON.",
-        },
-      });
+          systemPrompt: "You are a quantum NFT minting engine. Respond ONLY with valid JSON." } });
 
       let rarity = ["common", "uncommon", "rare", "epic", "legendary"][Math.floor(Math.random() * 5)];
       let signature = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
@@ -99,23 +93,19 @@ export function QuantumNFTs({ onBack }: { onBack: () => void }) {
         } catch {}
       }
 
-      const { error } = await supabase.from("quantum_nfts").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("quantum_nfts").insert({ user_id: user.id,
         name: mintName,
         description: mintDesc || null,
         rarity,
         quantum_signature: signature,
-        minted_price: 2,
-      });
+        minted_price: 2 });
 
       if (error) throw error;
 
       // Record transaction
-      await supabase.from("quantum_nft_transactions").insert({
-        buyer_id: user.id,
+      await supabase.from("quantum_nft_transactions").insert({ buyer_id: user.id,
         price: 2,
-        transaction_type: "mint",
-      });
+        transaction_type: "mint" });
 
       toast({ title: "NFT Minted! ✨", description: `"${mintName}" — ${rarity} rarity` });
       setMintName("");

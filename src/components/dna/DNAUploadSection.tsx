@@ -13,13 +13,11 @@ export const DNAUploadSection = () => {
   const [processing, setProcessing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
 
-  const handleAnalyze = async () => {
-    if (!sampleId.trim()) {
+  const handleAnalyze = async () => { if (!sampleId.trim()) {
       toast({
         title: "Sample ID Required",
         description: "Please enter your DNA sample ID",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -27,12 +25,10 @@ export const DNAUploadSection = () => {
       setProcessing(true);
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication Required",
           description: "Please sign in to analyze your DNA",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -45,15 +41,12 @@ export const DNAUploadSection = () => {
       setAnalysisResult(data.analysis);
       toast({
         title: "Analysis Complete!",
-        description: `Your DNA has been analyzed. ${data.memories} ancestral memories generated.`,
-      });
-    } catch (error) {
-      console.error('Error:', error);
+        description: `Your DNA has been analyzed. ${data.memories} ancestral memories generated.` });
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Analysis Failed",
         description: "Failed to process DNA analysis. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setProcessing(false);
     }

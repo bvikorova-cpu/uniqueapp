@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const CREDIT_COST = 1;
 
@@ -11,26 +9,21 @@ async function callOpenAI(apiKey: string, messages: any[]) {
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "gpt-4o-mini", messages }),
-  });
+    body: JSON.stringify({ model: "gpt-4o-mini", messages }) });
   if (!response.ok) throw new Error(`AI error: ${response.status}`);
   const data = await response.json();
   return data.choices?.[0]?.message?.content || "";
 }
 
-const styles: Record<string, string> = {
-  heartfelt: "Write with genuine warmth and emotional depth.",
+const styles: Record<string, string> = { heartfelt: "Write with genuine warmth and emotional depth.",
   poetic: "Use poetic language and metaphors.",
   funny: "Be witty, clever, and humorous.",
-  professional: "Keep it respectful and professionally warm.",
-};
+  professional: "Keep it respectful and professionally warm." };
 
-const variationPrompts: Record<string, string> = {
-  mood: "Create variations of the message in different emotional tones.",
+const variationPrompts: Record<string, string> = { mood: "Create variations of the message in different emotional tones.",
   formality: "Create variations ranging from casual to formal.",
   length: "Create short, medium, and long versions.",
-  style: "Create variations in different writing styles.",
-};
+  style: "Create variations in different writing styles." };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });

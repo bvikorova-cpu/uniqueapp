@@ -39,9 +39,7 @@ export const MemoryVaultView = () => {
     if (!newMem.trim()) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    await supabase.from("best_friend_memories").insert({
-      user_id: user.id, content: newMem.trim(), category: "fact", importance: 7,
-    });
+    await supabase.from("best_friend_memories").insert({ user_id: user.id, content: newMem.trim(), category: "fact", importance: 7 });
     setNewMem(""); load();
   };
 

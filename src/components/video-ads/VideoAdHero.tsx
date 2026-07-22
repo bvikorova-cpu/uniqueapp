@@ -6,14 +6,12 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const useLiveStats = () => {
   const [stats, setStats] = useState({ ads: 18420, creators: 3150, scripts: 92500, platforms: 6 });
-  useEffect(() => {
-    const i = setInterval(() => {
+  useEffect(() => { const i = setInterval(() => {
       setStats(p => ({
         ads: p.ads + Math.floor(Math.random() * 3),
         creators: p.creators + (Math.random() > 0.7 ? 1 : 0),
         scripts: p.scripts + Math.floor(Math.random() * 5),
-        platforms: 6,
-      }));
+        platforms: 6 }));
     }, 4000);
     return () => clearInterval(i);
   }, []);

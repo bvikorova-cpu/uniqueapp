@@ -56,13 +56,11 @@ const PremiumCourses = () => {
 
       if (error) throw error;
       setCourses(data || []);
-    } catch (error) {
-      console.error('Error fetching courses:', error);
+    } catch (error) { console.error('Error fetching courses:', error);
       toast({
         title: "Error",
         description: "Failed to load courses",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -94,10 +92,8 @@ const PremiumCourses = () => {
       
       if (error) throw error;
       
-      toast({
-        title: "Enrollment Successful!",
-        description: "You now have access to this course",
-      });
+      toast({ title: "Enrollment Successful!",
+        description: "You now have access to this course" });
       
       fetchEnrollments();
     } catch (error) {
@@ -105,13 +101,11 @@ const PremiumCourses = () => {
     }
   };
 
-  const handlePurchase = async (course: Course) => {
-    if (!user) {
+  const handlePurchase = async (course: Course) => { if (!user) {
       toast({
         title: "Authentication Required",
         description: "Please sign in to purchase courses",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate('/auth');
       return;
     }
@@ -130,13 +124,11 @@ const PremiumCourses = () => {
       if (data?.url) {
         window.open(data.url, '_blank');
       }
-    } catch (error: any) {
-      console.error('Error:', error);
+    } catch (error: any) { console.error('Error:', error);
       toast({
         title: "Purchase Failed",
         description: error.message || "Failed to initiate purchase",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setPurchasing(null);
     }

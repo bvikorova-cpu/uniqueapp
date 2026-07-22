@@ -191,8 +191,7 @@ const Megatalent = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke('megatalent-customer-portal', {
-        headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
-      });
+        headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined });
       if (error) throw error;
       if (data?.url) window.open(data.url, '_blank');
     } catch (error) {
@@ -308,11 +307,9 @@ const Megatalent = () => {
       const fileExt = (file.name.split('.').pop() || (isImage ? 'jpg' : 'mp4')).toLowerCase();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       const bucket = isImage ? 'media' : 'videos';
-      const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file, {
-        cacheControl: '3600',
+      const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file, { cacheControl: '3600',
         upsert: false,
-        contentType: file.type,
-      });
+        contentType: file.type });
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(fileName);
       setUploadedFile({ url: publicUrl, type });
@@ -541,14 +538,13 @@ const Megatalent = () => {
                 <div className="lg:col-span-1 order-3">
                   <div className="sticky top-24 space-y-4">
                     <LiveVoting
-                      contestants={sortedSubmissions.slice(0, 5).map(s => {
+                      contestants={ sortedSubmissions.slice(0, 5).map(s => {
                         const total = sortedSubmissions.slice(0, 5).reduce((a, b) => a + (b.votes_count || 0), 0) || 1;
                         return {
                           id: s.id,
                           name: s.profiles?.full_name || s.title || "User",
                           votes: s.votes_count || 0,
-                          percentage: Math.round(((s.votes_count || 0) / total) * 100),
-                        };
+                          percentage: Math.round(((s.votes_count || 0) / total) * 100) };
                       })}
                       totalVotes={sortedSubmissions.reduce((a, b) => a + (b.votes_count || 0), 0)}
                       isVotingOpen={true}

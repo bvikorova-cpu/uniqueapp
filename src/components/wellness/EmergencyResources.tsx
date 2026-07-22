@@ -15,34 +15,26 @@ interface EmergencyResource {
 }
 
 const defaultResources: EmergencyResource[] = [
-  {
-    name: 'Forget-Me-Not Trust Line (SK)',
+  { name: 'Forget-Me-Not Trust Line (SK)',
     description: '24/7 anonymous psychological help in crisis situations',
     phone: '0800 800 566',
     available: '24/7',
-    type: 'crisis',
-  },
-  {
-    name: 'IPčko – internet counseling for young people',
+    type: 'crisis' },
+  { name: 'IPčko – internet counseling for young people',
     description: 'Online chat and email counseling from psychologists',
     website: 'https://ipcko.sk',
     available: '7:00 – 24:00',
-    type: 'support',
-  },
-  {
-    name: 'Emergency line',
+    type: 'support' },
+  { name: 'Emergency line',
     description: 'For immediate threat to life or health',
     phone: '112',
     available: '24/7',
-    type: 'crisis',
-  },
-  {
-    name: 'League for Mental Health',
+    type: 'crisis' },
+  { name: 'League for Mental Health',
     description: 'Directory of support groups and experts internationally',
     website: 'https://dusevnezdravie.sk',
     available: 'Varies',
-    type: 'local',
-  },
+    type: 'local' },
 ];
 
 interface EmergencyResourcesProps {

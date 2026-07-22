@@ -22,9 +22,7 @@ export const VIPExperience = ({ onBack }: Props) => {
           productName: "VIP All-Access Pass",
           amount: 2999,
           mode: "subscription",
-          metadata: { type: "concert_vip", feature: "vip_pass" },
-        },
-      });
+          metadata: { type: "concert_vip", feature: "vip_pass" } } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
     } catch { toast.error("Failed to start checkout"); }

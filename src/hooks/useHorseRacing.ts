@@ -21,8 +21,7 @@ export const useHorseCurrency = () => {
       if (error) throw error;
       // Row is created server-side; show zero-balance placeholder until webhook fulfills
       return data ?? { user_id: user.id, coins: 0, gems: 0 };
-    },
-  });
+    } });
 
   // Realtime: react when webhook fulfills a Stripe purchase
   useEffect(() => {
@@ -41,8 +40,7 @@ export const useHorseCurrency = () => {
             event: "UPDATE",
             schema: "public",
             table: "horse_currency_purchases",
-            filter: `user_id=eq.${user.id}`,
-          },
+            filter: `user_id=eq.${user.id}` },
           (payload) => {
             const row = payload.new as {
               status?: string;
@@ -57,8 +55,7 @@ export const useHorseCurrency = () => {
               toast.success("Payment confirmed!", {
                 description: parts.length
                   ? `${parts.join(" · ")} added to your balance.`
-                  : "Your balance has been updated.",
-              });
+                  : "Your balance has been updated." });
               queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
             }
           }
@@ -69,8 +66,7 @@ export const useHorseCurrency = () => {
             event: "*",
             schema: "public",
             table: "horse_currency",
-            filter: `user_id=eq.${user.id}`,
-          },
+            filter: `user_id=eq.${user.id}` },
           () => {
             queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
           }
@@ -96,8 +92,7 @@ export const usePurchaseCurrency = () => {
       const { data, error } = await supabase.functions.invoke(
         "create-horse-currency-checkout",
         {
-          body: { packageType },
-        }
+          body: { packageType } }
       );
 
       if (error) throw error;
@@ -110,8 +105,7 @@ export const usePurchaseCurrency = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };
 
 export const useUserHorses = () => {
@@ -131,16 +125,14 @@ export const useUserHorses = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const createHorse = useMutation({
     mutationFn: async ({ name, breed, color, costCoins }: {
       name: string; breed: string; color: string; costCoins: number;
     }) => {
       const { data, error } = await supabase.functions.invoke("horse-create", {
-        body: { name, breed, color, costCoins },
-      });
+        body: { name, breed, color, costCoins } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return data.horse;
@@ -150,8 +142,7 @@ export const useUserHorses = () => {
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
       toast.success("Horse acquired!");
     },
-    onError: (error: Error) => toast.error(error.message),
-  });
+    onError: (error: Error) => toast.error(error.message) });
 
   return { horses, isLoading, createHorse };
 };
@@ -193,8 +184,7 @@ export const useJoinRace = () => {
       raceId: string; horseId: string; strategy: string;
     }) => {
       const { data, error } = await supabase.functions.invoke("horse-join-race", {
-        body: { raceId, horseId, strategy },
-      });
+        body: { raceId, horseId, strategy } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return data.participant;
@@ -204,8 +194,7 @@ export const useJoinRace = () => {
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
       toast.success("Joined race!");
     },
-    onError: (error: Error) => toast.error(error.message),
-  });
+    onError: (error: Error) => toast.error(error.message) });
 };
 
 // Training Hook
@@ -218,8 +207,7 @@ export const useTrainHorse = () => {
       statType: 'speed' | 'stamina' | 'acceleration' | 'temperament';
     }) => {
       const { data, error } = await supabase.functions.invoke("horse-train", {
-        body: { horseId, statType },
-      });
+        body: { horseId, statType } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return { statType: data.statType, newValue: data.newValue };
@@ -229,8 +217,7 @@ export const useTrainHorse = () => {
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
       toast.success(`${data.statType} increased to ${data.newValue}!`);
     },
-    onError: (error: Error) => toast.error(error.message),
-  });
+    onError: (error: Error) => toast.error(error.message) });
 };
 
 // Breeding Hook
@@ -274,12 +261,10 @@ export const useBreedHorses = () => {
         return Math.max(30, Math.min(100, Math.floor(average + variation)));
       };
 
-      const offspringStats = {
-        speed_stat: calculateOffspringStat(parent1.speed_stat, parent2.speed_stat),
+      const offspringStats = { speed_stat: calculateOffspringStat(parent1.speed_stat, parent2.speed_stat),
         stamina_stat: calculateOffspringStat(parent1.stamina_stat, parent2.stamina_stat),
         acceleration_stat: calculateOffspringStat(parent1.acceleration_stat, parent2.acceleration_stat),
-        temperament_stat: calculateOffspringStat(parent1.temperament_stat, parent2.temperament_stat),
-      };
+        temperament_stat: calculateOffspringStat(parent1.temperament_stat, parent2.temperament_stat) };
 
       // Create offspring
       const { data: offspring, error } = await supabase
@@ -289,8 +274,7 @@ export const useBreedHorses = () => {
           name: `${parent1.name} Jr.`,
           breed: parent1.breed,
           color: Math.random() > 0.5 ? parent1.color : parent2.color,
-          ...offspringStats,
-        })
+          ...offspringStats })
         .select()
         .single();
 
@@ -299,14 +283,12 @@ export const useBreedHorses = () => {
       // Record breeding
       await supabase
         .from("breeding_records")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           parent1_id: parent1Id,
           parent2_id: parent2Id,
           offspring_id: offspring.id,
           cost_coins: BREEDING_COST,
-          status: 'completed',
-        });
+          status: 'completed' });
 
       // Deduct coins
       await supabase
@@ -323,8 +305,7 @@ export const useBreedHorses = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };
 
 // Shop - Change Horse Color
@@ -370,8 +351,7 @@ export const usePurchaseHorseColor = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };
 
 // Shop - Purchase Item
@@ -454,13 +434,11 @@ export const usePurchaseShopItem = () => {
       // Record purchase
       await supabase
         .from("horse_shop_purchases")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           item_id: itemId,
           horse_id: horseId || null,
           cost_coins: costCoins || 0,
-          cost_gems: costGems || 0,
-        });
+          cost_gems: costGems || 0 });
 
       return { itemId, horseId };
     },
@@ -471,6 +449,5 @@ export const usePurchaseShopItem = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };

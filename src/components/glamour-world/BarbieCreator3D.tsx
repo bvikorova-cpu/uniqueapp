@@ -369,15 +369,13 @@ function StylePicker({ label, options, selected, onSelect }: StylePickerProps) {
   );
 }
 
-const defaultConfig: BarbieConfig = {
-  skinColor: SKIN_COLORS[0],
+const defaultConfig: BarbieConfig = { skinColor: SKIN_COLORS[0],
   hairColor: HAIR_COLORS[3],
   hairStyle: "Long",
   dressColor: DRESS_COLORS[0],
   dressStyle: "Ball Gown",
   shoeColor: SHOE_COLORS[0],
-  accessory: "Tiara",
-};
+  accessory: "Tiara" };
 
 export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
   const [config, setConfig] = useState<BarbieConfig>(defaultConfig);

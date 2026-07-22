@@ -31,8 +31,7 @@ export default function AIJobDescriptionWriter() {
     if (!title) return toast.error("Enter role title");
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("ai-job-description", {
-      body: { title, company, level, remote, tone, skills: skills.split(",").map(s => s.trim()).filter(Boolean) },
-    });
+      body: { title, company, level, remote, tone, skills: skills.split(",").map(s => s.trim()).filter(Boolean) } });
     setLoading(false);
     if (error) return toast.error(error.message);
     setResult(data.result);
@@ -42,8 +41,7 @@ export default function AIJobDescriptionWriter() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return toast.error("Sign in first");
     await (supabase as any).from("ai_job_description_drafts").insert({
-      user_id: user.id, title, prompt: JSON.stringify({ title, company, level, skills, remote, tone }), result,
-    });
+      user_id: user.id, title, prompt: JSON.stringify({ title, company, level, skills, remote, tone }), result });
     toast.success("Draft saved");
   };
 

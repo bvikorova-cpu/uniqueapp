@@ -4,23 +4,19 @@ import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export function NightSkyBackground() {
   const stars = useMemo(() =>
-    Array.from({ length: 60 }, (_, i) => ({
-      id: i,
+    Array.from({ length: 60 }, (_, i) => ({ id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: 1 + Math.random() * 3,
       delay: Math.random() * 5,
-      duration: 2 + Math.random() * 4,
-    })),
+      duration: 2 + Math.random() * 4 })),
   []);
 
   const shootingStars = useMemo(() =>
-    Array.from({ length: 3 }, (_, i) => ({
-      id: i,
+    Array.from({ length: 3 }, (_, i) => ({ id: i,
       startX: 10 + Math.random() * 60,
       startY: 5 + Math.random() * 20,
-      delay: 3 + i * 8,
-    })),
+      delay: 3 + i * 8 })),
   []);
 
   return (
@@ -36,8 +32,7 @@ export function NightSkyBackground() {
             left: `${star.x}%`,
             top: `${star.y}%`,
             width: star.size,
-            height: star.size,
-          }}
+            height: star.size }}
           animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.2, 0.8] }}
           transition={{ duration: star.duration, delay: star.delay, repeat: Infinity }}
         />
@@ -49,12 +44,11 @@ export function NightSkyBackground() {
           key={`shoot-${s.id}`}
           className="absolute w-1 h-1 bg-white rounded-full"
           style={{ left: `${s.startX}%`, top: `${s.startY}%` }}
-          animate={{
+          animate={ {
             x: [0, 200],
             y: [0, 100],
             opacity: [0, 1, 0],
-            scale: [0, 1.5, 0],
-          }}
+            scale: [0, 1.5, 0] }}
           transition={{ duration: 1.5, delay: s.delay, repeat: Infinity, repeatDelay: 12 }}
         >
           {/* Trail */}

@@ -11,8 +11,7 @@ interface LessonRecordingProps {
   isInstructor: boolean;
 }
 
-export const LessonRecording = ({ lessonId, recordingUrl, isInstructor }: LessonRecordingProps) => {
-  const [isRecording, setIsRecording] = useState(false);
+export const LessonRecording = ({ lessonId, recordingUrl, isInstructor }: LessonRecordingProps) => { const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
 
@@ -20,12 +19,9 @@ export const LessonRecording = ({ lessonId, recordingUrl, isInstructor }: Lesson
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
-        audio: true,
-      } as any);
+        audio: true } as any);
 
-      const recorder = new MediaRecorder(stream, {
-        mimeType: "video/webm;codecs=vp9",
-      });
+      const recorder = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9" });
 
       const chunks: Blob[] = [];
       recorder.ondataavailable = (e) => {

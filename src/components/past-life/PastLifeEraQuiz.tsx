@@ -13,8 +13,7 @@ const QUESTIONS = [
       { label: "Cherry blossoms", era: "japan" },
       { label: "Old leather & parchment", era: "medieval" },
       { label: "Salt & sea spray", era: "viking" },
-    ],
-  },
+    ] },
   {
     q: "Pick a sound that feels like home",
     options: [
@@ -22,8 +21,7 @@ const QUESTIONS = [
       { label: "Crackling fireplace & lute", era: "medieval" },
       { label: "Crashing waves on rocks", era: "viking" },
       { label: "Sand whispering in a desert", era: "egypt" },
-    ],
-  },
+    ] },
   {
     q: "Your dream attire?",
     options: [
@@ -31,16 +29,14 @@ const QUESTIONS = [
       { label: "Silk kimono", era: "japan" },
       { label: "Velvet & embroidered cloak", era: "medieval" },
       { label: "Fur, iron & woven leather", era: "viking" },
-    ],
-  },
+    ] },
 ];
 
 const RESULTS: Record<string, { title: string; emoji: string; desc: string }> = {
   egypt: { title: "Ancient Egyptian", emoji: "𓂀", desc: "You likely walked the temples of the Nile — priest, scribe, or healer." },
   japan: { title: "Feudal Japanese", emoji: "⛩️", desc: "Your soul carries the discipline of samurai or grace of a temple keeper." },
   medieval: { title: "Medieval European", emoji: "🏰", desc: "A scholar, knight, or master craftsperson in stone-walled cities." },
-  viking: { title: "Norse Viking", emoji: "⚔️", desc: "Born to the sea — explorer, shieldmaiden, or skald of the fjords." },
-};
+  viking: { title: "Norse Viking", emoji: "⚔️", desc: "Born to the sea — explorer, shieldmaiden, or skald of the fjords." } };
 
 export const PastLifeEraQuiz = () => {
   const [step, setStep] = useState(0);

@@ -25,11 +25,9 @@ export const MultiPersonProfileCard = () => {
   const update = (i: number, key: keyof Person, val: string) =>
     setPeople(people.map((p, idx) => (idx === i ? { ...p, [key]: val } : p)));
 
-  const submit = () => {
-    const payload = people.map((p) => ({
+  const submit = () => { const payload = people.map((p) => ({
       name: p.name.trim() || "Unknown",
-      messages: p.messages.split("\n").map((m) => m.trim()).filter(Boolean),
-    }));
+      messages: p.messages.split("\n").map((m) => m.trim()).filter(Boolean) }));
     if (payload.some((p) => p.messages.length === 0)) return;
     mp.mutate({ title: title || undefined, people: payload });
   };

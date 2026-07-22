@@ -10,26 +10,20 @@ import {
   Languages, FileText, Sparkles, Coins, Loader2, 
   Clock, Cloud, Zap, Heart, Wand2 
 } from "lucide-react";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
+  DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Select,
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 
 
 interface MessengerAIFeaturesProps {
@@ -103,23 +97,19 @@ const fallbackSmartReplies = (lastIncoming?: string): string[] => {
   return ["That made me smile 😊", "How are you?", "I’m glad to hear from you"];
 };
 
-const WEATHER_ICONS: Record<string, string> = {
-  sunny: "☀️",
+const WEATHER_ICONS: Record<string, string> = { sunny: "☀️",
   cloudy: "☁️",
   rainy: "🌧️",
   stormy: "⛈️",
   rainbow: "🌈",
-  foggy: "🌫️",
-};
+  foggy: "🌫️" };
 
-export const MessengerAIFeatures = ({
-  userId,
+export const MessengerAIFeatures = ({ userId,
   selectedText,
   messages,
   onInsertText,
   recipientId,
-  recipientName,
-}: MessengerAIFeaturesProps) => {
+  recipientName }: MessengerAIFeaturesProps) => {
   const { toast } = useToast();
   const [credits, setCredits] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -165,8 +155,7 @@ export const MessengerAIFeatures = ({
   };
 
   /** Returns true if it handled the error (caller should bail). */
-  const handleAIError = (error: any, data: any, fallbackTitle = "Failed"): boolean => {
-    const msg = String(error?.message || data?.error || "");
+  const handleAIError = (error: any, data: any, fallbackTitle = "Failed"): boolean => { const msg = String(error?.message || data?.error || "");
     const status = error?.context?.status ?? error?.status;
     const isCredits =
       status === 402 ||
@@ -178,8 +167,7 @@ export const MessengerAIFeatures = ({
       toast({
         title: "AI credits depleted",
         description: "Buy more credits to continue using AI features.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return true;
     }
     if (error || data?.error) {
@@ -199,8 +187,7 @@ export const MessengerAIFeatures = ({
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("messenger-ai", {
-        body: { action: "translate", text: selectedText, targetLanguage },
-      });
+        body: { action: "translate", text: selectedText, targetLanguage } });
 
       if (handleAIError(error, data)) return;
 
@@ -221,15 +208,12 @@ export const MessengerAIFeatures = ({
     }
 
     setIsLoading(true);
-    try {
-      const formattedMessages = messages.slice(-20).map(m => ({
+    try { const formattedMessages = messages.slice(-20).map(m => ({
         sender: m.sender_name || (m.sender_id === userId ? "Me" : "Them"),
-        content: m.content,
-      }));
+        content: m.content }));
 
       const { data, error } = await supabase.functions.invoke("messenger-ai", {
-        body: { action: "summarize", messages: formattedMessages },
-      });
+        body: { action: "summarize", messages: formattedMessages } });
 
       if (handleAIError(error, data)) return;
 
@@ -256,14 +240,11 @@ export const MessengerAIFeatures = ({
       const context = recentMessages
         .map((m) => `${m.sender_id === userId ? "Me" : (m.sender_name || recipientName || "Them")}: ${m.content.trim()}`)
         .join("\n");
-      const lastMessages = recentMessages.slice(-5).map(m => ({
-        isMe: m.sender_id === userId,
-        content: m.content,
-      }));
+      const lastMessages = recentMessages.slice(-5).map(m => ({ isMe: m.sender_id === userId,
+        content: m.content }));
 
       const { data, error } = await supabase.functions.invoke("messenger-ai", {
-        body: { action: "smart-reply", context, conversationText: context, lastMessages },
-      });
+        body: { action: "smart-reply", context, conversationText: context, lastMessages } });
 
       if (handleAIError(error, data)) return;
 
@@ -296,8 +277,7 @@ export const MessengerAIFeatures = ({
           deliveryDate, 
           recipientId,
           generateImage: true 
-        },
-      });
+        } });
 
       if (handleAIError(error, data)) return;
 
@@ -320,15 +300,12 @@ export const MessengerAIFeatures = ({
     }
 
     setIsLoading(true);
-    try {
-      const formattedMessages = messages.slice(-15).map(m => ({
+    try { const formattedMessages = messages.slice(-15).map(m => ({
         sender: m.sender_name || (m.sender_id === userId ? "Me" : "Them"),
-        content: m.content,
-      }));
+        content: m.content }));
 
       const { data, error } = await supabase.functions.invoke("messenger-ai", {
-        body: { action: "emotional-weather", messages: formattedMessages },
-      });
+        body: { action: "emotional-weather", messages: formattedMessages } });
 
       if (handleAIError(error, data)) return;
 
@@ -352,8 +329,7 @@ export const MessengerAIFeatures = ({
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("messenger-ai", {
-        body: { action: "quantum-message", originalMessage: quantumOriginal, variationType: quantumType },
-      });
+        body: { action: "quantum-message", originalMessage: quantumOriginal, variationType: quantumType } });
 
       if (handleAIError(error, data)) return;
 
@@ -375,8 +351,7 @@ export const MessengerAIFeatures = ({
           recipientName: recipientName || "someone special", 
           context: complimentContext,
           style: complimentStyle 
-        },
-      });
+        } });
 
       if (handleAIError(error, data)) return;
 
@@ -399,8 +374,7 @@ export const MessengerAIFeatures = ({
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("messenger-ai", {
-        body: { action: "what-if", scenario: whatIfScenario },
-      });
+        body: { action: "what-if", scenario: whatIfScenario } });
 
       if (handleAIError(error, data)) return;
 
@@ -417,8 +391,7 @@ export const MessengerAIFeatures = ({
   const handleBuyCredits = async (credits: number) => {
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: "messenger_ai", packKey: String(credits) },
-      });
+        body: { product: "messenger_ai", packKey: String(credits) } });
 
       if (error) throw error;
       if (data?.url) {

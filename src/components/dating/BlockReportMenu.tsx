@@ -36,9 +36,7 @@ export const BlockReportMenu = ({ targetUserId, targetName, onBlocked }: Props) 
     setBusy(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setBusy(false); return; }
-    const { error } = await supabase.from("dating_reports").insert({
-      reporter_id: user.id, reported_id: targetUserId, reason, details: details || null,
-    });
+    const { error } = await supabase.from("dating_reports").insert({ reporter_id: user.id, reported_id: targetUserId, reason, details: details || null });
     setBusy(false);
     if (error) { toast({ title: "Report failed", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Report submitted", description: "Our team will review within 24h." });
@@ -50,9 +48,7 @@ export const BlockReportMenu = ({ targetUserId, targetName, onBlocked }: Props) 
     setBusy(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setBusy(false); return; }
-    const { error } = await supabase.from("dating_blocks").insert({
-      blocker_id: user.id, blocked_id: targetUserId,
-    });
+    const { error } = await supabase.from("dating_blocks").insert({ blocker_id: user.id, blocked_id: targetUserId });
     setBusy(false);
     if (error && !error.message.includes("duplicate")) {
       toast({ title: "Block failed", description: error.message, variant: "destructive" }); return;

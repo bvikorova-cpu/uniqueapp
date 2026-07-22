@@ -14,8 +14,7 @@ export const useTutorialAICredits = () => {
       toast({
         title: "Insufficient Credits",
         description: `This action requires ${amount} credits. You have ${credits}. Purchase more to continue.`,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return false;
     }
 
@@ -24,20 +23,16 @@ export const useTutorialAICredits = () => {
         await spendCredit();
       }
       return true;
-    } catch (err) {
-      toast({
+    } catch (err) { toast({
         title: "Credit Error",
         description: "Failed to deduct credits. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return false;
     }
   };
 
-  return {
-    credits,
+  return { credits,
     isLoading,
     isDeducting: isUsingCredit,
-    checkAndDeduct,
-  };
+    checkAndDeduct };
 };

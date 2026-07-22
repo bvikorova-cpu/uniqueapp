@@ -14,14 +14,12 @@ interface Props {
 /**
  * Wraps an avatar with a circular XP progress ring and a small level badge.
  */
-export function AvatarLevelRing({
-  userId,
+export function AvatarLevelRing({ userId,
   size = 56,
   thickness = 3,
   showBadge = true,
   className,
-  children,
-}: Props) {
+  children }: Props) {
   const { data } = useUserLevel(userId);
   const pct = data?.progressPct ?? 0;
   const level = data?.level ?? 1;

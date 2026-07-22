@@ -24,8 +24,7 @@ export function useMoodLogs(days = 30) {
         .gte("logged_at", since)
         .order("logged_at", { ascending: true });
       return data || [];
-    },
-  });
+    } });
 }
 
 export function useAddMoodLog() {
@@ -41,8 +40,7 @@ export function useAddMoodLog() {
       qc.invalidateQueries({ queryKey: ["safety-mood-logs"] });
       toast.success("Mood logged");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 // ==================== WEEKLY INSIGHT (AI 5cr) ====================
@@ -61,8 +59,7 @@ export function useWeeklyInsight() {
         .limit(1)
         .maybeSingle();
       return data;
-    },
-  });
+    } });
   const generate = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -79,8 +76,7 @@ export function useWeeklyInsight() {
       qc.invalidateQueries({ queryKey: ["safety-ai-credits"] });
       toast.success("Weekly insight ready");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
   return { insight: latest.data, isLoading: latest.isLoading, generate };
 }
 
@@ -94,8 +90,7 @@ export function useRoleplayScore() {
       qc.invalidateQueries({ queryKey: ["safety-leaderboard"] });
       qc.invalidateQueries({ queryKey: ["safety-ai-credits"] });
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 export function useLeaderboard() {
@@ -104,8 +99,7 @@ export function useLeaderboard() {
     queryFn: async () => {
       const { data } = await supabase.from("safety_roleplay_leaderboard" as any).select("*").limit(50);
       return data || [];
-    },
-  });
+    } });
 }
 
 // ==================== WALL REACTIONS ====================
@@ -122,8 +116,7 @@ export function useWallReactions(messageIds: string[]) {
       });
       return grouped;
     },
-    enabled: messageIds.length > 0,
-  });
+    enabled: messageIds.length > 0 });
 }
 
 export function useToggleReaction() {
@@ -146,15 +139,13 @@ export function useToggleReaction() {
       }
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["safety-wall-reactions"] }),
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 // ==================== WALL AI FILTER (2cr) ====================
 export function useWallFilter() {
   return useMutation({
-    mutationFn: (message: string) => invoke<{ safe: boolean; reason?: string; suggested_rewrite?: string }>("wall_filter", { message }),
-  });
+    mutationFn: (message: string) => invoke<{ safe: boolean; reason?: string; suggested_rewrite?: string }>("wall_filter", { message }) });
 }
 
 // ==================== BUDDY MATCHING ====================
@@ -167,8 +158,7 @@ export function useBuddyProfile() {
       if (!user) return null;
       const { data } = await supabase.from("safety_buddy_profiles").select("*").eq("user_id", user.id).maybeSingle();
       return data;
-    },
-  });
+    } });
   const upsert = useMutation({
     mutationFn: async (vars: { anonymous_handle: string; age_range?: string; experience_tags?: string[]; looking_for?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -181,8 +171,7 @@ export function useBuddyProfile() {
       qc.invalidateQueries({ queryKey: ["safety-buddies"] });
       toast.success("Buddy profile saved");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
   return { profile: profile.data, isLoading: profile.isLoading, upsert };
 }
 
@@ -198,8 +187,7 @@ export function useBuddies() {
         .neq("user_id", user?.id || "00000000-0000-0000-0000-000000000000")
         .limit(30);
       return data || [];
-    },
-  });
+    } });
 }
 
 // ==================== SOS GEO ====================
@@ -219,13 +207,13 @@ const COUNTRY_HOTLINES: Record<string, { country: string; flag: string; numbers:
   AU: { country: "Australia", flag: "🇦🇺", numbers: [
     { name: "Emergency", tel: "000" }, { name: "Kids Helpline", tel: "1800551800" }, { name: "Lifeline", tel: "131114" },
   ]},
-  DE: { country: "Germany", flag: "🇩🇪", numbers: [
+  DE: { country: "Local", flag: "", numbers: [
     { name: "Emergency", tel: "112" }, { name: "Nummer gegen Kummer", tel: "11611" }, { name: "Telefonseelsorge", tel: "08001110111" },
   ]},
   FR: { country: "France", flag: "🇫🇷", numbers: [
     { name: "Emergency", tel: "112" }, { name: "3020 Anti-bullying", tel: "3020" }, { name: "SOS Friendship", tel: "0972394050" },
   ]},
-  SK: { country: "Slovakia", flag: "🇸🇰", numbers: [
+  SK: { country: "Country", flag: "🇸🇰", numbers: [
     { name: "Emergency", tel: "112" }, { name: "Children's Safety Line", tel: "116111" }, { name: "IPčko", tel: "116123" },
   ]},
   CZ: { country: "Czechia", flag: "🇨🇿", numbers: [
@@ -243,8 +231,7 @@ const COUNTRY_HOTLINES: Record<string, { country: string; flag: string; numbers:
   XX: { country: "International", flag: "🌍", numbers: [
     { name: "Emergency (EU)", tel: "112" }, { name: "Emergency (US)", tel: "911" },
     { name: "Crisis Text (US/UK/CA/IE)", tel: "741741", note: "Text HOME" },
-  ]},
-};
+  ]} };
 
 export function useSosCountry() {
   const qc = useQueryClient();
@@ -267,16 +254,14 @@ export function useSosCountry() {
         if (user) await supabase.from("safety_sos_country_pref").upsert({ user_id: user.id, country_code: code });
         return code;
       } catch { return "XX"; }
-    },
-  });
+    } });
   const setCountry = useMutation({
     mutationFn: async (code: string) => {
       localStorage.setItem("sos_country", code);
       const { data: { user } } = await supabase.auth.getUser();
       if (user) await supabase.from("safety_sos_country_pref").upsert({ user_id: user.id, country_code: code });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["safety-sos-country"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["safety-sos-country"] }) });
   const code = detected.data || "XX";
   const data = COUNTRY_HOTLINES[code] || COUNTRY_HOTLINES.XX;
   return { code, data, allCountries: COUNTRY_HOTLINES, setCountry, isLoading: detected.isLoading };

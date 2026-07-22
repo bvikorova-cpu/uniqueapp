@@ -3,24 +3,20 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const PARITY_COST = 6;
 
-const ACTION_TABLE: Record<string, string> = {
-  "swap-matcher": "skill_swap_swap_matchers",
+const ACTION_TABLE: Record<string, string> = { "swap-matcher": "skill_swap_swap_matchers",
   "learning-roadmap": "skill_swap_learning_roadmaps",
   "teaching-script": "skill_swap_teaching_scripts",
   "gap-analysis": "skill_swap_gap_analyses",
   "negotiation-helper": "skill_swap_negotiation_helpers",
   "portfolio-pitch": "skill_swap_portfolio_pitches",
   "cultural-tips": "skill_swap_cultural_tips",
-  "certification-path": "skill_swap_certification_paths",
-};
+  "certification-path": "skill_swap_certification_paths" };
 
 const SYSTEM_PROMPTS: Record<string, string> = {
   "swap-matcher": `You are a global skill swap matcher. Return ONLY JSON: {"matches":[{"persona":"realistic stranger profile","offers":"skill they teach","wants":"skill they want","timezone":"string","fit_score":1-100,"opening_message":"2-3 sentence ice-breaker"}],"strategy":"2 paragraph overall match strategy"}. Produce 4-6 matches.`,
@@ -30,8 +26,7 @@ const SYSTEM_PROMPTS: Record<string, string> = {
   "negotiation-helper": `You are a fair-exchange negotiator. Return ONLY JSON: {"proposal":"3-4 sentence opening proposal","value_breakdown":[{"side":"you|partner","contribution":"string","hours_per_week":number}],"counter_offers":["...","..."],"red_flags":["..."]}. Produce 3 counter offers and 3 red flags.`,
   "portfolio-pitch": `You are a personal-brand copywriter. Return ONLY JSON: {"headline":"max 12 words","elevator_pitch":"60-80 word paragraph","proof_points":["..."],"call_to_action":"single sentence","hashtags":["#..."]}. Produce 4-6 proof points and 4-6 hashtags.`,
   "cultural-tips": `You are a cross-cultural etiquette coach. Return ONLY JSON: {"country":"string","greeting":"how to greet","do":["..."],"avoid":["..."],"communication_style":"2-3 sentences","scheduling_tip":"timezone or meeting-time advice"}. Produce 4-6 dos and 4-6 avoids.`,
-  "certification-path": `You are a credentials curator. Return ONLY JSON: {"badges":[{"name":"real certification or badge","issuer":"string","level":"entry|intermediate|advanced","cost_eur":"approx range","time_weeks":number,"why_it_matters":"1 sentence"}],"sequence_advice":"2-3 sentences on order"}. Produce 4-6 badges.`,
-};
+  "certification-path": `You are a credentials curator. Return ONLY JSON: {"badges":[{"name":"real certification or badge","issuer":"string","level":"entry|intermediate|advanced","cost_eur":"approx range","time_weeks":number,"why_it_matters":"1 sentence"}],"sequence_advice":"2-3 sentences on order"}. Produce 4-6 badges.` };
 
 interface Body {
   action: string;
@@ -92,9 +87,7 @@ serve(async (req) => {
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (!aiResp.ok) {
       const errText = await aiResp.text();
@@ -115,12 +108,10 @@ serve(async (req) => {
 
     const { data: inserted, error: insertErr } = await admin
       .from(table)
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         credits_used: PARITY_COST,
         input: payload,
-        result: parsed,
-      })
+        result: parsed })
       .select()
       .single();
 
@@ -134,11 +125,9 @@ serve(async (req) => {
       .update({ credits_remaining: balance - PARITY_COST, updated_at: new Date().toISOString() })
       .eq("user_id", user.id);
 
-    return json({
-      success: true,
+    return json({ success: true,
       result: inserted,
-      creditsRemaining: balance - PARITY_COST,
-    }, 200);
+      creditsRemaining: balance - PARITY_COST }, 200);
   } catch (e) {
     console.error("Unhandled error", e);
     return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
@@ -148,6 +137,5 @@ serve(async (req) => {
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status,
-  });
+    status });
 }

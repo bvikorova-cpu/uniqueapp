@@ -96,12 +96,10 @@ const shopItems: ShopItem[] = [
   { id: 'mystery_ultimate', name: 'Ultimate Mystery Box', description: 'Contains 3 random legendary items!', icon: <Gift className="h-5 w-5 text-pink-500" />, costGems: 1500, category: 'mystery', rarity: 'legendary' },
 ];
 
-const rarityColors = {
-  common: 'bg-gray-500',
+const rarityColors = { common: 'bg-gray-500',
   rare: 'bg-blue-500',
   epic: 'bg-purple-500',
-  legendary: 'bg-yellow-500',
-};
+  legendary: 'bg-yellow-500' };
 
 export const HorseShop = () => {
   const { horses } = useUserHorses();
@@ -136,13 +134,11 @@ export const HorseShop = () => {
       return;
     }
 
-    purchaseItem.mutate({
-      itemId: item.id,
+    purchaseItem.mutate({ itemId: item.id,
       horseId: horseId || undefined,
       costCoins: item.costCoins,
       costGems: item.costGems,
-      statBoost: item.statBoost,
-    }, {
+      statBoost: item.statBoost }, {
       onSuccess: () => {
         setShowPurchaseDialog(false);
         setSelectedHorse("");

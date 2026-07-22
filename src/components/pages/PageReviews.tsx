@@ -50,8 +50,7 @@ export function PageReviews({ pageId }: Props) {
         .in("id", ids);
       const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
       return (data ?? []).map((r: any) => ({ ...r, profile: map.get(r.user_id) }));
-    },
-  });
+    } });
 
   const myReview = reviews.find((r) => r.user_id === userId);
   const avg =
@@ -66,15 +65,13 @@ export function PageReviews({ pageId }: Props) {
     }
   }, [myReview?.id]);
 
-  const submit = useMutation({
-    mutationFn: async () => {
+  const submit = useMutation({ mutationFn: async () => {
       if (!userId) throw new Error("Sign in to review");
       const payload = {
         page_id: pageId,
         user_id: userId,
         rating,
-        body: body.trim() || null,
-      };
+        body: body.trim() || null };
       const { error } = await supabase
         .from("page_reviews")
         .upsert(payload, { onConflict: "page_id,user_id" });
@@ -84,8 +81,7 @@ export function PageReviews({ pageId }: Props) {
       toast.success(myReview ? "Review updated" : "Review posted");
       qc.invalidateQueries({ queryKey: ["page-reviews", pageId] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e.message ?? "Failed") });
 
   const remove = useMutation({
     mutationFn: async () => {
@@ -97,8 +93,7 @@ export function PageReviews({ pageId }: Props) {
       setRating(5);
       setBody("");
       qc.invalidateQueries({ queryKey: ["page-reviews", pageId] });
-    },
-  });
+    } });
 
   return (
     <Card className="p-4 space-y-4">

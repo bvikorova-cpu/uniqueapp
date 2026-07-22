@@ -3,11 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { Bell, CheckCheck } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -28,8 +26,7 @@ export default function IQNotificationsBell() {
         .limit(20);
       return data ?? [];
     },
-    refetchInterval: 30_000,
-  });
+    refetchInterval: 30_000 });
 
   const unread = notifs.filter((n: any) => !n.is_read).length;
 
@@ -37,8 +34,7 @@ export default function IQNotificationsBell() {
     mutationFn: async () => {
       await supabase.rpc("mark_iq_notifications_read", { _ids: null });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["iq-notifications"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["iq-notifications"] }) });
 
   return (
     <>

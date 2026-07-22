@@ -16,26 +16,21 @@ Deno.serve(async (req) => {
     const { text } = await req.json();
     if (typeof text !== 'string' || text.length === 0) {
       return new Response(JSON.stringify({ error: 'text required' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
     if (text.length > 8000) {
       return new Response(JSON.stringify({ error: 'text too long' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
-    if (!OPENAI_API_KEY) {
-      // Fail-open with deny-list fallback if AI gateway unconfigured.
+    if (!OPENAI_API_KEY) { // Fail-open with deny-list fallback if AI gateway unconfigured.
       const denylist = /\b(kill yourself|kys|n[i1]gg[ae3]r|f[a4]gg[o0]t|child porn|csam)\b/i;
       const allowed = !denylist.test(text);
       const result: ModResult = {
         allowed,
         severity: allowed ? 'none' : 'high',
-        categories: allowed ? [] : ['hate_or_harassment'],
-      };
+        categories: allowed ? [] : ['hate_or_harassment'] };
       return new Response(JSON.stringify(result), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     const resp = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -47,17 +42,13 @@ Deno.serve(async (req) => {
           {
             role: 'system',
             content:
-              'You are a content moderator. Classify the user message. Return ONLY compact JSON like {"allowed":true|false,"severity":"none|low|medium|high","categories":[...],"reason":"..."}. Categories: hate, harassment, sexual_minors, sexual_explicit, violence, self_harm, illegal, spam. Block (allowed=false) only on severity medium+ for harassment/hate/violence/self_harm, or any severity for sexual_minors/illegal. Be tolerant of profanity and adult flirty content.',
-          },
+              'You are a content moderator. Classify the user message. Return ONLY compact JSON like {"allowed":true|false,"severity":"none|low|medium|high","categories":[...],"reason":"..."}. Categories: hate, harassment, sexual_minors, sexual_explicit, violence, self_harm, illegal, spam. Block (allowed=false) only on severity medium+ for harassment/hate/violence/self_harm, or any severity for sexual_minors/illegal. Be tolerant of profanity and adult flirty content.' },
           { role: 'user', content: text },
         ],
-        temperature: 0,
-      }),
-    });
+        temperature: 0 }) });
     if (resp.status === 429) {
       return new Response(JSON.stringify({ allowed: true, severity: 'none', categories: [], reason: 'rate_limited' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
     const data = await resp.json();
     const raw = data?.choices?.[0]?.message?.content ?? '{}';
@@ -68,11 +59,9 @@ Deno.serve(async (req) => {
       parsed = { allowed: true, severity: 'none', categories: [], reason: 'parse_fail' };
     }
     return new Response(JSON.stringify(parsed), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (e) {
     return new Response(JSON.stringify({ error: String(e) }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 });

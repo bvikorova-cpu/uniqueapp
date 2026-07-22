@@ -62,8 +62,7 @@ export default function RewardsXPBetting() {
         .limit(20);
       if (error) throw error;
       return (data ?? []) as Bet[];
-    },
-  });
+    } });
 
   const place = async () => {
     if (placeLock.current || placing) return;
@@ -91,12 +90,10 @@ export default function RewardsXPBetting() {
     placeLock.current = true;
     setPlacing(true);
     try {
-      const { data, error } = await supabase.rpc("place_xp_bet", {
-        _challenge_type: challengeType,
+      const { data, error } = await supabase.rpc("place_xp_bet", { _challenge_type: challengeType,
         _target: tgt,
         _amount: amt,
-        _hours: hrs,
-      });
+        _hours: hrs });
       if (error) {
         toast({ title: "Failed", description: error.message, variant: "destructive" });
         return;
@@ -108,8 +105,7 @@ export default function RewardsXPBetting() {
       }
       toast({
         title: "🎯 Bet placed!",
-        description: `Stake of ${amt} XP locked. Win 2× if you complete the challenge in time.`,
-      });
+        description: `Stake of ${amt} XP locked. Win 2× if you complete the challenge in time.` });
       qc.invalidateQueries({ queryKey: ["xp-bets"] });
       qc.invalidateQueries({ queryKey: ["rewards-stats"] });
       qc.invalidateQueries({ queryKey: ["gamification"] });

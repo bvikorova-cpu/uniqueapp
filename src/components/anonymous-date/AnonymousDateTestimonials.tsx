@@ -24,11 +24,9 @@ export const AnonymousDateTestimonials = () => {
         .map((r, i) => ({
           name: `Anonymous ${String.fromCharCode(65 + i)}.`,
           text: r.comment as string,
-          rating: r.rating,
-        }));
+          rating: r.rating }));
     },
-    staleTime: 5 * 60_000,
-  });
+    staleTime: 5 * 60_000 });
 
   return (
     <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">

@@ -3,40 +3,32 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Form,
+  DialogTrigger } from "@/components/ui/dialog";
+import { Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
-} from "@/components/ui/form";
-import {
-  Select,
+  FormDescription } from "@/components/ui/form";
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Target, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const goalSchema = z.object({
-  goal_type: z.enum(["votes", "rank", "daily_average"]),
+const goalSchema = z.object({ goal_type: z.enum(["votes", "rank", "daily_average"]),
   target_value: z.coerce.number().min(1, "Target must be at least 1"),
-  deadline: z.string().min(1, "Please select a deadline"),
-});
+  deadline: z.string().min(1, "Please select a deadline") });
 
 type GoalFormData = z.infer<typeof goalSchema>;
 
@@ -46,8 +38,7 @@ interface GoalSettingDialogProps {
   onGoalSet: () => void;
 }
 
-export function GoalSettingDialog({ sponsorId, currentGoal, onGoalSet }: GoalSettingDialogProps) {
-  const [open, setOpen] = useState(false);
+export function GoalSettingDialog({ sponsorId, currentGoal, onGoalSet }: GoalSettingDialogProps) { const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<GoalFormData>({
@@ -55,24 +46,18 @@ export function GoalSettingDialog({ sponsorId, currentGoal, onGoalSet }: GoalSet
     defaultValues: {
       goal_type: currentGoal?.goal_type || "votes",
       target_value: currentGoal?.target_value || 100,
-      deadline: currentGoal?.deadline ? new Date(currentGoal.deadline).toISOString().split('T')[0] : "",
-    },
-  });
+      deadline: currentGoal?.deadline ? new Date(currentGoal.deadline).toISOString().split('T')[0] : "" } });
 
   const onSubmit = async (data: GoalFormData) => {
     setSubmitting(true);
     try {
       const { error } = await supabase
         .from("sponsor_goals" as any)
-        .upsert({
-          sponsor_id: sponsorId,
+        .upsert({ sponsor_id: sponsorId,
           goal_type: data.goal_type,
           target_value: data.target_value,
           deadline: new Date(data.deadline).toISOString(),
-          status: "active",
-        } as any, {
-          onConflict: "sponsor_id",
-        });
+          status: "active" } as any, { onConflict: "sponsor_id" });
 
       if (error) throw error;
 

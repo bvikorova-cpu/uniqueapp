@@ -96,11 +96,9 @@ const KidsReadingCompanion = () => {
       setAnalysis(data);
       setActiveView("results");
       refreshCredits();
-      setStats(prev => ({
-        ...prev,
+      setStats(prev => ({ ...prev,
         textsAnalyzed: prev.textsAnalyzed + 1,
-        wordsLearned: prev.wordsLearned + (data.vocabulary?.length || 0),
-      }));
+        wordsLearned: prev.wordsLearned + (data.vocabulary?.length || 0) }));
       toast.success("Text analyzed! 📖");
     } catch (error: any) {
       console.error('Error:', error);

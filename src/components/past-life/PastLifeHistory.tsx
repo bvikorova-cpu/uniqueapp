@@ -27,15 +27,13 @@ export const PastLifeHistory = () => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const getTypeConfig = (type: string) => {
     const configs: Record<string, { label: string; gradient: string; icon: any }> = {
       basic: { label: "Basic", gradient: "from-blue-500 to-cyan-500", icon: Clock },
       full: { label: "Full", gradient: "from-primary to-accent", icon: Sparkles },
-      soulmate: { label: "Soul Mate", gradient: "from-pink-500 to-rose-500", icon: Heart },
-    };
+      soulmate: { label: "Soul Mate", gradient: "from-pink-500 to-rose-500", icon: Heart } };
     return configs[type] || configs.basic;
   };
 
@@ -62,11 +60,10 @@ export const PastLifeHistory = () => {
           Back to history
         </Button>
         <PastLifeResult
-          reading={{
+          reading={ {
             pastLives: selectedReading.past_lives,
             overallKarmicTheme: selectedReading.karmic_lessons,
-            soulmateConnection: selectedReading.soulmate_analysis,
-          }}
+            soulmateConnection: selectedReading.soulmate_analysis }}
         />
       </div>
       </>

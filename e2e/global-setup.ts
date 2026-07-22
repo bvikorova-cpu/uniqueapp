@@ -36,8 +36,7 @@ export default async function globalSetup() {
   ];
   const state = {
     cookies: [],
-    origins: Array.from(origins).map((origin) => ({ origin, localStorage: localStorageItems })),
-  };
+    origins: Array.from(origins).map((origin) => ({ origin, localStorage: localStorageItems })) };
   const path = "e2e/.auth/storage-state.json";
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, JSON.stringify(state, null, 2));

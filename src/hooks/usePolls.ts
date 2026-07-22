@@ -41,8 +41,7 @@ export const usePolls = (postId?: string) => {
       if (error && error.code !== "PGRST116") throw error;
       return data;
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
   const { data: options, isLoading: loadingOptions } = useQuery({
     queryKey: ["poll-options", poll?.id],
@@ -57,8 +56,7 @@ export const usePolls = (postId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!poll?.id,
-  });
+    enabled: !!poll?.id });
 
   const { data: userVote } = useQuery({
     queryKey: ["poll-vote", poll?.id],
@@ -77,8 +75,7 @@ export const usePolls = (postId?: string) => {
       if (error && error.code !== "PGRST116") throw error;
       return data;
     },
-    enabled: !!poll?.id,
-  });
+    enabled: !!poll?.id });
 
   const createPoll = useMutation({
     mutationFn: async ({ postId, question, options, endsAt }: {
@@ -89,20 +86,16 @@ export const usePolls = (postId?: string) => {
     }) => {
       const { data: pollData, error: pollError } = await supabase
         .from("polls")
-        .insert({
-          post_id: postId,
+        .insert({ post_id: postId,
           question,
-          ends_at: endsAt.toISOString(),
-        })
+          ends_at: endsAt.toISOString() })
         .select()
         .single();
 
       if (pollError) throw pollError;
 
-      const optionsData = options.map(opt => ({
-        poll_id: pollData.id,
-        option_text: opt,
-      }));
+      const optionsData = options.map(opt => ({ poll_id: pollData.id,
+        option_text: opt }));
 
       const { error: optionsError } = await supabase
         .from("poll_options")
@@ -114,8 +107,7 @@ export const usePolls = (postId?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["poll"] });
       toast({ title: "Poll created!" });
-    },
-  });
+    } });
 
   const votePoll = useMutation({
     mutationFn: async ({ pollId, optionId }: { pollId: string; optionId: string }) => {
@@ -124,11 +116,9 @@ export const usePolls = (postId?: string) => {
 
       const { error: voteError } = await supabase
         .from("poll_votes")
-        .insert({
-          poll_id: pollId,
+        .insert({ poll_id: pollId,
           option_id: optionId,
-          user_id: user.id,
-        });
+          user_id: user.id });
 
       if (voteError) throw voteError;
 
@@ -150,15 +140,12 @@ export const usePolls = (postId?: string) => {
       queryClient.invalidateQueries({ queryKey: ["poll-options"] });
       queryClient.invalidateQueries({ queryKey: ["poll-vote"] });
       toast({ title: "Vote recorded!" });
-    },
-  });
+    } });
 
-  return {
-    poll,
+  return { poll,
     options: options || [],
     userVote,
     isLoading: loadingPoll || loadingOptions,
     createPoll: createPoll.mutate,
-    votePoll: votePoll.mutate,
-  };
+    votePoll: votePoll.mutate };
 };

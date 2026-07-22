@@ -39,9 +39,7 @@ export default function FutureFaceSkinScore() {
     setBusy(true);
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { setBusy(false); return; }
-    const { error } = await supabase.from("future_face_skin_scores").insert({
-      user_id: session.user.id, score: s, notes: notes || null,
-    });
+    const { error } = await supabase.from("future_face_skin_scores").insert({ user_id: session.user.id, score: s, notes: notes || null });
     if (error) toast({ title: "Failed", description: error.message, variant: "destructive" });
     else { setNotes(""); await load(); toast({ title: "Logged!" }); }
     setBusy(false);
@@ -49,8 +47,7 @@ export default function FutureFaceSkinScore() {
 
   const chartData = rows.map(r => ({
     date: new Date(r.recorded_at).toLocaleDateString(undefined, { month: "short", day: "numeric" }),
-    score: r.score,
-  }));
+    score: r.score }));
   const avg = rows.length ? Math.round(rows.reduce((a, b) => a + b.score, 0) / rows.length) : 0;
   const last = rows[rows.length - 1]?.score ?? 0;
   const trend = rows.length >= 2 ? last - rows[rows.length - 2].score : 0;

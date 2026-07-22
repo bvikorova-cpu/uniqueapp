@@ -39,8 +39,7 @@ export async function trackPwaInstallEvent({
   runningStandalone = false,
   installed = false,
   metadata = {},
-  allowRepeat = false,
-}: TrackArgs): Promise<void> {
+  allowRepeat = false }: TrackArgs): Promise<void> {
   if (typeof window === "undefined") return;
 
   const key = `${eventType}:${platform}`;
@@ -53,15 +52,13 @@ export async function trackPwaInstallEvent({
     const { data } = await supabase.auth.getUser();
     const userId = data?.user?.id ?? null;
 
-    await supabase.from("pwa_install_events").insert({
-      user_id: userId,
+    await supabase.from("pwa_install_events").insert({ user_id: userId,
       event_type: eventType,
       platform,
       running_standalone: runningStandalone,
       installed,
       user_agent: navigator.userAgent.slice(0, 500),
-      metadata: metadata as never,
-    });
+      metadata: metadata as never });
   } catch {
     // Analytics must never break the UI.
   }

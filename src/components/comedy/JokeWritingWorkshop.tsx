@@ -36,8 +36,7 @@ export const JokeWritingWorkshop = ({ onBack }: Props) => {
       await supabase.from("comedy_currency").update({ coins: currency.coins - 10 }).eq("user_id", user.id);
 
       const { data, error } = await supabase.functions.invoke("comedy-ai-judge", {
-        body: { type: "workshop_feedback", content: joke, style },
-      });
+        body: { type: "workshop_feedback", content: joke, style } });
       if (error) throw error;
 
       setFeedback(data);
@@ -62,8 +61,7 @@ export const JokeWritingWorkshop = ({ onBack }: Props) => {
       await supabase.from("comedy_currency").update({ coins: currency.coins - 10 }).eq("user_id", user.id);
 
       const { data, error } = await supabase.functions.invoke("comedy-ai-judge", {
-        body: { type: "generate_joke", style },
-      });
+        body: { type: "generate_joke", style } });
       if (error) throw error;
 
       setGeneratedJoke(data.joke);

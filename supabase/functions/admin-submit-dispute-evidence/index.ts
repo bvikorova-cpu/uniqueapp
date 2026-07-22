@@ -5,10 +5,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -22,18 +20,14 @@ serve(async (req) => {
 
     const supaUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const userClient = createClient(supaUrl, Deno.env.get("SUPABASE_ANON_KEY") ?? "", {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData.user) throw new Error("Not authenticated");
 
     const admin = createClient(supaUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "", {
-      auth: { persistSession: false },
-    });
-    const { data: roleOk } = await admin.rpc("has_role", {
-      _user_id: userData.user.id,
-      _role: "admin",
-    });
+      auth: { persistSession: false } });
+    const { data: roleOk } = await admin.rpc("has_role", { _user_id: userData.user.id,
+      _role: "admin" });
     if (!roleOk) throw new Error("Not authorized");
 
     const body = await req.json();
@@ -51,19 +45,15 @@ serve(async (req) => {
     }
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const updated = await stripe.disputes.update(row.stripe_dispute_id, {
-      evidence,
-      submit,
-    });
+    const updated = await stripe.disputes.update(row.stripe_dispute_id, { evidence,
+      submit });
 
     await admin
       .from("stripe_disputes")
-      .update({
-        evidence: updated.evidence as any,
+      .update({ evidence: updated.evidence as any,
         evidence_submitted_at: submit ? new Date().toISOString() : null,
         status: updated.status,
-        updated_at: new Date().toISOString(),
-      })
+        updated_at: new Date().toISOString() })
       .eq("id", disputeId);
 
     await admin.from("admin_audit_log").insert({
@@ -71,17 +61,14 @@ serve(async (req) => {
       action: submit ? "dispute_evidence_submitted" : "dispute_evidence_staged",
       target_type: "stripe_disputes",
       target_id: disputeId,
-      details: { dispute_id: row.stripe_dispute_id },
-    });
+      details: { dispute_id: row.stripe_dispute_id } });
 
     return new Response(JSON.stringify({ success: true, status: updated.status }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 400,
-    });
+      status: 400 });
   }
 });

@@ -60,13 +60,12 @@ export const VacationerHero = () => {
         </motion.div>
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-3"
-          style={{
+          style={ {
             WebkitTextStroke: "1.5px rgba(255,255,255,0.3)",
             textShadow: "0 0 30px hsl(var(--primary)/0.4), 0 0 60px hsl(var(--primary)/0.2), 0 2px 4px rgba(0,0,0,0.5)",
             background: "linear-gradient(135deg, hsl(var(--foreground)), hsl(var(--primary)), hsl(var(--accent)))",
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}>
+            WebkitTextFillColor: "transparent" }}>
           Vacationer
         </motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}

@@ -39,10 +39,8 @@ export function QuantumAchievements({ onBack }: { onBack: () => void }) {
       userAchievementIds = (userAch || []).map(a => a.achievement_id);
     }
 
-    const merged = (allAchievements || []).map(a => ({
-      ...a,
-      earned: userAchievementIds.includes(a.id),
-    }));
+    const merged = (allAchievements || []).map(a => ({ ...a,
+      earned: userAchievementIds.includes(a.id) }));
 
     const earned = merged.filter(a => a.earned);
     setAchievements(merged);

@@ -22,11 +22,9 @@ export const useHandwritingCredits = () => {
       if (!data) {
         const { data: newData, error: insertError } = await supabase
           .from("handwriting_credits")
-          .insert({
-            user_id: user.id,
+          .insert({ user_id: user.id,
             credits_remaining: 0,
-            total_credits_purchased: 0,
-          })
+            total_credits_purchased: 0 })
           .select()
           .single();
 
@@ -35,14 +33,12 @@ export const useHandwritingCredits = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   const analyzeHandwriting = useMutation({
     mutationFn: async ({ imageUrl, analysisType }: { imageUrl: string; analysisType: string }) => {
       const { data, error } = await supabase.functions.invoke("handwriting-ai", {
-        body: { action: "analyze", imageUrl, analysisType },
-      });
+        body: { action: "analyze", imageUrl, analysisType } });
 
       if (error) throw error;
       return data;
@@ -57,14 +53,12 @@ export const useHandwritingCredits = () => {
       } else {
         toast.error("Error analyzing handwriting: " + error.message);
       }
-    },
-  });
+    } });
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {
     try {
       const { data, error } = await supabase.functions.invoke("create-handwriting-credits-payment", {
-        body: { credits },
-      });
+        body: { credits } });
 
       if (error) throw error;
 
@@ -79,11 +73,9 @@ export const useHandwritingCredits = () => {
     }
   };
 
-  return {
-    credits,
+  return { credits,
     isLoading,
     analyzeHandwriting: analyzeHandwriting.mutate,
     isAnalyzing: analyzeHandwriting.isPending,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

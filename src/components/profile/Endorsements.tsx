@@ -55,12 +55,10 @@ export const Endorsements = ({ profileUserId, currentUserId }: Props) => {
   const add = async () => {
     if (!skill.trim()) return;
     setAdding(true);
-    const { error } = await supabase.from("endorsements").insert({
-      endorsed_user_id: profileUserId,
+    const { error } = await supabase.from("endorsements").insert({ endorsed_user_id: profileUserId,
       endorser_id: currentUserId!,
       skill: skill.trim(),
-      message: message.trim() || null,
-    });
+      message: message.trim() || null });
     setAdding(false);
     if (error) {
       toast.error(error.message.includes("duplicate") ? "Already endorsed for this skill" : error.message);

@@ -21,15 +21,12 @@ export const useReminders = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
-  const setReminder = useMutation({
-    mutationFn: async ({
+  const setReminder = useMutation({ mutationFn: async ({
       postId,
       remindAt,
-      reminderType,
-    }: {
+      reminderType }: {
       postId: string;
       remindAt: Date;
       reminderType?: "view" | "reply" | "share";
@@ -37,12 +34,10 @@ export const useReminders = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("post_reminders").insert({
-        post_id: postId,
+      const { error } = await supabase.from("post_reminders").insert({ post_id: postId,
         user_id: user.id,
         remind_at: remindAt.toISOString(),
-        reminder_type: reminderType || "view",
-      });
+        reminder_type: reminderType || "view" });
 
       if (error) throw error;
     },
@@ -52,8 +47,7 @@ export const useReminders = () => {
     },
     onError: () => {
       toast({ title: "Failed to set reminder", variant: "destructive" });
-    },
-  });
+    } });
 
   const deleteReminder = useMutation({
     mutationFn: async (reminderId: string) => {
@@ -67,13 +61,10 @@ export const useReminders = () => {
     onSuccess: () => {
       toast({ title: "Reminder deleted" });
       queryClient.invalidateQueries({ queryKey: ["post-reminders"] });
-    },
-  });
+    } });
 
-  return {
-    reminders,
+  return { reminders,
     isLoading,
     setReminder: setReminder.mutate,
-    deleteReminder: deleteReminder.mutate,
-  };
+    deleteReminder: deleteReminder.mutate };
 };

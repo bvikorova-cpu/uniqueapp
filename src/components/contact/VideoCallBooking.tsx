@@ -56,14 +56,12 @@ export function VideoCallBooking() {
     setLoading(true);
     try {
       const scheduledAt = new Date(`${date}T${slot}:00`).toISOString();
-      const { error } = await supabase.from("support_video_bookings").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("support_video_bookings").insert({ user_id: user.id,
         email: user.email ?? "",
         name: (user.user_metadata?.full_name as string) || user.email || "Customer",
         topic: topic.trim(),
         scheduled_at: scheduledAt,
-        notes: notes.trim() || null,
-      });
+        notes: notes.trim() || null });
       if (error) throw error;
       toast({ title: "Call request sent", description: "We'll email you a meeting link shortly." });
       setTopic("");

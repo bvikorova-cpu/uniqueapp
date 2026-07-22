@@ -6,13 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Check, X, AlertTriangle, ExternalLink, RefreshCw, Heart } from "lucide-react";
 import { toast } from "sonner";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+  DialogDescription } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -32,25 +30,21 @@ interface PendingPayout {
   campaign_title?: string | null;
 }
 
-const CAMPAIGN_TABLE: Record<string, string> = {
-  medical: "medical_campaigns",
+const CAMPAIGN_TABLE: Record<string, string> = { medical: "medical_campaigns",
   dream: "dream_campaigns",
   hero: "hero_campaigns",
   pet: "pet_campaigns",
   student: "student_campaigns",
   crisis: "crisis_campaigns",
-  talent: "talent_campaigns",
-};
+  talent: "talent_campaigns" };
 
-const TYPE_LABEL: Record<string, string> = {
-  medical: "🏥 Medical",
+const TYPE_LABEL: Record<string, string> = { medical: "🏥 Medical",
   dream: "✨ Dream",
   hero: "🦸 Hero",
   pet: "🐾 Pet",
   student: "🎓 Student",
   crisis: "🚨 Crisis",
-  talent: "⭐ Talent",
-};
+  talent: "⭐ Talent" };
 
 const fmtEur = (cents: number) => `€${(cents / 100).toFixed(2)}`;
 
@@ -87,12 +81,10 @@ export function CampaignPayoutReviews() {
             return supabase.from(t as any).select("title").eq("id", r.campaign_id).maybeSingle();
           })(),
         ]);
-        return {
-          ...r,
+        return { ...r,
           owner_name: ownerRes.data?.full_name ?? null,
           owner_email: ownerRes.data?.email ?? null,
-          campaign_title: (campRes as any).data?.title ?? null,
-        };
+          campaign_title: (campRes as any).data?.title ?? null };
       }));
 
       setItems(enriched);
@@ -119,9 +111,7 @@ export function CampaignPayoutReviews() {
           body: {
             payout_id: selected.id,
             action,
-            ...(action === "reject" ? { rejection_reason: rejectReason.trim() } : {}),
-          },
-        },
+            ...(action === "reject" ? { rejection_reason: rejectReason.trim() } : {}) } },
       );
       if (error) throw error;
       const res = data as any;

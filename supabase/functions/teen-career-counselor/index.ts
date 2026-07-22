@@ -2,11 +2,9 @@
 // Credit-gated against teen_career_credits.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const MODEL = "gpt-4o-mini";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -14,12 +12,10 @@ const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 
-const COSTS: Record<string, number> = {
-  guidance: 5,
+const COSTS: Record<string, number> = { guidance: 5,
   dayInLife: 3,
   skillGap: 3,
-  mentor: 2,
-};
+  mentor: 2 };
 
 function json(b: unknown, s = 200) {
   return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -30,8 +26,7 @@ async function callAI(messages: any[], jsonMode = false) {
   const resp = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: MODEL, messages, ...(jsonMode ? { response_format: { type: "json_object" } } : {}) }),
-  });
+    body: JSON.stringify({ model: MODEL, messages, ...(jsonMode ? { response_format: { type: "json_object" } } : {}) }) });
   if (resp.status === 429) throw new Error("Rate limited, try again shortly");
   if (resp.status === 402) throw new Error("AI credits exhausted");
   if (!resp.ok) { console.error("AI", resp.status, await resp.text()); throw new Error("AI request failed"); }

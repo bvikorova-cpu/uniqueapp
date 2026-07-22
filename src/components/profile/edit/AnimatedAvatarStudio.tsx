@@ -30,8 +30,7 @@ export const AnimatedAvatarStudio = ({ imageUrl, audioUrl, onSaved }: Props) => 
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("animated-avatar", {
-        body: { description: desc, text },
-      });
+        body: { description: desc, text } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       onSaved(data.image_url, data.audio_url);

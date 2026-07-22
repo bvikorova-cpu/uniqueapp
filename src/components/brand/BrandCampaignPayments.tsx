@@ -48,14 +48,12 @@ export function BrandCampaignPayments() {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const checkoutMutation = useMutation({
     mutationFn: async ({ applicationId, amount }: { applicationId: string; amount: number }) => {
       const { data, error } = await supabase.functions.invoke("create-campaign-payment-checkout", {
-        body: { applicationId, amount },
-      });
+        body: { applicationId, amount } });
 
       if (error) throw error;
       return data;
@@ -68,14 +66,12 @@ export function BrandCampaignPayments() {
     },
     onError: (error: any) => {
       toast.error(error.message || "Failed to create checkout");
-    },
-  });
+    } });
 
   const verifyPaymentMutation = useMutation({
     mutationFn: async (sessionId: string) => {
       const { data, error } = await supabase.functions.invoke("verify-campaign-payment", {
-        body: { sessionId },
-      });
+        body: { sessionId } });
 
       if (error) throw error;
       return data;
@@ -88,8 +84,7 @@ export function BrandCampaignPayments() {
     onError: (error: any) => {
       toast.error(error.message || "Failed to verify payment");
       setSearchParams({});
-    },
-  });
+    } });
 
   useEffect(() => {
     const sessionId = searchParams.get("session_id");

@@ -28,13 +28,11 @@ const steps = [
   { label: "Analysis", icon: "🚀" },
 ];
 
-export const ExperimentWizard = ({
-  category, setCategory,
+export const ExperimentWizard = ({ category, setCategory,
   hypothesis, setHypothesis,
   observations, setObservations,
   difficulty, setDifficulty,
-  onAnalyze, loading, canAnalyze,
-}: ExperimentWizardProps) => {
+  onAnalyze, loading, canAnalyze }: ExperimentWizardProps) => {
   const [step, setStep] = useState(0);
 
   const canNext = () => {

@@ -21,13 +21,10 @@ export const useTrending = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
-  return {
-    topics: topics || [],
-    isLoading,
-  };
+  return { topics: topics || [],
+    isLoading };
 };
 
 export const useTrendingPosts = () => {
@@ -45,11 +42,8 @@ export const useTrendingPosts = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
-  return {
-    trendingPosts,
-    isLoading,
-  };
+  return { trendingPosts,
+    isLoading };
 };

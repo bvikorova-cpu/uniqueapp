@@ -66,14 +66,12 @@ export function CompatibilityMatchFinder({ credits, loading, onFindMatch }: Prop
     setSelectedLangs((cur) => (cur.includes(l) ? cur.filter((x) => x !== l) : [...cur, l]));
   };
 
-  const handleSubmit = () => {
-    onFindMatch({
+  const handleSubmit = () => { onFindMatch({
       location: location.trim() || undefined,
       preferred_gender: gender,
       relationship_goal: goal || undefined,
       languages: selectedLangs.length ? selectedLangs : undefined,
-      min_shared_interests: minShared,
-    });
+      min_shared_interests: minShared });
   };
 
   const insufficient = credits < MATCH_COST;
@@ -118,7 +116,7 @@ export function CompatibilityMatchFinder({ credits, loading, onFindMatch }: Prop
                   <MapPin className="h-3.5 w-3.5 text-pink-500" /> Location
                 </Label>
                 <Input
-                  placeholder="e.g. Berlin, Vienna…"
+                  placeholder="e.g. City, Country…"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                 />

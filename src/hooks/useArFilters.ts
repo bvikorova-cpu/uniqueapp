@@ -18,6 +18,5 @@ export function useArFilters() {
         .from("ar_filters").select("*").order("name");
       if (error) throw error;
       return (data ?? []) as ArFilter[];
-    },
-  });
+    } });
 }

@@ -15,14 +15,12 @@ interface ComedyVideoUploadProps {
   onUploadSuccess?: () => void;
 }
 
-export function ComedyVideoUpload({ comedianId, onUploadSuccess }: ComedyVideoUploadProps) {
-  const [uploading, setUploading] = useState(false);
+export function ComedyVideoUpload({ comedianId, onUploadSuccess }: ComedyVideoUploadProps) { const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [videoData, setVideoData] = useState({
     title: "",
     description: "",
-    priceCoins: "50",
-  });
+    priceCoins: "50" });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,9 +60,7 @@ export function ComedyVideoUpload({ comedianId, onUploadSuccess }: ComedyVideoUp
         setProgress((prev) => Math.min(prev + 10, 90));
       }, 500);
 
-      const { data, error } = await supabase.functions.invoke("upload-comedy-video", {
-        body: formData,
-      });
+      const { data, error } = await supabase.functions.invoke("upload-comedy-video", { body: formData });
 
       clearInterval(progressInterval);
       setProgress(100);

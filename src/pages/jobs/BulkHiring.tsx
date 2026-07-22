@@ -43,10 +43,8 @@ export default function BulkHiring() {
   const create = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user || !name.trim() || !role.trim()) return toast.error("Fill required fields");
-    const { error } = await (supabase as any).from("bulk_hiring_campaigns").insert({
-      employer_id: user.id, name, role_title: role, target_hires: target,
-      deadline: deadline || null, description,
-    });
+    const { error } = await (supabase as any).from("bulk_hiring_campaigns").insert({ employer_id: user.id, name, role_title: role, target_hires: target,
+      deadline: deadline || null, description });
     if (error) return toast.error(error.message);
     toast.success("Campaign created");
     setName(""); setRole(""); setTarget(5); setDeadline(""); setDescription("");

@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: any) =>
   console.log(`[PAUSE-SUBSCRIPTION] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
@@ -49,8 +47,7 @@ serve(async (req) => {
         JSON.stringify({
           error: `Maximum pause duration is ${maxMonths} month(s).`,
           code: "MONTHS_EXCEEDED",
-          limit: maxMonths,
-        }),
+          limit: maxMonths }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
       );
     }
@@ -64,8 +61,7 @@ serve(async (req) => {
           error: `You've reached the limit of ${maxPauses} pauses per year. Please wait or contact support.`,
           code: "PAUSE_LIMIT_REACHED",
           used: usedCount,
-          limit: maxPauses,
-        }),
+          limit: maxPauses }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 429 }
       );
     }
@@ -75,31 +71,24 @@ serve(async (req) => {
     if (customers.data.length === 0) throw new Error("No Stripe customer found");
     const customerId = customers.data[0].id;
 
-    const subs = await stripe.subscriptions.list({
-      customer: customerId,
+    const subs = await stripe.subscriptions.list({ customer: customerId,
       status: "active",
-      limit: 1,
-    });
+      limit: 1 });
     if (subs.data.length === 0) throw new Error("No active subscription");
 
     const sub = subs.data[0];
     const resumesAt = Math.floor(Date.now() / 1000) + months * 30 * 24 * 60 * 60;
 
-    const updated = await stripe.subscriptions.update(sub.id, {
-      pause_collection: {
+    const updated = await stripe.subscriptions.update(sub.id, { pause_collection: {
         behavior: "void",
-        resumes_at: resumesAt,
-      },
-    });
+        resumes_at: resumesAt } });
 
     // Log it
-    await supabase.from("subscription_pause_log").insert({
-      user_id: user.id,
+    await supabase.from("subscription_pause_log").insert({ user_id: user.id,
       user_email: user.email,
       stripe_subscription_id: updated.id,
       months,
-      resumes_at: new Date(resumesAt * 1000).toISOString(),
-    });
+      resumes_at: new Date(resumesAt * 1000).toISOString() });
 
     log("Subscription paused", { id: updated.id, resumesAt, used: usedCount + 1, max: maxPauses });
 
@@ -109,8 +98,7 @@ serve(async (req) => {
         message: `Subscription paused for ${months} month(s)`,
         resumes_at: new Date(resumesAt * 1000).toISOString(),
         pauses_used: usedCount + 1,
-        pauses_limit: maxPauses,
-      }),
+        pauses_limit: maxPauses }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
@@ -118,7 +106,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

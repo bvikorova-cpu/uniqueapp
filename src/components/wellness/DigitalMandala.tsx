@@ -8,12 +8,10 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const COLOR_PALETTES = {
-  "Cosmic": ["#8B5CF6", "#EC4899", "#3B82F6", "#6366F1", "#A855F7", "#F472B6"],
+const COLOR_PALETTES = { "Cosmic": ["#8B5CF6", "#EC4899", "#3B82F6", "#6366F1", "#A855F7", "#F472B6"],
   "Nature": ["#10B981", "#34D399", "#059669", "#047857", "#84CC16", "#22C55E"],
   "Sunset": ["#F59E0B", "#EF4444", "#F97316", "#DC2626", "#FBBF24", "#FB923C"],
-  "Ocean": ["#0EA5E9", "#06B6D4", "#0284C7", "#0369A1", "#38BDF8", "#67E8F9"],
-};
+  "Ocean": ["#0EA5E9", "#06B6D4", "#0284C7", "#0369A1", "#38BDF8", "#67E8F9"] };
 
 export function DigitalMandala() {
   const canvasRef = useRef<HTMLCanvasElement>(null);

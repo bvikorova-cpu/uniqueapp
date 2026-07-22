@@ -21,16 +21,14 @@ interface WallFeedProps {
  * Virtualized feed list with loading, error, empty and end states.
  * Pure presentational — all data fetching happens in the parent.
  */
-const WallFeed = ({
-  items,
+const WallFeed = ({ items,
   loading,
   loadingMore,
   hasMore,
   feedError,
   onRetry,
   onLoadMore,
-  onDelete,
-}: WallFeedProps) => {
+  onDelete }: WallFeedProps) => {
   useEffect(() => {
     if (items.length > 0) markWallFirstPaint();
   }, [items.length]);
@@ -97,8 +95,7 @@ const WallFeed = ({
               </Card>
             )}
           </>
-        ),
-      }}
+        ) }}
     />
   );
 };

@@ -346,14 +346,12 @@ export function PanoramaEscapeRoom({
           description: "New AI panorama has been applied"
         });
       }
-    } catch (err) {
-      console.error('Failed to generate panorama:', err);
+    } catch (err) { console.error('Failed to generate panorama:', err);
       sounds.playEffect('error');
       toast({
         title: "Error generating",
         description: "Try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsGeneratingPanorama(false);
     }
@@ -423,13 +421,11 @@ export function PanoramaEscapeRoom({
             title: "🔓 Unlocked!",
             description: hotspot.description || "The lock opened!"
           });
-        } else if (hotspot.requiredItem) {
-          sounds.playEffect('error');
+        } else if (hotspot.requiredItem) { sounds.playEffect('error');
           toast({
             title: "🔒 Locked",
             description: "You need the correct item from your inventory",
-            variant: "destructive",
-          });
+            variant: "destructive" });
         } else {
           setActiveHotspot(hotspot);
           setPuzzleAnswer("");
@@ -457,13 +453,11 @@ export function PanoramaEscapeRoom({
             const finalScore = baseScore + hiddenBonus;
             onComplete(finalScore, elapsedTime);
           }
-        } else {
-          sounds.playEffect('error');
+        } else { sounds.playEffect('error');
           toast({
             title: "🚪 Door is locked",
             description: "You must solve all puzzles in this room first",
-            variant: "destructive",
-          });
+            variant: "destructive" });
         }
         break;
       }
@@ -492,24 +486,20 @@ export function PanoramaEscapeRoom({
       
       setActiveHotspot(null);
       setPuzzleAnswer("");
-    } else {
-      sounds.playEffect('error');
+    } else { sounds.playEffect('error');
       toast({
         title: "❌ Incorrect",
         description: "Try again",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   }, [activeHotspot, puzzleAnswer, currentRoomIndex, addToInventory, toast, sounds]);
 
-  const useHint = useCallback(() => {
-    if (activeHotspot?.puzzle) {
+  const useHint = useCallback(() => { if (activeHotspot?.puzzle) {
       setHintsUsed(prev => prev + 1);
       sounds.playEffect('hint');
       toast({
         title: "💡 Hint",
-        description: activeHotspot.puzzle.hint,
-      });
+        description: activeHotspot.puzzle.hint });
     }
   }, [activeHotspot, toast, sounds]);
 

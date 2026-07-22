@@ -28,16 +28,13 @@ export default function CollectorGuilds({ userId }: Props) {
         .eq("activity_type", "guild_created")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data?.map((g: any) => ({
-        id: g.id,
+      return data?.map((g: any) => ({ id: g.id,
         name: (g.metadata as any)?.name || "Unknown Guild",
         description: (g.metadata as any)?.description || "",
         creatorId: g.user_id,
         members: (g.metadata as any)?.members || 1,
-        isOwner: g.user_id === userId,
-      })) || [];
-    },
-  });
+        isOwner: g.user_id === userId })) || [];
+    } });
 
   const createGuild = useMutation({
     mutationFn: async () => {
@@ -45,8 +42,7 @@ export default function CollectorGuilds({ userId }: Props) {
       const { error } = await supabase.from("activity_feed").insert({
         user_id: userId,
         activity_type: "guild_created",
-        metadata: { name: guildName, description: guildDesc, members: 1 },
-      });
+        metadata: { name: guildName, description: guildDesc, members: 1 } });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -55,25 +51,21 @@ export default function CollectorGuilds({ userId }: Props) {
       setGuildDesc("");
       toast.success("Guild created successfully!");
     },
-    onError: (e: any) => toast.error(e.message),
-  });
+    onError: (e: any) => toast.error(e.message) });
 
   const joinGuild = useMutation({
     mutationFn: async (guildId: string) => {
-      const { error } = await supabase.from("activity_feed").insert({
-        user_id: userId,
+      const { error } = await supabase.from("activity_feed").insert({ user_id: userId,
         activity_type: "guild_joined",
         target_id: guildId,
-        target_type: "guild",
-      });
+        target_type: "guild" });
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Joined guild!");
       queryClient.invalidateQueries({ queryKey: ["collector-guilds"] });
     },
-    onError: (e: any) => toast.error(e.message),
-  });
+    onError: (e: any) => toast.error(e.message) });
 
   const filtered = guilds?.filter(g => g.name.toLowerCase().includes(searchQuery.toLowerCase()));
 

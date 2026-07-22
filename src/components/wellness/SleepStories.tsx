@@ -27,12 +27,10 @@ const STORIES: SleepStory[] = [
   { id: "6", title: "Zen Garden at Dusk", description: "Find tranquility in a Japanese zen garden as the sun sets and lanterns glow", duration: "18 min", category: "meditation", mood: "Serene", gradient: "from-rose-500/20 to-pink-500/10", icon: "🏯" },
 ];
 
-const CATEGORY_COLORS: Record<string, string> = {
-  nature: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+const CATEGORY_COLORS: Record<string, string> = { nature: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   fantasy: "bg-violet-500/15 text-violet-400 border-violet-500/30",
   meditation: "bg-rose-500/15 text-rose-400 border-rose-500/30",
-  ambient: "bg-slate-500/15 text-slate-400 border-slate-500/30",
-};
+  ambient: "bg-slate-500/15 text-slate-400 border-slate-500/30" };
 
 export function SleepStories() {
   const [activeStory, setActiveStory] = useState<string | null>(null);

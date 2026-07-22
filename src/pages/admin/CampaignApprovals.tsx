@@ -22,15 +22,13 @@ interface CampaignApproval {
   campaign_data?: any;
 }
 
-const campaignTypeLabels = {
-  medical: '🏥 Medical',
+const campaignTypeLabels = { medical: '🏥 Medical',
   dream: '✨ Dream Maker',
   hero: '🦸 Community Hero',
   pet: '🐾 Pet Rescue',
   student: '🎓 Student Support',
   crisis: '🚨 Crisis Relief',
-  talent: '⭐ Talent Sponsorship',
-};
+  talent: '⭐ Talent Sponsorship' };
 
 export default function CampaignApprovals() {
   const navigate = useNavigate();
@@ -92,21 +90,17 @@ export default function CampaignApprovals() {
             console.error('Error fetching campaign:', err);
           }
 
-          return {
-            ...approval,
-            campaign_data: campaignData,
-          };
+          return { ...approval,
+            campaign_data: campaignData };
         })
       );
 
       setApprovals(approvalsWithData as CampaignApproval[]);
-    } catch (error) {
-      console.error('Error fetching approvals:', error);
+    } catch (error) { console.error('Error fetching approvals:', error);
       toast({
         title: 'Error',
         description: 'Failed to load campaign approvals',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -140,40 +134,32 @@ export default function CampaignApprovals() {
       // Update approval record
       const { error: approvalError } = await supabase
         .from('campaign_approvals')
-        .update({
-          status: 'approved',
+        .update({ status: 'approved',
           reviewed_by: (await supabase.auth.getUser()).data.user?.id,
-          reviewed_at: new Date().toISOString(),
-        })
+          reviewed_at: new Date().toISOString() })
         .eq('id', approval.id);
 
       if (approvalError) throw approvalError;
 
-      toast({
-        title: 'Success',
-        description: 'Campaign approved successfully',
-      });
+      toast({ title: 'Success',
+        description: 'Campaign approved successfully' });
 
       fetchApprovals();
-    } catch (error) {
-      console.error('Error approving campaign:', error);
+    } catch (error) { console.error('Error approving campaign:', error);
       toast({
         title: 'Error',
         description: 'Failed to approve campaign',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setProcessing(false);
     }
   };
 
-  const handleReject = async (approval: CampaignApproval) => {
-    if (!rejectionReason.trim()) {
+  const handleReject = async (approval: CampaignApproval) => { if (!rejectionReason.trim()) {
       toast({
         title: 'Error',
         description: 'Please provide a reason for rejection',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
@@ -203,31 +189,25 @@ export default function CampaignApprovals() {
       // Update approval record
       const { error: approvalError } = await supabase
         .from('campaign_approvals')
-        .update({
-          status: 'rejected',
+        .update({ status: 'rejected',
           reviewed_by: (await supabase.auth.getUser()).data.user?.id,
           reviewed_at: new Date().toISOString(),
-          rejection_reason: rejectionReason,
-        })
+          rejection_reason: rejectionReason })
         .eq('id', approval.id);
 
       if (approvalError) throw approvalError;
 
-      toast({
-        title: 'Success',
-        description: 'Campaign rejected',
-      });
+      toast({ title: 'Success',
+        description: 'Campaign rejected' });
 
       setSelectedApproval(null);
       setRejectionReason('');
       fetchApprovals();
-    } catch (error) {
-      console.error('Error rejecting campaign:', error);
+    } catch (error) { console.error('Error rejecting campaign:', error);
       toast({
         title: 'Error',
         description: 'Failed to reject campaign',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setProcessing(false);
     }

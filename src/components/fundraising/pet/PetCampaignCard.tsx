@@ -24,9 +24,7 @@ interface PetCampaign {
   created_at: string;
 }
 
-const petTypeLabels: Record<string, string> = {
-  dog: "🐕 Dog", cat: "🐈 Cat", bird: "🐦 Bird", rabbit: "🐰 Rabbit", other: "🐾 Other",
-};
+const petTypeLabels: Record<string, string> = { dog: "🐕 Dog", cat: "🐈 Cat", bird: "🐦 Bird", rabbit: "🐰 Rabbit", other: "🐾 Other" };
 
 const quickAmounts = [5, 10, 25];
 

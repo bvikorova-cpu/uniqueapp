@@ -20,13 +20,11 @@ interface DreamCampaign {
   created_at: string;
 }
 
-const dreamTypeLabels: Record<string, string> = {
-  education: "🎓 Education",
+const dreamTypeLabels: Record<string, string> = { education: "🎓 Education",
   travel: "✈️ Travel",
   startup: "🚀 Startup",
   creative: "🎨 Creative",
-  other: "✨ Other",
-};
+  other: "✨ Other" };
 
 const quickAmounts = [5, 10, 25];
 

@@ -37,8 +37,7 @@ const Coffee = () => {
       if (!user) return null;
       const { data } = await supabase.from("coffee_profiles").select("*").eq("user_id", user.id).maybeSingle();
       return data;
-    },
-  });
+    } });
 
   useEffect(() => {
     const payment = searchParams.get("payment");
@@ -67,8 +66,7 @@ const Coffee = () => {
       }
 
       const { data, error } = await supabase.functions.invoke("coffee-checkout", {
-        body: { tier },
-      });
+        body: { tier } });
 
       if (error) throw error;
       if (data?.url) {

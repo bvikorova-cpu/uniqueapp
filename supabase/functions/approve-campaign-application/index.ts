@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const logStep = (step: string, details?: any) => {
   console.log(`[APPROVE-APPLICATION] ${step}`, details || "");
@@ -81,13 +79,11 @@ serve(async (req) => {
     const newStatus = action === "approve" ? "approved" : "rejected";
     const { error: updateError } = await supabaseAdmin
       .from("campaign_applications")
-      .update({
-        status: newStatus,
+      .update({ status: newStatus,
         approved_by: user.id,
         approved_at: new Date().toISOString(),
         rejection_reason: action === "reject" ? rejectionReason : null,
-        updated_at: new Date().toISOString(),
-      })
+        updated_at: new Date().toISOString() })
       .eq("id", applicationId);
 
     if (updateError) {
@@ -101,20 +97,17 @@ serve(async (req) => {
       ? `Your application for campaign "${application.brand_campaigns.campaign_name}" has been approved! The brand can now proceed with payment.`
       : `Your application for campaign "${application.brand_campaigns.campaign_name}" has been rejected. ${rejectionReason || ""}`;
 
-    await supabaseAdmin.from("notifications").insert({
-      user_id: application.virtual_influencers.user_id,
+    await supabaseAdmin.from("notifications").insert({ user_id: application.virtual_influencers.user_id,
       type: action === "approve" ? "campaign_approved" : "campaign_rejected",
       title: action === "approve" ? "Campaign Application Approved" : "Campaign Application Rejected",
-      message: notificationMessage,
-    });
+      message: notificationMessage });
 
     // Send notification to brand
     await supabaseAdmin.from("notifications").insert({
       user_id: application.brand_campaigns.user_id,
       type: "campaign_application_reviewed",
       title: "Application Reviewed",
-      message: `The application from ${application.virtual_influencers.name} for your campaign "${application.brand_campaigns.campaign_name}" has been ${newStatus}.`,
-    });
+      message: `The application from ${application.virtual_influencers.name} for your campaign "${application.brand_campaigns.campaign_name}" has been ${newStatus}.` });
 
     logStep("Notifications sent");
 

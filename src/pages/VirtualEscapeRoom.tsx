@@ -106,8 +106,7 @@ const VirtualEscapeRoom = () => {
                             productName: `Escape Room Corporate — ${plan.name}`,
                             amount: Math.round(eur * 100),
                             mode: "subscription",
-                            metadata: { plan_name: plan.name, tier: "corporate" },
-                          }
+                            metadata: { plan_name: plan.name, tier: "corporate" } }
                         });
                         if (error) throw error;
                         if (data?.url) window.open(data.url, "_blank");

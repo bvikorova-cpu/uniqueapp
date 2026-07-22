@@ -61,11 +61,9 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
         return { pet, decay };
       }).filter(({ decay }) => decay.needsUpdate);
       if (petsToUpdate.length === 0) return;
-      for (const { pet, decay } of petsToUpdate) {
-        await supabase.from('pets').update({
+      for (const { pet, decay } of petsToUpdate) { await supabase.from('pets').update({
           hunger: decay.hunger, happiness: decay.happiness, energy: decay.energy,
-          last_activity_at: new Date().toISOString(),
-        }).eq('id', pet.id);
+          last_activity_at: new Date().toISOString() }).eq('id', pet.id);
       }
       queryClient.invalidateQueries({ queryKey: ['my-pets'] });
     };
@@ -88,9 +86,7 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
 
       // Free pets can be inserted directly (RLS allows owner inserts).
       if (price <= 0) {
-        const { data, error } = await supabase.from('pets').insert([{
-          user_id: user.id, pet_type_id: selectedTypeId, name: newPetName,
-        }]).select().single();
+        const { data, error } = await supabase.from('pets').insert([{ user_id: user.id, pet_type_id: selectedTypeId, name: newPetName }]).select().single();
         if (error) throw error;
         return data;
       }
@@ -98,8 +94,7 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
       // Paid adoption: server-side credit deduction + insert (atomic).
       if (credits.credits_remaining < price) throw new Error('INSUFFICIENT_CREDITS');
       const { data, error } = await supabase.functions.invoke('pet-purchase-item', {
-        body: { itemType: 'pet_type', itemId: selectedTypeId, petName: newPetName },
-      });
+        body: { itemType: 'pet_type', itemId: selectedTypeId, petName: newPetName } });
       if (error) throw error;
       if (data?.error) {
         if (data.code === 'INSUFFICIENT_CREDITS') throw new Error('INSUFFICIENT_CREDITS');

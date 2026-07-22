@@ -10,8 +10,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
-export const PropertyAIValuator = ({ onBack }: Props) => {
-  const [step, setStep] = useState<"form" | "result">("form");
+export const PropertyAIValuator = ({ onBack }: Props) => { const [step, setStep] = useState<"form" | "result">("form");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     location: "",
@@ -19,8 +18,7 @@ export const PropertyAIValuator = ({ onBack }: Props) => {
     area: "",
     rooms: "",
     condition: "",
-    year: "",
-  });
+    year: "" });
 
   const estimatedValue = Math.round(
     (parseInt(formData.area || "80") * 2200) +

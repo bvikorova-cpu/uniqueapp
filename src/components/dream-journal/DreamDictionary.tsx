@@ -41,8 +41,7 @@ const DreamDictionary = ({ onBack }: DreamDictionaryProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("dream-ai", {
         body: { action: "dictionary", symbol, context },
-        headers: { Authorization: `Bearer ${session?.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session?.access_token}` } });
       if (error) throw error;
       setResult(data.interpretation);
       toast.success("Symbol interpretation ready!");

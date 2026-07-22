@@ -38,8 +38,7 @@ export default function BecomeDoctor() {
   const [licenseDocPath, setLicenseDocPath] = useState<string | null>(null);
   const [licenseSubmittedAt, setLicenseSubmittedAt] = useState<string | null>(null);
   const [connect, setConnect] = useState<StripeConnectStatus>({});
-  const [form, setForm] = useState({
-    provider_name: "",
+  const [form, setForm] = useState({ provider_name: "",
     specialty: "",
     bio: "",
     languages: "en",
@@ -49,8 +48,7 @@ export default function BecomeDoctor() {
     is_accepting_bookings: false,
     provider_logo_url: "",
     license_number: "",
-    license_country: "",
-  });
+    license_country: "" });
 
   useEffect(() => {
     if (!user) return;
@@ -61,8 +59,7 @@ export default function BecomeDoctor() {
           .select("stripe_connect_account_id, stripe_connect_charges_enabled, stripe_connect_payouts_enabled, stripe_connect_onboarding_complete")
           .eq("id", user.id).maybeSingle(),
       ]);
-      if (hp) {
-        setExistingId(hp.id);
+      if (hp) { setExistingId(hp.id);
         setVerificationStatus(hp.verification_status ?? "unverified");
         setRejectionReason(hp.rejection_reason ?? null);
         setLicenseDocPath(hp.license_document_url ?? null);
@@ -78,16 +75,13 @@ export default function BecomeDoctor() {
           is_accepting_bookings: hp.is_accepting_bookings ?? false,
           provider_logo_url: hp.provider_logo_url ?? "",
           license_number: hp.license_number ?? "",
-          license_country: hp.license_country ?? "",
-        });
+          license_country: hp.license_country ?? "" });
       }
-      if (profile) {
-        setConnect({
+      if (profile) { setConnect({
           account_id: profile.stripe_connect_account_id,
           charges_enabled: profile.stripe_connect_charges_enabled ?? false,
           payouts_enabled: profile.stripe_connect_payouts_enabled ?? false,
-          onboarding_complete: profile.stripe_connect_onboarding_complete ?? false,
-        });
+          onboarding_complete: profile.stripe_connect_onboarding_complete ?? false });
       }
       setLoading(false);
     })();
@@ -121,17 +115,14 @@ export default function BecomeDoctor() {
       toast({ variant: "destructive", title: "Missing fields", description: "Provider name and specialty are required." });
       return;
     }
-    if (form.is_accepting_bookings && !canAcceptBookings) {
-      toast({
+    if (form.is_accepting_bookings && !canAcceptBookings) { toast({
         variant: "destructive",
         title: "Cannot accept bookings yet",
-        description: "Complete verification and Stripe Connect first.",
-      });
+        description: "Complete verification and Stripe Connect first." });
       return;
     }
     setSaving(true);
-    const payload = {
-      user_id: user.id,
+    const payload = { user_id: user.id,
       provider_name: form.provider_name.trim(),
       specialty: form.specialty.trim(),
       bio: form.bio.trim() || null,
@@ -142,8 +133,7 @@ export default function BecomeDoctor() {
       is_accepting_bookings: form.is_accepting_bookings,
       provider_logo_url: form.provider_logo_url.trim() || null,
       license_number: form.license_number.trim() || null,
-      license_country: form.license_country.trim() || null,
-    };
+      license_country: form.license_country.trim() || null };
     const res = existingId
       ? await supabase.from("healthcare_profiles").update(payload).eq("id", existingId)
       : await supabase.from("healthcare_profiles").insert(payload);
@@ -169,17 +159,13 @@ export default function BecomeDoctor() {
     try {
       const ext = file.name.split(".").pop()?.toLowerCase() || "pdf";
       const path = `${user.id}/license-${Date.now()}.${ext}`;
-      const up = await supabase.storage.from("doctor-licenses").upload(path, file, {
-        cacheControl: "3600",
-        upsert: false,
-      });
+      const up = await supabase.storage.from("doctor-licenses").upload(path, file, { cacheControl: "3600",
+        upsert: false });
       if (up.error) throw up.error;
-      const patch = {
-        license_document_url: path,
+      const patch = { license_document_url: path,
         license_submitted_at: new Date().toISOString(),
         verification_status: "pending" as const,
-        rejection_reason: null,
-      };
+        rejection_reason: null };
       const res = existingId
         ? await supabase.from("healthcare_profiles").update(patch).eq("id", existingId)
         : await supabase.from("healthcare_profiles").insert({ user_id: user.id, ...patch });
@@ -263,7 +249,7 @@ export default function BecomeDoctor() {
                     <Label htmlFor="lic-co">Issuing country</Label>
                     <Input id="lic-co" value={form.license_country}
                       onChange={(e) => setForm({ ...form, license_country: e.target.value })}
-                      placeholder="Slovakia" />
+                      placeholder="Country" />
                   </div>
                 </div>
 
@@ -395,7 +381,7 @@ export default function BecomeDoctor() {
                     <Label htmlFor="tz">Timezone</Label>
                     <Input id="tz" value={form.timezone}
                       onChange={(e) => setForm({ ...form, timezone: e.target.value })}
-                      placeholder="Europe/Bratislava" />
+                      placeholder="Europe/City" />
                   </div>
                 </div>
 

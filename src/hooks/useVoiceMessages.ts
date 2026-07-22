@@ -33,22 +33,19 @@ export const useVoiceMessages = () => {
       );
       if (convErr) throw convErr;
 
-      const { error } = await (supabase as any).from("conversation_messages").insert({
-        conversation_id: convId,
+      const { error } = await (supabase as any).from("conversation_messages").insert({ conversation_id: convId,
         sender_id: user.id,
         content: "[voice message]",
         message_type: "voice",
         audio_url: publicUrl,
-        audio_duration: duration,
-      });
+        audio_duration: duration });
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["direct-messages"] });
       toast({ title: "Voice message sent" });
     },
-    onError: (e: any) => toast({ title: "Failed to send", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Failed to send", description: e.message, variant: "destructive" }) });
 
   return { sendVoice: send.mutateAsync, isSending: send.isPending };
 };

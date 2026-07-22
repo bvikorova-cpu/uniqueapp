@@ -16,8 +16,7 @@ type Item = {
 const RANK_META = {
   champion: { icon: Crown, color: "text-yellow-500", bg: "from-yellow-500/20 to-amber-500/10", label: "Champion" },
   finalist: { icon: Medal, color: "text-slate-300", bg: "from-slate-300/20 to-slate-500/10", label: "Finalist" },
-  semifinalist: { icon: Award, color: "text-orange-400", bg: "from-orange-400/20 to-amber-700/10", label: "Semi-finalist" },
-};
+  semifinalist: { icon: Award, color: "text-orange-400", bg: "from-orange-400/20 to-amber-700/10", label: "Semi-finalist" } };
 
 const MegatalentTrophyCase = ({ userId }: { userId: string }) => {
   const [items, setItems] = useState<Item[]>([]);

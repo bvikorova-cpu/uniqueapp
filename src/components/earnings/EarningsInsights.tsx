@@ -52,8 +52,7 @@ export const EarningsInsights = ({ history }: EarningsInsightsProps) => {
       prev7,
       trendPct,
       topSource,
-      topDow: topDow ? { name: dowNames[Number(topDow[0])], amount: topDow[1] } : null,
-    };
+      topDow: topDow ? { name: dowNames[Number(topDow[0])], amount: topDow[1] } : null };
   }, [history]);
 
   const TrendIcon =

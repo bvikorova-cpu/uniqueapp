@@ -19,8 +19,7 @@ export const GratitudeGardenView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "gratitude_garden", gratitude },
-      });
+        body: { action: "gratitude_garden", gratitude } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

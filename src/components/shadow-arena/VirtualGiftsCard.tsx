@@ -12,12 +12,10 @@ interface CatalogItem {
   tier: string; credit_cost: number; animation: string;
 }
 
-const TIER_COLOR: Record<string, string> = {
-  common: "border-zinc-700/60",
+const TIER_COLOR: Record<string, string> = { common: "border-zinc-700/60",
   rare: "border-blue-500/60",
   epic: "border-purple-500/60",
-  legendary: "border-amber-500/60",
-};
+  legendary: "border-amber-500/60" };
 
 export function VirtualGiftsCard({ recipientId, contextType, contextId }: { recipientId?: string; contextType?: string; contextId?: string }) {
   const [items, setItems] = useState<CatalogItem[]>([]);
@@ -33,11 +31,9 @@ export function VirtualGiftsCard({ recipientId, contextType, contextId }: { reci
   const send = async (g: CatalogItem) => {
     if (!recipientId) { toast.error("Open a creator's stream to send gifts."); return; }
     setSending(g.code);
-    try {
-      await shadowArenaCall("gift_send", {
+    try { await shadowArenaCall("gift_send", {
         gift_code: g.code, recipient_id: recipientId,
-        context_type: contextType, context_id: contextId,
-      });
+        context_type: contextType, context_id: contextId });
       setFlying({ emoji: g.emoji, key: Date.now() });
       toast.success(`${g.emoji} ${g.name} sent!`);
       setTimeout(() => setFlying(null), 1500);

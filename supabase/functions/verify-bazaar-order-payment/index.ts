@@ -3,17 +3,14 @@ import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { createEscrowHold } from "../_shared/escrow.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -36,9 +33,7 @@ serve(async (req) => {
     const orderId: string | undefined = body.orderId || body.order_id;
     if (!sessionId || !orderId) return json({ verified: false, error: "Missing sessionId/orderId" }, 400);
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     const paid = session.payment_status === "paid" || session.status === "complete";
@@ -77,15 +72,13 @@ serve(async (req) => {
         return json({ verified: false, error: "Claim failed" }, 500);
       }
 
-      if (!claimed) {
-        // Item was already sold by a parallel purchase → cancel order and refund this buyer.
+      if (!claimed) { // Item was already sold by a parallel purchase → cancel order and refund this buyer.
         await admin
           .from("bazaar_orders")
           .update({
             status: "cancelled",
             escrow_status: "refunded",
-            stripe_session_id: sessionId,
-          })
+            stripe_session_id: sessionId })
           .eq("id", orderId);
         try {
           const pi = typeof session.payment_intent === "string"
@@ -97,21 +90,17 @@ serve(async (req) => {
         } catch (refundErr) {
           console.error("[verify-bazaar-order-payment] refund failed", refundErr);
         }
-        return json({
-          verified: false,
+        return json({ verified: false,
           refunded: true,
-          error: "Item was already sold to another buyer — payment has been refunded.",
-        }, 409);
+          error: "Item was already sold to another buyer — payment has been refunded." }, 409);
       }
 
       await admin
         .from("bazaar_orders")
-        .update({
-          status: "paid",
+        .update({ status: "paid",
           paid_at: new Date().toISOString(),
           stripe_session_id: sessionId,
-          escrow_status: "held",
-        })
+          escrow_status: "held" })
         .eq("id", orderId);
 
       // Create escrow hold (idempotent guard via try/catch)

@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  getUserFriendlyErrorMessage,
-  handleSupabaseFunctionError,
-} from "./errorHandler";
+import { getUserFriendlyErrorMessage,
+  handleSupabaseFunctionError } from "./errorHandler";
 
 describe("getUserFriendlyErrorMessage", () => {
   it("returns fallback for unknown values", () => {

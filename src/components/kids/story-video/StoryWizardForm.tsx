@@ -22,7 +22,7 @@ const LANGUAGES = [
   { value: 'slovak', label: '🇸🇰 Slovak' },
   { value: 'czech', label: '🇨🇿 Czech' },
   { value: 'hungarian', label: '🇭🇺 Magyar' },
-  { value: 'german', label: '🇩🇪 Deutsch' },
+  { value: 'german', label: 'Deutsch' },
   { value: 'spanish', label: '🇪🇸 Español' },
   { value: 'french', label: '🇫🇷 Français' },
   { value: 'italian', label: '🇮🇹 Italiano' },

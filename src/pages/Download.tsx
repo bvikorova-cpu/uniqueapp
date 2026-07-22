@@ -41,88 +41,66 @@ const STYLE_FLYERS: DownloadFile[] = [
 
 const files: DownloadFile[] = [
   ...STYLE_FLYERS,
-  {
-    name: "Flyer — Luxury A5 Gradient EN (PDF) ★ NEW",
+  { name: "Flyer — Luxury A5 Gradient EN (PDF) ★ NEW",
     description:
       "2-page A5 luxury flyer with real section photos on purple→pink gradient + gold accents",
     url: "/downloads/unique-flyer-luxury-a5-en-v2.pdf",
     size: "2.1 MB",
-    type: "pdf",
-  },
-  {
-    name: "Flyer — Luxury A5 Dark Photo EN (PDF) ★ NEW",
+    type: "pdf" },
+  { name: "Flyer — Luxury A5 Dark Photo EN (PDF) ★ NEW",
     description:
       "2-page A5 luxury flyer with full-page Megatalent/Racing photo background + gold-framed cards",
     url: "/downloads/unique-flyer-luxury-a5-en-photo.pdf",
     size: "1.3 MB",
-    type: "pdf",
-  },
-  {
-    name: "Flyer — Luxury Edition EN v1 (A5, PDF)",
+    type: "pdf" },
+  { name: "Flyer — Luxury Edition EN v1 (A5, PDF)",
     description:
       "Original 2-page A5 luxury flyer (no photos)",
     url: "/downloads/unique-flyer-luxury-a5-en.pdf",
     size: "195 KB",
-    type: "pdf",
-  },
-  {
-    name: "Flyer — Visual Edition EN v2 (A4, PDF) ★ recommended",
+    type: "pdf" },
+  { name: "Flyer — Visual Edition EN v2 (A4, PDF) ★ recommended",
     description:
       "4-page A4 flyer with Megatalent + Racing backgrounds and all 14 worlds",
     url: "/downloads/unique-letak-visual-en-v2.pdf",
     size: "720 KB",
-    type: "pdf",
-  },
-  {
-    name: "Flyer — Visual Edition EN v3 (A5, PDF)",
+    type: "pdf" },
+  { name: "Flyer — Visual Edition EN v3 (A5, PDF)",
     description:
       "4-page A5 flyer (print-ready) with section cover images from the app",
     url: "/downloads/unique-letak-visual-en-v3-a5.pdf",
     size: "1.4 MB",
-    type: "pdf",
-  },
-  {
-    name: "Flyer — About the Platform EN (PDF)",
+    type: "pdf" },
+  { name: "Flyer — About the Platform EN (PDF)",
     description: "2-page A4 flyer: 14 worlds, 100+ tools",
     url: "/downloads/unique-letak-about-en-v1.pdf",
     size: "70 KB",
-    type: "pdf",
-  },
-  {
-    name: "Brochure SK (PDF)",
+    type: "pdf" },
+  { name: "Brochure SK (PDF)",
     description: "Slovak version of the UNIQUE brochure",
     url: "/downloads/brozura-SK.pdf",
     size: "4.7 MB",
-    type: "pdf",
-  },
-  {
-    name: "Brochure EN (PDF)",
+    type: "pdf" },
+  { name: "Brochure EN (PDF)",
     description: "English version of UNIQUE brochure",
     url: "/downloads/brozura-EN.pdf",
     size: "4.7 MB",
-    type: "pdf",
-  },
-  {
-    name: "Brochure HU (PDF)",
+    type: "pdf" },
+  { name: "Brochure HU (PDF)",
     description: "Hungarian UNIQUE brochure",
     url: "/downloads/brozura-HU.pdf",
     size: "4.7 MB",
-    type: "pdf",
-  },
-  {
-    name: "Brochure SK (ZIP)",
+    type: "pdf" },
+  { name: "Brochure SK (ZIP)",
     description: "Slovak brochure packed in ZIP",
     url: "/downloads/brozura-SK.zip",
     size: "4.0 MB",
-    type: "zip",
-  },
-  {
-    name: "All languages (ZIP)",
+    type: "zip" },
+  { name: "All languages (ZIP)",
     description: "SK + EN + HU brochures in one ZIP archive",
     url: "/downloads/brozury-vsetky-jazyky.zip",
     size: "12 MB",
-    type: "zip",
-  },
+    type: "zip" },
 ];
 
 export default function Download() {

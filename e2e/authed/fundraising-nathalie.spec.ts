@@ -18,15 +18,13 @@ import { test, expect, type Page, type Route } from "@playwright/test";
 
 const CATEGORIES = ["medical", "dream", "hero", "pet", "student", "crisis", "talent"] as const;
 
-const HUB_PATHS: Record<(typeof CATEGORIES)[number], string> = {
-  medical: "/fundraising/medical",
+const HUB_PATHS: Record<(typeof CATEGORIES)[number], string> = { medical: "/fundraising/medical",
   dream:   "/fundraising/dream",
   hero:    "/fundraising/hero",
   pet:     "/fundraising/pet",
   student: "/fundraising/student",
   crisis:  "/fundraising/crisis",
-  talent:  "/fundraising/talent",
-};
+  talent:  "/fundraising/talent" };
 
 async function stubDonationCheckout(page: Page) {
   await page.route(/\/functions\/v1\/(create-campaign-donation|create-checkout)/i, async (route: Route) => {
@@ -35,8 +33,7 @@ async function stubDonationCheckout(page: Page) {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ url: "https://checkout.stripe.com/test_donation_stub" }),
-    });
+      body: JSON.stringify({ url: "https://checkout.stripe.com/test_donation_stub" }) });
   });
   await page.route("https://checkout.stripe.com/**", (r) =>
     r.fulfill({ status: 200, contentType: "text/html", body: "<html>stub</html>" }),

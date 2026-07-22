@@ -18,8 +18,7 @@ export const useFollowedTopics = () => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   const follow = useMutation({
     mutationFn: async (topic: string) => {
@@ -34,8 +33,7 @@ export const useFollowedTopics = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["followed-topics"] });
       toast({ title: "Topic followed" });
-    },
-  });
+    } });
 
   const unfollow = useMutation({
     mutationFn: async (topic: string) => {
@@ -48,14 +46,11 @@ export const useFollowedTopics = () => {
         .eq("topic", topic);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["followed-topics"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["followed-topics"] }) });
 
-  return {
-    topics,
+  return { topics,
     topicNames: topics.map((t: any) => t.topic),
     isLoading,
     followTopic: follow.mutate,
-    unfollowTopic: unfollow.mutate,
-  };
+    unfollowTopic: unfollow.mutate };
 };

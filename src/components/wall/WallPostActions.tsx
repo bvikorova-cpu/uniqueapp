@@ -1,30 +1,24 @@
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Heart,
+import { Heart,
   MessageCircle,
   Share2,
   Loader2,
   Info,
-  AlertCircle,
-} from "lucide-react";
+  AlertCircle } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Tooltip,
+  DialogFooter } from "@/components/ui/dialog";
+import { Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 import { trackChallengeAction } from "@/lib/trackChallenge";
 import { useToast } from "@/hooks/use-toast";
@@ -38,12 +32,9 @@ const repostSchema = z.object({
     .string()
     .trim()
     .min(REPOST_MIN, {
-      message: `Add at least ${REPOST_MIN} characters so your followers get context.`,
-    })
+      message: `Add at least ${REPOST_MIN} characters so your followers get context.` })
     .max(REPOST_MAX, {
-      message: `Comment must be ${REPOST_MAX} characters or fewer.`,
-    }),
-});
+      message: `Comment must be ${REPOST_MAX} characters or fewer.` }) });
 
 function friendlyRepostError(err: { code?: string; message?: string } | null) {
   if (!err) return "Failed to share post. Please try again.";
@@ -84,13 +75,11 @@ interface CommentRow {
  * tables: post_likes, post_comments, reposts. Used by GroupDetail and
  * PageDetail to replace previous "Coming soon" placeholders.
  */
-export function WallPostActions({
-  postId,
+export function WallPostActions({ postId,
   initialLikesCount = 0,
   initialCommentsCount = 0,
   initialRepostsCount = 0,
-  variant = "labeled",
-}: WallPostActionsProps) {
+  variant = "labeled" }: WallPostActionsProps) {
   const { toast } = useToast();
   const [userId, setUserId] = useState<string | null>(null);
   const [liked, setLiked] = useState(false);
@@ -129,13 +118,11 @@ export function WallPostActions({
     };
   }, [postId]);
 
-  const requireAuth = () => {
-    if (!userId) {
+  const requireAuth = () => { if (!userId) {
       toast({
         title: "Sign in required",
         description: "Please sign in to interact with posts.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return false;
     }
     return true;
@@ -165,15 +152,13 @@ export function WallPostActions({
         if (error) throw error;
       }
 
-    } catch (err: any) {
-      // revert on failure
+    } catch (err: any) { // revert on failure
       setLiked(!next);
       setLikesCount((c) => c + (next ? -1 : 1));
       toast({
         title: "Error",
         description: err.message ?? "Failed to update like",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -203,17 +188,13 @@ export function WallPostActions({
           ]),
         );
       }
-      const enriched: CommentRow[] = (data ?? []).map((c) => ({
-        ...c,
-        profile: profilesMap.get(c.user_id) ?? null,
-      }));
+      const enriched: CommentRow[] = (data ?? []).map((c) => ({ ...c,
+        profile: profilesMap.get(c.user_id) ?? null }));
       setComments(enriched);
-    } catch (err: any) {
-      toast({
+    } catch (err: any) { toast({
         title: "Error",
         description: err.message ?? "Failed to load comments",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoadingComments(false);
     }
@@ -249,12 +230,10 @@ export function WallPostActions({
       trackChallengeAction("comment", 10);
       await fetchComments();
 
-    } catch (err: any) {
-      toast({
+    } catch (err: any) { toast({
         title: "Error",
         description: err.message ?? "Failed to post comment",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setSubmittingComment(false);
     }
@@ -276,31 +255,23 @@ export function WallPostActions({
 
     setReposting(true);
     try {
-      const { error } = await supabase.from("reposts").insert({
-        user_id: userId!,
+      const { error } = await supabase.from("reposts").insert({ user_id: userId!,
         original_post_id: postId,
-        comment: parsed.data.comment,
-      });
+        comment: parsed.data.comment });
       if (error) throw error;
       setRepostsCount((c) => c + 1);
       setShowShareDialog(false);
       setRepostComment("");
       setRepostError(null);
-      toast({
-        title: "Shared",
-        description: "Post was shared to your profile.",
-      });
-    } catch (err: any) {
-      const friendly = friendlyRepostError({
+      toast({ title: "Shared",
+        description: "Post was shared to your profile." });
+    } catch (err: any) { const friendly = friendlyRepostError({
         code: err?.code,
-        message: err?.message,
-      });
+        message: err?.message });
       setRepostError(friendly);
-      toast({
-        title: "Couldn't share",
+      toast({ title: "Couldn't share",
         description: friendly,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setReposting(false);
     }

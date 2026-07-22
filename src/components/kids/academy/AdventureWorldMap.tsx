@@ -6,8 +6,7 @@ import { recordModuleVisit } from "@/lib/kidsAcademyEconomy";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const worlds = [
-  {
-    id: "story",
+  { id: "story",
     name: "Story Island",
     emoji: "📖",
     icon: PenTool,
@@ -16,10 +15,8 @@ const worlds = [
     gradient: "from-violet-500/20 to-pink-500/20",
     border: "border-violet-500/30",
     glow: "shadow-violet-500/20",
-    features: ["AI Illustrations", "Story Library"],
-  },
-  {
-    id: "science",
+    features: ["AI Illustrations", "Story Library"] },
+  { id: "science",
     name: "Science Volcano",
     emoji: "🌋",
     icon: FlaskConical,
@@ -28,10 +25,8 @@ const worlds = [
     gradient: "from-emerald-500/20 to-green-500/20",
     border: "border-emerald-500/30",
     glow: "shadow-emerald-500/20",
-    features: ["5 Categories", "AI Analysis"],
-  },
-  {
-    id: "art",
+    features: ["5 Categories", "AI Analysis"] },
+  { id: "art",
     name: "Art Rainbow",
     emoji: "🌈",
     icon: Palette,
@@ -40,10 +35,8 @@ const worlds = [
     gradient: "from-amber-500/20 to-orange-500/20",
     border: "border-amber-500/30",
     glow: "shadow-amber-500/20",
-    features: ["Step-by-Step", "Canvas Tools"],
-  },
-  {
-    id: "reading",
+    features: ["Step-by-Step", "Canvas Tools"] },
+  { id: "reading",
     name: "Reading Castle",
     emoji: "🏰",
     icon: BookOpen,
@@ -52,10 +45,8 @@ const worlds = [
     gradient: "from-blue-500/20 to-cyan-500/20",
     border: "border-blue-500/30",
     glow: "shadow-blue-500/20",
-    features: ["Text Analysis", "Quiz Mode"],
-  },
-  {
-    id: "homework",
+    features: ["Text Analysis", "Quiz Mode"] },
+  { id: "homework",
     name: "Homework Treehouse",
     emoji: "🏠",
     icon: Calculator,
@@ -64,10 +55,8 @@ const worlds = [
     gradient: "from-rose-500/20 to-pink-500/20",
     border: "border-rose-500/30",
     glow: "shadow-rose-500/20",
-    features: ["Math", "Spelling", "Science"],
-  },
-  {
-    id: "career",
+    features: ["Math", "Spelling", "Science"] },
+  { id: "career",
     name: "Career Compass",
     emoji: "🧭",
     icon: Briefcase,
@@ -76,8 +65,7 @@ const worlds = [
     gradient: "from-indigo-500/20 to-purple-500/20",
     border: "border-indigo-500/30",
     glow: "shadow-indigo-500/20",
-    features: ["AI Guidance", "Teens 13-18"],
-  },
+    features: ["AI Guidance", "Teens 13-18"] },
 ];
 
 export const AdventureWorldMap = () => {

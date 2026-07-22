@@ -56,8 +56,7 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
 
     try {
       const { data, error } = await supabase.functions.invoke("clone-chat", {
-        body: { cloneId: clone.id, message: userMessage, history: messages },
-      });
+        body: { cloneId: clone.id, message: userMessage, history: messages } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);

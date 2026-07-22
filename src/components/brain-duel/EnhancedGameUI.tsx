@@ -61,8 +61,7 @@ interface EnhancedGameUIProps {
   doublePointsActive: boolean;
 }
 
-export const EnhancedGameUI = ({
-  match,
+export const EnhancedGameUI = ({ match,
   questions,
   currentQuestionIndex,
   timeLeft,
@@ -77,8 +76,7 @@ export const EnhancedGameUI = ({
   hiddenOptions,
   showHint,
   activePowerup,
-  doublePointsActive,
-}: EnhancedGameUIProps) => {
+  doublePointsActive }: EnhancedGameUIProps) => {
   const { powerups } = useBrainDuelPowerups();
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;

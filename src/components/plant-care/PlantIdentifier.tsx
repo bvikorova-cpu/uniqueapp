@@ -68,8 +68,7 @@ export const PlantIdentifier = () => {
       
       toast({
         title: "Plant Identified!",
-        description: `Identified as ${data.identification.commonName}`,
-      });
+        description: `Identified as ${data.identification.commonName}` });
     } catch (error: any) {
       console.error('Error identifying plant:', error);
       toast({
@@ -104,10 +103,8 @@ export const PlantIdentifier = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Plant Saved!",
-        description: "Added to your garden collection.",
-      });
+      toast({ title: "Plant Saved!",
+        description: "Added to your garden collection." });
     } catch (error: any) {
       console.error('Error saving plant:', error);
       toast({

@@ -43,12 +43,10 @@ const BeautyStudio = () => {
         (supabase as any).from("beauty_skin_analyses").select("id", { count: "exact", head: true }).eq("user_id", user.id),
         (supabase as any).from("beauty_nail_designs").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
-      setStats({
-        transformations: t.count || 0,
+      setStats({ transformations: t.count || 0,
         styles: s.count || 0,
         analyses: a.count || 0,
-        designs: n.count || 0,
-      });
+        designs: n.count || 0 });
     };
     loadStats();
   }, []);

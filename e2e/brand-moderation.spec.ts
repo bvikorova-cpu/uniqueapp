@@ -28,8 +28,7 @@ test.describe("Brand Moderation — admin guard", () => {
 });
 
 test.describe("Brand Moderation — public listing visibility", () => {
-  test("pending brands are not rendered on /brand-battle", async ({ page }) => {
-    // Stub the brand_sponsors REST endpoint to return only approved brands —
+  test("pending brands are not rendered on /brand-battle", async ({ page }) => { // Stub the brand_sponsors REST endpoint to return only approved brands —
     // this mirrors the RLS contract: pending/rejected rows never reach the client.
     await page.route(/brand_sponsors.*moderation_status=eq\.approved/i, async (route) => {
       await route.fulfill({
@@ -39,10 +38,8 @@ test.describe("Brand Moderation — public listing visibility", () => {
           {
             id: "approved-1", name: "ApprovedCo", logo: "🟢",
             tier: "gold", category: "tech", total_votes: 10,
-            subscription_status: "active", moderation_status: "approved",
-          },
-        ]),
-      });
+            subscription_status: "active", moderation_status: "approved" },
+        ]) });
     });
     const res = await page.goto("/brand-battle");
     expect(res?.status() ?? 200).toBeLessThan(500);
@@ -59,10 +56,8 @@ test.describe("Brand Moderation — admin queue & actions (stubbed)", () => {
       const fake = {
         currentSession: {
           access_token: "fake", refresh_token: "fake",
-          user: { id: "admin-uuid", email: "admin@test.dev" },
-        },
-        expiresAt: Date.now() + 3600_000,
-      };
+          user: { id: "admin-uuid", email: "admin@test.dev" } },
+        expiresAt: Date.now() + 3600_000 };
       try { localStorage.setItem("sb-auth-token", JSON.stringify(fake)); } catch {}
     });
 
@@ -71,8 +66,7 @@ test.describe("Brand Moderation — admin queue & actions (stubbed)", () => {
       r.fulfill({ status: 200, contentType: "application/json", body: "true" })
     );
     await page.route(/brand_sponsors.*moderation_status=eq\.pending/, (r) =>
-      r.fulfill({
-        status: 200,
+      r.fulfill({ status: 200,
         contentType: "application/json",
         body: JSON.stringify([{
           id: "pending-1", name: "PendingBrand", logo: "🟡",
@@ -80,9 +74,7 @@ test.describe("Brand Moderation — admin queue & actions (stubbed)", () => {
           website: "https://x.test", user_id: "u1",
           subscription_status: "pending", moderation_status: "pending",
           moderation_reason: null, moderated_at: null,
-          created_at: new Date().toISOString(),
-        }]),
-      })
+          created_at: new Date().toISOString() }]) })
     );
     await page.route(/brand_sponsors.*moderation_status=eq\.approved/, (r) =>
       r.fulfill({ status: 200, contentType: "application/json", body: "[]" })
@@ -97,9 +89,7 @@ test.describe("Brand Moderation — admin queue & actions (stubbed)", () => {
           id: "a1", brand_id: "pending-1", admin_id: "admin-uuid-abc",
           previous_status: "pending", new_status: "approved",
           reason: null, created_at: new Date().toISOString(),
-          brand: { name: "PendingBrand" },
-        }]),
-      })
+          brand: { name: "PendingBrand" } }]) })
     );
   });
 

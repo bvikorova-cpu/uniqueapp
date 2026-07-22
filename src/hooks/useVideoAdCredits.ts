@@ -76,14 +76,12 @@ export const useVideoAdCredits = () => {
       }
 
       return data as VideoAdCredits;
-    },
-  });
+    } });
 
   const generateVideoAd = useMutation({
     mutationFn: async (params: GenerateVideoAdParams) => {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {
-        body: { action: 'generate_script', ...params },
-      });
+        body: { action: 'generate_script', ...params } });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
@@ -105,8 +103,7 @@ export const useVideoAdCredits = () => {
       } else {
         toast.error("Error generating video ad: " + error.message);
       }
-    },
-  });
+    } });
 
   const getTierLimits = (tier: string) => {
     switch (tier) {
@@ -175,13 +172,11 @@ export const useVideoAdCredits = () => {
     }
   };
 
-  return {
-    credits,
+  return { credits,
     isLoading,
     generateVideoAd: generateVideoAd.mutateAsync,
     isGenerating: generateVideoAd.isPending,
     getTierLimits,
     calculateCreditCost,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

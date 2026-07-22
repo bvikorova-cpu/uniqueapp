@@ -49,8 +49,7 @@ interface Show {
 }
 
 // Feature card component with playful animations
-const FeatureCard = ({
-  title,
+const FeatureCard = ({ title,
   description,
   icon: Icon,
   iconColor,
@@ -59,8 +58,7 @@ const FeatureCard = ({
   onClick,
   delay = 0,
   hasGoldPass,
-  showUnlocked,
-}: {
+  showUnlocked }: {
   title: string;
   description: string;
   icon: any;
@@ -133,8 +131,7 @@ const KidsChannel = () => {
     { path: '/kids-homework', name: 'AI Homework Helper' },
   ];
 
-  const showImageMap: Record<string, string> = {
-    "Peppa Pig": showImages.peppa,
+  const showImageMap: Record<string, string> = { "Peppa Pig": showImages.peppa,
     "Paw Patrol": showImages.pawPatrol,
     "Frozen Stories": showImages.frozen,
     "Lion Kingdom": showImages.lionking,
@@ -208,8 +205,7 @@ const KidsChannel = () => {
     "Zootopia": showImages.zootopia,
     "Lilo & Stitch": showImages['lilo&stitch'],
     "Winnie the Pooh": showImages.winniethepooh,
-    "Hercules": showImages.hercules,
-  };
+    "Hercules": showImages.hercules };
 
   useEffect(() => {
     fetchShows();

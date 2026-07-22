@@ -6,13 +6,11 @@ import { Sparkles, ShoppingCart, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+  DialogTrigger } from '@/components/ui/dialog';
 
 const CREDIT_PACKAGES = [
   { id: "10", credits: 10, price: "€5", popular: false },
@@ -31,19 +29,16 @@ export const AstrologyCreditsDisplay = () => {
     setPurchasing(packageId);
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { creditType: 'astrology', credits: Number(packageId) },
-      });
+        body: { creditType: 'astrology', credits: Number(packageId) } });
 
       if (error) throw error;
       if (data?.url) {
         window.open(data.url, '_blank');
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to start checkout",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setPurchasing(null);
     }

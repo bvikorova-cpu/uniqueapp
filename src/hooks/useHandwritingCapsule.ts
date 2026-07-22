@@ -5,8 +5,7 @@ import { toast } from "sonner";
 
 const invokeRouter = async (action: string, payload: Record<string, unknown>) => {
   const { data, error } = await supabase.functions.invoke("handwriting-ai", {
-    body: { action, ...payload },
-  });
+    body: { action, ...payload } });
   if (error) throw error;
   if ((data as any)?.error) throw new Error((data as any).error);
   return data;
@@ -34,8 +33,7 @@ export function useCapsuleEntries() {
         .order("captured_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 }
 
 export function useUploadCapsuleEntry() {
@@ -53,12 +51,10 @@ export function useUploadCapsuleEntry() {
       const pub = { publicUrl: await getReadableUrl("handwriting-capsule", path) };
       const { data: row, error } = await supabase
         .from("handwriting_time_capsule")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           image_url: pub.publicUrl,
           label: vars.label ?? null,
-          notes: vars.notes ?? null,
-        })
+          notes: vars.notes ?? null })
         .select()
         .single();
       if (error) throw error;
@@ -68,8 +64,7 @@ export function useUploadCapsuleEntry() {
       qc.invalidateQueries({ queryKey: ["capsule-entries"] });
       toast.success("Snapshot saved to your capsule");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useDeleteCapsuleEntry() {
@@ -83,8 +78,7 @@ export function useDeleteCapsuleEntry() {
       qc.invalidateQueries({ queryKey: ["capsule-entries"] });
       toast.success("Entry removed");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useCapsuleDiff() {
@@ -96,8 +90,7 @@ export function useCapsuleDiff() {
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
       toast.success("Evolution diff ready");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 // ---------- LIVE INK ----------
@@ -114,6 +107,5 @@ export function useLiveInkAnalyze() {
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
       toast.success("Live reading ready");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }

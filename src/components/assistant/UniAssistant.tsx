@@ -91,8 +91,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     setSpeaking(true);
     try {
       const { data, error } = await supabase.functions.invoke("uni-tts", {
-        body: { text, voice: "alloy" },
-      });
+        body: { text, voice: "alloy" } });
       if (error) throw error;
       // invoke returns a Blob for non-JSON responses
       const blob = data instanceof Blob
@@ -118,8 +117,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     setThinking(true);
     try {
       const { data, error } = await supabase.functions.invoke("uni-assistant", {
-        body: { transcript: text, currentRoute: location.pathname },
-      });
+        body: { transcript: text, currentRoute: location.pathname } });
       if (error) throw error;
       if (data?.error === "INSUFFICIENT_CREDITS") {
         toast({ title: "Not enough credits", description: "Uni costs 5 credits per command.", variant: "destructive" });

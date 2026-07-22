@@ -45,28 +45,23 @@ export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
       if (error) throw error;
       return (data ?? []) as LeaderboardRow[];
     },
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 
-  const leaderboard = useMemo<LeaderboardEntry[]>(() => {
-    const base: LeaderboardEntry[] = (rows ?? []).map((r, i) => ({
+  const leaderboard = useMemo<LeaderboardEntry[]>(() => { const base: LeaderboardEntry[] = (rows ?? []).map((r, i) => ({
       rank: i + 1,
       name: r.display_name || "Explorer",
       stamps: Number(r.stamps) || 0,
       xp: Number(r.xp) || 0,
       avatar: AVATAR_EMOJIS[i % AVATAR_EMOJIS.length],
-      isYou: !!user && r.user_id === user.id,
-    }));
+      isYou: !!user && r.user_id === user.id }));
 
-    if (!base.some((e) => e.isYou)) {
-      base.push({
+    if (!base.some((e) => e.isYou)) { base.push({
         rank: base.length + 1,
         name: "You",
         stamps: userStamps,
         xp: userStamps * 400,
         avatar: "⭐",
-        isYou: true,
-      });
+        isYou: true });
     }
 
     return base

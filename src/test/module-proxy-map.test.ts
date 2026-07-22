@@ -7,8 +7,7 @@ import { describe, it, expect } from "vitest";
 import { resolveProxy } from "@/integrations/supabase/proxyMap";
 
 // Names that MUST resolve via proxyMap (no standalone edge function exists).
-const PROXIED = {
-  antique: [
+const PROXIED = { antique: [
     "antique-ar-room",
     "antique-batch-appraisal",
     "antique-certificate",
@@ -49,8 +48,7 @@ const PROXIED = {
     "home-color-palette",
     "home-furniture-recommender",
     "home-virtual-staging",
-  ],
-};
+  ] };
 
 describe("Group 4 module proxies", () => {
   for (const [group, names] of Object.entries(PROXIED)) {

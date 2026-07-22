@@ -7,9 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import {
-  Sparkles, MessageSquareHeart, Brain, Wand2, Mic, MapPin, ScrollText, Loader2, Coins,
-} from "lucide-react";
+import { Sparkles, MessageSquareHeart, Brain, Wand2, Mic, MapPin, ScrollText, Loader2, Coins } from "lucide-react";
 import { useAnonymousDateAI, AI_COSTS, type AIFeature } from "@/hooks/useAnonymousDateAI";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -30,8 +28,7 @@ const FEATURES: Array<{
     fields: [
       { key: "your_traits", label: "Your traits & interests", placeholder: "Adventurous, loves hiking, into sci-fi books..." },
       { key: "match_traits", label: "Their traits & interests", placeholder: "Creative, plays guitar, loves coffee..." },
-    ],
-  },
+    ] },
   {
     id: "compatibility",
     title: "AI Compatibility Score",
@@ -41,8 +38,7 @@ const FEATURES: Array<{
     fields: [
       { key: "your_profile", label: "Your profile (interests, traits, looking for)", placeholder: "I'm playful, love travel, looking for deep connection...", type: "textarea" },
       { key: "their_profile", label: "Their profile", placeholder: "Calm, romantic, into art, looking for serious...", type: "textarea" },
-    ],
-  },
+    ] },
   {
     id: "reply_coach",
     title: "AI Reply Coach",
@@ -52,8 +48,7 @@ const FEATURES: Array<{
     fields: [
       { key: "their_message", label: "Their last message", placeholder: "What did they just say?", type: "textarea" },
       { key: "your_vibe", label: "Your vibe (optional)", placeholder: "I want to keep it flirty..." },
-    ],
-  },
+    ] },
   {
     id: "personality_mirror",
     title: "AI Personality Mirror",
@@ -63,8 +58,7 @@ const FEATURES: Array<{
     fields: [
       { key: "your_messages", label: "Paste 3-5 of your recent messages", placeholder: "I usually write things like...", type: "textarea" },
       { key: "your_traits", label: "Your traits", placeholder: "Romantic, adventurous, witty..." },
-    ],
-  },
+    ] },
   {
     id: "voice_preview",
     title: "AI Voice Preview Script",
@@ -74,8 +68,7 @@ const FEATURES: Array<{
     fields: [
       { key: "anonymous_name", label: "Your anonymous name", placeholder: "MysteryRose" },
       { key: "vibe", label: "Vibe", placeholder: "Mysterious, warm, slightly playful..." },
-    ],
-  },
+    ] },
   {
     id: "date_ideas",
     title: "AI Date Idea Generator",
@@ -84,9 +77,8 @@ const FEATURES: Array<{
     gradient: "from-emerald-500 to-teal-500",
     fields: [
       { key: "shared_interests", label: "Your shared interests", placeholder: "Coffee, books, indie music, hiking..." },
-      { key: "city", label: "City (optional)", placeholder: "Berlin" },
-    ],
-  },
+      { key: "city", label: "City (optional)", placeholder: "City" },
+    ] },
   {
     id: "love_letter",
     title: "AI Love Letter",
@@ -96,8 +88,7 @@ const FEATURES: Array<{
     fields: [
       { key: "anonymous_name", label: "Your anonymous name", placeholder: "MysteryRose" },
       { key: "what_you_loved", label: "What you loved about them", placeholder: "Their humour, the way they describe sunsets...", type: "textarea" },
-    ],
-  },
+    ] },
 ];
 
 function renderOutput(feature: AIFeature, output: any) {
@@ -154,13 +145,11 @@ function renderOutput(feature: AIFeature, output: any) {
     );
   }
 
-  if (feature === "reply_coach") {
-    const arr = Array.isArray(output) ? output : output.replies || [];
+  if (feature === "reply_coach") { const arr = Array.isArray(output) ? output : output.replies || [];
     const toneColor: Record<string, string> = {
       flirty: "from-pink-500 to-rose-500",
       playful: "from-amber-500 to-orange-500",
-      sincere: "from-emerald-500 to-teal-500",
-    };
+      sincere: "from-emerald-500 to-teal-500" };
     return (
       <div className="space-y-2">
         {arr.map((r: any, i: number) => (

@@ -22,8 +22,7 @@ interface CelebrationPostProps {
   hasCongratulated?: boolean;
 }
 
-export const CelebrationPost = ({
-  id,
+export const CelebrationPost = ({ id,
   userId,
   userName,
   userAvatar,
@@ -32,8 +31,7 @@ export const CelebrationPost = ({
   description,
   createdAt,
   congratulationsCount = 0,
-  hasCongratulated = false,
-}: CelebrationPostProps) => {
+  hasCongratulated = false }: CelebrationPostProps) => {
   const [congratCount, setCongratCount] = useState(congratulationsCount);
   const [hasCongrat, setHasCongrat] = useState(hasCongratulated);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -68,12 +66,10 @@ export const CelebrationPost = ({
   const handleCongratulate = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Login required",
           description: "Please login to congratulate",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -96,12 +92,10 @@ export const CelebrationPost = ({
       }
 
       setTimeout(() => setIsAnimating(false), 500);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

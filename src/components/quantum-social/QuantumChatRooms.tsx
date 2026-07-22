@@ -76,11 +76,9 @@ export function QuantumChatRooms({ onBack }: { onBack: () => void }) {
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
     if (!newRoomName.trim()) return;
 
-    const { error } = await supabase.from("quantum_chat_rooms").insert([{
-      name: newRoomName,
+    const { error } = await supabase.from("quantum_chat_rooms").insert([{ name: newRoomName,
       description: "A quantum superposition chat room",
-      creator_id: user.id,
-    }]);
+      creator_id: user.id }]);
 
     if (error) {
       toast({ title: "Error", description: "Failed to create room", variant: "destructive" });
@@ -96,23 +94,19 @@ export function QuantumChatRooms({ onBack }: { onBack: () => void }) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user || !activeRoom || !newMessage.trim()) return;
 
-    const { error } = await supabase.from("quantum_chat_messages").insert([{
-      room_id: activeRoom.id,
+    const { error } = await supabase.from("quantum_chat_messages").insert([{ room_id: activeRoom.id,
       sender_id: user.id,
-      content: newMessage,
-    }]);
+      content: newMessage }]);
 
     if (!error) setNewMessage("");
   };
 
-  const observeMessage = async (messageId: string) => {
-    const msg = messages.find(m => m.id === messageId);
+  const observeMessage = async (messageId: string) => { const msg = messages.find(m => m.id === messageId);
     if (!msg || msg.is_observed) return;
 
     await supabase.from("quantum_chat_messages").update({
       is_observed: true,
-      observed_by_count: (msg.observed_by_count || 0) + 1,
-    }).eq("id", messageId);
+      observed_by_count: (msg.observed_by_count || 0) + 1 }).eq("id", messageId);
 
     setMessages(prev => prev.map(m => m.id === messageId ? { ...m, is_observed: true, observed_by_count: (m.observed_by_count || 0) + 1 } : m));
   };

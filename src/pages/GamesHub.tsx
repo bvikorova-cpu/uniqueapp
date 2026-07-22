@@ -94,12 +94,10 @@ const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
   );
 };
 
-const GameCard = ({
-  game,
+const GameCard = ({ game,
   onClick,
   isFavorite,
-  onToggleFavorite,
-}: {
+  onToggleFavorite }: {
   game: GDGame;
   onClick: () => void;
   isFavorite: boolean;

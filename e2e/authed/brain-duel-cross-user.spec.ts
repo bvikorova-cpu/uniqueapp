@@ -43,8 +43,7 @@ test("A challenges B in brain duel; B accepts; both see correct state", async ({
 
   const signB = await request.post(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
     headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
-    data: { email: EMAIL_B, password: PASSWORD_B },
-  });
+    data: { email: EMAIL_B, password: PASSWORD_B } });
   expect(signB.ok(), `B sign-in failed: ${signB.status()}`).toBeTruthy();
   const sB = await signB.json();
   const userB: string = sB.user.id;
@@ -56,17 +55,14 @@ test("A challenges B in brain duel; B accepts; both see correct state", async ({
 
   // 1) A vytvorí challenge.
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-  const createRes = await request.post(`${SUPABASE_URL}/rest/v1/brain_duel_friend_challenges`, {
-    headers: hA,
+  const createRes = await request.post(`${SUPABASE_URL}/rest/v1/brain_duel_friend_challenges`, { headers: hA,
     data: {
       challenger_id: userA,
       challenged_id: userB,
       category: "general",
       stake_credits: 0,
       status: "pending",
-      expires_at: expiresAt,
-    },
-  });
+      expires_at: expiresAt } });
   if (!createRes.ok()) {
     test.skip(true, `challenge insert blocked (${createRes.status()}): ${(await createRes.text()).slice(0, 200)}`);
     return;
@@ -84,8 +80,7 @@ test("A challenges B in brain duel; B accepts; both see correct state", async ({
   // 3) B akceptuje.
   const acceptRes = await request.patch(`${SUPABASE_URL}/rest/v1/brain_duel_friend_challenges?id=eq.${challengeId}`, {
     headers: hB,
-    data: { status: "accepted", accepted_at: new Date().toISOString() },
-  });
+    data: { status: "accepted", accepted_at: new Date().toISOString() } });
   expect(acceptRes.ok(), `B accept failed: ${await acceptRes.text()}`).toBeTruthy();
 
   // 4) A overí stav.

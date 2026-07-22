@@ -41,8 +41,7 @@ export async function checkIdempotency(
   if (data?.response_body) {
     return new Response(JSON.stringify(data.response_body), {
       status: (data.response_status as number) ?? 200,
-      headers: { "Content-Type": "application/json", "X-Idempotent-Replay": "true" },
-    });
+      headers: { "Content-Type": "application/json", "X-Idempotent-Replay": "true" } });
   }
   return null;
 }
@@ -54,8 +53,7 @@ export async function saveIdempotency(
   body: unknown,
   status = 200,
   userId?: string,
-): Promise<void> {
-  const key = req.headers.get("idempotency-key");
+): Promise<void> { const key = req.headers.get("idempotency-key");
   if (!key) return;
   await sb.from("idempotency_keys").upsert(
     {
@@ -63,8 +61,7 @@ export async function saveIdempotency(
       scope,
       user_id: userId ?? null,
       response_body: body as never,
-      response_status: status,
-    },
+      response_status: status },
     { onConflict: "key" },
   );
 }

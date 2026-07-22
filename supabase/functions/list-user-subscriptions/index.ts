@@ -8,11 +8,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[LIST-SUBS] ${s}${d ? ` ${JSON.stringify(d)}` : ""}`);
@@ -20,8 +18,7 @@ const log = (s: string, d?: unknown) =>
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 serve(async (req) => {
@@ -60,8 +57,7 @@ serve(async (req) => {
     if (action === "list_invoices") {
       const limit = Math.min(Math.max(Number(body?.limit) || 12, 1), 50);
       const inv = await stripe.invoices.list({ customer: customerId, limit });
-      const invoices = inv.data.map((i) => ({
-        id: i.id,
+      const invoices = inv.data.map((i) => ({ id: i.id,
         number: i.number,
         status: i.status,
         amount_paid: (i.amount_paid ?? 0) / 100,
@@ -72,8 +68,7 @@ serve(async (req) => {
         period_end: i.period_end ? new Date(i.period_end * 1000).toISOString() : null,
         hosted_invoice_url: i.hosted_invoice_url,
         invoice_pdf: i.invoice_pdf,
-        description: i.description,
-      }));
+        description: i.description }));
       log("invoices", { count: invoices.length });
       return json({ invoices, customer_id: customerId }, 200);
     }
@@ -97,15 +92,13 @@ serve(async (req) => {
         customer: customerId,
         subscription: subId,
         subscription_items: [{ id: itemId, price: newPriceId }],
-        subscription_proration_behavior: "create_prorations",
-      });
+        subscription_proration_behavior: "create_prorations" });
 
       const prorationItems = (upcoming.lines?.data ?? []).filter((l: any) => l.proration);
       const proration_total =
         prorationItems.reduce((s: number, l: any) => s + (l.amount ?? 0), 0) / 100;
       return json(
-        {
-          amount_due_now: (upcoming.amount_due ?? 0) / 100,
+        { amount_due_now: (upcoming.amount_due ?? 0) / 100,
           subtotal: (upcoming.subtotal ?? 0) / 100,
           tax: (upcoming.tax ?? 0) / 100,
           total: (upcoming.total ?? 0) / 100,
@@ -117,27 +110,22 @@ serve(async (req) => {
           lines: (upcoming.lines?.data ?? []).map((l: any) => ({
             description: l.description,
             amount: (l.amount ?? 0) / 100,
-            proration: !!l.proration,
-          })),
-        },
+            proration: !!l.proration })) },
         200,
       );
     }
 
     // ---- DEFAULT: list subscriptions ---------------------------------------
-    const subs = await stripe.subscriptions.list({
-      customer: customerId,
+    const subs = await stripe.subscriptions.list({ customer: customerId,
       status: "all",
       limit: 50,
-      expand: ["data.items.data.price.product"],
-    });
+      expand: ["data.items.data.price.product"] });
 
     const result = subs.data
       .filter((s) =>
         ["active", "trialing", "past_due", "unpaid", "canceled"].includes(s.status),
       )
-      .map((s) => {
-        const item = s.items.data[0];
+      .map((s) => { const item = s.items.data[0];
         const price = item?.price;
         const product = (price?.product as Stripe.Product | undefined) ?? null;
         return {
@@ -153,13 +141,10 @@ serve(async (req) => {
           product_name: product?.name ?? "Subscription",
           amount: price?.unit_amount ? price.unit_amount / 100 : 0,
           currency: price?.currency?.toUpperCase() ?? "EUR",
-          interval: price?.recurring?.interval ?? "month",
-        };
+          interval: price?.recurring?.interval ?? "month" };
       })
-      .sort((a, b) => {
-        const order: Record<string, number> = {
-          active: 0, trialing: 1, past_due: 2, unpaid: 3, canceled: 4,
-        };
+      .sort((a, b) => { const order: Record<string, number> = {
+          active: 0, trialing: 1, past_due: 2, unpaid: 3, canceled: 4 };
         return (order[a.status] ?? 9) - (order[b.status] ?? 9);
       });
 

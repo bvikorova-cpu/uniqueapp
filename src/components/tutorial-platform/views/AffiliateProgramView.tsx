@@ -9,14 +9,12 @@ import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
-const affiliateStats = {
-  totalReferrals: 24,
+const affiliateStats = { totalReferrals: 24,
   activeReferrals: 18,
   pendingEarnings: 156.80,
   totalEarnings: 892.40,
   conversionRate: 32,
-  clicks: 248,
-};
+  clicks: 248 };
 
 const recentReferrals = [
   { id: 1, user: "John D.", course: "Web Dev Bootcamp", commission: 14.99, status: "paid", date: "Apr 3, 2026" },

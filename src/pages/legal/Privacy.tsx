@@ -72,7 +72,7 @@ export default function Privacy() {
             <LegalSection id="sharing" number="§4" title="Who We Share Data With">
               <ul>
                 <li><strong>Stripe</strong> — payment processing.</li>
-                <li><strong>Supabase</strong> — hosting (EU region).</li>
+                <li><strong>Supabase</strong> — hosting (global hosting regions).</li>
                 <li><strong>Lovable AI Gateway</strong> — AI features (prompts anonymized).</li>
                 <li><strong>Authorities</strong> — only when legally required.</li>
               </ul>

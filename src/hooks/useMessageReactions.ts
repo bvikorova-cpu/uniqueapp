@@ -23,8 +23,7 @@ export const useMessageReactions = (messageIds: string[]) => {
       if (error) throw error;
       return data as MessageReaction[];
     },
-    enabled: messageIds.length > 0,
-  });
+    enabled: messageIds.length > 0 });
 
   const toggle = useMutation({
     mutationFn: async ({ messageId, emoji }: { messageId: string; emoji: string }) => {
@@ -36,16 +35,13 @@ export const useMessageReactions = (messageIds: string[]) => {
       );
       if (existing) {
         await supabase.from("message_reactions").delete().eq("id", existing.id);
-      } else {
-        await supabase.from("message_reactions").insert({
+      } else { await supabase.from("message_reactions").insert({
           message_id: messageId,
           user_id: user.id,
-          reaction: emoji,
-        });
+          reaction: emoji });
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["message-reactions"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["message-reactions"] }) });
 
   const reactionsByMessage = reactions.reduce<Record<string, MessageReaction[]>>((acc, r) => {
     (acc[r.message_id] ||= []).push(r);

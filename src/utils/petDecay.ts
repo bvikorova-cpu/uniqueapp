@@ -12,8 +12,7 @@ export interface PetStats {
   last_activity_at: string | null;
 }
 
-export const calculateDecay = (pet: PetStats) => {
-  const now = new Date();
+export const calculateDecay = (pet: PetStats) => { const now = new Date();
   
   // Calculate hunger decay (based on last_fed_at)
   const lastFed = pet.last_fed_at ? new Date(pet.last_fed_at) : null;
@@ -48,6 +47,5 @@ export const calculateDecay = (pet: PetStats) => {
     hunger: newHunger,
     happiness: newHappiness,
     energy: newEnergy,
-    needsUpdate,
-  };
+    needsUpdate };
 };

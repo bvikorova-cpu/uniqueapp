@@ -1,14 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Heart,
+import { Heart,
   X,
   Sparkles,
   MessageCircle,
   Users,
   Search,
   Lightbulb,
-  Timer,
-} from "lucide-react";
+  Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -25,8 +23,7 @@ interface Props {
   onBrowseHub: () => void;
 }
 
-export const MatchCelebrationModal = ({
-  open,
+export const MatchCelebrationModal = ({ open,
   myPhoto,
   myName,
   theirPhoto,
@@ -35,8 +32,7 @@ export const MatchCelebrationModal = ({
   onStartChat,
   onFindAnother,
   onViewMatches,
-  onBrowseHub,
-}: Props) => {
+  onBrowseHub }: Props) => {
   return (
     <AnimatePresence>
       <FloatingHowItWorks
@@ -56,33 +52,29 @@ export const MatchCelebrationModal = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
-          style={{
+          style={ {
             background:
-              "radial-gradient(ellipse at center, hsl(330 100% 25% / 0.95) 0%, hsl(270 91% 12% / 0.98) 70%, hsl(270 91% 6% / 1) 100%)",
-          }}
+              "radial-gradient(ellipse at center, hsl(330 100% 25% / 0.95) 0%, hsl(270 91% 12% / 0.98) 70%, hsl(270 91% 6% / 1) 100%)" }}
         >
           {/* Floating hearts background */}
           {Array.from({ length: 18 }).map((_, i) => (
             <motion.div
               key={i}
               className="absolute pointer-events-none"
-              initial={{
+              initial={ {
                 x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 800),
                 y: (typeof window !== "undefined" ? window.innerHeight : 600) + 50,
                 opacity: 0,
-                scale: 0.5 + Math.random() * 0.8,
-              }}
-              animate={{
+                scale: 0.5 + Math.random() * 0.8 }}
+              animate={ {
                 y: -100,
                 opacity: [0, 0.7, 0.7, 0],
-                rotate: Math.random() * 360,
-              }}
-              transition={{
+                rotate: Math.random() * 360 }}
+              transition={ {
                 duration: 4 + Math.random() * 3,
                 delay: Math.random() * 2,
                 repeat: Infinity,
-                ease: "easeOut",
-              }}
+                ease: "easeOut" }}
             >
               <Heart className="text-pink-400 fill-pink-400" size={16 + Math.random() * 24} />
             </motion.div>
@@ -95,8 +87,7 @@ export const MatchCelebrationModal = ({
               className="absolute pointer-events-none"
               style={{
                 left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
+                top: `${Math.random() * 100}%` }}
               animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
               transition={{ duration: 2, delay: Math.random() * 2, repeat: Infinity }}
             >
@@ -119,13 +110,12 @@ export const MatchCelebrationModal = ({
               animate={{ scale: 1, rotate: -4 }}
               transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.1 }}
               className="text-5xl md:text-6xl font-bold text-white mb-2 text-center"
-              style={{
+              style={ {
                 fontFamily: "'Lobster Two', cursive",
                 textShadow: "0 4px 30px hsl(330 100% 50% / 0.6)",
                 background: "linear-gradient(135deg, #fff 20%, #ffd1e8 50%, #fff 80%)",
                 WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
+                WebkitTextFillColor: "transparent" }}
             >
               It's a Match!
             </motion.h1>
@@ -216,10 +206,9 @@ export const MatchCelebrationModal = ({
                 onClick={onStartChat}
                 size="lg"
                 className="w-full h-14 text-base font-bold rounded-full border-0 text-white shadow-xl hover:scale-[1.02] transition-transform"
-                style={{
+                style={ {
                   background: "linear-gradient(135deg, hsl(330 100% 55%), hsl(20 100% 60%))",
-                  boxShadow: "0 10px 40px hsl(330 100% 50% / 0.5)",
-                }}
+                  boxShadow: "0 10px 40px hsl(330 100% 50% / 0.5)" }}
               >
                 <MessageCircle className="h-5 w-5 mr-2" />
                 Start Chatting

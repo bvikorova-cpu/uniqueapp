@@ -53,8 +53,7 @@ export const CrystalAIAnalysis = ({ toolType, title, description, needsImage = t
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in to use this tool"); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke("crystal-ai-tool", {
-        body: { toolType, imageUrl, textInput },
-      });
+        body: { toolType, imageUrl, textInput } });
       if (error) throw error;
       setResult(data.analysis);
       toast.success("Analysis complete!");

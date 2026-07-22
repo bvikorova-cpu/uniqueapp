@@ -41,8 +41,7 @@ export default function PetSmartReminders({ onBack }: { onBack: () => void }) {
 
       const { data, error } = await supabase.functions.invoke("pet-translator-ai", {
         body: { action: "smart_reminders", ...form },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

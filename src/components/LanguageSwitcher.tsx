@@ -1,21 +1,19 @@
 import { useTranslation } from "react-i18next";
 import { Globe, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { loadLocale } from "@/i18n/config";
 
 const LANGUAGES: { code: string; label: string; flag: string }[] = [
   { code: "en", label: "English", flag: "🇬🇧" },
   { code: "sk", label: "Slovenčina", flag: "🇸🇰" },
   { code: "cs", label: "Čeština", flag: "🇨🇿" },
-  { code: "de", label: "Deutsch", flag: "🇩🇪" },
+  { code: "de", label: "Deutsch", flag: "" },
   { code: "es", label: "Español", flag: "🇪🇸" },
   { code: "fr", label: "Français", flag: "🇫🇷" },
   { code: "it", label: "Italiano", flag: "🇮🇹" },

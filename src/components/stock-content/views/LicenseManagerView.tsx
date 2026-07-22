@@ -6,20 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Select,
+  DialogFooter } from "@/components/ui/dialog";
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, FileCheck, Plus, Ban, Trash2, RotateCw } from "lucide-react";
 import { toast } from "sonner";
@@ -40,17 +36,13 @@ interface License {
   created_at: string;
 }
 
-const LICENSE_DESCRIPTIONS: Record<string, string> = {
-  standard: "Personal & small commercial use, up to 500k impressions",
+const LICENSE_DESCRIPTIONS: Record<string, string> = { standard: "Personal & small commercial use, up to 500k impressions",
   extended: "Unlimited commercial, merchandise, resale rights",
-  editorial: "News, blogs, non-commercial editorial use only",
-};
+  editorial: "News, blogs, non-commercial editorial use only" };
 
-const STATUS_COLORS: Record<string, string> = {
-  active: "bg-green-500/10 text-green-500 border-green-500/30",
+const STATUS_COLORS: Record<string, string> = { active: "bg-green-500/10 text-green-500 border-green-500/30",
   revoked: "bg-red-500/10 text-red-500 border-red-500/30",
-  expired: "bg-gray-500/10 text-gray-500 border-gray-500/30",
-};
+  expired: "bg-gray-500/10 text-gray-500 border-gray-500/30" };
 
 export function LicenseManagerView({ onBack }: { onBack: () => void }) {
   const { isAdmin } = useIsAdmin();
@@ -99,16 +91,14 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
       toast.error("Please login first");
       return;
     }
-    const { error } = await supabase.from("stock_licenses").insert({
-      user_id: user.id,
+    const { error } = await supabase.from("stock_licenses").insert({ user_id: user.id,
       content_item_id: contentId.trim(),
       license_type: licenseType,
       price_paid: parseFloat(pricePaid) || 0,
       currency: "EUR",
       valid_until: validUntil || null,
       notes: notes || null,
-      status: "active",
-    });
+      status: "active" });
     if (error) {
       toast.error(error.message);
       return;
@@ -147,13 +137,11 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
     if (!editing) return;
     const { error } = await supabase
       .from("stock_licenses")
-      .update({
-        license_type: editing.license_type,
+      .update({ license_type: editing.license_type,
         price_paid: editing.price_paid,
         valid_until: editing.valid_until,
         notes: editing.notes,
-        status: editing.status,
-      })
+        status: editing.status })
       .eq("id", editing.id);
     if (error) {
       toast.error(error.message);

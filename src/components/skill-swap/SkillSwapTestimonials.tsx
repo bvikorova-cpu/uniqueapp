@@ -23,11 +23,9 @@ export const SkillSwapTestimonials = () => {
         .map((r) => ({
           name: `User ${r.buyer_id.slice(0, 4).toUpperCase()}`,
           text: r.comment as string,
-          rating: r.rating,
-        }));
+          rating: r.rating }));
     },
-    staleTime: 5 * 60_000,
-  });
+    staleTime: 5 * 60_000 });
 
   return (
     <>

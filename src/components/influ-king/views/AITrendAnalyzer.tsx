@@ -19,8 +19,7 @@ export default function AITrendAnalyzer({ onBack }: Props) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("influ-king-ai", {
-        body: { action: "trend-analysis", platform, niche },
-      });
+        body: { action: "trend-analysis", platform, niche } });
       if (error) throw error;
       setTrends(data);
       toast.success("Trend analysis complete!");

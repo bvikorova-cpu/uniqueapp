@@ -28,8 +28,7 @@ const AdminPaymentDashboard = () => {
       });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Fetch all credit payments
   const { data: payments, isLoading: paymentsLoading } = useQuery({
@@ -62,8 +61,7 @@ const AdminPaymentDashboard = () => {
       }));
       
       return paymentsWithProfiles;
-    },
-  });
+    } });
 
   // Fetch conversion analytics
   const { data: analytics, isLoading: analyticsLoading } = useQuery({
@@ -74,8 +72,7 @@ const AdminPaymentDashboard = () => {
       });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const filteredPayments = payments?.filter(payment => 
     searchTerm === "" || 

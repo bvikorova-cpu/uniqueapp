@@ -4,22 +4,18 @@ import { Sparkles, Users, Palette, Star, Crown } from "lucide-react";
 import heroVideo from "@/assets/tattoo-hero-v2.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const useLiveStats = () => {
-  const [stats, setStats] = useState({
+const useLiveStats = () => { const [stats, setStats] = useState({
     designs: 24750,
     artists: 1840,
     styles: 156,
-    rating: 4.9,
-  });
+    rating: 4.9 });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
+  useEffect(() => { const interval = setInterval(() => {
       setStats((prev) => ({
         designs: prev.designs + Math.floor(Math.random() * 3),
         artists: prev.artists + (Math.random() > 0.7 ? 1 : 0),
         styles: prev.styles,
-        rating: prev.rating,
-      }));
+        rating: prev.rating }));
     }, 4000);
     return () => clearInterval(interval);
   }, []);
@@ -77,14 +73,13 @@ export const TattooHero = () => {
 
             <h1
               className="text-5xl md:text-7xl font-black mb-3 leading-tight"
-              style={{
+              style={ {
                 background: "linear-gradient(135deg, #D4AF37 0%, #F5E6C8 30%, #D4AF37 50%, #B8860B 70%, #F5E6C8 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 WebkitTextStroke: "1.5px rgba(212,175,55,0.2)",
                 textShadow: "0 0 60px rgba(212,175,55,0.5)",
-                filter: "drop-shadow(0 0 20px rgba(212,175,55,0.3))",
-              }}
+                filter: "drop-shadow(0 0 20px rgba(212,175,55,0.3))" }}
             >
               AI Tattoo Atelier
             </h1>

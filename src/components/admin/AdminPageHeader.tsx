@@ -22,23 +22,19 @@ interface Props {
   breadcrumbs?: { label: string; to?: string }[];
 }
 
-const accentMap: Record<string, string> = {
-  cyan: "from-cyan-300 to-blue-400",
+const accentMap: Record<string, string> = { cyan: "from-cyan-300 to-blue-400",
   purple: "from-purple-300 to-pink-400",
   amber: "from-amber-300 to-orange-400",
   emerald: "from-emerald-300 to-teal-400",
-  pink: "from-pink-300 to-rose-400",
-};
+  pink: "from-pink-300 to-rose-400" };
 
-export const AdminPageHeader = ({
-  title,
+export const AdminPageHeader = ({ title,
   subtitle,
   icon: Icon,
   badge,
   stats = [],
   actions,
-  breadcrumbs = [],
-}: Props) => {
+  breadcrumbs = [] }: Props) => {
   const navigate = useNavigate();
   const crumbs = [{ label: "Command Center", to: "/admin" }, ...breadcrumbs];
 
@@ -60,10 +56,9 @@ export const AdminPageHeader = ({
       <div className="absolute inset-0 bg-gradient-to-r from-purple-500/15 via-transparent to-cyan-500/15" />
       <div
         className="absolute inset-0 pointer-events-none opacity-20"
-        style={{
+        style={ {
           backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(168,85,247,0.06) 0px, rgba(168,85,247,0.06) 1px, transparent 1px, transparent 3px)",
-        }}
+            "repeating-linear-gradient(0deg, rgba(168,85,247,0.06) 0px, rgba(168,85,247,0.06) 1px, transparent 1px, transparent 3px)" }}
       />
 
       <div className="relative z-10 px-5 sm:px-10 pt-5 pb-7 sm:pt-6 sm:pb-9">

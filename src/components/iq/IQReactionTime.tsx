@@ -62,21 +62,18 @@ const IQReactionTime = () => {
 
   const avg = attempts.length ? Math.round(attempts.reduce((a, b) => a + b, 0) / attempts.length) : null;
 
-  const bg = {
-    idle: "bg-primary/10 hover:bg-primary/20",
+  const bg = { idle: "bg-primary/10 hover:bg-primary/20",
     waiting: "bg-rose-500/30",
     ready: "bg-emerald-500/40 animate-pulse",
     result: "bg-primary/20",
-    early: "bg-amber-500/30",
-  }[state];
+    early: "bg-amber-500/30" }[state];
 
   const message = {
     idle: "Click to start",
     waiting: "Wait for green…",
     ready: "CLICK NOW!",
     result: `${time}ms`,
-    early: "Too early! Click to retry",
-  }[state];
+    early: "Too early! Click to retry" }[state];
 
   const tier = time === null ? "" :
     time < 200 ? "Lightning" :

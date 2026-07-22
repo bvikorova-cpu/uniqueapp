@@ -22,8 +22,7 @@ interface JobListing {
   is_featured?: boolean | null;
 }
 
-const CATEGORIES: Record<string, string> = {
-  it_software: "IT & Software",
+const CATEGORIES: Record<string, string> = { it_software: "IT & Software",
   marketing_sales: "Marketing & Sales",
   finance_accounting: "Finance & Accounting",
   healthcare: "Healthcare",
@@ -34,16 +33,13 @@ const CATEGORIES: Record<string, string> = {
   manufacturing: "Manufacturing",
   construction: "Construction",
   transportation: "Transportation",
-  other: "Other",
-};
+  other: "Other" };
 
-const JOB_TYPES: Record<string, string> = {
-  full_time: "Full Time",
+const JOB_TYPES: Record<string, string> = { full_time: "Full Time",
   part_time: "Part Time",
   contract: "Contract",
   internship: "Internship",
-  remote: "Remote",
-};
+  remote: "Remote" };
 
 interface JobCardRedesignedProps {
   job: JobListing;

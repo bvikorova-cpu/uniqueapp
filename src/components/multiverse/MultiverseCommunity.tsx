@@ -25,16 +25,13 @@ const MultiverseCommunity = ({ onBack }: MultiverseCommunityProps) => {
     queryFn: async (): Promise<ExplorerRow[]> => {
       const { data, error } = await supabase.rpc("get_multiverse_explorers", { limit_count: 12 });
       if (error) throw error;
-      return ((data ?? []) as any[]).map((r) => ({
-        user_id: r.user_id,
+      return ((data ?? []) as any[]).map((r) => ({ user_id: r.user_id,
         display_name: r.display_name,
         avatar_url: r.avatar_url,
         universes: Number(r.universes) || 0,
-        specialty: r.specialty,
-      }));
+        specialty: r.specialty }));
     },
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
   return (
     <>
       <FloatingHowItWorks

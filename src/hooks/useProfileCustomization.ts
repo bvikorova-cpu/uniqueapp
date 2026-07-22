@@ -32,8 +32,7 @@ export const useProfileCustomization = (userId?: string) => {
       if (error) throw error;
       return data as PinnedPost[];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const { data: featuredLinks = [] } = useQuery({
     queryKey: ["featured-links", userId],
@@ -47,8 +46,7 @@ export const useProfileCustomization = (userId?: string) => {
       if (error) throw error;
       return data as FeaturedLink[];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const pinPost = useMutation({
     mutationFn: async (postId: string) => {
@@ -59,40 +57,34 @@ export const useProfileCustomization = (userId?: string) => {
         .insert({ user_id: user.id, post_id: postId });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["pinned-posts"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["pinned-posts"] }) });
 
   const unpinPost = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("profile_pinned_posts").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["pinned-posts"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["pinned-posts"] }) });
 
   const addLink = useMutation({
     mutationFn: async ({ title, url, icon }: { title: string; url: string; icon?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-      const { error } = await supabase.from("profile_featured_links").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("profile_featured_links").insert({ user_id: user.id,
         title,
         url,
         icon,
-        position: featuredLinks.length,
-      });
+        position: featuredLinks.length });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["featured-links"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["featured-links"] }) });
 
   const removeLink = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("profile_featured_links").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["featured-links"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["featured-links"] }) });
 
   const updateBanner = useMutation({
     mutationFn: async (file: File) => {
@@ -109,16 +101,13 @@ export const useProfileCustomization = (userId?: string) => {
       if (error) throw error;
       return pub.publicUrl;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["profile"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["profile"] }) });
 
-  return {
-    pinnedPosts,
+  return { pinnedPosts,
     featuredLinks,
     pinPost: pinPost.mutate,
     unpinPost: unpinPost.mutate,
     addLink: addLink.mutate,
     removeLink: removeLink.mutate,
-    updateBanner: updateBanner.mutateAsync,
-  };
+    updateBanner: updateBanner.mutateAsync };
 };

@@ -3,11 +3,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -25,22 +23,18 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } },
     );
-    const { data: isAdmin } = await admin.rpc("has_role", {
-      _user_id: userData.user.id,
-      _role: "admin",
-    });
+    const { data: isAdmin } = await admin.rpc("has_role", { _user_id: userData.user.id,
+      _role: "admin" });
     if (!isAdmin) throw new Error("Admin only");
 
     const { doctor_id, action, reason } = await req.json();
     if (!doctor_id || !["approve", "reject"].includes(action)) {
       throw new Error("doctor_id and valid action required");
     }
-    const patch: Record<string, unknown> = {
-      verification_status: action === "approve" ? "approved" : "rejected",
+    const patch: Record<string, unknown> = { verification_status: action === "approve" ? "approved" : "rejected",
       verified_at: action === "approve" ? new Date().toISOString() : null,
       verified_by: userData.user.id,
-      rejection_reason: action === "reject" ? (reason || "Not specified") : null,
-    };
+      rejection_reason: action === "reject" ? (reason || "Not specified") : null };
     if (action === "reject") patch.is_accepting_bookings = false;
 
     const { error } = await admin
@@ -50,12 +44,10 @@ serve(async (req) => {
     if (error) throw error;
 
     return new Response(JSON.stringify({ ok: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

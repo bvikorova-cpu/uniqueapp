@@ -95,20 +95,16 @@ const KidsStoryCreator = () => {
     setContinuingStory(true);
     try {
       const continuationPrompt = `Continue this story: ${story.story.slice(-500)}. Keep characters: ${story.characters || "same"}. Category: ${story.category || "adventure"}. Write the next chapter with a satisfying mini-arc.`;
-      const { data: result, error } = await supabase.functions.invoke('kids-story-generate', {
-        body: {
+      const { data: result, error } = await supabase.functions.invoke('kids-story-generate', { body: {
           title: story.title + " — Part 2",
-          prompt: continuationPrompt,
-        }
+          prompt: continuationPrompt }
       });
 
       if (error) throw error;
 
-      setStory({
-        ...story,
+      setStory({ ...story,
         title: story.title,
-        story: story.story + "\n\n--- Part 2 ---\n\n" + (result?.story || ""),
-      });
+        story: story.story + "\n\n--- Part 2 ---\n\n" + (result?.story || "") });
       refreshCredits();
       toast.success("Story continued! 📖✨");
     } catch (err: any) {

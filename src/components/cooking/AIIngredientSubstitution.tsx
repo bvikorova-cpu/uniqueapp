@@ -24,8 +24,7 @@ export default function AIIngredientSubstitution({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Ingredient Substitution");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are a professional chef and food scientist. The user needs ingredient substitutions. For each ingredient they mention, provide: 1) Best substitute with exact ratio, 2) How it changes flavor/texture, 3) Allergen-free alternative, 4) Budget-friendly option, 5) Tips for the swap. Also suggest if any technique changes are needed. User request: ${input}` },
-      });
+        body: { prompt: `You are a professional chef and food scientist. The user needs ingredient substitutions. For each ingredient they mention, provide: 1) Best substitute with exact ratio, 2) How it changes flavor/texture, 3) Allergen-free alternative, 4) Budget-friendly option, 5) Tips for the swap. Also suggest if any technique changes are needed. User request: ${input}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }

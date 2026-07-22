@@ -5,12 +5,10 @@ import { describe, it, expect } from "vitest";
  * Ensures only admin-decided transitions are considered valid.
  */
 type Status = "pending" | "approved" | "rejected" | "paid";
-const validTransitions: Record<Status, Status[]> = {
-  pending: ["approved", "rejected"],
+const validTransitions: Record<Status, Status[]> = { pending: ["approved", "rejected"],
   approved: ["paid", "rejected"],
   rejected: [],
-  paid: [],
-};
+  paid: [] };
 
 function transition(from: Status, to: Status): boolean {
   return validTransitions[from].includes(to);

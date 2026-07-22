@@ -34,8 +34,7 @@ export default function AICookingTimer({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Cooking Timer");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are a professional chef timer assistant. Based on the recipe or dish the user describes, create a detailed multi-step cooking timeline with precise timers. For each step provide: 1) Step name, 2) Duration in minutes, 3) What to do during this time, 4) Temperature settings, 5) Visual/sensory cues for doneness. Also provide tips on parallel tasks to save time. Format each timer step clearly. User recipe: ${input}` },
-      });
+        body: { prompt: `You are a professional chef timer assistant. Based on the recipe or dish the user describes, create a detailed multi-step cooking timeline with precise timers. For each step provide: 1) Step name, 2) Duration in minutes, 3) What to do during this time, 4) Temperature settings, 5) Visual/sensory cues for doneness. Also provide tips on parallel tasks to save time. Format each timer step clearly. User recipe: ${input}` } });
       if (error) throw error;
       const msg = data?.message || data?.text || "No result";
       setResult(msg);
@@ -46,8 +45,7 @@ export default function AICookingTimer({ onBack }: Props) {
         label: `Step ${i + 1}`,
         seconds: parseInt(m[1]) * 60,
         remaining: parseInt(m[1]) * 60,
-        running: false,
-      }));
+        running: false }));
       if (parsed.length > 0) setTimers(parsed);
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
     finally { setLoading(false); }

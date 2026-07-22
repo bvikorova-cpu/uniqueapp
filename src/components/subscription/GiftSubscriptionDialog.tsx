@@ -22,8 +22,7 @@ export const GiftSubscriptionDialog = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("gift-subscription", {
-        body: { action: "create", recipient_email: email, tier, months: Number(months), message },
-      });
+        body: { action: "create", recipient_email: email, tier, months: Number(months), message } });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
     } catch (e: any) {

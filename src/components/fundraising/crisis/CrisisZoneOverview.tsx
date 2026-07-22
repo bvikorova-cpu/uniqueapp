@@ -9,14 +9,12 @@ const zones = [
   { region: "Southern Europe", active: 2, severity: "medium", emoji: "🔥", types: "Wildfires" },
   { region: "Central America", active: 1, severity: "high", emoji: "🌪️", types: "Hurricanes" },
   { region: "East Africa", active: 2, severity: "medium", emoji: "🌍", types: "Drought" },
-  { region: "Western USA", active: 1, severity: "low", emoji: "🔥", types: "Wildfires" },
+  { region: "Region 1", active: 1, severity: "low", emoji: "🔥", types: "Wildfires" },
 ];
 
-const severityColors: Record<string, string> = {
-  high: "bg-destructive text-destructive-foreground",
+const severityColors: Record<string, string> = { high: "bg-destructive text-destructive-foreground",
   medium: "bg-accent text-accent-foreground",
-  low: "bg-secondary text-secondary-foreground",
-};
+  low: "bg-secondary text-secondary-foreground" };
 
 export function CrisisZoneOverview() {
   return (

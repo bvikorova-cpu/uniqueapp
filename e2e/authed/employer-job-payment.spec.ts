@@ -53,8 +53,7 @@ async function stubEdgeFunctions(
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ url: FAKE_STRIPE_URL, sessionId: "cs_test_e2e_stub_session" }),
-    });
+      body: JSON.stringify({ url: FAKE_STRIPE_URL, sessionId: "cs_test_e2e_stub_session" }) });
   });
 
   await page.route(/\/functions\/v1\/verify-job-listing-payment/, async (route: Route) => {
@@ -62,11 +61,9 @@ async function stubEdgeFunctions(
     let body: any = null;
     try { body = req.postDataJSON(); } catch {}
     onVerifyCall(body, req.headers().authorization ?? null);
-    await route.fulfill({
-      status: 200,
+    await route.fulfill({ status: 200,
       contentType: "application/json",
-      body: JSON.stringify(verifyResult),
-    });
+      body: JSON.stringify(verifyResult) });
   });
 
   // Blokuj reálne Stripe Checkout (window.open)
@@ -78,8 +75,7 @@ async function stubEdgeFunctions(
 test.describe("Employer job listing → Stripe payment (stubbed)", () => {
   test.setTimeout(60_000);
 
-  test("create → checkout → verify (SUCCESS) → UI shows payment successful", async ({ page }) => {
-    const FAKE_JOB_ID = "00000000-0000-0000-0000-0000e2e0b001";
+  test("create → checkout → verify (SUCCESS) → UI shows payment successful", async ({ page }) => { const FAKE_JOB_ID = "00000000-0000-0000-0000-0000e2e0b001";
 
     // ---- Stub DB insert na PostgREST (REST /rest/v1/job_listings POST) ----
     await page.route(/\/rest\/v1\/job_listings(\?|$)/, async (route: Route) => {
@@ -93,9 +89,7 @@ test.describe("Employer job listing → Stripe payment (stubbed)", () => {
             title: "E2E QA Senior React Engineer",
             paid_status: "pending",
             is_active: false,
-            duration_days: 7,
-          }]),
-        });
+            duration_days: 7 }]) });
       }
       if (req.method() === "DELETE") {
         return route.fulfill({ status: 204, body: "" });
@@ -128,10 +122,8 @@ test.describe("Employer job listing → Stripe payment (stubbed)", () => {
           headers: {
             "Content-Type": "application/json",
             apikey: anonKey,
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({ productKey: "job_listing_7", metadata: { jobListingId: jobId } }),
-        });
+            Authorization: `Bearer ${accessToken}` },
+          body: JSON.stringify({ productKey: "job_listing_7", metadata: { jobListingId: jobId } }) });
         const data = await res.json().catch(() => null);
         return { data, error: res.ok ? null : `HTTP ${res.status}` };
       },
@@ -147,9 +139,7 @@ test.describe("Employer job listing → Stripe payment (stubbed)", () => {
     expect(checkoutCalls[0].body?.metadata?.jobListingId).toBe(FAKE_JOB_ID);
 
     // ---- Návrat z (stubnutého) Stripe → /jobs/post/success ----
-    await page.goto(`/jobs/post/success?session_id=cs_test_e2e_stub_session`, {
-      waitUntil: "domcontentloaded",
-    });
+    await page.goto(`/jobs/post/success?session_id=cs_test_e2e_stub_session`, { waitUntil: "domcontentloaded" });
 
     await expect(page.getByRole("heading", { name: /payment successful/i })).toBeVisible({ timeout: 8_000 });
     expect(verifyCalls.length).toBe(1);
@@ -168,9 +158,7 @@ test.describe("Employer job listing → Stripe payment (stubbed)", () => {
       { verified: false, status: "unpaid" },
     );
 
-    await page.goto(`/jobs/post/success?session_id=cs_test_e2e_stub_failed`, {
-      waitUntil: "domcontentloaded",
-    });
+    await page.goto(`/jobs/post/success?session_id=cs_test_e2e_stub_failed`, { waitUntil: "domcontentloaded" });
 
     await expect(page.getByRole("heading", { name: /verification failed/i })).toBeVisible({ timeout: 8_000 });
     await expect(page.getByText(/unpaid/i)).toBeVisible();

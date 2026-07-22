@@ -42,17 +42,14 @@ export function CreatorProfileEditForm({ creator, onSave }: CreatorProfileEditFo
     try {
       const { error } = await supabase
         .from("creator_profiles")
-        .update({
-          display_name: displayName.trim(),
+        .update({ display_name: displayName.trim(),
           bio: bio.trim() || null,
           social_links: {
             instagram: instagram.trim() || null,
             twitter: twitter.trim() || null,
-            website: website.trim() || null,
-          },
+            website: website.trim() || null },
           is_adult_content: isAdultContent,
-          updated_at: new Date().toISOString(),
-        })
+          updated_at: new Date().toISOString() })
         .eq("id", creator.id);
 
       if (error) throw error;

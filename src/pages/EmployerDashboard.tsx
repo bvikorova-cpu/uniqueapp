@@ -8,14 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, CheckCircle2, AlertCircle, Sparkles, Crown, BarChart3, Receipt } from "lucide-react";
-import {
-  Table,
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
@@ -50,8 +48,7 @@ interface Application {
   job_title: string;
 }
 
-export default function EmployerDashboard() {
-  const [jobs, setJobs] = useState<JobWithStats[]>([]);
+export default function EmployerDashboard() { const [jobs, setJobs] = useState<JobWithStats[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -59,8 +56,7 @@ export default function EmployerDashboard() {
     totalJobs: 0,
     activeJobs: 0,
     totalApplications: 0,
-    totalViews: 0,
-  });
+    totalViews: 0 });
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [jobFilter, setJobFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
@@ -91,12 +87,10 @@ export default function EmployerDashboard() {
         .order('created_at', { ascending: false });
       if (jobsError) throw jobsError;
 
-      const jobsWithStats = jobsData.map(job => ({
-        id: job.id, title: job.title, company_name: job.company_name,
+      const jobsWithStats = jobsData.map(job => ({ id: job.id, title: job.title, company_name: job.company_name,
         location: job.location, created_at: job.created_at,
         is_active: job.is_active || false, applications_count: job.applications_count || 0,
-        views_count: job.views_count || 0,
-      }));
+        views_count: job.views_count || 0 }));
       setJobs(jobsWithStats);
 
       const jobIds = jobsWithStats.map(j => j.id);
@@ -108,11 +102,9 @@ export default function EmployerDashboard() {
           .order('created_at', { ascending: false });
         if (applicationsError) throw applicationsError;
 
-        setApplications(applicationsData.map((app: any) => ({
-          id: app.id, created_at: app.created_at, status: app.status || 'pending',
+        setApplications(applicationsData.map((app: any) => ({ id: app.id, created_at: app.created_at, status: app.status || 'pending',
           cover_letter: app.cover_letter || '', resume_url: app.resume_url,
-          applicant_id: app.applicant_id, job_id: app.job_id, job_title: app.job_listings.title,
-        })));
+          applicant_id: app.applicant_id, job_id: app.job_id, job_title: app.job_listings.title })));
       }
 
       const totalApplications = jobsWithStats.reduce((sum, job) => sum + job.applications_count, 0);

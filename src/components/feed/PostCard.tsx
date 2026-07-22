@@ -34,25 +34,19 @@ import { CommentItem } from "./CommentItem";
 import { SensitiveOverlay } from "./SensitiveOverlay";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Dialog,
+  PopoverTrigger } from "@/components/ui/popover";
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
+  DialogFooter } from "@/components/ui/dialog";
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
@@ -200,8 +194,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         toast({
           title: "File rejected",
           description: `${f.name}: ${!okType ? "unsupported type" : "exceeds 25 MB"}`,
-          variant: "destructive",
-        });
+          variant: "destructive" });
         continue;
       }
       accepted.push(f);
@@ -284,8 +277,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
       { type: "idea", emoji: "💡", label: "Idea" },
       { type: "rocket", emoji: "🚀", label: "Launch" },
       { type: "target", emoji: "🎯", label: "Goal" },
-    ],
-  };
+    ] };
 
   const allReactions = [
     ...reactions.positive,
@@ -301,15 +293,12 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
     setDeleting(true);
     try {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { user } } = await supabase.auth.getUser();
 
-      if (user?.id !== post.user_id) {
-        toast({
+      if (user?.id !== post.user_id) { toast({
           title: "Cannot delete",
           description: "You can only delete your own posts",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -317,18 +306,14 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Post was deleted",
-      });
+      toast({ title: "Success",
+        description: "Post was deleted" });
 
       onDelete();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setDeleting(false);
     }
@@ -391,12 +376,10 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         uploadedPaths.push(safeName);
 
         const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(safeName);
-        const { error: mediaError } = await supabase.from("media").insert({
-          post_id: post.id,
+        const { error: mediaError } = await supabase.from("media").insert({ post_id: post.id,
           file_url: publicUrl,
           file_type: fileType,
-          file_name: file.name,
-        });
+          file_name: file.name });
         if (mediaError) throw mediaError;
       }
 
@@ -464,10 +447,8 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         ? await supabase.from("saved_posts").delete().eq("post_id", post.id).eq("user_id", user.id)
         : await supabase.from("saved_posts").insert({ post_id: post.id, user_id: user.id });
       if (error) throw error;
-      toast({
-        title: wasSaved ? "Removed" : "Saved",
-        description: wasSaved ? "Post removed from bookmarks" : "Post saved to bookmarks",
-      });
+      toast({ title: wasSaved ? "Removed" : "Saved",
+        description: wasSaved ? "Post removed from bookmarks" : "Post saved to bookmarks" });
     } catch (error: any) {
       setSaved(wasSaved); // Rollback
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -528,8 +509,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
       const profMap = new Map((profilesBatch || []).map((p: any) => [p.id, p]));
       const commentsWithProfiles = (commentsData || []).map((comment: any) => ({
         ...comment,
-        profiles: profMap.get(comment.user_id) || { id: comment.user_id, full_name: null, avatar_url: null },
-      }));
+        profiles: profMap.get(comment.user_id) || { id: comment.user_id, full_name: null, avatar_url: null } }));
 
       setComments(commentsWithProfiles);
     } catch (error: any) {
@@ -601,11 +581,9 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         return;
       }
 
-      const { error } = await supabase.from("reposts").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("reposts").insert({ user_id: user.id,
         original_post_id: post.id,
-        comment: trimmed,
-      });
+        comment: trimmed });
       if (error) throw error;
 
       toast({ title: "Success", description: "Post was shared to your profile" });
@@ -773,10 +751,9 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>
-                {formatDistanceToNow(new Date(post.created_at), {
+                { formatDistanceToNow(new Date(post.created_at), {
                   addSuffix: true,
-                  locale: enUS,
-                })}
+                  locale: enUS })}
               </span>
               {post.feeling && (
                 <>
@@ -1007,10 +984,9 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                     )}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(post.created_at), {
+                    { formatDistanceToNow(new Date(post.created_at), {
                       addSuffix: true,
-                      locale: enUS,
-                    })}
+                      locale: enUS })}
                   </p>
                 </div>
               </div>

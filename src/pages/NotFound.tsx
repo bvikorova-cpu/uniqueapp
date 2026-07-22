@@ -6,8 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 // Legacy / alias paths that should redirect to the canonical premium page
 // instead of showing a 404. Keep keys lowercase.
-const PREMIUM_ALIASES: Record<string, string> = {
-  "/pricing": "/subscription",
+const PREMIUM_ALIASES: Record<string, string> = { "/pricing": "/subscription",
   "/price": "/subscription",
   "/prices": "/subscription",
   "/plans": "/subscription",
@@ -23,8 +22,7 @@ const PREMIUM_ALIASES: Record<string, string> = {
   "/checkout": "/subscription",
   "/buy": "/subscription",
   "/payment": "/subscription",
-  "/payments": "/subscription",
-};
+  "/payments": "/subscription" };
 
 // Any path containing one of these tokens (as a path segment) will fall back
 // to /subscription instead of showing a 404. This catches nested aliases like
@@ -86,13 +84,11 @@ const NotFound = () => {
 
       void (async () => {
         const { data: { user } } = await supabase.auth.getUser().catch(() => ({ data: { user: null } as any }));
-        await supabase.from("route_404_events").insert({
-          path: location.pathname,
+        await supabase.from("route_404_events").insert({ path: location.pathname,
           referrer: typeof document !== "undefined" ? document.referrer || null : null,
           redirected_to: redirectTo,
           user_id: user?.id ?? null,
-          user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
-        });
+          user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null });
       })();
     } catch {
       // Never let 404 telemetry break the fallback page.

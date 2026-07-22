@@ -43,42 +43,34 @@ import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const DETECTOR_TOOLS = [
-  {
-    id: "single",
+  { id: "single",
     name: "Single Message",
     icon: MessageSquare,
     description: "Analyze any text message for truthfulness indicators and deception patterns",
     color: "from-blue-500 to-cyan-500",
     features: ["Truthfulness score", "Deception indicators", "Emotional analysis", "Manipulation detection"],
-    credits: 3,
-  },
-  {
-    id: "thread",
+    credits: 3 },
+  { id: "thread",
     name: "Conversation Thread",
     icon: Users,
     description: "Scan entire chat threads to detect patterns across multiple messages",
     color: "from-purple-500 to-pink-500",
     features: ["Multi-message analysis", "Pattern detection", "Consistency check", "Red flag alerts"],
-    credits: 15,
-  },
-  {
-    id: "profile",
+    credits: 15 },
+  { id: "profile",
     name: "Psychological Profile",
     icon: Brain,
     description: "Deep psychological insights about communication styles and behavioral patterns",
     color: "from-amber-500 to-orange-500",
     features: ["Personality assessment", "Communication style", "Behavioral patterns", "Risk indicators"],
-    credits: 50,
-  },
-  {
-    id: "history",
+    credits: 50 },
+  { id: "history",
     name: "Analysis History",
     icon: History,
     description: "View all your past analyses and track patterns over time",
     color: "from-emerald-500 to-teal-500",
     features: ["Past results", "Score trends", "Export reports", "Saved analyses"],
-    credits: 0,
-  },
+    credits: 0 },
 ];
 
 const HOW_IT_WORKS = [

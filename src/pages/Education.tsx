@@ -138,11 +138,9 @@ const Education = () => {
       // Roll back the optimistic user message so they can retry without losing context
       setChatHistory(prev => prev.slice(0, -1));
       setChatMessage(userMessage);
-      toast({
-        title: "Message failed",
+      toast({ title: "Message failed",
         description: creditDeducted ? "Your credit was refunded. Try again." : "Failed to send message",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsLoading(false);
     }

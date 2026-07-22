@@ -31,16 +31,13 @@ export const useEducationalCertificates = () => {
 
       if (error) throw error;
       return data as Certificate[];
-    },
-  });
+    } });
 
-  const createCertificate = useMutation({
-    mutationFn: async ({
+  const createCertificate = useMutation({ mutationFn: async ({
       studentName,
       totalTopicsCompleted,
       totalStarsEarned,
-      averageQuizScore,
-    }: {
+      averageQuizScore }: {
       studentName: string;
       totalTopicsCompleted: number;
       totalStarsEarned: number;
@@ -51,13 +48,11 @@ export const useEducationalCertificates = () => {
 
       const { data, error } = await supabase
         .from("educational_certificates")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           student_name: studentName,
           total_topics_completed: totalTopicsCompleted,
           total_stars_earned: totalStarsEarned,
-          average_quiz_score: averageQuizScore,
-        })
+          average_quiz_score: averageQuizScore })
         .select()
         .single();
 
@@ -70,13 +65,10 @@ export const useEducationalCertificates = () => {
     },
     onError: (error: Error) => {
       toast.error("Failed to create certificate: " + error.message);
-    },
-  });
+    } });
 
-  return {
-    certificates,
+  return { certificates,
     isLoading,
     createCertificate: createCertificate.mutate,
-    isCreating: createCertificate.isPending,
-  };
+    isCreating: createCertificate.isPending };
 };

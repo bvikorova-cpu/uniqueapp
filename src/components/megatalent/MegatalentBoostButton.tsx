@@ -18,8 +18,7 @@ export default function MegatalentBoostButton({ submissionId, category }: Props)
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-megatalent-boost", {
-        body: { submission_id: submissionId, category },
-      });
+        body: { submission_id: submissionId, category } });
       if (error) throw error;
       if ((data as any)?.url) {
         window.location.href = (data as any).url;

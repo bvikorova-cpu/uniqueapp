@@ -28,8 +28,7 @@ test("gift/success confirms pending→paid exactly once and is idempotent on ref
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ status: "paid" }),
-    });
+      body: JSON.stringify({ status: "paid" }) });
   });
 
   // First visit — the redirect Stripe sends the buyer to.

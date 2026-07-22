@@ -108,13 +108,11 @@ export default function MedicalDetail() {
 
       if (error) throw error;
       setCampaign(data);
-    } catch (error) {
-      console.error('Error fetching campaign:', error);
+    } catch (error) { console.error('Error fetching campaign:', error);
       toast({
         title: 'Error',
         description: 'Failed to load campaign',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       navigate('/fundraising/medical');
     } finally {
       setLoading(false);
@@ -140,8 +138,7 @@ export default function MedicalDetail() {
   const verifyDonation = async (sessionId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('verify-donation', {
-        body: { session_id: sessionId },
-      });
+        body: { session_id: sessionId } });
 
       if (error) throw error;
 
@@ -158,8 +155,7 @@ export default function MedicalDetail() {
             >
               View Receipt
             </Button>
-          ) as any,
-        });
+          ) as any });
         // Refresh campaign data
         fetchCampaign();
         fetchDonations();
@@ -169,24 +165,20 @@ export default function MedicalDetail() {
     }
   };
 
-  const handleDonate = async () => {
-    const finalAmount = amount === 'custom' ? parseFloat(customAmount) : parseFloat(amount);
+  const handleDonate = async () => { const finalAmount = amount === 'custom' ? parseFloat(customAmount) : parseFloat(amount);
 
     if (!finalAmount || finalAmount < 1) {
       toast({
         title: 'Error',
         description: 'Minimum donation amount is 1€',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
-    if (!donorEmail) {
-      toast({
+    if (!donorEmail) { toast({
         title: 'Error',
         description: 'Please enter your email',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
@@ -195,8 +187,7 @@ export default function MedicalDetail() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
 
-      const { data, error } = await supabase.functions.invoke('create-campaign-donation', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('create-campaign-donation', { body: {
           campaignId: id,
           campaignType: 'medical',
           amount: finalAmount,
@@ -204,29 +195,22 @@ export default function MedicalDetail() {
           isAnonymous,
           message,
           donorEmail,
-          donorName: isAnonymous ? null : donorName,
-        },
+          donorName: isAnonymous ? null : donorName },
         headers: session ? {
-          Authorization: `Bearer ${session.access_token}`,
-        } : undefined,
-      });
+          Authorization: `Bearer ${session.access_token}` } : undefined });
 
       if (error) throw error;
 
-      if (data.url) {
-        window.open(data.url, '_blank');
+      if (data.url) { window.open(data.url, '_blank');
         toast({
           title: 'Redirecting',
-          description: 'We opened the payment gateway in a new window',
-        });
+          description: 'We opened the payment gateway in a new window' });
       }
-    } catch (error) {
-      console.error('Error creating donation:', error);
+    } catch (error) { console.error('Error creating donation:', error);
       toast({
         title: 'Error',
         description: 'Failed to create payment',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setDonating(false);
     }
@@ -247,13 +231,11 @@ export default function MedicalDetail() {
     setShareDialogOpen(true);
   };
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
+  const handleCopyLink = () => { navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     toast({
       title: 'Link copied',
-      description: 'Campaign link copied to clipboard',
-    });
+      description: 'Campaign link copied to clipboard' });
     setTimeout(() => setCopied(false), 2000);
   };
 

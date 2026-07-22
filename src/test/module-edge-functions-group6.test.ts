@@ -11,8 +11,7 @@ import { resolve } from "node:path";
 
 const FN_ROOT = resolve(__dirname, "../../supabase/functions");
 
-const GROUPS: Record<string, string[]> = {
-  "video-ad": ["video-ad-tools"],
+const GROUPS: Record<string, string[]> = { "video-ad": ["video-ad-tools"],
   "brain-duel": [
     "brain-duel-ai-commentary",
     "brain-duel-ai-recap",
@@ -32,8 +31,7 @@ const GROUPS: Record<string, string[]> = {
     "coupon-price-alerts-cron",
     "coupon-public-api",
   ],
-  multiverse: ["multiverse-ai-tool"],
-};
+  multiverse: ["multiverse-ai-tool"] };
 
 describe("Group 6 edge functions present", () => {
   for (const [group, fns] of Object.entries(GROUPS)) {

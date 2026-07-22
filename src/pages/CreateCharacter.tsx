@@ -104,16 +104,14 @@ export default function CreateCharacter() {
   const [currentStep, setCurrentStep] = useState(0);
   const [createdCount, setCreatedCount] = useState(0);
 
-  const selections = {
-    hair: find(hairColors, selectedHair),
+  const selections = { hair: find(hairColors, selectedHair),
     power: find(superPowers, selectedPower),
     eyes: find(eyeColors, selectedEyeColor),
     costume: find(costumeColors, selectedCostumeColor),
     personality: find(personalities, selectedPersonality),
     skin: find(skinColors, selectedSkinColor),
     gender: find(genders, selectedGender),
-    age: find(ageGroups, selectedAgeGroup),
-  };
+    age: find(ageGroups, selectedAgeGroup) };
 
   const playMagicalSound = () => {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -158,17 +156,14 @@ export default function CreateCharacter() {
     }
     setIsGeneratingStory(true);
     try {
-      const { data, error } = await supabase.functions.invoke("generate-character-story", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("generate-character-story", { body: {
           characterName,
           hairColor: selections.hair.name,
           superpower: selections.power.name,
           eyeColor: selections.eyes.name,
           costumeColor: selections.costume.name,
           ageGroup: selections.age.name,
-          personality: selections.personality.name,
-        },
-      });
+          personality: selections.personality.name } });
       if (error) throw error;
       if (data?.story) {
         setGeneratedStory(data.story);
@@ -189,8 +184,7 @@ export default function CreateCharacter() {
     }
     setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("generate-character-image", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("generate-character-image", { body: {
           characterName,
           hairColor: selections.hair.name,
           eyeColor: selections.eyes.name,
@@ -199,9 +193,7 @@ export default function CreateCharacter() {
           ageGroup: selections.age.name,
           personality: selections.personality.name,
           gender: selections.gender.name,
-          skinColor: selections.skin.name,
-        },
-      });
+          skinColor: selections.skin.name } });
       if (error) throw error;
       if (data?.imageUrl) {
         setGeneratedImage(data.imageUrl);
@@ -221,10 +213,8 @@ export default function CreateCharacter() {
         }, 250);
 
         const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (user) {
-          await supabase.from("created_characters").insert({
+          data: { user } } = await supabase.auth.getUser();
+        if (user) { await supabase.from("created_characters").insert({
             user_id: user.id,
             name: characterName,
             hair_color: selectedHair,
@@ -234,8 +224,7 @@ export default function CreateCharacter() {
             age_group: selectedAgeGroup,
             personality: selectedPersonality,
             gender: selectedGender,
-            image_url: data.imageUrl,
-          });
+            image_url: data.imageUrl });
         }
         toast({ title: "Character Created! 🎉", description: `${characterName} is ready for adventure!` });
       }

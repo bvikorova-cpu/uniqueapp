@@ -16,21 +16,17 @@ interface Event {
   created_at: string;
 }
 
-const iconMap = {
-  user: UserPlus,
+const iconMap = { user: UserPlus,
   transaction: CreditCard,
   subscription: Zap,
   message: MessageSquare,
-  audit: AlertCircle,
-};
+  audit: AlertCircle };
 
-const colorMap = {
-  user: "text-cyan-400 bg-cyan-500/10 border-cyan-500/30",
+const colorMap = { user: "text-cyan-400 bg-cyan-500/10 border-cyan-500/30",
   transaction: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30",
   subscription: "text-amber-400 bg-amber-500/10 border-amber-500/30",
   message: "text-pink-400 bg-pink-500/10 border-pink-500/30",
-  audit: "text-purple-400 bg-purple-500/10 border-purple-500/30",
-};
+  audit: "text-purple-400 bg-purple-500/10 border-purple-500/30" };
 
 export const RealtimeActivityFeed = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -97,24 +93,20 @@ export const RealtimeActivityFeed = () => {
       users.data?.forEach((u: any) => items.push({
         id: `u-${u.id}`, type: "user" as const,
         title: "New user registered", description: u.full_name || u.email || "Unknown",
-        created_at: u.created_at,
-      }));
+        created_at: u.created_at }));
       txs.data?.forEach((t: any) => items.push({
         id: `t-${t.id}`, type: "transaction" as const,
         title: `${t.item_type || "Transaction"} • €${parseFloat(t.amount || 0).toFixed(2)}`,
         description: "Payment processed",
-        created_at: t.created_at,
-      }));
+        created_at: t.created_at }));
       msgs.data?.forEach((m: any) => items.push({
         id: `m-${m.id}`, type: "message" as const,
         title: "Contact message", description: `${m.name}: ${m.subject || ""}`.slice(0, 60),
-        created_at: m.created_at,
-      }));
+        created_at: m.created_at }));
       tickets.data?.forEach((t: any) => items.push({
         id: `st-${t.id}`, type: "message" as const,
         title: `Support ticket #${t.ticket_number || ""}`, description: `${t.name}: ${t.subject || ""}`.slice(0, 60),
-        created_at: t.created_at,
-      }));
+        created_at: t.created_at }));
 
       items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setEvents(items.slice(0, 12));
@@ -131,8 +123,7 @@ export const RealtimeActivityFeed = () => {
         setEvents((prev) => [{
           id: `u-${payload.new.id}`, type: "user" as const,
           title: "New user registered", description: desc,
-          created_at: payload.new.created_at,
-        }, ...prev].slice(0, 12));
+          created_at: payload.new.created_at }, ...prev].slice(0, 12));
         playBleep("user");
         showNotif("👤 New user registered", desc);
       })
@@ -142,8 +133,7 @@ export const RealtimeActivityFeed = () => {
         setEvents((prev) => [{
           id: `t-${payload.new.id}`, type: "transaction" as const,
           title: t, description: "Payment processed",
-          created_at: payload.new.created_at,
-        }, ...prev].slice(0, 12));
+          created_at: payload.new.created_at }, ...prev].slice(0, 12));
         playBleep("transaction");
         showNotif("💰 New transaction", t);
       })
@@ -153,8 +143,7 @@ export const RealtimeActivityFeed = () => {
         setEvents((prev) => [{
           id: `m-${payload.new.id}`, type: "message" as const,
           title: "Contact message", description: desc,
-          created_at: payload.new.created_at,
-        }, ...prev].slice(0, 12));
+          created_at: payload.new.created_at }, ...prev].slice(0, 12));
         playBleep("message");
         showNotif("✉️ Contact message", desc);
       })
@@ -164,8 +153,7 @@ export const RealtimeActivityFeed = () => {
         setEvents((prev) => [{
           id: `st-${payload.new.id}`, type: "message" as const,
           title: `Support ticket #${payload.new.ticket_number || ""}`, description: desc,
-          created_at: payload.new.created_at,
-        }, ...prev].slice(0, 12));
+          created_at: payload.new.created_at }, ...prev].slice(0, 12));
         playBleep("message");
         showNotif("🎫 Support ticket", desc);
       })

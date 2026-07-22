@@ -17,8 +17,7 @@ const statusMeta: Record<string, { label: string; icon: any; tone: string; descr
   available: { label: "Ready for Adoption", icon: PawPrint, tone: "bg-blue-500/10 text-blue-600 border-blue-500/30", description: "Healthy and waiting for a loving home." },
   pending_adoption: { label: "Pending Adoption", icon: Sparkles, tone: "bg-primary/10 text-primary border-primary/30", description: "Adoption in progress — final paperwork underway." },
   adopted: { label: "Adopted! 🎉", icon: Home, tone: "bg-green-500/10 text-green-600 border-green-500/30", description: "Found a forever home." },
-  sanctuary: { label: "Sanctuary Care", icon: Heart, tone: "bg-purple-500/10 text-purple-600 border-purple-500/30", description: "Long-term care at a partner sanctuary." },
-};
+  sanctuary: { label: "Sanctuary Care", icon: Heart, tone: "bg-purple-500/10 text-purple-600 border-purple-500/30", description: "Long-term care at a partner sanctuary." } };
 
 export function PetAdoptionStatus({ status, petName, adopterName, adoptedAt, intakeDate }: Props) {
   const meta = statusMeta[status] ?? statusMeta.in_treatment;

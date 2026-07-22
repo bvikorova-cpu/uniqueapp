@@ -160,11 +160,9 @@ const MegatalentBattleRoyale = ({ category, categories }: { category?: string; c
     if (!userId) { toast.error("Login required to vote"); return; }
     if (myVotes[match.id]) { toast.info("You already voted in this match"); return; }
     setBusyId(match.id);
-    const { error } = await supabase.from("battle_royale_votes").insert({
-      match_id: match.id,
+    const { error } = await supabase.from("battle_royale_votes").insert({ match_id: match.id,
       user_id: userId,
-      voted_for_participant_id: participantId,
-    });
+      voted_for_participant_id: participantId });
     setBusyId(null);
     if (error) { toast.error("Vote failed", { description: error.message }); return; }
     setMyVotes(prev => ({ ...prev, [match.id]: participantId }));

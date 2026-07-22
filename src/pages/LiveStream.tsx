@@ -10,14 +10,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Video, Send, Users, Gift, ArrowLeft, VideoOff } from "lucide-react";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { SuperChatDialog } from "@/components/live/SuperChatDialog";
 import { SuperChatFeed } from "@/components/live/SuperChatFeed";
@@ -40,12 +38,10 @@ interface GiftType {
   price: number;
 }
 
-const GIFT_IDS = {
-  rose: "00000000-0000-0000-0000-000000000001",
+const GIFT_IDS = { rose: "00000000-0000-0000-0000-000000000001",
   heart: "00000000-0000-0000-0000-000000000002",
   diamond: "00000000-0000-0000-0000-000000000003",
-  crown: "00000000-0000-0000-0000-000000000004",
-};
+  crown: "00000000-0000-0000-0000-000000000004" };
 
 export default function LiveStream() {
   const { streamId } = useParams();
@@ -74,8 +70,7 @@ export default function LiveStream() {
       
       if (error) throw error;
       return data as GiftType[];
-    },
-  });
+    } });
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -103,8 +98,7 @@ export default function LiveStream() {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Fetch messages with realtime updates
   const { data: messages = [] } = useQuery({
@@ -133,18 +127,15 @@ export default function LiveStream() {
         profiles: profiles?.find(p => p.id === msg.user_id)
       })) as Message[];
     },
-    refetchInterval: 2000,
-  });
+    refetchInterval: 2000 });
 
   // Join stream
-  useEffect(() => {
-    if (!user || !streamId) return;
+  useEffect(() => { if (!user || !streamId) return;
 
     const joinStream = async () => {
       await supabase.from("stream_viewers").insert({
         stream_id: streamId,
-        user_id: user.id,
-      });
+        user_id: user.id });
     };
 
     const leaveStream = async () => {
@@ -167,11 +158,9 @@ export default function LiveStream() {
     mutationFn: async (text: string) => {
       if (!user) throw new Error("Must be logged in");
 
-      const { error } = await supabase.from("stream_messages").insert({
-        stream_id: streamId,
+      const { error } = await supabase.from("stream_messages").insert({ stream_id: streamId,
         user_id: user.id,
-        message: text,
-      });
+        message: text });
 
       if (error) throw error;
     },
@@ -182,21 +171,17 @@ export default function LiveStream() {
     onError: (error) => {
       toast.error("Error sending message");
       console.error(error);
-    },
-  });
+    } });
 
   // Send gift mutation
   const sendGiftMutation = useMutation({
     mutationFn: async (gift: GiftType) => {
       if (!user) throw new Error("Must be logged in");
 
-      const { data, error } = await supabase.functions.invoke("send-stream-gift", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("send-stream-gift", { body: {
           streamId,
           giftId: gift.id,
-          message: giftMessage,
-        },
-      });
+          message: giftMessage } });
 
       if (error) throw error;
       return data;
@@ -211,16 +196,14 @@ export default function LiveStream() {
     onError: (error) => {
       toast.error("Error sending gift");
       console.error(error);
-    },
-  });
+    } });
 
   // WebRTC Configuration
   const rtcConfig = {
     iceServers: [
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' },
-    ],
-  };
+    ] };
 
   // Start broadcasting (influencer)
   const startBroadcast = async () => {
@@ -244,9 +227,7 @@ export default function LiveStream() {
       // Setup Supabase Realtime channel for signaling
       const channel = supabase.channel(`stream:${streamId}`, {
         config: {
-          broadcast: { self: true },
-        },
-      });
+          broadcast: { self: true } } });
 
       channelRef.current = channel;
 
@@ -300,16 +281,13 @@ export default function LiveStream() {
     });
 
     // Handle ICE candidates
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate && channelRef.current) {
+    peerConnection.onicecandidate = (event) => { if (event.candidate && channelRef.current) {
         channelRef.current.send({
           type: 'broadcast',
           event: 'ice-candidate',
           payload: {
             candidate: event.candidate,
-            targetId: viewerId,
-          },
-        });
+            targetId: viewerId } });
       }
     };
 
@@ -317,15 +295,12 @@ export default function LiveStream() {
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
 
-    if (channelRef.current) {
-      channelRef.current.send({
+    if (channelRef.current) { channelRef.current.send({
         type: 'broadcast',
         event: 'offer',
         payload: {
           offer: offer,
-          targetId: viewerId,
-        },
-      });
+          targetId: viewerId } });
     }
   };
 
@@ -337,9 +312,7 @@ export default function LiveStream() {
       // Setup Supabase Realtime channel
       const channel = supabase.channel(`stream:${streamId}`, {
         config: {
-          broadcast: { self: true },
-        },
-      });
+          broadcast: { self: true } } });
 
       channelRef.current = channel;
 
@@ -364,13 +337,10 @@ export default function LiveStream() {
       await channel.subscribe();
 
       // Notify broadcaster that viewer joined
-      channel.send({
-        type: 'broadcast',
+      channel.send({ type: 'broadcast',
         event: 'viewer-join',
         payload: {
-          viewerId: user?.id,
-        },
-      });
+          viewerId: user?.id } });
 
       setIsConnecting(false);
     } catch (error) {
@@ -395,15 +365,12 @@ export default function LiveStream() {
     };
 
     // Handle ICE candidates
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate && channelRef.current) {
+    peerConnection.onicecandidate = (event) => { if (event.candidate && channelRef.current) {
         channelRef.current.send({
           type: 'broadcast',
           event: 'ice-candidate',
           payload: {
-            candidate: event.candidate,
-          },
-        });
+            candidate: event.candidate } });
       }
     };
 
@@ -413,14 +380,11 @@ export default function LiveStream() {
     await peerConnection.setLocalDescription(answer);
 
     // Send answer back
-    if (channelRef.current) {
-      channelRef.current.send({
+    if (channelRef.current) { channelRef.current.send({
         type: 'broadcast',
         event: 'answer',
         payload: {
-          answer: answer,
-        },
-      });
+          answer: answer } });
     }
   };
 

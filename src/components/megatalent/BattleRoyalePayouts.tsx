@@ -43,10 +43,8 @@ const BattleRoyalePayouts = ({ userId }: Props) => {
       for (const t of (tours || [])) {
         if ((t.prize_amount_cents || 0) <= 0) continue;
         const { data: avail } = await (supabase as any).rpc("get_battle_royale_available_payout", { _tournament_id: t.id });
-        items.push({
-          tournament_id: t.id, category: t.category, ends_at: t.ends_at,
-          prize_amount_cents: t.prize_amount_cents || 0, available_cents: Number(avail ?? 0),
-        });
+        items.push({ tournament_id: t.id, category: t.category, ends_at: t.ends_at,
+          prize_amount_cents: t.prize_amount_cents || 0, available_cents: Number(avail ?? 0) });
       }
       setWins(items);
 

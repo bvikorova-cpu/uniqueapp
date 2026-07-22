@@ -17,22 +17,19 @@ export const useUserCertificates = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return { certificates, isLoading };
 };
 
-export const useSaveCertificate = () => {
-  const queryClient = useQueryClient();
+export const useSaveCertificate = () => { const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
       castleId,
       completionTimeMs,
       unlockedMilestones,
-      totalRooms,
-    }: {
+      totalRooms }: {
       castleId: string;
       completionTimeMs: number;
       unlockedMilestones: number[];
@@ -43,13 +40,11 @@ export const useSaveCertificate = () => {
 
       const { data, error } = await supabase
         .from("user_castle_certificates")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           castle_id: castleId,
           completion_time_ms: completionTimeMs,
           unlocked_milestones: unlockedMilestones,
-          total_rooms: totalRooms,
-        })
+          total_rooms: totalRooms })
         .select()
         .single();
 
@@ -61,8 +56,7 @@ export const useSaveCertificate = () => {
     },
     onError: (error: Error) => {
       toast.error("Failed to save certificate: " + error.message);
-    },
-  });
+    } });
 };
 
 export const useDeleteCertificate = () => {
@@ -83,6 +77,5 @@ export const useDeleteCertificate = () => {
     },
     onError: (error: Error) => {
       toast.error("Failed to delete certificate: " + error.message);
-    },
-  });
+    } });
 };

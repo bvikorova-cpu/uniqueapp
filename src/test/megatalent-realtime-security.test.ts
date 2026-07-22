@@ -62,8 +62,7 @@ const channelMock = vi.fn((topic: string) => {
       return channel;
     }),
     unsubscribe: vi.fn(() => Promise.resolve("ok")),
-    topic,
-  };
+    topic };
   return channel;
 });
 
@@ -75,13 +74,9 @@ vi.mock("@/integrations/supabase/client", () => ({
       getUser: () =>
         Promise.resolve({
           data: { user: currentSession?.user ?? null },
-          error: currentSession ? null : { message: "not authenticated" },
-        }),
-    },
+          error: currentSession ? null : { message: "not authenticated" } }) },
     channel: (topic: string) => channelMock(topic),
-    removeChannel: () => Promise.resolve("ok"),
-  },
-}));
+    removeChannel: () => Promise.resolve("ok") } }));
 
 import { supabase } from "@/integrations/supabase/client";
 

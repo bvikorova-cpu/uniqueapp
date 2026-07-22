@@ -9,12 +9,10 @@ import { motion } from "framer-motion";
 import { HeartHandshake, Loader2, Sparkles, Star } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const colorMap: Record<string, string> = {
-  lavender: "from-purple-500/20 to-indigo-500/20 border-purple-500/30",
+const colorMap: Record<string, string> = { lavender: "from-purple-500/20 to-indigo-500/20 border-purple-500/30",
   coral: "from-pink-500/20 to-rose-500/20 border-pink-500/30",
   mint: "from-green-500/20 to-emerald-500/20 border-green-500/30",
-  gold: "from-yellow-500/20 to-amber-500/20 border-yellow-500/30",
-};
+  gold: "from-yellow-500/20 to-amber-500/20 border-yellow-500/30" };
 
 export const EncouragementCardsView = () => {
   const { toast } = useToast();
@@ -26,8 +24,7 @@ export const EncouragementCardsView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "encouragement_cards", situation: situation.trim() || undefined },
-      });
+        body: { action: "encouragement_cards", situation: situation.trim() || undefined } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

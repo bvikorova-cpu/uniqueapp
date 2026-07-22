@@ -7,12 +7,10 @@ import { Radar, Sparkles } from "lucide-react";
 import { useCyberRiskScan } from "@/hooks/useSafetyAIFeatures";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
-const RISK_COLORS: Record<string, string> = {
-  safe: "bg-emerald-600",
+const RISK_COLORS: Record<string, string> = { safe: "bg-emerald-600",
   caution: "bg-amber-500",
   elevated: "bg-orange-600",
-  severe: "bg-red-600",
-};
+  severe: "bg-red-600" };
 
 export function CyberRiskScanCard() {
   const [open, setOpen] = useState(false);

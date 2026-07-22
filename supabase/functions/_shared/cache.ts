@@ -11,14 +11,12 @@ interface CacheEntry<T> {
   expiresAt: number;
 }
 
-class EdgeCache {
-  private cache = new Map<string, CacheEntry<unknown>>();
+class EdgeCache { private cache = new Map<string, CacheEntry<unknown>>();
   
   set<T>(key: string, data: T, ttlSeconds: number = 60): void {
     this.cache.set(key, {
       data,
-      expiresAt: Date.now() + ttlSeconds * 1000,
-    });
+      expiresAt: Date.now() + ttlSeconds * 1000 });
   }
   
   get<T>(key: string): T | null {
@@ -99,12 +97,10 @@ export async function dbCacheSet(
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
   
   try {
-    const { error } = await supabase.rpc('cache_set', {
-      p_key: key,
+    const { error } = await supabase.rpc('cache_set', { p_key: key,
       p_value: value,
       p_ttl_seconds: ttlSeconds,
-      p_tags: tags,
-    });
+      p_tags: tags });
     
     if (error) {
       console.error('[Cache] DB set error:', error);
@@ -220,19 +216,16 @@ export function getCacheHeaders(
   return {
     'Cache-Control': directives.join(', '),
     'CDN-Cache-Control': `max-age=${maxAgeSeconds}`,
-    'Vercel-CDN-Cache-Control': `max-age=${maxAgeSeconds}`,
-  };
+    'Vercel-CDN-Cache-Control': `max-age=${maxAgeSeconds}` };
 }
 
 /**
  * Get no-cache headers
  */
-export function getNoCacheHeaders(): Record<string, string> {
-  return {
+export function getNoCacheHeaders(): Record<string, string> { return {
     'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
     'Pragma': 'no-cache',
-    'Expires': '0',
-  };
+    'Expires': '0' };
 }
 
 // ============= Cache Key Generators =============
@@ -251,8 +244,7 @@ export function globalCacheKey(resource: string, ...args: string[]): string {
   return `global:${resource}:${args.join(':')}`;
 }
 
-export default {
-  edgeCache,
+export default { edgeCache,
   dbCacheGet,
   dbCacheSet,
   dbCacheInvalidateByTag,
@@ -260,5 +252,4 @@ export default {
   getCacheHeaders,
   getNoCacheHeaders,
   userCacheKey,
-  globalCacheKey,
-};
+  globalCacheKey };

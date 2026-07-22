@@ -1,14 +1,12 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Audio,
   Img,
   Sequence,
   interpolate,
   spring,
   staticFile,
-  useCurrentFrame,
-} from "remotion";
+  useCurrentFrame } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
 
@@ -17,13 +15,11 @@ const body = loadBody("normal", { weights: ["500", "600", "700", "900"] });
 
 const FPS = 30;
 
-const BRAND = {
-  white: "#ffffff",
+const BRAND = { white: "#ffffff",
   bgDeep: "#07040f",
   purple: "#8b5cf6",
   pink: "#ec4899",
-  gold: "#fbbf24",
-};
+  gold: "#fbbf24" };
 
 const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
@@ -34,10 +30,8 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const tagOp = interpolate(frame, [50, 78], [0, 1], { extrapolateRight: "clamp" });
   const tagY = interpolate(frame, [50, 78], [20, 0], { extrapolateRight: "clamp" });
   const kb = interpolate(frame, [0, duration], [1.08, 1.2], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 20, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 20, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{ transform: `scale(${kb})` }}>
@@ -60,8 +54,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 80px rgba(236,72,153,0.55)",
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em" }}
         >
           Unique
         </div>
@@ -77,8 +70,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             textAlign: "center",
-            textShadow: "0 4px 30px rgba(251,191,36,0.6)",
-          }}
+            textShadow: "0 4px 30px rgba(251,191,36,0.6)" }}
         >
           Marketplaces
         </div>
@@ -100,10 +92,8 @@ type Beat = {
 const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod }) => {
   const frame = useCurrentFrame();
   const enter = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 18, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   const shellOp = enter * (1 - exit);
   const kbScale = interpolate(frame, [0, duration], [1.1, 1.28], { extrapolateRight: "clamp" });
   const kbX = interpolate(frame, [0, duration], [-20, 20]);
@@ -125,31 +115,27 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
             height: "100%",
             objectFit: "cover",
             transform: `scale(${kbScale}) translate(${kbX}px, ${kbY}px)`,
-            filter: "saturate(1.15) contrast(1.05)",
-          }}
+            filter: "saturate(1.15) contrast(1.05)" }}
         />
       </AbsoluteFill>
       <AbsoluteFill
         style={{
           background: `linear-gradient(160deg, ${mod.accent}33 0%, transparent 40%, ${mod.accent2}55 100%)`,
-          mixBlendMode: "screen",
-        }}
+          mixBlendMode: "screen" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "linear-gradient(180deg, rgba(7,4,15,0.82) 0%, rgba(7,4,15,0.15) 22%, rgba(7,4,15,0) 45%, rgba(7,4,15,0.4) 62%, rgba(7,4,15,0.95) 100%)",
-        }}
+            "linear-gradient(180deg, rgba(7,4,15,0.82) 0%, rgba(7,4,15,0.15) 22%, rgba(7,4,15,0) 45%, rgba(7,4,15,0.4) 62%, rgba(7,4,15,0.95) 100%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "space-between",
           flexDirection: "column",
           padding: 80,
           paddingTop: 160,
-          paddingBottom: 180,
-        }}
+          paddingBottom: 180 }}
       >
         <div
           style={{
@@ -165,8 +151,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
             letterSpacing: "0.24em",
             textTransform: "uppercase",
             boxShadow: `0 20px 60px -15px ${mod.accent}cc`,
-            textAlign: "center",
-          }}
+            textAlign: "center" }}
         >
           {mod.badge}
         </div>
@@ -182,8 +167,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
               color: BRAND.white,
               letterSpacing: "-0.035em",
               textShadow: "0 8px 40px rgba(0,0,0,0.75)",
-              textAlign: "center",
-            }}
+              textAlign: "center" }}
           >
             {mod.title}
           </div>
@@ -199,8 +183,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
               textAlign: "center",
               maxWidth: 900,
               lineHeight: 1.25,
-              textShadow: "0 4px 20px rgba(0,0,0,0.85)",
-            }}
+              textShadow: "0 4px 20px rgba(0,0,0,0.85)" }}
           >
             {mod.subtitle}
           </div>
@@ -222,8 +205,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
                     borderRadius: 22,
                     background: "rgba(7,4,15,0.6)",
                     border: `1px solid ${mod.accent}66`,
-                    boxShadow: `0 10px 40px -20px ${mod.accent}aa`,
-                  }}
+                    boxShadow: `0 10px 40px -20px ${mod.accent}aa` }}
                 >
                   <div
                     style={{
@@ -234,21 +216,19 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      flexShrink: 0,
-                    }}
+                      flexShrink: 0 }}
                   >
                     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </div>
                   <div
-                    style={{
+                    style={ {
                       fontFamily: body.fontFamily,
                       fontWeight: 700,
                       fontSize: 34,
                       color: BRAND.white,
-                      letterSpacing: "-0.01em",
-                    }}
+                      letterSpacing: "-0.01em" }}
                   >
                     {p}
                   </div>
@@ -268,17 +248,14 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   const wordS = spring({ frame: frame - 12, fps: FPS, config: { damping: 14, stiffness: 110 } });
   const urlOp = interpolate(frame, [30, 55], [0, 1], { extrapolateRight: "clamp" });
   const tagOp = interpolate(frame, [45, 70], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 15, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 15, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 50% 45%, rgba(251,191,36,0.45), transparent 60%), radial-gradient(circle at 50% 90%, rgba(139,92,246,0.4), transparent 60%)",
-        }}
+            "radial-gradient(circle at 50% 45%, rgba(251,191,36,0.45), transparent 60%), radial-gradient(circle at 50% 90%, rgba(139,92,246,0.4), transparent 60%)" }}
       />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
         <Img
@@ -288,8 +265,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             height: 280,
             borderRadius: 72,
             transform: `scale(${logoS})`,
-            filter: "drop-shadow(0 15px 50px rgba(251,191,36,0.6))",
-          }}
+            filter: "drop-shadow(0 15px 50px rgba(251,191,36,0.6))" }}
         />
         <div
           style={{
@@ -302,8 +278,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(180deg, ${BRAND.white} 0%, #fde68a 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 60px rgba(251,191,36,0.5)",
-          }}
+            textShadow: "0 0 60px rgba(251,191,36,0.5)" }}
         >
           Unique
         </div>
@@ -311,7 +286,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
           uniqueapp.fun
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 26,
             opacity: tagOp,
             fontFamily: body.fontFamily,
@@ -321,8 +296,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             textAlign: "center",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           Buy · Sell · Trade
         </div>
@@ -332,78 +306,62 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
 };
 
 const BEATS: Beat[] = [
-  {
-    badge: "01 · Property",
+  { badge: "01 · Property",
     title: "Live where\nyou dream.",
     subtitle: "List, rent or buy homes and apartments across Europe — verified owners, transparent EUR pricing.",
     perks: ["Verified listings", "Direct owner chat", "EUR-only pricing"],
     image: "marketplaces/01-property.jpg",
     accent: "#f59e0b",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "02 · Skills",
+    accent2: "#ec4899" },
+  { badge: "02 · Skills",
     title: "Hire real\ntalent.",
     subtitle: "Design, video, coding, repairs, tutoring — book skilled pros with escrow-protected payments.",
     perks: ["Escrow protection", "Verified reviews", "80/20 split"],
     image: "marketplaces/02-skills.jpg",
     accent: "#8b5cf6",
-    accent2: "#22d3ee",
-  },
-  {
-    badge: "03 · Global Skill Swap",
+    accent2: "#22d3ee" },
+  { badge: "03 · Global Skill Swap",
     title: "Trade skills,\nnot money.",
     subtitle: "Teach what you know, learn what you love — barter sessions with anyone on the planet.",
     perks: ["Barter or pay", "50+ countries", "Live video sessions"],
     image: "marketplaces/03-globalswap.jpg",
     accent: "#22d3ee",
-    accent2: "#fbbf24",
-  },
-  {
-    badge: "04 · Bazaar",
+    accent2: "#fbbf24" },
+  { badge: "04 · Bazaar",
     title: "Sell anything,\nfast.",
     subtitle: "Classifieds for gadgets, fashion, home, cars — post in seconds, sell to your neighbourhood.",
     perks: ["Free listings", "Saved searches", "Chat & meetup"],
     image: "marketplaces/04-bazaar.jpg",
     accent: "#ec4899",
-    accent2: "#f97316",
-  },
-  {
-    badge: "05 · Coupons",
+    accent2: "#f97316" },
+  { badge: "05 · Coupons",
     title: "Save every\nsingle day.",
     subtitle: "Fresh promo codes and vouchers from top brands — verified daily by the community.",
     perks: ["Verified codes", "Cashback deals", "Brand partnerships"],
     image: "marketplaces/05-coupons.jpg",
     accent: "#ec4899",
-    accent2: "#fbbf24",
-  },
-  {
-    badge: "06 · Auctions",
+    accent2: "#fbbf24" },
+  { badge: "06 · Auctions",
     title: "Bid. Win.\nCelebrate.",
     subtitle: "Live online auctions with anti-sniping timers, escrow and safe shipping across the EU.",
     perks: ["Anti-snipe timer", "Escrow release", "EU shipping"],
     image: "marketplaces/06-auctions.jpg",
     accent: "#fbbf24",
-    accent2: "#a855f7",
-  },
-  {
-    badge: "07 · Collectibles",
+    accent2: "#a855f7" },
+  { badge: "07 · Collectibles",
     title: "For true\ncollectors.",
     subtitle: "Cards, comics, memorabilia, coins — authenticated, graded and safely traded worldwide.",
     perks: ["Grading & auth", "Rarity index", "Insured shipping"],
     image: "marketplaces/07-collectibles.jpg",
     accent: "#a855f7",
-    accent2: "#22d3ee",
-  },
-  {
-    badge: "08 · Antique Appraisal",
+    accent2: "#22d3ee" },
+  { badge: "08 · Antique Appraisal",
     title: "What is it\nreally worth?",
     subtitle: "Send photos, get an expert AI + human appraisal in EUR within 24 hours.",
     perks: ["AI + expert combo", "24h turnaround", "Sell directly after"],
     image: "marketplaces/08-antique.jpg",
     accent: "#f59e0b",
-    accent2: "#7c3aed",
-  },
+    accent2: "#7c3aed" },
 ];
 
 const INTRO = 120;

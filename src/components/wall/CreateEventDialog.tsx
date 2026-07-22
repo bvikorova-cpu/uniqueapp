@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -24,8 +22,7 @@ export const CreateEventDialog = () => {
   const [coverImage, setCoverImage] = useState<string | undefined>();
   const { createEvent } = useEvents();
 
-  const handleCreate = () => {
-    if (!title || !startTime || !endTime) return;
+  const handleCreate = () => { if (!title || !startTime || !endTime) return;
 
     createEvent(
       {
@@ -36,8 +33,7 @@ export const CreateEventDialog = () => {
         end_time: endTime,
         cover_image: coverImage || null,
         is_public: true,
-        max_attendees: null,
-      },
+        max_attendees: null },
       {
         onSuccess: () => {
           setOpen(false);
@@ -47,8 +43,7 @@ export const CreateEventDialog = () => {
           setStartTime("");
           setEndTime("");
           setCoverImage(undefined);
-        },
-      }
+        } }
     );
   };
 

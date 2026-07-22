@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const TIER_PRICE: Record<string, number> = { basic: 999, premium: 1999, business: 4999 };
 
@@ -50,13 +48,11 @@ serve(async (req) => {
       rationale = `Heavy usage (${aiCount} AI generations) — Business unlocks unlimited generations and team seats.`;
     }
 
-    await supabase.from("plan_recommendations").upsert({
-      user_id: userId,
+    await supabase.from("plan_recommendations").upsert({ user_id: userId,
       recommended_tier: recommended,
       rationale,
       monthly_savings_cents: savings,
-      computed_at: new Date().toISOString(),
-    }, { onConflict: "user_id" });
+      computed_at: new Date().toISOString() }, { onConflict: "user_id" });
 
     return Response.json({ recommended_tier: recommended, current_tier: tier, rationale, monthly_savings_cents: savings, ai_usage_30d: aiCount, listings_30d: listCount }, { headers: corsHeaders });
   } catch (e: any) {

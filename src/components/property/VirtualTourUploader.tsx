@@ -32,12 +32,10 @@ export function VirtualTourUploader({
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           variant: "destructive",
           title: "Authentication required",
-          description: "Please sign in to add virtual tours.",
-        });
+          description: "Please sign in to add virtual tours." });
         return;
       }
 
@@ -50,21 +48,17 @@ export function VirtualTourUploader({
 
       if (error) throw error;
 
-      toast({
-        title: "Virtual tour added!",
-        description: "Your 3D tour has been successfully linked to the property.",
-      });
+      toast({ title: "Virtual tour added!",
+        description: "Your 3D tour has been successfully linked to the property." });
 
       setTourUrl("");
       onOpenChange(false);
       onSuccess();
-    } catch (error) {
-      console.error('Error adding virtual tour:', error);
+    } catch (error) { console.error('Error adding virtual tour:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to add virtual tour. Please try again.",
-      });
+        description: "Failed to add virtual tour. Please try again." });
     } finally {
       setLoading(false);
     }

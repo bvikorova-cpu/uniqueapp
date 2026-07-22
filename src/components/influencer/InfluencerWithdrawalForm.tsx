@@ -15,20 +15,16 @@ interface InfluencerWithdrawalFormProps {
   onSuccess: () => void;
 }
 
-export const InfluencerWithdrawalForm = ({
-  influencerId,
+export const InfluencerWithdrawalForm = ({ influencerId,
   availableBalance,
-  onSuccess,
-}: InfluencerWithdrawalFormProps) => {
+  onSuccess }: InfluencerWithdrawalFormProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"stripe" | "paypal" | "bank_transfer">("stripe");
-  const [paymentDetails, setPaymentDetails] = useState({
-    email: "",
+  const [paymentDetails, setPaymentDetails] = useState({ email: "",
     iban: "",
-    accountName: "",
-  });
+    accountName: "" });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,29 +49,22 @@ export const InfluencerWithdrawalForm = ({
         details.accountName = paymentDetails.accountName;
       }
 
-      const { data, error } = await supabase.functions.invoke("request-influencer-withdrawal", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("request-influencer-withdrawal", { body: {
           influencerId,
           amount: withdrawalAmount,
           paymentMethod,
-          paymentDetails: details,
-        },
-      });
+          paymentDetails: details } });
 
       if (error) throw error;
 
-      toast({
-        title: "Withdrawal requested",
-        description: "Your withdrawal request has been submitted and is pending admin approval.",
-      });
+      toast({ title: "Withdrawal requested",
+        description: "Your withdrawal request has been submitted and is pending admin approval." });
 
       onSuccess();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

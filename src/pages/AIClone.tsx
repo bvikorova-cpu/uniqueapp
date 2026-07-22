@@ -71,8 +71,7 @@ export default function AIClone() {
         .select("id", { count: "exact", head: true })
         .eq("user_id", user.id);
       return { count: data };
-    },
-  });
+    } });
 
   const renderView = () => {
     switch (activeView) {

@@ -67,16 +67,14 @@ const defaultImpact = [
   { label: "Volunteers", value: "45" },
 ];
 
-export const FundraisingDashboard = ({
-  campaignTitle = "Let's help together",
+export const FundraisingDashboard = ({ campaignTitle = "Let's help together",
   goalAmount = 10000,
   raisedAmount = 7500,
   donorsCount = 156,
   daysLeft = 14,
   milestones = defaultMilestones,
   topDonors = defaultDonors,
-  impactMetrics = defaultImpact,
-}: FundraisingDashboardProps) => {
+  impactMetrics = defaultImpact }: FundraisingDashboardProps) => {
   const progressPercent = (raisedAmount / goalAmount) * 100;
 
   return (

@@ -75,14 +75,12 @@ export function LiveInkCard() {
     }
   }, []);
 
-  const getPos = (e: React.PointerEvent) => {
-    const r = canvasRef.current!.getBoundingClientRect();
+  const getPos = (e: React.PointerEvent) => { const r = canvasRef.current!.getBoundingClientRect();
     return {
       x: ((e.clientX - r.left) / r.width) * W,
       y: ((e.clientY - r.top) / r.height) * H,
       t: performance.now(),
-      p: e.pressure || 0.5,
-    };
+      p: e.pressure || 0.5 };
   };
 
   const onDown = (e: React.PointerEvent) => {

@@ -9,24 +9,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import {
-  categoryToTable,
+import { categoryToTable,
   campaignDetailRoute,
   campaignDashboardRoute,
   FUNDRAISING_CATEGORIES,
-  type FundraisingCategory,
-} from "@/lib/fundraisingRoutes";
+  type FundraisingCategory } from "@/lib/fundraisingRoutes";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const schema = z.object({
-  title: z.string().trim().min(3, "Title too short").max(150),
+const schema = z.object({ title: z.string().trim().min(3, "Title too short").max(150),
   description: z.string().trim().min(10, "Description too short").max(500),
   story: z.string().trim().max(10000).optional().or(z.literal("")),
   target_amount: z.coerce.number().positive("Must be positive").max(1_000_000),
   image_url: z.string().trim().url("Invalid URL").max(2048).optional().or(z.literal("")),
   video_url: z.string().trim().url("Invalid URL").max(2048).optional().or(z.literal("")),
-  ends_at: z.string().optional().or(z.literal("")),
-});
+  ends_at: z.string().optional().or(z.literal("")) });
 
 type FormState = z.infer<typeof schema>;
 
@@ -42,15 +38,13 @@ export default function EditCampaign() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState<FormState>({
-    title: "",
+  const [form, setForm] = useState<FormState>({ title: "",
     description: "",
     story: "",
     target_amount: 0,
     image_url: "",
     video_url: "",
-    ends_at: "",
-  });
+    ends_at: "" });
 
   useEffect(() => {
     if (!validType || !campaignId) {
@@ -79,15 +73,13 @@ export default function EditCampaign() {
         navigate(campaignDetailRoute(type, campaignId));
         return;
       }
-      setForm({
-        title: data.title ?? "",
+      setForm({ title: data.title ?? "",
         description: data.description ?? "",
         story: data.story ?? "",
         target_amount: Number(data.target_amount ?? 0),
         image_url: data.image_url ?? "",
         video_url: data.video_url ?? "",
-        ends_at: data.ends_at ? new Date(data.ends_at).toISOString().slice(0, 10) : "",
-      });
+        ends_at: data.ends_at ? new Date(data.ends_at).toISOString().slice(0, 10) : "" });
       setLoading(false);
     })();
   }, [campaignId, type, table, validType, navigate]);
@@ -100,14 +92,12 @@ export default function EditCampaign() {
       return;
     }
     setSaving(true);
-    try {
-      const payload: Record<string, unknown> = {
+    try { const payload: Record<string, unknown> = {
         title: parsed.data.title,
         description: parsed.data.description,
         story: parsed.data.story || null,
         target_amount: parsed.data.target_amount,
-        video_url: parsed.data.video_url || null,
-      };
+        video_url: parsed.data.video_url || null };
       if (!NO_IMAGE.has(type)) payload.image_url = parsed.data.image_url || null;
       if (!NO_ENDS_AT.has(type)) payload.ends_at = parsed.data.ends_at ? new Date(parsed.data.ends_at).toISOString() : null;
 

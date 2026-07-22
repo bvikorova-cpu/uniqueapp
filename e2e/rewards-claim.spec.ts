@@ -34,10 +34,8 @@ test.describe("Claim RPCs are server-side gated", () => {
       headers: {
         apikey: SUPABASE_ANON_KEY,
         Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        "Content-Type": "application/json",
-      },
-      data: body,
-    });
+        "Content-Type": "application/json" },
+      data: body });
     let json: any = null;
     try { json = await res.json(); } catch { /* may be empty */ }
     return { status: res.status(), json };
@@ -54,28 +52,22 @@ test.describe("Claim RPCs are server-side gated", () => {
   });
 
   test("claim_battle_pass_reward refuses anonymous caller", async () => {
-    const { status, json } = await rpc("claim_battle_pass_reward", {
-      _season_id: "00000000-0000-0000-0000-000000000000",
+    const { status, json } = await rpc("claim_battle_pass_reward", { _season_id: "00000000-0000-0000-0000-000000000000",
       _tier: 1,
-      _track: "free",
-    });
+      _track: "free" });
     if (status === 200) expect(json?.ok).toBeFalsy();
     else expect([401, 403, 404]).toContain(status);
   });
 
   test("claim_calendar_day refuses anonymous caller", async () => {
-    const { status, json } = await rpc("claim_calendar_day", {
-      _month_key: "2026-05",
-      _day_number: 1,
-    });
+    const { status, json } = await rpc("claim_calendar_day", { _month_key: "2026-05",
+      _day_number: 1 });
     if (status === 200) expect(json?.ok).toBeFalsy();
     else expect([401, 403, 404]).toContain(status);
   });
 
   test("acquire_cosmetic_item refuses anonymous caller", async () => {
-    const { status, json } = await rpc("acquire_cosmetic_item", {
-      _item_id: "00000000-0000-0000-0000-000000000000",
-    });
+    const { status, json } = await rpc("acquire_cosmetic_item", { _item_id: "00000000-0000-0000-0000-000000000000" });
     if (status === 200) expect(json?.ok).toBeFalsy();
     else expect([401, 403, 404]).toContain(status);
   });

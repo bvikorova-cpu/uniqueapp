@@ -52,8 +52,7 @@ export default function RewardsStreakCoach() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("rewards-ai", {
-        body: { action: "streak_coach", current_streak: currentStreak, best_streak: bestStreak, timezone, challenge_areas: challengeAreas },
-      });
+        body: { action: "streak_coach", current_streak: currentStreak, best_streak: bestStreak, timezone, challenge_areas: challengeAreas } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

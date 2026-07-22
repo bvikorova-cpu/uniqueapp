@@ -69,19 +69,14 @@ export const useStories = () => {
         .in("id", userIds);
 
       const profileMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
-      return (data || []).map((story) => ({
-        ...story,
-        profiles: profileMap.get(story.user_id) ?? null,
-      }));
-    },
-  });
+      return (data || []).map((story) => ({ ...story,
+        profiles: profileMap.get(story.user_id) ?? null }));
+    } });
 
-  const createStory = useMutation({
-    mutationFn: async ({
+  const createStory = useMutation({ mutationFn: async ({
       mediaFile,
       caption,
-      onProgress,
-    }: {
+      onProgress }: {
       mediaFile: File;
       caption?: string;
       onProgress?: (pct: number) => void;
@@ -103,13 +98,11 @@ export const useStories = () => {
       const expiresAt = new Date();
       expiresAt.setHours(expiresAt.getHours() + 24);
 
-      const { error } = await supabase.from("stories").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("stories").insert({ user_id: user.id,
         media_url: publicUrl,
         media_type: mediaType,
         caption,
-        expires_at: expiresAt.toISOString(),
-      });
+        expires_at: expiresAt.toISOString() });
 
       if (error) throw error;
 
@@ -126,8 +119,7 @@ export const useStories = () => {
         ? "File too large. Try a smaller file."
         : msg;
       toast({ title: "Story upload failed", description: friendly, variant: "destructive" });
-    },
-  });
+    } });
 
   const deleteStory = useMutation({
     mutationFn: async (story: { id: string; media_url?: string | null; storage_path?: string | null }) => {
@@ -151,29 +143,23 @@ export const useStories = () => {
     },
     onError: (err: any) => {
       toast({ title: "Could not delete", description: err?.message ?? "Try again", variant: "destructive" });
-    },
-  });
+    } });
 
   const viewStory = useMutation({
     mutationFn: async (storyId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      await supabase.from("story_views").insert({
-        story_id: storyId,
-        user_id: user.id,
-      });
-    },
-  });
+      await supabase.from("story_views").insert({ story_id: storyId,
+        user_id: user.id });
+    } });
 
-  return {
-    stories: stories || [],
+  return { stories: stories || [],
     isLoading,
     createStory: createStory.mutate,
     createStoryAsync: createStory.mutateAsync,
     isCreating: createStory.isPending,
     deleteStory: deleteStory.mutate,
     isDeleting: deleteStory.isPending,
-    viewStory: viewStory.mutate,
-  };
+    viewStory: viewStory.mutate };
 };

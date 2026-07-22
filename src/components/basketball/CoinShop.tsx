@@ -32,8 +32,7 @@ export function CoinShop({ onBack }: { onBack: () => void }) {
       if (!session) throw new Error("Not authenticated");
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         headers: { Authorization: `Bearer ${session.access_token}` },
-        body: { priceId: pack.priceId, productKey: "basketball_coins", metadata: { coins: pack.coins, module: "basketball" } },
-      });
+        body: { priceId: pack.priceId, productKey: "basketball_coins", metadata: { coins: pack.coins, module: "basketball" } } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(null); }

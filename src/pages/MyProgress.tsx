@@ -41,8 +41,7 @@ export default function MyProgress() {
         .gte("activity_date", since)
         .order("activity_date", { ascending: true });
       return (data ?? []) as DayRow[];
-    },
-  });
+    } });
 
   const { data: completed = [] } = useQuery({
     queryKey: ["my-progress-completed", userId],
@@ -56,8 +55,7 @@ export default function MyProgress() {
         .order("completed_at", { ascending: false })
         .limit(50);
       return (data ?? []) as CompletedChallenge[];
-    },
-  });
+    } });
 
   const dayMap = useMemo(() => {
     const m: Record<string, number> = {};
@@ -215,9 +213,7 @@ export default function MyProgress() {
   );
 }
 
-function SummaryCard({
-  icon: Icon, label, value, color, sub,
-}: { icon: any; label: string; value: string | number; color: string; sub?: string }) {
+function SummaryCard({ icon: Icon, label, value, color, sub }: { icon: any; label: string; value: string | number; color: string; sub?: string }) {
   return (
     <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardContent className="p-3 sm:p-4">

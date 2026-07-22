@@ -52,10 +52,8 @@ export default function IQCountryLeaderboard() {
   useEffect(() => {
     if (!selected) return;
     (async () => {
-      const { data } = await supabase.rpc("get_iq_country_top_players", {
-        _country_code: selected.country_code,
-        _limit: 25,
-      });
+      const { data } = await supabase.rpc("get_iq_country_top_players", { _country_code: selected.country_code,
+        _limit: 25 });
       setPlayers((data ?? []) as PlayerRow[]);
     })();
   }, [selected]);

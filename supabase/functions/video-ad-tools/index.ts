@@ -6,10 +6,8 @@ import { checkTestMode } from "../_shared/testMode.ts";
 
 const VIDEO_AD_ACTIONS = ['ping', 'generate_script', 'storyboard', 'ad_copy', 'audience_analyzer', 'performance_predictor', 'brand_voice', 'multi_platform', 'competitor_analysis', 'thumbnail_generator', 'music_composer', 'voiceover_script', 'campaign_planner', 'social_calendar', 'roi_calculator', 'ad_analytics', 'multi_language_translator', 'ab_tester', 'url_to_video', 'hook_analyzer', 'caption_generator', 'winning_ads_recommend', 'avatar_plan', 'stock_footage', 'resize_advice', 'text_to_video_split', 'scenes', 'sfx', 'tts', 'voice_clone'];
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-};
+const corsHeaders = { 'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
@@ -17,12 +15,10 @@ serve(async (req) => {
   try {
     // Health probe: no auth, no credits.
     const probe = req.method === 'GET' ? {} : await req.clone().json().catch(() => ({}));
-    if ((probe as any)?.action === 'ping' || new URL(req.url).searchParams.get('action') === 'ping') {
-      return new Response(JSON.stringify({
+    if ((probe as any)?.action === 'ping' || new URL(req.url).searchParams.get('action') === 'ping') { return new Response(JSON.stringify({
         ok: true,
         router: 'video-ad-tools',
-      actions: VIDEO_AD_ACTIONS,
-      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      actions: VIDEO_AD_ACTIONS }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     // Test-mode bypass: skip auth, credits, OpenAI.
@@ -58,8 +54,7 @@ serve(async (req) => {
     const isAdmin = !!adminRole;
 
     // Credit costs
-    const costs: Record<string, number> = {
-      generate_script: 1,
+    const costs: Record<string, number> = { generate_script: 1,
       storyboard: 3,
       ad_copy: 2,
       audience_analyzer: 2,
@@ -88,8 +83,7 @@ serve(async (req) => {
       scenes: 5,
       sfx: 5,
       tts: 5,
-      voice_clone: 10,
-    };
+      voice_clone: 10 };
 
     const cost = costs[action] || 1;
     let refundOnError = false;
@@ -102,8 +96,7 @@ serve(async (req) => {
 
       if (!credits || credits.credits_remaining < cost) {
         return new Response(JSON.stringify({ error: 'Insufficient credits. Please purchase more.' }), {
-          status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
+          status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
       }
       prevCredits = credits.credits_remaining;
 
@@ -283,8 +276,7 @@ serve(async (req) => {
           const r = await fetch('https://api.openai.com/v1/images/generations', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${openaiKey2}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'gpt-image-1', prompt: `Cinematic video ad scene, professional advertising photography, high quality: ${sceneText}`, size, quality: 'medium', n: 1 }),
-          });
+            body: JSON.stringify({ model: 'gpt-image-1', prompt: `Cinematic video ad scene, professional advertising photography, high quality: ${sceneText}`, size, quality: 'medium', n: 1 }) });
           if (!r.ok) {
             const errTxt = await r.text();
             await refund();
@@ -310,8 +302,7 @@ serve(async (req) => {
         const r = await fetch('https://api.elevenlabs.io/v1/sound-generation', {
           method: 'POST',
           headers: { 'xi-api-key': elevenKey, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: prompt, duration_seconds: dur, prompt_influence: promptInfluence }),
-        });
+          body: JSON.stringify({ text: prompt, duration_seconds: dur, prompt_influence: promptInfluence }) });
         if (!r.ok) { const txt = await r.text(); await refund(); return new Response(JSON.stringify({ error: `ElevenLabs SFX error ${r.status}: ${txt.slice(0, 200)}` }), { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }); }
         const buf = await r.arrayBuffer();
         return new Response(JSON.stringify({ audioBase64: b64encode(new Uint8Array(buf)), mimeType: 'audio/mpeg', credits_used: cost }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -329,8 +320,7 @@ serve(async (req) => {
         const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${vId}?output_format=mp3_44100_128`, {
           method: 'POST',
           headers: { 'xi-api-key': elevenKey, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.4, use_speaker_boost: true } }),
-        });
+          body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.4, use_speaker_boost: true } }) });
         if (!r.ok) { await refund(); const errTxt = await r.text(); return new Response(JSON.stringify({ error: `ElevenLabs error ${r.status}: ${errTxt.slice(0, 300)}` }), { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }); }
         const audioBuf = await r.arrayBuffer();
         return new Response(JSON.stringify({ audioBase64: b64encode(new Uint8Array(audioBuf)), mimeType: 'audio/mpeg', credits_used: cost }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -357,8 +347,7 @@ serve(async (req) => {
       default:
         await refund();
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
-          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     let result: unknown;
@@ -372,9 +361,7 @@ serve(async (req) => {
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt }
           ],
-          response_format: { type: 'json_object' },
-        }),
-      });
+          response_format: { type: 'json_object' } }) });
       if (!response.ok) {
         const txt = await response.text();
         throw new Error(`AI gateway error ${response.status}: ${txt.slice(0, 200)}`);
@@ -386,18 +373,15 @@ serve(async (req) => {
       const msg = aiErr instanceof Error ? aiErr.message : String(aiErr);
       console.error('[video-ad-tools] AI error:', msg);
       return new Response(JSON.stringify({ error: msg }), {
-        status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+        status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     return new Response(JSON.stringify({ result, credits_used: cost }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('[video-ad-tools] error:', msg);
     return new Response(JSON.stringify({ error: msg }), {
-      status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 });

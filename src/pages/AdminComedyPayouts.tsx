@@ -53,12 +53,10 @@ export default function AdminComedyPayouts() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      const updateData: any = {
-        status,
+      const updateData: any = { status,
         admin_notes: adminNotes,
         processed_by: user?.id,
-        processed_at: new Date().toISOString(),
-      };
+        processed_at: new Date().toISOString() };
 
       const { error: updateError } = await supabase
         .from("comedian_withdrawal_requests")

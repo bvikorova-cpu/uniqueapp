@@ -5,29 +5,23 @@ import { usePatronCheckout } from "@/hooks/useShadowArenaFeatures";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 
-export function PatronModeCard({ authorUserId, authorName }: { authorUserId: string; authorName: string }) {
-  const checkout = usePatronCheckout();
+export function PatronModeCard({ authorUserId, authorName }: { authorUserId: string; authorName: string }) { const checkout = usePatronCheckout();
 
   const TIERS = [
     {
       id: "bronze" as const,
       name: "Bronze",
       price: "€4.99/mo",
-      perks: ["Patron badge", "Exclusive stories"],
-    },
-    {
-      id: "silver" as const,
+      perks: ["Patron badge", "Exclusive stories"] },
+    { id: "silver" as const,
       name: "Silver",
       price: "€9.99/mo",
       perks: ["All Bronze perks", "Voice narrations", "Early access"],
-      popular: true,
-    },
-    {
-      id: "gold" as const,
+      popular: true },
+    { id: "gold" as const,
       name: "Gold",
       price: "€19.99/mo",
-      perks: ["All Silver perks", "Custom requests", "Direct messages"],
-    },
+      perks: ["All Silver perks", "Custom requests", "Direct messages"] },
   ];
 
   return (

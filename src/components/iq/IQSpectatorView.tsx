@@ -32,12 +32,10 @@ interface ProfileLite {
  * Read-only spectator window for an ongoing or finished IQ duel.
  * Subscribes to realtime updates on iq_duels and renders a live scoreboard + chat.
  */
-export default function IQSpectatorView({
-  duelId,
+export default function IQSpectatorView({ duelId,
   myUserId,
   myName,
-  onClose,
-}: {
+  onClose }: {
   duelId: string;
   myUserId: string;
   myName: string;

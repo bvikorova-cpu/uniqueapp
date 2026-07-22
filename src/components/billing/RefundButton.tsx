@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Loader2, RotateCcw } from "lucide-react";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -32,8 +30,7 @@ export default function RefundButton({ subscriptionId, onDone }: Props) {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.functions.invoke("check-refund-eligibility", {
-        body: { subscription_id: subscriptionId },
-      });
+        body: { subscription_id: subscriptionId } });
       if (data) setElig(data as Eligibility);
     })();
   }, [subscriptionId]);
@@ -44,8 +41,7 @@ export default function RefundButton({ subscriptionId, onDone }: Props) {
     setBusy(true);
     try {
       const { data, error } = await supabase.functions.invoke("refund-membership", {
-        body: { subscription_id: subscriptionId },
-      });
+        body: { subscription_id: subscriptionId } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       toast({ title: "Refunded", description: "Your subscription has been canceled and refunded." });

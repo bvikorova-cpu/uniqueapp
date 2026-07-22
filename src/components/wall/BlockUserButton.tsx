@@ -1,7 +1,6 @@
 import { Ban } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -9,8 +8,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
 
 interface BlockUserButtonProps {

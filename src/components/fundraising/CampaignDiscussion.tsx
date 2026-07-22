@@ -106,9 +106,7 @@ export function CampaignDiscussion({ campaignId, campaignType, ownerUserId }: Pr
     const text = commentText.trim();
     if (text.length < 1) return;
     setPosting(true);
-    const { error } = await supabase.from("campaign_comments" as any).insert({
-      campaign_id: campaignId, campaign_type: campaignType, user_id: me, content: text,
-    });
+    const { error } = await supabase.from("campaign_comments" as any).insert({ campaign_id: campaignId, campaign_type: campaignType, user_id: me, content: text });
     setPosting(false);
     if (error) { toast({ title: "Failed to post", description: error.message, variant: "destructive" }); return; }
     setCommentText("");
@@ -119,9 +117,7 @@ export function CampaignDiscussion({ campaignId, campaignType, ownerUserId }: Pr
     const t = updTitle.trim(); const b = updBody.trim();
     if (!t || !b) return;
     setPosting(true);
-    const { error } = await supabase.from("campaign_updates" as any).insert({
-      campaign_id: campaignId, campaign_type: campaignType, user_id: me, title: t, body: b,
-    });
+    const { error } = await supabase.from("campaign_updates" as any).insert({ campaign_id: campaignId, campaign_type: campaignType, user_id: me, title: t, body: b });
     setPosting(false);
     if (error) { toast({ title: "Failed to post update", description: error.message, variant: "destructive" }); return; }
     setUpdTitle(""); setUpdBody("");

@@ -31,8 +31,7 @@ const WEATHER_CONDITIONS: WeatherCondition[] = [
     ],
     trackEffect: "Fast Track — All horses gain +3 base speed",
     color: "text-amber-400",
-    bgClass: "from-amber-950/30 to-orange-950/20",
-  },
+    bgClass: "from-amber-950/30 to-orange-950/20" },
   {
     id: "rainy",
     name: "Heavy Rain",
@@ -45,8 +44,7 @@ const WEATHER_CONDITIONS: WeatherCondition[] = [
     ],
     trackEffect: "Muddy Track — Stamina matters more, speed reduced",
     color: "text-blue-400",
-    bgClass: "from-blue-950/30 to-slate-950/20",
-  },
+    bgClass: "from-blue-950/30 to-slate-950/20" },
   {
     id: "snowy",
     name: "Snow & Ice",
@@ -59,8 +57,7 @@ const WEATHER_CONDITIONS: WeatherCondition[] = [
     ],
     trackEffect: "Frozen Track — Wild horses excel, others struggle",
     color: "text-cyan-400",
-    bgClass: "from-cyan-950/30 to-blue-950/20",
-  },
+    bgClass: "from-cyan-950/30 to-blue-950/20" },
   {
     id: "windy",
     name: "Strong Winds",
@@ -73,8 +70,7 @@ const WEATHER_CONDITIONS: WeatherCondition[] = [
     ],
     trackEffect: "Wind Tunnel — Lighter breeds gain an advantage",
     color: "text-emerald-400",
-    bgClass: "from-emerald-950/30 to-green-950/20",
-  },
+    bgClass: "from-emerald-950/30 to-green-950/20" },
   {
     id: "foggy",
     name: "Dense Fog",
@@ -87,8 +83,7 @@ const WEATHER_CONDITIONS: WeatherCondition[] = [
     ],
     trackEffect: "Fog Track — Temperament becomes critical for steady racing",
     color: "text-gray-400",
-    bgClass: "from-gray-900/30 to-slate-950/20",
-  },
+    bgClass: "from-gray-900/30 to-slate-950/20" },
   {
     id: "storm",
     name: "Thunderstorm",
@@ -101,8 +96,7 @@ const WEATHER_CONDITIONS: WeatherCondition[] = [
     ],
     trackEffect: "Storm Track — Only the bravest horses thrive",
     color: "text-violet-400",
-    bgClass: "from-violet-950/30 to-purple-950/20",
-  },
+    bgClass: "from-violet-950/30 to-purple-950/20" },
 ];
 
 export const WeatherRacingBonuses = () => {

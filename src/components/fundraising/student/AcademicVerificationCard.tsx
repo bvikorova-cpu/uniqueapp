@@ -15,16 +15,14 @@ interface Props {
   schoolName?: string | null;
 }
 
-export function AcademicVerificationCard({
-  institutionVerified,
+export function AcademicVerificationCard({ institutionVerified,
   enrollmentVerified,
   enrollmentDocUrl,
   verifierName,
   verifiedAt,
   currentGpa,
   expectedGraduation,
-  schoolName,
-}: Props) {
+  schoolName }: Props) {
   const fullyVerified = institutionVerified && enrollmentVerified;
 
   return (

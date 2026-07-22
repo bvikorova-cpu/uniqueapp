@@ -54,8 +54,7 @@ const channelMock = vi.fn((topic: string) => {
       return channel;
     }),
     unsubscribe: vi.fn(() => Promise.resolve("ok")),
-    topic,
-  };
+    topic };
   return channel;
 });
 
@@ -67,18 +66,13 @@ vi.mock("@/integrations/supabase/client", () => ({
       getSession: () =>
         Promise.resolve({
           data: { session: { user: { id: SELF_UID } } },
-          error: null,
-        }),
+          error: null }),
       getUser: () =>
         Promise.resolve({
           data: { user: { id: SELF_UID } },
-          error: null,
-        }),
-    },
+          error: null }) },
     channel: (topic: string) => channelMock(topic),
-    removeChannel: (ch: unknown) => removeChannelMock(),
-  },
-}));
+    removeChannel: (ch: unknown) => removeChannelMock() } }));
 
 // Import AFTER mocks
 import { supabase } from "@/integrations/supabase/client";

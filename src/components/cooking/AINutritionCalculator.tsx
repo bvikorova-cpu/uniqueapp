@@ -24,8 +24,7 @@ export default function AINutritionCalculator({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Nutrition Calculator");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are a certified nutritionist. Calculate the complete nutritional breakdown for the recipe or meal described. Include: 1) Total calories per serving, 2) Macros (protein, carbs, fat in grams), 3) Fiber, sugar, sodium, 4) Key vitamins and minerals, 5) Glycemic index estimate, 6) Healthier modifications to reduce calories/increase nutrients, 7) Comparison to daily recommended intake (%). Recipe/meal: ${input}` },
-      });
+        body: { prompt: `You are a certified nutritionist. Calculate the complete nutritional breakdown for the recipe or meal described. Include: 1) Total calories per serving, 2) Macros (protein, carbs, fat in grams), 3) Fiber, sugar, sodium, 4) Key vitamins and minerals, 5) Glycemic index estimate, 6) Healthier modifications to reduce calories/increase nutrients, 7) Comparison to daily recommended intake (%). Recipe/meal: ${input}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }

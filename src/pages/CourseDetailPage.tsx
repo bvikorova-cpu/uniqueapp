@@ -11,16 +11,14 @@ import { CourseReviews } from "@/components/courses/CourseReviews";
 import { CourseDiscussion } from "@/components/courses/CourseDiscussion";
 import { CourseLeaderboard } from "@/components/courses/CourseLeaderboard";
 import { LiveLessonRoom } from "@/components/courses/LiveLessonRoom";
-import {
-  Play,
+import { Play,
   Clock,
   Users,
   Star,
   BookOpen,
   CheckCircle,
   Lock,
-  Video,
-} from "lucide-react";
+  Video } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Course {
@@ -116,12 +114,10 @@ export default function CourseDetailPage() {
         // Check if user is the course creator
         setIsInstructor(courseData.creator_id === user.id);
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/courses");
     } finally {
       setLoading(false);
@@ -131,12 +127,10 @@ export default function CourseDetailPage() {
   const handlePurchase = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     
-    if (!user) {
-      toast({
+    if (!user) { toast({
         title: "Authentication Required",
         description: "Please sign in to purchase this course",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/auth");
       return;
     }
@@ -144,8 +138,7 @@ export default function CourseDetailPage() {
     setPurchasing(true);
     try {
       const { data, error } = await supabase.functions.invoke("purchase-course", {
-        body: { courseId },
-      });
+        body: { courseId } });
 
       if (error) throw error;
 
@@ -153,12 +146,10 @@ export default function CourseDetailPage() {
       if (data?.url) {
         window.open(data.url, "_blank");
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setPurchasing(false);
     }
@@ -170,12 +161,10 @@ export default function CourseDetailPage() {
     if (lesson.is_preview || isEnrolled) {
       setSelectedLesson(lesson);
       setIsPlayerOpen(true);
-    } else {
-      toast({
+    } else { toast({
         title: "Purchase Required",
         description: "You need to purchase this course to access this lesson",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

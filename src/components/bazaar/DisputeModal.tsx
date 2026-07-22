@@ -42,27 +42,20 @@ export function DisputeModal({ open, onOpenChange, orderId, onDisputeOpened }: D
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("open-dispute", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("open-dispute", { body: {
           orderId,
           reason,
-          description: description.trim(),
-        },
-      });
+          description: description.trim() } });
 
       if (error) throw error;
 
-      toast.success("Dispute opened successfully", {
-        description: "Our team will review your case within 24-48 hours.",
-      });
+      toast.success("Dispute opened successfully", { description: "Our team will review your case within 24-48 hours." });
       
       onOpenChange(false);
       onDisputeOpened?.();
-    } catch (error) {
-      console.error("Error opening dispute:", error);
+    } catch (error) { console.error("Error opening dispute:", error);
       toast.error("Failed to open dispute", {
-        description: error instanceof Error ? error.message : "Please try again later",
-      });
+        description: error instanceof Error ? error.message : "Please try again later" });
     } finally {
       setLoading(false);
     }

@@ -53,12 +53,10 @@ export const BrainDuelLeaderboard = () => {
       });
 
       const leaderboardData = Object.entries(playerStats)
-        .map(([userId, stats]) => ({
-          user_id: userId,
+        .map(([userId, stats]) => ({ user_id: userId,
           wins: stats.wins,
           total_games: stats.total,
-          win_rate: (stats.wins / stats.total) * 100,
-        }))
+          win_rate: (stats.wins / stats.total) * 100 }))
         .filter((entry) => entry.total_games >= 3)
         .sort((a, b) => {
           if (b.wins !== a.wins) return b.wins - a.wins;
@@ -72,12 +70,9 @@ export const BrainDuelLeaderboard = () => {
         .select('id, full_name, avatar_url')
         .in('id', userIds);
 
-      return leaderboardData.map((entry) => ({
-        ...entry,
-        profile: profiles?.find((p) => p.id === entry.user_id) || null,
-      }));
-    },
-  });
+      return leaderboardData.map((entry) => ({ ...entry,
+        profile: profiles?.find((p) => p.id === entry.user_id) || null }));
+    } });
 
   const getMedalIcon = (index: number) => {
     if (index === 0)

@@ -59,9 +59,8 @@ export const HorseRacingHero = ({ stats, onNavigate }: HorseRacingHeroProps) => 
       />
 
       {/* Scanline overlay */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(218,165,32,0.02) 2px, rgba(218,165,32,0.02) 4px)',
-      }} />
+      <div className="absolute inset-0 pointer-events-none" style={ {
+        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(218,165,32,0.02) 2px, rgba(218,165,32,0.02) 4px)' }} />
 
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
@@ -96,11 +95,10 @@ export const HorseRacingHero = ({ stats, onNavigate }: HorseRacingHeroProps) => 
           </div>
 
           <h1 className="text-[clamp(2.2rem,11vw,4.5rem)] font-black font-mono leading-[1.05] mb-3 max-w-[20ch]"
-            style={{
+            style={ {
               background: 'linear-gradient(135deg, #fff 0%, #f59e0b 50%, #dc2626 100%)',
               WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}>
+              WebkitTextFillColor: 'transparent' }}>
             🏇 Horse Racing Arena
           </h1>
 

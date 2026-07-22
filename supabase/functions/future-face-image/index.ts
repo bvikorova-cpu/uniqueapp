@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -22,8 +20,7 @@ const ACTIONS: Record<string, { cost: number; prompt: (p: any) => string }> = {
   healthy_lifestyle: { cost: 6, prompt: ({ years }) => `Show this face after ${years || 10} years of optimal healthy lifestyle: glowing skin, fit appearance, bright eyes, minimal wrinkles. Photorealistic.` },
   unhealthy_lifestyle: { cost: 6, prompt: ({ years }) => `Show this face after ${years || 10} years of poor lifestyle (smoking, sun damage, stress, poor sleep): premature wrinkles, dull skin, dark circles, sallow tone. Photorealistic.` },
   genetic_twin: { cost: 7, prompt: ({ ethnicity }) => `Generate a photorealistic portrait of a "genetic twin" — a different person who shares strong facial bone structure, eye shape, nose and lip proportions with the person in this photo${ethnicity ? `, with ${ethnicity} appearance` : ""}. Different hair, different styling, neutral studio background. Same age range.` },
-  mood_emotion: { cost: 5, prompt: ({ mood }) => `Re-render this face expressing the emotion: ${mood || "joyful happiness"}. Adjust facial muscles, mouth, eyes and brows naturally. Keep identity, hair, lighting and background unchanged. Photorealistic.` },
-};
+  mood_emotion: { cost: 5, prompt: ({ mood }) => `Re-render this face expressing the emotion: ${mood || "joyful happiness"}. Adjust facial muscles, mouth, eyes and brows naturally. Keep identity, hair, lighting and background unchanged. Photorealistic.` } };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -47,9 +44,7 @@ serve(async (req) => {
     const cfg = ACTIONS[action];
 
     // Atomic credit deduction
-    const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits" as any, {
-      p_user_id: user.id, p_amount: cfg.cost,
-    });
+    const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits" as any, { p_user_id: user.id, p_amount: cfg.cost });
     if (deductError) { console.error("deduct error:", deductError); return json({ error: "Credit deduction failed" }, 500); }
     if (!deducted) return json({ error: `Insufficient credits. Need ${cfg.cost}.` }, 402);
 
@@ -83,8 +78,7 @@ serve(async (req) => {
       aiRes = await fetch("https://api.openai.com/v1/images/edits", {
         method: "POST",
         headers: { "Authorization": `Bearer ${lovableKey}` },
-        body: form,
-      });
+        body: form });
     } catch (e: any) {
       console.error("OpenAI image edit fetch error:", e);
       try {
@@ -122,9 +116,7 @@ serve(async (req) => {
       const ext = mime.split("/")[1] || "png";
       const bytes = Uint8Array.from(atob(m[2]), c => c.charCodeAt(0));
       const path = `${user.id}/${action}-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("future-face-photos").upload(path, bytes, {
-        contentType: mime, upsert: false,
-      });
+      const { error: upErr } = await supabase.storage.from("future-face-photos").upload(path, bytes, { contentType: mime, upsert: false });
       if (upErr) console.error("storage upload error:", upErr);
       else {
         const { data: pub } = supabase.storage.from("future-face-photos").getPublicUrl(path);
@@ -134,8 +126,7 @@ serve(async (req) => {
 
     // Save history
     await supabase.from("future_face_images").insert({
-      user_id: user.id, action, source_url: sourceUrl, result_url: publicUrl, metadata: params || {},
-    });
+      user_id: user.id, action, source_url: sourceUrl, result_url: publicUrl, metadata: params || {} });
 
     return json({ resultUrl: publicUrl, action, creditsUsed: cfg.cost });
   } catch (error: any) {

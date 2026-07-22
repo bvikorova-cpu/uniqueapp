@@ -11,8 +11,7 @@ const call = (body: unknown) =>
   fetch(FN, {
     method: "POST",
     headers: { "Content-Type": "application/json", apikey: ANON, Authorization: `Bearer ${ANON}` },
-    body: JSON.stringify(body),
-  });
+    body: JSON.stringify(body) });
 
 async function isDeployed(): Promise<boolean> {
   const r = await call({ id: "00000000-0000-0000-0000-000000000000" });

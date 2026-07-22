@@ -8,8 +8,7 @@ import { useState } from "react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SUBSCRIPTION_TIERS = [
-  {
-    name: "Basic",
+  { name: "Basic",
     price: 49,
     priceId: "price_1SRO3r0QTWhd4oRpbItPTDme",
     productId: "prod_TOAOrEnRtpLdJq",
@@ -20,10 +19,8 @@ const SUBSCRIPTION_TIERS = [
       "Job analytics",
       "Application management",
     ],
-    popular: false,
-  },
-  {
-    name: "Premium",
+    popular: false },
+  { name: "Premium",
     price: 99,
     priceId: "price_1SRO4DGaXSfGtYFtfXevezC9",
     productId: "prod_TOAPUm5AolgpPh",
@@ -35,10 +32,8 @@ const SUBSCRIPTION_TIERS = [
       "Advanced analytics",
       "Custom branding",
     ],
-    popular: true,
-  },
-  {
-    name: "Enterprise",
+    popular: true },
+  { name: "Enterprise",
     price: 199,
     priceId: "price_1SRO4V0QTWhd4oRp6RSdSAWk",
     productId: "prod_TOAP0gwcYMZAV7",
@@ -51,8 +46,7 @@ const SUBSCRIPTION_TIERS = [
       "White-label solution",
       "SLA guarantee",
     ],
-    popular: false,
-  },
+    popular: false },
 ];
 
 export function EmployerSubscriptionTiers() {
@@ -64,13 +58,11 @@ export function EmployerSubscriptionTiers() {
     try {
       setProcessingTier(tierName);
       await createCheckout(priceId);
-    } catch (error) {
-      console.error("Subscription error:", error);
+    } catch (error) { console.error("Subscription error:", error);
       toast({
         title: "Error",
         description: "Failed to start subscription process. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setProcessingTier(null);
     }
@@ -79,13 +71,11 @@ export function EmployerSubscriptionTiers() {
   const handleManageSubscription = async () => {
     try {
       await manageSubscription();
-    } catch (error) {
-      console.error("Portal error:", error);
+    } catch (error) { console.error("Portal error:", error);
       toast({
         title: "Error",
         description: "Failed to open subscription management. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

@@ -2,11 +2,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -44,9 +42,7 @@ serve(async (req) => {
             { type: "text", text: caption ? `Look! ${caption}` : "Look at this!" },
             { type: "image_url", image_url: { url: image_url } },
           ] },
-        ],
-      }),
-    });
+        ] }) });
     if (!aiResp.ok) {
       const txt = await aiResp.text().catch(()=>"");
       console.error("vision err", aiResp.status, txt);
@@ -55,9 +51,7 @@ serve(async (req) => {
     const data = await aiResp.json();
     const reaction = data.choices?.[0]?.message?.content || "Wow! 💖";
 
-    await admin.from("best_friend_photos").insert({
-      user_id: u.user.id, image_url, caption: caption || null, ai_reaction: reaction,
-    });
+    await admin.from("best_friend_photos").insert({ user_id: u.user.id, image_url, caption: caption || null, ai_reaction: reaction });
 
     return j({ reaction });
   } catch (e) {

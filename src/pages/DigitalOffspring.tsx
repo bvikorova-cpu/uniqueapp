@@ -62,8 +62,7 @@ export default function DigitalOffspring() {
     setCreating(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-digital-offspring", {
-        body: { name: name.trim() },
-      });
+        body: { name: name.trim() } });
       if (error) throw error;
       const o = data?.offspring as Offspring;
       setList((l) => [o, ...l]);
@@ -85,8 +84,7 @@ export default function DigitalOffspring() {
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke("chat-with-offspring", {
-        body: { offspringId: active.id, message: text },
-      });
+        body: { offspringId: active.id, message: text } });
       if (error) throw error;
       setMessages((m) => [...m, { role: "assistant", message: data?.reply ?? "..." }]);
       requestAnimationFrame(() => scroller.current?.scrollTo({ top: 9e9, behavior: "smooth" }));

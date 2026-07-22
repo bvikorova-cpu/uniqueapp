@@ -10,13 +10,11 @@ import { toast } from "sonner";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 
-const RARITY: Record<string, string> = {
-  common: "border-slate-400 bg-slate-500/10",
+const RARITY: Record<string, string> = { common: "border-slate-400 bg-slate-500/10",
   rare: "border-blue-400 bg-blue-500/10",
   epic: "border-purple-400 bg-purple-500/10",
   legendary: "border-amber-400 bg-amber-500/10",
-  mythic: "border-pink-400 bg-pink-500/10",
-};
+  mythic: "border-pink-400 bg-pink-500/10" };
 
 export default function RewardsCosmetics() {
   const { user } = useAuth();
@@ -55,8 +53,7 @@ export default function RewardsCosmetics() {
     if (!sessionId || !itemId) return;
     (async () => {
       const { data, error } = await supabase.functions.invoke("verify-cosmetic-purchase", {
-        body: { sessionId, itemId },
-      });
+        body: { sessionId, itemId } });
       if (error || !(data as any)?.ok) {
         toast.error((data as any)?.error ?? error?.message ?? "Acquire failed");
       } else {
@@ -83,9 +80,7 @@ export default function RewardsCosmetics() {
             name: item.name,
             description: `${item.category} • ${item.rarity}`,
             metadata: { itemId: item.id },
-            successPath,
-          },
-        });
+            successPath } });
         if (error || !(data as any)?.url) {
           toast.error(error?.message ?? "Checkout failed");
           return;

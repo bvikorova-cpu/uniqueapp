@@ -16,8 +16,7 @@ export const ChatAnalyticsDashboard = ({ onBack, userId }: ChatAnalyticsDashboar
     avgResponseTime: "< 2 min",
     mostActiveHour: 0,
     weeklyMessages: [0, 0, 0, 0, 0, 0, 0],
-    topContacts: [] as { name: string; count: number }[],
-  });
+    topContacts: [] as { name: string; count: number }[] });
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -48,14 +47,12 @@ export const ChatAnalyticsDashboard = ({ onBack, userId }: ChatAnalyticsDashboar
 
       const mostActiveHour = hourCounts.indexOf(Math.max(...hourCounts));
 
-      setStats({
-        totalMessages: msgCount || 0,
+      setStats({ totalMessages: msgCount || 0,
         totalConversations: convCount || 0,
         avgResponseTime: "< 2 min",
         mostActiveHour,
         weeklyMessages: dayCounts,
-        topContacts: [],
-      });
+        topContacts: [] });
     };
     fetchStats();
   }, [userId]);
@@ -142,8 +139,7 @@ export const ChatAnalyticsDashboard = ({ onBack, userId }: ChatAnalyticsDashboar
                     className="aspect-square rounded-md flex items-center justify-center text-[9px] font-bold"
                     style={{
                       backgroundColor: `hsl(190 ${60 + intensity * 40}% ${20 + intensity * 30}%)`,
-                      color: intensity > 0.5 ? "white" : "hsl(190 20% 60%)",
-                    }}
+                      color: intensity > 0.5 ? "white" : "hsl(190 20% 60%)" }}
                   >
                     {h}h
                   </div>

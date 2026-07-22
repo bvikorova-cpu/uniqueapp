@@ -34,19 +34,16 @@ export const CrystalOracleTool = () => {
     // Get AI oracle guidance
     try {
       const { data, error } = await supabase.functions.invoke("crystal-ai-tool", {
-        body: { toolType: "oracle", textInput: `Crystal: ${crystal.name}. Properties: ${crystal.properties}. Chakra: ${crystal.chakra}. Element: ${crystal.element}.` },
-      });
+        body: { toolType: "oracle", textInput: `Crystal: ${crystal.name}. Properties: ${crystal.properties}. Chakra: ${crystal.chakra}. Element: ${crystal.element}.` } });
       
       const guidance = error ? crystal.properties : data?.analysis || crystal.properties;
       const today = new Date().toISOString().split("T")[0];
       
-      const { data: draw } = await (supabase as any).from("crystal_oracle_draws").insert({
-        user_id: session.user.id,
+      const { data: draw } = await (supabase as any).from("crystal_oracle_draws").insert({ user_id: session.user.id,
         crystal_name: crystal.name,
         mantra: crystal.mantra,
         guidance,
-        drawn_at: today,
-      }).select().single();
+        drawn_at: today }).select().single();
 
       setTodayDraw(draw || { crystal_name: crystal.name, mantra: crystal.mantra, guidance });
       toast.success("Your daily crystal has been revealed! ✨");
@@ -58,8 +55,7 @@ export const CrystalOracleTool = () => {
         crystal_name: crystal.name,
         mantra: crystal.mantra,
         guidance: `Today's crystal is ${crystal.name}. ${crystal.properties}. Focus on your ${crystal.chakra} chakra and work with the ${crystal.element} element.`,
-        drawn_at: today,
-      }).select().single();
+        drawn_at: today }).select().single();
       setTodayDraw(draw || { crystal_name: crystal.name, mantra: crystal.mantra, guidance: crystal.properties });
     }
     setDrawing(false);

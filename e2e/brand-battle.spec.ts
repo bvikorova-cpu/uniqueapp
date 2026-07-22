@@ -70,9 +70,7 @@ test.describe("Brand Battle Hub — 20 features render", () => {
     await page.goto("/brand-battle/hub");
     await waitForHydration(page);
     for (const title of FEATURE_TITLES) {
-      await expect(page.getByText(title, { exact: true }).first()).toBeVisible({
-        timeout: 8_000,
-      });
+      await expect(page.getByText(title, { exact: true }).first()).toBeVisible({ timeout: 8_000 });
     }
   });
 
@@ -90,9 +88,7 @@ test.describe("Brand Battle Hub — 20 features render", () => {
       await page.goto("/brand-battle/hub");
       await waitForHydration(page);
       await page.getByText(title, { exact: true }).first().click();
-      await expect(page.getByRole("button", { name: /close/i }).first()).toBeVisible({
-        timeout: 6_000,
-      });
+      await expect(page.getByRole("button", { name: /close/i }).first()).toBeVisible({ timeout: 6_000 });
       expect(errors, `JS errors opening ${title}:\n${errors.join("\n")}`).toEqual([]);
     });
   }

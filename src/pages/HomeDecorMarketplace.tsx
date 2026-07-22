@@ -40,13 +40,11 @@ const HomeDecorMarketplace = () => {
   const [uploading, setUploading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [items, setItems] = useState<DecorItem[]>([]);
-  const [formData, setFormData] = useState({
-    title: "",
+  const [formData, setFormData] = useState({ title: "",
     price: "",
     description: "",
     category: "furniture",
-    condition: "Like New",
-  });
+    condition: "Like New" });
 
   useEffect(() => {
     checkAuth();
@@ -105,23 +103,19 @@ const HomeDecorMarketplace = () => {
     return publicUrl;
   };
 
-  const handleSubmit = async () => {
-    if (!currentUserId) {
+  const handleSubmit = async () => { if (!currentUserId) {
       toast({
         title: "Login Required",
         description: "Please log in to add an item",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/auth");
       return;
     }
 
-    if (!formData.title || !formData.price || !formData.description) {
-      toast({
+    if (!formData.title || !formData.price || !formData.description) { toast({
         title: "Missing Information",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -131,52 +125,42 @@ const HomeDecorMarketplace = () => {
 
       const { error } = await supabase
         .from('home_decor_items')
-        .insert({
-          title: formData.title,
+        .insert({ title: formData.title,
           price: parseFloat(formData.price),
           description: formData.description,
           category: formData.category,
           condition: formData.condition,
           image_url: imageUrl,
-          user_id: currentUserId,
-        });
+          user_id: currentUserId });
 
       if (error) throw error;
 
-      toast({
-        title: "Success!",
-        description: "Your item has been added to the marketplace",
-      });
+      toast({ title: "Success!",
+        description: "Your item has been added to the marketplace" });
 
-      setFormData({
-        title: "",
+      setFormData({ title: "",
         price: "",
         description: "",
         category: "furniture",
-        condition: "Like New",
-      });
+        condition: "Like New" });
       setImageFile(null);
       setImagePreview("");
       await loadItems();
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Error",
         description: "Failed to add item",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setUploading(false);
     }
   };
 
-  const handleSubscribe = async () => {
-    if (!currentUserId) {
+  const handleSubscribe = async () => { if (!currentUserId) {
       toast({
         title: "Login Required",
         description: "Please log in to upgrade",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/auth");
       return;
     }
@@ -188,22 +172,18 @@ const HomeDecorMarketplace = () => {
       if (data?.url) {
         window.open(data.url, '_blank');
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to create checkout",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
-  const handlePurchaseItem = async (itemId: string) => {
-    if (!currentUserId) {
+  const handlePurchaseItem = async (itemId: string) => { if (!currentUserId) {
       toast({
         title: "Login Required",
         description: "Please log in to make a purchase",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/auth");
       return;
     }
@@ -218,12 +198,10 @@ const HomeDecorMarketplace = () => {
       if (data?.url) {
         window.open(data.url, '_blank');
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to create checkout",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

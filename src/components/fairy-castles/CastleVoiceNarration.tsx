@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Volume2, VolumeX, Globe, Play, Pause, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -14,7 +12,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 // Supported languages with flags
 const LANGUAGES = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'de', name: 'Deutsch', flag: '' },
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
   { code: 'es', name: 'Español', flag: '🇪🇸' },
   { code: 'sk', name: 'Slovak', flag: '🇸🇰' },
@@ -111,12 +109,9 @@ export function CastleVoiceNarration({
     // Generate new audio
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', { body: {
           text: fullNarrationText,
-          language: selectedLanguage,
-        },
-      });
+          language: selectedLanguage } });
 
       if (error) throw error;
 
@@ -286,8 +281,7 @@ export function CastleVoiceNarration({
                       ? `${Math.random() * 100}%` 
                       : '20%',
                     animationDelay: `${i * 0.1}s`,
-                    animationDuration: '0.5s',
-                  }}
+                    animationDuration: '0.5s' }}
                 />
               ))}
             </div>

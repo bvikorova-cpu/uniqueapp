@@ -31,21 +31,18 @@ export const CareerHero = () => {
         <motion.span
           key={i}
           className="absolute text-xl sm:text-2xl pointer-events-none select-none"
-          style={{
+          style={ {
             left: emojiPositions[i].left,
-            top: emojiPositions[i].top,
-          }}
-          animate={{
+            top: emojiPositions[i].top }}
+          animate={ {
             y: [0, -15, 0],
             rotate: [0, i % 2 === 0 ? 10 : -10, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
+            scale: [1, 1.1, 1] }}
+          transition={ {
             duration: 3 + i * 0.4,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: i * 0.3,
-          }}
+            delay: i * 0.3 }}
         >
           {emoji}
         </motion.span>
@@ -78,20 +75,17 @@ export const CareerHero = () => {
           <motion.div
             key={i}
             className="absolute w-8 h-8 rounded-full bg-background border-2 border-primary/30 flex items-center justify-center shadow-md"
-            animate={{
-              rotate: 360,
-            }}
-            transition={{
+            animate={ {
+              rotate: 360 }}
+            transition={ {
               duration: 8 + i * 2,
               repeat: Infinity,
               ease: "linear",
-              delay: i * 1.5,
-            }}
+              delay: i * 1.5 }}
             style={{
               top: "50%",
               left: "50%",
-              transformOrigin: `${-20 + i * 5}px ${-20 + i * 5}px`,
-            }}
+              transformOrigin: `${-20 + i * 5}px ${-20 + i * 5}px` }}
           >
             <m.icon className={`h-4 w-4 ${m.color}`} />
           </motion.div>

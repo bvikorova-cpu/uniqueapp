@@ -4,8 +4,7 @@ import { describe, it, expect } from "vitest";
  * Phase 5 — prescription QR token stability.
  * Verifies the QR token format we generate DB-side (hex, ≥18 bytes → ≥36 chars).
  */
-function looksLikeQrToken(t: string) {
-  return /^[0-9a-f]{36,}$/i.test(t);
+function looksLikeQrToken(t: string) { return /^[0-9a-f]{36 }$/i.test(t);
 }
 
 describe("prescription QR token", () => {

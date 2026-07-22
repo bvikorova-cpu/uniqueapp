@@ -8,14 +8,12 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
-export const ConcertNotifications = ({ onBack }: Props) => {
-  const [prefs, setPrefs] = useState({
+export const ConcertNotifications = ({ onBack }: Props) => { const [prefs, setPrefs] = useState({
     newConcerts: true,
     liveAlerts: true,
     giftNotifs: false,
     artistUpdates: true,
-    weeklyDigest: false,
-  });
+    weeklyDigest: false });
 
   const toggle = (key: keyof typeof prefs) => {
     setPrefs(prev => ({ ...prev, [key]: !prev[key] }));

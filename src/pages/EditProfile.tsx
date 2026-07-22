@@ -87,9 +87,7 @@ const EditProfile = () => {
   const [showPreview, setShowPreview] = useState(true);
 
   const [voiceIntro, setVoiceIntro] = useState<{ url: string | null; transcript: string | null }>({ url: null, transcript: null });
-  const [verifiedState, setVerifiedState] = useState<VerifiedBadgesState>({
-    email: false, phone: false, id: false, payment: false,
-  });
+  const [verifiedState, setVerifiedState] = useState<VerifiedBadgesState>({ email: false, phone: false, id: false, payment: false });
 
   const [profile, setProfile] = useState<ProfileData>({
     id: "", full_name: "", email: "", avatar_url: "", cover_url: "", bio: "", headline: "",
@@ -99,8 +97,7 @@ const EditProfile = () => {
     is_verified: false, stripe_connect_charges_enabled: false,
     open_to_work: false, open_to_work_details: {}, profile_music_url: null, profile_music_title: null,
     bio_score: null, bio_score_feedback: null, bio_variants: [], bio_translations: {},
-    seo_title: "", seo_description: "",
-  });
+    seo_title: "", seo_description: "" });
   const [newInterest, setNewInterest] = useState("");
   const [newLanguage, setNewLanguage] = useState("");
   const [avatarDescription, setAvatarDescription] = useState("");
@@ -158,17 +155,14 @@ const EditProfile = () => {
         bio_variants: Array.isArray(p.bio_variants) ? p.bio_variants : [],
         bio_translations: (p.bio_translations as Record<string, string>) || {},
         seo_title: p.seo_title || "",
-        seo_description: p.seo_description || "",
-      });
+        seo_description: p.seo_description || "" });
 
       // verified state — read real email_confirmed_at from auth user
       const { data: { user: authUser } } = await supabase.auth.getUser();
-      setVerifiedState({
-        email: !!authUser?.email_confirmed_at,
+      setVerifiedState({ email: !!authUser?.email_confirmed_at,
         phone: !!p.phone?.trim(),
         id: !!p.is_verified,
-        payment: !!p.stripe_connect_charges_enabled,
-      });
+        payment: !!p.stripe_connect_charges_enabled });
 
       // voice intro
       const { data: vi } = await supabase
@@ -185,8 +179,7 @@ const EditProfile = () => {
     if (!user) return;
     setSaving(true);
     try {
-      const { error } = await supabase.from("profiles").update({
-        full_name: profile.full_name,
+      const { error } = await supabase.from("profiles").update({ full_name: profile.full_name,
         bio: profile.bio,
         headline: profile.headline,
         location: profile.location,
@@ -216,8 +209,7 @@ const EditProfile = () => {
         bio_variants: profile.bio_variants,
         bio_translations: profile.bio_translations,
         seo_title: profile.seo_title || null,
-        seo_description: profile.seo_description || null,
-      } as any).eq("id", user.id);
+        seo_description: profile.seo_description || null } as any).eq("id", user.id);
       if (error) throw error;
       toast({ title: "Profile saved", description: "Your changes are live." });
       navigate(`/profile/${user.id}`);
@@ -236,10 +228,8 @@ const EditProfile = () => {
     const rawExt = (file.name.split(".").pop() || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     const ext = rawExt || (file.type.split("/")[1] || "jpg");
     const fileName = `${user.id}/${Date.now()}.${ext}`;
-    const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file, {
-      upsert: true,
-      contentType: file.type || "image/jpeg",
-    });
+    const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file, { upsert: true,
+      contentType: file.type || "image/jpeg" });
     if (uploadError) {
       console.error("[upload]", bucket, fileName, file.type, file.size, uploadError);
       const message = `${uploadError.message || ""} ${uploadError.statusCode || ""} ${(uploadError as any).error || ""}`.toLowerCase();
@@ -283,8 +273,7 @@ const EditProfile = () => {
       toast({
         title: "Upload error",
         description: `${error?.message || error} (${error?.statusCode || error?.error || "no-code"})`,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally { setUploadingImage(false); }
   };
 
@@ -312,8 +301,7 @@ const EditProfile = () => {
       toast({
         title: "Upload error",
         description: `${error?.message || error} (${error?.statusCode || error?.error || "no-code"})`,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally { setUploadingCover(false); }
   };
 
@@ -324,8 +312,7 @@ const EditProfile = () => {
     setGeneratingAvatar(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-avatar", {
-        body: { description: avatarDescription, style },
-      });
+        body: { description: avatarDescription, style } });
       if (error) throw error;
       if (data.imageUrl) {
         const blob = await (await fetch(data.imageUrl)).blob();
@@ -345,12 +332,9 @@ const EditProfile = () => {
   const handleGenerateBio = async (tone: string) => {
     setGeneratingBio(true);
     try {
-      const { data, error } = await supabase.functions.invoke("generate-bio", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("generate-bio", { body: {
           name: profile.full_name, occupation: profile.occupation, company: profile.company,
-          location: profile.location, interests: profile.interests, skills: profile.skills, tone,
-        },
-      });
+          location: profile.location, interests: profile.interests, skills: profile.skills, tone } });
       if (error) throw error;
       if (data?.bio) {
         setProfile({ ...profile, bio: data.bio, tone_of_voice: tone });
@@ -406,15 +390,13 @@ const EditProfile = () => {
     }
   };
 
-  const applyPersonality = (r: { interests: string[]; tone: string; archetype: string; summary: string }) => {
-    const merged = Array.from(new Set([...(profile.interests || []), ...r.interests])).slice(0, 20);
+  const applyPersonality = (r: { interests: string[]; tone: string; archetype: string; summary: string }) => { const merged = Array.from(new Set([...(profile.interests || []), ...r.interests])).slice(0, 20);
     setProfile({
       ...profile,
       interests: merged,
       tone_of_voice: r.tone,
       headline: profile.headline || r.archetype,
-      bio: profile.bio || r.summary,
-    });
+      bio: profile.bio || r.summary });
   };
 
   // Completeness
@@ -589,7 +571,7 @@ const EditProfile = () => {
                     </div>
                     <div>
                       <Label htmlFor="location">Location</Label>
-                      <Input id="location" placeholder="e.g. Berlin, Germany" value={profile.location || ""} onChange={(e) => setProfile({ ...profile, location: e.target.value })} />
+                      <Input id="location" placeholder="e.g. Global" value={profile.location || ""} onChange={(e) => setProfile({ ...profile, location: e.target.value })} />
                     </div>
                     <div>
                       <Label htmlFor="birth_date">Birth Date</Label>

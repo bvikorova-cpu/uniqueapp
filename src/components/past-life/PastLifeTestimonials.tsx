@@ -3,21 +3,15 @@ import { Star, Quote } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const testimonials = [
-  {
-    name: "Elena M.",
+  { name: "Elena M.",
     text: "The reading revealed I was a healer in ancient Egypt. It explained my unexplained fascination with herbs and natural medicine!",
-    rating: 5,
-  },
-  {
-    name: "Marco T.",
+    rating: 5 },
+  { name: "Marco T.",
     text: "The soulmate connection reading blew my mind. My partner and I have been connected across three lifetimes!",
-    rating: 5,
-  },
-  {
-    name: "Sarah K.",
+    rating: 5 },
+  { name: "Sarah K.",
     text: "Finally understand why I've always been drawn to medieval history. The karmic lessons were eye-opening.",
-    rating: 5,
-  },
+    rating: 5 },
 ];
 
 export const PastLifeTestimonials = () => {

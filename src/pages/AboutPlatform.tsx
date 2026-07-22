@@ -1,16 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Sparkles, Play, Pause, Volume2, VolumeX, ArrowRight, Search,
+import { Sparkles, Play, Pause, Volume2, VolumeX, ArrowRight, Search,
   Crown, Cpu, Swords, Heart, Users, Globe, Brain, Trophy,
   Briefcase, GraduationCap, Gem, Star, Music, Mic2, ChefHat,
   Lock, Gift, Plane, Coffee, PawPrint, Building2, Store, Ticket,
   Gavel, Activity, Apple, Shield, Ghost, Bot, PenTool, Image as ImageIcon,
   Clock, Palette, Scale, Dna, Zap, Video, MessageSquare, Mail,
   MessageCircle, BookOpen, FlaskConical, Car, Home, AlertTriangle, Bookmark, BookmarkCheck,
-  ChevronDown, Coins, Wallet, CheckCircle2,
-} from "lucide-react";
+  ChevronDown, Coins, Wallet, CheckCircle2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,8 +42,7 @@ type Category = {
 };
 
 const CATEGORIES: Category[] = [
-  {
-    id: "social",
+  { id: "social",
     title: "Social & Communication",
     icon: Users,
     accent: "text-violet-500",
@@ -57,76 +54,57 @@ const CATEGORIES: Category[] = [
         features: ["Stories (24h)", "Reactions, comments, shares", "Saved posts & memories", "Trending tab", "Friend & follow graph", "Reels-style videos"],
         details: "The Wall is the social heart of Unique. It blends a chronological friend feed with an algorithmic discovery layer that surfaces trending creators, communities and viral clips. Post text, photos, multi-image carousels, short videos, polls and 24-hour stories — everything supports reactions, threaded comments and shares with built-in moderation. Saved posts become searchable memories you can revisit any time.",
         pricing: "Free to use • Boosted posts and creator tips paid in credits",
-        capabilities: ["Friend requests & follow graph", "Mute, block, report", "Hashtags & mentions", "Image and video upload up to 4K", "Story highlights archive", "Cross-post to Pages and Groups", "Verified badges", "Algorithm preference controls"],
-      },
-      {
-        path: "/messenger", title: "Messenger", icon: Mail,
+        capabilities: ["Friend requests & follow graph", "Mute, block, report", "Hashtags & mentions", "Image and video upload up to 4K", "Story highlights archive", "Cross-post to Pages and Groups", "Verified badges", "Algorithm preference controls"] },
+      { path: "/messenger", title: "Messenger", icon: Mail,
         blurb: "1:1 and group chats with media, voice, video calls and reactions.",
         features: ["Privacy-first messaging", "Voice & video calls", "Group chats up to 100", "Pinned messages", "Media gallery", "Disappearing messages"],
         details: "A unified messenger that replaces every legacy DM layer in the platform. Chat 1:1, in small groups or in topic rooms with full media support, reactions, replies and read receipts. Voice and video calls run on WebRTC with screen sharing. Conversations are partitioned by community so DMs from creators, friends and brands never collide.",
         pricing: "Free • Premium creator DMs may be paid (PPV unlocked by creator)",
-        capabilities: ["End-to-end style encryption", "Voice notes & video messages", "Group call up to 12 participants", "File attachments (images, PDF, audio)", "Typing indicators & read receipts", "Block, mute, report and archive", "Search across conversations", "Auto-delete timers"],
-      },
-      {
-        path: "/wall/groups", title: "Groups", icon: Users,
+        capabilities: ["End-to-end style encryption", "Voice notes & video messages", "Group call up to 12 participants", "File attachments (images, PDF, audio)", "Typing indicators & read receipts", "Block, mute, report and archive", "Search across conversations", "Auto-delete timers"] },
+      { path: "/wall/groups", title: "Groups", icon: Users,
         blurb: "Topic communities with their own posts, rules, moderators and events.",
         features: ["Public & private groups", "Moderation tools", "Member roles", "Group insights", "Group events", "Pinned announcements"],
         details: "Groups are full mini-communities, each with their own feed, members, roles and rules. Owners and moderators get pinned announcements, approval queues, banned-word filters, member analytics and event scheduling. Groups can be free, paid or invite-only with optional Stripe-powered membership.",
         pricing: "Free to create • Paid groups split 85/15 with platform",
-        capabilities: ["Owner / mod / member roles", "Approval queue for posts and members", "Auto-moderation (AI + keyword)", "Scheduled posts", "Group-only events", "Polls and Q&A", "Member directory", "Group-scoped bazaar listings"],
-      },
-      {
-        path: "/wall/pages", title: "Pages", icon: Globe,
+        capabilities: ["Owner / mod / member roles", "Approval queue for posts and members", "Auto-moderation (AI + keyword)", "Scheduled posts", "Group-only events", "Polls and Q&A", "Member directory", "Group-scoped bazaar listings"] },
+      { path: "/wall/pages", title: "Pages", icon: Globe,
         blurb: "Brand, creator and business pages with reviews, followers and content.",
         features: ["Reviews & ratings", "Follower analytics", "Pinned posts", "Verified badges", "Call-to-action button", "Cross-post scheduler"],
         details: "Pages are public-facing profiles for brands, creators, businesses, artists and public figures. Followers see updates in their feed, can leave star reviews, book services and tap CTA buttons (visit website, message, buy, donate). Built-in analytics show reach, engagement and conversion. Verified Founder and brand badges are issued by Unique admins.",
         pricing: "Free to create • Verification fee one-time • Promoted posts in credits",
-        capabilities: ["Star reviews with replies", "Audience insights dashboard", "Multi-admin teams", "Custom CTA buttons", "Scheduled content calendar", "Pinned welcome message", "Cross-post to Wall, Groups, Events", "Brand kit storage"],
-      },
-      {
-        path: "/wall/events", title: "Events", icon: Star,
+        capabilities: ["Star reviews with replies", "Audience insights dashboard", "Multi-admin teams", "Custom CTA buttons", "Scheduled content calendar", "Pinned welcome message", "Cross-post to Wall, Groups, Events", "Brand kit storage"] },
+      { path: "/wall/events", title: "Events", icon: Star,
         blurb: "Create or RSVP to local and online events with tickets.",
         features: ["RSVP & guest lists", "Paid tickets", "Calendar export", "Event chat", "QR check-in", "Recurring events"],
         details: "Plan in-person or virtual events end-to-end. Sell free or paid tickets via Stripe Connect (platform takes 10%), manage guest lists, generate QR check-in codes and broadcast updates to all attendees. Recurring events handle weekly meetups; virtual events embed live video or external links.",
         pricing: "Free events free • Paid tickets: 10% platform fee + Stripe fees",
-        capabilities: ["Ticket tiers with limits", "Promo codes & early-bird pricing", "Co-host invitations", "Attendee Q&A board", "Photo gallery after event", "Refund window controls", "ICS / Google calendar export", "Reminder notifications"],
-      },
-      {
-        path: "/megaforum", title: "Megaforum", icon: MessageCircle,
+        capabilities: ["Ticket tiers with limits", "Promo codes & early-bird pricing", "Co-host invitations", "Attendee Q&A board", "Photo gallery after event", "Refund window controls", "ICS / Google calendar export", "Reminder notifications"] },
+      { path: "/megaforum", title: "Megaforum", icon: MessageCircle,
         blurb: "Long-form discussion forum with debates, polls, challenges and reputation.",
         features: ["Threaded debates", "Live polls", "Forum reputation", "Topic following", "Karma scoring", "Best-answer voting"],
         details: "Reddit-style long-form discussions with multi-level threading, karma, badges and topic subscriptions. Each topic has moderators and rules; users build reputation through upvoted answers and weekly debate challenges. AI summarizes long threads on demand.",
         pricing: "Free to read and post • Premium topics & AI summaries cost credits",
-        capabilities: ["Nested threading 8 levels deep", "Up/down voting with karma", "Best-answer marking", "Weekly debate prompts", "AI thread summarization (3 credits)", "Topic-level moderation", "User flair and badges", "Markdown editor with media"],
-      },
-      {
-        path: "/companions", title: "Character Companions", icon: Bot,
+        capabilities: ["Nested threading 8 levels deep", "Up/down voting with karma", "Best-answer marking", "Weekly debate prompts", "AI thread summarization (3 credits)", "Topic-level moderation", "User flair and badges", "Markdown editor with media"] },
+      { path: "/companions", title: "Character Companions", icon: Bot,
         blurb: "Chat with AI characters with persistent memory and unique personalities.",
         features: ["Custom personas", "Long-term memory", "Roleplay scenarios", "Voice replies", "Image generation in-chat", "Shareable companions"],
         details: "Create and chat with AI companions that remember everything — your name, preferences, ongoing storylines. Pick from preset personas (mentor, friend, historical figure, fictional character) or build your own with personality traits, voice, avatar and backstory. Share companions publicly or keep them private.",
         pricing: "5 credits per long conversation • Voice replies +2 credits • Image gen +3 credits",
-        capabilities: ["Custom personality builder", "Persistent multi-month memory", "Voice cloning per companion", "In-chat image generation", "Roleplay scene setting", "Public companion marketplace", "Save/export conversations", "NSFW filter toggle (18+)"],
-      },
-      {
-        path: "/emotion-economy", title: "Emotion Economy", icon: Heart,
+        capabilities: ["Custom personality builder", "Persistent multi-month memory", "Voice cloning per companion", "In-chat image generation", "Roleplay scene setting", "Public companion marketplace", "Save/export conversations", "NSFW filter toggle (18+)"] },
+      { path: "/emotion-economy", title: "Emotion Economy", icon: Heart,
         blurb: "Track, trade and mine your emotional currency — gamified mood network.",
         features: ["Mood wallet", "Emotion drops", "Insurance & futures", "Mining rewards", "Mood charts", "Social sharing"],
         details: "An experimental gamified network where your daily moods become a tradeable currency. Log emotions to mine tokens, buy insurance against bad streaks, invest in futures contracts on your own mood and trade emotion drops with friends. Pure entertainment — not financial.",
         pricing: "Free to log • Premium mining boosts & insurance in credits",
-        capabilities: ["Daily mood check-in", "Emotion token mining", "Mood-futures market", "Insurance policies", "Friend leaderboards", "Mood-based AI insights", "Streak rewards", "Public mood charts"],
-      },
-      {
-        path: "/referral", title: "Invite Friends", icon: Users,
+        capabilities: ["Daily mood check-in", "Emotion token mining", "Mood-futures market", "Insurance policies", "Friend leaderboards", "Mood-based AI insights", "Streak rewards", "Public mood charts"] },
+      { path: "/referral", title: "Invite Friends", icon: Users,
         blurb: "Earn recurring credits when friends join and subscribe.",
         features: ["Custom referral code", "Lifetime % rewards", "Leaderboard", "Fraud-protected", "Email & link sharing", "Tracking dashboard"],
         details: "Share your unique referral code. Every friend who signs up and spends credits earns you a recurring percentage for life. Anti-fraud filters detect duplicate signups and self-referrals. Real-time leaderboard rewards top recruiters with bonus credits.",
         pricing: "Free • You earn 10% lifetime of referred user spend",
-        capabilities: ["Custom personal code", "Shareable referral link", "Tracking dashboard with stats", "Monthly leaderboard prizes", "Anti-abuse fraud detection", "Tiered milestones (10/50/100 referrals)", "Auto-payout to credit wallet", "Email invite tool"],
-      },
-    ],
-  },
-  {
-    id: "dating",
+        capabilities: ["Custom personal code", "Shareable referral link", "Tracking dashboard with stats", "Monthly leaderboard prizes", "Anti-abuse fraud detection", "Tiered milestones (10/50/100 referrals)", "Auto-payout to credit wallet", "Email invite tool"] },
+    ] },
+  { id: "dating",
     title: "Dating & Relationships",
     icon: Heart,
     accent: "text-pink-500",
@@ -138,36 +116,27 @@ const CATEGORIES: Category[] = [
         features: ["AI compatibility score", "Date ideas planner", "Video verification", "Super-likes & boosts", "Distance filter", "Voice intros"],
         details: "Classic photo-first dating with modern AI on top. Filter by age, distance, interests, lifestyle and zodiac. Each profile gets an AI compatibility score based on bio analysis. Boost your profile, send super-likes, exchange voice intros and use the date planner to propose specific venues.",
         pricing: "Free swipes • Super-likes 1 credit • Boost 10 credits/hour • Verification free",
-        capabilities: ["Profile verification with selfie", "AI bio writer", "Date ideas with venue links", "Voice and video calls", "Mutual friends visibility", "Match expiration timers", "Incognito browsing (premium)", "Travel mode"],
-      },
-      {
-        path: "/anonymous-date", title: "Anonymous Date", icon: Lock,
+        capabilities: ["Profile verification with selfie", "AI bio writer", "Date ideas with venue links", "Voice and video calls", "Mutual friends visibility", "Match expiration timers", "Incognito browsing (premium)", "Travel mode"] },
+      { path: "/anonymous-date", title: "Anonymous Date", icon: Lock,
         blurb: "Match by personality first — photos reveal only after chemistry is proven.",
         features: ["Chemistry reports", "Red-flag scans", "Vibe decoder", "Reveal readiness", "Personality quizzes", "Voice-only mode"],
         details: "Photos stay hidden until you and your match both pass a chemistry threshold. AI analyzes your conversations for compatibility, red flags and shared values then issues a reveal-readiness score. Build connection through text, voice and personality games before seeing each other.",
         pricing: "5 credits per chemistry report • Reveal free once unlocked",
-        capabilities: ["AI chemistry score", "Red-flag scanner", "Vibe decoder for messages", "Personality quizzes", "Voice-only icebreakers", "Reveal-readiness meter", "Mutual reveal mechanic", "Profile anonymity toggle"],
-      },
-      {
-        path: "/best-friend", title: "AI Best Friend", icon: Bot,
+        capabilities: ["AI chemistry score", "Red-flag scanner", "Vibe decoder for messages", "Personality quizzes", "Voice-only icebreakers", "Reveal-readiness meter", "Mutual reveal mechanic", "Profile anonymity toggle"] },
+      { path: "/best-friend", title: "AI Best Friend", icon: Bot,
         blurb: "Always-on AI companion that remembers your life, moods and goals.",
         features: ["Mood journal", "Crisis check-ins", "Memory bank", "Daily nudges", "Voice replies", "Goal tracking"],
         details: "Your 24/7 AI friend who remembers your life — name, job, relationships, hopes, struggles. Get daily check-ins, mood support, goal nudges and crisis routing to real help if conversations turn dark. Voice replies make it feel natural; the memory bank means you never repeat yourself.",
         pricing: "5 credits per long session • Voice +2 credits • Crisis routing free",
-        capabilities: ["Persistent multi-year memory", "Daily mood check-in", "Crisis safety routing", "Goal and habit tracking", "Voice conversations", "Personality customization", "Photo & memory upload", "Privacy lock"],
-      },
-      {
-        path: "/membership-community", title: "Membership Community", icon: Crown,
+        capabilities: ["Persistent multi-year memory", "Daily mood check-in", "Crisis safety routing", "Goal and habit tracking", "Voice conversations", "Personality customization", "Photo & memory upload", "Privacy lock"] },
+      { path: "/membership-community", title: "Membership Community", icon: Crown,
         blurb: "Paid creator memberships with perks, livestreams and welcome DMs.",
         features: ["Tiered perks", "Fan persona AI", "Growth funnels", "Livestream briefs", "PPV content", "Paid DMs"],
         details: "Creators sell paid memberships with multiple tiers, each unlocking PPV content, paid DMs, exclusive livestreams and welcome gifts. AI analyzes fan personas, suggests growth funnels and drafts livestream briefs. Platform splits 85/15 with creators.",
         pricing: "Subscription set by creator • Platform takes 15%",
-        capabilities: ["Multiple subscription tiers", "PPV photos and videos", "Paid 1:1 DM unlocks", "Welcome DM automation", "Livestream scheduling", "AI fan-persona reports", "Growth funnel suggestions", "Stripe Connect payouts"],
-      },
-    ],
-  },
-  {
-    id: "mystical",
+        capabilities: ["Multiple subscription tiers", "PPV photos and videos", "Paid 1:1 DM unlocks", "Welcome DM automation", "Livestream scheduling", "AI fan-persona reports", "Growth funnel suggestions", "Stripe Connect payouts"] },
+    ] },
+  { id: "mystical",
     title: "Mystical & Spiritual",
     icon: Sparkles,
     accent: "text-purple-500",
@@ -179,8 +148,7 @@ const CATEGORIES: Category[] = [
         features: ["8 advanced tools", "Karmic debt tracker", "Soul tribes", "Death reflections", "Animal elementals", "Regression sessions"],
         details: "Eight interconnected tools for past-life exploration. Get a base reading then dive deeper with animal elemental scans, karmic debt analysis, soul tribe matching, regression sessions and death reflection journaling. All entertainment-purpose; results shareable as cinematic cards.",
         pricing: "8 credits per reading • Deep tools 5-12 credits each",
-        capabilities: ["Base past-life reading", "Animal elemental scan", "Karmic debt tracker", "Soul tribe matching", "Death reflection journal", "Regression voice sessions", "Past-life timeline visualizer", "Shareable cinematic cards"],
-      },
+        capabilities: ["Base past-life reading", "Animal elemental scan", "Karmic debt tracker", "Soul tribe matching", "Death reflection journal", "Regression voice sessions", "Past-life timeline visualizer", "Shareable cinematic cards"] },
       { path: "/astrology", title: "Astrology", icon: Star, blurb: "Daily horoscopes, birth charts and compatibility reports.", features: ["Birth chart builder", "Daily horoscopes", "Compatibility", "Transit alerts", "Synastry charts", "Solar return"], details: "Full Western astrology suite with accurate ephemeris. Build natal charts, read daily and monthly horoscopes, run synastry compatibility with anyone, get transit alerts for major aspects and explore solar/lunar returns. AI interpretations on every chart.", pricing: "Daily horoscope free • Birth chart 5 credits • Compatibility 8 credits", capabilities: ["Accurate ephemeris birth chart", "Daily and weekly horoscopes", "Synastry compatibility", "Composite charts", "Transit alerts (push)", "Solar & lunar return charts", "Saved chart library", "AI interpretation per aspect"] },
       { path: "/numerology", title: "Numerology", icon: Sparkles, blurb: "Name and birth-date numerology with full life-path breakdown.", features: ["Life-path report", "Lucky numbers", "Personal year cycles", "Shareable cards", "Name analysis", "Compatibility"], details: "Pythagorean and Chaldean numerology. Get your life-path number, expression, soul urge, personality, personal year cycles and lucky numbers. Run compatibility between two names and birthdays. All reports exportable as shareable cards.", pricing: "Life-path 5 credits • Compatibility 8 credits", capabilities: ["Life-path calculation", "Expression & soul-urge numbers", "Personal year cycles", "Lucky number generator", "Name compatibility", "Master number alerts", "Shareable result cards", "Saved profile library"] },
       { path: "/dream-journal", title: "Dream Analyzer", icon: Brain, blurb: "Log dreams, get AI interpretation, track moods and battle dream interpretations.", features: ["Mood-linked entries", "AI interpretations", "Dream battles", "Pattern detection", "Symbol library", "Voice logging"], details: "Log dreams in text or voice, link them to your mood that day, and get AI interpretations referencing Jungian symbols, recurring themes and personal patterns. Dream battles let friends interpret each other's dreams and vote on the best take.", pricing: "AI interpretation 3 credits per dream • Pattern reports 5 credits", capabilities: ["Voice and text logging", "AI symbol interpretation", "Recurring pattern detection", "Mood linkage", "Dream battle multiplayer", "Symbol library reference", "Export dream book PDF", "Privacy lock per entry"] },
@@ -194,8 +162,7 @@ const CATEGORIES: Category[] = [
       { path: "/time-capsule", title: "Time Capsule", icon: Clock, blurb: "Create capsules that open at a future date with messages, photos and videos.", features: ["Future open dates", "Media attachments", "Recipient lists", "Reminders", "Group capsules", "Public showcase"], details: "Seal letters, photos, videos and voice messages into capsules that unlock on a future date — birthdays, anniversaries, decades from now. Send to specific recipients or your future self. Group capsules let friends contribute together.", pricing: "Free up to 5 capsules • Premium €5/mo unlimited", capabilities: ["Text, photo, video, voice content", "Custom unlock date", "Recipient lists", "Group capsules", "Auto reminder emails", "Public showcase opt-in", "Capsule library archive", "Premium unlimited slots"] },
       { path: "/time-reversal", title: "Time Reversal", icon: Clock, blurb: "Age backwards, lock ages, glimpse the future. Premium time-manipulation features.", features: ["Time travel speed", "Age locks", "Future glimpse", "Paradox posts", "Memory restoration", "Reverse timeline"], details: "Visual time-manipulation experiments on your profile. Age your photos backwards, lock your displayed age, glimpse AI-generated future versions of yourself and post paradox content to a reverse timeline. Pure entertainment.", pricing: "Premium €7/mo • Per-glimpse 8 credits", capabilities: ["Photo age reversal", "Profile age lock", "Future face glimpse", "Paradox post timeline", "Memory restoration tool", "Reverse-order feed", "Time speed controls", "Premium unlimited usage"] },
       { path: "/holographic-avatars", title: "Holographic Avatars", icon: Sparkles, blurb: "Create autonomous 3D AI avatars that evolve, battle and breed.", features: ["Avatar creator", "PvP battles", "Breeding", "Marketplace", "Evolution stages", "AI autonomy"], details: "Design 3D holographic avatars with unique traits, voices and personalities. They evolve over time, battle other avatars in PvP arenas, breed to create offspring with mixed traits and can be sold on the marketplace. Powered by Three.js.", pricing: "Creation 15 credits • Battle entry 3 credits • Marketplace 15% commission", capabilities: ["3D avatar customizer", "Trait & personality builder", "PvP battle arena", "Breeding system", "Evolution stages", "Marketplace for trading", "AI autonomous behavior", "Avatar diary"] },
-    ],
-  },
+    ] },
   {
     id: "ai-tools",
     title: "AI Tools & Studios",
@@ -224,8 +191,7 @@ const CATEGORIES: Category[] = [
       { path: "/lie-detector", title: "Lie Detector", icon: Shield, blurb: "Voice, text, body-language and screenshot truth scoring. Entertainment only.", features: ["Voice heatmaps", "Body language", "Chat imports", "Detective ranks", "Screenshot analysis", "Multi-modal scoring"], details: "Entertainment-only truth scoring across multiple modalities. Voice tonality heatmaps, body-language analysis from video, chat screenshot pattern detection. Rank up as a detective by analyzing more samples. Not forensic-grade.", pricing: "5 credits per voice scan • 8 per video scan", capabilities: ["Voice stress heatmap", "Body language video scan", "Chat screenshot analysis", "Multi-modal combined score", "Detective rank progression", "Sample history", "Shareable verdicts", "Disclaimer-locked outputs"] },
       { path: "/stock-content-library", title: "Stock Content Library", icon: ImageIcon, blurb: "Royalty-free AI-generated images, videos and audio.", features: ["Curated packs", "Commercial license", "Collections", "Daily drops", "Search by mood", "Bulk download"], details: "A growing library of AI-generated stock content — images, short videos, audio loops — all with commercial license. New packs daily, curated by theme. Search by mood, color or subject. Bulk download discounts.", pricing: "Single asset 3-10 credits • Pack discounts available", capabilities: ["Image, video, audio library", "Commercial license on all assets", "Curated theme packs", "Daily new drops", "Search by mood/color/subject", "Bulk download discounts", "Save to collections", "Submit your own (with approval)"] },
       { path: "/virtual-influencer-agency", title: "Virtual Influencer Agency", icon: Crown, blurb: "Spin up an AI influencer, grow followers, monetize.", features: ["Persona builder", "Content calendar", "Brand deals", "Earnings", "Auto-posting", "Voice & video"], details: "Create a fully AI influencer with custom persona, looks and voice. Auto-generate content on schedule, grow followers organically, accept brand deal offers and track earnings — all from one dashboard.", pricing: "Persona 30 credits • Auto-posts 5 credits each • Brand deals 15% commission", capabilities: ["Persona & look builder", "Content calendar with auto-post", "Voice & video generation", "Brand deal marketplace", "Earnings dashboard", "Multi-platform export", "Engagement analytics", "Multiple influencer profiles"] },
-    ],
-  },
+    ] },
   {
     id: "health",
     title: "Health & Wellness",
@@ -240,8 +206,7 @@ const CATEGORIES: Category[] = [
       { path: "/nutrition-hub", title: "Nutrition Hub", icon: Apple, blurb: "Recipes, meal plans, ingredient scanner and dietary subscriptions.", features: ["Meal plans", "Ingredient scanner", "Recipes", "Subscriptions", "Allergen alerts", "Shopping lists"], details: "AI-generated weekly meal plans tailored to your diet (vegan, keto, mediterranean, etc.). Scan barcodes or photos of ingredients to get nutritional info. Recipe library with auto-generated shopping lists. Subscriptions unlock personalized macros and chef-curated plans.", pricing: "Meal plan 8 credits • Scanner 2 credits • Premium €9/mo", capabilities: ["AI weekly meal plans", "Barcode & photo ingredient scanner", "Recipe library 1000+", "Auto shopping lists", "Allergen alerts", "Dietary filters", "Premium chef plans", "Macro targets"] },
       { path: "/phobia-trading", title: "Phobia Trading", icon: Brain, blurb: "Treat phobias in tiers, track progress, trade success stories.", features: ["Phobia treatments", "Progress tracking", "Trades", "Subscriptions", "Exposure modules", "Community support"], details: "Tiered phobia treatment programs combining CBT, gradual exposure and visualization. Track progress across sessions, trade success stories with others, join community support groups. Premium tier includes 1:1 AI coaching.", pricing: "Per-tier 15-40 credits • Premium €12/mo", capabilities: ["10+ phobia treatment tracks", "Gradual exposure modules", "Progress dashboard", "Success story sharing", "Community support groups", "Premium AI coaching", "Crisis safety routing", "Therapist referrals"] },
       { path: "/safety-prevention", title: "Safety & Prevention", icon: Shield, blurb: "Bullying prevention, online safety education and reporting.", features: ["Safety library", "Reports", "Family setup", "Resources", "Bullying detection", "Privacy tools"], details: "Education and tools for online safety — bullying detection in chats, privacy hardening guides, family setup for kids and teens, and report flow for incidents. Resources for victims include legal contacts and crisis lines.", pricing: "Free", capabilities: ["Bullying detection in DMs", "Privacy hardening guide", "Family safety setup", "Incident reporting flow", "Resource library", "Legal contact directory", "Crisis line directory", "Age-gated content controls"] },
-    ],
-  },
+    ] },
   {
     id: "sports",
     title: "Sports Arenas",
@@ -257,8 +222,7 @@ const CATEGORIES: Category[] = [
       { path: "/tennis-arena", title: "Tennis Arena", icon: Trophy, blurb: "Tennis tournaments and player progression.", features: ["Tournaments", "Player growth", "Rankings", "Matches", "Grand slams", "Doubles"], details: "Run a tennis career — train your player, enter tournaments from local to Grand Slam, climb the rankings. Doubles partnerships with other users. Surface specialization (clay/grass/hard).", pricing: "Free to play • Entry fees for premium tournaments in credits", capabilities: ["Player progression", "Tournament ladder", "Grand Slam events", "Doubles partnerships", "Surface specialization", "Live rankings", "Match replays", "Coaching"] },
       { path: "/american-football-arena", title: "American Football", icon: Trophy, blurb: "Full NFL-style fantasy with transfers and training.", features: ["Teams", "Leagues", "Transfers", "Stadiums", "Playbook designer", "Drafts"], details: "Full NFL-style management — draft players, design playbooks, manage cap space, build stadiums, compete through regular season and playoffs to a championship.", pricing: "Free to play • Premium playbooks & boosts in credits", capabilities: ["NFL-style drafts", "Playbook designer", "Cap space management", "Stadium upgrades", "Regular season + playoffs", "Championship payout", "Trade deadline", "Stat tracking"] },
       { path: "/gp-racing", title: "GP Fantasy Racing", icon: Car, blurb: "Build cars, fantasy teams, races and subscriptions.", features: ["Car builder", "Fantasy teams", "Races", "Leaderboard", "Pit strategy", "Driver development"], details: "Build GP-style cars, manage two-driver teams, set pit strategy, race through a full calendar of Grand Prix events. Subscriptions unlock advanced telemetry and engineering tools.", pricing: "Free to play • Premium €9/mo for engineering tools", capabilities: ["Car builder with components", "Two-driver teams", "Pit strategy", "Full season calendar", "Driver development", "Premium telemetry", "Engineering tools", "Live leaderboards"] },
-    ],
-  },
+    ] },
   {
     id: "entertainment",
     title: "Entertainment & Lifestyle",
@@ -281,10 +245,8 @@ const CATEGORIES: Category[] = [
       { path: "/cooking", title: "Cooking Hub", icon: ChefHat, blurb: "AI recipes, chef chat, meal plans and scanner.", features: ["AI recipes", "Chef chat", "Meal plans", "Scanner", "Pantry tracking", "Video tutorials"], details: "Generate recipes from ingredients you have, chat with an AI chef for technique questions, build weekly meal plans, scan pantry items to track inventory. Video tutorials for cooking techniques.", pricing: "AI recipe 3 credits • Meal plan 8 credits • Chef chat 2 credits/session", capabilities: ["AI recipe generation from ingredients", "AI chef chat", "Weekly meal plans", "Pantry scanner", "Inventory tracking", "Video technique tutorials", "Save & share recipes", "Dietary filters"] },
       { path: "/coffee", title: "Coffee Community", icon: Coffee, blurb: "Cafe check-ins, ratings, dating events and reviews.", features: ["Cafe check-ins", "Reviews", "Events", "Matches", "Roast library", "Brewing guides"], details: "Coffee enthusiast community. Check in at cafes, leave reviews, browse roast library, follow brewing guides. Coffee dating events match people over shared coffee preferences in local cafes.", pricing: "Free • Premium roast guides 3 credits", capabilities: ["Cafe check-in with map", "Review system", "Roast library", "Brewing guides", "Coffee dating events", "Local meetups", "Preference matching", "Photo gallery"] },
       { path: "/virtual-pet", title: "Virtual Pet", icon: PawPrint, blurb: "Adopt, feed, train and breed virtual pets with mini-games.", features: ["Pet care", "Mini-games", "Breeding", "Battles", "Customization", "Pet shop"], details: "Adopt and raise virtual pets — feed, train, play mini-games, breed for unique offspring, battle other pets. Customize appearances, buy accessories in the pet shop, build a lasting bond. Pets evolve over time.", pricing: "Free starter pet • Premium pets & shop items in credits", capabilities: ["Multiple pet species", "Care mechanics (feed/play/train)", "Mini-games for XP", "Breeding system", "PvP battles", "Customization & accessories", "Pet shop", "Evolution stages"] },
-    ],
-  },
-  {
-    id: "marketplaces",
+    ] },
+  { id: "marketplaces",
     title: "Marketplaces & Commerce",
     icon: Store,
     accent: "text-blue-500",
@@ -296,66 +258,50 @@ const CATEGORIES: Category[] = [
         features: ["Listings", "Favorites", "Submissions", "Verified sellers", "Photo galleries", "Map search"],
         details: "Full real-estate marketplace for residential, commercial and land listings. Sellers go through Stripe Connect onboarding before they can publish. Buyers browse by location, price, type, save favorites, contact sellers directly. Verified seller badges and AI-assisted listing descriptions.",
         pricing: "Listing fee 20 credits • Featured boost 50 credits • Platform commission applies on successful sale",
-        capabilities: ["Residential, commercial, land categories", "Photo gallery up to 30 images", "Map-based search", "Save favorites", "Direct seller contact", "Verified seller badges", "AI listing description writer", "Featured boost slots", "Stripe Connect required to list", "Submission moderation queue"],
-      },
-      {
-        path: "/marketplace", title: "Skills Marketplace", icon: Briefcase,
+        capabilities: ["Residential, commercial, land categories", "Photo gallery up to 30 images", "Map-based search", "Save favorites", "Direct seller contact", "Verified seller badges", "AI listing description writer", "Featured boost slots", "Stripe Connect required to list", "Submission moderation queue"] },
+      { path: "/marketplace", title: "Skills Marketplace", icon: Briefcase,
         blurb: "Hire freelancers or sell skills with responses and subscriptions.",
         features: ["Skill listings", "Responses", "Notifications", "Subscriptions", "Portfolio uploads", "Reviews"],
         details: "Hire freelancers or sell your skills — design, writing, coding, marketing, voice, music, more. Sellers need Stripe Connect to list. Buyers post requests; sellers respond with quotes. Escrow holds payment until delivery confirmation. Star reviews build seller reputation.",
         pricing: "Listing free • 10% platform commission per completed gig",
-        capabilities: ["Skill listings with packages", "Buyer request board", "Quote responses", "Escrow on every order", "Portfolio uploads", "Star reviews", "Subscription gigs (recurring)", "Notification center", "Stripe Connect required", "Dispute resolution"],
-      },
-      {
-        path: "/skill-swap", title: "Global Skill Swap", icon: Globe,
+        capabilities: ["Skill listings with packages", "Buyer request board", "Quote responses", "Escrow on every order", "Portfolio uploads", "Star reviews", "Subscription gigs (recurring)", "Notification center", "Stripe Connect required", "Dispute resolution"] },
+      { path: "/skill-swap", title: "Global Skill Swap", icon: Globe,
         blurb: "Trade skills 1:1 globally — no money, just exchange.",
         features: ["Skill profiles", "Matching", "Settings", "Worldwide", "Time bank", "Video sessions"],
         details: "Pure barter — trade skills with anyone in the world without money. Set what you offer and what you want, AI matches you with complementary partners. Time-bank tracks fair exchange. Video sessions built in.",
         pricing: "Free — no money exchanged",
-        capabilities: ["Offer/want skill profiles", "AI matching algorithm", "Time bank tracking", "Built-in video sessions", "Cross-timezone scheduling", "Review system", "Worldwide reach", "Multi-language matching"],
-      },
-      {
-        path: "/bazaar", title: "Bazaar", icon: Store,
+        capabilities: ["Offer/want skill profiles", "AI matching algorithm", "Time bank tracking", "Built-in video sessions", "Cross-timezone scheduling", "Review system", "Worldwide reach", "Multi-language matching"] },
+      { path: "/bazaar", title: "Bazaar", icon: Store,
         blurb: "Marketplace with escrow, disputes, reviews and ratings.",
         features: ["Escrow protection", "Disputes", "Seller ratings", "Saved searches", "Category filters", "Local pickup"],
         details: "General marketplace for new and used goods. Sellers complete Stripe Connect onboarding before listing. Every transaction is an escrow destination charge — Stripe deducts the platform commission and routes the remainder to the seller atomically. Buyer protection includes dispute resolution and refunds.",
         pricing: "Listing free • 10% platform commission auto-deducted by Stripe • Featured listings in credits",
-        capabilities: ["Stripe Connect required to sell", "Escrow on every order via destination charge", "Automatic commission deduction at Stripe level", "Buyer dispute resolution", "Star reviews + seller ratings", "Saved searches with alerts", "Category & condition filters", "Local pickup or shipping", "Photo galleries", "Daily reconciliation cron", "Indexed for million+ orders"],
-      },
-      {
-        path: "/coupon-marketplace", title: "Coupon Marketplace", icon: Ticket,
+        capabilities: ["Stripe Connect required to sell", "Escrow on every order via destination charge", "Automatic commission deduction at Stripe level", "Buyer dispute resolution", "Star reviews + seller ratings", "Saved searches with alerts", "Category & condition filters", "Local pickup or shipping", "Photo galleries", "Daily reconciliation cron", "Indexed for million+ orders"] },
+      { path: "/coupon-marketplace", title: "Coupon Marketplace", icon: Ticket,
         blurb: "Buy and sell verified coupons with cashback and battles.",
         features: ["Verified coupons", "Cashback", "Coupon battles", "Wishlist", "Brand directory", "Expiry alerts"],
         details: "Buy and sell verified discount coupons for major brands. AI verification reduces fraud. Cashback rewards on every purchase. Coupon battles let users vote on best deals. Wishlist with expiry alerts. Sellers need Stripe Connect.",
         pricing: "Listing free • 10% commission on sold coupons • Cashback funded from commission pool",
-        capabilities: ["AI coupon verification", "Cashback on purchases", "Coupon battles with voting", "Wishlist & expiry alerts", "Brand directory", "Stripe Connect required to sell", "Buyer protection", "Reviews", "Local & online deals"],
-      },
-      {
-        path: "/auction", title: "Online Auctions", icon: Gavel,
+        capabilities: ["AI coupon verification", "Cashback on purchases", "Coupon battles with voting", "Wishlist & expiry alerts", "Brand directory", "Stripe Connect required to sell", "Buyer protection", "Reviews", "Local & online deals"] },
+      { path: "/auction", title: "Online Auctions", icon: Gavel,
         blurb: "Live auctions with bidding, escrow and withdrawals.",
         features: ["Live bidding", "Escrow", "Photo galleries", "Disputes", "Reserve prices", "Auto-bidding"],
         details: "Live auction platform — sellers list with reserve price, buyers bid in real time with auto-bid support. Winner pays via Stripe Connect with funds held in escrow until delivery confirmed. Sellers need verified Stripe Connect onboarding.",
         pricing: "Listing fee 15 credits • 10% commission on winning bid auto-deducted",
-        capabilities: ["Real-time bidding", "Auto-bid (max-bid) support", "Reserve price option", "Photo galleries up to 30", "Stripe Connect escrow", "Auction extensions (anti-snipe)", "Bid history", "Dispute resolution", "Bidder watchlist", "Win/loss notifications"],
-      },
-      {
-        path: "/collectibles", title: "Collectibles", icon: Sparkles,
+        capabilities: ["Real-time bidding", "Auto-bid (max-bid) support", "Reserve price option", "Photo galleries up to 30", "Stripe Connect escrow", "Auction extensions (anti-snipe)", "Bid history", "Dispute resolution", "Bidder watchlist", "Win/loss notifications"] },
+      { path: "/collectibles", title: "Collectibles", icon: Sparkles,
         blurb: "Trade collectibles, rarities, evolution and achievements.",
         features: ["Rarities", "Trades", "Achievements", "Evolution", "Mystery boxes", "AI rarity scoring"],
         details: "Complete collectibles ecosystem with 18 features. Generate AI items, customize them, list on marketplace with Stripe Connect, P2P trade with escrow (no money), open mystery boxes, get AI rarity predictions, climb leaderboards and join guilds. Mature trading economy with full audit trails.",
         pricing: "Generate item 10 credits • Customize 12 credits • AI rarity 8 credits • Marketplace 15% commission • Trading free (P2P escrow)",
-        capabilities: ["AI item generation (10 cr)", "AI item customizer (12 cr)", "My Collection inventory", "Marketplace with Stripe Connect (15%)", "P2P trading hub with escrow (no money)", "Price alerts (5 cr)", "Mystery boxes", "Box simulator (3 cr)", "Daily rewards & VIP", "AI rarity predictor (8 cr)", "AI collection advisor (5 cr)", "Leaderboard", "Achievements", "Guilds", "Buy credits", "Purchase history"],
-      },
-      {
-        path: "/antique-appraisal", title: "Antique Appraisal", icon: Gem,
+        capabilities: ["AI item generation (10 cr)", "AI item customizer (12 cr)", "My Collection inventory", "Marketplace with Stripe Connect (15%)", "P2P trading hub with escrow (no money)", "Price alerts (5 cr)", "Mystery boxes", "Box simulator (3 cr)", "Daily rewards & VIP", "AI rarity predictor (8 cr)", "AI collection advisor (5 cr)", "Leaderboard", "Achievements", "Guilds", "Buy credits", "Purchase history"] },
+      { path: "/antique-appraisal", title: "Antique Appraisal", icon: Gem,
         blurb: "AI estimates antique value with photos and collections.",
         features: ["AI appraisal", "Collections", "Marketplace", "Credit-based", "Photo analysis", "Historical comparables"],
         details: "Upload photos of antiques, get AI valuation with historical comparables and condition assessment. Build a collection portfolio with total estimated value. List for sale in the integrated marketplace (Stripe Connect required) or keep private.",
         pricing: "Appraisal 8 credits • Collection storage free • Marketplace 10% commission",
-        capabilities: ["AI valuation from photos", "Historical comparables lookup", "Condition assessment", "Collection portfolio", "Total value tracking", "Integrated marketplace listing", "Stripe Connect required to sell", "Shareable certificates", "Insurance valuation export", "Expert review request (premium)"],
-      },
-    ],
-  },
+        capabilities: ["AI valuation from photos", "Historical comparables lookup", "Condition assessment", "Collection portfolio", "Total value tracking", "Integrated marketplace listing", "Stripe Connect required to sell", "Shareable certificates", "Insurance valuation export", "Expert review request (premium)"] },
+    ] },
   {
     id: "learning",
     title: "Learning & Growth",
@@ -369,8 +315,7 @@ const CATEGORIES: Category[] = [
       { path: "/brain-duel", title: "BrainDuel", icon: Trophy, blurb: "Real-time knowledge battles with powerups, leagues and SRS.", features: ["Live matches", "Leagues", "Powerups", "SRS cards", "Custom topics", "Tournament mode"], details: "Real-time 1v1 knowledge battles across topics — geography, science, history, pop culture. Powerups add strategy (50/50, freeze, double points). Promotion/relegation leagues. SRS flashcards help you grind weak topics.", pricing: "Duel 2 credits • Powerups 1 credit each • Leagues free", capabilities: ["Live 1v1 battles", "20+ topics", "Powerups (50/50, freeze, double)", "Promotion/relegation leagues", "SRS card grinding", "Tournament mode", "Custom topic battles", "Friend challenges"] },
       { path: "/kids-channel", title: "Kids Channel", icon: Video, blurb: "Safe video channel for ages 6–12 with parental controls.", features: ["Curated videos", "Parental gate", "Watch history", "Recommendations", "Time limits", "No ads"], details: "Curated, safe video channel for ages 6-12. Parental gate locks access, time limits prevent overuse, no ads, no comments, only pre-approved educational and entertainment content. Watch history visible to parents.", pricing: "Subscription €5/mo per child profile", capabilities: ["Curated educational videos", "Parental gate", "Watch history for parents", "Time limit controls", "No ads, no comments", "Age-appropriate recommendations", "Multiple child profiles", "Offline download (premium)"] },
       { path: "/coloring-pages", title: "Coloring Pages", icon: Palette, blurb: "AI-generated coloring pages with contests, collabs and POD.", features: ["AI pages", "Contests", "Collabs", "Print-on-demand", "Color palettes", "Sharing"], details: "Generate custom coloring pages from any prompt with AI. Enter weekly contests, collaborate with other artists, order print-on-demand booklets shipped to your door. Color digitally or print and color physically.", pricing: "Generate 3 credits • POD prices vary", capabilities: ["AI page generation from prompt", "Weekly contests", "Artist collaborations", "Print-on-demand booklets", "Digital coloring tool", "Color palette suggestions", "Public gallery", "Save favorites"] },
-    ],
-  },
+    ] },
   {
     id: "kids",
     title: "Kids Academy (6–12) & Teen (13–18)",
@@ -385,8 +330,7 @@ const CATEGORIES: Category[] = [
       { path: "/kids-drawing-buddy", title: "Drawing Buddy", icon: Palette, blurb: "Guided drawing lessons with AI feedback.", features: ["Drawing lessons", "AI feedback", "Subscriptions", "Gallery", "Step-by-step", "Skill levels"], details: "AI-guided drawing lessons from stick figures to advanced shading. Upload your drawing, AI gives encouraging feedback and improvement tips. Personal gallery and public showcase (moderated).", pricing: "Included in Kids Academy subscription", capabilities: ["Step-by-step lessons", "AI drawing feedback", "Skill level progression", "Personal gallery", "Moderated public showcase", "Multiple art styles", "Tool tutorials", "Certificates"] },
       { path: "/kids-reading-companion", title: "Reading Companion", icon: BookOpen, blurb: "Reading practice with audio, sessions and credits.", features: ["Reading sessions", "Audio", "Levels", "Subscriptions", "Pronunciation help", "Progress tracking"], details: "Reading practice with AI companion. Read aloud — AI listens and helps with pronunciation. Multiple reading levels, vast story library, progress tracking and parent reports.", pricing: "Included in Kids Academy subscription", capabilities: ["Read-aloud sessions", "Pronunciation correction", "Multiple reading levels", "Story library", "Progress tracking", "Parent reports", "Audio recordings", "Vocabulary builder"] },
       { path: "/teen-career-counselor", title: "Career Counselor", icon: Briefcase, blurb: "Career guidance for teens with AI advisor.", features: ["Career paths", "Aptitude", "Advisor", "Resources", "University guides", "Internship leads"], details: "Career exploration for ages 13-18. AI advisor based on aptitude tests, personality and interests. Maps career paths with required education, salary ranges, university programs and internship leads.", pricing: "Subscription €7/mo", capabilities: ["AI career advisor", "Aptitude tests", "Personality assessment", "Career path mapping", "University guides", "Internship leads", "Salary ranges", "Resource library"] },
-    ],
-  },
+    ] },
   {
     id: "jobs",
     title: "Work & Careers",
@@ -401,8 +345,7 @@ const CATEGORIES: Category[] = [
       { path: "/jobs/career-path", title: "Career Path", icon: GraduationCap, blurb: "Visualize your career trajectory with AI guidance.", features: ["Path nodes", "Skill gaps", "Recommendations", "Goals", "Salary projections", "Course links"], details: "Visualize your career as branching paths — current role, target role, intermediate steps. AI identifies skill gaps, recommends courses and certifications, projects salary growth and tracks goals.", pricing: "Free basic • Premium €5/mo for AI deep analysis", capabilities: ["Career path visualization", "Skill gap analysis", "Course recommendations", "Certification recommendations", "Salary projections", "Goal tracking", "AI deep analysis (premium)", "Multiple path comparison"] },
       { path: "/jobs/headhunters", title: "Headhunters", icon: Search, blurb: "Hire or be hired by professional headhunters.", features: ["Headhunter profiles", "Engagements", "Verification", "Payments", "Commission tracking", "Candidate pools"], details: "Marketplace for professional headhunters. Companies hire headhunters for hard-to-fill roles, headhunters earn commission per placement. Verified profiles, candidate pools, commission tracking. Stripe Connect for payments.", pricing: "Commission rates vary • Platform 10%", capabilities: ["Verified headhunter profiles", "Engagement contracts", "Candidate pool management", "Commission tracking", "Stripe Connect payments", "Review system", "Specialization filters", "Success metrics"] },
       { path: "/jobs/ai-jd-writer", title: "AI JD Writer", icon: PenTool, blurb: "Generate full job descriptions from a brief.", features: ["AI generation", "Templates", "Drafts", "Diversity", "Compensation suggestions", "Multi-language"], details: "Generate complete job descriptions from a brief — title, responsibilities, requirements, benefits, compensation suggestions, diversity-inclusive language. Multi-language output for global hiring.", pricing: "5 credits per generation", capabilities: ["AI JD generation", "Template library", "Save drafts", "Diversity-inclusive language", "Compensation suggestions", "Multi-language output", "Industry-specific templates", "Tone adjustments"] },
-    ],
-  },
+    ] },
   {
     id: "brand-arena",
     title: "Brand Arena",
@@ -414,8 +357,7 @@ const CATEGORIES: Category[] = [
       { path: "/brand-battle/hub", title: "Arena Hub", icon: Sparkles, blurb: "All 20 arena features in one place.", features: ["20 features", "Tribes", "Investments", "Stocks", "Predictions", "Sponsorship tiers"], details: "Central hub for all 20+ Brand Arena features. Track your tribes, manage brand stock portfolio, invest in rising brands, view leaderboards, claim sponsorship tier perks, follow battle history.", pricing: "Free hub access • Premium features per tier", capabilities: ["Tribe tracking", "Brand stock portfolio", "Brand investment", "Prediction markets", "Tournament tracking", "Leaderboards", "Sponsorship tier perks", "Battle history archive"] },
       { path: "/sponsor-registration", title: "Become a Sponsor", icon: Crown, blurb: "Onboard your brand as an arena sponsor.", features: ["Registration", "Verification", "Branding", "Events", "Tier selection", "Onboarding"], details: "Onboard your brand as an arena sponsor. Pick a tier (Bronze/Silver/Gold/Enterprise), get verified, upload branding, scheduled events and campaigns. Enterprise unlocks API access and dedicated account manager.", pricing: "Tiers from €99/mo to Enterprise custom pricing", capabilities: ["Tier selection (Bronze to Enterprise)", "Brand verification", "Logo & branding upload", "Event scheduling", "Campaign management", "Enterprise API access", "Dedicated account manager (Enterprise)", "Priority support SLA"] },
       { path: "/sponsor-dashboard", title: "Sponsor Dashboard", icon: Building2, blurb: "Manage campaigns, AI insights, API keys.", features: ["Campaigns", "AI insights", "API keys", "Earnings", "Audience analytics", "Auto-bidding"], details: "Sponsor dashboard for managing all campaigns, viewing AI-driven insights on audience and ROI, generating API keys for integrations, tracking earnings from arena participation. Auto-bidding for premium ad slots.", pricing: "Included in sponsorship tier", capabilities: ["Campaign management", "AI audience insights", "ROI tracking", "API key generation", "Earnings dashboard", "Auto-bidding for ad slots", "Audience analytics", "Export reports"] },
-    ],
-  },
+    ] },
   {
     id: "megatalent",
     title: "Megatalent",
@@ -425,8 +367,7 @@ const CATEGORIES: Category[] = [
     sections: [
       { path: "/megatalent", title: "Megatalent Hub", icon: Crown, blurb: "Browse talents by category, vote, tip and subscribe.", features: ["Categories", "Voting", "Tips", "Subscriptions", "Watch parties", "Stories"], tag: "Premium", details: "Premium talent competition where users showcase abilities (music, dance, comedy, art, sports, anything). Browse by category, vote, tip in credits, subscribe to favorite talents. Watch parties for live performances. 24-hour stories. Winners get 80% with 20% to platform; 100k bonus votes available.", pricing: "Voting free • Tips 1-100 credits • Subscriptions vary • Winner payout 80/20 escrow", capabilities: ["Browse by talent category", "Voting & tipping", "Creator subscriptions", "Watch parties for live shows", "24h stories", "80/20 escrow payouts", "100k bonus votes for nominees", "Featured tournaments", "Verified Founder badges"] },
       { path: "/megatalent/battle-results", title: "Battle Results", icon: Trophy, blurb: "Tournament brackets and winner payouts.", features: ["Brackets", "Live votes", "Winners", "Payouts", "Replay archive", "Vote audit"], details: "Tournament bracket visualization with live vote counts, winner announcements, payout tracking and full vote audit trail. Replays of past battles available. Transparency dashboard for every payout.", pricing: "Free to view", capabilities: ["Live bracket visualization", "Real-time vote counts", "Winner announcements", "Payout tracking", "Full vote audit trail", "Battle replay archive", "Transparency dashboard", "Notification on results"] },
-    ],
-  },
+    ] },
   {
     id: "fundraising",
     title: "Fundraising",
@@ -442,10 +383,8 @@ const CATEGORIES: Category[] = [
       { path: "/fundraising/student", title: "Student Support (5%)", icon: GraduationCap, blurb: "Tuition, textbooks and student emergencies.", features: ["Verified students", "Milestones", "Lowest fee", "Updates", "School partnerships", "Scholarship matching"], details: "Fundraise for tuition, textbooks, equipment, student emergencies. Verified student status required. Milestone payouts tied to academic progress. School partnerships for direct disbursement. 5% lowest fee.", pricing: "5% platform fee (lowest) • Stripe fees separate", capabilities: ["Student verification", "Academic milestone payouts", "School direct disbursement", "Scholarship matching tool", "Update timeline", "Donor receipts", "Recurring donations", "Anonymous donor option"] },
       { path: "/fundraising/crisis", title: "Crisis Relief (8%)", icon: AlertTriangle, blurb: "Disaster and crisis response with partner orgs.", features: ["Partner orgs", "Distribution", "Higher overhead", "Real-time", "Aid tracking", "Volunteer coordination"], details: "Disaster relief and crisis response — natural disasters, conflicts, humanitarian emergencies. Partnered with vetted aid orgs for distribution. Real-time aid tracking. 8% fee covers higher overhead. Volunteer coordination tools included.", pricing: "8% platform fee (covers vetting overhead) • Stripe fees separate", capabilities: ["Vetted partner org network", "Aid distribution tracking", "Real-time crisis updates", "Volunteer coordination", "Direct payout to partners", "Transparency reports", "Anonymous donations", "Featured spots for urgent crises"] },
       { path: "/fundraising/talent", title: "Talent Sponsorship (10%)", icon: Star, blurb: "Sponsor emerging talent — highest creator support.", features: ["Talent matching", "Recurring", "Approval flow", "Stripe Connect", "Mentorship", "Progress reports"], details: "Sponsor emerging talent — recurring or one-time funding for creators, athletes, artists pursuing their craft. Includes mentorship matching, approval flow for sponsors and detailed progress reports from talents. 10% covers full creator support stack.", pricing: "10% platform fee (covers full support) • Stripe fees separate", capabilities: ["Talent matching algorithm", "Recurring sponsorship", "Sponsor approval flow", "Mentorship matching", "Progress report templates", "Stripe Connect to talent", "Sponsor dashboard", "Public sponsor wall"] },
-    ],
-  },
-  {
-    id: "membership",
+    ] },
+  { id: "membership",
     title: "Membership & Identity",
     icon: Crown,
     accent: "text-yellow-500",
@@ -457,42 +396,32 @@ const CATEGORIES: Category[] = [
         features: ["Digital €20 / Physical €30", "€1.50/mo recurring", "Founding 1,000 status", "10% Good Fund", "Monthly AI credits", "Gold ring badge"],
         details: "Join the Unique VIP Club with a one-time entry fee (€20 digital, €30 physical shipped card) plus €1.50/month recurring. 10% of every payment funds the Unique Good Fund supporting community causes. Members get monthly AI credits, exclusive badges, priority support and a gold-ring MemberBadge visible across the platform. The first 1,000 members get permanent Founding status.",
         pricing: "€20 (digital) or €30 (physical) entry + €1.50/mo • 30-day trial on recurring • 10% to Good Fund",
-        capabilities: ["Digital or shipped physical card", "Gold-ring MemberBadge everywhere", "Founding 1,000 lifetime badge", "Monthly AI credit drops", "Shipping address management", "Referral rewards (€5 credit)", "Good Fund contribution tracking", "Stripe Billing Portal access"],
-      },
-      {
-        path: "/verified", title: "Unique Verified", icon: Shield,
+        capabilities: ["Digital or shipped physical card", "Gold-ring MemberBadge everywhere", "Founding 1,000 lifetime badge", "Monthly AI credit drops", "Shipping address management", "Referral rewards (€5 credit)", "Good Fund contribution tracking", "Stripe Billing Portal access"] },
+      { path: "/verified", title: "Unique Verified", icon: Shield,
         blurb: "Three verification tiers with colored rings, boosted reach and creator perks.",
         features: ["Blue €15/mo", "Gold €40/mo", "Purple €150/mo", "Auto-renewal control", "Boosted reach", "Priority support"],
         details: "Get verified on Unique with three tiers. Blue (€15/mo) confirms real identity. Gold (€40/mo) adds creator perks and boosted reach. Purple (€150/mo) is the enterprise/celebrity tier with full white-glove support. Each tier shows a distinct colored ring on your avatar. Auto-renewal with in-app cancel and instant renewal after expiration.",
         pricing: "Blue €15/mo • Gold €40/mo • Purple €150/mo • Cancel anytime",
-        capabilities: ["Three colored ring tiers", "Identity verification", "Boosted feed reach (Gold+)", "Priority support (Purple)", "Auto-renewal via Stripe", "One-click renewal after expiry", "Verified-only rooms access", "Anti-impersonation shield"],
-      },
-      {
-        path: "/subscriptions", title: "Subscription Manager", icon: Wallet,
+        capabilities: ["Three colored ring tiers", "Identity verification", "Boosted feed reach (Gold+)", "Priority support (Purple)", "Auto-renewal via Stripe", "One-click renewal after expiry", "Verified-only rooms access", "Anti-impersonation shield"] },
+      { path: "/subscriptions", title: "Subscription Manager", icon: Wallet,
         blurb: "Manage every subscription — Club, Verified, Fan Clubs, hub premiums — from one dashboard.",
         features: ["All subscriptions in one view", "Cancel or change plan", "Invoice history", "Stripe Billing Portal", "Renewal reminders", "Payment method update"],
         details: "Central dashboard for every recurring payment on Unique — VIP Club, Verified tiers, Fan Club memberships, Skill Swap, hub premiums (Wellness, Fit & Slim, Nutrition, Escape Rooms). Cancel, change plan, update payment method or download invoices directly from your account. Powered by the Stripe Customer Billing Portal.",
         pricing: "Free to manage • Underlying subscriptions billed by each product",
-        capabilities: ["Unified subscription list", "One-click cancel", "Plan upgrade / downgrade", "Invoice PDF downloads", "Payment method updates", "Renewal reminder emails", "Failed-payment recovery", "Stripe Billing Portal deep-link"],
-      },
-      {
-        path: "/creators", title: "Creators & Fan Clubs", icon: Star,
+        capabilities: ["Unified subscription list", "One-click cancel", "Plan upgrade / downgrade", "Invoice PDF downloads", "Payment method updates", "Renewal reminder emails", "Failed-payment recovery", "Stripe Billing Portal deep-link"] },
+      { path: "/creators", title: "Creators & Fan Clubs", icon: Star,
         blurb: "Real Stripe-powered Fan Club subscriptions with tiered locked content and creator payouts.",
         features: ["85% to creator / 15% platform", "Tiered locked content", "PPV posts", "Paid DMs", "Gift Wall", "Auto membership sync"],
         details: "Discover creators and subscribe to their Fan Club tiers via real Stripe subscriptions. Creators build tiered content — public, subscriber-only, PPV posts, paid DMs. Live streaming status, weekly challenges, AI deal finder and audience insights included. Revenue split is 85% creator / 15% platform, with automated membership re-sync and Stripe Connect payouts to creators.",
         pricing: "Subscription price set by creator • 85/15 split • Tips 90/10",
-        capabilities: ["Real Stripe subscriptions", "Multiple tier support", "PPV post unlocks", "Paid DMs", "Gift Wall with leaderboards", "Live streaming status", "Audience insight dashboard", "Stripe Connect creator payouts"],
-      },
-      {
-        path: "/doctors", title: "Doctor Bookings", icon: Activity,
+        capabilities: ["Real Stripe subscriptions", "Multiple tier support", "PPV post unlocks", "Paid DMs", "Gift Wall with leaderboards", "Live streaming status", "Audience insight dashboard", "Stripe Connect creator payouts"] },
+      { path: "/doctors", title: "Doctor Bookings", icon: Activity,
         blurb: "Book appointments with verified doctors — 85% payout, 24h refund window, no video calls required.",
         features: ["Appointment booking only", "10-90 min slot lengths", "85% doctor payout", "15% platform fee", "24h refund window", "Verified doctors"],
         details: "Book real appointments with verified doctors. Each doctor sets their own slot length (10 to 90 minutes) and availability. Patients pay upfront, doctors receive 85% via Stripe Connect after visit confirmation. 24-hour refund window before the appointment. This is appointment scheduling only — no video consultations required.",
         pricing: "Appointment fee set by doctor • 15% platform fee • Refund up to 24h before visit",
-        capabilities: ["Verified doctor directory", "Availability calendar", "Slot length 10-90 min", "Stripe upfront payment", "Automated Stripe Connect payout", "24h refund policy", "Booking confirmation emails", "Doctor dashboard with earnings"],
-      },
-    ],
-  },
+        capabilities: ["Verified doctor directory", "Availability calendar", "Slot length 10-90 min", "Stripe upfront payment", "Automated Stripe Connect payout", "24h refund policy", "Booking confirmation emails", "Doctor dashboard with earnings"] },
+    ] },
 ];
 
 const HERO_STATS = [
@@ -536,8 +465,7 @@ export default function AboutPlatform() {
     setIsMuted(!isMuted);
   };
 
-  const filteredCategories = useMemo(() => {
-    const q = query.trim().toLowerCase();
+  const filteredCategories = useMemo(() => { const q = query.trim().toLowerCase();
     if (!q) return CATEGORIES;
     // Single-letter query = alphabetical index (match section title start)
     if (q.length === 1) {
@@ -546,21 +474,18 @@ export default function AboutPlatform() {
           ...cat,
           sections: cat.sections.filter((s) =>
             s.title.toLowerCase().startsWith(q)
-          ),
-        }))
+          ) }))
         .filter((cat) => cat.sections.length > 0);
     }
     return CATEGORIES
-      .map((cat) => ({
-        ...cat,
+      .map((cat) => ({ ...cat,
         sections: cat.sections.filter((s) =>
           s.title.toLowerCase().includes(q) ||
           s.blurb.toLowerCase().includes(q) ||
           (s.details ?? "").toLowerCase().includes(q) ||
           s.features.some((f) => f.toLowerCase().includes(q)) ||
           (s.capabilities ?? []).some((f) => f.toLowerCase().includes(q))
-        ),
-      }))
+        ) }))
       .filter((cat) => cat.sections.length > 0);
   }, [query]);
 
@@ -569,10 +494,9 @@ export default function AboutPlatform() {
       {/* Subtle scan-line overlay (matches Holographic hub vibe) */}
       <div
         className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]"
-        style={{
+        style={ {
           background:
-            "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(168,85,247,0.15) 3px, rgba(168,85,247,0.15) 4px)",
-        }}
+            "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(168,85,247,0.15) 3px, rgba(168,85,247,0.15) 4px)" }}
       />
 
       <div className="container mx-auto px-4 pt-20 pb-12">
@@ -601,8 +525,7 @@ export default function AboutPlatform() {
                   background: i % 2 === 0 ? "hsl(var(--primary))" : "hsl(var(--accent))",
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
-                  boxShadow: `0 0 8px hsl(var(--primary) / 0.6)`,
-                }}
+                  boxShadow: `0 0 8px hsl(var(--primary) / 0.6)` }}
                 animate={{ y: [0, -30, 0], opacity: [0.3, 0.9, 0.3], scale: [1, 1.4, 1] }}
                 transition={{ duration: 3 + Math.random() * 4, repeat: Infinity, delay: Math.random() * 3, ease: "easeInOut" }}
               />
@@ -621,12 +544,11 @@ export default function AboutPlatform() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-3 text-primary"
-              style={{
+              style={ {
                 WebkitTextStroke: "1.5px rgba(88, 28, 135, 0.8)",
                 textShadow:
                   "0 0 30px hsl(var(--primary) / 0.6), 0 0 60px hsl(var(--primary) / 0.3), 0 2px 10px rgba(0,0,0,0.8)",
-                filter: "drop-shadow(0 0 8px hsl(var(--primary) / 0.5))",
-              }}
+                filter: "drop-shadow(0 0 8px hsl(var(--primary) / 0.5))" }}
             >
               About the Platform
             </motion.h1>

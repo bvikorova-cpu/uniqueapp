@@ -60,9 +60,7 @@ export const AICertificationSystem = ({ onBack }: Props) => {
 Each question should test practical first aid knowledge. Format EXACTLY as JSON array:
 [{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"..."}]
 
-Where "correct" is the 0-based index of the right answer. Make questions challenging but fair. Include real medical scenarios.`,
-        },
-      });
+Where "correct" is the 0-based index of the right answer. Make questions challenging but fair. Include real medical scenarios.` } });
       if (error) throw error;
       const text = data?.message || data?.analysis || "";
       const jsonMatch = text.match(/\[[\s\S]*\]/);

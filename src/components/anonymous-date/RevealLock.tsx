@@ -87,12 +87,10 @@ export const RevealLock = ({ matchId, currentUserId, partnerName, revealRequestA
     }
     const { error } = await supabase
       .from("anonymous_dating_matches")
-      .update({
-        status: "revealed",
+      .update({ status: "revealed",
         revealed_at: new Date().toISOString(),
         user1_revealed: true,
-        user2_revealed: true,
-      })
+        user2_revealed: true })
       .eq("id", matchId)
       .eq("status", "active")
       .neq("reveal_request_by", currentUserId);

@@ -24,8 +24,7 @@ export default function AdminIQAnalytics() {
       const { data, error } = await supabase.rpc("get_iq_funnel");
       if (error) throw error;
       return (data ?? []) as Array<{ event_name: string; total: number; unique_users: number }>;
-    },
-  });
+    } });
 
   const map = new Map<string, { total: number; uniq: number }>();
   (data ?? []).forEach((r) => map.set(r.event_name, { total: Number(r.total), uniq: Number(r.unique_users) }));

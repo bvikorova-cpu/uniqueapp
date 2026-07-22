@@ -61,8 +61,7 @@ export const FriendChallenges = () => {
           event: 'INSERT',
           schema: 'public',
           table: 'brain_duel_friend_challenges',
-          filter: `challenged_id=eq.${userId}`,
-        },
+          filter: `challenged_id=eq.${userId}` },
         async (payload) => {
           // Fetch challenger profile for notification
           const { data: profile } = await supabase
@@ -73,8 +72,7 @@ export const FriendChallenges = () => {
 
           toast({
             title: '⚔️ New Challenge!',
-            description: `${profile?.full_name || 'Someone'} challenged you to ${payload.new.category}!`,
-          });
+            description: `${profile?.full_name || 'Someone'} challenged you to ${payload.new.category}!` });
 
           // Refresh challenges list
           queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
@@ -86,8 +84,7 @@ export const FriendChallenges = () => {
           event: 'UPDATE',
           schema: 'public',
           table: 'brain_duel_friend_challenges',
-          filter: `challenger_id=eq.${userId}`,
-        },
+          filter: `challenger_id=eq.${userId}` },
         async (payload) => {
           // Only notify if status changed to accepted
           if (payload.new.status === 'accepted' && payload.old.status === 'pending') {
@@ -99,8 +96,7 @@ export const FriendChallenges = () => {
 
             toast({
               title: '🎉 Challenge Accepted!',
-              description: `${profile?.full_name || 'Your friend'} accepted your challenge!`,
-            });
+              description: `${profile?.full_name || 'Your friend'} accepted your challenge!` });
 
             // Refresh challenges list
             queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
@@ -139,8 +135,7 @@ export const FriendChallenges = () => {
         .in('id', friendIds);
 
       return profiles || [];
-    },
-  });
+    } });
 
   // Fetch challenges
   const { data: challenges } = useQuery({
@@ -169,13 +164,10 @@ export const FriendChallenges = () => {
         .select('id, full_name, avatar_url')
         .in('id', Array.from(userIds));
 
-      return data?.map((challenge) => ({
-        ...challenge,
+      return data?.map((challenge) => ({ ...challenge,
         challenger_profile: profiles?.find((p) => p.id === challenge.challenger_id),
-        challenged_profile: profiles?.find((p) => p.id === challenge.challenged_id),
-      })) || [];
-    },
-  });
+        challenged_profile: profiles?.find((p) => p.id === challenge.challenged_id) })) || [];
+    } });
 
   // Create challenge mutation
   const createChallenge = useMutation({
@@ -190,12 +182,10 @@ export const FriendChallenges = () => {
 
       const { error } = await supabase
         .from('brain_duel_friend_challenges')
-        .insert({
-          challenger_id: user.id,
+        .insert({ challenger_id: user.id,
           challenged_id: selectedFriend,
           category,
-          stake_credits: stakeCredits,
-        });
+          stake_credits: stakeCredits });
 
       if (error) throw error;
     },
@@ -205,10 +195,8 @@ export const FriendChallenges = () => {
       setSelectedFriend('');
       setCategory('');
       setStakeCredits(10);
-      toast({
-        title: 'Challenge sent! 🎯',
-        description: 'Your friend has been challenged',
-      });
+      toast({ title: 'Challenge sent! 🎯',
+        description: 'Your friend has been challenged' });
     },
     onError: (error: Error) => {
       toast({
@@ -216,10 +204,8 @@ export const FriendChallenges = () => {
         description: error.message === 'Insufficient credits' 
           ? `You need at least ${stakeCredits} credits to create this challenge`
           : error.message,
-        variant: 'destructive',
-      });
-    },
-  });
+        variant: 'destructive' });
+    } });
 
   // Accept challenge mutation
   const acceptChallenge = useMutation({
@@ -227,8 +213,7 @@ export const FriendChallenges = () => {
       setAcceptingChallenge(challengeId);
       
       const { data, error } = await supabase.functions.invoke('brain-duel-friend-match', {
-        body: { challenge_id: challengeId },
-      });
+        body: { challenge_id: challengeId } });
 
       if (error) throw error;
       return data;
@@ -239,23 +224,19 @@ export const FriendChallenges = () => {
       
       toast({
         title: 'Challenge accepted! ⚔️',
-        description: `Match starting with ${data.stake_amount} credits at stake!`,
-      });
+        description: `Match starting with ${data.stake_amount} credits at stake!` });
 
       // Navigate to game after a short delay
       setTimeout(() => {
         window.location.href = '/brain-duel?match_id=' + data.match.id;
       }, 1500);
     },
-    onError: (error: Error) => {
-      setAcceptingChallenge(null);
+    onError: (error: Error) => { setAcceptingChallenge(null);
       toast({
         title: 'Failed to accept challenge',
         description: error.message,
-        variant: 'destructive',
-      });
-    },
-  });
+        variant: 'destructive' });
+    } });
 
   // Decline challenge mutation
   const declineChallenge = useMutation({
@@ -269,11 +250,8 @@ export const FriendChallenges = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
-      toast({
-        title: 'Challenge declined',
-      });
-    },
-  });
+      toast({ title: 'Challenge declined' });
+    } });
 
   return (
     <Card className="overflow-hidden backdrop-blur-xl bg-card/80 border-primary/10 relative">
@@ -489,9 +467,8 @@ export const FriendChallenges = () => {
                   <div className="flex items-center justify-between">
                     <p className="text-xs text-muted-foreground flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      {formatDistanceToNow(new Date(challenge.created_at), {
-                        addSuffix: true,
-                      })}
+                      { formatDistanceToNow(new Date(challenge.created_at), {
+                        addSuffix: true })}
                     </p>
                     {!isChallenger && challenge.status === 'pending' && (
                       <div className="flex gap-2">

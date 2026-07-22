@@ -25,18 +25,15 @@ interface TournamentsProps {
 }
 
 const defaultTournaments: Tournament[] = [
-  {
-    id: '1',
+  { id: '1',
     name: 'Weekend Championship',
     game: 'Brain Duel',
     status: 'live',
     participants: 128,
     maxParticipants: 128,
     prizePool: '€500',
-    startTime: 'Now',
-  },
-  {
-    id: '2',
+    startTime: 'Now' },
+  { id: '2',
     name: 'Quick Fire Cup',
     game: 'Trivia Battle',
     status: 'upcoming',
@@ -44,10 +41,8 @@ const defaultTournaments: Tournament[] = [
     maxParticipants: 64,
     prizePool: '€100',
     startTime: '2h 30m',
-    entryFee: '€5',
-  },
-  {
-    id: '3',
+    entryFee: '€5' },
+  { id: '3',
     name: 'Pro League Finals',
     game: 'Strategy Arena',
     status: 'upcoming',
@@ -55,8 +50,7 @@ const defaultTournaments: Tournament[] = [
     maxParticipants: 16,
     prizePool: '€1,000',
     startTime: 'Tomorrow',
-    entryFee: '€20',
-  },
+    entryFee: '€20' },
 ];
 
 export const Tournaments = ({ tournaments = defaultTournaments, onJoin }: TournamentsProps) => {

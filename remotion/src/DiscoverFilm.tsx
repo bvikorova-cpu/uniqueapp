@@ -1,14 +1,12 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Audio,
   Img,
   Sequence,
   interpolate,
   spring,
   staticFile,
-  useCurrentFrame,
-} from "remotion";
+  useCurrentFrame } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
 
@@ -17,13 +15,11 @@ const body = loadBody("normal", { weights: ["500", "600", "700", "900"] });
 
 const FPS = 30;
 
-const BRAND = {
-  white: "#ffffff",
+const BRAND = { white: "#ffffff",
   bgDeep: "#07030f",
   purple: "#8b5cf6",
   pink: "#ec4899",
-  amber: "#fbbf24",
-};
+  amber: "#fbbf24" };
 
 /* ---------- Intro ---------- */
 
@@ -36,10 +32,8 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const tagOp = interpolate(frame, [50, 78], [0, 1], { extrapolateRight: "clamp" });
   const tagY = interpolate(frame, [50, 78], [20, 0], { extrapolateRight: "clamp" });
   const kb = interpolate(frame, [0, duration], [1.08, 1.2], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 20, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 20, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{ transform: `scale(${kb})` }}>
@@ -50,18 +44,16 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
         <AbsoluteFill style={{ backgroundColor: "rgba(5,0,20,0.35)" }} />
       </AbsoluteFill>
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          opacity: 1 - exit,
-        }}
+          opacity: 1 - exit }}
       >
         <div
           style={{
             transform: `scale(${logoScale}) rotate(${logoRot}deg)`,
-            filter: "drop-shadow(0 20px 60px rgba(236,72,153,0.55))",
-          }}
+            filter: "drop-shadow(0 20px 60px rgba(236,72,153,0.55))" }}
         >
           <Img
             src={staticFile("home/logo.png")}
@@ -80,8 +72,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 80px rgba(236,72,153,0.5)",
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em" }}
         >
           Unique
         </div>
@@ -95,8 +86,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             fontSize: 44,
             color: "rgba(255,255,255,0.92)",
             letterSpacing: "0.28em",
-            textTransform: "uppercase",
-          }}
+            textTransform: "uppercase" }}
         >
           Discover
         </div>
@@ -124,20 +114,18 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 30% 30%, rgba(139,92,246,0.4), transparent 55%), radial-gradient(circle at 70% 70%, rgba(236,72,153,0.4), transparent 55%)",
-        }}
+            "radial-gradient(circle at 30% 30%, rgba(139,92,246,0.4), transparent 55%), radial-gradient(circle at 70% 70%, rgba(236,72,153,0.4), transparent 55%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
           padding: 80,
           textAlign: "center",
-          opacity,
-        }}
+          opacity }}
       >
         <div
           style={{
@@ -146,8 +134,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             fontFamily: body.fontFamily,
             fontWeight: 500,
             fontSize: 72,
-            color: "rgba(255,255,255,0.82)",
-          }}
+            color: "rgba(255,255,255,0.82)" }}
         >
           Eight worlds.
         </div>
@@ -163,8 +150,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "-0.04em",
             background: `linear-gradient(90deg, ${BRAND.purple} 0%, ${BRAND.pink} 50%, ${BRAND.amber} 100%)`,
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
+            WebkitTextFillColor: "transparent" }}
         >
           One app.
         </div>
@@ -177,8 +163,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             fontWeight: 600,
             fontSize: 48,
             color: "rgba(255,255,255,0.9)",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           Discover everything Unique has to offer.
         </div>
@@ -202,10 +187,8 @@ type Module = {
 const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mod }) => {
   const frame = useCurrentFrame();
   const enter = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 18, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   const shellOp = enter * (1 - exit);
 
   const kbScale = interpolate(frame, [0, duration], [1.1, 1.28], { extrapolateRight: "clamp" });
@@ -229,34 +212,30 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
             height: "100%",
             objectFit: "cover",
             transform: `scale(${kbScale}) translate(${kbX}px, ${kbY}px)`,
-            filter: "saturate(1.15) contrast(1.05)",
-          }}
+            filter: "saturate(1.15) contrast(1.05)" }}
         />
       </AbsoluteFill>
 
       <AbsoluteFill
         style={{
           background: `linear-gradient(160deg, ${mod.accent}33 0%, transparent 40%, ${mod.accent2}55 100%)`,
-          mixBlendMode: "screen",
-        }}
+          mixBlendMode: "screen" }}
       />
 
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "linear-gradient(180deg, rgba(7,3,15,0.75) 0%, rgba(7,3,15,0.15) 22%, rgba(7,3,15,0) 45%, rgba(7,3,15,0.35) 62%, rgba(7,3,15,0.92) 100%)",
-        }}
+            "linear-gradient(180deg, rgba(7,3,15,0.75) 0%, rgba(7,3,15,0.15) 22%, rgba(7,3,15,0) 45%, rgba(7,3,15,0.35) 62%, rgba(7,3,15,0.92) 100%)" }}
       />
 
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "space-between",
           flexDirection: "column",
           padding: 80,
           paddingTop: 160,
-          paddingBottom: 180,
-        }}
+          paddingBottom: 180 }}
       >
         <div
           style={{
@@ -271,8 +250,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
             color: BRAND.white,
             letterSpacing: "0.3em",
             textTransform: "uppercase",
-            boxShadow: `0 20px 60px -15px ${mod.accent}cc`,
-          }}
+            boxShadow: `0 20px 60px -15px ${mod.accent}cc` }}
         >
           {mod.badge}
         </div>
@@ -289,8 +267,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
               color: BRAND.white,
               letterSpacing: "-0.035em",
               textShadow: "0 8px 40px rgba(0,0,0,0.75)",
-              textAlign: "center",
-            }}
+              textAlign: "center" }}
           >
             {mod.title}
           </div>
@@ -307,28 +284,25 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
               textAlign: "center",
               maxWidth: 900,
               lineHeight: 1.25,
-              textShadow: "0 4px 20px rgba(0,0,0,0.85)",
-            }}
+              textShadow: "0 4px 20px rgba(0,0,0,0.85)" }}
           >
             {mod.subtitle}
           </div>
 
           <div
-            style={{
+            style={ {
               marginTop: 44,
               display: "flex",
               flexDirection: "column",
               gap: 16,
-              width: "88%",
-            }}
+              width: "88%" }}
           >
             {mod.perks.map((p, i) => {
               const delay = 44 + i * 10;
               const s = spring({
                 frame: frame - delay,
                 fps: FPS,
-                config: { damping: 15, stiffness: 130 },
-              });
+                config: { damping: 15, stiffness: 130 } });
               const x = interpolate(s, [0, 1], [-60, 0]);
               return (
                 <div
@@ -343,8 +317,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
                     borderRadius: 22,
                     background: "rgba(7,3,15,0.55)",
                     border: `1px solid ${mod.accent}66`,
-                    boxShadow: `0 10px 40px -20px ${mod.accent}aa`,
-                  }}
+                    boxShadow: `0 10px 40px -20px ${mod.accent}aa` }}
                 >
                   <div
                     style={{
@@ -355,8 +328,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      flexShrink: 0,
-                    }}
+                      flexShrink: 0 }}
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -372,13 +344,12 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
                     </svg>
                   </div>
                   <div
-                    style={{
+                    style={ {
                       fontFamily: body.fontFamily,
                       fontWeight: 700,
                       fontSize: 36,
                       color: BRAND.white,
-                      letterSpacing: "-0.01em",
-                    }}
+                      letterSpacing: "-0.01em" }}
                   >
                     {p}
                   </div>
@@ -400,24 +371,20 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   const wordS = spring({ frame: frame - 12, fps: FPS, config: { damping: 14, stiffness: 110 } });
   const urlOp = interpolate(frame, [30, 55], [0, 1], { extrapolateRight: "clamp" });
   const tagOp = interpolate(frame, [45, 70], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 15, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 15, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.4), transparent 60%)",
-        }}
+            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.4), transparent 60%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column",
-        }}
+          flexDirection: "column" }}
       >
         <Img
           src={staticFile("home/logo.png")}
@@ -426,8 +393,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             height: 280,
             borderRadius: 72,
             transform: `scale(${logoS})`,
-            filter: "drop-shadow(0 15px 50px rgba(236,72,153,0.55))",
-          }}
+            filter: "drop-shadow(0 15px 50px rgba(236,72,153,0.55))" }}
         />
         <div
           style={{
@@ -440,26 +406,24 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(180deg, ${BRAND.white} 0%, #fbcfe8 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 60px rgba(236,72,153,0.45)",
-          }}
+            textShadow: "0 0 60px rgba(236,72,153,0.45)" }}
         >
           Unique
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 40,
             opacity: urlOp,
             fontFamily: body.fontFamily,
             fontWeight: 700,
             fontSize: 68,
             color: BRAND.white,
-            letterSpacing: "0.05em",
-          }}
+            letterSpacing: "0.05em" }}
         >
           uniqueapp.fun
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 26,
             opacity: tagOp,
             fontFamily: body.fontFamily,
@@ -469,8 +433,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             textAlign: "center",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           Discover · Connect · Thrive
         </div>
@@ -482,78 +445,62 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
 /* ---------- Modules ---------- */
 
 const MODULES: Module[] = [
-  {
-    badge: "Wall",
+  { badge: "Wall",
     title: "Your Feed.",
     subtitle: "Share moments. Follow the people you love.",
     perks: ["Posts, photos & videos", "Likes, comments & shares", "Real-time global feed"],
     image: "discover/01-wall.jpg",
     accent: "#8b5cf6",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "Games",
+    accent2: "#ec4899" },
+  { badge: "Games",
     title: "Play & Win.",
     subtitle: "Hundreds of arcade, puzzle and brain games.",
     perks: ["Solo & multiplayer", "Daily tournaments", "Earn XP and prizes"],
     image: "discover/02-games.jpg",
     accent: "#22d3ee",
-    accent2: "#8b5cf6",
-  },
-  {
-    badge: "Work",
+    accent2: "#8b5cf6" },
+  { badge: "Work",
     title: "Find a Job.",
     subtitle: "Local & remote gigs. Hire top talent fast.",
     perks: ["Post jobs in minutes", "Verified applicants", "Chat & hire in-app"],
     image: "discover/03-work.jpg",
     accent: "#a78bfa",
-    accent2: "#7c3aed",
-  },
-  {
-    badge: "Promotions",
+    accent2: "#7c3aed" },
+  { badge: "Promotions",
     title: "Get Noticed.",
     subtitle: "Boost your business to thousands in seconds.",
     perks: ["Targeted geo-ads", "Smart budget control", "Live performance stats"],
     image: "discover/04-promotions.jpg",
     accent: "#f59e0b",
-    accent2: "#ef4444",
-  },
-  {
-    badge: "Booking",
+    accent2: "#ef4444" },
+  { badge: "Booking",
     title: "Book Anything.",
     subtitle: "Salons, doctors, tables, rides — all in one tap.",
     perks: ["Instant reservations", "Smart reminders", "Cancel or reschedule anytime"],
     image: "discover/05-booking.jpg",
     accent: "#10b981",
-    accent2: "#14b8a6",
-  },
-  {
-    badge: "Services",
+    accent2: "#14b8a6" },
+  { badge: "Services",
     title: "Get Help.",
     subtitle: "Trusted pros for every job, big or small.",
     perks: ["Rated professionals", "Secure escrow payments", "Reviews you can trust"],
     image: "discover/06-services.jpg",
     accent: "#ec4899",
-    accent2: "#f43f5e",
-  },
-  {
-    badge: "Rewards",
+    accent2: "#f43f5e" },
+  { badge: "Rewards",
     title: "Earn Perks.",
     subtitle: "Turn everyday moments into real rewards.",
     perks: ["Daily streaks & bonuses", "Level up your profile", "Redeem for real prizes"],
     image: "discover/07-rewards.jpg",
     accent: "#fbbf24",
-    accent2: "#f59e0b",
-  },
-  {
-    badge: "Megatalent",
+    accent2: "#f59e0b" },
+  { badge: "Megatalent",
     title: "Become a Star.",
     subtitle: "Global talent contest. €10,000 prize pool every quarter.",
     perks: ["Compete across 30+ categories", "Live voting & watch parties", "Real cash payouts"],
     image: "discover/08-megatalent.jpg",
     accent: "#c084fc",
-    accent2: "#ec4899",
-  },
+    accent2: "#ec4899" },
 ];
 
 /* ---------- Composition ---------- */
@@ -566,18 +513,14 @@ const OUTRO = 130;
 export const DISCOVER_DURATION =
   INTRO + PROMISE + MODULES.length * MODULE_DUR + OUTRO; // 130+90+880+130 = 1230
 
-export const DiscoverFilm: React.FC = () => {
-  const frame = useCurrentFrame();
+export const DiscoverFilm: React.FC = () => { const frame = useCurrentFrame();
   const total = DISCOVER_DURATION;
   const musicVolume = (f: number) => {
     const fadeIn = interpolate(f, [0, 20], [0, 0.7], {
       extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    });
-    const fadeOut = interpolate(f, [total - 40, total - 5], [0.7, 0], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    });
+      extrapolateRight: "clamp" });
+    const fadeOut = interpolate(f, [total - 40, total - 5], [0.7, 0], { extrapolateLeft: "clamp",
+      extrapolateRight: "clamp" });
     return Math.min(fadeIn, fadeOut);
   };
 

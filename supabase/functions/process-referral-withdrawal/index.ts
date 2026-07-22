@@ -1,16 +1,13 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-};
+const corsHeaders = { 'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-  });
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
@@ -30,10 +27,8 @@ serve(async (req) => {
     const caller = u.user;
     if (!caller) return json({ error: 'Not authenticated' }, 401);
 
-    const { data: isAdmin } = await supabase.rpc('has_role', {
-      _user_id: caller.id,
-      _role: 'admin',
-    });
+    const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: caller.id,
+      _role: 'admin' });
     if (!isAdmin) return json({ error: 'Forbidden: admin only' }, 403);
 
     // ── INPUT ──────────────────────────────────────────────────────
@@ -101,21 +96,18 @@ serve(async (req) => {
       action === 'complete' ? `Your referral withdrawal of €${request.amount} has been completed.` :
       `Your referral withdrawal request for €${request.amount} has been rejected. ${adminNotes || ''}`;
 
-    await supabase.from('notifications').insert({
-      user_id: request.referrer_id,
+    await supabase.from('notifications').insert({ user_id: request.referrer_id,
       title: notificationTitle,
       message: notificationMessage,
       type: 'withdrawal',
-      is_read: false,
-    });
+      is_read: false });
 
     await supabase.from('admin_audit_log').insert({
       admin_id: caller.id,
       action: `referral_withdrawal_${action}`,
       target_type: 'referral_withdrawal_requests',
       target_id: requestId,
-      details: { amount: request.amount, referrer_id: request.referrer_id, notes: adminNotes },
-    });
+      details: { amount: request.amount, referrer_id: request.referrer_id, notes: adminNotes } });
 
     return json({ success: true });
   } catch (error) {

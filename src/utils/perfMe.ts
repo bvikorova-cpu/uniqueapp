@@ -66,8 +66,7 @@ export type MeProfileSnapshot = {
   savedAt: number;
 };
 
-export const storeMeProfileSnapshot = (user: SessionUserLike | null | undefined) => {
-  if (typeof window === "undefined" || !user?.id) return;
+export const storeMeProfileSnapshot = (user: SessionUserLike | null | undefined) => { if (typeof window === "undefined" || !user?.id) return;
   try {
     const fullName =
       (user.user_metadata?.full_name as string | undefined) ||
@@ -77,8 +76,7 @@ export const storeMeProfileSnapshot = (user: SessionUserLike | null | undefined)
       full_name: fullName,
       avatar_url: (user.user_metadata?.avatar_url as string | undefined) || null,
       email: user.email ?? null,
-      savedAt: Date.now(),
-    };
+      savedAt: Date.now() };
     window.sessionStorage.setItem(SNAPSHOT_KEY, JSON.stringify(snapshot));
   } catch {
     /* ignore */
@@ -119,8 +117,7 @@ export const startMeTrace = () => {
   notify();
 };
 
-export const markMeFirstPaint = () => {
-  if (firstPaintAt !== 0) return;
+export const markMeFirstPaint = () => { if (firstPaintAt !== 0) return;
   firstPaintAt = now();
   const clickAt = readClickAt();
   const sinceClick = clickAt ? firstPaintAt - clickAt : null;
@@ -130,8 +127,7 @@ export const markMeFirstPaint = () => {
     "[PerfMe] first-paint",
     JSON.stringify({
       sinceClickMs: sinceClick !== null ? Math.round(sinceClick) : null,
-      sinceMountMs: sinceMount !== null ? Math.round(sinceMount) : null,
-    }),
+      sinceMountMs: sinceMount !== null ? Math.round(sinceMount) : null }),
   );
   try {
     window.sessionStorage.removeItem(CLICK_KEY);
@@ -157,10 +153,8 @@ export const tracedQuery = async <T>(
     samples.push({ label, ms, ok });
     if (isPerfEnabled()) {
       // eslint-disable-next-line no-console
-      console.log(`[PerfMe] query ${label}`, {
-        ms: Math.round(ms),
-        ok,
-      });
+      console.log(`[PerfMe] query ${label}`, { ms: Math.round(ms),
+        ok });
     }
     notify();
     return result;
@@ -185,19 +179,16 @@ export const finishMeTrace = () => {
     slowest: [...samples]
       .sort((a, b) => b.ms - a.ms)
       .slice(0, 5)
-      .map((s) => ({ label: s.label, ms: Math.round(s.ms), ok: s.ok })),
-  };
+      .map((s) => ({ label: s.label, ms: Math.round(s.ms), ok: s.ok })) };
   // eslint-disable-next-line no-console
   console.log("[PerfMe] done", summary);
   notify();
 };
 
-export const getMeSnapshot = () => ({
-  traceStart,
+export const getMeSnapshot = () => ({ traceStart,
   firstPaintAt,
   queryCount,
-  samples: [...samples],
-});
+  samples: [...samples] });
 
 export const subscribeMe = (cb: () => void) => {
   subscribers.push(cb);

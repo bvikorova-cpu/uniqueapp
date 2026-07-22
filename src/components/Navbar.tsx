@@ -3,14 +3,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors, Diamond } from "lucide-react";
 import { useTheme } from "next-themes";
 import NotificationBell from "@/components/notifications/NotificationBell";
@@ -143,8 +141,7 @@ const Navbar = () => {
         { path: "/graphic-design", label: "Graphic Design", icon: Palette },
         { path: "/photography", label: "Photography", icon: Image },
         { path: "/music-production", label: "Music Production", icon: Music },
-      ],
-    },
+      ] },
     {
       category: "Mystical & Spiritual",
       items: [
@@ -161,8 +158,7 @@ const Navbar = () => {
         { path: "/time-capsule", label: "Time Capsule Network", icon: Clock },
         { path: "/time-reversal", label: "Time Reversal Social", icon: Clock },
         { path: "/holographic-avatars", label: "Holographic Avatars", icon: Sparkles },
-      ],
-    },
+      ] },
     {
       category: "Social & Dating",
       items: [
@@ -175,8 +171,7 @@ const Navbar = () => {
         { path: "/companions", label: "Character Companions", icon: MessageCircle },
         { path: "/emotion-economy", label: "Emotion Economy", icon: Heart },
         { path: "/referral", label: "Invite friend", icon: User },
-      ],
-    },
+      ] },
     {
       category: "Health & Wellness",
       items: [
@@ -189,8 +184,7 @@ const Navbar = () => {
         { path: "/safety-prevention", label: "Safety & Bullying Prevention", icon: Shield },
         { path: "/lie-detector", label: "Lie Detector Chat", icon: Shield },
         { path: "/fitness-wellness", label: "Fitness & Wellness", icon: Heart },
-      ],
-    },
+      ] },
     {
       category: "Sports Arenas",
       items: [
@@ -202,8 +196,7 @@ const Navbar = () => {
         { path: "/tennis-arena", label: "Tennis Arena", icon: Trophy },
         { path: "/american-football-arena", label: "American Football", icon: Trophy },
         { path: "/gp-racing", label: "GP Fantasy Racing", icon: Car },
-      ],
-    },
+      ] },
     {
       category: "Entertainment & Lifestyle",
       items: [
@@ -222,8 +215,7 @@ const Navbar = () => {
         { path: "/coffee", label: "Coffee Community", icon: Coffee },
         { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
         { path: "/culinary-arts", label: "Culinary Arts Academy", icon: ChefHat },
-      ],
-    },
+      ] },
     {
       category: "Marketplaces & Commerce",
       items: [
@@ -235,8 +227,7 @@ const Navbar = () => {
         { path: "/auction", label: "Online Auctions", icon: Gavel },
         { path: "/collectibles", label: "Collectibles", icon: Sparkles },
         { path: "/antique-appraisal", label: "Antique Appraisal", icon: Gem },
-      ],
-    },
+      ] },
     {
       category: "Learning & Growth",
       items: [
@@ -247,20 +238,17 @@ const Navbar = () => {
         { path: "/creative-writing", label: "Creative Writing", icon: PenTool },
         { path: "/language-learning", label: "Language Learning", icon: Globe },
         { path: "/financial-investment", label: "Financial Investment", icon: TrendingUp },
-      ],
-    },
+      ] },
     {
       category: "About",
       items: [
         { path: "/about-platform", label: "About the Platform — Full Tour", icon: Info },
-      ],
-    },
+      ] },
     {
       category: "Legal",
       items: [
         { path: "/terms", label: "Terms", icon: FileText },
-      ],
-    },
+      ] },
   ];
 
   const otherServices = otherServiceGroups.flatMap((g) => g.items);
@@ -281,11 +269,10 @@ const Navbar = () => {
             <span
               className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent transition-all duration-500 group-hover:scale-110 notranslate shrink-0"
               translate="no"
-              style={{
+              style={ {
                 backgroundImage:
                   "linear-gradient(90deg, hsl(270 91% 60%), hsl(330 100% 60%), hsl(270 91% 60%))",
-                backgroundSize: "200% auto",
-              }}
+                backgroundSize: "200% auto" }}
             >
               Unique
             </span>

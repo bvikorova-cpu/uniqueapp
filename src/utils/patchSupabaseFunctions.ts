@@ -295,8 +295,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
 
   // SCA / Dunning user-scoped checks → check-router (Batch 17 consolidation)
   "check-sca":                          { target: "check-router", action: "sca" },
-  "check-dunning":                      { target: "check-router", action: "dunning" },
-};
+  "check-dunning":                      { target: "check-router", action: "dunning" } };
 
 const originalInvoke = supabase.functions.invoke.bind(supabase.functions);
 
@@ -319,9 +318,7 @@ supabase.functions.invoke = async function patchedInvoke(
         ...(alias.bodyExtras || {}),
         ...baseBody,
         // Always preserve original function name so router can disambiguate
-        _aliasFrom: functionName,
-      },
-    };
+        _aliasFrom: functionName } };
     console.info(`[EdgeFn:alias] ${functionName} → ${alias.target}${alias.action ? ` (action=${alias.action})` : ""}`);
   }
 
@@ -357,12 +354,9 @@ supabase.functions.invoke = async function patchedInvoke(
 
       console.warn(`[EdgeFn:${targetFunction}]`, message);
 
-      return {
-        data: null,
+      return { data: null,
         error: Object.assign(new Error(message), {
-          name: "EdgeFunctionError",
-        }),
-      };
+          name: "EdgeFunctionError" }) };
     }
 
     return result;
@@ -382,12 +376,9 @@ supabase.functions.invoke = async function patchedInvoke(
 
     console.warn(`[EdgeFn:${targetFunction}] network:`, raw);
 
-    return {
-      data: null,
+    return { data: null,
       error: Object.assign(new Error(friendly), {
-        name: "EdgeFunctionNetworkError",
-      }),
-    };
+        name: "EdgeFunctionNetworkError" }) };
   }
 } as typeof supabase.functions.invoke;
 

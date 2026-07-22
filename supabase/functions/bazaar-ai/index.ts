@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -14,8 +12,7 @@ serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -31,8 +28,7 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
       return new Response(JSON.stringify({ error: "Invalid token" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { action, ...params } = await req.json();
@@ -40,12 +36,10 @@ serve(async (req) => {
     if (!OPENAI_API_KEY) throw new Error("OpenAI API key not configured");
 
     // Credit costs per action
-    const creditCosts: Record<string, number> = {
-      "price-estimator": 3,
+    const creditCosts: Record<string, number> = { "price-estimator": 3,
       "listing-optimizer": 3,
       "buyer-match": 4,
-      "fraud-detector": 4,
-    };
+      "fraud-detector": 4 };
 
     const cost = creditCosts[action];
     if (!cost) throw new Error(`Unknown action: ${action}`);
@@ -60,8 +54,7 @@ serve(async (req) => {
     const remaining = credits?.credits_remaining ?? 0;
     if (remaining < cost) {
       return new Response(JSON.stringify({ error: "Insufficient credits", credits_remaining: remaining, credits_needed: cost }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     let systemPrompt = "";
@@ -159,9 +152,7 @@ Provide:
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        max_completion_tokens: 1500,
-      }),
-    });
+        max_completion_tokens: 1500 }) });
 
     if (!response.ok) {
       const errText = await response.text();
@@ -185,17 +176,14 @@ Provide:
       user_id: user.id,
       usage_type: `bazaar_${action}`,
       credits_used: cost,
-      description: `Bazaar AI: ${action}`,
-    });
+      description: `Bazaar AI: ${action}` });
 
     return new Response(JSON.stringify({ result, credits_used: cost, credits_remaining: remaining - cost }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("bazaar-ai error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: error.message.includes("Insufficient") ? 402 : 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

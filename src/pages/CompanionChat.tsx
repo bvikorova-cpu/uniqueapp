@@ -84,8 +84,7 @@ const CompanionChat = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke("character-chat", {
-        body: { conversationId, message: messageText, characterId: character.id },
-      });
+        body: { conversationId, message: messageText, characterId: character.id } });
 
       if (error) {
         if (error.message?.includes("Daily message limit")) {

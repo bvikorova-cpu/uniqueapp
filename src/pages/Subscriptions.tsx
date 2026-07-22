@@ -44,12 +44,10 @@ export default function Subscriptions() {
         supabase.functions.invoke("check-verification").catch(() => ({ data: null })),
       ]);
       setClub((clubData as any)?.membership ?? null);
-      if (verData) {
-        setVerified({
+      if (verData) { setVerified({
           tier: (verData as any).tier ?? "none",
           status: (verData as any).status ?? "none",
-          expiresAt: (verData as any).expiresAt ?? null,
-        });
+          expiresAt: (verData as any).expiresAt ?? null });
       }
     } catch (e) {
       console.error("[Subscriptions.load]", e);
@@ -73,8 +71,7 @@ export default function Subscriptions() {
     setOpeningPortal(true);
     try {
       const { data, error } = await supabase.functions.invoke("billing-portal", {
-        body: { return_url: `${window.location.origin}/subscriptions` },
-      });
+        body: { return_url: `${window.location.origin}/subscriptions` } });
       if (error) throw error;
       const url = (data as any)?.url;
       if (!url) throw new Error("No portal URL");

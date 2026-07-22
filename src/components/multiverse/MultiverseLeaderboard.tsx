@@ -59,15 +59,13 @@ const MultiverseLeaderboard = ({ onBack }: MultiverseLeaderboardProps) => {
 
   const rankColors = ["text-amber-400", "text-violet-300", "text-amber-600"];
   const rankBg = ["bg-amber-500/20 border-amber-500/40", "bg-violet-500/20 border-violet-500/40", "bg-amber-700/20 border-amber-700/40"];
-  const badgeColors: Record<string, string> = {
-    Grandmaster: "bg-gradient-to-r from-amber-500 to-orange-500 text-black",
+  const badgeColors: Record<string, string> = { Grandmaster: "bg-gradient-to-r from-amber-500 to-orange-500 text-black",
     Master: "bg-gradient-to-r from-violet-500 to-purple-500",
     Expert: "bg-gradient-to-r from-cyan-500 to-blue-500",
     Adept: "bg-gradient-to-r from-emerald-500 to-teal-500",
     Explorer: "bg-violet-500/30 text-violet-300 border border-violet-500/30",
     Seeker: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
-    Novice: "bg-black/40 text-violet-300/60 border border-violet-500/20",
-  };
+    Novice: "bg-black/40 text-violet-300/60 border border-violet-500/20" };
 
   return (
     <>

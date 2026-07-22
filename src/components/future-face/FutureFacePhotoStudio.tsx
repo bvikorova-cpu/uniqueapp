@@ -28,15 +28,12 @@ const META: Record<ActionId, { label: string; cost: number; icon: any; needs2?: 
   botox_simulator:    { label: "Botox Simulator",    cost: 7, icon: Syringe },
   uv_heatmap:         { label: "UV Damage Heatmap",  cost: 6, icon: Sun },
   healthy_lifestyle:  { label: "Healthy +Years",     cost: 6, icon: Sparkles },
-  unhealthy_lifestyle:{ label: "Unhealthy +Years",   cost: 6, icon: Sparkles },
-};
+  unhealthy_lifestyle:{ label: "Unhealthy +Years",   cost: 6, icon: Sparkles } };
 
 async function uploadPhoto(file: File, userId: string): Promise<string> {
   const ext = file.name.split(".").pop() || "jpg";
   const path = `${userId}/source-${Date.now()}.${ext}`;
-  const { error } = await supabase.storage.from("future-face-photos").upload(path, file, {
-    contentType: file.type, upsert: false,
-  });
+  const { error } = await supabase.storage.from("future-face-photos").upload(path, file, { contentType: file.type, upsert: false });
   if (error) throw error;
   return (await getReadableUrl("future-face-photos", path));
 }
@@ -83,8 +80,7 @@ export default function FutureFacePhotoStudio() {
       if (action === "botox_simulator") params.area = styleParam || undefined;
 
       const res = await supabase.functions.invoke("future-face-image", {
-        body: { action, sourceUrl, sourceUrl2: secondUrl, params },
-      });
+        body: { action, sourceUrl, sourceUrl2: secondUrl, params } });
       const data = throwIfInvokeError(res);
       setResultUrl(data.resultUrl);
       toast({ title: "Generated!", description: `Used ${data.creditsUsed} credits.` });

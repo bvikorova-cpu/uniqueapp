@@ -36,8 +36,7 @@ export function GroupRulesEditor({ groupId, isStaff }: Props) {
         .order("position", { ascending: true });
       if (error) throw error;
       return (data ?? []) as Rule[];
-    },
-  });
+    } });
 
   const invalidate = () =>
     qc.invalidateQueries({ queryKey: ["group-rules", groupId] });
@@ -47,13 +46,11 @@ export function GroupRulesEditor({ groupId, isStaff }: Props) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
       const nextPos = (rules[rules.length - 1]?.position ?? -1) + 1;
-      const { error } = await supabase.from("group_rules").insert({
-        group_id: groupId,
+      const { error } = await supabase.from("group_rules").insert({ group_id: groupId,
         position: nextPos,
         title: title.trim(),
         description: description.trim() || null,
-        created_by: user.id,
-      });
+        created_by: user.id });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -62,16 +59,14 @@ export function GroupRulesEditor({ groupId, isStaff }: Props) {
       setDescription("");
       invalidate();
     },
-    onError: (e: any) => toast.error(e.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e.message ?? "Failed") });
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("group_rules").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: invalidate,
-  });
+    onSuccess: invalidate });
 
   const move = useMutation({
     mutationFn: async ({ id, dir }: { id: string; dir: "up" | "down" }) => {
@@ -84,8 +79,7 @@ export function GroupRulesEditor({ groupId, isStaff }: Props) {
         supabase.from("group_rules").update({ position: a.position }).eq("id", swapWith.id),
       ]);
     },
-    onSuccess: invalidate,
-  });
+    onSuccess: invalidate });
 
   return (
     <Card className="p-4 space-y-4">

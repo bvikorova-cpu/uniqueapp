@@ -7,8 +7,7 @@ import { Loader2, Pause, Play, X, CreditCard, RefreshCw, ExternalLink, FileText,
 import { useToast } from "@/hooks/use-toast";
 import PauseLimitCard from "@/components/billing/PauseLimitCard";
 import RefundButton from "@/components/billing/RefundButton";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -16,11 +15,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
-} from "@/components/ui/dialog";
+  AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
@@ -61,13 +57,11 @@ interface Proration {
   lines: { description: string; amount: number; proration: boolean }[];
 }
 
-const statusVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-  active: "default",
+const statusVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = { active: "default",
   trialing: "secondary",
   past_due: "destructive",
   unpaid: "destructive",
-  canceled: "outline",
-};
+  canceled: "outline" };
 
 export default function MySubscriptions() {
   const { toast } = useToast();
@@ -102,8 +96,7 @@ export default function MySubscriptions() {
     setInvoicesLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("list-user-subscriptions", {
-        body: { action: "list_invoices", limit: 24 },
-      });
+        body: { action: "list_invoices", limit: 24 } });
       if (error) throw error;
       setInvoices(data?.invoices || []);
     } catch (e: any) {
@@ -123,13 +116,10 @@ export default function MySubscriptions() {
     if (!pvSub || !pvPriceId.trim()) return;
     setPvLoading(true); setPvError(null); setPvData(null);
     try {
-      const { data, error } = await supabase.functions.invoke("list-user-subscriptions", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("list-user-subscriptions", { body: {
           action: "proration_preview",
           subscription_id: pvSub.id,
-          new_price_id: pvPriceId.trim(),
-        },
-      });
+          new_price_id: pvPriceId.trim() } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setPvData(data as Proration);

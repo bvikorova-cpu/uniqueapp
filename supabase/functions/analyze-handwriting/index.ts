@@ -1,17 +1,13 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const CREDIT_COSTS = {
-  personal: 5,
+const CREDIT_COSTS = { personal: 5,
   professional: 10,
   relationship: 15,
-  business: 20,
-};
+  business: 20 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -81,34 +77,23 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${openaiApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
+        "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "gpt-4o",
         messages: [
           {
             role: "system",
-            content: systemPrompt,
-          },
-          {
-            role: "user",
+            content: systemPrompt },
+          { role: "user",
             content: [
               {
                 type: "text",
-                text: "Please analyze this handwriting sample in detail.",
-              },
-              {
-                type: "image_url",
+                text: "Please analyze this handwriting sample in detail." },
+              { type: "image_url",
                 image_url: {
-                  url: imageUrl,
-                },
-              },
-            ],
-          },
+                  url: imageUrl } },
+            ] },
         ],
-        max_completion_tokens: 2000,
-      }),
-    });
+        max_completion_tokens: 2000 }) });
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -137,8 +122,7 @@ serve(async (req) => {
     if (dedErr) {
       if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
         return new Response(JSON.stringify({ error: "Insufficient credits" }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       throw new Error(`Failed to update credits: ${dedErr.message}`);
     }
@@ -148,8 +132,7 @@ serve(async (req) => {
     // Save analysis to database (refund on failure)
     const { data: savedAnalysis, error: insertError } = await supabaseClient
       .from("handwriting_analyses")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         image_url: imageUrl,
         analysis_type: analysisType,
         credits_used: creditsRequired,
@@ -165,8 +148,7 @@ serve(async (req) => {
         creativity_level: analysisResult.creativity_level,
         leadership_qualities: analysisResult.leadership_qualities,
         detailed_analysis: analysisResult.detailed_analysis,
-        recommendations: analysisResult.recommendations,
-      })
+        recommendations: analysisResult.recommendations })
       .select()
       .single();
 
@@ -179,14 +161,11 @@ serve(async (req) => {
     console.log("[HANDWRITING] Analysis saved:", savedAnalysis.id);
 
     return new Response(
-      JSON.stringify({
-        success: true,
+      JSON.stringify({ success: true,
         analysis: savedAnalysis,
-        creditsRemaining: newRemaining,
-      }),
+        creditsRemaining: newRemaining }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("[HANDWRITING] Error:", error);
@@ -194,8 +173,7 @@ serve(async (req) => {
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
       {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
@@ -227,12 +205,10 @@ IMPORTANT: Return ONLY a valid JSON object with this exact structure:
   "recommendations": ["recommendation1", "recommendation2", "recommendation3"]
 }`;
 
-  const typeSpecific = {
-    personal: "\n\nFocus on: Personal growth, emotional intelligence, self-awareness, relationship compatibility, life balance.",
+  const typeSpecific = { personal: "\n\nFocus on: Personal growth, emotional intelligence, self-awareness, relationship compatibility, life balance.",
     professional: "\n\nFocus on: Career strengths, work style, team collaboration, leadership potential, professional development areas.",
     relationship: "\n\nFocus on: Communication patterns, emotional availability, conflict resolution style, intimacy indicators, partner compatibility.",
-    business: "\n\nFocus on: Decision-making under pressure, risk tolerance, negotiation style, strategic thinking, business acumen.",
-  };
+    business: "\n\nFocus on: Decision-making under pressure, risk tolerance, negotiation style, strategic thinking, business acumen." };
 
   return basePrompt + (typeSpecific[analysisType as keyof typeof typeSpecific] || "");
 }

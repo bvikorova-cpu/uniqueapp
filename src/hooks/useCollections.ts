@@ -30,8 +30,7 @@ export const useCollections = () => {
 
       if (error) throw error;
       return data as Collection[];
-    },
-  });
+    } });
 
   const createCollection = useMutation({
     mutationFn: async ({ name, description, isPrivate }: {
@@ -44,12 +43,10 @@ export const useCollections = () => {
 
       const { data, error } = await supabase
         .from("saved_collections")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           name,
           description,
-          is_private: isPrivate ?? true,
-        })
+          is_private: isPrivate ?? true })
         .select()
         .single();
 
@@ -59,8 +56,7 @@ export const useCollections = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["saved-collections"] });
       toast({ title: "Collection created!" });
-    },
-  });
+    } });
 
   const addToCollection = useMutation({
     mutationFn: async ({ collectionId, postId }: {
@@ -69,18 +65,15 @@ export const useCollections = () => {
     }) => {
       const { error } = await supabase
         .from("collection_items")
-        .insert({
-          collection_id: collectionId,
-          post_id: postId,
-        });
+        .insert({ collection_id: collectionId,
+          post_id: postId });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["collection-items"] });
       toast({ title: "Added to collection!" });
-    },
-  });
+    } });
 
   const deleteCollection = useMutation({
     mutationFn: async (collectionId: string) => {
@@ -94,14 +87,11 @@ export const useCollections = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["saved-collections"] });
       toast({ title: "Collection deleted" });
-    },
-  });
+    } });
 
-  return {
-    collections: collections || [],
+  return { collections: collections || [],
     isLoading,
     createCollection: createCollection.mutate,
     addToCollection: addToCollection.mutate,
-    deleteCollection: deleteCollection.mutate,
-  };
+    deleteCollection: deleteCollection.mutate };
 };

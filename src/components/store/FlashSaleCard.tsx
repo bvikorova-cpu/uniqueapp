@@ -14,20 +14,17 @@ interface FlashSaleCardProps {
 }
 
 /** Daily Flash Sale — 24h rolling countdown + heavy discount. */
-export const FlashSaleCard = ({
-  name,
+export const FlashSaleCard = ({ name,
   description,
   emoji,
   originalPrice,
   discountPercent,
   onBuy,
-  disabled,
-}: FlashSaleCardProps) => {
+  disabled }: FlashSaleCardProps) => {
   const [remaining, setRemaining] = useState({ h: 0, m: 0, s: 0 });
   const salePrice = Math.round(originalPrice * (1 - discountPercent / 100));
 
-  useEffect(() => {
-    const tick = () => {
+  useEffect(() => { const tick = () => {
       const now = new Date();
       const tomorrow = new Date(now);
       tomorrow.setHours(24, 0, 0, 0);
@@ -35,8 +32,7 @@ export const FlashSaleCard = ({
       setRemaining({
         h: Math.floor(diff / 3.6e6),
         m: Math.floor((diff % 3.6e6) / 6e4),
-        s: Math.floor((diff % 6e4) / 1000),
-      });
+        s: Math.floor((diff % 6e4) / 1000) });
     };
     tick();
     const id = setInterval(tick, 1000);

@@ -28,15 +28,14 @@ export const VirtualPetHero = () => (
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 100 }}
           className="text-3xl md:text-5xl font-black mb-2"
-          style={{
+          style={ {
             WebkitTextStroke: "2.5px rgba(0,0,0,0.7)",
             background: "linear-gradient(135deg, #fff, #f0abfc, #c084fc)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 30px rgba(192,132,252,0.6), 0 0 60px rgba(192,132,252,0.3), 0 4px 20px rgba(0,0,0,0.7)",
             filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.8))",
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em" }}
         >
           Virtual Pet Companion
         </motion.h1>

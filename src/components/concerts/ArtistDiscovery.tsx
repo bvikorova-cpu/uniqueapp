@@ -19,8 +19,7 @@ export const ArtistDiscovery = ({ onBack }: Props) => {
         .order("followers_count", { ascending: false });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return (
     <>

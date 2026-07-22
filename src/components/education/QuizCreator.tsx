@@ -51,8 +51,7 @@ export default function QuizCreator() {
 
     await createQuiz.mutateAsync({
       quiz: { title, passing_score: passingScore, lesson_id: "default" },
-      questions: validQuestions,
-    });
+      questions: validQuestions });
     navigate("/education");
   };
 

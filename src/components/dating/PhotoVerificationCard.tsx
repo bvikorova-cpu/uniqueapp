@@ -48,11 +48,9 @@ export const PhotoVerificationCard = ({ profileId, userId, status, verified, onC
       const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(path);
       const { error } = await supabase
         .from("dating_profiles")
-        .update({
-          verification_selfie_url: publicUrl,
+        .update({ verification_selfie_url: publicUrl,
           verification_status: "pending",
-          verification_submitted_at: new Date().toISOString(),
-        })
+          verification_submitted_at: new Date().toISOString() })
         .eq("id", profileId);
       if (error) throw error;
       onChange("pending");

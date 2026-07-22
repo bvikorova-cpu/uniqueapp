@@ -21,8 +21,7 @@ export function useChatImport() {
       if (!user) return [];
       const { data } = await supabase.from("lie_chat_imports").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10);
       return data || [];
-    },
-  });
+    } });
   const run = useMutation({
     mutationFn: (vars: { raw_text: string; source_app?: string }) => invoke("chat-import", vars),
     onSuccess: () => {
@@ -30,8 +29,7 @@ export function useChatImport() {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       toast.success("Chat analyzed");
     },
-    onError: onErr,
-  });
+    onError: onErr });
   return { items: list.data || [], run };
 }
 
@@ -45,8 +43,7 @@ export function useEmailScan() {
       if (!user) return [];
       const { data } = await supabase.from("lie_email_scans").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10);
       return data || [];
-    },
-  });
+    } });
   const run = useMutation({
     mutationFn: (vars: { subject?: string; sender?: string; body: string }) => invoke("email-scan", vars),
     onSuccess: () => {
@@ -54,8 +51,7 @@ export function useEmailScan() {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       toast.success("Email analyzed");
     },
-    onError: onErr,
-  });
+    onError: onErr });
   return { items: list.data || [], run };
 }
 
@@ -69,8 +65,7 @@ export function useSentimentTimeline() {
       if (!user) return [];
       const { data } = await supabase.from("lie_sentiment_timelines_v2").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10);
       return data || [];
-    },
-  });
+    } });
   const run = useMutation({
     mutationFn: (vars: { messages: string[]; title?: string }) => invoke("sentiment-timeline", vars),
     onSuccess: () => {
@@ -78,8 +73,7 @@ export function useSentimentTimeline() {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       toast.success("Timeline mapped");
     },
-    onError: onErr,
-  });
+    onError: onErr });
   return { items: list.data || [], run };
 }
 
@@ -88,23 +82,19 @@ export function useWatchlist() {
   const qc = useQueryClient();
   const list = useQuery({
     queryKey: ["lie-watchlist"],
-    queryFn: () => invoke<{ items: any[] }>("watchlist", { sub_action: "list" }).then((r) => r.items || []),
-  });
+    queryFn: () => invoke<{ items: any[] }>("watchlist", { sub_action: "list" }).then((r) => r.items || []) });
   const create = useMutation({
     mutationFn: (vars: { label: string; keywords: string[]; notify?: boolean }) =>
       invoke("watchlist", { sub_action: "create", ...vars }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["lie-watchlist"] }); toast.success("Trigger added"); },
-    onError: onErr,
-  });
+    onError: onErr });
   const remove = useMutation({
     mutationFn: (id: string) => invoke("watchlist", { sub_action: "delete", id }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["lie-watchlist"] }); toast.success("Removed"); },
-    onError: onErr,
-  });
+    onError: onErr });
   const scan = useMutation({
     mutationFn: (text: string) => invoke<{ hits: any[]; total: number }>("watchlist", { sub_action: "scan", text }),
-    onError: onErr,
-  });
+    onError: onErr });
   return { items: list.data || [], create, remove, scan };
 }
 
@@ -118,16 +108,14 @@ export function useRedFlagLookup() {
       if (!user) return [];
       const { data } = await supabase.from("lie_red_flag_lookups").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10);
       return data || [];
-    },
-  });
+    } });
   const run = useMutation({
     mutationFn: (phrase: string) => invoke("red-flag", { phrase }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["lie-red-flag-lookups"] });
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
     },
-    onError: onErr,
-  });
+    onError: onErr });
   return { items: list.data || [], run };
 }
 
@@ -141,16 +129,14 @@ export function useTruthChat() {
       if (!user) return [];
       const { data } = await supabase.from("lie_truth_chat_sessions").select("*").eq("user_id", user.id).order("last_message_at", { ascending: false }).limit(10);
       return data || [];
-    },
-  });
+    } });
   const send = useMutation({
     mutationFn: (vars: { session_id?: string; message: string; context?: string }) => invoke("truth-chat", vars),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["lie-truth-chat-sessions"] });
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
     },
-    onError: onErr,
-  });
+    onError: onErr });
   return { sessions: sessions.data || [], send };
 }
 
@@ -159,8 +145,7 @@ export function useTrustScore() {
   const qc = useQueryClient();
   const list = useQuery({
     queryKey: ["lie-trust-scores"],
-    queryFn: () => invoke<{ items: any[] }>("trust-score", { sub_action: "list" }).then((r) => r.items || []),
-  });
+    queryFn: () => invoke<{ items: any[] }>("trust-score", { sub_action: "list" }).then((r) => r.items || []) });
   const score = useMutation({
     mutationFn: (vars: { contact_name: string; sample_text: string }) =>
       invoke("trust-score", { sub_action: "score", ...vars }),
@@ -169,13 +154,11 @@ export function useTrustScore() {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       toast.success("Trust score updated");
     },
-    onError: onErr,
-  });
+    onError: onErr });
   const remove = useMutation({
     mutationFn: (id: string) => invoke("trust-score", { sub_action: "delete", id }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["lie-trust-scores"] }),
-    onError: onErr,
-  });
+    onError: onErr });
   return { items: list.data || [], score, remove };
 }
 
@@ -189,8 +172,7 @@ export function useTacticClassify() {
       if (!user) return [];
       const { data } = await supabase.from("lie_tactic_classifications").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10);
       return data || [];
-    },
-  });
+    } });
   const run = useMutation({
     mutationFn: (text: string) => invoke("tactic-classify", { text }),
     onSuccess: () => {
@@ -198,7 +180,6 @@ export function useTacticClassify() {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       toast.success("Tactics classified");
     },
-    onError: onErr,
-  });
+    onError: onErr });
   return { items: list.data || [], run };
 }

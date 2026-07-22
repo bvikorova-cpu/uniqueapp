@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -22,12 +20,10 @@ interface TagFriendsDialogProps {
   onToggleFriend: (friendId: string) => void;
 }
 
-export function TagFriendsDialog({
-  open,
+export function TagFriendsDialog({ open,
   onOpenChange,
   selectedFriends,
-  onToggleFriend,
-}: TagFriendsDialogProps) {
+  onToggleFriend }: TagFriendsDialogProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: user } = useQuery({
@@ -35,8 +31,7 @@ export function TagFriendsDialog({
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: friends = [] } = useQuery({
     queryKey: ["friends-for-tagging", user?.id, searchQuery],
@@ -66,8 +61,7 @@ export function TagFriendsDialog({
       const { data: profiles } = await query;
       return profiles || [];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

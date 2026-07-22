@@ -26,8 +26,7 @@ async function stubCheckoutSuccess(page: Page) {
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ url: "https://checkout.stripe.com/test_session_123" }),
-      });
+        body: JSON.stringify({ url: "https://checkout.stripe.com/test_session_123" }) });
     }
     return route.continue();
   });
@@ -40,8 +39,7 @@ async function stubCheckoutFailure(page: Page) {
       return route.fulfill({
         status: 500,
         contentType: "application/json",
-        body: JSON.stringify({ error: "Stripe unavailable" }),
-      });
+        body: JSON.stringify({ error: "Stripe unavailable" }) });
     }
     return route.continue();
   });
@@ -54,8 +52,7 @@ async function stubVerifySuccess(page: Page) {
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ success: true, credits_added: 100 }),
-      });
+        body: JSON.stringify({ success: true, credits_added: 100 }) });
     }
     return route.continue();
   });

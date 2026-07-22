@@ -31,9 +31,7 @@ export function LotterySyndicate({ onBack }: Props) {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) { toast({ title: "Sign in required", variant: "destructive" }); setLoading(false); return; }
     const code = Math.random().toString(36).slice(2, 8).toUpperCase();
-    const { error } = await (supabase as any).from("lottery_syndicates").insert({
-      name, owner_id: u.user.id, invite_code: code,
-    });
+    const { error } = await (supabase as any).from("lottery_syndicates").insert({ name, owner_id: u.user.id, invite_code: code });
     if (error) toast({ title: "Failed", description: error.message, variant: "destructive" });
     else { toast({ title: "Syndicate created", description: `Invite code: ${code}` }); setName(""); load(); }
     setLoading(false);

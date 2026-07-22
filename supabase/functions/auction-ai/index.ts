@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -24,8 +22,7 @@ serve(async (req) => {
 
     const { action, ...params } = await req.json();
 
-    const creditCosts: Record<string, number> = {
-      price_estimator: 3,
+    const creditCosts: Record<string, number> = { price_estimator: 3,
       listing_optimizer: 4,
       bid_strategy: 3,
       category_recommender: 2,
@@ -34,8 +31,7 @@ serve(async (req) => {
       value_tracker: 3,
       photo_enhancer: 3,
       negotiation_coach: 4,
-      market_trends: 4,
-    };
+      market_trends: 4 };
 
     const cost = creditCosts[action];
     if (!cost) throw new Error("Unknown action: " + action);
@@ -104,16 +100,13 @@ serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (!aiResponse.ok) {
       if (aiResponse.status === 429) throw new Error("AI rate limited. Please try again in a moment.");
@@ -128,12 +121,10 @@ serve(async (req) => {
     await supabase.rpc("deduct_ai_credits" as any, { p_user_id: user.id, p_amount: cost });
 
     return new Response(JSON.stringify({ result }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

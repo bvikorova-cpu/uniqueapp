@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
@@ -51,17 +49,14 @@ export function SendGiftDialog({ open, onOpenChange, creatorId, creatorName }: P
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Sign in required",
           description: "Please sign in to send a gift.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
       const { data, error } = await supabase.functions.invoke("send-creator-gift", {
-        body: { creatorId, giftId: selected, message: message.trim() },
-      });
+        body: { creatorId, giftId: selected, message: message.trim() } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       if (data?.url) {
@@ -70,12 +65,10 @@ export function SendGiftDialog({ open, onOpenChange, creatorId, creatorName }: P
         setSelected(null);
         setMessage("");
       }
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Gift failed",
         description: e?.message || "Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

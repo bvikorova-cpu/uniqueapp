@@ -44,9 +44,7 @@ export const EmailTemplateEditor = () => {
 
   const save = async () => {
     if (!draft) return;
-    const { error } = await supabase.from("email_templates").update({
-      subject: draft.subject, body_html: draft.body_html, body_text: draft.body_text,
-    }).eq("id", draft.id);
+    const { error } = await supabase.from("email_templates").update({ subject: draft.subject, body_html: draft.body_html, body_text: draft.body_text }).eq("id", draft.id);
     if (error) toast.error(error.message);
     else { toast.success("Saved"); load(); }
   };
@@ -55,8 +53,7 @@ export const EmailTemplateEditor = () => {
     if (!newSlug.trim()) return;
     const { data, error } = await supabase.from("email_templates").insert({
       slug: newSlug.trim(), language: "en",
-      subject: "New subject", body_html: "<p>Hello {{name}}</p>",
-    }).select().single();
+      subject: "New subject", body_html: "<p>Hello {{name}}</p>" }).select().single();
     if (error) toast.error(error.message);
     else { toast.success("Created"); setNewSlug(""); setCreating(false); load(); if (data) { setActiveId(data.id); setDraft(data as Tpl); } }
   };

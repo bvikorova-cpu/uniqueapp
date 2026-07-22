@@ -33,15 +33,13 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
     
     try {
       toast.info("🎨 Generating 360° panorama...", {
-        description: `Creating image for ${room.room_name}`,
-      });
+        description: `Creating image for ${room.room_name}` });
 
       const { data, error } = await supabase.functions.invoke('generate-castle-panorama', {
         body: {
           roomName: room.room_name,
           castleName: `${castle.name} (${castle.park_name})`,
-          description: room.description,
-        }
+          description: room.description }
       });
 
       if (error) throw error;
@@ -70,8 +68,7 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
       if (updateError) throw updateError;
 
       toast.success("✨ Panorama generated!", {
-        description: `${room.room_name} now has AI 360° image`,
-      });
+        description: `${room.room_name} now has AI 360° image` });
 
       onRoomUpdated();
 

@@ -50,15 +50,13 @@ export const SpiritualCommunity = () => {
 
       const { data } = await query;
 
-      if (data) {
-        setPosts(data.map((d: any) => ({
+      if (data) { setPosts(data.map((d: any) => ({
           id: d.id,
           content: (d.metadata as any)?.content || "",
           category: d.target_type || "General",
           user_id: d.user_id,
           created_at: d.created_at,
-          likes: (d.metadata as any)?.likes || 0,
-        })));
+          likes: (d.metadata as any)?.likes || 0 })));
       }
     } catch (error) {
       console.error("Error:", error);
@@ -81,19 +79,16 @@ export const SpiritualCommunity = () => {
         user_id: session.user.id,
         activity_type: "reincarnation_community_post",
         target_type: postCategory,
-        metadata: { content: newPost.trim(), likes: 0 },
-      }).select().single();
+        metadata: { content: newPost.trim(), likes: 0 } }).select().single();
 
       if (error) throw error;
 
-      setPosts((prev) => [{
-        id: data.id,
+      setPosts((prev) => [{ id: data.id,
         content: newPost.trim(),
         category: postCategory,
         user_id: session.user.id,
         created_at: data.created_at,
-        likes: 0,
-      }, ...prev]);
+        likes: 0 }, ...prev]);
       setNewPost("");
       toast({ title: "Posted to community!" });
     } catch (error) {

@@ -46,8 +46,7 @@ const StoryVideoDemo = () => {
     try {
       toast.info('Generating your story... This may take up to 2 minutes.');
       const { data, error } = await supabase.functions.invoke('generate-story-video', {
-        body: { theme: config.theme, sceneCount: config.sceneCount, language: config.language },
-      });
+        body: { theme: config.theme, sceneCount: config.sceneCount, language: config.language } });
 
       if (error) {
         if (error.message?.includes('Too Many Requests') || error.message?.includes('rate limited')) {
@@ -71,8 +70,7 @@ const StoryVideoDemo = () => {
           audio_files: data.audioFiles || null,
           thumbnail: data.images[0] || null,
           scene_count: config.sceneCount,
-          scene_duration: config.sceneDuration,
-        }] as any);
+          scene_duration: config.sceneDuration }] as any);
       }
 
       toast.success('Story video generated and saved!');
@@ -84,13 +82,11 @@ const StoryVideoDemo = () => {
     }
   }, [loading, lastRequestTime]);
 
-  const handleSelectGalleryStory = (story: any) => {
-    if (story.scenes && story.images) {
+  const handleSelectGalleryStory = (story: any) => { if (story.scenes && story.images) {
       setStoryData({
         scenes: Array.isArray(story.scenes) ? story.scenes.map((s: any) => s.text || s) : [],
         images: story.images,
-        audioFiles: story.audio_files || undefined,
-      });
+        audioFiles: story.audio_files || undefined });
       setSceneDuration(story.scene_duration || 5);
       setLastTheme(story.theme || '');
     }

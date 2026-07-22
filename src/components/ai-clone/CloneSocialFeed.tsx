@@ -31,8 +31,7 @@ export function CloneSocialFeed() {
           id: d.id,
           clone_name: d.clone_name,
           event: d.total_conversations > 0 ? `Has had ${d.total_conversations} conversations` : "Just joined the network",
-          time: d.created_at,
-        })));
+          time: d.created_at })));
       }
     };
     fetchFeed();

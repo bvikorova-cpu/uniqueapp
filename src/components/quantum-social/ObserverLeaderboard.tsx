@@ -49,8 +49,7 @@ export function ObserverLeaderboard({ onBack }: { onBack: () => void }) {
       observations_count: 1,
       accuracy_score: 50,
       streak_days: 1,
-      total_points: 10,
-    });
+      total_points: 10 });
 
     if (error?.code === "23505") {
       toast({ title: "Already on leaderboard!" });

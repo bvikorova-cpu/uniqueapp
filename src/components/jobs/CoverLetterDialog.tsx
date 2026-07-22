@@ -20,13 +20,10 @@ export function CoverLetterDialog({ jobId, jobTitle, jobDescription, companyName
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setLoading(false); return; }
     const { data: resume } = await supabase.from("candidate_resumes").select("parsed_skills, parsed_summary").eq("user_id", user.id).order("is_primary", { ascending: false }).limit(1).maybeSingle();
-    const { data, error } = await supabase.functions.invoke("generate-cover-letter", {
-      body: {
+    const { data, error } = await supabase.functions.invoke("generate-cover-letter", { body: {
         jobTitle, jobDescription, companyName, tone,
         candidateSummary: resume?.parsed_summary,
-        candidateSkills: resume?.parsed_skills || [],
-      },
-    });
+        candidateSkills: resume?.parsed_skills || [] } });
     if (error) { toast({ title: "Failed", description: error.message, variant: "destructive" }); setLoading(false); return; }
     setContent(data.content);
     setLoading(false);
@@ -36,8 +33,7 @@ export function CoverLetterDialog({ jobId, jobTitle, jobDescription, companyName
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
     await supabase.from("cover_letters").insert({
-      user_id: user.id, job_id: jobId, title: `Cover letter for ${jobTitle}`, content, is_ai_generated: true,
-    });
+      user_id: user.id, job_id: jobId, title: `Cover letter for ${jobTitle}`, content, is_ai_generated: true });
     toast({ title: "Saved!" });
   };
 

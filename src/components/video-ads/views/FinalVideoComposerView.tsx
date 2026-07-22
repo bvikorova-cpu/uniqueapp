@@ -108,8 +108,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd";
       await ff.load({
         coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-      });
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm") });
       ffmpegRef.current = ff;
       setFfmpegReady(true);
       return ff;
@@ -123,11 +122,9 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
     if (outputUrl) URL.revokeObjectURL(outputUrl);
   }, []);
 
-  const addImages = (files: FileList | null) => {
-    if (!files) return;
+  const addImages = (files: FileList | null) => { if (!files) return;
     const imgs: SceneImg[] = Array.from(files).filter(f => f.type.startsWith("image/")).map(f => ({
-      id: crypto.randomUUID(), file: f, preview: URL.createObjectURL(f),
-    }));
+      id: crypto.randomUUID(), file: f, preview: URL.createObjectURL(f) }));
     setScenes(s => [...s, ...imgs]);
   };
 
@@ -139,8 +136,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
     try {
       const finalVoiceId = customVoiceId.trim() || voiceId;
       const { data, error } = await supabase.functions.invoke('video-ad-tts', {
-        body: { text: voText, voiceId: finalVoiceId },
-      });
+        body: { text: voText, voiceId: finalVoiceId } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'TTS' }); return; }
       const bin = atob(data.audioBase64);
       const bytes = new Uint8Array(bin.length);
@@ -189,8 +185,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
     updateSfx(id, { loading: true });
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-sfx', {
-        body: { prompt: sfx.prompt, durationSeconds: sfx.duration },
-      });
+        body: { prompt: sfx.prompt, durationSeconds: sfx.duration } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'SFX' }); return; }
       const bin = atob(data.audioBase64);
       const bytes = new Uint8Array(bin.length);

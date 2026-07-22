@@ -40,8 +40,7 @@ export default function RewardsMarketplace() {
         .order("cost_xp");
       if (error) throw error;
       return (data ?? []) as ShopItem[];
-    },
-  });
+    } });
 
   const { data: inv } = useQuery<InventoryRow[]>({
     queryKey: ["rewards-inventory"],
@@ -54,8 +53,7 @@ export default function RewardsMarketplace() {
         .eq("user_id", user.id);
       if (error) throw error;
       return (data ?? []) as InventoryRow[];
-    },
-  });
+    } });
 
   const redeem = useMutation({
     mutationFn: async (code: string) => {
@@ -73,8 +71,7 @@ export default function RewardsMarketplace() {
       qc.invalidateQueries({ queryKey: ["gamification"] });
     },
     onError: (e: Error) => toast({ title: "Purchase failed", description: e.message, variant: "destructive" }),
-    onSettled: () => setPending(null),
-  });
+    onSettled: () => setPending(null) });
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">

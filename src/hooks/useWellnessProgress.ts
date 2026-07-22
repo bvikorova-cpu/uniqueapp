@@ -56,8 +56,7 @@ export const useWellnessProgress = () => {
       if (error) throw error;
       return data as MeditationSession[];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   // Fetch journal entries
   const { data: journalEntries = [], isLoading: journalLoading } = useQuery({
@@ -74,8 +73,7 @@ export const useWellnessProgress = () => {
       if (error) throw error;
       return data as JournalEntry[];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   // Fetch usage statistics
   const { data: stats = [], isLoading: statsLoading } = useQuery({
@@ -90,17 +88,14 @@ export const useWellnessProgress = () => {
       if (error) throw error;
       return data as UsageStats[];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   // Log meditation session
-  const logSession = useMutation({
-    mutationFn: async ({
+  const logSession = useMutation({ mutationFn: async ({
       sessionType,
       durationSeconds,
       completed,
-      notes,
-    }: {
+      notes }: {
       sessionType: string;
       durationSeconds: number;
       completed: boolean;
@@ -111,13 +106,11 @@ export const useWellnessProgress = () => {
 
       const { data, error } = await (supabase as any)
         .from("wellness_meditation_sessions")
-        .insert({
-          user_id: session.user.id,
+        .insert({ user_id: session.user.id,
           session_type: sessionType,
           duration_seconds: durationSeconds,
           completed,
-          notes,
-        })
+          notes })
         .select()
         .single();
 
@@ -128,24 +121,19 @@ export const useWellnessProgress = () => {
       queryClient.invalidateQueries({ queryKey: ["wellness-meditation-sessions"] });
       queryClient.invalidateQueries({ queryKey: ["wellness-usage-stats"] });
     },
-    onError: (error) => {
-      toast({
+    onError: (error) => { toast({
         title: "Error",
         description: "Failed to log meditation session",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       console.error(error);
-    },
-  });
+    } });
 
   // Save journal entry
-  const saveJournalEntry = useMutation({
-    mutationFn: async ({
+  const saveJournalEntry = useMutation({ mutationFn: async ({
       entryText,
       moodRating,
       aiInsights,
-      tags,
-    }: {
+      tags }: {
       entryText: string;
       moodRating?: number;
       aiInsights?: string;
@@ -156,13 +144,11 @@ export const useWellnessProgress = () => {
 
       const { data, error } = await (supabase as any)
         .from("wellness_journal_entries")
-        .insert({
-          user_id: session.user.id,
+        .insert({ user_id: session.user.id,
           entry_text: entryText,
           mood_rating: moodRating,
           ai_insights: aiInsights,
-          tags,
-        })
+          tags })
         .select()
         .single();
 
@@ -172,27 +158,20 @@ export const useWellnessProgress = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["wellness-journal-entries"] });
       queryClient.invalidateQueries({ queryKey: ["wellness-usage-stats"] });
-      toast({
-        title: "Success",
-        description: "Journal entry saved",
-      });
+      toast({ title: "Success",
+        description: "Journal entry saved" });
     },
-    onError: (error) => {
-      toast({
+    onError: (error) => { toast({
         title: "Error",
         description: "Failed to save journal entry",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       console.error(error);
-    },
-  });
+    } });
 
   // Update usage statistics
-  const updateStats = useMutation({
-    mutationFn: async ({
+  const updateStats = useMutation({ mutationFn: async ({
       activityType,
-      durationSeconds = 0,
-    }: {
+      durationSeconds = 0 }: {
       activityType: string;
       durationSeconds?: number;
     }) => {
@@ -211,11 +190,9 @@ export const useWellnessProgress = () => {
         // Update existing stat
         const { error } = await (supabase as any)
           .from("wellness_usage_stats")
-          .update({
-            activity_count: existing.activity_count + 1,
+          .update({ activity_count: existing.activity_count + 1,
             total_duration_seconds: existing.total_duration_seconds + durationSeconds,
-            last_activity_at: new Date().toISOString(),
-          })
+            last_activity_at: new Date().toISOString() })
           .eq("id", existing.id);
 
         if (error) throw error;
@@ -223,13 +200,11 @@ export const useWellnessProgress = () => {
         // Create new stat
         const { error } = await (supabase as any)
           .from("wellness_usage_stats")
-          .insert({
-            user_id: session.user.id,
+          .insert({ user_id: session.user.id,
             activity_type: activityType,
             activity_count: 1,
             total_duration_seconds: durationSeconds,
-            last_activity_at: new Date().toISOString(),
-          });
+            last_activity_at: new Date().toISOString() });
 
         if (error) throw error;
       }
@@ -239,11 +214,9 @@ export const useWellnessProgress = () => {
     },
     onError: (error) => {
       console.error("Failed to update stats:", error);
-    },
-  });
+    } });
 
-  return {
-    sessions,
+  return { sessions,
     journalEntries,
     stats,
     isLoading: sessionsLoading || journalLoading || statsLoading,
@@ -251,6 +224,5 @@ export const useWellnessProgress = () => {
     saveJournalEntry: saveJournalEntry.mutateAsync,
     updateStats: updateStats.mutateAsync,
     isLoggingSession: logSession.isPending,
-    isSavingJournal: saveJournalEntry.isPending,
-  };
+    isSavingJournal: saveJournalEntry.isPending };
 };

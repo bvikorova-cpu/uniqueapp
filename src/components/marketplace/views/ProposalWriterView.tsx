@@ -29,8 +29,7 @@ export function ProposalWriterView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke("marketplace-ai", {
         body: { action: "proposal-writer", jobDescription, mySkills, experience, budget },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Proposal written! (${data.credits_used} credits used)`);

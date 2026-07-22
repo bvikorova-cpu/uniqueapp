@@ -35,8 +35,7 @@ export const useCollaborators = (postId?: string) => {
       const map = new Map((profiles || []).map((p: any) => [p.id, p]));
       return (data || []).map((c: any) => ({ ...c, profiles: map.get(c.collaborator_id) || null }));
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
   const inviteCollaborator = useMutation({
     mutationFn: async ({ postId, collaboratorId }: {
@@ -48,19 +47,16 @@ export const useCollaborators = (postId?: string) => {
 
       const { error } = await supabase
         .from("post_collaborators")
-        .insert({
-          post_id: postId,
+        .insert({ post_id: postId,
           collaborator_id: collaboratorId,
-          invited_by: user.id,
-        });
+          invited_by: user.id });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-collaborators"] });
       toast({ title: "Collaborator invited!" });
-    },
-  });
+    } });
 
   const respondToInvite = useMutation({
     mutationFn: async ({ inviteId, status }: {
@@ -77,12 +73,9 @@ export const useCollaborators = (postId?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-collaborators"] });
       toast({ title: "Response recorded!" });
-    },
-  });
+    } });
 
-  return {
-    collaborators: collaborators || [],
+  return { collaborators: collaborators || [],
     inviteCollaborator: inviteCollaborator.mutate,
-    respondToInvite: respondToInvite.mutate,
-  };
+    respondToInvite: respondToInvite.mutate };
 };

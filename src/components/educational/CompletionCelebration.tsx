@@ -16,12 +16,10 @@ interface CompletionCelebrationProps {
   onClose: () => void;
 }
 
-export const CompletionCelebration = ({
-  totalTopicsCompleted,
+export const CompletionCelebration = ({ totalTopicsCompleted,
   totalStarsEarned,
   averageQuizScore,
-  onClose,
-}: CompletionCelebrationProps) => {
+  onClose }: CompletionCelebrationProps) => {
   const [studentName, setStudentName] = useState("");
   const [showCertificate, setShowCertificate] = useState(false);
   const { certificates, createCertificate, isCreating } = useEducationalCertificates();
@@ -31,12 +29,10 @@ export const CompletionCelebration = ({
       return;
     }
 
-    createCertificate({
-      studentName: studentName.trim(),
+    createCertificate({ studentName: studentName.trim(),
       totalTopicsCompleted,
       totalStarsEarned,
-      averageQuizScore,
-    });
+      averageQuizScore });
     
     // Show certificate after a short delay
     setTimeout(() => {
@@ -45,8 +41,7 @@ export const CompletionCelebration = ({
       confetti({
         particleCount: 100,
         spread: 70,
-        origin: { y: 0.6 },
-      });
+        origin: { y: 0.6 } });
     }, 1000);
   };
 

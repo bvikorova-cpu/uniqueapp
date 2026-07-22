@@ -1,11 +1,9 @@
 // Past-life analysis: deducts 1 past_life_credit, calls Lovable AI, inserts past_life_readings.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const COST = 1;
@@ -13,8 +11,7 @@ const COST = 1;
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 Deno.serve(async (req) => {
@@ -27,22 +24,19 @@ Deno.serve(async (req) => {
     if (!authHeader) return json({ error: "Not authenticated" }, 401);
 
     const auth = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData } = await auth.auth.getUser();
     const user = userData?.user;
     if (!user) return json({ error: "Not authenticated" }, 401);
     if (!OPENAI_API_KEY) return json({ error: "OPENAI_API_KEY not configured" }, 500);
 
     const body = await req.json().catch(() => ({}));
-    const {
-      birthDate,
+    const { birthDate,
       dreamsDejavu = "",
       talentsPhobias = "",
       readingType = "general",
       partnerBirthDate,
-      partnerInfo,
-    } = body || {};
+      partnerInfo } = body || {};
     if (!birthDate) return json({ error: "birthDate required" }, 400);
 
     const admin = createClient(supabaseUrl, serviceKey);
@@ -72,17 +66,14 @@ Partner info: ${partnerInfo || "(none)"}`;
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+        ] }) });
     if (aiResp.status === 429) return json({ error: "Rate limited" }, 429);
     if (aiResp.status === 402) return json({ error: "AI credits exhausted" }, 402);
     if (!aiResp.ok) {
@@ -103,8 +94,7 @@ Partner info: ${partnerInfo || "(none)"}`;
     // Insert reading
     const { data: inserted } = await admin
       .from("past_life_readings")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         birth_date: birthDate,
         reading_type: readingType,
         dreams_dejavu: dreamsDejavu,
@@ -114,8 +104,7 @@ Partner info: ${partnerInfo || "(none)"}`;
         past_lives: parsed.past_lives ?? [],
         karmic_lessons: parsed.karmic_lessons ?? null,
         soulmate_analysis: parsed.soulmate_analysis ?? null,
-        credits_used: COST,
-      })
+        credits_used: COST })
       .select()
       .single();
 

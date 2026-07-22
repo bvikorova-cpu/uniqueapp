@@ -19,8 +19,7 @@ export const ConflictResolverView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "conflict_resolver", conflict },
-      });
+        body: { action: "conflict_resolver", conflict } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

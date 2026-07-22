@@ -1,24 +1,20 @@
 import { useRef, useCallback, useEffect } from 'react';
 
 // Sound URLs - using free sound effects
-const SOUNDS = {
-  ambient: {
+const SOUNDS = { ambient: {
     mystery: 'https://cdn.pixabay.com/audio/2022/10/25/audio_6c0ef17d00.mp3',
     horror: 'https://cdn.pixabay.com/audio/2022/03/10/audio_fe1fae1dc8.mp3',
     scifi: 'https://cdn.pixabay.com/audio/2022/05/16/audio_db6d1e3fb1.mp3',
     adventure: 'https://cdn.pixabay.com/audio/2021/09/06/audio_1c4df99b10.mp3',
-    fantasy: 'https://cdn.pixabay.com/audio/2022/01/18/audio_d0ef89f39c.mp3',
-  },
-  effects: {
-    pickup: 'https://cdn.pixabay.com/audio/2022/03/15/audio_fd62e8f1d6.mp3',
+    fantasy: 'https://cdn.pixabay.com/audio/2022/01/18/audio_d0ef89f39c.mp3' },
+  effects: { pickup: 'https://cdn.pixabay.com/audio/2022/03/15/audio_fd62e8f1d6.mp3',
     success: 'https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1e68f.mp3',
     error: 'https://cdn.pixabay.com/audio/2022/03/15/audio_942694d06a.mp3',
     unlock: 'https://cdn.pixabay.com/audio/2022/03/10/audio_35bb2bef86.mp3',
     door: 'https://cdn.pixabay.com/audio/2022/03/15/audio_371b07a08d.mp3',
     click: 'https://cdn.pixabay.com/audio/2022/11/21/audio_e0908ec0a5.mp3',
     hint: 'https://cdn.pixabay.com/audio/2022/03/24/audio_0c1c8c4b90.mp3',
-    complete: 'https://cdn.pixabay.com/audio/2021/08/04/audio_dc39844db9.mp3',
-  }
+    complete: 'https://cdn.pixabay.com/audio/2021/08/04/audio_dc39844db9.mp3' }
 };
 
 export type SoundEffect = keyof typeof SOUNDS.effects;
@@ -104,11 +100,9 @@ export function useEscapeRoomSounds(theme: string = 'mystery') {
     }
   }, []);
 
-  return {
-    playAmbient,
+  return { playAmbient,
     stopAmbient,
     playEffect,
     setMuted,
-    setAmbientVolume,
-  };
+    setAmbientVolume };
 }

@@ -95,13 +95,10 @@ async function probe(fn) {
   try {
     // OPTIONS (CORS preflight) — reaches worker without running its handler,
     // so validation/auth/rate-limit responses never fire.
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/${fn}`, {
-      method: 'OPTIONS',
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/${fn}`, { method: 'OPTIONS',
       headers: {
         'Access-Control-Request-Method': 'POST',
-        'Access-Control-Request-Headers': 'authorization,content-type',
-      },
-    });
+        'Access-Control-Request-Headers': 'authorization,content-type' } });
     const ms = Math.round(performance.now() - t0);
     try { await res.text(); } catch {}
     const code = res.status;

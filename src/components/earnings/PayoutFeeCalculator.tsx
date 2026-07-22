@@ -10,8 +10,7 @@ const FEES: Record<string, { pct: number; fixed: number; label: string }> = {
   stripe: { pct: 0.0025, fixed: 0.25, label: "Stripe Connect" },
   instant: { pct: 0.01, fixed: 0, label: "Instant payout" },
   paypal: { pct: 0.02, fixed: 0.35, label: "PayPal" },
-  wise: { pct: 0.005, fixed: 0.5, label: "Wise" },
-};
+  wise: { pct: 0.005, fixed: 0.5, label: "Wise" } };
 
 /** Quick fee calculator — shows net for each payout method. */
 export function PayoutFeeCalculator() {

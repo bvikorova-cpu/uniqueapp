@@ -1,11 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import {
-  corsHeaders,
+import { corsHeaders,
   json,
   errorResponse,
-  findMatchSchema,
-} from "../_shared/anonymous-dating.ts";
+  findMatchSchema } from "../_shared/anonymous-dating.ts";
 
 const MATCH_COST = 5; // Credits to start a match
 
@@ -34,11 +32,9 @@ serve(async (req) => {
     }
 
     // ── Rate limit: 30 match requests per minute per user ──
-    const { data: rateOk } = await supabaseClient.rpc("check_anon_dating_rate_limit", {
-      p_user_id: user.id,
+    const { data: rateOk } = await supabaseClient.rpc("check_anon_dating_rate_limit", { p_user_id: user.id,
       p_action: "find_anonymous_match",
-      p_max_per_minute: 30,
-    });
+      p_max_per_minute: 30 });
     if (rateOk === false) {
       return errorResponse("RATE_LIMITED", "Too many match requests. Please wait a minute.", 429);
     }
@@ -53,10 +49,8 @@ serve(async (req) => {
       }
     }
     const parsedBody = findMatchSchema.safeParse(rawBody);
-    if (!parsedBody.success) {
-      return errorResponse("VALIDATION_ERROR", "Invalid request payload", 400, {
-        issues: parsedBody.error.flatten().fieldErrors,
-      });
+    if (!parsedBody.success) { return errorResponse("VALIDATION_ERROR", "Invalid request payload", 400, {
+        issues: parsedBody.error.flatten().fieldErrors });
     }
     const { mode, targetUserId, filters } = parsedBody.data;
 
@@ -155,8 +149,7 @@ serve(async (req) => {
     const myLanguages: string[] = userProfile.languages ?? [];
     const myTraits: string[] = userProfile.personality_traits ?? [];
 
-    const scored = potentialMatches.map((p: any) => {
-      const sharedInterests = (p.interests || []).filter((i: string) => myInterests.includes(i));
+    const scored = potentialMatches.map((p: any) => { const sharedInterests = (p.interests || []).filter((i: string) => myInterests.includes(i));
       const sharedLanguages = (p.languages || []).filter((l: string) => myLanguages.includes(l));
       const sharedTraits = (p.personality_traits || []).filter((t: string) => myTraits.includes(t));
 
@@ -177,9 +170,7 @@ serve(async (req) => {
           shared_languages: sharedLanguages,
           shared_traits: sharedTraits,
           same_goal: !!goalScore,
-          same_location: !!locationScore,
-        },
-      };
+          same_location: !!locationScore } };
     }).sort((a, b) => b.compatibility - a.compatibility);
 
     const minShared = filters.min_shared_interests ?? 0;
@@ -187,8 +178,7 @@ serve(async (req) => {
     const pool = acceptable.length > 0 ? acceptable : scored;
 
     // PREVIEW MODE — return top 5 candidates without creating a match or spending credits
-    if (mode === "preview") {
-      const candidates = pool.slice(0, 5).map(r => ({
+    if (mode === "preview") { const candidates = pool.slice(0, 5).map(r => ({
         user_id: r.profile.user_id,
         anonymous_name: r.profile.anonymous_name,
         age_range: r.profile.age_range,
@@ -196,8 +186,7 @@ serve(async (req) => {
         interests: r.profile.interests ?? [],
         personality_traits: r.profile.personality_traits ?? [],
         compatibility: r.compatibility,
-        breakdown: r.breakdown,
-      }));
+        breakdown: r.breakdown }));
       return json({ candidates, cost: MATCH_COST });
     }
 
@@ -232,15 +221,12 @@ serve(async (req) => {
     // Create match
     const { data: newMatch, error: matchError } = await supabaseClient
       .from("anonymous_dating_matches")
-      .insert({
-        user1_id: user.id,
+      .insert({ user1_id: user.id,
         user2_id: matchedProfile.user_id,
         status: "active",
         match_interests: {
           common: chosen.breakdown.shared_interests,
-          compatibility: chosen.compatibility,
-        },
-      })
+          compatibility: chosen.compatibility } })
       .select()
       .single();
 
@@ -250,16 +236,13 @@ serve(async (req) => {
       throw matchError;
     }
 
-    return json({
-      match: newMatch,
+    return json({ match: newMatch,
       partner: {
         anonymous_name: matchedProfile.anonymous_name,
         age_range: matchedProfile.age_range,
         interests: matchedProfile.interests,
         personality_traits: matchedProfile.personality_traits,
-        compatibility: chosen.compatibility,
-      },
-    });
+        compatibility: chosen.compatibility } });
   } catch (error) {
     console.error("Error:", error);
     return errorResponse("SERVER_ERROR", error instanceof Error ? error.message : "Unknown error", 500);

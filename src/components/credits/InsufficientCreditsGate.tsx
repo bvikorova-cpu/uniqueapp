@@ -16,12 +16,10 @@ interface Props {
  * Blocking message shown when balance < required.
  * Renders nothing if the user has enough credits.
  */
-export const InsufficientCreditsGate = ({
-  balance,
+export const InsufficientCreditsGate = ({ balance,
   required,
   action,
-  topUpHref = "/ai-credits",
-}: Props) => {
+  topUpHref = "/ai-credits" }: Props) => {
   const navigate = useNavigate();
   if (balance >= required) return null;
 

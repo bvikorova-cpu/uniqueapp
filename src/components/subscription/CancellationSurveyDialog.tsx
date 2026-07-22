@@ -34,10 +34,8 @@ export const CancellationSurveyDialog = ({ open, onOpenChange, tier, onProceedCa
     setSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from("cancellation_surveys").insert({
-          user_id: user.id, tier, reason, feedback, accepted_offer: offer,
-        });
+      if (user) { await supabase.from("cancellation_surveys").insert({
+          user_id: user.id, tier, reason, feedback, accepted_offer: offer });
       }
       if (offer === "pause") {
         await supabase.functions.invoke("pause-subscription", { body: { weeks: 4 } });

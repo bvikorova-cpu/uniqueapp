@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const PRICES = {
   digital_signup: "price_1TvfL2GaXSfGtYFtX5udEkKU", // €20 one-off
@@ -34,9 +32,7 @@ serve(async (req) => {
     if (uErr || !userData.user?.email) throw new Error("Not authenticated");
     const user = userData.user;
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     const customerId = customers.data[0]?.id;
@@ -54,55 +50,43 @@ serve(async (req) => {
         { price: PRICES.monthly, quantity: 1 },
         { price: signupPrice, quantity: 1 },
       ],
-      subscription_data: {
-        trial_period_days: 30,
+      subscription_data: { trial_period_days: 30,
         metadata: {
           product: "unique_club",
           tier,
           user_id: user.id,
-          referral_code: referralCode ?? "",
-        },
-      },
-      metadata: {
-        product: "unique_club",
+          referral_code: referralCode ?? "" } },
+      metadata: { product: "unique_club",
         tier,
         user_id: user.id,
-        referral_code: referralCode ?? "",
-      },
+        referral_code: referralCode ?? "" },
       ...(tier === "physical"
-        ? {
-            shipping_address_collection: {
+        ? { shipping_address_collection: {
               allowed_countries: [
                 "SK","CZ","HU","AT","DE","PL","FR","IT","ES","NL","BE","IE","PT","SE","DK","FI","GR","RO","BG","HR","SI","LT","LV","EE","LU","MT","CY","GB","US","CA","AU","CH","NO"
-              ],
-            },
+              ] },
             phone_number_collection: { enabled: true },
             custom_fields: [
               {
                 key: "recipient_name",
                 label: { type: "custom", custom: "Recipient full name (as printed on the card)" },
                 type: "text",
-                optional: false,
-              },
+                optional: false },
               {
                 key: "delivery_note",
                 label: { type: "custom", custom: "Delivery note (buzzer, floor…)" },
                 type: "text",
-                optional: true,
-              },
-            ],
-          }
+                optional: true },
+            ] }
         : {}),
       success_url: `${origin}/club?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/club?canceled=1`,
-      allow_promotion_codes: true,
-    });
+      allow_promotion_codes: true });
 
 
     return new Response(JSON.stringify({ url: finalSession.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e) {
     console.error("[create-club-checkout]", e);
     return new Response(

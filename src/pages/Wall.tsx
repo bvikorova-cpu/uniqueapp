@@ -5,11 +5,9 @@ import { Sparkles } from "lucide-react";
 // preview-sync: 2026-01-05a (touch file to ensure consistent preview refresh)
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  startWallTrace,
+import { startWallTrace,
   markWallInteractive,
-  tracedRpc,
-} from "@/utils/wallPerf";
+  tracedRpc } from "@/utils/wallPerf";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import UserSearch from "@/components/feed/UserSearch";
@@ -105,11 +103,9 @@ const Feed = () => {
     else next.set("tab", view);
     setSearchParams(next, { replace: true });
   }, [searchParams, setSearchParams]);
-  const [pullToRefresh, setPullToRefresh] = useState({
-    pulling: false,
+  const [pullToRefresh, setPullToRefresh] = useState({ pulling: false,
     pullDistance: 0,
-    canRefresh: false,
-  });
+    canRefresh: false });
   const POSTS_PER_PAGE = 10;
   const PULL_THRESHOLD = 80;
   const { toast } = useToast();
@@ -130,8 +126,7 @@ const Feed = () => {
         .single();
       return data;
     },
-    enabled: !!user && feedEnhancementsReady,
-  });
+    enabled: !!user && feedEnhancementsReady });
 
   // Race-condition lock + cursor for keyset pagination (avoids range duplicates)
   const fetchInFlight = useRef(false);
@@ -185,15 +180,12 @@ const Feed = () => {
 
       const fallback = (id: string) => ({ id, full_name: null, avatar_url: null });
 
-      const postsWithProfiles = postsData.map((post: any) => ({
-        ...post,
+      const postsWithProfiles = postsData.map((post: any) => ({ ...post,
         media: post.media || [],
-        profiles: post.profiles || fallback(post.user_id),
-      })) as Post[];
+        profiles: post.profiles || fallback(post.user_id) })) as Post[];
 
       const repostsWithData = repostsData
-        .map((repost: any) => {
-          const op = repost.original_post;
+        .map((repost: any) => { const op = repost.original_post;
           if (!op) return null;
           return {
             ...repost,
@@ -201,9 +193,7 @@ const Feed = () => {
             original_post: {
               ...op,
               media: op.media || [],
-              profiles: op.profiles || fallback(op.user_id),
-            },
-          };
+              profiles: op.profiles || fallback(op.user_id) } };
         })
         .filter(Boolean) as Repost[];
 
@@ -257,13 +247,11 @@ const Feed = () => {
       // (removed: localStorage cache — was causing stale/slow first paint)
 
 
-    } catch (error: any) {
-      setFeedError(error?.message || "Failed to load posts");
+    } catch (error: any) { setFeedError(error?.message || "Failed to load posts");
       toast({
         title: "Error loading posts",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       fetchInFlight.current = false;
       setLoading(false);
@@ -328,12 +316,10 @@ const Feed = () => {
       }));
 
       setSavedPosts(postsWithProfiles);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error loading saved posts",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoadingSaved(false);
     }
@@ -424,14 +410,12 @@ const Feed = () => {
       }
       const currentY = e.touches[0].clientY;
       const pullDistance = Math.max(0, currentY - state.startY);
-      if (pullDistance > 10) {
-        const canRefresh = pullDistance > PULL_THRESHOLD;
+      if (pullDistance > 10) { const canRefresh = pullDistance > PULL_THRESHOLD;
         state.canRefresh = canRefresh;
         setPullToRefresh({
           pulling: true,
           pullDistance: Math.min(pullDistance, 120),
-          canRefresh,
-        });
+          canRefresh });
       }
     };
 
@@ -494,8 +478,7 @@ const Feed = () => {
       return (data ?? [])
         .map((r) => (r.user_id === user!.id ? r.friend_id : r.user_id))
         .filter(Boolean) as string[];
-    },
-  });
+    } });
 
   // Followed user IDs for the "Following" feed tab
   const { data: followingIds = [] } = useQuery({
@@ -508,8 +491,7 @@ const Feed = () => {
         .eq("follower_id", user!.id);
       if (error) return [];
       return (data ?? []).map((r: any) => r.following_id).filter(Boolean);
-    },
-  });
+    } });
 
   // Filter and sort feed items
   const filteredFeedItems = useMemo(() => {

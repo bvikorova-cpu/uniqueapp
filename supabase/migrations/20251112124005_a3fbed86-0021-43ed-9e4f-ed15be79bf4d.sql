@@ -86,7 +86,7 @@ CREATE INDEX idx_brain_duel_answers_match ON public.brain_duel_answers(match_id)
 
 -- Insert sample questions
 INSERT INTO public.brain_duel_questions (category, question, option_a, option_b, option_c, option_d, correct_answer, difficulty) VALUES
-('General Knowledge', 'What is the capital of France?', 'London', 'Berlin', 'Paris', 'Madrid', 'c', 'easy'),
+('General Knowledge', 'What is the result of 8 + 5?', '11', '12', '13', '14', 'c', 'easy'),
 ('General Knowledge', 'Which planet is known as the Red Planet?', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'b', 'easy'),
 ('Science', 'What is the chemical symbol for gold?', 'Go', 'Gd', 'Au', 'Ag', 'c', 'medium'),
 ('Science', 'How many bones are in the human body?', '206', '208', '210', '212', 'a', 'medium'),

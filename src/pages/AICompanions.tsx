@@ -21,13 +21,11 @@ import { CompanionMemory } from "@/components/companions/CompanionMemory";
 import { GroupConversations } from "@/components/companions/GroupConversations";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const personalityIcons: Record<string, any> = {
-  motivator: Lightbulb,
+const personalityIcons: Record<string, any> = { motivator: Lightbulb,
   therapist: Heart,
   humor: Smile,
   romance: Heart,
-  mentor: Brain,
-};
+  mentor: Brain };
 
 type ActiveView = 'dashboard' | 'mood-matcher' | 'voice-messages' | 'companion-memory' | 'group-conversations';
 
@@ -71,12 +69,10 @@ const AICompanions = () => {
         supabase.from("character_messages").select("id", { count: "exact" }).eq("role", "user"),
       ]);
 
-      setStats({
-        totalChats: convos.count || 0,
+      setStats({ totalChats: convos.count || 0,
         totalMessages: msgs.count || 0,
         companions: characters.length,
-        streak: 0,
-      });
+        streak: 0 });
     } catch (e) { console.error(e); }
   };
 
@@ -140,8 +136,7 @@ const AICompanions = () => {
       'mood-matcher': { component: <MoodMatcher />, title: 'AI Mood Matcher' },
       'voice-messages': { component: <VoiceMessages />, title: 'Voice Messages' },
       'companion-memory': { component: <CompanionMemory />, title: 'Companion Memory' },
-      'group-conversations': { component: <GroupConversations />, title: 'Group Conversations' },
-    };
+      'group-conversations': { component: <GroupConversations />, title: 'Group Conversations' } };
     const view = viewMap[activeView];
     return (
       <div className="min-h-screen bg-background pt-16 pb-12">

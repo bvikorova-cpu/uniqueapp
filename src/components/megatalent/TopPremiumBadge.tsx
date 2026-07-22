@@ -8,11 +8,9 @@ interface TopPremiumBadgeProps {
   showIcon?: boolean;
 }
 
-export const TopPremiumBadge = ({
-  variant = "default",
+export const TopPremiumBadge = ({ variant = "default",
   className,
-  showIcon = true,
-}: TopPremiumBadgeProps) => {
+  showIcon = true }: TopPremiumBadgeProps) => {
   if (variant === "inline") {
     return (
       <span className={cn(

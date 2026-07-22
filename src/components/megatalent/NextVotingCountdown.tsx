@@ -6,14 +6,13 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 /**
  * Countdown to the next MegaTalent voting round / €10,000 prize draw.
  * Round ends at the last day of the current calendar month at 23:59:59
- * in the configured timezone (default: Europe/Berlin), independent of
+ * in the configured timezone (default: UTC), independent of
  * the visitor's local time.
  */
-const DRAW_TIMEZONE = "Europe/Berlin";
+const DRAW_TIMEZONE = "UTC";
 
 /** Get the current Y/M/D/H/M/S in a given IANA timezone. */
-function getZonedParts(date: Date, timeZone: string) {
-  const fmt = new Intl.DateTimeFormat("en-US", {
+function getZonedParts(date: Date, timeZone: string) { const fmt = new Intl.DateTimeFormat("en-US", {
     timeZone,
     year: "numeric",
     month: "2-digit",
@@ -21,8 +20,7 @@ function getZonedParts(date: Date, timeZone: string) {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-    hour12: false,
-  });
+    hour12: false });
   const parts = Object.fromEntries(
     fmt.formatToParts(date).filter((p) => p.type !== "literal").map((p) => [p.type, Number(p.value)])
   ) as Record<string, number>;
@@ -48,8 +46,7 @@ function zonedTimeToUtc(
   return guess - offset;
 }
 
-function getTimeLeft() {
-  const now = new Date();
+function getTimeLeft() { const now = new Date();
   const z = getZonedParts(now, DRAW_TIMEZONE);
   // Last day of current month in target timezone = day 0 of next month
   const lastDay = new Date(Date.UTC(z.year, z.month, 0)).getUTCDate();
@@ -65,8 +62,7 @@ function getTimeLeft() {
     days: Math.floor(diff / 86_400_000),
     hours: Math.floor((diff % 86_400_000) / 3_600_000),
     minutes: Math.floor((diff % 3_600_000) / 60_000),
-    seconds: Math.floor((diff % 60_000) / 1000),
-  };
+    seconds: Math.floor((diff % 60_000) / 1000) };
 }
 
 export default function NextVotingCountdown() {
@@ -86,24 +82,20 @@ export default function NextVotingCountdown() {
     </div>
   );
 
-  const drawDateTime = t.end.toLocaleString(undefined, {
-    day: "2-digit",
+  const drawDateTime = t.end.toLocaleString(undefined, { day: "2-digit",
     month: "long",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
     timeZone: DRAW_TIMEZONE,
-    timeZoneName: "short",
-  });
+    timeZoneName: "short" });
 
-  const startDateTime = t.start.toLocaleString(undefined, {
-    day: "2-digit",
+  const startDateTime = t.start.toLocaleString(undefined, { day: "2-digit",
     month: "long",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: DRAW_TIMEZONE,
-  });
+    timeZone: DRAW_TIMEZONE });
 
   return (
     <motion.div

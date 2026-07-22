@@ -20,8 +20,7 @@ export function LiveTipDialog({ livePostId, streamerId }: { livePostId: string; 
       const cents = Math.round(parseFloat(amount) * 100);
       if (!cents || cents < 50) throw new Error("Min tip €0.50");
       const { data, error } = await supabase.functions.invoke("tip-stream", {
-        body: { livePostId, streamerId, amountCents: cents, message },
-      });
+        body: { livePostId, streamerId, amountCents: cents, message } });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
     } catch (e: any) {

@@ -73,8 +73,7 @@ export default function AIStyleScanner() {
       }
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "style-scanner", imageUrl },
-      });
+        body: { action: "style-scanner", imageUrl } });
       if (error) throw error;
       return data;
     },
@@ -82,8 +81,7 @@ export default function AIStyleScanner() {
       setResult(data.scanResult);
       toast.success("Outfit scanned!");
     },
-    onError: (e: any) => toast.error(e.message || "Scan failed"),
-  });
+    onError: (e: any) => toast.error(e.message || "Scan failed") });
 
   return (
     <>

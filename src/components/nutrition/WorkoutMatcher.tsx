@@ -43,8 +43,7 @@ export default function WorkoutMatcher() {
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast.success("Workout plan generated!");
     },
-    onError: (error: any) => toast.error(error.message || "Error generating plan"),
-  });
+    onError: (error: any) => toast.error(error.message || "Error generating plan") });
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">

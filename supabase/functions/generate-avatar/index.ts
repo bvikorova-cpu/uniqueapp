@@ -2,21 +2,17 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const STYLE_MODIFIERS: Record<string, string> = {
-  realistic: "ultra-photorealistic studio portrait, soft natural lighting, sharp eyes, magazine quality, 85mm lens",
+const STYLE_MODIFIERS: Record<string, string> = { realistic: "ultra-photorealistic studio portrait, soft natural lighting, sharp eyes, magazine quality, 85mm lens",
   anime: "vibrant anime portrait, clean line art, expressive eyes, Studio Ghibli inspired, soft cel-shading",
   cyberpunk: "neon cyberpunk portrait, glowing pink-cyan rim lights, futuristic visor reflections, rainy night atmosphere",
   watercolor: "delicate watercolor painting portrait, flowing pastel washes, paper texture, artistic brush strokes",
   pixar: "Pixar / Disney 3D animated character portrait, expressive friendly face, polished render, soft warm lighting",
   oilpainting: "renaissance oil painting portrait, dramatic chiaroscuro lighting, rich textured brushwork, classical composition",
   comic: "bold pop-art comic book portrait, halftone shading, vibrant primary colors, ink outlines",
-  fantasy: "epic fantasy portrait, ethereal glowing aura, intricate ornate details, mystical atmosphere",
-};
+  fantasy: "epic fantasy portrait, ethereal glowing aura, intricate ornate details, mystical atmosphere" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -48,15 +44,11 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-image-1",
+        "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "gpt-image-1",
         prompt: prompt,
         n: 1,
-        size: "1024x1024",
-      }),
-    });
+        size: "1024x1024" }) });
 
     if (!response.ok) {
       if (response.status === 429) {
@@ -76,8 +68,7 @@ serve(async (req) => {
 
     await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ imageUrl }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error in generate-avatar function:", error);
     return new Response(

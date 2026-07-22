@@ -15,8 +15,7 @@ interface ContactSpeed {
   totalRead: number;
 }
 
-export const ReadReceiptsAnalytics = ({ onBack, userId }: ReadReceiptsAnalyticsProps) => {
-  const [stats, setStats] = useState({
+export const ReadReceiptsAnalytics = ({ onBack, userId }: ReadReceiptsAnalyticsProps) => { const [stats, setStats] = useState({
     totalSent: 0,
     totalRead: 0,
     avgReadTime: 0,
@@ -24,8 +23,7 @@ export const ReadReceiptsAnalytics = ({ onBack, userId }: ReadReceiptsAnalyticsP
     slowestReader: "",
     readRate: 0,
     hourlyReadRates: Array(24).fill(0),
-    contactSpeeds: [] as ContactSpeed[],
-  });
+    contactSpeeds: [] as ContactSpeed[] });
 
   useEffect(() => {
     const fetchReadStats = async () => {
@@ -98,26 +96,22 @@ export const ReadReceiptsAnalytics = ({ onBack, userId }: ReadReceiptsAnalyticsP
             .eq("id", participants[0].user_id)
             .single();
 
-          contactSpeeds.push({
-            name: profile?.full_name || "Unknown",
+          contactSpeeds.push({ name: profile?.full_name || "Unknown",
             avgTime: Math.round(data.times.reduce((a, b) => a + b, 0) / data.times.length),
-            totalRead: data.count,
-          });
+            totalRead: data.count });
         }
       }
 
       contactSpeeds.sort((a, b) => a.avgTime - b.avgTime);
 
-      setStats({
-        totalSent,
+      setStats({ totalSent,
         totalRead,
         avgReadTime,
         fastestReader: contactSpeeds[0]?.name || "N/A",
         slowestReader: contactSpeeds[contactSpeeds.length - 1]?.name || "N/A",
         readRate,
         hourlyReadRates: normalizedHourly,
-        contactSpeeds: contactSpeeds.slice(0, 8),
-      });
+        contactSpeeds: contactSpeeds.slice(0, 8) });
     };
 
     fetchReadStats();
@@ -223,8 +217,7 @@ export const ReadReceiptsAnalytics = ({ onBack, userId }: ReadReceiptsAnalyticsP
                   className="aspect-square rounded-md flex items-center justify-center text-[9px] font-bold transition-colors"
                   style={{
                     backgroundColor: `hsl(var(--primary) / ${0.1 + (rate / 100) * 0.8})`,
-                    color: rate > 50 ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
-                  }}
+                    color: rate > 50 ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))" }}
                 >
                   {h}h
                 </div>

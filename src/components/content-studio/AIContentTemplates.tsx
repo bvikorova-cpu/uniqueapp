@@ -8,10 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import {
-  ArrowLeft, Loader2, Copy, Sparkles, Mail, Megaphone, Linkedin, Twitter,
-  Instagram, FileText, Presentation, ShoppingBag, Newspaper, MessageSquare,
-} from "lucide-react";
+import { ArrowLeft, Loader2, Copy, Sparkles, Mail, Megaphone, Linkedin, Twitter,
+  Instagram, FileText, Presentation, ShoppingBag, Newspaper, MessageSquare } from "lucide-react";
 
 const TEMPLATES = [
   { id: "email_marketing", name: "Email Marketing", icon: Mail, credits: 3, desc: "Compelling email campaigns with subject lines and CTA" },
@@ -45,8 +43,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
     setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
-        body: { action: "templates", templateType: selectedTemplate, topic, details },
-      });
+        body: { action: "templates", templateType: selectedTemplate, topic, details } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.content);

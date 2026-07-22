@@ -6,13 +6,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Globe, Loader2, TrendingUp, Shuffle, Zap, AlertCircle, Crown, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 
 const MyUniverses = () => {
   const [universes, setUniverses] = useState<any[]>([]);
@@ -76,30 +74,24 @@ const MyUniverses = () => {
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, '_blank');
+      if (data?.url) { window.open(data.url, '_blank');
         toast({
           title: "Opening Checkout",
-          description: "Complete your purchase to unlock Reality Jumping",
-        });
+          description: "Complete your purchase to unlock Reality Jumping" });
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Error",
         description: "Failed to open checkout. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
-  const handleJump = async (universe: any) => {
-    if (!hasJumpAccess) {
+  const handleJump = async (universe: any) => { if (!hasJumpAccess) {
       toast({
         title: "Subscription Required",
         description: "Reality Jumping requires an active subscription",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -120,17 +112,14 @@ const MyUniverses = () => {
 
       toast({
         title: "Reality Jump Successful! 🌌",
-        description: `You've jumped to ${universe.universe_name}`,
-      });
+        description: `You've jumped to ${universe.universe_name}` });
 
       setSelectedUniverse(universe);
-    } catch (error) {
-      console.error('Error jumping:', error);
+    } catch (error) { console.error('Error jumping:', error);
       toast({
         title: "Jump Failed",
         description: error instanceof Error ? error.message : "Could not complete reality jump",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setJumping(false);
     }

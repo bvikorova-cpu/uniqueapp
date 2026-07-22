@@ -50,21 +50,17 @@ async function openBrandingTab(page: any) {
 }
 
 test.describe("Sponsor Dashboard — Branding tab", () => {
-  test("logo upload populates URL field and preview", async ({ page }) => {
-    await openBrandingTab(page);
+  test("logo upload populates URL field and preview", async ({ page }) => { await openBrandingTab(page);
 
     const fileInput = page.getByTestId("branding-logo-file");
     await fileInput.setInputFiles({
       name: "logo.png",
       mimeType: "image/png",
-      buffer: TINY_PNG,
-    });
+      buffer: TINY_PNG });
 
     // URL field should fill within ~10s after Supabase upload completes.
     const urlField = page.getByTestId("branding-logo-url");
-    await expect(urlField).toHaveValue(/^https?:\/\/.+\.(png|jpg|jpeg|webp)(\?.*)?$/i, {
-      timeout: 15_000,
-    });
+    await expect(urlField).toHaveValue(/^https?:\/\/.+\.(png|jpg|jpeg|webp)(\?.*)?$/i, { timeout: 15_000 });
 
     // Toast confirmation.
     await expect(page.getByText(/logo uploaded/i)).toBeVisible({ timeout: 5_000 });

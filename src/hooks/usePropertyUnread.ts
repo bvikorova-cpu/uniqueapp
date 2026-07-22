@@ -49,16 +49,14 @@ export function usePropertyUnread({ notifyToasts = true }: Options = {}) {
       const other = m.buyer_id === user.id ? m.seller_id : m.buyer_id;
       const existing = map.get(key);
       const isUnread = m.sender_id !== user.id && !m.read_at;
-      if (!existing) {
-        map.set(key, {
+      if (!existing) { map.set(key, {
           property_id: m.property_id,
           buyer_id: m.buyer_id,
           seller_id: m.seller_id,
           other_id: other,
           last_content: m.content,
           last_at: m.created_at,
-          unread: isUnread ? 1 : 0,
-        });
+          unread: isUnread ? 1 : 0 });
       } else if (isUnread) {
         existing.unread += 1;
       }
@@ -91,14 +89,12 @@ export function usePropertyUnread({ notifyToasts = true }: Options = {}) {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "property_messages" },
-        (payload) => {
-          const m: any = payload.new;
+        (payload) => { const m: any = payload.new;
           if (m.sender_id === user.id) return;
           if (m.buyer_id !== user.id && m.seller_id !== user.id) return;
           if (notifyToasts) {
             toast("New property message", {
-              description: m.content.length > 90 ? m.content.slice(0, 90) + "…" : m.content,
-            });
+              description: m.content.length > 90 ? m.content.slice(0, 90) + "…" : m.content });
           }
           refresh();
         },

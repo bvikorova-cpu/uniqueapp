@@ -4,9 +4,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useMentorPremium } from "@/hooks/useMentorRouter";
-import {
-  Brain, Target, Theater, Users, Bell, ListChecks, Sparkles, Repeat, UserCog, FileText, Mic2, BookHeart, Crown, ScrollText, Award, MessageCircle, Lightbulb, Flame,
-} from "lucide-react";
+import { Brain, Target, Theater, Users, Bell, ListChecks, Sparkles, Repeat, UserCog, FileText, Mic2, BookHeart, Crown, ScrollText, Award, MessageCircle, Lightbulb, Flame } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const __HIW_MENTORHUB_STEPS = [

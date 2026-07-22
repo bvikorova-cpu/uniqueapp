@@ -20,8 +20,7 @@ interface Rule {
   is_active: boolean;
 }
 
-export function ManageBookingPanel() {
-  const [loading, setLoading] = useState(true);
+export function ManageBookingPanel() { const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [profile, setProfile] = useState({
@@ -29,8 +28,7 @@ export function ManageBookingPanel() {
     bio: "",
     consultation_price_cents: 5000,
     consultation_duration_min: 30,
-    is_accepting_bookings: false,
-  });
+    is_accepting_bookings: false });
   const [rules, setRules] = useState<Rule[]>([]);
   const [newRule, setNewRule] = useState({ weekday: 1, start_time: "09:00", end_time: "17:00" });
 
@@ -53,13 +51,11 @@ export function ManageBookingPanel() {
           .eq("doctor_id", uid)
           .order("weekday"),
       ]);
-      if (p) setProfile({
-        specialty: p.specialty ?? "",
+      if (p) setProfile({ specialty: p.specialty ?? "",
         bio: p.bio ?? "",
         consultation_price_cents: p.consultation_price_cents ?? 5000,
         consultation_duration_min: p.consultation_duration_min ?? 30,
-        is_accepting_bookings: !!p.is_accepting_bookings,
-      });
+        is_accepting_bookings: !!p.is_accepting_bookings });
       setRules((r as Rule[]) ?? []);
       setLoading(false);
     })();
@@ -148,11 +144,10 @@ export function ManageBookingPanel() {
                 min={10}
                 max={200}
                 value={profile.consultation_price_cents / 100}
-                onChange={(e) =>
+                onChange={ (e) =>
                   setProfile({
                     ...profile,
-                    consultation_price_cents: Math.round(Number(e.target.value) * 100),
-                  })
+                    consultation_price_cents: Math.round(Number(e.target.value) * 100) })
                 }
               />
               <p className="text-xs text-muted-foreground mt-1">85% to you, 15% platform fee.</p>

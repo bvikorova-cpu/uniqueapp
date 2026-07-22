@@ -28,9 +28,7 @@ export function CouponApiKeysPanel() {
     if (!user) { toast.error("Sign in"); return; }
     const raw = `ch_${crypto.randomUUID().replace(/-/g, "")}`;
     const hash = await sha256(raw);
-    const { error } = await supabase.from("coupon_api_keys" as any).insert({
-      user_id: user.id, key_hash: hash, label: label || "default", scope: "read",
-    });
+    const { error } = await supabase.from("coupon_api_keys" as any).insert({ user_id: user.id, key_hash: hash, label: label || "default", scope: "read" });
     if (error) { toast.error(error.message); return; }
     setNewKey(raw);
     setLabel("");

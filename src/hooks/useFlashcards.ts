@@ -37,8 +37,7 @@ export const useFlashcardDecks = () => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as FlashcardDeck[];
-    },
-  });
+    } });
 };
 
 export const useDeckCards = (deckId: string | undefined) => {
@@ -54,8 +53,7 @@ export const useDeckCards = (deckId: string | undefined) => {
       if (error) throw error;
       return (data ?? []) as Flashcard[];
     },
-    enabled: !!deckId,
-  });
+    enabled: !!deckId });
 };
 
 export const useCreateDeck = () => {
@@ -66,20 +64,17 @@ export const useCreateDeck = () => {
       if (!user) throw new Error("Not authenticated");
       const { data, error } = await supabase
         .from("education_flashcard_decks")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           title: deck.title ?? "Untitled deck",
           description: deck.description ?? null,
           subject: deck.subject ?? null,
-          is_public: deck.is_public ?? false,
-        })
+          is_public: deck.is_public ?? false })
         .select()
         .single();
       if (error) throw error;
       return data as FlashcardDeck;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["flashcard-decks"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["flashcard-decks"] }) });
 };
 
 export const useAddCard = () => {
@@ -102,8 +97,7 @@ export const useAddCard = () => {
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: ["flashcards", vars.deck_id] });
       qc.invalidateQueries({ queryKey: ["flashcard-decks"] });
-    },
-  });
+    } });
 };
 
 export const useAIGenerateCards = () => {
@@ -112,13 +106,11 @@ export const useAIGenerateCards = () => {
     mutationFn: async ({ deckId, topic, count }: { deckId: string; topic: string; count?: number }) => {
       const { cards } = await eduCall<{ cards: any[] }>("deck.ai_generate", { topic, count: count ?? 10 });
       if (!cards?.length) throw new Error("AI returned no cards");
-      const rows = cards.map((c: any, i: number) => ({
-        deck_id: deckId,
+      const rows = cards.map((c: any, i: number) => ({ deck_id: deckId,
         front: String(c.front ?? "").slice(0, 500),
         back: String(c.back ?? "").slice(0, 1000),
         hint: c.hint ? String(c.hint).slice(0, 200) : null,
-        order_index: i,
-      }));
+        order_index: i }));
       const { error } = await supabase.from("education_flashcards").insert(rows);
       if (error) throw error;
       await supabase.from("education_flashcard_decks").update({ card_count: rows.length }).eq("id", deckId);
@@ -129,8 +121,7 @@ export const useAIGenerateCards = () => {
       qc.invalidateQueries({ queryKey: ["flashcard-decks"] });
       toast.success(`Generated ${n} flashcards`);
     },
-    onError: (e: any) => toast.error(e?.message ?? "Failed to generate"),
-  });
+    onError: (e: any) => toast.error(e?.message ?? "Failed to generate") });
 };
 
 export const useSRSQueue = (deckId?: string) => {
@@ -143,8 +134,7 @@ export const useSRSQueue = (deckId?: string) => {
         ? cards.filter((c: any) => c.education_flashcards?.deck_id === deckId)
         : cards;
       return filtered;
-    },
-  });
+    } });
 };
 
 export const useReviewCard = () => {
@@ -153,6 +143,5 @@ export const useReviewCard = () => {
     mutationFn: async ({ cardId, quality }: { cardId: string; quality: number }) => {
       return eduCall("srs.review", { card_id: cardId, quality });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["srs-queue"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["srs-queue"] }) });
 };

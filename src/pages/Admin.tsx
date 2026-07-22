@@ -41,13 +41,11 @@ const Admin = () => {
   const [cmdOpen, setCmdOpen] = useState(false);
   
   // Stats
-  const [stats, setStats] = useState({
-    totalUsers: 0,
+  const [stats, setStats] = useState({ totalUsers: 0,
     premiumUsers: 0,
     totalRevenue: 0,
     monthlyRevenue: 0,
-    masterchefEarnings: 0,
-  });
+    masterchefEarnings: 0 });
   
   // Data
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
@@ -100,12 +98,10 @@ const Admin = () => {
         .eq('role', 'admin')
         .maybeSingle();
 
-      if (!roles) {
-        toast({
+      if (!roles) { toast({
           title: "Access Denied",
           description: "You do not have permission to access the Command Center",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate('/');
         return;
       }
@@ -186,8 +182,7 @@ const Admin = () => {
           is_read: t.status === 'resolved' || t.status === 'closed',
           created_at: t.created_at,
           _source: 'support_tickets' as const,
-          _status: t.status,
-        })),
+          _status: t.status })),
       ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
       setMessages(merged);
@@ -229,20 +224,16 @@ const Admin = () => {
         return sum + (parseFloat(String(e.commission_amount)) || 0);
       }, 0) || 0;
 
-      setStats({
-        totalUsers,
+      setStats({ totalUsers,
         premiumUsers,
         totalRevenue,
         monthlyRevenue,
-        masterchefEarnings,
-      });
-    } catch (error) {
-      console.error('Load data error:', error);
+        masterchefEarnings });
+    } catch (error) { console.error('Load data error:', error);
       toast({
         title: "Error",
         description: "Failed to load data",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -255,19 +246,15 @@ const Admin = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Transaction status updated",
-      });
+      toast({ title: "Success",
+        description: "Transaction status updated" });
       
       await loadData();
-    } catch (error) {
-      console.error('Update error:', error);
+    } catch (error) { console.error('Update error:', error);
       toast({
         title: "Error",
         description: "Failed to update status",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

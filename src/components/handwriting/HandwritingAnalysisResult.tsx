@@ -2,10 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { SocialShareButtons } from "@/components/shared/SocialShareButtons";
-import {
-  Brain, TrendingUp, TrendingDown, Heart, MessageCircle,
-  Briefcase, Users, Target, Activity, Lightbulb, Crown, Share2,
-} from "lucide-react";
+import { Brain, TrendingUp, TrendingDown, Heart, MessageCircle,
+  Briefcase, Users, Target, Activity, Lightbulb, Crown, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -13,23 +11,19 @@ interface HandwritingAnalysisResultProps {
   analysis: any;
 }
 
-const getTypeColor = (type: string) => {
-  const colors: Record<string, string> = {
+const getTypeColor = (type: string) => { const colors: Record<string, string> = {
     personal: "from-purple-500 to-violet-500",
     professional: "from-blue-500 to-cyan-500",
     relationship: "from-pink-500 to-rose-500",
-    business: "from-emerald-500 to-teal-500",
-  };
+    business: "from-emerald-500 to-teal-500" };
   return colors[type] || "from-primary to-accent";
 };
 
-const getTypeLabel = (type: string) => {
-  const labels: Record<string, string> = {
+const getTypeLabel = (type: string) => { const labels: Record<string, string> = {
     personal: "Personal Analysis",
     professional: "Professional Analysis",
     relationship: "Relationship Analysis",
-    business: "Business Analysis",
-  };
+    business: "Business Analysis" };
   return labels[type] || type;
 };
 

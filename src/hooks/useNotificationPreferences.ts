@@ -35,18 +35,15 @@ export function useNotificationPreferences() {
       const map = new Map<NotifCategory, NotificationPreference>();
       (data ?? []).forEach((p: any) => map.set(p.category, p));
       return ALL_CATEGORIES.map((cat) =>
-        map.get(cat) ?? {
-          category: cat,
+        map.get(cat) ?? { category: cat,
           in_app: true,
           email: cat === "mentions" || cat === "messages",
           push: true,
           digest_frequency: "instant" as DigestFrequency,
           quiet_hours_start: null,
-          quiet_hours_end: null,
-        },
+          quiet_hours_end: null },
       );
-    },
-  });
+    } });
 
   const upsert = useMutation({
     mutationFn: async (pref: NotificationPreference) => {
@@ -63,8 +60,7 @@ export function useNotificationPreferences() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["notification-preferences"] });
     },
-    onError: (e: any) => toast({ title: "Update failed", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Update failed", description: e.message, variant: "destructive" }) });
 
   return { ...query, save: upsert.mutate };
 }

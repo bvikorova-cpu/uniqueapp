@@ -1,11 +1,9 @@
 import { describe, it, expect } from "vitest";
-import {
-  TIER_BENEFITS,
+import { TIER_BENEFITS,
   TOP_PREMIUM_BOOST_MULTIPLIER,
   TOP_PREMIUM_BOOST_PERCENT,
   calculateTotalVotesWithBonus,
-  getRankingBoostFactor,
-} from "@/hooks/useMegaTalentTier";
+  getRankingBoostFactor } from "@/hooks/useMegaTalentTier";
 
 type Submission = {
   id: string;

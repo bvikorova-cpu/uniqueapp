@@ -6,12 +6,10 @@ export const useForYouRanking = (enabled: boolean) => {
     queryKey: ["for-you-ranking"],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("rank-feed", {
-        body: { limit: 50 },
-      });
+        body: { limit: 50 } });
       if (error) throw error;
       return (data?.ids ?? []) as string[];
     },
     enabled,
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 };

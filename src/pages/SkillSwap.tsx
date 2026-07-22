@@ -65,132 +65,104 @@ interface SkillOffering {
 type ViewType = "hub" | "browse" | "matches" | "messages" | "add" | "skillmap" | "advisor" | "progress" | "lessons" | "leaderboard" | "scheduler" | "valuation" | "demo" | "certification" | "workshops";
 
 const SWAP_TOOLS = [
-  {
-    id: "browse",
+  { id: "browse",
     title: "Browse Skills",
     description: "Explore hundreds of skill offerings from our global community",
     icon: Globe,
     badge: "Free",
     gradient: "bg-gradient-to-r from-primary to-accent",
-    features: ["Filter by category", "Search by keyword", "Sort by rating", "Location-based"],
-  },
-  {
-    id: "matches",
+    features: ["Filter by category", "Search by keyword", "Sort by rating", "Location-based"] },
+  { id: "matches",
     title: "Suggested Matches",
     description: "AI-powered matches based on your skills and preferences",
     icon: Sparkles,
     badge: "Premium",
     gradient: "bg-gradient-to-r from-amber-500 to-orange-500",
-    features: ["Smart matching algorithm", "Compatibility score", "One-click connect", "Auto-suggestions"],
-  },
-  {
-    id: "messages",
+    features: ["Smart matching algorithm", "Compatibility score", "One-click connect", "Auto-suggestions"] },
+  { id: "messages",
     title: "Messages",
     description: "Chat with exchange partners and arrange skill swap sessions",
     icon: MessageSquare,
     badge: "Real-time",
     gradient: "bg-gradient-to-r from-emerald-500 to-teal-500",
-    features: ["Real-time messaging", "Video call support", "Exchange completion", "Review system"],
-  },
-  {
-    id: "add",
+    features: ["Real-time messaging", "Video call support", "Exchange completion", "Review system"] },
+  { id: "add",
     title: "Offer Your Skill",
     description: "List a new skill you can teach and start getting requests",
     icon: UserPlus,
     badge: "Create",
     gradient: "bg-gradient-to-r from-pink-500 to-rose-500",
-    features: ["Media upload support", "Category selection", "Custom description", "Instant publishing"],
-  },
-  {
-    id: "skillmap",
+    features: ["Media upload support", "Category selection", "Custom description", "Instant publishing"] },
+  { id: "skillmap",
     title: "Skill Map",
     description: "Interactive world map showing swappers across the globe",
     icon: Globe,
     badge: "New",
     gradient: "bg-gradient-to-r from-cyan-500 to-blue-500",
-    features: ["Global visualization", "Filter by continent", "Connect instantly", "Location-based"],
-  },
-  {
-    id: "advisor",
+    features: ["Global visualization", "Filter by continent", "Connect instantly", "Location-based"] },
+  { id: "advisor",
     title: "AI Skill Advisor",
     description: "AI chatbot recommending skills to learn based on market trends",
     icon: Sparkles,
     badge: "AI",
     gradient: "bg-gradient-to-r from-violet-500 to-purple-500",
-    features: ["Market analysis", "Personalized advice", "Trending skills", "Career paths"],
-  },
-  {
-    id: "progress",
+    features: ["Market analysis", "Personalized advice", "Trending skills", "Career paths"] },
+  { id: "progress",
     title: "Learning Progress",
     description: "Track your learning journey with milestones and goals",
     icon: BookOpen,
     badge: "Track",
     gradient: "bg-gradient-to-r from-green-500 to-emerald-500",
-    features: ["Milestone tracking", "Hours logged", "Progress bars", "Goal setting"],
-  },
-  {
-    id: "lessons",
+    features: ["Milestone tracking", "Hours logged", "Progress bars", "Goal setting"] },
+  { id: "lessons",
     title: "Lesson Library",
     description: "Watch recorded lessons from top-rated skill swappers",
     icon: Video,
     badge: "Video",
     gradient: "bg-gradient-to-r from-red-500 to-rose-500",
-    features: ["HD recordings", "Multi-category", "Expert instructors", "Free & premium"],
-  },
-  {
-    id: "leaderboard",
+    features: ["HD recordings", "Multi-category", "Expert instructors", "Free & premium"] },
+  { id: "leaderboard",
     title: "Leaderboard",
     description: "See the most active and top-rated swappers worldwide",
     icon: Award,
     badge: "Rank",
     gradient: "bg-gradient-to-r from-yellow-500 to-amber-500",
-    features: ["Global rankings", "Multiple metrics", "Weekly updates", "Achievement badges"],
-  },
-  {
-    id: "scheduler",
+    features: ["Global rankings", "Multiple metrics", "Weekly updates", "Achievement badges"] },
+  { id: "scheduler",
     title: "Session Scheduler",
     description: "Plan and manage your exchange sessions with a calendar",
     icon: CalendarDays,
     badge: "Plan",
     gradient: "bg-gradient-to-r from-indigo-500 to-blue-500",
-    features: ["Calendar view", "Video call links", "Reminders", "Session history"],
-  },
-  {
-    id: "valuation",
+    features: ["Calendar view", "Video call links", "Reminders", "Session history"] },
+  { id: "valuation",
     title: "AI Skill Valuation",
     description: "AI-powered market value analysis for your skills",
     icon: TrendingUp,
     badge: "4 CR",
     gradient: "bg-gradient-to-r from-amber-500 to-orange-500",
-    features: ["Market value score", "Demand analysis", "Exchange rate", "Trend insights"],
-  },
-  {
-    id: "demo",
+    features: ["Market value score", "Demand analysis", "Exchange rate", "Trend insights"] },
+  { id: "demo",
     title: "Live Skill Demo",
     description: "Generate professional demo scripts to showcase skills",
     icon: Radio,
     badge: "3 CR",
     gradient: "bg-gradient-to-r from-rose-500 to-pink-500",
-    features: ["Presentation scripts", "Audience engagement", "Tech setup guide", "Demo plans"],
-  },
-  {
-    id: "certification",
+    features: ["Presentation scripts", "Audience engagement", "Tech setup guide", "Demo plans"] },
+  { id: "certification",
     title: "Skill Certification",
     description: "AI assessment and digital certification for your skills",
     icon: ShieldCheck,
     badge: "5 CR",
     gradient: "bg-gradient-to-r from-emerald-500 to-teal-500",
-    features: ["Proficiency scoring", "Digital badges", "Detailed feedback", "Learning path"],
-  },
-  {
-    id: "workshops",
+    features: ["Proficiency scoring", "Digital badges", "Detailed feedback", "Learning path"] },
+  { id: "workshops",
     title: "Group Workshops",
     description: "AI-designed group workshop plans for teaching multiple learners",
     icon: UsersRound,
     badge: "4 CR",
     gradient: "bg-gradient-to-r from-violet-500 to-purple-500",
-    features: ["Curriculum design", "Group activities", "Pricing guide", "Marketing tips"],
-  },
+    features: ["Curriculum design", "Group activities", "Pricing guide", "Marketing tips"] },
 ];
 
 const CATEGORIES = [
@@ -224,19 +196,15 @@ export default function SkillSwap() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<ViewType>("hub");
-  const [filters, setFilters] = useState({
-    category: "all",
+  const [filters, setFilters] = useState({ category: "all",
     minRating: "0",
     location: "",
-    ownership: "all",
-  });
+    ownership: "all" });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
-  const [newOffering, setNewOffering] = useState({
-    title: "",
+  const [newOffering, setNewOffering] = useState({ title: "",
     description: "",
-    category: "teaching",
-  });
+    category: "teaching" });
   const [editOffering, setEditOffering] = useState<{
     id: string;
     title: string;
@@ -376,10 +344,8 @@ export default function SkillSwap() {
         const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
         mediaUrl = publicUrl;
       }
-      const { error } = await supabase.from('skill_offerings').insert([{
-        user_id: session.user.id, title: newOffering.title, description: newOffering.description,
-        category: newOffering.category as any, is_active: true, image_url: mediaUrl,
-      }]);
+      const { error } = await supabase.from('skill_offerings').insert([{ user_id: session.user.id, title: newOffering.title, description: newOffering.description,
+        category: newOffering.category as any, is_active: true, image_url: mediaUrl }]);
       if (error) throw error;
       toast.success("Skill offering added successfully!");
       setActiveView("browse");
@@ -406,9 +372,7 @@ export default function SkillSwap() {
         .or(`and(user1_id.eq.${session.user.id},user2_id.eq.${offering.user_id}),and(user1_id.eq.${offering.user_id},user2_id.eq.${session.user.id})`)
         .eq('offering_id', offeringId).maybeSingle();
       if (!existingConv) {
-        const { error: insErr } = await supabase.from('skill_swap_conversations').insert([{
-          user1_id: session.user.id, user2_id: offering.user_id, offering_id: offeringId,
-        }]);
+        const { error: insErr } = await supabase.from('skill_swap_conversations').insert([{ user1_id: session.user.id, user2_id: offering.user_id, offering_id: offeringId }]);
         if (insErr) throw insErr;
       }
       toast.success("Conversation started! Check Messages.");
@@ -450,9 +414,7 @@ export default function SkillSwap() {
         const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
         mediaUrl = publicUrl;
       }
-      const { error } = await supabase.from('skill_offerings').update({
-        title: editOffering.title, description: editOffering.description, category: editOffering.category as any, image_url: mediaUrl,
-      }).eq('id', editOffering.id);
+      const { error } = await supabase.from('skill_offerings').update({ title: editOffering.title, description: editOffering.description, category: editOffering.category as any, image_url: mediaUrl }).eq('id', editOffering.id);
       if (error) throw error;
       toast.success("Skill offering updated successfully!");
       setShowEditDialog(false); setEditOffering(null); setMediaFile(null); setMediaPreview(""); setRemoveMedia(false);

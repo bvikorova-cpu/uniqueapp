@@ -48,8 +48,7 @@ const STATUS_META: Record<string, { label: string; cls: string; icon: any }> = {
   pending: { label: "Processing", cls: "border-blue-500/40 text-blue-600 dark:text-blue-400", icon: Clock },
   completed: { label: "Paid out", cls: "border-green-500/40 text-green-600 dark:text-green-400", icon: CheckCircle2 },
   rejected: { label: "Rejected", cls: "border-red-500/40 text-red-600 dark:text-red-400", icon: XCircle },
-  failed: { label: "Failed", cls: "border-red-500/40 text-red-600 dark:text-red-400", icon: XCircle },
-};
+  failed: { label: "Failed", cls: "border-red-500/40 text-red-600 dark:text-red-400", icon: XCircle } };
 
 export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: Props) {
   const { user } = useAuth();
@@ -62,15 +61,13 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
 
   const isOwner = !!user && user.id === ownerUserId;
 
-  const refresh = useCallback(async () => {
-    if (!isOwner) return;
+  const refresh = useCallback(async () => { if (!isOwner) return;
     setLoading(true);
     try {
       const [balRes, connectRes, recentRes] = await Promise.all([
         supabase.rpc("get_campaign_available_balance", {
           _campaign_type: campaignType,
-          _campaign_id: campaignId,
-        }),
+          _campaign_id: campaignId }),
         supabase.functions.invoke("check-connect-status", { body: { action: "status" } }),
         supabase
           .from("campaign_payouts")
@@ -83,22 +80,18 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
 
       if (balRes.error) throw balRes.error;
       const row = (balRes.data as any)?.[0];
-      if (row) {
-        setBalance({
+      if (row) { setBalance({
           total_raised_cents: Number(row.total_raised_cents ?? 0),
           total_paid_out_cents: Number(row.total_paid_out_cents ?? 0),
-          available_cents: Number(row.available_cents ?? 0),
-        });
+          available_cents: Number(row.available_cents ?? 0) });
       }
 
-      if (!connectRes.error && connectRes.data) {
-        const d = connectRes.data as any;
+      if (!connectRes.error && connectRes.data) { const d = connectRes.data as any;
         setConnect({
           has_account: !!d.has_account,
           payouts_enabled: !!d.payouts_enabled,
           charges_enabled: !!d.charges_enabled,
-          details_submitted: !!d.details_submitted,
-        });
+          details_submitted: !!d.details_submitted });
       } else {
         setConnect({ has_account: false, payouts_enabled: false });
       }
@@ -152,18 +145,15 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
     setSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("request-campaign-payout", {
-        body: { campaign_type: campaignType, campaign_id: campaignId, amount_cents: cents },
-      });
+        body: { campaign_type: campaignType, campaign_id: campaignId, amount_cents: cents } });
       if (error) throw error;
       const res = data as any;
       if (res?.error) throw new Error(res.error);
 
       const status = res?.status;
-      if (status === "pending_review") {
-        toast.info("Withdrawal queued for admin review", {
+      if (status === "pending_review") { toast.info("Withdrawal queued for admin review", {
           description: res?.review_reason || "You will be notified once approved.",
-          duration: 7000,
-        });
+          duration: 7000 });
       } else {
         toast.success(`Payout sent! ${fmtEur(cents)} is on its way to your bank.`);
       }

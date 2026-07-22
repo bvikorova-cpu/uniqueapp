@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -36,16 +34,13 @@ serve(async (req) => {
 
     if (!m) {
       return new Response(JSON.stringify({ is_member: false }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Reconcile from Stripe if we have a subscription id
-    if (m.stripe_subscription_id) {
-      try {
+    if (m.stripe_subscription_id) { try {
         const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-          apiVersion: "2025-08-27.basil",
-        });
+          apiVersion: "2025-08-27.basil" });
         const sub = await stripe.subscriptions.retrieve(m.stripe_subscription_id);
         const status =
           sub.status === "active" || sub.status === "trialing"
@@ -68,10 +63,8 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({
-        is_member: m.status === "active",
-        membership: m,
-      }),
+      JSON.stringify({ is_member: m.status === "active",
+        membership: m }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (e) {

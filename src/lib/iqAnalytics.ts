@@ -27,14 +27,12 @@ export async function trackIQEvent(
 ) {
   try {
     const { data: { user } } = await supabase.auth.getUser();
-    await supabase.from("iq_events").insert({
-      event_name,
+    await supabase.from("iq_events").insert({ event_name,
       user_id: user?.id ?? null,
       session_id: getSessionId(),
       path: typeof window !== "undefined" ? window.location.pathname : null,
       referrer: typeof document !== "undefined" ? document.referrer || null : null,
-      properties,
-    });
+      properties });
   } catch {
     // silent — analytics must never break UX
   }

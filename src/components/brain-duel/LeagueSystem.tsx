@@ -45,8 +45,7 @@ export const LeagueSystem = () => {
         .eq('season', 'Q1-2026')
         .single();
       return data;
-    },
-  });
+    } });
 
   const { data: leaderboard } = useQuery({
     queryKey: ['brain-duel-league-leaderboard'],
@@ -63,12 +62,9 @@ export const LeagueSystem = () => {
         .from('profiles')
         .select('id, full_name, avatar_url')
         .in('id', userIds);
-      return leagueData.map(entry => ({
-        ...entry,
-        profile: profiles?.find(p => p.id === entry.user_id),
-      }));
-    },
-  });
+      return leagueData.map(entry => ({ ...entry,
+        profile: profiles?.find(p => p.id === entry.user_id) }));
+    } });
 
   const handleJoinLeague = (league: League) => {
     if (credits < league.entry) {

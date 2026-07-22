@@ -2,11 +2,9 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Clock, Ghost, Users, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 
 export type PostVisibility = "normal" | "ephemeral" | "close-friends";
 
@@ -16,27 +14,21 @@ interface EphemeralPostToggleProps {
 }
 
 const options = [
-  {
-    value: "normal" as PostVisibility,
+  { value: "normal" as PostVisibility,
     label: "Normal",
     description: "Stays on your profile",
     icon: Eye,
-    gradient: "from-primary/20 to-primary/10",
-  },
-  {
-    value: "ephemeral" as PostVisibility,
+    gradient: "from-primary/20 to-primary/10" },
+  { value: "ephemeral" as PostVisibility,
     label: "24h Only",
     description: "Disappears after 24 hours",
     icon: Ghost,
-    gradient: "from-orange-500/20 to-amber-500/10",
-  },
-  {
-    value: "close-friends" as PostVisibility,
+    gradient: "from-orange-500/20 to-amber-500/10" },
+  { value: "close-friends" as PostVisibility,
     label: "Close Friends",
     description: "Only close friends can see",
     icon: Users,
-    gradient: "from-emerald-500/20 to-teal-500/10",
-  },
+    gradient: "from-emerald-500/20 to-teal-500/10" },
 ];
 
 export const EphemeralPostToggle = ({ visibility, onVisibilityChange }: EphemeralPostToggleProps) => {

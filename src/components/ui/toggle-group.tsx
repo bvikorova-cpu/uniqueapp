@@ -5,10 +5,8 @@ import { type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { toggleVariants } from "@/components/ui/toggle";
 
-const ToggleGroupContext = React.createContext<VariantProps<typeof toggleVariants>>({
-  size: "default",
-  variant: "default",
-});
+const ToggleGroupContext = React.createContext<VariantProps<typeof toggleVariants>>({ size: "default",
+  variant: "default" });
 
 const ToggleGroup = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Root>,
@@ -30,11 +28,10 @@ const ToggleGroupItem = React.forwardRef<
   return (
     <ToggleGroupPrimitive.Item
       ref={ref}
-      className={cn(
+      className={ cn(
         toggleVariants({
           variant: context.variant || variant,
-          size: context.size || size,
-        }),
+          size: context.size || size }),
         className,
       )}
       {...props}

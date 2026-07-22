@@ -45,14 +45,12 @@ export default function TeenCareerCounselor() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { data: shadowArenaData } = useHasShadowArenaAchievementsForCareer();
-  const {
-    balance,
+  const { balance,
     canUse,
     isLoading: creditsLoading,
     purchase,
     refresh: refreshCredits,
-    costPerUse,
-  } = useTeenCareerCredits();
+    costPerUse } = useTeenCareerCredits();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

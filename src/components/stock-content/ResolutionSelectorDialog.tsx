@@ -24,8 +24,7 @@ const DEFAULTS: Record<ResolutionKey, { label: string; sub: string; mult: number
   small:    { label: "Small",    sub: "Web & social",      mult: 0.4, width: 640,  icon: Smartphone },
   medium:   { label: "Medium",   sub: "Blogs & email",     mult: 0.7, width: 1280, icon: Monitor },
   large:    { label: "Large",    sub: "HD print & web",    mult: 1.0, width: 1920, icon: Tv },
-  original: { label: "Original", sub: "Max resolution",    mult: 1.5, width: 0,    icon: Maximize2 },
-};
+  original: { label: "Original", sub: "Max resolution",    mult: 1.5, width: 0,    icon: Maximize2 } };
 
 export function ResolutionSelectorDialog({ open, onOpenChange, basePrice, resolutions, onSelect }: ResolutionSelectorDialogProps) {
   const keys: ResolutionKey[] = ["small", "medium", "large", "original"];

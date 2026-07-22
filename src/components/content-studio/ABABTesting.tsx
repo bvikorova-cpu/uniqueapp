@@ -42,8 +42,7 @@ const ABABTesting = ({ onBack }: Props) => {
     setWinner(null);
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
-        body: { action: "ab-test", topic, context, contentType, variantCount },
-      });
+        body: { action: "ab-test", topic, context, contentType, variantCount } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setVariants(data.variants || []);

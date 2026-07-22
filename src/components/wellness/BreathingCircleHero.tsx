@@ -38,10 +38,9 @@ export function BreathingCircleHero() {
         className="relative w-36 h-36 rounded-full flex items-center justify-center"
         animate={{ scale }}
         transition={{ duration: phase === "inhale" ? 4 : phase === "hold" ? 3 : 4, ease: "easeInOut" }}
-        style={{
+        style={ {
           background: "radial-gradient(circle, hsla(270, 91%, 65%, 0.25), hsla(330, 100%, 60%, 0.1), transparent)",
-          boxShadow: "0 0 60px hsla(270, 91%, 65%, 0.15), inset 0 0 30px hsla(270, 91%, 65%, 0.1)",
-        }}
+          boxShadow: "0 0 60px hsla(270, 91%, 65%, 0.15), inset 0 0 30px hsla(270, 91%, 65%, 0.1)" }}
       >
         <div className="text-center">
           <motion.p

@@ -138,10 +138,8 @@ const ResetPassword = () => {
     // Force sign-out so the user must log in with the new password (defence-in-depth
     // against session-hijack scenarios where recovery was triggered by an attacker).
     await supabase.auth.signOut();
-    toast({
-      title: "Password successfully changed!",
-      description: "Please log in with your new password.",
-    });
+    toast({ title: "Password successfully changed!",
+      description: "Please log in with your new password." });
     navigate("/auth", { replace: true });
   };
 

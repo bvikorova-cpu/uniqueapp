@@ -45,8 +45,7 @@ export function RoomReplayView({ onBack }: { onBack: () => void }) {
         .order("completed_at", { ascending: false })
         .limit(50);
       if (error) throw error;
-      return (data ?? []).map((r: any) => {
-        const totalPuzzles = 8;
+      return (data ?? []).map((r: any) => { const totalPuzzles = 8;
         const puzzlesSolved = Math.round((Number(r.score) || 0) / 100 * totalPuzzles);
         const dur = Number(r.completion_time_seconds) || 0;
         return {
@@ -58,12 +57,10 @@ export function RoomReplayView({ onBack }: { onBack: () => void }) {
           puzzlesSolved,
           totalPuzzles,
           hintsUsed: Number(r.hints_used) || 0,
-          avgSolveTime: fmtSec(puzzlesSolved > 0 ? Math.round(dur / puzzlesSolved) : 0),
-        };
+          avgSolveTime: fmtSec(puzzlesSolved > 0 ? Math.round(dur / puzzlesSolved) : 0) };
       });
     },
-    staleTime: 30_000,
-  });
+    staleTime: 30_000 });
 
 
   if (selected) {

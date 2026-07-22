@@ -21,13 +21,11 @@ interface TimeTravelLog {
 }
 
 const BRANCHES = ["alpha", "beta", "gamma", "delta", "omega"];
-const BRANCH_COLORS: Record<string, string> = {
-  alpha: "text-cyan-400 border-cyan-500/30",
+const BRANCH_COLORS: Record<string, string> = { alpha: "text-cyan-400 border-cyan-500/30",
   beta: "text-violet-400 border-violet-500/30",
   gamma: "text-emerald-400 border-emerald-500/30",
   delta: "text-pink-400 border-pink-500/30",
-  omega: "text-amber-400 border-amber-500/30",
-};
+  omega: "text-amber-400 border-amber-500/30" };
 
 export function QuantumTimeTravel({ onBack }: { onBack: () => void }) {
   const [logs, setLogs] = useState<TimeTravelLog[]>([]);
@@ -64,9 +62,7 @@ export function QuantumTimeTravel({ onBack }: { onBack: () => void }) {
       const response = await supabase.functions.invoke("ai-mood-therapist", {
         body: {
           messages: [{ role: "user", content: `Time travel query: "${query}" in timeline branch "${selectedBranch}". Describe what this post/event/moment looked like in a previous version of quantum reality. Use quantum physics metaphors. Include a "Timeline Branch: ${selectedBranch}" header. Be creative and immersive. 2-3 paragraphs.` }],
-          systemPrompt: "You are a Quantum Time Travel Engine. You show users previous versions of quantum reality. Each timeline branch (alpha, beta, gamma, delta, omega) shows a different historical version. Be vivid, mysterious, and use quantum physics language.",
-        },
-      });
+          systemPrompt: "You are a Quantum Time Travel Engine. You show users previous versions of quantum reality. Each timeline branch (alpha, beta, gamma, delta, omega) shows a different historical version. Be vivid, mysterious, and use quantum physics language." } });
 
       let content = `## Timeline Branch: ${selectedBranch.toUpperCase()}\n\n⏳ *Traveling through the quantum field...*\n\nIn the ${selectedBranch} timeline, "${query}" manifested differently. The wave function hadn't yet collapsed, and multiple possibilities coexisted in superposition.\n\nThis version of reality shows a more primal form of the event — before observers shaped it into its current state. The quantum echoes reveal patterns hidden from linear time perception.\n\n*Quantum coherence maintained for 3.7 nanoseconds before decoherence.*`;
 
@@ -88,12 +84,10 @@ export function QuantumTimeTravel({ onBack }: { onBack: () => void }) {
 
       setResult(content);
 
-      await supabase.from("quantum_time_travel_logs").insert({
-        user_id: user.id,
+      await supabase.from("quantum_time_travel_logs").insert({ user_id: user.id,
         viewed_version: Math.floor(Math.random() * 99) + 1,
         timeline_branch: selectedBranch,
-        credits_used: 1,
-      });
+        credits_used: 1 });
 
       fetchLogs();
     } catch {

@@ -74,8 +74,7 @@ export const HeadToHead = ({ sponsors, onVote, isVoting, canVote, isAuthenticate
       particleCount: 80,
       spread: 90,
       origin: { y: 0.6 },
-      colors: ["hsl(var(--primary))", "#FFD700", "#FF6B00", "#7C3AED"],
-    });
+      colors: ["hsl(var(--primary))", "#FFD700", "#FF6B00", "#7C3AED"] });
   };
 
   const nextMatchup = () => {

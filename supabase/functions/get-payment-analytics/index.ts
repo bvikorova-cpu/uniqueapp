@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -67,23 +65,19 @@ serve(async (req) => {
       .slice(0, 5);
 
     // Credit breakdown
-    const creditBreakdown = Object.entries(creditTypeStats).map(([credit_type, stats]) => ({
-      credit_type,
+    const creditBreakdown = Object.entries(creditTypeStats).map(([credit_type, stats]) => ({ credit_type,
       total_credits: payments
         .filter(p => p.credit_type === credit_type)
         .reduce((sum, p) => sum + (p.credits || 0), 0),
       total_revenue: stats.revenue,
-      transaction_count: stats.count,
-    }));
+      transaction_count: stats.count }));
 
     return new Response(
-      JSON.stringify({
-        conversionRate,
+      JSON.stringify({ conversionRate,
         revenuePerUser,
         repeatCustomerRate,
         topCreditTypes,
-        creditBreakdown,
-      }),
+        creditBreakdown }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
@@ -91,7 +85,6 @@ serve(async (req) => {
     console.error("Error:", errorMessage);
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

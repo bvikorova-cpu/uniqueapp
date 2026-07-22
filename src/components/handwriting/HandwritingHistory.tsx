@@ -9,23 +9,19 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const getTypeLabel = (type: string) => {
-  const labels: Record<string, string> = {
+const getTypeLabel = (type: string) => { const labels: Record<string, string> = {
     personal: "Personal",
     professional: "Professional",
     relationship: "Relationship",
-    business: "Business",
-  };
+    business: "Business" };
   return labels[type] || type;
 };
 
-const getTypeColor = (type: string) => {
-  const colors: Record<string, string> = {
+const getTypeColor = (type: string) => { const colors: Record<string, string> = {
     personal: "from-purple-500 to-violet-500",
     professional: "from-blue-500 to-cyan-500",
     relationship: "from-pink-500 to-rose-500",
-    business: "from-emerald-500 to-teal-500",
-  };
+    business: "from-emerald-500 to-teal-500" };
   return colors[type] || "from-primary to-accent";
 };
 
@@ -46,8 +42,7 @@ export const HandwritingHistory = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   if (selectedAnalysis) {
     return (

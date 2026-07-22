@@ -5,11 +5,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const PLATFORM_FEE_BPS = 1500; // 15%
 
@@ -55,32 +53,24 @@ serve(async (req) => {
           .eq("user_id", appt.provider_id)
           .maybeSingle(),
       ]);
-      return {
-        patient_email: patient?.user?.email ?? null,
+      return { patient_email: patient?.user?.email ?? null,
         doctor_email: doctor?.user?.email ?? null,
-        doctor_name: (dprof as any)?.provider_name ?? "Doctor",
-      };
+        doctor_name: (dprof as any)?.provider_name ?? "Doctor" };
     };
 
     // Already confirmed?
     if (appt.status === "confirmed") {
       const emails = await fetchEmails();
       return new Response(JSON.stringify({ status: "confirmed", appointment: appt, ...emails }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
-      apiVersion: "2025-08-27.basil",
-    });
-    const session = await stripe.checkout.sessions.retrieve(session_id, {
-      expand: ["payment_intent"],
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", { apiVersion: "2025-08-27.basil" });
+    const session = await stripe.checkout.sessions.retrieve(session_id, { expand: ["payment_intent"] });
 
     if (session.payment_status !== "paid") {
       return new Response(JSON.stringify({ status: appt.status, payment_status: session.payment_status }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const paymentIntent =
@@ -94,24 +84,20 @@ serve(async (req) => {
 
     await admin
       .from("healthcare_appointments")
-      .update({
-        status: "confirmed",
+      .update({ status: "confirmed",
         confirmed_at: new Date().toISOString(),
         stripe_payment_intent_id: paymentIntent?.id,
-        stripe_charge_id: chargeId,
-      })
+        stripe_charge_id: chargeId })
       .eq("id", appointment_id);
 
     // Record payout row (pending payout)
     await admin.from("doctor_payouts").upsert(
-      {
-        doctor_id: appt.provider_id,
+      { doctor_id: appt.provider_id,
         appointment_id,
         amount_cents: doctorAmount,
         platform_fee_cents: platformFee,
         currency: "EUR",
-        status: "pending",
-      },
+        status: "pending" },
       { onConflict: "appointment_id" },
     );
 
@@ -121,14 +107,12 @@ serve(async (req) => {
         user_id: appt.provider_id,
         type: "doctor_booking_confirmed",
         title: "New appointment booked",
-        message: `You have a new confirmed appointment on ${new Date(appt.scheduled_at).toUTCString()}.`,
-      },
+        message: `You have a new confirmed appointment on ${new Date(appt.scheduled_at).toUTCString()}.` },
       {
         user_id: appt.patient_id,
         type: "doctor_booking_confirmed",
         title: "Appointment confirmed",
-        message: `Your appointment is confirmed for ${new Date(appt.scheduled_at).toUTCString()}.`,
-      },
+        message: `Your appointment is confirmed for ${new Date(appt.scheduled_at).toUTCString()}.` },
     ]);
 
     const emails = await fetchEmails();
@@ -136,15 +120,13 @@ serve(async (req) => {
       JSON.stringify({
         status: "confirmed",
         appointment: { ...appt, status: "confirmed", scheduled_at: appt.scheduled_at },
-        ...emails,
-      }),
+        ...emails }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (error: any) {
     console.error("verify-doctor-booking error", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

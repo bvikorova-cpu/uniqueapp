@@ -44,8 +44,7 @@ export const AnalyzerToolLayout = ({
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("analyzer-ai", {
-        body: { action, ...buildBody(input) },
-      });
+        body: { action, ...buildBody(input) } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

@@ -12,20 +12,16 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const ok = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-const COSTS: Record<string, number> = {
-  "hub.dailyPlan": 3,
+const COSTS: Record<string, number> = { "hub.dailyPlan": 3,
   "hub.recommendations": 2,
-  "hub.parentDigest": 3,
-};
+  "hub.parentDigest": 3 };
 
 // Simple in-memory per-user rate limiter for free read actions to prevent abuse.
 const rateMap = new Map<string, number[]>();
@@ -47,9 +43,7 @@ async function callAI(messages: any[], json = true): Promise<any> {
     body: JSON.stringify({
       model: "gpt-4o-mini",
       messages,
-      ...(json ? { response_format: { type: "json_object" } } : {}),
-    }),
-  });
+      ...(json ? { response_format: { type: "json_object" } } : {}) }) });
   if (res.status === 429) throw new Error("RATE_LIMIT");
   if (res.status === 402) throw new Error("AI_CREDITS_EXHAUSTED");
   if (!res.ok) throw new Error(`AI ${res.status}`);
@@ -137,10 +131,8 @@ serve(async (req) => {
         const totalXp = (cur?.total_xp ?? 0) + Number(xp);
         const level = Math.floor(totalXp / 100) + 1;
         const longest = Math.max(cur?.longest_streak ?? 0, streak);
-        await supabase.from("kids_academy_xp").upsert({
-          parent_id: userId, child_id, total_xp: totalXp, level,
-          current_streak: streak, longest_streak: longest, last_activity_date: today,
-        }, { onConflict: "child_id" });
+        await supabase.from("kids_academy_xp").upsert({ parent_id: userId, child_id, total_xp: totalXp, level,
+          current_streak: streak, longest_streak: longest, last_activity_date: today }, { onConflict: "child_id" });
         return ok({ total_xp: totalXp, level, current_streak: streak });
       }
 

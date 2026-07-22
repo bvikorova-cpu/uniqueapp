@@ -18,8 +18,7 @@ const REST_SUB = `https://${SUPABASE_HOST}/rest/v1/megatalent_subscriptions*`;
 const FN_CHECKOUT = `https://${SUPABASE_HOST}/functions/v1/create-checkout`;
 const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-megatalent-subscription`;
 
-async function installGateStubs(page: Page, getSubscribed: () => boolean) {
-  await page.route(REST_SUB, async (route) =>
+async function installGateStubs(page: Page, getSubscribed: () => boolean) { await page.route(REST_SUB, async (route) =>
     route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -28,29 +27,24 @@ async function installGateStubs(page: Page, getSubscribed: () => boolean) {
             {
               status: "active",
               tier: "top_premium",
-              current_period_end: new Date(Date.now() + 30 * 86_400_000).toISOString(),
-            },
+              current_period_end: new Date(Date.now() + 30 * 86_400_000).toISOString() },
           ])
-        : "[]",
-    }),
+        : "[]" }),
   );
   await page.route(FN_CHECK, async (route) =>
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ subscribed: getSubscribed(), tier: "top_premium" }),
-    }),
+      body: JSON.stringify({ subscribed: getSubscribed(), tier: "top_premium" }) }),
   );
   await page.route("https://checkout.stripe.com/**", (r) =>
     r.fulfill({ status: 200, body: "<html>stub</html>" }),
   );
 }
 
-test.describe("Megatalent payment flow — €15 Top Premium (authed)", () => {
-  test("pay €15 → return from Stripe → feed unlocks at top_premium tier", async ({
+test.describe("Megatalent payment flow — €15 Top Premium (authed)", () => { test("pay €15 → return from Stripe → feed unlocks at top_premium tier", async ({
     page,
-    context,
-  }) => {
+    context }) => {
     let subscribed = false;
     let checkoutCalled = false;
 
@@ -63,13 +57,10 @@ test.describe("Megatalent payment flow — €15 Top Premium (authed)", () => {
       }
       checkoutCalled = true;
       expect(body?.tier).toBe("top_premium");
-      await route.fulfill({
-        status: 200,
+      await route.fulfill({ status: 200,
         contentType: "application/json",
         body: JSON.stringify({
-          url: "https://checkout.stripe.com/test_session_megatalent_top_e2e",
-        }),
-      });
+          url: "https://checkout.stripe.com/test_session_megatalent_top_e2e" }) });
     });
 
     await page.goto("/megatalent");

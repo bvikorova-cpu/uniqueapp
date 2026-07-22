@@ -7,7 +7,7 @@ AS $$
 DECLARE
   v_user UUID := auth.uid();
   v_row public.user_login_streaks%ROWTYPE;
-  v_today DATE := (now() AT TIME ZONE 'Europe/Bratislava')::date;
+  v_today DATE := (now() AT TIME ZONE 'Europe/City')::date;
   v_bonus INT := 1;
   v_new_streak INT;
   v_was_reset BOOLEAN := false;

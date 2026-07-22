@@ -40,13 +40,11 @@ function generateMathQuestion(): { question: string; answer: number } {
   return { question: `What is ${a} − ${b}?`, answer: a - b };
 }
 
-export function ParentalGate({
-  isOpen,
+export function ParentalGate({ isOpen,
   onSuccess,
   onCancel,
   featureName = "this feature",
-  storageKey = "parental_gate_verified",
-}: ParentalGateProps) {
+  storageKey = "parental_gate_verified" }: ParentalGateProps) {
   const [mathQuestion, setMathQuestion] = useState(generateMathQuestion());
   const [userAnswer, setUserAnswer] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -132,11 +130,9 @@ export function ParentalGate({
 
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          await supabase.from("kids_parental_gate_log").insert({
+        if (user) { await supabase.from("kids_parental_gate_log").insert({
             user_id: user.id,
-            feature_name: featureName,
-          });
+            feature_name: featureName });
         }
       } catch (e) {
         console.warn("Could not log parental gate verification:", e);

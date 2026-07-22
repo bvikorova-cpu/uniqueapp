@@ -24,8 +24,7 @@ export const BrandVoiceView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("video-ad-tools", {
-        body: { action: "brand_voice", brand, industry, description, audience },
-      });
+        body: { action: "brand_voice", brand, industry, description, audience } });
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setResult(data.result);

@@ -8,10 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter,
-  DialogHeader, DialogTitle, DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter,
+  DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ShieldAlert, CheckCircle2, XCircle, Clock, History, Search, Gavel, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { AdminGuard } from "@/components/admin/AdminGuard";
@@ -67,8 +65,7 @@ const STATUS_BADGE: Record<string, { label: string; variant: any; icon: any }> =
   rejected: { label: "Rejected", variant: "destructive", icon: XCircle },
   under_review: { label: "Under review", variant: "secondary", icon: Gavel },
   accepted: { label: "Accepted", variant: "default", icon: CheckCircle2 },
-  dismissed: { label: "Dismissed", variant: "destructive", icon: XCircle },
-};
+  dismissed: { label: "Dismissed", variant: "destructive", icon: XCircle } };
 
 function StatusBadge({ status }: { status: string }) {
   const s = STATUS_BADGE[status] ?? STATUS_BADGE.pending;
@@ -95,12 +92,10 @@ function ModerationActions({ brand }: { brand: Brand }) {
     const { data: u } = await supabase.auth.getUser();
     const { error } = await supabase
       .from("brand_sponsors")
-      .update({
-        moderation_status: status,
+      .update({ moderation_status: status,
         moderation_reason: status === "rejected" ? reason.trim() : null,
         moderated_by: u.user?.id,
-        moderated_at: new Date().toISOString(),
-      })
+        moderated_at: new Date().toISOString() })
       .eq("id", brand.id);
     setBusy(false);
     if (error) { toast.error(error.message); return; }
@@ -142,9 +137,7 @@ function ModerationActions({ brand }: { brand: Brand }) {
   );
 }
 
-function QueueFilters({
-  search, setSearch, dateFrom, setDateFrom, dateTo, setDateTo, reason, setReason, showReason,
-}: {
+function QueueFilters({ search, setSearch, dateFrom, setDateFrom, dateTo, setDateTo, reason, setReason, showReason }: {
   search: string; setSearch: (v: string) => void;
   dateFrom: string; setDateFrom: (v: string) => void;
   dateTo: string; setDateTo: (v: string) => void;
@@ -199,8 +192,7 @@ function QueueTable({ status }: { status: "pending" | "approved" | "rejected" })
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as Brand[];
-    },
-  });
+    } });
 
   const filtered = useMemo(() => {
     const s = search.trim().toLowerCase();
@@ -268,24 +260,20 @@ function AppealReviewActions({ appeal }: { appeal: Appeal }) {
     const { data: u } = await supabase.auth.getUser();
     const { error } = await supabase
       .from("brand_moderation_appeals")
-      .update({
-        status,
+      .update({ status,
         admin_response: response.trim() || null,
         reviewed_by: u.user?.id,
-        reviewed_at: new Date().toISOString(),
-      })
+        reviewed_at: new Date().toISOString() })
       .eq("id", appeal.id);
 
     // If accepted, re-approve the brand
-    if (!error && status === "accepted") {
-      await supabase
+    if (!error && status === "accepted") { await supabase
         .from("brand_sponsors")
         .update({
           moderation_status: "approved",
           moderation_reason: null,
           moderated_by: u.user?.id,
-          moderated_at: new Date().toISOString(),
-        })
+          moderated_at: new Date().toISOString() })
         .eq("id", appeal.brand_id);
     }
     setBusy(false);
@@ -356,8 +344,7 @@ function AppealsQueue() {
         .limit(200);
       if (error) throw error;
       return data as Appeal[];
-    },
-  });
+    } });
 
   const filtered = useMemo(() => {
     const s = search.trim().toLowerCase();
@@ -436,8 +423,7 @@ function AuditLog() {
         .limit(200);
       if (error) throw error;
       return data as AuditRow[];
-    },
-  });
+    } });
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
   if (!data.length) {

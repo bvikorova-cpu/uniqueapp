@@ -40,10 +40,8 @@ export const ColorQuest = ({ onComplete, onBack }: ColorQuestProps) => {
       setColoredCount(coloredCount + 1);
     }
     
-    setColoredShapes({
-      ...coloredShapes,
-      [shapeId]: selectedColor,
-    });
+    setColoredShapes({ ...coloredShapes,
+      [shapeId]: selectedColor });
 
     if (coloredCount + 1 === shapes.length) {
       toast.success("Excellent! You colored all the shapes! 🎨");

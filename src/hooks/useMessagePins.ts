@@ -17,34 +17,29 @@ export function useMessagePins(conversationId?: string) {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   const pin = useMutation({
     mutationFn: async (messageId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !conversationId) throw new Error("Not allowed");
-      const { error } = await supabase.from("message_pins").insert({
-        conversation_id: conversationId,
+      const { error } = await supabase.from("message_pins").insert({ conversation_id: conversationId,
         message_id: messageId,
-        pinned_by: user.id,
-      });
+        pinned_by: user.id });
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["message-pins", conversationId] });
       toast({ title: "Message pinned" });
     },
-    onError: (e: any) => toast({ title: "Could not pin", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Could not pin", description: e.message, variant: "destructive" }) });
 
   const unpin = useMutation({
     mutationFn: async (pinId: string) => {
       const { error } = await supabase.from("message_pins").delete().eq("id", pinId);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["message-pins", conversationId] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["message-pins", conversationId] }) });
 
   return { ...query, pin: pin.mutate, unpin: unpin.mutate };
 }

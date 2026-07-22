@@ -4,21 +4,15 @@ import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const testimonials = [
-  {
-    text: "Helped me catch inconsistencies in messages I would have never noticed. The psychological profiling is incredibly detailed.",
+  { text: "Helped me catch inconsistencies in messages I would have never noticed. The psychological profiling is incredibly detailed.",
     author: "Sarah M.",
-    rating: 5,
-  },
-  {
-    text: "The thread analysis saved me from a scam. It detected manipulation patterns across 20+ messages instantly.",
+    rating: 5 },
+  { text: "The thread analysis saved me from a scam. It detected manipulation patterns across 20+ messages instantly.",
     author: "David K.",
-    rating: 5,
-  },
-  {
-    text: "Fascinating tool for understanding communication styles. The emotional analysis is spot-on.",
+    rating: 5 },
+  { text: "Fascinating tool for understanding communication styles. The emotional analysis is spot-on.",
     author: "Elena R.",
-    rating: 4,
-  },
+    rating: 4 },
 ];
 
 export const LieDetectorTestimonials = () => {

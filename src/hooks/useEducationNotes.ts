@@ -16,8 +16,7 @@ export const useNotes = () => {
         .order("updated_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 };
 
 export const useSaveNote = () => {
@@ -44,26 +43,22 @@ export const useSaveNote = () => {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["edu-notes"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["edu-notes"] }) });
 };
 
 export const useAIGenerateNote = () =>
   useMutation({
     mutationFn: async (topic: string) => eduCall<{ markdown: string }>("notes.generate", { topic }),
-    onError: (e: any) => toast.error(e?.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e?.message ?? "Failed") });
 
 export const useMathSolver = () =>
   useMutation({
     mutationFn: async (p: { problem_text?: string; image_url?: string }) =>
       eduCall<{ solution: { steps: any[]; answer: string } }>("math.solve", p),
-    onError: (e: any) => toast.error(e?.message === "insufficient_credits" ? "Buy homework credits to solve" : e?.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e?.message === "insufficient_credits" ? "Buy homework credits to solve" : e?.message ?? "Failed") });
 
 export const useTutorChat = () =>
   useMutation({
     mutationFn: async (p: { message: string; context?: string }) =>
       eduCall<{ reply: string }>("tutor.chat", p),
-    onError: (e: any) => toast.error(e?.message === "insufficient_credits" ? "Buy homework credits to chat" : e?.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e?.message === "insufficient_credits" ? "Buy homework credits to chat" : e?.message ?? "Failed") });

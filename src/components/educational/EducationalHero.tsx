@@ -23,19 +23,16 @@ export const EducationalHero = ({ totalStars, completedTopics, totalTopics, stre
           className="absolute text-2xl md:text-4xl opacity-20 select-none pointer-events-none"
           style={{
             left: `${(i * 10) + 5}%`,
-            top: `${(i % 3) * 30 + 10}%`,
-          }}
-          animate={{
+            top: `${(i % 3) * 30 + 10}%` }}
+          animate={ {
             y: [0, -20, 0],
             rotate: [0, i % 2 === 0 ? 15 : -15, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
+            scale: [1, 1.1, 1] }}
+          transition={ {
             duration: 3 + (i * 0.4),
             repeat: Infinity,
             ease: "easeInOut",
-            delay: i * 0.3,
-          }}
+            delay: i * 0.3 }}
         >
           {emoji}
         </motion.div>

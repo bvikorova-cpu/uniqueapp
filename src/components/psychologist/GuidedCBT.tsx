@@ -30,8 +30,7 @@ const EXERCISES: CBTExercise[] = [
       { title: "Evidence For", prompt: "What evidence supports this thought? What facts back it up?", tip: "Stick to facts only — not feelings or interpretations." },
       { title: "Evidence Against", prompt: "What evidence contradicts this thought? What proves it might not be fully true?", tip: "Consider what you'd tell a friend in the same situation." },
       { title: "Balanced Thought", prompt: "Now write a more balanced, realistic thought that considers all the evidence.", tip: "This isn't positive thinking — it's accurate thinking." },
-    ],
-  },
+    ] },
   {
     id: "cognitive-distortions", title: "Cognitive Distortion Spotter", desc: "Learn to identify thinking traps and patterns that fuel negative emotions",
     icon: AlertTriangle, color: "from-orange-500 to-red-500",
@@ -40,8 +39,7 @@ const EXERCISES: CBTExercise[] = [
       { title: "Identify the Distortion", prompt: "Which thinking trap applies?\n\n• All-or-Nothing: Seeing in black/white\n• Catastrophizing: Expecting the worst\n• Mind Reading: Assuming what others think\n• Fortune Telling: Predicting negative outcomes\n• Personalization: Blaming yourself for everything\n• Overgeneralization: 'Always' or 'Never' thinking\n• Emotional Reasoning: Feeling = fact\n• Should Statements: Rigid rules for self/others", tip: "A single thought can contain multiple distortions." },
       { title: "Challenge It", prompt: "How would you respond to this distortion? What's a more accurate way to think about it?", tip: "Ask: 'Is this thought helpful? Is it true? What would I tell a friend?'" },
       { title: "Reframe", prompt: "Write a reframed version of the thought that's more balanced and compassionate.", tip: "Self-compassion is key — treat yourself like you'd treat someone you care about." },
-    ],
-  },
+    ] },
   {
     id: "behavioral-activation", title: "Behavioral Activation", desc: "Plan activities that boost mood and combat depression through action",
     icon: Target, color: "from-green-500 to-emerald-500",
@@ -50,8 +48,7 @@ const EXERCISES: CBTExercise[] = [
       { title: "Values Check", prompt: "What matters most to you? List 3-5 things you value (relationships, health, creativity, learning, etc.)", tip: "Activities aligned with values tend to boost mood more." },
       { title: "Activity Plan", prompt: "List 3 small, achievable activities you could do today or this week. They can be tiny — even a 5-minute walk counts.", tip: "Start small. 'Do the dishes' is better than 'Clean the whole house'." },
       { title: "Predict & Track", prompt: "For each activity, predict your mood before (0-10) and rate it after completing it. You'll often find it was better than predicted.", tip: "This gap between prediction and reality is the key insight of behavioral activation." },
-    ],
-  },
+    ] },
   {
     id: "worry-tree", title: "Worry Tree", desc: "Systematically sort worries into actionable and non-actionable categories",
     icon: Scale, color: "from-blue-500 to-cyan-500",
@@ -60,8 +57,7 @@ const EXERCISES: CBTExercise[] = [
       { title: "Can You Act?", prompt: "Is there anything you can actually do about this worry right now? If yes, what? If no, acknowledge that.", tip: "Distinguish between productive problem-solving and unproductive rumination." },
       { title: "Action Plan (if actionable)", prompt: "If you can act: What's the next concrete step? When will you do it? Write a simple plan.", tip: "Break it into the smallest possible first step." },
       { title: "Let Go (if not actionable)", prompt: "If you can't act: Practice accepting uncertainty. Write a compassionate statement to yourself about letting go of what you can't control.", tip: "Try: 'I notice I'm worrying about X. I can't control this right now, and that's okay.'" },
-    ],
-  },
+    ] },
 ];
 
 export const GuidedCBT = ({ onBack }: Props) => {

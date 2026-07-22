@@ -1,22 +1,18 @@
 import { useState } from "react";
 import { Flag, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Select,
+  DialogTrigger } from "@/components/ui/dialog";
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
@@ -44,26 +40,22 @@ const violationTypes = [
   { value: "other", label: "Other" },
 ];
 
-export const ReportButton = ({
-  contentId,
+export const ReportButton = ({ contentId,
   contentType,
   reportedUserId,
   variant = "ghost",
-  size = "icon",
-}: ReportButtonProps) => {
+  size = "icon" }: ReportButtonProps) => {
   const [open, setOpen] = useState(false);
   const [violationType, setViolationType] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async () => {
-    if (!violationType) {
+  const handleSubmit = async () => { if (!violationType) {
       toast({
         title: "Error",
         description: "Please select a reason for reporting.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -72,41 +64,33 @@ export const ReportButton = ({
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Error",
           description: "You must be logged in to report content.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
-      const { error } = await supabase.from("content_reports").insert({
-        reporter_id: user.id,
+      const { error } = await supabase.from("content_reports").insert({ reporter_id: user.id,
         reported_user_id: reportedUserId,
         content_id: contentId,
         content_type: contentType,
         violation_type: violationType as any,
-        description: description || null,
-      });
+        description: description || null });
 
       if (error) throw error;
 
-      toast({
-        title: "Report Submitted",
-        description: "Thank you for helping keep our community safe.",
-      });
+      toast({ title: "Report Submitted",
+        description: "Thank you for helping keep our community safe." });
       
       setOpen(false);
       setViolationType("");
       setDescription("");
-    } catch (error: any) {
-      console.error("Error submitting report:", error);
+    } catch (error: any) { console.error("Error submitting report:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to submit report.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }

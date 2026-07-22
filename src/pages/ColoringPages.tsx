@@ -74,8 +74,7 @@ export default function ColoringPages() {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const generateMutation = useMutation({
     mutationFn: async () => {
@@ -113,8 +112,7 @@ export default function ColoringPages() {
       } else {
         toast.error("Failed to generate: " + error.message);
       }
-    },
-  });
+    } });
 
   const aiPromptMutation = useMutation({
     mutationFn: async ({ prompt, difficulty: diff }: { prompt: string; difficulty: string }) => {
@@ -131,8 +129,7 @@ export default function ColoringPages() {
     },
     onError: (error: Error) => {
       toast.error("Failed to generate: " + error.message);
-    },
-  });
+    } });
 
   const buyCreditsPack = async (creditCount: number) => {
     const url = await purchase(creditCount);

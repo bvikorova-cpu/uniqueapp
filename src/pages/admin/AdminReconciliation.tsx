@@ -50,12 +50,10 @@ export default function AdminReconciliation() {
       if ((data as any)?.error) throw new Error((data as any).error);
       setResult(data as ReconcileResult);
       toast({ title: "Reconciliation complete", description: `Date: ${date}` });
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Reconciliation failed",
         description: e.message ?? String(e),
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -203,11 +201,9 @@ export default function AdminReconciliation() {
   );
 }
 
-function StatCard({
-  label,
+function StatCard({ label,
   value,
-  bad,
-}: {
+  bad }: {
   label: string;
   value: number;
   bad?: boolean;

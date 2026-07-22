@@ -53,8 +53,7 @@ export async function requireAiCredits(
       errorResponse: new Response(
         JSON.stringify({ error: "Not authenticated" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      ),
-    };
+      ) };
   }
 
   const token = authHeader.replace("Bearer ", "");
@@ -64,8 +63,7 @@ export async function requireAiCredits(
       errorResponse: new Response(
         JSON.stringify({ error: "Not authenticated" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      ),
-    };
+      ) };
   }
   // ---- Rate limiting (per-user, per-bucket) ----
   if (opts.rateLimit !== false) {
@@ -78,26 +76,20 @@ export async function requireAiCredits(
         _bucket: `${bucket}:${user.id}`,
         _max: max,
         _window_seconds: windowSec,
-        _user_id: user.id,
-      });
+        _user_id: user.id });
       if (!rlErr && allowed === false) {
         return {
           errorResponse: new Response(
             JSON.stringify({
               error: "rate_limited",
               message: `Too many requests. Try again in ${windowSec}s.`,
-              bucket,
-            }),
-            {
-              status: 429,
+              bucket }),
+            { status: 429,
               headers: {
                 ...corsHeaders,
                 "Content-Type": "application/json",
-                "Retry-After": String(windowSec),
-              },
-            }
-          ),
-        };
+                "Retry-After": String(windowSec) } }
+          ) };
       }
     } catch (e) {
       // Fail open on infra errors — never block a paying user because of a rate-limit infra glitch.
@@ -120,34 +112,27 @@ export async function requireAiCredits(
         JSON.stringify({
           error: `Insufficient AI credits. Need ${credits}, have ${remaining}.`,
           creditsRemaining: remaining,
-          creditsRequired: credits,
-        }),
+          creditsRequired: credits }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      ),
-    };
+      ) };
   }
 
-  const deduct = async () => {
-    await supabase
+  const deduct = async () => { await supabase
       .from("ai_credits")
       .update({
         credits_remaining: remaining - credits,
-        last_used_at: new Date().toISOString(),
-      })
+        last_used_at: new Date().toISOString() })
       .eq("user_id", user.id);
 
-    await supabase.from("ai_usage_history").insert({
-      user_id: user.id,
+    await supabase.from("ai_usage_history").insert({ user_id: user.id,
       usage_type: usageType,
       credits_used: credits,
-      description: opts.description ?? null,
-    });
+      description: opts.description ?? null });
   };
 
   return {
     user: { id: user.id, email: user.email ?? undefined },
     supabase,
     credits: remaining,
-    deduct,
-  };
+    deduct };
 }

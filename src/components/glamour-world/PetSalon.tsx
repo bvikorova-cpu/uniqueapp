@@ -26,8 +26,7 @@ export function PetSalon({ onBack }: { onBack: () => void }) {
       if (!user) return [];
       const { data } = await supabase.from("glamour_pets").select("*").eq("user_id", user.id);
       return data || [];
-    },
-  });
+    } });
 
   const adoptPet = async () => {
     if (!petName || !petSpecies) return toast({ title: "Name your pet and choose species", variant: "destructive" });
@@ -55,8 +54,7 @@ export function PetSalon({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "pet_grooming", prompt: `Groom a pet in ${groomStyle} style. Describe the new look, accessories, and how the pet feels.`, coins: 3 },
-      });
+        body: { type: "pet_grooming", prompt: `Groom a pet in ${groomStyle} style. Describe the new look, accessories, and how the pet feels.`, coins: 3 } });
       if (error) throw error;
       setResult(data.result);
       await supabase.from("glamour_pets").update({ grooming_count: (pets?.find(p => p.id === petId)?.grooming_count || 0) + 1, current_outfit: groomStyle }).eq("id", petId);

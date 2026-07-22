@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import {
-  ArrowLeft, Swords, Trophy, ListOrdered, Users, Layers, EyeOff, Timer,
+import { ArrowLeft, Swords, Trophy, ListOrdered, Users, Layers, EyeOff, Timer,
   Share2, TrendingUp, UserPlus, UsersRound, Code2, Sparkles, Map as MapIcon,
-  PieChart, LineChart, MessageCircle, Building2, Brain, Gem,
-} from "lucide-react";
+  PieChart, LineChart, MessageCircle, Building2, Brain, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -103,11 +101,9 @@ export default function BrandArenaHub() {
       } else {
         const payload: any = {};
         Object.entries(input).forEach(([k, v]) => (payload[k] = v));
-        await brandArenaCall("records.create", {
-          kind: active.id,
+        await brandArenaCall("records.create", { kind: active.id,
           payload,
-          is_public: true,
-        });
+          is_public: true });
         toast.success("Saved!");
         const r = await brandArenaCall<any>("records.list", { kind: active.id, limit: 12 });
         setRecords(r.records ?? []);

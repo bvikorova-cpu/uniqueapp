@@ -38,18 +38,15 @@ export const PropertyMapView = ({ onBack }: Props) => {
         cityMap.set(city, entry);
       });
 
-      return Array.from(cityMap.entries()).map(([city, data], i) => ({
-        id: i + 1,
+      return Array.from(cityMap.entries()).map(([city, data], i) => ({ id: i + 1,
         city,
         count: data.count,
         avgPrice: Math.round(data.totalPrice / data.count),
         type: [...data.types][0] || 'apartment',
         // Map coordinates to visual positions
         x: 10 + ((data.lng - 16.5) / 5.5) * 80,
-        y: 10 + ((49.5 - data.lat) / 2) * 80,
-      }));
-    },
-  });
+        y: 10 + ((49.5 - data.lat) / 2) * 80 }));
+    } });
 
   const filtered = filter === "all" ? cityData : cityData.filter(p => p.type === filter);
 

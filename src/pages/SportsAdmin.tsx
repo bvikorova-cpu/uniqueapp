@@ -12,14 +12,12 @@ import { Plus, Trash2, ArrowLeft, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 
 const SPORTS = ["Football", "Basketball", "Tennis", "Hockey", "Volleyball", "Baseball"];
-const LEAGUES = {
-  Football: ["Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1", "Champions League"],
+const LEAGUES = { Football: ["Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1", "Champions League"],
   Basketball: ["NBA", "EuroLeague", "Spanish ACB", "Turkish BSL"],
   Tennis: ["ATP", "WTA", "Grand Slam"],
   Hockey: ["NHL", "KHL", "Champions League"],
   Volleyball: ["CEV Champions League", "World Championship"],
-  Baseball: ["MLB", "NPB"],
-};
+  Baseball: ["MLB", "NPB"] };
 
 export default function SportsAdmin() {
   const navigate = useNavigate();
@@ -30,14 +28,12 @@ export default function SportsAdmin() {
   const [matches, setMatches] = useState<any[]>([]);
   const [loadingMatches, setLoadingMatches] = useState(true);
   
-  const [formData, setFormData] = useState({
-    sport: "",
+  const [formData, setFormData] = useState({ sport: "",
     league: "",
     home_team: "",
     away_team: "",
     match_date: format(new Date(), "yyyy-MM-dd"),
-    match_time: "20:00",
-  });
+    match_time: "20:00" });
 
   useEffect(() => {
     if (!user) {
@@ -59,27 +55,23 @@ export default function SportsAdmin() {
 
       if (error) throw error;
       setMatches(data || []);
-    } catch (error) {
-      console.error("Error fetching matches:", error);
+    } catch (error) { console.error("Error fetching matches:", error);
       toast({
         title: "Error",
         description: "Failed to load matches",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoadingMatches(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
 
     if (!formData.sport || !formData.league || !formData.home_team || !formData.away_team) {
       toast({
         title: "Missing Data",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -89,30 +81,24 @@ export default function SportsAdmin() {
 
       if (error) throw error;
 
-      toast({
-        title: "Success! ⚽",
-        description: "Match successfully added",
-      });
+      toast({ title: "Success! ⚽",
+        description: "Match successfully added" });
 
       // Reset form
-      setFormData({
-        sport: "",
+      setFormData({ sport: "",
         league: "",
         home_team: "",
         away_team: "",
         match_date: format(new Date(), "yyyy-MM-dd"),
-        match_time: "20:00",
-      });
+        match_time: "20:00" });
 
       // Refresh matches list
       await fetchMatches();
-    } catch (error: any) {
-      console.error("Error adding match:", error);
+    } catch (error: any) { console.error("Error adding match:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to add match",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -126,18 +112,14 @@ export default function SportsAdmin() {
 
       if (error) throw error;
 
-      toast({
-        title: "Deleted",
-        description: "Match successfully deleted",
-      });
+      toast({ title: "Deleted",
+        description: "Match successfully deleted" });
 
       await fetchMatches();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to delete match",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -212,7 +194,7 @@ export default function SportsAdmin() {
                     onChange={(e) =>
                       setFormData({ ...formData, home_team: e.target.value })
                     }
-                    placeholder="e.g. Real Madrid"
+                    placeholder="e.g. Team A"
                   />
                 </div>
 
@@ -224,7 +206,7 @@ export default function SportsAdmin() {
                     onChange={(e) =>
                       setFormData({ ...formData, away_team: e.target.value })
                     }
-                    placeholder="e.g. Barcelona"
+                    placeholder="e.g. City"
                   />
                 </div>
 

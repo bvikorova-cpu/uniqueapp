@@ -30,19 +30,15 @@ export async function spendAiCredits(
 
   const { error: updErr } = await admin
     .from("ai_credits")
-    .update({
-      credits_remaining: remaining - amount,
-      last_used_at: new Date().toISOString(),
-    })
+    .update({ credits_remaining: remaining - amount,
+      last_used_at: new Date().toISOString() })
     .eq("user_id", userId);
   if (updErr) return { ok: false, remaining, error: updErr.message };
 
-  await admin.from("ai_usage_history").insert({
-    user_id: userId,
+  await admin.from("ai_usage_history").insert({ user_id: userId,
     usage_type: "custom_generation",
     credits_used: amount,
-    description: reason,
-  }).catch(() => {});
+    description: reason }).catch(() => {});
 
   return { ok: true, remaining: remaining - amount };
 }

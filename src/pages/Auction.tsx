@@ -161,10 +161,8 @@ const Auction = () => {
         uploadedPhotos.push(publicUrl);
         if (!firstImageUrl) firstImageUrl = publicUrl;
       }
-      const { data: auctionData, error: auctionError } = await supabase.from("auction_items").insert({
-        user_id: user.id, title, description, starting_price: parseFloat(startingPrice), current_price: parseFloat(startingPrice),
-        buyout_price: buyoutPrice ? parseFloat(buyoutPrice) : null, category, condition, ends_at: endsAt.toISOString(), image_url: firstImageUrl,
-      }).select().single();
+      const { data: auctionData, error: auctionError } = await supabase.from("auction_items").insert({ user_id: user.id, title, description, starting_price: parseFloat(startingPrice), current_price: parseFloat(startingPrice),
+        buyout_price: buyoutPrice ? parseFloat(buyoutPrice) : null, category, condition, ends_at: endsAt.toISOString(), image_url: firstImageUrl }).select().single();
       if (auctionError) throw auctionError;
       if (uploadedPhotos.length > 0) {
         await supabase.from("auction_photos").insert(uploadedPhotos.map(url => ({ auction_id: auctionData.id, photo_url: url })));
@@ -189,8 +187,7 @@ const Auction = () => {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("create-auction-buyout", {
         body: { auction_id: auction.id },
-        headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined,
-      });
+        headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined });
       if (error) throw error;
       if (!data?.url) throw new Error("No checkout URL");
       window.location.href = data.url;
@@ -208,10 +205,8 @@ const Auction = () => {
     if (amount > 1_000_000) { toast.error("Bid too large"); return; }
     setBidding(true);
     try {
-      const { error } = await supabase.rpc("place_auction_bid" as any, {
-        p_auction_id: selectedAuction.id,
-        p_amount: amount,
-      });
+      const { error } = await supabase.rpc("place_auction_bid" as any, { p_auction_id: selectedAuction.id,
+        p_amount: amount });
       if (error) throw error;
       toast.success("Bid placed!"); setBidDialogOpen(false); setBidAmount(""); setSelectedAuction(null); fetchAuctions();
     } catch (e: any) { toast.error(e?.message || "Failed to place bid"); }

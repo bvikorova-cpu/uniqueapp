@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const PARITY_COST = 5;
 
@@ -16,8 +14,7 @@ const ACTIONS: Record<string, { table: string; system: string }> = {
   "retention-booster": { table: "membership_parity_retention_boosters", system: "You are a churn-prevention coach. Output JSON: { at_risk_signals[], save_offers[{trigger,offer,script}], win_back_plays[], loyalty_rewards[] }." },
   "perk-ideas": { table: "membership_parity_perk_ideas", system: "You are a benefits designer. Output JSON: { perks:[{name,description,cost_to_creator,perceived_value}], digital_perks[], irl_perks[], surprise_drops[] }." },
   "livestream-brief": { table: "membership_parity_livestream_briefs", system: "You are a livestream producer. Output JSON: { title, hook, run_of_show:[{minute,segment}], chat_prompts[], cta_moments[], replay_repurpose[] }." },
-  "growth-funnel": { table: "membership_parity_growth_funnels", system: "You are a fan acquisition strategist. Output JSON: { awareness_plays[], free_to_paid_funnel:[{step,asset,goal}], content_magnets[], referral_loop }." },
-};
+  "growth-funnel": { table: "membership_parity_growth_funnels", system: "You are a fan acquisition strategist. Output JSON: { awareness_plays[], free_to_paid_funnel:[{step,asset,goal}], content_magnets[], referral_loop }." } };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -53,9 +50,7 @@ serve(async (req) => {
           { role: "system", content: cfg.system + " Reply ONLY with valid JSON." },
           { role: "user", content: JSON.stringify(payload ?? {}) },
         ],
-        response_format: { type: "json_object" },
-      }),
-    });
+        response_format: { type: "json_object" } }) });
     if (aiRes.status === 429) {
       return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again shortly." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -75,12 +70,10 @@ serve(async (req) => {
     await supabaseAdmin.from("membership_parity_credits").insert({ user_id: user.id, action, credits_spent: PARITY_COST });
 
     return new Response(JSON.stringify({ result, cost: PARITY_COST }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -28,27 +28,22 @@ export const useShadowArenaAchievements = (userId?: string) => {
       if (error) throw error;
       return data || [];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
-  return {
-    achievements: achievements || [],
+  return { achievements: achievements || [],
     isLoading,
     hasTalentBadge: (achievements?.length || 0) > 0,
-    highestPlacement: achievements?.reduce((min, a) => Math.min(min, a.placement), 4) || null,
-  };
+    highestPlacement: achievements?.reduce((min, a) => Math.min(min, a.placement), 4) || null };
 };
 
 export const useAwardShadowArenaBadge = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async ({
+  return useMutation({ mutationFn: async ({
       userId,
       battleId,
-      placement,
-    }: {
+      placement }: {
       userId: string;
       battleId: string;
       placement: number;
@@ -68,12 +63,10 @@ export const useAwardShadowArenaBadge = () => {
       // Award the Shadow Arena achievement
       const { error: achievementError } = await supabase
         .from("shadow_arena_achievements")
-        .insert({
-          user_id: userId,
+        .insert({ user_id: userId,
           battle_id: battleId,
           placement,
-          badge_type: "shadow_arena_talent",
-        });
+          badge_type: "shadow_arena_talent" });
 
       if (achievementError) throw achievementError;
 
@@ -93,21 +86,17 @@ export const useAwardShadowArenaBadge = () => {
           .eq("badge_id", badge.id)
           .single();
 
-        if (!existingBadge) {
-          // Award the badge to user
+        if (!existingBadge) { // Award the badge to user
           await supabase.from("user_badges").insert({
             user_id: userId,
-            badge_id: badge.id,
-          });
+            badge_id: badge.id });
         }
       }
 
       // Insert placement record
-      await supabase.from("shadow_battle_placements").insert({
-        battle_id: battleId,
+      await supabase.from("shadow_battle_placements").insert({ battle_id: battleId,
         user_id: userId,
-        placement,
-      });
+        placement });
 
       return { success: true, placement };
     },
@@ -116,21 +105,16 @@ export const useAwardShadowArenaBadge = () => {
         queryClient.invalidateQueries({ queryKey: ["shadow-arena-achievements"] });
         queryClient.invalidateQueries({ queryKey: ["user-badges"] });
         
-        toast({
-          title: "🏆 Shadow Arena Talent Badge Awarded!",
-          description: "Congratulations! Your win has been added to your Teen Career Profile as a new achievement.",
-        });
+        toast({ title: "🏆 Shadow Arena Talent Badge Awarded!",
+          description: "Congratulations! Your win has been added to your Teen Career Profile as a new achievement." });
       }
     },
-    onError: (error: Error) => {
-      console.error("Error awarding badge:", error);
+    onError: (error: Error) => { console.error("Error awarding badge:", error);
       toast({
         title: "Error",
         description: "Failed to award badge",
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 };
 
 // Hook to check if user has Shadow Arena achievements for Teen Career
@@ -158,8 +142,6 @@ export const useHasShadowArenaAchievementsForCareer = () => {
             case 3: return "3rd Place Winner";
             default: return "Top Performer";
           }
-        }) || [],
-      };
-    },
-  });
+        }) || [] };
+    } });
 };

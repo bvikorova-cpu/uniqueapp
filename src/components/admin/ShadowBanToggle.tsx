@@ -2,22 +2,18 @@ import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {
-  Tooltip,
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  TooltipTrigger } from "@/components/ui/tooltip";
 import { EyeOff, Info, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -31,12 +27,10 @@ interface ShadowBanToggleProps {
   onUpdate?: (isShadowBanned: boolean) => void;
 }
 
-export const ShadowBanToggle = ({
-  userId,
+export const ShadowBanToggle = ({ userId,
   userName,
   initialValue = false,
-  onUpdate,
-}: ShadowBanToggleProps) => {
+  onUpdate }: ShadowBanToggleProps) => {
   const [isShadowBanned, setIsShadowBanned] = useState(initialValue);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [pendingValue, setPendingValue] = useState(false);
@@ -55,11 +49,9 @@ export const ShadowBanToggle = ({
       if (pendingValue) {
         const { error } = await supabase
           .from("shadow_bans")
-          .upsert({
-            user_id: userId,
+          .upsert({ user_id: userId,
             is_active: true,
-            banned_at: new Date().toISOString(),
-          }, {
+            banned_at: new Date().toISOString() }, {
             onConflict: 'user_id'
           });
 
@@ -76,18 +68,14 @@ export const ShadowBanToggle = ({
       setIsShadowBanned(pendingValue);
       onUpdate?.(pendingValue);
 
-      toast({
-        title: pendingValue ? "Shadow ban activated" : "Shadow ban removed",
+      toast({ title: pendingValue ? "Shadow ban activated" : "Shadow ban removed",
         description: pendingValue 
           ? "User's posts are now hidden from public feeds"
-          : "User's posts are visible again",
-      });
-    } catch (error: any) {
-      toast({
+          : "User's posts are visible again" });
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setUpdating(false);
       setShowConfirmDialog(false);

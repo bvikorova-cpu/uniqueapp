@@ -8,8 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import {
-  Trophy,
+import { Trophy,
   Flag,
   Timer,
   Users,
@@ -17,8 +16,7 @@ import {
   Pause,
   RotateCcw,
   Car,
-  Loader2,
-} from "lucide-react";
+  Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -55,12 +53,10 @@ const defaultReplays: RaceReplay[] = [
   { id: "3", title: "Spa GP 2024", date: "28.07.2024", duration: "1:42:18" },
 ];
 
-const teamColors: Record<string, string> = {
-  "Red Bull": "bg-blue-600",
+const teamColors: Record<string, string> = { "Red Bull": "bg-blue-600",
   "Mercedes": "bg-teal-500",
   "Ferrari": "bg-red-600",
-  "McLaren": "bg-orange-500",
-};
+  "McLaren": "bg-orange-500" };
 
 export const RacingDashboard = () => {
   const { user } = useAuth();

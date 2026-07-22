@@ -1,10 +1,8 @@
 // Barcode / QR product lookup using free Open Food Facts API + AI fallback.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -20,8 +18,7 @@ serve(async (req) => {
     let product: any = null;
     try {
       const off = await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(cleaned)}.json`);
-      if (off.ok) {
-        const j = await off.json();
+      if (off.ok) { const j = await off.json();
         if (j.status === 1 && j.product) {
           const p = j.product;
           product = {
@@ -36,8 +33,7 @@ serve(async (req) => {
             nova: p.nova_group || null,
             calories_per_100g: p.nutriments?.["energy-kcal_100g"] ?? null,
             image_url: p.image_url || "",
-            barcode: cleaned,
-          };
+            barcode: cleaned };
         }
       }
     } catch (_) { /* ignore */ }
@@ -55,15 +51,11 @@ serve(async (req) => {
               { role: "system", content: "You are a barcode/QR lookup assistant. Given a code, identify what it most likely refers to (product, URL, contact, plain text). Provide best guess and where the user could verify (Amazon, Google, Open Food Facts)." },
               { role: "user", content: `Code: ${cleaned}` },
             ],
-            max_completion_tokens: 600,
-          }),
-        });
+            max_completion_tokens: 600 }) });
         const j = await aiRes.json();
-        product = {
-          source: "ai-guess",
+        product = { source: "ai-guess",
           ai_result: j?.choices?.[0]?.message?.content || "No information found",
-          barcode: cleaned,
-        };
+          barcode: cleaned };
       } else {
         product = { source: "none", barcode: cleaned, message: "Product not found in Open Food Facts and AI fallback unavailable." };
       }

@@ -51,9 +51,7 @@ export const BrandTribes = () => {
       // Leave current tribe if any
       if (myTribe) await supabase.from("brand_tribe_members").delete().eq("user_id", user.id);
 
-      const { error } = await supabase.from("brand_tribe_members").insert({
-        tribe_id: tribe.id, user_id: user.id, rank: "recruit",
-      });
+      const { error } = await supabase.from("brand_tribe_members").insert({ tribe_id: tribe.id, user_id: user.id, rank: "recruit" });
       if (error) throw error;
 
       await supabase.from("brand_tribes").update({ member_count: tribe.member_count + 1 }).eq("id", tribe.id);

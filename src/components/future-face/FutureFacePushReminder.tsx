@@ -27,8 +27,7 @@ export default function FutureFacePushReminder() {
   }, []);
 
   // Fire while app open
-  useEffect(() => {
-    if (!enabled || perm !== "granted") return;
+  useEffect(() => { if (!enabled || perm !== "granted") return;
     const id = setInterval(() => {
       const now = new Date();
       const lastShown = localStorage.getItem(KEY + ":lastShown");
@@ -36,8 +35,7 @@ export default function FutureFacePushReminder() {
       if (now.getHours() === hour && lastShown !== todayKey) {
         new Notification("Future Face — Daily Selfie 📸", {
           body: "Time to capture today's selfie and update your skin score!",
-          icon: "/favicon.ico",
-        });
+          icon: "/favicon.ico" });
         localStorage.setItem(KEY + ":lastShown", todayKey);
       }
     }, 60_000);

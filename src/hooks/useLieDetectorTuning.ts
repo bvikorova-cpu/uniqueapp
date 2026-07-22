@@ -3,13 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 // All lie-detector-* are routed through the consolidated `lie-detector-ai` function.
-const ROUTE_MAP: Record<string, string> = {
-  "lie-detector-coach": "coach",
+const ROUTE_MAP: Record<string, string> = { "lie-detector-coach": "coach",
   "lie-detector-multi-person": "multi-person",
   "lie-detector-deepfake": "deepfake",
   "lie-detector-daily-challenge": "daily-challenge",
-  "lie-detector-verify-report": "verify-report",
-};
+  "lie-detector-verify-report": "verify-report" };
 async function invoke<T = any>(name: string, body: Record<string, any>): Promise<T> {
   const action = ROUTE_MAP[name];
   // Router action MUST win over body.action. Sub-actions (e.g. daily-challenge get/submit)
@@ -37,8 +35,7 @@ export function useLieCoach() {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       toast.success("Coach analysis ready");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 // ============== MULTI-PERSON ==============
@@ -52,8 +49,7 @@ export function useMultiPersonProfile() {
       qc.invalidateQueries({ queryKey: ["lie-relationship-maps"] });
       toast.success("Relationship map generated");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 export function useRelationshipMaps(limit = 5) {
@@ -65,8 +61,7 @@ export function useRelationshipMaps(limit = 5) {
       const { data } = await supabase.from("lie_relationship_maps").select("*")
         .eq("user_id", user.id).order("created_at", { ascending: false }).limit(limit);
       return data || [];
-    },
-  });
+    } });
 }
 
 // ============== DEEPFAKE ==============
@@ -79,8 +74,7 @@ export function useDeepfakeCheck() {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       toast.success("Deepfake check complete");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 // ============== DAILY CHALLENGE ==============
@@ -88,8 +82,7 @@ export function useDailyChallenge() {
   return useQuery({
     queryKey: ["lie-daily-challenge"],
     queryFn: () => invoke("lie-detector-daily-challenge", { action: "get" }),
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 }
 
 export function useSubmitChallenge() {
@@ -101,8 +94,7 @@ export function useSubmitChallenge() {
       qc.invalidateQueries({ queryKey: ["lie-daily-challenge"] });
       qc.invalidateQueries({ queryKey: ["lie-leaderboard"] });
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 export function useLieLeaderboard(limit = 20) {
@@ -112,8 +104,7 @@ export function useLieLeaderboard(limit = 20) {
       const { data } = await supabase.from("lie_leaderboard").select("*")
         .order("total_points", { ascending: false }).limit(limit);
       return data || [];
-    },
-  });
+    } });
 }
 
 // ============== REPORT VERIFICATION ==============
@@ -121,8 +112,7 @@ export function useRegisterVerification() {
   return useMutation({
     mutationFn: async (vars: { report_id?: string; title: string; summary?: string; truthfulness_score?: number }) =>
       invoke("lie-detector-verify-report", vars),
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 // ============== INTERROGATION MODE PREF ==============
@@ -136,8 +126,7 @@ export function useInterrogationMode() {
       const { data } = await supabase.from("lie_detector_preferences")
         .select("*").eq("user_id", user.id).maybeSingle();
       return data || { interrogation_mode: false };
-    },
-  });
+    } });
   const toggle = useMutation({
     mutationFn: async (next: boolean) => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -152,7 +141,6 @@ export function useInterrogationMode() {
       return next;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["lie-detector-prefs"] }),
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
   return { ...q, toggle };
 }

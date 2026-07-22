@@ -41,8 +41,7 @@ export const GenerateView = ({ onCreditsUsed }: GenerateViewProps) => {
     setEnhancing(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-image-tools", {
-        body: { action: "prompt_enhance", prompt },
-      });
+        body: { action: "prompt_enhance", prompt } });
       if (error) throw error;
       if (data?.enhanced) {
         setPrompt(data.enhanced);
@@ -59,8 +58,7 @@ export const GenerateView = ({ onCreditsUsed }: GenerateViewProps) => {
     try {
       const seedNum = seed ? Number(seed) : undefined;
       const { data, error } = await supabase.functions.invoke('ai-image-tools', {
-        body: { action: 'generate', prompt, negativePrompt, aspectRatio, seed: seedNum, model },
-      });
+        body: { action: 'generate', prompt, negativePrompt, aspectRatio, seed: seedNum, model } });
       if (error) throw error;
       if (data.error) { toast.error(data.error); return; }
       setGeneratedImage(data.imageUrl);

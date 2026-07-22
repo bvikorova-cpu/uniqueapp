@@ -18,37 +18,29 @@ export const usePostMood = (postId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
-  const addMood = useMutation({
-    mutationFn: async ({
+  const addMood = useMutation({ mutationFn: async ({
       postId,
       mood,
-      emoji,
-    }: {
+      emoji }: {
       postId: string;
       mood: string;
       emoji?: string;
     }) => {
-      const { error } = await supabase.from("post_moods").insert({
-        post_id: postId,
+      const { error } = await supabase.from("post_moods").insert({ post_id: postId,
         mood,
-        emoji,
-      });
+        emoji });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-mood"] });
-    },
-  });
+    } });
 
-  return {
-    mood,
+  return { mood,
     isLoading,
-    addMood: addMood.mutate,
-  };
+    addMood: addMood.mutate };
 };
 
 export const MOOD_OPTIONS = [

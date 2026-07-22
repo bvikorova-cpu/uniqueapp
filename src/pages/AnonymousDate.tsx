@@ -45,42 +45,34 @@ type MatchFilters = {
 };
 
 const DATING_TOOLS = [
-  {
-    id: "find",
+  { id: "find",
     title: "Find New Match",
     description: "Get matched with someone who shares your interests and personality",
     icon: Search,
     credits: 5,
     gradient: "bg-gradient-to-r from-pink-500 to-rose-500",
-    features: ["Interest-based matching", "Anonymous profiles", "7-day chat period", "Personality focus"],
-  },
-  {
-    id: "matches",
+    features: ["Interest-based matching", "Anonymous profiles", "7-day chat period", "Personality focus"] },
+  { id: "matches",
     title: "Active Matches",
     description: "Continue conversations with your current anonymous matches",
     icon: MessageCircle,
     credits: "1-3" as any,
     gradient: "bg-gradient-to-r from-primary to-accent",
-    features: ["Text messages (1 credit)", "Voice messages (3 credits)", "Real-time chat", "Countdown timer"],
-  },
-  {
-    id: "credits",
+    features: ["Text messages (1 credit)", "Voice messages (3 credits)", "Real-time chat", "Countdown timer"] },
+  { id: "credits",
     title: "Credit Store",
     description: "Purchase credits to unlock premium dating features",
     icon: CreditCard,
     credits: "€5+" as any,
     gradient: "bg-gradient-to-r from-amber-500 to-orange-500",
-    features: ["4 tier packages", "Instant delivery", "Secure Stripe payment", "Volume discounts"],
-  },
-  {
-    id: "profile",
+    features: ["4 tier packages", "Instant delivery", "Secure Stripe payment", "Volume discounts"] },
+  { id: "profile",
     title: "Edit Profile",
     description: "Update your anonymous identity and matching preferences",
     icon: UserPlus,
     credits: "Free" as any,
     gradient: "bg-gradient-to-r from-emerald-500 to-teal-500",
-    features: ["Update interests", "Change personality traits", "Edit preferences", "Manage visibility"],
-  },
+    features: ["Update interests", "Change personality traits", "Edit preferences", "Manage visibility"] },
 ];
 
 const HOW_IT_WORKS = [
@@ -115,16 +107,14 @@ export default function AnonymousDate() {
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
   }, []);
 
-  const {
-    credits,
+  const { credits,
     loading,
     activeMatches,
     fetchCredits,
     fetchActiveMatches,
     purchaseCredits,
     findMatch,
-    previewMatches,
-  } = useAnonymousDate();
+    previewMatches } = useAnonymousDate();
 
   useEffect(() => {
     const adultWarningAccepted = sessionStorage.getItem("adult_warning_accepted");
@@ -261,25 +251,21 @@ export default function AnonymousDate() {
     await loadCandidates(filters);
   };
 
-  const handleSelectCandidate = async (userId: string) => {
-    if (credits < 5) {
+  const handleSelectCandidate = async (userId: string) => { if (credits < 5) {
       toast({
         title: "Not enough credits",
         description: "Locking in a match costs 5 credits. Visit the Credit Store to top up.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setActiveView("credits");
       return;
     }
     setMatchingUserId(userId);
-    try {
-      const result = await findMatch(lastFilters, userId);
+    try { const result = await findMatch(lastFilters, userId);
       if (result?.match) {
         setMatchCelebration({
           matchId: result.match.id,
           partnerName: result.partner?.anonymous_name ?? "Match",
-          location: result.partner?.location ?? null,
-        });
+          location: result.partner?.location ?? null });
       } else {
         // Candidate became unavailable — refresh the list
         await loadCandidates(lastFilters);

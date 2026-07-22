@@ -47,9 +47,7 @@ export const AITherapistChat = () => {
       const { data, error } = await supabase.functions.invoke("ai-chat", {
         body: {
           messages: [...messages, userMsg].map(m => ({ role: m.role, content: m.content })),
-          systemPrompt: "You are a compassionate AI therapist specializing in phobias and anxiety disorders. Use evidence-based techniques like CBT, exposure therapy, and mindfulness. Be empathetic, professional, and helpful. Provide actionable advice and coping strategies. Always remind users to seek professional help for severe conditions. Keep responses concise (2-3 paragraphs max).",
-        },
-      });
+          systemPrompt: "You are a compassionate AI therapist specializing in phobias and anxiety disorders. Use evidence-based techniques like CBT, exposure therapy, and mindfulness. Be empathetic, professional, and helpful. Provide actionable advice and coping strategies. Always remind users to seek professional help for severe conditions. Keep responses concise (2-3 paragraphs max)." } });
 
       if (error) throw error;
       const reply = data?.response || data?.content || data?.message || "I'm here to help. Could you tell me more about your fear?";

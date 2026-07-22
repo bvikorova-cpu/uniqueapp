@@ -40,13 +40,11 @@ export const AkashicRecords = () => {
         .order("created_at", { ascending: false })
         .limit(10);
 
-      if (data) {
-        setEntries(data.map((d: any) => ({
+      if (data) { setEntries(data.map((d: any) => ({
           question: (d.metadata as any)?.question || "",
           answer: (d.metadata as any)?.answer || "",
           category: (d.metadata as any)?.category || "general",
-          created_at: d.created_at,
-        })));
+          created_at: d.created_at })));
       }
     } catch (error) {
       console.error("Error:", error);
@@ -67,26 +65,22 @@ export const AkashicRecords = () => {
 
       // Use the reincarnation plan edge function to generate akashic response
       const { data, error } = await supabase.functions.invoke("create-reincarnation-plan", {
-        body: { planName: "Akashic Query", goalDescription: question },
-      });
+        body: { planName: "Akashic Query", goalDescription: question } });
       if (error) throw error;
 
       const answer = data.plan?.soul_missions?.[0]?.mission || 
         "The Akashic Records reveal that your answer lies within your own spiritual growth journey. Meditate on this question and the universe will guide you.";
 
-      const newEntry: AkashicEntry = {
-        question: question.trim(),
+      const newEntry: AkashicEntry = { question: question.trim(),
         answer,
         category: "spiritual guidance",
-        created_at: new Date().toISOString(),
-      };
+        created_at: new Date().toISOString() };
 
       // Save to activity feed
       await supabase.from("activity_feed").insert({
         user_id: session.user.id,
         activity_type: "akashic_query",
-        metadata: { question: newEntry.question, answer: newEntry.answer, category: newEntry.category },
-      });
+        metadata: { question: newEntry.question, answer: newEntry.answer, category: newEntry.category } });
 
       setEntries((prev) => [newEntry, ...prev]);
       setQuestion("");

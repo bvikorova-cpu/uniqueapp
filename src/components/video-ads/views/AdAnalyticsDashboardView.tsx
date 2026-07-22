@@ -24,8 +24,7 @@ export const AdAnalyticsDashboardView = ({ onBack }: { onBack: () => void }) => 
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("video-ad-tools", {
-        body: { action: "ad_analytics", product, campaignData, budget, platforms },
-      });
+        body: { action: "ad_analytics", product, campaignData, budget, platforms } });
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setResult(data.result);

@@ -91,14 +91,12 @@ export default function StoryGames() {
               .eq("user_id", userId)
               .eq("game_id", gameId)
               .maybeSingle();
-            await supabase.from("kids_game_progress").upsert({
-              user_id: userId,
+            await supabase.from("kids_game_progress").upsert({ user_id: userId,
               game_id: gameId,
               best_score: newBest,
               total_plays: (existing?.total_plays || 0) + 1,
               total_xp: (existing?.total_xp || 0) + gameScore,
-              last_played_at: new Date().toISOString(),
-            }, { onConflict: "user_id,game_id" });
+              last_played_at: new Date().toISOString() }, { onConflict: "user_id,game_id" });
           } catch (e) {
             console.error("Failed to save game progress:", e);
             toast.error("Couldn't save your score");

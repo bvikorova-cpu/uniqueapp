@@ -74,9 +74,7 @@ export const VoiceNoteRecorder = ({ userId, matchId, onSent }: Props) => {
       const { error: upErr } = await supabase.storage.from("media").upload(path, blob, { contentType: blob.type });
       if (upErr) throw upErr;
       const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(path);
-      const { error: dbErr } = await supabase.from("dating_messages").insert({
-        match_id: matchId, sender_id: userId, content: "🎙️ Voice note", voice_url: publicUrl, voice_duration: duration,
-      });
+      const { error: dbErr } = await supabase.from("dating_messages").insert({ match_id: matchId, sender_id: userId, content: "🎙️ Voice note", voice_url: publicUrl, voice_duration: duration });
       if (dbErr) throw dbErr;
       onSent();
     } catch (e: any) {

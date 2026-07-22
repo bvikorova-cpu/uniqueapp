@@ -27,8 +27,7 @@ export const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment" }, // Use back camera on mobile
-        audio: false,
-      });
+        audio: false });
       
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;

@@ -48,8 +48,7 @@ const defaultRecipe: Recipe = {
     { id: "5", name: "Black pepper", amount: "to taste", checked: false, category: "Spices" },
     { id: "6", name: "Salt", amount: "to taste", checked: false, category: "Spices" },
     { id: "7", name: "Garlic", amount: "2 cloves", checked: false, category: "Vegetables" },
-  ],
-};
+  ] };
 
 export const ShoppingList = () => {
   const [recipe, setRecipe] = useState(defaultRecipe);
@@ -64,12 +63,10 @@ export const ShoppingList = () => {
       ...recipe,
       ingredients: recipe.ingredients.map(i =>
         i.id === id ? { ...i, checked: !i.checked } : i
-      ),
-    });
+      ) });
   };
 
-  const addItem = () => {
-    if (!newItem.trim()) return;
+  const addItem = () => { if (!newItem.trim()) return;
     setRecipe({
       ...recipe,
       ingredients: [
@@ -79,18 +76,14 @@ export const ShoppingList = () => {
           name: newItem,
           amount: "",
           checked: false,
-          category: "Other",
-        },
-      ],
-    });
+          category: "Other" },
+      ] });
     setNewItem("");
   };
 
-  const removeItem = (id: string) => {
-    setRecipe({
+  const removeItem = (id: string) => { setRecipe({
       ...recipe,
-      ingredients: recipe.ingredients.filter(i => i.id !== id),
-    });
+      ingredients: recipe.ingredients.filter(i => i.id !== id) });
   };
 
   // Group by category

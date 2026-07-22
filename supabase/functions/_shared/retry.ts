@@ -8,13 +8,11 @@ interface RetryOptions {
   retryCondition?: (error: unknown) => boolean;
 }
 
-const defaultOptions: Required<RetryOptions> = {
-  maxRetries: 3,
+const defaultOptions: Required<RetryOptions> = { maxRetries: 3,
   initialDelayMs: 100,
   maxDelayMs: 5000,
   backoffMultiplier: 2,
-  retryCondition: () => true,
-};
+  retryCondition: () => true };
 
 /**
  * Sleep for a given number of milliseconds
@@ -107,10 +105,8 @@ export async function fetchWithRetry(
       
       return response;
     },
-    {
-      ...retryOptions,
-      retryCondition: isRetryableError,
-    }
+    { ...retryOptions,
+      retryCondition: isRetryableError }
   );
 }
 
@@ -183,14 +179,12 @@ const circuitBreakers = new Map<string, CircuitBreaker>();
 export function getCircuitBreaker(
   name: string,
   options: CircuitBreakerOptions = {}
-): CircuitBreaker {
-  if (!circuitBreakers.has(name)) {
+): CircuitBreaker { if (!circuitBreakers.has(name)) {
     circuitBreakers.set(
       name,
       new CircuitBreaker(name, {
         failureThreshold: options.failureThreshold ?? 5,
-        resetTimeoutMs: options.resetTimeoutMs ?? 30000,
-      })
+        resetTimeoutMs: options.resetTimeoutMs ?? 30000 })
     );
   }
   return circuitBreakers.get(name)!;

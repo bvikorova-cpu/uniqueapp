@@ -32,8 +32,7 @@ export const ForumPolls = ({ onBack }: ForumPollsProps) => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: myVotes = [] } = useQuery({
     queryKey: ["forum-poll-votes"],
@@ -46,8 +45,7 @@ export const ForumPolls = ({ onBack }: ForumPollsProps) => {
         .eq("user_id", user.id);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: allVotes = [] } = useQuery({
     queryKey: ["forum-all-poll-votes"],
@@ -55,8 +53,7 @@ export const ForumPolls = ({ onBack }: ForumPollsProps) => {
       const { data, error } = await supabase.from("forum_poll_votes").select("*");
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const createPoll = useMutation({
     mutationFn: async () => {
@@ -69,8 +66,7 @@ export const ForumPolls = ({ onBack }: ForumPollsProps) => {
         user_id: user.id,
         post_id: null as any, // standalone poll
         question,
-        options: validOptions.map(o => ({ text: o, votes: 0 })),
-      });
+        options: validOptions.map(o => ({ text: o, votes: 0 })) });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -80,19 +76,16 @@ export const ForumPolls = ({ onBack }: ForumPollsProps) => {
       setOptions(["", "", ""]);
       toast({ title: "Poll created!" });
     },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   const voteMutation = useMutation({
     mutationFn: async ({ pollId, optionIndex }: { pollId: string; optionIndex: number }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
 
-      const { error } = await supabase.from("forum_poll_votes").insert({
-        poll_id: pollId,
+      const { error } = await supabase.from("forum_poll_votes").insert({ poll_id: pollId,
         user_id: user.id,
-        option_index: optionIndex,
-      });
+        option_index: optionIndex });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -100,8 +93,7 @@ export const ForumPolls = ({ onBack }: ForumPollsProps) => {
       queryClient.invalidateQueries({ queryKey: ["forum-all-poll-votes"] });
       toast({ title: "Vote recorded!" });
     },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   const hasVoted = (pollId: string) => myVotes.some((v: any) => v.poll_id === pollId);
 

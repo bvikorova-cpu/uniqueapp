@@ -28,16 +28,14 @@ export const MemoryMatch = ({ onComplete, onBack }: MemoryMatchProps) => {
     initializeGame();
   }, []);
 
-  const initializeGame = () => {
-    const gameEmojis = [...emojis, ...emojis];
+  const initializeGame = () => { const gameEmojis = [...emojis, ...emojis];
     const shuffled = gameEmojis
       .sort(() => Math.random() - 0.5)
       .map((emoji, index) => ({
         id: index,
         emoji,
         isFlipped: false,
-        isMatched: false,
-      }));
+        isMatched: false }));
     setCards(shuffled);
     setFlippedIndices([]);
     setMoves(0);

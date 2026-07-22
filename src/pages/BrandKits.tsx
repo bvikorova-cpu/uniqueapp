@@ -42,9 +42,7 @@ export default function BrandKits() {
     try {
       const { data, error } = await supabase.functions.invoke("ai-text-generator", {
         body: {
-          prompt: `You are a senior brand designer. Produce concrete, usable brand deliverables. Use clear bullet lists and HEX codes where relevant.\n\nDeliverable: ${title}. Brand: "${brandName}". Pitch: ${pitch}`,
-        },
-      });
+          prompt: `You are a senior brand designer. Produce concrete, usable brand deliverables. Use clear bullet lists and HEX codes where relevant.\n\nDeliverable: ${title}. Brand: "${brandName}". Pitch: ${pitch}` } });
       if (error) throw error;
       setResult(data?.text ?? data?.result ?? "No output produced.");
     } catch (e: any) {

@@ -138,8 +138,7 @@ prewarmHotRoutes();
 import NotFound from "./pages/NotFound";
 
 // All other pages - lazy loaded
-import {
-  ResetPassword,
+import { ResetPassword,
   AuthCallback,
   Profile,
   EditProfile,
@@ -528,8 +527,7 @@ import {
   Numerology,
   ParallelUniverse,
   MemoryAuctions,
-  BrandKits,
-} from "@/routes/lazyPages";
+  BrandKits } from "@/routes/lazyPages";
 
 const AdminRefunds = lazy(() => import("@/pages/admin/AdminRefunds"));
 // Education vertical
@@ -633,17 +631,13 @@ const HealthyChallenge = lazy(() => import("@/pages/HealthyChallenge"));
 const HealthyChallengeHistory = lazy(() => import("@/pages/HealthyChallengeHistory"));
 const EcoChallengeHistory = lazy(() => import("@/pages/EcoChallengeHistory"));
 
-const queryClient = new QueryClient({
-  defaultOptions: {
+const queryClient = new QueryClient({ defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5,
       gcTime: 1000 * 60 * 30,
       retry: 1,
       refetchOnWindowFocus: false,
-      refetchOnMount: false,
-    },
-  },
-});
+      refetchOnMount: false } } });
 
 const App = () => {
   useEffect(() => {

@@ -36,14 +36,11 @@ export default function MasterChefGlobalMap() {
         supabase.from("masterchef_competition_entries").select("user_id"),
       ]);
       const chefs = new Set((chefsRes.data ?? []).map((r: any) => r.user_id)).size;
-      return {
-        chefs,
+      return { chefs,
         competitions: comps.count ?? 0,
         entries: entries.count ?? 0,
-        recipes: recipes.count ?? 0,
-      };
-    },
-  });
+        recipes: recipes.count ?? 0 };
+    } });
 
   return (
     <>

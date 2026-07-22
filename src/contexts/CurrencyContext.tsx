@@ -45,12 +45,11 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <CurrencyContext.Provider
-      value={{
+      value={ {
         currency,
         setCurrency,
         format: (v: number) => formatPrice(v, currency),
-        currencies: CURRENCIES,
-      }}
+        currencies: CURRENCIES }}
     >
       {children}
     </CurrencyContext.Provider>
@@ -65,8 +64,7 @@ export const useCurrency = () => {
       currency: CURRENCIES[0],
       setCurrency: () => {},
       format: (v: number) => formatPrice(v, CURRENCIES[0]),
-      currencies: CURRENCIES,
-    } as CurrencyContextValue;
+      currencies: CURRENCIES } as CurrencyContextValue;
   }
   return ctx;
 };

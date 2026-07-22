@@ -51,9 +51,7 @@ export function WeatherSystem({ onBack }: { onBack: () => void }) {
 
   useEffect(() => {
     if (selectedWeather.id === "rain" || selectedWeather.id === "storm") {
-      setAnimatedDrops(Array.from({ length: 30 }, (_, i) => ({
-        id: i, x: Math.random() * 100, delay: Math.random() * 2,
-      })));
+      setAnimatedDrops(Array.from({ length: 30 }, (_, i) => ({ id: i, x: Math.random() * 100, delay: Math.random() * 2 })));
     } else {
       setAnimatedDrops([]);
     }
@@ -87,9 +85,8 @@ export function WeatherSystem({ onBack }: { onBack: () => void }) {
         ))}
 
         {/* Scanlines */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,229,255,0.015) 3px, rgba(0,229,255,0.015) 6px)',
-        }} />
+        <div className="absolute inset-0 pointer-events-none" style={ {
+          background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,229,255,0.015) 3px, rgba(0,229,255,0.015) 6px)' }} />
 
         <div className="relative z-10 flex items-center gap-6">
           <div className="relative">

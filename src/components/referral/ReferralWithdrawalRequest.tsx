@@ -8,13 +8,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, DollarSign, CheckCircle, XCircle, Clock } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const ReferralWithdrawalRequest = () => {
@@ -33,8 +31,7 @@ export const ReferralWithdrawalRequest = () => {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -47,8 +44,7 @@ export const ReferralWithdrawalRequest = () => {
         .single();
       return data;
     },
-    enabled: !!user?.id,
-  });
+    enabled: !!user?.id });
 
   const { data: earnings } = useQuery({
     queryKey: ["referral-earnings", user?.id],
@@ -65,8 +61,7 @@ export const ReferralWithdrawalRequest = () => {
       
       return { availableBalance, totalEarnings };
     },
-    enabled: !!user?.id,
-  });
+    enabled: !!user?.id });
 
   const { data: requests } = useQuery({
     queryKey: ["referral-withdrawal-requests", user?.id],
@@ -79,8 +74,7 @@ export const ReferralWithdrawalRequest = () => {
         .order("created_at", { ascending: false });
       return data || [];
     },
-    enabled: !!user?.id,
-  });
+    enabled: !!user?.id });
 
   const createRequest = useMutation({
     mutationFn: async () => {
@@ -97,42 +91,33 @@ export const ReferralWithdrawalRequest = () => {
 
       const paymentDetails = paymentMethod === "paypal" 
         ? { paypal_email: paypalEmail }
-        : {
-            account_number: accountNumber,
+        : { account_number: accountNumber,
             account_name: accountName,
             bank_name: bankName,
-            swift_code: swiftCode,
-          };
+            swift_code: swiftCode };
 
       const { data, error } = await supabase
         .from("referral_withdrawal_requests")
-        .insert({
-          referrer_id: user.id,
+        .insert({ referrer_id: user.id,
           amount: requestAmount,
           payment_method: paymentMethod,
-          payment_details: paymentDetails,
-        })
+          payment_details: paymentDetails })
         .select()
         .single();
 
       if (error) throw error;
 
       // Notify admins
-      await supabase.functions.invoke("notify-admin-referral-withdrawal", {
-        body: {
+      await supabase.functions.invoke("notify-admin-referral-withdrawal", { body: {
           requestId: data.id,
           referrerName: profile?.full_name || "User",
-          amount: requestAmount,
-        },
-      });
+          amount: requestAmount } });
 
       return data;
     },
-    onSuccess: () => {
-      toast({
+    onSuccess: () => { toast({
         title: "Success",
-        description: "Withdrawal request submitted successfully",
-      });
+        description: "Withdrawal request submitted successfully" });
       setAmount("");
       setAccountNumber("");
       setAccountName("");
@@ -142,14 +127,11 @@ export const ReferralWithdrawalRequest = () => {
       queryClient.invalidateQueries({ queryKey: ["referral-withdrawal-requests"] });
       queryClient.invalidateQueries({ queryKey: ["referral-earnings"] });
     },
-    onError: (error: Error) => {
-      toast({
+    onError: (error: Error) => { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
   const getStatusIcon = (status: string) => {
     switch (status) {

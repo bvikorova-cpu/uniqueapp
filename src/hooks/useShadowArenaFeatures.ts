@@ -19,8 +19,7 @@ export const useCurseWheel = () => {
         .limit(1)
         .maybeSingle();
       return data;
-    },
-  });
+    } });
 
   const spin = useMutation({
     mutationFn: async () => {
@@ -34,8 +33,7 @@ export const useCurseWheel = () => {
       qc.invalidateQueries({ queryKey: ["curse-wheel-last"] });
       qc.invalidateQueries({ queryKey: ["shadow-arena-credits"] });
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   return { lastSpin, spin, hasSpunToday: !!lastSpin };
 };
@@ -53,20 +51,16 @@ export const useBattleReactions = (battleId: string | undefined) => {
       return data || [];
     },
     enabled: !!battleId,
-    refetchInterval: 3000,
-  });
+    refetchInterval: 3000 });
 
   const send = useMutation({
     mutationFn: async (emoji: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !battleId) throw new Error("Not authenticated");
-      const { error } = await supabase.from("shadow_battle_reactions").insert({
-        battle_id: battleId, user_id: user.id, emoji,
-      });
+      const { error } = await supabase.from("shadow_battle_reactions").insert({ battle_id: battleId, user_id: user.id, emoji });
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["battle-reactions", battleId] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["battle-reactions", battleId] }) });
 
   const counts = (reactions || []).reduce<Record<string, number>>((acc, r) => {
     acc[r.emoji] = (acc[r.emoji] || 0) + 1;
@@ -87,35 +81,28 @@ export const useStoryChains = () => {
         .order("created_at", { ascending: false })
         .limit(20);
       return data || [];
-    },
-  });
+    } });
 
   const createChain = useMutation({
     mutationFn: async (vars: { title: string; theme: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
-      const { data, error } = await supabase.from("shadow_story_chains").insert({
-        title: vars.title, theme: vars.theme, starter_user_id: user.id,
-      }).select().single();
+      const { data, error } = await supabase.from("shadow_story_chains").insert({ title: vars.title, theme: vars.theme, starter_user_id: user.id }).select().single();
       if (error) throw error;
       return data;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["story-chains"] }); toast.success("Chain started!"); },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const addSegment = useMutation({
     mutationFn: async (vars: { chainId: string; content: string; order: number }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
-      const { error } = await supabase.from("shadow_story_chain_segments").insert({
-        chain_id: vars.chainId, user_id: user.id, content: vars.content, segment_order: vars.order,
-      });
+      const { error } = await supabase.from("shadow_story_chain_segments").insert({ chain_id: vars.chainId, user_id: user.id, content: vars.content, segment_order: vars.order });
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["story-chains"] }); toast.success("Segment added"); },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   return { chains, isLoading, createChain, addSegment };
 };
@@ -129,8 +116,7 @@ export const useVoiceClone = () => {
       if (!user) return null;
       const { data } = await supabase.from("shadow_voice_clones").select("*").eq("user_id", user.id).maybeSingle();
       return data;
-    },
-  });
+    } });
 
   const cloneVoice = useMutation({
     mutationFn: async (vars: { audioBase64: string; voiceName: string }) => {
@@ -144,8 +130,7 @@ export const useVoiceClone = () => {
       qc.invalidateQueries({ queryKey: ["shadow-arena-credits"] });
       toast.success("Your voice has been cloned!");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   return { clone, cloneVoice };
 };
@@ -158,8 +143,7 @@ export const useCursedAchievements = (userId?: string) => {
       if (!target) return [];
       const { data } = await supabase.from("shadow_cursed_achievements").select("*").eq("user_id", target).order("unlocked_at", { ascending: false });
       return data || [];
-    },
-  });
+    } });
 };
 
 export const useHorrorReels = () => {
@@ -174,8 +158,7 @@ export const useHorrorReels = () => {
         .order("created_at", { ascending: false })
         .limit(20);
       return data || [];
-    },
-  });
+    } });
 
   const generate = useMutation({
     mutationFn: async (vars: { prompt: string; storyId?: string; title?: string }) => {
@@ -189,8 +172,7 @@ export const useHorrorReels = () => {
       qc.invalidateQueries({ queryKey: ["shadow-arena-credits"] });
       toast.success("Horror reel generated!");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   return { reels, isLoading, generate };
 };
@@ -204,8 +186,7 @@ export const usePushNotifications = () => {
       if (!user) return null;
       const { data } = await supabase.from("shadow_push_subscriptions").select("*").eq("user_id", user.id).maybeSingle();
       return data;
-    },
-  });
+    } });
 
   const subscribe = useMutation({
     mutationFn: async () => {
@@ -224,13 +205,11 @@ export const usePushNotifications = () => {
         endpoint: `local://${user.id}`,
         p256dh_key: "browser-managed",
         auth_key: "browser-managed",
-        enabled_categories: ["battles", "wins", "patron"],
-      });
+        enabled_categories: ["battles", "wins", "patron"] });
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["push-sub"] }); toast.success("Spooky alerts enabled 👻"); },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   return { subscription, subscribe, enabled: !!subscription };
 };
@@ -244,6 +223,5 @@ export const usePatronCheckout = () => {
       if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
       return data;
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 };

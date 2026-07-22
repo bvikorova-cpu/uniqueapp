@@ -54,9 +54,7 @@ Format your response EXACTLY like this:
 SITUATION: [vivid description of what you see and hear]
 CHOICE_A: [first option]
 CHOICE_B: [second option]  
-CHOICE_C: [third option]`,
-        },
-      });
+CHOICE_C: [third option]` } });
       if (error) throw error;
       const text = data?.message || data?.analysis || "";
       parseResponse(text);
@@ -103,9 +101,7 @@ Format:
 SITUATION: [what happens next]
 CHOICE_A: [first option]
 CHOICE_B: [second option]
-CHOICE_C: [third option]`}`,
-        },
-      });
+CHOICE_C: [third option]`}` } });
       if (error) throw error;
       const text = data?.message || data?.analysis || "";
       
@@ -123,16 +119,14 @@ CHOICE_C: [third option]`}`,
     }
   };
 
-  const parseResponse = (text: string) => {
-    const situationMatch = text.match(/SITUATION:\s*([\s\S]*?)(?=CHOICE_A:|$)/);
+  const parseResponse = (text: string) => { const situationMatch = text.match(/SITUATION:\s*([\s\S]*?)(?=CHOICE_A:|$)/);
     const choiceA = text.match(/CHOICE_A:\s*(.*)/);
     const choiceB = text.match(/CHOICE_B:\s*(.*)/);
     const choiceC = text.match(/CHOICE_C:\s*(.*)/);
 
     setStory({
       text: situationMatch?.[1]?.trim() || text,
-      choices: [choiceA?.[1]?.trim(), choiceB?.[1]?.trim(), choiceC?.[1]?.trim()].filter(Boolean) as string[],
-    });
+      choices: [choiceA?.[1]?.trim(), choiceB?.[1]?.trim(), choiceC?.[1]?.trim()].filter(Boolean) as string[] });
   };
 
   const reset = () => {

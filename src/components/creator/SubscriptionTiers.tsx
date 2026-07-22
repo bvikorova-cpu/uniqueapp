@@ -47,12 +47,10 @@ export function SubscriptionTiers({ creatorId, tiers, currentTierId, onSubscribe
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Authentication Required",
           description: "Please sign in to subscribe",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
@@ -63,20 +61,16 @@ export function SubscriptionTiers({ creatorId, tiers, currentTierId, onSubscribe
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, '_blank');
+      if (data?.url) { window.open(data.url, '_blank');
         toast({
           title: "Redirecting to Checkout",
-          description: "Complete your payment to activate membership",
-        });
+          description: "Complete your payment to activate membership" });
       }
-    } catch (error) {
-      console.error('Error subscribing:', error);
+    } catch (error) { console.error('Error subscribing:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to start subscription. Please try again.",
-      });
+        description: "Failed to start subscription. Please try again." });
     } finally {
       setLoading(null);
     }
@@ -91,13 +85,11 @@ export function SubscriptionTiers({ creatorId, tiers, currentTierId, onSubscribe
       if (data?.url) {
         window.open(data.url, '_blank');
       }
-    } catch (error) {
-      console.error('Error opening portal:', error);
+    } catch (error) { console.error('Error opening portal:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to open subscription management.",
-      });
+        description: "Failed to open subscription management." });
     }
   };
 

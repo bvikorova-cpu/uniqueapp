@@ -46,8 +46,7 @@ export default function LuckyWheel() {
     if (balance !== null && balance < SPIN_COST) {
       toast.error("Not enough credits", {
         description: `You need at least ${SPIN_COST} CR. Top up in the AI Credits Store.`,
-        action: { label: "Top up", onClick: () => navigate("/ai-credits-store") },
-      });
+        action: { label: "Top up", onClick: () => navigate("/ai-credits-store") } });
       return;
     }
     setSpinning(true);
@@ -62,10 +61,8 @@ export default function LuckyWheel() {
       const r = data as unknown as (SpinResult & { error?: string });
       await new Promise((res) => setTimeout(res, 1800));
 
-      if (r?.error === "already_spun_today") {
-        toast.error("Come back tomorrow", {
-          description: "You've already spun the wheel today.",
-        });
+      if (r?.error === "already_spun_today") { toast.error("Come back tomorrow", {
+          description: "You've already spun the wheel today." });
         return;
       }
 
@@ -73,8 +70,7 @@ export default function LuckyWheel() {
       setBalance(r.balance_after);
       if (r.prize > 0) {
         toast.success(`You won ${r.prize} CR!`, {
-          description: `Net: ${r.net >= 0 ? "+" : ""}${r.net} CR · Balance: ${r.balance_after} CR`,
-        });
+          description: `Net: ${r.net >= 0 ? "+" : ""}${r.net} CR · Balance: ${r.balance_after} CR` });
       } else {
         toast(`No win this time — lost ${SPIN_COST} CR`);
       }
@@ -129,8 +125,7 @@ export default function LuckyWheel() {
                   hsl(var(--accent)) 180deg 240deg,
                   hsl(var(--primary)) 240deg 300deg,
                   hsl(var(--accent)) 300deg 360deg
-                )`,
-              }}
+                )` }}
             >
               <div className="absolute inset-8 rounded-full bg-background flex items-center justify-center">
                 <Sparkles className="h-12 w-12 text-primary" />

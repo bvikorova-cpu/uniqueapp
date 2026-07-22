@@ -47,7 +47,7 @@ export const AITravelPlanner = ({ onBack }: Props) => {
           <CardTitle className="flex items-center gap-2"><Brain className="w-6 h-6 text-primary" />AI Travel Planner<span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full ml-2">3 Credits</span></CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Input placeholder="Destination (e.g., Bali, Tokyo, Paris)" value={form.destination} onChange={e => setForm({...form, destination: e.target.value})} />
+          <Input placeholder="Destination (e.g., City, City, City)" value={form.destination} onChange={e => setForm({...form, destination: e.target.value})} />
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-sm text-muted-foreground">Duration (days)</label>

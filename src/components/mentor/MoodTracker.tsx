@@ -55,14 +55,12 @@ export function MoodTracker() {
     if (!user) return;
     setSaving(true);
     try {
-      const { error } = await supabase.from("mentor_moods").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("mentor_moods").insert({ user_id: user.id,
         mentor_area: area as any,
         mood_score: mood,
         energy_score: energy,
         stress_score: stress,
-        notes: notes || null,
-      });
+        notes: notes || null });
       if (error) throw error;
       toast({ title: "Mood Logged ✅", description: "+10 XP earned!" });
       setNotes("");
@@ -82,8 +80,7 @@ export function MoodTracker() {
     setLoadingInsight(true);
     try {
       const { data, error } = await supabase.functions.invoke("mentor-ai-tools", {
-        body: { action: "mood-insight" },
-      });
+        body: { action: "mood-insight" } });
       if (error) throw error;
       setInsight(data.insight);
     } catch {

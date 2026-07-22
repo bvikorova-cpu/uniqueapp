@@ -8,16 +8,12 @@ vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     auth: {
       getUser: () => getUserMock(),
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-    },
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }) },
     from: (t: string) => fromMock(t),
-    functions: { invoke: vi.fn() },
-  },
-}));
+    functions: { invoke: vi.fn() } } }));
 
 vi.mock("@/hooks/use-toast", () => ({
-  useToast: () => ({ toast: vi.fn() }),
-}));
+  useToast: () => ({ toast: vi.fn() }) }));
 
 import { useAnonymousDate } from "./useAnonymousDate";
 
@@ -25,36 +21,28 @@ const ME = "me-user-id";
 const PARTNER_A = "partner-a";
 const PARTNER_B = "partner-b";
 
-const profileA = {
-  user_id: PARTNER_A,
+const profileA = { user_id: PARTNER_A,
   anonymous_name: "Mystic Fox",
   age_range: "25-30",
   interests: ["yoga", "books"],
-  personality_traits: ["calm"],
-};
-const profileB = {
-  user_id: PARTNER_B,
+  personality_traits: ["calm"] };
+const profileB = { user_id: PARTNER_B,
   anonymous_name: "Silver Wolf",
   age_range: "30-35",
   interests: ["hiking", "music", "art"],
-  personality_traits: ["bold"],
-};
+  personality_traits: ["bold"] };
 
-const matchA = {
-  id: "match-a",
+const matchA = { id: "match-a",
   user1_id: ME,
   user2_id: PARTNER_A,
   status: "active",
-  expires_at: new Date(Date.now() + 5 * 86400000).toISOString(),
-};
-const matchB = {
-  id: "match-b",
+  expires_at: new Date(Date.now() + 5 * 86400000).toISOString() };
+const matchB = { id: "match-b",
   user1_id: PARTNER_B, // I am user2 here
   user2_id: ME,
   status: "revealed",
   expires_at: null,
-  revealed_at: new Date().toISOString(),
-};
+  revealed_at: new Date().toISOString() };
 
 /** Build a mock implementation of supabase.from() that handles all
  * tables touched by useAnonymousDate's initial mount. */
@@ -67,28 +55,20 @@ function buildFromMock(opts: {
   const profiles = opts.profiles ?? [];
   const credits = opts.credits === undefined ? { credits_remaining: 0 } : opts.credits;
 
-  return (table: string) => {
-    if (table === "anonymous_dating_credits") {
+  return (table: string) => { if (table === "anonymous_dating_credits") {
       return {
         select: () => ({
           eq: () => ({
             maybeSingle: () =>
               Promise.resolve({
                 data: credits,
-                error: null,
-              }),
-          }),
-        }),
+                error: null }) }) }),
         insert: () => ({
           select: () => ({
             single: () =>
               Promise.resolve({
                 data: { credits_remaining: 0 },
-                error: null,
-              }),
-          }),
-        }),
-      };
+                error: null }) }) }) };
     }
 
     if (table === "anonymous_dating_matches") {
@@ -96,31 +76,21 @@ function buildFromMock(opts: {
         select: () => ({
           or: () => ({
             in: () => ({
-              order: () => Promise.resolve({ data: matches, error: null }),
-            }),
-          }),
-        }),
-      };
+              order: () => Promise.resolve({ data: matches, error: null }) }) }) }) };
     }
 
     if (table === "blocked_users") {
       return {
         select: () => ({
-          eq: () => Promise.resolve({ data: [], error: null }),
-        }),
-      };
+          eq: () => Promise.resolve({ data: [], error: null }) }) };
     }
 
-    if (table === "anonymous_dating_profiles") {
-      return {
+    if (table === "anonymous_dating_profiles") { return {
         select: () => ({
           in: (_col: string, ids: string[]) =>
             Promise.resolve({
               data: profiles.filter((p) => ids.includes(p.user_id)),
-              error: null,
-            }),
-        }),
-      };
+              error: null }) }) };
     }
 
     throw new Error(`Unexpected table: ${table}`);
@@ -134,12 +104,10 @@ describe("useAnonymousDate — partner profile enrichment (RLS-dependent UX)", (
     getUserMock.mockResolvedValue({ data: { user: { id: ME } } });
   });
 
-  it("enriches each match with the correct partner profile (different partners)", async () => {
-    fromMock.mockImplementation(
+  it("enriches each match with the correct partner profile (different partners)", async () => { fromMock.mockImplementation(
       buildFromMock({
         matches: [matchA, matchB],
-        profiles: [profileA, profileB],
-      })
+        profiles: [profileA, profileB] })
     );
 
     const { result } = renderHook(() => useAnonymousDate());
@@ -189,10 +157,8 @@ describe("useAnonymousDate — partner profile enrichment (RLS-dependent UX)", (
     // (e.g. partner changed their anonymous name + a brand-new match appeared).
     const updatedProfileA = { ...profileA, anonymous_name: "Mystic Fox v2" };
     fromMock.mockImplementation(
-      buildFromMock({
-        matches: [matchA, matchB],
-        profiles: [updatedProfileA, profileB],
-      })
+      buildFromMock({ matches: [matchA, matchB],
+        profiles: [updatedProfileA, profileB] })
     );
 
     const second = renderHook(() => useAnonymousDate());

@@ -40,10 +40,9 @@ export const CoffeeHero = () => {
           <Coffee className="h-5 w-5 text-amber-400" />
           <span
             className="text-2xl sm:text-4xl font-black tracking-tight text-white"
-            style={{
+            style={ {
               WebkitTextStroke: "1.5px rgba(180,120,60,0.5)",
-              textShadow: "0 0 30px rgba(180,120,60,0.4), 0 2px 10px rgba(0,0,0,0.6)",
-            }}
+              textShadow: "0 0 30px rgba(180,120,60,0.4), 0 2px 10px rgba(0,0,0,0.6)" }}
           >
             Coffee Community
           </span>

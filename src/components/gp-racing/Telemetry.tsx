@@ -19,8 +19,7 @@ interface TelemetryPoint {
 }
 
 function generateLapData(laps: number): TelemetryPoint[] {
-  return Array.from({ length: laps }, (_, i) => ({
-    lap: i + 1,
+  return Array.from({ length: laps }, (_, i) => ({ lap: i + 1,
     speed: 280 + Math.sin(i * 0.5) * 40 + Math.random() * 15,
     gForce: 2.5 + Math.sin(i * 0.7) * 1.5 + Math.random() * 0.5,
     throttle: 70 + Math.sin(i * 0.3) * 25 + Math.random() * 5,
@@ -28,8 +27,7 @@ function generateLapData(laps: number): TelemetryPoint[] {
     tireTemp: 85 + i * 0.8 + Math.random() * 5,
     engineTemp: 95 + Math.sin(i * 0.2) * 8 + Math.random() * 3,
     fuelLevel: 100 - i * (100 / laps) + Math.random() * 2,
-    kers: 60 + Math.sin(i * 0.6) * 30 + Math.random() * 10,
-  }));
+    kers: 60 + Math.sin(i * 0.6) * 30 + Math.random() * 10 }));
 }
 
 function MiniChart({ data, dataKey, color, label, unit, max }: {
@@ -64,8 +62,7 @@ function MiniChart({ data, dataKey, color, label, unit, max }: {
   );
 }
 
-export function Telemetry({ onBack }: { onBack: () => void }) {
-  const [data, setData] = useState<TelemetryPoint[]>(() => generateLapData(25));
+export function Telemetry({ onBack }: { onBack: () => void }) { const [data, setData] = useState<TelemetryPoint[]>(() => generateLapData(25));
   const [isLive, setIsLive] = useState(true);
   const [selectedCar, setSelectedCar] = useState("phantom-x1");
 
@@ -83,8 +80,7 @@ export function Telemetry({ onBack }: { onBack: () => void }) {
           tireTemp: Math.min(120, 85 + lastLap * 0.5 + Math.random() * 5),
           engineTemp: 95 + Math.sin(lastLap * 0.2) * 8 + Math.random() * 3,
           fuelLevel: Math.max(5, 100 - lastLap * 2 + Math.random() * 2),
-          kers: 60 + Math.sin(lastLap * 0.6) * 30 + Math.random() * 10,
-        };
+          kers: 60 + Math.sin(lastLap * 0.6) * 30 + Math.random() * 10 };
         return [...prev.slice(-50), newPoint];
       });
     }, 2000);
@@ -152,9 +148,8 @@ export function Telemetry({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Scanline overlay */}
-      <div className="fixed inset-0 pointer-events-none z-50 opacity-10" style={{
-        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.05) 2px, rgba(0,229,255,0.05) 4px)',
-      }} />
+      <div className="fixed inset-0 pointer-events-none z-50 opacity-10" style={ {
+        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.05) 2px, rgba(0,229,255,0.05) 4px)' }} />
     </div>
   );
 }

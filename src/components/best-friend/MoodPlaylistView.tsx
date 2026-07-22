@@ -20,8 +20,7 @@ export const MoodPlaylistView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "mood_playlist", mood, preferences },
-      });
+        body: { action: "mood_playlist", mood, preferences } });
       if (error) throw error;
       setResult(data);
       toast.success("Playlist created! (3 credits used)");

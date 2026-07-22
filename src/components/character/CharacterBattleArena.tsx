@@ -21,8 +21,7 @@ export const CharacterBattleArena = () => {
       const { data, error } = await supabase.from("characters").select("*").order("created_at", { ascending: false });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const battle = useMutation({
     mutationFn: async (data: { character1Id: string; character2Id: string }) => {
@@ -35,8 +34,7 @@ export const CharacterBattleArena = () => {
       toast.success("Battle complete!");
       queryClient.invalidateQueries({ queryKey: ["characters"] });
     },
-    onError: (error: Error) => toast.error(error.message || "Failed to start battle"),
-  });
+    onError: (error: Error) => toast.error(error.message || "Failed to start battle") });
 
   const renderCharList = (selectedId: string | null, onSelect: (id: string) => void, label: string, accentColor: string) => (
     <div>

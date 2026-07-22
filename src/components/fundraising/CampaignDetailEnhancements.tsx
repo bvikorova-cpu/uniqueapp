@@ -33,14 +33,12 @@ interface Props {
  * - Top donors with tier badges
  * - Sponsor matching badge (if active)
  */
-export function CampaignDetailEnhancements({
-  currentAmount,
+export function CampaignDetailEnhancements({ currentAmount,
   targetAmount,
   supportersCount,
   campaignType,
   campaignId,
-  topDonations = [],
-}: Props) {
+  topDonations = [] }: Props) {
   const pct = Math.min((currentAmount / targetAmount) * 100, 100);
   const topThree = [...topDonations].sort((a, b) => Number(b.amount) - Number(a.amount)).slice(0, 3);
   const [match, setMatch] = useState<any>(null);

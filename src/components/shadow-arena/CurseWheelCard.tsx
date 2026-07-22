@@ -48,8 +48,7 @@ export function CurseWheelCard() {
                 key={i}
                 className="absolute top-1/2 left-1/2 text-[9px] font-bold text-red-100 origin-left"
                 style={{
-                  transform: `rotate(${(360 / SEGMENTS.length) * i}deg) translateX(60px)`,
-                }}
+                  transform: `rotate(${(360 / SEGMENTS.length) * i}deg) translateX(60px)` }}
               >
                 {s}
               </div>

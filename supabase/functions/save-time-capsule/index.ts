@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -19,8 +17,7 @@ serve(async (req) => {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader?.startsWith("Bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -29,12 +26,10 @@ serve(async (req) => {
     const user = userData.user;
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const {
-      title,
+    const { title,
       message,
       capsuleType,
       deliveryDate,
@@ -43,20 +38,17 @@ serve(async (req) => {
       durationYears,
       pricePaid,
       stripePaymentId,
-      files,
-    } = await req.json();
+      files } = await req.json();
 
     if (!title || !deliveryDate || !durationYears) {
       return new Response(JSON.stringify({ error: "Title, delivery date, and duration are required" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Create time capsule
     const { data: capsule, error: capsuleError } = await supabaseClient
       .from("time_capsules")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         title,
         message,
         capsule_type: capsuleType || 'text',
@@ -66,21 +58,18 @@ serve(async (req) => {
         duration_years: durationYears,
         price_paid: pricePaid,
         payment_status: stripePaymentId ? 'paid' : 'pending',
-        stripe_payment_id: stripePaymentId,
-      })
+        stripe_payment_id: stripePaymentId })
       .select()
       .single();
 
     if (capsuleError) throw capsuleError;
 
     // Save files if any
-    if (files && files.length > 0) {
-      const fileRecords = files.map((file: any) => ({
+    if (files && files.length > 0) { const fileRecords = files.map((file: any) => ({
         capsule_id: capsule.id,
         file_url: file.url,
         file_type: file.type,
-        file_size: file.size,
-      }));
+        file_size: file.size }));
 
       const { error: filesError } = await supabaseClient
         .from("time_capsule_files")
@@ -109,13 +98,11 @@ serve(async (req) => {
       message: "Time capsule created successfully"
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (error) {
     console.error("Save time capsule error:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

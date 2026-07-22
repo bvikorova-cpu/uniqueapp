@@ -29,149 +29,108 @@ export type ProductDef = {
  * NOTE: subscriptions (coffee_lover, decor_pro, etc.) live in the
  * Phase-3 `create-checkout` router, NOT here.
  */
-export const PRODUCTS: Record<string, ProductDef> = {
-  // === Jobs (Phase 4 part 1) ===
+export const PRODUCTS: Record<string, ProductDef> = { // === Jobs (Phase 4 part 1) ===
   job_listing_7: {
     priceId: "price_1TOyIhGaXSfGtYFt2CrL50T6",
     successPath: "/jobs/post/success",
-    cancelPath: "/jobs/post",
-  },
-  job_listing_14: {
-    priceId: "price_1TOyIjGaXSfGtYFtsiK8FRRx",
+    cancelPath: "/jobs/post" },
+  job_listing_14: { priceId: "price_1TOyIjGaXSfGtYFtsiK8FRRx",
     successPath: "/jobs/post/success",
-    cancelPath: "/jobs/post",
-  },
-  job_listing_30: {
-    priceId: "price_1TOyIkGaXSfGtYFtSVA63POC",
+    cancelPath: "/jobs/post" },
+  job_listing_30: { priceId: "price_1TOyIkGaXSfGtYFtSVA63POC",
     successPath: "/jobs/post/success",
-    cancelPath: "/jobs/post",
-  },
-  job_listing_featured: {
-    priceId: "price_1TOyIkGaXSfGtYFtBNKAmNFk",
+    cancelPath: "/jobs/post" },
+  job_listing_featured: { priceId: "price_1TOyIkGaXSfGtYFtBNKAmNFk",
     successPath: "/jobs/post/success",
-    cancelPath: "/jobs/post",
-  },
+    cancelPath: "/jobs/post" },
 
   // === Coffee / tip jar (dynamic amount; no auth required) ===
-  coffee_small: {
-    amount: 300,
+  coffee_small: { amount: 300,
     currency: "eur",
     name: "Buy a Coffee – Small",
     successPath: "/?coffee=success",
     cancelPath: "/?coffee=cancel",
-    requireAuth: false,
-  },
-  coffee_medium: {
-    amount: 500,
+    requireAuth: false },
+  coffee_medium: { amount: 500,
     currency: "eur",
     name: "Buy a Coffee – Medium",
     successPath: "/?coffee=success",
     cancelPath: "/?coffee=cancel",
-    requireAuth: false,
-  },
-  coffee_large: {
-    amount: 1000,
+    requireAuth: false },
+  coffee_large: { amount: 1000,
     currency: "eur",
     name: "Buy a Coffee – Large",
     successPath: "/?coffee=success",
     cancelPath: "/?coffee=cancel",
-    requireAuth: false,
-  },
+    requireAuth: false },
 
   // === AR Preview ===
-  ar_preview: {
-    amount: 199,
+  ar_preview: { amount: 199,
     currency: "eur",
     name: "AR Preview",
     successPath: "/home-decor",
-    cancelPath: "/home-decor",
-  },
+    cancelPath: "/home-decor" },
 
   // === Concert: song requests + collectible tickets (dynamic amount) ===
-  concert_song_request: {
-    currency: "eur",
+  concert_song_request: { currency: "eur",
     name: "Song Request",
     successPath: "/live-concerts",
-    cancelPath: "/live-concerts",
-  },
-  concert_collectible_ticket: {
-    currency: "eur",
+    cancelPath: "/live-concerts" },
+  concert_collectible_ticket: { currency: "eur",
     name: "Collectible Ticket",
     successPath: "/live-concerts",
-    cancelPath: "/live-concerts",
-  },
-  concert_ticket: {
-    currency: "eur",
+    cancelPath: "/live-concerts" },
+  concert_ticket: { currency: "eur",
     name: "Concert Ticket",
     successPath: "/live-concerts",
-    cancelPath: "/live-concerts",
-  },
+    cancelPath: "/live-concerts" },
 
   // === Crystal marketplace ===
-  crystal_purchase: {
-    currency: "eur",
+  crystal_purchase: { currency: "eur",
     name: "Crystal Item",
     successPath: "/crystal-marketplace",
-    cancelPath: "/crystal-marketplace",
-  },
+    cancelPath: "/crystal-marketplace" },
 
   // === Platform virtual gift (creator hub) ===
-  platform_gift: {
-    currency: "eur",
+  platform_gift: { currency: "eur",
     name: "Virtual Gift",
     successPath: "/",
-    cancelPath: "/",
-  },
+    cancelPath: "/" },
 
   // === Influencer / MasterChef / Live-stream gifts ===
-  influencer_gift: {
-    currency: "eur",
+  influencer_gift: { currency: "eur",
     name: "Influencer Gift",
     successPath: "/influ-king",
-    cancelPath: "/influ-king",
-  },
-  masterchef_gift: {
-    currency: "eur",
+    cancelPath: "/influ-king" },
+  masterchef_gift: { currency: "eur",
     name: "MasterChef Gift",
     successPath: "/masterchef/dashboard",
-    cancelPath: "/masterchef/dashboard",
-  },
-  stream_gift: {
-    currency: "eur",
+    cancelPath: "/masterchef/dashboard" },
+  stream_gift: { currency: "eur",
     name: "Stream Gift",
     successPath: "/live-stream",
-    cancelPath: "/live-stream",
-  },
+    cancelPath: "/live-stream" },
 
   // === Course purchase (one-off lifetime access) ===
-  course_purchase: {
-    currency: "eur",
+  course_purchase: { currency: "eur",
     name: "Course Purchase",
     successPath: "/course",
-    cancelPath: "/course",
-  },
+    cancelPath: "/course" },
 
   // === Rewards: cosmetic items (avatar frames, themes, borders, name colors) ===
-  cosmetic_purchase: {
-    currency: "eur",
+  cosmetic_purchase: { currency: "eur",
     name: "Cosmetic Item",
     successPath: "/rewards",
-    cancelPath: "/rewards",
-  },
+    cancelPath: "/rewards" },
 
   // === Skills Marketplace: one-off service order (dynamic amount) ===
-  skill_service_order: {
-    currency: "eur",
+  skill_service_order: { currency: "eur",
     name: "Skills Marketplace Order",
     successPath: "/skills-marketplace/orders/success",
-    cancelPath: "/skills-marketplace/orders",
-  },
-};
+    cancelPath: "/skills-marketplace/orders" } };
 
-export function getStripe(): Stripe {
-  return new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-    apiVersion: "2025-08-27.basil",
-  });
+export function getStripe(): Stripe { return new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    apiVersion: "2025-08-27.basil" });
 }
 
 export async function getOrFindCustomer(
@@ -223,18 +182,14 @@ export async function createOneOffSession(
 
   const lineItem = product.priceId
     ? { price: product.priceId, quantity: 1 }
-    : {
-        quantity: 1,
+    : { quantity: 1,
         price_data: {
           currency: product.currency || "eur",
           unit_amount: input.amount ?? product.amount ?? 100,
           product_data: {
             name: input.name || product.name || input.productKey,
             description: input.description || product.description,
-            images: input.images?.length ? input.images : undefined,
-          },
-        },
-      };
+            images: input.images?.length ? input.images : undefined } } };
 
   const successPath = input.successPath || product.successPath;
   const cancelPath = input.cancelPath || product.cancelPath;
@@ -252,10 +207,8 @@ export async function createOneOffSession(
     metadata: {
       productKey: input.productKey,
       userId: input.userId ?? "",
-      ...(input.metadata || {}),
-    },
-    client_reference_id: input.userId,
-  });
+      ...(input.metadata || {}) },
+    client_reference_id: input.userId });
 
   return { url: session.url, sessionId: session.id };
 }

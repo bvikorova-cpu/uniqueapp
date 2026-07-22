@@ -4,18 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { savePendingAction } from "@/lib/pendingAction";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Sparkles, TrendingUp, Star, Save, Zap, BarChart3, Coins, Check,
+import { Sparkles, TrendingUp, Star, Save, Zap, BarChart3, Coins, Check,
   ArrowRight, Dices, Target, BookOpen, Shield, Settings, AlertTriangle,
-  Bell, Share2, Trophy, Radio, ArrowLeft,
-} from "lucide-react";
+  Bell, Share2, Trophy, Radio, ArrowLeft } from "lucide-react";
 import { LotteryHero } from "@/components/lottery/LotteryHero";
 import { LotteryStreak } from "@/components/lottery/LotteryStreak";
 import { LotteryProgress } from "@/components/lottery/LotteryProgress";
@@ -46,20 +42,15 @@ const LOTTERY_TYPES = [
 
 const SUBSCRIPTION_TIERS = {
   basic: { price_id: "price_1STrLuGaXSfGtYFtgA9rNDxL", product_id: "prod_TQinlyjGo50cTk" },
-  pro: { price_id: "price_1STrLwGaXSfGtYFtdbmjAGKA", product_id: "prod_TQinw9pUYC81T8" },
-};
+  pro: { price_id: "price_1STrLwGaXSfGtYFtdbmjAGKA", product_id: "prod_TQinw9pUYC81T8" } };
 
 const PRICING_TIERS = [
-  {
-    name: "Basic", tier: "basic", price: "4.99", period: "month",
+  { name: "Basic", tier: "basic", price: "4.99", period: "month",
     features: ["10 generations per month", "Basic statistics", "Hot & Cold numbers", "Save up to 5 combinations"],
-    icon: Star, color: "from-blue-500 to-cyan-500",
-  },
-  {
-    name: "Pro", tier: "pro", price: "9.99", period: "month",
+    icon: Star, color: "from-blue-500 to-cyan-500" },
+  { name: "Pro", tier: "pro", price: "9.99", period: "month",
     features: ["30 generations per month", "Advanced analytics", "Pattern notifications", "Save unlimited combinations", "Historical pattern analysis", "Priority AI processing"],
-    icon: Zap, color: "from-primary to-accent", popular: true,
-  },
+    icon: Zap, color: "from-primary to-accent", popular: true },
 ];
 
 const HOW_IT_WORKS = [
@@ -283,11 +274,9 @@ export default function LotteryAI() {
     }
 
     try {
-      const { error: insErr } = await supabase.from("lottery_generations").insert({
-        user_id: user.id, lottery_type: selectedLottery.name,
+      const { error: insErr } = await supabase.from("lottery_generations").insert({ user_id: user.id, lottery_type: selectedLottery.name,
         main_numbers: generatedData.numbers,
-        bonus_numbers: generatedData.bonusNumbers?.length > 0 ? generatedData.bonusNumbers : null,
-      });
+        bonus_numbers: generatedData.bonusNumbers?.length > 0 ? generatedData.bonusNumbers : null });
       if (insErr) throw insErr;
       await loadHistory();
       setIsGenerating(false);
@@ -311,11 +300,9 @@ export default function LotteryAI() {
       return;
     }
     const { chargeLotteryAction } = await import("@/lib/moduleCreditActions");
-    const charge = await chargeLotteryAction("save-pick", {
-      game_type: selectedLottery?.name || "unknown",
+    const charge = await chargeLotteryAction("save-pick", { game_type: selectedLottery?.name || "unknown",
       numbers: generatedNumbers,
-      bonus_numbers: bonusNumbers?.length ? bonusNumbers : undefined,
-    });
+      bonus_numbers: bonusNumbers?.length ? bonusNumbers : undefined });
     if (!charge.ok) return;
     try {
       const { data: existing, error: fetchErr } = await supabase

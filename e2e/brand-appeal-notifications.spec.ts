@@ -22,8 +22,7 @@ test("brand battle landing does not leak pending brands in stats", async ({ page
       status: 200,
       contentType: "application/json",
       headers: { "content-range": "0-0/3" },
-      body: JSON.stringify([]),
-    }),
+      body: JSON.stringify([]) }),
   );
   const res = await page.goto("/brand-battle");
   expect(res?.status() ?? 200).toBeLessThan(500);

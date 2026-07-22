@@ -22,12 +22,10 @@ interface ScienceComprehensionQuizProps {
 
 const PASS_THRESHOLD = 4;
 
-export const ScienceComprehensionQuiz = ({
-  category,
+export const ScienceComprehensionQuiz = ({ category,
   difficulty,
   questions,
-  onComplete,
-}: ScienceComprehensionQuizProps) => {
+  onComplete }: ScienceComprehensionQuizProps) => {
   const [currentQ, setCurrentQ] = useState(0);
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState<number | null>(null);
@@ -44,15 +42,13 @@ export const ScienceComprehensionQuiz = ({
       const passed = finalScore >= PASS_THRESHOLD;
       const { data, error } = await supabase
         .from("kids_science_quiz_attempts")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           category,
           difficulty,
           score: finalScore,
           total_questions: total,
           questions_json: questions as any,
-          passed,
-        })
+          passed })
         .select("id")
         .single();
       if (error) throw error;
@@ -93,14 +89,12 @@ export const ScienceComprehensionQuiz = ({
       const childName =
         (user.user_metadata?.full_name as string) ||
         (user.email?.split("@")[0] ?? "Young Scientist");
-      const { error } = await supabase.from("kids_science_certificates").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("kids_science_certificates").insert({ user_id: user.id,
         child_name: childName,
         category,
         difficulty,
         score,
-        total_questions: total,
-      });
+        total_questions: total });
       if (error) throw error;
       setCertificateIssued(true);
       toast.success("🏆 Certificate added to your collection!");

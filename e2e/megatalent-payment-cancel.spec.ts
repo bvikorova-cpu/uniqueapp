@@ -16,10 +16,8 @@ const SUPABASE_HOST = "jufrdzeonywluwutvyxz.supabase.co";
 
 test.describe("Megatalent paywall — anonymous cancel/decline", () => {
   for (const query of ["canceled=true", "payment=failed", "success=false"]) {
-    test(`anonymous return with ?${query} stays locked & bounces to /auth`, async ({
-      page,
-      context,
-    }) => {
+    test(`anonymous return with ?${query} stays locked & bounces to /auth`, async ({ page,
+      context }) => {
       let checkoutInvoked = false;
       let stripeOpened = false;
 
@@ -34,8 +32,7 @@ test.describe("Megatalent paywall — anonymous cancel/decline", () => {
           await route.fulfill({
             status: 401,
             contentType: "application/json",
-            body: JSON.stringify({ error: "Authentication required" }),
-          });
+            body: JSON.stringify({ error: "Authentication required" }) });
         },
       );
 

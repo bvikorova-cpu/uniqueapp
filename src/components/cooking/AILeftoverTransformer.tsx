@@ -24,8 +24,7 @@ export default function AILeftoverTransformer({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Leftover Transformer");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are a zero-waste chef specializing in creative leftover transformation. The user has leftovers. Create 3 completely different recipes that transform these leftovers into exciting new meals. For each recipe include: 1) Creative name, 2) Additional ingredients needed (keep minimal), 3) Step-by-step instructions, 4) Time to prepare, 5) Estimated calories, 6) Storage tips for remaining leftovers. Leftovers available: ${input}` },
-      });
+        body: { prompt: `You are a zero-waste chef specializing in creative leftover transformation. The user has leftovers. Create 3 completely different recipes that transform these leftovers into exciting new meals. For each recipe include: 1) Creative name, 2) Additional ingredients needed (keep minimal), 3) Step-by-step instructions, 4) Time to prepare, 5) Estimated calories, 6) Storage tips for remaining leftovers. Leftovers available: ${input}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }

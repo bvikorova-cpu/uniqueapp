@@ -1,18 +1,14 @@
 import { Bell, BellOff, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import {
-  useNotifications,
+import { useNotifications,
   isNotificationSoundEnabled,
-  setNotificationSoundEnabled,
-} from "@/hooks/useNotifications";
+  setNotificationSoundEnabled } from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 
 export const NotificationBell = () => {

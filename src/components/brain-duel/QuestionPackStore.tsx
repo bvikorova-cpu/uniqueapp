@@ -13,16 +13,14 @@ import { motion } from 'framer-motion';
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const categoryIcons: Record<string, typeof Globe> = {
-  'Entertainment': Star,
+const categoryIcons: Record<string, typeof Globe> = { 'Entertainment': Star,
   'History': BookOpen,
   'Science': FlaskConical,
   'Geography': Globe,
   'Sports': Dumbbell,
   'Music': Music,
   'Technology': Cpu,
-  'Art': Palette,
-};
+  'Art': Palette };
 
 export const QuestionPackStore = () => {
   const { toast } = useToast();
@@ -37,8 +35,7 @@ export const QuestionPackStore = () => {
         .select('*')
         .order('price_credits', { ascending: true });
       return data || [];
-    },
-  });
+    } });
 
   const { data: userPacks } = useQuery({
     queryKey: ['brain-duel-user-packs'],
@@ -50,8 +47,7 @@ export const QuestionPackStore = () => {
         .select('pack_id')
         .eq('user_id', user.id);
       return data?.map(p => p.pack_id) || [];
-    },
-  });
+    } });
 
   const purchasePack = useMutation({
     mutationFn: async (pack: { id: string; price_credits: number; name: string }) => {
@@ -70,8 +66,7 @@ export const QuestionPackStore = () => {
     },
     onError: (error: Error) => {
       toast({ title: 'Purchase failed', description: error.message, variant: 'destructive' });
-    },
-  });
+    } });
 
   const isOwned = (packId: string) => userPacks?.includes(packId);
 

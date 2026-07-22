@@ -71,13 +71,11 @@ export const DigitalOffspringChat = () => {
     setMessages(data || []);
   };
 
-  const createOffspring = async () => {
-    if (!name.trim()) {
+  const createOffspring = async () => { if (!name.trim()) {
       toast({
         title: "Name Required",
         description: "Please enter a name for your digital offspring",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -95,12 +93,10 @@ export const DigitalOffspringChat = () => {
         .limit(1)
         .single();
 
-      if (!dnaData) {
-        toast({
+      if (!dnaData) { toast({
           title: "DNA Analysis Required",
           description: "Please complete a DNA analysis first",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -114,15 +110,12 @@ export const DigitalOffspringChat = () => {
       loadMessages(data.offspring.id);
       toast({
         title: "Success!",
-        description: `${name} has been created!`,
-      });
-    } catch (error) {
-      console.error("Error:", error);
+        description: `${name} has been created!` });
+    } catch (error) { console.error("Error:", error);
       toast({
         title: "Error",
         description: "Failed to create digital offspring",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setCreating(false);
     }
@@ -142,13 +135,11 @@ export const DigitalOffspringChat = () => {
       // Reload messages
       loadMessages(offspring.id);
       setNewMessage("");
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (error) { console.error("Error:", error);
       toast({
         title: "Error",
         description: "Failed to send message",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setSending(false);
     }

@@ -49,12 +49,10 @@ export const ChatThemePicker = ({ current, onChange }: Props) => (
   </div>
 );
 
-export const themeGradient = (theme: ChatTheme): string => {
-  const map: Record<ChatTheme, string> = {
+export const themeGradient = (theme: ChatTheme): string => { const map: Record<ChatTheme, string> = {
     midnight: "from-slate-900 via-violet-900 to-primary",
     rose: "from-pink-600 via-rose-500 to-orange-400",
     ocean: "from-cyan-600 via-blue-500 to-indigo-600",
-    sunset: "from-amber-500 via-orange-500 to-red-500",
-  };
+    sunset: "from-amber-500 via-orange-500 to-red-500" };
   return map[theme] ?? map.midnight;
 };

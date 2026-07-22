@@ -483,20 +483,17 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
         id: v.id, kind: "video", video_url: v.video_url, title: v.title, description: v.description,
         user_id: v.user_id, likes_count: v.likes_count, views_count: v.views_count,
         profile: { full_name: null, avatar_url: null },
-        _ts: new Date(v.created_at).getTime(),
-      }));
+        _ts: new Date(v.created_at).getTime() }));
       (posts || []).forEach((p: any) => {
         if (p.file_url) all.push({
           id: p.id, kind: "post", video_url: p.file_url, title: null, description: p.content,
           user_id: p.user_id, profile: { full_name: null, avatar_url: null },
-          _ts: new Date(p.created_at).getTime(),
-        });
+          _ts: new Date(p.created_at).getTime() });
       });
       (storyRows || []).forEach((s: any) => s.media_url && all.push({
         id: s.id, kind: "story", video_url: s.media_url, title: null, description: s.caption,
         user_id: s.user_id, profile: { full_name: null, avatar_url: null },
-        _ts: new Date(s.created_at).getTime(),
-      }));
+        _ts: new Date(s.created_at).getTime() }));
 
       const ids = Array.from(new Set(all.map((s) => s.user_id).filter(Boolean)));
       if (ids.length) {
@@ -522,8 +519,7 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
         if (b.kind === "story" && a.kind !== "story") return 1;
         return b._ts - a._ts;
       });
-    },
-  });
+    } });
 
   useEffect(() => {
     const el = containerRef.current;

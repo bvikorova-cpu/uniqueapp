@@ -29,8 +29,7 @@ export async function enforceRateLimit(
     _bucket: `${opts.bucket}:${userId}`,
     _max: opts.max,
     _window_seconds: opts.windowSec,
-    _user_id: userId,
-  });
+    _user_id: userId });
   if (error) {
     // Fail open — log but do not block on infra issue.
     console.warn("[withRateLimit] rpc error", error.message);
@@ -41,12 +40,10 @@ export async function enforceRateLimit(
       JSON.stringify({
         error: "rate_limited",
         message: `Too many requests. Try again in ${opts.windowSec}s.`,
-        bucket: opts.bucket,
-      }),
+        bucket: opts.bucket }),
       {
         status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": String(opts.windowSec) },
-      },
+        headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": String(opts.windowSec) } },
     );
   }
   return null;

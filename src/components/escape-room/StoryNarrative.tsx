@@ -170,19 +170,16 @@ export function StoryNarrative({
               <motion.div
                 key={i}
                 className="absolute w-1 h-1 bg-white/20 rounded-full"
-                initial={{
+                initial={ {
                   x: Math.random() * window.innerWidth,
-                  y: window.innerHeight + 10,
-                }}
-                animate={{
+                  y: window.innerHeight + 10 }}
+                animate={ {
                   y: -10,
-                  opacity: [0, 1, 0],
-                }}
-                transition={{
+                  opacity: [0, 1, 0] }}
+                transition={ {
                   duration: Math.random() * 5 + 5,
                   repeat: Infinity,
-                  delay: Math.random() * 5,
-                }}
+                  delay: Math.random() * 5 }}
               />
             ))}
           </div>

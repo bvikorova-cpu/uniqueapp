@@ -31,8 +31,7 @@ describe("patchSupabaseFunctions rewrites check-connect-status", () => {
   it("invoke('check-connect-status') calls check-router with connect_status", async () => {
     const invoke = vi.fn().mockResolvedValue({ data: { ok: true }, error: null });
     vi.doMock("@/integrations/supabase/client", () => ({
-      supabase: { functions: { invoke } },
-    }));
+      supabase: { functions: { invoke } } }));
 
     await import("@/utils/patchSupabaseFunctions");
     const { supabase } = await import("@/integrations/supabase/client");
@@ -42,13 +41,10 @@ describe("patchSupabaseFunctions rewrites check-connect-status", () => {
     await supabase.functions.invoke("check-connect-status", { body: { action: "live_status" } });
 
     expect(invoke).toHaveBeenNthCalledWith(1, "check-router", expect.objectContaining({
-      body: expect.objectContaining({ action: "connect_status", _aliasFrom: "check-connect-status" }),
-    }));
+      body: expect.objectContaining({ action: "connect_status", _aliasFrom: "check-connect-status" }) }));
     expect(invoke).toHaveBeenNthCalledWith(2, "check-router", expect.objectContaining({
-      body: expect.objectContaining({ action: "connect_login" }),
-    }));
+      body: expect.objectContaining({ action: "connect_login" }) }));
     expect(invoke).toHaveBeenNthCalledWith(3, "check-router", expect.objectContaining({
-      body: expect.objectContaining({ action: "live_status" }),
-    }));
+      body: expect.objectContaining({ action: "live_status" }) }));
   });
 });

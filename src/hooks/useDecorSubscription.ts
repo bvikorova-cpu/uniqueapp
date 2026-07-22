@@ -13,27 +13,23 @@ interface DecorSubscription {
 
 export function useDecorSubscription() {
   const { toast } = useToast();
-  const [subscription, setSubscription] = useState<DecorSubscription>({
-    subscribed: false,
+  const [subscription, setSubscription] = useState<DecorSubscription>({ subscribed: false,
     product_id: null,
     subscription_end: null,
     designs_used: 0,
     designs_limit: 0,
-    loading: true,
-  });
+    loading: true });
 
   const checkSubscription = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setSubscription({
+      if (!session) { setSubscription({
           subscribed: false,
           product_id: null,
           subscription_end: null,
           designs_used: 0,
           designs_limit: 0,
-          loading: false,
-        });
+          loading: false });
         return;
       }
 
@@ -45,14 +41,12 @@ export function useDecorSubscription() {
         return;
       }
 
-      setSubscription({
-        subscribed: data.subscribed || false,
+      setSubscription({ subscribed: data.subscribed || false,
         product_id: data.product_id || null,
         subscription_end: data.subscription_end || null,
         designs_used: data.designs_used || 0,
         designs_limit: data.designs_limit || 0,
-        loading: false,
-      });
+        loading: false });
     } catch (error) {
       console.error("Error checking subscription:", error);
       setSubscription((prev) => ({ ...prev, loading: false }));
@@ -65,44 +59,35 @@ export function useDecorSubscription() {
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, "_blank");
+      if (data?.url) { window.open(data.url, "_blank");
         toast({
           title: "Redirecting to Checkout",
-          description: "Complete your subscription to unlock AI design features.",
-        });
+          description: "Complete your subscription to unlock AI design features." });
       }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to create subscription";
+    } catch (error) { const message = error instanceof Error ? error.message : "Failed to create subscription";
       toast({
         title: "Subscription Error",
         description: message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
   const generateDesign = async (style: string, roomDescription?: string) => {
     try {
       const { data, error } = await supabase.functions.invoke("generate-room-design", {
-        body: { style, roomDescription },
-      });
+        body: { style, roomDescription } });
 
-      if (error) {
-        if (error.message.includes("subscription required")) {
+      if (error) { if (error.message.includes("subscription required")) {
           toast({
             title: "Subscription Required",
             description: "Please subscribe to Pro Designer to generate AI designs.",
-            variant: "destructive",
-          });
+            variant: "destructive" });
           return null;
         }
-        if (error.message.includes("limit reached")) {
-          toast({
+        if (error.message.includes("limit reached")) { toast({
             title: "Design Limit Reached",
             description: "You've used all your designs for this month. Upgrade or wait for next period.",
-            variant: "destructive",
-          });
+            variant: "destructive" });
           return null;
         }
         throw error;
@@ -112,13 +97,11 @@ export function useDecorSubscription() {
       await checkSubscription();
 
       return data;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to generate design";
+    } catch (error) { const message = error instanceof Error ? error.message : "Failed to generate design";
       toast({
         title: "Design Generation Error",
         description: message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return null;
     }
   };
@@ -126,25 +109,20 @@ export function useDecorSubscription() {
   const purchaseARPreview = async (productId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke("create-ar-preview-payment", {
-        body: { productId },
-      });
+        body: { productId } });
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, "_blank");
+      if (data?.url) { window.open(data.url, "_blank");
         toast({
           title: "Redirecting to Checkout",
-          description: "Complete payment to unlock AR preview for this item.",
-        });
+          description: "Complete payment to unlock AR preview for this item." });
       }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to create AR preview payment";
+    } catch (error) { const message = error instanceof Error ? error.message : "Failed to create AR preview payment";
       toast({
         title: "Payment Error",
         description: message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -154,20 +132,16 @@ export function useDecorSubscription() {
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, "_blank");
+      if (data?.url) { window.open(data.url, "_blank");
         toast({
           title: "Opening Customer Portal",
-          description: "Manage your subscription in the Stripe portal.",
-        });
+          description: "Manage your subscription in the Stripe portal." });
       }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to open customer portal";
+    } catch (error) { const message = error instanceof Error ? error.message : "Failed to open customer portal";
       toast({
         title: "Portal Error",
         description: message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -179,12 +153,10 @@ export function useDecorSubscription() {
     return () => clearInterval(interval);
   }, []);
 
-  return {
-    subscription,
+  return { subscription,
     checkSubscription,
     subscribe,
     generateDesign,
     purchaseARPreview,
-    manageSubscription,
-  };
+    manageSubscription };
 }

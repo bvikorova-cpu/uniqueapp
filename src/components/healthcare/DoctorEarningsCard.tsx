@@ -16,12 +16,10 @@ interface Payout {
   appointment_id: string;
 }
 
-const STATUS_TONE: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-  pending: "outline",
+const STATUS_TONE: Record<string, "default" | "secondary" | "destructive" | "outline"> = { pending: "outline",
   paid: "default",
   cancelled: "secondary",
-  failed: "destructive",
-};
+  failed: "destructive" };
 
 export function DoctorEarningsCard() {
   const { user } = useAuth();

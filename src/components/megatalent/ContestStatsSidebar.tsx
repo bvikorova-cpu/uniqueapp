@@ -74,8 +74,7 @@ export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: Co
                     const d = now.getDate();
                     const total = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
                     return `${(d / total) * 100}%`;
-                  })(),
-                }}
+                  })() }}
               />
             </div>
           </div>

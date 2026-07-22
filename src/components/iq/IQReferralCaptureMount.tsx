@@ -45,8 +45,7 @@ export default function IQReferralCaptureMount() {
       const d = data as { referrer_credits: number; referee_credits: number } | null;
       toast({
         title: "Welcome bonus! 🎁",
-        description: `You got +${d?.referee_credits ?? 5} IQ credits from your friend's invite.`,
-      });
+        description: `You got +${d?.referee_credits ?? 5} IQ credits from your friend's invite.` });
       qc.invalidateQueries({ queryKey: ["iq-credits"] });
     })();
   }, [user, toast, qc]);

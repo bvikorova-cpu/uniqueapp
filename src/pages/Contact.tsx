@@ -38,15 +38,13 @@ const PRIORITIES = [
   { id: "urgent", label: "Urgent", color: "bg-red-500/15 text-red-600 border-red-500/30" },
 ];
 
-const contactSchema = z.object({
-  name: z.string().trim().min(1, "Name is required").max(100),
+const contactSchema = z.object({ name: z.string().trim().min(1, "Name is required").max(100),
   email: z.string().trim().email("Invalid email address").max(255),
   subject: z.string().trim().min(3, "Subject too short").max(200),
   message: z.string().trim().min(10, "Message must be at least 10 characters").max(2000),
   category: z.string(),
   priority: z.string(),
-  honeypot: z.string().max(0, "Spam detected"),
-});
+  honeypot: z.string().max(0, "Spam detected") });
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
@@ -71,8 +69,7 @@ const Contact = () => {
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
-    defaultValues: { name: "", email: "", subject: "", message: "", category: "support", priority: "normal", honeypot: "" },
-  });
+    defaultValues: { name: "", email: "", subject: "", message: "", category: "support", priority: "normal", honeypot: "" } });
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -112,8 +109,7 @@ const Contact = () => {
     setTriageResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("contact-ai-triage", {
-        body: { subject: subjectValue, message: messageValue, faq: faqList },
-      });
+        body: { subject: subjectValue, message: messageValue, faq: faqList } });
       if (error) throw error;
       setTriageResult(data);
       if (data.category) form.setValue("category", data.category);
@@ -138,10 +134,8 @@ const Contact = () => {
     // (anonymous folder was a security risk and has been removed).
     if (!user?.id) return null;
     const filename = `${user.id}/${kind}-${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("support-attachments").upload(filename, blob, {
-      contentType: blob.type,
-      upsert: false,
-    });
+    const { error } = await supabase.storage.from("support-attachments").upload(filename, blob, { contentType: blob.type,
+      upsert: false });
     if (error) {
       console.error("upload error", error);
       return null;
@@ -161,11 +155,9 @@ const Contact = () => {
           const { error } = await supabase.storage.from("support-attachments").upload(path, f, { upsert: false });
           if (!error) uploadedAttachments.push({ name: f.name, path });
         }
-      } else if (files.length > 0) {
-        toast({
+      } else if (files.length > 0) { toast({
           title: "Sign in to attach files",
-          description: "Anonymous tickets can't upload attachments. Please log in to include files.",
-        });
+          description: "Anonymous tickets can't upload attachments. Please log in to include files." });
       }
 
       const voicePath = voiceBlob && voiceBlob.size > 0 ? await uploadBlob(voiceBlob, "webm", "voice") : null;
@@ -173,8 +165,7 @@ const Contact = () => {
 
       const { data: inserted, error } = await supabase
         .from("support_tickets")
-        .insert({
-          user_id: user?.id ?? null,
+        .insert({ user_id: user?.id ?? null,
           name: data.name,
           email: data.email,
           subject: data.subject,
@@ -186,8 +177,7 @@ const Contact = () => {
           screen_recording_url: screenPath,
           ai_suggested_category: triageResult?.category ?? null,
           ai_suggested_faq_id: triageResult?.suggested_faq_id || null,
-          sentiment: triageResult?.sentiment ?? null,
-        })
+          sentiment: triageResult?.sentiment ?? null })
         .select("ticket_number")
         .single();
 
@@ -196,8 +186,7 @@ const Contact = () => {
       setSubmittedTicket(inserted.ticket_number);
       toast({
         title: "Message sent!",
-        description: `Your reference: ${inserted.ticket_number}`,
-      });
+        description: `Your reference: ${inserted.ticket_number}` });
       form.reset({ name: data.name, email: data.email, subject: "", message: "", category: "support", priority: "normal", honeypot: "" });
       setFiles([]);
       setVoiceBlob(null);

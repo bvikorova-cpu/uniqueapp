@@ -41,47 +41,38 @@ export function PayoutBatchesView() {
       if (error) throw error;
 
       setBatches(data || []);
-    } catch (error: any) {
-      console.error("Error loading batches:", error);
+    } catch (error: any) { console.error("Error loading batches:", error);
       toast({
         title: "Error",
         description: "Failed to load payout batches",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
-  const triggerPayoutProcessing = async () => {
-    try {
+  const triggerPayoutProcessing = async () => { try {
       toast({
         title: "Processing",
-        description: "Triggering payout processing...",
-      });
+        description: "Triggering payout processing..." });
 
       const { data, error } = await supabase.functions.invoke(
         "process-scheduled-payouts",
         {
-          body: { manual_trigger: true },
-        }
+          body: { manual_trigger: true } }
       );
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Payout processing triggered successfully",
-      });
+      toast({ title: "Success",
+        description: "Payout processing triggered successfully" });
 
       loadBatches();
-    } catch (error: any) {
-      console.error("Error triggering payouts:", error);
+    } catch (error: any) { console.error("Error triggering payouts:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to trigger payout processing",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

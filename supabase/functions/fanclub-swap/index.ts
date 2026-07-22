@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { authenticateUser, createSupabaseAdminClient } from "../_shared/supabaseClient.ts";
 import { createStripeClient, safeParseStripeDate } from "../_shared/stripe.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 /**
  * Swap between tiers of the same creator's fan clubs.
@@ -65,17 +63,12 @@ serve(async (req) => {
             product: (item.price?.product as string) ?? undefined,
             product_data: (item.price?.product as string)
               ? undefined
-              : { name: `Fan Club: ${to.name} (${to.tier})` },
-          } as any,
-        },
+              : { name: `Fan Club: ${to.name} (${to.tier})` } } as any },
       ],
-      metadata: {
-        type: "fan_club",
+      metadata: { type: "fan_club",
         fan_club_id: to.id,
         creator_id: to.creator_id,
-        user_id: userId,
-      },
-    });
+        user_id: userId } });
 
     // Move DB row: remove old, upsert new.
     await admin
@@ -85,27 +78,23 @@ serve(async (req) => {
       .eq("user_id", userId);
 
     await admin.from("influencer_fan_club_members").upsert(
-      {
-        fan_club_id: to.id,
+      { fan_club_id: to.id,
         user_id: userId,
         status: "active",
         stripe_customer_id: member.stripe_customer_id,
         stripe_subscription_id: updated.id,
         current_period_end: safeParseStripeDate((updated as any).current_period_end),
-        cancel_at_period_end: Boolean((updated as any).cancel_at_period_end),
-      },
+        cancel_at_period_end: Boolean((updated as any).cancel_at_period_end) },
       { onConflict: "fan_club_id,user_id" },
     );
 
     return new Response(JSON.stringify({ ok: true, fan_club_id: to.id }), {
       status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("[fanclub-swap]", e?.message);
     return new Response(JSON.stringify({ error: e?.message ?? "error" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

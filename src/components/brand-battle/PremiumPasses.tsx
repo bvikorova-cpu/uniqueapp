@@ -44,8 +44,7 @@ export const PremiumPasses = () => {
     setLoading(tier);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { plan: tier },
-      });
+        body: { plan: tier } });
       if (error) throw error;
       if ((data as any)?.url) window.open((data as any).url, "_blank");
       else toast.error("Checkout setup pending — Stripe price IDs need to be configured.");

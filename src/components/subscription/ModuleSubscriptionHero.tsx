@@ -23,14 +23,12 @@ interface ModuleSubscriptionHeroProps {
  * (Nutrition, KitchenStars, GP Racing, Kids, Time Capsule, etc.) so they all match
  * the main /subscription premium look.
  */
-export const ModuleSubscriptionHero = ({
-  module,
+export const ModuleSubscriptionHero = ({ module,
   title,
   subtitle,
   icon: Icon,
   badge,
-  videoUrl,
-}: ModuleSubscriptionHeroProps) => {
+  videoUrl }: ModuleSubscriptionHeroProps) => {
   return (
     <>
       <FloatingHowItWorks title={"Module Subscription Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Module Subscription Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Module Subscription Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />

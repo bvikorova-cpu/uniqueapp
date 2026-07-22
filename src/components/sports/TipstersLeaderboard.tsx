@@ -50,13 +50,11 @@ export function TipstersLeaderboard() {
 
       if (error) throw error;
       setTipsters(data || []);
-    } catch (error: any) {
-      console.error('Error fetching tipsters:', error);
+    } catch (error: any) { console.error('Error fetching tipsters:', error);
       toast({
         title: "Error",
         description: getUserFriendlyErrorMessage(error, "Failed to load tipsters"),
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -103,33 +101,25 @@ export function TipstersLeaderboard() {
           return newSet;
         });
 
-        toast({
-          title: "Unfollowed",
-          description: "You have unfollowed this tipster",
-        });
+        toast({ title: "Unfollowed",
+          description: "You have unfollowed this tipster" });
       } else {
         const { error } = await supabase
           .from('sports_tipster_followers')
-          .insert({
-            user_id: user.id,
-            tipster_id: tipsterId,
-          });
+          .insert({ user_id: user.id,
+            tipster_id: tipsterId });
 
         if (error) throw error;
         
         setFollowing(prev => new Set(prev).add(tipsterId));
 
-        toast({
-          title: "Following",
-          description: "You are now following this tipster",
-        });
+        toast({ title: "Following",
+          description: "You are now following this tipster" });
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: getUserFriendlyErrorMessage(error, "Failed to update follow status"),
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setFollowingInProgress(null);
     }

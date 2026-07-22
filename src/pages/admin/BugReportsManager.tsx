@@ -4,28 +4,22 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
+  SelectValue } from "@/components/ui/select";
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
+  TableRow } from "@/components/ui/table";
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Bug, CheckCircle2, Gift, Loader2, RefreshCw } from "lucide-react";
 
@@ -49,20 +43,16 @@ interface BugReport {
   reviewed_at: string | null;
 }
 
-const STATUS_COLORS: Record<Status, string> = {
-  new: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+const STATUS_COLORS: Record<Status, string> = { new: "bg-blue-500/10 text-blue-600 border-blue-500/20",
   triage: "bg-amber-500/10 text-amber-600 border-amber-500/20",
   confirmed: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
   rejected: "bg-rose-500/10 text-rose-600 border-rose-500/20",
   duplicate: "bg-gray-500/10 text-gray-600 border-gray-500/20",
-  fixed: "bg-primary/10 text-primary border-primary/20",
-};
+  fixed: "bg-primary/10 text-primary border-primary/20" };
 
-const SEVERITY_COLORS: Record<Severity, string> = {
-  minor: "bg-slate-500/10 text-slate-600 border-slate-500/20",
+const SEVERITY_COLORS: Record<Severity, string> = { minor: "bg-slate-500/10 text-slate-600 border-slate-500/20",
   major: "bg-orange-500/10 text-orange-600 border-orange-500/20",
-  critical: "bg-red-500/10 text-red-600 border-red-500/20",
-};
+  critical: "bg-red-500/10 text-red-600 border-red-500/20" };
 
 export default function BugReportsManager() {
   const [reports, setReports] = useState<BugReport[]>([]);
@@ -110,12 +100,10 @@ export default function BugReportsManager() {
     return { total, pending, confirmed, rewarded, creditsPaid };
   }, [reports]);
 
-  const updateStatus = async (id: string, status: Status) => {
-    setSaving(id);
+  const updateStatus = async (id: string, status: Status) => { setSaving(id);
     const patch: Partial<BugReport> = {
       status,
-      admin_notes: selected?.id === id ? notes || null : undefined,
-    };
+      admin_notes: selected?.id === id ? notes || null : undefined };
     const { error } = await supabase
       .from("bug_reports")
       .update(patch)

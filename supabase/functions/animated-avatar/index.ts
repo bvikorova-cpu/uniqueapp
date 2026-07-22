@@ -1,10 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -23,19 +21,16 @@ Deno.serve(async (req) => {
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: { user } } = await sb.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { description, text, voiceId = "EXAVITQu4vr4xnSDxMaL" } = await req.json();
@@ -47,16 +42,12 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-image-1",
         messages: [{
           role: "user",
-          content: `Pixar 3D animated character portrait of: ${description}. Friendly expressive face, big eyes, cinematic studio lighting, clean background. NO real person, NO trademark, NO text.`,
-        }],
-      }),
-    });
+          content: `Pixar 3D animated character portrait of: ${description}. Friendly expressive face, big eyes, cinematic studio lighting, clean background. NO real person, NO trademark, NO text.` }] }) });
     if (!imgRes.ok) {
       const t = await imgRes.text();
       if (imgRes.status === 429) throw new Error("Rate limit, try again shortly");
@@ -78,9 +69,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           text,
           model_id: "eleven_multilingual_v2",
-          voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.55, use_speaker_boost: true },
-        }),
-      }
+          voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.55, use_speaker_boost: true } }) }
     );
     if (!ttsRes.ok) throw new Error("TTS failed: " + (await ttsRes.text()));
     const audioBuf = await ttsRes.arrayBuffer();
@@ -98,15 +87,11 @@ Deno.serve(async (req) => {
     const { data: imgPub } = admin.storage.from("animated-avatars").getPublicUrl(imgPath);
     const { data: audPub } = admin.storage.from("animated-avatars").getPublicUrl(audPath);
 
-    await admin.from("profiles").update({
-      animated_avatar_url: imgPub.publicUrl,
-      animated_avatar_audio_url: audPub.publicUrl,
-    }).eq("id", user.id);
+    await admin.from("profiles").update({ animated_avatar_url: imgPub.publicUrl,
+      animated_avatar_audio_url: audPub.publicUrl }).eq("id", user.id);
 
-    return new Response(JSON.stringify({
-      image_url: imgPub.publicUrl,
-      audio_url: audPub.publicUrl,
-    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ image_url: imgPub.publicUrl,
+      audio_url: audPub.publicUrl }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("[animated-avatar]", e);
     const msg = (e as Error).message ?? "Unknown error";
@@ -114,7 +99,6 @@ Deno.serve(async (req) => {
                  : /required|missing|too long|invalid/i.test(msg) ? 400 : 500;
     return new Response(JSON.stringify({ error: msg }), {
       status,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -1,9 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -13,8 +11,7 @@ Deno.serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -39,13 +36,11 @@ Deno.serve(async (req) => {
       throw new Error("Invalid input");
     }
     // DoS protection: cap candidates and field sizes
-    const candidates = rawCandidates.slice(0, 50).map((c: any) => ({
-      candidate_id: String(c.candidate_id ?? c.id ?? "").slice(0, 64),
+    const candidates = rawCandidates.slice(0, 50).map((c: any) => ({ candidate_id: String(c.candidate_id ?? c.id ?? "").slice(0, 64),
       name: String(c.name ?? "").slice(0, 120),
       headline: String(c.headline ?? "").slice(0, 200),
       skills: Array.isArray(c.skills) ? c.skills.slice(0, 30) : [],
-      experience: String(c.experience ?? "").slice(0, 1000),
-    }));
+      experience: String(c.experience ?? "").slice(0, 1000) }));
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY missing");
@@ -65,16 +60,13 @@ Return ONLY a JSON array, sorted best→worst, each item:
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are an expert hiring AI. Return only valid JSON arrays." },
           { role: "user", content: prompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (!aiRes.ok) {
       const t = await aiRes.text();
@@ -86,27 +78,23 @@ Return ONLY a JSON array, sorted best→worst, each item:
     const rankings = JSON.parse(cleaned);
 
     // Save rankings
-    const rows = rankings.map((r: any, idx: number) => ({
-      job_id: jobId,
+    const rows = rankings.map((r: any, idx: number) => ({ job_id: jobId,
       candidate_id: r.candidate_id,
       employer_id: u.user.id,
       score: r.score,
       rank_position: idx + 1,
       reasoning: r.reasoning,
       strengths: r.strengths || [],
-      concerns: r.concerns || [],
-    }));
+      concerns: r.concerns || [] }));
 
     const { error } = await supabase.from("ai_candidate_rankings").insert(rows);
     if (error) throw error;
 
     return new Response(JSON.stringify({ rankings }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

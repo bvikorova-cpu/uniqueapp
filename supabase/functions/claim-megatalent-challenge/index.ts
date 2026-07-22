@@ -1,9 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -17,8 +15,7 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData.user) throw new Error("Unauthorized");
     const userId = userData.user.id;
@@ -38,8 +35,7 @@ Deno.serve(async (req) => {
     if (!challenge) {
       return new Response(JSON.stringify({ error: "No challenge today" }), {
         status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if ((progressData as any).completed) {
@@ -50,24 +46,20 @@ Deno.serve(async (req) => {
     }
 
     const progress = (progressData as any).progress ?? 0;
-    if (progress < challenge.requirement_value) {
-      return new Response(
+    if (progress < challenge.requirement_value) { return new Response(
         JSON.stringify({
           error: "Challenge not completed yet",
           progress,
-          required: challenge.requirement_value,
-        }),
+          required: challenge.requirement_value }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
     const { error: insErr } = await admin
       .from("megatalent_challenge_completions")
-      .insert({
-        user_id: userId,
+      .insert({ user_id: userId,
         challenge_id: challenge.id,
-        bonus_votes_awarded: challenge.bonus_votes,
-      });
+        bonus_votes_awarded: challenge.bonus_votes });
     if (insErr && !insErr.message.includes("duplicate")) throw insErr;
 
     return new Response(
@@ -78,7 +70,6 @@ Deno.serve(async (req) => {
     console.error("claim-megatalent-challenge error", e);
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

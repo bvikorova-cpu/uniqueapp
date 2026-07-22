@@ -52,12 +52,9 @@ test.describe("Megatalent voting paywall — pay then unlock", () => {
     if (!haveCreds) return;
     // Resolve the test user's id once via password sign-in.
     const anon = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
-    const { data, error } = await anon.auth.signInWithPassword({
-      email: TEST_EMAIL,
-      password: TEST_PASSWORD,
-    });
+      auth: { persistSession: false, autoRefreshToken: false } });
+    const { data, error } = await anon.auth.signInWithPassword({ email: TEST_EMAIL,
+      password: TEST_PASSWORD });
     if (error || !data.user) {
       throw new Error(`E2E test user sign-in failed: ${error?.message}`);
     }
@@ -65,8 +62,7 @@ test.describe("Megatalent voting paywall — pay then unlock", () => {
 
     // Ensure a clean baseline: no megatalent subscription before the test.
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+      auth: { persistSession: false, autoRefreshToken: false } });
     await admin.from("megatalent_subscriptions").delete().eq("user_id", userId);
   });
 
@@ -74,8 +70,7 @@ test.describe("Megatalent voting paywall — pay then unlock", () => {
     if (!haveCreds || !userId) return;
     // Clean up the seeded subscription row so the test is repeatable.
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+      auth: { persistSession: false, autoRefreshToken: false } });
     await admin.from("megatalent_subscriptions").delete().eq("user_id", userId);
   });
 
@@ -92,19 +87,15 @@ test.describe("Megatalent voting paywall — pay then unlock", () => {
         // @ts-expect-error — load supabase-js inside the page
         const mod = await import("https://esm.sh/@supabase/supabase-js@2");
         const c = mod.createClient(url, key);
-        const { data, error } = await c.auth.signInWithPassword({
-          email,
-          password,
-        });
+        const { data, error } = await c.auth.signInWithPassword({ email,
+          password });
         if (error) throw new Error(error.message);
         return data.session;
       },
-      {
-        url: SUPABASE_URL,
+      { url: SUPABASE_URL,
         key: SUPABASE_ANON_KEY,
         email: TEST_EMAIL,
-        password: TEST_PASSWORD,
-      },
+        password: TEST_PASSWORD },
     );
 
     expect(session, "sign-in returned no session").toBeTruthy();
@@ -112,34 +103,28 @@ test.describe("Megatalent voting paywall — pay then unlock", () => {
 
   async function seedActivePremium() {
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+      auth: { persistSession: false, autoRefreshToken: false } });
     // Mirror the row a successful €10 Stripe payment webhook would insert.
     const { error } = await admin
       .from("megatalent_subscriptions")
       .upsert(
-        {
-          user_id: userId,
+        { user_id: userId,
           tier: "basic", // table enum maps 'basic' → €10 Premium tier
           price: 10.0,
           status: "active",
           started_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString(),
-        },
+          expires_at: new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString() },
         { onConflict: "user_id" },
       );
     expect(error, `seed error: ${error?.message}`).toBeNull();
   }
 
-  test("BEFORE payment: /megatalent shows paywall, voting/commenting NOT available", async ({
-    page,
-  }) => {
+  test("BEFORE payment: /megatalent shows paywall, voting/commenting NOT available", async ({ page }) => {
     await signInBrowser(page);
 
     // Confirm baseline: no subscription row.
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+      auth: { persistSession: false, autoRefreshToken: false } });
     const { data: existing } = await admin
       .from("megatalent_subscriptions")
       .select("id")
@@ -151,9 +136,7 @@ test.describe("Megatalent voting paywall — pay then unlock", () => {
 
     // The MegatalentGuard paywall card MUST be visible.
     // Title: "Odomkni MegaTalent súťaž 🏆"
-    await expect(page.getByText(/Odomkni MegaTalent súťaž/i)).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(page.getByText(/Odomkni MegaTalent súťaž/i)).toBeVisible({ timeout: 15_000 });
 
     // The €10 Premium checkout button MUST be present (the gate to pay).
     await expect(page.getByText(/€10 \/ mesiac/i)).toBeVisible();
@@ -167,10 +150,7 @@ test.describe("Megatalent voting paywall — pay then unlock", () => {
     expect(await commentBtns.count()).toBe(0);
   });
 
-  test("AFTER €10 payment is confirmed: voting & commenting unlock", async ({
-    page,
-  }) => {
-    await signInBrowser(page);
+  test("AFTER €10 payment is confirmed: voting & commenting unlock", async ({ page }) => { await signInBrowser(page);
 
     // Simulate the successful €10 payment (what the Stripe webhook would do).
     await seedActivePremium();
@@ -180,8 +160,7 @@ test.describe("Megatalent voting paywall — pay then unlock", () => {
 
     // Paywall card must be GONE.
     await expect(page.getByText(/Odomkni MegaTalent súťaž/i)).toHaveCount(0, {
-      timeout: 15_000,
-    });
+      timeout: 15_000 });
 
     // The hero/feed should be rendered. We can't guarantee submissions exist
     // in the database, but the UI for posting/voting must now be reachable.

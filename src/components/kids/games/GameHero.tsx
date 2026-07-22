@@ -25,11 +25,10 @@ export function GameHero({ totalScore, level, gamesPlayed }: GameHeroProps) {
           key={i}
           className="absolute text-2xl md:text-3xl opacity-20"
           style={{ left: `${(i / FLOATING_ICONS.length) * 100}%`, top: `${20 + (i % 3) * 25}%` }}
-          animate={{
+          animate={ {
             y: [0, -20, 0],
             rotate: [0, 15, -15, 0],
-            scale: [1, 1.2, 1],
-          }}
+            scale: [1, 1.2, 1] }}
           transition={{ duration: 3 + i * 0.5, repeat: Infinity, delay: i * 0.3 }}
         >
           {icon}

@@ -69,12 +69,10 @@ export default function IQDailyStreak() {
       } else {
         triggerRewardConfetti();
         toast({ title: `🔥 Day ${res.streak} streak!`, description: `+${res.reward} IQ credits awarded` });
-        setRow((prev) => ({
-          current_streak: res.streak,
+        setRow((prev) => ({ current_streak: res.streak,
           longest_streak: Math.max(prev?.longest_streak ?? 0, res.streak),
           last_claim_date: today,
-          total_credits_earned: (prev?.total_credits_earned ?? 0) + (res.reward ?? 0),
-        }));
+          total_credits_earned: (prev?.total_credits_earned ?? 0) + (res.reward ?? 0) }));
         qc.invalidateQueries({ queryKey: ["iq-credits"] });
       }
     } catch (e) {

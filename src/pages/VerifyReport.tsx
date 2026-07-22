@@ -17,16 +17,13 @@ const VerifyReport = () => {
     if (!token) { setState("invalid"); return; }
     (async () => {
       const { data: d, error } = await supabase.functions.invoke("lie-detector-ai", {
-        body: { action: "verify-report", report_id: token },
-      });
+        body: { action: "verify-report", report_id: token } });
       if (error || !d?.valid) { setState("invalid"); return; }
-      setData({
-        ...d,
+      setData({ ...d,
         token: d.report_id,
         summary: d.watermark,
         generated_at: d.issued_at,
-        view_count: 0,
-      });
+        view_count: 0 });
       setState("valid");
     })();
   }, [token]);

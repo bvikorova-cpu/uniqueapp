@@ -1,0 +1,1 @@
+UPDATE public.dating_profiles SET location = 'City, Country' WHERE bio LIKE '%[seed:v1]%';

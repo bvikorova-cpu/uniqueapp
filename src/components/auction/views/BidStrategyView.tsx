@@ -20,8 +20,7 @@ export const BidStrategyView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("auction-ai", {
-        body: { action: "bid_strategy", auction_info: input },
-      });
+        body: { action: "bid_strategy", auction_info: input } });
       if (error) throw error;
       setResult(data.result);
     } catch (err: any) { toast.error(err.message || "Strategy generation failed"); }

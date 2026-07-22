@@ -110,12 +110,11 @@ export const AchievementAnimation = () => {
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, scale: 0 }}
-                    animate={{
+                    animate={ {
                       opacity: [0, 1, 0],
                       scale: [0, 1, 0],
                       x: Math.cos((i / 6) * Math.PI * 2) * 80,
-                      y: Math.sin((i / 6) * Math.PI * 2) * 80,
-                    }}
+                      y: Math.sin((i / 6) * Math.PI * 2) * 80 }}
                     transition={{ duration: 1.5, delay: 0.2 + i * 0.1, repeat: Infinity, repeatDelay: 1 }}
                     className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full bg-primary"
                   />

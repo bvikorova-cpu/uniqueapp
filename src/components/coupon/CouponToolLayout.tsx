@@ -24,10 +24,8 @@ interface CouponToolLayoutProps {
   children: React.ReactNode;
 }
 
-export function CouponToolLayout({
-  onBack, title, subtitle, credits, icon: Icon, gradientFrom, gradientTo,
-  borderColor, formTitle, resultTitle, emptyText, result, loading, children,
-}: CouponToolLayoutProps) {
+export function CouponToolLayout({ onBack, title, subtitle, credits, icon: Icon, gradientFrom, gradientTo,
+  borderColor, formTitle, resultTitle, emptyText, result, loading, children }: CouponToolLayoutProps) {
   const [copied, setCopied] = useState(false);
   const [creditBalance, setCreditBalance] = useState<number | null>(null);
 
@@ -64,15 +62,12 @@ export function CouponToolLayout({
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <div className="relative overflow-hidden rounded-2xl p-6 mb-6" style={{
           background: `linear-gradient(135deg, ${gradientFrom}15, ${gradientTo}10, transparent)`,
-          borderLeft: `4px solid ${gradientFrom}`,
-        }}>
+          borderLeft: `4px solid ${gradientFrom}` }}>
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10" style={{
-            background: `radial-gradient(circle, ${gradientFrom}, transparent)`,
-          }} />
+            background: `radial-gradient(circle, ${gradientFrom}, transparent)` }} />
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg" style={{
-              background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`,
-            }}>
+              background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})` }}>
               <Icon className="w-7 h-7 text-white" />
             </div>
             <div className="flex-1">
@@ -80,8 +75,7 @@ export function CouponToolLayout({
               <p className="text-muted-foreground text-sm mt-0.5">{subtitle}</p>
             </div>
             <Badge className="text-white border-0 shadow-lg px-3 py-1.5 hidden sm:flex" style={{
-              background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`,
-            }}>
+              background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})` }}>
               <Sparkles className="w-3 h-3 mr-1" />{credits} Credits
             </Badge>
           </div>
@@ -123,8 +117,7 @@ export function CouponToolLayout({
               ) : (
                 <div className="text-center py-16">
                   <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center opacity-20" style={{
-                    background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`,
-                  }}>
+                    background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})` }}>
                     <Icon className="w-8 h-8 text-white" />
                   </div>
                   <p className="text-muted-foreground text-sm">{emptyText}</p>

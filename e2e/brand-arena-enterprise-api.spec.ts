@@ -24,20 +24,16 @@ const ENTERPRISE_KEY = process.env.BRAND_ARENA_ENTERPRISE_API_KEY;
 test.describe("Brand Arena Enterprise API — auth gating", () => {
   test("rejects request with no X-API-Key and no JWT (401)", async ({ request }) => {
     const res = await request.get(`${FN_URL}?action=me`, {
-      headers: { apikey: SUPABASE_ANON_KEY },
-    });
+      headers: { apikey: SUPABASE_ANON_KEY } });
     expect(res.status()).toBe(401);
     const body = await res.json().catch(() => ({}));
     expect(String(body.error ?? "")).toMatch(/unauthor/i);
   });
 
   test("rejects unknown ba_live_ key with invalid_api_key (401)", async ({ request }) => {
-    const res = await request.get(`${FN_URL}?action=me`, {
-      headers: {
+    const res = await request.get(`${FN_URL}?action=me`, { headers: {
         apikey: SUPABASE_ANON_KEY,
-        "X-API-Key": "ba_live_definitely_not_a_real_key_000000",
-      },
-    });
+        "X-API-Key": "ba_live_definitely_not_a_real_key_000000" } });
     expect(res.status()).toBe(401);
     const body = await res.json().catch(() => ({}));
     expect(body.error).toBe("invalid_api_key");
@@ -46,22 +42,19 @@ test.describe("Brand Arena Enterprise API — auth gating", () => {
   test("rejects non-prefixed key by falling through to JWT branch (401)", async ({ request }) => {
     // Keys that don't start with ba_live_ skip the API-key branch entirely.
     const res = await request.get(`${FN_URL}?action=me`, {
-      headers: { apikey: SUPABASE_ANON_KEY, "X-API-Key": "wrong_prefix_xyz" },
-    });
+      headers: { apikey: SUPABASE_ANON_KEY, "X-API-Key": "wrong_prefix_xyz" } });
     expect(res.status()).toBe(401);
   });
 });
 
-test.describe("Brand Arena Enterprise API — valid key (env-gated)", () => {
-  test.skip(
+test.describe("Brand Arena Enterprise API — valid key (env-gated)", () => { test.skip(
     !ENTERPRISE_KEY,
     "BRAND_ARENA_ENTERPRISE_API_KEY not set — skipping live API checks",
   );
 
   const headers = () => ({
     apikey: SUPABASE_ANON_KEY,
-    "X-API-Key": ENTERPRISE_KEY!,
-  });
+    "X-API-Key": ENTERPRISE_KEY! });
 
   test("action=me returns active enterprise sponsor", async ({ request }) => {
     const res = await request.get(`${FN_URL}?action=me`, { headers: headers() });

@@ -18,13 +18,11 @@ interface SocialMediaKitProps {
   onCreditsUsed: () => void;
 }
 
-const platformIcons: Record<string, string> = {
-  instagram: "📸",
+const platformIcons: Record<string, string> = { instagram: "📸",
   twitter: "🐦",
   linkedin: "💼",
   tiktok: "🎵",
-  facebook: "📘",
-};
+  facebook: "📘" };
 
 const SocialMediaKit = ({ credits, onBack, onCreditsUsed }: SocialMediaKitProps) => {
   const { toast } = useToast();
@@ -49,8 +47,7 @@ const SocialMediaKit = ({ credits, onBack, onCreditsUsed }: SocialMediaKitProps)
     try {
       setLoading(true);
       const res = await supabase.functions.invoke("brand-ai", {
-        body: { action: "social-media-kit", brandName, industry, tone, targetAudience },
-      });
+        body: { action: "social-media-kit", brandName, industry, tone, targetAudience } });
 
       if (res.error) throw res.error;
       if (res.data?.error) throw new Error(res.data.error);

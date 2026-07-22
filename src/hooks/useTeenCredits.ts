@@ -4,14 +4,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 // Per-action credit costs for Teen modules
-export const TEEN_CREDIT_COSTS = {
-  homework_pro: 4,
+export const TEEN_CREDIT_COSTS = { homework_pro: 4,
   essay_coach: 5,
   mental_wellness: 3,
   study_planner: 3,
   skill_builder: 4,
-  social_coach: 3,
-} as const;
+  social_coach: 3 } as const;
 
 export type TeenModuleKey = keyof typeof TEEN_CREDIT_COSTS;
 
@@ -30,8 +28,7 @@ export function useTeenCredits(module?: TeenModuleKey) {
         .maybeSingle();
       return data || { credits_remaining: 0, total_credits_purchased: 0 };
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const balance = data?.credits_remaining ?? 0;
   const cost = module ? TEEN_CREDIT_COSTS[module] : 0;
@@ -39,8 +36,7 @@ export function useTeenCredits(module?: TeenModuleKey) {
 
   const purchase = async (credits: number) => {
     const { data: res, error } = await supabase.functions.invoke("create-checkout", {
-      body: { credits, creditType: "teen_hub" },
-    });
+      body: { credits, creditType: "teen_hub" } });
     if (error || !res?.url) {
       toast.error("Failed to start checkout");
       return null;

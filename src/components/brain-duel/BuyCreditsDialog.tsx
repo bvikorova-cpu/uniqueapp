@@ -1,11 +1,9 @@
 import { useState } from 'react';
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -21,29 +19,23 @@ interface BuyCreditsDialogProps {
 }
 
 const CREDIT_PACKAGES = [
-  {
-    credits: 100,
+  { credits: 100,
     price: '€2.99',
     priceId: 'price_1SSd4iGaXSfGtYFtv9AoBSDD',
     popular: false,
-    icon: '🧠',
-  },
-  {
-    credits: 500,
+    icon: '🧠' },
+  { credits: 500,
     price: '€9.99',
     priceId: 'price_1SSd4jGaXSfGtYFtrF2pSCnX',
     popular: true,
     savings: 'Save 33%',
-    icon: '⚡',
-  },
-  {
-    credits: 2000,
+    icon: '⚡' },
+  { credits: 2000,
     price: '€29.99',
     priceId: 'price_1SSd4kGaXSfGtYFtNZwDEepN',
     popular: false,
     savings: 'Save 50%',
-    icon: '👑',
-  },
+    icon: '👑' },
 ];
 
 export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) => {
@@ -53,8 +45,7 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
     setLoading(priceId);
     try {
       const { data, error } = await supabase.functions.invoke('create-brain-duel-payment', {
-        body: { priceId },
-      });
+        body: { priceId } });
 
       if (error) throw error;
 

@@ -2,20 +2,16 @@ import { useRef, useState } from "react";
 import { MessageCircle, Send, MoreHorizontal, ExternalLink, BellOff, Bell, User, Trash2, Flag, Phone, Video, Search, Image, Smile, ThumbsUp, Loader2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
+  DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -47,23 +43,19 @@ export const MessageButton = ({ userId, userName, userAvatar }: MessageButtonPro
     fileInputRef.current?.click();
   };
 
-  const handleImageSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleImageSelected = async (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
       toast({
         title: "Invalid file",
         description: "Please select an image.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
+    if (file.size > 5 * 1024 * 1024) { toast({
         title: "File too large",
         description: "Image must be under 5 MB.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     setUploadingImage(true);
@@ -84,12 +76,10 @@ export const MessageButton = ({ userId, userName, userAvatar }: MessageButtonPro
         .getPublicUrl(path);
       sendMessage({ receiverId: userId, content: urlData.publicUrl });
       toast({ title: "Image sent" });
-    } catch (err: any) {
-      toast({
+    } catch (err: any) { toast({
         title: "Upload failed",
         description: err.message ?? "Could not upload image.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setUploadingImage(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -100,14 +90,12 @@ export const MessageButton = ({ userId, userName, userAvatar }: MessageButtonPro
     setNewMessage((prev) => prev + emoji);
   };
 
-  const handleSend = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSend = (e: React.FormEvent) => { e.preventDefault();
     if (!newMessage.trim()) return;
     
     sendMessage({
       receiverId: userId,
-      content: newMessage.trim(),
-    });
+      content: newMessage.trim() });
     setNewMessage("");
   };
 
@@ -122,8 +110,7 @@ export const MessageButton = ({ userId, userName, userAvatar }: MessageButtonPro
       title: isMuted ? "Notifications enabled" : "Notifications muted",
       description: isMuted 
         ? `You will receive notifications from ${userName}` 
-        : `You won't receive notifications from ${userName}`,
-    });
+        : `You won't receive notifications from ${userName}` });
   };
 
   const handleViewProfile = () => {
@@ -131,25 +118,19 @@ export const MessageButton = ({ userId, userName, userAvatar }: MessageButtonPro
     navigate(`/profile/${userId}`);
   };
 
-  const handleDeleteConversation = () => {
-    toast({
+  const handleDeleteConversation = () => { toast({
       title: "Conversation deleted",
-      description: "This conversation has been removed",
-    });
+      description: "This conversation has been removed" });
   };
 
-  const handleReport = () => {
-    toast({
+  const handleReport = () => { toast({
       title: "Report submitted",
-      description: "Thank you for your feedback",
-    });
+      description: "Thank you for your feedback" });
   };
 
-  const handleQuickReaction = () => {
-    sendMessage({
+  const handleQuickReaction = () => { sendMessage({
       receiverId: userId,
-      content: "👍",
-    });
+      content: "👍" });
   };
 
   return (

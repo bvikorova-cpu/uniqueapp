@@ -15,13 +15,11 @@ import { ArrowLeft } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CATEGORIES = ["construction", "repairs", "cleaning", "gardening", "technology", "teaching", "creative", "other"] as const;
 
-const Schema = z.object({
-  title: z.string().trim().min(5, "At least 5 characters").max(120),
+const Schema = z.object({ title: z.string().trim().min(5, "At least 5 characters").max(120),
   description: z.string().trim().min(20, "At least 20 characters").max(2000),
   category: z.enum(CATEGORIES),
   price_per_hour: z.coerce.number().min(1, "Min 1 €").max(10000),
-  location: z.string().trim().max(120).optional().or(z.literal("")),
-});
+  location: z.string().trim().max(120).optional().or(z.literal("")) });
 
 export default function SkillsMarketplaceCreate() {
   const { user } = useAuth();
@@ -56,16 +54,14 @@ export default function SkillsMarketplaceCreate() {
 
       const { data, error } = await supabase
         .from("skill_offerings")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           title: parsed.data.title,
           description: parsed.data.description,
           category: parsed.data.category,
           price_per_hour: parsed.data.price_per_hour,
           location: parsed.data.location || null,
           image_url,
-          is_active: true,
-        })
+          is_active: true })
         .select("id")
         .single();
       if (error) throw error;

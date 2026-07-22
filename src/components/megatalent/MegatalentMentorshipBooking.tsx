@@ -88,8 +88,7 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
     setReleaseStatus((prev) => ({ ...prev, [bookingId]: "loading" }));
     setReleasing(bookingId);
     const { data, error } = await supabase.functions.invoke("mt-release-funds", {
-      body: { kind: "mentorship", id: bookingId },
-    });
+      body: { kind: "mentorship", id: bookingId } });
     setReleasing(null);
     if (error || (data as any)?.error) {
       setReleaseStatus((prev) => ({ ...prev, [bookingId]: "error" }));
@@ -113,12 +112,10 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
     setSubmitting(true);
     const { data: booking, error } = await (supabase as any)
       .from("mt_mentorship_bookings")
-      .insert({
-        mentor_id: bookingMentor.id,
+      .insert({ mentor_id: bookingMentor.id,
         student_id: userId,
         price_cents: bookingMentor.hourly_price_cents,
-        message: bookingMessage.trim() || null,
-      })
+        message: bookingMessage.trim() || null })
       .select("id")
       .single();
     if (error || !booking) {
@@ -127,8 +124,7 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
       return;
     }
     const { data: co, error: coErr } = await supabase.functions.invoke("mt-checkout", {
-      body: { kind: "mentorship", id: booking.id },
-    });
+      body: { kind: "mentorship", id: booking.id } });
     setSubmitting(false);
     if (coErr || !(co as any)?.url) {
       toast.error("Checkout failed", { description: coErr?.message || (co as any)?.error });
@@ -144,14 +140,12 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
       return;
     }
     setSubmitting(true);
-    const { error } = await (supabase as any).from("mt_mentors").insert({
-      user_id: userId,
+    const { error } = await (supabase as any).from("mt_mentors").insert({ user_id: userId,
       display_name: applyForm.display_name.trim(),
       expertise: applyForm.expertise.trim(),
       bio: applyForm.bio.trim() || null,
       avatar_emoji: applyForm.emoji || "🎓",
-      hourly_price_cents: Math.max(100, Math.round(applyForm.price * 100)),
-    });
+      hourly_price_cents: Math.max(100, Math.round(applyForm.price * 100)) });
     setSubmitting(false);
     if (error) {
       toast.error("Application failed", { description: error.message });

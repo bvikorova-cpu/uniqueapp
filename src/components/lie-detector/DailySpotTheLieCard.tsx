@@ -21,12 +21,10 @@ export const DailySpotTheLieCard = () => {
   const attempt = data?.attempt;
   const done = !!attempt || !!result;
 
-  const onPick = async (i: number) => {
-    if (done || !ch) return;
+  const onPick = async (i: number) => { if (done || !ch) return;
     setPicked(i);
     const res = await submit.mutateAsync({
-      challenge_id: ch.id, selected_index: i, time_taken_ms: Date.now() - startedAt,
-    });
+      challenge_id: ch.id, selected_index: i, time_taken_ms: Date.now() - startedAt });
     setResult(res);
     refetch();
   };

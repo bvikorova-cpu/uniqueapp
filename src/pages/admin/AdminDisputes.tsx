@@ -8,22 +8,18 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Table,
+  DialogTitle } from "@/components/ui/dialog";
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableRow } from "@/components/ui/table";
 import { format, formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 
@@ -43,16 +39,14 @@ interface DisputeRow {
   created_at: string;
 }
 
-const STATUS_VARIANTS: Record<string, "default" | "destructive" | "secondary" | "outline"> = {
-  warning_needs_response: "destructive",
+const STATUS_VARIANTS: Record<string, "default" | "destructive" | "secondary" | "outline"> = { warning_needs_response: "destructive",
   warning_under_review: "secondary",
   warning_closed: "outline",
   needs_response: "destructive",
   under_review: "secondary",
   charge_refunded: "outline",
   won: "default",
-  lost: "destructive",
-};
+  lost: "destructive" };
 
 function StatusBadge({ status }: { status: string }) {
   return (
@@ -62,11 +56,9 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function EvidenceDialog({
-  dispute,
+function EvidenceDialog({ dispute,
   onClose,
-  onSaved,
-}: {
+  onSaved }: {
   dispute: DisputeRow;
   onClose: () => void;
   onSaved: () => void;
@@ -83,14 +75,12 @@ function EvidenceDialog({
   const [adminNotes, setAdminNotes] = useState(dispute.admin_notes ?? "");
   const [busy, setBusy] = useState(false);
 
-  const buildEvidence = () => ({
-    product_description: productDescription || undefined,
+  const buildEvidence = () => ({ product_description: productDescription || undefined,
     customer_communication: customerCommunication || undefined,
     service_date: serviceDate || undefined,
     shipping_tracking_number: shippingTracking || undefined,
     refund_policy: refundPolicy || undefined,
-    uncategorized_text: uncategorized || undefined,
-  });
+    uncategorized_text: uncategorized || undefined });
 
   const save = async (submit: boolean) => {
     setBusy(true);

@@ -14,20 +14,17 @@ export type SkillSwapParityAction =
 
 export const SKILL_SWAP_PARITY_COST = 6;
 
-export const useSkillSwapParity = () => {
-  const qc = useQueryClient();
+export const useSkillSwapParity = () => { const qc = useQueryClient();
 
   const run = useMutation({
     mutationFn: async ({
       action,
-      payload,
-    }: {
+      payload }: {
       action: SkillSwapParityAction;
       payload: Record<string, unknown>;
     }) => {
       const result = await invokeOrThrow("skill-swap-parity", {
-        body: { action, payload },
-      });
+        body: { action, payload } });
       if (result?.requiresPayment) throw new Error("INSUFFICIENT_CREDITS");
       return result;
     },
@@ -40,13 +37,10 @@ export const useSkillSwapParity = () => {
       } else {
         toast.error(e.message || "Failed to generate result");
       }
-    },
-  });
+    } });
 
-  return {
-    run: run.mutateAsync,
+  return { run: run.mutateAsync,
     isRunning: run.isPending,
     lastResult: run.data?.result,
-    lastAction: run.variables?.action,
-  };
+    lastAction: run.variables?.action };
 };

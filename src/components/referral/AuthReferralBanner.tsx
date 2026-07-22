@@ -24,16 +24,14 @@ export function AuthReferralBanner() {
       const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
       fetch(`https://${projectId}.supabase.co/functions/v1/track-referral-click?code=${encodeURIComponent(code)}`, {
         method: "POST",
-        headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
-      }).catch(() => {});
+        headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY } }).catch(() => {});
     } catch { /* ignore */ }
     (async () => {
       try {
         const { data } = await supabase.functions.invoke("get-referrer-info", {
           method: "GET" as any,
           // @ts-expect-error querystring is not part of typed invoke options
-          query: { code },
-        });
+          query: { code } });
         // Fallback: invoke doesn't support query — fetch directly via URL
         if (!data) throw new Error("retry");
         setInfo(data as ReferrerInfo);
@@ -42,8 +40,7 @@ export function AuthReferralBanner() {
           const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
           const url = `https://${projectId}.supabase.co/functions/v1/get-referrer-info?code=${encodeURIComponent(code)}`;
           const res = await fetch(url, {
-            headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
-          });
+            headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY } });
           if (res.ok) setInfo(await res.json());
         } catch {
           /* silent */

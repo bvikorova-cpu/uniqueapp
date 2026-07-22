@@ -24,8 +24,7 @@ export function GroupInsightsPanel({ groupId }: Props) {
         .order("day", { ascending: false });
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   const totals = insights.reduce(
     (acc, r: any) => {
@@ -38,9 +37,7 @@ export function GroupInsightsPanel({ groupId }: Props) {
   );
 
   const handleRefresh = async () => {
-    const { error } = await supabase.rpc("aggregate_group_insights", {
-      _day: format(new Date(), "yyyy-MM-dd"),
-    });
+    const { error } = await supabase.rpc("aggregate_group_insights", { _day: format(new Date(), "yyyy-MM-dd") });
     if (error) {
       toast.error(error.message);
       return;

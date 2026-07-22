@@ -1,18 +1,14 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
-import {
-  CLUB_SIGNUP_AI_CREDITS,
+import { CLUB_SIGNUP_AI_CREDITS,
   CLUB_REFERRAL_CREDIT_EUR,
   contributeToGoodFund,
-  grantClubAiCredits,
-} from "../_shared/club-perks.ts";
+  grantClubAiCredits } from "../_shared/club-perks.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -32,13 +28,9 @@ serve(async (req) => {
     if (!uData.user) throw new Error("Not authenticated");
     const user = uData.user;
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ["subscription", "customer", "shipping_details", "line_items", "customer_details"],
-    });
+    const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["subscription", "customer", "shipping_details", "line_items", "customer_details"] });
 
     if (session.payment_status !== "paid" && session.status !== "complete") {
       return new Response(
@@ -90,8 +82,7 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle<{ id: string; is_founding: boolean; member_number: number }>();
 
-    const updatePayload: Record<string, unknown> = {
-      tier,
+    const updatePayload: Record<string, unknown> = { tier,
       status: "active",
       stripe_customer_id: customerId,
       stripe_subscription_id: sub?.id ?? null,
@@ -103,10 +94,8 @@ serve(async (req) => {
         ? {
             recipient_name: recipientName,
             phone,
-            shipping_note: shippingNote,
-          }
-        : {}),
-    };
+            shipping_note: shippingNote }
+        : {}) };
 
     let membershipId: string;
     if (existing) {
@@ -130,13 +119,11 @@ serve(async (req) => {
     // ── Perk 1: signup Good Fund contribution (10 % of amount_total) ─────────
     const amountTotal = session.amount_total ?? 0;
     const contributionEur = Math.round(amountTotal * 0.10) / 100;
-    if (contributionEur > 0) {
-      await contributeToGoodFund(admin, {
+    if (contributionEur > 0) { await contributeToGoodFund(admin, {
         membershipId,
         amountEur: contributionEur,
         source: "signup",
-        stripeEventId: session.id,
-      });
+        stripeEventId: session.id });
     }
 
     // ── Perk 2: welcome AI credits (idempotent per membership) ───────────────
@@ -146,8 +133,7 @@ serve(async (req) => {
       perk: "signup_ai_credits",
       periodKey: `signup:${membershipId}`,
       amount: CLUB_SIGNUP_AI_CREDITS,
-      stripeEventId: session.id,
-    });
+      stripeEventId: session.id });
 
     // ── Perk 3: referral reward (€5 credit to referrer) ──────────────────────
     if (referralCode) {
@@ -160,18 +146,14 @@ serve(async (req) => {
         const referrerId = refUser.user_id;
         const { error: refErr } = await admin
           .from("club_referrals")
-          .insert({
-            referrer_user_id: referrerId,
+          .insert({ referrer_user_id: referrerId,
             referred_membership_id: membershipId,
-            credit_awarded_eur: CLUB_REFERRAL_CREDIT_EUR,
-          });
-        if (!refErr) {
-          await admin.from("notifications").insert({
+            credit_awarded_eur: CLUB_REFERRAL_CREDIT_EUR });
+        if (!refErr) { await admin.from("notifications").insert({
             user_id: referrerId,
             type: "club_referral",
             title: "🎁 +€5 referral credit",
-            message: "Someone joined the Unique VIP Club with your invite link.",
-          }).then(() => {}).catch(() => {});
+            message: "Someone joined the Unique VIP Club with your invite link." }).then(() => {}).catch(() => {});
         }
       }
     }

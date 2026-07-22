@@ -35,8 +35,7 @@ export const LIFE_EVENT_LABELS: Record<LifeEventKind, { label: string; emoji: st
   new_pet: { label: "New Pet", emoji: "🐾" },
   travel: { label: "Travelled", emoji: "✈️" },
   milestone: { label: "Milestone", emoji: "🏆" },
-  other: { label: "Life Event", emoji: "✨" },
-};
+  other: { label: "Life Event", emoji: "✨" } };
 
 const KEY = ["life-events"] as const;
 
@@ -55,8 +54,7 @@ export function useLifeEvents(profileUserId: string | undefined) {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as LifeEvent[];
-    },
-  });
+    } });
 
   const create = useMutation({
     mutationFn: async (input: Omit<LifeEvent, "id" | "created_at" | "post_id"> & { post_id?: string | null }) => {
@@ -67,8 +65,7 @@ export function useLifeEvents(profileUserId: string | undefined) {
       toast.success("Life event added");
       qc.invalidateQueries({ queryKey: KEY });
     },
-    onError: (e: any) => toast.error(e.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e.message ?? "Failed") });
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
@@ -77,8 +74,7 @@ export function useLifeEvents(profileUserId: string | undefined) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: KEY });
-    },
-  });
+    } });
 
   return { list, create, remove };
 }

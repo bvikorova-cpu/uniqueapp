@@ -22,8 +22,8 @@ const categories = ["All", "Nature", "Fantasy", "Sci-Fi", "Portrait", "Abstract"
 const curatedPrompts: PromptItem[] = [
   { title: "Aurora Borealis", prompt: "Northern lights dancing over a frozen lake in Iceland, long exposure photography, vivid greens and purples reflecting on ice, 4K ultra detailed", category: "Nature", difficulty: "Easy" },
   { title: "Steampunk Airship", prompt: "Massive Victorian steampunk airship flying through golden clouds at sunset, intricate brass mechanisms, oil painting style, dramatic lighting", category: "Fantasy", difficulty: "Medium" },
-  { title: "Cyberpunk Samurai", prompt: "Neon-lit cyberpunk samurai warrior standing on a rainy rooftop in Neo-Tokyo, holographic katana, cinematic wide shot, Blade Runner aesthetic", category: "Sci-Fi", difficulty: "Hard" },
-  { title: "Watercolor Cafe", prompt: "Charming Parisian cafe on a rainy afternoon, watercolor painting style, soft warm tones, people with umbrellas, impressionist feel", category: "Architecture", difficulty: "Easy" },
+  { title: "Cyberpunk Samurai", prompt: "Neon-lit cyberpunk samurai warrior standing on a rainy rooftop in Neo-Metropolis, holographic katana, cinematic wide shot, Blade Runner aesthetic", category: "Sci-Fi", difficulty: "Hard" },
+  { title: "Watercolor Cafe", prompt: "Charming cafe on a rainy afternoon, watercolor painting style, soft warm tones, people with umbrellas, impressionist feel", category: "Architecture", difficulty: "Easy" },
   { title: "Crystal Dragon", prompt: "Magnificent crystal dragon emerging from a geode cave, prismatic light refractions, fantasy art, ultra detailed scales and wings", category: "Fantasy", difficulty: "Hard" },
   { title: "Macro Dewdrop", prompt: "Extreme macro shot of a morning dewdrop on a spider web, entire garden reflected inside, photorealistic, bokeh background", category: "Nature", difficulty: "Medium" },
 ];

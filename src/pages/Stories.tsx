@@ -7,16 +7,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { ArrowLeft, Heart, Send, X, Trash2, Eye } from "lucide-react";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ViewersList } from "@/components/story/ViewersList";
@@ -91,26 +89,21 @@ export default function Stories() {
         .in("story_id", storiesData?.map((s) => s.id) || []);
 
       // Combine data
-      return (storiesData || []).map((story) => ({
-        ...story,
+      return (storiesData || []).map((story) => ({ ...story,
         profiles: profile,
-        story_polls: polls?.filter((p) => p.story_id === story.id) || [],
-      })) as Story[];
+        story_polls: polls?.filter((p) => p.story_id === story.id) || [] })) as Story[];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const currentStory = stories[currentIndex];
 
   // Record view
-  useEffect(() => {
-    if (!currentStory || !user) return;
+  useEffect(() => { if (!currentStory || !user) return;
 
     const recordView = async () => {
       await supabase.from("story_views").insert({
         story_id: currentStory.id,
-        user_id: user.id,
-      });
+        user_id: user.id });
     };
 
     recordView();
@@ -197,21 +190,17 @@ export default function Stories() {
       }
 
       // Send message with story reference
-      const { error: messageError } = await supabase.from("messages").insert({
-        conversation_id: conversationId,
+      const { error: messageError } = await supabase.from("messages").insert({ conversation_id: conversationId,
         sender_id: user.id,
         content: messageText,
-        story_id: currentStory.id,
-      });
+        story_id: currentStory.id });
 
       if (messageError) throw messageError;
 
       // Also save as story reaction
-      await supabase.from("story_reactions").insert({
-        story_id: currentStory.id,
+      await supabase.from("story_reactions").insert({ story_id: currentStory.id,
         user_id: user.id,
-        reaction: messageText,
-      });
+        reaction: messageText });
     },
     onSuccess: () => {
       toast.success("Message sent!");
@@ -223,27 +212,23 @@ export default function Stories() {
       } else {
         toast.error("Error sending message");
       }
-    },
-  });
+    } });
 
   // Vote on poll
   const voteMutation = useMutation({
     mutationFn: async ({ pollId, vote }: { pollId: string; vote: "a" | "b" }) => {
       if (!user) throw new Error("Not logged in");
 
-      const { error } = await supabase.from("story_poll_votes").insert({
-        poll_id: pollId,
+      const { error } = await supabase.from("story_poll_votes").insert({ poll_id: pollId,
         user_id: user.id,
-        vote,
-      });
+        vote });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["stories", userId] });
       toast.success("Vote recorded!");
-    },
-  });
+    } });
 
   // Delete story
   const deleteStoryMutation = useMutation({
@@ -277,8 +262,7 @@ export default function Stories() {
     onError: (error) => {
       toast.error("Error deleting story");
       console.error(error);
-    },
-  });
+    } });
 
   if (isLoading) {
     return (
@@ -313,8 +297,7 @@ export default function Stories() {
             <div
               className="h-full bg-white transition-all duration-100"
               style={{
-                width: idx < currentIndex ? "100%" : idx === currentIndex ? `${progress}%` : "0%",
-              }}
+                width: idx < currentIndex ? "100%" : idx === currentIndex ? `${progress}%` : "0%" }}
             />
           </div>
         ))}
@@ -330,10 +313,9 @@ export default function Stories() {
           <div className="text-white">
             <p className="font-semibold">{currentStory.profiles?.full_name}</p>
             <p className="text-xs opacity-75">
-              {new Date(currentStory.created_at).toLocaleTimeString("sk-SK", {
+              { new Date(currentStory.created_at).toLocaleTimeString("sk-SK", {
                 hour: "2-digit",
-                minute: "2-digit",
-              })}
+                minute: "2-digit" })}
             </p>
           </div>
         </div>
@@ -410,8 +392,7 @@ export default function Stories() {
                 <div
                   className="absolute inset-0 bg-primary/20"
                   style={{
-                    width: totalVotes > 0 ? `${(poll.votes_a / totalVotes) * 100}%` : "0%",
-                  }}
+                    width: totalVotes > 0 ? `${(poll.votes_a / totalVotes) * 100}%` : "0%" }}
                 />
                 <div className="relative flex justify-between items-center">
                   <span>{poll.option_a}</span>
@@ -429,8 +410,7 @@ export default function Stories() {
                 <div
                   className="absolute inset-0 bg-primary/20"
                   style={{
-                    width: totalVotes > 0 ? `${(poll.votes_b / totalVotes) * 100}%` : "0%",
-                  }}
+                    width: totalVotes > 0 ? `${(poll.votes_b / totalVotes) * 100}%` : "0%" }}
                 />
                 <div className="relative flex justify-between items-center">
                   <span>{poll.option_b}</span>

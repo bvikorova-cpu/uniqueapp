@@ -36,25 +36,21 @@ export function startWallTrace(opts: { cacheHit: boolean }) {
   console.log("[WallPerf] start", { cacheHit });
 }
 
-export function markWallFirstPaint() {
-  if (firstPaintAt !== 0 || mountAt === 0) return;
+export function markWallFirstPaint() { if (firstPaintAt !== 0 || mountAt === 0) return;
   firstPaintAt = now();
   // eslint-disable-next-line no-console
   console.log("[WallPerf] first-paint", {
     ms: Math.round(firstPaintAt - mountAt),
-    cacheHit,
-  });
+    cacheHit });
   maybeReport();
 }
 
-export function markWallInteractive() {
-  if (interactiveAt !== 0 || mountAt === 0) return;
+export function markWallInteractive() { if (interactiveAt !== 0 || mountAt === 0) return;
   interactiveAt = now();
   // eslint-disable-next-line no-console
   console.log("[WallPerf] interactive", {
     ms: Math.round(interactiveAt - mountAt),
-    rpcCount,
-  });
+    rpcCount });
   maybeReport();
 }
 
@@ -94,8 +90,7 @@ function maybeReport() {
     slowestRpc: [...rpcSamples]
       .sort((a, b) => b.ms - a.ms)
       .slice(0, 5)
-      .map((s) => ({ label: s.label, ms: Math.round(s.ms), ok: s.ok })),
-  };
+      .map((s) => ({ label: s.label, ms: Math.round(s.ms), ok: s.ok })) };
   // eslint-disable-next-line no-console
   console.log("[WallPerf] report", summary);
 }

@@ -46,8 +46,7 @@ export function GratitudeJournal() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
-          body: JSON.stringify({ messages: [{ role: "user", content: `Analyze this gratitude journal entry and provide encouraging insights in 2-3 sentences: "${entry}"` }] }),
-        }
+          body: JSON.stringify({ messages: [{ role: "user", content: `Analyze this gratitude journal entry and provide encouraging insights in 2-3 sentences: "${entry}"` }] }) }
       );
       if (!response.ok || !response.body) throw new Error("Failed to analyze");
       const reader = response.body.getReader();

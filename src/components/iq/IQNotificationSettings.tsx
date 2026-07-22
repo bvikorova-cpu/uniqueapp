@@ -15,13 +15,11 @@ interface Prefs {
   preferred_hour: number;
 }
 
-const DEFAULTS: Prefs = {
-  weekly_digest: true,
+const DEFAULTS: Prefs = { weekly_digest: true,
   streak_reminder: true,
   duel_invite: true,
   daily_challenge: true,
-  preferred_hour: 9,
-};
+  preferred_hour: 9 };
 
 export default function IQNotificationSettings() {
   const [uid, setUid] = useState<string | null>(null);
@@ -39,13 +37,11 @@ export default function IQNotificationSettings() {
         .select("*")
         .eq("user_id", session.user.id)
         .maybeSingle();
-      if (data) setPrefs({
-        weekly_digest: data.weekly_digest,
+      if (data) setPrefs({ weekly_digest: data.weekly_digest,
         streak_reminder: data.streak_reminder,
         duel_invite: data.duel_invite,
         daily_challenge: data.daily_challenge,
-        preferred_hour: data.preferred_hour,
-      });
+        preferred_hour: data.preferred_hour });
       setLoading(false);
     })();
   }, []);

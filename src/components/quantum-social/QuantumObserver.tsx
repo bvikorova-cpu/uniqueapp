@@ -36,8 +36,7 @@ const QuantumObserver = ({ onBack }: { onBack: () => void }) => {
     if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: "observer_mode", productName: "Quantum Observer Mode" },
-      });
+        body: { product: "observer_mode", productName: "Quantum Observer Mode" } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
     } catch (e: any) {

@@ -24,8 +24,7 @@ export default function AIPlatingCoach({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Plating Coach");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are a Michelin-star chef specializing in food presentation and plating. For the dish described, provide: 1) Plate selection (shape, color, size), 2) Color composition strategy, 3) Step-by-step plating instructions, 4) Sauce placement techniques (dots, swoosh, pool), 5) Garnish recommendations (micro greens, edible flowers, etc.), 6) Height and dimension tips, 7) Photography angle suggestions for Instagram. Dish: ${input}` },
-      });
+        body: { prompt: `You are a Michelin-star chef specializing in food presentation and plating. For the dish described, provide: 1) Plate selection (shape, color, size), 2) Color composition strategy, 3) Step-by-step plating instructions, 4) Sauce placement techniques (dots, swoosh, pool), 5) Garnish recommendations (micro greens, edible flowers, etc.), 6) Height and dimension tips, 7) Photography angle suggestions for Instagram. Dish: ${input}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }

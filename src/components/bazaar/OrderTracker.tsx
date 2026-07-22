@@ -28,15 +28,13 @@ const steps: Step[] = [
   { key: 'completed', label: 'Completed', icon: CheckCircle, description: 'Funds released' },
 ];
 
-const statusOrder: Record<OrderStatus, number> = {
-  pending: 0,
+const statusOrder: Record<OrderStatus, number> = { pending: 0,
   paid: 1,
   shipped: 2,
   delivered: 3,
   completed: 4,
   disputed: -1,
-  refunded: -2,
-};
+  refunded: -2 };
 
 export function OrderTracker({ 
   status, 

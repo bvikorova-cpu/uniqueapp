@@ -38,8 +38,7 @@ export const usePhotoCredits = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   // Admin always has unlimited credits
   const effectiveCredits = isAdmin && credits
@@ -66,8 +65,7 @@ export const usePhotoCredits = () => {
       } else {
         toast.error("Error restoring photo: " + error.message);
       }
-    },
-  });
+    } });
 
   const purchaseCredits = async (credits: number, price: number) => {
     try {
@@ -87,9 +85,7 @@ export const usePhotoCredits = () => {
           productName: `Photo Restoration Credits (${credits})`,
           metadata: { credits: String(credits), credit_type: 'photo' },
           successUrl: `${origin}/photo-restoration?payment=success&product_type=photo_credits&session_id={CHECKOUT_SESSION_ID}`,
-          cancelUrl: `${origin}/photo-restoration?payment=canceled`,
-        },
-      });
+          cancelUrl: `${origin}/photo-restoration?payment=canceled` } });
 
       if (error) throw error;
 
@@ -102,11 +98,9 @@ export const usePhotoCredits = () => {
     }
   };
 
-  return {
-    credits: effectiveCredits,
+  return { credits: effectiveCredits,
     isLoading,
     restorePhoto: restorePhoto.mutate,
     isRestoring: restorePhoto.isPending,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

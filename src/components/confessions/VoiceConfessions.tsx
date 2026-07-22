@@ -129,32 +129,26 @@ export const VoiceConfessions = () => {
 
 Confession: "${confessionText}"
 
-Respond in markdown format, be compassionate and brief.`,
-        },
-      });
+Respond in markdown format, be compassionate and brief.` } });
 
       const analysis = aiData?.plan?.next_life_goal ||
         aiData?.plan?.soul_missions?.map((m: any) => m.mission).join("\n\n") ||
         "Analysis processed.";
 
-      const newEntry: VoiceEntry = {
-        id: Date.now().toString(),
+      const newEntry: VoiceEntry = { id: Date.now().toString(),
         text: confessionText,
         audioUrl: storedAudioUrl,
         duration: recordingTime,
         timestamp: new Date().toISOString(),
-        aiTranscription: analysis,
-      };
+        aiTranscription: analysis };
 
       setEntries(prev => [newEntry, ...prev]);
 
       // Also save to confessions table
-      await supabase.from("confessions").insert({
-        user_id: user.id,
+      await supabase.from("confessions").insert({ user_id: user.id,
         confession_text: confessionText,
         sin_category: "voice",
-        is_anonymous: true,
-      });
+        is_anonymous: true });
 
       setAudioBlob(null);
       setAudioUrl(null);

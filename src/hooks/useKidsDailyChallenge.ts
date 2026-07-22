@@ -31,8 +31,7 @@ export const useKidsDailyChallenge = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: progress, isLoading: progressLoading } = useQuery({
     queryKey: ['daily-progress', user?.id, today],
@@ -49,8 +48,7 @@ export const useKidsDailyChallenge = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: completion, isLoading: completionLoading } = useQuery({
     queryKey: ['challenge-completion', user?.id, challenge?.id],
@@ -67,13 +65,10 @@ export const useKidsDailyChallenge = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!user && !!challenge,
-  });
+    enabled: !!user && !!challenge });
 
-  return {
-    challenge,
+  return { challenge,
     progress,
     isCompleted: !!completion,
-    isLoading: challengeLoading || progressLoading || completionLoading,
-  };
+    isLoading: challengeLoading || progressLoading || completionLoading };
 };

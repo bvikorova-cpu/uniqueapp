@@ -57,13 +57,11 @@ export const RaceTrack3D = ({ participants, isRaceActive, onRaceComplete }: Race
           }
         });
 
-        if (allFinished) {
-          // Race complete - calculate results
+        if (allFinished) { // Race complete - calculate results
           const results = participants.map(p => ({
             id: p.id,
             position: 0,
-            time: Date.now() - raceStartTime,
-          })).sort((a, b) => {
+            time: Date.now() - raceStartTime })).sort((a, b) => {
             const aProgress = newProgress.get(a.id) || 0;
             const bProgress = newProgress.get(b.id) || 0;
             return bProgress - aProgress;

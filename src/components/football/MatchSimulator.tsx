@@ -82,8 +82,7 @@ export const MatchSimulator = ({ onBack }: { onBack: () => void }) => {
         coins_reward: reward,
         highlights: log.slice(0, 4),
         mvp: squadPlayers && squadPlayers.length > 0 ? squadPlayers.sort((a, b) => b.overall_rating - a.overall_rating)[0]?.name : undefined,
-        mvp_stats: `Squad rating ${squadRating} vs ${opponentRating}`,
-      };
+        mvp_stats: `Squad rating ${squadRating} vs ${opponentRating}` };
       setResult(matchResult);
 
       const won = homeScore > awayScore;

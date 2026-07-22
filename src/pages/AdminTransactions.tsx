@@ -73,11 +73,9 @@ const AdminTransactions = () => {
         profilesById = Object.fromEntries((profiles || []).map((p: any) => [p.id, p]));
       }
 
-      const enriched = txs.map((t) => ({
-        ...t,
+      const enriched = txs.map((t) => ({ ...t,
         seller_profile: profilesById[t.seller_id] || null,
-        buyer_profile: profilesById[t.buyer_id] || null,
-      }));
+        buyer_profile: profilesById[t.buyer_id] || null }));
 
       setTransactions(enriched as any);
     } catch (error) {

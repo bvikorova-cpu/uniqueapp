@@ -69,9 +69,7 @@ export default function VideoResumes() {
       const { error: upErr } = await supabase.storage.from("video-resumes").upload(path, file, { contentType: file.type });
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("video-resumes").getPublicUrl(path);
-      const { error: insErr } = await (supabase as any).from("video_resumes").insert({
-        user_id: userId, video_url: pub.publicUrl, title: title || file.name, is_public: isPublic,
-      });
+      const { error: insErr } = await (supabase as any).from("video_resumes").insert({ user_id: userId, video_url: pub.publicUrl, title: title || file.name, is_public: isPublic });
       if (insErr) throw insErr;
       toast.success("Video resume uploaded");
       setTitle("");

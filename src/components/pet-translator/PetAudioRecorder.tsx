@@ -62,10 +62,8 @@ export default function PetAudioRecorder({ onBack }: { onBack: () => void }) {
           action: "audio_translate",
           pet_type: petType,
           recording_duration: recordingTime,
-          description: `Live audio recording of a ${petType} for ${recordingTime} seconds. The user recorded their pet's sounds in real-time for translation.`,
-        },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+          description: `Live audio recording of a ${petType} for ${recordingTime} seconds. The user recorded their pet's sounds in real-time for translation.` },
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

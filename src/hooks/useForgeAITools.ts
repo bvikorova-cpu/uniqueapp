@@ -26,15 +26,13 @@ export function useForgeAITools(onCreditsRefresh?: () => void) {
     setLoading(action);
     try {
       const { data, error } = await supabase.functions.invoke("forge-ai-tools", {
-        body: { action, text, extra },
-      });
+        body: { action, text, extra } });
       if (error) throw error;
       if (data?.error === "INSUFFICIENT_CREDITS") {
         toast({
           title: "Not enough credits",
           description: `You need ${FORGE_AI_COST} credits for this action.`,
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return null;
       }
       if (data?.error) {

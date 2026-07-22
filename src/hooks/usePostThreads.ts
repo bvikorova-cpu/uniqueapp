@@ -39,14 +39,11 @@ export const usePostThreads = (postId?: string) => {
 
       return sortedPosts || [];
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
-  const addToThread = useMutation({
-    mutationFn: async ({
+  const addToThread = useMutation({ mutationFn: async ({
       parentPostId,
-      childPostId,
-    }: {
+      childPostId }: {
       parentPostId: string;
       childPostId: string;
     }) => {
@@ -60,11 +57,9 @@ export const usePostThreads = (postId?: string) => {
 
       const nextOrder = existing && existing.length > 0 ? existing[0].thread_order + 1 : 1;
 
-      const { error } = await supabase.from("post_threads").insert({
-        parent_post_id: parentPostId,
+      const { error } = await supabase.from("post_threads").insert({ parent_post_id: parentPostId,
         child_post_id: childPostId,
-        thread_order: nextOrder,
-      });
+        thread_order: nextOrder });
 
       if (error) throw error;
     },
@@ -74,14 +69,11 @@ export const usePostThreads = (postId?: string) => {
     },
     onError: () => {
       toast({ title: "Failed to add to thread", variant: "destructive" });
-    },
-  });
+    } });
 
-  const removeFromThread = useMutation({
-    mutationFn: async ({
+  const removeFromThread = useMutation({ mutationFn: async ({
       parentPostId,
-      childPostId,
-    }: {
+      childPostId }: {
       parentPostId: string;
       childPostId: string;
     }) => {
@@ -96,13 +88,10 @@ export const usePostThreads = (postId?: string) => {
     onSuccess: () => {
       toast({ title: "Removed from thread" });
       queryClient.invalidateQueries({ queryKey: ["post-thread"] });
-    },
-  });
+    } });
 
-  return {
-    threadPosts,
+  return { threadPosts,
     isLoading,
     addToThread: addToThread.mutate,
-    removeFromThread: removeFromThread.mutate,
-  };
+    removeFromThread: removeFromThread.mutate };
 };

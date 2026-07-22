@@ -1,12 +1,10 @@
 import { useState } from "react";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Heart, Pause, Gift, X } from "lucide-react";
 
@@ -25,14 +23,12 @@ interface WinBackDialogProps {
  * Step 2: 50% discount for next 3 months
  * Step 3: confirm cancel
  */
-export const WinBackDialog = ({
-  open,
+export const WinBackDialog = ({ open,
   onClose,
   onPause,
   onAcceptDiscount,
   onConfirmCancel,
-  cancelling,
-}: WinBackDialogProps) => {
+  cancelling }: WinBackDialogProps) => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
   const handleClose = () => {

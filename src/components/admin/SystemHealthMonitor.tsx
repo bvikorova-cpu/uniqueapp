@@ -26,23 +26,19 @@ export const SystemHealthMonitor = () => {
       // Database
       const t1 = performance.now();
       const { error: dbErr } = await (supabase as any).from("profiles_public").select("id").limit(1);
-      results.push({
-        name: "Database",
+      results.push({ name: "Database",
         status: dbErr ? "down" : "operational",
         latency: Math.round(performance.now() - t1),
-        icon: Database,
-      });
+        icon: Database });
 
       // Edge functions (ping a public/CORS-safe endpoint indirectly via auth call)
       const t2 = performance.now();
-      try {
-        await supabase.auth.getSession();
+      try { await supabase.auth.getSession();
         results.push({
           name: "Edge Functions",
           status: "operational",
           latency: Math.round(performance.now() - t2),
-          icon: Zap,
-        });
+          icon: Zap });
       } catch {
         results.push({ name: "Edge Functions", status: "degraded", latency: null, icon: Zap });
       }
@@ -50,22 +46,18 @@ export const SystemHealthMonitor = () => {
       // Storage
       const t3 = performance.now();
       const { error: stErr } = await supabase.storage.listBuckets();
-      results.push({
-        name: "Storage",
+      results.push({ name: "Storage",
         status: stErr ? "degraded" : "operational",
         latency: Math.round(performance.now() - t3),
-        icon: Cloud,
-      });
+        icon: Cloud });
 
       // Auth
       const t4 = performance.now();
       const { error: authErr } = await supabase.auth.getUser();
-      results.push({
-        name: "Auth",
+      results.push({ name: "Auth",
         status: authErr ? "degraded" : "operational",
         latency: Math.round(performance.now() - t4),
-        icon: Server,
-      });
+        icon: Server });
 
       setChecks(results);
     };

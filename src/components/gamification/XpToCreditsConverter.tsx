@@ -39,10 +39,8 @@ export const XpToCreditsConverter = ({ userId }: Props) => {
     if (!canConvert) return;
     setLoading(true);
     try {
-      const { data, error } = await (supabase as any).rpc("convert_xp_to_credits", {
-        p_xp_amount: xpCost,
-        p_target: target,
-      });
+      const { data, error } = await (supabase as any).rpc("convert_xp_to_credits", { p_xp_amount: xpCost,
+        p_target: target });
       if (error) throw error;
       toast.success(`Converted ${xpCost} XP → ${credits} ${TARGETS.find(t => t.id === target)?.label}!`);
       await refresh();

@@ -7,8 +7,7 @@ export const calculateXPForLevel = (level: number): number => {
   return Math.floor(100 * Math.pow(1.15, level - 1));
 };
 
-export const calculateLevelFromXP = (totalXP: number): { level: number; currentXP: number; xpForNextLevel: number } => {
-  let level = 1;
+export const calculateLevelFromXP = (totalXP: number): { level: number; currentXP: number; xpForNextLevel: number } => { let level = 1;
   let xpRemaining = totalXP;
   
   while (level < 100) {
@@ -17,8 +16,7 @@ export const calculateLevelFromXP = (totalXP: number): { level: number; currentX
       return {
         level,
         currentXP: xpRemaining,
-        xpForNextLevel: xpNeeded,
-      };
+        xpForNextLevel: xpNeeded };
     }
     xpRemaining -= xpNeeded;
     level++;
@@ -83,8 +81,7 @@ export const useSocialGiftsProgress = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Get all badges
   const { data: allBadges = [], isLoading: badgesLoading } = useQuery({
@@ -97,8 +94,7 @@ export const useSocialGiftsProgress = () => {
 
       if (error) throw error;
       return data as Badge[];
-    },
-  });
+    } });
 
   // Get user's earned badges
   const { data: earnedBadges = [], isLoading: earnedLoading } = useQuery({
@@ -114,8 +110,7 @@ export const useSocialGiftsProgress = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Award badge
   const awardBadge = useMutation({
@@ -131,8 +126,7 @@ export const useSocialGiftsProgress = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["social-gifts-user-badges"] });
-    },
-  });
+    } });
 
   // Add XP and update progress
   const addXP = useMutation({
@@ -144,12 +138,10 @@ export const useSocialGiftsProgress = () => {
       const newTotalXP = (currentProgress.total_xp || 0) + xp;
       const { level, currentXP } = calculateLevelFromXP(newTotalXP);
 
-      const updates: any = {
-        total_xp: newTotalXP,
+      const updates: any = { total_xp: newTotalXP,
         current_xp: currentXP,
         level,
-        updated_at: new Date().toISOString(),
-      };
+        updated_at: new Date().toISOString() };
 
       if (type === "gift_sent") {
         updates.gifts_sent = (currentProgress.gifts_sent || 0) + 1;
@@ -177,18 +169,15 @@ export const useSocialGiftsProgress = () => {
       if (data.newLevel > data.previousLevel) {
         toast({
           title: `🎉 Level Up! You're now level ${data.newLevel}!`,
-          description: "Keep sending gifts to level up more!",
-        });
+          description: "Keep sending gifts to level up more!" });
       }
-    },
-  });
+    } });
 
   const levelInfo = progress 
     ? calculateLevelFromXP(progress.total_xp || 0)
     : { level: 1, currentXP: 0, xpForNextLevel: 100 };
 
-  return {
-    progress,
+  return { progress,
     progressLoading,
     allBadges,
     earnedBadges,
@@ -196,6 +185,5 @@ export const useSocialGiftsProgress = () => {
     isLoading: progressLoading || badgesLoading || earnedLoading,
     awardBadge: awardBadge.mutate,
     addXP: addXP.mutate,
-    levelInfo,
-  };
+    levelInfo };
 };

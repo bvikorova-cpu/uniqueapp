@@ -18,15 +18,13 @@ interface Props {
  * Renders Hinge-style prompts, voice intro player, and social embeds
  * on a viewable dating profile card (used on swipe view / match preview).
  */
-export const ProfileExtrasDisplay = ({
-  prompts,
+export const ProfileExtrasDisplay = ({ prompts,
   voiceUrl,
   voiceDuration,
   spotifyUrl,
   instagramUrl,
   verified,
-  videoPrompts,
-}: Props) => {
+  videoPrompts }: Props) => {
   const hasAnything =
     (prompts && prompts.length) || voiceUrl || spotifyUrl || instagramUrl || verified || (videoPrompts && videoPrompts.length);
   if (!hasAnything) return null;

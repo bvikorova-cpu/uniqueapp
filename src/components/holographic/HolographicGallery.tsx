@@ -21,14 +21,12 @@ const GALLERY_AVATARS = [
   { id: 9, name: "VoidWalker", owner: "Nyx P.", style: "Shadow", likes: 234, views: 980, featured: false, level: 46 },
 ];
 
-const styleGradients: Record<string, string> = {
-  "Cyberpunk": "from-cyan-500/20 via-violet-500/10 to-pink-500/20",
+const styleGradients: Record<string, string> = { "Cyberpunk": "from-cyan-500/20 via-violet-500/10 to-pink-500/20",
   "Crystal": "from-blue-500/20 via-purple-500/10 to-indigo-500/20",
   "Shadow": "from-gray-800/40 via-purple-900/20 to-gray-700/30",
   "Cosmic": "from-indigo-500/20 via-blue-600/10 to-violet-500/20",
   "Bio-Organic": "from-emerald-500/20 via-green-600/10 to-teal-500/20",
-  "Mystic": "from-amber-500/20 via-orange-500/10 to-red-500/20",
-};
+  "Mystic": "from-amber-500/20 via-orange-500/10 to-red-500/20" };
 
 export const HolographicGallery = ({ onBack }: Props) => {
   const [filter, setFilter] = useState("all");

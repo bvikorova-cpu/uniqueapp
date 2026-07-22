@@ -31,16 +31,12 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
   useEffect(() => {
     let active = true;
     (async () => {
-      const { data } = await supabase.rpc("get_megatalent_tip_stats" as any, {
-        _creator_id: creatorId,
-      });
+      const { data } = await supabase.rpc("get_megatalent_tip_stats" as any, { _creator_id: creatorId });
       if (!active) return;
       const row = Array.isArray(data) ? data[0] : data;
-      if (row) {
-        setStats({
+      if (row) { setStats({
           count: Number(row.total_tips ?? 0),
-          total: Number(row.total_amount_cents ?? 0),
-        });
+          total: Number(row.total_amount_cents ?? 0) });
       }
     })();
     return () => {
@@ -56,14 +52,11 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
       (async () => {
         try {
           const { data, error } = await supabase.functions.invoke("verify-megatalent-tip", {
-            body: { sessionId: sid },
-          });
+            body: { sessionId: sid } });
           if (error) throw error;
-          if ((data as any)?.verified) {
-            toast({
+          if ((data as any)?.verified) { toast({
               title: "Thanks for your support!",
-              description: "Your tip has been delivered to the creator.",
-            });
+              description: "Your tip has been delivered to the creator." });
           }
         } catch (e: any) {
           console.error("verify-megatalent-tip", e);
@@ -81,43 +74,34 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
     }
   }, [searchParams, setSearchParams]);
 
-  const handleTip = async () => {
-    if (!user) {
+  const handleTip = async () => { if (!user) {
       toast({
         title: "Sign in required",
         description: "Sign in to send a tip.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     const finalAmount = custom ? Math.round(parseFloat(custom) * 100) : amount;
-    if (!Number.isFinite(finalAmount) || finalAmount < 100 || finalAmount > 50000) {
-      toast({
+    if (!Number.isFinite(finalAmount) || finalAmount < 100 || finalAmount > 50000) { toast({
         title: "Invalid amount",
         description: "Tips must be €1 – €500.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-megatalent-tip", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("create-megatalent-tip", { body: {
           creatorId,
           amountCents: finalAmount,
           message: message || null,
-          categorySlug: categorySlug ?? null,
-        },
-      });
+          categorySlug: categorySlug ?? null } });
       if (error) throw error;
       const url = (data as any)?.url;
       if (url) window.location.href = url;
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Tip failed",
         description: e?.message ?? "Unknown error",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

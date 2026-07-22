@@ -64,15 +64,13 @@ export const ConfessionRooms = () => {
       // Subscribe to real-time messages via Supabase Realtime
       channelRef.current = supabase
         .channel(`room-${activeRoom.id}`)
-        .on("broadcast", { event: "message" }, (payload: any) => {
-          const msg = payload.payload;
+        .on("broadcast", { event: "message" }, (payload: any) => { const msg = payload.payload;
           setMessages(prev => [...prev, {
             id: msg.id,
             text: msg.text,
             sender: msg.sender,
             timestamp: msg.timestamp,
-            isOwn: msg.senderId === userId,
-          }]);
+            isOwn: msg.senderId === userId }]);
         })
         .subscribe();
 
@@ -91,11 +89,9 @@ export const ConfessionRooms = () => {
         .from("confessions_public")
         .select("category", { count: "exact" });
 
-      setRooms(prev => prev.map(r => ({
-        ...r,
+      setRooms(prev => prev.map(r => ({ ...r,
         activeUsers: Math.floor(Math.random() * 15) + 1,
-        messageCount: Math.floor(Math.random() * 100) + (count || 0),
-      })));
+        messageCount: Math.floor(Math.random() * 100) + (count || 0) })));
     } catch {
       // Use defaults
     }
@@ -113,8 +109,7 @@ export const ConfessionRooms = () => {
         text: `Welcome to ${room.name}! All messages are anonymous. Be respectful and supportive.`,
         sender: "System",
         timestamp: new Date().toISOString(),
-        isOwn: false,
-      }
+        isOwn: false }
     ]);
   };
 
@@ -132,37 +127,29 @@ export const ConfessionRooms = () => {
     setSending(true);
     try {
       const anonymousName = `Soul-${userId.substring(0, 4).toUpperCase()}`;
-      const msgPayload = {
-        id: Date.now().toString(),
+      const msgPayload = { id: Date.now().toString(),
         text: newMessage.trim(),
         sender: anonymousName,
         senderId: userId,
-        timestamp: new Date().toISOString(),
-      };
+        timestamp: new Date().toISOString() };
 
       // Broadcast via Supabase Realtime
-      await supabase.channel(`room-${activeRoom.id}`).send({
-        type: "broadcast",
+      await supabase.channel(`room-${activeRoom.id}`).send({ type: "broadcast",
         event: "message",
-        payload: msgPayload,
-      });
+        payload: msgPayload });
 
       // Add own message locally
-      setMessages(prev => [...prev, {
-        id: msgPayload.id,
+      setMessages(prev => [...prev, { id: msgPayload.id,
         text: msgPayload.text,
         sender: anonymousName,
         timestamp: msgPayload.timestamp,
-        isOwn: true,
-      }]);
+        isOwn: true }]);
 
       // Also save to confessions for persistence
-      await supabase.from("confessions").insert({
-        user_id: userId,
+      await supabase.from("confessions").insert({ user_id: userId,
         confession_text: newMessage.trim(),
         sin_category: activeRoom.id,
-        is_anonymous: true,
-      });
+        is_anonymous: true });
 
       setNewMessage("");
     } catch (error: any) {

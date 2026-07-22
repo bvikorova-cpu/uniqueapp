@@ -39,8 +39,7 @@ export const MoodJournalView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "mood_journal", entry: entry.trim() },
-      });
+        body: { action: "mood_journal", entry: entry.trim() } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

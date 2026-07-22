@@ -1,21 +1,17 @@
 import { useState } from "react";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,23 +25,19 @@ interface WithdrawalRequestDialogProps {
   onSuccess: () => void;
 }
 
-export function WithdrawalRequestDialog({
-  open,
+export function WithdrawalRequestDialog({ open,
   onOpenChange,
   instructorId,
   availableBalance,
-  onSuccess,
-}: WithdrawalRequestDialogProps) {
+  onSuccess }: WithdrawalRequestDialogProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("bank_transfer");
-  const [paymentDetails, setPaymentDetails] = useState({
-    accountHolder: "",
+  const [paymentDetails, setPaymentDetails] = useState({ accountHolder: "",
     iban: "",
     bic: "",
-    bankName: "",
-  });
+    bankName: "" });
 
   // Calculate next payout date
   const getNextPayoutDate = () => {
@@ -62,14 +54,11 @@ export function WithdrawalRequestDialog({
   };
 
   const nextPayoutDate = getNextPayoutDate();
-  const formattedPayoutDate = nextPayoutDate.toLocaleDateString('en-US', {
-    month: 'long',
+  const formattedPayoutDate = nextPayoutDate.toLocaleDateString('en-US', { month: 'long',
     day: 'numeric',
-    year: 'numeric',
-  });
+    year: 'numeric' });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
     
     const withdrawalAmount = parseFloat(amount);
     
@@ -78,35 +67,28 @@ export function WithdrawalRequestDialog({
       toast({
         title: "Invalid Amount",
         description: "Please enter a valid amount",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
-    if (withdrawalAmount < 10) {
-      toast({
+    if (withdrawalAmount < 10) { toast({
         title: "Amount Too Low",
         description: "Minimum withdrawal amount is €10.00",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
-    if (withdrawalAmount > availableBalance) {
-      toast({
+    if (withdrawalAmount > availableBalance) { toast({
         title: "Insufficient Balance",
         description: "You cannot withdraw more than your available balance",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
-    if (!paymentDetails.accountHolder || !paymentDetails.iban) {
-      toast({
+    if (!paymentDetails.accountHolder || !paymentDetails.iban) { toast({
         title: "Missing Information",
         description: "Please fill in all required payment details",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -115,39 +97,31 @@ export function WithdrawalRequestDialog({
 
       const { error } = await supabase
         .from("instructor_withdrawal_requests")
-        .insert({
-          instructor_id: instructorId,
+        .insert({ instructor_id: instructorId,
           amount: withdrawalAmount,
           payment_method: paymentMethod,
           payment_details: paymentDetails,
-          status: "pending",
-        });
+          status: "pending" });
 
       if (error) throw error;
 
-      toast({
-        title: "Request Submitted",
-        description: "Your withdrawal request has been submitted successfully",
-      });
+      toast({ title: "Request Submitted",
+        description: "Your withdrawal request has been submitted successfully" });
 
       // Reset form
       setAmount("");
-      setPaymentDetails({
-        accountHolder: "",
+      setPaymentDetails({ accountHolder: "",
         iban: "",
         bic: "",
-        bankName: "",
-      });
+        bankName: "" });
       
       onSuccess();
       onOpenChange(false);
-    } catch (error: any) {
-      console.error("Error submitting withdrawal request:", error);
+    } catch (error: any) { console.error("Error submitting withdrawal request:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to submit withdrawal request",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

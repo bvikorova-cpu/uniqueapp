@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -46,16 +44,13 @@ serve(async (req) => {
               method: "POST",
               headers: {
                 Authorization: `Bearer ${OPENAI_API_KEY}`,
-                "Content-Type": "application/json",
-              },
+                "Content-Type": "application/json" },
               body: JSON.stringify({
                 model: "gpt-4o-mini",
                 messages: [
                   { role: "system", content: "Generate a catchy title and description for a daily brain quiz challenge. Reply with JSON: {\"title\": \"...\", \"description\": \"...\"}" },
                   { role: "user", content: `Category: ${category}. Make it exciting and fun!` },
-                ],
-              }),
-            });
+                ] }) });
             if (aiRes.ok) {
               const aiData = await aiRes.json();
               const content = aiData.choices?.[0]?.message?.content || "";
@@ -70,15 +65,13 @@ serve(async (req) => {
 
         const { data: newChallenge } = await supabase
           .from("brain_duel_daily_challenges")
-          .insert({
-            challenge_date: today,
+          .insert({ challenge_date: today,
             category,
             title,
             description,
             question_count: 5,
             time_limit: 60,
-            reward_credits: 15,
-          })
+            reward_credits: 15 })
           .select()
           .single();
         challenge = newChallenge;
@@ -99,17 +92,14 @@ serve(async (req) => {
         ? await supabase.from("profiles").select("id, full_name, avatar_url").in("id", userIds)
         : { data: [] };
 
-      const leaderboard = entries?.map((e: any) => ({
-        ...e,
-        profile: profiles?.find((p: any) => p.id === e.user_id),
-      })) || [];
+      const leaderboard = entries?.map((e: any) => ({ ...e,
+        profile: profiles?.find((p: any) => p.id === e.user_id) })) || [];
 
       // Check if user already submitted
       const userEntry = entries?.find((e: any) => e.user_id === user.id);
 
       return new Response(JSON.stringify({ challenge, leaderboard, userEntry }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (action === "submit") {
@@ -127,18 +117,15 @@ serve(async (req) => {
 
       if (existing) {
         return new Response(JSON.stringify({ error: "Already submitted today's challenge" }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       const { data: entry } = await supabase
         .from("brain_duel_daily_challenge_entries")
-        .insert({
-          challenge_id: challengeId,
+        .insert({ challenge_id: challengeId,
           user_id: user.id,
           score,
-          time_taken: timeTaken,
-        })
+          time_taken: timeTaken })
         .select()
         .single();
 
@@ -165,15 +152,13 @@ serve(async (req) => {
       }
 
       return new Response(JSON.stringify({ entry, reward: challenge?.reward_credits }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     throw new Error("Invalid action");
   } catch (e: any) {
     console.error("brain-duel-daily-challenge error:", e);
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

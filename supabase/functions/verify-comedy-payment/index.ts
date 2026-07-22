@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -27,9 +25,7 @@ serve(async (req) => {
     const { sessionId } = await req.json();
     if (!sessionId) throw new Error("session_id_required");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
@@ -49,20 +45,16 @@ serve(async (req) => {
       .eq("stripe_session_id", sessionId)
       .maybeSingle();
 
-    if (!existing) {
-      await admin.from("comedy_coin_purchases").insert({
+    if (!existing) { await admin.from("comedy_coin_purchases").insert({
         user_id: user.id,
         stripe_session_id: sessionId,
         coins,
-        amount_cents: session.amount_total ?? 0,
-      });
+        amount_cents: session.amount_total ?? 0 });
 
       // Atomic credit (correct column name + adds to existing balance)
-      const { error: rpcErr } = await admin.rpc("add_comedy_coins", {
-        _user_id: user.id,
+      const { error: rpcErr } = await admin.rpc("add_comedy_coins", { _user_id: user.id,
         _amount: coins,
-        _purchased: true,
-      });
+        _purchased: true });
       if (rpcErr) throw rpcErr;
     }
 
@@ -75,7 +67,6 @@ serve(async (req) => {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

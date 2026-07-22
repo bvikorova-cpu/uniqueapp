@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 interface ReceiptPayload {
   donationId?: string;
@@ -67,15 +65,13 @@ serve(async (req) => {
     }
 
     // Fetch campaign title (best-effort across all 8 fundraising tables)
-    const tableMap: Record<string, string> = {
-      medical: "medical_campaigns",
+    const tableMap: Record<string, string> = { medical: "medical_campaigns",
       dream: "dream_campaigns",
       hero: "hero_campaigns",
       pet: "pet_campaigns",
       student: "student_campaigns",
       crisis: "crisis_campaigns",
-      talent: "talent_campaigns",
-    };
+      talent: "talent_campaigns" };
     const table = tableMap[donation.campaign_type];
     let campaignTitle = "Campaign";
     let beneficiary = "";
@@ -100,8 +96,7 @@ serve(async (req) => {
       .slice(0, 10)
       .replace(/-/g, "")}-${donation.id.slice(0, 8).toUpperCase()}`;
 
-    const receipt = {
-      receipt_number: receiptNumber,
+    const receipt = { receipt_number: receiptNumber,
       issued_at: new Date().toISOString(),
       donation_id: donation.id,
       donation_date: donation.created_at,
@@ -118,24 +113,20 @@ serve(async (req) => {
       is_monthly: donation.is_monthly,
       payment_status: donation.status,
       tax_deductible_note:
-        "This receipt confirms a charitable contribution made via Unique Fundraising. Tax deductibility depends on your country of residence and the registered status of the campaign beneficiary. Consult a tax advisor for guidance.",
+        "This receipt confirms a charitable contribution made via Unique Fundraising. Tax deductibility depends on your jurisdiction of residence and the registered status of the campaign beneficiary. Consult a tax advisor for guidance.",
       issuer: {
         name: "Unique Platform",
-        legal_entity: "Unique s.r.o.",
-        website: "https://uniqueapp.fun",
-      },
-    };
+        legal_entity: "UNIQUE",
+        website: "https://uniqueapp.fun" } };
 
     return new Response(JSON.stringify({ receipt }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("[get-donation-receipt] ERROR", msg);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

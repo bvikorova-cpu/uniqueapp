@@ -22,8 +22,7 @@ export const GlamourCoinsBadge = ({ onBuyClick }: GlamourCoinsBadgeProps) => {
         .maybeSingle();
       return data?.balance ?? 0;
     },
-    refetchInterval: 15000,
-  });
+    refetchInterval: 15000 });
 
   const coins = balance ?? 0;
   const isLow = !isLoading && coins < LOW_THRESHOLD;

@@ -45,8 +45,7 @@ export default function AIOutfitRemixEngine() {
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "outfit-remix", outfit_description: outfit },
-      });
+        body: { action: "outfit-remix", outfit_description: outfit } });
       if (error) throw error;
       return data as RemixResult;
     },
@@ -54,8 +53,7 @@ export default function AIOutfitRemixEngine() {
       setResult(data);
       toast.success(`${data.remix_count} remix variations generated!`);
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const difficultyColor = (d: string) => d === "Easy" ? "text-green-500" : d === "Medium" ? "text-amber-500" : "text-red-500";
 

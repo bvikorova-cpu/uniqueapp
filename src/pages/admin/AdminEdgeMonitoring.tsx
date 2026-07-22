@@ -49,15 +49,13 @@ const Inner = () => {
     return [...list].sort((a, b) => (b[sortKey] as number) - (a[sortKey] as number));
   }, [rows, q, sortKey]);
 
-  const totals = useMemo(() => {
-    const total = rows.reduce((s, r) => s + Number(r.total_calls), 0);
+  const totals = useMemo(() => { const total = rows.reduce((s, r) => s + Number(r.total_calls), 0);
     const errs = rows.reduce((s, r) => s + Number(r.error_count), 0);
     return {
       total,
       errs,
       rate: total ? ((errs / total) * 100).toFixed(2) : "0.00",
-      fns: rows.length,
-    };
+      fns: rows.length };
   }, [rows]);
 
   const rateColor = (r: number) =>

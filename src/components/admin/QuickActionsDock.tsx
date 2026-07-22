@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Megaphone,
+import { Megaphone,
   Download,
   ShieldCheck,
   Banknote,
   Users,
   Sparkles,
   ChevronRight,
-  Zap,
-} from "lucide-react";
+  Zap } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const QuickActionsDock = () => {

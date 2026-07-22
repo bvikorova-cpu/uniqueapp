@@ -10,12 +10,10 @@ interface PushNotificationState {
 
 export function usePushNotifications() {
   const { toast } = useToast();
-  const [state, setState] = useState<PushNotificationState>({
-    isSupported: false,
+  const [state, setState] = useState<PushNotificationState>({ isSupported: false,
     isSubscribed: false,
     permission: "default",
-    isLoading: true,
-  });
+    isLoading: true });
 
   useEffect(() => {
     const check = async () => {

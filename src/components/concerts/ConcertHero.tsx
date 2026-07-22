@@ -59,11 +59,10 @@ export const ConcertHero = () => {
         </motion.div>
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-3 text-primary"
-          style={{
+          style={ {
             WebkitTextStroke: '1.5px rgba(88, 28, 135, 0.8)',
             textShadow: '0 0 30px hsl(var(--primary) / 0.6), 0 0 60px hsl(var(--primary) / 0.3), 0 2px 10px rgba(0,0,0,0.8), 0 4px 20px rgba(0,0,0,0.5)',
-            filter: 'drop-shadow(0 0 8px hsl(var(--primary) / 0.5))',
-          }}>
+            filter: 'drop-shadow(0 0 8px hsl(var(--primary) / 0.5))' }}>
           Exclusive Live Concerts
         </motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}

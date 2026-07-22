@@ -2,19 +2,16 @@
 // Costs 4 kids_drawing credits per enhancement. Uses OpenAI gpt-image-1 (supports image input).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const COST = 4;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 
-const STYLE_HINTS: Record<string, string> = {
-  watercolor: "soft watercolor painting, gentle pastel colors, paper texture",
+const STYLE_HINTS: Record<string, string> = { watercolor: "soft watercolor painting, gentle pastel colors, paper texture",
   cartoon: "bright cheerful cartoon style, bold clean outlines, vivid saturated colors",
   pixar: "3D Pixar-style render, warm cinematic lighting, expressive shapes",
   anime: "studio ghibli / cute anime style, soft cel-shading, dreamy background",
@@ -23,14 +20,12 @@ const STYLE_HINTS: Record<string, string> = {
   comic: "comic book style with halftone shading and bold outlines",
   oil: "rich oil painting with visible brushstrokes and dramatic light",
   pixel: "cute 16-bit pixel art style, limited palette",
-  neon: "vibrant neon glow art, dark background, electric colors",
-};
+  neon: "vibrant neon glow art, dark background, electric colors" };
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 function dataUrlToBlob(dataUrl: string): { blob: Blob; ext: string } {
@@ -51,8 +46,7 @@ Deno.serve(async (req) => {
     if (!authHeader) return json({ error: "Missing authorization header" }, 401);
 
     const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData.user) return json({ error: "Invalid bearer token" }, 401);
     const user = userData.user;
@@ -73,10 +67,8 @@ Deno.serve(async (req) => {
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (!credRowT) {
-        await adminT.from("kids_drawing_credits").insert({
-          user_id: user.id, credits_remaining: 0, total_credits_purchased: 0,
-        });
+      if (!credRowT) { await adminT.from("kids_drawing_credits").insert({
+          user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
         return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
       }
       const balanceT = credRowT.credits_remaining ?? 0;
@@ -95,9 +87,7 @@ Deno.serve(async (req) => {
             { role: "system", content: `You create kid-friendly step-by-step drawing tutorials for ages 4-12. Return STRICT JSON: {"title": string, "steps": [{"instruction": string}]}. Each instruction <20 words, encouraging, simple shapes (circle, oval, line, curve, triangle). No scary content.` },
             { role: "user", content: `Create a ${difficulty} ${stepCount}-step drawing tutorial for: ${topic}.` },
           ],
-          max_completion_tokens: 800,
-        }),
-      });
+          max_completion_tokens: 800 }) });
       if (!tRes.ok) {
         console.error("OpenAI tutorial error:", await tRes.text());
         return json({ error: "AI tutorial generation failed" }, 502);
@@ -138,10 +128,8 @@ Deno.serve(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (!credRow) {
-      await admin.from("kids_drawing_credits").insert({
-        user_id: user.id, credits_remaining: 0, total_credits_purchased: 0,
-      });
+    if (!credRow) { await admin.from("kids_drawing_credits").insert({
+        user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
       return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
     }
     const balance = credRow.credits_remaining ?? 0;
@@ -166,8 +154,7 @@ Kid-friendly (ages 4-12), no text or letters, no scary or violent content, frien
     const aiResp = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
       headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
-      body: form,
-    });
+      body: form });
 
     if (aiResp.status === 429) return json({ error: "Rate limited, try again shortly" }, 429);
     if (!aiResp.ok) {
@@ -192,12 +179,10 @@ Kid-friendly (ages 4-12), no text or letters, no scary or violent content, frien
       .update({ credits_remaining: newBalance, updated_at: new Date().toISOString() })
       .eq("user_id", user.id);
 
-    return json({
-      enhanced: imageUrl,
+    return json({ enhanced: imageUrl,
       style,
       credits_remaining: newBalance,
-      cost: COST,
-    });
+      cost: COST });
   } catch (e: any) {
     console.error("kids-drawing-enhance error", e);
     return json({ error: e?.message || "Internal error" }, 500);

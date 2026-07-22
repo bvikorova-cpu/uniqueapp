@@ -35,12 +35,10 @@ export default function CareerPath() {
     if (!form.role_title) return toast.error("Role required");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return toast.error("Sign in required");
-    const { error } = await (supabase as any).from("career_path_nodes").insert({
-      user_id: user.id, role_title: form.role_title,
+    const { error } = await (supabase as any).from("career_path_nodes").insert({ user_id: user.id, role_title: form.role_title,
       target_date: form.target_date || null, notes: form.notes,
       skills_required: form.skills_required.split(",").map(s => s.trim()).filter(Boolean),
-      order_index: nodes.length,
-    });
+      order_index: nodes.length });
     if (error) return toast.error(error.message);
     setForm({ role_title: "", target_date: "", notes: "", skills_required: "" });
     load();

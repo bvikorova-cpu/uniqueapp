@@ -31,19 +31,16 @@ export function PricingHero() {
           className="absolute text-3xl pointer-events-none select-none"
           style={{
             left: `${8 + (i * 9)}%`,
-            top: `${10 + (i % 3) * 25}%`,
-          }}
-          animate={{
+            top: `${10 + (i % 3) * 25}%` }}
+          animate={ {
             y: [0, -20, 0],
             rotate: [0, i % 2 === 0 ? 15 : -15, 0],
-            scale: [1, 1.15, 1],
-          }}
-          transition={{
+            scale: [1, 1.15, 1] }}
+          transition={ {
             duration: 3 + (i * 0.3),
             repeat: Infinity,
             ease: "easeInOut",
-            delay: i * 0.2,
-          }}
+            delay: i * 0.2 }}
         >
           {emoji}
         </motion.span>

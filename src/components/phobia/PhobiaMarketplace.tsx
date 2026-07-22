@@ -72,12 +72,10 @@ const PhobiaMarketplace = ({ onOpenPricing }: PhobiaMarketplaceProps) => {
   const handleBuy = async (tradeId: string) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication Required",
           description: "Please sign in to trade phobias",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -91,19 +89,15 @@ const PhobiaMarketplace = ({ onOpenPricing }: PhobiaMarketplaceProps) => {
 
       if (error) throw error;
 
-      toast({
-        title: "Purchase Successful",
-        description: "Phobia has been transferred to your collection",
-      });
+      toast({ title: "Purchase Successful",
+        description: "Phobia has been transferred to your collection" });
 
       loadMarketplace();
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Purchase Failed",
         description: "Please try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

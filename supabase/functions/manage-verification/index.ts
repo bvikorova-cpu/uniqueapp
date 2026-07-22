@@ -15,19 +15,15 @@ const log = (step: string, details?: unknown) => {
 };
 
 type Tier = "verified" | "plus" | "pro";
-const PRICE_BY_TIER: Record<"plus" | "pro", string> = {
-  plus: "price_1TvEcEGaXSfGtYFtEHzujgoE",
-  pro: "price_1TvEcFGaXSfGtYFtc8kKfh5M",
-};
-const TIER_BY_PRICE: Record<string, Tier> = {
-  "price_1TvEcCGaXSfGtYFtpISbqkdD": "verified",
+const PRICE_BY_TIER: Record<"plus" | "pro", string> = { plus: "price_1TvEcEGaXSfGtYFtEHzujgoE",
+  pro: "price_1TvEcFGaXSfGtYFtc8kKfh5M" };
+const TIER_BY_PRICE: Record<string, Tier> = { "price_1TvEcCGaXSfGtYFtpISbqkdD": "verified",
   "price_1TvEcEGaXSfGtYFtEHzujgoE": "plus",
   "price_1TvEcFGaXSfGtYFtc8kKfh5M": "pro",
   // Legacy price IDs
   "price_1TvDqrGaXSfGtYFt2g1n3Nuv": "verified",
   "price_1TvDqsGaXSfGtYFtSyfF7vjE": "plus",
-  "price_1TvDqsGaXSfGtYFt6boV1wed": "pro",
-};
+  "price_1TvDqsGaXSfGtYFt6boV1wed": "pro" };
 
 
 type Action = "downgrade" | "cancel" | "resume" | "cancel_now";
@@ -54,21 +50,17 @@ serve(async (req) => {
     const userId = userData.user.id;
     const email = userData.user.email;
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     // Find the active recurring subscription for this user.
     const customers = await stripe.customers.list({ email, limit: 5 });
     let sub: Stripe.Subscription | null = null;
     let customerId: string | null = null;
-    for (const c of customers.data) {
-      const subs = await stripe.subscriptions.list({
+    for (const c of customers.data) { const subs = await stripe.subscriptions.list({
         customer: c.id,
         status: "all",
         limit: 20,
-        expand: ["data.items.data.price"],
-      });
+        expand: ["data.items.data.price"] });
       for (const s of subs.data) {
         if (!["active", "trialing", "past_due"].includes(s.status)) continue;
         const priceId = s.items.data[0]?.price?.id;
@@ -99,30 +91,21 @@ serve(async (req) => {
         items: [{ id: currentItem.id, price: newPriceId }],
         proration_behavior: "create_prorations",
         cancel_at_period_end: false,
-        metadata: { ...(sub.metadata ?? {}), module: "verification", tier: targetTier },
-      });
+        metadata: { ...(sub.metadata ?? {}), module: "verification", tier: targetTier } });
       log("downgrade complete", { subId: sub.id, to: targetTier });
-      result = {
-        ...result,
+      result = { ...result,
         new_tier: targetTier,
-        current_period_end: updated.current_period_end,
-      };
-    } else if (action === "cancel") {
-      const updated = await stripe.subscriptions.update(sub.id, {
-        cancel_at_period_end: true,
-      });
+        current_period_end: updated.current_period_end };
+    } else if (action === "cancel") { const updated = await stripe.subscriptions.update(sub.id, {
+        cancel_at_period_end: true });
       result = { ...result, cancels_at: updated.current_period_end };
-    } else if (action === "resume") {
-      const updated = await stripe.subscriptions.update(sub.id, {
-        cancel_at_period_end: false,
-      });
+    } else if (action === "resume") { const updated = await stripe.subscriptions.update(sub.id, {
+        cancel_at_period_end: false });
       result = { ...result, renews_at: updated.current_period_end };
-    } else if (action === "cancel_now") {
-      // Immediate cancel with prorated credit back to customer's balance.
+    } else if (action === "cancel_now") { // Immediate cancel with prorated credit back to customer's balance.
       const cancelled = await stripe.subscriptions.cancel(sub.id, {
         prorate: true,
-        invoice_now: false,
-      });
+        invoice_now: false });
       result = { ...result, status: cancelled.status };
     } else {
       throw new Error("Unknown action");
@@ -149,14 +132,12 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ ok: true, ...result }), {
       status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

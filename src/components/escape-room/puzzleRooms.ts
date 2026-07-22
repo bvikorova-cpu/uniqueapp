@@ -767,8 +767,7 @@ export const adventureRooms: RoomData[] = [
 
 // Fantasy Theme Rooms - 3 miestnosti
 export const fantasyRooms: RoomData[] = [
-  {
-    id: 0,
+  { id: 0,
     name: "Wizard's Tower",
     description: "You are trapped in a magic tower. Only the right spell will free you.",
     panoramaUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=2048",
@@ -778,8 +777,7 @@ export const fantasyRooms: RoomData[] = [
         position: angleToPosition(-30, 10),
         type: "clue",
         label: "Book of Spells",
-        description: "The open page says: 'The opening spell has 9 letters and starts with ALO-'",
-      },
+        description: "The open page says: 'The opening spell has 9 letters and starts with ALO-'" },
       {
         id: "crystal-ball",
         position: angleToPosition(60, 0),

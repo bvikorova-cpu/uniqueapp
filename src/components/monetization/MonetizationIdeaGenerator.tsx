@@ -28,8 +28,7 @@ export function MonetizationIdeaGenerator() {
   const generateMutation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke("generate-monetization-ideas", {
-        body: { theme, context },
-      });
+        body: { theme, context } });
 
       if (error) throw error;
       return data;
@@ -46,8 +45,7 @@ export function MonetizationIdeaGenerator() {
       } else {
         toast.error(error.message || "Failed to generate ideas");
       }
-    },
-  });
+    } });
 
   const quickThemes = [
     { label: "Horror 👻", value: "Horror experiences - scary stories, haunted mysteries, psychological thrillers" },

@@ -84,8 +84,7 @@ export function shouldFlipIcon(iconName: string): boolean {
 /**
  * CSS classes for RTL-aware layouts
  */
-export const rtlClasses = {
-  // Flex direction
+export const rtlClasses = { // Flex direction
   flexRowReverse: "rtl:flex-row-reverse",
   
   // Spacing
@@ -107,16 +106,13 @@ export const rtlClasses = {
   roundedEnd: "ltr:rounded-r rtl:rounded-l",
   
   // Transforms
-  flipX: "rtl:-scale-x-100",
-};
+  flipX: "rtl:-scale-x-100" };
 
-export default {
-  isRTLLanguage,
+export default { isRTLLanguage,
   getDirection,
   applyRTLToDocument,
   getLogicalProperty,
   mirrorForRTL,
   getTextAlign,
   shouldFlipIcon,
-  rtlClasses,
-};
+  rtlClasses };

@@ -55,8 +55,7 @@ const QuantumDestinyForecast = ({ onBack }: QuantumDestinyForecastProps) => {
             { year: "10 years", event: "Long-term trajectory shows divergence — your choices in the next year are critical", probability: 61, trend: "neutral" },
           ],
           warnings: ["Avoid overcommitting in the first quarter", "Relationship dynamics may shift unexpectedly", "Financial caution recommended in volatile periods"],
-          opportunities: ["Unexpected collaboration opens new dimensions", "Hidden talent surfaces with proper nurturing", "Technology shift creates unique advantage window"],
-        });
+          opportunities: ["Unexpected collaboration opens new dimensions", "Hidden talent surfaces with proper nurturing", "Technology shift creates unique advantage window"] });
       }
     } catch (e) {
       console.error(e);

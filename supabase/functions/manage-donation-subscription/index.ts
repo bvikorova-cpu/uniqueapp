@@ -1,10 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -13,8 +11,7 @@ Deno.serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Missing auth" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supaUser = createClient(
@@ -25,8 +22,7 @@ Deno.serve(async (req) => {
     const { data: { user } } = await supaUser.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const body = await req.json();
@@ -34,8 +30,7 @@ Deno.serve(async (req) => {
     const donationId: string = body.donationId;
     if (!action || !donationId) {
       return new Response(JSON.stringify({ error: "action and donationId required" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supaAdmin = createClient(
@@ -51,35 +46,27 @@ Deno.serve(async (req) => {
 
     if (dErr || !donation) {
       return new Response(JSON.stringify({ error: "Donation not found" }), {
-        status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (donation.donor_id !== user.id) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
-        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (!donation.stripe_subscription_id) {
       return new Response(JSON.stringify({ error: "No subscription linked" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, { apiVersion: "2025-08-27.basil" });
 
     let updates: Record<string, unknown> = {};
 
     if (action === "pause") {
       await stripe.subscriptions.update(donation.stripe_subscription_id, {
-        pause_collection: { behavior: "void" },
-      });
+        pause_collection: { behavior: "void" } });
       updates = { paused_at: new Date().toISOString(), subscription_status: "paused" };
-    } else if (action === "resume") {
-      await stripe.subscriptions.update(donation.stripe_subscription_id, {
-        pause_collection: "",
-      } as any);
+    } else if (action === "resume") { await stripe.subscriptions.update(donation.stripe_subscription_id, {
+        pause_collection: "" } as any);
       updates = { paused_at: null, subscription_status: "active" };
     } else if (action === "cancel") {
       await stripe.subscriptions.cancel(donation.stripe_subscription_id);
@@ -87,22 +74,18 @@ Deno.serve(async (req) => {
     } else if (action === "portal") {
       if (!donation.stripe_customer_id) {
         return new Response(JSON.stringify({ error: "No customer linked" }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       const origin = req.headers.get("origin") || "https://www.uniqueapp.fun";
       const session = await stripe.billingPortal.sessions.create({
         customer: donation.stripe_customer_id,
         return_url: `${origin}/fundraising/recurring`,
-        flow_data: { type: "payment_method_update" } as any,
-      });
+        flow_data: { type: "payment_method_update" } as any });
       return new Response(JSON.stringify({ url: session.url }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     } else {
       return new Response(JSON.stringify({ error: "Unknown action" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (Object.keys(updates).length) {
@@ -110,12 +93,10 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ ok: true, action }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("[manage-donation-subscription]", e);
     return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

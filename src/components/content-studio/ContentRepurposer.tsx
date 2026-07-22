@@ -43,8 +43,7 @@ const ContentRepurposer = ({ onBack }: Props) => {
     setResults({});
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
-        body: { action: "repurpose", sourceContent, formats: selectedFormats },
-      });
+        body: { action: "repurpose", sourceContent, formats: selectedFormats } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResults(data.results || {});

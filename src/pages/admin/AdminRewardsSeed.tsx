@@ -36,8 +36,7 @@ async function seedBattlePass() {
         premium_price_xp: 5000,
         total_tiers: 50,
         xp_per_tier: 1000,
-        is_active: true,
-      },
+        is_active: true },
       { onConflict: "season_number" }
     )
     .select()
@@ -72,8 +71,7 @@ async function fillRewards(seasonId: string) {
       reward_type: tier % 5 === 0 ? "badge" : "xp",
       reward_value: tier % 5 === 0 ? 1 : 50 + tier * 10,
       reward_label: tier % 5 === 0 ? `Free Badge T${tier}` : `${50 + tier * 10} XP`,
-      reward_icon: pickIcon(tier),
-    });
+      reward_icon: pickIcon(tier) });
     // premium track
     rows.push({
       season_id: seasonId,
@@ -86,8 +84,7 @@ async function fillRewards(seasonId: string) {
         : tier % 3 === 0
         ? `${5 + tier} Credits`
         : `${100 + tier * 25} XP`,
-      reward_icon: isMilestone ? "👑" : pickIcon(tier + 3),
-    });
+      reward_icon: isMilestone ? "👑" : pickIcon(tier + 3) });
   }
   const { error } = await supabase.from("battle_pass_rewards").insert(rows);
   if (error) throw error;
@@ -127,8 +124,7 @@ async function seedCalendar(monthsAhead: number) {
             : `${5 + Math.floor(day / 7) * 5} Credits`
           : `${25 + day * 5} XP`,
         reward_icon: isMilestone ? (day === 30 ? "👑" : "💰") : pickIcon(day),
-        is_milestone: isMilestone,
-      });
+        is_milestone: isMilestone });
     }
     const { error } = await supabase.from("login_calendar_templates").insert(rows);
     if (error) throw error;
@@ -172,19 +168,16 @@ async function seedQuestPath() {
 
   const { data: path, error: pErr } = await supabase
     .from("quest_paths")
-    .insert({
-      name: "Path of the Legend — Season 1",
+    .insert({ name: "Path of the Legend — Season 1",
       season_number: seasonNumber,
       starts_at: startsAt.toISOString(),
       ends_at: endsAt.toISOString(),
-      is_active: true,
-    })
+      is_active: true })
     .select()
     .single();
   if (pErr) throw pErr;
 
-  const rows = QUEST_NODES.map((n, i) => ({
-    path_id: path.id,
+  const rows = QUEST_NODES.map((n, i) => ({ path_id: path.id,
     node_index: i,
     title: n.title,
     description: n.description,
@@ -193,8 +186,7 @@ async function seedQuestPath() {
     reward_type: n.reward_type,
     reward_value: n.reward_value,
     reward_label: n.reward_label,
-    is_boss: n.is_boss || false,
-  }));
+    is_boss: n.is_boss || false }));
 
   const { error: nErr } = await supabase.from("quest_nodes").insert(rows);
   if (nErr) throw nErr;
@@ -213,12 +205,10 @@ async function seedLeague() {
 
   const { data, error } = await supabase
     .from("league_seasons")
-    .insert({
-      season_number: Math.floor(Date.now() / 1000),
+    .insert({ season_number: Math.floor(Date.now() / 1000),
       starts_at: startsAt.toISOString(),
       ends_at: endsAt.toISOString(),
-      is_active: true,
-    })
+      is_active: true })
     .select()
     .single();
   if (error) throw error;

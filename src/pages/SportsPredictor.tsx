@@ -16,8 +16,7 @@ import { TipstersLeaderboard } from "@/components/sports/TipstersLeaderboard";
 import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import {
-  Trophy,
+import { Trophy,
   TrendingUp,
   Star,
   Zap,
@@ -31,12 +30,10 @@ import {
   CheckCircle2,
   AlertCircle,
   Lock,
-  Loader2,
-} from "lucide-react";
+  Loader2 } from "lucide-react";
 
 const PRICING_TIERS = [
-  {
-    name: "AI Premium",
+  { name: "AI Premium",
     price: "9.99",
     currency: "€",
     period: "month",
@@ -51,10 +48,8 @@ const PRICING_TIERS = [
     ],
     icon: Zap,
     color: "from-blue-500 to-cyan-500",
-    popular: true,
-  },
-  {
-    name: "Expert Tipster",
+    popular: true },
+  { name: "Expert Tipster",
     price: "19.99",
     currency: "€",
     period: "month",
@@ -69,13 +64,11 @@ const PRICING_TIERS = [
       "Monthly expert webinars",
     ],
     icon: Trophy,
-    color: "from-purple-500 to-pink-500",
-  },
+    color: "from-purple-500 to-pink-500" },
 ];
 
 const TOP_TIPSTERS = [
-  {
-    id: 1,
+  { id: 1,
     name: "Mike Rodriguez",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mike",
     sport: "Football",
@@ -83,10 +76,8 @@ const TOP_TIPSTERS = [
     totalTips: 342,
     followers: 12400,
     roi: "+24.3%",
-    badge: "Elite",
-  },
-  {
-    id: 2,
+    badge: "Elite" },
+  { id: 2,
     name: "Sarah Thompson",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
     sport: "Basketball",
@@ -94,10 +85,8 @@ const TOP_TIPSTERS = [
     totalTips: 289,
     followers: 9800,
     roi: "+21.8%",
-    badge: "Pro",
-  },
-  {
-    id: 3,
+    badge: "Pro" },
+  { id: 3,
     name: "James Chen",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
     sport: "Tennis",
@@ -105,8 +94,7 @@ const TOP_TIPSTERS = [
     totalTips: 256,
     followers: 8300,
     roi: "+19.5%",
-    badge: "Pro",
-  },
+    badge: "Pro" },
 ];
 
 interface Match {
@@ -160,27 +148,22 @@ export default function SportsPredictor() {
       if (predictionsError) throw predictionsError;
 
       // Combine matches with predictions
-      const matchesWithPredictions = (matchesData || []).map(match => {
-        const prediction = predictionsData?.find(p => p.match_id === match.id);
+      const matchesWithPredictions = (matchesData || []).map(match => { const prediction = predictionsData?.find(p => p.match_id === match.id);
         return {
           ...match,
           prediction: prediction ? {
             prediction_type: prediction.prediction_type,
             confidence: prediction.confidence,
             odds: prediction.odds,
-            analysis: prediction.analysis_text,
-          } : undefined,
-        };
+            analysis: prediction.analysis_text } : undefined };
       });
 
       setMatches(matchesWithPredictions);
-    } catch (error) {
-      console.error('Error fetching matches:', error);
+    } catch (error) { console.error('Error fetching matches:', error);
       toast({
         title: "Error",
         description: "Failed to load matches",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoadingMatches(false);
     }
@@ -195,12 +178,10 @@ export default function SportsPredictor() {
     try {
       setCheckoutLoading(true);
       await createCheckout(selectedTier);
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Error",
         description: "Failed to create payment. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setCheckoutLoading(false);
     }
@@ -212,37 +193,30 @@ export default function SportsPredictor() {
       return;
     }
 
-    if (!canViewPredictions) {
-      toast({
+    if (!canViewPredictions) { toast({
         title: "Subscription Required",
         description: "Active subscription required to generate predictions",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
     try {
       setGeneratingPrediction(matchId);
       const { data, error } = await supabase.functions.invoke('generate-sports-prediction', {
-        body: { matchId },
-      });
+        body: { matchId } });
 
       if (error) throw error;
 
-      toast({
-        title: "Prediction Generated! 🎯",
-        description: "AI successfully analyzed the match",
-      });
+      toast({ title: "Prediction Generated! 🎯",
+        description: "AI successfully analyzed the match" });
 
       // Refresh matches to show new prediction
       await fetchMatches();
-    } catch (error: any) {
-      console.error('Error generating prediction:', error);
+    } catch (error: any) { console.error('Error generating prediction:', error);
       toast({
         title: "Error",
         description: getUserFriendlyErrorMessage(error, "Failed to generate prediction"),
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setGeneratingPrediction(null);
     }

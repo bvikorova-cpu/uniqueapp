@@ -37,13 +37,11 @@ interface CampaignRow {
   __route: string;
 }
 
-const statusColors: Record<string, string> = {
-  pending: "bg-yellow-500/20 text-yellow-700 border-yellow-500/50",
+const statusColors: Record<string, string> = { pending: "bg-yellow-500/20 text-yellow-700 border-yellow-500/50",
   approved: "bg-green-500/20 text-green-700 border-green-500/50",
   rejected: "bg-red-500/20 text-red-700 border-red-500/50",
   banned: "bg-red-900/30 text-red-900 border-red-900/50",
-  flagged: "bg-orange-500/20 text-orange-700 border-orange-500/50",
-};
+  flagged: "bg-orange-500/20 text-orange-700 border-orange-500/50" };
 
 const AdminFundraisingModeration = () => {
   const [campaigns, setCampaigns] = useState<CampaignRow[]>([]);
@@ -79,8 +77,7 @@ const AdminFundraisingModeration = () => {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("admin-moderate-campaign", {
         body: { campaignType: campaign.__type, campaignId: campaign.id, action, notes: notes ?? null },
-        headers: session ? { Authorization: `Bearer ${session.access_token}` } : {},
-      });
+        headers: session ? { Authorization: `Bearer ${session.access_token}` } : {} });
       if (error || data?.error) throw new Error(error?.message || data?.error);
       toast.success(`Campaign ${action}d`);
       load();

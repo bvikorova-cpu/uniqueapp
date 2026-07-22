@@ -47,15 +47,12 @@ export function useRewardsStats(userId: string | undefined) {
         ls?.longest_streak ?? 0,
         currentStreak,
       );
-      return {
-        level: p?.level ?? 1,
+      return { level: p?.level ?? 1,
         totalXP: p?.total_points ?? 0,
         currentLevelXP: p?.current_level_points ?? 0,
         streak: currentStreak,
         longestStreak,
-        badges: badgesRes.count ?? 0,
-      };
+        badges: badgesRes.count ?? 0 };
     },
-    staleTime: 30_000,
-  });
+    staleTime: 30_000 });
 }

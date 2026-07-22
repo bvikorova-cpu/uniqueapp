@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -14,8 +12,7 @@ serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -45,8 +42,7 @@ serve(async (req) => {
     const currentCredits = creditData?.credits || 0;
     if (currentCredits < ANALYSIS_COST) {
       return new Response(JSON.stringify({ error: "Insufficient credits", required: ANALYSIS_COST, current: currentCredits }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Get match data
@@ -69,11 +65,9 @@ serve(async (req) => {
     const correct = answers?.filter((a: any) => a.is_correct).length || 0;
     const accuracy = totalQ > 0 ? Math.round((correct / totalQ) * 100) : 0;
 
-    const wrongAnswers = answers?.filter((a: any) => !a.is_correct).map((a: any) => ({
-      question: a.brain_duel_questions?.question,
+    const wrongAnswers = answers?.filter((a: any) => !a.is_correct).map((a: any) => ({ question: a.brain_duel_questions?.question,
       your_answer: a.answer,
-      correct_answer: a.brain_duel_questions?.correct_answer,
-    })) || [];
+      correct_answer: a.brain_duel_questions?.correct_answer })) || [];
 
     // AI Analysis
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
@@ -83,8 +77,7 @@ serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
@@ -113,20 +106,16 @@ Provide:
 5. Predicted ELO Impact
 6. Motivational closing`
           }
-        ],
-      }),
-    });
+        ] }) });
 
     if (!aiResponse.ok) {
       if (aiResponse.status === 429) {
         return new Response(JSON.stringify({ error: "AI rate limited. Try again shortly." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       if (aiResponse.status === 402) {
         return new Response(JSON.stringify({ error: "AI credits exhausted." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       throw new Error("AI analysis failed");
     }
@@ -143,14 +132,11 @@ Provide:
     return new Response(JSON.stringify({
       analysis,
       stats: { accuracy, correct, total: totalQ, wrong_answers: wrongAnswers },
-      credits_spent: ANALYSIS_COST,
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      credits_spent: ANALYSIS_COST }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("Match analysis error:", e);
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

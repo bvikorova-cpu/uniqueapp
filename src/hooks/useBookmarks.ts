@@ -21,8 +21,7 @@ export const useBookmarks = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const isBookmarked = (postId: string) => {
     return bookmarks?.some((b: any) => b.post_id === postId) || false;
@@ -53,16 +52,11 @@ export const useBookmarks = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
       queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
-      toast({
-        title: data.action === "added" ? "Bookmark saved!" : "Bookmark removed",
-      });
-    },
-  });
+      toast({ title: data.action === "added" ? "Bookmark saved!" : "Bookmark removed" });
+    } });
 
-  return {
-    bookmarks: bookmarks || [],
+  return { bookmarks: bookmarks || [],
     isLoading,
     isBookmarked,
-    toggleBookmark: toggleBookmark.mutate,
-  };
+    toggleBookmark: toggleBookmark.mutate };
 };

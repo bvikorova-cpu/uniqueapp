@@ -19,8 +19,7 @@ export default function PetDailyTip() {
     if (!force && cached?.date === today) { setTip(cached.tip); return; }
     setLoading(true);
     const { data } = await supabase.functions.invoke("pet-translator-ai", {
-      body: { action: "daily_tip", species: active?.species || "dog" },
-    });
+      body: { action: "daily_tip", species: active?.species || "dog" } });
     setLoading(false);
     if (data?.result) { setTip(data.result); localStorage.setItem(KEY, JSON.stringify({ date: today, tip: data.result })); }
   };

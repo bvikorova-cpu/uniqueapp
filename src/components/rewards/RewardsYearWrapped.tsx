@@ -52,8 +52,7 @@ export default function RewardsYearWrapped() {
       streak_max: streakMax,
       top_modules: [{ name: "Rewards", xp: totalXp }],
       highlights: { generated_at: new Date().toISOString() },
-      share_slug: slug,
-    }, { onConflict: "user_id,year" });
+      share_slug: slug }, { onConflict: "user_id,year" });
 
     if (error) toast.error(error.message);
     else toast.success("Your wrapped is ready!");

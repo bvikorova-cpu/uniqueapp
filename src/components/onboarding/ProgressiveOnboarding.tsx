@@ -27,50 +27,38 @@ interface OnboardingStep {
 }
 
 const onboardingSteps: OnboardingStep[] = [
-  {
-    id: "welcome",
+  { id: "welcome",
     title: "Welcome to Unique!",
     description: "Discover a world of talents, creativity, and fun. Let's go through the basics together.",
-    icon: <Sparkles className="h-8 w-8" />,
-  },
-  {
-    id: "profile",
+    icon: <Sparkles className="h-8 w-8" /> },
+  { id: "profile",
     title: "Create your profile",
     description: "Add a profile photo and fill in basic information about yourself.",
     icon: <User className="h-8 w-8" />,
     action: "Edit profile",
-    actionUrl: "/profile",
-  },
-  {
-    id: "post",
+    actionUrl: "/profile" },
+  { id: "post",
     title: "Share your talent",
     description: "Create your first post - video, photo, or text.",
     icon: <Camera className="h-8 w-8" />,
     action: "Create post",
-    actionUrl: "/create",
-  },
-  {
-    id: "interact",
+    actionUrl: "/create" },
+  { id: "interact",
     title: "Interact with the community",
     description: "Like, comment, and follow other creators.",
     icon: <Heart className="h-8 w-8" />,
     action: "Explore",
-    actionUrl: "/explore",
-  },
-  {
-    id: "messages",
+    actionUrl: "/explore" },
+  { id: "messages",
     title: "Connect with others",
     description: "Send messages and build relationships with like-minded people.",
     icon: <MessageCircle className="h-8 w-8" />,
     action: "Messages",
-    actionUrl: "/messages",
-  },
-  {
-    id: "notifications",
+    actionUrl: "/messages" },
+  { id: "notifications",
     title: "Stay informed",
     description: "Enable notifications so you don't miss anything.",
-    icon: <Bell className="h-8 w-8" />,
-  },
+    icon: <Bell className="h-8 w-8" /> },
 ];
 
 interface ProgressiveOnboardingProps {

@@ -64,17 +64,14 @@ export default function KidsParentalDashboard() {
         supabase.from("kids_drawings" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("kids_parental_gate_log").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
-      return {
-        homework_tasks: homework.count || 0,
+      return { homework_tasks: homework.count || 0,
         science_experiments: science.count || 0,
         vocabulary_learned: reading.count || 0,
         stories_created: stories.count || 0,
         drawings_made: drawings.count || 0,
-        total_time_minutes: (gateLogs.count || 0) * 5,
-      } as UsageStats;
+        total_time_minutes: (gateLogs.count || 0) * 5 } as UsageStats;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   // Real weekly chart data — last 7 days from DB
   const { data: weeklyData = [] } = useQuery({
@@ -111,8 +108,7 @@ export default function KidsParentalDashboard() {
       bump(rd, "reading");
       return Object.values(buckets);
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
 
   const { data: settings } = useQuery({
@@ -126,8 +122,7 @@ export default function KidsParentalDashboard() {
         .maybeSingle();
       return data;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   useEffect(() => {
     if (settings) {
@@ -151,15 +146,12 @@ export default function KidsParentalDashboard() {
     },
     onError: (err: any) => {
       toast.error(err?.message || "Failed to save settings");
-    },
-  });
+    } });
 
-  const handleSaveSettings = () => {
-    saveMutation.mutate({
+  const handleSaveSettings = () => { saveMutation.mutate({
       sleep_timer_enabled: sleepTimerEnabled,
       daily_limit_minutes: parseInt(dailyLimit),
-      email_reports: emailReports,
-    });
+      email_reports: emailReports });
   };
 
 

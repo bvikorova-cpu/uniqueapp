@@ -37,19 +37,16 @@ export const useTrendingPosts = () => {
       );
 
       // Calculate engagement score for better trending
-      const postsWithScore = postsWithProfiles.map((post) => ({
-        ...post,
+      const postsWithScore = postsWithProfiles.map((post) => ({ ...post,
         engagement_score:
           (post.likes_count || 0) * 3 +
           (post.comments_count || 0) * 5 +
           (post.shares_count || 0) * 2 +
-          (post.reposts_count || 0) * 4,
-      }));
+          (post.reposts_count || 0) * 4 }));
 
       // Sort by engagement score
       return postsWithScore.sort((a, b) => b.engagement_score - a.engagement_score);
-    },
-  });
+    } });
 };
 
 export const useActiveUsers = () => {
@@ -87,10 +84,7 @@ export const useActiveUsers = () => {
       if (profilesError) throw profilesError;
 
       // Combine with post counts
-      return profiles.map((profile) => ({
-        ...profile,
-        post_count: userPostCounts[profile.id],
-      }));
-    },
-  });
+      return profiles.map((profile) => ({ ...profile,
+        post_count: userPostCounts[profile.id] }));
+    } });
 };

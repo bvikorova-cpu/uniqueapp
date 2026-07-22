@@ -53,8 +53,7 @@ export default function WeeklyCookingChallenge({ onBack }: Props) {
       await supabase.from('activity_feed').insert({
         user_id: user.id,
         activity_type: 'cooking_challenge_joined',
-        metadata: { challenge_id: challenge.id, title: challenge.title, xp: challenge.xp },
-      });
+        metadata: { challenge_id: challenge.id, title: challenge.title, xp: challenge.xp } });
       setJoinedChallenges(prev => new Set([...prev, challenge.id]));
       setUserXp(prev => prev + challenge.xp);
       toast({ title: `🏆 Challenge Joined! +${challenge.xp} XP` });

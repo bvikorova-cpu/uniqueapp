@@ -5,13 +5,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { 
   Wand2, 
   Hash, 
@@ -71,8 +69,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
     setLoading(type);
     try {
       const { data, error } = await supabase.functions.invoke("wall-ai-assistant", {
-        body: { type, content, language: "sk" },
-      });
+        body: { type, content, language: "sk" } });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

@@ -9,10 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { CalendarClock, Store, Loader2, XCircle } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface Booking {
   id: string;
@@ -33,8 +31,7 @@ const STATUS_BADGE: Record<string, { label: string; variant: "default" | "second
   cancelled_by_customer: { label: "Cancelled by you", variant: "secondary" },
   cancelled_by_provider: { label: "Cancelled by provider", variant: "secondary" },
   refunded: { label: "Refunded", variant: "secondary" },
-  no_show: { label: "No-show", variant: "destructive" },
-};
+  no_show: { label: "No-show", variant: "destructive" } };
 
 export default function MyServiceBookings() {
   const { user } = useAuth();
@@ -73,10 +70,8 @@ export default function MyServiceBookings() {
       const { error } = await supabase.functions.invoke("cancel-service-booking", { body: { booking_id: id } });
       if (error) throw error;
       const hoursUntil = (new Date(scheduledAt).getTime() - Date.now()) / 3600000;
-      toast({
-        title: "Booking cancelled",
-        description: hoursUntil >= 24 ? "Full refund is being processed." : "Cancelled without refund (less than 24h notice).",
-      });
+      toast({ title: "Booking cancelled",
+        description: hoursUntil >= 24 ? "Full refund is being processed." : "Cancelled without refund (less than 24h notice)." });
       await load();
     } catch (e: any) {
       toast({ title: "Cancellation failed", description: e.message, variant: "destructive" });

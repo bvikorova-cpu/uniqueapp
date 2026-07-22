@@ -451,8 +451,7 @@ const sportConfigs: Record<SportType, {
   basketball: { ambientColor: "#f97316", bgColor: "#1a0f05", cameraPos: [7, 5, 7] },
   hockey: { ambientColor: "#06b6d4", bgColor: "#051520", cameraPos: [8, 5, 8] },
   tennis: { ambientColor: "#84cc16", bgColor: "#0a1a05", cameraPos: [6, 5, 6] },
-  "american-football": { ambientColor: "#22c55e", bgColor: "#0a1510", cameraPos: [8, 6, 8] },
-};
+  "american-football": { ambientColor: "#22c55e", bgColor: "#0a1510", cameraPos: [8, 6, 8] } };
 
 interface Stadium3DProps {
   sport: SportType;

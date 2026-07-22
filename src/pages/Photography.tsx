@@ -15,8 +15,7 @@ const Photography = () => {
   const [enrolling, setEnrolling] = useState<string | null>(null);
   const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+  useEffect(() => { const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
@@ -24,8 +23,7 @@ const Photography = () => {
         if (success) {
           toast({
             title: "Enrollment Successful! 🎉",
-            description: "You now have access to your photography ProClass.",
-          });
+            description: "You now have access to your photography ProClass." });
           window.history.replaceState({}, '', '/photography');
         }
       });
@@ -87,12 +85,10 @@ const Photography = () => {
     }
   ];
 
-  const handleEnroll = async (masterclassId: string, price: number, title: string) => {
-    if (isPurchased(masterclassId, "photography-masterclass")) {
+  const handleEnroll = async (masterclassId: string, price: number, title: string) => { if (isPurchased(masterclassId, "photography-masterclass")) {
       toast({
         title: "Already Enrolled",
-        description: "You already have access to this ProClass.",
-      });
+        description: "You already have access to this ProClass." });
       return;
     }
 
@@ -104,12 +100,10 @@ const Photography = () => {
       if (sessionUrl) {
         { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; } }
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Enrollment Failed",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setEnrolling(null);
     }
   };
@@ -222,7 +216,7 @@ const Photography = () => {
                   </Button>
                 </div>
                 <CourseAcademicActions
-                  meta={{
+                  meta={ {
                     module_key: "photography",
                     module_label: "Photography",
                     course_slug: masterclass.id,
@@ -231,8 +225,7 @@ const Photography = () => {
                     level: masterclass.level,
                     duration: masterclass.duration,
                     price: masterclass.price,
-                    skills: masterclass.skills,
-                  }}
+                    skills: masterclass.skills }}
                   unlocked={isPurchased(masterclass.id, "photography-masterclass")}
                 />
               </div>

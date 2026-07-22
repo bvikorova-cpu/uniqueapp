@@ -120,6 +120,5 @@ export function useInstallPrompt() {
     promptInstall,
     openApp,
     /** @deprecated kept for API compatibility */
-    dismiss: () => {},
-  };
+    dismiss: () => {} };
 }

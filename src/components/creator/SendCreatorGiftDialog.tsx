@@ -7,8 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Gift, Loader2, Heart } from "lucide-react";
 
-const giftEmojis: Record<string, string> = {
-  "Heart": "❤️",
+const giftEmojis: Record<string, string> = { "Heart": "❤️",
   "Double Heart": "💕",
   "Golden Heart": "💛",
   "Star": "⭐",
@@ -23,8 +22,7 @@ const giftEmojis: Record<string, string> = {
   "Rose": "🌹",
   "Bouquet": "💐",
   "Cake": "🎂",
-  "Champagne": "🍾",
-};
+  "Champagne": "🍾" };
 
 interface GiftOption {
   id: string;
@@ -42,12 +40,10 @@ interface SendCreatorGiftDialogProps {
   creatorName: string;
 }
 
-export function SendCreatorGiftDialog({
-  open,
+export function SendCreatorGiftDialog({ open,
   onOpenChange,
   creatorId,
-  creatorName,
-}: SendCreatorGiftDialogProps) {
+  creatorName }: SendCreatorGiftDialogProps) {
   const [gifts, setGifts] = useState<GiftOption[]>([]);
   const [selectedGift, setSelectedGift] = useState<string | null>(null);
   const [message, setMessage] = useState("");
@@ -72,25 +68,21 @@ export function SendCreatorGiftDialog({
 
       if (error) throw error;
       setGifts(data || []);
-    } catch (error) {
-      console.error("Error loading gifts:", error);
+    } catch (error) { console.error("Error loading gifts:", error);
       toast({
         title: "Error",
         description: "Failed to load gifts. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoadingGifts(false);
     }
   };
 
-  const handleSendGift = async () => {
-    if (!selectedGift) {
+  const handleSendGift = async () => { if (!selectedGift) {
       toast({
         title: "Select a gift",
         description: "Please choose a gift to send",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -98,22 +90,17 @@ export function SendCreatorGiftDialog({
       setLoading(true);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Login Required",
           description: "Please sign in to send gifts",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke("send-gift-payment", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("send-gift-payment", { body: {
           creatorId,
           giftId: selectedGift,
-          message: message.trim(),
-        },
-      });
+          message: message.trim() } });
 
       if (error) throw error;
 
@@ -125,13 +112,11 @@ export function SendCreatorGiftDialog({
       } else {
         throw new Error("No checkout URL returned");
       }
-    } catch (error) {
-      console.error("Gift send error:", error);
+    } catch (error) { console.error("Gift send error:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to send gift. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

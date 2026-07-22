@@ -47,9 +47,8 @@ export const HolographicHero = () => {
 
       {/* Holographic scan lines overlay */}
       <div className="absolute inset-0 pointer-events-none opacity-20"
-        style={{
-          background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(168, 85, 247, 0.05) 2px, rgba(168, 85, 247, 0.05) 4px)',
-        }}
+        style={ {
+          background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(168, 85, 247, 0.05) 2px, rgba(168, 85, 247, 0.05) 4px)' }}
       />
 
       <div className="absolute inset-0 bg-gradient-to-b from-background/15 via-background/30 to-background/70" />
@@ -63,14 +62,12 @@ export const HolographicHero = () => {
               background: i % 3 === 0 ? 'hsl(var(--primary))' : i % 3 === 1 ? 'hsl(var(--accent))' : '#a855f7',
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              boxShadow: `0 0 8px ${i % 2 === 0 ? 'hsl(var(--primary) / 0.6)' : 'hsl(var(--accent) / 0.6)'}`,
-            }}
-            animate={{
+              boxShadow: `0 0 8px ${i % 2 === 0 ? 'hsl(var(--primary) / 0.6)' : 'hsl(var(--accent) / 0.6)'}` }}
+            animate={ {
               y: [0, -30, 0],
               x: [0, Math.random() * 20 - 10, 0],
               opacity: [0.3, 0.9, 0.3],
-              scale: [1, 1.4, 1],
-            }}
+              scale: [1, 1.4, 1] }}
             transition={{ duration: 3 + Math.random() * 4, repeat: Infinity, delay: Math.random() * 3, ease: "easeInOut" }}
           />
         ))}
@@ -85,11 +82,10 @@ export const HolographicHero = () => {
 
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-3 text-primary"
-          style={{
+          style={ {
             WebkitTextStroke: '1.5px rgba(88, 28, 135, 0.8)',
             textShadow: '0 0 30px hsl(var(--primary) / 0.6), 0 0 60px hsl(var(--primary) / 0.3), 0 2px 10px rgba(0,0,0,0.8), 0 4px 20px rgba(0,0,0,0.5)',
-            filter: 'drop-shadow(0 0 8px hsl(var(--primary) / 0.5))',
-          }}>
+            filter: 'drop-shadow(0 0 8px hsl(var(--primary) / 0.5))' }}>
           Holographic Avatars
         </motion.h1>
 

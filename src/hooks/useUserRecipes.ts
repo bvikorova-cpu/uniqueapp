@@ -36,8 +36,7 @@ export function useUserRecipes() {
 
       if (error) throw error;
       return data as UserRecipe[];
-    },
-  });
+    } });
 
   const deleteRecipe = useMutation({
     mutationFn: async (recipeId: string) => {
@@ -51,14 +50,11 @@ export function useUserRecipes() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-recipes"] });
-    },
-  });
+    } });
 
-  return {
-    userRecipes,
+  return { userRecipes,
     isLoading,
     refetch,
     deleteRecipe: deleteRecipe.mutate,
-    isDeleting: deleteRecipe.isPending,
-  };
+    isDeleting: deleteRecipe.isPending };
 }

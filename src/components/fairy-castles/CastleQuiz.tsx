@@ -13,23 +13,17 @@ interface CastleQuizProps {
 }
 
 // Generate quiz questions from fun facts
-function generateQuestions(castleName: string, funFacts: string[]) {
-  const questions = [
+function generateQuestions(castleName: string, funFacts: string[]) { const questions = [
     {
       q: `Which castle did you just explore?`,
       options: [castleName, "Hogwarts Castle", "Buckingham Palace", "Neuschwanstein"],
-      correct: 0,
-    },
-    {
-      q: `How many fairy castles exist around the world?`,
+      correct: 0 },
+    { q: `How many fairy castles exist around the world?`,
       options: ["4", "6", "8", "10"],
-      correct: 1,
-    },
-    {
-      q: `What can you find inside fairy castles?`,
+      correct: 1 },
+    { q: `What can you find inside fairy castles?`,
       options: ["Real dragons", "Magical rooms & galleries", "A swimming pool", "A spaceship"],
-      correct: 1,
-    },
+      correct: 1 },
   ];
   return questions;
 }

@@ -30,8 +30,7 @@ const rarityStyles = {
   common:    { ring: "ring-slate-400/40",  glow: "shadow-slate-500/20",  text: "text-slate-300",  bg: "from-slate-700/30 to-slate-800/30" },
   rare:      { ring: "ring-blue-400/50",   glow: "shadow-blue-500/30",   text: "text-blue-300",   bg: "from-blue-900/40 to-blue-950/40" },
   epic:      { ring: "ring-violet-400/60", glow: "shadow-violet-500/40", text: "text-violet-300", bg: "from-violet-900/40 to-violet-950/40" },
-  legendary: { ring: "ring-amber-400/70",  glow: "shadow-amber-500/50",  text: "text-amber-300",  bg: "from-amber-900/40 to-amber-950/40" },
-};
+  legendary: { ring: "ring-amber-400/70",  glow: "shadow-amber-500/50",  text: "text-amber-300",  bg: "from-amber-900/40 to-amber-950/40" } };
 
 export const AchievementsWall = ({ userId, stats }: AchievementsWallProps) => {
   // Fetch unlocked achievements from DB
@@ -44,8 +43,7 @@ export const AchievementsWall = ({ userId, stats }: AchievementsWallProps) => {
         .eq("user_id", userId);
       return data?.map((a) => a.achievement_id) || [];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   // Local computed achievements based on stats (visible regardless of DB state)
   const achievements: Achievement[] = [

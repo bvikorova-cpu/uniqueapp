@@ -1,24 +1,20 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -58,21 +54,17 @@ const CreateInfluencer = ({ open, onOpenChange }: CreateInfluencerProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGeneratingAvatar, setIsGeneratingAvatar] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
+  const [formData, setFormData] = useState({ name: "",
     description: "",
     personality: "",
     niche: "",
-    avatarUrl: "",
-  });
+    avatarUrl: "" });
 
-  const handleGenerateAvatar = async () => {
-    if (!formData.name || !formData.niche || !formData.personality) {
+  const handleGenerateAvatar = async () => { if (!formData.name || !formData.niche || !formData.personality) {
       toast({
         title: "Missing Information",
         description: "Please fill in name, niche, and personality first",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -81,37 +73,30 @@ const CreateInfluencer = ({ open, onOpenChange }: CreateInfluencerProps) => {
       const prompt = `Create a professional, realistic virtual influencer portrait photo for ${formData.name}, specialized in ${formData.niche} with a ${formData.personality} personality. High-quality headshot, Instagram influencer style, professional lighting, 4K quality.`;
 
       const { data, error } = await supabase.functions.invoke("ai-image-generation", {
-        body: { prompt },
-      });
+        body: { prompt } });
 
       if (error) throw error;
 
       setFormData({ ...formData, avatarUrl: data.imageUrl });
-      toast({
-        title: "Avatar Generated!",
-        description: "Your influencer's avatar is ready",
-      });
-    } catch (error) {
-      console.error("Error generating avatar:", error);
+      toast({ title: "Avatar Generated!",
+        description: "Your influencer's avatar is ready" });
+    } catch (error) { console.error("Error generating avatar:", error);
       toast({
         title: "Generation Failed",
         description: "Failed to generate avatar. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsGeneratingAvatar(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
     
     if (!formData.name || !formData.niche || !formData.personality) {
       toast({
         title: "Missing Fields",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -135,25 +120,20 @@ const CreateInfluencer = ({ open, onOpenChange }: CreateInfluencerProps) => {
 
       toast({
         title: "Influencer Created!",
-        description: `${formData.name} is now ready to start earning`,
-      });
+        description: `${formData.name} is now ready to start earning` });
 
       queryClient.invalidateQueries({ queryKey: ["virtual-influencers"] });
       onOpenChange(false);
-      setFormData({
-        name: "",
+      setFormData({ name: "",
         description: "",
         personality: "",
         niche: "",
-        avatarUrl: "",
-      });
-    } catch (error) {
-      console.error("Error creating influencer:", error);
+        avatarUrl: "" });
+    } catch (error) { console.error("Error creating influencer:", error);
       toast({
         title: "Creation Failed",
         description: "Failed to create influencer. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsLoading(false);
     }

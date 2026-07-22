@@ -8,8 +8,7 @@ import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared
  * Server-side credit deduction — single source of truth.
  */
 
-const CREDIT_COSTS: Record<string, number> = {
-  daily_horoscope: 1,
+const CREDIT_COSTS: Record<string, number> = { daily_horoscope: 1,
   horoscope: 1,
   weekly_horoscope: 3,
   monthly_horoscope: 8,
@@ -28,8 +27,7 @@ const CREDIT_COSTS: Record<string, number> = {
   birth_chart: 20,
   daily_ritual: 1,
   natal_chart: 20,
-  transit: 3,
-};
+  transit: 3 };
 
 const SYSTEMS: Record<string, { system: string; json: boolean }> = {
   daily_horoscope: { system: "You are an expert astrologer. Give a vivid daily horoscope (4-6 sentences) covering love, career, energy, lucky color & number.", json: false },
@@ -46,8 +44,7 @@ const SYSTEMS: Record<string, { system: string; json: boolean }> = {
   palmistry: { system: "You are a palmistry reader. Interpret palm lines from the image (or generic if no image). Return JSON: {life_line, heart_line, head_line, fate_line, summary}.", json: true },
   yes_no: { system: "You are a mystical oracle. Answer YES or NO with a 1-2 sentence cosmic reasoning. Return JSON: {answer:'yes'|'no'|'maybe', reasoning, confidence_0_100}.", json: true },
   rune: { system: "You are a Norse rune reader. Draw 1 rune and interpret. Return JSON: {rune_name, symbol, meaning, advice}.", json: true },
-  daily_ritual: { system: "You are a mystical guide. Suggest a short daily ritual (3-5 sentences) including a mantra, color, and crystal.", json: false },
-};
+  daily_ritual: { system: "You are a mystical guide. Suggest a short daily ritual (3-5 sentences) including a mantra, color, and crystal.", json: false } };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -111,12 +108,10 @@ serve(async (req) => {
       data.prompt && `Prompt: ${data.prompt}`,
     ].filter(Boolean).join("\n");
 
-    const result = await callOpenAI({
-      system: config.system,
+    const result = await callOpenAI({ system: config.system,
       user: contextParts || "Give me a reading",
       json: config.json,
-      temperature: 0.85,
-    });
+      temperature: 0.85 });
 
     // Deduct credits AFTER successful AI call
     if (row) {
@@ -126,8 +121,7 @@ serve(async (req) => {
         .eq("user_id", user.id);
     }
 
-    return jsonResponse({
-      success: true,
+    return jsonResponse({ success: true,
       type,
       action: type,
       cost,
@@ -135,8 +129,7 @@ serve(async (req) => {
       result: config.json ? safeJson(result) : result,
       reading: result,
       text: result,
-      response: result,
-    });
+      response: result });
   } catch (e: any) {
     return errorResponse(e?.message || "Astrology reading failed");
   }

@@ -11,14 +11,10 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 const PACKS = [
-  {
-    id: "basic", name: "Basic Pack", price: "€3", priceId: "price_1SPjFUGaXSfGtYFtNiiQEQcT",
-    features: ["20+ appearance options", "Basic clothing items", "5 personality traits", "Name customization"], color: "border-blue-500/30",
-  },
-  {
-    id: "advanced", name: "Advanced Pack", price: "€15", priceId: "price_1SPjFk0QTWhd4oRpZGc4FevP", popular: true,
-    features: ["200+ appearance options", "Premium clothing & accessories", "20+ personality traits", "Custom animations", "Voice customization", "Exclusive visual effects"], color: "border-primary/40",
-  },
+  { id: "basic", name: "Basic Pack", price: "€3", priceId: "price_1SPjFUGaXSfGtYFtNiiQEQcT",
+    features: ["20+ appearance options", "Basic clothing items", "5 personality traits", "Name customization"], color: "border-blue-500/30" },
+  { id: "advanced", name: "Advanced Pack", price: "€15", priceId: "price_1SPjFk0QTWhd4oRpZGc4FevP", popular: true,
+    features: ["200+ appearance options", "Premium clothing & accessories", "20+ personality traits", "Custom animations", "Voice customization", "Exclusive visual effects"], color: "border-primary/40" },
 ];
 
 export const AvatarCustomization = ({ onBack }: Props) => {
@@ -29,8 +25,7 @@ export const AvatarCustomization = ({ onBack }: Props) => {
     setLoading(pack.id);
     try {
       const { data, error } = await supabase.functions.invoke("create-holographic-avatar-checkout", {
-        body: { priceId: pack.priceId, featureName: pack.name },
-      });
+        body: { priceId: pack.priceId, featureName: pack.name } });
       if (error) throw error;
       if (data?.url) { window.open(data.url, "_blank"); }
     } catch { toast({ title: "Error", description: "Failed to start purchase", variant: "destructive" }); }

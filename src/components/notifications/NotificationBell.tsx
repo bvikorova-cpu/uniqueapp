@@ -4,11 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Bell, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
@@ -73,8 +71,7 @@ const NotificationBell = ({ className }: { className?: string }) => {
           event: "INSERT",
           schema: "public",
           table: "notifications",
-          filter: `user_id=eq.${currentUser.id}`,
-        },
+          filter: `user_id=eq.${currentUser.id}` },
         async (payload) => {
           if (cancelled) return;
           if (payload.new.actor_id) {
@@ -82,15 +79,12 @@ const NotificationBell = ({ className }: { className?: string }) => {
               .rpc("get_public_profiles", { ids: [payload.new.actor_id] });
             const profile = (profiles || [])[0];
 
-            const newNotification = {
-              ...payload.new,
+            const newNotification = { ...payload.new,
               actor: profile || {
                 id: payload.new.actor_id,
                 full_name: null,
                 username: null,
-                avatar_url: null,
-              },
-            };
+                avatar_url: null } };
 
             setNotifications(prev => [newNotification as Notification, ...prev].slice(0, 20));
             setUnreadCount(prev => prev + 1);
@@ -133,15 +127,12 @@ const NotificationBell = ({ className }: { className?: string }) => {
         profilesMap = new Map((profiles || []).map((p: any) => [p.id, p]));
       }
 
-      const notificationsWithActors = (data || []).map(notification => ({
-        ...notification,
+      const notificationsWithActors = (data || []).map(notification => ({ ...notification,
         actor: notification.actor_id ? (profilesMap.get(notification.actor_id) || {
           id: notification.actor_id,
           full_name: null,
           username: null,
-          avatar_url: null,
-        }) : undefined,
-      }));
+          avatar_url: null }) : undefined }));
 
       setNotifications(notificationsWithActors as Notification[]);
       setUnreadCount(notificationsWithActors.filter(n => !n.is_read).length);
@@ -260,9 +251,7 @@ const NotificationBell = ({ className }: { className?: string }) => {
       setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
       setUnreadCount(0);
       
-      toast({
-        title: "All notifications marked as read",
-      });
+      toast({ title: "All notifications marked as read" });
     } catch (error: any) {
       console.error("Error marking all as read:", error);
     }
@@ -387,10 +376,9 @@ const NotificationBell = ({ className }: { className?: string }) => {
                             </p>
                           )}
                           <p className="text-xs text-muted-foreground mt-1">
-                            {formatDistanceToNow(new Date(notification.created_at), {
+                            { formatDistanceToNow(new Date(notification.created_at), {
                               addSuffix: true,
-                              locale: enUS,
-                            })}
+                              locale: enUS })}
                           </p>
                           {notification.type === "friend_request" && (
                             <div className="flex gap-2 mt-2">

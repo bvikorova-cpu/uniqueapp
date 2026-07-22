@@ -18,8 +18,7 @@ export const useSavedSearches = () => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   const save = useMutation({
     mutationFn: async ({ query, label }: { query: string; label?: string }) => {
@@ -33,16 +32,14 @@ export const useSavedSearches = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["saved-searches"] });
       toast({ title: "Search saved" });
-    },
-  });
+    } });
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("saved_searches").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["saved-searches"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["saved-searches"] }) });
 
   return { searches, isLoading, saveSearch: save.mutate, removeSearch: remove.mutate };
 };

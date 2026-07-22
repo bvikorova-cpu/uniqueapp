@@ -14,8 +14,7 @@ const PLANS = {
   ageLocks: { name: "Age Locks", price: "€4.99", priceId: "price_1SPitb0QTWhd4oRpSUpKFiYN", icon: Lock, popular: false, description: "Freeze time at your perfect age", features: ["Unlimited age lock points", "Pause at any age you want", "Create custom milestones", "Resume aging anytime"] },
   futureGlimpse: { name: "Future Glimpse", price: "€2.99", priceId: "price_1SPitv0QTWhd4oRpT3MCvpTR", icon: Eye, popular: false, description: "See your future self", features: ["Preview any future age", "AI-generated future photos", "Timeline exploration", "What-if scenarios"] },
   paradoxPosts: { name: "Time Paradox Posts", price: "€1.99", priceId: "price_1SPiuHGaXSfGtYFtJQmIpTBa", icon: Sparkles, popular: false, description: "Post across different timelines", features: ["Post from any age", "Create time paradoxes", "Cross-timeline content", "Special paradox badges"] },
-  masterBundle: { name: "Time Master Bundle", price: "€12.99", priceId: "price_1SPiudGaXSfGtYFttW8NCjDx", icon: Clock, popular: true, description: "All features unlocked", features: ["All features included", "Exclusive Time Master badge", "Priority support", "Early access to new features", "Save €2 per month"] },
-};
+  masterBundle: { name: "Time Master Bundle", price: "€12.99", priceId: "price_1SPiudGaXSfGtYFttW8NCjDx", icon: Clock, popular: true, description: "All features unlocked", features: ["All features included", "Exclusive Time Master badge", "Priority support", "Early access to new features", "Save €2 per month"] } };
 
 export function TimeReversalPlans({ onBack }: Props) {
   const [loading, setLoading] = useState<string | null>(null);
@@ -30,8 +29,7 @@ export function TimeReversalPlans({ onBack }: Props) {
 
       const plan = PLANS[planKey];
       const { data, error } = await supabase.functions.invoke("create-time-reversal-checkout", {
-        body: { priceId: plan.priceId, featureName: plan.name },
-      });
+        body: { priceId: plan.priceId, featureName: plan.name } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
     } catch (e) {

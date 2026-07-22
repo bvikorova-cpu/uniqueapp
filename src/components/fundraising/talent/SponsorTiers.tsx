@@ -19,12 +19,10 @@ interface Tier {
   sort_order: number;
 }
 
-const tierIcons: Record<string, any> = {
-  bronze: Star,
+const tierIcons: Record<string, any> = { bronze: Star,
   silver: Sparkles,
   gold: Gem,
-  platinum: Crown,
-};
+  platinum: Crown };
 
 export const SponsorTiers = ({ campaignId, isOwner }: { campaignId: string; isOwner: boolean }) => {
   const [tiers, setTiers] = useState<Tier[]>([]);
@@ -52,14 +50,12 @@ export const SponsorTiers = ({ campaignId, isOwner }: { campaignId: string; isOw
       return;
     }
     const benefits = form.benefits.split("\n").map(s => s.trim()).filter(Boolean);
-    const { error } = await (supabase as any).from("talent_sponsor_tiers").insert({
-      campaign_id: campaignId,
+    const { error } = await (supabase as any).from("talent_sponsor_tiers").insert({ campaign_id: campaignId,
       tier_name: form.tier_name,
       min_amount: amount,
       benefits,
       perk_icon: form.perk_icon,
-      sort_order: tiers.length,
-    });
+      sort_order: tiers.length });
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
       return;

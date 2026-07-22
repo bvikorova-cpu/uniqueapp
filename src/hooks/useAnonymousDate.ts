@@ -67,13 +67,11 @@ export function useAnonymousDate() {
       } else {
         setCredits(data.credits_remaining);
       }
-    } catch (error) {
-      console.error("Error fetching credits:", error);
+    } catch (error) { console.error("Error fetching credits:", error);
       toast({
         title: "Error",
         description: "Failed to load credits",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -124,13 +122,11 @@ export function useAnonymousDate() {
         );
       }
 
-      const enriched: ActiveMatch[] = visibleMatches.map((m) => {
-        const partnerId = m.user1_id === userId ? m.user2_id : m.user1_id;
+      const enriched: ActiveMatch[] = visibleMatches.map((m) => { const partnerId = m.user1_id === userId ? m.user2_id : m.user1_id;
         return {
           ...m,
           current_user_id: userId,
-          partner_profile: profilesById[partnerId] ?? null,
-        };
+          partner_profile: profilesById[partnerId] ?? null };
       });
 
       setActiveMatches(enriched);
@@ -151,30 +147,25 @@ export function useAnonymousDate() {
       if (data?.url) {
         window.open(data.url, "_blank");
       }
-    } catch (error) {
-      console.error("Error purchasing credits:", error);
+    } catch (error) { console.error("Error purchasing credits:", error);
       toast({
         title: "Error",
         description: "Failed to initiate payment",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   }, [toast]);
 
   const previewMatches = useCallback(async (filters?: MatchFilters) => {
     try {
       const { data, error } = await supabase.functions.invoke("find-anonymous-match", {
-        body: { mode: "preview", filters: filters ?? {} },
-      });
+        body: { mode: "preview", filters: filters ?? {} } });
       if (error) throw error;
       return data?.candidates ?? [];
-    } catch (error: any) {
-      console.error("Error previewing matches:", error);
+    } catch (error: any) { console.error("Error previewing matches:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to load candidates",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return [];
     }
   }, [toast]);
@@ -183,27 +174,23 @@ export function useAnonymousDate() {
     try {
       setLoading(true);
       const { data, error } = await supabase.functions.invoke("find-anonymous-match", {
-        body: { mode: "match", filters: filters ?? {}, targetUserId },
-      });
+        body: { mode: "match", filters: filters ?? {}, targetUserId } });
 
       if (error) throw error;
 
       if (data?.match) {
         toast({
           title: "Match Found!",
-          description: `You've been matched with ${data.partner.anonymous_name}`,
-        });
+          description: `You've been matched with ${data.partner.anonymous_name}` });
         await fetchCredits();
         await fetchActiveMatches();
         return data;
       }
-    } catch (error: any) {
-      console.error("Error finding match:", error);
+    } catch (error: any) { console.error("Error finding match:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to find match",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -219,14 +206,12 @@ export function useAnonymousDate() {
     return () => { sub.subscription.unsubscribe(); };
   }, [fetchCredits, fetchActiveMatches]);
 
-  return {
-    credits,
+  return { credits,
     loading,
     activeMatches,
     fetchCredits,
     fetchActiveMatches,
     purchaseCredits,
     findMatch,
-    previewMatches,
-  };
+    previewMatches };
 }

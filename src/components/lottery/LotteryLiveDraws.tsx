@@ -11,26 +11,18 @@ interface LotteryLiveDrawsProps {
 }
 
 const LIVE_DRAWS = [
-  {
-    id: 1, lottery: "EuroJackpot", status: "live", nextDraw: "NOW",
+  { id: 1, lottery: "EuroJackpot", status: "live", nextDraw: "NOW",
     jackpot: "€87,000,000", numbers: [4, 17, 23, 31, 44], bonus: [2, 9],
-    country: "🇪🇺 Europe", revealed: 5,
-  },
-  {
-    id: 2, lottery: "Powerball", status: "upcoming", nextDraw: "2h 15m",
+    country: "🇪🇺 Europe", revealed: 5 },
+  { id: 2, lottery: "Powerball", status: "upcoming", nextDraw: "2h 15m",
     jackpot: "$340,000,000", numbers: [], bonus: [],
-    country: "🇺🇸 USA", revealed: 0,
-  },
-  {
-    id: 3, lottery: "Mega Millions", status: "upcoming", nextDraw: "5h 30m",
+    country: "🌍 Region", revealed: 0 },
+  { id: 3, lottery: "Mega Millions", status: "upcoming", nextDraw: "5h 30m",
     jackpot: "$215,000,000", numbers: [], bonus: [],
-    country: "🇺🇸 USA", revealed: 0,
-  },
-  {
-    id: 4, lottery: "Lotto 6/49", status: "completed", nextDraw: "Completed",
+    country: "🌍 Region", revealed: 0 },
+  { id: 4, lottery: "Lotto 6/49", status: "completed", nextDraw: "Completed",
     jackpot: "€2,500,000", numbers: [6, 13, 22, 29, 38, 45], bonus: [],
-    country: "🇩🇪 Germany", revealed: 6,
-  },
+    country: "Local", revealed: 6 },
 ];
 
 const RECENT_RESULTS = [

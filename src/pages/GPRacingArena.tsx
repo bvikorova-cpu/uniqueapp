@@ -120,12 +120,10 @@ const toolCards = [
   { id: "track-editor", name: "Track Editor", icon: Map, desc: "Design custom circuits", color: "text-indigo-400", gradient: "from-indigo-950/30 to-violet-950/20", border: "border-indigo-500/20" },
 ];
 
-const statIcons: Record<string, React.ReactNode> = {
-  engine: <Flame className="h-4 w-4" />,
+const statIcons: Record<string, React.ReactNode> = { engine: <Flame className="h-4 w-4" />,
   aero: <Wind className="h-4 w-4" />,
   tires: <CircleDot className="h-4 w-4" />,
-  handling: <Compass className="h-4 w-4" />,
-};
+  handling: <Compass className="h-4 w-4" /> };
 
 export default function GPRacingArena() {
   const navigate = useNavigate();

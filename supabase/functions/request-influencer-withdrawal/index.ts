@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -61,13 +59,11 @@ serve(async (req) => {
     // Create withdrawal request
     const { data: withdrawal, error: withdrawalError } = await supabase
       .from("influencer_withdrawal_requests")
-      .insert({
-        influencer_id: influencerId,
+      .insert({ influencer_id: influencerId,
         amount,
         payment_method: paymentMethod,
         payment_details: paymentDetails,
-        status: "pending",
-      })
+        status: "pending" })
       .select()
       .single();
 
@@ -76,9 +72,7 @@ serve(async (req) => {
     // Update pending_withdrawal in balance
     const { error: updateError } = await supabase
       .from("influencer_balances")
-      .update({
-        pending_withdrawal: balance.pending_withdrawal + amount,
-      })
+      .update({ pending_withdrawal: balance.pending_withdrawal + amount })
       .eq("influencer_id", influencerId);
 
     if (updateError) throw updateError;
@@ -96,8 +90,7 @@ serve(async (req) => {
         title: "New Influencer Withdrawal Request",
         message: `${influencer.name} requested €${amount} withdrawal via ${paymentMethod}`,
         related_id: influencerId,
-        is_read: false,
-      }));
+        is_read: false }));
 
       await supabase.from("notifications").insert(adminNotifications);
     }

@@ -35,8 +35,7 @@ export default function StyleBattleArena() {
         .limit(20);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: entries } = useQuery({
     queryKey: ["fashion-battle-entries", selectedBattle],
@@ -50,17 +49,14 @@ export default function StyleBattleArena() {
       if (error) throw error;
       return data;
     },
-    enabled: !!selectedBattle,
-  });
+    enabled: !!selectedBattle });
 
   const createBattle = useMutation({
     mutationFn: async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
       const endsAt = new Date(Date.now() + parseInt(hours) * 3600000).toISOString();
-      const { error } = await supabase.from("fashion_style_battles").insert({
-        title, theme, ends_at: endsAt, created_by: session.user.id,
-      });
+      const { error } = await supabase.from("fashion_style_battles").insert({ title, theme, ends_at: endsAt, created_by: session.user.id });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -70,8 +66,7 @@ export default function StyleBattleArena() {
       setTitle("");
       setTheme("");
     },
-    onError: (e: any) => toast.error(e.message),
-  });
+    onError: (e: any) => toast.error(e.message) });
 
   const submitEntry = useMutation({
     mutationFn: async () => {
@@ -85,17 +80,14 @@ export default function StyleBattleArena() {
 
       const battle = battles?.find(b => b.id === selectedBattle);
       const { data: scoreData, error: scoreError } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "battle-score", outfitDescription: entryText, battleTheme: battle?.theme || "" },
-      });
+        body: { action: "battle-score", outfitDescription: entryText, battleTheme: battle?.theme || "" } });
       if (scoreError) throw scoreError;
 
-      const { error } = await supabase.from("fashion_battle_entries").insert({
-        battle_id: selectedBattle!,
+      const { error } = await supabase.from("fashion_battle_entries").insert({ battle_id: selectedBattle!,
         user_id: session.user.id,
         outfit_description: entryText,
         ai_score: scoreData.score?.overall_score || 0,
-        ai_feedback: scoreData.score?.judge_commentary || "",
-      });
+        ai_feedback: scoreData.score?.judge_commentary || "" });
       if (error) throw error;
       return scoreData.score;
     },
@@ -104,8 +96,7 @@ export default function StyleBattleArena() {
       queryClient.invalidateQueries({ queryKey: ["fashion-battle-entries"] });
       setEntryText("");
     },
-    onError: (e: any) => toast.error(e.message),
-  });
+    onError: (e: any) => toast.error(e.message) });
 
   const vote = useMutation({
     mutationFn: async (entryId: string) => {
@@ -117,8 +108,7 @@ export default function StyleBattleArena() {
       toast.success("Vote cast!");
       queryClient.invalidateQueries({ queryKey: ["fashion-battle-entries"] });
     },
-    onError: (e: any) => toast.error(e.message || "Vote failed"),
-  });
+    onError: (e: any) => toast.error(e.message || "Vote failed") });
 
   return (
     <>

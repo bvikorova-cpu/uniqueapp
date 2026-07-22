@@ -40,15 +40,12 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
     setDeleting(true);
     try {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { user } } = await supabase.auth.getUser();
 
-      if (user?.id !== repost.user_id) {
-        toast({
+      if (user?.id !== repost.user_id) { toast({
           title: "Cannot delete",
           description: "You can only delete your own reposts",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -56,18 +53,14 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Repost was deleted",
-      });
+      toast({ title: "Success",
+        description: "Repost was deleted" });
 
       onDelete();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setDeleting(false);
     }
@@ -101,10 +94,9 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
               <span className="text-muted-foreground text-sm">shared</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              {formatDistanceToNow(new Date(repost.created_at), {
+              { formatDistanceToNow(new Date(repost.created_at), {
                 addSuffix: true,
-                locale: enUS,
-              })}
+                locale: enUS })}
             </p>
           </div>
           {currentUserId === repost.user_id && (

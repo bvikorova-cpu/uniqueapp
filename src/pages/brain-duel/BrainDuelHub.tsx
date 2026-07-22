@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import {
-  ArrowLeft, Sparkles, ScanLine, Mic, ShieldAlert, Share2, BookOpen,
-  Trophy, Globe2, Layers, Hourglass, Swords, Image as ImageIcon,
-} from "lucide-react";
+import { ArrowLeft, Sparkles, ScanLine, Mic, ShieldAlert, Share2, BookOpen,
+  Trophy, Globe2, Layers, Hourglass, Swords, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

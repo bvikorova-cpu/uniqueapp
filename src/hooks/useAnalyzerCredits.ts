@@ -38,15 +38,12 @@ export const useAnalyzerCredits = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
-  const analyzeImage = useMutation({
-    mutationFn: async ({
+  const analyzeImage = useMutation({ mutationFn: async ({
       imageUrl,
       category,
-      analysisType = 'basic',
-    }: {
+      analysisType = 'basic' }: {
       imageUrl: string;
       category: string;
       analysisType?: 'basic' | 'expert';
@@ -55,8 +52,7 @@ export const useAnalyzerCredits = () => {
       if (!user) throw new Error("Not authenticated");
 
       // Map category → universal-vision-analyzer task
-      const TASK_BY_CATEGORY: Record<string, string> = {
-        nature: 'plant_identify',
+      const TASK_BY_CATEGORY: Record<string, string> = { nature: 'plant_identify',
         objects: 'antique_identify',
         fashion: 'virtual_tryon',
         text: 'message',
@@ -77,14 +73,12 @@ export const useAnalyzerCredits = () => {
         nutrition: 'calorie_scan',
         drawing: 'drawing_identify',
         math: 'math_solve',
-        homework: 'homework_help',
-      };
+        homework: 'homework_help' };
       const task = TASK_BY_CATEGORY[category] ?? 'plant_identify';
       const creditsCost = analysisType === 'expert' ? 2 : 1;
 
       const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
-        body: { task, imageUrl, extras: { category, analysisType } },
-      });
+        body: { task, imageUrl, extras: { category, analysisType } } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
@@ -100,8 +94,7 @@ export const useAnalyzerCredits = () => {
           analysis_type: analysisType,
           main_identification: resultText.slice(0, 2000),
           detailed_info: { result: resultText, task } as any,
-          credits_used: creditsCost,
-        })
+          credits_used: creditsCost })
         .select()
         .single();
       if (insErr) throw insErr;
@@ -127,8 +120,7 @@ export const useAnalyzerCredits = () => {
       } else {
         toast.error("Error analyzing image: " + error.message);
       }
-    },
-  });
+    } });
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {
     try {
@@ -176,12 +168,10 @@ export const useAnalyzerCredits = () => {
     }
   };
 
-  return {
-    credits,
+  return { credits,
     isLoading,
     analyzeImage: analyzeImage.mutate,
     isAnalyzing: analyzeImage.isPending,
     purchaseCredits,
-    getTierLimits,
-  };
+    getTierLimits };
 };

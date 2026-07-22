@@ -45,8 +45,7 @@ export const TattooAgingSimulator = ({ onBack }: Props) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("tattoo-ai-tools", {
-        body: { type: "aging_simulation", imageUrl: tattooImage, years: parseInt(years), skinType },
-      });
+        body: { type: "aging_simulation", imageUrl: tattooImage, years: parseInt(years), skinType } });
       if (error) throw error;
       setResult(data);
       await refresh();

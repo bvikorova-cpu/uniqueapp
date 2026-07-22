@@ -21,9 +21,7 @@ interface Claim {
   admin_note: string | null;
   created_at: string;
 }
-const STATUS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-  pending: "secondary", approved: "default", paid: "default", rejected: "destructive",
-};
+const STATUS: Record<string, "default" | "secondary" | "destructive" | "outline"> = { pending: "secondary", approved: "default", paid: "default", rejected: "destructive" };
 
 export default function InsuranceClaims() {
   const { user } = useAuth();
@@ -60,12 +58,10 @@ export default function InsuranceClaims() {
     setBusy(true);
     // Simple client-side obfuscation; edge fn would ideally re-encrypt server-side.
     const encrypted = btoa(unescape(encodeURIComponent(policyNumber)));
-    const { error } = await supabase.from("insurance_cards").insert({
-      patient_id: user.id,
+    const { error } = await supabase.from("insurance_cards").insert({ patient_id: user.id,
       provider_name: providerName.trim(),
       policy_number_encrypted: encrypted,
-      valid_until: validUntil || null,
-    });
+      valid_until: validUntil || null });
     setBusy(false);
     if (error) return toast({ variant: "destructive", title: "Save failed", description: error.message });
     setProviderName(""); setPolicyNumber(""); setValidUntil("");
@@ -76,8 +72,7 @@ export default function InsuranceClaims() {
     if (!cardId || !amountEur) return;
     setBusy(true);
     const { error } = await supabase.functions.invoke("submit-insurance-claim", {
-      body: { insurance_card_id: cardId, amount_cents: Math.round(parseFloat(amountEur) * 100) },
-    });
+      body: { insurance_card_id: cardId, amount_cents: Math.round(parseFloat(amountEur) * 100) } });
     setBusy(false);
     if (error) return toast({ variant: "destructive", title: "Submit failed", description: error.message });
     toast({ title: "Claim submitted", description: "An admin will review it shortly." });

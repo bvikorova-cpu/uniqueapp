@@ -26,11 +26,9 @@ const defaultProfiles: ChildProfile[] = [
   { name: "Emma", avatar: "👧", age: 5, level: 3, xp: 180, xpToNext: 300, streak: 4, todayMinutes: 20, limitMinutes: 45, mood: "happy", lastActivity: "Drew a rainbow", totalStars: 78 },
 ];
 
-const moodIcons = {
-  happy: <Smile className="w-4 h-4 text-green-500" />,
+const moodIcons = { happy: <Smile className="w-4 h-4 text-green-500" />,
   neutral: <Meh className="w-4 h-4 text-yellow-500" />,
-  tired: <Frown className="w-4 h-4 text-orange-500" />,
-};
+  tired: <Frown className="w-4 h-4 text-orange-500" /> };
 const moodLabels = { happy: "Happy", neutral: "Neutral", tired: "Tired" };
 
 export const ChildProfileCards = () => {

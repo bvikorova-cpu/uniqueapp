@@ -106,10 +106,8 @@ test.describe("Wall – funkčnosť ostatných features", () => {
       .first();
     const has = await stories.isVisible({ timeout: 3000 }).catch(() => false);
     // Stories nie sú povinné – iba info
-    test.info().annotations.push({
-      type: "stories",
-      description: has ? "Stories bar zobrazený" : "Stories bar nezobrazený",
-    });
+    test.info().annotations.push({ type: "stories",
+      description: has ? "Stories bar zobrazený" : "Stories bar nezobrazený" });
     expect(true).toBeTruthy();
   });
 
@@ -244,10 +242,8 @@ test.describe("Wall – funkčnosť ostatných features", () => {
     await page.waitForTimeout(800);
     const live = page.getByText(/live|naživo/i).first();
     const has = await live.isVisible({ timeout: 3000 }).catch(() => false);
-    test.info().annotations.push({
-      type: "live",
-      description: has ? "Live widget renderuje" : "Live widget nie je v DOM (nikto nestreamuje)",
-    });
+    test.info().annotations.push({ type: "live",
+      description: has ? "Live widget renderuje" : "Live widget nie je v DOM (nikto nestreamuje)" });
     expect(true).toBeTruthy();
   });
 });

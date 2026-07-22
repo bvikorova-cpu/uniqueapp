@@ -12,10 +12,8 @@ interface PlanItem {
   recommendation: string;
 }
 
-const labelMap: Record<string, string> = {
-  memory: "Memory", logic: "Logic", spatial: "Spatial",
-  verbal: "Verbal", speed: "Speed", pattern: "Pattern", general: "General",
-};
+const labelMap: Record<string, string> = { memory: "Memory", logic: "Logic", spatial: "Spatial",
+  verbal: "Verbal", speed: "Speed", pattern: "Pattern", general: "General" };
 
 export default function IQTrainingPlan() {
   const [plan, setPlan] = useState<PlanItem[]>([]);

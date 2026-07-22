@@ -27,8 +27,7 @@ export function AudienceAnalyzerView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); return; }
       const { data, error } = await supabase.functions.invoke("video-ad-tools", {
         body: { action: "audience_analyzer", product, audience, industry },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Analysis complete! (${data.credits_used} credits)`);

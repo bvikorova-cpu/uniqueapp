@@ -41,33 +41,28 @@ export const PublicGoals = ({ userId, isOwnProfile }: PublicGoalsProps) => {
         .order("created_at", { ascending: false });
       return (data || []) as Goal[];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const create = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("profile_goals").insert({
-        user_id: userId,
+      const { error } = await supabase.from("profile_goals").insert({ user_id: userId,
         title,
         target_value: Number(target),
-        current_value: Number(current),
-      });
+        current_value: Number(current) });
       if (error) throw error;
     },
     onSuccess: () => {
       toast({ title: "Goal added" });
       setTitle(""); setTarget("100"); setCurrent("0"); setOpen(false);
       qc.invalidateQueries({ queryKey: ["profile-goals", userId] });
-    },
-  });
+    } });
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("profile_goals").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["profile-goals", userId] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["profile-goals", userId] }) });
 
   if (!goals || (goals.length === 0 && !isOwnProfile)) return null;
 

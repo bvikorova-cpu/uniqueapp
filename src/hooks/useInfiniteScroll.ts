@@ -83,15 +83,13 @@ export const useInfiniteScroll = <T>(
     }
   }, []);
 
-  return {
-    data,
+  return { data,
     loading,
     hasMore,
     error,
     loadMoreRef: setLoadMoreRef,
     reset,
-    setData,
-  };
+    setData };
 };
 
 export default useInfiniteScroll;

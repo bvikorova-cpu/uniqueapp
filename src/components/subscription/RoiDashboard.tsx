@@ -17,14 +17,12 @@ interface RoiDashboardProps {
  * Pulls real numbers from activity_logs / ai_usage_history when available,
  * falls back to deterministic estimates if no data yet.
  */
-export const RoiDashboard = ({ userId, currency, tier }: RoiDashboardProps) => {
-  const [stats, setStats] = useState({
+export const RoiDashboard = ({ userId, currency, tier }: RoiDashboardProps) => { const [stats, setStats] = useState({
     aiCalls: 0,
     aiValue: 0,
     commissionSaved: 0,
     daysActive: 0,
-    loading: true,
-  });
+    loading: true });
 
   useEffect(() => {
     let active = true;
@@ -50,13 +48,11 @@ export const RoiDashboard = ({ userId, currency, tier }: RoiDashboardProps) => {
         const days = Math.max(1, Math.floor((Date.now() - start.getTime()) / 86_400_000));
 
         if (!active) return;
-        setStats({
-          aiCalls: calls,
+        setStats({ aiCalls: calls,
           aiValue: calls * 0.5, // €0.50 perceived value per generation
           commissionSaved: tier === "basic" ? 0 : Math.round(days * 1.2), // estimate
           daysActive: days,
-          loading: false,
-        });
+          loading: false });
       } catch {
         if (active) setStats((s) => ({ ...s, loading: false }));
       }
@@ -74,29 +70,22 @@ export const RoiDashboard = ({ userId, currency, tier }: RoiDashboardProps) => {
       label: "AI generations used",
       value: stats.aiCalls.toLocaleString(),
       sub: `Worth ~${formatPrice(stats.aiValue, currency)}`,
-      color: "from-violet-500 to-fuchsia-500",
-    },
-    {
-      icon: Coins,
+      color: "from-violet-500 to-fuchsia-500" },
+    { icon: Coins,
       label: "Commission saved",
       value: formatPrice(stats.commissionSaved, currency),
       sub: "0% on every sale",
-      color: "from-emerald-500 to-teal-500",
-    },
-    {
-      icon: TrendingUp,
+      color: "from-emerald-500 to-teal-500" },
+    { icon: TrendingUp,
       label: "Total value",
       value: formatPrice(totalSaved, currency),
       sub: "Since you joined",
-      color: "from-amber-500 to-orange-500",
-    },
-    {
-      icon: Trophy,
+      color: "from-amber-500 to-orange-500" },
+    { icon: Trophy,
       label: "Days active",
       value: stats.daysActive.toString(),
       sub: tier.toUpperCase() + " member",
-      color: "from-primary to-purple-500",
-    },
+      color: "from-primary to-purple-500" },
   ];
 
   return (

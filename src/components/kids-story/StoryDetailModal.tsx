@@ -31,8 +31,7 @@ const CATEGORIES: Record<string, { label: string; emoji: string; color: string }
   friendship: { label: "Friendship", emoji: "🤝", color: "bg-pink-100 text-pink-800 border-pink-300" },
   animal: { label: "Animal", emoji: "🐾", color: "bg-green-100 text-green-800 border-green-300" },
   space: { label: "Space", emoji: "🚀", color: "bg-indigo-100 text-indigo-800 border-indigo-300" },
-  "fairy-tale": { label: "Fairy Tale", emoji: "👑", color: "bg-yellow-100 text-yellow-800 border-yellow-300" },
-};
+  "fairy-tale": { label: "Fairy Tale", emoji: "👑", color: "bg-yellow-100 text-yellow-800 border-yellow-300" } };
 
 export const StoryDetailModal = ({ story, isOpen, onClose }: StoryDetailModalProps) => {
   if (!story) return null;

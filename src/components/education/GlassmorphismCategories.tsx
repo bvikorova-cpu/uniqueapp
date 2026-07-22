@@ -18,8 +18,7 @@ const difficultyConfig: Record<Exclude<Difficulty, "all">, { label: string; colo
   easy: { label: "Easy", color: "text-green-600", bgColor: "bg-green-500/10", borderColor: "border-green-500/30" },
   medium: { label: "Medium", color: "text-yellow-600", bgColor: "bg-yellow-500/10", borderColor: "border-yellow-500/30" },
   hard: { label: "Hard", color: "text-orange-600", bgColor: "bg-orange-500/10", borderColor: "border-orange-500/30" },
-  expert: { label: "Expert", color: "text-red-600", bgColor: "bg-red-500/10", borderColor: "border-red-500/30" },
-};
+  expert: { label: "Expert", color: "text-red-600", bgColor: "bg-red-500/10", borderColor: "border-red-500/30" } };
 
 interface GlassmorphismCategoriesProps {
   categories: Category[];

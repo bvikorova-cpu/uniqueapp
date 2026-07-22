@@ -14,16 +14,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // ── Pinned fixtures (mirror of the edge fn's PRODUCT_DEFAULTS) ────────────
 const EXPECTED = {
   dating_monthly: { amount: 200, mode: "subscription", interval: "month", price_eur: 2.0,  type: "monthly" },
-  dating_yearly:  { amount: 2000, mode: "subscription", interval: "year",  price_eur: 20.0, type: "yearly"  },
-} as const;
+  dating_yearly:  { amount: 2000, mode: "subscription", interval: "year",  price_eur: 20.0, type: "yearly"  } } as const;
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     auth: { getSession: vi.fn() },
     functions: { invoke: vi.fn() },
-    from: vi.fn(),
-  },
-}));
+    from: vi.fn() } }));
 
 import { supabase } from "@/integrations/supabase/client";
 const invoke = supabase.functions.invoke as unknown as ReturnType<typeof vi.fn> & ((...args: any[]) => any);

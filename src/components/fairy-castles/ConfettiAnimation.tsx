@@ -30,12 +30,9 @@ const COLORS = [
   "#00BFFF", // Deep Sky Blue
 ];
 
-export const ConfettiAnimation = ({
-  isActive,
+export const ConfettiAnimation = ({ isActive,
   duration = 3000,
-  onComplete,
-}: ConfettiAnimationProps) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  onComplete }: ConfettiAnimationProps) => { const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animationFrameRef = useRef<number>();
   const startTimeRef = useRef<number>();
@@ -68,8 +65,7 @@ export const ConfettiAnimation = ({
         rotationSpeed: (Math.random() - 0.5) * 0.2,
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
         size: Math.random() * 8 + 4,
-        shape: ["circle", "square", "star"][Math.floor(Math.random() * 3)] as "circle" | "square" | "star",
-      });
+        shape: ["circle", "square", "star"][Math.floor(Math.random() * 3)] as "circle" | "square" | "star" });
     }
 
     startTimeRef.current = Date.now();

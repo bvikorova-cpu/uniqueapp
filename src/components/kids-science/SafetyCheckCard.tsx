@@ -36,8 +36,7 @@ export const SafetyCheckCard = ({ category, hypothesis, observations, onCreditsC
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("kids-science-helper", {
-        body: { action: "safetyCheck", category, hypothesis, observations },
-      });
+        body: { action: "safetyCheck", category, hypothesis, observations } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data as SafetyResult);

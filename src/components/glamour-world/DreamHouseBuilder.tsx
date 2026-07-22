@@ -26,15 +26,13 @@ export function DreamHouseBuilder({ onBack }: { onBack: () => void }) {
       if (!user) throw new Error("Please sign in");
 
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "dream_house", prompt: `Design a ${style} style ${room}. Details: ${details}`, coins: 5 },
-      });
+        body: { type: "dream_house", prompt: `Design a ${style} style ${room}. Details: ${details}`, coins: 5 } });
       if (error) throw error;
 
       setResult(data.result);
       await supabase.from("glamour_creations").insert({
         user_id: user.id, creation_type: "dream_house", title: `${style} ${room}`,
-        prompt: details, result_text: data.result, credits_used: 5,
-      });
+        prompt: details, result_text: data.result, credits_used: 5 });
     } catch (e: any) {
       const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
         if (isCoinsErr) {

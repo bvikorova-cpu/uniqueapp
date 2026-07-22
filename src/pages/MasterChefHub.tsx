@@ -15,23 +15,16 @@ import { useState } from "react";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-const TIERS = {
-  amateur: {
+const TIERS = { amateur: {
     name: "Amateur", price: "€19.99", priceId: "price_1SPiaUGaXSfGtYFtpV3Q8jjN",
     icon: ChefHat, popular: false,
-    features: ["5 competitions per month", "Basic voting system", "Access to amateur categories", "Community recipes", "Basic performance statistics"],
-  },
-  pro: {
-    name: "Pro", price: "€49.99", priceId: "price_1SPiarGaXSfGtYFtBgTuCPiw",
+    features: ["5 competitions per month", "Basic voting system", "Access to amateur categories", "Community recipes", "Basic performance statistics"] },
+  pro: { name: "Pro", price: "€49.99", priceId: "price_1SPiarGaXSfGtYFtBgTuCPiw",
     icon: Crown, popular: true,
-    features: ["Unlimited competitions", "Live battles in real-time", "Premium categories (Fine Dining, Dessert Masters)", "Exclusive recipes from professionals", "Detailed statistics and analytics", "Priority support", "Mystery Box challenges"],
-  },
-  elite: {
-    name: "Elite", price: "€99.99", priceId: "price_1SPibC0QTWhd4oRpJwaH5vZM",
+    features: ["Unlimited competitions", "Live battles in real-time", "Premium categories (Fine Dining, Dessert Masters)", "Exclusive recipes from professionals", "Detailed statistics and analytics", "Priority support", "Mystery Box challenges"] },
+  elite: { name: "Elite", price: "€99.99", priceId: "price_1SPibC0QTWhd4oRpJwaH5vZM",
     icon: Sparkles, popular: false,
-    features: ["Everything from Pro tier", "Personal mentoring from professional chefs", "VIP behind-the-scenes access", "Winning bonuses and rewards", "No commission on winnings", "Exclusive live events", "Priority leaderboard placement", "Access to closed premium communities"],
-  },
-};
+    features: ["Everything from Pro tier", "Personal mentoring from professional chefs", "VIP behind-the-scenes access", "Winning bonuses and rewards", "No commission on winnings", "Exclusive live events", "Priority leaderboard placement", "Access to closed premium communities"] } };
 
 const toolCards = [
   { icon: Trophy, title: "Competitions", desc: "Join cooking battles & win prizes", route: "/masterchef/competitions-public", color: "from-orange-500 to-red-500" },
@@ -62,8 +55,7 @@ export default function MasterChefHub() {
         return;
       }
       const { data, error } = await supabase.functions.invoke("create-masterchef-checkout", {
-        body: { priceId: TIERS[tier].priceId, tier },
-      });
+        body: { priceId: TIERS[tier].priceId, tier } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
     } catch (error) {

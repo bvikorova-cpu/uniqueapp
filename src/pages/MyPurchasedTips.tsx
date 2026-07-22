@@ -63,13 +63,11 @@ export default function MyPurchasedTips() {
 
       if (error) throw error;
       setTips((data as any) || []);
-    } catch (error) {
-      console.error('Error fetching purchased tips:', error);
+    } catch (error) { console.error('Error fetching purchased tips:', error);
       toast({
         title: "Error",
         description: "Failed to load purchased tips",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

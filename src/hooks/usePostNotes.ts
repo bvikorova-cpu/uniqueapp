@@ -18,8 +18,7 @@ export const usePostNotes = (postId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
   const addNote = useMutation({
     mutationFn: async (body: string) => {
@@ -31,8 +30,7 @@ export const usePostNotes = (postId?: string) => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["post-notes", postId] });
       toast({ title: "Note submitted for review" });
-    },
-  });
+    } });
 
   const vote = useMutation({
     mutationFn: async ({ noteId, isHelpful }: { noteId: string; isHelpful: boolean }) => {
@@ -43,8 +41,7 @@ export const usePostNotes = (postId?: string) => {
         .upsert({ note_id: noteId, user_id: user.id, is_helpful: isHelpful }, { onConflict: "note_id,user_id" });
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["post-notes", postId] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["post-notes", postId] }) });
 
   return { notes, addNote: addNote.mutate, vote: vote.mutate };
 };

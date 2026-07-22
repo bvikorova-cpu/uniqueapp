@@ -27,8 +27,7 @@ export const VideoGallery = ({ onSelectStory }: VideoGalleryProps) => {
         .limit(6);
 
       return data || [];
-    },
-  });
+    } });
 
   if (isLoading) {
     return (

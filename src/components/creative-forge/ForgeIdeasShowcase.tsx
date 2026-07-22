@@ -1,8 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Lightbulb, Library, UserSquare2, Music2, Trophy,
-  LineChart, Target, GitCompare, Store,
-} from "lucide-react";
+import { Lightbulb, Library, UserSquare2, Music2, Trophy,
+  LineChart, Target, GitCompare, Store } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 

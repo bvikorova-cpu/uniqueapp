@@ -55,7 +55,7 @@ export default function AIMoodBoard() {
         <div className="space-y-4">
           <div>
             <Label>Theme / Inspiration</Label>
-            <Textarea value={theme} onChange={e => setTheme(e.target.value)} placeholder="E.g., Parisian chic meets Tokyo street style, romantic garden party, 90s grunge revival..." rows={3} />
+            <Textarea value={theme} onChange={e => setTheme(e.target.value)} placeholder="E.g., urban chic meets street style, romantic garden party, 90s grunge revival..." rows={3} />
           </div>
           <div>
             <Label>Aesthetic</Label>

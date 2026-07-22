@@ -70,8 +70,7 @@ export default function FutureFaceLiveAR() {
       if (error) throw error;
       const url = (await getReadableUrl("future-face-photos", path));
       const res = await supabase.functions.invoke("future-face-image", {
-        body: { action: "age_progression", sourceUrl: url, params: { years: 25 } },
-      });
+        body: { action: "age_progression", sourceUrl: url, params: { years: 25 } } });
       const data = throwIfInvokeError(res);
       setAged(data.resultUrl);
     } catch (err: any) {

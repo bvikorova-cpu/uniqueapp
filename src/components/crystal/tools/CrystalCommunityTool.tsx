@@ -28,11 +28,9 @@ export const CrystalCommunityTool = () => {
     setPosting(true);
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { toast.error("Please sign in to post"); setPosting(false); return; }
-    const { error } = await (supabase as any).from("crystal_community_posts").insert({
-      user_id: session.user.id,
+    const { error } = await (supabase as any).from("crystal_community_posts").insert({ user_id: session.user.id,
       title: form.title,
-      content: form.content,
-    });
+      content: form.content });
     if (error) toast.error("Failed to create post");
     else {
       toast.success("Post created! 🔮");

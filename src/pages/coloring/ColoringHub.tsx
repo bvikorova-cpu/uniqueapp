@@ -141,8 +141,7 @@ function useAction<T = any>() {
     } catch (e: any) {
       const msg = String(e?.message ?? "");
       if (msg === "insufficient_credits") toast.error("Not enough credits. Please top up.", {
-        action: { label: "Buy credits", onClick: () => { window.location.href = "/ai-credits-store"; } },
-      });
+        action: { label: "Buy credits", onClick: () => { window.location.href = "/ai-credits-store"; } } });
       else if (msg === "unauthorized") {
         toast.error("Please sign in to continue.");
         setTimeout(() => {
@@ -562,15 +561,13 @@ function TimelapsePanel() {
 }
 
 // Canvas-based features info
-function CanvasInfoPanel({ slug }: { slug: string }) {
-  const navigate = useNavigate();
+function CanvasInfoPanel({ slug }: { slug: string }) { const navigate = useNavigate();
   const tips: Record<string, string> = {
     "paint-bucket": "Open the canvas in Coloring Pages → tap a closed zone for instant fill.",
     "brushes": "Watercolor, pastel, spray, glitter and neon are available on the canvas. Pressure is detected from your stylus.",
     "mandala": "Activate symmetry/mandala mode on the canvas — everything mirrors 2× to 16×.",
     "layers": "The canvas keeps a 50+ stroke history; undo/redo + branching.",
-    "zoom-stylus": "Pinch-zoom and pressure-sensitive pens (Apple Pencil / S Pen) — automatic.",
-  };
+    "zoom-stylus": "Pinch-zoom and pressure-sensitive pens (Apple Pencil / S Pen) — automatic." };
   return (
     <Card>
       <CardHeader><CardTitle>How to use</CardTitle></CardHeader>

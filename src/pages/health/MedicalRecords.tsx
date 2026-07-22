@@ -49,12 +49,10 @@ export default function MedicalRecords() {
   async function add() {
     if (!user || !title.trim()) return;
     setSaving(true);
-    const { error } = await supabase.from("medical_records").insert({
-      patient_id: user.id,
+    const { error } = await supabase.from("medical_records").insert({ patient_id: user.id,
       record_type: type,
       title: title.trim(),
-      description: description.trim() || null,
-    });
+      description: description.trim() || null });
     setSaving(false);
     if (error) return toast({ variant: "destructive", title: "Save failed", description: error.message });
     setTitle(""); setDescription("");

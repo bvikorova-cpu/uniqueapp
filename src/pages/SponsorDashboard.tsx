@@ -25,8 +25,7 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer, Area, AreaChart 
 } from "recharts";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -34,8 +33,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface BrandSponsor {
@@ -63,8 +61,7 @@ const TIER_INFO = {
   silver: { name: "Silver", icon: Star, color: "from-gray-400 to-gray-600", price: "€500" },
   gold: { name: "Gold", icon: Crown, color: "from-yellow-400 to-yellow-600", price: "€1,500" },
   platinum: { name: "Platinum", icon: Zap, color: "from-purple-400 to-purple-600", price: "€3,000" },
-  enterprise: { name: "Enterprise", icon: Building2, color: "from-amber-400 via-yellow-500 to-amber-600", price: "€10,000" },
-};
+  enterprise: { name: "Enterprise", icon: Building2, color: "from-amber-400 via-yellow-500 to-amber-600", price: "€10,000" } };
 
 export default function SponsorDashboard() {
   const navigate = useNavigate();
@@ -115,8 +112,7 @@ export default function SponsorDashboard() {
       }
       return data as BrandSponsor;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   // Load vote history for analytics
   const { data: voteHistory = [] } = useQuery({
@@ -140,13 +136,10 @@ export default function SponsorDashboard() {
       });
       
       // Convert to chart data
-      return Object.entries(votesByDate).map(([date, votes]) => ({
-        date,
-        votes,
-      }));
+      return Object.entries(votesByDate).map(([date, votes]) => ({ date,
+        votes }));
     },
-    enabled: !!sponsor,
-  });
+    enabled: !!sponsor });
 
   // Load ranking position
   const { data: rankingData } = useQuery({
@@ -167,8 +160,7 @@ export default function SponsorDashboard() {
       
       return { rank, totalSponsors };
     },
-    enabled: !!sponsor,
-  });
+    enabled: !!sponsor });
 
   // Load recent voters
   const { data: recentVotes = [] } = useQuery({
@@ -186,8 +178,7 @@ export default function SponsorDashboard() {
       if (error) throw error;
       return data;
     },
-    enabled: !!sponsor,
-  });
+    enabled: !!sponsor });
 
   // Load category competitors
   const { data: competitors = [] } = useQuery({
@@ -207,8 +198,7 @@ export default function SponsorDashboard() {
       if (error) throw error;
       return data;
     },
-    enabled: !!sponsor,
-  });
+    enabled: !!sponsor });
 
   // Load category benchmarks
   const { data: categoryBenchmarks } = useQuery({
@@ -243,17 +233,14 @@ export default function SponsorDashboard() {
       });
       const avgDailyVotes = categoryDailyAvgs.reduce((sum, v) => sum + v, 0) / categoryDailyAvgs.length;
       
-      return {
-        totalSponsors: allSponsors.length,
+      return { totalSponsors: allSponsors.length,
         avgVotes,
         avgDailyVotes,
         totalCategoryVotes: totalVotes,
         sponsorDailyAvg,
-        sponsorDaysActive,
-      };
+        sponsorDaysActive };
     },
-    enabled: !!sponsor,
-  });
+    enabled: !!sponsor });
 
   // Load vote growth trend (last 7 days)
   const { data: growthMetrics } = useQuery({
@@ -292,15 +279,12 @@ export default function SponsorDashboard() {
         ? ((votesLast7Days - votesPrev7Days) / votesPrev7Days) * 100 
         : votesLast7Days > 0 ? 100 : 0;
       
-      return {
-        votesLast7Days,
+      return { votesLast7Days,
         votesPrev7Days,
         growthRate,
-        dailyAverage: votesLast7Days / 7,
-      };
+        dailyAverage: votesLast7Days / 7 };
     },
-    enabled: !!sponsor,
-  });
+    enabled: !!sponsor });
 
   // Load sponsor goals
   const { data: sponsorGoal, refetch: refetchGoal } = useQuery({
@@ -322,8 +306,7 @@ export default function SponsorDashboard() {
       
       return data;
     },
-    enabled: !!sponsor,
-  });
+    enabled: !!sponsor });
 
   const handleCancelSubscription = async () => {
     if (!sponsor?.stripe_subscription_id) {
@@ -334,8 +317,7 @@ export default function SponsorDashboard() {
     setCancelingSubscription(true);
     try {
       const { error } = await supabase.functions.invoke("cancel-subscription", {
-        body: { subscriptionId: sponsor.stripe_subscription_id },
-      });
+        body: { subscriptionId: sponsor.stripe_subscription_id } });
 
       if (error) throw error;
 

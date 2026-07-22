@@ -28,8 +28,7 @@ export const EarningsForecastChart = ({ history }: EarningsForecastChartProps) =
       days.push({
         date: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
         actual: total,
-        forecast: null,
-      });
+        forecast: null });
     }
 
     const total30 = days.reduce((s, d) => s + (d.actual || 0), 0);
@@ -47,8 +46,7 @@ export const EarningsForecastChart = ({ history }: EarningsForecastChartProps) =
       days.push({
         date: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
         actual: null,
-        forecast: Math.max(0, avg),
-      });
+        forecast: Math.max(0, avg) });
     }
 
     return days;

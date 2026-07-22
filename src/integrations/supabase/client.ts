@@ -9,16 +9,14 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, { auth: {
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
     // Disable navigator.locks-based locking which causes spurious
     // "Lock broken by another request with the 'steal' option" AbortErrors
     // when many parallel queries fetch the session at once on mobile.
-    lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<any>) => fn(),
-  }
+    lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<any>) => fn() }
 });
 
 // ---------------------------------------------------------------------------
@@ -52,8 +50,7 @@ const _originalInvoke = supabase.functions.invoke.bind(supabase.functions);
 // Sampling for successful calls to keep write volume bounded — errors always logged.
 const METRIC_SAMPLE_RATE = 0.1;
 
-async function recordMetric(fn: string, startedAt: number, ok: boolean, statusCode: number | null, errorMessage: string | null) {
-  try {
+async function recordMetric(fn: string, startedAt: number, ok: boolean, statusCode: number | null, errorMessage: string | null) { try {
     if (ok && Math.random() > METRIC_SAMPLE_RATE) return;
     const duration_ms = Math.min(Math.max(Math.round(performance.now() - startedAt), 0), 599999);
     await (supabase.from("edge_function_metrics") as any).insert({
@@ -61,8 +58,7 @@ async function recordMetric(fn: string, startedAt: number, ok: boolean, statusCo
       duration_ms,
       ok,
       status_code: statusCode,
-      error_message: errorMessage ? errorMessage.slice(0, 999) : null,
-    });
+      error_message: errorMessage ? errorMessage.slice(0, 999) : null });
   } catch {
     /* swallow — telemetry must never break the app */
   }

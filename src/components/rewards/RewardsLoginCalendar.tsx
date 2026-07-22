@@ -18,26 +18,22 @@ interface Tpl {
   is_milestone: boolean;
 }
 
-// Server anchors the calendar to Europe/Berlin — mirror it here so
+// Server anchors the calendar to UTC — mirror it here so
 // worldwide users see the same "today" regardless of their local timezone.
-const TZ = "Europe/Berlin";
+const TZ = "UTC";
 
-const getLocalParts = (d: Date) => {
-  const parts = new Intl.DateTimeFormat("en-GB", {
+const getLocalParts = (d: Date) => { const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit",
-    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
-  }).formatToParts(d).reduce<Record<string, string>>((acc, p) => {
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).formatToParts(d).reduce<Record<string, string>>((acc, p) => {
     if (p.type !== "literal") acc[p.type] = p.value;
     return acc;
   }, {});
-  return {
-    year: Number(parts.year),
+  return { year: Number(parts.year),
     month: Number(parts.month),
     day: Number(parts.day),
     hour: Number(parts.hour),
     minute: Number(parts.minute),
-    second: Number(parts.second),
-  };
+    second: Number(parts.second) };
 };
 
 const monthKeyLocal = (d: Date) => {
@@ -67,8 +63,7 @@ const DEFAULTS: Tpl[] = Array.from({ length: 30 }, (_, i) => {
     reward_value: milestone ? day * 50 : 25 + (day * 5),
     reward_label: milestone ? `${day * 50} XP` : `${25 + day * 5} XP`,
     reward_icon: null,
-    is_milestone: milestone,
-  };
+    is_milestone: milestone };
 });
 
 export default function RewardsLoginCalendar() {
@@ -119,9 +114,7 @@ export default function RewardsLoginCalendar() {
 
     setClaiming(true);
     try {
-      const { data, error } = await supabase.rpc("claim_calendar_day", {
-        _month_key: mKey, _day_number: day,
-      });
+      const { data, error } = await supabase.rpc("claim_calendar_day", { _month_key: mKey, _day_number: day });
       if (error) { toast.error(error.message); return; }
       const res = data as any;
       if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
@@ -166,7 +159,7 @@ export default function RewardsLoginCalendar() {
             <span className="text-xs opacity-90">{"Next reward unlocks in"}</span>
             <span className="font-mono text-lg font-bold tabular-nums">{countdown}</span>
           </div>
-          <p className="text-[10px] opacity-70 mt-1 text-right">{"Resets at midnight Europe/Berlin (CET/CEST)"}</p>
+          <p className="text-[10px] opacity-70 mt-1 text-right">{"Resets at midnight UTC (CET/CEST)"}</p>
         </div>
       </Card>
 

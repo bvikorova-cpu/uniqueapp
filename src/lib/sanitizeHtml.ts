@@ -8,8 +8,7 @@ import DOMPurify from "dompurify";
  * renderer. NO <script>, <iframe>, <object>, on* handlers, javascript: URLs, etc.
  */
 export const sanitizeHtml = (dirty: string): string =>
-  DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: [
+  DOMPurify.sanitize(dirty, { ALLOWED_TAGS: [
       "b", "i", "em", "strong", "u", "s", "br", "p", "span", "div",
       "h1", "h2", "h3", "h4", "h5", "h6",
       "ul", "ol", "li", "a", "code", "pre", "blockquote", "hr",
@@ -17,8 +16,7 @@ export const sanitizeHtml = (dirty: string): string =>
     ALLOWED_ATTR: ["class", "href", "target", "rel"],
     ALLOW_DATA_ATTR: false,
     FORBID_TAGS: ["script", "iframe", "object", "embed", "form", "input", "style"],
-    FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "onfocus", "onblur"],
-  });
+    FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "onfocus", "onblur"] });
 
 /**
  * Simple text-only escape — converts \n to <br/> after escaping HTML entities.

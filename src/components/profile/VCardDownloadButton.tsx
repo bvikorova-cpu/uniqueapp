@@ -43,10 +43,8 @@ function buildVCard(p: VCardProfile, profileUrl: string): string {
   return lines.join("\r\n");
 }
 
-export const VCardDownloadButton = ({
-  profile,
-  profileUrl,
-}: {
+export const VCardDownloadButton = ({ profile,
+  profileUrl }: {
   profile: VCardProfile;
   profileUrl?: string;
 }) => {

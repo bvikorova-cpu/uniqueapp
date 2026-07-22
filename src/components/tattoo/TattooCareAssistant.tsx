@@ -32,8 +32,7 @@ export const TattooCareAssistant = ({ onBack }: Props) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("tattoo-ai-tools", {
-        body: { type: "care_guide", healingStage: stage, concerns },
-      });
+        body: { type: "care_guide", healingStage: stage, concerns } });
       if (error) throw error;
       setResult(data);
       await refresh();

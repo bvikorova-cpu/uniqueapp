@@ -13,35 +13,27 @@ import { test, expect, type Page, type Route } from "@playwright/test";
  *      confirmed upcoming appointments.
  */
 
-async function stubDoctorFunctions(page: Page) {
-  await page.route(/\/functions\/v1\/create-doctor-booking.*/i, async (r: Route) =>
+async function stubDoctorFunctions(page: Page) { await page.route(/\/functions\/v1\/create-doctor-booking.*/i, async (r: Route) =>
     r.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
         url: "https://checkout.stripe.com/test_doctor_stub",
-        appointment_id: "test-appt-1",
-      }),
-    }),
+        appointment_id: "test-appt-1" }) }),
   );
   await page.route(/\/functions\/v1\/doctor-availability-slots.*/i, async (r: Route) =>
     r.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        slots: Array.from({ length: 5 }).map((_, i) => ({
-          starts_at: new Date(Date.now() + (i + 1) * 86400000).toISOString(),
-          ends_at: new Date(Date.now() + (i + 1) * 86400000 + 30 * 60000).toISOString(),
-        })),
-      }),
-    }),
+        slots: Array.from({ length: 5 }).map((_, i) => ({ starts_at: new Date(Date.now() + (i + 1) * 86400000).toISOString(),
+          ends_at: new Date(Date.now() + (i + 1) * 86400000 + 30 * 60000).toISOString() })) }) }),
   );
   await page.route(/\/functions\/v1\/patient-cancel-booking.*/i, async (r: Route) =>
     r.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ ok: true, refunded: true }),
-    }),
+      body: JSON.stringify({ ok: true, refunded: true }) }),
   );
   await page.route("https://checkout.stripe.com/**", (r) =>
     r.fulfill({ status: 200, contentType: "text/html", body: "<html>stub</html>" }),
@@ -58,17 +50,13 @@ test.describe("Doctor booking flow (patient)", () => {
 
   test("Doctors list renders and links to My bookings", async ({ page }) => {
     await page.goto("/doctors");
-    await expect(page.getByRole("heading", { name: /find a doctor/i })).toBeVisible({
-      timeout: 15000,
-    });
+    await expect(page.getByRole("heading", { name: /find a doctor/i })).toBeVisible({ timeout: 15000 });
     await expect(page.getByRole("link", { name: /my bookings/i })).toBeVisible();
   });
 
   test("My bookings page loads for authenticated user", async ({ page }) => {
     await page.goto("/my-bookings/doctors");
-    await expect(page.getByRole("heading", { name: /my bookings/i })).toBeVisible({
-      timeout: 15000,
-    });
+    await expect(page.getByRole("heading", { name: /my bookings/i })).toBeVisible({ timeout: 15000 });
     // Either empty-state or at least one card render is acceptable.
     const emptyState = page.getByText(/haven't booked/i);
     const anyCard = page.locator("[class*='card']").first();
@@ -86,9 +74,7 @@ test.describe("Doctor booking flow (patient)", () => {
     test.skip(!hasDoctor, "No doctors in this environment");
 
     const [fnRequest] = await Promise.all([
-      page.waitForRequest(/\/functions\/v1\/(create-doctor-booking|doctor-availability-slots)/i, {
-        timeout: 15000,
-      }),
+      page.waitForRequest(/\/functions\/v1\/(create-doctor-booking|doctor-availability-slots)/i, { timeout: 15000 }),
       bookLink.click(),
     ]);
     expect(fnRequest.url()).toMatch(/doctor/);

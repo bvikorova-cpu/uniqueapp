@@ -56,8 +56,7 @@ export default function DoctorProfile() {
       const from = new Date();
       const to = new Date(Date.now() + 21 * 24 * 3600 * 1000);
       const { data, error } = await supabase.functions.invoke("doctor-availability-slots", {
-        body: { doctor_id: id, from: from.toISOString(), to: to.toISOString() },
-      });
+        body: { doctor_id: id, from: from.toISOString(), to: to.toISOString() } });
       if (error) console.error(error);
       setSlots((data?.slots as string[]) ?? []);
       setLoading(false);
@@ -77,8 +76,7 @@ export default function DoctorProfile() {
     setBooking(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-doctor-booking", {
-        body: { doctor_id: id, scheduled_at: selected, patient_notes: notes || undefined },
-      });
+        body: { doctor_id: id, scheduled_at: selected, patient_notes: notes || undefined } });
       if (error) throw error;
       if (data?.url) {
         window.location.href = data.url;
@@ -193,11 +191,10 @@ export default function DoctorProfile() {
                   {grouped.map(([day, daySlots]) => (
                     <div key={day}>
                       <div className="text-sm font-semibold mb-2">
-                        {new Date(day).toLocaleDateString(undefined, {
+                        { new Date(day).toLocaleDateString(undefined, {
                           weekday: "long",
                           month: "short",
-                          day: "numeric",
-                        })}
+                          day: "numeric" })}
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {daySlots.map((iso) => (
@@ -207,10 +204,9 @@ export default function DoctorProfile() {
                             variant={selected === iso ? "default" : "outline"}
                             onClick={() => setSelected(iso)}
                           >
-                            {new Date(iso).toLocaleTimeString(undefined, {
+                            { new Date(iso).toLocaleTimeString(undefined, {
                               hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                              minute: "2-digit" })}
                           </Button>
                         ))}
                       </div>
@@ -234,13 +230,12 @@ export default function DoctorProfile() {
                   <div className="flex items-center justify-between">
                     <div className="text-sm">
                       <div className="font-semibold">
-                        {new Date(selected).toLocaleString(undefined, {
+                        { new Date(selected).toLocaleString(undefined, {
                           weekday: "long",
                           month: "short",
                           day: "numeric",
                           hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                          minute: "2-digit" })}
                       </div>
                       <div className="text-muted-foreground">
                         €{priceEur} · {doctor.consultation_duration_min ?? 30} min

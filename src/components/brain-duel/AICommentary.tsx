@@ -29,8 +29,7 @@ export const AICommentary = ({ matchId }: Props) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("brain-duel-ai-commentary", {
-        body: { matchId, style },
-      });
+        body: { matchId, style } });
 
       if (error) throw error;
       if (data?.error) {

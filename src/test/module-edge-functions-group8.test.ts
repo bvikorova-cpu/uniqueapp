@@ -9,8 +9,7 @@ import { resolve } from "node:path";
 
 const FN_ROOT = resolve(__dirname, "../../supabase/functions");
 
-const GROUPS: Record<string, string[]> = {
-  "analyze-*": [
+const GROUPS: Record<string, string[]> = { "analyze-*": [
     "analyze-dream",
     "analyze-handwriting",
     "analyze-journal",
@@ -42,8 +41,7 @@ const GROUPS: Record<string, string[]> = {
     "generate-sports-prediction",
     "generate-voice-intro",
     "generate-workout-plan",
-  ],
-};
+  ] };
 
 describe("Group 8 edge functions present", () => {
   for (const [group, fns] of Object.entries(GROUPS)) {

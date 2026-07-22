@@ -41,8 +41,7 @@ export const TattooCoverUpGenerator = ({ onBack }: Props) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("tattoo-ai-tools", {
-        body: { type: "cover_up", imageUrl: oldTattooImg, preferences },
-      });
+        body: { type: "cover_up", imageUrl: oldTattooImg, preferences } });
       if (error) throw error;
       setResult(data);
       
@@ -54,8 +53,7 @@ export const TattooCoverUpGenerator = ({ onBack }: Props) => {
             prompt: `Cover-Up: ${preferences || "AI suggested"}`,
             style: "cover-up",
             design_url: data.coverUpUrl,
-            credits_used: 15,
-          });
+            credits_used: 15 });
         }
       }
       await refresh();

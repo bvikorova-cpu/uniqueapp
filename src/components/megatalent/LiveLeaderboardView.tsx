@@ -52,11 +52,9 @@ export const LiveLeaderboardView = () => {
         const tierMap: Record<string, string> = {};
         subs?.forEach(s => { tierMap[s.user_id] = s.tier; });
 
-        setEntries(data.map(d => ({
-          ...d,
+        setEntries(data.map(d => ({ ...d,
           profile: profiles?.find(p => p.id === d.user_id) as any,
-          tier: tierMap[d.user_id],
-        })));
+          tier: tierMap[d.user_id] })));
       } else { setEntries([]); }
     } catch (e) { console.error(e); toast({ title: "Error loading leaderboard", variant: "destructive" }); } finally { setLoading(false); }
   };

@@ -39,8 +39,7 @@ export default function ShadowArenaBattleSubmit() {
     try {
       if (!sessionId || !battleId) return;
       const { data, error } = await supabase.functions.invoke('verify-shadow-battle-payment', {
-        body: { sessionId, battleId },
-      });
+        body: { sessionId, battleId } });
       if (error) throw error;
       if (!data?.verified) {
         setPaymentVerified(false);

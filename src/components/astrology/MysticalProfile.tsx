@@ -56,12 +56,10 @@ export const MysticalProfile = () => {
         supabase.from('rune_readings').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
       ]);
 
-      return {
-        tarot: tarot.count || 0,
+      return { tarot: tarot.count || 0,
         horoscopes: horoscopes.count || 0,
         dreams: dreams.count || 0,
-        runes: runes.count || 0,
-      };
+        runes: runes.count || 0 };
     }
   });
 

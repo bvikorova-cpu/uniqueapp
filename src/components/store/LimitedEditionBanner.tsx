@@ -15,9 +15,7 @@ interface LimitedEditionBannerProps {
 }
 
 /** Scarcity-driven limited collectibles banner. */
-export const LimitedEditionBanner = ({
-  title, subtitle, emoji, totalSupply, remaining, endsAt, onView,
-}: LimitedEditionBannerProps) => {
+export const LimitedEditionBanner = ({ title, subtitle, emoji, totalSupply, remaining, endsAt, onView }: LimitedEditionBannerProps) => {
   const sold = totalSupply - remaining;
   const pct = Math.min(100, (sold / totalSupply) * 100);
 

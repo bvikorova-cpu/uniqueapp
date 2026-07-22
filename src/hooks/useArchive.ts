@@ -31,8 +31,7 @@ export const useArchive = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const isArchived = (postId: string) => {
     return archivedPosts.some((a) => a.post_id === postId);
@@ -53,10 +52,8 @@ export const useArchive = () => {
 
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("archived_posts").insert({
-          user_id: user.id,
-          post_id: postId,
-        });
+        const { error } = await supabase.from("archived_posts").insert({ user_id: user.id,
+          post_id: postId });
 
         if (error) throw error;
       }
@@ -64,13 +61,10 @@ export const useArchive = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["archived-posts"] });
       toast({ title: "Archive updated" });
-    },
-  });
+    } });
 
-  return {
-    archivedPosts,
+  return { archivedPosts,
     isLoading,
     isArchived,
-    toggleArchive: toggleArchive.mutate,
-  };
+    toggleArchive: toggleArchive.mutate };
 };

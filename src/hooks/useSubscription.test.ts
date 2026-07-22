@@ -7,9 +7,7 @@ const fromMock = vi.fn();
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     auth: { getUser: () => getUserMock() },
-    from: (t: string) => fromMock(t),
-  },
-}));
+    from: (t: string) => fromMock(t) } }));
 
 import { useSubscription } from "./useSubscription";
 
@@ -19,11 +17,7 @@ function rolesTable(role: string | null) {
       eq: () => ({
         eq: () => ({
           maybeSingle: () =>
-            Promise.resolve({ data: role ? { role } : null, error: null }),
-        }),
-      }),
-    }),
-  };
+            Promise.resolve({ data: role ? { role } : null, error: null }) }) }) }) };
 }
 function subsTable(tier: string | null) {
   return {
@@ -33,22 +27,13 @@ function subsTable(tier: string | null) {
           order: () => ({
             limit: () => ({
               maybeSingle: () =>
-                Promise.resolve({ data: tier ? { tier } : null, error: null }),
-            }),
-          }),
-        }),
-      }),
-    }),
-  };
+                Promise.resolve({ data: tier ? { tier } : null, error: null }) }) }) }) }) }) };
 }
 function countTable(count: number) {
   return {
     select: () => ({
       eq: () => ({
-        gte: () => Promise.resolve({ count, error: null }),
-      }),
-    }),
-  };
+        gte: () => Promise.resolve({ count, error: null }) }) }) };
 }
 
 describe("useSubscription", () => {

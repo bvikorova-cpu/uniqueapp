@@ -4,8 +4,7 @@ import { toast } from "sonner";
 import type { AstrologyCredits } from "@/types/credits";
 import { invokeOrThrow, safeInvoke } from "@/utils/safeInvoke";
 
-export const CREDIT_COSTS = {
-  tarot_3: 3,
+export const CREDIT_COSTS = { tarot_3: 3,
   tarot_5: 5,
   tarot_10: 10,
   tarot_premium: 15,
@@ -22,8 +21,7 @@ export const CREDIT_COSTS = {
   yes_no: 2,
   birth_chart: 20,
   rune: 1,
-  mystic_chat: 1,
-} as const;
+  mystic_chat: 1 } as const;
 
 export type ReadingType = keyof typeof CREDIT_COSTS;
 
@@ -60,8 +58,7 @@ export const useAstrologyCredits = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   const performReading = useMutation({
     mutationFn: async ({ readingType, data }: { readingType: string; data: Record<string, unknown> }) => {
@@ -80,8 +77,7 @@ export const useAstrologyCredits = () => {
       } else {
         toast.error("Error performing reading. Please try again.");
       }
-    },
-  });
+    } });
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {
     const { data, error } = await safeInvoke('create-astrology-credits-payment', {
@@ -96,11 +92,9 @@ export const useAstrologyCredits = () => {
     return data?.url || null;
   };
 
-  return {
-    credits,
+  return { credits,
     isLoading,
     performReading: performReading.mutate,
     isPerformingReading: performReading.isPending,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

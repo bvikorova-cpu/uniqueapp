@@ -7,24 +7,18 @@ import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const stories = [
-  {
-    type: "🎓 Education",
+  { type: "🎓 Education",
     title: "A student funded their university tuition",
     outcome: "Goal reached — Studies started!",
-    raised: "100%",
-  },
-  {
-    type: "🚀 Startup",
+    raised: "100%" },
+  { type: "🚀 Startup",
     title: "A young entrepreneur launched their first product",
     outcome: "Goal reached — Business launched!",
-    raised: "100%",
-  },
-  {
-    type: "🎨 Creative",
+    raised: "100%" },
+  { type: "🎨 Creative",
     title: "An artist funded their first solo exhibition",
     outcome: "Goal reached — Exhibition opened!",
-    raised: "100%",
-  },
+    raised: "100%" },
 ];
 
 export const DreamSuccessStories = () => {

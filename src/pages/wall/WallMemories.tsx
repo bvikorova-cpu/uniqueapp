@@ -19,15 +19,12 @@ export default function WallMemories() {
     queryKey: ["post-memories-page", userId],
     enabled: !!userId,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_post_memories", {
-        _user_id: userId!,
-        _limit: 50,
-      });
+      const { data, error } = await supabase.rpc("get_post_memories", { _user_id: userId!,
+        _limit: 50 });
       if (error) throw error;
       return data ?? [];
     },
-    staleTime: 1000 * 60 * 30,
-  });
+    staleTime: 1000 * 60 * 30 });
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-6">

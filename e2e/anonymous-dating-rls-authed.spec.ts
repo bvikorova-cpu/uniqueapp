@@ -54,8 +54,7 @@ test.describe("RLS enforcement — authenticated user, Anonymous Dating", () => 
     if (!SERVICE_ROLE_KEY) return;
     const { createClient } = await import("@supabase/supabase-js");
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+      auth: { persistSession: false, autoRefreshToken: false } });
 
     // Ensure partner profile exists (so the user has SOMETHING they're
     // legitimately allowed to see).
@@ -65,13 +64,11 @@ test.describe("RLS enforcement — authenticated user, Anonymous Dating", () => 
       .eq("user_id", PARTNER_ID!)
       .maybeSingle();
 
-    if (!existingPartner) {
-      await admin.from("anonymous_dating_profiles").insert({
+    if (!existingPartner) { await admin.from("anonymous_dating_profiles").insert({
         user_id: PARTNER_ID!,
         anonymous_name: "RLS Partner",
         age_range: "28-32",
-        interests: ["rls", "tests"],
-      });
+        interests: ["rls", "tests"] });
       createdPartnerProfile = true;
     }
 
@@ -87,12 +84,10 @@ test.describe("RLS enforcement — authenticated user, Anonymous Dating", () => 
     await admin
       .from("anonymous_dating_profiles")
       .upsert(
-        {
-          user_id: OUTSIDER_ID!,
+        { user_id: OUTSIDER_ID!,
           anonymous_name: "Outsider",
           age_range: "40-45",
-          interests: ["should-not-be-visible"],
-        },
+          interests: ["should-not-be-visible"] },
         { onConflict: "user_id" },
       );
 
@@ -109,12 +104,10 @@ test.describe("RLS enforcement — authenticated user, Anonymous Dating", () => 
     if (!existingMatch) {
       const { data } = await admin
         .from("anonymous_dating_matches")
-        .insert({
-          user1_id: USER_ID!,
+        .insert({ user1_id: USER_ID!,
           user2_id: PARTNER_ID!,
           status: "active",
-          expires_at: new Date(Date.now() + 7 * 86400000).toISOString(),
-        })
+          expires_at: new Date(Date.now() + 7 * 86400000).toISOString() })
         .select("id")
         .single();
       createdMatchId = data?.id ?? null;
@@ -125,8 +118,7 @@ test.describe("RLS enforcement — authenticated user, Anonymous Dating", () => 
     if (!SERVICE_ROLE_KEY) return;
     const { createClient } = await import("@supabase/supabase-js");
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+      auth: { persistSession: false, autoRefreshToken: false } });
     if (createdMatchId) {
       await admin.from("anonymous_dating_matches").delete().eq("id", createdMatchId);
     }
@@ -142,13 +134,10 @@ test.describe("RLS enforcement — authenticated user, Anonymous Dating", () => 
       async ({ url, key, email, password, partnerId, outsiderId }) => {
         const mod = await import("https://esm.sh/@supabase/supabase-js@2");
         const client = mod.createClient(url, key, {
-          auth: { persistSession: false, autoRefreshToken: false },
-        });
+          auth: { persistSession: false, autoRefreshToken: false } });
 
-        const { data: signIn, error: authErr } = await client.auth.signInWithPassword({
-          email: email!,
-          password: password!,
-        });
+        const { data: signIn, error: authErr } = await client.auth.signInWithPassword({ email: email!,
+          password: password! });
         if (authErr || !signIn?.user) {
           return { phase: "auth", error: authErr?.message ?? "no user" };
         }
@@ -185,17 +174,14 @@ test.describe("RLS enforcement — authenticated user, Anonymous Dating", () => 
           broad: { rows: broad.data ?? [], error: broad.error?.message ?? null },
           outsider: { rows: outsider.data ?? [], error: outsider.error?.message ?? null },
           partner: { rows: partner.data ?? [], error: partner.error?.message ?? null },
-          matches: { rows: matches.data ?? [], error: matches.error?.message ?? null },
-        };
+          matches: { rows: matches.data ?? [], error: matches.error?.message ?? null } };
       },
-      {
-        url: SUPABASE_URL,
+      { url: SUPABASE_URL,
         key: SUPABASE_ANON_KEY,
         email: EMAIL,
         password: PASSWORD,
         partnerId: PARTNER_ID,
-        outsiderId: OUTSIDER_ID,
-      },
+        outsiderId: OUTSIDER_ID },
     );
 
     expect(result.phase, `auth failed: ${(result as any).error}`).toBe("ok");
@@ -250,13 +236,10 @@ test.describe("RLS enforcement — authenticated user, Anonymous Dating", () => 
       async ({ url, key, email, password }) => {
         const mod = await import("https://esm.sh/@supabase/supabase-js@2");
         const client = mod.createClient(url, key, {
-          auth: { persistSession: false, autoRefreshToken: false },
-        });
+          auth: { persistSession: false, autoRefreshToken: false } });
 
-        const { error: authErr } = await client.auth.signInWithPassword({
-          email: email!,
-          password: password!,
-        });
+        const { error: authErr } = await client.auth.signInWithPassword({ email: email!,
+          password: password! });
         if (authErr) return { phase: "auth", error: authErr.message };
 
         // Try to pull columns that should not exist on the anonymous profile

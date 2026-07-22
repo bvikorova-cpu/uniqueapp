@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -17,8 +15,7 @@ Deno.serve(async (req) => {
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
     const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: auth } },
-    });
+      global: { headers: { Authorization: auth } } });
     const { data: userData } = await userClient.auth.getUser();
     const user = userData.user;
     if (!user) return json({ error: "Unauthorized" }, 401);
@@ -50,10 +47,8 @@ Deno.serve(async (req) => {
     }
 
     // Atomic increment via SECURITY DEFINER RPC (prevents lost updates from parallel votes)
-    const { error: incErr } = await admin.rpc("increment_megatalent_bracket_vote", {
-      p_match_id: match_id,
-      p_side: voted_for,
-    });
+    const { error: incErr } = await admin.rpc("increment_megatalent_bracket_vote", { p_match_id: match_id,
+      p_side: voted_for });
     if (incErr) throw incErr;
 
 
@@ -67,6 +62,5 @@ Deno.serve(async (req) => {
 function json(b: unknown, status = 200) {
   return new Response(JSON.stringify(b), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

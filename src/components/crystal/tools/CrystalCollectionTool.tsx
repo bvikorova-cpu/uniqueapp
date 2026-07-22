@@ -31,12 +31,10 @@ export const CrystalCollectionTool = () => {
     setAdding(true);
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { toast.error("Please sign in"); setAdding(false); return; }
-    const { error } = await (supabase as any).from("crystal_user_collections").insert({
-      user_id: session.user.id,
+    const { error } = await (supabase as any).from("crystal_user_collections").insert({ user_id: session.user.id,
       crystal_name: form.crystal_name,
       crystal_type: form.crystal_type || null,
-      notes: form.notes || null,
-    });
+      notes: form.notes || null });
     if (error) { toast.error("Failed to add crystal"); }
     else {
       toast.success("Crystal added to collection! 💎");

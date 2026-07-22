@@ -4,15 +4,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 const insertMock = vi.fn().mockResolvedValue({ error: null });
 const fromMock: any = vi.fn(() => ({ insert: insertMock }));
 const getSessionMock = vi.fn().mockResolvedValue({
-  data: { session: { user: { id: "user-1" } } },
-});
+  data: { session: { user: { id: "user-1" } } } });
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     from: (table: string) => fromMock(table),
-    auth: { getSession: () => getSessionMock() },
-  },
-}));
+    auth: { getSession: () => getSessionMock() } } }));
 
 import { logger } from "./logger";
 

@@ -14,12 +14,10 @@ export async function trackJobEvent(jobId: string, eventType: JobEventType, sour
     const last = recent.get(key) ?? 0;
     if (Date.now() - last < DEDUP_MS) return;
     recent.set(key, Date.now());
-    await (supabase as any).from("job_analytics_events").insert({
-      job_id: jobId,
+    await (supabase as any).from("job_analytics_events").insert({ job_id: jobId,
       event_type: eventType,
       user_id: user.id,
-      source: source ?? null,
-    });
+      source: source ?? null });
   } catch (e) {
     // Trigger may silently drop dups (returns NULL); ignore errors entirely.
   }

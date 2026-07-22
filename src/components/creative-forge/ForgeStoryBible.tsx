@@ -54,13 +54,11 @@ export function ForgeStoryBible({ open, onClose }: Props) {
     if (!editing?.name?.trim() || !editing.entry_type) { toast({ title: "Name & type required", variant: "destructive" }); return; }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const payload = {
-      user_id: user.id,
+    const payload = { user_id: user.id,
       entry_type: editing.entry_type,
       name: editing.name,
       summary: editing.summary ?? "",
-      tags: editing.tags ?? [],
-    };
+      tags: editing.tags ?? [] };
     if (editing.id) {
       await supabase.from("creative_forge_story_bible").update(payload).eq("id", editing.id);
     } else {

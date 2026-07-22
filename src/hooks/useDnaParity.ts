@@ -20,8 +20,7 @@ export function useDnaParity() {
   const run = useMutation({
     mutationFn: async ({ action, payload }: { action: DnaParityAction; payload: Record<string, unknown> }) => {
       const { data, error } = await supabase.functions.invoke("dna-parity", {
-        body: { action, payload },
-      });
+        body: { action, payload } });
       if (error) throw new Error(error.message);
       if (data?.error) throw new Error(data.error);
       return data as { result: any; cost: number };
@@ -31,8 +30,7 @@ export function useDnaParity() {
     },
     onSuccess: () => {
       toast({ title: "Done", description: `Spent ${DNA_PARITY_COST} credits` });
-    },
-  });
+    } });
 
   return { run: run.mutateAsync, isLoading: run.isPending, data: run.data?.result };
 }

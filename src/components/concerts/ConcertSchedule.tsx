@@ -21,8 +21,7 @@ export const ConcertSchedule = ({ onBack }: Props) => {
         .order("scheduled_at", { ascending: true });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const getTimeLabel = (dateStr: string) => {
     const d = new Date(dateStr);

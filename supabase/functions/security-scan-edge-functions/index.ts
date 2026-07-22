@@ -3,11 +3,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -37,13 +35,12 @@ const RULES: Array<(name: string, src: string) => Finding[]> = [
     return out;
   },
   // R2 — hardcoded secrets
-  (fn, src) => {
-    const out: Finding[] = [];
+  (fn, src) => { const out: Finding[] = [];
     const patterns: Array<[RegExp, string]> = [
-      [/sk_live_[A-Za-z0-9]{20,}/, "Stripe live secret key hardcoded"],
-      [/sk_test_[A-Za-z0-9]{20,}/, "Stripe test secret key hardcoded"],
+      [/sk_live_[A-Za-z0-9]{20 }/, "Stripe live secret key hardcoded"],
+      [/sk_test_[A-Za-z0-9]{ 20 }/, "Stripe test secret key hardcoded"],
       [/AIza[0-9A-Za-z_-]{35}/, "Google API key hardcoded"],
-      [/eyJ[A-Za-z0-9_-]{20,}\.eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}/, "JWT-shaped secret hardcoded"],
+      [/eyJ[A-Za-z0-9_-]{ 20 }\.eyJ[A-Za-z0-9_-]{ 20 }\.[A-Za-z0-9_-]{ 20 }/, "JWT-shaped secret hardcoded"],
     ];
     for (const [re, label] of patterns) {
       if (re.test(src)) out.push({ fn, rule: "hardcoded_secret", severity: "critical",
@@ -146,8 +143,7 @@ async function probeCors(fnName: string): Promise<Finding[]> {
   try {
     const res = await fetch(`${SUPABASE_URL}/functions/v1/${fnName}`, {
       method: "OPTIONS",
-      headers: { Origin: "https://example.com", "Access-Control-Request-Method": "POST" },
-    });
+      headers: { Origin: "https://example.com", "Access-Control-Request-Method": "POST" } });
     const allow = res.headers.get("access-control-allow-origin");
     if (!allow) out.push({ fn: fnName, rule: "runtime_no_cors", severity: "medium",
       message: "OPTIONS preflight did not return Access-Control-Allow-Origin.",
@@ -210,8 +206,7 @@ serve(async (req) => {
     const counts = { critical: 0, high: 0, medium: 0, low: 0 };
     for (const f of findings) counts[f.severity]++;
 
-    const snapshot = {
-      scan_type: "edge_functions" as const,
+    const snapshot = { scan_type: "edge_functions" as const,
       triggered_by: triggeredBy,
       trigger_source: triggerSource,
       total_findings: findings.length,
@@ -223,10 +218,8 @@ serve(async (req) => {
       meta: {
         functions_scanned: functions.length,
         functions_probed: probeTargets.length,
-        github_source: !!(GH_OWNER && GH_REPO && GH_TOKEN),
-      },
-      duration_ms: Date.now() - start,
-    };
+        github_source: !!(GH_OWNER && GH_REPO && GH_TOKEN) },
+      duration_ms: Date.now() - start };
 
     const { data: inserted, error: insErr } = await supabase
       .from("security_scan_snapshots").insert(snapshot).select("id").single();

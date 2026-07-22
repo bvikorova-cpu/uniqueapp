@@ -1,14 +1,12 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Audio,
   Img,
   Sequence,
   interpolate,
   spring,
   staticFile,
-  useCurrentFrame,
-} from "remotion";
+  useCurrentFrame } from "remotion";
 
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
@@ -19,31 +17,23 @@ const body = loadBody("normal", { weights: ["500", "700", "900"] });
 const FPS = 30;
 export const CHALLENGES_DURATION = 900; // 30s
 
-const BRAND = {
-  purple: "#8b5cf6",
+const BRAND = { purple: "#8b5cf6",
   pink: "#ec4899",
   amber: "#fbbf24",
   green: "#10b981",
   lime: "#84cc16",
   red: "#ef4444",
   bgDeep: "#07030f",
-  white: "#ffffff",
-};
+  white: "#ffffff" };
 
 /* ---------- Shared visuals ---------- */
 
-const KenBurns: React.FC<{ src: string; duration: number; darken?: number }> = ({
-  src,
+const KenBurns: React.FC<{ src: string; duration: number; darken?: number }> = ({ src,
   duration,
-  darken = 0.35,
-}) => {
-  const frame = useCurrentFrame();
+  darken = 0.35 }) => { const frame = useCurrentFrame();
   const scale = interpolate(frame, [0, duration], [1.1, 1.28], {
-    extrapolateRight: "clamp",
-  });
-  const ty = interpolate(frame, [0, duration], [-25, 25], {
-    extrapolateRight: "clamp",
-  });
+    extrapolateRight: "clamp" });
+  const ty = interpolate(frame, [0, duration], [-25, 25], { extrapolateRight: "clamp" });
   return (
     <AbsoluteFill>
       <Img
@@ -53,15 +43,13 @@ const KenBurns: React.FC<{ src: string; duration: number; darken?: number }> = (
           height: "100%",
           objectFit: "cover",
           transform: `scale(${scale}) translateY(${ty}px)`,
-          filter: "saturate(1.2) brightness(1.05)",
-        }}
+          filter: "saturate(1.2) brightness(1.05)" }}
       />
       <AbsoluteFill style={{ backgroundColor: `rgba(5,0,15,${darken})` }} />
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.75) 100%)",
-        }}
+            "linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.75) 100%)" }}
       />
     </AbsoluteFill>
   );
@@ -72,12 +60,9 @@ const useEnterExit = (duration: number, exitLen = 20) => {
   const enter = spring({
     frame,
     fps: FPS,
-    config: { damping: 18, stiffness: 130 },
-  });
-  const exit = interpolate(frame, [duration - exitLen, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+    config: { damping: 18, stiffness: 130 } });
+  const exit = interpolate(frame, [duration - exitLen, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return { enter, exit, opacity: enter * (1 - exit), frame };
 };
 
@@ -88,25 +73,14 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const logoScale = spring({
     frame,
     fps: FPS,
-    config: { damping: 10, stiffness: 110 },
-  });
+    config: { damping: 10, stiffness: 110 } });
   const logoRot = interpolate(logoScale, [0, 1], [-25, 0]);
-  const wordOp = interpolate(frame, [18, 42], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-  const wordY = interpolate(frame, [18, 42], [40, 0], {
-    extrapolateRight: "clamp",
-  });
-  const tagOp = interpolate(frame, [50, 78], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-  const tagY = interpolate(frame, [50, 78], [20, 0], {
-    extrapolateRight: "clamp",
-  });
-  const exit = interpolate(frame, [duration - 20, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const wordOp = interpolate(frame, [18, 42], [0, 1], { extrapolateRight: "clamp" });
+  const wordY = interpolate(frame, [18, 42], [40, 0], { extrapolateRight: "clamp" });
+  const tagOp = interpolate(frame, [50, 78], [0, 1], { extrapolateRight: "clamp" });
+  const tagY = interpolate(frame, [50, 78], [20, 0], { extrapolateRight: "clamp" });
+  const exit = interpolate(frame, [duration - 20, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill>
       <KenBurns
@@ -115,18 +89,16 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
         darken={0.2}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          opacity: 1 - exit,
-        }}
+          opacity: 1 - exit }}
       >
         <div
           style={{
             transform: `scale(${logoScale}) rotate(${logoRot}deg)`,
-            filter: "drop-shadow(0 20px 60px rgba(236,72,153,0.55))",
-          }}
+            filter: "drop-shadow(0 20px 60px rgba(236,72,153,0.55))" }}
         >
           <Img
             src={staticFile("home/logo.png")}
@@ -145,8 +117,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 80px rgba(236,72,153,0.5)",
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em" }}
         >
           Unique
         </div>
@@ -160,8 +131,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             fontSize: 44,
             color: "rgba(255,255,255,0.92)",
             letterSpacing: "0.28em",
-            textTransform: "uppercase",
-          }}
+            textTransform: "uppercase" }}
         >
           Challenges
         </div>
@@ -183,21 +153,19 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
             "radial-gradient(circle at 30% 30%, rgba(16,185,129,0.35), transparent 55%), radial-gradient(circle at 70% 75%, rgba(236,72,153,0.4), transparent 55%)",
-          filter: "blur(20px)",
-        }}
+          filter: "blur(20px)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
           padding: 80,
           textAlign: "center",
-          opacity,
-        }}
+          opacity }}
       >
         <div
           style={{
@@ -207,8 +175,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             fontWeight: 500,
             fontSize: 72,
             color: "rgba(255,255,255,0.82)",
-            letterSpacing: "-0.01em",
-          }}
+            letterSpacing: "-0.01em" }}
         >
           Two challenges.
         </div>
@@ -224,8 +191,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "-0.04em",
             background: `linear-gradient(90deg, ${BRAND.green} 0%, ${BRAND.amber} 50%, ${BRAND.pink} 100%)`,
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
+            WebkitTextFillColor: "transparent" }}
         >
           One mission.
         </div>
@@ -238,8 +204,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             fontWeight: 600,
             fontSize: 52,
             color: "rgba(255,255,255,0.9)",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           Live better. Earn real rewards.
         </div>
@@ -263,8 +228,7 @@ const ChallengeScene: React.FC<{
   tagline: string;
   perks: Perk[];
   iconPath: string; // svg path d
-}> = ({
-  duration,
+}> = ({ duration,
   backdrop,
   accent,
   accent2,
@@ -273,48 +237,27 @@ const ChallengeScene: React.FC<{
   subtitle,
   tagline,
   perks,
-  iconPath,
-}) => {
-
-  const frame = useCurrentFrame();
+  iconPath }) => { const frame = useCurrentFrame();
   const exit = interpolate(frame, [duration - 22, duration], [0, 1], {
     extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+    extrapolateRight: "clamp" });
 
-  const badgeOp = interpolate(frame, [4, 24], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-  const badgeY = interpolate(frame, [4, 24], [-40, 0], {
-    extrapolateRight: "clamp",
-  });
+  const badgeOp = interpolate(frame, [4, 24], [0, 1], { extrapolateRight: "clamp" });
+  const badgeY = interpolate(frame, [4, 24], [-40, 0], { extrapolateRight: "clamp" });
 
   const iconS = spring({
     frame: frame - 8,
     fps: FPS,
-    config: { damping: 12, stiffness: 130 },
-  });
+    config: { damping: 12, stiffness: 130 } });
 
-  const titleOp = interpolate(frame, [18, 40], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-  const titleY = interpolate(frame, [18, 40], [50, 0], {
-    extrapolateRight: "clamp",
-  });
+  const titleOp = interpolate(frame, [18, 40], [0, 1], { extrapolateRight: "clamp" });
+  const titleY = interpolate(frame, [18, 40], [50, 0], { extrapolateRight: "clamp" });
 
-  const subOp = interpolate(frame, [32, 55], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-  const subY = interpolate(frame, [32, 55], [30, 0], {
-    extrapolateRight: "clamp",
-  });
+  const subOp = interpolate(frame, [32, 55], [0, 1], { extrapolateRight: "clamp" });
+  const subY = interpolate(frame, [32, 55], [30, 0], { extrapolateRight: "clamp" });
 
-  const tagOp = interpolate(frame, [46, 70], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-  const tagY = interpolate(frame, [46, 70], [24, 0], {
-    extrapolateRight: "clamp",
-  });
+  const tagOp = interpolate(frame, [46, 70], [0, 1], { extrapolateRight: "clamp" });
+  const tagY = interpolate(frame, [46, 70], [24, 0], { extrapolateRight: "clamp" });
 
 
   return (
@@ -322,13 +265,12 @@ const ChallengeScene: React.FC<{
       <KenBurns src={staticFile(backdrop)} duration={duration} darken={0.4} />
 
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "flex-start",
           flexDirection: "column",
           padding: 80,
-          paddingTop: 160,
-        }}
+          paddingTop: 160 }}
       >
         {/* Badge */}
         <div
@@ -344,8 +286,7 @@ const ChallengeScene: React.FC<{
             color: BRAND.white,
             letterSpacing: "0.3em",
             textTransform: "uppercase",
-            boxShadow: `0 20px 60px -15px ${accent}cc`,
-          }}
+            boxShadow: `0 20px 60px -15px ${accent}cc` }}
         >
           {badge}
         </div>
@@ -362,8 +303,7 @@ const ChallengeScene: React.FC<{
             alignItems: "center",
             justifyContent: "center",
             transform: `scale(${iconS}) rotate(${(1 - iconS) * -30}deg)`,
-            boxShadow: `0 30px 80px -20px ${accent}dd, inset 0 4px 20px rgba(255,255,255,0.25)`,
-          }}
+            boxShadow: `0 30px 80px -20px ${accent}dd, inset 0 4px 20px rgba(255,255,255,0.25)` }}
         >
           <svg
             viewBox="0 0 24 24"
@@ -392,8 +332,7 @@ const ChallengeScene: React.FC<{
             color: BRAND.white,
             letterSpacing: "-0.035em",
             textShadow: "0 8px 40px rgba(0,0,0,0.55)",
-            textAlign: "center",
-          }}
+            textAlign: "center" }}
         >
           {title}
         </div>
@@ -410,8 +349,7 @@ const ChallengeScene: React.FC<{
             color: "rgba(255,255,255,0.92)",
             textAlign: "center",
             maxWidth: 880,
-            textShadow: "0 4px 20px rgba(0,0,0,0.7)",
-          }}
+            textShadow: "0 4px 20px rgba(0,0,0,0.7)" }}
         >
           {subtitle}
         </div>
@@ -430,8 +368,7 @@ const ChallengeScene: React.FC<{
             textAlign: "center",
             maxWidth: 940,
             lineHeight: 1.3,
-            textShadow: "0 4px 20px rgba(0,0,0,0.7)",
-          }}
+            textShadow: "0 4px 20px rgba(0,0,0,0.7)" }}
         >
           {tagline}
         </div>
@@ -439,21 +376,19 @@ const ChallengeScene: React.FC<{
 
         {/* Perks list */}
         <div
-          style={{
+          style={ {
             marginTop: 70,
             display: "flex",
             flexDirection: "column",
             gap: 22,
-            width: "88%",
-          }}
+            width: "88%" }}
         >
           {perks.map((p, i) => {
             const delay = 55 + i * 12;
             const s = spring({
               frame: frame - delay,
               fps: FPS,
-              config: { damping: 15, stiffness: 130 },
-            });
+              config: { damping: 15, stiffness: 130 } });
             const x = interpolate(s, [0, 1], [-80, 0]);
             return (
               <div
@@ -469,8 +404,7 @@ const ChallengeScene: React.FC<{
                   background: "rgba(255,255,255,0.1)",
                   border: `1px solid ${accent}66`,
                   backdropFilter: undefined,
-                  boxShadow: `0 10px 40px -20px ${accent}aa`,
-                }}
+                  boxShadow: `0 10px 40px -20px ${accent}aa` }}
               >
                 <div
                   style={{
@@ -481,8 +415,7 @@ const ChallengeScene: React.FC<{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    flexShrink: 0,
-                  }}
+                    flexShrink: 0 }}
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -498,13 +431,12 @@ const ChallengeScene: React.FC<{
                   </svg>
                 </div>
                 <div
-                  style={{
+                  style={ {
                     fontFamily: body.fontFamily,
                     fontWeight: 700,
                     fontSize: 42,
                     color: BRAND.white,
-                    letterSpacing: "-0.01em",
-                  }}
+                    letterSpacing: "-0.01em" }}
                 >
                   {p.label}
                 </div>
@@ -519,39 +451,33 @@ const ChallengeScene: React.FC<{
 
 /* ---------- Scene 5: Prize ---------- */
 
-const ScenePrize: React.FC<{ duration: number }> = ({ duration }) => {
-  const frame = useCurrentFrame();
+const ScenePrize: React.FC<{ duration: number }> = ({ duration }) => { const frame = useCurrentFrame();
   const exit = interpolate(frame, [duration - 22, duration], [0, 1], {
     extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+    extrapolateRight: "clamp" });
   const s1 = spring({ frame, fps: FPS, config: { damping: 12, stiffness: 110 } });
   const s2 = spring({
     frame: frame - 18,
     fps: FPS,
-    config: { damping: 14, stiffness: 120 },
-  });
+    config: { damping: 14, stiffness: 120 } });
   const s3 = spring({
     frame: frame - 36,
     fps: FPS,
-    config: { damping: 14, stiffness: 120 },
-  });
+    config: { damping: 14, stiffness: 120 } });
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 50% 40%, rgba(251,191,36,0.4), transparent 55%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.35), transparent 60%)",
-        }}
+            "radial-gradient(circle at 50% 40%, rgba(251,191,36,0.4), transparent 55%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.35), transparent 60%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
           padding: 80,
-          textAlign: "center",
-        }}
+          textAlign: "center" }}
       >
         <div
           style={{
@@ -562,8 +488,7 @@ const ScenePrize: React.FC<{ duration: number }> = ({ duration }) => {
             fontSize: 56,
             color: "rgba(255,255,255,0.85)",
             letterSpacing: "0.2em",
-            textTransform: "uppercase",
-          }}
+            textTransform: "uppercase" }}
         >
           Monthly Prize
         </div>
@@ -580,8 +505,7 @@ const ScenePrize: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(180deg, ${BRAND.amber} 0%, #fde68a 50%, ${BRAND.pink} 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 100px rgba(251,191,36,0.5)",
-          }}
+            textShadow: "0 0 100px rgba(251,191,36,0.5)" }}
         >
           €500
         </div>
@@ -594,8 +518,7 @@ const ScenePrize: React.FC<{ duration: number }> = ({ duration }) => {
             fontWeight: 700,
             fontSize: 54,
             color: BRAND.white,
-            maxWidth: 920,
-          }}
+            maxWidth: 920 }}
         >
           + XP · credits · winner spotlight
         </div>
@@ -611,33 +534,25 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   const logoS = spring({
     frame,
     fps: FPS,
-    config: { damping: 12, stiffness: 100 },
-  });
+    config: { damping: 12, stiffness: 100 } });
   const wordS = spring({
     frame: frame - 12,
     fps: FPS,
-    config: { damping: 14, stiffness: 110 },
-  });
-  const urlOp = interpolate(frame, [30, 55], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-  const tagOp = interpolate(frame, [45, 70], [0, 1], {
-    extrapolateRight: "clamp",
-  });
+    config: { damping: 14, stiffness: 110 } });
+  const urlOp = interpolate(frame, [30, 55], [0, 1], { extrapolateRight: "clamp" });
+  const tagOp = interpolate(frame, [45, 70], [0, 1], { extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.4), transparent 60%)",
-        }}
+            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.4), transparent 60%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "column",
-        }}
+          flexDirection: "column" }}
       >
         <Img
           src={staticFile("home/logo.png")}
@@ -646,8 +561,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             height: 280,
             borderRadius: 72,
             transform: `scale(${logoS})`,
-            filter: "drop-shadow(0 15px 50px rgba(236,72,153,0.55))",
-          }}
+            filter: "drop-shadow(0 15px 50px rgba(236,72,153,0.55))" }}
         />
         <div
           style={{
@@ -660,26 +574,24 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(180deg, ${BRAND.white} 0%, #fbcfe8 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 60px rgba(236,72,153,0.45)",
-          }}
+            textShadow: "0 0 60px rgba(236,72,153,0.45)" }}
         >
           Unique
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 40,
             opacity: urlOp,
             fontFamily: body.fontFamily,
             fontWeight: 700,
             fontSize: 68,
             color: BRAND.white,
-            letterSpacing: "0.05em",
-          }}
+            letterSpacing: "0.05em" }}
         >
           uniqueapp.fun/challenges
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 26,
             opacity: tagOp,
             fontFamily: body.fontFamily,
@@ -689,8 +601,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             textAlign: "center",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           Join · Compete · Win
         </div>
@@ -752,28 +663,23 @@ const HealthScene: React.FC<{ duration: number }> = ({ duration }) => (
 
 /* ---------- Scene: Global Movement (replaces prize) ---------- */
 
-const SceneMovement: React.FC<{ duration: number }> = ({ duration }) => {
-  const frame = useCurrentFrame();
+const SceneMovement: React.FC<{ duration: number }> = ({ duration }) => { const frame = useCurrentFrame();
   const exit = interpolate(frame, [duration - 22, duration], [0, 1], {
     extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+    extrapolateRight: "clamp" });
   const s1 = spring({ frame, fps: FPS, config: { damping: 14, stiffness: 110 } });
   const s2 = spring({
     frame: frame - 16,
     fps: FPS,
-    config: { damping: 14, stiffness: 110 },
-  });
+    config: { damping: 14, stiffness: 110 } });
   const s3 = spring({
     frame: frame - 34,
     fps: FPS,
-    config: { damping: 15, stiffness: 110 },
-  });
+    config: { damping: 15, stiffness: 110 } });
   const s4 = spring({
     frame: frame - 54,
     fps: FPS,
-    config: { damping: 15, stiffness: 110 },
-  });
+    config: { damping: 15, stiffness: 110 } });
 
   const stats = [
     { big: "2", small: "missions,\none movement" },
@@ -784,19 +690,17 @@ const SceneMovement: React.FC<{ duration: number }> = ({ duration }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 30% 30%, rgba(16,185,129,0.4), transparent 55%), radial-gradient(circle at 70% 70%, rgba(236,72,153,0.4), transparent 55%), radial-gradient(circle at 50% 100%, rgba(139,92,246,0.35), transparent 60%)",
-        }}
+            "radial-gradient(circle at 30% 30%, rgba(16,185,129,0.4), transparent 55%), radial-gradient(circle at 70% 70%, rgba(236,72,153,0.4), transparent 55%), radial-gradient(circle at 50% 100%, rgba(139,92,246,0.35), transparent 60%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
           padding: 80,
-          textAlign: "center",
-        }}
+          textAlign: "center" }}
       >
         <div
           style={{
@@ -807,8 +711,7 @@ const SceneMovement: React.FC<{ duration: number }> = ({ duration }) => {
             fontSize: 50,
             color: "rgba(255,255,255,0.85)",
             letterSpacing: "0.28em",
-            textTransform: "uppercase",
-          }}
+            textTransform: "uppercase" }}
         >
           Join the Movement
         </div>
@@ -825,8 +728,7 @@ const SceneMovement: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(90deg, ${BRAND.green} 0%, ${BRAND.amber} 50%, ${BRAND.pink} 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 80px rgba(236,72,153,0.4)",
-          }}
+            textShadow: "0 0 80px rgba(236,72,153,0.4)" }}
         >
           One world.
           <br />One team.
@@ -841,8 +743,7 @@ const SceneMovement: React.FC<{ duration: number }> = ({ duration }) => {
             fontSize: 42,
             color: "rgba(255,255,255,0.9)",
             maxWidth: 940,
-            lineHeight: 1.3,
-          }}
+            lineHeight: 1.3 }}
         >
           A global community turning tiny habits into
           <br />a greener, healthier planet.
@@ -854,19 +755,17 @@ const SceneMovement: React.FC<{ duration: number }> = ({ duration }) => {
             display: "flex",
             gap: 30,
             opacity: s4,
-            transform: `translateY(${(1 - s4) * 40}px)`,
-          }}
+            transform: `translateY(${(1 - s4) * 40}px)` }}
         >
           {stats.map((st) => (
             <div
               key={st.big}
-              style={{
+              style={ {
                 padding: "28px 30px",
                 borderRadius: 32,
                 background: "rgba(255,255,255,0.08)",
                 border: "1px solid rgba(255,255,255,0.18)",
-                minWidth: 260,
-              }}
+                minWidth: 260 }}
             >
               <div
                 style={{
@@ -876,21 +775,19 @@ const SceneMovement: React.FC<{ duration: number }> = ({ duration }) => {
                   lineHeight: 1,
                   background: `linear-gradient(180deg, ${BRAND.white} 0%, #fbcfe8 100%)`,
                   WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
+                  WebkitTextFillColor: "transparent" }}
               >
                 {st.big}
               </div>
               <div
-                style={{
+                style={ {
                   marginTop: 10,
                   fontFamily: body.fontFamily,
                   fontWeight: 600,
                   fontSize: 26,
                   color: "rgba(255,255,255,0.85)",
                   whiteSpace: "pre-line",
-                  lineHeight: 1.25,
-                }}
+                  lineHeight: 1.25 }}
               >
                 {st.small}
               </div>
@@ -911,19 +808,15 @@ const SCENES: SceneDef[] = [
   { from: 780, duration: 120, component: SceneOutro },
 ];
 
-export const ChallengesFilm: React.FC = () => {
-  const frame = useCurrentFrame();
+export const ChallengesFilm: React.FC = () => { const frame = useCurrentFrame();
   const total = CHALLENGES_DURATION;
   // fade music in/out at the boundaries
   const musicVolume = (f: number) => {
     const fadeIn = interpolate(f, [0, 20], [0, 0.7], {
       extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    });
-    const fadeOut = interpolate(f, [total - 40, total - 5], [0.7, 0], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    });
+      extrapolateRight: "clamp" });
+    const fadeOut = interpolate(f, [total - 40, total - 5], [0.7, 0], { extrapolateLeft: "clamp",
+      extrapolateRight: "clamp" });
     return Math.min(fadeIn, fadeOut);
   };
   return (

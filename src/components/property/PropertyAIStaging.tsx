@@ -58,12 +58,10 @@ export const PropertyAIStaging = ({ onBack }: Props) => {
     toast.success("Staging config downloaded");
   };
 
-  const useInListing = () => {
-    const params = new URLSearchParams({
+  const useInListing = () => { const params = new URLSearchParams({
       staged: "1",
       room: selectedRoom,
-      style: selectedStyle,
-    });
+      style: selectedStyle });
     navigate(`/property-submission?${params.toString()}`);
     toast.success("Staging applied to your new listing");
   };

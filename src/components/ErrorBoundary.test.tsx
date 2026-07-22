@@ -3,14 +3,11 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { ErrorBoundary } from "./ErrorBoundary";
 
 // Silence logger during tests
-vi.mock("@/utils/logger", () => ({
-  logger: {
+vi.mock("@/utils/logger", () => ({ logger: {
     reactError: vi.fn(),
     error: vi.fn(),
     warn: vi.fn(),
-    info: vi.fn(),
-  },
-}));
+    info: vi.fn() } }));
 
 const Bomb = () => {
   throw new Error("Kaboom");

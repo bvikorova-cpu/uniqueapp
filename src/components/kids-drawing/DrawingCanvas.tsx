@@ -44,15 +44,13 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
   const [drawingTitle, setDrawingTitle] = useState("");
   const { saveDrawing, isSaving } = useKidsDrawingGallery();
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
+  useEffect(() => { if (!canvasRef.current) return;
 
     const canvas = new FabricCanvas(canvasRef.current, {
       width: 600,
       height: 450,
       backgroundColor: "#ffffff",
-      isDrawingMode: true,
-    });
+      isDrawingMode: true });
 
     // Initialize brush
     const brush = new PencilBrush(canvas);
@@ -166,8 +164,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
     setHistoryStep((prev) => prev + 1);
   };
 
-  const handleAddShape = (shapeType: "circle" | "square" | "star") => {
-    if (!fabricCanvas) return;
+  const handleAddShape = (shapeType: "circle" | "square" | "star") => { if (!fabricCanvas) return;
 
     setActiveTool(shapeType);
 
@@ -178,28 +175,24 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
         radius: 50,
         fill: activeColor,
         stroke: activeColor,
-        strokeWidth: 2,
-      });
+        strokeWidth: 2 });
       fabricCanvas.add(circle);
       fabricCanvas.setActiveObject(circle);
       saveStateToHistory();
       toast.success("Circle added! ⭕");
-    } else if (shapeType === "square") {
-      const square = new Rect({
+    } else if (shapeType === "square") { const square = new Rect({
         left: 100,
         top: 100,
         width: 100,
         height: 100,
         fill: activeColor,
         stroke: activeColor,
-        strokeWidth: 2,
-      });
+        strokeWidth: 2 });
       fabricCanvas.add(square);
       fabricCanvas.setActiveObject(square);
       saveStateToHistory();
       toast.success("Square added! ◻️");
-    } else if (shapeType === "star") {
-      // Create a 5-pointed star
+    } else if (shapeType === "star") { // Create a 5-pointed star
       const points = [];
       const outerRadius = 50;
       const innerRadius = 25;
@@ -210,17 +203,14 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
         const angle = (Math.PI * i) / numPoints;
         points.push({
           x: Math.cos(angle - Math.PI / 2) * radius,
-          y: Math.sin(angle - Math.PI / 2) * radius,
-        });
+          y: Math.sin(angle - Math.PI / 2) * radius });
       }
 
-      const star = new Polygon(points, {
-        left: 150,
+      const star = new Polygon(points, { left: 150,
         top: 150,
         fill: activeColor,
         stroke: activeColor,
-        strokeWidth: 2,
-      });
+        strokeWidth: 2 });
       fabricCanvas.add(star);
       fabricCanvas.setActiveObject(star);
       saveStateToHistory();
@@ -232,13 +222,11 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
     setTimeout(() => setActiveTool("draw"), 100);
   };
 
-  const handleDownload = () => {
-    if (!fabricCanvas) return;
+  const handleDownload = () => { if (!fabricCanvas) return;
     const dataURL = fabricCanvas.toDataURL({
       format: "png",
       quality: 1,
-      multiplier: 2,
-    });
+      multiplier: 2 });
     const link = document.createElement("a");
     link.download = `drawing-step-${stepNumber}.png`;
     link.href = dataURL;
@@ -246,21 +234,17 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
     toast.success("Drawing downloaded! 📥");
   };
 
-  const handleSaveToGallery = () => {
-    if (!fabricCanvas) return;
+  const handleSaveToGallery = () => { if (!fabricCanvas) return;
     const dataURL = fabricCanvas.toDataURL({
       format: "png",
       quality: 1,
-      multiplier: 2,
-    });
+      multiplier: 2 });
     
     const title = drawingTitle.trim() || `Drawing Step ${stepNumber}`;
-    saveDrawing({
-      imageDataURL: dataURL,
+    saveDrawing({ imageDataURL: dataURL,
       title,
       stepNumber,
-      category,
-    });
+      category });
     
     setShowSaveDialog(false);
     setDrawingTitle("");

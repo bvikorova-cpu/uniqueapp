@@ -56,14 +56,12 @@ export const DailyTrainingQuests = () => {
       const progress: Record<string, number> = {};
       data?.forEach((q: any) => { progress[q.quest_id] = q.progress || 0; });
       return progress;
-    },
-  });
+    } });
 
   const claimReward = useMutation({
     mutationFn: async (questId: string) => {
       const { data, error } = await supabase.functions.invoke("horse-claim-quest-reward", {
-        body: { questId },
-      });
+        body: { questId } });
       if (error) throw error;
       return data;
     },
@@ -72,8 +70,7 @@ export const DailyTrainingQuests = () => {
       queryClient.invalidateQueries({ queryKey: ["daily-quest-progress"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const getQuestStatus = (quest: Quest) => {
     const progress = (questProgress as Record<string, number>)[quest.id] || 0;

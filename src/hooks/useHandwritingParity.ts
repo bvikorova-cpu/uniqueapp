@@ -4,8 +4,7 @@ import { toast } from "sonner";
 
 const invoke = async (action: string, payload: Record<string, unknown>) => {
   const { data, error } = await supabase.functions.invoke("handwriting-ai", {
-    body: { action, ...payload },
-  });
+    body: { action, ...payload } });
   if (error) throw error;
   if ((data as any)?.error) throw new Error((data as any).error);
   return data;
@@ -27,8 +26,7 @@ const mk = (action: string, successMsg: string) => () => {
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
       toast.success(successMsg);
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 };
 
 export const useZoneAnalysis = mk("zone-analysis", "Zone analysis ready");

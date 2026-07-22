@@ -28,8 +28,7 @@ export function useClubPublicMember(userId?: string | null) {
         .maybeSingle();
       if (error) return null;
       return (data as unknown as PublicMember) ?? null;
-    },
-  });
+    } });
 }
 
 interface MemberBadgeProps {
@@ -49,14 +48,12 @@ interface MemberBadgeProps {
  * Renders children untouched when the user is not a club member so it is safe
  * to sprinkle throughout the app.
  */
-export function MemberBadge({
-  userId,
+export function MemberBadge({ userId,
   member: memberProp,
   size = "md",
   className,
   withTooltip = true,
-  children,
-}: MemberBadgeProps) {
+  children }: MemberBadgeProps) {
   const { data: fetched } = useClubPublicMember(memberProp === undefined ? userId : null);
   const member = memberProp !== undefined ? memberProp : fetched;
 

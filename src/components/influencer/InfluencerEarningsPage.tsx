@@ -25,8 +25,7 @@ export const InfluencerEarningsPage = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: balance, isLoading: loadingBalance, refetch: refetchBalance } = useQuery({
     queryKey: ["influencer-balance", selectedInfluencer],
@@ -42,8 +41,7 @@ export const InfluencerEarningsPage = () => {
       if (error && error.code !== "PGRST116") throw error;
       return data;
     },
-    enabled: !!selectedInfluencer,
-  });
+    enabled: !!selectedInfluencer });
 
   const { data: withdrawals, refetch: refetchWithdrawals } = useQuery({
     queryKey: ["influencer-withdrawals", selectedInfluencer],
@@ -59,8 +57,7 @@ export const InfluencerEarningsPage = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!selectedInfluencer,
-  });
+    enabled: !!selectedInfluencer });
 
   const { data: earnings } = useQuery({
     queryKey: ["influencer-earnings", selectedInfluencer],
@@ -77,8 +74,7 @@ export const InfluencerEarningsPage = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!selectedInfluencer,
-  });
+    enabled: !!selectedInfluencer });
 
   if (loadingInfluencers) {
     return (

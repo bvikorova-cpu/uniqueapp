@@ -48,8 +48,7 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
       if (!user) return null;
       const { data } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
       return data;
-    },
-  });
+    } });
 
   const generateThumbnail = async () => {
     if (!title.trim()) {
@@ -80,8 +79,7 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
         prompt: `Create a ${selectedStyle} style thumbnail for: "${title}". Template: ${selectedTemplate || "custom"}`,
         credits_used: 8,
         status: "completed" as any,
-        generated_text: `AI Thumbnail concept for "${title}" in ${selectedStyle} style. Use bold typography, contrasting colors, and eye-catching composition.`,
-      }).select().single();
+        generated_text: `AI Thumbnail concept for "${title}" in ${selectedStyle} style. Use bold typography, contrasting colors, and eye-catching composition.` }).select().single();
 
       if (error) throw error;
 
@@ -92,8 +90,7 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
         user_id: user.id,
         usage_type: "thumbnail_creator",
         credits_used: 8,
-        description: `Thumbnail for: ${title} (${selectedStyle})`,
-      });
+        description: `Thumbnail for: ${title} (${selectedStyle})` });
 
       toast({ title: "✅ Thumbnail Generated!", description: "Your AI thumbnail concept is ready (8 credits used)" });
     } catch (error: any) {
@@ -189,9 +186,8 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
                 <CardContent className="p-4">
                   <div className="aspect-video bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 rounded-lg flex items-center justify-center mb-4 border border-primary/20">
                     <div className="text-center p-6">
-                      <h3 className="text-2xl md:text-3xl font-black mb-2" style={{
-                        textShadow: "0 2px 10px rgba(0,0,0,0.3)",
-                      }}>{title}</h3>
+                      <h3 className="text-2xl md:text-3xl font-black mb-2" style={ {
+                        textShadow: "0 2px 10px rgba(0,0,0,0.3)" }}>{title}</h3>
                       <Badge>{selectedStyle}</Badge>
                     </div>
                   </div>

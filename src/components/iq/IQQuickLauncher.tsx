@@ -16,8 +16,7 @@ const SHORTCUTS = [
  * Also handles ?action= deep-links opened from a homescreen shortcut by
  * scrolling to the matching section.
  */
-export default function IQQuickLauncher() {
-  const navigate = useNavigate();
+export default function IQQuickLauncher() { const navigate = useNavigate();
   const [params] = useSearchParams();
 
   useEffect(() => {
@@ -26,8 +25,7 @@ export default function IQQuickLauncher() {
     const map: Record<string, string> = {
       test: "iq-test-section",
       daily: "iq-daily-section",
-      friends: "iq-friends-section",
-    };
+      friends: "iq-friends-section" };
     const id = map[action];
     if (!id) return;
     requestAnimationFrame(() => {

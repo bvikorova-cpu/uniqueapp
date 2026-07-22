@@ -3,11 +3,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -54,15 +52,13 @@ async function fetchPackageJson(inline?: Record<string, unknown>) {
 async function queryOsv(packages: Array<{ name: string; version: string }>) {
   const queries = packages.map((p) => ({
     package: { name: p.name, ecosystem: "npm" },
-    version: p.version,
-  }));
+    version: p.version }));
   const out: Array<{ pkg: { name: string; version: string }; vulns: any[] }> = [];
   // OSV recommends ≤1000 per batch — we're well under that
   const res = await fetch("https://api.osv.dev/v1/querybatch", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ queries }),
-  });
+    body: JSON.stringify({ queries }) });
   if (!res.ok) throw new Error(`OSV API ${res.status}: ${await res.text()}`);
   const data = await res.json();
   const results = data.results || [];
@@ -112,15 +108,13 @@ serve(async (req) => {
     const pkgJson = await fetchPackageJson(body?.manifest as Record<string, unknown> | undefined);
     const deps: Record<string, string> = {
       ...((pkgJson as any).dependencies ?? {}),
-      ...((pkgJson as any).devDependencies ?? {}),
-    };
+      ...((pkgJson as any).devDependencies ?? {}) };
     const packages = Object.entries(deps).map(([name, ver]) => ({ name, version: cleanVersion(ver as string) }));
 
     const vulnPkgs = await queryOsv(packages);
 
     const findings: Vuln[] = [];
-    for (const { pkg, vulns } of vulnPkgs) {
-      for (const v of vulns) {
+    for (const { pkg, vulns } of vulnPkgs) { for (const v of vulns) {
         const cvss = v.severity?.find?.((s: any) => s.type?.startsWith("CVSS"))?.score;
         const cvssNum = typeof cvss === "string" ? parseFloat(cvss.match(/[\d.]+/)?.[0] || "0") : (cvss ?? undefined);
         const sev = severityFromCvss(cvssNum);
@@ -133,16 +127,14 @@ serve(async (req) => {
           severity: sev,
           cvss: cvssNum,
           fixed_in: fixed,
-          references: (v.references || []).slice(0, 3).map((r: any) => r.url),
-        });
+          references: (v.references || []).slice(0, 3).map((r: any) => r.url) });
       }
     }
 
     const counts = { critical: 0, high: 0, medium: 0, low: 0 };
     for (const f of findings) counts[f.severity]++;
 
-    const snapshot = {
-      scan_type: "frontend_deps" as const,
+    const snapshot = { scan_type: "frontend_deps" as const,
       triggered_by: triggeredBy,
       trigger_source: triggerSource,
       total_findings: findings.length,
@@ -154,10 +146,8 @@ serve(async (req) => {
       meta: {
         packages_scanned: packages.length,
         vulnerable_packages: vulnPkgs.length,
-        source: GH_OWNER ? "github" : "inline",
-      },
-      duration_ms: Date.now() - start,
-    };
+        source: GH_OWNER ? "github" : "inline" },
+      duration_ms: Date.now() - start };
 
     const { data: inserted, error: insErr } = await supabase
       .from("security_scan_snapshots").insert(snapshot).select("id").single();

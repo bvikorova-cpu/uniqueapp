@@ -7,11 +7,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[ADMIN-PAYOUT-WITHDRAWAL] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
@@ -26,8 +24,7 @@ const KIND_MAP: Record<Kind, { table: string; creatorCol: string; transferCol: s
   influencer:  { table: "influencer_withdrawal_requests",  creatorCol: "influencer_id",  transferCol: "stripe_transfer_id" },
   auction:     { table: "auction_withdrawal_requests",     creatorCol: "seller_id",      transferCol: "stripe_payout_id"   },
   referral:    { table: "referral_withdrawal_requests",    creatorCol: "referrer_id",    transferCol: "stripe_transfer_id" },
-  campaign:    { table: "withdrawal_requests",             creatorCol: "user_id",        transferCol: "stripe_transfer_id" },
-};
+  campaign:    { table: "withdrawal_requests",             creatorCol: "user_id",        transferCol: "stripe_transfer_id" } };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -37,8 +34,7 @@ serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -53,17 +49,14 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Missing Authorization header");
     const userClient = createClient(supaUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: u, error: uErr } = await userClient.auth.getUser();
     if (uErr || !u.user) throw new Error("Not authenticated");
     const adminId = u.user.id;
 
     const admin = createClient(supaUrl, serviceKey, { auth: { persistSession: false } });
-    const { data: isAdmin, error: roleErr } = await admin.rpc("has_role", {
-      _user_id: adminId,
-      _role: "admin",
-    });
+    const { data: isAdmin, error: roleErr } = await admin.rpc("has_role", { _user_id: adminId,
+      _role: "admin" });
     if (roleErr) throw new Error(`Role check failed: ${roleErr.message}`);
     if (!isAdmin) throw new Error("Admin role required");
 
@@ -92,11 +85,9 @@ serve(async (req) => {
     if (action === "reject") {
       const { error: upErr } = await admin
         .from(table)
-        .update({
-          status: "rejected",
+        .update({ status: "rejected",
           admin_notes: adminNotes,
-          processed_at: new Date().toISOString(),
-        })
+          processed_at: new Date().toISOString() })
         .eq("id", withdrawalId);
       if (upErr) throw new Error(`Update failed: ${upErr.message}`);
 
@@ -105,12 +96,10 @@ serve(async (req) => {
         action: "withdrawal_rejected",
         target_id: withdrawalId,
         target_type: table,
-        details: { kind, amount: wd.amount, notes: adminNotes },
-      });
+        details: { kind, amount: wd.amount, notes: adminNotes } });
 
       return new Response(JSON.stringify({ success: true, status: "rejected" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Approve path → Stripe transfer
@@ -174,19 +163,16 @@ serve(async (req) => {
         currency: "eur",
         destination: profile.stripe_connect_account_id,
         description: `${kind} withdrawal ${withdrawalId}`,
-        metadata: { kind, withdrawal_id: withdrawalId, creator_id: creatorId },
-      },
+        metadata: { kind, withdrawal_id: withdrawalId, creator_id: creatorId } },
       { idempotencyKey: `payout_${kind}_${withdrawalId}` },
     );
 
     log("transfer created", { id: transfer.id });
 
-    const updateData: Record<string, unknown> = {
-      status: "completed",
+    const updateData: Record<string, unknown> = { status: "completed",
       admin_notes: adminNotes,
       processed_at: new Date().toISOString(),
-      [transferCol]: transfer.id,
-    };
+      [transferCol]: transfer.id };
     // Only some tables have processed_by
     if ("processed_by" in wd) updateData.processed_by = adminId;
 
@@ -202,8 +188,7 @@ serve(async (req) => {
       action: "withdrawal_paid",
       target_id: withdrawalId,
       target_type: table,
-      details: { kind, amount: wd.amount, transfer_id: transfer.id, creator_id: creatorId },
-    });
+      details: { kind, amount: wd.amount, transfer_id: transfer.id, creator_id: creatorId } });
 
     return new Response(
       JSON.stringify({ success: true, status: "completed", transfer_id: transfer.id }),
@@ -214,7 +199,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

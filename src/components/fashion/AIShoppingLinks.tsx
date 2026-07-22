@@ -50,8 +50,7 @@ export default function AIShoppingLinks() {
       }
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "shopping-links", description, budget: parseInt(budget), style },
-      });
+        body: { action: "shopping-links", description, budget: parseInt(budget), style } });
       if (error) throw error;
       return data;
     },
@@ -59,8 +58,7 @@ export default function AIShoppingLinks() {
       setResult(data.shoppingGuide);
       toast.success("Shopping guide generated!");
     },
-    onError: (e: any) => toast.error(e.message || "Failed to generate"),
-  });
+    onError: (e: any) => toast.error(e.message || "Failed to generate") });
 
   return (
     <>

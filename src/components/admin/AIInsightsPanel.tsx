@@ -15,21 +15,17 @@ interface Insight {
   icon: string;
 }
 
-const iconMap: Record<string, any> = {
-  "trending-up": TrendingUp,
+const iconMap: Record<string, any> = { "trending-up": TrendingUp,
   "trending-down": TrendingDown,
   "alert-triangle": AlertTriangle,
   "lightbulb": Lightbulb,
   "target": Target,
-  "zap": Zap,
-};
+  "zap": Zap };
 
-const sentimentStyles = {
-  positive: "from-emerald-500/15 to-teal-500/10 border-emerald-500/40 text-emerald-300",
+const sentimentStyles = { positive: "from-emerald-500/15 to-teal-500/10 border-emerald-500/40 text-emerald-300",
   warning: "from-amber-500/15 to-orange-500/10 border-amber-500/40 text-amber-300",
   neutral: "from-blue-500/15 to-cyan-500/10 border-blue-500/40 text-cyan-300",
-  critical: "from-red-500/15 to-pink-500/10 border-red-500/40 text-red-300",
-};
+  critical: "from-red-500/15 to-pink-500/10 border-red-500/40 text-red-300" };
 
 interface Props {
   stats: {

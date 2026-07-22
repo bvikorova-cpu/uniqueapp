@@ -18,8 +18,7 @@ type Period = "weekly" | "monthly" | "all_time";
 const PRIZE_POOL: Record<Period, { total: number; splits: number[] }> = {
   weekly: { total: 500, splits: [250, 150, 100] },
   monthly: { total: 2500, splits: [1500, 600, 400] },
-  all_time: { total: 0, splits: [] },
-};
+  all_time: { total: 0, splits: [] } };
 
 export default function MegatalentLeaderboard({ category, categories }: Props) {
   const [period, setPeriod] = useState<Period>("weekly");

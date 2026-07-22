@@ -22,14 +22,12 @@ Deno.serve(async (req) => {
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   if (!breached?.length) {
     return new Response(JSON.stringify({ checked: 0 }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   // Mark breached
@@ -59,8 +57,7 @@ Deno.serve(async (req) => {
         related_id: t.id,
         action_url: `/admin/support?ticket=${t.id}`,
         metadata: { ticket_id: t.id, due_at: t.sla_response_due_at },
-        is_read: false,
-      });
+        is_read: false });
     }
   }
 
@@ -77,19 +74,14 @@ Deno.serve(async (req) => {
           templateName: "priority-support-sla-breach",
           recipientEmail: priorityEmail,
           idempotencyKey: `sla-breach-${t.id}`,
-          templateData: {
-            ticketNumber: t.ticket_number ?? t.id.slice(0, 8),
+          templateData: { ticketNumber: t.ticket_number ?? t.id.slice(0, 8),
             subject: t.subject,
             customerName: t.name,
             customerEmail: t.email,
-            ticketId: t.id,
-          },
-        },
-      }).catch(() => {});
+            ticketId: t.id } } }).catch(() => {});
     }
   } catch (_) { /* email is best-effort */ }
 
   return new Response(JSON.stringify({ breached: breached.length, notified_admins: adminIds.length }), {
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 });

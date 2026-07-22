@@ -25,8 +25,7 @@ const InfluencerDashboard = ({ influencerId }: InfluencerDashboardProps) => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: content } = useQuery({
     queryKey: ["influencer-content", influencerId],
@@ -40,8 +39,7 @@ const InfluencerDashboard = ({ influencerId }: InfluencerDashboardProps) => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: earnings } = useQuery({
     queryKey: ["influencer-earnings", influencerId],
@@ -54,8 +52,7 @@ const InfluencerDashboard = ({ influencerId }: InfluencerDashboardProps) => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   if (!influencer) return <div>Loading...</div>;
 

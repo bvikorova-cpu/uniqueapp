@@ -16,8 +16,7 @@ interface JobPreferencesDialogProps {
   userId: string;
 }
 
-const CATEGORIES = {
-  it_software: "IT & Software",
+const CATEGORIES = { it_software: "IT & Software",
   marketing_sales: "Marketing & Sales",
   finance_accounting: "Finance & Accounting",
   healthcare: "Healthcare",
@@ -28,29 +27,24 @@ const CATEGORIES = {
   manufacturing: "Manufacturing",
   construction: "Construction",
   transportation: "Transportation",
-  other: "Other",
-};
+  other: "Other" };
 
-const JOB_TYPES = {
-  full_time: "Full Time",
+const JOB_TYPES = { full_time: "Full Time",
   part_time: "Part Time",
   contract: "Contract",
   internship: "Internship",
-  remote: "Remote",
-};
+  remote: "Remote" };
 
 export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [preferences, setPreferences] = useState({
-    categories: [] as string[],
+  const [preferences, setPreferences] = useState({ categories: [] as string[],
     job_types: [] as string[],
     locations: [] as string[],
     min_salary: "",
     max_salary: "",
-    notify_enabled: true,
-  });
+    notify_enabled: true });
 
   const [locationInput, setLocationInput] = useState("");
 
@@ -67,20 +61,17 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
       if (error && error.code !== "PGRST116") throw error;
       return data;
     },
-    enabled: open && !!userId,
-  });
+    enabled: open && !!userId });
 
   // Load existing preferences when dialog opens
-  useEffect(() => {
-    if (existingPreferences) {
+  useEffect(() => { if (existingPreferences) {
       setPreferences({
         categories: existingPreferences.categories || [],
         job_types: existingPreferences.job_types || [],
         locations: existingPreferences.locations || [],
         min_salary: existingPreferences.min_salary?.toString() || "",
         max_salary: existingPreferences.max_salary?.toString() || "",
-        notify_enabled: existingPreferences.notify_enabled ?? true,
-      });
+        notify_enabled: existingPreferences.notify_enabled ?? true });
     }
   }, [existingPreferences]);
 
@@ -89,68 +80,53 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
     mutationFn: async () => {
       const { error } = await supabase
         .from("user_job_preferences")
-        .upsert({
-          user_id: userId,
+        .upsert({ user_id: userId,
           categories: preferences.categories,
           job_types: preferences.job_types,
           locations: preferences.locations,
           min_salary: preferences.min_salary ? parseInt(preferences.min_salary) : null,
           max_salary: preferences.max_salary ? parseInt(preferences.max_salary) : null,
-          notify_enabled: preferences.notify_enabled,
-        });
+          notify_enabled: preferences.notify_enabled });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["jobPreferences"] });
-      toast({
-        title: "✅ Preferences Saved",
-        description: "You will receive notifications about new job offers matching your preferences",
-      });
+      toast({ title: "✅ Preferences Saved",
+        description: "You will receive notifications about new job offers matching your preferences" });
       setOpen(false);
     },
-    onError: (error: any) => {
-      toast({
+    onError: (error: any) => { toast({
         title: "❌ Error",
         description: error.message || "Failed to save preferences",
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
-  const toggleCategory = (category: string) => {
-    setPreferences((prev) => ({
+  const toggleCategory = (category: string) => { setPreferences((prev) => ({
       ...prev,
       categories: prev.categories.includes(category)
         ? prev.categories.filter((c) => c !== category)
-        : [...prev.categories, category],
-    }));
+        : [...prev.categories, category] }));
   };
 
-  const toggleJobType = (type: string) => {
-    setPreferences((prev) => ({
+  const toggleJobType = (type: string) => { setPreferences((prev) => ({
       ...prev,
       job_types: prev.job_types.includes(type)
         ? prev.job_types.filter((t) => t !== type)
-        : [...prev.job_types, type],
-    }));
+        : [...prev.job_types, type] }));
   };
 
-  const addLocation = () => {
-    if (locationInput.trim() && !preferences.locations.includes(locationInput.trim())) {
+  const addLocation = () => { if (locationInput.trim() && !preferences.locations.includes(locationInput.trim())) {
       setPreferences((prev) => ({
         ...prev,
-        locations: [...prev.locations, locationInput.trim()],
-      }));
+        locations: [...prev.locations, locationInput.trim()] }));
       setLocationInput("");
     }
   };
 
-  const removeLocation = (location: string) => {
-    setPreferences((prev) => ({
+  const removeLocation = (location: string) => { setPreferences((prev) => ({
       ...prev,
-      locations: prev.locations.filter((l) => l !== location),
-    }));
+      locations: prev.locations.filter((l) => l !== location) }));
   };
 
   return (
@@ -242,7 +218,7 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
             </p>
             <div className="flex gap-2 mb-2">
               <Input
-                placeholder={"e.g.: Berlin, Prague, Remote..."}
+                placeholder={"e.g.: City, City, Remote..."}
                 value={locationInput}
                 onChange={(e) => setLocationInput(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addLocation()}

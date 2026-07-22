@@ -33,8 +33,7 @@ export default function AdminEngagement() {
   const load = async (windowDays: number) => {
     setLoading(true);
     const { data: res, error } = await supabase.functions.invoke("admin-engagement", {
-      body: { days: windowDays },
-    });
+      body: { days: windowDays } });
     if (error || (res as any)?.error) {
       toast.error((res as any)?.error || error?.message || "Failed to load");
     } else {
@@ -129,11 +128,10 @@ export default function AdminEngagement() {
                   />
                   <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} allowDecimals={false} />
                   <Tooltip
-                    contentStyle={{
+                    contentStyle={ {
                       backgroundColor: "hsl(var(--card))",
                       border: "1px solid hsl(var(--border))",
-                      borderRadius: 8,
-                    }}
+                      borderRadius: 8 }}
                   />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line

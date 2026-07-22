@@ -81,8 +81,7 @@ const DialogDescription = React.forwardRef<
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
-export {
-  Dialog,
+export { Dialog,
   DialogPortal,
   DialogOverlay,
   DialogClose,
@@ -91,5 +90,4 @@ export {
   DialogHeader,
   DialogFooter,
   DialogTitle,
-  DialogDescription,
-};
+  DialogDescription };

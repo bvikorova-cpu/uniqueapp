@@ -16,7 +16,6 @@ export function useKidsDrawingCount() {
       if (error) return 0;
       return count ?? 0;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
   return { count: data ?? 0, isLoading, refetch };
 }

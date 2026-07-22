@@ -19,8 +19,7 @@ export const useMentorPremium = (area?: MentorArea) =>
       const { data } = await supabase.functions.invoke("mentor-router", { body: { action: "premium.check", area } });
       return data as { subscribed: boolean; plan?: "monthly" | "yearly"; current_period_end?: string; areas: Record<string, MentorAreaSub> };
     },
-    refetchInterval: 60_000,
-  });
+    refetchInterval: 60_000 });
 
 export const useMentorCheckout = () =>
   useMutation({
@@ -31,15 +30,12 @@ export const useMentorCheckout = () =>
       if (data?.url) window.open(data.url, "_blank");
       return data;
     },
-    onError: (e: any) => toast.error(e?.message ?? "Checkout failed"),
-  });
+    onError: (e: any) => toast.error(e?.message ?? "Checkout failed") });
 
 // Generic hook for any list action
 export const useMentor = <T = any>(action: string, payload: Record<string, any> = {}, key?: any[]) =>
-  useQuery({
-    queryKey: ["mentor", action, ...(key ?? [])],
-    queryFn: async () => mentorCall<T>(action, payload),
-  });
+  useQuery({ queryKey: ["mentor", action, ...(key ?? [])],
+    queryFn: async () => mentorCall<T>(action, payload) });
 
 export const useMentorMutation = <T = any>(action: string, invalidate?: string[]) => {
   const qc = useQueryClient();
@@ -48,6 +44,5 @@ export const useMentorMutation = <T = any>(action: string, invalidate?: string[]
     onSuccess: () => {
       invalidate?.forEach((k) => qc.invalidateQueries({ queryKey: ["mentor", k] }));
     },
-    onError: (e: any) => toast.error(e?.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e?.message ?? "Failed") });
 };

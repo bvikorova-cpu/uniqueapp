@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -21,8 +19,7 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
     const userClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
 
     const { data: { user }, error: userError } = await userClient.auth.getUser();
     if (userError || !user) throw new Error("Not authenticated");
@@ -37,8 +34,7 @@ serve(async (req) => {
     if (!credits || credits.credits < 5) {
       return new Response(JSON.stringify({ error: "Insufficient credits. AI recap costs 5 credits." }), {
         status: 402,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Gather stats for the last 7 days
@@ -74,8 +70,7 @@ serve(async (req) => {
     const accuracy = totalAnswers > 0 ? Math.round((correctAnswers / totalAnswers) * 100) : 0;
     const avgTime = totalAnswers > 0 ? Math.round(answers.reduce((sum: number, a: any) => sum + (a.time_taken || 0), 0) / totalAnswers) : 0;
 
-    const statsSnapshot = {
-      matches_played: matches.length,
+    const statsSnapshot = { matches_played: matches.length,
       wins,
       losses,
       correct_answers: correctAnswers,
@@ -83,8 +78,7 @@ serve(async (req) => {
       accuracy,
       avg_answer_time: avgTime,
       league: leagueResult.data?.league || "unranked",
-      elo: leagueResult.data?.elo_rating || 1000,
-    };
+      elo: leagueResult.data?.elo_rating || 1000 };
 
     // Generate AI recap
     const prompt = `You are a competitive gaming analyst for "BrainDuel" — a real-time knowledge quiz battle game. Generate an engaging, motivational weekly performance recap for a player. Be specific with numbers, use emojis sparingly, and give 2-3 concrete improvement tips.
@@ -103,29 +97,24 @@ Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas
       method: "POST",
       headers: {
         Authorization: `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a competitive gaming coach who writes engaging weekly performance recaps." },
           { role: "user", content: prompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (!aiResponse.ok) {
       if (aiResponse.status === 429) {
         return new Response(JSON.stringify({ error: "AI rate limited. Try again later." }), {
           status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       if (aiResponse.status === 402) {
         return new Response(JSON.stringify({ error: "AI credits exhausted. Contact support." }), {
           status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       throw new Error("OpenAI API error");
     }
@@ -145,27 +134,23 @@ Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas
 
     const { data: recap, error: recapError } = await supabase
       .from("brain_duel_ai_recaps")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         recap_text: recapText,
         week_start: weekStart,
         week_end: weekEnd,
         stats_snapshot: statsSnapshot,
-        credits_used: 5,
-      })
+        credits_used: 5 })
       .select()
       .single();
 
     if (recapError) throw recapError;
 
     return new Response(JSON.stringify({ recap, stats: statsSnapshot }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

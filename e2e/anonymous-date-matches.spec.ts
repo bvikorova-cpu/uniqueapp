@@ -41,8 +41,7 @@ function makeMatch(
   daysUntilReveal = 5
 ): FixtureMatch {
   const partnerId = `partner-${id}`;
-  return {
-    id,
+  return { id,
     user1_id: ME,
     user2_id: partnerId,
     status,
@@ -52,9 +51,7 @@ function makeMatch(
       user_id: partnerId,
       anonymous_name: partnerName,
       age_range: ageRange,
-      interests,
-    },
-  };
+      interests } };
 }
 
 async function gotoHarness(page: Page, matches: FixtureMatch[]) {
@@ -65,10 +62,8 @@ async function gotoHarness(page: Page, matches: FixtureMatch[]) {
   await page.waitForSelector('[data-testid="e2e-anon-date-harness"]');
 }
 
-test.describe("Anonymous Dating — partner profile rendering", () => {
-  test("renders different partners in their own match cards simultaneously", async ({
-    page,
-  }) => {
+test.describe("Anonymous Dating — partner profile rendering", () => { test("renders different partners in their own match cards simultaneously", async ({
+    page }) => {
     const matches: FixtureMatch[] = [
       makeMatch("m1", "Mystic Fox", "25-30", ["yoga", "books"]),
       makeMatch("m2", "Silver Wolf", "30-35", ["hiking", "music"], "revealed"),
@@ -110,9 +105,7 @@ test.describe("Anonymous Dating — partner profile rendering", () => {
     await expect(page.getByText("hiking", { exact: true })).toBeVisible();
   });
 
-  test("swapping the partner inside a match updates name, age, and interests", async ({
-    page,
-  }) => {
+  test("swapping the partner inside a match updates name, age, and interests", async ({ page }) => {
     // First render — partner A in slot m1
     await gotoHarness(page, [
       makeMatch("m1", "Mystic Fox", "25-30", ["yoga", "books"]),
@@ -136,17 +129,13 @@ test.describe("Anonymous Dating — partner profile rendering", () => {
     await expect(page.getByText("yoga", { exact: true })).toHaveCount(0);
   });
 
-  test("missing partner_profile falls back to 'Anonymous Match' label", async ({
-    page,
-  }) => {
-    const orphan: FixtureMatch = {
+  test("missing partner_profile falls back to 'Anonymous Match' label", async ({ page }) => { const orphan: FixtureMatch = {
       id: "m-orphan",
       user1_id: ME,
       user2_id: "partner-x",
       status: "active",
       expires_at: new Date(Date.now() + 3 * 86400000).toISOString(),
-      partner_profile: null,
-    };
+      partner_profile: null };
     await gotoHarness(page, [orphan]);
     await expect(page.getByText("Anonymous Match", { exact: true })).toBeVisible();
   });

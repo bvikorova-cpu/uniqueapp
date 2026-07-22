@@ -3,11 +3,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -17,21 +15,18 @@ serve(async (req) => {
     if (!provider_id || !from || !to) {
       return new Response(JSON.stringify({ error: "provider_id, from, to required" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const fromDate = new Date(from);
     const toDate = new Date(to);
     if (isNaN(+fromDate) || isNaN(+toDate) || toDate <= fromDate) {
       return new Response(JSON.stringify({ error: "invalid date range" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (+toDate - +fromDate > 60 * 24 * 3600 * 1000) {
       return new Response(JSON.stringify({ error: "range too large (max 60 days)" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supabase = createClient(
@@ -76,24 +71,20 @@ serve(async (req) => {
     const profile = profileRes.data;
     if (!profile || !profile.is_accepting_bookings) {
       return new Response(JSON.stringify({ slots: [], reason: "not_accepting" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const offering: any = (offeringRes as any).data;
     if (offering_id && (!offering || offering.provider_id !== provider_id || !offering.is_active)) {
       return new Response(JSON.stringify({ slots: [], reason: "offering_unavailable" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const slotMin = offering?.duration_min || profile.duration_min || 60;
     const priceCents = offering?.price_cents ?? profile.price_cents;
     const rules = rulesRes.data ?? [];
-    const blocks = (blocksRes.data ?? []).map((b: any) => ({
-      start: new Date(b.starts_at).getTime(),
-      end: new Date(b.ends_at).getTime(),
-    }));
+    const blocks = (blocksRes.data ?? []).map((b: any) => ({ start: new Date(b.starts_at).getTime(),
+      end: new Date(b.ends_at).getTime() }));
     const booked = (bookingsRes.data ?? []).map((a: any) => {
       const start = new Date(a.scheduled_at).getTime();
       return { start, end: start + (a.duration_minutes || slotMin) * 60000 };
@@ -131,7 +122,6 @@ serve(async (req) => {
   } catch (error: any) {
     console.error("service-availability-slots error", error);
     return new Response(JSON.stringify({ error: error.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -236,25 +236,21 @@ function Scene({ gameState, onShoot, onAnimDone }: { gameState: GameState; onSho
 
 // --- Main ---
 
-export function FreeThrow3D({ onBack }: { onBack: () => void }) {
-  const [gameState, setGameState] = useState<GameState>({
-    phase: "aiming", round: 1, scored: 0, missed: 0, shootTarget: [0, 2.7], lastResult: "",
-  });
+export function FreeThrow3D({ onBack }: { onBack: () => void }) { const [gameState, setGameState] = useState<GameState>({
+    phase: "aiming", round: 1, scored: 0, missed: 0, shootTarget: [0, 2.7], lastResult: "" });
 
   const handleShoot = useCallback((x: number, y: number) => {
     setGameState(prev => ({ ...prev, phase: "shooting", shootTarget: [x, y] }));
   }, []);
 
-  const handleAnimDone = useCallback((scored: boolean) => {
-    setGameState(prev => {
+  const handleAnimDone = useCallback((scored: boolean) => { setGameState(prev => {
       const isGameOver = prev.round >= 10;
       return {
         ...prev,
         phase: isGameOver ? "gameover" : "result",
         scored: prev.scored + (scored ? 1 : 0),
         missed: prev.missed + (scored ? 0 : 1),
-        lastResult: scored ? "SWISH! 🏀🔥" : "MISSED! 😤",
-      };
+        lastResult: scored ? "SWISH! 🏀🔥" : "MISSED! 😤" };
     });
   }, []);
 

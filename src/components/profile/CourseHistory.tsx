@@ -46,8 +46,7 @@ export const CourseHistory = ({ userId }: CourseHistoryProps = {}) => {
       if (error) throw error;
       return data as CompletedCourse[];
     },
-    enabled: !!userId || userId === undefined,
-  });
+    enabled: !!userId || userId === undefined });
 
   const { data: inProgressCourses, isLoading: loadingProgress } = useQuery({
     queryKey: ["in-progress-courses", userId],
@@ -67,8 +66,7 @@ export const CourseHistory = ({ userId }: CourseHistoryProps = {}) => {
 
       if (error) throw error;
       return data as CourseProgress[];
-    },
-  });
+    } });
 
   if (loadingCompleted || loadingProgress) {
     return <div className="text-center py-8">Loading...</div>;

@@ -36,19 +36,15 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { WallPostActions } from "@/components/wall/WallPostActions";
 
 const EMOJIS = ["😊", "😂", "❤️", "🔥", "👍", "🎉", "😍", "🤔", "😢", "😎", "🙏", "💪"];
@@ -79,12 +75,10 @@ export default function PageDetail() {
     const next = !notifyEnabled;
     setNotifyEnabled(next);
     localStorage.setItem(`page-notify-${pageId}`, next ? "on" : "off");
-    toast({
-      title: next ? "Notifications enabled" : "Notifications muted",
+    toast({ title: next ? "Notifications enabled" : "Notifications muted",
       description: next
         ? "You'll be notified about new posts from this page."
-        : "You won't receive notifications from this page.",
-    });
+        : "You won't receive notifications from this page." });
   };
 
   const { data: user } = useQuery({
@@ -92,8 +86,7 @@ export default function PageDetail() {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: page, isLoading: isLoadingPage } = useQuery({
     queryKey: ["page", pageId],
@@ -106,8 +99,7 @@ export default function PageDetail() {
       if (error) throw error;
       return data;
     },
-    enabled: !!pageId,
-  });
+    enabled: !!pageId });
 
   const { data: isFollowing } = useQuery({
     queryKey: ["page-following", pageId, user?.id],
@@ -121,8 +113,7 @@ export default function PageDetail() {
         .single();
       return !!data;
     },
-    enabled: !!user && !!pageId,
-  });
+    enabled: !!user && !!pageId });
 
   const { data: followers = [] } = useQuery({
     queryKey: ["page-followers", pageId],
@@ -141,8 +132,7 @@ export default function PageDetail() {
         .order("created_at", { ascending: false });
       return data || [];
     },
-    enabled: !!pageId,
-  });
+    enabled: !!pageId });
 
   const { data: posts = [] } = useQuery({
     queryKey: ["page-posts", pageId],
@@ -162,8 +152,7 @@ export default function PageDetail() {
       if (error) throw error;
       return data as any[];
     },
-    enabled: !!pageId,
-  });
+    enabled: !!pageId });
 
   const followMutation = useMutation({
     mutationFn: async () => {
@@ -171,14 +160,10 @@ export default function PageDetail() {
       const { error } = await supabase
         .from("page_followers")
         .upsert(
-          {
-            page_id: pageId,
-            user_id: user.id,
-          },
-          {
-            onConflict: "page_id,user_id",
-            ignoreDuplicates: true,
-          }
+          { page_id: pageId,
+            user_id: user.id },
+          { onConflict: "page_id,user_id",
+            ignoreDuplicates: true }
         );
       if (error) throw error;
     },
@@ -186,8 +171,7 @@ export default function PageDetail() {
       queryClient.invalidateQueries({ queryKey: ["page-following"] });
       queryClient.invalidateQueries({ queryKey: ["page-followers"] });
       toast({ title: "Following page!" });
-    },
-  });
+    } });
 
   const unfollowMutation = useMutation({
     mutationFn: async () => {
@@ -203,8 +187,7 @@ export default function PageDetail() {
       queryClient.invalidateQueries({ queryKey: ["page-following"] });
       queryClient.invalidateQueries({ queryKey: ["page-followers"] });
       toast({ title: "Unfollowed page" });
-    },
-  });
+    } });
 
   const createPostMutation = useMutation({
     mutationFn: async () => {
@@ -215,8 +198,7 @@ export default function PageDetail() {
           user_id: user.id,
           content: postContent + (postFeeling ? ` ${postFeeling}` : "") + (postLocation ? ` 📍 ${postLocation}` : ""),
           page_id: pageId,
-          image_url: postImage || null,
-        } as any);
+          image_url: postImage || null } as any);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -226,8 +208,7 @@ export default function PageDetail() {
       setPostLocation(undefined);
       setPostFeeling(undefined);
       toast({ title: "Post created!" });
-    },
-  });
+    } });
 
   const updateCoverMutation = useMutation({
     mutationFn: async (coverImage: string) => {
@@ -242,8 +223,7 @@ export default function PageDetail() {
       setIsEditingCover(false);
       setNewCoverImage(undefined);
       toast({ title: "Cover image updated!" });
-    },
-  });
+    } });
 
   const updatePageMutation = useMutation({
     mutationFn: async () => {
@@ -261,8 +241,7 @@ export default function PageDetail() {
       queryClient.invalidateQueries({ queryKey: ["page", pageId] });
       setShowSettingsDialog(false);
       toast({ title: "Page updated!" });
-    },
-  });
+    } });
 
   const deletePageMutation = useMutation({
     mutationFn: async () => {
@@ -275,8 +254,7 @@ export default function PageDetail() {
     onSuccess: () => {
       navigate("/wall/pages");
       toast({ title: "Page deleted!" });
-    },
-  });
+    } });
 
   const openSettings = () => {
     setEditName(page?.name || "");

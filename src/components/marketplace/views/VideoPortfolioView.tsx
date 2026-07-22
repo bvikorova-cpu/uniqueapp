@@ -29,8 +29,7 @@ export function VideoPortfolioView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke("marketplace-ai", {
         body: { action: "video-portfolio", name, skills, projects, tone },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Script ready! (${data.credits_used} credits used)`);

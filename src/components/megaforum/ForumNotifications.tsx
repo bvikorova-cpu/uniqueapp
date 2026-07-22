@@ -27,8 +27,7 @@ export const ForumNotifications = ({ userId, onViewPost }: ForumNotificationsPro
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: 15000,
-  });
+    refetchInterval: 15000 });
 
   const unreadCount = notifications.filter((n: any) => !n.is_read).length;
 
@@ -40,8 +39,7 @@ export const ForumNotifications = ({ userId, onViewPost }: ForumNotificationsPro
         .eq("user_id", userId)
         .eq("is_read", false);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["forum-notifications"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["forum-notifications"] }) });
 
   const getTimeSince = (d: string) => {
     const diff = Math.floor((Date.now() - new Date(d).getTime()) / 1000);

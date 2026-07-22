@@ -55,15 +55,13 @@ export const StoreLeaderboard = ({ currentUserId }: { currentUserId?: string }) 
           (profilesData || []).map((p: any) => [p.id, p])
         );
         setRows(
-          top.map(([user_id, agg]) => {
-            const p: any = profMap.get(user_id);
+          top.map(([user_id, agg]) => { const p: any = profMap.get(user_id);
             return {
               user_id,
               display_name: p?.full_name || p?.username || "Anonymous",
               avatar_url: p?.avatar_url || null,
               items_purchased: agg.items,
-              total_credits_spent: agg.total,
-            };
+              total_credits_spent: agg.total };
           })
         );
       } catch (e) {

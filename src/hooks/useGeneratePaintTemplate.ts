@@ -23,6 +23,5 @@ export const useGeneratePaintTemplate = () => {
       }
 
       return data as GeneratedImages;
-    },
-  });
+    } });
 };

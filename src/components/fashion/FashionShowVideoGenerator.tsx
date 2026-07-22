@@ -52,8 +52,7 @@ export default function FashionShowVideoGenerator() {
       }
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "video-generator", concept, style, duration: parseInt(duration), mood },
-      });
+        body: { action: "video-generator", concept, style, duration: parseInt(duration), mood } });
       if (error) throw error;
       return data;
     },
@@ -61,8 +60,7 @@ export default function FashionShowVideoGenerator() {
       setResult(data.videoStoryboard);
       toast.success("Video storyboard generated!");
     },
-    onError: (e: any) => toast.error(e.message || "Failed to generate video concept"),
-  });
+    onError: (e: any) => toast.error(e.message || "Failed to generate video concept") });
 
   return (
     <>

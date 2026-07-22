@@ -41,8 +41,7 @@ export const useGlobalMessageChime = () => {
             event: "INSERT",
             schema: "public",
             table: "conversation_participants",
-            filter: `user_id=eq.${user.id}`,
-          },
+            filter: `user_id=eq.${user.id}` },
           () => loadConvIds(),
         )
         .subscribe();

@@ -29,8 +29,7 @@ export default function JobsCareerAchievements() {
       const { data, error } = await (supabase as any).rpc("get_user_job_achievements");
       if (error) throw error;
       return (data ?? []) as JobAchievement[];
-    },
-  });
+    } });
 
   const totalPoints = achievements.filter((a) => a.unlocked).reduce((s, a) => s + a.points, 0);
   const maxPoints = achievements.reduce((s, a) => s + a.points, 0);

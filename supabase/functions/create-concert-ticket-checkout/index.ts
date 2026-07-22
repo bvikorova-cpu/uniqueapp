@@ -11,11 +11,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { createOneOffSession } from "../_shared/oneOffCheckout.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const PLATFORM_COMMISSION_RATE = 0.20; // 20% platform / 80% musician
 
@@ -37,8 +35,7 @@ serve(async (req) => {
     if (!token) {
       return new Response(JSON.stringify({ error: "Missing Authorization header" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+        status: 401 });
     }
 
     const supabaseUser = createClient(
@@ -50,8 +47,7 @@ serve(async (req) => {
     if (userErr || !userData.user?.email) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+        status: 401 });
     }
     const user = userData.user;
 
@@ -72,8 +68,7 @@ serve(async (req) => {
     if (!ticketType) {
       return new Response(JSON.stringify({ error: "Ticket type not found" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 404,
-      });
+        status: 404 });
     }
 
     // Sold-out guard.
@@ -83,8 +78,7 @@ serve(async (req) => {
     ) {
       return new Response(JSON.stringify({ error: "Ticket type sold out" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 409,
-      });
+        status: 409 });
     }
 
     // Duplicate guard — user already holds a completed ticket for this concert.
@@ -108,8 +102,7 @@ serve(async (req) => {
     if (!Number.isFinite(priceCents) || priceCents < 50) {
       return new Response(JSON.stringify({ error: "Invalid ticket price" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      });
+        status: 400 });
     }
 
     const platformCommission = Math.round(priceCents * PLATFORM_COMMISSION_RATE) / 100;
@@ -124,19 +117,15 @@ serve(async (req) => {
       userId: user.id,
       userEmail: user.email,
       origin,
-      metadata: {
-        concertId,
+      metadata: { concertId,
         ticketTypeId,
         musicianAmount: musicianAmount.toFixed(2),
-        platformCommission: platformCommission.toFixed(2),
-      },
-    });
+        platformCommission: platformCommission.toFixed(2) } });
 
     // Pre-record the purchase (pending). verify-concert-ticket-payment flips it to 'completed'.
     const { error: insertErr } = await supabaseAdmin
       .from("concert_ticket_purchases")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         concert_id: concertId,
         ticket_type_id: ticketTypeId,
         amount: Number(ticketType.price),
@@ -144,8 +133,7 @@ serve(async (req) => {
         platform_commission: platformCommission,
         musician_amount: musicianAmount,
         payment_status: "pending",
-        stripe_session_id: sessionId,
-      });
+        stripe_session_id: sessionId });
     if (insertErr) {
       console.error("concert-ticket pre-insert failed:", insertErr);
       // Non-fatal: user can still complete Stripe payment, and verify-* will attempt update by session_id.
@@ -153,14 +141,12 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ url, sessionId }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (error) {
     console.error("create-concert-ticket-checkout error:", error);
     const msg = error instanceof Error ? error.message : "Unknown error";
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

@@ -34,8 +34,7 @@ export const RATE_LIMITS: Record<string, RateLimitConfig> = {
   upload: { action: 'upload', maxRequests: 20, windowMinutes: 5 },
   post_create: { action: 'post_create', maxRequests: 30, windowMinutes: 5 },
   file_upload: { action: 'file_upload', maxRequests: 50, windowMinutes: 60 },
-  message_send: { action: 'message_send', maxRequests: 100, windowMinutes: 60 },
-};
+  message_send: { action: 'message_send', maxRequests: 100, windowMinutes: 60 } };
 
 /**
  * Get identifier from request (user ID or IP)
@@ -68,12 +67,10 @@ export async function checkRateLimit(
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
-    const { data, error } = await supabase.rpc('check_rate_limit', {
-      p_identifier: identifier,
+    const { data, error } = await supabase.rpc('check_rate_limit', { p_identifier: identifier,
       p_action_type: config.action,
       p_max_requests: config.maxRequests,
-      p_window_seconds: windowSeconds,
-    });
+      p_window_seconds: windowSeconds });
     
     if (error) {
       console.error('Rate limit check error:', error);
@@ -81,12 +78,10 @@ export async function checkRateLimit(
     }
     
     const allowed = data === true;
-    return {
-      allowed,
+    return { allowed,
       remaining: allowed ? config.maxRequests - 1 : 0,
       reset_at: resetAt,
-      current_count: allowed ? 1 : config.maxRequests,
-    };
+      current_count: allowed ? 1 : config.maxRequests };
   } catch (err) {
     console.error('Rate limit exception:', err);
     return { allowed: true, remaining: 999, reset_at: resetAt, current_count: 0 };
@@ -99,8 +94,7 @@ export async function checkRateLimit(
 export function rateLimitExceededResponse(
   result: RateLimitResult,
   corsHeaders: Record<string, string>
-): Response {
-  const resetDate = new Date(result.reset_at);
+): Response { const resetDate = new Date(result.reset_at);
   const retryAfter = Math.ceil((resetDate.getTime() - Date.now()) / 1000);
   
   return new Response(
@@ -108,16 +102,12 @@ export function rateLimitExceededResponse(
       error: 'Rate limit exceeded',
       message: 'Too many requests. Please try again later.',
       retry_after: retryAfter,
-      reset_at: result.reset_at,
-    }),
-    {
-      status: 429,
+      reset_at: result.reset_at }),
+    { status: 429,
       headers: {
         ...corsHeaders,
         'Content-Type': 'application/json',
-        'Retry-After': String(retryAfter),
-      },
-    }
+        'Retry-After': String(retryAfter) } }
   );
 }
 
@@ -128,13 +118,11 @@ export function addRateLimitHeaders(
   headers: Record<string, string>,
   result: RateLimitResult,
   config: RateLimitConfig
-): Record<string, string> {
-  return {
+): Record<string, string> { return {
     ...headers,
     'X-RateLimit-Limit': String(config.maxRequests),
     'X-RateLimit-Remaining': String(result.remaining),
-    'X-RateLimit-Reset': result.reset_at,
-  };
+    'X-RateLimit-Reset': result.reset_at };
 }
 
 /**
@@ -158,11 +146,9 @@ export async function withRateLimit(
   return null;
 }
 
-export default {
-  checkRateLimit,
+export default { checkRateLimit,
   withRateLimit,
   rateLimitExceededResponse,
   addRateLimitHeaders,
   getIdentifier,
-  RATE_LIMITS,
-};
+  RATE_LIMITS };

@@ -13,8 +13,7 @@ export const CharacterGallery = () => {
       const { data, error } = await supabase.from("characters").select("*").order("popularity_score", { ascending: false }).limit(50);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return (
     <>

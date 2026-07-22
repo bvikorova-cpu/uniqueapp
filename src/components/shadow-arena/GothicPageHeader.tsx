@@ -18,13 +18,11 @@ interface Props {
  * vignette + film grain — used on every Shadow Arena subpage for
  * a consistent atmospheric identity.
  */
-export function GothicPageHeader({
-  icon: Icon,
+export function GothicPageHeader({ icon: Icon,
   title,
   subtitle,
   children,
-  height = "h-[280px] md:h-[340px]",
-}: Props) {
+  height = "h-[280px] md:h-[340px]" }: Props) {
   return (
     <>
       <FloatingHowItWorks title={"Gothic Page Header - How it works"} steps={[{ title: 'Open', desc: 'Access the Gothic Page Header section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gothic Page Header.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
@@ -59,8 +57,7 @@ export function GothicPageHeader({
             left: `${(i * 17) % 100}%`,
             top: `${20 + ((i * 19) % 60)}%`,
             width: 100 + (i % 3) * 50,
-            height: 100 + (i % 3) * 50,
-          }}
+            height: 100 + (i % 3) * 50 }}
           animate={{ x: [-25, 25, -25], opacity: [0.1, 0.3, 0.1] }}
           transition={{ duration: 9 + i, repeat: Infinity, delay: i * 0.6, ease: "easeInOut" }}
         />

@@ -20,8 +20,7 @@ export const useHighlights = (userId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const addHighlight = useMutation({
     mutationFn: async (postId: string) => {
@@ -32,19 +31,16 @@ export const useHighlights = (userId?: string) => {
 
       const { error } = await supabase
         .from("post_highlights")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           post_id: postId,
-          highlight_order: maxOrder + 1,
-        });
+          highlight_order: maxOrder + 1 });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-highlights"] });
       toast({ title: "Added to highlights!" });
-    },
-  });
+    } });
 
   const removeHighlight = useMutation({
     mutationFn: async (postId: string) => {
@@ -62,12 +58,9 @@ export const useHighlights = (userId?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-highlights"] });
       toast({ title: "Removed from highlights" });
-    },
-  });
+    } });
 
-  return {
-    highlights: highlights || [],
+  return { highlights: highlights || [],
     addHighlight: addHighlight.mutate,
-    removeHighlight: removeHighlight.mutate,
-  };
+    removeHighlight: removeHighlight.mutate };
 };

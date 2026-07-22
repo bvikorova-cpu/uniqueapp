@@ -60,11 +60,9 @@ export default function MasterclassLearning() {
 
     toast({
       title: "Module Completed! 🎉",
-      description: `You've completed module ${moduleIndex + 1}/${topics.length}`,
-    });
+      description: `You've completed module ${moduleIndex + 1}/${topics.length}` });
 
-    if (progressPercentage === 100 && !certificate) {
-      const expertName = masterclassId.includes("leadership") ? "Simon Sinek" 
+    if (progressPercentage === 100 && !certificate) { const expertName = masterclassId.includes("leadership") ? "Simon Sinek" 
         : masterclassId.includes("ai") ? "Dr. Andrew Ng"
         : masterclassId.includes("business") ? "Gary Vaynerchuk"
         : "Tim Brown";
@@ -79,8 +77,7 @@ export default function MasterclassLearning() {
       if (cert) {
         toast({
           title: "Congratulations! 🏆",
-          description: "Your masterclass certificate has been generated!",
-        });
+          description: "Your masterclass certificate has been generated!" });
       }
     }
 

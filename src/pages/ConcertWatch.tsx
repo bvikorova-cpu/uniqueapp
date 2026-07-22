@@ -138,8 +138,7 @@ const ConcertWatch = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session || removed) return;
       const ch = supabase.channel(`concert-presence-${id}`, {
-        config: { presence: { key: session.user.id } },
-      });
+        config: { presence: { key: session.user.id } } });
       ch.on("presence", { event: "sync" }, () => {
         const state = ch.presenceState();
         const n = Object.keys(state).length;

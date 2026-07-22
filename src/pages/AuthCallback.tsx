@@ -38,17 +38,13 @@ export default function AuthCallback() {
           const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
           if (error) throw error;
         } else if (tokenHash && type) {
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: tokenHash,
-            type: type as EmailOtpType,
-          });
+          const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash,
+            type: type as EmailOtpType });
           if (error) throw error;
         } else if (token && type) {
-          const { error } = await supabase.auth.verifyOtp({
-            token,
+          const { error } = await supabase.auth.verifyOtp({ token,
             email,
-            type: type as EmailOtpType,
-          });
+            type: type as EmailOtpType });
           if (error) throw error;
         } else {
           throw new Error("Missing token in callback URL");

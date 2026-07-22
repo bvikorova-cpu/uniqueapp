@@ -94,15 +94,13 @@ export function useGamesHub() {
   );
 
   const trackPlay = useCallback(
-    async (game: GamePlayMeta) => {
-      setRecent((prev) => [game.id, ...prev.filter((g) => g !== game.id)].slice(0, 20));
+    async (game: GamePlayMeta) => { setRecent((prev) => [game.id, ...prev.filter((g) => g !== game.id)].slice(0, 20));
       if (!userId) return;
       await supabase.from("games_plays").insert({
         user_id: userId,
         game_id: game.id,
         game_title: game.title ?? null,
-        game_category: game.category ?? null,
-      });
+        game_category: game.category ?? null });
     },
     [userId]
   );

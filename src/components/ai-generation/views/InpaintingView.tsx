@@ -34,8 +34,7 @@ export const InpaintingView = ({ onCreditsUsed }: Props) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-image-tools", {
-        body: { action: "inpainting", prompt: originalPrompt.trim(), editPrompt: editPrompt.trim(), region },
-      });
+        body: { action: "inpainting", prompt: originalPrompt.trim(), editPrompt: editPrompt.trim(), region } });
       if (error) throw error;
       setResult(data.imageUrl);
       onCreditsUsed();

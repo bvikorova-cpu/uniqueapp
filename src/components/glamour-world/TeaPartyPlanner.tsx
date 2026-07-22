@@ -23,14 +23,11 @@ export function TeaPartyPlanner({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "party", prompt: `Plan a ${theme} party. Guests: ${guests || "5 friends"}. Include: decorations, dress code, food menu, activities, games, music playlist, and party favors.`, coins: 4 },
-      });
+        body: { type: "party", prompt: `Plan a ${theme} party. Guests: ${guests || "5 friends"}. Include: decorations, dress code, food menu, activities, games, music playlist, and party favors.`, coins: 4 } });
       if (error) throw error;
       setResult(data.result);
-      await supabase.from("glamour_creations").insert({
-        user_id: user.id, creation_type: "party", title: theme,
-        prompt: guests, result_text: data.result, credits_used: 4,
-      });
+      await supabase.from("glamour_creations").insert({ user_id: user.id, creation_type: "party", title: theme,
+        prompt: guests, result_text: data.result, credits_used: 4 });
     } catch (e: any) {
       const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
         if (isCoinsErr) {

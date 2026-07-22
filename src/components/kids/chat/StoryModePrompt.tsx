@@ -9,38 +9,30 @@ interface StoryModePromptProps {
 }
 
 const STORY_PROMPTS = [
-  {
-    id: "adventure",
+  { id: "adventure",
     title: "Epic Adventure",
     icon: <Sword className="h-5 w-5" />,
     prompt: "Let's go on an exciting adventure together! Start an interactive story where I make choices. Begin the adventure!",
     color: "from-red-400 to-orange-400",
-    emoji: "⚔️",
-  },
-  {
-    id: "mystery",
+    emoji: "⚔️" },
+  { id: "mystery",
     title: "Solve a Mystery",
     icon: <Map className="h-5 w-5" />,
     prompt: "Let's solve a mystery together! Create an interactive mystery where I help find clues and solve the case!",
     color: "from-purple-400 to-indigo-400",
-    emoji: "🔍",
-  },
-  {
-    id: "fairy-tale",
+    emoji: "🔍" },
+  { id: "fairy-tale",
     title: "Fairy Tale",
     icon: <BookOpen className="h-5 w-5" />,
     prompt: "Tell me a magical fairy tale where I can make choices and be part of the story!",
     color: "from-pink-400 to-rose-400",
-    emoji: "🧚",
-  },
-  {
-    id: "space",
+    emoji: "🧚" },
+  { id: "space",
     title: "Space Mission",
     icon: <Sparkles className="h-5 w-5" />,
     prompt: "Let's go on a space mission together! Create an interactive space adventure where I make decisions!",
     color: "from-blue-400 to-cyan-400",
-    emoji: "🚀",
-  },
+    emoji: "🚀" },
 ];
 
 export function StoryModePrompt({ characterName, onSelectStory }: StoryModePromptProps) {

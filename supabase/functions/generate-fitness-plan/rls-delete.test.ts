@@ -3,10 +3,8 @@
 // - Admin user can delete any plan
 import "https://deno.land/std@0.224.0/dotenv/load.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import {
-  assertEquals,
-  assert,
-} from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { assertEquals,
+  assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
 const SUPABASE_URL =
   Deno.env.get("SUPABASE_URL") ?? Deno.env.get("VITE_SUPABASE_URL")!;
@@ -20,27 +18,21 @@ assert(SERVICE_ROLE, "SUPABASE_SERVICE_ROLE_KEY missing");
 assert(ANON_KEY, "ANON key missing");
 
 const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
-  auth: { persistSession: false },
-});
+  auth: { persistSession: false } });
 
 async function makeUser(email: string) {
-  const { data, error } = await admin.auth.admin.createUser({
-    email,
+  const { data, error } = await admin.auth.admin.createUser({ email,
     password: "Test1234!xx",
-    email_confirm: true,
-  });
+    email_confirm: true });
   if (error) throw error;
   return data.user!;
 }
 
 async function signIn(email: string) {
   const c = createClient(SUPABASE_URL, ANON_KEY, {
-    auth: { persistSession: false },
-  });
-  const { data, error } = await c.auth.signInWithPassword({
-    email,
-    password: "Test1234!xx",
-  });
+    auth: { persistSession: false } });
+  const { data, error } = await c.auth.signInWithPassword({ email,
+    password: "Test1234!xx" });
   if (error) throw error;
   return { client: c, token: data.session!.access_token };
 }
@@ -48,8 +40,7 @@ async function signIn(email: string) {
 async function insertPlan(userId: string) {
   const { data, error } = await admin
     .from("fitness_plans")
-    .insert({
-      user_id: userId,
+    .insert({ user_id: userId,
       plan_type: "weekly",
       status: "pending",
       age: 30,
@@ -57,8 +48,7 @@ async function insertPlan(userId: string) {
       height_cm: 180,
       weight_kg: 80,
       activity_level: "moderate",
-      fitness_goal: "lose_weight",
-    })
+      fitness_goal: "lose_weight" })
     .select()
     .single();
   if (error) throw error;

@@ -104,8 +104,7 @@ export function useClubMembership() {
 
   const startCheckout = useCallback(async (tier: ClubTier, options?: StartCheckoutOptions) => {
     const { data, error } = await supabase.functions.invoke<CheckoutUrlResponse>("create-club-checkout", {
-      body: { tier, referralCode: options?.referralCode },
-    });
+      body: { tier, referralCode: options?.referralCode } });
     if (error) throw error;
     const url = data?.url;
     if (!url) throw new Error("Stripe checkout URL was not returned.");

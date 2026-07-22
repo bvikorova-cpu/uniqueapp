@@ -20,9 +20,7 @@ async function callAI(system: string, user: string, json = true) {
         { role: "system", content: system },
         { role: "user", content: user },
       ],
-      ...(json ? { response_format: { type: "json_object" } } : {}),
-    }),
-  });
+      ...(json ? { response_format: { type: "json_object" } } : {}) }) });
   if (res.status === 429) throw new Error("RATE_LIMIT");
   if (res.status === 402) throw new Error("AI_CREDITS_EXHAUSTED");
   if (!res.ok) throw new Error(`AI error ${res.status}: ${await res.text()}`);
@@ -40,8 +38,7 @@ Deno.serve(async (req) => {
     if (!token) throw new Error("Not authenticated");
 
     const supaUser = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: { user }, error: uerr } = await supaUser.auth.getUser(token);
     if (uerr || !user) throw new Error("Not authenticated");
 
@@ -103,7 +100,6 @@ Deno.serve(async (req) => {
     const msg = e?.message ?? String(e);
     const status = msg === "RATE_LIMIT" ? 429 : msg === "AI_CREDITS_EXHAUSTED" ? 402 : 400;
     return new Response(JSON.stringify({ error: msg }), {
-      status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

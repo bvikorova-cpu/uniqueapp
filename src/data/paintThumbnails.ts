@@ -99,8 +99,7 @@ import winterWonderland from "@/assets/paint-thumbnails/winter-wonderland.png";
 import wolfMoon from "@/assets/paint-thumbnails/wolf-moon.png";
 import zebraStripes from "@/assets/paint-thumbnails/zebra-stripes.png";
 
-export const paintThumbnails: Record<string, string> = {
-  "Cute Unicorn": cuteUnicorn,
+export const paintThumbnails: Record<string, string> = { "Cute Unicorn": cuteUnicorn,
   "Magical Castle": magicalCastle,
   "Friendly Lion": friendlyLion,
   "Colorful Butterfly": colorfulButterfly,
@@ -199,5 +198,4 @@ export const paintThumbnails: Record<string, string> = {
   "Whale Ocean": whaleOcean,
   "Winter Wonderland": winterWonderland,
   "Wolf Moon": wolfMoon,
-  "Zebra Stripes": zebraStripes,
-};
+  "Zebra Stripes": zebraStripes };

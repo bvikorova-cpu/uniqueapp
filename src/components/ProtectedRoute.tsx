@@ -31,11 +31,9 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
         savePendingAction({ key: "auth:return", returnTo });
         setHasAccess(false);
         setIsChecking(false);
-        toast({
-          title: "Access denied",
+        toast({ title: "Access denied",
           description: "You must be logged in",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -50,14 +48,12 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
         if (error) {
           console.error('Error checking admin role:', error);
           setHasAccess(false);
-        } else {
-          setHasAccess(!!roleData);
+        } else { setHasAccess(!!roleData);
           if (!roleData) {
             toast({
               title: "Access denied",
               description: "You do not have permission to access this page",
-              variant: "destructive",
-            });
+              variant: "destructive" });
           }
         }
       } else {

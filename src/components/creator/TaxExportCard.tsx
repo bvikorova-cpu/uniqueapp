@@ -32,10 +32,8 @@ export function TaxExportCard() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ year }),
-      });
+          Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ year }) });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         throw new Error(j.error || `Export failed (${res.status})`);
@@ -49,12 +47,10 @@ export function TaxExportCard() {
       a.remove();
       URL.revokeObjectURL(a.href);
       toast({ title: "Tax export ready", description: `tax-export-${year}.csv downloaded` });
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Export failed",
         description: e?.message || "Unknown error",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

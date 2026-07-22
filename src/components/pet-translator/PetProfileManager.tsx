@@ -10,9 +10,7 @@ import { Plus, Trash2, Check, PawPrint, Pencil, Upload, Loader2, Gamepad2 } from
 import { usePetProfiles, type PetProfile } from "@/hooks/usePetProfiles";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const empty: Partial<PetProfile> = {
-  name: "", species: "dog", breed: "", age_years: 0, gender: "unknown", personality: "", photo_url: "",
-};
+const empty: Partial<PetProfile> = { name: "", species: "dog", breed: "", age_years: 0, gender: "unknown", personality: "", photo_url: "" };
 
 export default function PetProfileManager() {
   const { pets, active, setActive, reload } = usePetProfiles();
@@ -44,16 +42,14 @@ export default function PetProfileManager() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return toast.error("Sign in first");
     setSaving(true);
-    const payload = {
-      name: editing.name.trim(),
+    const payload = { name: editing.name.trim(),
       species: editing.species || "dog",
       breed: editing.breed || null,
       age_years: editing.age_years ?? null,
       gender: editing.gender || null,
       personality: editing.personality || null,
       photo_url: editing.photo_url || null,
-      is_indoor: editing.is_indoor ?? true,
-    };
+      is_indoor: editing.is_indoor ?? true };
     const { error } = editing.id
       ? await supabase.from("pet_profiles").update(payload).eq("id", editing.id)
       : await supabase.from("pet_profiles").insert({ ...payload, user_id: user.id });
@@ -84,9 +80,7 @@ export default function PetProfileManager() {
     const toImport = vps.filter((v) => !existing.has((v.name || "").toLowerCase()));
     if (!toImport.length) return toast.info("All Virtual Pets already imported");
 
-    const rows = toImport.map((v) => ({
-      user_id: user.id, name: v.name || "Pet", species: "other",
-    }));
+    const rows = toImport.map((v) => ({ user_id: user.id, name: v.name || "Pet", species: "other" }));
     const { error: insErr } = await supabase.from("pet_profiles").insert(rows);
     if (insErr) return toast.error(insErr.message);
     toast.success(`Imported ${rows.length} pet${rows.length > 1 ? "s" : ""}`);

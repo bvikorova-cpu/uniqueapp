@@ -16,8 +16,7 @@ const MOOD_KEYWORDS: Record<string, { keywords: string[]; emoji: string; color: 
   sad: { keywords: ["sad", "😢", "😭", "miss", "sorry", "unfortunately", "bad", "terrible", "awful", "hate", "worst", "crying"], emoji: "😢", color: "from-blue-500 to-indigo-500" },
   angry: { keywords: ["angry", "😡", "furious", "annoyed", "mad", "wtf", "stupid", "ridiculous", "unacceptable", "frustrated"], emoji: "😤", color: "from-red-500 to-rose-600" },
   neutral: { keywords: ["ok", "okay", "sure", "yeah", "alright", "fine", "hmm", "idk", "maybe"], emoji: "😐", color: "from-gray-400 to-gray-500" },
-  loving: { keywords: ["love", "❤️", "😍", "miss you", "thinking of you", "care", "beautiful", "darling", "sweetie", "babe", "💕", "🥰"], emoji: "🥰", color: "from-pink-500 to-rose-500" },
-};
+  loving: { keywords: ["love", "❤️", "😍", "miss you", "thinking of you", "care", "beautiful", "darling", "sweetie", "babe", "💕", "🥰"], emoji: "🥰", color: "from-pink-500 to-rose-500" } };
 
 const analyzeMood = (text: string): string => {
   const lower = text.toLowerCase();
@@ -44,8 +43,7 @@ export const AIMoodDetection = ({ onBack, userId }: AIMoodDetectionProps) => {
     distribution: {},
     recentMoods: [],
     moodTrend: [],
-    conversationMoods: [],
-  });
+    conversationMoods: [] });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -72,16 +70,14 @@ export const AIMoodDetection = ({ onBack, userId }: AIMoodDetectionProps) => {
     const dayMoods: Map<string, string[]> = new Map();
     const convMoodMap: Map<string, string[]> = new Map();
 
-    for (const msg of messages) {
-      const mood = analyzeMood(msg.content);
+    for (const msg of messages) { const mood = analyzeMood(msg.content);
       dist[mood] = (dist[mood] || 0) + 1;
 
       if (recent.length < 10) {
         recent.push({
           mood,
           message: msg.content.substring(0, 60) + (msg.content.length > 60 ? "..." : ""),
-          time: new Date(msg.created_at).toLocaleString(),
-        });
+          time: new Date(msg.created_at).toLocaleString() });
       }
 
       const day = new Date(msg.created_at).toLocaleDateString();

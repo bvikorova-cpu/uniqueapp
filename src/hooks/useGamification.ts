@@ -29,11 +29,9 @@ export const useGamification = (userId?: string) => {
       return {
         points: points || { total_points: 0, level: 1 },
         userAchievements: userAchievements || [],
-        allAchievements: allAchievements || [],
-      };
+        allAchievements: allAchievements || [] };
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 };
 
 export const useUserBadges = (userId: string) => {
@@ -46,8 +44,7 @@ export const useUserBadges = (userId: string) => {
         .eq("user_id", userId);
       return data || [];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 };
 
 export const useAllBadges = () => {
@@ -56,8 +53,7 @@ export const useAllBadges = () => {
     queryFn: async () => {
       const { data } = await supabase.from("badges").select("*");
       return data || [];
-    },
-  });
+    } });
 };
 
 export const useDailyReward = () => {
@@ -81,8 +77,7 @@ export const useDailyReward = () => {
       const canClaim = !lastClaim || new Date().toDateString() !== new Date(lastClaim).toDateString();
 
       return { canClaim, streak: rewards?.[0]?.day_streak || 0 };
-    },
-  });
+    } });
 
   const claimReward = useMutation({
     mutationFn: async () => {
@@ -107,8 +102,7 @@ export const useDailyReward = () => {
         description: error.message || "Failed to claim reward", 
         variant: "destructive" 
       });
-    },
-  });
+    } });
 
   return { checkCanClaim, claimReward };
 };
@@ -127,6 +121,5 @@ export const useLeaderboard = (limit: number = 10) => {
       const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url, username").in("id", ids);
       const pmap = new Map<string, any>((profs || []).map((p: any) => [p.id, p]));
       return rows.map((r: any) => ({ ...r, profile: pmap.get(r.user_id) || null }));
-    },
-  });
+    } });
 };

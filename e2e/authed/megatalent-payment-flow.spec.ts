@@ -34,27 +34,22 @@ const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-megatalent-subscri
  * Install request interceptors that simulate the gate's data sources.
  * `subscribed` controls the response on subsequent calls; flip via the setter.
  */
-async function installGateStubs(page: Page, getSubscribed: () => boolean) {
-  // Block the DB-first check: return an empty array while unsubscribed,
+async function installGateStubs(page: Page, getSubscribed: () => boolean) { // Block the DB-first check: return an empty array while unsubscribed,
   // an active row once flipped.
   await page.route(REST_SUB, async (route) => {
     if (!getSubscribed()) {
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: "[]",
-      });
+        body: "[]" });
     }
-    return route.fulfill({
-      status: 200,
+    return route.fulfill({ status: 200,
       contentType: "application/json",
       body: JSON.stringify([
         {
           status: "active",
-          current_period_end: new Date(Date.now() + 30 * 86_400_000).toISOString(),
-        },
-      ]),
-    });
+          current_period_end: new Date(Date.now() + 30 * 86_400_000).toISOString() },
+      ]) });
   });
 
   // Fallback edge function check — mirror the same toggle.
@@ -62,8 +57,7 @@ async function installGateStubs(page: Page, getSubscribed: () => boolean) {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ subscribed: getSubscribed() }),
-    }),
+      body: JSON.stringify({ subscribed: getSubscribed() }) }),
   );
 
   // Block real Stripe — should never load.
@@ -90,8 +84,7 @@ test.describe("Megatalent payment flow — authed", () => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ url: "https://checkout.stripe.com/test_session_megatalent_e2e" }),
-      });
+        body: JSON.stringify({ url: "https://checkout.stripe.com/test_session_megatalent_e2e" }) });
     });
 
     // 1) Paywall is up.

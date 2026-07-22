@@ -2,16 +2,13 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const PRICE_BY_TIER: Record<string, { priceId: string; name: string }> = {
   kindergarten: { priceId: "price_1TlW0UGaXSfGtYFtUzz6KiLb", name: "Kindergarten Starter" },
   elementary:   { priceId: "price_1TlW0VGaXSfGtYFtITtkl24X", name: "Elementary Standard" },
-  premium:      { priceId: "price_1TlW0WGaXSfGtYFt5YxXqOsA", name: "School Premium" },
-};
+  premium:      { priceId: "price_1TlW0WGaXSfGtYFt5YxXqOsA", name: "School Premium" } };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[CREATE-SCHOOL-SUB] ${s}${d ? " " + JSON.stringify(d) : ""}`);
@@ -53,20 +50,16 @@ serve(async (req) => {
       cancel_url: `${origin}/coloring-pages?tab=schools&checkout=cancel`,
       metadata: { kind: "school_subscription", tier_id: tier, plan_name: cfg.name, user_id: user.id },
       subscription_data: {
-        metadata: { kind: "school_subscription", tier_id: tier, plan_name: cfg.name, user_id: user.id },
-      },
-    });
+        metadata: { kind: "school_subscription", tier_id: tier, plan_name: cfg.name, user_id: user.id } } });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

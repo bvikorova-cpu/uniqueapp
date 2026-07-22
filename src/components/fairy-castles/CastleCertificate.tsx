@@ -16,14 +16,12 @@ interface CastleCertificateProps {
   onClose: () => void;
 }
 
-export const CastleCertificate = ({
-  castleName,
+export const CastleCertificate = ({ castleName,
   completionTime,
   unlockedMilestones,
   totalRooms,
   isVisible,
-  onClose,
-}: CastleCertificateProps) => {
+  onClose }: CastleCertificateProps) => {
   const certificateRef = useRef<HTMLDivElement>(null);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -34,25 +32,20 @@ export const CastleCertificate = ({
     }
   }, [isVisible]);
 
-  const generateQRCode = async () => {
-    try {
+  const generateQRCode = async () => { try {
       // Generate a shareable URL (you can customize this with actual sharing logic)
       const certificateData = {
         castle: castleName,
         time: completionTime,
         milestones: unlockedMilestones.length,
         rooms: totalRooms,
-        date: new Date().toISOString(),
-      };
+        date: new Date().toISOString() };
       
-      const dataUrl = await QRCode.toDataURL(JSON.stringify(certificateData), {
-        width: 200,
+      const dataUrl = await QRCode.toDataURL(JSON.stringify(certificateData), { width: 200,
         margin: 2,
         color: {
           dark: "#1e293b",
-          light: "#ffffff",
-        },
-      });
+          light: "#ffffff" } });
       
       setQrCodeUrl(dataUrl);
     } catch (error) {
@@ -74,16 +67,14 @@ export const CastleCertificate = ({
     }
   };
 
-  const handleDownload = async () => {
-    if (!certificateRef.current) return;
+  const handleDownload = async () => { if (!certificateRef.current) return;
 
     setIsGenerating(true);
     try {
       const canvas = await html2canvas(certificateRef.current, {
         scale: 2,
         backgroundColor: "#ffffff",
-        logging: false,
-      });
+        logging: false });
 
       const link = document.createElement("a");
       link.download = `${castleName.replace(/\s/g, "-")}-Certificate.png`;
@@ -99,16 +90,14 @@ export const CastleCertificate = ({
     }
   };
 
-  const handleShare = async () => {
-    if (!certificateRef.current) return;
+  const handleShare = async () => { if (!certificateRef.current) return;
 
     setIsGenerating(true);
     try {
       const canvas = await html2canvas(certificateRef.current, {
         scale: 2,
         backgroundColor: "#ffffff",
-        logging: false,
-      });
+        logging: false });
 
       canvas.toBlob(async (blob) => {
         if (!blob) return;
@@ -119,8 +108,7 @@ export const CastleCertificate = ({
           await navigator.share({
             title: `${castleName} Tour Certificate`,
             text: `I completed the magical tour of ${castleName}! 🏰✨`,
-            files: [file],
-          });
+            files: [file] });
           toast.success("Certificate shared successfully! 🎉");
         } else {
           // Fallback: download instead
@@ -136,16 +124,14 @@ export const CastleCertificate = ({
     }
   };
 
-  const handleFacebookShare = async () => {
-    if (!certificateRef.current) return;
+  const handleFacebookShare = async () => { if (!certificateRef.current) return;
 
     setIsGenerating(true);
     try {
       const canvas = await html2canvas(certificateRef.current, {
         scale: 2,
         backgroundColor: "#ffffff",
-        logging: false,
-      });
+        logging: false });
 
       const imageUrl = canvas.toDataURL("image/png");
       
@@ -180,16 +166,14 @@ export const CastleCertificate = ({
     toast.info("Tip: Download the certificate and attach it to your tweet!");
   };
 
-  const handleInstagramShare = async () => {
-    if (!certificateRef.current) return;
+  const handleInstagramShare = async () => { if (!certificateRef.current) return;
 
     setIsGenerating(true);
     try {
       const canvas = await html2canvas(certificateRef.current, {
         scale: 2,
         backgroundColor: "#ffffff",
-        logging: false,
-      });
+        logging: false });
 
       canvas.toBlob(async (blob) => {
         if (!blob) return;
@@ -202,10 +186,8 @@ export const CastleCertificate = ({
         link.href = canvas.toDataURL("image/png");
         link.click();
 
-        toast.success("Certificate downloaded! 📸", {
-          description: "Open Instagram app and create a new post with this image!",
-          duration: 5000,
-        });
+        toast.success("Certificate downloaded! 📸", { description: "Open Instagram app and create a new post with this image!",
+          duration: 5000 });
       });
     } catch (error) {
       console.error("Error preparing for Instagram:", error);
@@ -217,11 +199,9 @@ export const CastleCertificate = ({
 
   if (!isVisible) return null;
 
-  const completionDate = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
+  const completionDate = new Date().toLocaleDateString("en-US", { year: "numeric",
     month: "long",
-    day: "numeric",
-  });
+    day: "numeric" });
 
   return (
     <>

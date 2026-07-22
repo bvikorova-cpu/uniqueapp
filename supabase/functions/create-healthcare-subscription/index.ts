@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const ALLOWED_PRICE_IDS = new Set([
   "price_1TlWB3GaXSfGtYFtwmGHpzLV", // pediatric_mini €3
@@ -53,20 +51,16 @@ serve(async (req) => {
       cancel_url: `${origin}/coloring-pages?tab=healthcare&checkout=cancel`,
       metadata: { kind: "healthcare_subscription", plan_name: planName ?? "", user_id: user.id },
       subscription_data: {
-        metadata: { kind: "healthcare_subscription", plan_name: planName ?? "", user_id: user.id },
-      },
-    });
+        metadata: { kind: "healthcare_subscription", plan_name: planName ?? "", user_id: user.id } } });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

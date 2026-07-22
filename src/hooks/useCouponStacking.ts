@@ -10,8 +10,7 @@ export function useCouponStacking() {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("coupon-stacking-calc", {
-        body: { coupon_ids, cart_total },
-      });
+        body: { coupon_ids, cart_total } });
       if (error) throw error;
       if (data?.error === "insufficient_credits") {
         toast.error("Need 3 AI credits to run stacking calculator.");

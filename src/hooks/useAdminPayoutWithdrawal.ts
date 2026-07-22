@@ -29,9 +29,7 @@ export function useAdminPayoutWithdrawal() {
   }) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("admin-payout-withdrawal", {
-        body: params,
-      });
+      const { data, error } = await supabase.functions.invoke("admin-payout-withdrawal", { body: params });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
 
@@ -43,15 +41,12 @@ export function useAdminPayoutWithdrawal() {
         description:
           params.action === "approve"
             ? `Transfer ${(data as any)?.transfer_id ?? ""} created.`
-            : "The creator has been notified.",
-      });
+            : "The creator has been notified." });
       return data;
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Payout failed",
         description: e?.message || "Unknown error",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       throw e;
     } finally {
       setLoading(false);

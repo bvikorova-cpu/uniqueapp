@@ -3,9 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 const useIsAdminMock = vi.fn();
-vi.mock("@/hooks/useIsAdmin", () => ({
-  useIsAdmin: () => useIsAdminMock(),
-}));
+vi.mock("@/hooks/useIsAdmin", () => ({ useIsAdmin: () => useIsAdminMock() }));
 
 import { AdminGuard } from "./AdminGuard";
 

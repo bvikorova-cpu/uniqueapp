@@ -31,9 +31,7 @@ export function PromoCodeInput({ onApplied }: { onApplied?: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Sign in required");
 
-      const { error: redErr } = await supabase.from("ai_credit_promo_redemptions").insert({
-        code: upper, user_id: user.id, bonus_credits: promo.bonus_credits,
-      });
+      const { error: redErr } = await supabase.from("ai_credit_promo_redemptions").insert({ code: upper, user_id: user.id, bonus_credits: promo.bonus_credits });
       if (redErr) {
         if (redErr.code === "23505") throw new Error("You already used this code");
         throw redErr;
@@ -45,14 +43,10 @@ export function PromoCodeInput({ onApplied }: { onApplied?: () => void }) {
           .select("credits_remaining")
           .eq("user_id", user.id)
           .maybeSingle();
-        if (existing) {
-          await supabase.from("ai_credits").update({
-            credits_remaining: (existing.credits_remaining || 0) + promo.bonus_credits,
-          }).eq("user_id", user.id);
-        } else {
-          await supabase.from("ai_credits").insert({
-            user_id: user.id, credits_remaining: promo.bonus_credits, total_credits_purchased: 0,
-          });
+        if (existing) { await supabase.from("ai_credits").update({
+            credits_remaining: (existing.credits_remaining || 0) + promo.bonus_credits }).eq("user_id", user.id);
+        } else { await supabase.from("ai_credits").insert({
+            user_id: user.id, credits_remaining: promo.bonus_credits, total_credits_purchased: 0 });
         }
       }
 

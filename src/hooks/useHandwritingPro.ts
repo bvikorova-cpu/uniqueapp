@@ -4,16 +4,14 @@ import { toast } from "sonner";
 
 // All 8 tools are routed through a single edge function "handwriting-ai"
 // using { action, ...payload } to stay within the function-slot quota.
-const ROUTED: Record<string, string> = {
-  "handwriting-signature-analyzer": "signature",
+const ROUTED: Record<string, string> = { "handwriting-signature-analyzer": "signature",
   "handwriting-compatibility": "compatibility",
   "handwriting-mood-tracker": "mood",
   "handwriting-forgery-detector": "forgery",
   "handwriting-twin-finder": "twin",
   "handwriting-famous-comparison": "famous",
   "handwriting-academy": "academy",
-  "handwriting-pdf-report": "pdf-report",
-};
+  "handwriting-pdf-report": "pdf-report" };
 
 const invoke = async (fn: string, body: any) => {
   const action = ROUTED[fn];
@@ -52,8 +50,7 @@ export function useSignatureAnalyzer() {
       qc.invalidateQueries({ queryKey: ["signature-analyses"] });
       toast.success("Signature analyzed");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useCompatibility() {
@@ -65,8 +62,7 @@ export function useCompatibility() {
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
       toast.success("Compatibility report ready");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useMoodTracker() {
@@ -79,8 +75,7 @@ export function useMoodTracker() {
       qc.invalidateQueries({ queryKey: ["mood-scans"] });
       toast.success("Mood scan recorded");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useMoodHistory() {
@@ -96,8 +91,7 @@ export function useMoodHistory() {
         .order("scan_date", { ascending: false })
         .limit(30);
       return data ?? [];
-    },
-  });
+    } });
 }
 
 export function useForgeryDetector() {
@@ -109,8 +103,7 @@ export function useForgeryDetector() {
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
       toast.success("Forensic check complete");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useTwinFinder() {
@@ -122,8 +115,7 @@ export function useTwinFinder() {
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
       toast.success("Twin search complete");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useFamousComparison() {
@@ -134,8 +126,7 @@ export function useFamousComparison() {
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
       toast.success("Famous match found");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useAcademy() {
@@ -145,13 +136,11 @@ export function useAcademy() {
     queryFn: async () => {
       const { data } = await invoke("handwriting-academy", { action: "list" }) as any;
       return data?.progress ?? (data?.progress === undefined ? [] : data.progress);
-    },
-  });
+    } });
   const generateQuiz = useMutation({
     mutationFn: (vars: { lessonId: string }) =>
       invoke("handwriting-academy", { action: "generate-quiz", lessonId: vars.lessonId }),
-    onError: handleErr,
-  });
+    onError: handleErr });
   const completeLesson = useMutation({
     mutationFn: (vars: { lessonId: string; quizScore: number }) =>
       invoke("handwriting-academy", { action: "complete", ...vars }),
@@ -159,8 +148,7 @@ export function useAcademy() {
       qc.invalidateQueries({ queryKey: ["academy-progress"] });
       toast.success("Lesson complete · XP earned");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
   return { progress, generateQuiz, completeLesson };
 }
 
@@ -173,6 +161,5 @@ export function usePdfReport() {
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
       toast.success("Forensic PDF ready");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }

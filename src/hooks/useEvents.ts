@@ -41,50 +41,41 @@ export const useEvents = () => {
         profilesById = Object.fromEntries((profs || []).map((p: any) => [p.id, p]));
       }
       return (data || []).map((e: any) => ({ ...e, profiles: profilesById[e.creator_id] || null }));
-    },
-  });
+    } });
 
   const createEvent = useMutation({
     mutationFn: async (eventData: Omit<Event, "id" | "creator_id" | "created_at">) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("events").insert({
-        ...eventData,
-        creator_id: user.id,
-      });
+      const { error } = await supabase.from("events").insert({ ...eventData,
+        creator_id: user.id });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
       toast({ title: "Event created!" });
-    },
-  });
+    } });
 
   const attendEvent = useMutation({
     mutationFn: async ({ eventId, status }: { eventId: string; status: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("event_attendees").upsert({
-        event_id: eventId,
+      const { error } = await supabase.from("event_attendees").upsert({ event_id: eventId,
         user_id: user.id,
-        status,
-      });
+        status });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
       toast({ title: "RSVP updated!" });
-    },
-  });
+    } });
 
-  return {
-    events: events || [],
+  return { events: events || [],
     isLoading,
     createEvent: createEvent.mutate,
-    attendEvent: attendEvent.mutate,
-  };
+    attendEvent: attendEvent.mutate };
 };

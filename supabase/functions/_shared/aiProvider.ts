@@ -6,8 +6,7 @@
  */
 
 // Configuration - change these values to update all functions
-export const AI_CONFIG = {
-  // Default model for all AI calls
+export const AI_CONFIG = { // Default model for all AI calls
   defaultModel: "gpt-4o-mini",
   
   // Model for complex reasoning tasks
@@ -20,8 +19,7 @@ export const AI_CONFIG = {
   defaultMaxTokens: 1000,
   
   // Default temperature
-  defaultTemperature: 0.7,
-};
+  defaultTemperature: 0.7 };
 
 export interface AIMessage {
   role: "system" | "user" | "assistant";
@@ -60,14 +58,12 @@ export function getOpenAIKey(): string {
 /**
  * Make a chat completion request to OpenAI
  */
-export async function chatCompletion(options: AIRequestOptions): Promise<AIResponse> {
-  const apiKey = getOpenAIKey();
+export async function chatCompletion(options: AIRequestOptions): Promise<AIResponse> { const apiKey = getOpenAIKey();
   
   const body: Record<string, unknown> = {
     model: options.model || AI_CONFIG.defaultModel,
     messages: options.messages,
-    max_completion_tokens: options.maxTokens || AI_CONFIG.defaultMaxTokens,
-  };
+    max_completion_tokens: options.maxTokens || AI_CONFIG.defaultMaxTokens };
   
   if (options.responseFormat === "json_object") {
     body.response_format = { type: "json_object" };
@@ -77,10 +73,8 @@ export async function chatCompletion(options: AIRequestOptions): Promise<AIRespo
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+      "Content-Type": "application/json" },
+    body: JSON.stringify(body) });
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -98,10 +92,8 @@ export async function chatCompletion(options: AIRequestOptions): Promise<AIRespo
 
   const data = await response.json();
   
-  return {
-    content: data.choices[0].message.content,
-    usage: data.usage,
-  };
+  return { content: data.choices[0].message.content,
+    usage: data.usage };
 }
 
 /**
@@ -114,14 +106,10 @@ export async function streamChatCompletion(options: AIRequestOptions): Promise<R
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: options.model || AI_CONFIG.defaultModel,
+      "Content-Type": "application/json" },
+    body: JSON.stringify({ model: options.model || AI_CONFIG.defaultModel,
       messages: options.messages,
-      stream: true,
-    }),
-  });
+      stream: true }) });
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -180,13 +168,11 @@ export async function analyzeText(
   text: string,
   analysisType: "emotion" | "sentiment" | "themes" | "summary",
   language: string = "en"
-): Promise<AIResponse> {
-  const prompts: Record<string, string> = {
+): Promise<AIResponse> { const prompts: Record<string, string> = {
     emotion: `Analyze the emotional content of this text and return a JSON object with emotion scores (0-100): joy, sadness, anger, fear, excitement, peace. Include "dominant_emotion" and "summary" fields.`,
     sentiment: `Analyze the sentiment of this text. Return JSON with: sentiment (positive/negative/neutral), confidence (0-100), and explanation.`,
     themes: `Identify the main themes in this text. Return JSON with: themes (array of strings), keywords (array), and summary.`,
-    summary: `Summarize this text concisely. Return JSON with: summary (string), key_points (array), word_count (number).`,
-  };
+    summary: `Summarize this text concisely. Return JSON with: summary (string), key_points (array), word_count (number).` };
 
   return chatCompletion({
     messages: [
@@ -194,8 +180,7 @@ export async function analyzeText(
       { role: "user", content: `${prompts[analysisType]}\n\nText: "${text}"` }
     ],
     responseFormat: "json_object",
-    maxTokens: 500,
-  });
+    maxTokens: 500 });
 }
 
 /**
@@ -208,12 +193,10 @@ export async function generateContent(
 ): Promise<AIResponse> {
   const lengthTokens = { short: 200, medium: 500, long: 1000 };
   
-  const systemPrompts: Record<string, string> = {
-    story: "You are a creative storyteller. Write engaging narratives.",
+  const systemPrompts: Record<string, string> = { story: "You are a creative storyteller. Write engaging narratives.",
     article: "You are a professional content writer. Create well-structured articles.",
     social_post: "You are a social media expert. Create engaging posts with emojis and hashtags.",
-    description: "You are a product copywriter. Write compelling descriptions.",
-  };
+    description: "You are a product copywriter. Write compelling descriptions." };
 
   return chatCompletion({
     messages: [
@@ -223,8 +206,7 @@ export async function generateContent(
       },
       { role: "user", content: prompt }
     ],
-    maxTokens: lengthTokens[options?.length || "medium"],
-  });
+    maxTokens: lengthTokens[options?.length || "medium"] });
 }
 
 /**
@@ -260,8 +242,7 @@ export async function analyzeImage(
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
+      "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "gpt-4o-mini",
       messages: [
@@ -270,12 +251,9 @@ export async function analyzeImage(
           content: [
             { type: "text", text: prompt },
             { type: "image_url", image_url: { url: imageUrl } },
-          ],
-        },
+          ] },
       ],
-      max_completion_tokens: 1000,
-    }),
-  });
+      max_completion_tokens: 1000 }) });
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -283,8 +261,6 @@ export async function analyzeImage(
   }
 
   const data = await response.json();
-  return {
-    content: data.choices[0].message.content,
-    usage: data.usage,
-  };
+  return { content: data.choices[0].message.content,
+    usage: data.usage };
 }

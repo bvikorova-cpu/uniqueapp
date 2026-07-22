@@ -47,11 +47,9 @@ export const useSearch = () => {
 
     await supabase
       .from("search_history")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         query,
-        result_type: resultType,
-      });
+        result_type: resultType });
   };
 
   const search = async (query: string, type: "all" | "posts" | "users" | "hashtags" = "all") => {
@@ -76,11 +74,9 @@ export const useSearch = () => {
     }
   };
 
-  return {
-    search,
+  return { search,
     searching,
     searchPosts,
     searchUsers,
-    searchHashtags,
-  };
+    searchHashtags };
 };

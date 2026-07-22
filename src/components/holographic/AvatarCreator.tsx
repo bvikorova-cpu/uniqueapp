@@ -45,8 +45,7 @@ export const AvatarCreator = ({ onBack }: Props) => {
     setIsCreating(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-holographic-avatar-checkout", {
-        body: { priceId: "price_1SPjFEGaXSfGtYFtBjeXRVkk", featureName: "Premium AI Avatar", metadata: { name, style: selectedStyle, traits: selectedTraits } },
-      });
+        body: { priceId: "price_1SPjFEGaXSfGtYFtBjeXRVkk", featureName: "Premium AI Avatar", metadata: { name, style: selectedStyle, traits: selectedTraits } } });
       if (error) throw error;
       if (data?.url) {
         window.open(data.url, "_blank");

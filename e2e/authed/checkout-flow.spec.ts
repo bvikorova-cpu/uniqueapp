@@ -27,8 +27,7 @@ async function stubCheckout(page: Page) {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ url: "https://checkout.stripe.com/test_stub_session" }),
-    });
+      body: JSON.stringify({ url: "https://checkout.stripe.com/test_stub_session" }) });
   });
   // Block any real Stripe popup navigation.
   await page.route("https://checkout.stripe.com/**", (r) =>
@@ -46,33 +45,27 @@ const PROBES: Probe[] = [
   {
     route: "/dna-memory-network",
     label: "DNA Genetic Dating Get Started",
-    ctaSelector: (page) => page.getByRole("button", { name: /get started/i }).first(),
-  },
+    ctaSelector: (page) => page.getByRole("button", { name: /get started/i }).first() },
   {
     route: "/crystal-energy-network",
     label: "Crystal Subscribe",
     ctaSelector: (page) =>
-      page.getByRole("button", { name: /subscribe|get premium|unlock|upgrade/i }).first(),
-  },
+      page.getByRole("button", { name: /subscribe|get premium|unlock|upgrade/i }).first() },
 ];
 
 test.describe("Authenticated checkout flow audit", () => {
   for (const probe of PROBES) {
-    test(`${probe.route} → ${probe.label} invokes create-checkout and re-enables`, async ({
-      page,
-    }) => {
+    test(`${probe.route} → ${probe.label} invokes create-checkout and re-enables`, async ({ page }) => {
       const jsErrors: string[] = [];
       page.on("pageerror", (e) => jsErrors.push(e.message));
 
       await stubCheckout(page);
 
       const requests: { url: string; auth: string | null }[] = [];
-      page.on("request", (req) => {
-        if (FN_PATTERN.test(req.url())) {
+      page.on("request", (req) => { if (FN_PATTERN.test(req.url())) {
           requests.push({
             url: req.url(),
-            auth: req.headers().authorization ?? null,
-          });
+            auth: req.headers().authorization ?? null });
         }
       });
 

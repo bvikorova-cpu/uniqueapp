@@ -44,8 +44,7 @@ export const SecretSantaSendGift = () => {
       if (error) throw error;
       return (data || []).map((u: any) => ({ id: u.id, username: u.full_name || "User", avatar_url: u.avatar_url }));
     },
-    enabled: searchQuery.length >= 2,
-  });
+    enabled: searchQuery.length >= 2 });
 
   const filteredGifts = activeCategory === "all" 
     ? GIFT_CATALOG 
@@ -54,8 +53,7 @@ export const SecretSantaSendGift = () => {
   const selectedGiftData = GIFT_CATALOG.find(g => g.type === selectedGift);
   const selectedUserData = users.find(u => u.id === selectedRecipient);
 
-  const handleSend = async () => {
-    if (!selectedGift || !selectedRecipient) return;
+  const handleSend = async () => { if (!selectedGift || !selectedRecipient) return;
     
     setShowSendingAnimation(true);
     
@@ -64,8 +62,7 @@ export const SecretSantaSendGift = () => {
         recipientId: selectedRecipient,
         giftType: selectedGift,
         message: message || undefined,
-        isAnonymous,
-      });
+        isAnonymous });
 
       // Add XP for sending gift
       addXP({ xp: 25, type: "gift_sent" });

@@ -5,11 +5,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: any) =>
   console.log(`[CANCEL-SUB-BY-ID] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
@@ -22,8 +20,7 @@ serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -58,22 +55,18 @@ serve(async (req) => {
     let result: Stripe.Subscription;
     if (immediate) {
       result = await stripe.subscriptions.cancel(subscription_id);
-    } else {
-      result = await stripe.subscriptions.update(subscription_id, {
-        cancel_at_period_end: true,
-      });
+    } else { result = await stripe.subscriptions.update(subscription_id, {
+        cancel_at_period_end: true });
     }
 
     log("canceled", { id: result.id, immediate });
 
     return new Response(
-      JSON.stringify({
-        success: true,
+      JSON.stringify({ success: true,
         immediate,
         cancel_at: (result as any).current_period_end
           ? new Date((result as any).current_period_end * 1000).toISOString()
-          : null,
-      }),
+          : null }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
   } catch (error) {
@@ -81,7 +74,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

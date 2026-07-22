@@ -250,8 +250,7 @@ export default function WallFeed({
                         </div>
                       )}
                     </>
-                  ),
-                }}
+                  ) }}
               />
             )}
           </div>

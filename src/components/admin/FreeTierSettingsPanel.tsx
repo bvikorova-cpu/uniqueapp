@@ -17,8 +17,7 @@ interface Settings {
 }
 
 const TIMEZONES = [
-  "Europe/Berlin", "Europe/Prague", "Europe/Vienna", "Europe/Berlin",
-  "Europe/London", "Europe/Paris", "Europe/Madrid", "UTC", "America/New_York",
+  "UTC", "UTC-08:00", "UTC-05:00", "UTC", "UTC+00:00", "UTC+01:00", "UTC+02:00", "UTC+05:30", "UTC+09:00",
 ];
 
 export const FreeTierSettingsPanel = () => {
@@ -43,12 +42,10 @@ export const FreeTierSettingsPanel = () => {
     setSaving(true);
     const { error } = await (supabase as any)
       .from("free_tier_settings")
-      .update({
-        enabled: s.enabled,
+      .update({ enabled: s.enabled,
         monthly_amount: s.monthly_amount,
         timezone: s.timezone,
-        updated_at: new Date().toISOString(),
-      })
+        updated_at: new Date().toISOString() })
       .eq("id", 1);
     setSaving(false);
     if (error) toast.error(error.message);

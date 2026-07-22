@@ -3,11 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Star } from "lucide-react";
 import { motion } from "framer-motion";
-import {
-  Tooltip,
+import { Tooltip,
   TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  TooltipTrigger } from "@/components/ui/tooltip";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MyBadgesDisplayProps {

@@ -56,10 +56,8 @@ Deno.serve(async (req) => {
       errors.push(String((e as Error).message));
       fail++;
     }
-    await supabase.from("smoke_test_route_results").insert({
-      run_id: run.id, route, status, http_status: httpStatus,
-      console_errors: errors, duration_ms: Date.now() - start,
-    });
+    await supabase.from("smoke_test_route_results").insert({ run_id: run.id, route, status, http_status: httpStatus,
+      console_errors: errors, duration_ms: Date.now() - start });
   }
 
   await supabase
@@ -68,6 +66,5 @@ Deno.serve(async (req) => {
     .eq("id", run.id);
 
   return new Response(JSON.stringify({ run_id: run.id, pass, fail }), {
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 });

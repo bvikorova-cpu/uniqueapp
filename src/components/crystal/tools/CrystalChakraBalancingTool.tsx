@@ -13,8 +13,7 @@ const DAILY_CHAKRA_PROGRAM = CHAKRAS.map((chakra, i) => ({
   color: chakra.color,
   frequency: chakra.frequency,
   crystals: CRYSTAL_DATABASE.filter(c => c.chakra.includes(chakra.name)).slice(0, 3).map(c => c.name),
-  exercise: `Focus on your ${chakra.name} chakra at the ${chakra.location}. Meditate for 15 minutes with ${chakra.frequency} Hz frequency. Visualize ${chakra.color.toLowerCase()} light filling this energy center.`,
-}));
+  exercise: `Focus on your ${chakra.name} chakra at the ${chakra.location}. Meditate for 15 minutes with ${chakra.frequency} Hz frequency. Visualize ${chakra.color.toLowerCase()} light filling this energy center.` }));
 
 export const CrystalChakraBalancingTool = () => {
   const [progress, setProgress] = useState<any[]>([]);
@@ -37,13 +36,11 @@ export const CrystalChakraBalancingTool = () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { toast.error("Please sign in"); return; }
     const today = new Date().toISOString().split("T")[0];
-    const inserts = DAILY_CHAKRA_PROGRAM.map(day => ({
-      user_id: session.user.id,
+    const inserts = DAILY_CHAKRA_PROGRAM.map(day => ({ user_id: session.user.id,
       day_number: day.day,
       chakra_name: day.chakra,
       completed: false,
-      program_started_at: today,
-    }));
+      program_started_at: today }));
     const { error } = await (supabase as any).from("crystal_chakra_progress").insert(inserts);
     if (error) toast.error("Failed to start program");
     else {

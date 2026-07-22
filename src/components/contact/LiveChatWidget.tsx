@@ -63,8 +63,7 @@ export const LiveChatWidget = ({ docked = false }: LiveChatWidgetProps) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("contact-ai-triage", {
-        body: { action: "live_chat", messages: next },
-      });
+        body: { action: "live_chat", messages: next } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setMessages((m) => [...m, { role: "assistant", content: data.reply || "…" }]);

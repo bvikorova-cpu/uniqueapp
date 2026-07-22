@@ -32,16 +32,12 @@ test.describe("Watch Party — anonymous paywall + RLS", () => {
           apikey: ANON_KEY,
           Authorization: `Bearer ${ANON_KEY}`,
           "Content-Type": "application/json",
-          Prefer: "return=representation",
-        },
-        data: {
-          host_user_id: "00000000-0000-0000-0000-000000000000",
+          Prefer: "return=representation" },
+        data: { host_user_id: "00000000-0000-0000-0000-000000000000",
           category: "singing",
           title: "anon hack",
           status: "live",
-          started_at: new Date().toISOString(),
-        },
-      },
+          started_at: new Date().toISOString() } },
     );
     expect(res.status(), `expected RLS deny, got ${res.status()}`).toBeGreaterThanOrEqual(401);
     expect(res.status()).toBeLessThan(500);
@@ -54,14 +50,10 @@ test.describe("Watch Party — anonymous paywall + RLS", () => {
         headers: {
           apikey: ANON_KEY,
           Authorization: `Bearer ${ANON_KEY}`,
-          "Content-Type": "application/json",
-        },
-        data: {
-          stream_id: "00000000-0000-0000-0000-000000000000",
+          "Content-Type": "application/json" },
+        data: { stream_id: "00000000-0000-0000-0000-000000000000",
           user_id: "00000000-0000-0000-0000-000000000000",
-          content: "anon hack",
-        },
-      },
+          content: "anon hack" } },
     );
     expect(res.status()).toBeGreaterThanOrEqual(401);
     expect(res.status()).toBeLessThan(500);

@@ -91,8 +91,7 @@ const BrainDuel = () => {
   const handlePaymentSuccess = async (sessionId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('verify-brain-duel-payment', {
-        body: { sessionId },
-      });
+        body: { sessionId } });
       if (error) throw error;
       if (data?.success) {
         toast.success(`Success! Added ${data.added} credits. Total: ${data.credits}`);
@@ -106,8 +105,7 @@ const BrainDuel = () => {
       toast.error('Could not verify payment', {
         description: 'We were unable to confirm your purchase. Tap retry or contact support if you were charged.',
         action: { label: 'Retry', onClick: () => handlePaymentSuccess(sessionId) },
-        duration: 15000,
-      });
+        duration: 15000 });
     }
   };
 
@@ -373,8 +371,7 @@ const BrainDuel = () => {
 
               <GameModeSelector onSelectMode={(mode) => {
                 toast.success(`${mode.name} mode selected`, {
-                  description: `${mode.questions} questions, ${mode.entry} credits entry. Scroll up to start a duel!`,
-                });
+                  description: `${mode.questions} questions, ${mode.entry} credits entry. Scroll up to start a duel!` });
                 document.getElementById("brain-duel-game-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
               }} />
 
@@ -406,9 +403,7 @@ const BrainDuel = () => {
                             variant="outline"
                             className={`h-auto min-h-[80px] sm:min-h-[90px] py-3 sm:py-4 flex-col gap-2 px-2 sm:px-3 whitespace-normal w-full bg-gradient-to-br ${category.bg} border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300`}
                             onClick={() => {
-                              toast.success(`${category.name} selected`, {
-                                description: "Choose this category in the duel panel above to start playing.",
-                              });
+                              toast.success(`${category.name} selected`, { description: "Choose this category in the duel panel above to start playing." });
                               document.getElementById("brain-duel-game-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
                             }}
                           >

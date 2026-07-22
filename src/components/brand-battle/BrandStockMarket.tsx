@@ -61,13 +61,11 @@ export const BrandStockMarket = () => {
       await spendBrandCredits(credits);
 
       const shares = credits / s.current_price;
-      const { error } = await supabase.from("brand_investments").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("brand_investments").insert({ user_id: user.id,
         brand_id: s.brand_id,
         shares,
         buy_price: s.current_price,
-        current_value: credits,
-      });
+        current_value: credits });
       if (error) throw error;
 
       refetch();

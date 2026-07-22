@@ -1,21 +1,17 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const CREDIT_COSTS: Record<string, number> = {
-  talent_coach: 4,
+const CREDIT_COSTS: Record<string, number> = { talent_coach: 4,
   thumbnail_generator: 3,
   trend_analyzer: 3,
   performance_score: 4,
   viral_predictor: 4,
   music_advisor: 3,
   caption_writer: 3,
-  collaboration_matcher: 4,
-};
+  collaboration_matcher: 4 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -48,8 +44,7 @@ serve(async (req) => {
     const remaining = credits?.credits_remaining || 0;
     if (remaining < creditCost) {
       return new Response(JSON.stringify({ error: `Not enough credits. Need ${creditCost}, have ${remaining}.` }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
 
@@ -102,8 +97,7 @@ serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
@@ -111,9 +105,7 @@ serve(async (req) => {
           { role: "user", content: userPrompt },
         ],
         max_completion_tokens: 2000,
-        response_format: { type: "json_object" },
-      }),
-    });
+        response_format: { type: "json_object" } }) });
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
@@ -126,30 +118,25 @@ serve(async (req) => {
     const parsed = JSON.parse(content);
 
     // Atomic deduction AFTER successful AI call (race-safe; throws INSUFFICIENT_CREDITS)
-    const { error: deductErr } = await supabase.rpc("deduct_ai_credits_atomic", {
-      _user_id: user.id,
-      _amount: creditCost,
-    });
+    const { error: deductErr } = await supabase.rpc("deduct_ai_credits_atomic", { _user_id: user.id,
+      _amount: creditCost });
 
     if (deductErr) {
       const msg = deductErr.message || "";
       const status = msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500;
       return new Response(JSON.stringify({ error: msg }), {
-        status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { data: bal } = await supabase
       .from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
 
     return new Response(JSON.stringify({ ...parsed, credits_used: creditCost, credits_remaining: bal?.credits_remaining ?? 0 }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
   } catch (error) {
     console.error("megatalent-ai error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

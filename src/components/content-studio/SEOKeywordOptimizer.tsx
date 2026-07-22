@@ -46,8 +46,7 @@ const SEOKeywordOptimizer = ({ onBack }: Props) => {
     setAnalysis(null);
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
-        body: { action: "seo-analyze", content, targetKeyword },
-      });
+        body: { action: "seo-analyze", content, targetKeyword } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setAnalysis(data.analysis);

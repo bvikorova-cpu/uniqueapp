@@ -11,13 +11,11 @@ export default function IQFinalSummary() {
       if (localStorage.key(i)?.startsWith("iq_")) keys++;
     }
     const sh = JSON.parse(localStorage.getItem("iq_score_history") || "[]") as number[];
-    setStats({
-      keys,
+    setStats({ keys,
       score: sh.length ? sh[sh.length - 1] : 0,
       milestones: (JSON.parse(localStorage.getItem("iq_milestones") || "[]") as string[]).length,
       badges: (JSON.parse(localStorage.getItem("iq_showcase_badges") || "[]") as string[]).length,
-      time: parseInt(localStorage.getItem("iq_time_spent_min") || "0"),
-    });
+      time: parseInt(localStorage.getItem("iq_time_spent_min") || "0") });
   }, []);
   return (
     <>

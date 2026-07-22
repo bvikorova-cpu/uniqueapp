@@ -11,21 +11,17 @@ interface StoryUsage {
 
 export const useKidsStoryCreator = () => {
   const { user } = useAuth();
-  const [usage, setUsage] = useState<StoryUsage>({
-    storiesCreatedThisMonth: 0,
+  const [usage, setUsage] = useState<StoryUsage>({ storiesCreatedThisMonth: 0,
     isPremium: false,
-    loading: true,
-  });
+    loading: true });
 
   useEffect(() => {
     if (user) {
       checkUsage();
-    } else {
-      setUsage({
+    } else { setUsage({
         storiesCreatedThisMonth: 0,
         isPremium: false,
-        loading: false,
-      });
+        loading: false });
     }
   }, [user]);
 
@@ -35,12 +31,10 @@ export const useKidsStoryCreator = () => {
       const { data: subData } = await supabase.functions.invoke('check-kids-story-subscription');
       const isPremium = subData?.subscribed || false;
 
-      if (isPremium) {
-        setUsage({
+      if (isPremium) { setUsage({
           storiesCreatedThisMonth: 0,
           isPremium: true,
-          loading: false,
-        });
+          loading: false });
         return;
       }
 
@@ -61,18 +55,14 @@ export const useKidsStoryCreator = () => {
         ? usageData.stories_created_this_month 
         : 0;
 
-      setUsage({
-        storiesCreatedThisMonth: storiesCreated,
+      setUsage({ storiesCreatedThisMonth: storiesCreated,
         isPremium: false,
-        loading: false,
-      });
-    } catch (error) {
-      console.error('Error checking usage:', error);
+        loading: false });
+    } catch (error) { console.error('Error checking usage:', error);
       setUsage({
         storiesCreatedThisMonth: 0,
         isPremium: false,
-        loading: false,
-      });
+        loading: false });
     }
   };
 
@@ -97,9 +87,7 @@ export const useKidsStoryCreator = () => {
     }
   };
 
-  return {
-    ...usage,
+  return { ...usage,
     refreshUsage,
-    manageSubscription,
-  };
+    manageSubscription };
 };

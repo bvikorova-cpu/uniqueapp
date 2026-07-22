@@ -94,9 +94,7 @@ export function getNotificationRoute(n: NotifLike): string {
     // Course/education
     course_enrollment: "/education",
     course_completed: "/education/certificates",
-    certificate_issued: "/education/certificates",
-
-  };
+    certificate_issued: "/education/certificates" };
 
   if (typeMap[t]) return typeMap[t];
 

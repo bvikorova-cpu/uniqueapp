@@ -40,9 +40,7 @@ async function injectFakeSession(page: Page) {
         aud: "authenticated",
         role: "authenticated",
         app_metadata: {},
-        user_metadata: {},
-      },
-    };
+        user_metadata: {} } };
     // Supabase v2 storage key pattern: sb-<ref>-auth-token
     for (const k of Object.keys(localStorage)) {
       if (k.startsWith("sb-") && k.endsWith("-auth-token")) localStorage.removeItem(k);
@@ -63,27 +61,23 @@ async function stubFunctions(page: Page, router: RouterStub) {
 
     if (url.includes("coloring-router")) {
       const { status = 200, body: respBody } = router(body.action ?? "", body);
-      return route.fulfill({
-        status,
+      return route.fulfill({ status,
         contentType: "application/json",
-        body: JSON.stringify(respBody),
-      });
+        body: JSON.stringify(respBody) });
     }
 
     if (url.includes("create-checkout")) {
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ url: "https://checkout.stripe.com/test_coloring_session" }),
-      });
+        body: JSON.stringify({ url: "https://checkout.stripe.com/test_coloring_session" }) });
     }
 
     // Default: empty success so tanstack-query enabled hooks don't blow up
     return route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({}),
-    });
+      body: JSON.stringify({}) });
   });
 
   // Block real Stripe popup
@@ -101,8 +95,7 @@ test.describe("Coloring Pages — authenticated user flow", () => {
       r.fulfill({
         status: 401,
         contentType: "application/json",
-        body: JSON.stringify({ error: "unauthorized" }),
-      }),
+        body: JSON.stringify({ error: "unauthorized" }) }),
     );
 
     await page.goto("/coloring-pages/hub/color-by-number");
@@ -177,14 +170,12 @@ test.describe("Coloring Pages — authenticated user flow", () => {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ url: "https://checkout.stripe.com/test_coloring_session" }),
-        });
+          body: JSON.stringify({ url: "https://checkout.stripe.com/test_coloring_session" }) });
       }
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({}),
-      });
+        body: JSON.stringify({}) });
     });
 
     await page.goto("/coloring-pages");
@@ -203,8 +194,7 @@ test.describe("Coloring Pages — authenticated user flow", () => {
     await injectFakeSession(page);
     await stubFunctions(page, () => ({
       status: 429,
-      body: { error: "rate_limited" },
-    }));
+      body: { error: "rate_limited" } }));
 
     await page.goto("/coloring-pages/hub/color-by-number");
     await page.waitForLoadState("domcontentloaded");

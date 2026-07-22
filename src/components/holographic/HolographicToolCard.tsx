@@ -13,8 +13,7 @@ interface Props {
   badge?: string;
 }
 
-const colorMap: Record<string, string> = {
-  violet: "from-violet-500/20 to-violet-600/5 border-violet-500/30 hover:border-violet-400/60",
+const colorMap: Record<string, string> = { violet: "from-violet-500/20 to-violet-600/5 border-violet-500/30 hover:border-violet-400/60",
   purple: "from-purple-500/20 to-purple-600/5 border-purple-500/30 hover:border-purple-400/60",
   pink: "from-pink-500/20 to-pink-600/5 border-pink-500/30 hover:border-pink-400/60",
   cyan: "from-cyan-500/20 to-cyan-600/5 border-cyan-500/30 hover:border-cyan-400/60",
@@ -23,14 +22,11 @@ const colorMap: Record<string, string> = {
   red: "from-red-500/20 to-red-600/5 border-red-500/30 hover:border-red-400/60",
   blue: "from-blue-500/20 to-blue-600/5 border-blue-500/30 hover:border-blue-400/60",
   indigo: "from-indigo-500/20 to-indigo-600/5 border-indigo-500/30 hover:border-indigo-400/60",
-  orange: "from-orange-500/20 to-orange-600/5 border-orange-500/30 hover:border-orange-400/60",
-};
+  orange: "from-orange-500/20 to-orange-600/5 border-orange-500/30 hover:border-orange-400/60" };
 
-const iconColorMap: Record<string, string> = {
-  violet: "text-violet-400", purple: "text-purple-400", pink: "text-pink-400",
+const iconColorMap: Record<string, string> = { violet: "text-violet-400", purple: "text-purple-400", pink: "text-pink-400",
   cyan: "text-cyan-400", amber: "text-amber-400", emerald: "text-emerald-400",
-  red: "text-red-400", blue: "text-blue-400", indigo: "text-indigo-400", orange: "text-orange-400",
-};
+  red: "text-red-400", blue: "text-blue-400", indigo: "text-indigo-400", orange: "text-orange-400" };
 
 export const HolographicToolCard = ({ icon: Icon, title, description, color, onClick, index, badge }: Props) => {
   return (
@@ -52,9 +48,8 @@ export const HolographicToolCard = ({ icon: Icon, title, description, color, onC
     >
       {/* Holographic shimmer effect */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{
-          background: 'linear-gradient(105deg, transparent 30%, rgba(168,85,247,0.08) 45%, rgba(236,72,153,0.08) 55%, transparent 70%)',
-        }}
+        style={ {
+          background: 'linear-gradient(105deg, transparent 30%, rgba(168,85,247,0.08) 45%, rgba(236,72,153,0.08) 55%, transparent 70%)' }}
       />
       
       {badge && (

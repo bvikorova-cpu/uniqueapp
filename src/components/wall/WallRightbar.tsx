@@ -28,8 +28,7 @@ export function WallRightbar() {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   // Get online friends
   const { data: onlineFriends = [] } = useQuery({
@@ -57,8 +56,7 @@ export function WallRightbar() {
 
       return profiles || [];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   // Get upcoming birthdays
   const { data: birthdays = [] } = useQuery({
@@ -86,8 +84,7 @@ export function WallRightbar() {
 
       return profiles || [];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   return (
     <div className="w-full md:w-64 xl:w-80 md:h-[calc(100vh-112px)] md:sticky md:top-0 p-2 xl:p-4 pt-6 space-y-4 md:overflow-y-auto touch-auto -webkit-overflow-scrolling-touch">

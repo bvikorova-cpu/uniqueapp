@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
+  DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,8 +34,7 @@ interface Form {
 
 const initialFromMembership = (m: ClubMembership): Form => {
   const addr = m.shipping_address?.address ?? m.shipping_address ?? {};
-  return {
-    recipient_name: m.recipient_name ?? m.shipping_address?.name ?? "",
+  return { recipient_name: m.recipient_name ?? m.shipping_address?.name ?? "",
     phone: m.phone ?? m.shipping_address?.phone ?? "",
     line1: addr.line1 ?? "",
     line2: addr.line2 ?? "",
@@ -45,8 +42,7 @@ const initialFromMembership = (m: ClubMembership): Form => {
     postal_code: addr.postal_code ?? "",
     state: addr.state ?? "",
     country: (addr.country ?? "SK").toUpperCase(),
-    note: m.shipping_note ?? "",
-  };
+    note: m.shipping_note ?? "" };
 };
 
 export function EditShippingDialog({ membership, open, onOpenChange, onSaved }: Props) {
@@ -59,21 +55,17 @@ export function EditShippingDialog({ membership, open, onOpenChange, onSaved }: 
   const submit = async () => {
     setSaving(true);
     try {
-      const { data, error } = await supabase.functions.invoke("update-club-shipping", {
-        body: form,
-      });
+      const { data, error } = await supabase.functions.invoke("update-club-shipping", { body: form });
       if (error || (data as any)?.error) {
         throw new Error((data as any)?.error ?? error?.message ?? "Update failed");
       }
       toast({ title: "Shipping details saved" });
       onOpenChange(false);
       onSaved();
-    } catch (e) {
-      toast({
+    } catch (e) { toast({
         title: "Couldn't save",
         description: e instanceof Error ? e.message : String(e),
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setSaving(false);
     }

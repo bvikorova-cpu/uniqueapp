@@ -41,8 +41,7 @@ export const BrowseConcerts = ({ onBack }: Props) => {
         .order("scheduled_at", { ascending: true });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const handleBuyTicket = async (concertId: string, ticketTypeId: string) => {
     try {
@@ -50,8 +49,7 @@ export const BrowseConcerts = ({ onBack }: Props) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in to buy tickets"); return; }
       const { data, error } = await supabase.functions.invoke("create-concert-ticket-checkout", {
-        body: { concertId, ticketTypeId },
-      });
+        body: { concertId, ticketTypeId } });
       if (error) throw error;
       if (data?.url) { window.open(data.url, "_blank"); toast.success("Redirecting to checkout..."); }
     } catch (error: any) {

@@ -3,28 +3,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-const KEYS = {
-  invites: "iq_duel_invites",
+const KEYS = { invites: "iq_duel_invites",
   duelWins: "iq_duel_match_wins",
   clan: "iq_clan_name",
   groups: "iq_study_groups",
   friendInv: "iq_friend_invites_sent",
-  mentor: "iq_mentor_match",
-};
+  mentor: "iq_mentor_match" };
 
 export default function IQSocialSummary() {
   const [stats, setStats] = useState({ invites: 0, duelWins: 0, clan: "—", groups: 0, friendInv: 0, mentor: "—" });
 
-  useEffect(() => {
-    try {
+  useEffect(() => { try {
       setStats({
         invites: JSON.parse(localStorage.getItem(KEYS.invites) || "[]").length,
         duelWins: Number(localStorage.getItem(KEYS.duelWins) || 0),
         clan: localStorage.getItem(KEYS.clan) || "—",
         groups: JSON.parse(localStorage.getItem(KEYS.groups) || "[]").length,
         friendInv: Number(localStorage.getItem(KEYS.friendInv) || 0),
-        mentor: localStorage.getItem(KEYS.mentor) || "—",
-      });
+        mentor: localStorage.getItem(KEYS.mentor) || "—" });
     } catch {}
   }, []);
 

@@ -4,11 +4,9 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const ALLOWED_METRICS = new Set(["LCP", "CLS", "INP", "FCP", "TTFB"]);
 
@@ -39,8 +37,7 @@ Deno.serve(async (req) => {
     const samples: Sample[] = Array.isArray(body?.samples) ? body.samples : [];
     if (samples.length === 0 || samples.length > 20) {
       return new Response(JSON.stringify({ ok: true, accepted: 0 }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Resolve user_id if a real auth header is present (best-effort).
@@ -51,8 +48,7 @@ Deno.serve(async (req) => {
     if (auth?.startsWith("Bearer ")) {
       try {
         const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
-          global: { headers: { Authorization: auth } },
-        });
+          global: { headers: { Authorization: auth } } });
         const userPromise = anon.auth.getUser();
         const timeout = new Promise<{ data: { user: null } }>((resolve) =>
           setTimeout(() => resolve({ data: { user: null } }), 1500),
@@ -70,8 +66,7 @@ Deno.serve(async (req) => {
     const rows = samples
       .filter((s) => ALLOWED_METRICS.has(s.metric) && Number.isFinite(s.value))
       .slice(0, 20)
-      .map((s) => ({
-        user_id: userId,
+      .map((s) => ({ user_id: userId,
         session_id: clamp(s.session_id, 64),
         metric: s.metric,
         value: Math.max(0, Number(s.value)),
@@ -80,13 +75,11 @@ Deno.serve(async (req) => {
         route: clamp(s.route, 256),
         device: clamp(s.device, 16),
         connection: clamp(s.connection, 16),
-        user_agent: ua,
-      }));
+        user_agent: ua }));
 
     if (rows.length === 0) {
       return new Response(JSON.stringify({ ok: true, accepted: 0 }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Service role insert (bypasses RLS — table has no INSERT policy by design).
@@ -100,18 +93,15 @@ Deno.serve(async (req) => {
     if (error) {
       console.error("[VITALS_INGEST] insert failed", JSON.stringify(error));
       return new Response(JSON.stringify({ ok: false, accepted: 0 }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     return new Response(JSON.stringify({ ok: true, accepted: rows.length }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     const msg = e instanceof Error ? e.message : JSON.stringify(e);
     console.error("[VITALS_INGEST] failed", msg);
     return new Response(JSON.stringify({ ok: false, accepted: 0 }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

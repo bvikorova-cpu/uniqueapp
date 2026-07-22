@@ -35,28 +35,23 @@ serve(async (req) => {
       merge_timelines: "Merge two timeline scenarios into a coherent narrative. Return JSON: {merged_narrative, conflicts[], synergies[], emergent_outcomes[]}.",
       reality_jump: "Describe a vivid alternate reality jump. Return JSON: {destination_reality, sensory_experience, key_differences[], duration, return_message}.",
       reality_lottery: "Generate a random alternate reality scenario. Return JSON: {reality_name, description, rarity, special_gift, life_lesson}.",
-      create_universe: "Help design a custom universe. Return JSON: {universe_name, physics_rules[], dominant_species, history_summary, unique_phenomena[]}.",
-    };
+      create_universe: "Help design a custom universe. Return JSON: {universe_name, physics_rules[], dominant_species, history_summary, unique_phenomena[]}." };
 
     const actionKey = action.replace(/-/g, "_");
     const system = systemPrompts[actionKey] || systemPrompts.chat;
     const wantsJson = actionKey !== "chat" && actionKey !== "quantum_chat";
 
-    const result = await callOpenAI({
-      system,
+    const result = await callOpenAI({ system,
       user: userInput,
       json: wantsJson,
-      temperature: 0.9,
-    });
+      temperature: 0.9 });
 
     const parsed = wantsJson ? safeJson(result) : null;
-    return jsonResponse({
-      success: true,
+    return jsonResponse({ success: true,
       action: actionKey,
       result: parsed ?? result,
       text: result,
-      reply: result,
-    });
+      reply: result });
   } catch (e: any) {
     return errorResponse(e.message || "Multiverse AI failed");
   }

@@ -38,12 +38,9 @@ test("module-course-exam: curriculum → exam → submit → certificate", async
       apikey: ANON,
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
-      origin: "https://uniqueapp.fun",
-    },
-  });
+      origin: "https://uniqueapp.fun" } });
 
-  const meta = {
-    module_key: "public-speaking",
+  const meta = { module_key: "public-speaking",
     module_label: "Public Speaking",
     course_slug: "e2e-smoke-course",
     course_title: "E2E Smoke Course",
@@ -51,19 +48,16 @@ test("module-course-exam: curriculum → exam → submit → certificate", async
     level: "Beginner",
     duration: "2h",
     price: 9,
-    skills: ["public speaking"],
-  };
+    skills: ["public speaking"] };
 
   const curr = await api.post("/module-course-exam", {
-    data: { action: "curriculum", meta },
-  });
+    data: { action: "curriculum", meta } });
   expect(curr.status(), await curr.text()).toBe(200);
   const currBody = await curr.json();
   expect(currBody.content?.modules?.length).toBeGreaterThan(0);
 
   const exam = await api.post("/module-course-exam", {
-    data: { action: "exam", meta },
-  });
+    data: { action: "exam", meta } });
   expect(exam.status(), await exam.text()).toBe(200);
   const examBody = await exam.json();
   expect(Array.isArray(examBody.questions)).toBe(true);
@@ -73,8 +67,7 @@ test("module-course-exam: curriculum → exam → submit → certificate", async
   // Submit random answers (should score, may pass or fail — we only assert shape).
   const answers = examBody.questions.map(() => 0);
   const submit = await api.post("/module-course-exam", {
-    data: { action: "submit", meta, answers, exam_token: examBody.exam_token, recipient_name: "E2E Tester" },
-  });
+    data: { action: "submit", meta, answers, exam_token: examBody.exam_token, recipient_name: "E2E Tester" } });
   expect(submit.status(), await submit.text()).toBe(200);
   const sub = await submit.json();
   expect(typeof sub.score).toBe("number");

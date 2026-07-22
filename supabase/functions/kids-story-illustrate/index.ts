@@ -2,11 +2,9 @@
 // Costs 2 kids_story credits per page. Uses OpenAI DALL-E 3.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const COST = 2;
 const MODEL = "dall-e-3";
@@ -14,20 +12,17 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 
-const STYLE_HINTS: Record<string, string> = {
-  watercolor: "soft watercolor children's book illustration, gentle pastel colors",
+const STYLE_HINTS: Record<string, string> = { watercolor: "soft watercolor children's book illustration, gentle pastel colors",
   cartoon: "bright cheerful cartoon style, bold outlines, vivid colors",
   pixar: "3D Pixar-style render, warm cinematic lighting, expressive characters",
   anime: "cute anime / studio ghibli style, soft cel-shading",
   storybook: "classic storybook illustration, hand-drawn ink and color wash",
-  pencil: "delicate pencil sketch with light color tint",
-};
+  pencil: "delicate pencil sketch with light color tint" };
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 Deno.serve(async (req) => {
@@ -39,8 +34,7 @@ Deno.serve(async (req) => {
     if (!authHeader) return json({ error: "Missing authorization header" }, 401);
 
     const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData.user) return json({ error: "Invalid bearer token" }, 401);
     const user = userData.user;
@@ -63,10 +57,8 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     const balance = credRow?.credits_remaining ?? 0;
-    if (!credRow) {
-      await admin.from("kids_story_credits").insert({
-        user_id: user.id, credits_remaining: 0, total_credits_purchased: 0,
-      });
+    if (!credRow) { await admin.from("kids_story_credits").insert({
+        user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
     }
     if (balance < COST) {
       return json({ error: "Insufficient credits", credits_remaining: balance, cost: COST }, 402);
@@ -82,16 +74,12 @@ Visual style: ${styleHint}. Age-appropriate for kids 4-10, friendly and safe, no
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: MODEL,
+        "Content-Type": "application/json" },
+      body: JSON.stringify({ model: MODEL,
         prompt: prompt.slice(0, 4000),
         n: 1,
         size: "1024x1024",
-        response_format: "b64_json",
-      }),
-    });
+        response_format: "b64_json" }) });
 
     if (aiResp.status === 429) return json({ error: "Rate limited, try again shortly" }, 429);
     if (!aiResp.ok) {
@@ -116,11 +104,9 @@ Visual style: ${styleHint}. Age-appropriate for kids 4-10, friendly and safe, no
       .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
       .eq("user_id", user.id);
 
-    return json({
-      illustration: imageUrl,
+    return json({ illustration: imageUrl,
       credits_remaining: newBalance,
-      cost: COST,
-    });
+      cost: COST });
   } catch (e: any) {
     console.error("kids-story-illustrate error", e);
     return json({ error: e?.message || "Internal error" }, 500);

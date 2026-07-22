@@ -49,8 +49,7 @@ export function useFriendships(userId: string | undefined) {
         .select("id, full_name, avatar_url, username")
         .in("id", ids);
       return (profs ?? []) as FriendProfile[];
-    },
-  });
+    } });
 
   // ---- Incoming pending requests (someone sent ME)
   const incoming = useQuery({
@@ -69,16 +68,13 @@ export function useFriendships(userId: string | undefined) {
         .select("id, full_name, avatar_url, username")
         .in("id", ids);
       const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
-      return (data ?? []).map((r) => ({
-        id: r.id,
+      return (data ?? []).map((r) => ({ id: r.id,
         user_id: r.user_id,
         friend_id: userId!,
         status: "pending" as const,
         created_at: r.created_at,
-        profile: map.get(r.user_id) as FriendProfile,
-      }));
-    },
-  });
+        profile: map.get(r.user_id) as FriendProfile }));
+    } });
 
   // ---- Outgoing pending requests
   const outgoing = useQuery({
@@ -92,18 +88,15 @@ export function useFriendships(userId: string | undefined) {
         .eq("status", "pending");
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   // ---- People you may know (mutual-friend RPC)
   const suggestions = useQuery({
     queryKey: [...KEY, "suggestions", userId],
     enabled: !!userId,
     queryFn: async (): Promise<FriendSuggestion[]> => {
-      const { data, error } = await supabase.rpc("suggest_friends", {
-        _user_id: userId!,
-        _limit: 8,
-      });
+      const { data, error } = await supabase.rpc("suggest_friends", { _user_id: userId!,
+        _limit: 8 });
       if (error) throw error;
       const ids = (data ?? []).map((r: any) => r.suggested_id);
       if (ids.length === 0) return [];
@@ -120,8 +113,7 @@ export function useFriendships(userId: string | undefined) {
         })
         .filter(Boolean) as FriendSuggestion[];
     },
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 
   // ---- Mutations
   const sendRequest = useMutation({
@@ -167,8 +159,7 @@ export function useFriendships(userId: string | undefined) {
       toast.success(res?.accepted ? "Friend request accepted" : "Friend request sent");
       qc.invalidateQueries({ queryKey: KEY });
     },
-    onError: (e: any) => toast.error(e.message ?? "Failed to send request"),
-  });
+    onError: (e: any) => toast.error(e.message ?? "Failed to send request") });
 
   const accept = useMutation({
     mutationFn: async (friendshipId: string) => {
@@ -182,8 +173,7 @@ export function useFriendships(userId: string | undefined) {
       toast.success("Friend request accepted");
       qc.invalidateQueries({ queryKey: KEY });
     },
-    onError: (e: any) => toast.error(e.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e.message ?? "Failed") });
 
   const cancelRequest = useMutation({
     mutationFn: async (friendshipId: string) => {
@@ -199,8 +189,7 @@ export function useFriendships(userId: string | undefined) {
       toast.success("Friend request cancelled");
       qc.invalidateQueries({ queryKey: KEY });
     },
-    onError: (e: any) => toast.error(e.message ?? "Failed to cancel request"),
-  });
+    onError: (e: any) => toast.error(e.message ?? "Failed to cancel request") });
 
   const reject = useMutation({
     mutationFn: async (friendshipId: string) => {
@@ -213,8 +202,7 @@ export function useFriendships(userId: string | undefined) {
     onSuccess: () => {
       toast.success("Request dismissed");
       qc.invalidateQueries({ queryKey: KEY });
-    },
-  });
+    } });
 
   const removeFriend = useMutation({
     mutationFn: async (otherUserId: string) => {
@@ -230,11 +218,9 @@ export function useFriendships(userId: string | undefined) {
     onSuccess: () => {
       toast.success("Friend removed");
       qc.invalidateQueries({ queryKey: KEY });
-    },
-  });
+    } });
 
-  return {
-    friends,
+  return { friends,
     incoming,
     outgoing,
     suggestions,
@@ -242,6 +228,5 @@ export function useFriendships(userId: string | undefined) {
     accept,
     reject,
     cancelRequest,
-    removeFriend,
-  };
+    removeFriend };
 }

@@ -1,14 +1,11 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const TOOL_COSTS: Record<string, number> = {
-  generate: 5,
+const TOOL_COSTS: Record<string, number> = { generate: 5,
   edit: 3,
   style_transfer: 3,
   upscale: 2,
@@ -29,14 +26,12 @@ const TOOL_COSTS: Record<string, number> = {
   tile_pattern: 3,
   avatar_pack: 8,
   animate_image: 6,
-  prompt_enhance: 1,
-};
+  prompt_enhance: 1 };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 const OPENAI_IMAGE_URL = "https://api.openai.com/v1/images/generations";
 const OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions";
@@ -78,13 +73,11 @@ serve(async (req) => {
     if (!user) return json({ error: "Not authenticated" }, 401);
 
     const body = await req.json().catch(() => ({}));
-    const {
-      action, prompt, imageUrl, style, targetSize, editPrompt, region, variationIndex,
+    const { action, prompt, imageUrl, style, targetSize, editPrompt, region, variationIndex,
       // NEW params
       aspectRatio, negativePrompt, seed, referenceImageUrl, referencePrompt,
       backgroundPrompt, logoText, brandName, sketchDescription, characterName,
-      characterDescription, pose, patternType, count,
-    } = body ?? {};
+      characterDescription, pose, patternType, count } = body ?? {};
 
     if (!action || typeof action !== "string") return json({ error: "Missing action" }, 400);
     if (!(action in TOOL_COSTS)) return json({ error: `Unknown action: ${action}` }, 400);
@@ -132,16 +125,13 @@ serve(async (req) => {
       const res = await fetch(OPENAI_IMAGE_URL, {
         method: "POST",
         headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "gpt-image-1",
+        body: JSON.stringify({ model: "gpt-image-1",
           prompt: finalPrompt,
           n: 1,
           size,
           quality: "high",
           output_format: "webp",
-          output_compression: 90,
-        }),
-      });
+          output_compression: 90 }) });
       if (!res.ok) {
         const text = await res.text();
         console.error("OpenAI image API error:", res.status, text);
@@ -157,8 +147,7 @@ serve(async (req) => {
       const res = await fetch(OPENAI_CHAT_URL, {
         method: "POST",
         headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "gpt-4o-mini", messages, response_format: { type: "json_object" } }),
-      });
+        body: JSON.stringify({ model: "gpt-4o-mini", messages, response_format: { type: "json_object" } }) });
       if (!res.ok) {
         const text = await res.text();
         console.error("OpenAI chat API error:", res.status, text);
@@ -287,8 +276,7 @@ serve(async (req) => {
           // Render a stylized motion-blur frame as preview; true video is out of scope here.
           result = {
             imageUrl: await generateImage(`A single keyframe representing the START of an animation: ${prompt}. Add subtle motion-blur and dynamic energy hinting at movement.`, size),
-            note: "Static keyframe preview. Full video animation coming soon.",
-          };
+            note: "Static keyframe preview. Full video animation coming soon." };
           break;
         }
         case "prompt_enhance": {
@@ -330,8 +318,7 @@ serve(async (req) => {
         user_id: user.id,
         usage_type: `image_${action}`,
         credits_used: cost,
-        description: `AI Image ${action}: ${(prompt || "").substring(0, 100)}`,
-      }).then(() => {}, () => {});
+        description: `AI Image ${action}: ${(prompt || "").substring(0, 100)}` }).then(() => {}, () => {});
     }
     if (["generate", "variations", "inpainting", "style_transfer", "outpainting", "bg_replace", "reference_image", "logo_text"].includes(action) && prompt) {
       (async () => {
@@ -345,10 +332,8 @@ serve(async (req) => {
           await supabase.from("ai_prompt_history")
             .update({ use_count: (existing.use_count || 1) + 1, last_used_at: new Date().toISOString() })
             .eq("id", existing.id);
-        } else {
-          await supabase.from("ai_prompt_history").insert({
-            user_id: user.id, prompt, title: prompt.substring(0, 50), category: action,
-          });
+        } else { await supabase.from("ai_prompt_history").insert({
+            user_id: user.id, prompt, title: prompt.substring(0, 50), category: action });
         }
       })().catch(() => {});
     }

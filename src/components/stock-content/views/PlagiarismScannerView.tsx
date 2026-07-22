@@ -65,8 +65,7 @@ export function PlagiarismScannerView({ onBack }: PlagiarismScannerViewProps) {
       }
 
       const { data, error } = await supabase.functions.invoke("stock-content-ai", {
-        body: { action: "plagiarism_scan", imageUrl: uploadedUrl },
-      });
+        body: { action: "plagiarism_scan", imageUrl: uploadedUrl } });
       if (error) throw error;
 
       setResult(data);

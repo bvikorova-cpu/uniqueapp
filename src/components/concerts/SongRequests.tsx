@@ -47,9 +47,7 @@ export const SongRequests = ({ onBack }: Props) => {
         body: {
           type: "song_request",
           amount: tier.price * 100,
-          metadata: { song: songTitle, artist: artistName, tier: selectedTier },
-        },
-      });
+          metadata: { song: songTitle, artist: artistName, tier: selectedTier } } });
 
       if (error) throw error;
       if (data?.url) {

@@ -11,18 +11,15 @@ export const MONETIZATION_RULES = {
   aiFeatures: {
     resumeOptimizer: { credits: 5, xpRequired: 0, premiumFree: true },
     jobMatcher: { credits: 3, xpRequired: 0, premiumFree: true },
-    interviewCoach: { credits: 10, xpRequired: 0, premiumFree: true },
-  },
+    interviewCoach: { credits: 10, xpRequired: 0, premiumFree: true } },
   
   // Premium Store - Level unlocks "right to buy" (still requires credits)
-  levelUnlocks: {
-    5: ["basic_badge", "basic_theme"],
+  levelUnlocks: { 5: ["basic_badge", "basic_theme"],
     10: ["employer_branding_package", "pro_badge"],
     15: ["visibility_boost_7d", "animated_avatar"],
     20: ["featured_listing_package", "legendary_badge"],
     25: ["premium_analytics", "custom_theme"],
-    30: ["unlimited_visibility", "founder_exclusive"],
-  },
+    30: ["unlimited_visibility", "founder_exclusive"] },
   
   // Visibility boosters (main revenue drivers)
   visibilityBoosters: [
@@ -30,8 +27,7 @@ export const MONETIZATION_RULES = {
     { id: "boost_7d", name: "7-Day Featured", credits: 50, levelRequired: 15, multiplier: "5x", priceEur: null },
     { id: "boost_30d", name: "30-Day Premium Spotlight", credits: 150, levelRequired: 20, multiplier: "10x", priceEur: null },
     { id: "featured_employer", name: "Featured Employer Badge", credits: 100, levelRequired: 25, multiplier: null, priceEur: 79 },
-  ],
-} as const;
+  ] } as const;
 
 export const MonetizationPolicy = () => {
   const navigate = useNavigate();

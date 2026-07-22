@@ -6,13 +6,11 @@ import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
 import { Clock, Plus, Sparkles, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+  DialogDescription } from "@/components/ui/dialog";
 
 export const PastLifeCreditsDisplay = () => {
   const { credits, isLoading, purchaseCredits } = usePastLifeCredits();

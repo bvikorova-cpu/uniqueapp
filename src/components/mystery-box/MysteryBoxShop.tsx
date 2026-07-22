@@ -195,10 +195,9 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
                   key={ub.id}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  animate={opening === ub.id && openingPhase === "shaking" ? {
+                  animate={ opening === ub.id && openingPhase === "shaking" ? {
                     x: [0, -4, 4, -4, 4, -2, 2, 0],
-                    rotate: [0, -3, 3, -3, 3, -1, 1, 0],
-                  } : {}}
+                    rotate: [0, -3, 3, -3, 3, -1, 1, 0] } : {}}
                   transition={opening === ub.id && openingPhase === "shaking" ? {
                     duration: 0.5, repeat: 3
                   } : {}}

@@ -6,11 +6,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 type Operation =
   | "restore"
@@ -22,19 +20,16 @@ type Operation =
   | "face-enhance"
   | "upscale";
 
-const COSTS: Record<Operation, number> = {
-  restore: 1,
+const COSTS: Record<Operation, number> = { restore: 1,
   colorize: 1,
   repair: 1,
   enhance: 1,
   "bg-remove": 3,
   "colorize-pro": 8,
   "face-enhance": 5,
-  upscale: 5,
-};
+  upscale: 5 };
 
-const BG_PROMPTS: Record<string, string> = {
-  transparent:
+const BG_PROMPTS: Record<string, string> = { transparent:
     "Remove the background completely. Output the foreground subject perfectly cut out on a fully transparent background. Preserve all original detail, edges, and hair.",
   white: "Remove the background and replace it with a clean solid white background. Keep subject sharp.",
   black: "Remove the background and replace it with a clean solid black background. Keep subject sharp.",
@@ -42,11 +37,9 @@ const BG_PROMPTS: Record<string, string> = {
     "Remove the background and replace it with a smooth blue gradient (deep navy to bright cyan). Keep subject sharp.",
   "gradient-purple":
     "Remove the background and replace it with a smooth purple gradient (deep violet to magenta). Keep subject sharp.",
-  blur: "Keep the original background but apply a strong cinematic blur (depth-of-field). Keep subject sharp.",
-};
+  blur: "Keep the original background but apply a strong cinematic blur (depth-of-field). Keep subject sharp." };
 
-const PROMPTS: Record<Operation, string> = {
-  restore:
+const PROMPTS: Record<Operation, string> = { restore:
     "Restore this old photograph. Repair scratches, tears, dust spots, faded areas and torn edges while preserving original facial features, expressions, clothing detail and composition. Produce a clean, sharp restored version.",
   colorize:
     "Colorize this black and white photo with realistic, era-appropriate colors. Preserve skin tones, fabric textures, and lighting. Output a natural-looking color photograph.",
@@ -60,11 +53,9 @@ const PROMPTS: Record<Operation, string> = {
   "face-enhance":
     "Enhance and upscale faces in this photograph: sharpen features, recover skin texture, repair eyes and mouth, improve lighting on the face. Keep identity unchanged.",
   upscale:
-    "Upscale this image to high resolution. Add sharpness, recover detail, reduce compression artifacts. Output a 4K-quality version.",
-};
+    "Upscale this image to high resolution. Add sharpness, recover detail, reduce compression artifacts. Output a 4K-quality version." };
 
-const ALIAS: Record<string, Operation> = {
-  restore: "restore",
+const ALIAS: Record<string, Operation> = { restore: "restore",
   colorize: "colorize",
   repair: "repair",
   enhance: "enhance",
@@ -77,8 +68,7 @@ const ALIAS: Record<string, Operation> = {
   photo_face_enhance: "face-enhance",
   upscale: "upscale",
   photo_upscale: "upscale",
-  photo_restore: "restore",
-};
+  photo_restore: "restore" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -93,15 +83,13 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const sbAuth = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const { data: { user } } = await sbAuth.auth.getUser(authHeader.replace("Bearer ", ""));
     if (!user) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const body = await req.json();
@@ -119,8 +107,7 @@ serve(async (req) => {
       body.creditPool === "ai_credits" ? "ai_credits" : "photo_credits";
 
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
-      auth: { persistSession: false },
-    });
+      auth: { persistSession: false } });
 
     const ADMIN_USER_ID = Deno.env.get("ADMIN_USER_ID");
     const isAdmin = ADMIN_USER_ID && user.id === ADMIN_USER_ID;
@@ -138,8 +125,7 @@ serve(async (req) => {
         JSON.stringify({
           error: "INSUFFICIENT_CREDITS",
           message: `Need ${cost} credits, have ${remaining}.`,
-          required: cost, remaining,
-        }),
+          required: cost, remaining }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -147,9 +133,7 @@ serve(async (req) => {
     // Fetch source image
     const srcRes = await fetch(imageUrl);
     if (!srcRes.ok) throw new Error("Could not fetch source image");
-    const srcBlob = new Blob([await srcRes.arrayBuffer()], {
-      type: srcRes.headers.get("content-type") ?? "image/png",
-    });
+    const srcBlob = new Blob([await srcRes.arrayBuffer()], { type: srcRes.headers.get("content-type") ?? "image/png" });
 
     // Pick prompt — bg-remove supports color variants
     let prompt = PROMPTS[operation];
@@ -170,8 +154,7 @@ serve(async (req) => {
     const aiRes = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
       headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
-      body: form,
-    });
+      body: form });
 
     if (!aiRes.ok) {
       const txt = await aiRes.text();
@@ -204,26 +187,22 @@ serve(async (req) => {
     const resultUrl = urlData.publicUrl;
 
     // Deduct credits (skip for admin)
-    if (!isAdmin) {
-      await admin
+    if (!isAdmin) { await admin
         .from(creditPool)
         .update({
           credits_remaining: remaining - cost,
-          updated_at: new Date().toISOString(),
-        })
+          updated_at: new Date().toISOString() })
         .eq("user_id", user.id);
     }
 
     // Log to old_photos if photo pool
-    if (creditPool === "photo_credits") {
-      try {
+    if (creditPool === "photo_credits") { try {
         await admin.from("old_photos").insert({
           user_id: user.id,
           original_url: imageUrl,
           restored_url: resultUrl,
           restoration_type: operation,
-          credits_used: cost,
-        });
+          credits_used: cost });
       } catch (_e) {/* non-blocking */}
     } else {
       try {
@@ -231,14 +210,12 @@ serve(async (req) => {
           user_id: user.id,
           usage_type: `image_${operation}`,
           credits_used: cost,
-          description: `Photo ${operation}`,
-        });
+          description: `Photo ${operation}` });
       } catch (_e) {/* non-blocking */}
     }
 
     return new Response(
-      JSON.stringify({
-        success: true,
+      JSON.stringify({ success: true,
         resultUrl,
         restoredImageUrl: resultUrl,
         processedImageUrl: resultUrl,
@@ -249,15 +226,13 @@ serve(async (req) => {
         operation,
         bgColor: body.bgColor ?? null,
         creditsDeducted: isAdmin ? 0 : cost,
-        creditsRemaining: isAdmin ? 999999 : remaining - cost,
-      }),
+        creditsRemaining: isAdmin ? 999999 : remaining - cost }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err: any) {
     console.error("remove-background (universal photo) error", err);
     return new Response(JSON.stringify({ error: err?.message ?? "Unknown error" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

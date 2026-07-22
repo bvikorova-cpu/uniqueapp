@@ -45,12 +45,10 @@ export default function RewardsDonateXP() {
     setLoading(true);
     const eur = amount / RATE;
     const camp = campaigns.find(c => c.id === selectedId);
-    const { data, error } = await supabase.rpc("donate_xp" as any, {
-      _amount: amount,
+    const { data, error } = await supabase.rpc("donate_xp" as any, { _amount: amount,
       _campaign_id: selectedId || null,
       _campaign_name: camp?.title || "General fund",
-      _rate: RATE,
-    });
+      _rate: RATE });
     setLoading(false);
     if (error) return toast.error(error.message);
     const res = data as any;

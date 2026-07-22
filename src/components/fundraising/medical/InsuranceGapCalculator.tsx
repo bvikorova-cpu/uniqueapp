@@ -15,12 +15,10 @@ interface Props {
  * Visual breakdown: Treatment total cost = Insurance coverage + Funding gap.
  * Shows donors exactly why this campaign exists and where their money goes.
  */
-export function InsuranceGapCalculator({
-  treatmentTotalCost,
+export function InsuranceGapCalculator({ treatmentTotalCost,
   insuranceCoverage,
   targetAmount,
-  currentAmount,
-}: Props) {
+  currentAmount }: Props) {
   // If no treatment cost is set, fall back to: target = gap, insurance = 0
   const total = treatmentTotalCost ?? targetAmount;
   const insurance = insuranceCoverage ?? 0;
@@ -102,26 +100,22 @@ export function InsuranceGapCalculator({
   );
 }
 
-function Row({
-  color,
+function Row({ color,
   icon,
   label,
   value,
   hint,
-  bold,
-}: {
+  bold }: {
   color: "emerald" | "primary" | "rose";
   icon?: React.ReactNode;
   label: string;
   value: number;
   hint: string;
   bold?: boolean;
-}) {
-  const dotClass = {
+}) { const dotClass = {
     emerald: "bg-emerald-500",
     primary: "bg-primary",
-    rose: "bg-rose-500",
-  }[color];
+    rose: "bg-rose-500" }[color];
   return (
     <div className="flex items-center justify-between gap-3 py-1.5 px-2 rounded-lg hover:bg-muted/30 transition-colors">
       <div className="flex items-center gap-2.5 min-w-0">

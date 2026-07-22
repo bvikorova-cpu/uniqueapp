@@ -34,9 +34,7 @@ export default function MegatalentTalentDuel({ category, categories }: Props) {
     setWinnerId(null);
     try {
       const cats = categories?.length ? categories : category ? [category] : null;
-      const { data, error } = await supabase.rpc("mt_get_duel_pair", {
-        _categories: cats as any,
-      });
+      const { data, error } = await supabase.rpc("mt_get_duel_pair", { _categories: cats as any });
       if (error) throw error;
       const rows = (data || []) as Contender[];
       if (rows.length < 2) {

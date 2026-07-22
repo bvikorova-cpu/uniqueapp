@@ -35,8 +35,7 @@ const KIND_CONFIG: Record<PayoutKind, KindConfig> = {
   influencer: { table: "influencer_withdrawal_requests", userIdCol: "influencer_id", label: "Influencer" },
   auction: { table: "auction_withdrawal_requests", userIdCol: "seller_id", label: "Auctions" },
   referral: { table: "referral_withdrawal_requests", userIdCol: "referrer_id", label: "Referrals" },
-  campaign: { table: "withdrawal_requests", userIdCol: "creator_id", label: "Campaigns" },
-};
+  campaign: { table: "withdrawal_requests", userIdCol: "creator_id", label: "Campaigns" } };
 
 export const KIND_LABELS = Object.fromEntries(
   Object.entries(KIND_CONFIG).map(([k, v]) => [k, v.label]),

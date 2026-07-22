@@ -75,7 +75,7 @@ const AIExperiences = () => {
     { name: "Amsterdam", image: "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=800&h=600&fit=crop", credits: 15, landmark: "Canal Ring" },
     { name: "Prague", image: "https://images.unsplash.com/photo-1541849546-216549ae216d?w=800&h=600&fit=crop", credits: 15, landmark: "Charles Bridge" },
     { name: "Vienna", image: "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800&h=600&fit=crop", credits: 15, landmark: "Schönbrunn" },
-    { name: "Berlin", image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&h=600&fit=crop", credits: 15, landmark: "Brandenburg Gate" },
+    { name: "City", image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&h=600&fit=crop", credits: 15, landmark: "Landmark" },
     { name: "Bangkok", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&h=600&fit=crop", credits: 15, landmark: "Grand Palace" },
     { name: "Seoul", image: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=800&h=600&fit=crop", credits: 15, landmark: "Gyeongbokgung" },
     { name: "Athens", image: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&h=600&fit=crop", credits: 15, landmark: "Acropolis" },
@@ -583,12 +583,11 @@ const AIExperiences = () => {
             <motion.h1
               initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15 }}
               className="text-[clamp(2.2rem,11vw,3.5rem)] md:text-6xl lg:text-7xl font-black mb-3 leading-[1.02] max-w-[14ch]"
-              style={{
+              style={ {
                 WebkitTextStroke: "1.5px rgba(0,0,0,0.5)",
                 textShadow: "0 0 40px rgba(139,92,246,0.3), 0 4px 15px rgba(0,0,0,0.8)",
                 background: "linear-gradient(135deg, #fff 0%, #c4b5fd 40%, #8b5cf6 70%, #7c3aed 100%)",
-                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-              }}
+                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
             >
               Explore the World
             </motion.h1>

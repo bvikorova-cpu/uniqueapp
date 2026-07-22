@@ -37,8 +37,7 @@ export const anonymousDatingProfileSchema = z
       .array(z.string().trim().min(1))
       .min(ANON_DATING_MIN_INTERESTS, `Select at least ${ANON_DATING_MIN_INTERESTS} interests`)
       .max(ANON_DATING_MAX_INTERESTS),
-    personality_traits: z.array(z.string().trim().min(1)).max(ANON_DATING_MAX_TRAITS),
-  })
+    personality_traits: z.array(z.string().trim().min(1)).max(ANON_DATING_MAX_TRAITS) })
   .superRefine((val, ctx) => {
     const [lo, hi] = val.age_range.split("-").map(Number);
     if (Number.isFinite(lo) && Number.isFinite(hi)) {

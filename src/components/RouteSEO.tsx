@@ -33,8 +33,7 @@ export function RouteSEO() {
         description,
         applicationCategory: "MultimediaApplication",
         inLanguage: i18n.language,
-        offers: { "@type": "Offer", priceCurrency: "EUR" },
-      }}
+        offers: { "@type": "Offer", priceCurrency: "EUR" } }}
     />
   );
 }

@@ -2,11 +2,9 @@
 // Returns base64 MP3 audio for client playback
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -58,12 +56,10 @@ Deno.serve(async (req) => {
     }
 
     // Rate limit: 30 TTS requests / 5 min per user
-    const { data: allowed } = await admin.rpc("check_rate_limit", {
-      p_identifier: userData.user.id,
+    const { data: allowed } = await admin.rpc("check_rate_limit", { p_identifier: userData.user.id,
       p_action_type: "kids_story_tts",
       p_max_requests: 30,
-      p_window_seconds: 300,
-    });
+      p_window_seconds: 300 });
     if (allowed === false) {
       return new Response(
         JSON.stringify({ error: "Rate limit exceeded. Try again in a few minutes." }),
@@ -112,10 +108,8 @@ Deno.serve(async (req) => {
       .eq("user_id", userId)
       .maybeSingle();
     const balance = credRow?.credits_remaining ?? 0;
-    if (!credRow) {
-      await admin.from("kids_story_credits").insert({
-        user_id: userId, credits_remaining: 0, total_credits_purchased: 0,
-      });
+    if (!credRow) { await admin.from("kids_story_credits").insert({
+        user_id: userId, credits_remaining: 0, total_credits_purchased: 0 });
     }
     if (balance < TTS_COST) {
       return new Response(
@@ -130,16 +124,12 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "tts-1",
+        "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "tts-1",
         voice,
         input: truncated,
         response_format: "mp3",
-        speed: 0.95,
-      }),
-    });
+        speed: 0.95 }) });
 
     if (!ttsResponse.ok) {
       const errText = await ttsResponse.text();
@@ -172,8 +162,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ audioContent: audioBase64, mimeType: "audio/mpeg", credits_remaining: newBalance, cost: TTS_COST }),
       {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
+        headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
     console.error("kids-story-tts unexpected error:", err);

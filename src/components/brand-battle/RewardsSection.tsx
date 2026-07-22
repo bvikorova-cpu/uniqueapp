@@ -40,8 +40,7 @@ export const RewardsSection = () => {
       const currentQuarterEnd = new Date(now.getFullYear(), Math.ceil((now.getMonth() + 1) / 3) * 3, 0);
       const daysRemaining = Math.max(0, Math.ceil((currentQuarterEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
       return { totalVotes: totalVotes || 0, totalVoters: uniqueVoters, totalSponsors: totalSponsors || 0, daysRemaining };
-    },
-  });
+    } });
 
   const { data: topVoters = [] } = useQuery({
     queryKey: ["top-voters"],
@@ -53,8 +52,7 @@ export const RewardsSection = () => {
         .limit(10);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const streakDays = streak?.currentStreak || 0;
   const daysUntilBonus = 7 - (streakDays % 7);

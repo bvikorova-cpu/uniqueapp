@@ -140,8 +140,7 @@ export function AIJobOptimizer() {
         
         toast({
           title: "Analysis Complete!",
-          description: `Your professional score: ${data.analysis.professionalScore}/100`,
-        });
+          description: `Your professional score: ${data.analysis.professionalScore}/100` });
       } else {
         throw new Error(data.error || 'Analysis failed');
       }

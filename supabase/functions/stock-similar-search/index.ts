@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -39,9 +37,7 @@ serve(async (req) => {
       headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        messages: [{ role: "user", content: userContent }],
-      }),
-    });
+        messages: [{ role: "user", content: userContent }] }) });
 
     if (aiRes.status === 429) return new Response(JSON.stringify({ error: "Rate limit. Try again later." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     if (!aiRes.ok) {
@@ -71,12 +67,10 @@ serve(async (req) => {
     }).filter(i => i._score > 0).sort((a, b) => b._score - a._score).slice(0, 24);
 
     return new Response(JSON.stringify({ keywords, results: scored }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message || "Search failed" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

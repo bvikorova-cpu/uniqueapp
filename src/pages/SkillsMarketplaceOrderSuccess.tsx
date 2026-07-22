@@ -20,8 +20,7 @@ export default function SkillsMarketplaceOrderSuccess() {
     }
     (async () => {
       const { data, error } = await supabase.functions.invoke("verify-skill-service-order", {
-        body: { sessionId },
-      });
+        body: { sessionId } });
       if (error) {
         setState("error");
         setError(error.message);

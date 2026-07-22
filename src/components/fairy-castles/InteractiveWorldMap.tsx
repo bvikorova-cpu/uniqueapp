@@ -16,12 +16,11 @@ interface InteractiveWorldMapProps {
 }
 
 const countryPositions: Record<string, { x: number; y: number; label: string }> = {
-  US: { x: 20, y: 42, label: "USA" },
-  FR: { x: 48, y: 35, label: "France" },
+  US: { x: 20, y: 42, label: "Region 1" },
+  FR: { x: 48, y: 35, label: "Region 2" },
   JP: { x: 82, y: 40, label: "Japan" },
   CN: { x: 76, y: 45, label: "China" },
-  HK: { x: 78, y: 52, label: "Hong Kong" },
-};
+  HK: { x: 78, y: 52, label: "Hong Kong" } };
 
 export function InteractiveWorldMap({ castles, stampedIds, visitedIds, onCastleClick }: InteractiveWorldMapProps) {
   // Group castles by country

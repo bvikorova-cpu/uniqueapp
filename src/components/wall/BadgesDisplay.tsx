@@ -1,12 +1,10 @@
 import { Award } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useBadges } from "@/hooks/useBadges";
-import {
-  Tooltip,
+import { Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  TooltipTrigger } from "@/components/ui/tooltip";
 
 interface BadgesDisplayProps {
   userId: string;

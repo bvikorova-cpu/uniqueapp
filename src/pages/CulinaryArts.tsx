@@ -14,8 +14,7 @@ const CulinaryArts = () => {
   const [enrolling, setEnrolling] = useState<string | null>(null);
   const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+  useEffect(() => { const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
@@ -23,8 +22,7 @@ const CulinaryArts = () => {
         if (success) {
           toast({
             title: "Enrollment Successful! 🎉",
-            description: "You now have access to your culinary program.",
-          });
+            description: "You now have access to your culinary program." });
           window.history.replaceState({}, '', '/culinary-arts');
         }
       });
@@ -100,12 +98,10 @@ const CulinaryArts = () => {
       if (sessionUrl) {
         { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; } }
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Enrollment Failed",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setEnrolling(null);
     }
   };
@@ -203,7 +199,7 @@ const CulinaryArts = () => {
                   </Button>
                 </div>
                 <CourseAcademicActions
-                  meta={{
+                  meta={ {
                     module_key: "culinary-arts",
                     module_label: "Culinary Arts",
                     course_slug: program.id,
@@ -212,8 +208,7 @@ const CulinaryArts = () => {
                     level: program.level,
                     duration: program.duration,
                     price: program.price,
-                    skills: program.skills,
-                  }}
+                    skills: program.skills }}
                   unlocked={isPurchased(program.id, "culinary-program")}
                 />
               </div>

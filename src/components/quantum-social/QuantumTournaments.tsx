@@ -23,11 +23,9 @@ interface Tournament {
   joined?: boolean;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  active: "bg-emerald-600",
+const STATUS_COLORS: Record<string, string> = { active: "bg-emerald-600",
   upcoming: "bg-cyan-600",
-  completed: "bg-muted",
-};
+  completed: "bg-muted" };
 
 export function QuantumTournaments({ onBack }: { onBack: () => void }) {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
@@ -68,10 +66,8 @@ export function QuantumTournaments({ onBack }: { onBack: () => void }) {
 
     setJoining(tournament.id);
     try {
-      const { error } = await supabase.from("quantum_tournament_participants").insert({
-        tournament_id: tournament.id,
-        user_id: user.id,
-      });
+      const { error } = await supabase.from("quantum_tournament_participants").insert({ tournament_id: tournament.id,
+        user_id: user.id });
       if (error) throw error;
       toast({ title: "Joined Tournament! ⚔️", description: tournament.name });
       fetchTournaments();

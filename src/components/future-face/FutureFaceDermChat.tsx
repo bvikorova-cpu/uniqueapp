@@ -36,8 +36,7 @@ export default function FutureFaceDermChat() {
       // Build context-aware prompt: include short history
       const historyContext = conv.slice(-6).map(m => `${m.role === "user" ? "PATIENT" : "DERMATOLOGIST"}: ${m.content}`).join("\n\n");
       const res = await supabase.functions.invoke("future-face-ai", {
-        body: { action: "dermatologist_review", prompt: historyContext, age: 30 },
-      });
+        body: { action: "dermatologist_review", prompt: historyContext, age: 30 } });
       const data = throwIfInvokeError(res);
       setMsgs(m => [...m, { role: "assistant", content: data.result }]);
     } catch (err: any) {

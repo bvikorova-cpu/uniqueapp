@@ -56,13 +56,11 @@ export type FriendChallenge = {
 export function getFriendChallenges(): FriendChallenge[] {
   return JSON.parse(localStorage.getItem(FRIEND_KEY) || "[]");
 }
-export function addFriendChallenge(c: Omit<FriendChallenge, "id" | "createdAt" | "status">): FriendChallenge {
-  const newChallenge: FriendChallenge = {
+export function addFriendChallenge(c: Omit<FriendChallenge, "id" | "createdAt" | "status">): FriendChallenge { const newChallenge: FriendChallenge = {
     ...c,
     id: crypto.randomUUID(),
     createdAt: Date.now(),
-    status: "pending",
-  };
+    status: "pending" };
   const list = getFriendChallenges();
   list.unshift(newChallenge);
   localStorage.setItem(FRIEND_KEY, JSON.stringify(list));

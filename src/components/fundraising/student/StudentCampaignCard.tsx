@@ -23,9 +23,7 @@ interface StudentCampaign {
   created_at: string;
 }
 
-const supportTypeLabels: Record<string, string> = {
-  tuition: "🎓 Tuition", books: "📚 Books", course: "💻 Course", equipment: "🔬 Equipment", other: "📖 Other",
-};
+const supportTypeLabels: Record<string, string> = { tuition: "🎓 Tuition", books: "📚 Books", course: "💻 Course", equipment: "🔬 Equipment", other: "📖 Other" };
 
 const quickAmounts = [5, 10, 25];
 

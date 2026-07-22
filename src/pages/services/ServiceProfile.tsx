@@ -81,14 +81,11 @@ export default function ServiceProfile() {
       setSlotsLoading(true); setSelected(null);
       const from = new Date();
       const to = new Date(Date.now() + 21 * 24 * 3600 * 1000);
-      const { data } = await supabase.functions.invoke("service-availability-slots", {
-        body: {
+      const { data } = await supabase.functions.invoke("service-availability-slots", { body: {
           provider_id: id,
           from: from.toISOString(),
           to: to.toISOString(),
-          offering_id: selectedOffering?.id,
-        },
-      });
+          offering_id: selectedOffering?.id } });
       setSlots((data?.slots as string[]) ?? []);
       setSlotsLoading(false);
     })();
@@ -106,14 +103,11 @@ export default function ServiceProfile() {
     if (!session.session) { toast.error("Please sign in to book"); navigate("/auth"); return; }
     setBooking(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-service-booking", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("create-service-booking", { body: {
           provider_id: id,
           scheduled_at: selected,
           customer_notes: notes || undefined,
-          offering_id: selectedOffering?.id,
-        },
-      });
+          offering_id: selectedOffering?.id } });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
       else throw new Error("No checkout URL returned");

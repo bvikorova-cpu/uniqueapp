@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const COST = 2;
 
@@ -57,11 +55,9 @@ serve(async (req) => {
     const winner = s1 >= s2 ? c1 : c2;
     const loser = s1 >= s2 ? c2 : c1;
 
-    const rounds = Array.from({ length: 5 }, (_, i) => ({
-      round: i + 1,
+    const rounds = Array.from({ length: 5 }, (_, i) => ({ round: i + 1,
       attacker: i % 2 === 0 ? winner.name : loser.name,
-      damage: Math.floor(15 + Math.random() * 30),
-    }));
+      damage: Math.floor(15 + Math.random() * 30) }));
 
     // Update stats
     await admin.from("characters").update({ wins: (winner.wins ?? 0) + 1 }).eq("id", winner.id);
@@ -74,8 +70,7 @@ serve(async (req) => {
       winner_id: winner.id,
       battle_type: "1v1",
       battle_commentary: rounds.map(r => `Round ${r.round}: ${r.attacker} hits for ${r.damage}`).join("\n"),
-      status: "completed",
-    });
+      status: "completed" });
 
     // Deduct credits (optimistic)
     await admin
@@ -88,8 +83,7 @@ serve(async (req) => {
       winner: { id: winner.id, name: winner.name },
       loser: { id: loser.id, name: loser.name },
       rounds,
-      creditsRemaining: balance - COST,
-    });
+      creditsRemaining: balance - COST });
   } catch (e) {
     console.error(e);
     return json({ error: e instanceof Error ? e.message : String(e) }, 500);
@@ -99,6 +93,5 @@ serve(async (req) => {
 function json(b: unknown, status = 200) {
   return new Response(JSON.stringify(b), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

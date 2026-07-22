@@ -22,8 +22,7 @@ export function AIRoomNarratorView({ onBack }: { onBack: () => void }) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("stock-content-ai", {
-        body: { action: "escape-narrator-gen", roomTheme, scene, voiceStyle },
-      });
+        body: { action: "escape-narrator-gen", roomTheme, scene, voiceStyle } });
       if (error) throw error;
       setResult(data.result);
       toast.success("Narration generated! (4 credits used)");

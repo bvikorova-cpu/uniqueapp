@@ -27,8 +27,7 @@ export function MusicStudioAI() {
     setConcept(null);
     try {
       const { data, error } = await supabase.functions.invoke("music-studio-ai", {
-        body: { brief, genre: genre || "any", mood: mood || "any" },
-      });
+        body: { brief, genre: genre || "any", mood: mood || "any" } });
       if (error) throw error;
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       setConcept((data as { concept: Concept }).concept);

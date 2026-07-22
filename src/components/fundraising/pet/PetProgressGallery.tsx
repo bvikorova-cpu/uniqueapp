@@ -26,8 +26,7 @@ const milestoneMeta: Record<string, { label: string; icon: any; color: string }>
   before: { label: "Before", icon: Camera, color: "text-orange-500" },
   progress: { label: "Progress", icon: PawPrint, color: "text-primary" },
   milestone: { label: "Milestone", icon: Sparkles, color: "text-accent" },
-  after: { label: "After", icon: Heart, color: "text-green-500" },
-};
+  after: { label: "After", icon: Heart, color: "text-green-500" } };
 
 interface Props {
   campaignId: string;
@@ -35,8 +34,7 @@ interface Props {
   petName: string;
 }
 
-export function PetProgressGallery({ campaignId, ownerUserId, petName }: Props) {
-  const [updates, setUpdates] = useState<Update[]>([]);
+export function PetProgressGallery({ campaignId, ownerUserId, petName }: Props) { const [updates, setUpdates] = useState<Update[]>([]);
   const [isOwner, setIsOwner] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
@@ -44,8 +42,7 @@ export function PetProgressGallery({ campaignId, ownerUserId, petName }: Props) 
     body: "",
     image_url: "",
     day_since_rescue: "",
-    milestone_type: "progress",
-  });
+    milestone_type: "progress" });
   const [posting, setPosting] = useState(false);
 
   const load = async () => {
@@ -69,15 +66,13 @@ export function PetProgressGallery({ campaignId, ownerUserId, petName }: Props) 
     }
     setPosting(true);
     const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("pet_progress_updates" as any).insert({
-      campaign_id: campaignId,
+    const { error } = await supabase.from("pet_progress_updates" as any).insert({ campaign_id: campaignId,
       author_user_id: user?.id,
       title: form.title.trim().slice(0, 200),
       body: form.body.trim() || null,
       image_url: form.image_url.trim() || null,
       day_since_rescue: form.day_since_rescue ? parseInt(form.day_since_rescue) : null,
-      milestone_type: form.milestone_type,
-    });
+      milestone_type: form.milestone_type });
     setPosting(false);
     if (error) {
       toast({ title: "Could not post", description: error.message, variant: "destructive" });

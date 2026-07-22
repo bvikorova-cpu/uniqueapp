@@ -39,19 +39,15 @@ export const ConcertChat = ({ onBack }: Props) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in to chat"); return; }
 
-      const msg = {
-        user_id: session.user.id,
+      const msg = { user_id: session.user.id,
         username: session.user.email?.split("@")[0] || "Anonymous",
         content: newMessage.trim(),
-        timestamp: new Date().toISOString(),
-      };
+        timestamp: new Date().toISOString() };
 
       // Reuse subscribed channel instead of creating a new one per send (leak fix).
-      await channelRef.current.send({
-        type: "broadcast",
+      await channelRef.current.send({ type: "broadcast",
         event: "chat_message",
-        payload: msg,
-      });
+        payload: msg });
 
       setMessages(prev => [...prev, msg]);
       setNewMessage("");

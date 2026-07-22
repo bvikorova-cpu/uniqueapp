@@ -7,15 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { CreditCard, Search, TrendingUp, DollarSign } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-export const TransactionLogPanel = () => {
-  const [transactions, setTransactions] = useState<any[]>([]);
+export const TransactionLogPanel = () => { const [transactions, setTransactions] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalRevenue: 0,
     todayRevenue: 0,
-    transactionCount: 0,
-  });
+    transactionCount: 0 });
 
   useEffect(() => {
     loadTransactions();
@@ -46,28 +44,24 @@ export const TransactionLogPanel = () => {
       // Combine and format transactions
       const allTransactions: any[] = [];
 
-      bazaarOrders.data?.forEach(order => {
-        allTransactions.push({
+      bazaarOrders.data?.forEach(order => { allTransactions.push({
           id: order.id,
           type: 'Bazaar Order',
           amount: order.amount,
           commission: order.commission_amount,
           status: order.status,
           created_at: order.created_at,
-          source: 'bazaar',
-        });
+          source: 'bazaar' });
       });
 
-      auctionBids.data?.forEach(bid => {
-        allTransactions.push({
+      auctionBids.data?.forEach(bid => { allTransactions.push({
           id: bid.id,
           type: 'Auction Bid',
           amount: bid.bid_amount,
           commission: bid.bid_amount * 0.1, // 10% commission
           status: 'completed',
           created_at: bid.created_at,
-          source: 'auction',
-        });
+          source: 'auction' });
       });
 
       subscriptions.data?.forEach(sub => {
@@ -79,8 +73,7 @@ export const TransactionLogPanel = () => {
             commission: sub.price, // Full amount for subscriptions
             status: sub.status,
             created_at: sub.created_at,
-            source: 'subscription',
-          });
+            source: 'subscription' });
         }
       });
 
@@ -103,11 +96,9 @@ export const TransactionLogPanel = () => {
         .filter(t => new Date(t.created_at) >= today)
         .reduce((sum, t) => sum + (parseFloat(t.commission) || 0), 0);
 
-      setStats({
-        totalRevenue,
+      setStats({ totalRevenue,
         todayRevenue,
-        transactionCount: allTransactions.length,
-      });
+        transactionCount: allTransactions.length });
     } catch (error) {
       console.error('Load transactions error:', error);
     } finally {

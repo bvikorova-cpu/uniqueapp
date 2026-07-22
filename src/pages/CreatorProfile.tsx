@@ -105,31 +105,24 @@ export default function CreatorProfile() {
     if (giftSuccess === 'true' && sessionId) {
       // Verify and record the gift payment
       supabase.functions.invoke('verify-gift-payment', {
-        body: { sessionId },
-      }).then(({ error }) => {
+        body: { sessionId } }).then(({ error }) => {
         if (error) {
           console.error('Gift verification error:', error);
         }
-        toast({
-          title: "Gift Sent! 🎉",
-          description: `Your gift has been delivered! The creator receives 90% of the value.`,
-        });
+        toast({ title: "Gift Sent! 🎉",
+          description: `Your gift has been delivered! The creator receives 90% of the value.` });
       });
       window.history.replaceState({}, '', `/creator/${creatorId}`);
     }
 
-    if (subscription === 'success') {
-      checkSubscription();
+    if (subscription === 'success') { checkSubscription();
       toast({
         title: "Subscription Activated!",
-        description: "Welcome to the creator's community!",
-      });
+        description: "Welcome to the creator's community!" });
       window.history.replaceState({}, '', `/creator/${creatorId}`);
-    } else if (purchase === 'success') {
-      toast({
+    } else if (purchase === 'success') { toast({
         title: "Purchase Complete!",
-        description: "Content pack purchased successfully!",
-      });
+        description: "Content pack purchased successfully!" });
       window.history.replaceState({}, '', `/creator/${creatorId}`);
     }
   }, [searchParams, creatorId, toast, creator]);
@@ -158,24 +151,20 @@ export default function CreatorProfile() {
 
       if (error) throw error;
       
-      if (!data) {
-        toast({
+      if (!data) { toast({
           variant: "destructive",
           title: "Creator Not Found",
-          description: "This creator profile doesn't exist.",
-        });
+          description: "This creator profile doesn't exist." });
         navigate('/discover-creators');
         return;
       }
       
       setCreator(data);
-    } catch (error: any) {
-      console.error('Error loading creator:', error);
+    } catch (error: any) { console.error('Error loading creator:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load creator profile",
-      });
+        description: "Failed to load creator profile" });
       navigate('/discover-creators');
     } finally {
       setLoading(false);
@@ -205,20 +194,17 @@ export default function CreatorProfile() {
       if (!user) return;
 
       const { data, error } = await supabase.functions.invoke('check-creator-subscription', {
-        body: { creatorId: creator.id },
-      });
+        body: { creatorId: creator.id } });
 
       if (error) throw error;
 
       const tierId = data?.tier_id;
       const tierName = tierId ? tiers.find((t) => t.id === tierId)?.name : undefined;
 
-      setUserSubscription({
-        subscribed: data?.subscribed || false,
+      setUserSubscription({ subscribed: data?.subscribed || false,
         tier_id: tierId,
         tier_name: tierName,
-        subscription_end: data?.subscription_end,
-      });
+        subscription_end: data?.subscription_end });
     } catch (error: any) {
       console.error('Error checking subscription:', error);
     }
@@ -254,17 +240,13 @@ export default function CreatorProfile() {
       if (updateError) throw updateError;
 
       setCreator({ ...creator, avatar_url: publicUrl });
-      toast({
-        title: "Avatar Updated",
-        description: "Your profile photo has been changed.",
-      });
-    } catch (error: any) {
-      console.error('Error uploading avatar:', error);
+      toast({ title: "Avatar Updated",
+        description: "Your profile photo has been changed." });
+    } catch (error: any) { console.error('Error uploading avatar:', error);
       toast({
         variant: "destructive",
         title: "Upload Failed",
-        description: error.message || "Failed to upload avatar",
-      });
+        description: error.message || "Failed to upload avatar" });
     } finally {
       setUploadingAvatar(false);
     }
@@ -298,17 +280,13 @@ export default function CreatorProfile() {
       if (updateError) throw updateError;
 
       setCreator({ ...creator, cover_image_url: publicUrl });
-      toast({
-        title: "Cover Updated",
-        description: "Your cover photo has been changed.",
-      });
-    } catch (error: any) {
-      console.error('Error uploading cover:', error);
+      toast({ title: "Cover Updated",
+        description: "Your cover photo has been changed." });
+    } catch (error: any) { console.error('Error uploading cover:', error);
       toast({
         variant: "destructive",
         title: "Upload Failed",
-        description: error.message || "Failed to upload cover",
-      });
+        description: error.message || "Failed to upload cover" });
     } finally {
       setUploadingCover(false);
     }

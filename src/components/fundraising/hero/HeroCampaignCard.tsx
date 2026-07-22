@@ -22,13 +22,11 @@ interface HeroCampaign {
   created_at: string;
 }
 
-const heroTypeLabels: Record<string, string> = {
-  firefighter: "🚒 Firefighters",
+const heroTypeLabels: Record<string, string> = { firefighter: "🚒 Firefighters",
   paramedic: "🚑 Paramedics",
   teacher: "👨‍🏫 Teachers",
   volunteer: "🤝 Volunteers",
-  other: "🦸 Other Heroes",
-};
+  other: "🦸 Other Heroes" };
 
 const quickAmounts = [5, 10, 25];
 

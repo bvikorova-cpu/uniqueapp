@@ -14,14 +14,12 @@ interface ReportDialogProps {
   variant?: "ghost" | "outline" | "default";
 }
 
-export const ReportDialog = ({
-  contentType,
+export const ReportDialog = ({ contentType,
   contentId,
   postId,
   communityId,
   trigger,
-  variant = "ghost",
-}: ReportDialogProps) => {
+  variant = "ghost" }: ReportDialogProps) => {
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
   const { submitReport } = useModerationQueue();

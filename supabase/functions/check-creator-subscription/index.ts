@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[CHECK-CREATOR-SUB] ${s}${d ? " " + JSON.stringify(d) : ""}`);
@@ -39,16 +37,13 @@ serve(async (req) => {
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     if (customers.data.length === 0) {
       return new Response(JSON.stringify({ subscribed: false }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const customerId = customers.data[0].id;
 
-    const subs = await stripe.subscriptions.list({
-      customer: customerId,
+    const subs = await stripe.subscriptions.list({ customer: customerId,
       status: "active",
-      limit: 100,
-    });
+      limit: 100 });
 
     const match = subs.data.find(
       (s) => s.metadata?.creator_id === creatorId && s.metadata?.kind === "creator_subscription",
@@ -63,8 +58,7 @@ serve(async (req) => {
         .eq("creator_id", creatorId);
 
       return new Response(JSON.stringify({ subscribed: false }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const tierId = match.metadata?.tier_id ?? null;
@@ -72,24 +66,20 @@ serve(async (req) => {
 
     // Sync local record (best-effort)
     await supabase.from("creator_subscriptions").upsert(
-      {
-        subscriber_id: user.id,
+      { subscriber_id: user.id,
         creator_id: creatorId,
         tier_id: tierId,
         status: "active",
         stripe_subscription_id: match.id,
-        current_period_end: periodEnd,
-      },
+        current_period_end: periodEnd },
       { onConflict: "subscriber_id,creator_id" },
     );
 
     return new Response(
-      JSON.stringify({
-        subscribed: true,
+      JSON.stringify({ subscribed: true,
         tier_id: tierId,
         subscription_end: periodEnd,
-        stripe_subscription_id: match.id,
-      }),
+        stripe_subscription_id: match.id }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
@@ -97,7 +87,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg, subscribed: false }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   }
 });

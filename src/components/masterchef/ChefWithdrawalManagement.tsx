@@ -4,13 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Clock, DollarSign } from "lucide-react";
 import { toast } from "sonner";
@@ -61,11 +59,9 @@ export const ChefWithdrawalManagement = () => {
 
       const profilesMap = new Map(profiles?.map(p => [p.id, p]) || []);
 
-      const enrichedRequests = (data || []).map(req => ({
-        ...req,
+      const enrichedRequests = (data || []).map(req => ({ ...req,
         chef_name: profilesMap.get(req.chef_id)?.full_name || "Unknown Chef",
-        chef_email: profilesMap.get(req.chef_id)?.email || "N/A",
-      }));
+        chef_email: profilesMap.get(req.chef_id)?.email || "N/A" }));
 
       setRequests(enrichedRequests);
     } catch (error: any) {
@@ -88,12 +84,10 @@ export const ChefWithdrawalManagement = () => {
         return;
       }
 
-      const { error } = await supabase.rpc("process_masterchef_withdrawal", {
-        p_request_id: selectedRequest.id,
+      const { error } = await supabase.rpc("process_masterchef_withdrawal", { p_request_id: selectedRequest.id,
         p_admin_id: session.user.id,
         p_status: status,
-        p_admin_notes: adminNotes || null,
-      });
+        p_admin_notes: adminNotes || null });
 
       if (error) throw error;
 
@@ -114,8 +108,7 @@ export const ChefWithdrawalManagement = () => {
       pending: { icon: Clock, color: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400" },
       approved: { icon: CheckCircle, color: "bg-blue-500/20 text-blue-700 dark:text-blue-400" },
       completed: { icon: CheckCircle, color: "bg-green-500/20 text-green-700 dark:text-green-400" },
-      rejected: { icon: XCircle, color: "bg-red-500/20 text-red-700 dark:text-red-400" },
-    };
+      rejected: { icon: XCircle, color: "bg-red-500/20 text-red-700 dark:text-red-400" } };
     const config = configs[status as keyof typeof configs] || configs.pending;
     const Icon = config.icon;
     return (

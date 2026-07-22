@@ -41,19 +41,15 @@ export const SpectatorBetting = ({ matchId, player1Name, player2Name, player1Id,
 
       spendCredits(betAmount);
 
-      const { error } = await supabase.from("brain_duel_spectator_bets").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("brain_duel_spectator_bets").insert({ user_id: user.id,
         match_id: matchId,
         bet_on_player_id: playerId,
         bet_amount: betAmount,
-        status: "pending",
-      });
+        status: "pending" });
 
       if (error) throw error;
       setBetPlaced({ playerId, amount: betAmount });
-      toast.success(`Bet placed! ${betAmount} credits on ${playerId === player1Id ? player1Name : player2Name}`, {
-        description: "If they win, you earn 2× your bet!",
-      });
+      toast.success(`Bet placed! ${betAmount} credits on ${playerId === player1Id ? player1Name : player2Name}`, { description: "If they win, you earn 2× your bet!" });
     } catch (e) {
       toast.error("Failed to place bet");
     } finally {

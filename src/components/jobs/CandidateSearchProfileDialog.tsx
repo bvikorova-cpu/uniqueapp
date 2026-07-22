@@ -9,13 +9,11 @@ import { UserCheck } from "lucide-react";
 import { toast } from "sonner";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-export default function CandidateSearchProfileDialog() {
-  const [open, setOpen] = useState(false);
+export default function CandidateSearchProfileDialog() { const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState<any>({
     headline: "", bio: "", skills: "", years_experience: 0,
     desired_role: "", desired_location: "", desired_salary_min: 0,
-    remote_ok: true, is_searchable: true, is_open_to_offers: true,
-  });
+    remote_ok: true, is_searchable: true, is_open_to_offers: true });
 
   const load = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -29,8 +27,7 @@ export default function CandidateSearchProfileDialog() {
   const save = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return toast.error("Sign in required");
-    const payload = {
-      user_id: user.id,
+    const payload = { user_id: user.id,
       headline: profile.headline,
       bio: profile.bio,
       skills: (profile.skills || "").split(",").map((s: string) => s.trim()).filter(Boolean),
@@ -41,8 +38,7 @@ export default function CandidateSearchProfileDialog() {
       remote_ok: !!profile.remote_ok,
       is_searchable: !!profile.is_searchable,
       is_open_to_offers: !!profile.is_open_to_offers,
-      updated_at: new Date().toISOString(),
-    };
+      updated_at: new Date().toISOString() };
     const { error } = await (supabase as any).from("candidate_search_profiles").upsert(payload, { onConflict: "user_id" });
     if (error) return toast.error(error.message);
     toast.success("Profile saved — recruiters can now find you");

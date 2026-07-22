@@ -25,9 +25,7 @@ const scenarios: Scenario[] = [
         { text: "Stay calm, then talk to teacher after class", score: 100, feedback: "Calm denies them the reaction. Reporting is right." },
         { text: "Leave crying", score: 20, feedback: "Reinforces bully behavior. Stay grounded." },
         { text: "Laugh along to fit in", score: 10, feedback: "Validates the behavior, hurts your self-esteem." },
-      ],
-    }],
-  },
+      ] }] },
   {
     id: "cyberbullying", title: "Cyberbullying Attack", description: "Someone created a fake account about you",
     difficulty: "medium", category: "Online",
@@ -38,9 +36,7 @@ const scenarios: Scenario[] = [
         { text: "Screenshot everything, report account to platform", score: 100, feedback: "Evidence + proper reporting." },
         { text: "Delete all your social media", score: 30, feedback: "Lets the bully win." },
         { text: "Confront them at school", score: 20, feedback: "Could backfire badly." },
-      ],
-    }],
-  },
+      ] }] },
   {
     id: "physical-threat", title: "Physical Threat", description: "Someone threatens to hurt you after school",
     difficulty: "hard", category: "Safety",
@@ -51,9 +47,7 @@ const scenarios: Scenario[] = [
         { text: "Go to nearest teacher/office and report immediately", score: 100, feedback: "Physical threats MUST be reported. Not snitching." },
         { text: "Find friends to back you up for the fight", score: 0, feedback: "Risk of injury + punishment." },
         { text: "Stay quiet, hope they forget", score: 10, feedback: "Threats rarely just go away." },
-      ],
-    }],
-  },
+      ] }] },
   {
     id: "expert-coercion", title: "Coercion & Blackmail", description: "Someone threatens to release private content",
     difficulty: "expert", category: "Critical",
@@ -64,9 +58,7 @@ const scenarios: Scenario[] = [
         { text: "Stop responding, screenshot everything, tell a trusted adult + report to police/CyberTipline", score: 100, feedback: "Cutting contact + evidence + authorities is the only safe path." },
         { text: "Try to reason with them", score: 10, feedback: "Engagement gives them leverage." },
         { text: "Threaten them back", score: 0, feedback: "Escalates and could become criminal on your end." },
-      ],
-    }],
-  },
+      ] }] },
 ];
 
 const diffColor = { easy: "bg-emerald-500", medium: "bg-amber-500", hard: "bg-red-500", expert: "bg-purple-600" };
@@ -219,11 +211,10 @@ const SafetyRoleplay = () => {
               <Textarea value={userResponse} onChange={(e) => setUserResponse(e.target.value)} rows={3} placeholder="Type how you'd respond..." className="bg-background/50" />
               <Button
                 disabled={!userResponse.trim() || scoreApi.isPending}
-                onClick={async () => {
+                onClick={ async () => {
                   const r = await scoreApi.mutateAsync({
                     scenario_id: voiceScenario.id, scenario: voiceScenario.steps[0].situation,
-                    user_response: userResponse, difficulty: voiceDifficulty, mode: "text",
-                  });
+                    user_response: userResponse, difficulty: voiceDifficulty, mode: "text" });
                   setAiResult(r);
                 }}
                 className="w-full bg-indigo-600 hover:bg-indigo-500"

@@ -21,20 +21,17 @@ export const useGroups = () => {
       }
       console.log("Groups fetched:", data?.length);
       return data;
-    },
-  });
+    } });
 
   if (queryError) {
     console.error("Query error:", queryError);
   }
 
-  const createGroup = useMutation({
-    mutationFn: async ({
+  const createGroup = useMutation({ mutationFn: async ({
       name,
       description,
       isPrivate,
-      coverImage,
-    }: {
+      coverImage }: {
       name: string;
       description?: string;
       isPrivate?: boolean;
@@ -49,13 +46,11 @@ export const useGroups = () => {
 
       const { data: group, error: groupError } = await supabase
         .from("groups")
-        .insert({
-          name,
+        .insert({ name,
           description,
           is_private: isPrivate || false,
           cover_image: coverImage,
-          creator_id: user.id,
-        })
+          creator_id: user.id })
         .select()
         .single();
 
@@ -68,11 +63,9 @@ export const useGroups = () => {
       // Add creator as admin
       const { error: memberError } = await supabase
         .from("group_members")
-        .insert({
-          group_id: group.id,
+        .insert({ group_id: group.id,
           user_id: user.id,
-          role: "admin",
-        });
+          role: "admin" });
 
       if (memberError) {
         console.error("Error adding creator as member:", memberError);
@@ -93,8 +86,7 @@ export const useGroups = () => {
         description: error.message,
         variant: "destructive" 
       });
-    },
-  });
+    } });
 
   const joinGroup = useMutation({
     mutationFn: async (groupId: string) => {
@@ -107,15 +99,11 @@ export const useGroups = () => {
 
       // Use upsert to avoid duplicate key errors if the user is already a member
       const { error } = await supabase.from("group_members").upsert(
-        {
-          group_id: groupId,
+        { group_id: groupId,
           user_id: user.id,
-          role: "member",
-        },
-        {
-          onConflict: "group_id,user_id",
-          ignoreDuplicates: true,
-        }
+          role: "member" },
+        { onConflict: "group_id,user_id",
+          ignoreDuplicates: true }
       );
 
       if (error) {
@@ -135,8 +123,7 @@ export const useGroups = () => {
         description: error.message,
         variant: "destructive" 
       });
-    },
-  });
+    } });
 
   const leaveGroup = useMutation({
     mutationFn: async (groupId: string) => {
@@ -170,8 +157,7 @@ export const useGroups = () => {
         description: error.message,
         variant: "destructive" 
       });
-    },
-  });
+    } });
 
   const deleteGroup = useMutation({
     mutationFn: async (groupId: string) => {
@@ -184,15 +170,12 @@ export const useGroups = () => {
     },
     onError: (error: Error) => {
       toast({ title: "Error deleting group", description: error.message, variant: "destructive" });
-    },
-  });
+    } });
 
-  return {
-    groups: groups || [],
+  return { groups: groups || [],
     isLoading,
     createGroup: createGroup.mutate,
     joinGroup: joinGroup.mutate,
     leaveGroup: leaveGroup.mutate,
-    deleteGroup: deleteGroup.mutate,
-  };
+    deleteGroup: deleteGroup.mutate };
 };

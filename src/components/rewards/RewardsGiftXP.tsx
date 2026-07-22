@@ -95,11 +95,9 @@ export default function RewardsGiftXP() {
     sendLock.current = true;
     setSending(true);
     try {
-      const { data, error } = await supabase.rpc("gift_xp", {
-        _recipient: recipient.id,
+      const { data, error } = await supabase.rpc("gift_xp", { _recipient: recipient.id,
         _amount: amt,
-        _message: message.trim() || null,
-      });
+        _message: message.trim() || null });
       if (error) {
         toast({ title: "Gift failed", description: error.message, variant: "destructive" });
         return;

@@ -37,8 +37,7 @@ type Session = {
 async function signIn(request: APIRequestContext, email: string, password: string): Promise<Session> {
   const res = await request.post(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
     headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
-    data: { email, password },
-  });
+    data: { email, password } });
   expect(res.ok(), `sign-in failed for ${email}: ${res.status()} ${await res.text()}`).toBeTruthy();
   return (await res.json()) as Session;
 }
@@ -46,16 +45,14 @@ async function signIn(request: APIRequestContext, email: string, password: strin
 async function ensureAccountB(request: APIRequestContext): Promise<void> {
   const res = await request.post(`${SUPABASE_URL}/functions/v1/e2e-ensure-test-user`, {
     headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON_KEY },
-    data: { email: ACCOUNT_B_EMAIL, password: ACCOUNT_B_PASSWORD },
-  });
+    data: { email: ACCOUNT_B_EMAIL, password: ACCOUNT_B_PASSWORD } });
   expect(res.ok(), `ensure account B failed: ${res.status()} ${await res.text()}`).toBeTruthy();
 }
 
 function buildStorageState(session: Session, baseURL: string) {
   const onboardingPayload = JSON.stringify({ at: Date.now(), interests: [] });
   const localStorage = [
-    {
-      name: STORAGE_KEY,
+    { name: STORAGE_KEY,
       value: JSON.stringify({
         access_token: session.access_token,
         refresh_token: session.refresh_token,
@@ -64,9 +61,7 @@ function buildStorageState(session: Session, baseURL: string) {
         token_type: session.token_type,
         user: session.user,
         provider_token: null,
-        provider_refresh_token: null,
-      }),
-    },
+        provider_refresh_token: null }) },
     { name: "onboarding_completed", value: "true" },
     { name: "welcome_onboarding_v1", value: onboardingPayload },
     { name: `welcome_onboarding_v1_${session.user.id}`, value: onboardingPayload },
@@ -83,8 +78,7 @@ function buildStorageState(session: Session, baseURL: string) {
   ]);
   return {
     cookies: [],
-    origins: Array.from(origins).map((origin) => ({ origin, localStorage })),
-  };
+    origins: Array.from(origins).map((origin) => ({ origin, localStorage })) };
 }
 
 async function deleteFriendshipsBetween(
@@ -98,8 +92,7 @@ async function deleteFriendshipsBetween(
     apikey: SUPABASE_ANON_KEY,
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
-    Prefer: "return=minimal",
-  };
+    Prefer: "return=minimal" };
   const r1 = await request.delete(
     `${SUPABASE_URL}/rest/v1/friendships?user_id=eq.${userA}&friend_id=eq.${userB}`,
     { headers },
@@ -139,10 +132,8 @@ async function insertFriendRequest(
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
-      Prefer: "return=minimal",
-    },
-    data: { user_id: fromUser, friend_id: toUser, status: "pending" },
-  });
+      Prefer: "return=minimal" },
+    data: { user_id: fromUser, friend_id: toUser, status: "pending" } });
   expect([200, 201]).toContain(res.status());
 }
 
@@ -180,12 +171,10 @@ test.describe("Wall Friends – accept & decline (two účty)", () => {
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${sessionB.access_token}`,
       "Content-Type": "application/json",
-      Prefer: "resolution=merge-duplicates,return=minimal",
-    };
+      Prefer: "resolution=merge-duplicates,return=minimal" };
     await request.post(`${SUPABASE_URL}/rest/v1/profiles`, {
       headers,
-      data: { id: userBId, full_name: "E2E Friend B" },
-    });
+      data: { id: userBId, full_name: "E2E Friend B" } });
   });
 
   test.beforeEach(async ({ request }) => {
@@ -254,11 +243,9 @@ test.describe("Wall Friends – accept & decline (two účty)", () => {
         .first()
         .isVisible({ timeout: 10_000 })
         .catch(() => false);
-      if (!friendVisible) {
-        test.info().annotations.push({
+      if (!friendVisible) { test.info().annotations.push({
           type: "soft-skip",
-          description: "DB má accepted, UI A neukazuje B (profiles_public propagation lag)",
-        });
+          description: "DB má accepted, UI A neukazuje B (profiles_public propagation lag)" });
       }
     } finally {
       await ctxA.close();

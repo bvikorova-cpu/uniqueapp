@@ -62,8 +62,7 @@ export const MultiverseHero = () => {
     size: Math.random() * 4 + 2,
     x: `${Math.random() * 100}%`,
     y: `${Math.random() * 100}%`,
-    duration: Math.random() * 3 + 2,
-  }));
+    duration: Math.random() * 3 + 2 }));
 
   return (
     <div className="relative h-[78vh] min-h-[540px] w-full overflow-hidden rounded-3xl mb-8">
@@ -121,13 +120,12 @@ export const MultiverseHero = () => {
         >
           <motion.h1
             className="text-3xl md:text-5xl lg:text-6xl font-black text-center"
-            style={{
+            style={ {
               background: 'linear-gradient(135deg, #c084fc, #22d3ee, #a78bfa, #67e8f9)',
               backgroundSize: '200% 200%',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              textShadow: '0 0 40px rgba(139,92,246,0.5)',
-            }}
+              textShadow: '0 0 40px rgba(139,92,246,0.5)' }}
             animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
             transition={{ duration: 5, repeat: Infinity }}
           >

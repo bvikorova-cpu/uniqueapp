@@ -46,8 +46,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   const { data: myProgress = {} } = useQuery({
     queryKey: ["forum-challenge-progress"],
@@ -62,23 +61,20 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
       const map: Record<string, any> = {};
       (data || []).forEach((p: any) => { map[p.challenge_id] = p; });
       return map;
-    },
-  });
+    } });
 
   const createChallenge = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
       const endsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      const { error } = await (supabase as any).from("forum_challenges").insert({
-        title,
+      const { error } = await (supabase as any).from("forum_challenges").insert({ title,
         description,
         challenge_type: challengeType,
         target_value: parseInt(targetValue),
         karma_reward: parseInt(karmaReward),
         credit_reward: parseInt(creditReward) || 0,
-        ends_at: endsAt,
-      });
+        ends_at: endsAt });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -87,25 +83,21 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
       setTitle("");
       setDescription("");
       toast({ title: "Challenge created!" });
-    },
-  });
+    } });
 
   const joinChallenge = useMutation({
     mutationFn: async (challengeId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
-      const { error } = await (supabase as any).from("forum_challenge_progress").insert({
-        user_id: user.id,
+      const { error } = await (supabase as any).from("forum_challenge_progress").insert({ user_id: user.id,
         challenge_id: challengeId,
-        current_value: 0,
-      });
+        current_value: 0 });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forum-challenge-progress"] });
       toast({ title: "Challenge joined!" });
-    },
-  });
+    } });
 
   const getTypeInfo = (type: string) => CHALLENGE_TYPES.find(t => t.value === type) || CHALLENGE_TYPES[0];
   const isExpired = (endsAt: string) => new Date(endsAt) < new Date();

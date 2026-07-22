@@ -20,10 +20,7 @@ vi.mock("@/integrations/supabase/client", () => ({
       getSession: () => getSessionMock(),
       signUp: (...args: any[]) => signUpMock(...args),
       signInWithPassword: (...args: any[]) => signInMock(...args),
-      signOut: () => signOutMock(),
-    },
-  },
-}));
+      signOut: () => signOutMock() } } }));
 
 import { AuthProvider, useAuth } from "./AuthContext";
 

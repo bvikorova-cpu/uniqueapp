@@ -61,12 +61,10 @@ export function createSubscriptionCheckHandler(config: SubscriptionConfig) {
       const customerId = await getStripeCustomer(stripe, email);
       const supabase = createSupabaseAdminClient();
 
-      const defaultNoSubResponse = config.defaultResponse || {
-        subscribed: false,
+      const defaultNoSubResponse = config.defaultResponse || { subscribed: false,
         product_id: null,
         tier: null,
-        subscription_end: null,
-      };
+        subscription_end: null };
 
       if (!customerId) {
         log("No Stripe customer found");
@@ -79,12 +77,10 @@ export function createSubscriptionCheckHandler(config: SubscriptionConfig) {
       // may internally convert timestamps to Date objects and throw
       // "Invalid time value" for malformed values.
       let subscriptions: any;
-      try {
-        subscriptions = await stripe.subscriptions.list({
+      try { subscriptions = await stripe.subscriptions.list({
           customer: customerId,
           status: "active",
-          limit: 1,
-        });
+          limit: 1 });
       } catch (stripeErr: any) {
         if (stripeErr?.message?.includes("Invalid time value")) {
           log("Stripe SDK date parsing error – treating as no subscription", { error: stripeErr.message });
@@ -107,13 +103,11 @@ export function createSubscriptionCheckHandler(config: SubscriptionConfig) {
               const tier = findTierByProductId(purchaseResult.productId, config.lifetimeProducts);
               log("Lifetime purchase found", { tier });
 
-              let response: Record<string, unknown> = {
-                subscribed: true,
+              let response: Record<string, unknown> = { subscribed: true,
                 tier,
                 product_id: purchaseResult.productId,
                 subscription_end: null,
-                is_lifetime: true,
-              };
+                is_lifetime: true };
 
               return successResponse(
                 config.responseMapping ? config.responseMapping(response) : response
@@ -155,13 +149,11 @@ export function createSubscriptionCheckHandler(config: SubscriptionConfig) {
       log("Active subscription found", { tier, priceId, productId, subscriptionEnd });
 
       // Build response
-      let response: Record<string, unknown> = {
-        subscribed: true,
+      let response: Record<string, unknown> = { subscribed: true,
         tier,
         price_id: priceId,
         product_id: productId,
-        subscription_end: subscriptionEnd,
-      };
+        subscription_end: subscriptionEnd };
 
       // Add additional fields if configured
       if (config.additionalFields) {
@@ -244,10 +236,8 @@ export function createCustomerPortalHandler(config: { functionName: string; retu
       const origin = req.headers.get("origin") || "";
       const returnUrl = `${origin}${config.returnPath || "/"}`;
 
-      const portalSession = await stripe.billingPortal.sessions.create({
-        customer: customerId,
-        return_url: returnUrl,
-      });
+      const portalSession = await stripe.billingPortal.sessions.create({ customer: customerId,
+        return_url: returnUrl });
 
       log("Portal session created", { sessionId: portalSession.id });
       return successResponse({ url: portalSession.url });

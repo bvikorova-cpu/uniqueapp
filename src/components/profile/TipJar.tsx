@@ -51,8 +51,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-profile-tip", {
-        body: { recipientId, amountCents: Math.round(amount * 100), message: message.trim() || null },
-      });
+        body: { recipientId, amountCents: Math.round(amount * 100), message: message.trim() || null } });
       if (error) throw error;
       if (data?.url) {
         window.location.href = data.url as string;

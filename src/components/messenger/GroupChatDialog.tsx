@@ -7,13 +7,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Users, X } from "lucide-react";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 interface Profile {
   id: string;
   full_name: string | null;
@@ -39,13 +37,11 @@ export const GroupChatDialog = ({ userId, allUsers, onGroupCreated }: GroupChatD
     );
   };
 
-  const createGroup = async () => {
-    if (!groupName.trim() || selectedUsers.length === 0) {
+  const createGroup = async () => { if (!groupName.trim() || selectedUsers.length === 0) {
       toast({
         title: "Error",
         description: "Please enter a group name and select at least one member",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -55,10 +51,8 @@ export const GroupChatDialog = ({ userId, allUsers, onGroupCreated }: GroupChatD
       // Create the group
       const { data: group, error: groupError } = await supabase
         .from("group_chats")
-        .insert({
-          name: groupName.trim(),
-          created_by: userId,
-        })
+        .insert({ name: groupName.trim(),
+          created_by: userId })
         .select()
         .single();
 
@@ -67,20 +61,16 @@ export const GroupChatDialog = ({ userId, allUsers, onGroupCreated }: GroupChatD
       // Add creator as admin
       const { error: creatorError } = await supabase
         .from("group_chat_members")
-        .insert({
-          group_id: group.id,
+        .insert({ group_id: group.id,
           user_id: userId,
-          role: "creator",
-        });
+          role: "creator" });
 
       if (creatorError) throw creatorError;
 
       // Add selected members
-      const memberInserts = selectedUsers.map(memberId => ({
-        group_id: group.id,
+      const memberInserts = selectedUsers.map(memberId => ({ group_id: group.id,
         user_id: memberId,
-        role: "member",
-      }));
+        role: "member" }));
 
       const { error: membersError } = await supabase
         .from("group_chat_members")
@@ -88,22 +78,18 @@ export const GroupChatDialog = ({ userId, allUsers, onGroupCreated }: GroupChatD
 
       if (membersError) throw membersError;
 
-      toast({
-        title: "Success",
-        description: "Group created successfully!",
-      });
+      toast({ title: "Success",
+        description: "Group created successfully!" });
 
       setOpen(false);
       setGroupName("");
       setSelectedUsers([]);
       onGroupCreated();
-    } catch (error) {
-      console.error("Error creating group:", error);
+    } catch (error) { console.error("Error creating group:", error);
       toast({
         title: "Error",
         description: "Failed to create group",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsCreating(false);
     }

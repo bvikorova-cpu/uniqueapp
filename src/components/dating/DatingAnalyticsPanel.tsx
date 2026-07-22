@@ -91,8 +91,7 @@ export const DatingAnalyticsPanel = () => {
       conversionLikeToMatch: likesSent > 0 ? Math.round((matchList.length / likesSent) * 100) : 0,
       conversionMatchToChat: matchList.length > 0 ? Math.round((matchesWithChat / matchList.length) * 100) : 0,
       topPhotos,
-      daily: Object.entries(days).map(([date, v]) => ({ date, ...v })),
-    });
+      daily: Object.entries(days).map(([date, v]) => ({ date, ...v })) });
     setLoading(false);
   };
 

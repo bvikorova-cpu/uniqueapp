@@ -10,8 +10,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 
 const TIERS = [
-  {
-    key: "verified",
+  { key: "verified",
     name: "Unique Verified",
     price: "15",
     period: "one-time",
@@ -26,10 +25,8 @@ const TIERS = [
       "VIP support channel",
       "Verified-only comment highlight",
       "Lifetime badge (no subscription)",
-    ],
-  },
-  {
-    key: "plus",
+    ] },
+  { key: "plus",
     name: "Unique Plus",
     price: "40",
     period: "month",
@@ -45,10 +42,8 @@ const TIERS = [
       "Top feed priority for your posts",
       "Exclusive filters & stickers",
       "Early access to new features",
-    ],
-  },
-  {
-    key: "pro",
+    ] },
+  { key: "pro",
     name: "Unique Pro",
     price: "150",
     period: "month",
@@ -64,8 +59,7 @@ const TIERS = [
       "Custom profile branding",
       "Personal account manager",
       "Verified creator eligibility",
-    ],
-  },
+    ] },
 ];
 
 
@@ -98,8 +92,7 @@ export default function Verified() {
     const check = async () => {
       try {
         const { data, error } = await supabase.functions.invoke("check-subscription", {
-          body: { tier: "verification" },
-        });
+          body: { tier: "verification" } });
         if (!mounted) return;
         if (error) throw error;
         setCurrentTier(data?.tier ?? "none");
@@ -107,8 +100,7 @@ export default function Verified() {
         // After Stripe redirects back, apply the verification grant.
         if (success && sessionId && data?.tier === "none") {
           const apply = await supabase.functions.invoke("apply-verification", {
-            body: { session_id: sessionId },
-          });
+            body: { session_id: sessionId } });
           if (apply.error) throw apply.error;
           if (apply.data?.applied) {
             setCurrentTier(apply.data.tier);
@@ -140,8 +132,7 @@ export default function Verified() {
     setProcessingTier(tier);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: "verification", tier },
-      });
+        body: { product: "verification", tier } });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
       else throw new Error("No checkout URL returned");

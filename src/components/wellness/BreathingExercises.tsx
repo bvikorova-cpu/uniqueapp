@@ -21,8 +21,7 @@ const EXERCISES: Record<string, Exercise> = {
       { name: "Inhale", duration: 4, color: "from-sky-500/40 to-cyan-500/40" },
       { name: "Hold", duration: 7, color: "from-violet-500/40 to-purple-500/40" },
       { name: "Exhale", duration: 8, color: "from-emerald-500/40 to-green-500/40" },
-    ],
-  },
+    ] },
   box: {
     name: "Box Breathing",
     description: "Used by Navy SEALs for focus under pressure. Equal breathing pattern for stress relief.",
@@ -31,17 +30,14 @@ const EXERCISES: Record<string, Exercise> = {
       { name: "Hold", duration: 4, color: "from-violet-500/40 to-purple-500/40" },
       { name: "Exhale", duration: 4, color: "from-emerald-500/40 to-green-500/40" },
       { name: "Hold", duration: 4, color: "from-amber-500/40 to-yellow-500/40" },
-    ],
-  },
+    ] },
   "2-4": {
     name: "Relaxing Breath",
     description: "Simple 2-second inhale, 4-second exhale pattern. Perfect for beginners.",
     phases: [
       { name: "Inhale", duration: 2, color: "from-sky-500/40 to-cyan-500/40" },
       { name: "Exhale", duration: 4, color: "from-emerald-500/40 to-green-500/40" },
-    ],
-  },
-};
+    ] } };
 
 export function BreathingExercises() {
   const [selectedExercise, setSelectedExercise] = useState<string>("4-7-8");

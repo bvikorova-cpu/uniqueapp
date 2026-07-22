@@ -85,15 +85,12 @@ export default function BecomeCreator() {
 
       toast({
         title: "Success",
-        description: `${type === 'cover' ? 'Cover image' : 'Avatar'} uploaded successfully`,
-      });
-    } catch (error) {
-      console.error('Error uploading image:', error);
+        description: `${type === 'cover' ? 'Cover image' : 'Avatar'} uploaded successfully` });
+    } catch (error) { console.error('Error uploading image:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to upload image",
-      });
+        description: "Failed to upload image" });
     } finally {
       const setUploading = type === 'cover' ? setUploadingCover : setUploadingAvatar;
       setUploading(false);
@@ -106,12 +103,10 @@ export default function BecomeCreator() {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
+      if (!user) { toast({
           variant: "destructive",
           title: "Error",
-          description: "You must be logged in to become a creator",
-        });
+          description: "You must be logged in to become a creator" });
         navigate("/auth");
         return;
       }
@@ -160,19 +155,15 @@ export default function BecomeCreator() {
 
       if (tiersError) throw tiersError;
 
-      toast({
-        title: "Success!",
-        description: "Your creator profile has been created",
-      });
+      toast({ title: "Success!",
+        description: "Your creator profile has been created" });
 
       navigate(`/creator/${user.id}`);
-    } catch (error: any) {
-      console.error('Error creating creator profile:', error);
+    } catch (error: any) { console.error('Error creating creator profile:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to create creator profile",
-      });
+        description: error.message || "Failed to create creator profile" });
     } finally {
       setLoading(false);
     }

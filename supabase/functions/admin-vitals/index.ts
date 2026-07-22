@@ -4,11 +4,9 @@
 // Consolidated to stay within Supabase edge-function quota. Auth enforced via has_role().
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 // deno-lint-ignore no-explicit-any
 type Json = any;
@@ -35,9 +33,7 @@ async function gh(path: string, init: RequestInit = {}) {
       Authorization: `Bearer ${token}`,
       "X-GitHub-Api-Version": "2022-11-28",
       "Content-Type": "application/json",
-      ...(init.headers || {}),
-    },
-  });
+      ...(init.headers || {}) } });
   const text = await res.text();
   let data: Json = null;
   try { data = text ? JSON.parse(text) : null; } catch { data = text; }
@@ -74,9 +70,7 @@ Deno.serve(async (req) => {
   try {
     const auth = req.headers.get("Authorization");
     if (!auth) {
-      return new Response(JSON.stringify({ error: "Missing authorization" }), {
-        status: 401, headers: jsonHeaders,
-      });
+      return new Response(JSON.stringify({ error: "Missing authorization" }), { status: 401, headers: jsonHeaders });
     }
 
     const body: Json = await req.json().catch(() => ({}));
@@ -90,8 +84,7 @@ Deno.serve(async (req) => {
         const routeLimit = String(body?.route_limit ?? "0");
         await gh(`/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
           method: "POST",
-          body: JSON.stringify({ ref: body?.ref || "main", inputs: { route_limit: routeLimit } }),
-        });
+          body: JSON.stringify({ ref: body?.ref || "main", inputs: { route_limit: routeLimit } }) });
         return new Response(JSON.stringify({ ok: true, dispatched: true }), { headers: jsonHeaders });
       }
       if (action === "list") {
@@ -137,17 +130,13 @@ Deno.serve(async (req) => {
     if (e1) throw e1;
     if (e2) throw e2;
 
-    return new Response(JSON.stringify({ summary, daily, days: safeDays, metric: safeMetric }), {
-      headers: jsonHeaders,
-    });
+    return new Response(JSON.stringify({ summary, daily, days: safeDays, metric: safeMetric }), { headers: jsonHeaders });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     const lower = msg.toLowerCase();
     const status = lower.includes("unauthorized") ? 401
       : lower.includes("forbidden") || lower.includes("permission") ? 403
       : 500;
-    return new Response(JSON.stringify({ error: msg }), {
-      status, headers: jsonHeaders,
-    });
+    return new Response(JSON.stringify({ error: msg }), { status, headers: jsonHeaders });
   }
 });

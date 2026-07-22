@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Timer } from "lucide-react";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 
 interface SelfDestructingMessageProps {
@@ -24,11 +22,9 @@ const DURATIONS = [
   { label: "Off", value: 0 },
 ];
 
-export const SelfDestructingMessage = ({
-  onSelectDuration,
+export const SelfDestructingMessage = ({ onSelectDuration,
   isActive,
-  duration,
-}: SelfDestructingMessageProps) => {
+  duration }: SelfDestructingMessageProps) => {
   const formatDuration = (seconds: number) => {
     if (seconds === 0) return "Off";
     if (seconds < 60) return `${seconds}s`;

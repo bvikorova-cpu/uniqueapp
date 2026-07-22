@@ -5,10 +5,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -47,11 +45,9 @@ serve(async (req) => {
       .eq("id", referrerId)
       .maybeSingle();
 
-    return json({
-      found: true,
+    return json({ found: true,
       full_name: profile?.full_name || profile?.username || "A friend",
-      avatar_url: profile?.avatar_url || null,
-    }, 200);
+      avatar_url: profile?.avatar_url || null }, 200);
   } catch (e) {
     return json({ error: (e as Error).message }, 500);
   }
@@ -60,6 +56,5 @@ serve(async (req) => {
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

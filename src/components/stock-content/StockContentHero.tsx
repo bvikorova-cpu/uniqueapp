@@ -15,13 +15,11 @@ export function StockContentHero() {
 
   useEffect(() => {
     setLiveStats({ assets: 12450, downloads: 89200, creators: 3240, revenue: 245000 });
-    const interval = setInterval(() => {
-      setLiveStats({
+    const interval = setInterval(() => { setLiveStats({
         assets: Math.floor(Math.random() * 500) + 12200,
         downloads: Math.floor(Math.random() * 3000) + 88000,
         creators: Math.floor(Math.random() * 200) + 3100,
-        revenue: Math.floor(Math.random() * 15000) + 240000,
-      });
+        revenue: Math.floor(Math.random() * 15000) + 240000 });
     }, 3000);
     return () => clearInterval(interval);
   }, []);

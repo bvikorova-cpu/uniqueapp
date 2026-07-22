@@ -16,17 +16,13 @@ import {
   Mic
 } from "lucide-react";
 import { VoiceCommentRecorder } from "@/components/wall/VoiceCommentRecorder";
-import {
-  Tooltip,
+import { Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Popover,
+  TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { PostTemplatesDialog } from "@/components/wall/PostTemplatesDialog";
 import { TagFriendsDialog } from "@/components/wall/TagFriendsDialog";
 
@@ -86,13 +82,11 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
     }
   };
 
-  const handleSubmit = async () => {
-    if (!content.trim() && !file) {
+  const handleSubmit = async () => { if (!content.trim() && !file) {
       toast({
         title: "Empty comment",
         description: "Add text or media",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -138,8 +132,7 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
 
       const { error: commentError } = await supabase
         .from("post_comments")
-        .insert({
-          post_id: postId,
+        .insert({ post_id: postId,
           user_id: user.id,
           content: content.trim(),
           image_url: imageUrl,
@@ -149,8 +142,7 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
           tagged_friends: taggedFriends.length > 0 ? taggedFriends : null,
           parent_comment_id: parentCommentId || null,
           voice_url: voiceUrl,
-          voice_duration: voiceDuration,
-        });
+          voice_duration: voiceDuration });
 
       if (commentError) throw commentError;
 

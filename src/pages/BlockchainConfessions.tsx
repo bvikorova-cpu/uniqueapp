@@ -225,10 +225,9 @@ const BlockchainConfessions = () => {
                 </Badge>
                 <h1 
                   className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 text-purple-200"
-                  style={{ 
+                  style={ { 
                     WebkitTextStroke: '1.5px rgba(88, 28, 135, 0.9)',
-                    textShadow: '0 0 20px rgba(139, 92, 246, 0.8), 0 0 40px rgba(139, 92, 246, 0.4), 0 2px 4px rgba(0,0,0,0.8)',
-                  }}
+                    textShadow: '0 0 20px rgba(139, 92, 246, 0.8), 0 0 40px rgba(139, 92, 246, 0.4), 0 2px 4px rgba(0,0,0,0.8)' }}
                 >
                   Blockchain Confessions
                 </h1>

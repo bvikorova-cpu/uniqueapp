@@ -30,8 +30,7 @@ export const ComparisonView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("analyzer-ai", {
-        body: { action: "comparison", item1, item2 },
-      });
+        body: { action: "comparison", item1, item2 } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

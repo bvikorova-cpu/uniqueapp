@@ -4,13 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { HeartPulse, Loader2, Plus, TrendingUp, AlertCircle } from "lucide-react";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PhobiaCureDashboardProps {
@@ -78,13 +76,11 @@ const PhobiaCureDashboard = ({ onOpenPricing }: PhobiaCureDashboardProps) => {
   };
 
 
-  const handleGenerateCure = async () => {
-    if (!selectedPhobia) {
+  const handleGenerateCure = async () => { if (!selectedPhobia) {
       toast({
         title: "Select a Phobia",
         description: "Please select a phobia to generate cure plan",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -92,12 +88,10 @@ const PhobiaCureDashboard = ({ onOpenPricing }: PhobiaCureDashboardProps) => {
       setGenerating(true);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication Required",
           description: "Please sign in to generate cure plans",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -107,19 +101,15 @@ const PhobiaCureDashboard = ({ onOpenPricing }: PhobiaCureDashboardProps) => {
 
       if (error) throw error;
 
-      toast({
-        title: "Cure Plan Generated",
-        description: "Your personalized treatment plan is ready",
-      });
+      toast({ title: "Cure Plan Generated",
+        description: "Your personalized treatment plan is ready" });
 
       loadData();
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Generation Failed",
         description: "Please try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setGenerating(false);
     }

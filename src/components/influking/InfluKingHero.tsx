@@ -107,14 +107,13 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
         <motion.h1
           initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15 }}
           className="text-[clamp(2.2rem,11vw,3.5rem)] md:text-6xl lg:text-7xl font-black mb-3 leading-[1.02] max-w-[14ch]"
-          style={{
+          style={ {
             WebkitTextStroke: "1.5px rgba(0,0,0,0.5)",
             textShadow: "0 0 40px rgba(251,191,36,0.3), 0 4px 15px rgba(0,0,0,0.8)",
             background: "linear-gradient(135deg, #fff 0%, #fde68a 40%, #fbbf24 70%, #f59e0b 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
+            backgroundClip: "text" }}
         >
           {t("influking.hero.title")}
         </motion.h1>

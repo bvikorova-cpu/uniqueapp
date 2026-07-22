@@ -18,23 +18,18 @@ export function useAdminRefund() {
   }) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("admin-refund-payment", {
-        body: params,
-      });
+      const { data, error } = await supabase.functions.invoke("admin-refund-payment", { body: params });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
 
       toast({
         title: "Refund issued",
-        description: `Stripe refund ${(data as any)?.refund_id ?? ""} created.`,
-      });
+        description: `Stripe refund ${(data as any)?.refund_id ?? ""} created.` });
       return data;
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Refund failed",
         description: e?.message || "Unknown error",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       throw e;
     } finally {
       setLoading(false);

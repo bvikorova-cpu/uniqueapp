@@ -13,8 +13,7 @@ export type AIFeature =
   | "daily_question"
   | "conversation_coach";
 
-export const AI_COSTS: Record<AIFeature, number> = {
-  icebreakers: 3,
+export const AI_COSTS: Record<AIFeature, number> = { icebreakers: 3,
   compatibility: 5,
   reply_coach: 2,
   personality_mirror: 8,
@@ -22,8 +21,7 @@ export const AI_COSTS: Record<AIFeature, number> = {
   date_ideas: 5,
   love_letter: 15,
   daily_question: 5,
-  conversation_coach: 10,
-};
+  conversation_coach: 10 };
 
 export function useAnonymousDateAI() {
   const { toast } = useToast();
@@ -35,8 +33,7 @@ export function useAnonymousDateAI() {
     setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("anonymous-date-ai", {
-        body: { feature, payload, matchId },
-      });
+        body: { feature, payload, matchId } });
 
       if (error) {
         // Try to read structured error

@@ -10,27 +10,23 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const ICON_MAP: Record<string, typeof Bell> = {
-  challenge: Swords,
+const ICON_MAP: Record<string, typeof Bell> = { challenge: Swords,
   league: TrendingUp,
   achievement: Trophy,
   reward: Gift,
   social: Users,
   streak: Flame,
   referral: UserPlus,
-  ai_recap: Brain,
-};
+  ai_recap: Brain };
 
-const COLOR_MAP: Record<string, string> = {
-  challenge: 'text-red-400',
+const COLOR_MAP: Record<string, string> = { challenge: 'text-red-400',
   league: 'text-blue-400',
   achievement: 'text-yellow-400',
   reward: 'text-green-400',
   social: 'text-purple-400',
   streak: 'text-orange-400',
   referral: 'text-emerald-400',
-  ai_recap: 'text-violet-400',
-};
+  ai_recap: 'text-violet-400' };
 
 export const NotificationCenter = () => {
   const queryClient = useQueryClient();
@@ -50,8 +46,7 @@ export const NotificationCenter = () => {
         .limit(30);
 
       return data || [];
-    },
-  });
+    } });
 
   // Real-time listener for new notifications
   useEffect(() => {
@@ -104,19 +99,16 @@ export const NotificationCenter = () => {
           message: `You have ${challengeCount} friend challenge${(challengeCount || 0) > 1 ? 's' : ''} waiting.`,
           created_at: new Date(now.getTime() - 5 * 60000).toISOString(),
           is_read: false,
-          _contextual: true,
-        });
+          _contextual: true });
       }
 
-      notifs.push({
-        id: 'daily-spin',
+      notifs.push({ id: 'daily-spin',
         type: 'reward',
         title: 'Daily Spin Available!',
         message: "Spin the wheel for a chance at 100 credits!",
         created_at: new Date(now.getTime() - 15 * 60000).toISOString(),
         is_read: false,
-        _contextual: true,
-      });
+        _contextual: true });
 
       setContextualNotifs(notifs);
     };

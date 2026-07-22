@@ -5,17 +5,14 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -40,10 +37,8 @@ serve(async (req) => {
     const adminUser = u.user;
 
     // Verify admin role
-    const { data: isAdmin, error: roleErr } = await supabase.rpc("has_role", {
-      _user_id: adminUser.id,
-      _role: "admin",
-    });
+    const { data: isAdmin, error: roleErr } = await supabase.rpc("has_role", { _user_id: adminUser.id,
+      _role: "admin" });
     if (roleErr || !isAdmin) {
       return json({ error: "Admin access required" }, 403);
     }
@@ -75,20 +70,17 @@ serve(async (req) => {
 
     if (payout.status !== "pending_review") {
       return json({
-        error: `Payout is not awaiting review (current status: ${payout.status})`,
-      }, 409);
+        error: `Payout is not awaiting review (current status: ${payout.status})` }, 409);
     }
 
     if (action === "reject") {
       // Atomic claim: only succeeds if row is still pending_review.
       const { data: rejClaim, error: rejClaimErr } = await supabase
         .from("campaign_payouts")
-        .update({
-          status: "rejected",
+        .update({ status: "rejected",
           rejection_reason,
           reviewed_by: adminUser.id,
-          reviewed_at: new Date().toISOString(),
-        })
+          reviewed_at: new Date().toISOString() })
         .eq("id", payout_id)
         .eq("status", "pending_review")
         .select("id")
@@ -102,8 +94,7 @@ serve(async (req) => {
         type: "campaign_payout_rejected",
         title: "Payout request rejected",
         message: `Your payout request of €${(Number(payout.amount_cents) / 100).toFixed(2)} was rejected. Reason: ${rejection_reason}`,
-        related_id: payout_id,
-      });
+        related_id: payout_id });
 
       return json({ success: true, status: "rejected", payout_id });
     }
@@ -111,11 +102,9 @@ serve(async (req) => {
     // ===== APPROVE → atomically claim row to 'processing' BEFORE Stripe call =====
     const { data: appClaim, error: appClaimErr } = await supabase
       .from("campaign_payouts")
-      .update({
-        status: "processing",
+      .update({ status: "processing",
         reviewed_by: adminUser.id,
-        reviewed_at: new Date().toISOString(),
-      })
+        reviewed_at: new Date().toISOString() })
       .eq("id", payout_id)
       .eq("status", "pending_review")
       .select("id")
@@ -131,24 +120,19 @@ serve(async (req) => {
         currency: payout.currency || "eur",
         destination: payout.stripe_destination_account,
         description: `Campaign payout (admin-approved) — ${payout.campaign_type}/${payout.campaign_id}`,
-        metadata: {
-          campaign_type: payout.campaign_type,
+        metadata: { campaign_type: payout.campaign_type,
           campaign_id: payout.campaign_id,
           payout_row_id: payout.id,
           owner_user_id: payout.owner_user_id,
-          approved_by: adminUser.id,
-        },
-      });
+          approved_by: adminUser.id } });
 
       await supabase
         .from("campaign_payouts")
-        .update({
-          status: "completed",
+        .update({ status: "completed",
           stripe_transfer_id: transfer.id,
           reviewed_by: adminUser.id,
           reviewed_at: new Date().toISOString(),
-          completed_at: new Date().toISOString(),
-        })
+          completed_at: new Date().toISOString() })
         .eq("id", payout_id);
 
       await supabase.from("notifications").insert({
@@ -156,17 +140,13 @@ serve(async (req) => {
         type: "campaign_payout_completed",
         title: "Payout approved and sent",
         message: `Your payout request of €${(Number(payout.amount_cents) / 100).toFixed(2)} was approved. The funds have been transferred to your Stripe account.`,
-        related_id: payout_id,
-      });
+        related_id: payout_id });
 
-      return json({
-        success: true,
+      return json({ success: true,
         status: "completed",
         transfer_id: transfer.id,
-        payout_id,
-      });
-    } catch (stripeErr) {
-      const msg = stripeErr instanceof Error ? stripeErr.message : String(stripeErr);
+        payout_id });
+    } catch (stripeErr) { const msg = stripeErr instanceof Error ? stripeErr.message : String(stripeErr);
       console.error("[stripe.transfers.create]", msg);
       await supabase
         .from("campaign_payouts")
@@ -174,8 +154,7 @@ serve(async (req) => {
           status: "failed",
           failure_reason: msg,
           reviewed_by: adminUser.id,
-          reviewed_at: new Date().toISOString(),
-        })
+          reviewed_at: new Date().toISOString() })
         .eq("id", payout_id);
       return json({ error: msg, code: "STRIPE_TRANSFER_FAILED" }, 502);
     }

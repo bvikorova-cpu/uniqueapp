@@ -8,10 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Bug, RefreshCw, AlertTriangle, AlertCircle, Info,
-  Trash2, Search, Activity, TrendingUp,
-} from "lucide-react";
+import { Bug, RefreshCw, AlertTriangle, AlertCircle, Info,
+  Trash2, Search, Activity, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
@@ -33,8 +31,7 @@ interface ErrorLog {
 const SEVERITY_META: Record<Severity, { color: string; bg: string; icon: typeof AlertCircle }> = {
   error: { color: "text-destructive", bg: "bg-destructive/10 border-destructive/30", icon: AlertCircle },
   warning: { color: "text-amber-500", bg: "bg-amber-500/10 border-amber-500/30", icon: AlertTriangle },
-  info: { color: "text-blue-500", bg: "bg-blue-500/10 border-blue-500/30", icon: Info },
-};
+  info: { color: "text-blue-500", bg: "bg-blue-500/10 border-blue-500/30", icon: Info } };
 
 export default function AdminErrorLogs() {
   const [logs, setLogs] = useState<ErrorLog[]>([]);
@@ -84,15 +81,13 @@ export default function AdminErrorLogs() {
     });
   }, [logs, severityFilter, search]);
 
-  const stats = useMemo(() => {
-    const last24h = Date.now() - 24 * 60 * 60 * 1000;
+  const stats = useMemo(() => { const last24h = Date.now() - 24 * 60 * 60 * 1000;
     const recent = logs.filter((l) => new Date(l.created_at).getTime() > last24h);
     return {
       total: logs.length,
       errors24h: recent.filter((l) => l.severity === "error").length,
       warnings24h: recent.filter((l) => l.severity === "warning").length,
-      uniqueUsers24h: new Set(recent.map((l) => l.user_id).filter(Boolean)).size,
-    };
+      uniqueUsers24h: new Set(recent.map((l) => l.user_id).filter(Boolean)).size };
   }, [logs]);
 
   const purgeOld = async () => {

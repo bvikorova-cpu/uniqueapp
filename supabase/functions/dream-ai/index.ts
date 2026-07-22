@@ -1,28 +1,23 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 // Credit cost per action (matches the UI labels in DreamJournal.tsx).
-const ACTION_COSTS: Record<string, number> = {
-  "dictionary": 1,
+const ACTION_COSTS: Record<string, number> = { "dictionary": 1,
   "lucid-coach": 1,
   "mood-correlation": 1,
   "pattern-analysis": 1,
   "sleep-analyzer": 1,
   "sleep-ritual": 1,
   "soundscapes": 2,
-  "visualizer": 3,
-};
+  "visualizer": 3 };
 
 async function callOpenAI(apiKey: string, messages: any[]) {
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "gpt-4o-mini", messages }),
-  });
+    body: JSON.stringify({ model: "gpt-4o-mini", messages }) });
   if (!response.ok) {
     const errorText = await response.text();
     if (response.status === 429) throw new Error("Rate limit exceeded. Please try again later.");
@@ -42,8 +37,7 @@ Deno.serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -54,8 +48,7 @@ Deno.serve(async (req) => {
     const { data: userData, error: userErr } = await supabase.auth.getUser(token);
     if (userErr || !userData.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const userId = userData.user.id;
 
@@ -64,8 +57,7 @@ Deno.serve(async (req) => {
 
     if (!action || !ACTION_COSTS[action]) {
       return new Response(JSON.stringify({ error: `Unknown or missing action` }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // ── Credit deduction (uses service role to bypass RLS for atomic decrement) ──
@@ -83,8 +75,7 @@ Deno.serve(async (req) => {
     const remaining = creditsRow?.credits_remaining ?? 0;
     if (remaining < cost) {
       return new Response(JSON.stringify({ error: "Insufficient credits", required: cost, remaining }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const apiKey = Deno.env.get("OPENAI_API_KEY");
@@ -145,15 +136,12 @@ Deno.serve(async (req) => {
     // ── Deduct credits AFTER successful AI call ──
     await adminClient
       .from("ai_credits")
-      .update({
-        credits_remaining: remaining - cost,
-        last_used_at: new Date().toISOString(),
-      })
+      .update({ credits_remaining: remaining - cost,
+        last_used_at: new Date().toISOString() })
       .eq("user_id", userId);
 
     return new Response(JSON.stringify({ ...result, credits_used: cost, credits_remaining: remaining - cost }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("dream-ai error:", e);
     const status = e.message?.includes("Unauthorized") ? 401
@@ -161,7 +149,6 @@ Deno.serve(async (req) => {
       : e.message?.includes("Rate limit") ? 429
       : 500;
     return new Response(JSON.stringify({ error: e.message }), {
-      status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

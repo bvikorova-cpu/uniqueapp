@@ -15,13 +15,11 @@ export function InfluKingHero() {
 
   useEffect(() => {
     setLiveStats({ influencers: 1842, content: 24560, engagement: 89400, earnings: 156200 });
-    const interval = setInterval(() => {
-      setLiveStats({
+    const interval = setInterval(() => { setLiveStats({
         influencers: Math.floor(Math.random() * 200) + 1800,
         content: Math.floor(Math.random() * 2000) + 24000,
         engagement: Math.floor(Math.random() * 5000) + 87000,
-        earnings: Math.floor(Math.random() * 10000) + 150000,
-      });
+        earnings: Math.floor(Math.random() * 10000) + 150000 });
     }, 3000);
     return () => clearInterval(interval);
   }, []);

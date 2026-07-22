@@ -39,10 +39,8 @@ function bumpLocalViews(sectionKey: string) {
     const today = new Date().toISOString().split("T")[0];
     const all: LocalViews = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
     const row = all[sectionKey];
-    all[sectionKey] = {
-      date: today,
-      count: row?.date === today ? row.count + 1 : 1,
-    };
+    all[sectionKey] = { date: today,
+      count: row?.date === today ? row.count + 1 : 1 };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
   } catch {
     // ignore
@@ -109,11 +107,9 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   const claim = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Sign in to claim 5 XP",
-          description: "Redirecting you to sign in…",
-        });
+          description: "Redirecting you to sign in…" });
         const redirect = encodeURIComponent(window.location.pathname + window.location.search);
         window.setTimeout(() => {
           window.location.href = `/auth?redirect=${redirect}`;
@@ -122,8 +118,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       }
 
       const { data, error } = await supabase.functions.invoke("claim-rewarded-ad-xp", {
-        body: { section_key: sectionKey },
-      });
+        body: { section_key: sectionKey } });
 
       // Supabase SDK surfaces non-2xx as `error`. For 429 we need to read the body from error.context.
       let bodyErr = (data as { error?: string; retry_after?: number } | null)?.error;
@@ -151,8 +146,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
           const wait = retryAfter ?? 10;
           toast({
             title: "Slow down ⏱️",
-            description: `Please wait ${wait}s before claiming again.`,
-          });
+            description: `Please wait ${wait}s before claiming again.` });
           setPhase("idle");
           return;
         }
@@ -173,16 +167,12 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       } catch { /* ignore */ }
 
       setPhase("claimed");
-      toast({
-        title: "+5 XP earned! ✨",
-        description: "Watch another video to earn more — no daily limit!",
-      });
-    } catch (e) {
-      toast({
+      toast({ title: "+5 XP earned! ✨",
+        description: "Watch another video to earn more — no daily limit!" });
+    } catch (e) { toast({
         title: "Could not claim XP",
         description: e instanceof Error ? e.message : "Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

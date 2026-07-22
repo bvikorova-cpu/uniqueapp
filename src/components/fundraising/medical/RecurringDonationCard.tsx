@@ -21,9 +21,8 @@ export function RecurringDonationCard({ isMonthly, onChange, amount }: Props) {
       <FloatingHowItWorks title={"Recurring Donation Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Recurring Donation Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Recurring Donation Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <motion.label
       htmlFor="recurring-toggle"
-      animate={{
-        scale: isMonthly ? 1.01 : 1,
-      }}
+      animate={ {
+        scale: isMonthly ? 1.01 : 1 }}
       className={`block cursor-pointer rounded-xl border-2 p-4 transition-all ${
         isMonthly
           ? "border-primary bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 shadow-lg shadow-primary/10"

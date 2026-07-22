@@ -28,8 +28,7 @@ export function useIQUserStats() {
         .eq("user_id", user.id)
         .maybeSingle();
       return (data as unknown as IQUserStats) ?? null;
-    },
-  });
+    } });
 }
 
 export function useIQGlobalCounts() {
@@ -42,8 +41,7 @@ export function useIQGlobalCounts() {
       ]);
       return { totalTests: testCount ?? 0, totalUsers: userCount ?? 0 };
     },
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 }
 
 export function useIQProgress() {
@@ -57,6 +55,5 @@ export function useIQProgress() {
         percentile: number;
         category: string;
       }>;
-    },
-  });
+    } });
 }

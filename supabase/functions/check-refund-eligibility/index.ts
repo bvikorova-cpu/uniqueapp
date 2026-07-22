@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const REFUND_WINDOW_HOURS = 24;
 
@@ -32,23 +30,19 @@ serve(async (req) => {
     const inv = invoices.data[0];
     if (!inv) {
       return new Response(JSON.stringify({ eligible: false, reason: "no_invoice" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const hours_left = REFUND_WINDOW_HOURS - (Date.now() / 1000 - inv.created) / 3600;
     return new Response(
-      JSON.stringify({
-        eligible: hours_left > 0,
+      JSON.stringify({ eligible: hours_left > 0,
         hours_left: Math.max(0, hours_left),
         amount: inv.amount_paid,
-        currency: inv.currency,
-      }),
+        currency: inv.currency }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
     return new Response(JSON.stringify({ eligible: false, error: e instanceof Error ? e.message : String(e) }), {
       status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

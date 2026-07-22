@@ -13,15 +13,13 @@ const errorResponse = (error: unknown, status = 500) => {
   log("ERROR", { message, status });
   return new Response(JSON.stringify({ error: message }), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 };
 
 const successResponse = (data: any) =>
   new Response(JSON.stringify(data), {
     status: 200,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -47,13 +45,9 @@ serve(async (req) => {
     const email = userData.user.email;
     if (!email) throw new Error("User email missing");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ["line_items"],
-    });
+    const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["line_items"] });
     if (!session) throw new Error("Checkout session not found");
     if (session.payment_status !== "paid" && session.status !== "complete") {
       throw new Error("Payment not completed");
@@ -66,15 +60,13 @@ serve(async (req) => {
     }
 
     const priceId = (session.line_items?.data?.[0]?.price as any)?.id || metadata.price_id;
-    const TIER_BY_PRICE: Record<string, string> = {
-      "price_1TvEcCGaXSfGtYFtpISbqkdD": "verified",
+    const TIER_BY_PRICE: Record<string, string> = { "price_1TvEcCGaXSfGtYFtpISbqkdD": "verified",
       "price_1TvEcEGaXSfGtYFtEHzujgoE": "plus",
       "price_1TvEcFGaXSfGtYFtc8kKfh5M": "pro",
       // Legacy price IDs — still honored for existing customers.
       "price_1TvDqrGaXSfGtYFt2g1n3Nuv": "verified",
       "price_1TvDqsGaXSfGtYFtSyfF7vjE": "plus",
-      "price_1TvDqsGaXSfGtYFt6boV1wed": "pro",
-    };
+      "price_1TvDqsGaXSfGtYFt6boV1wed": "pro" };
 
     const tier = TIER_BY_PRICE[priceId] || metadata.tier;
     if (!tier || !["verified", "plus", "pro"].includes(tier)) {
@@ -108,21 +100,17 @@ serve(async (req) => {
       expiresAt.setFullYear(expiresAt.getFullYear() + 100);
     }
 
-    const creditGrants: Record<string, number> = {
-      verified: 50,
+    const creditGrants: Record<string, number> = { verified: 50,
       plus: 100,
-      pro: 150,
-    };
+      pro: 150 };
 
     const creditsToGrant = creditGrants[tier] || 0;
 
     // Update profile (only service_role can change verification_tier due to trigger)
     const { error: updateError } = await admin
       .from("profiles")
-      .update({
-        verification_tier: tier,
-        verification_expires_at: expiresAt.toISOString(),
-      })
+      .update({ verification_tier: tier,
+        verification_expires_at: expiresAt.toISOString() })
       .eq("id", userId);
     if (updateError) throw new Error(`Profile update failed: ${updateError.message}`);
 
@@ -143,22 +131,18 @@ serve(async (req) => {
         amount: creditsToGrant,
         balance_after: newBalance,
         transaction_type: "verification_grant",
-        description: `Unique ${tier} verification bonus`,
-      });
+        description: `Unique ${tier} verification bonus` });
     }
 
     // Audit log
-    await admin.from("verification_benefits_log").insert({
-      user_id: userId,
+    await admin.from("verification_benefits_log").insert({ user_id: userId,
       benefit_type: "verification_purchase",
       tier,
       credits_granted: creditsToGrant,
       metadata: {
         session_id: sessionId,
         price_id: priceId,
-        payment_status: session.payment_status,
-      },
-    });
+        payment_status: session.payment_status } });
 
     log("Applied verification", { userId, tier, credits: creditsToGrant });
     return successResponse({ applied: true, tier, credits_granted: creditsToGrant });

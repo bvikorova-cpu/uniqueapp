@@ -76,8 +76,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
 
     const parsed = anonymousDatingProfileSchema.safeParse({
       anonymous_name: anonymousName,
@@ -89,16 +88,13 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
       relationship_goal: relationshipGoal,
       languages: selectedLanguages,
       interests: selectedInterests,
-      personality_traits: selectedTraits,
-    });
+      personality_traits: selectedTraits });
 
-    if (!parsed.success) {
-      const first = parsed.error.issues[0];
+    if (!parsed.success) { const first = parsed.error.issues[0];
       toast({
         title: "Check your profile",
         description: first?.message ?? "Some fields are invalid.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -110,8 +106,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
       const v = parsed.data;
       const { error } = await supabase
         .from("anonymous_dating_profiles")
-        .upsert({
-          user_id: user.id,
+        .upsert({ user_id: user.id,
           anonymous_name: v.anonymous_name,
           age_range: v.age_range,
           interests: v.interests,
@@ -122,8 +117,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
           preferred_gender: v.preferred_gender || null,
           relationship_goal: v.relationship_goal || null,
           languages: v.languages.length ? v.languages : null,
-          is_active: true,
-        });
+          is_active: true });
 
       if (error) throw error;
       toast({ title: "Profile Created!", description: "You can now start finding matches" });
@@ -174,8 +168,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
             style={{
               left: `${8 + i * 12}%`,
               top: `${20 + (i % 3) * 22}%`,
-              fontSize: `${14 + (i % 3) * 6}px`,
-            }}
+              fontSize: `${14 + (i % 3) * 6}px` }}
             animate={{ y: [0, -40, 0], opacity: [0.3, 0.9, 0.3], scale: [1, 1.3, 1] }}
             transition={{ duration: 4 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
           >
@@ -371,7 +364,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
                     <Input
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="Berlin, Prague, Vienna..."
+                      placeholder="City, City, City..."
                       className="mt-1.5 bg-muted/10 border-border/50 focus:border-primary/50"
                     />
                     <p className="text-[10px] text-muted-foreground mt-1">Helps find matches near you</p>

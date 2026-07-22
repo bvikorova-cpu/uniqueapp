@@ -92,10 +92,9 @@ export const MegaforumHero = ({ totalPosts, totalUsers, todayPosts, trendingTopi
           </span>
           <h1
             className="text-3xl sm:text-5xl font-black text-white mb-2"
-            style={{
+            style={ {
               textShadow: "0 0 30px rgba(16,185,129,0.4), 0 2px 10px rgba(0,0,0,0.8)",
-              WebkitTextStroke: "1px rgba(0,0,0,0.3)",
-            }}
+              WebkitTextStroke: "1px rgba(0,0,0,0.3)" }}
           >
             MEGAFORUM
           </h1>

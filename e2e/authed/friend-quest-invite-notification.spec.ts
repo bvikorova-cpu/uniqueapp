@@ -41,16 +41,14 @@ test("friend quest invite creates notification for recipient with related_id+act
     apikey: SUPABASE_ANON_KEY,
     Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
-    Prefer: "return=representation",
-  };
+    Prefer: "return=representation" };
 
   // 1) Insert invite (self → self).
   const inviteRes = await page.request.post(
     `${SUPABASE_URL}/rest/v1/friend_quest_invites`,
     {
       headers,
-      data: { from_user: userId, to_user: userId, quest_type: "post_streak" },
-    },
+      data: { from_user: userId, to_user: userId, quest_type: "post_streak" } },
   );
   if (!inviteRes.ok()) {
     const body = await inviteRes.text();

@@ -32,9 +32,7 @@ export const ThreadAnalysis = () => {
     const validMessages = messages.filter(m => m.trim());
     if (validMessages.length === 0) return;
     const formatted = validMessages.map(text => ({ text }));
-    analyzeThread(formatted, {
-      onSuccess: (data) => setResult(data.analysis),
-    });
+    analyzeThread(formatted, { onSuccess: (data) => setResult(data.analysis) });
   };
 
   return (

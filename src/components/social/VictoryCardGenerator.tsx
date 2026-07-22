@@ -19,13 +19,11 @@ interface VictoryCardGeneratorProps {
  * Generates a shareable PNG "victory card" — for social bragging & viral growth.
  * Renders an SVG-to-canvas pipeline (no extra deps).
  */
-export function VictoryCardGenerator({
-  defaultTitle = "I just won on Unique!",
+export function VictoryCardGenerator({ defaultTitle = "I just won on Unique!",
   defaultSubtitle = "Join me and try your luck",
   defaultAmount = "€500",
   username,
-  avatarUrl,
-}: VictoryCardGeneratorProps) {
+  avatarUrl }: VictoryCardGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [title, setTitle] = useState(defaultTitle);
   const [amount, setAmount] = useState(defaultAmount);
@@ -145,11 +143,9 @@ export function VictoryCardGenerator({
       }
 
       // Fallback: copy text+link to clipboard
-      try {
-        await navigator.clipboard.writeText(text);
+      try { await navigator.clipboard.writeText(text);
         toast.success("Link copied — paste it on social media!", {
-          description: inIframe ? "Native share works on the live app (uniqueapp.fun)." : undefined,
-        });
+          description: inIframe ? "Native share works on the live app (uniqueapp.fun)." : undefined });
       } catch {
         toast.error("Couldn't share — try Save to download the image.");
       }

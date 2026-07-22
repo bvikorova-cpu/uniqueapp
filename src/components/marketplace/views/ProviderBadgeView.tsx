@@ -29,8 +29,7 @@ export function ProviderBadgeView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke("marketplace-ai", {
         body: { action: "provider-badge", skills, portfolio, experience, certifications },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Verification complete! (${data.credits_used} credits used)`);

@@ -61,8 +61,7 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("kids-drawing-enhance", {
-        body: { sketchBase64: sketch, description, style },
-      });
+        body: { sketchBase64: sketch, description, style } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setEnhanced(data.enhanced as string);

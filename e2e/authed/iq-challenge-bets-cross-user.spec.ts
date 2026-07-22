@@ -46,8 +46,7 @@ test("A vs B IQ challenge: invite, dual bets visible to both, B accepts", async 
 
   const signB = await request.post(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
     headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
-    data: { email: EMAIL_B, password: PASSWORD_B },
-  });
+    data: { email: EMAIL_B, password: PASSWORD_B } });
   expect(signB.ok()).toBeTruthy();
   const sB = await signB.json();
   const userB: string = sB.user.id;
@@ -60,8 +59,7 @@ test("A vs B IQ challenge: invite, dual bets visible to both, B accepts", async 
   // 1) A vytvorí IQ challenge.
   const cRes = await request.post(`${SUPABASE_URL}/rest/v1/iq_friend_challenges`, {
     headers: hA,
-    data: { challenger_id: userA, opponent_id: userB, question_count: 10, stake_credits: 0, status: "pending" },
-  });
+    data: { challenger_id: userA, opponent_id: userB, question_count: 10, stake_credits: 0, status: "pending" } });
   if (!cRes.ok()) {
     test.skip(true, `iq challenge insert blocked (${cRes.status()}): ${(await cRes.text()).slice(0, 200)}`);
     return;
@@ -77,15 +75,13 @@ test("A vs B IQ challenge: invite, dual bets visible to both, B accepts", async 
   // 3) Obaja stavia v iq_match_bets (match_id = challenge.id).
   const betA = await request.post(`${SUPABASE_URL}/rest/v1/iq_match_bets`, {
     headers: hA,
-    data: { match_id: challengeId, user_id: userA, predicted_winner_id: userA, stake_credits: 5 },
-  });
+    data: { match_id: challengeId, user_id: userA, predicted_winner_id: userA, stake_credits: 5 } });
   expect(betA.ok(), `A bet failed: ${await betA.text()}`).toBeTruthy();
   const betAId: string = (await betA.json())[0].id;
 
   const betB = await request.post(`${SUPABASE_URL}/rest/v1/iq_match_bets`, {
     headers: hB,
-    data: { match_id: challengeId, user_id: userB, predicted_winner_id: userB, stake_credits: 5 },
-  });
+    data: { match_id: challengeId, user_id: userB, predicted_winner_id: userB, stake_credits: 5 } });
   expect(betB.ok(), `B bet failed: ${await betB.text()}`).toBeTruthy();
   const betBId: string = (await betB.json())[0].id;
 
@@ -101,8 +97,7 @@ test("A vs B IQ challenge: invite, dual bets visible to both, B accepts", async 
   // 5) B akceptuje challenge.
   const accept = await request.patch(`${SUPABASE_URL}/rest/v1/iq_friend_challenges?id=eq.${challengeId}`, {
     headers: hB,
-    data: { status: "accepted" },
-  });
+    data: { status: "accepted" } });
   expect(accept.ok(), `B accept failed: ${await accept.text()}`).toBeTruthy();
 
   // 6) A overí.

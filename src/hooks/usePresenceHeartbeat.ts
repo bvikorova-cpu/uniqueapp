@@ -7,8 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
  * (and immediately on mount / visibility regain). On hide / unload / unmount
  * flags user offline while still updating last_seen.
  */
-export const usePresenceHeartbeat = (userId: string | null | undefined) => {
-  useEffect(() => {
+export const usePresenceHeartbeat = (userId: string | null | undefined) => { useEffect(() => {
     if (!userId) return;
 
     let cancelled = false;
@@ -22,8 +21,7 @@ export const usePresenceHeartbeat = (userId: string | null | undefined) => {
             {
               user_id: userId,
               is_online: isOnline,
-              last_seen: new Date().toISOString(),
-            },
+              last_seen: new Date().toISOString() },
             { onConflict: "user_id" }
           );
       } catch {

@@ -27,8 +27,7 @@ export const CloseFriendsDialog = ({ trigger }: Props) => {
       const { data, error } = await (supabase as any).rpc("search_users", { q, lim: 20 });
       if (error) throw error;
       return (data || []).filter((u: any) => u.id !== user?.id);
-    },
-  });
+    } });
 
   const friendIds = new Set(friends.map((f: any) => f.friend_id));
 

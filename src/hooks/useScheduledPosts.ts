@@ -21,8 +21,7 @@ export const useScheduledPosts = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const schedulePost = useMutation({
     mutationFn: async ({ content, mediaUrls, scheduledFor }: {
@@ -33,20 +32,17 @@ export const useScheduledPosts = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("scheduled_posts").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("scheduled_posts").insert({ user_id: user.id,
         content,
         media_urls: mediaUrls,
-        scheduled_for: scheduledFor.toISOString(),
-      });
+        scheduled_for: scheduledFor.toISOString() });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["scheduled-posts"] });
       toast({ title: "Post scheduled!" });
-    },
-  });
+    } });
 
   const cancelScheduled = useMutation({
     mutationFn: async (postId: string) => {
@@ -60,13 +56,10 @@ export const useScheduledPosts = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["scheduled-posts"] });
       toast({ title: "Scheduled post cancelled" });
-    },
-  });
+    } });
 
-  return {
-    scheduledPosts: scheduledPosts || [],
+  return { scheduledPosts: scheduledPosts || [],
     isLoading,
     schedulePost: schedulePost.mutate,
-    cancelScheduled: cancelScheduled.mutate,
-  };
+    cancelScheduled: cancelScheduled.mutate };
 };

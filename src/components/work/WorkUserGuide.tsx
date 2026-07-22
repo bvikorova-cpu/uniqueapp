@@ -418,13 +418,11 @@ function ServiceQuickCard({
   title: string; 
   description: string; 
   color: "blue" | "green" | "purple" | "orange";
-}) {
-  const colors = {
+}) { const colors = {
     blue: "from-blue-500/10 to-blue-500/5 border-blue-500/20 text-blue-500",
     green: "from-green-500/10 to-green-500/5 border-green-500/20 text-green-500",
     purple: "from-purple-500/10 to-purple-500/5 border-purple-500/20 text-purple-500",
-    orange: "from-orange-500/10 to-orange-500/5 border-orange-500/20 text-orange-500",
-  };
+    orange: "from-orange-500/10 to-orange-500/5 border-orange-500/20 text-orange-500" };
 
   return (
     <div className={`p-4 rounded-xl bg-gradient-to-br ${colors[color]} border text-center`}>
@@ -449,20 +447,16 @@ function ServiceDetailCard({
   subtitle: string; 
   color: "blue" | "green" | "purple" | "orange";
   features: { title: string; items: string[] }[];
-}) {
-  const colors = {
+}) { const colors = {
     blue: "from-blue-500/5 to-blue-500/10 border-blue-500/20",
     green: "from-green-500/5 to-green-500/10 border-green-500/20",
     purple: "from-purple-500/5 to-purple-500/10 border-purple-500/20",
-    orange: "from-orange-500/5 to-orange-500/10 border-orange-500/20",
-  };
+    orange: "from-orange-500/5 to-orange-500/10 border-orange-500/20" };
 
-  const iconColors = {
-    blue: "bg-blue-500/20 text-blue-500",
+  const iconColors = { blue: "bg-blue-500/20 text-blue-500",
     green: "bg-green-500/20 text-green-500",
     purple: "bg-purple-500/20 text-purple-500",
-    orange: "bg-orange-500/20 text-orange-500",
-  };
+    orange: "bg-orange-500/20 text-orange-500" };
 
   return (
     <Card className={`backdrop-blur-sm bg-gradient-to-br ${colors[color]} border`}>

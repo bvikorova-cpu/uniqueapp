@@ -37,13 +37,11 @@ interface UserSubscription {
   created_at: string;
 }
 
-export default function KidsScienceAdmin() {
-  const [stats, setStats] = useState<SubscriptionStats>({
+export default function KidsScienceAdmin() { const [stats, setStats] = useState<SubscriptionStats>({
     totalSubscribers: 0,
     activeSubscribers: 0,
     monthlyRevenue: 0,
-    totalExperiments: 0,
-  });
+    totalExperiments: 0 });
   const [users, setUsers] = useState<UserSubscription[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -70,12 +68,10 @@ export default function KidsScienceAdmin() {
       .eq("role", "admin")
       .maybeSingle();
 
-    if (!roles) {
-      toast({
+    if (!roles) { toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/");
     }
   };
@@ -86,16 +82,14 @@ export default function KidsScienceAdmin() {
         .from("kids_science_usage")
         .select("*");
 
-      if (usageData) {
-        const activeSubscribers = usageData.filter(u => u.subscription_status === 'active').length;
+      if (usageData) { const activeSubscribers = usageData.filter(u => u.subscription_status === 'active').length;
         const totalExperiments = usageData.reduce((sum, u) => sum + (u.experiments_this_month || 0), 0);
         
         setStats({
           totalSubscribers: usageData.length,
           activeSubscribers,
           monthlyRevenue: activeSubscribers * 5, // €5 per subscriber
-          totalExperiments,
-        });
+          totalExperiments });
       }
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -120,8 +114,7 @@ export default function KidsScienceAdmin() {
           .select("id, email, full_name")
           .in("id", userIds);
 
-        const usersWithDetails = usageData.map(usage => {
-          const profile = profiles?.find(p => p.id === usage.user_id);
+        const usersWithDetails = usageData.map(usage => { const profile = profiles?.find(p => p.id === usage.user_id);
           return {
             user_id: usage.user_id,
             email: profile?.email || "N/A",
@@ -130,19 +123,16 @@ export default function KidsScienceAdmin() {
             product_id: usage.product_id,
             subscription_end: usage.subscription_end,
             experiments_this_month: usage.experiments_this_month || 0,
-            created_at: usage.created_at,
-          };
+            created_at: usage.created_at };
         });
 
         setUsers(usersWithDetails);
       }
-    } catch (error) {
-      console.error("Error fetching users:", error);
+    } catch (error) { console.error("Error fetching users:", error);
       toast({
         title: "Error",
         description: "Failed to load user data",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -157,17 +147,13 @@ export default function KidsScienceAdmin() {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "User usage reset successfully",
-      });
+      toast({ title: "Success",
+        description: "User usage reset successfully" });
       fetchUsers();
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Error",
         description: "Failed to reset user usage",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

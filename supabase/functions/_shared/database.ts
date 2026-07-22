@@ -19,9 +19,7 @@ export function createSupabaseClient(authHeader?: string): SupabaseClient {
 
   return createClient(supabaseUrl, supabaseKey, {
     global: {
-      headers: authHeader ? { Authorization: authHeader } : {},
-    },
-  });
+      headers: authHeader ? { Authorization: authHeader } : {} } });
 }
 
 /**
@@ -37,8 +35,7 @@ export function createUserClient(req: Request): SupabaseClient {
  */
 export async function getUserId(supabase: SupabaseClient): Promise<string | null> {
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { user } } = await supabase.auth.getUser();
   return user?.id || null;
 }
 
@@ -86,20 +83,16 @@ export async function executeWithRollback<T>(
           }
         }
         
-        return {
-          success: false,
-          error: error instanceof Error ? error.message : String(error),
-        };
+        return { success: false,
+          error: error instanceof Error ? error.message : String(error) };
       }
       
       results.push(data);
       completedOps.push(op.rollback);
     }
 
-    return {
-      success: true,
-      data: results as T[],
-    };
+    return { success: true,
+      data: results as T[] };
   } catch (error) {
     // Rollback on unexpected error
     for (let i = completedOps.length - 1; i >= 0; i--) {
@@ -110,10 +103,8 @@ export async function executeWithRollback<T>(
       }
     }
 
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : String(error),
-    };
+    return { success: false,
+      error: error instanceof Error ? error.message : String(error) };
   }
 }
 
@@ -163,11 +154,9 @@ export async function batchInsert<T extends Record<string, unknown>>(
   for (const chunk of chunks) {
     const { error } = await supabase.from(table).insert(chunk);
     
-    if (error) {
-      return {
+    if (error) { return {
         success: false,
-        error: error.message,
-      };
+        error: error.message };
     }
   }
 
@@ -189,15 +178,11 @@ export async function safeUpsert<T extends Record<string, unknown>>(
     .select()
     .single();
 
-  if (error) {
-    return {
+  if (error) { return {
       success: false,
-      error: error.message,
-    };
+      error: error.message };
   }
 
-  return {
-    success: true,
-    data: data as T,
-  };
+  return { success: true,
+    data: data as T };
 }

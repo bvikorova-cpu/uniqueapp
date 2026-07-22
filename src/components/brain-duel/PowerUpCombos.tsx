@@ -41,14 +41,12 @@ export const PowerUpCombos = () => {
 
       spendCredits(combo.cost);
 
-      await supabase.from("brain_duel_powerup_combos").insert({
-        user_id: user.id,
+      await supabase.from("brain_duel_powerup_combos").insert({ user_id: user.id,
         combo_type: combo.id,
         powerup_1: combo.p1,
         powerup_2: combo.p2,
         effect_description: combo.effect,
-        credits_cost: combo.cost,
-      });
+        credits_cost: combo.cost });
 
       setLastActivated(combo.id);
       toast.success(`${combo.emoji} ${combo.name} activated!`, { description: combo.effect });

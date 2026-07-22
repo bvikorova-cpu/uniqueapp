@@ -36,10 +36,8 @@ const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
   const [url, setUrl] = useState("");
   const [note, setNote] = useState("");
 
-  const { data: userId } = useQuery({
-    queryKey: ["auth-uid"],
-    queryFn: async () => (await supabase.auth.getUser()).data.user?.id ?? null,
-  });
+  const { data: userId } = useQuery({ queryKey: ["auth-uid"],
+    queryFn: async () => (await supabase.auth.getUser()).data.user?.id ?? null });
 
   const { data: challenges = [], isLoading } = useQuery({
     queryKey: ["influking-weekly-challenges"],
@@ -52,8 +50,7 @@ const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
         .order("ends_at", { ascending: true });
       if (error) throw error;
       return (data ?? []) as Challenge[];
-    },
-  });
+    } });
 
   const { data: joined = new Set<string>() } = useQuery({
     queryKey: ["influking-my-joins", userId],
@@ -63,8 +60,7 @@ const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
         .from("influking_challenge_participants")
         .select("challenge_id").eq("user_id", userId!);
       return new Set((data ?? []).map((r: any) => r.challenge_id as string));
-    },
-  });
+    } });
 
   const { data: mySubs = [] } = useQuery({
     queryKey: ["influking-my-subs", userId],
@@ -76,8 +72,7 @@ const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
         .eq("user_id", userId!)
         .order("created_at", { ascending: false });
       return data ?? [];
-    },
-  });
+    } });
 
   const joinMut = useMutation({
     mutationFn: async (challengeId: string) => {
@@ -91,8 +86,7 @@ const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
       qc.invalidateQueries({ queryKey: ["influking-weekly-challenges"] });
       toast({ title: "✅ Joined!", description: "Good luck — submit your entry before the deadline." });
     },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   const leaveMut = useMutation({
     mutationFn: async (challengeId: string) => {
@@ -104,17 +98,14 @@ const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["influking-my-joins"] });
       qc.invalidateQueries({ queryKey: ["influking-weekly-challenges"] });
-    },
-  });
+    } });
 
   const submitMut = useMutation({
     mutationFn: async () => {
       if (!userId || !selected) throw new Error("Missing data");
       if (!/^https?:\/\/.+/i.test(url.trim())) throw new Error("Enter a valid URL");
-      const { error } = await supabase.from("influking_challenge_submissions").insert({
-        challenge_id: selected.id, user_id: userId,
-        submission_url: url.trim(), note: note.trim() || null,
-      });
+      const { error } = await supabase.from("influking_challenge_submissions").insert({ challenge_id: selected.id, user_id: userId,
+        submission_url: url.trim(), note: note.trim() || null });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -122,8 +113,7 @@ const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
       setShowSubmit(false); setUrl(""); setNote("");
       qc.invalidateQueries({ queryKey: ["influking-my-subs"] });
     },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   const diffColor = (d: string) =>
     d === "Easy" ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"

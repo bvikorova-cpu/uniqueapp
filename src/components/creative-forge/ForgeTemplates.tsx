@@ -48,8 +48,7 @@ const templates: Partial<Record<CreativeCategory, QuickTemplate[]>> = {
   ],
   theater_play: [
     { label: "Family Drama", title: "The Last Supper", genre: "Drama", mood: "Emotional, Tense", description: "A family dinner where long-held secrets are revealed one by one", characters: "Helen - the matriarch hiding the biggest secret; Tom - the prodigal son returning after 10 years", setting: "Family dining room, Christmas Eve", styleReference: "Arthur Miller" },
-  ],
-};
+  ] };
 
 interface ForgeTemplatesProps {
   category: CreativeCategory;

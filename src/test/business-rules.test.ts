@@ -4,22 +4,18 @@
  * the kind of bugs that render "correct-looking" but wrong data.
  */
 import { describe, it, expect, beforeEach } from "vitest";
-import {
-  FEE_DEFAULTS,
+import { FEE_DEFAULTS,
   CREATOR_SUBSCRIPTION_PLATFORM_FEE_PCT,
   CREATOR_SUBSCRIPTION_CREATOR_SHARE_PCT,
   calcCreatorNetCents,
   calcPlatformFeeCents,
   netCents,
-  feeCentsFor,
-} from "@/lib/feeRates";
-import {
-  getXP,
+  feeCentsFor } from "@/lib/feeRates";
+import { getXP,
   addXP,
   getStars,
   getStarsSpent,
-  spendStars,
-} from "@/lib/kidsAcademyEconomy";
+  spendStars } from "@/lib/kidsAcademyEconomy";
 
 describe("feeRates — platform commission rules (project memory)", () => {
   it("creator subscription split is exactly 85/15 (memory: 85/15 for Creator Subscriptions)", () => {

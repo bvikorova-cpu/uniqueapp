@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const logStep = (step: string, details?: any) => {
   console.log(`[VERIFY-CAMPAIGN-PAYMENT] ${step}`, details || "");
@@ -40,9 +38,7 @@ serve(async (req) => {
     logStep("Verifying session", { sessionId });
 
     // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     // Retrieve the session from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId);
@@ -101,12 +97,10 @@ serve(async (req) => {
     // Update payment status to completed
     const { error: updateError } = await supabaseAdmin
       .from("campaign_payments")
-      .update({
-        status: "completed",
+      .update({ status: "completed",
         stripe_payment_intent_id: session.payment_intent as string,
         paid_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+        updated_at: new Date().toISOString() })
       .eq("id", payment.id);
 
     if (updateError) {
@@ -127,11 +121,9 @@ serve(async (req) => {
         // Update existing balance
         const { error: balanceError } = await supabaseAdmin
           .from("influencer_balances")
-          .update({
-            total_earned: existingBalance.total_earned + payment.influencer_amount,
+          .update({ total_earned: existingBalance.total_earned + payment.influencer_amount,
             available_balance: existingBalance.available_balance + payment.influencer_amount,
-            updated_at: new Date().toISOString(),
-          })
+            updated_at: new Date().toISOString() })
           .eq("influencer_id", influencer.id);
 
         if (balanceError) {
@@ -146,13 +138,11 @@ serve(async (req) => {
         // Create new balance
         const { error: createError } = await supabaseAdmin
           .from("influencer_balances")
-          .insert({
-            influencer_id: influencer.id,
+          .insert({ influencer_id: influencer.id,
             total_earned: payment.influencer_amount,
             available_balance: payment.influencer_amount,
             withdrawn: 0,
-            pending_withdrawal: 0,
-          });
+            pending_withdrawal: 0 });
 
         if (createError) {
           logStep("ERROR creating balance", createError);
@@ -166,14 +156,12 @@ serve(async (req) => {
     if (influencer) {
       const { error: earningsError } = await supabaseAdmin
         .from("influencer_earnings")
-        .insert({
-          influencer_id: influencer.id,
+        .insert({ influencer_id: influencer.id,
           user_id: payment.influencer_user_id,
           amount: payment.amount,
           platform_fee: payment.platform_fee,
           net_amount: payment.influencer_amount,
-          source: "brand_collaboration",
-        });
+          source: "brand_collaboration" });
       if (earningsError) {
         logStep("ERROR recording earnings", earningsError);
       } else {
@@ -187,14 +175,12 @@ serve(async (req) => {
         user_id: payment.influencer_user_id,
         type: "payment_received",
         title: "Payment Received",
-        message: `You've received €${payment.influencer_amount.toFixed(2)} for the campaign "${payment.brand_campaigns?.campaign_name || 'a brand campaign'}". Check your earnings dashboard!`,
-      },
+        message: `You've received €${payment.influencer_amount.toFixed(2)} for the campaign "${payment.brand_campaigns?.campaign_name || 'a brand campaign'}". Check your earnings dashboard!` },
       {
         user_id: payment.brand_user_id,
         type: "payment_confirmed",
         title: "Payment Confirmed",
-        message: `Your payment of €${payment.amount.toFixed(2)} for campaign "${payment.brand_campaigns?.campaign_name || 'your campaign'}" has been processed successfully.`,
-      }
+        message: `Your payment of €${payment.amount.toFixed(2)} for campaign "${payment.brand_campaigns?.campaign_name || 'your campaign'}" has been processed successfully.` }
     ]);
 
     logStep("Notifications sent");

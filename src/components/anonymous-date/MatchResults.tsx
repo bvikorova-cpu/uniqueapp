@@ -51,8 +51,7 @@ function scoreLabel(score: number) {
   return "Weak";
 }
 
-export function MatchResults({
-  candidates,
+export function MatchResults({ candidates,
   loading,
   matching,
   matchingUserId,
@@ -60,8 +59,7 @@ export function MatchResults({
   cost,
   onBack,
   onRefresh,
-  onSelect,
-}: Props) {
+  onSelect }: Props) {
   const insufficient = credits < cost;
 
   return (

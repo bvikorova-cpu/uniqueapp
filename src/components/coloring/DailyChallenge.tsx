@@ -27,8 +27,7 @@ export function DailyChallenge() {
         .maybeSingle();
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Get submissions for today's challenge
   const { data: submissions } = useQuery({
@@ -44,8 +43,7 @@ export function DailyChallenge() {
       if (error) throw error;
       return data;
     },
-    enabled: !!challenge,
-  });
+    enabled: !!challenge });
 
   // Check if user already submitted
   const { data: mySubmission } = useQuery({
@@ -62,8 +60,7 @@ export function DailyChallenge() {
         .maybeSingle();
       return data;
     },
-    enabled: !!challenge,
-  });
+    enabled: !!challenge });
 
   const handleSubmit = async () => {
     if (!submissionFile || !challenge) return;
@@ -77,14 +74,11 @@ export function DailyChallenge() {
       if (upErr) throw upErr;
       const { data: { publicUrl } } = supabase.storage.from("coloring-images").getPublicUrl(fileName);
 
-      const { data, error } = await supabase.functions.invoke("coloring-ai-tools", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("coloring-ai-tools", { body: {
           action: "submit-challenge",
           challengeId: challenge.id,
           imageUrl: publicUrl,
-          xpReward: challenge.xp_reward,
-        },
-      });
+          xpReward: challenge.xp_reward } });
       if (error) throw error;
       toast.success(`Challenge submitted! +${challenge.xp_reward} XP earned!`);
       setSubmissionFile(null);

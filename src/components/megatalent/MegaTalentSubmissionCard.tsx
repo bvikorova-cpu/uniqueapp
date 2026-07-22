@@ -24,8 +24,7 @@ interface SubmissionCardProps {
   onMediaClick: (url: string, type: "image" | "video") => void;
 }
 
-export default function MegaTalentSubmissionCard({
-  submission,
+export default function MegaTalentSubmissionCard({ submission,
   categoryLabel,
   isLiked,
   commentCount,
@@ -36,8 +35,7 @@ export default function MegaTalentSubmissionCard({
   onComment,
   onShare,
   onDelete,
-  onMediaClick,
-}: SubmissionCardProps) {
+  onMediaClick }: SubmissionCardProps) {
   const isTopPremium = submission.subscriptionTier === "top_premium";
   const displayVotes = (submission.votes_count || 0).toLocaleString();
 

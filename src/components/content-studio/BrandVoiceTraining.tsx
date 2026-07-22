@@ -23,8 +23,7 @@ interface Props {
   onBack: () => void;
 }
 
-const BrandVoiceTraining = ({ onBack }: Props) => {
-  const [voices, setVoices] = useState<BrandVoice[]>([]);
+const BrandVoiceTraining = ({ onBack }: Props) => { const [voices, setVoices] = useState<BrandVoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -37,8 +36,7 @@ const BrandVoiceTraining = ({ onBack }: Props) => {
     brand_name: "",
     tone: "",
     style_notes: "",
-    sample_content: "",
-  });
+    sample_content: "" });
 
   useEffect(() => {
     loadVoices();
@@ -66,13 +64,11 @@ const BrandVoiceTraining = ({ onBack }: Props) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await (supabase as any).from("brand_voices").insert({
-        user_id: user.id,
+      const { error } = await (supabase as any).from("brand_voices").insert({ user_id: user.id,
         brand_name: form.brand_name,
         tone: form.tone,
         style_notes: form.style_notes,
-        sample_content: form.sample_content,
-      });
+        sample_content: form.sample_content });
       if (error) throw error;
       toast.success("Brand voice saved!");
       setForm({ brand_name: "", tone: "", style_notes: "", sample_content: "" });
@@ -100,8 +96,7 @@ const BrandVoiceTraining = ({ onBack }: Props) => {
     setTestResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
-        body: { action: "brand-voice", voiceId: selectedVoice, prompt: testPrompt },
-      });
+        body: { action: "brand-voice", voiceId: selectedVoice, prompt: testPrompt } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setTestResult(data.content);

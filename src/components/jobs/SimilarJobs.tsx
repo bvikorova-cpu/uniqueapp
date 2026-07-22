@@ -45,10 +45,8 @@ export function SimilarJobs({ jobId, category, title, country }: Props) {
       setLoading(true);
 
       // Primary: server-side FTS RPC.
-      const { data, error } = await (supabase.rpc as any)("find_similar_jobs", {
-        _job_id: jobId,
-        _limit: 8,
-      });
+      const { data, error } = await (supabase.rpc as any)("find_similar_jobs", { _job_id: jobId,
+        _limit: 8 });
 
       let rows: SimilarJob[] = [];
       if (!error && Array.isArray(data) && data.length > 0) {

@@ -18,8 +18,7 @@ Deno.serve(async (req) => {
 
     const auth = req.headers.get("Authorization") ?? "";
     const userClient = createClient(SUPABASE_URL, SUPABASE_ANON, {
-      global: { headers: { Authorization: auth } },
-    });
+      global: { headers: { Authorization: auth } } });
     const { data: { user } } = await userClient.auth.getUser();
     if (!user) return json({ error: "auth_required" }, 401);
 
@@ -32,16 +31,12 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "openai/gpt-4o-mini-tts",
+        "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "openai/gpt-4o-mini-tts",
         input: text,
         voice,
         response_format: "mp3",
-        instructions: "Speak warmly, clearly and briefly, like a friendly personal assistant.",
-      }),
-    });
+        instructions: "Speak warmly, clearly and briefly, like a friendly personal assistant." }) });
 
     if (ttsRes.status === 429) return json({ error: "rate_limited" }, 429);
     if (ttsRes.status === 402) return json({ error: "ai_credits_exhausted" }, 402);
@@ -50,14 +45,11 @@ Deno.serve(async (req) => {
       return json({ error: `tts_error ${ttsRes.status}: ${t.slice(0, 200)}` }, 502);
     }
 
-    return new Response(ttsRes.body, {
-      status: 200,
+    return new Response(ttsRes.body, { status: 200,
       headers: {
         ...corsHeaders,
         "Content-Type": "audio/mpeg",
-        "Cache-Control": "no-store",
-      },
-    });
+        "Cache-Control": "no-store" } });
   } catch (e) {
     return json({ error: (e as Error).message ?? "unknown" }, 500);
   }
@@ -66,6 +58,5 @@ Deno.serve(async (req) => {
 function json(payload: unknown, status = 200) {
   return new Response(JSON.stringify(payload), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

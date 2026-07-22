@@ -67,9 +67,8 @@ export function CarPaintStudio({ onBack }: { onBack: () => void }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Preview */}
         <Card className="lg:col-span-1 relative overflow-hidden bg-slate-900/60 border-cyan-500/20 aspect-square flex items-center justify-center">
-          <div className="absolute inset-0 pointer-events-none" style={{
-            background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,229,255,0.02) 3px, rgba(0,229,255,0.02) 6px)',
-          }} />
+          <div className="absolute inset-0 pointer-events-none" style={ {
+            background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,229,255,0.02) 3px, rgba(0,229,255,0.02) 6px)' }} />
           <div className="text-center">
             {/* Car preview shape */}
             <div className="relative inline-block">
@@ -81,10 +80,9 @@ export function CarPaintStudio({ onBack }: { onBack: () => void }) {
                     <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-6 bg-white/30" />
                   </div>
                 )}
-                {selectedPattern === "carbon" && (
+                { selectedPattern === "carbon" && (
                   <div className="absolute inset-0 rounded-lg opacity-30" style={{
-                    backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.3) 5px, rgba(0,0,0,0.3) 10px)',
-                  }} />
+                    backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.3) 5px, rgba(0,0,0,0.3) 10px)' }} />
                 )}
               </div>
               {/* Wheels */}

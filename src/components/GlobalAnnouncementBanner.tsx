@@ -30,11 +30,9 @@ export const GlobalAnnouncementBanner = () => {
     // Subscribe to changes
     const channel = supabase
       .channel(`global-announcements-${crypto.randomUUID()}`)
-      .on('postgres_changes', {
-        event: '*',
+      .on('postgres_changes', { event: '*',
         schema: 'public',
-        table: 'global_announcements',
-      }, () => {
+        table: 'global_announcements' }, () => {
         loadAnnouncement();
       })
       .subscribe();

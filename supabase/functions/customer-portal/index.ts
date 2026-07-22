@@ -3,10 +3,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const DEFAULT_ORIGIN = "https://uniqueapp.fun";
 
@@ -35,8 +33,7 @@ serve(async (req) => {
     if (customers.data.length === 0) {
       return new Response(JSON.stringify({ error: "No Stripe customer found" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 404,
-      });
+        status: 404 });
     }
 
     let returnUrl = DEFAULT_ORIGIN;
@@ -49,20 +46,16 @@ serve(async (req) => {
       }
     } catch {/* ignore */}
 
-    const session = await stripe.billingPortal.sessions.create({
-      customer: customers.data[0].id,
-      return_url: returnUrl,
-    });
+    const session = await stripe.billingPortal.sessions.create({ customer: customers.data[0].id,
+      return_url: returnUrl });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

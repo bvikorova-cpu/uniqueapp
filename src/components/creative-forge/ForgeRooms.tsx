@@ -42,13 +42,9 @@ export const ForgeRooms = ({ open, onClose }: Props) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data, error } = await supabase.from("creative_forge_rooms").insert({
-        owner_id: user.id, name, description: desc, category: cat, is_public: isPublic,
-      }).select().single();
+      const { data, error } = await supabase.from("creative_forge_rooms").insert({ owner_id: user.id, name, description: desc, category: cat, is_public: isPublic }).select().single();
       if (error) throw error;
-      await supabase.from("creative_forge_room_members").insert({
-        room_id: data.id, user_id: user.id, role: "owner",
-      });
+      await supabase.from("creative_forge_room_members").insert({ room_id: data.id, user_id: user.id, role: "owner" });
       qc.invalidateQueries({ queryKey: ["creative-rooms"] });
       toast.success("Room created!");
       setActiveRoomId(data.id);
@@ -179,9 +175,7 @@ const RoomView = ({ roomId }: { roomId: string }) => {
     if (!input.trim()) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    await supabase.from("creative_forge_room_messages").insert({
-      room_id: roomId, user_id: user.id, message_type: "chat", content: input,
-    });
+    await supabase.from("creative_forge_room_messages").insert({ room_id: roomId, user_id: user.id, message_type: "chat", content: input });
     setInput("");
   };
 

@@ -17,8 +17,7 @@ export const useCommunities = () => {
         .limit(50);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // P1 — realtime so member_count and new communities propagate.
   // Unique channel name per mount avoids "cannot add postgres_changes callbacks
@@ -57,8 +56,7 @@ export const useCommunities = () => {
       qc.invalidateQueries({ queryKey: ["communities"] });
       toast({ title: "Community created" });
     },
-    onError: (e: Error) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: Error) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   const join = useMutation({
     mutationFn: async (communityId: string) => {
@@ -73,8 +71,7 @@ export const useCommunities = () => {
       qc.invalidateQueries({ queryKey: ["communities"] });
       toast({ title: "Joined community" });
     },
-    onError: (e: Error) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: Error) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   // P1 — symmetric leave mutation (was missing).
   const leave = useMutation({
@@ -92,14 +89,11 @@ export const useCommunities = () => {
       qc.invalidateQueries({ queryKey: ["communities"] });
       toast({ title: "Left community" });
     },
-    onError: (e: Error) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: Error) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
-  return {
-    communities,
+  return { communities,
     isLoading,
     createCommunity: createCommunity.mutate,
     join: join.mutate,
-    leave: leave.mutate,
-  };
+    leave: leave.mutate };
 };

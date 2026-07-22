@@ -81,9 +81,7 @@ export default function EmployerATS() {
   const addNote = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user || !selectedApp || !noteText.trim()) return;
-    const { error } = await (supabase as any).from("ats_candidate_notes").insert({
-      application_id: selectedApp.id, employer_id: user.id, note: noteText.trim(), rating: noteRating || null,
-    });
+    const { error } = await (supabase as any).from("ats_candidate_notes").insert({ application_id: selectedApp.id, employer_id: user.id, note: noteText.trim(), rating: noteRating || null });
     if (error) return toast.error(error.message);
     setNoteText(""); setNoteRating(0);
     openCandidate(selectedApp);
@@ -97,10 +95,8 @@ export default function EmployerATS() {
     if (!user) return;
     // resolve candidate email from auth via profiles is not available, fall back to contact_email
     const recipient = selectedApp.profile?.email || job?.contact_email || "candidate@unknown";
-    const { error } = await (supabase as any).from("rejection_email_log").insert({
-      application_id: selectedApp.id, employer_id: user.id,
-      recipient_email: recipient, subject: tpl.subject, body: tpl.body,
-    });
+    const { error } = await (supabase as any).from("rejection_email_log").insert({ application_id: selectedApp.id, employer_id: user.id,
+      recipient_email: recipient, subject: tpl.subject, body: tpl.body });
     if (error) return toast.error(error.message);
     await supabase.from("job_applications").update({ status: "rejected" }).eq("id", selectedApp.id);
     toast.success("Rejection logged & candidate moved to Rejected");

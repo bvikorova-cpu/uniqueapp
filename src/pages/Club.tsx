@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  Crown,
+import { Crown,
   Sparkles,
   Heart,
   Gift,
@@ -15,8 +14,7 @@ import {
   Percent,
   ArrowRight,
   Trophy,
-  HandHeart,
-} from "lucide-react";
+  HandHeart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import clubCardPreview from "@/assets/club-card-preview.png.asset.json";
 import clubHeroVideo from "@/assets/unique-club-hero.mp4.asset.json";
@@ -26,12 +24,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import {
-  Accordion,
+import { Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  AccordionTrigger } from "@/components/ui/accordion";
 import { Helmet } from "react-helmet-async";
 
 const PERKS = [
@@ -88,13 +84,11 @@ export default function Club() {
     setVerifying(true);
     supabase.functions
       .invoke("verify-club-membership", { body: { sessionId: sid } })
-      .then(({ data, error }) => {
-        if (error) throw error;
+      .then(({ data, error }) => { if (error) throw error;
         if ((data as any)?.status === "active") {
           toast({
             title: "🎉 Welcome to the Unique VIP Club!",
-            description: "Your card is active. Gold ring unlocked. 15% discount active platform-wide.",
-          });
+            description: "Your card is active. Gold ring unlocked. 15% discount active platform-wide." });
           refresh();
         }
       })

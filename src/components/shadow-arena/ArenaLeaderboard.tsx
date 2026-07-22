@@ -29,16 +29,13 @@ export function ArenaLeaderboard() {
     queryFn: async (): Promise<LeaderRow[]> => {
       const { data, error } = await supabase.rpc("get_arena_leaderboard", { limit_count: 20 });
       if (error) throw error;
-      return ((data ?? []) as any[]).map((r) => ({
-        user_id: r.user_id,
+      return ((data ?? []) as any[]).map((r) => ({ user_id: r.user_id,
         display_name: r.display_name,
         wins: Number(r.wins) || 0,
         matches: Number(r.matches) || 0,
-        earnings_cents: Number(r.earnings_cents) || 0,
-      }));
+        earnings_cents: Number(r.earnings_cents) || 0 }));
     },
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 
   return (
 <div className="rounded-2xl border border-purple-900/30 bg-gradient-to-br from-purple-950/20 via-card/30 to-red-950/20 p-6 mb-8">

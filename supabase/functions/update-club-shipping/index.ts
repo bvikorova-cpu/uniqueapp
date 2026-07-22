@@ -4,11 +4,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 interface ShippingPayload {
   recipient_name: string;
@@ -51,8 +49,7 @@ serve(async (req) => {
     if (invalid) {
       return new Response(JSON.stringify({ error: invalid }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const admin = createClient(
@@ -74,8 +71,7 @@ serve(async (req) => {
       throw new Error("Card already shipped — contact support to update.");
     }
 
-    const address = {
-      name: payload.recipient_name!.trim(),
+    const address = { name: payload.recipient_name!.trim(),
       phone: payload.phone!.trim(),
       address: {
         line1: payload.line1!.trim(),
@@ -83,25 +79,20 @@ serve(async (req) => {
         city: payload.city!.trim(),
         postal_code: payload.postal_code!.trim(),
         state: (payload.state ?? "").trim(),
-        country: payload.country!.trim().toUpperCase(),
-      },
-    };
+        country: payload.country!.trim().toUpperCase() } };
 
     const { error } = await admin
       .from("club_memberships")
-      .update({
-        recipient_name: address.name,
+      .update({ recipient_name: address.name,
         phone: address.phone,
         shipping_address: address,
         shipping_note: (payload.note ?? "").trim(),
-        shipping_status: "pending",
-      })
+        shipping_status: "pending" })
       .eq("id", (m as any).id);
     if (error) throw error;
 
     return new Response(JSON.stringify({ ok: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("[update-club-shipping]", e);
     return new Response(

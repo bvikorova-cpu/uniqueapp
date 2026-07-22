@@ -128,10 +128,8 @@ const CouponMarketplace = () => {
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [hideExpired, setHideExpired] = useState(true);
   const [sortBy, setSortBy] = useState<string>("newest");
-  const [formData, setFormData] = useState({
-    title: "", description: "", store_name: "", original_value: "", selling_price: "",
-    discount_code: "", expiry_date: "", category: "general", coupon_type: "discount_code", terms_conditions: "",
-  });
+  const [formData, setFormData] = useState({ title: "", description: "", store_name: "", original_value: "", selling_price: "",
+    discount_code: "", expiry_date: "", category: "general", coupon_type: "discount_code", terms_conditions: "" });
   const { toast } = useToast();
   const wishlist = useCouponWishlist(currentUserId);
 

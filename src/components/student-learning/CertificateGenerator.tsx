@@ -15,26 +15,22 @@ interface CertificateGeneratorProps {
   courseId: string;
 }
 
-export function CertificateGenerator({
-  courseTitle,
+export function CertificateGenerator({ courseTitle,
   studentName,
   completionDate,
   userId,
-  courseId,
-}: CertificateGeneratorProps) {
+  courseId }: CertificateGeneratorProps) {
   const { toast } = useToast();
   const [generating, setGenerating] = useState(false);
   const [certificateGenerated, setCertificateGenerated] = useState(false);
 
-  const generatePDF = async () => {
-    setGenerating(true);
+  const generatePDF = async () => { setGenerating(true);
     
     try {
       const doc = new jsPDF({
         orientation: "landscape",
         unit: "mm",
-        format: "a4",
-      });
+        format: "a4" });
 
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
@@ -138,11 +134,9 @@ export function CertificateGenerator({
       doc.setFont("helvetica", "normal");
       doc.setTextColor(107, 114, 128);
       const dateY = startY + (lines.length * lineHeight) + 15;
-      const formattedDate = new Date(completionDate).toLocaleDateString("en-US", {
-        year: "numeric",
+      const formattedDate = new Date(completionDate).toLocaleDateString("en-US", { year: "numeric",
         month: "long",
-        day: "numeric",
-      });
+        day: "numeric" });
       doc.text(`Completed on ${formattedDate}`, pageWidth / 2, dateY, { align: "center" });
 
       // Signature section
@@ -184,16 +178,12 @@ export function CertificateGenerator({
 
       setCertificateGenerated(true);
       
-      toast({
-        title: "Certificate Generated! 🎉",
-        description: "Your certificate has been downloaded successfully.",
-      });
-    } catch (error: any) {
-      toast({
+      toast({ title: "Certificate Generated! 🎉",
+        description: "Your certificate has been downloaded successfully." });
+    } catch (error: any) { toast({
         title: "Error",
         description: "Failed to generate certificate. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       console.error("Certificate generation error:", error);
     } finally {
       setGenerating(false);

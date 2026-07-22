@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { authenticateUser, createSupabaseAdminClient } from "../_shared/supabaseClient.ts";
 import { createStripeClient, getStripeCustomer, safeParseStripeDate } from "../_shared/stripe.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 /**
  * Reconciles fan-club membership rows with Stripe reality.
@@ -18,8 +16,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   const startedAt = Date.now();
-  let audit = {
-    user_id: null as string | null,
+  let audit = { user_id: null as string | null,
     email: null as string | null,
     fan_club_id: null as string | null,
     outcome: "unknown" as string,
@@ -27,16 +24,13 @@ serve(async (req) => {
     stripe_customer_id: null as string | null,
     subscriptions_found: 0,
     memberships_synced: 0,
-    status_summary: null as Record<string, number> | null,
-  };
+    status_summary: null as Record<string, number> | null };
   const admin = createSupabaseAdminClient();
 
-  const writeAudit = async () => {
-    try {
+  const writeAudit = async () => { try {
       await admin.from("fanclub_verify_audit").insert({
         ...audit,
-        duration_ms: Date.now() - startedAt,
-      });
+        duration_ms: Date.now() - startedAt });
     } catch (e) {
       console.error("[fanclub-verify] audit write failed", (e as Error)?.message);
     }
@@ -59,8 +53,7 @@ serve(async (req) => {
       await writeAudit();
       return new Response(JSON.stringify({ error: audit.error_message }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     audit.user_id = userId ?? null;
     audit.email = email ?? null;
@@ -71,8 +64,7 @@ serve(async (req) => {
       await writeAudit();
       return new Response(JSON.stringify({ error: audit.error_message }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const stripe = createStripeClient();
@@ -84,16 +76,13 @@ serve(async (req) => {
       await writeAudit();
       return new Response(JSON.stringify({ memberships: [] }), {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const subs = await stripe.subscriptions.list({
-      customer: customerId,
+    const subs = await stripe.subscriptions.list({ customer: customerId,
       status: "all",
       limit: 100,
-      expand: ["data.items.data.price"],
-    });
+      expand: ["data.items.data.price"] });
 
     const relevant = subs.data.filter(
       (s) =>
@@ -106,8 +95,7 @@ serve(async (req) => {
     const results: Array<Record<string, unknown>> = [];
     const statusSummary: Record<string, number> = {};
 
-    for (const sub of relevant) {
-      const clubId = sub.metadata?.fan_club_id;
+    for (const sub of relevant) { const clubId = sub.metadata?.fan_club_id;
       if (!clubId) continue;
 
       const active = sub.status === "active" || sub.status === "trialing";
@@ -129,8 +117,7 @@ serve(async (req) => {
         stripe_customer_id: customerId,
         stripe_subscription_id: sub.id,
         current_period_end: safeParseStripeDate((sub as any).current_period_end),
-        cancel_at_period_end: Boolean((sub as any).cancel_at_period_end),
-      };
+        cancel_at_period_end: Boolean((sub as any).cancel_at_period_end) };
 
       const { error: upsertErr } = await admin
         .from("influencer_fan_club_members")
@@ -152,8 +139,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ memberships: results }), {
       status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("[fanclub-verify]", e?.message);
     audit.outcome = audit.outcome === "unknown" ? "stripe_error" : audit.outcome;
@@ -161,7 +147,6 @@ serve(async (req) => {
     await writeAudit();
     return new Response(JSON.stringify({ error: e?.message ?? "error" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

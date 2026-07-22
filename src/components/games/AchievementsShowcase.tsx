@@ -28,30 +28,24 @@ interface Achievement {
   unlockedAt?: Date;
 }
 
-const iconMap = {
-  trophy: Trophy,
+const iconMap = { trophy: Trophy,
   star: Star,
   zap: Zap,
   target: Target,
   crown: Crown,
   medal: Medal,
   flame: Flame,
-  award: Award,
-};
+  award: Award };
 
-const rarityColors = {
-  common: "bg-gray-500/20 text-gray-500 border-gray-500/30",
+const rarityColors = { common: "bg-gray-500/20 text-gray-500 border-gray-500/30",
   rare: "bg-blue-500/20 text-blue-500 border-blue-500/30",
   epic: "bg-purple-500/20 text-purple-500 border-purple-500/30",
-  legendary: "bg-yellow-500/20 text-yellow-500 border-yellow-500/30",
-};
+  legendary: "bg-yellow-500/20 text-yellow-500 border-yellow-500/30" };
 
-const rarityGlow = {
-  common: "",
+const rarityGlow = { common: "",
   rare: "shadow-blue-500/20",
   epic: "shadow-purple-500/30",
-  legendary: "shadow-yellow-500/40 shadow-lg",
-};
+  legendary: "shadow-yellow-500/40 shadow-lg" };
 
 interface AchievementsShowcaseProps {
   achievements?: Achievement[];
@@ -60,8 +54,7 @@ interface AchievementsShowcaseProps {
 }
 
 const defaultAchievements: Achievement[] = [
-  {
-    id: "1",
+  { id: "1",
     name: "First Victory",
     description: "Win your first game",
     icon: "trophy",
@@ -70,10 +63,8 @@ const defaultAchievements: Achievement[] = [
     unlocked: true,
     rarity: "common",
     xpReward: 100,
-    unlockedAt: new Date(),
-  },
-  {
-    id: "2",
+    unlockedAt: new Date() },
+  { id: "2",
     name: "Winning Streak",
     description: "Vyhrajte 5 hier za sebou",
     icon: "flame",
@@ -81,10 +72,8 @@ const defaultAchievements: Achievement[] = [
     maxProgress: 5,
     unlocked: false,
     rarity: "rare",
-    xpReward: 250,
-  },
-  {
-    id: "3",
+    xpReward: 250 },
+  { id: "3",
     name: "Majster",
     description: "Dosiahnite level 50",
     icon: "crown",
@@ -92,10 +81,8 @@ const defaultAchievements: Achievement[] = [
     maxProgress: 50,
     unlocked: false,
     rarity: "epic",
-    xpReward: 500,
-  },
-  {
-    id: "4",
+    xpReward: 500 },
+  { id: "4",
     name: "Legenda",
     description: "Vyhrajte turnaj",
     icon: "star",
@@ -103,15 +90,12 @@ const defaultAchievements: Achievement[] = [
     maxProgress: 1,
     unlocked: false,
     rarity: "legendary",
-    xpReward: 1000,
-  },
+    xpReward: 1000 },
 ];
 
-export const AchievementsShowcase = ({
-  achievements = defaultAchievements,
+export const AchievementsShowcase = ({ achievements = defaultAchievements,
   totalXp = 1250,
-  level = 12,
-}: AchievementsShowcaseProps) => {
+  level = 12 }: AchievementsShowcaseProps) => {
   const unlockedCount = achievements.filter((a) => a.unlocked).length;
   const nextLevelXp = level * 500;
   const currentLevelProgress = (totalXp % 500) / 5;

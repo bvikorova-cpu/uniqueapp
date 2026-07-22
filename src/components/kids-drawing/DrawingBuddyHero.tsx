@@ -16,18 +16,15 @@ export const DrawingBuddyHero = () => {
           className="absolute text-2xl md:text-3xl select-none pointer-events-none"
           style={{
             left: `${10 + (i * 12) % 80}%`,
-            top: `${15 + (i * 17) % 60}%`,
-          }}
-          animate={{
+            top: `${15 + (i * 17) % 60}%` }}
+          animate={ {
             y: [0, -15, 0],
             rotate: [0, i % 2 === 0 ? 10 : -10, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
+            scale: [1, 1.1, 1] }}
+          transition={ {
             duration: 3 + i * 0.3,
             repeat: Infinity,
-            delay: i * 0.4,
-          }}
+            delay: i * 0.4 }}
         >
           {emoji}
         </motion.div>
@@ -41,11 +38,10 @@ export const DrawingBuddyHero = () => {
             className="absolute inset-0 rounded-full border border-primary/20"
             style={{ scale: 1 + ring * 0.3 }}
             animate={{ rotate: 360 }}
-            transition={{
+            transition={ {
               duration: 20 + ring * 5,
               repeat: Infinity,
-              ease: "linear",
-            }}
+              ease: "linear" }}
           />
         ))}
       </div>
@@ -54,15 +50,13 @@ export const DrawingBuddyHero = () => {
         {/* Rotating mascot */}
         <motion.div
           className="text-6xl md:text-7xl mx-auto"
-          animate={{
-            rotateY: [0, 360],
-          }}
+          animate={ {
+            rotateY: [0, 360] }}
           transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
         >
           <motion.span
-            animate={{
-              scale: [1, 1.15, 1],
-            }}
+            animate={ {
+              scale: [1, 1.15, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
             🎨
@@ -99,11 +93,10 @@ export const DrawingBuddyHero = () => {
               key={i}
               className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-xl md:text-2xl shadow-md"
               animate={{ y: [0, -8, 0] }}
-              transition={{
+              transition={ {
                 duration: 1.5,
                 repeat: Infinity,
-                delay: i * 0.2,
-              }}
+                delay: i * 0.2 }}
               whileHover={{ scale: 1.2 }}
             >
               {m}

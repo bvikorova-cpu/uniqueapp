@@ -5,12 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Hourglass, Upload, Trash2, Wand2, Coins, ArrowRight } from "lucide-react";
-import {
-  useCapsuleEntries,
+import { useCapsuleEntries,
   useUploadCapsuleEntry,
   useDeleteCapsuleEntry,
-  useCapsuleDiff,
-} from "@/hooks/useHandwritingCapsule";
+  useCapsuleDiff } from "@/hooks/useHandwritingCapsule";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -40,8 +38,7 @@ export function TimeCapsuleCard() {
           setPendingFile(null);
           setLabel("");
           if (fileRef.current) fileRef.current.value = "";
-        },
-      },
+        } },
     );
   };
 

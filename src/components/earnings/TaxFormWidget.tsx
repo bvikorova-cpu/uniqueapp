@@ -17,13 +17,11 @@ export function TaxFormWidget() {
   const { toast } = useToast();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({
-    form_type: "DAC7",
+  const [form, setForm] = useState({ form_type: "DAC7",
     full_name: "",
     tax_id: "",
     country: "SK",
-    vat_id: "",
-  });
+    vat_id: "" });
 
   useEffect(() => {
     if (!user?.id) return;
@@ -33,14 +31,12 @@ export function TaxFormWidget() {
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
-      if (data) {
-        setForm({
+      if (data) { setForm({
           form_type: data.form_type,
           full_name: data.full_name || "",
           tax_id: data.tax_id || "",
           country: data.country || "SK",
-          vat_id: data.vat_id || "",
-        });
+          vat_id: data.vat_id || "" });
         setSubmitted(true);
       }
     })();

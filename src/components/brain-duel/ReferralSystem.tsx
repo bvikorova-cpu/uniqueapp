@@ -38,8 +38,7 @@ export const ReferralSystem = () => {
         .single();
 
       return newCode;
-    },
-  });
+    } });
 
   const { data: referrals } = useQuery({
     queryKey: ["brain-duel-referrals"],
@@ -54,14 +53,12 @@ export const ReferralSystem = () => {
         .order("created_at", { ascending: false });
 
       return data || [];
-    },
-  });
+    } });
 
   const useReferral = useMutation({
     mutationFn: async (code: string) => {
       const { data, error } = await supabase.functions.invoke("brain-duel-use-referral", {
-        body: { referralCode: code },
-      });
+        body: { referralCode: code } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return data;
@@ -74,8 +71,7 @@ export const ReferralSystem = () => {
     },
     onError: (err: Error) => {
       toast.error(err.message);
-    },
-  });
+    } });
 
   const copyCode = () => {
     if (myCode?.code) {
@@ -91,8 +87,7 @@ export const ReferralSystem = () => {
       navigator.share({
         title: "Join me on BrainDuel!",
         text: `Use my referral code ${myCode.code} to get 10 bonus credits when you join BrainDuel!`,
-        url: window.location.origin + "/brain-duel",
-      }).catch(() => copyCode());
+        url: window.location.origin + "/brain-duel" }).catch(() => copyCode());
     } else {
       copyCode();
     }

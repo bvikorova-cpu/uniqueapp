@@ -20,9 +20,7 @@ interface GiftDialogProps {
 }
 
 /** Gift an item to another user by email or username. Viral loop. */
-export const GiftDialog = ({
-  open, onOpenChange, itemType, itemId, itemName, itemEmoji, creditCost, userCredits, onSent,
-}: GiftDialogProps) => {
+export const GiftDialog = ({ open, onOpenChange, itemType, itemId, itemName, itemEmoji, creditCost, userCredits, onSent }: GiftDialogProps) => {
   const { toast } = useToast();
   const [recipient, setRecipient] = useState("");
   const [message, setMessage] = useState("");
@@ -57,33 +55,28 @@ export const GiftDialog = ({
 
       const recipientId = (profile as any).id as string;
 
-      const { error } = await supabase.from("premium_store_gifts").insert({
-        sender_id: user.id,
+      const { error } = await supabase.from("premium_store_gifts").insert({ sender_id: user.id,
         recipient_id: recipientId,
         item_type: itemType,
         item_id: itemId,
         item_name: itemName,
         message: message.trim() || null,
-        credits_spent: creditCost,
-      });
+        credits_spent: creditCost });
 
       if (error) throw error;
 
       // Log purchase as gift (does not appear in leaderboard)
-      await supabase.from("premium_store_purchases").insert({
-        user_id: user.id,
+      await supabase.from("premium_store_purchases").insert({ user_id: user.id,
         item_type: itemType,
         item_id: itemId,
         item_name: itemName,
         credits_spent: creditCost,
         is_gift: true,
-        recipient_id: recipientId,
-      });
+        recipient_id: recipientId });
 
       toast({
         title: "Gift sent! 🎁",
-        description: `${recipient} will be notified about ${itemName}.`,
-      });
+        description: `${recipient} will be notified about ${itemName}.` });
       setRecipient("");
       setMessage("");
       onOpenChange(false);

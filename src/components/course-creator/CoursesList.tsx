@@ -5,17 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  BookOpen,
+import { BookOpen,
   Edit,
   Eye,
   Trash2,
   Users,
   DollarSign,
-  Clock,
-} from "lucide-react";
-import {
-  AlertDialog,
+  Clock } from "lucide-react";
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -23,8 +20,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Course {
@@ -68,12 +64,10 @@ export function CoursesList({ onEditCourse }: CoursesListProps) {
       if (error) throw error;
 
       setCourses(data || []);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -88,18 +82,14 @@ export function CoursesList({ onEditCourse }: CoursesListProps) {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Course deleted successfully",
-      });
+      toast({ title: "Success",
+        description: "Course deleted successfully" });
       
       loadCourses();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

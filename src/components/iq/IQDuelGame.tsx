@@ -35,11 +35,9 @@ interface Duel {
   entry_fee: number;
 }
 
-export default function IQDuelGame({
-  duelId,
+export default function IQDuelGame({ duelId,
   myUserId,
-  onClose,
-}: {
+  onClose }: {
   duelId: string;
   myUserId: string;
   onClose: () => void;
@@ -120,8 +118,7 @@ export default function IQDuelGame({
     submittedRef.current = true;
     setSubmitted(true);
     const { error } = await supabase.functions.invoke("iq-duel-finalize", {
-      body: { duelId, answers: finalAnswers },
-    });
+      body: { duelId, answers: finalAnswers } });
     if (error) toast({ title: "Submit failed", description: error.message, variant: "destructive" });
   };
 

@@ -81,8 +81,7 @@ ${colorConfig
 }
 `,
           )
-          .join("\n"),
-      }}
+          .join("\n") }}
     />
   );
 };
@@ -100,8 +99,7 @@ const ChartTooltipContent = React.forwardRef<
       labelKey?: string;
     }
 >(
-  (props, ref) => {
-    const {
+  (props, ref) => { const {
       active,
       payload,
       className,
@@ -114,8 +112,7 @@ const ChartTooltipContent = React.forwardRef<
       formatter,
       color,
       nameKey,
-      labelKey,
-    } = props as any;
+      labelKey } = props as any;
     const { config } = useChart();
 
     const tooltipLabel = React.useMemo(() => {
@@ -171,7 +168,7 @@ const ChartTooltipContent = React.forwardRef<
                   indicator === "dot" && "items-center",
                 )}
               >
-                {formatter && item?.value !== undefined && item.name ? (
+                { formatter && item?.value !== undefined && item.name ? (
                   formatter(item.value, item.name, item, index, item.payload)
                 ) : (
                   <>
@@ -184,13 +181,10 @@ const ChartTooltipContent = React.forwardRef<
                             "h-2.5 w-2.5": indicator === "dot",
                             "w-1": indicator === "line",
                             "w-0 border-[1.5px] border-dashed bg-transparent": indicator === "dashed",
-                            "my-0.5": nestLabel && indicator === "dashed",
-                          })}
-                          style={
-                            {
+                            "my-0.5": nestLabel && indicator === "dashed" })}
+                          style={ {
                               "--color-bg": indicatorColor,
-                              "--color-border": indicatorColor,
-                            } as React.CSSProperties
+                              "--color-border": indicatorColor } as React.CSSProperties
                           }
                         />
                       )
@@ -254,14 +248,13 @@ const ChartLegendContent = React.forwardRef<
             key={item.value}
             className={cn("flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground")}
           >
-            {itemConfig?.icon && !hideIcon ? (
+            { itemConfig?.icon && !hideIcon ? (
               <itemConfig.icon />
             ) : (
               <div
                 className="h-2 w-2 shrink-0 rounded-[2px]"
                 style={{
-                  backgroundColor: item.color,
-                }}
+                  backgroundColor: item.color }}
               />
             )}
             {itemConfig?.label}

@@ -41,14 +41,12 @@ export const FamilyTreeBuilder = () => {
         .eq("user_id", session.user.id)
         .order("created_at", { ascending: true });
 
-      const dnaMembers: FamilyMember[] = (memories || []).map(m => ({
-        id: m.id,
+      const dnaMembers: FamilyMember[] = (memories || []).map(m => ({ id: m.id,
         name: m.ancestor_name || "Unknown",
         relation: "Ancestor (DNA)",
         era: m.ancestor_era || "Unknown",
         location: m.ancestor_location || "Unknown",
-        isFromDNA: true,
-      }));
+        isFromDNA: true }));
 
       // Load manual entries from localStorage
       const stored = localStorage.getItem(`family-tree-${session.user.id}`);
@@ -76,8 +74,7 @@ export const FamilyTreeBuilder = () => {
       relation: newMember.relation || "Family Member",
       era: newMember.era || "Present",
       location: newMember.location || "Unknown",
-      isFromDNA: false,
-    };
+      isFromDNA: false };
 
     const manualMembers = members.filter(m => !m.isFromDNA);
     const updated = [...manualMembers, member];

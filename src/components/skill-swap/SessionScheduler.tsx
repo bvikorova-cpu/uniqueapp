@@ -41,8 +41,7 @@ export const SessionScheduler = ({ onBack }: SessionSchedulerProps) => {
 
       const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
 
-      return conversations.map(c => {
-        const partnerId = c.user1_id === user.id ? c.user2_id : c.user1_id;
+      return conversations.map(c => { const partnerId = c.user1_id === user.id ? c.user2_id : c.user1_id;
         const partner = profileMap.get(partnerId);
         const offering = c.skill_offerings as any;
         const date = new Date(c.created_at || new Date());
@@ -56,11 +55,9 @@ export const SessionScheduler = ({ onBack }: SessionSchedulerProps) => {
           partnerAvatar: partner?.avatar_url,
           date,
           status: isCancelled ? 'cancelled' as const : isCompleted ? 'completed' as const : 'upcoming' as const,
-          skill: offering?.category || 'General',
-        };
+          skill: offering?.category || 'General' };
       });
-    },
-  });
+    } });
 
   const filteredSessions = sessions.filter(s => {
     if (filter === "upcoming") return s.status === "upcoming";

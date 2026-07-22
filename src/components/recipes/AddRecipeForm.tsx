@@ -13,8 +13,7 @@ interface AddRecipeFormProps {
   onSuccess: () => void;
 }
 
-export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => { const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   
@@ -28,8 +27,7 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
     calories: "",
     ingredients: [""],
     instructions: [""],
-    tags: "",
-  });
+    tags: "" });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,11 +41,9 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
     setFormData({ ...formData, ingredients: [...formData.ingredients, ""] });
   };
 
-  const removeIngredient = (index: number) => {
-    setFormData({
+  const removeIngredient = (index: number) => { setFormData({
       ...formData,
-      ingredients: formData.ingredients.filter((_, i) => i !== index),
-    });
+      ingredients: formData.ingredients.filter((_, i) => i !== index) });
   };
 
   const updateIngredient = (index: number, value: string) => {
@@ -60,11 +56,9 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
     setFormData({ ...formData, instructions: [...formData.instructions, ""] });
   };
 
-  const removeInstruction = (index: number) => {
-    setFormData({
+  const removeInstruction = (index: number) => { setFormData({
       ...formData,
-      instructions: formData.instructions.filter((_, i) => i !== index),
-    });
+      instructions: formData.instructions.filter((_, i) => i !== index) });
   };
 
   const updateInstruction = (index: number, value: string) => {
@@ -101,8 +95,7 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
         imageUrl = publicUrl;
       }
 
-      const { error } = await supabase.from("recipes").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("recipes").insert({ user_id: user.id,
         title: formData.title,
         description: formData.description,
         category: formData.category,
@@ -114,14 +107,12 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
         instructions: formData.instructions.filter((i) => i.trim() !== ""),
         tags: formData.tags.split(",").map((t) => t.trim()).filter((t) => t !== ""),
         image_url: imageUrl,
-        is_active: true,
-      });
+        is_active: true });
 
       if (error) throw error;
 
       toast.success("Recipe successfully added!");
-      setFormData({
-        title: "",
+      setFormData({ title: "",
         description: "",
         category: "",
         difficulty: "",
@@ -130,8 +121,7 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
         calories: "",
         ingredients: [""],
         instructions: [""],
-        tags: "",
-      });
+        tags: "" });
       setImageFile(null);
       setImagePreview("");
       onSuccess();

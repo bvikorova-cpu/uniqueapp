@@ -44,15 +44,13 @@ export default function ClubCard() {
 
   const memberNum = String(membership.member_number).padStart(4, "0");
 
-  const handleExport = async (kind: "png" | "pdf") => {
-    if (!frontRef.current) return;
+  const handleExport = async (kind: "png" | "pdf") => { if (!frontRef.current) return;
     try {
       setExporting(kind);
       const canvas = await html2canvas(frontRef.current, {
         backgroundColor: null,
         scale: 3,
-        useCORS: true,
-      });
+        useCORS: true });
       const dataUrl = canvas.toDataURL("image/png");
       const filename = `unique-club-card-${memberNum}`;
       if (kind === "png") {
@@ -98,11 +96,10 @@ export default function ClubCard() {
           {/* FRONT */}
           <div
             className="absolute inset-0 rounded-3xl p-6 flex flex-col justify-between shadow-2xl"
-            style={{
+            style={ {
               backfaceVisibility: "hidden",
               background:
-                "linear-gradient(135deg, #7c3aed 0%, #ec4899 45%, #f59e0b 100%)",
-            }}
+                "linear-gradient(135deg, #7c3aed 0%, #ec4899 45%, #f59e0b 100%)" }}
           >
             <div className="flex justify-between items-start">
               <div>
@@ -189,7 +186,7 @@ export default function ClubCard() {
       <div style={{ position: "fixed", left: "-10000px", top: 0, pointerEvents: "none" }} aria-hidden>
         <div
           ref={frontRef}
-          style={{
+          style={ {
             width: 856,
             height: 540,
             borderRadius: 48,
@@ -200,8 +197,7 @@ export default function ClubCard() {
             background:
               "linear-gradient(135deg, #7c3aed 0%, #ec4899 45%, #f59e0b 100%)",
             color: "white",
-            fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
-          }}
+            fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif" }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>

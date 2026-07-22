@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -40,8 +38,7 @@ serve(async (req) => {
     const currentCredits = creditData?.credits || 0;
     if (currentCredits < entryCost) {
       return new Response(JSON.stringify({ error: "Insufficient credits", required: entryCost, current: currentCredits }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Deduct entry cost
@@ -53,8 +50,7 @@ serve(async (req) => {
     // Create match (solo vs AI bot)
     const { data: match, error: matchError } = await supabase
       .from("brain_duel_matches")
-      .insert({
-        category,
+      .insert({ category,
         player1_id: user.id,
         player2_id: null,
         status: "ready",
@@ -66,20 +62,17 @@ serve(async (req) => {
         time_per_question: timePerQuestion,
         entry_cost: entryCost,
         win_reward: winReward,
-        started_at: new Date().toISOString(),
-      })
+        started_at: new Date().toISOString() })
       .select()
       .single();
 
     if (matchError) throw matchError;
 
     return new Response(JSON.stringify({ match }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("Matchmaking error:", e);
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

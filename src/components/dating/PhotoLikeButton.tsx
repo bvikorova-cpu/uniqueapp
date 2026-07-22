@@ -40,13 +40,11 @@ export const PhotoLikeButton = ({ fromUserId, toUserId, photoUrl, promptIndex = 
 
   const handleSend = async () => {
     setSaving(true);
-    const { error } = await supabase.from("dating_photo_likes").insert({
-      from_user_id: fromUserId,
+    const { error } = await supabase.from("dating_photo_likes").insert({ from_user_id: fromUserId,
       to_user_id: toUserId,
       photo_url: photoUrl,
       prompt_index: promptIndex,
-      comment: comment.trim().slice(0, 200) || null,
-    });
+      comment: comment.trim().slice(0, 200) || null });
     setSaving(false);
     if (error) {
       toast({ title: "Couldn't send", description: error.message, variant: "destructive" });

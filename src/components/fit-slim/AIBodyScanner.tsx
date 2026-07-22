@@ -28,9 +28,7 @@ Age: ${form.age}, Gender: ${form.gender}, Height: ${form.height}cm, Weight: ${fo
 ${form.waist ? `Waist: ${form.waist}cm` : ""} ${form.hip ? `Hip: ${form.hip}cm` : ""}
 Calculate: BMI, estimated body fat %, lean mass, BMR, TDEE.
 Provide: body type classification, health risk assessment, ideal weight range.
-Give 5 specific recommendations for improvement. Use clear sections with emojis.`,
-        },
-      });
+Give 5 specific recommendations for improvement. Use clear sections with emojis.` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
     } catch (e: any) {

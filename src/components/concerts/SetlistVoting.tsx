@@ -33,8 +33,7 @@ export const SetlistVoting = ({ onBack }: Props) => {
       });
       return Array.from(tally.values()).sort((a, b) => b.votes - a.votes).slice(0, 20);
     },
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 
   const songs = useMemo(() =>
     baseSongs

@@ -4,14 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  CreditCard,
+import { CreditCard,
   Receipt,
   ExternalLink,
   Loader2,
   ArrowRight,
-  CheckCircle2,
-} from "lucide-react";
+  CheckCircle2 } from "lucide-react";
 import { useClubMembership } from "@/hooks/useClubMembership";
 
 interface Sub {
@@ -64,8 +62,7 @@ export function BillingOverviewCard() {
         const [subsRes, invRes] = await Promise.all([
           supabase.functions.invoke("list-user-subscriptions"),
           supabase.functions.invoke("list-user-subscriptions", {
-            body: { action: "list_invoices", limit: 3 },
-          }),
+            body: { action: "list_invoices", limit: 3 } }),
         ]);
         if (cancelled) return;
         setSubs((subsRes.data as any)?.subscriptions || []);

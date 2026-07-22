@@ -67,15 +67,13 @@ export function DatingNotificationsCenter() {
     return () => { if (channel) supabase.removeChannel(channel); };
   }, []);
 
-  const filtered = useMemo(() => {
-    if (filter === "all") return items;
+  const filtered = useMemo(() => { if (filter === "all") return items;
     const map: Record<Filter, string[]> = {
       all: [],
       likes: ["dating_like", "dating_super_like", "dating_photo_like", "like"],
       matches: ["dating_match", "match"],
       messages: ["dating_message", "message"],
-      system: ["dating_event", "dating_poll", "dating_date_plan", "dating_gift", "dating_boost"],
-    };
+      system: ["dating_event", "dating_poll", "dating_date_plan", "dating_gift", "dating_boost"] };
     return items.filter((n) => map[filter].includes(n.type));
   }, [items, filter]);
 

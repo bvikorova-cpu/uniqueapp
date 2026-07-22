@@ -33,8 +33,7 @@ export const ConfessionWall = () => {
   const loadConfessions = async () => {
     try {
       const { data, error } = await supabase.functions.invoke("get-confessions", {
-        body: { limit: 20, offset: 0 },
-      });
+        body: { limit: 20, offset: 0 } });
       if (error) throw error;
       setConfessions(data.confessions || []);
     } catch (error) {
@@ -70,8 +69,7 @@ export const ConfessionWall = () => {
       }
 
       const { data, error } = await supabase.functions.invoke("vote-absolution", {
-        body: { confessionId, voteType },
-      });
+        body: { confessionId, voteType } });
 
       if (error) throw error;
 

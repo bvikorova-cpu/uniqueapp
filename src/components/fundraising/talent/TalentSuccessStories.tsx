@@ -7,24 +7,18 @@ import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const stories = [
-  {
-    type: "🎵 Music",
+  { type: "🎵 Music",
     title: "A young musician funded their debut album",
     outcome: "Goal reached — Album released!",
-    raised: "100%",
-  },
-  {
-    type: "🏆 Sports",
+    raised: "100%" },
+  { type: "🏆 Sports",
     title: "An athlete reached international competition",
     outcome: "Goal reached — Bronze medal!",
-    raised: "100%",
-  },
-  {
-    type: "🎨 Art",
+    raised: "100%" },
+  { type: "🎨 Art",
     title: "An emerging painter funded a solo gallery show",
     outcome: "Goal reached — Show sold out!",
-    raised: "100%",
-  },
+    raised: "100%" },
 ];
 
 export const TalentSuccessStories = () => {

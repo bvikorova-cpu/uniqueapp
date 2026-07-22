@@ -44,13 +44,11 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
         ]);
         const created = (profile.data as any)?.created_at;
         const days = created ? Math.max(1, Math.floor((Date.now() - new Date(created).getTime()) / 86400000)) : 0;
-        setStats({
-          votes: votes.count || 0,
+        setStats({ votes: votes.count || 0,
           comments: comments.count || 0,
           uploads: uploads.count || 0,
           followers: followers.count || 0,
-          joinedDays: days,
-        });
+          joinedDays: days });
         setRealXp((points.data as any)?.total_points ?? null);
       } catch {
         setStats({ votes: 0, comments: 0, uploads: 0, followers: 0, joinedDays: 0 });

@@ -7,11 +7,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 const log = (s: string, d?: unknown) =>
   console.log(`[SYNC-REF-DSP] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
 
@@ -35,8 +33,7 @@ serve(async (req) => {
       const auth = req.headers.get("Authorization");
       if (!auth) {
         return new Response(JSON.stringify({ error: "Unauthorized" }), {
-          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       const { data: u } = await admin.auth.getUser(auth.replace("Bearer ", ""));
       if (!u.user) throw new Error("Not authenticated");
@@ -44,8 +41,7 @@ serve(async (req) => {
         .from("user_roles").select("role").eq("user_id", u.user.id);
       if (!roles?.some((r: any) => r.role === "admin")) {
         return new Response(JSON.stringify({ error: "Admin only" }), {
-          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
     }
 
@@ -61,8 +57,7 @@ serve(async (req) => {
     let starting_after: string | undefined;
     for (let i = 0; i < 30; i++) {
       const page = await stripe.refunds.list({
-        created: { gte: since }, limit: 100, starting_after,
-      });
+        created: { gte: since }, limit: 100, starting_after });
       for (const rf of page.data) {
         refundsChecked++;
         const piId = typeof rf.payment_intent === "string"
@@ -81,13 +76,11 @@ serve(async (req) => {
         if (!needsUpdate) continue;
         const { error } = await admin
           .from("payment_records")
-          .update({
-            status: "refunded",
+          .update({ status: "refunded",
             refunded_at: new Date(rf.created * 1000).toISOString(),
             refund_amount_cents: rf.amount,
             stripe_refund_id: rf.id,
-            refund_reason: rf.reason ?? null,
-          })
+            refund_reason: rf.reason ?? null })
           .eq("id", rec.id);
         if (error) errors.push({ kind: "refund", id: rf.id, error: error.message });
         else refundsSynced++;
@@ -101,8 +94,7 @@ serve(async (req) => {
     starting_after = undefined;
     for (let i = 0; i < 30; i++) {
       const page = await stripe.disputes.list({
-        created: { gte: since }, limit: 100, starting_after,
-      });
+        created: { gte: since }, limit: 100, starting_after });
       for (const dp of page.data) {
         disputesChecked++;
         const piId = typeof dp.payment_intent === "string"
@@ -115,8 +107,7 @@ serve(async (req) => {
           : { data: null as any };
 
         // Upsert stripe_disputes
-        const row = {
-          stripe_dispute_id: dp.id,
+        const row = { stripe_dispute_id: dp.id,
           stripe_payment_intent_id: piId ?? null,
           stripe_charge_id: chId ?? null,
           payment_record_id: pr?.id ?? null,
@@ -129,8 +120,7 @@ serve(async (req) => {
           is_charge_refundable: dp.is_charge_refundable ?? null,
           resolved_at: ["won", "lost", "warning_closed"].includes(dp.status)
             ? new Date().toISOString() : null,
-          resolution: ["won", "lost"].includes(dp.status) ? dp.status : null,
-        };
+          resolution: ["won", "lost"].includes(dp.status) ? dp.status : null };
         const { error: upErr } = await admin
           .from("stripe_disputes")
           .upsert(row, { onConflict: "stripe_dispute_id" });
@@ -150,20 +140,16 @@ serve(async (req) => {
     }
     log("disputes", { disputesChecked, disputesSynced });
 
-    const summary = {
-      days, refundsChecked, refundsSynced, disputesChecked, disputesSynced,
-      errors: errors.length, duration_ms: Date.now() - t0,
-    };
+    const summary = { days, refundsChecked, refundsSynced, disputesChecked, disputesSynced,
+      errors: errors.length, duration_ms: Date.now() - t0 };
     log("done", summary);
 
     return new Response(JSON.stringify({ ok: true, ...summary, errors }), {
-      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

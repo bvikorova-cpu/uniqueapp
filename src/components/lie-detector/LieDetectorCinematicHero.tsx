@@ -24,10 +24,9 @@ export const LieDetectorCinematicHero = () => {
       {/* Scanlines overlay */}
       <div
         className="pointer-events-none absolute inset-0"
-        style={{
+        style={ {
           background:
-            "repeating-linear-gradient(0deg, rgba(255,30,30,0.04) 0px, rgba(255,30,30,0.04) 1px, transparent 1px, transparent 3px)",
-        }}
+            "repeating-linear-gradient(0deg, rgba(255,30,30,0.04) 0px, rgba(255,30,30,0.04) 1px, transparent 1px, transparent 3px)" }}
       />
 
       {/* Vignette + film grain */}

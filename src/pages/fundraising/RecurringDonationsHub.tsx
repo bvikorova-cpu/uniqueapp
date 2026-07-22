@@ -5,11 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { ArrowLeft, Pause, Play, X, CreditCard, Repeat, Calendar, Heart } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -29,10 +27,8 @@ interface RecurringDonation {
   created_at: string;
 }
 
-const typeLabels: Record<string, string> = {
-  medical: "🏥 Medical", dream: "✨ Dream", hero: "🦸 Hero",
-  crisis: "🚨 Crisis", pet: "🐾 Pet", student: "🎓 Student", talent: "🎭 Talent",
-};
+const typeLabels: Record<string, string> = { medical: "🏥 Medical", dream: "✨ Dream", hero: "🦸 Hero",
+  crisis: "🚨 Crisis", pet: "🐾 Pet", student: "🎓 Student", talent: "🎭 Talent" };
 
 export default function RecurringDonationsHub() {
   const navigate = useNavigate();
@@ -64,8 +60,7 @@ export default function RecurringDonationsHub() {
     setBusyId(id);
     try {
       const { data, error } = await supabase.functions.invoke("manage-donation-subscription", {
-        body: { donationId: id, action },
-      });
+        body: { donationId: id, action } });
       if (error) throw error;
       if (action === "portal" && (data as any)?.url) {
         window.location.href = (data as any).url;

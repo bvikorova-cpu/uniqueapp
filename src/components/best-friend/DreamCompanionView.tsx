@@ -19,8 +19,7 @@ export const DreamCompanionView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "dream_companion", dream },
-      });
+        body: { action: "dream_companion", dream } });
       if (error) throw error;
       setResult(data);
       toast.success("Dream interpreted! (4 credits used)");

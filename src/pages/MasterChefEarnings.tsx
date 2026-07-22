@@ -16,15 +16,13 @@ interface Earning {
   created_at: string;
 }
 
-export default function MasterChefEarnings() {
-  const [earnings, setEarnings] = useState<Earning[]>([]);
+export default function MasterChefEarnings() { const [earnings, setEarnings] = useState<Earning[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalEarnings: 0,
     pendingEarnings: 0,
     totalGifts: 0,
-    averageCommission: 0,
-  });
+    averageCommission: 0 });
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -48,12 +46,10 @@ export default function MasterChefEarnings() {
         .eq("role", "admin")
         .single();
 
-      if (!roles) {
-        toast({
+      if (!roles) { toast({
           title: "Access Denied",
           description: "You need admin privileges to view this page",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/");
         return;
       }
@@ -85,19 +81,15 @@ export default function MasterChefEarnings() {
         .reduce((sum, e) => sum + Number(e.commission_amount), 0);
       const avgCommission = data && data.length > 0 ? total / data.length : 0;
 
-      setStats({
-        totalEarnings: total,
+      setStats({ totalEarnings: total,
         pendingEarnings: pending,
         totalGifts: data?.length || 0,
-        averageCommission: avgCommission,
-      });
-    } catch (error) {
-      console.error("Error loading earnings:", error);
+        averageCommission: avgCommission });
+    } catch (error) { console.error("Error loading earnings:", error);
       toast({
         title: "Error",
         description: "Failed to load earnings data",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

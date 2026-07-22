@@ -61,9 +61,7 @@ test.describe("DNA Social Memory Network — buttons + redirects", () => {
     await expect(page.getByText("DNA Analysis", { exact: true }).first()).toBeVisible();
   });
 
-  test("clicks every DNA tool sequentially without errors + spinners clear", async ({
-    page,
-  }) => {
+  test("clicks every DNA tool sequentially without errors + spinners clear", async ({ page }) => {
     test.setTimeout(180_000);
     const errors = (page as any)._jsErrors as string[];
     const failures: string[] = [];
@@ -85,17 +83,13 @@ test.describe("DNA Social Memory Network — buttons + redirects", () => {
       }
 
       // Loading state must clear
-      try {
-        await expect(page.locator('[aria-busy="true"]')).toHaveCount(0, {
-          timeout: 8_000,
-        });
+      try { await expect(page.locator('[aria-busy="true"]')).toHaveCount(0, {
+          timeout: 8_000 });
       } catch {
         failures.push(`${name}: aria-busy element still present`);
       }
-      try {
-        await expect(page.locator(".animate-spin").first()).toBeHidden({
-          timeout: 8_000,
-        });
+      try { await expect(page.locator(".animate-spin").first()).toBeHidden({
+          timeout: 8_000 });
       } catch {
         failures.push(`${name}: .animate-spin still visible`);
       }
@@ -120,9 +114,7 @@ test.describe("DNA Social Memory Network — buttons + redirects", () => {
     expect(failures, `Per-tool failures:\n${failures.join("\n")}`).toEqual([]);
   });
 
-  test("pricing 'Get Started' buttons require auth (no anonymous checkout)", async ({
-    page,
-  }) => {
+  test("pricing 'Get Started' buttons require auth (no anonymous checkout)", async ({ page }) => {
     // Each pricing card has a "Get Started" button. Without a session, clicking
     // must show the "Authentication Required" toast and NOT open Stripe.
     const popupPromise = page

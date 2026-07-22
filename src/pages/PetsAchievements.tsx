@@ -182,13 +182,11 @@ function FilterableAchievements({ items }: { items: UA[] }) {
     return Array.from(set).sort();
   }, [items]);
 
-  const buckets: Record<string, [number, number]> = {
-    any: [0, Infinity],
+  const buckets: Record<string, [number, number]> = { any: [0, Infinity],
     low: [0, 49],
     mid: [50, 149],
     high: [150, 499],
-    legend: [500, Infinity],
-  };
+    legend: [500, Infinity] };
 
   const filtered = useMemo(() => {
     const [min, max] = buckets[bucket];

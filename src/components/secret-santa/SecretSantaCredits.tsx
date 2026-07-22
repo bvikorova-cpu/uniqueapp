@@ -15,20 +15,17 @@ export const SecretSantaCredits = () => {
     
     try {
       const { data, error } = await supabase.functions.invoke("create-secret-santa-payment", {
-        body: { credits, price },
-      });
+        body: { credits, price } });
 
       if (error) throw error;
       
       if (data?.url) {
         window.open(data.url, "_blank");
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Failed to start payment",
         description: "Please try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoadingPackage(null);
     }

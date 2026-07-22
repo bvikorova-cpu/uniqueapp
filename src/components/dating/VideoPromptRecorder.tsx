@@ -52,8 +52,7 @@ export const VideoPromptRecorder = ({ userId, value, onChange }: Props) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user", width: { ideal: 720 }, height: { ideal: 720 } },
-        audio: true,
-      });
+        audio: true });
       streamRef.current = stream;
       if (previewRef.current) {
         previewRef.current.srcObject = stream;
@@ -112,9 +111,7 @@ export const VideoPromptRecorder = ({ userId, value, onChange }: Props) => {
     try {
       const ext = blobRef.current.type.includes("mp4") ? "mp4" : "webm";
       const path = `dating-video-prompts/${userId}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("media").upload(path, blobRef.current, {
-        contentType: blobRef.current.type, upsert: false,
-      });
+      const { error: upErr } = await supabase.storage.from("media").upload(path, blobRef.current, { contentType: blobRef.current.type, upsert: false });
       if (upErr) throw upErr;
       const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(path);
 

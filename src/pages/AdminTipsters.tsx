@@ -53,12 +53,10 @@ export default function AdminTipsters() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Access denied",
           description: "Please sign in to access admin panel",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
@@ -70,12 +68,10 @@ export default function AdminTipsters() {
         .eq("role", "admin")
         .maybeSingle();
       
-      if (!roleData) {
-        toast({
+      if (!roleData) { toast({
           title: "Access denied",
           description: "You don't have admin permissions",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/");
         return;
       }
@@ -104,13 +100,11 @@ export default function AdminTipsters() {
       setPendingTipsters(pending);
       setActiveTipsters(active);
       setRejectedTipsters(rejected);
-    } catch (error) {
-      console.error("Error loading tipsters:", error);
+    } catch (error) { console.error("Error loading tipsters:", error);
       toast({
         title: "Error",
         description: "Failed to load tipsters",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -126,19 +120,15 @@ export default function AdminTipsters() {
 
       if (error) throw error;
 
-      toast({
-        title: "Tipster approved",
-        description: "The tipster can now publish predictions",
-      });
+      toast({ title: "Tipster approved",
+        description: "The tipster can now publish predictions" });
 
       await loadTipsters();
-    } catch (error) {
-      console.error("Error approving tipster:", error);
+    } catch (error) { console.error("Error approving tipster:", error);
       toast({
         title: "Error",
         description: "Failed to approve tipster",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setActionLoading(null);
     }
@@ -154,19 +144,15 @@ export default function AdminTipsters() {
 
       if (error) throw error;
 
-      toast({
-        title: "Tipster rejected",
-        description: "The application has been rejected",
-      });
+      toast({ title: "Tipster rejected",
+        description: "The application has been rejected" });
 
       await loadTipsters();
-    } catch (error) {
-      console.error("Error rejecting tipster:", error);
+    } catch (error) { console.error("Error rejecting tipster:", error);
       toast({
         title: "Error",
         description: "Failed to reject tipster",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setActionLoading(null);
     }

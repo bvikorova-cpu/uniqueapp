@@ -33,10 +33,8 @@ export default function PetOnboardingQuiz({ onDone }: { onDone: () => void }) {
     // Persist quiz
     await supabase.from("pet_quiz_responses").insert({ user_id: user.id, answers });
     // Auto-create pet profile if name given
-    if (answers.name) {
-      await supabase.from("pet_profiles").insert({
-        user_id: user.id, name: answers.name, species: answers.species || "dog", personality: answers.personality,
-      });
+    if (answers.name) { await supabase.from("pet_profiles").insert({
+        user_id: user.id, name: answers.name, species: answers.species || "dog", personality: answers.personality });
     }
     const { data } = await supabase.functions.invoke("pet-translator-ai", { body: { action: "onboarding_personalize", answers } });
     setIntro(data?.result || "Welcome!");

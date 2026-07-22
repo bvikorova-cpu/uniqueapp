@@ -66,10 +66,8 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
-    return {
-      x: ((e.clientX - rect.left) / rect.width) * canvas.width,
-      y: ((e.clientY - rect.top) / rect.height) * canvas.height,
-    };
+    return { x: ((e.clientX - rect.left) / rect.width) * canvas.width,
+      y: ((e.clientY - rect.top) / rect.height) * canvas.height };
   };
 
   const startDraw = (e: React.MouseEvent<HTMLCanvasElement>) => { setIsDrawing(true); lastPos.current = getPos(e); };

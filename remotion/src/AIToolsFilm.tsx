@@ -1,14 +1,12 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Audio,
   Img,
   Sequence,
   interpolate,
   spring,
   staticFile,
-  useCurrentFrame,
-} from "remotion";
+  useCurrentFrame } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
 
@@ -17,13 +15,11 @@ const body = loadBody("normal", { weights: ["500", "600", "700", "900"] });
 
 const FPS = 30;
 
-const BRAND = {
-  white: "#ffffff",
+const BRAND = { white: "#ffffff",
   bgDeep: "#07030f",
   purple: "#8b5cf6",
   pink: "#ec4899",
-  cyan: "#22d3ee",
-};
+  cyan: "#22d3ee" };
 
 const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
@@ -34,10 +30,8 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const tagOp = interpolate(frame, [50, 78], [0, 1], { extrapolateRight: "clamp" });
   const tagY = interpolate(frame, [50, 78], [20, 0], { extrapolateRight: "clamp" });
   const kb = interpolate(frame, [0, duration], [1.08, 1.2], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 20, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 20, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{ transform: `scale(${kb})` }}>
@@ -48,12 +42,11 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
         <AbsoluteFill style={{ backgroundColor: "rgba(5,0,20,0.65)" }} />
       </AbsoluteFill>
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          opacity: 1 - exit,
-        }}
+          opacity: 1 - exit }}
       >
         <div style={{ transform: `scale(${logoScale}) rotate(${logoRot}deg)`, filter: "drop-shadow(0 20px 60px rgba(139,92,246,0.6))" }}>
           <Img src={staticFile("home/logo.png")} style={{ width: 340, height: 340, borderRadius: 84 }} />
@@ -70,8 +63,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 80px rgba(139,92,246,0.55)",
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em" }}
         >
           Unique
         </div>
@@ -86,8 +78,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             color: "rgba(255,255,255,0.94)",
             letterSpacing: "0.28em",
             textTransform: "uppercase",
-            textAlign: "center",
-          }}
+            textAlign: "center" }}
         >
           AI Tools & Studios
         </div>
@@ -96,12 +87,10 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   );
 };
 
-const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
-  const frame = useCurrentFrame();
+const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => { const frame = useCurrentFrame();
   const opacity = interpolate(frame, [0, 12, duration - 20, duration], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+    extrapolateRight: "clamp" });
   const l1o = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
   const l1y = interpolate(frame, [0, 18], [40, 0], { extrapolateRight: "clamp" });
   const l2o = interpolate(frame, [16, 34], [0, 1], { extrapolateRight: "clamp" });
@@ -111,20 +100,18 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 30% 30%, rgba(139,92,246,0.45), transparent 55%), radial-gradient(circle at 70% 70%, rgba(236,72,153,0.4), transparent 55%)",
-        }}
+            "radial-gradient(circle at 30% 30%, rgba(139,92,246,0.45), transparent 55%), radial-gradient(circle at 70% 70%, rgba(236,72,153,0.4), transparent 55%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
           padding: 80,
           textAlign: "center",
-          opacity,
-        }}
+          opacity }}
       >
         <div
           style={{
@@ -133,8 +120,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             fontFamily: body.fontFamily,
             fontWeight: 500,
             fontSize: 72,
-            color: "rgba(255,255,255,0.82)",
-          }}
+            color: "rgba(255,255,255,0.82)" }}
         >
           Imagine it.
         </div>
@@ -150,8 +136,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "-0.04em",
             background: `linear-gradient(90deg, ${BRAND.cyan} 0%, ${BRAND.purple} 50%, ${BRAND.pink} 100%)`,
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
+            WebkitTextFillColor: "transparent" }}
         >
           AI makes it.
         </div>
@@ -164,8 +149,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             fontWeight: 600,
             fontSize: 48,
             color: "rgba(255,255,255,0.9)",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           20 studios. One creative universe. Powered by AI.
         </div>
@@ -187,10 +171,8 @@ type Module = {
 const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mod }) => {
   const frame = useCurrentFrame();
   const enter = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 18, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   const shellOp = enter * (1 - exit);
   const kbScale = interpolate(frame, [0, duration], [1.1, 1.28], { extrapolateRight: "clamp" });
   const kbX = interpolate(frame, [0, duration], [-20, 20]);
@@ -212,31 +194,27 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
             height: "100%",
             objectFit: "cover",
             transform: `scale(${kbScale}) translate(${kbX}px, ${kbY}px)`,
-            filter: "saturate(1.15) contrast(1.05)",
-          }}
+            filter: "saturate(1.15) contrast(1.05)" }}
         />
       </AbsoluteFill>
       <AbsoluteFill
         style={{
           background: `linear-gradient(160deg, ${mod.accent}33 0%, transparent 40%, ${mod.accent2}55 100%)`,
-          mixBlendMode: "screen",
-        }}
+          mixBlendMode: "screen" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "linear-gradient(180deg, rgba(7,3,15,0.75) 0%, rgba(7,3,15,0.15) 22%, rgba(7,3,15,0) 45%, rgba(7,3,15,0.35) 62%, rgba(7,3,15,0.92) 100%)",
-        }}
+            "linear-gradient(180deg, rgba(7,3,15,0.75) 0%, rgba(7,3,15,0.15) 22%, rgba(7,3,15,0) 45%, rgba(7,3,15,0.35) 62%, rgba(7,3,15,0.92) 100%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "space-between",
           flexDirection: "column",
           padding: 80,
           paddingTop: 160,
-          paddingBottom: 180,
-        }}
+          paddingBottom: 180 }}
       >
         <div
           style={{
@@ -252,8 +230,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
             letterSpacing: "0.28em",
             textTransform: "uppercase",
             boxShadow: `0 20px 60px -15px ${mod.accent}cc`,
-            textAlign: "center",
-          }}
+            textAlign: "center" }}
         >
           {mod.badge}
         </div>
@@ -269,8 +246,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
               color: BRAND.white,
               letterSpacing: "-0.035em",
               textShadow: "0 8px 40px rgba(0,0,0,0.75)",
-              textAlign: "center",
-            }}
+              textAlign: "center" }}
           >
             {mod.title}
           </div>
@@ -286,8 +262,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
               textAlign: "center",
               maxWidth: 900,
               lineHeight: 1.25,
-              textShadow: "0 4px 20px rgba(0,0,0,0.85)",
-            }}
+              textShadow: "0 4px 20px rgba(0,0,0,0.85)" }}
           >
             {mod.subtitle}
           </div>
@@ -309,8 +284,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
                     borderRadius: 22,
                     background: "rgba(7,3,15,0.55)",
                     border: `1px solid ${mod.accent}66`,
-                    boxShadow: `0 10px 40px -20px ${mod.accent}aa`,
-                  }}
+                    boxShadow: `0 10px 40px -20px ${mod.accent}aa` }}
                 >
                   <div
                     style={{
@@ -321,21 +295,19 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      flexShrink: 0,
-                    }}
+                      flexShrink: 0 }}
                   >
                     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                       <path d="M5 12l5 5L20 7" />
                     </svg>
                   </div>
                   <div
-                    style={{
+                    style={ {
                       fontFamily: body.fontFamily,
                       fontWeight: 700,
                       fontSize: 34,
                       color: BRAND.white,
-                      letterSpacing: "-0.01em",
-                    }}
+                      letterSpacing: "-0.01em" }}
                   >
                     {p}
                   </div>
@@ -355,17 +327,14 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   const wordS = spring({ frame: frame - 12, fps: FPS, config: { damping: 14, stiffness: 110 } });
   const urlOp = interpolate(frame, [30, 55], [0, 1], { extrapolateRight: "clamp" });
   const tagOp = interpolate(frame, [45, 70], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 15, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 15, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.4), transparent 60%)",
-        }}
+            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.4), transparent 60%)" }}
       />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
         <Img
@@ -375,8 +344,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             height: 280,
             borderRadius: 72,
             transform: `scale(${logoS})`,
-            filter: "drop-shadow(0 15px 50px rgba(139,92,246,0.6))",
-          }}
+            filter: "drop-shadow(0 15px 50px rgba(139,92,246,0.6))" }}
         />
         <div
           style={{
@@ -389,26 +357,24 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(180deg, ${BRAND.white} 0%, #e9d5ff 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 60px rgba(139,92,246,0.5)",
-          }}
+            textShadow: "0 0 60px rgba(139,92,246,0.5)" }}
         >
           Unique
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 40,
             opacity: urlOp,
             fontFamily: body.fontFamily,
             fontWeight: 700,
             fontSize: 68,
             color: BRAND.white,
-            letterSpacing: "0.05em",
-          }}
+            letterSpacing: "0.05em" }}
         >
           uniqueapp.fun
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 26,
             opacity: tagOp,
             fontFamily: body.fontFamily,
@@ -418,8 +384,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             textAlign: "center",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           Create · Generate · Amaze
         </div>
@@ -429,186 +394,146 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
 };
 
 const MODULES: Module[] = [
-  {
-    badge: "CreativeForge",
+  { badge: "CreativeForge",
     title: "Words that sell.",
     subtitle: "AI writing studio for blogs, ads, scripts and every voice you need.",
     perks: ["Brainstorm · rewrite · expand", "SEO & plagiarism built-in", "12 languages, one prompt"],
     image: "aitools/01-creativeforge.jpg",
     accent: "#8b5cf6",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "Content Studio",
+    accent2: "#ec4899" },
+  { badge: "Content Studio",
     title: "Social, on tap.",
     subtitle: "Posts, captions, hashtags and hooks for every platform.",
     perks: ["Multi-platform templates", "Tone & style presets", "Schedule-ready output"],
     image: "aitools/02-content-studio.jpg",
     accent: "#ec4899",
-    accent2: "#f97316",
-  },
-  {
-    badge: "AI Generation",
+    accent2: "#f97316" },
+  { badge: "AI Generation",
     title: "Pixels from thin air.",
     subtitle: "Turn any idea into stunning original images in seconds.",
     perks: ["Photo · art · concept styles", "High-resolution downloads", "Commercial-safe outputs"],
     image: "aitools/03-ai-generation.jpg",
     accent: "#a855f7",
-    accent2: "#22d3ee",
-  },
-  {
-    badge: "Universal Analyzer",
+    accent2: "#22d3ee" },
+  { badge: "Universal Analyzer",
     title: "Understand anything.",
     subtitle: "Drop a doc, image, audio or link — get instant insights.",
     perks: ["Text · image · audio · video", "Summaries & sentiment", "One tool, endless inputs"],
     image: "aitools/04-analyzer.jpg",
     accent: "#22d3ee",
-    accent2: "#8b5cf6",
-  },
-  {
-    badge: "Video Ad Generator",
+    accent2: "#8b5cf6" },
+  { badge: "Video Ad Generator",
     title: "Ads that hit.",
     subtitle: "Scroll-stopping video ads from a single product link.",
     perks: ["Auto script & voiceover", "Vertical · square · wide", "Ready-to-post exports"],
     image: "aitools/05-video-ad.jpg",
     accent: "#ec4899",
-    accent2: "#fbbf24",
-  },
-  {
-    badge: "AI Tattoo Designer",
+    accent2: "#fbbf24" },
+  { badge: "AI Tattoo Designer",
     title: "Ink your story.",
     subtitle: "Personal tattoo concepts from your idea, style and placement.",
     perks: ["100+ tattoo styles", "Body-placement preview", "Print-ready stencils"],
     image: "aitools/06-tattoo.jpg",
     accent: "#fbbf24",
-    accent2: "#f97316",
-  },
-  {
-    badge: "AI Personality Clone",
+    accent2: "#f97316" },
+  { badge: "AI Personality Clone",
     title: "Your voice, on-demand.",
     subtitle: "Train an AI twin that thinks and answers like you.",
     perks: ["Private personality model", "Chat 24/7 in your style", "Shareable with fans"],
     image: "aitools/07-personality.jpg",
     accent: "#22d3ee",
-    accent2: "#8b5cf6",
-  },
-  {
-    badge: "AI Pet Translator",
+    accent2: "#8b5cf6" },
+  { badge: "AI Pet Translator",
     title: "What is Rex saying?",
     subtitle: "Upload a bark, meow or photo — get a fun playful translation.",
     perks: ["Dog · cat · exotic pets", "Mood & body language", "Share cards for social"],
     image: "aitools/08-pet-translator.jpg",
     accent: "#f97316",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "Handwriting Analyzer",
+    accent2: "#ec4899" },
+  { badge: "Handwriting Analyzer",
     title: "Read between the lines.",
     subtitle: "AI graphology reveals personality from a single handwriting sample.",
     perks: ["Personality traits map", "Strengths & habits report", "Beautiful PDF export"],
     image: "aitools/09-handwriting.jpg",
     accent: "#fbbf24",
-    accent2: "#8b5cf6",
-  },
-  {
-    badge: "Future Face",
+    accent2: "#8b5cf6" },
+  { badge: "Future Face",
     title: "Meet your future self.",
     subtitle: "See yourself aged 10, 20 or 50 years from now — realistically.",
     perks: ["+10 / +20 / +50 predictions", "Family lineage previews", "Save & share reveals"],
     image: "aitools/10-future-face.jpg",
     accent: "#a855f7",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "Photo Restoration",
+    accent2: "#ec4899" },
+  { badge: "Photo Restoration",
     title: "Bring memories back.",
     subtitle: "Repair scratches, colorize and enhance old family photos.",
     perks: ["Damage & scratch repair", "AI colorization", "Studio-grade upscaling"],
     image: "aitools/11-photo-restoration.jpg",
     accent: "#fbbf24",
-    accent2: "#f97316",
-  },
-  {
-    badge: "Stock Content Library",
+    accent2: "#f97316" },
+  { badge: "Stock Content Library",
     title: "Millions of assets.",
     subtitle: "Photos, video, audio and vectors — all license-clear.",
     perks: ["4K · 8K · vector · audio", "Instant download", "Creator revenue share"],
     image: "aitools/12-stock-library.jpg",
     accent: "#22d3ee",
-    accent2: "#3b82f6",
-  },
-  {
-    badge: "Virtual Influencer",
+    accent2: "#3b82f6" },
+  { badge: "Virtual Influencer",
     title: "Build a persona.",
     subtitle: "Design AI influencers that post, grow and earn brand deals.",
     perks: ["Custom look & niche", "Auto-posting schedule", "Brand deals marketplace"],
     image: "aitools/13-virtual-influencer.jpg",
     accent: "#ec4899",
-    accent2: "#a855f7",
-  },
-  {
-    badge: "Brand Builder",
+    accent2: "#a855f7" },
+  { badge: "Brand Builder",
     title: "A brand in minutes.",
     subtitle: "Logo, colors, fonts and voice — a full identity from one prompt.",
     perks: ["Logo variants & SVG", "Palette & typography", "Downloadable brand book"],
     image: "aitools/14-brand-builder.jpg",
     accent: "#fbbf24",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "Home Designer",
+    accent2: "#ec4899" },
+  { badge: "Home Designer",
     title: "Redesign any room.",
     subtitle: "Snap a photo and see it restyled in dozens of interiors.",
     perks: ["100+ interior styles", "Furniture & material swaps", "Save & share moodboards"],
     image: "aitools/15-home-designer.jpg",
     accent: "#a855f7",
-    accent2: "#fbbf24",
-  },
-  {
-    badge: "Beauty Studio",
+    accent2: "#fbbf24" },
+  { badge: "Beauty Studio",
     title: "Try before you buy.",
     subtitle: "Virtual makeup, hair and skincare on your live selfie.",
     perks: ["Live AR try-on", "Real product catalog", "Save & shop your looks"],
     image: "aitools/16-beauty.jpg",
     accent: "#ec4899",
-    accent2: "#f472b6",
-  },
-  {
-    badge: "Fashion Studio",
+    accent2: "#f472b6" },
+  { badge: "Fashion Studio",
     title: "Wear tomorrow, today.",
     subtitle: "Try on outfits, plan looks and get AI styling for any occasion.",
     perks: ["Virtual full-body fitting", "AI outfit stylist", "Wardrobe calendar"],
     image: "aitools/17-fashion.jpg",
     accent: "#ec4899",
-    accent2: "#8b5cf6",
-  },
-  {
-    badge: "Graphic Design",
+    accent2: "#8b5cf6" },
+  { badge: "Graphic Design",
     title: "Design without limits.",
     subtitle: "Posters, social kits, thumbnails and print — all AI-assisted.",
     perks: ["Smart templates", "Vector & raster export", "Brand-locked assets"],
     image: "aitools/18-graphic-design.jpg",
     accent: "#f97316",
-    accent2: "#22d3ee",
-  },
-  {
-    badge: "Photography",
+    accent2: "#22d3ee" },
+  { badge: "Photography",
     title: "Studio in your pocket.",
     subtitle: "AI retouching, background swaps and cinematic color grading.",
     perks: ["Skin & light retouching", "Background remove & swap", "Cinema-grade LUTs"],
     image: "aitools/19-photography.jpg",
     accent: "#fbbf24",
-    accent2: "#a855f7",
-  },
-  {
-    badge: "Music Production",
+    accent2: "#a855f7" },
+  { badge: "Music Production",
     title: "Sound that moves.",
     subtitle: "Generate beats, hooks and full tracks in any genre.",
     perks: ["Genre & mood presets", "Royalty-free stems", "Export WAV / MP3"],
     image: "aitools/20-music.jpg",
     accent: "#8b5cf6",
-    accent2: "#ec4899",
-  },
+    accent2: "#ec4899" },
 ];
 
 const INTRO = 130;

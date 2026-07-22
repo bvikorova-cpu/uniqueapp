@@ -119,11 +119,9 @@ export default function IQMatchBetting({ competitionId }: { competitionId: strin
       return;
     }
     setPlacing(matchId);
-    const { error } = await supabase.rpc("place_iq_match_bet", {
-      _match_id: matchId,
+    const { error } = await supabase.rpc("place_iq_match_bet", { _match_id: matchId,
       _predicted_winner_id: side,
-      _stake: amt,
-    });
+      _stake: amt });
     setPlacing(null);
     if (error) {
       toast({ title: "Bet failed", description: error.message.replace(/_/g, " "), variant: "destructive" });

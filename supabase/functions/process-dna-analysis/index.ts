@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -34,8 +32,7 @@ serve(async (req) => {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${openaiKey}`,
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "gpt-4o-mini",
           messages: [
@@ -59,9 +56,7 @@ Use creative region names (e.g., "Northern European", "East Asian", "Sub-Saharan
               role: "user",
               content: `Generate a unique DNA analysis for sample ID: ${sampleId}. Make it creative and personalized with diverse heritage mix.`
             }
-          ],
-        }),
-      });
+          ] }) });
 
       if (aiResponse.ok) {
         const aiData = await aiResponse.json();
@@ -111,8 +106,7 @@ Use creative region names (e.g., "Northern European", "East Asian", "Sub-Saharan
             method: "POST",
             headers: {
               "Authorization": `Bearer ${openaiKey}`,
-              "Content-Type": "application/json",
-            },
+              "Content-Type": "application/json" },
             body: JSON.stringify({
               model: "gpt-4o-mini",
               messages: [
@@ -124,9 +118,7 @@ Use creative region names (e.g., "Northern European", "East Asian", "Sub-Saharan
                   role: "user",
                   content: `Generate a vivid first-person ancestral memory for: ${ancestor.name}, who lived in the ${ancestor.era} and was a ${ancestor.occupation}. Make it deeply personal and emotionally resonant.`
                 }
-              ],
-            }),
-          });
+              ] }) });
 
           if (memResponse.ok) {
             const memData = await memResponse.json();

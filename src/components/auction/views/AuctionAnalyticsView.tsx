@@ -20,8 +20,7 @@ export const AuctionAnalyticsView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("auction-ai", {
-        body: { action: "auction_analytics", auction_data: input },
-      });
+        body: { action: "auction_analytics", auction_data: input } });
       if (error) throw error;
       setResult(data.result);
     } catch (err: any) { toast.error(err.message || "Analysis failed"); }

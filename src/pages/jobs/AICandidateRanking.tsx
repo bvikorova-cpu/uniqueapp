@@ -59,24 +59,19 @@ export default function AICandidateRanking() {
   };
   useEffect(() => { load(); }, [jobId]);
 
-  const runRanking = async () => {
-    if (!job || applications.length === 0) return toast.error("No applications to rank");
+  const runRanking = async () => { if (!job || applications.length === 0) return toast.error("No applications to rank");
     setRunning(true);
     try {
       const candidates = applications.map(a => ({
         candidate_id: a.applicant_id || a.user_id || a.id,
         cover_letter: a.cover_letter,
         resume_url: a.resume_url,
-        notes: a.notes,
-      }));
-      const { data, error } = await supabase.functions.invoke("ai-rank-candidates", {
-        body: {
+        notes: a.notes }));
+      const { data, error } = await supabase.functions.invoke("ai-rank-candidates", { body: {
           jobId,
           jobTitle: job.title,
           jobDescription: job.description,
-          candidates,
-        },
-      });
+          candidates } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       toast.success("Ranking complete");

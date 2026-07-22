@@ -53,36 +53,29 @@ export default function SecuritySettings() {
     setBusy(true);
     const { data, error } = await supabase.auth.mfa.enroll({
       factorType: "totp",
-      friendlyName: `Authenticator ${new Date().toISOString().slice(0, 10)}`,
-    });
+      friendlyName: `Authenticator ${new Date().toISOString().slice(0, 10)}` });
     setBusy(false);
     if (error || !data) {
       toast({ title: "Enroll failed", description: error?.message, variant: "destructive" });
       return;
     }
-    setEnrolling({
-      factorId: data.id,
+    setEnrolling({ factorId: data.id,
       qr: data.totp.qr_code,
-      secret: data.totp.secret,
-    });
+      secret: data.totp.secret });
   };
 
   const verifyEnroll = async () => {
     if (!enrolling) return;
     setBusy(true);
-    const { data: challenge, error: cErr } = await supabase.auth.mfa.challenge({
-      factorId: enrolling.factorId,
-    });
+    const { data: challenge, error: cErr } = await supabase.auth.mfa.challenge({ factorId: enrolling.factorId });
     if (cErr || !challenge) {
       setBusy(false);
       toast({ title: "Challenge failed", description: cErr?.message, variant: "destructive" });
       return;
     }
-    const { error: vErr } = await supabase.auth.mfa.verify({
-      factorId: enrolling.factorId,
+    const { error: vErr } = await supabase.auth.mfa.verify({ factorId: enrolling.factorId,
       challengeId: challenge.id,
-      code,
-    });
+      code });
     setBusy(false);
     if (vErr) {
       toast({ title: "Invalid code", description: vErr.message, variant: "destructive" });

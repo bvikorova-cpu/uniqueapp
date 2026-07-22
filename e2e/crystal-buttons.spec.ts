@@ -123,9 +123,7 @@ test.describe("Crystal Energy Network — buttons + redirects", () => {
   // After each click, ensure no loading spinner is left behind and the page
   // is interactive again (no aria-busy=true, no .animate-spin elements,
   // and the underlying tool button is clickable for re-entry).
-  test("loading spinners clear after each tool click and page stays interactive", async ({
-    page,
-  }) => {
+  test("loading spinners clear after each tool click and page stays interactive", async ({ page }) => {
     // Tools that route to a separate page — covered by the "redirects" test;
     // skip them here so we focus on in-hub spinner behavior.
     const inHubTools = CRYSTAL_TOOLS.filter((n) => n !== "Crystal Marketplace");
@@ -183,14 +181,11 @@ test.describe("Crystal edge functions — anonymous calls must be rejected", () 
   test("each crystal edge function returns 401 without JWT", async () => {
     const ctx = await request.newContext();
     for (const fn of CRYSTAL_EDGE_FUNCTIONS) {
-      const res = await ctx.post(`${SUPABASE_URL}/functions/v1/${fn}`, {
-        headers: {
+      const res = await ctx.post(`${SUPABASE_URL}/functions/v1/${fn}`, { headers: {
           "Content-Type": "application/json",
           // anon key is required to reach the function; missing JWT -> 401 inside handler
-          apikey: ANON_KEY,
-        },
-        data: {},
-      });
+          apikey: ANON_KEY },
+        data: {} });
       expect(
         [401, 403],
         `${fn} must reject anonymous (got ${res.status()})`,

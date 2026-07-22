@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -14,8 +12,7 @@ serve(async (req) => {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   const supabaseClient = createClient(
@@ -31,8 +28,7 @@ serve(async (req) => {
 
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { confessionId, voteType } = await req.json();
@@ -61,20 +57,16 @@ serve(async (req) => {
     }
 
     // Insert vote
-    await supabaseClient.from("absolution_votes").insert({
-      confession_id: confessionId,
+    await supabaseClient.from("absolution_votes").insert({ confession_id: confessionId,
       voter_id: user.id,
       vote_type: voteType,
-      tokens_spent: 1,
-    });
+      tokens_spent: 1 });
 
     // Update token balance
     await supabaseClient
       .from("absolution_tokens")
-      .update({
-        tokens_remaining: tokenData.tokens_remaining - 1,
-        tokens_used: tokenData.tokens_used + 1,
-      })
+      .update({ tokens_remaining: tokenData.tokens_remaining - 1,
+        tokens_used: tokenData.tokens_used + 1 })
       .eq("user_id", user.id);
 
     // Update confession vote counts

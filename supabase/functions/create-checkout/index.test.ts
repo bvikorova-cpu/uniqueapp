@@ -3,10 +3,8 @@
 // supabase/functions/create-checkout/index.ts — drift here = failing test.
 //
 // Run with: deno test --allow-net --allow-env supabase/functions/create-checkout/index.test.ts
-import {
-  assertEquals,
-  assert,
-} from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { assertEquals,
+  assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
 // ── Mirror of constants in index.ts ───────────────────────────────────────
 const DEFAULT_APP_ORIGIN = "https://uniqueapp.fun";
@@ -21,17 +19,13 @@ function normalizeOrigin(value: string | null) {
   }
 }
 
-const CAMPAIGN_FEE_PCT: Record<string, number> = {
-  medical: 0.06, dream: 0.07, hero: 0.05, pet: 0.06,
-  student: 0.05, crisis: 0.08, talent: 0.10,
-};
+const CAMPAIGN_FEE_PCT: Record<string, number> = { medical: 0.06, dream: 0.07, hero: 0.05, pet: 0.06,
+  student: 0.05, crisis: 0.08, talent: 0.10 };
 
-const ANTIQUE_PRICE_IDS: Record<number, string> = {
-  10: "price_1SOII2GaXSfGtYFtPltUZvxb",
+const ANTIQUE_PRICE_IDS: Record<number, string> = { 10: "price_1SOII2GaXSfGtYFtPltUZvxb",
   25: "price_1SOIIMGaXSfGtYFtonaY4jqs",
   60: "price_1SOIItGaXSfGtYFtvHTuEutU",
-  150: "price_1SOIJE0QTWhd4oRpow80Xeyd",
-};
+  150: "price_1SOIJE0QTWhd4oRpow80Xeyd" };
 
 // ── normalizeOrigin ───────────────────────────────────────────────────────
 
@@ -83,12 +77,10 @@ Deno.test("CAMPAIGN_FEE_PCT: every rate is between 0 and 0.10 (cap = 10%)", () =
   }
 });
 
-Deno.test("CAMPAIGN_FEE_PCT: fee math on €100 donation matches expected cents", () => {
-  const grossCents = 10_000;
+Deno.test("CAMPAIGN_FEE_PCT: fee math on €100 donation matches expected cents", () => { const grossCents = 10_000;
   const expected: Record<string, number> = {
     medical: 600, dream: 700, hero: 500, pet: 600,
-    student: 500, crisis: 800, talent: 1000,
-  };
+    student: 500, crisis: 800, talent: 1000 };
   for (const [k, pct] of Object.entries(CAMPAIGN_FEE_PCT)) {
     const fee = Math.floor(grossCents * pct);
     assertEquals(fee, expected[k], `${k}: expected ${expected[k]} got ${fee}`);

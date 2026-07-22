@@ -41,10 +41,8 @@ export default function AdminDoctorVerifications() {
       return;
     }
     (async () => {
-      const { data, error } = await supabase.rpc("has_role", {
-        _user_id: user.id,
-        _role: "admin",
-      });
+      const { data, error } = await supabase.rpc("has_role", { _user_id: user.id,
+        _role: "admin" });
       setIsAdmin(!error && data === true);
     })();
   }, [user]);
@@ -89,13 +87,10 @@ export default function AdminDoctorVerifications() {
   async function decide(doctor: DoctorRow, action: "approve" | "reject") {
     setBusy(doctor.user_id);
     try {
-      const { error } = await supabase.functions.invoke("admin-verify-doctor", {
-        body: {
+      const { error } = await supabase.functions.invoke("admin-verify-doctor", { body: {
           doctor_id: doctor.user_id,
           action,
-          reason: action === "reject" ? reasonByDoctor[doctor.user_id] ?? "" : undefined,
-        },
-      });
+          reason: action === "reject" ? reasonByDoctor[doctor.user_id] ?? "" : undefined } });
       if (error) throw error;
       toast.success(action === "approve" ? "Doctor approved" : "Doctor rejected");
       await load();

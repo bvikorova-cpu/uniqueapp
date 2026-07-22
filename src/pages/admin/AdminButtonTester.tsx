@@ -150,16 +150,14 @@ export default function AdminButtonTester() {
     [routes, filter]
   );
 
-  const stats = useMemo(() => {
-    const list = Object.values(results);
+  const stats = useMemo(() => { const list = Object.values(results);
     return {
       total: list.length,
       pass: list.filter((r) => classify(r) === "pass").length,
       warn: list.filter((r) => classify(r) === "warn").length,
       fail: list.filter((r) => classify(r) === "fail").length,
       buttons: list.reduce((a, r) => a + r.total, 0),
-      clicks: list.reduce((a, r) => a + r.clickable, 0),
-    };
+      clicks: list.reduce((a, r) => a + r.clickable, 0) };
   }, [results]);
 
   const visibleTableRoutes = useMemo(() => {
@@ -187,13 +185,11 @@ export default function AdminButtonTester() {
     return `${tested}/${checkpoint.routesTotal} uložené — ${new Date(checkpoint.updatedAt).toLocaleString()}`;
   }
 
-  function saveCheckpoint(nextResults: Record<string, BtnResult>, routesTotal: number) {
-    try {
+  function saveCheckpoint(nextResults: Record<string, BtnResult>, routesTotal: number) { try {
       const checkpoint: Checkpoint = {
         updatedAt: new Date().toISOString(),
         results: nextResults,
-        routesTotal,
-      };
+        routesTotal };
       localStorage.setItem(CHECKPOINT_KEY, JSON.stringify(checkpoint));
       setCheckpointLabel(formatCheckpointLabel(checkpoint));
     } catch {
@@ -220,8 +216,7 @@ export default function AdminButtonTester() {
     }
   }
 
-  async function probeRoute(route: string): Promise<BtnResult> {
-    const startedAt = performance.now();
+  async function probeRoute(route: string): Promise<BtnResult> { const startedAt = performance.now();
     const finish = (partial: Partial<BtnResult>): BtnResult => ({
       route,
       total: 0,
@@ -233,8 +228,7 @@ export default function AdminButtonTester() {
       ok: false,
       testedAt: new Date().toISOString(),
       durationMs: Math.round(performance.now() - startedAt),
-      ...partial,
-    });
+      ...partial });
 
     if (SELF_TESTER_ROUTES.has(route)) {
       return finish({ ok: true, reason: "self-tester route skipped" });
@@ -301,8 +295,7 @@ export default function AdminButtonTester() {
         if (!stillLoading && (hasInteractive || txt.length > 30)) { readyReason = "ready"; break; }
         await new Promise((r) => setTimeout(r, 150));
       }
-      if (readyReason !== "ready" && readyReason !== "crash") {
-        const textSample = compactText(iframe.contentDocument?.body?.innerText || "");
+      if (readyReason !== "ready" && readyReason !== "crash") { const textSample = compactText(iframe.contentDocument?.body?.innerText || "");
         return finish({
           reason: "stuck on loading",
           loadedUrl: iframe.contentWindow?.location?.pathname,
@@ -312,9 +305,7 @@ export default function AdminButtonTester() {
             overlayTriggers: 0,
             openedOverlays: 0,
             readyMs: Date.now() - readyStart,
-            source: "iframe-dom",
-          },
-        });
+            source: "iframe-dom" } });
       }
 
       const doc = iframe.contentDocument;
@@ -325,8 +316,7 @@ export default function AdminButtonTester() {
 
       // Not found detection
       const bodyText = (doc.body.innerText || "").slice(0, 4000);
-      if (/404|not found|nen[aá]jden/i.test(bodyText.slice(0, 400))) {
-        return finish({
+      if (/404|not found|nen[aá]jden/i.test(bodyText.slice(0, 400))) { return finish({
           reason: "404 page",
           loadedUrl: win.location.pathname,
           evidence: {
@@ -335,14 +325,11 @@ export default function AdminButtonTester() {
             overlayTriggers: 0,
             openedOverlays: 0,
             readyMs: Date.now() - readyStart,
-            source: "iframe-dom",
-          },
-        });
+            source: "iframe-dom" } });
       }
 
       // Crash overlay?
-      if (doc.querySelector("[data-unique-crash-overlay]")) {
-        return finish({
+      if (doc.querySelector("[data-unique-crash-overlay]")) { return finish({
           crashed: 1,
           errors: ["crash overlay"],
           reason: "crash on load",
@@ -353,9 +340,7 @@ export default function AdminButtonTester() {
             overlayTriggers: 0,
             openedOverlays: 0,
             readyMs: Date.now() - readyStart,
-            source: "iframe-dom",
-          },
-        });
+            source: "iframe-dom" } });
       }
 
       // Attach error listener in iframe
@@ -409,15 +394,12 @@ export default function AdminButtonTester() {
               reason: "crash opening overlay",
               labels,
               loadedUrl: win.location.pathname,
-              evidence: {
-                bodyHash: hashText(doc.body.innerText || ""),
+              evidence: { bodyHash: hashText(doc.body.innerText || ""),
                 textSample: compactText(doc.body.innerText || ""),
                 overlayTriggers: triggers.length,
                 openedOverlays: overlaysOpened,
                 readyMs: Date.now() - readyStart,
-                source: "iframe-dom",
-              },
-            });
+                source: "iframe-dom" } });
           }
           countNodes(); // count new nested items now visible
           // close via Escape
@@ -496,15 +478,12 @@ export default function AdminButtonTester() {
         reason: ok ? (finalCount === 0 ? "no interactive elements" : `${overlaysOpened} overlays opened`) : (iframeErrs[0] || "crashed"),
         labels: labels.slice(0, 25),
         loadedUrl: win.location.pathname,
-        evidence: {
-          bodyHash: hashText(doc.body.innerText || ""),
+        evidence: { bodyHash: hashText(doc.body.innerText || ""),
           textSample: compactText(doc.body.innerText || ""),
           overlayTriggers: triggers.length,
           openedOverlays: overlaysOpened,
           readyMs: Date.now() - readyStart,
-          source: "iframe-dom",
-        },
-      });
+          source: "iframe-dom" } });
     } catch (e: any) {
       return finish({ errors: [String(e?.message || e)], reason: e?.message });
     } finally {

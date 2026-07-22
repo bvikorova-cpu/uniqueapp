@@ -57,8 +57,7 @@ export const MyPurchases = () => {
     window.open(url, '_blank');
     toast({
       title: "Download Started",
-      description: `Downloading ${title}`,
-    });
+      description: `Downloading ${title}` });
   };
 
   if (loading) {

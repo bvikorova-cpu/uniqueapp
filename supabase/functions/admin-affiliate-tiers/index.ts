@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -24,10 +22,8 @@ Deno.serve(async (req) => {
     const { data: u } = await userClient.auth.getUser();
     if (!u?.user) return json({ error: "unauthenticated" }, 401);
 
-    const { data: isAdmin } = await supabase.rpc("has_role", {
-      _user_id: u.user.id,
-      _role: "admin",
-    });
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: u.user.id,
+      _role: "admin" });
     if (!isAdmin) return json({ error: "forbidden" }, 403);
 
     const { data: config } = await supabase
@@ -50,8 +46,7 @@ Deno.serve(async (req) => {
       action: "viewed_affiliate_tiers",
       target_type: "affiliate_tier_status",
       target_id: u.user.id,
-      details: {},
-    });
+      details: {} });
 
     return json({ config, status, counts });
   } catch (e) {
@@ -62,6 +57,5 @@ Deno.serve(async (req) => {
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

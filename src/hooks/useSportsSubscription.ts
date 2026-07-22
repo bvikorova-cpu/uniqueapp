@@ -11,21 +11,17 @@ interface SubscriptionStatus {
 
 export function useSportsSubscription() {
   const { user, session } = useAuth();
-  const [status, setStatus] = useState<SubscriptionStatus>({
-    subscribed: false,
+  const [status, setStatus] = useState<SubscriptionStatus>({ subscribed: false,
     tier: null,
     subscription_end: null,
-    loading: true,
-  });
+    loading: true });
 
-  const checkSubscription = async () => {
-    if (!user || !session) {
+  const checkSubscription = async () => { if (!user || !session) {
       setStatus({
         subscribed: false,
         tier: null,
         subscription_end: null,
-        loading: false,
-      });
+        loading: false });
       return;
     }
 
@@ -34,35 +30,27 @@ export function useSportsSubscription() {
       
       const { data, error } = await supabase.functions.invoke('check-sports-subscription', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+          Authorization: `Bearer ${session.access_token}` } });
 
-      if (error) {
-        console.error('Error checking subscription:', error);
+      if (error) { console.error('Error checking subscription:', error);
         setStatus({
           subscribed: false,
           tier: null,
           subscription_end: null,
-          loading: false,
-        });
+          loading: false });
         return;
       }
 
-      setStatus({
-        subscribed: data.subscribed || false,
+      setStatus({ subscribed: data.subscribed || false,
         tier: data.tier || null,
         subscription_end: data.subscription_end || null,
-        loading: false,
-      });
-    } catch (error) {
-      console.error('Error:', error);
+        loading: false });
+    } catch (error) { console.error('Error:', error);
       setStatus({
         subscribed: false,
         tier: null,
         subscription_end: null,
-        loading: false,
-      });
+        loading: false });
     }
   };
 
@@ -82,10 +70,8 @@ export function useSportsSubscription() {
 
     const { data, error } = await supabase.functions.invoke('create-sports-checkout', {
       headers: {
-        Authorization: `Bearer ${session.access_token}`,
-      },
-      body: { tier },
-    });
+        Authorization: `Bearer ${session.access_token}` },
+      body: { tier } });
 
     if (error) throw error;
     if (!data?.url) throw new Error('No checkout URL returned');
@@ -94,9 +80,7 @@ export function useSportsSubscription() {
     window.open(data.url, '_blank');
   };
 
-  return {
-    ...status,
+  return { ...status,
     checkSubscription,
-    createCheckout,
-  };
+    createCheckout };
 }

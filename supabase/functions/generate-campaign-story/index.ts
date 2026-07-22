@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const STORY_COST = 5; // credits
 
@@ -15,8 +13,7 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -27,15 +24,13 @@ serve(async (req) => {
     if (!openaiKey) throw new Error("OPENAI_API_KEY missing");
 
     const userClient = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 
     const { data: userData, error: userError } = await userClient.auth.getUser();
     if (userError || !userData?.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const userId = userData.user.id;
 
@@ -44,8 +39,7 @@ serve(async (req) => {
 
     if (!summary || summary.length < 10) {
       return new Response(JSON.stringify({ error: "Provide at least a short summary (10+ chars)" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Check & deduct credits
@@ -59,18 +53,15 @@ serve(async (req) => {
       return new Response(JSON.stringify({
         error: "insufficient_credits",
         message: `You need ${STORY_COST} credits to generate a story. You have ${credits?.credits_remaining ?? 0}.`,
-        cost: STORY_COST,
-      }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        cost: STORY_COST }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Build prompt
-    const toneMap: Record<string, string> = {
-      emotional: "deeply emotional, heartfelt, vulnerable but hopeful",
+    const toneMap: Record<string, string> = { emotional: "deeply emotional, heartfelt, vulnerable but hopeful",
       hopeful: "uplifting, hopeful, focusing on the positive impact donors will make",
       urgent: "urgent and time-sensitive while remaining respectful and dignified",
       grateful: "warm, grateful, focused on community and gratitude",
-      inspiring: "inspiring, motivational, focusing on resilience and overcoming odds",
-    };
+      inspiring: "inspiring, motivational, focusing on resilience and overcoming odds" };
 
     const systemPrompt = `You are a world-class fundraising copywriter. You write campaign stories that convert visitors into donors. Write in English. Be respectful, dignified, never manipulative. Keep cultural sensitivity in mind.`;
 
@@ -92,8 +83,7 @@ Return JSON with EXACTLY these keys:
       method: "POST",
       headers: {
         Authorization: `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
@@ -110,27 +100,19 @@ Return JSON with EXACTLY these keys:
               properties: {
                 title: { type: "string" },
                 story: { type: "string" },
-                appeal: { type: "string" },
-              },
+                appeal: { type: "string" } },
               required: ["title", "story", "appeal"],
-              additionalProperties: false,
-            },
-          },
-        }],
-        tool_choice: { type: "function", function: { name: "submit_story" } },
-      }),
-    });
+              additionalProperties: false } } }],
+        tool_choice: { type: "function", function: { name: "submit_story" } } }) });
 
     if (!aiRes.ok) {
       if (aiRes.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limited. Try again in a moment." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       if (aiRes.status === 402) {
         return new Response(JSON.stringify({ error: "AI service requires top-up. Please contact support." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       const t = await aiRes.text();
       console.error("AI error:", aiRes.status, t);
@@ -145,36 +127,29 @@ Return JSON with EXACTLY these keys:
     // Deduct credits
     await adminClient
       .from("ai_credits")
-      .update({
-        credits_remaining: credits.credits_remaining - STORY_COST,
-        last_used_at: new Date().toISOString(),
-      })
+      .update({ credits_remaining: credits.credits_remaining - STORY_COST,
+        last_used_at: new Date().toISOString() })
       .eq("user_id", userId);
 
     // Log generation
-    await adminClient.from("ai_story_generations").insert({
-      user_id: userId,
+    await adminClient.from("ai_story_generations").insert({ user_id: userId,
       campaign_type: campaignType,
       input_summary: summary,
       generated_story: parsed.story,
       generated_title: parsed.title,
       tone,
-      credits_used: STORY_COST,
-    });
+      credits_used: STORY_COST });
 
-    return new Response(JSON.stringify({
-      success: true,
+    return new Response(JSON.stringify({ success: true,
       title: parsed.title,
       story: parsed.story,
       appeal: parsed.appeal,
       credits_used: STORY_COST,
-      credits_remaining: credits.credits_remaining - STORY_COST,
-    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      credits_remaining: credits.credits_remaining - STORY_COST }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
   } catch (e) {
     console.error("generate-campaign-story error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

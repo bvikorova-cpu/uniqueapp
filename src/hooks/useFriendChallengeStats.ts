@@ -50,8 +50,7 @@ export const useFriendChallengeStats = (userId?: string) => {
         const challenge = match.brain_duel_friend_challenges as { stake_credits?: number } | null;
         const stake = challenge?.stake_credits || 0;
 
-        if (!statsMap.has(opponentId)) {
-          statsMap.set(opponentId, {
+        if (!statsMap.has(opponentId)) { statsMap.set(opponentId, {
             friend_id: opponentId,
             friend_name: '',
             friend_avatar: null,
@@ -60,8 +59,7 @@ export const useFriendChallengeStats = (userId?: string) => {
             total_credits_won: 0,
             total_credits_lost: 0,
             net_credits: 0,
-            total_games: 0,
-          });
+            total_games: 0 });
         }
 
         const stats = statsMap.get(opponentId)!;
@@ -98,6 +96,5 @@ export const useFriendChallengeStats = (userId?: string) => {
       // Convert to array and sort by net credits (descending)
       return Array.from(statsMap.values()).sort((a, b) => b.net_credits - a.net_credits);
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 };

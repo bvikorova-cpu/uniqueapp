@@ -8,8 +8,7 @@ interface Props {
   viewerId?: string | null;
 }
 
-export const ProfileViewsCounter = ({ profileUserId, viewerId }: Props) => {
-  const [total, setTotal] = useState<number>(0);
+export const ProfileViewsCounter = ({ profileUserId, viewerId }: Props) => { const [total, setTotal] = useState<number>(0);
   const [week, setWeek] = useState<number>(0);
 
   useEffect(() => {
@@ -20,8 +19,7 @@ export const ProfileViewsCounter = ({ profileUserId, viewerId }: Props) => {
         await supabase.from("profile_views").insert({
           profile_id: profileUserId,
           viewer_id: viewerId,
-          source: "profile_page",
-        });
+          source: "profile_page" });
       }
       // Fetch counters
       const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();

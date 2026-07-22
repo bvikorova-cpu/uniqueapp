@@ -45,8 +45,7 @@ export const LiveExpertChat = ({ onBack }: Props) => {
     setMessages([{
       role: "expert",
       content: `Hello! I'm Dr. AI, your certified first aid expert. You've selected the topic "${topic}". I'm here to answer your questions with detailed, medically-accurate guidance. How can I help you today?\n\n⚠️ Note: This is AI-powered guidance. In real emergencies, always call 112 first.`,
-      timestamp: new Date(),
-    }]);
+      timestamp: new Date() }]);
   };
 
   const sendMessage = async () => {
@@ -71,9 +70,7 @@ ${history}
 
 Patient's new question: ${userMsg}
 
-Provide a thorough, professional response. Use bullet points for clarity. Include relevant safety warnings. Reference evidence-based guidelines when applicable. Always remind about calling emergency services if the situation is life-threatening.`,
-        },
-      });
+Provide a thorough, professional response. Use bullet points for clarity. Include relevant safety warnings. Reference evidence-based guidelines when applicable. Always remind about calling emergency services if the situation is life-threatening.` } });
       if (error) throw error;
       setMessages(prev => [...prev, { role: "expert", content: data?.message || data?.analysis || "I apologize, let me try again.", timestamp: new Date() }]);
     } catch (e) {

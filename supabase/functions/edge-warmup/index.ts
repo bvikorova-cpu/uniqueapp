@@ -34,10 +34,8 @@ Deno.serve(async (req) => {
     HOT_FUNCTIONS.map(async (name) => {
       const t0 = Date.now();
       try {
-        const r = await fetch(`${BASE}/${name}`, {
-          method: "OPTIONS",
-          signal: AbortSignal.timeout(3000),
-        });
+        const r = await fetch(`${BASE}/${name}`, { method: "OPTIONS",
+          signal: AbortSignal.timeout(3000) });
         return { name, status: r.status, ms: Date.now() - t0 };
       } catch (e) {
         return { name, error: String(e instanceof Error ? e.message : e), ms: Date.now() - t0 };
@@ -49,11 +47,9 @@ Deno.serve(async (req) => {
     ok: true,
     pinged: HOT_FUNCTIONS.length,
     total_ms: Date.now() - startedAt,
-    results: results.map((r) => (r.status === "fulfilled" ? r.value : { error: String(r.reason) })),
-  };
+    results: results.map((r) => (r.status === "fulfilled" ? r.value : { error: String(r.reason) })) };
 
   return new Response(JSON.stringify(payload), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status: 200,
-  });
+    status: 200 });
 });

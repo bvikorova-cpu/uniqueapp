@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const KIDS_SAFETY_PROMPT = `\n\nIMPORTANT SAFETY RULES (children ages 6-12):
 - Always be kind, encouraging, and age-appropriate
@@ -37,16 +35,14 @@ serve(async (req) => {
     if (rateLimitResponse) return rateLimitResponse;
 
     const body = await req.json();
-    const {
-      // Legacy mode (DB-backed conversations)
+    const { // Legacy mode (DB-backed conversations)
       conversationId,
       characterId,
       // Kids mode (stateless)
       messages,
       characterName,
       characterPersonality,
-      message,
-    } = body;
+      message } = body;
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
@@ -105,10 +101,8 @@ serve(async (req) => {
       // Cap payload
       const safeMessages = messages
         .slice(-20)
-        .map((m: any) => ({
-          role: m.role === "assistant" ? "assistant" : "user",
-          content: String(m.content || "").slice(0, 2000),
-        }));
+        .map((m: any) => ({ role: m.role === "assistant" ? "assistant" : "user",
+          content: String(m.content || "").slice(0, 2000) }));
 
       const systemPrompt = `You are ${characterName}, a beloved children's character. Personality: ${characterPersonality || "friendly, kind, playful"}.${KIDS_SAFETY_PROMPT}`;
 
@@ -116,28 +110,23 @@ serve(async (req) => {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "gpt-4o-mini",
           messages: [{ role: "system", content: systemPrompt }, ...safeMessages],
-          stream: true,
-        }),
-      });
+          stream: true }) });
 
       if (response.status === 429) {
         await refund();
         return new Response(JSON.stringify({ error: "Too many messages. Please slow down!" }), {
           status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       if (response.status === 402) {
         await refund();
         return new Response(JSON.stringify({ error: "AI service unavailable. Credit refunded." }), {
           status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       if (!response.ok || !response.body) {
         await refund();
@@ -146,13 +135,10 @@ serve(async (req) => {
         throw new Error("AI service error");
       }
 
-      return new Response(response.body, {
-        headers: {
+      return new Response(response.body, { headers: {
           ...corsHeaders,
           "Content-Type": "text/event-stream",
-          "X-Credits-Remaining": String(balance - 1),
-        },
-      });
+          "X-Credits-Remaining": String(balance - 1) } });
     }
 
     // ============ LEGACY MODE: DB-backed conversation ============
@@ -192,8 +178,7 @@ serve(async (req) => {
       if (!access) {
         return new Response(JSON.stringify({ error: "Premium character access required" }), {
           status: 403,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
     }
 
@@ -209,8 +194,7 @@ serve(async (req) => {
       if (!isSubscribed && freeUsed >= 5) {
         return new Response(JSON.stringify({ error: "Free message limit reached. Subscribe for unlimited." }), {
           status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
     }
 
@@ -230,29 +214,24 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: charCheck.system_prompt + memStr + sumStr + KIDS_SAFETY_PROMPT },
           ...(history || []),
           { role: "user", content: userMessage },
-        ],
-      }),
-    });
+        ] }) });
 
     if (aiResp.status === 429) {
       return new Response(JSON.stringify({ error: "Too many requests" }), {
         status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (aiResp.status === 402) {
       return new Response(JSON.stringify({ error: "AI credits exhausted" }), {
         status: 402,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (!aiResp.ok) {
       console.error("AI Gateway error:", aiResp.status, await aiResp.text());
@@ -281,14 +260,12 @@ serve(async (req) => {
       .eq("id", conversationId);
 
     return new Response(JSON.stringify({ response: aiMsg }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("character-chat error:", msg);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

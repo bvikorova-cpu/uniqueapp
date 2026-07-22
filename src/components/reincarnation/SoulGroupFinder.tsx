@@ -116,8 +116,7 @@ export const SoulGroupFinder = () => {
             shared_locations: sharedLocations,
             shared_themes: sharedThemes,
             connection_strength: strength,
-            discovered_at: new Date().toISOString(),
-          });
+            discovered_at: new Date().toISOString() });
         }
       });
 
@@ -168,8 +167,7 @@ export const SoulGroupFinder = () => {
           display_name: `Soul #${userId.substring(0, 6).toUpperCase()}`,
           matching_readings: readings.length,
           sample_era: readings[0]?.era || "Unknown",
-          sample_location: (readings[0]?.reading_result as any)?.location || "Unknown",
-        }));
+          sample_location: (readings[0]?.reading_result as any)?.location || "Unknown" }));
 
         setPublicProfiles(results);
         toast({ title: `Found ${results.length} matching souls`, description: `Searching for "${searchQuery}"` });

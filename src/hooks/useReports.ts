@@ -6,12 +6,10 @@ export const useReports = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const reportPost = useMutation({
-    mutationFn: async ({
+  const reportPost = useMutation({ mutationFn: async ({
       postId,
       reason,
-      description,
-    }: {
+      description }: {
       postId: string;
       reason: string;
       description?: string;
@@ -19,26 +17,21 @@ export const useReports = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("post_reports").insert({
-        post_id: postId,
+      const { error } = await supabase.from("post_reports").insert({ post_id: postId,
         reported_by: user.id,
         reason,
-        description,
-      });
+        description });
 
       if (error) throw error;
     },
     onSuccess: () => {
       toast({ title: "Report submitted. We'll review it shortly." });
-    },
-  });
+    } });
 
-  const reportUser = useMutation({
-    mutationFn: async ({
+  const reportUser = useMutation({ mutationFn: async ({
       userId,
       reportType,
-      reason,
-    }: {
+      reason }: {
       userId: string;
       reportType: string;
       reason: string;
@@ -46,23 +39,18 @@ export const useReports = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("user_reports").insert({
-        reporter_id: user.id,
+      const { error } = await supabase.from("user_reports").insert({ reporter_id: user.id,
         reported_user_id: userId,
         report_type: reportType,
-        reason,
-      });
+        reason });
 
       if (error) throw error;
     },
     onSuccess: () => {
       toast({ title: "Report submitted. We'll review it shortly." });
-    },
-  });
+    } });
 
-  return {
-    reportPost: reportPost.mutate,
+  return { reportPost: reportPost.mutate,
     reportUser: reportUser.mutate,
-    isReporting: reportPost.isPending || reportUser.isPending,
-  };
+    isReporting: reportPost.isPending || reportUser.isPending };
 };

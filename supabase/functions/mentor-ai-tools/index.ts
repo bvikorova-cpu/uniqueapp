@@ -1,22 +1,16 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const ACTION_COSTS: Record<string, number> = {
-  "generate-action-plan": 5,
+const ACTION_COSTS: Record<string, number> = { "generate-action-plan": 5,
   "voice-coaching": 4,
-  "mood-insight": 3,
-};
+  "mood-insight": 3 };
 
-const ACTION_USAGE_TYPES: Record<string, string> = {
-  "generate-action-plan": "mentor_action_plan",
+const ACTION_USAGE_TYPES: Record<string, string> = { "generate-action-plan": "mentor_action_plan",
   "voice-coaching": "mentor_voice_coaching",
-  "mood-insight": "mentor_mood_insight",
-};
+  "mood-insight": "mentor_mood_insight" };
 
 async function callOpenAI(systemPrompt: string, userPrompt: string, maxTokens = 1000) {
   const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
@@ -26,17 +20,14 @@ async function callOpenAI(systemPrompt: string, userPrompt: string, maxTokens = 
     method: "POST",
     headers: {
       Authorization: `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
-    },
+      "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt.slice(0, 6000) },
       ],
-      max_tokens: maxTokens,
-    }),
-  });
+      max_tokens: maxTokens }) });
 
   return response;
 }
@@ -55,15 +46,12 @@ serve(async (req) => {
     if (!action || !ACTION_COSTS[action]) {
       return new Response(JSON.stringify({ error: "Unknown action" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const credits = ACTION_COSTS[action];
-    auth = await requireAiCredits(req, corsHeaders, {
-      credits,
-      usageType: ACTION_USAGE_TYPES[action] || "mentor_ai",
-    });
+    auth = await requireAiCredits(req, corsHeaders, { credits,
+      usageType: ACTION_USAGE_TYPES[action] || "mentor_ai" });
     if (auth.errorResponse) return auth.errorResponse;
 
     const supabase = auth.supabase!;
@@ -106,28 +94,24 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
       const planContent = aiData.choices?.[0]?.message?.content || "Could not generate plan.";
       const title = `Week of ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })} — ${area.charAt(0).toUpperCase() + area.slice(1)}`;
 
-      await supabase.from("mentor_action_plans").insert({
-        user_id: user.id,
+      await supabase.from("mentor_action_plans").insert({ user_id: user.id,
         mentor_area: area,
         title,
         plan_content: planContent,
-        credits_used: credits,
-      });
+        credits_used: credits });
 
       await deduct();
       await awardXP(supabase, user.id, 25, "action_plan");
 
       return new Response(JSON.stringify({ plan: planContent, title }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (action === "voice-coaching") {
       if (!message || typeof message !== "string" || !message.trim()) {
         return new Response(JSON.stringify({ error: "Message is required" }), {
           status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       const area = (mentorArea || "career").toLowerCase();
       const systemPrompt = `You are a warm, encouraging ${area} coach speaking directly to your client. Give brief, motivational spoken-style advice (2-3 paragraphs max). Sound natural, empathetic, and actionable. Use "you" language. Don't use markdown formatting — write as if speaking aloud.`;
@@ -146,8 +130,7 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
       await awardXP(supabase, user.id, 10, "voice_session");
 
       return new Response(JSON.stringify({ reply }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (action === "mood-insight") {
@@ -161,8 +144,7 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
       if (!moodData || moodData.length < 3) {
         return new Response(JSON.stringify({ error: "Need at least 3 mood entries for insights." }), {
           status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       const systemPrompt = "You are a wellness coach analyzing mood patterns. Give brief, actionable insights about trends, patterns, and recommendations. Be encouraging. Keep it under 200 words.";
@@ -185,8 +167,7 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
 
     return new Response(JSON.stringify({ error: "Unknown action" }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("mentor-ai-tools error:", e);
     return new Response(

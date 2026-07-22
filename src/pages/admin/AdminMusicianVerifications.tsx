@@ -50,18 +50,14 @@ const AdminMusicianVerifications = () => {
   const reviewMusician = async (id: string, approve: boolean) => {
     const { data: { session } } = await supabase.auth.getSession();
     const target = pending.find((m: any) => m.id === id);
-    if (target?.user_id && notes[id]) {
-      await supabase.from("musician_kyc").upsert({
+    if (target?.user_id && notes[id]) { await supabase.from("musician_kyc").upsert({
         user_id: target.user_id,
-        verification_notes: notes[id],
-      }, { onConflict: "user_id" });
+        verification_notes: notes[id] }, { onConflict: "user_id" });
     }
-    const { error } = await supabase.from("musician_profiles").update({
-      verified: approve,
+    const { error } = await supabase.from("musician_profiles").update({ verified: approve,
       verification_status: approve ? "verified" : "rejected",
       verification_reviewed_at: new Date().toISOString(),
-      verification_reviewed_by: session?.user.id,
-    }).eq("id", id);
+      verification_reviewed_by: session?.user.id }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success(approve ? "Musician verified ✓" : "Verification rejected");
     load();
@@ -71,30 +67,25 @@ const AdminMusicianVerifications = () => {
   const reviewReport = async (reportId: string, action: "dismissed" | "suspended_musician") => {
     const { data: { session } } = await supabase.auth.getSession();
     const report = reports.find((r) => r.id === reportId);
-    if (action === "suspended_musician" && report) {
-      const musicianId = report.live_concert_streams?.musician_id;
+    if (action === "suspended_musician" && report) { const musicianId = report.live_concert_streams?.musician_id;
       const musicianUserId = report.live_concert_streams?.musician_profiles?.user_id;
       if (musicianId) {
         await supabase.from("musician_profiles").update({
-          suspended: true,
-        }).eq("id", musicianId);
+          suspended: true }).eq("id", musicianId);
         if (musicianUserId) {
           await supabase.from("musician_kyc").upsert({
             user_id: musicianUserId,
-            suspended_reason: `Suspended after report: ${report.category}`,
-          }, { onConflict: "user_id" });
+            suspended_reason: `Suspended after report: ${report.category}` }, { onConflict: "user_id" });
         }
       }
       // also end the stream
       await supabase.from("live_concert_streams").update({ status: "ended" }).eq("id", report.concert_id);
     }
 
-    const { error } = await supabase.from("concert_reports").update({
-      status: "reviewed",
+    const { error } = await supabase.from("concert_reports").update({ status: "reviewed",
       action_taken: action,
       reviewed_at: new Date().toISOString(),
-      reviewed_by: session?.user.id,
-    }).eq("id", reportId);
+      reviewed_by: session?.user.id }).eq("id", reportId);
     if (error) return toast.error(error.message);
     toast.success("Report processed");
     load();
@@ -102,11 +93,9 @@ const AdminMusicianVerifications = () => {
 
   const addReserved = async () => {
     if (!newReserved.display.trim()) return;
-    const { error } = await supabase.from("reserved_artist_names").insert({
-      name_normalized: newReserved.display.trim().toLowerCase(),
+    const { error } = await supabase.from("reserved_artist_names").insert({ name_normalized: newReserved.display.trim().toLowerCase(),
       display_name: newReserved.display.trim(),
-      reason: newReserved.reason.trim() || null,
-    });
+      reason: newReserved.reason.trim() || null });
     if (error) return toast.error(error.message);
     toast.success("Added");
     setNewReserved({ display: "", reason: "" });

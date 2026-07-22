@@ -76,13 +76,12 @@ export function MasterChefHero() {
           </div>
           
           <h1 className="text-[clamp(2.2rem,11vw,4.5rem)] font-black leading-[1.05] mb-3 max-w-[20ch]"
-            style={{
+            style={ {
               WebkitTextStroke: '1.5px rgba(255,255,255,0.15)',
               textShadow: '0 0 40px rgba(249,115,22,0.4), 0 4px 20px rgba(0,0,0,0.6)',
               background: 'linear-gradient(135deg, #fff 0%, #fdba74 50%, #f97316 100%)',
               WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}>
+              WebkitTextFillColor: 'transparent' }}>
             KitchenStars Arena
           </h1>
           

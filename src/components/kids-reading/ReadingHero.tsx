@@ -15,18 +15,15 @@ export const ReadingHero = () => {
           className="absolute text-2xl md:text-3xl pointer-events-none select-none"
           style={{
             left: `${10 + (i * 12) % 80}%`,
-            top: `${15 + (i * 17) % 60}%`,
-          }}
-          animate={{
+            top: `${15 + (i * 17) % 60}%` }}
+          animate={ {
             y: [0, -15, 0],
             rotate: [0, i % 2 === 0 ? 10 : -10, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
+            scale: [1, 1.1, 1] }}
+          transition={ {
             duration: 3 + i * 0.4,
             repeat: Infinity,
-            delay: i * 0.3,
-          }}
+            delay: i * 0.3 }}
         >
           {emoji}
         </motion.div>

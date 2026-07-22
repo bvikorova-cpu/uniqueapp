@@ -8,14 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Plus, Image as ImageIcon, Video } from "lucide-react";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -35,8 +33,7 @@ export default function CreateStory() {
       if (!mediaFile) throw new Error("Select media");
 
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("You are not logged in");
 
       // Upload media
@@ -49,18 +46,15 @@ export default function CreateStory() {
       if (uploadError) throw uploadError;
 
       const {
-        data: { publicUrl },
-      } = supabase.storage.from("media").getPublicUrl(fileName);
+        data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(fileName);
 
       // Create story
       const { data: story, error: storyError } = await supabase
         .from("stories")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           media_url: publicUrl,
           media_type: mediaType,
-          caption: caption || null,
-        })
+          caption: caption || null })
         .select()
         .single();
 
@@ -68,12 +62,10 @@ export default function CreateStory() {
 
       // Create poll if included
       if (includePoll && pollQuestion && pollOptionA && pollOptionB) {
-        const { error: pollError } = await supabase.from("story_polls").insert({
-          story_id: story.id,
+        const { error: pollError } = await supabase.from("story_polls").insert({ story_id: story.id,
           question: pollQuestion,
           option_a: pollOptionA,
-          option_b: pollOptionB,
-        });
+          option_b: pollOptionB });
 
         if (pollError) throw pollError;
       }
@@ -94,8 +86,7 @@ export default function CreateStory() {
     onError: (error) => {
       toast.error("Error creating story");
       console.error(error);
-    },
-  });
+    } });
 
   return (
     <>

@@ -22,23 +22,20 @@ const ROUTE = "/multiverse-network";
 async function stubAll(
   page: Page,
   handlers: Record<string, { status: number; body: any }>,
-) {
-  await page.route(FN_RE, async (route) => {
+) { await page.route(FN_RE, async (route) => {
     const url = route.request().url();
     for (const [key, resp] of Object.entries(handlers)) {
       if (url.includes(key)) {
         return route.fulfill({
           status: resp.status,
           contentType: "application/json",
-          body: JSON.stringify(resp.body),
-        });
+          body: JSON.stringify(resp.body) });
       }
     }
     return route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ ok: true }),
-    });
+      body: JSON.stringify({ ok: true }) });
   });
 }
 
@@ -55,9 +52,7 @@ test.describe("Multiverse Network", () => {
     await stubAll(page, {
       "create-multiverse-checkout": {
         status: 200,
-        body: { url: "https://checkout.stripe.com/test_mv_123" },
-      },
-    });
+        body: { url: "https://checkout.stripe.com/test_mv_123" } } });
     await page.route("https://checkout.stripe.com/**", (r) =>
       r.fulfill({ status: 200, body: "<html>stripe</html>" }),
     );
@@ -82,9 +77,7 @@ test.describe("Multiverse Network", () => {
     await stubAll(page, {
       "create-multiverse-checkout": {
         status: 500,
-        body: { error: "Stripe unavailable" },
-      },
-    });
+        body: { error: "Stripe unavailable" } } });
 
     await page.goto(ROUTE);
     await page.waitForLoadState("networkidle");
@@ -107,8 +100,7 @@ test.describe("Multiverse Network", () => {
       "vote-absolution": { status: 401, body: { error: "Unauthorized" } },
       "reality-jump": { status: 401, body: { error: "Unauthorized" } },
       "merge-timelines": { status: 401, body: { error: "Unauthorized" } },
-      "multiverse-ai-tool": { status: 401, body: { error: "Unauthorized" } },
-    });
+      "multiverse-ai-tool": { status: 401, body: { error: "Unauthorized" } } });
 
     await page.goto(ROUTE);
     await page.waitForLoadState("networkidle");
@@ -128,13 +120,10 @@ test.describe("Multiverse Network", () => {
     await stubAll(page, {
       "verify-multiverse-payment": {
         status: 200,
-        body: { success: true, service: "reality_jumping" },
-      },
+        body: { success: true, service: "reality_jumping" } },
       "verify-": {
         status: 200,
-        body: { success: true },
-      },
-    });
+        body: { success: true } } });
 
     await page.goto(`${ROUTE}?payment=success&session_id=cs_test_mv_999`);
     await page.waitForLoadState("networkidle");

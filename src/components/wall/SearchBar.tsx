@@ -7,11 +7,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 
 interface SearchResult {
   posts: any[];
@@ -62,11 +60,9 @@ export const SearchBar = () => {
             .limit(5),
         ]);
 
-        setResults({
-          posts: postsResult.data || [],
+        setResults({ posts: postsResult.data || [],
           users: usersResult.data || [],
-          hashtags: hashtagsResult.data || [],
-        });
+          hashtags: hashtagsResult.data || [] });
       } catch (error) {
         console.error("Search error:", error);
       } finally {

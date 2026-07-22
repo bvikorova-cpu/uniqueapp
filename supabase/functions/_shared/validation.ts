@@ -90,14 +90,12 @@ function validateField(
     if (rule.minLength !== undefined && value.length < rule.minLength) {
       return {
         valid: false,
-        message: rule.message || `${field} must be at least ${rule.minLength} characters`,
-      };
+        message: rule.message || `${field} must be at least ${rule.minLength} characters` };
     }
     if (rule.maxLength !== undefined && value.length > rule.maxLength) {
       return {
         valid: false,
-        message: rule.message || `${field} must be at most ${rule.maxLength} characters`,
-      };
+        message: rule.message || `${field} must be at most ${rule.maxLength} characters` };
     }
   }
 
@@ -106,14 +104,12 @@ function validateField(
     if (rule.min !== undefined && value < rule.min) {
       return {
         valid: false,
-        message: rule.message || `${field} must be at least ${rule.min}`,
-      };
+        message: rule.message || `${field} must be at least ${rule.min}` };
     }
     if (rule.max !== undefined && value > rule.max) {
       return {
         valid: false,
-        message: rule.message || `${field} must be at most ${rule.max}`,
-      };
+        message: rule.message || `${field} must be at most ${rule.max}` };
     }
   }
 
@@ -121,16 +117,14 @@ function validateField(
   if (rule.pattern && typeof value === 'string' && !rule.pattern.test(value)) {
     return {
       valid: false,
-      message: rule.message || `${field} has invalid format`,
-    };
+      message: rule.message || `${field} has invalid format` };
   }
 
   // Custom validation
   if (rule.custom && !rule.custom(value)) {
     return {
       valid: false,
-      message: rule.message || `${field} is invalid`,
-    };
+      message: rule.message || `${field} is invalid` };
   }
 
   return { valid: true };
@@ -149,10 +143,8 @@ export function validate(data: Record<string, unknown>, schema: ValidationSchema
     }
   }
 
-  return {
-    valid: errors.length === 0,
-    errors,
-  };
+  return { valid: errors.length === 0,
+    errors };
 }
 
 /**
@@ -174,8 +166,7 @@ export async function parseAndValidate<T>(
   } catch {
     return {
       data: null,
-      errors: [{ field: '_body', message: 'Invalid JSON body' }],
-    };
+      errors: [{ field: '_body', message: 'Invalid JSON body' }] };
   }
 }
 

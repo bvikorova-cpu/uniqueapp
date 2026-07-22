@@ -24,8 +24,7 @@ export default function CrystalEnergyNetwork() {
     const success = searchParams.get("success");
     if (success === "true" && sessionId) {
       supabase.functions.invoke("verify-crystal-payment", {
-        body: { sessionId },
-      }).then(({ error }) => {
+        body: { sessionId } }).then(({ error }) => {
         if (error) {
           toast({ title: "Verification failed", description: "Please contact support.", variant: "destructive" });
         } else {

@@ -1,16 +1,13 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 const calcPower = (p: any) =>
   (p.level || 1) * 10 +
@@ -31,8 +28,7 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const admin = createClient(supabaseUrl, serviceKey);
 
     const { data: userData, error: userErr } = await userClient.auth.getUser();
@@ -60,15 +56,13 @@ Deno.serve(async (req) => {
     const myTeamPower = myPets.reduce((s, p) => s + calcPower(p), 0);
 
     // AI opponent: generate per-pet enemies with ~80-120% of each pet's power
-    const opponentTeam = myPets.map((p) => {
-      const power = Math.round(calcPower(p) * (0.8 + Math.random() * 0.4));
+    const opponentTeam = myPets.map((p) => { const power = Math.round(calcPower(p) * (0.8 + Math.random() * 0.4));
       const level = Math.max(1, Math.round(power / 12));
       const names = ["Shadow", "Rogue", "Blaze", "Frost", "Storm", "Venom", "Thorn", "Echo"];
       return {
         name: names[Math.floor(Math.random() * names.length)] + " " + (p.pet_types?.species || "Beast"),
         power,
-        level,
-      };
+        level };
     });
     const opponentPower = opponentTeam.reduce((s, o) => s + o.power, 0);
 
@@ -79,8 +73,7 @@ Deno.serve(async (req) => {
       return {
         myPet: { name: p.name, power: calcPower(p) },
         opponent: opponentTeam[i],
-        winner: myRoll >= oppRoll ? "challenger" : "opponent",
-      };
+        winner: myRoll >= oppRoll ? "challenger" : "opponent" };
     });
 
     const myWins = battleLog.filter((l) => l.winner === "challenger").length;
@@ -100,20 +93,17 @@ Deno.serve(async (req) => {
       }
       await admin
         .from("pets")
-        .update({
-          experience: newXP,
+        .update({ experience: newXP,
           level: newLevel,
           energy: Math.max(0, (p.energy || 50) - 15),
           battle_wins: (p.battle_wins || 0) + (isWinner ? 1 : 0),
           battle_losses: (p.battle_losses || 0) + (isWinner ? 0 : 1),
-          last_activity_at: new Date().toISOString(),
-        })
+          last_activity_at: new Date().toISOString() })
         .eq("id", p.id);
     }
 
     // Record battle
-    await admin.from("pet_battles").insert({
-      challenger_id: userId,
+    await admin.from("pet_battles").insert({ challenger_id: userId,
       challenger_pets: myPetIds,
       challenger_power: myTeamPower,
       opponent_id: null,
@@ -122,16 +112,13 @@ Deno.serve(async (req) => {
       winner_id: isWinner ? userId : null,
       xp_earned: xpEarned,
       battle_type: battleType,
-      battle_log: battleLog,
-    });
+      battle_log: battleLog });
 
-    return json({
-      isWinner,
+    return json({ isWinner,
       myTeamPower,
       opponentPower,
       xpEarned,
-      battleLog,
-    });
+      battleLog });
   } catch (e: any) {
     console.error("battle-pets error:", e);
     return json({ error: e?.message || "Internal error" }, 500);

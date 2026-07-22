@@ -9,9 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  CreditCard, Globe, Bitcoin, Plus, Trash2, CheckCircle2, Star, Loader2,
-} from "lucide-react";
+import { CreditCard, Globe, Bitcoin, Plus, Trash2, CheckCircle2, Star, Loader2 } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type MethodType = "paypal" | "wise" | "crypto" | "stripe_connect";
@@ -37,8 +35,7 @@ const METHOD_META: Record<MethodType, { icon: any; label: string; desc: string; 
     icon: Globe, label: "PayPal",
     desc: "Worldwide — instant, ~2% fee",
     color: "from-sky-500 to-indigo-500",
-    fields: [{ key: "email", label: "PayPal email", placeholder: "you@example.com", type: "email" }],
-  },
+    fields: [{ key: "email", label: "PayPal email", placeholder: "you@example.com", type: "email" }] },
   wise: {
     icon: Globe, label: "Wise (TransferWise)",
     desc: "80+ countries, low FX fees",
@@ -46,8 +43,7 @@ const METHOD_META: Record<MethodType, { icon: any; label: string; desc: string; 
     fields: [
       { key: "email", label: "Wise email", placeholder: "you@example.com", type: "email" },
       { key: "wise_id", label: "Wise tag (optional)", placeholder: "@yourtag" },
-    ],
-  },
+    ] },
   crypto: {
     icon: Bitcoin, label: "Crypto wallet",
     desc: "USDT / USDC / BTC — global, instant",
@@ -56,15 +52,12 @@ const METHOD_META: Record<MethodType, { icon: any; label: string; desc: string; 
       { key: "network", label: "Network", placeholder: "TRC20 / ERC20 / BEP20 / Bitcoin" },
       { key: "wallet_address", label: "Wallet address", placeholder: "0x... or T..." },
       { key: "asset", label: "Asset", placeholder: "USDT" },
-    ],
-  },
+    ] },
   stripe_connect: {
     icon: CreditCard, label: "Stripe Connect",
     desc: "40+ countries — bank or card payouts",
     color: "from-violet-500 to-purple-500",
-    fields: [{ key: "note", label: "Click 'Connect Stripe' below to onboard", placeholder: "" }],
-  },
-};
+    fields: [{ key: "note", label: "Click 'Connect Stripe' below to onboard", placeholder: "" }] } };
 
 export const PayoutMethodsManager = ({ onChange }: Props) => {
   const { toast } = useToast();
@@ -109,16 +102,14 @@ export const PayoutMethodsManager = ({ onChange }: Props) => {
       return;
     }
 
-    const { error } = await supabase.from("payout_methods").insert({
-      user_id: user.id,
+    const { error } = await supabase.from("payout_methods").insert({ user_id: user.id,
       method_type: selectedType,
       label: meta.label,
       account_holder: accountHolder || null,
       account_details: form,
       currency,
       country: country || null,
-      is_default: methods.length === 0,
-    });
+      is_default: methods.length === 0 });
 
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });

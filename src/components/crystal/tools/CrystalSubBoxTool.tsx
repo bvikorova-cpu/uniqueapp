@@ -26,9 +26,7 @@ export const CrystalSubBoxTool = () => {
           priceId: "crystal_sub_box",
           mode: "subscription",
           successUrl: `${window.location.origin}/crystal-energy-network?success=true`,
-          cancelUrl: `${window.location.origin}/crystal-energy-network?canceled=true`,
-        },
-      });
+          cancelUrl: `${window.location.origin}/crystal-energy-network?canceled=true` } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
       else toast.error("Checkout not available yet. Please contact support.");

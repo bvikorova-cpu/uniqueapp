@@ -36,8 +36,7 @@ export default function AIRecipeVideoGenerator({ onBack }: Props) {
 9) HASHTAG & SEO SUGGESTIONS
 10) ESTIMATED PRODUCTION TIME
 
-Recipe: ${input}` },
-      });
+Recipe: ${input}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }

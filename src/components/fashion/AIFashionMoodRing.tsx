@@ -64,8 +64,7 @@ export default function AIFashionMoodRing() {
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "mood-ring", mood: selectedMood, energy_level: energy[0], context },
-      });
+        body: { action: "mood-ring", mood: selectedMood, energy_level: energy[0], context } });
       if (error) throw error;
       return data as MoodResult;
     },
@@ -73,8 +72,7 @@ export default function AIFashionMoodRing() {
       setResult(data);
       toast.success("Your mood-matched outfits are ready!");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   return (
     <>

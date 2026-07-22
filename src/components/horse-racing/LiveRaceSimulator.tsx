@@ -44,15 +44,13 @@ export const LiveRaceSimulator = () => {
           ← Back to Races
         </Button>
         <RaceTrack3D
-          participants={activeRace.race_participants.map((p: any) => ({
-            id: p.id, horse: p.horses, position: p.position || 0, progress: 0,
-          }))}
+          participants={ activeRace.race_participants.map((p: any) => ({
+            id: p.id, horse: p.horses, position: p.position || 0, progress: 0 }))}
           isRaceActive={activeRace.status === "running"}
           onRaceComplete={async (results) => {
             try {
               const { data, error } = await supabase.functions.invoke("calculate-race-results", {
-                body: { raceId: selectedRace },
-              });
+                body: { raceId: selectedRace } });
               if (error) throw error;
               if (data?.results) {
                 const winner = data.results[0];

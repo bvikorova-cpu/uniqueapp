@@ -1,17 +1,13 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const CREDIT_COSTS: Record<string, number> = {
-  "skill-valuation": 4,
+const CREDIT_COSTS: Record<string, number> = { "skill-valuation": 4,
   "live-demo-script": 3,
   "skill-certification": 5,
-  "workshop-planner": 4,
-};
+  "workshop-planner": 4 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -20,8 +16,7 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supabase = createClient(
@@ -33,16 +28,14 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { action, ...params } = await req.json();
     const credits = CREDIT_COSTS[action];
     if (!credits) {
       return new Response(JSON.stringify({ error: "Unknown action" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Check credits balance
@@ -54,10 +47,8 @@ serve(async (req) => {
 
     if (!balance || balance.credits_remaining < credits) {
       return new Response(JSON.stringify({
-        error: `Insufficient credits. You need ${credits} credits for this action.`,
-      }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        error: `Insufficient credits. You need ${credits} credits for this action.` }), {
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     let systemPrompt = "";
@@ -135,19 +126,15 @@ Be thorough but encouraging.`;
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (response.status === 429) {
       return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again shortly." }), {
-        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (response.status === 402) {
       return new Response(JSON.stringify({ error: "AI credits depleted. Please top up." }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (!response.ok) {
       const errText = await response.text();
@@ -159,21 +146,17 @@ Be thorough but encouraging.`;
     const result = data.choices?.[0]?.message?.content || "No result generated";
 
     // Deduct credits AFTER successful AI call
-    const { error: deductErr } = await supabase.rpc("deduct_ai_credits" as any, {
-      p_user_id: user.id,
-      p_amount: credits,
-    });
+    const { error: deductErr } = await supabase.rpc("deduct_ai_credits" as any, { p_user_id: user.id,
+      p_amount: credits });
     if (deductErr) console.error("Credit deduction failed:", deductErr);
 
     return new Response(JSON.stringify({ result, credits_used: credits }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("skill-swap-ai error:", error);
     const msg = error instanceof Error ? error.message : String(error);
     return new Response(JSON.stringify({ error: msg || "Service error" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -19,18 +19,15 @@ export const usePostEmbeds = (postId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
-  const addEmbed = useMutation({
-    mutationFn: async ({
+  const addEmbed = useMutation({ mutationFn: async ({
       postId,
       embedType,
       embedUrl,
       embedTitle,
       embedDescription,
-      embedImage,
-    }: {
+      embedImage }: {
       postId: string;
       embedType: "link" | "video" | "music" | "location" | "product";
       embedUrl: string;
@@ -38,14 +35,12 @@ export const usePostEmbeds = (postId?: string) => {
       embedDescription?: string;
       embedImage?: string;
     }) => {
-      const { error } = await supabase.from("post_embeds").insert({
-        post_id: postId,
+      const { error } = await supabase.from("post_embeds").insert({ post_id: postId,
         embed_type: embedType,
         embed_url: embedUrl,
         embed_title: embedTitle,
         embed_description: embedDescription,
-        embed_image: embedImage,
-      });
+        embed_image: embedImage });
 
       if (error) throw error;
     },
@@ -55,8 +50,7 @@ export const usePostEmbeds = (postId?: string) => {
     },
     onError: () => {
       toast({ title: "Failed to add embed", variant: "destructive" });
-    },
-  });
+    } });
 
   const deleteEmbed = useMutation({
     mutationFn: async (embedId: string) => {
@@ -70,13 +64,10 @@ export const usePostEmbeds = (postId?: string) => {
     onSuccess: () => {
       toast({ title: "Embed removed" });
       queryClient.invalidateQueries({ queryKey: ["post-embeds"] });
-    },
-  });
+    } });
 
-  return {
-    embeds,
+  return { embeds,
     isLoading,
     addEmbed: addEmbed.mutate,
-    deleteEmbed: deleteEmbed.mutate,
-  };
+    deleteEmbed: deleteEmbed.mutate };
 };

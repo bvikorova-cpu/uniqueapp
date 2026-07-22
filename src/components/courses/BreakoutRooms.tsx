@@ -30,8 +30,7 @@ export function BreakoutRooms({ lessonId, participants }: BreakoutRoomsProps) {
       newRooms.push({
         id: crypto.randomUUID(),
         name: `Room ${i + 1}`,
-        participants: [],
-      });
+        participants: [] });
     }
     setRooms(newRooms);
   };
@@ -43,10 +42,8 @@ export function BreakoutRooms({ lessonId, participants }: BreakoutRoomsProps) {
     }
 
     const shuffled = [...participants].sort(() => Math.random() - 0.5);
-    const newRooms = rooms.map((room, index) => ({
-      ...room,
-      participants: [],
-    }));
+    const newRooms = rooms.map((room, index) => ({ ...room,
+      participants: [] }));
 
     shuffled.forEach((participant, index) => {
       const roomIndex = index % rooms.length;
@@ -54,29 +51,23 @@ export function BreakoutRooms({ lessonId, participants }: BreakoutRoomsProps) {
     });
 
     setRooms(newRooms);
-    toast({
-      title: "Participants Assigned",
-      description: "Participants have been randomly distributed to breakout rooms",
-    });
+    toast({ title: "Participants Assigned",
+      description: "Participants have been randomly distributed to breakout rooms" });
   };
 
-  const moveParticipant = (participantId: string, fromRoomId: string, toRoomId: string) => {
-    const newRooms = rooms.map((room) => {
+  const moveParticipant = (participantId: string, fromRoomId: string, toRoomId: string) => { const newRooms = rooms.map((room) => {
       if (room.id === fromRoomId) {
         return {
           ...room,
-          participants: room.participants.filter((p) => p.id !== participantId),
-        };
+          participants: room.participants.filter((p) => p.id !== participantId) };
       }
-      if (room.id === toRoomId) {
-        const participant = rooms
+      if (room.id === toRoomId) { const participant = rooms
           .find((r) => r.id === fromRoomId)
           ?.participants.find((p) => p.id === participantId);
         if (participant) {
           return {
             ...room,
-            participants: [...room.participants, participant],
-          };
+            participants: [...room.participants, participant] };
         }
       }
       return room;
@@ -95,10 +86,8 @@ export function BreakoutRooms({ lessonId, participants }: BreakoutRoomsProps) {
       }
     }
 
-    toast({
-      title: "Breakout Sessions Started",
-      description: "Participants have been moved to their breakout rooms",
-    });
+    toast({ title: "Breakout Sessions Started",
+      description: "Participants have been moved to their breakout rooms" });
   };
 
   const endBreakoutSessions = async () => {
@@ -109,10 +98,8 @@ export function BreakoutRooms({ lessonId, participants }: BreakoutRoomsProps) {
       .eq("lesson_id", lessonId);
 
     setRooms([]);
-    toast({
-      title: "Breakout Sessions Ended",
-      description: "All participants have returned to the main room",
-    });
+    toast({ title: "Breakout Sessions Ended",
+      description: "All participants have returned to the main room" });
   };
 
   const unassignedParticipants = participants.filter(

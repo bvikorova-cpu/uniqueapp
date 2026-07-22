@@ -9,16 +9,13 @@
 // Piggybacked onto health-check to avoid burning a second edge-function slot
 // (project is at SUPABASE_MAX_FUNCTIONS_REACHED).
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
 
 const ROUTERS = ["nutrition-router", "horse-router", "video-ad-tools", "job-redirect"];
 
-const EXPECTED = {
-  "nutrition-router": [
+const EXPECTED = { "nutrition-router": [
     "coach_chat", "allergy_scanner", "barcode_scanner", "body_predictor",
     "grocery_optimizer", "hydration_coach", "meal_challenge",
     "supplement_advisor", "weekly_progress",
@@ -27,8 +24,7 @@ const EXPECTED = {
     "create", "train", "join_race", "purchase_equipment",
     "championship_enroll", "claim_quest_reward",
   ],
-  "video-ad-tools": ["scenes", "sfx", "tts", "voice_clone"],
-};
+  "video-ad-tools": ["scenes", "sfx", "tts", "voice_clone"] };
 
 const BASE = Deno.env.get("SUPABASE_URL") ?? "";
 const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
@@ -69,11 +65,9 @@ async function probeOne(name: string) {
       headers: {
         "Content-Type": "application/json",
         apikey: key,
-        Authorization: `Bearer ${key}`,
-      },
+        Authorization: `Bearer ${key}` },
       body: JSON.stringify({ __probe: true }),
-      signal: AbortSignal.timeout(8000),
-    });
+      signal: AbortSignal.timeout(8000) });
     let body = "";
     try { body = await res.text(); } catch { /* ignore */ }
     const { status, detail } = classify(res.status, body);
@@ -115,27 +109,23 @@ async function runHealth() {
       if (name === "job-redirect") {
         const r = await fetch(`${BASE}/functions/v1/job-redirect`, {
           headers: { apikey: ANON, Authorization: `Bearer ${ANON}` },
-          redirect: "manual",
-        });
+          redirect: "manual" });
         checks.push({ name, ok: r.status === 400, status: r.status });
         continue;
       }
       const r = await fetch(`${BASE}/functions/v1/${name}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", apikey: ANON, Authorization: `Bearer ${ANON}` },
-        body: JSON.stringify({ action: "ping" }),
-      });
+        body: JSON.stringify({ action: "ping" }) });
       const data = await r.json().catch(() => ({}));
       const expected = (EXPECTED as any)[name] ?? [];
       const actions = Array.isArray(data?.actions) ? data.actions : [];
       const missing = expected.filter((a: string) => !actions.includes(a));
-      checks.push({
-        name,
+      checks.push({ name,
         ok: r.ok && data?.ok === true && missing.length === 0,
         status: r.status,
         actions_count: actions.length,
-        missing_actions: missing,
-      });
+        missing_actions: missing });
     } catch (e: any) {
       checks.push({ name, ok: false, error: e?.message ?? "fetch failed" });
     }
@@ -152,14 +142,12 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     if (body?.__probe) {
       return new Response(JSON.stringify({ probe: true }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (Array.isArray(body?.names)) {
       const results = await probeMany(body.names.filter((n: unknown) => typeof n === "string"));
       return new Response(JSON.stringify({ results }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
   }
 
@@ -167,6 +155,5 @@ Deno.serve(async (req) => {
   const res = await runHealth();
   return new Response(JSON.stringify(res, null, 2), {
     status: res.ok ? 200 : 503,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 });

@@ -34,10 +34,8 @@ export function LiveLessonRoom({ lessonId, lessonTitle, isInstructor }: LiveLess
       if (!user) return;
 
       // Insert participant record
-      await supabase.from("live_lesson_participants").insert({
-        lesson_id: lessonId,
-        user_id: user.id,
-      });
+      await supabase.from("live_lesson_participants").insert({ lesson_id: lessonId,
+        user_id: user.id });
 
       // Update lesson status to live if instructor
       if (isInstructor) {
@@ -53,8 +51,7 @@ export function LiveLessonRoom({ lessonId, lessonTitle, isInstructor }: LiveLess
             event: "*",
             schema: "public",
             table: "live_lesson_participants",
-            filter: `lesson_id=eq.${lessonId}`,
-          },
+            filter: `lesson_id=eq.${lessonId}` },
           (payload) => {
             loadParticipants();
           }
@@ -122,12 +119,10 @@ export function LiveLessonRoom({ lessonId, lessonTitle, isInstructor }: LiveLess
         }
         setIsVideoEnabled(false);
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Camera Error",
         description: "Could not access camera",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -148,12 +143,10 @@ export function LiveLessonRoom({ lessonId, lessonTitle, isInstructor }: LiveLess
         }
         setIsAudioEnabled(false);
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Microphone Error",
         description: "Could not access microphone",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -176,12 +169,10 @@ export function LiveLessonRoom({ lessonId, lessonTitle, isInstructor }: LiveLess
         }
         setIsScreenSharing(false);
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Screen Share Error",
         description: "Could not start screen sharing",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

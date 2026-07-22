@@ -15,19 +15,15 @@ interface CommissionSetting {
   is_active: boolean;
 }
 
-const serviceIcons: Record<string, typeof ShoppingBag> = {
-  bazaar: ShoppingBag,
+const serviceIcons: Record<string, typeof ShoppingBag> = { bazaar: ShoppingBag,
   marketplace: Users,
   skill_swap: RefreshCw,
-  job_portal: Briefcase,
-};
+  job_portal: Briefcase };
 
-const serviceLabels: Record<string, string> = {
-  bazaar: "Online Bazaar",
+const serviceLabels: Record<string, string> = { bazaar: "Online Bazaar",
   marketplace: "Skills Marketplace",
   skill_swap: "Skill Swap",
-  job_portal: "Job Portal",
-};
+  job_portal: "Job Portal" };
 
 export function CommissionSummaryTable() {
   const { data: commissions, isLoading, error } = useQuery({
@@ -41,8 +37,7 @@ export function CommissionSummaryTable() {
 
       if (error) throw error;
       return data as CommissionSetting[];
-    },
-  });
+    } });
 
   if (isLoading) {
     return (

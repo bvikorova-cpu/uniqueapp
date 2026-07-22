@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const logStep = (step: string, details?: any) => {
   console.log(`[MONETIZATION-IDEAS] ${step}`, details || "");
@@ -61,8 +59,7 @@ Return creative, unexpected ideas that blend entertainment with monetization sea
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
@@ -102,8 +99,7 @@ Return creative, unexpected ideas that blend entertainment with monetization sea
           }
         ],
         tool_choice: { type: "function", function: { name: "generate_monetization_ideas" } }
-      }),
-    });
+      }) });
 
     if (!response.ok) {
       if (response.status === 429) {

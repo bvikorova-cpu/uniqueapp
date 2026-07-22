@@ -37,9 +37,7 @@ Include:
 5. Active recovery suggestions for off days
 6. Supplement recommendations
 7. When to work out next (recovery timeline)
-Format with sections, emojis, and specific timing.`,
-        },
-      });
+Format with sections, emojis, and specific timing.` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
     } catch (e: any) {

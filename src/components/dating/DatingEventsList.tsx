@@ -75,15 +75,13 @@ export const DatingEventsList = ({ userId }: { userId: string }) => {
       toast({ title: "Title & start date required", variant: "destructive" });
       return;
     }
-    const { error } = await (supabase as any).from("dating_events").insert({
-      host_id: userId,
+    const { error } = await (supabase as any).from("dating_events").insert({ host_id: userId,
       title: form.title,
       description: form.description || null,
       mode: form.mode,
       starts_at: new Date(form.starts_at).toISOString(),
       city: form.city || null,
-      max_participants: form.max_participants ? parseInt(form.max_participants) : null,
-    });
+      max_participants: form.max_participants ? parseInt(form.max_participants) : null });
     if (error) { toast({ title: error.message, variant: "destructive" }); return; }
     toast({ title: "Event created 🎉" });
     setOpen(false);

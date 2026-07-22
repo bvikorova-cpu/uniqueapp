@@ -31,8 +31,7 @@ export default function MasterChefIngredientScanner() {
       if (!session) { navigate("/auth"); return; }
 
       const { data, error } = await supabase.functions.invoke("masterchef-ai", {
-        body: { action: "scan-ingredients", image: imagePreview },
-      });
+        body: { action: "scan-ingredients", image: imagePreview } });
       if (error) throw error;
       setAnalysis(data?.analysis || "Could not identify ingredients.");
     } catch (error) {

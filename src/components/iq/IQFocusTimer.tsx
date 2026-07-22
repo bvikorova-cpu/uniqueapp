@@ -56,10 +56,8 @@ const IQFocusTimer = () => {
           }
           try {
             new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=").play().catch(() => {});
-            if ("Notification" in window && Notification.permission === "granted") {
-              new Notification(phase === "focus" ? "Focus session complete" : "Break complete", {
-                body: phase === "focus" ? "Time for a short break." : "Back to focus!",
-              });
+            if ("Notification" in window && Notification.permission === "granted") { new Notification(phase === "focus" ? "Focus session complete" : "Break complete", {
+                body: phase === "focus" ? "Time for a short break." : "Back to focus!" });
             }
           } catch {}
           return 0;
@@ -127,8 +125,7 @@ const IQFocusTimer = () => {
             className="absolute inset-0 rounded-2xl"
             style={{
               background: `conic-gradient(hsl(var(--primary)) ${pct}%, transparent ${pct}%)`,
-              opacity: 0.12,
-            }}
+              opacity: 0.12 }}
           />
           <div className="relative">
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">

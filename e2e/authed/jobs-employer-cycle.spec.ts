@@ -113,8 +113,7 @@ test.describe("Employer cycle @smoke", () => {
       `${SUPABASE_URL}/functions/v1/job-redirect?id=00000000-0000-0000-0000-000000000000`,
       {
         headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
-        maxRedirects: 0,
-      },
+        maxRedirects: 0 },
     );
     expect([301, 308, 404]).toContain(r.status());
   });

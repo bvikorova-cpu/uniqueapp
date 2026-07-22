@@ -13,8 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Send } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const formSchema = z.object({
-  company_name: z.string().trim().min(2, "Company name must be at least 2 characters").max(100, "Company name can be at most 100 characters"),
+const formSchema = z.object({ company_name: z.string().trim().min(2, "Company name must be at least 2 characters").max(100, "Company name can be at most 100 characters"),
   contact_name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name can be at most 100 characters"),
   email: z.string().trim().email("Invalid email address").max(255, "Email can be at most 255 characters"),
   phone: z.string().trim().optional(),
@@ -22,8 +21,7 @@ const formSchema = z.object({
   event_type: z.string().trim().optional(),
   expected_attendees: z.coerce.number().int().positive().optional(),
   event_date: z.string().optional(),
-  message: z.string().trim().min(10, "Message must be at least 10 characters").max(1000, "Message can be at most 1000 characters"),
-});
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(1000, "Message can be at most 1000 characters") });
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -36,8 +34,7 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<FormValues>({ resolver: zodResolver(formSchema),
     defaultValues: {
       company_name: "",
       contact_name: "",
@@ -47,17 +44,14 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
       event_type: defaultCategory || "",
       expected_attendees: undefined,
       event_date: "",
-      message: "",
-    },
-  });
+      message: "" } });
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      const { error } = await supabase.from("corporate_inquiries").insert({
-        user_id: user?.id || null,
+      const { error } = await supabase.from("corporate_inquiries").insert({ user_id: user?.id || null,
         company_name: values.company_name,
         contact_name: values.contact_name,
         email: values.email,
@@ -67,24 +61,19 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
         expected_attendees: values.expected_attendees || null,
         event_date: values.event_date || null,
         message: values.message,
-        status: "pending",
-      });
+        status: "pending" });
 
       if (error) throw error;
 
-      toast({
-        title: "Inquiry sent!",
-        description: "We will contact you soon with an individual offer.",
-      });
+      toast({ title: "Inquiry sent!",
+        description: "We will contact you soon with an individual offer." });
 
       form.reset();
-    } catch (error: any) {
-      console.error("Error submitting inquiry:", error);
+    } catch (error: any) { console.error("Error submitting inquiry:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to send inquiry. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }

@@ -9,11 +9,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[AUTO-PAYOUT] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
@@ -25,8 +23,7 @@ const KIND_MAP = {
   influencer: { table: "influencer_withdrawal_requests", creatorCol: "influencer_id", transferCol: "stripe_transfer_id" },
   auction:    { table: "auction_withdrawal_requests",    creatorCol: "seller_id",     transferCol: "stripe_payout_id"   },
   referral:   { table: "referral_withdrawal_requests",   creatorCol: "referrer_id",   transferCol: "stripe_transfer_id" },
-  campaign:   { table: "withdrawal_requests",            creatorCol: "user_id",       transferCol: "stripe_transfer_id" },
-} as const;
+  campaign:   { table: "withdrawal_requests",            creatorCol: "user_id",       transferCol: "stripe_transfer_id" } } as const;
 
 const AUTO_MAX_EUR = Number(Deno.env.get("AUTO_PAYOUT_MAX_EUR") ?? "200");
 
@@ -119,17 +116,13 @@ serve(async (req) => {
             currency: "eur",
             destination: profile.stripe_connect_account_id,
             description: `auto ${kind} withdrawal ${wd.id}`,
-            metadata: { kind, withdrawal_id: wd.id, creator_id: creatorId, auto: "true" },
-          }, {
-            idempotencyKey: `auto-payout-${kind}-${wd.id}`,
-          });
+            metadata: { kind, withdrawal_id: wd.id, creator_id: creatorId, auto: "true" } }, {
+            idempotencyKey: `auto-payout-${kind}-${wd.id}` });
 
-          const updateData: Record<string, unknown> = {
-            status: "completed",
+          const updateData: Record<string, unknown> = { status: "completed",
             admin_notes: "Auto-paid by scheduled job",
             processed_at: new Date().toISOString(),
-            [cfg.transferCol]: transfer.id,
-          };
+            [cfg.transferCol]: transfer.id };
           await admin.from(cfg.table).update(updateData).eq("id", wd.id);
 
           // For referral kind, mark earnings as paid FIFO up to the withdrawn amount
@@ -160,8 +153,7 @@ serve(async (req) => {
             action: "withdrawal_auto_paid",
             target_id: wd.id,
             target_type: cfg.table,
-            details: { kind, amount: wd.amount, transfer_id: transfer.id },
-          });
+            details: { kind, amount: wd.amount, transfer_id: transfer.id } });
 
           totalPaid++;
           results.push({ kind, id: wd.id, transfer_id: transfer.id, amount: wd.amount });
@@ -180,13 +172,11 @@ serve(async (req) => {
     log("sweep complete", { paid: totalPaid, skipped: totalSkipped, failed: totalFailed });
 
     return new Response(
-      JSON.stringify({
-        success: true,
+      JSON.stringify({ success: true,
         paid: totalPaid,
         skipped: totalSkipped,
         failed: totalFailed,
-        details: results,
-      }),
+        details: results }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
@@ -194,7 +184,6 @@ serve(async (req) => {
     log("FATAL", { msg });
     return new Response(JSON.stringify({ error: msg, paid: totalPaid, failed: totalFailed }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

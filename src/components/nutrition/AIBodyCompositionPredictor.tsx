@@ -33,8 +33,7 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
       return data;
     },
     onSuccess: (data) => { setResult(data.prediction); toast.success("Body composition predicted!"); },
-    onError: (e: any) => toast.error(e.message || "Error predicting"),
-  });
+    onError: (e: any) => toast.error(e.message || "Error predicting") });
 
   return (
     <>

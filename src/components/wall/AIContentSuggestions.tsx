@@ -30,20 +30,17 @@ export const AIContentSuggestions = () => {
     try {
       const topic = topics[Math.floor(Math.random() * topics.length)];
       const { data, error } = await supabase.functions.invoke("wall-ai-assistant", {
-        body: { type: "caption", content: topic, language: "en" },
-      });
+        body: { type: "caption", content: topic, language: "en" } });
 
       if (error) throw error;
       if (data?.result?.captions) {
         setSuggestions(data.result.captions);
       }
-    } catch (err) {
-      console.error("AI suggestions error:", err);
+    } catch (err) { console.error("AI suggestions error:", err);
       toast({
         title: "Error",
         description: "Failed to load AI suggestions",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

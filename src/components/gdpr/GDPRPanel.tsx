@@ -4,8 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -13,8 +12,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Download, Trash2, Shield, Eye, Settings, FileText, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -33,15 +31,13 @@ export function GDPRPanel() {
   const { toast } = useToast();
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [preferences, setPreferences] = useState<CookiePreferences>(() => {
-    const saved = localStorage.getItem("gdpr_cookie_preferences");
+  const [preferences, setPreferences] = useState<CookiePreferences>(() => { const saved = localStorage.getItem("gdpr_cookie_preferences");
     if (saved) return JSON.parse(saved);
     return {
       necessary: true,
       analytics: false,
       marketing: false,
-      personalization: false,
-    };
+      personalization: false };
   });
 
   const updatePreferences = (key: keyof CookiePreferences, value: boolean) => {
@@ -49,10 +45,8 @@ export function GDPRPanel() {
     setPreferences(newPrefs);
     localStorage.setItem("gdpr_cookie_preferences", JSON.stringify(newPrefs));
     localStorage.setItem("gdpr_cookie_consent", new Date().toISOString());
-    toast({
-      title: "Settings saved",
-      description: "Your cookie preferences have been updated.",
-    });
+    toast({ title: "Settings saved",
+      description: "Your cookie preferences have been updated." });
   };
 
   const exportData = async () => {
@@ -66,13 +60,11 @@ export function GDPRPanel() {
         supabase.from("messages").select("*").or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`),
       ]);
 
-      const exportData = {
-        exportDate: new Date().toISOString(),
+      const exportData = { exportDate: new Date().toISOString(),
         profile: profileRes.data,
         posts: postsRes.data,
         messages: messagesRes.data,
-        cookiePreferences: preferences,
-      };
+        cookiePreferences: preferences };
 
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
@@ -84,16 +76,12 @@ export function GDPRPanel() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      toast({
-        title: "Export complete",
-        description: "Your data has been downloaded.",
-      });
-    } catch (error) {
-      toast({
+      toast({ title: "Export complete",
+        description: "Your data has been downloaded." });
+    } catch (error) { toast({
         title: "Export error",
         description: "Failed to export data.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setExporting(false);
     }
@@ -118,20 +106,16 @@ export function GDPRPanel() {
       await supabase.auth.signOut();
       localStorage.clear();
 
-      toast({
-        title: "Account deleted",
-        description: "Your account and all data have been permanently deleted.",
-      });
+      toast({ title: "Account deleted",
+        description: "Your account and all data have been permanently deleted." });
 
       window.location.href = "/";
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description:
           error?.message ||
           "Failed to delete account. Please contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setDeleting(false);
     }

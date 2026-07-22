@@ -56,9 +56,7 @@ const VIS_OPTIONS: { v: Visibility; label: string; icon: React.ElementType }[] =
   { v: "private", label: "Private", icon: Lock },
 ];
 
-export const PrivacyAndStyle = ({
-  visibility, onVisibilityChange, accentColor, onAccentChange, theme, onThemeChange,
-}: Props) => {
+export const PrivacyAndStyle = ({ visibility, onVisibilityChange, accentColor, onAccentChange, theme, onThemeChange }: Props) => {
   return (
     <>
       <FloatingHowItWorks title={"Privacy And Style - How it works"} steps={[{ title: 'Open', desc: 'Access the Privacy And Style section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Privacy And Style.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />

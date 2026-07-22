@@ -67,12 +67,10 @@ export default function TipsterDashboard() {
         .eq('status', 'active')
         .single();
 
-      if (error || !tipster) {
-        toast({
+      if (error || !tipster) { toast({
           title: "Access Denied",
           description: "You need to be an approved tipster to access this page",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate('/sports-predictor');
         return;
       }
@@ -118,37 +116,31 @@ export default function TipsterDashboard() {
     }
   };
 
-  const handleSubmitPrediction = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitPrediction = async (e: React.FormEvent) => { e.preventDefault();
     
     if (!selectedMatch) {
       toast({
         title: "Error",
         description: "Please select a match",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
     try {
       setSubmitting(true);
-      const { error } = await supabase.from('sports_predictions').insert({
-        tipster_id: profile?.id,
+      const { error } = await supabase.from('sports_predictions').insert({ tipster_id: profile?.id,
         match_id: selectedMatch,
         prediction_type: predictionType,
         confidence: parseInt(confidence),
         odds: parseFloat(odds),
         price: parseFloat(price),
         is_premium: true,
-        analysis_text: analysis,
-      });
+        analysis_text: analysis });
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Prediction added successfully",
-      });
+      toast({ title: "Success",
+        description: "Prediction added successfully" });
 
       // Reset form
       setSelectedMatch("");
@@ -157,12 +149,10 @@ export default function TipsterDashboard() {
       setOdds("2.00");
       setPrice("9.99");
       setAnalysis("");
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to add prediction",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setSubmitting(false);
     }

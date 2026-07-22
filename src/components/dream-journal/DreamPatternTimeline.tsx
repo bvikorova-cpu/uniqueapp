@@ -53,19 +53,16 @@ const DreamPatternTimeline = ({ onBack }: DreamPatternTimelineProps) => {
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();
-      const dreamSummaries = dreams.map(d => ({
-        title: d.title,
+      const dreamSummaries = dreams.map(d => ({ title: d.title,
         date: d.dream_date,
         themes: d.themes,
         emotions: d.emotions,
         symbols: d.symbols,
-        content: d.content?.substring(0, 200),
-      }));
+        content: d.content?.substring(0, 200) }));
 
       const { data, error } = await supabase.functions.invoke("dream-ai", {
         body: { action: "pattern-analysis", dreams: dreamSummaries },
-        headers: { Authorization: `Bearer ${session?.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session?.access_token}` } });
       if (error) throw error;
       setAnalysis(data.analysis);
       toast.success("Pattern analysis complete!");

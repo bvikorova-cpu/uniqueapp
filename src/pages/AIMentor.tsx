@@ -33,8 +33,7 @@ const __HIW_AIMENTOR_STEPS = [
 const __HIW_AIMENTOR = { title: 'AI Personal Mentor', intro: 'Four AI coaches (Career, Fitness, Mindset, Wellness) guiding your growth.', steps: __HIW_AIMENTOR_STEPS };
 
 const MENTOR_AREAS = [
-  {
-    id: "career",
+  { id: "career",
     name: "Career Coach",
     icon: Briefcase,
     description: "Career planning, job search, professional growth, and work-life balance",
@@ -45,10 +44,8 @@ const MENTOR_AREAS = [
       "Resume optimization",
       "Workplace challenges",
       "Professional development",
-    ],
-  },
-  {
-    id: "fitness",
+    ] },
+  { id: "fitness",
     name: "Fitness Coach",
     icon: Dumbbell,
     description: "Workout planning, nutrition guidance, and healthy habits",
@@ -59,10 +56,8 @@ const MENTOR_AREAS = [
       "Habit building",
       "Progress tracking",
       "Injury prevention",
-    ],
-  },
-  {
-    id: "mindset",
+    ] },
+  { id: "mindset",
     name: "Mindset Coach",
     icon: Brain,
     description: "Mental resilience, goal setting, and personal development",
@@ -73,10 +68,8 @@ const MENTOR_AREAS = [
       "Confidence building",
       "Stress management",
       "Positive thinking",
-    ],
-  },
-  {
-    id: "relationships",
+    ] },
+  { id: "relationships",
     name: "Relationships Coach",
     icon: Heart,
     description: "Communication skills, healthy relationships, and emotional intelligence",
@@ -87,8 +80,7 @@ const MENTOR_AREAS = [
       "Emotional intelligence",
       "Healthy boundaries",
       "Connection building",
-    ],
-  },
+    ] },
 ];
 
 const AIMentor = () => {
@@ -140,11 +132,9 @@ const AIMentor = () => {
       return;
     }
     const hasSub = subscriptions.some(s => s.mentor_area === areaId);
-    if (!hasSub) {
-      toast({
+    if (!hasSub) { toast({
         title: "Subscription required",
-        description: "You need an active subscription to access this mentor area",
-      });
+        description: "You need an active subscription to access this mentor area" });
       navigate('/subscription');
       return;
     }

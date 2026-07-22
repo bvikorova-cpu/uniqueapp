@@ -60,12 +60,10 @@ export default function VideoConsultationRoom() {
         .select("provider_name")
         .eq("user_id", appt.provider_id)
         .maybeSingle();
-      setCtx({
-        ...appt,
+      setCtx({ ...appt,
         provider_name: healthcare?.provider_name ?? null,
         patient_name: role === "doctor" ? (otherProfile?.full_name ?? null) : null,
-        role,
-      });
+        role });
       setLoading(false);
     })();
   }, [appointmentId]);

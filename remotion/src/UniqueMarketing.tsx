@@ -1,6 +1,5 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Audio,
   Img,
   Sequence,
@@ -8,8 +7,7 @@ import {
   spring,
   staticFile,
   useCurrentFrame,
-  useVideoConfig,
-} from "remotion";
+  useVideoConfig } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/Lobster";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
 
@@ -55,8 +53,7 @@ const KenBurnsImage: React.FC<{ src: string; duration: number }> = ({ src, durat
           height: "100%",
           objectFit: "cover",
           transform: `scale(${scale}) translate(${tx}px, ${ty}px)`,
-          filter: "saturate(1.35) brightness(1.18) contrast(1.05)",
-        }}
+          filter: "saturate(1.35) brightness(1.18) contrast(1.05)" }}
       />
     </AbsoluteFill>
   );
@@ -67,10 +64,8 @@ const SceneCard: React.FC<Scene> = ({ duration, caption, image, tint }) => {
   const { fps } = useVideoConfig();
 
   const enter = spring({ frame, fps, config: { damping: 18, stiffness: 130 } });
-  const exit = interpolate(frame, [duration - 12, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 12, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   const opacity = enter * (1 - exit);
   const y = interpolate(enter, [0, 1], [40, 0]);
 
@@ -83,19 +78,17 @@ const SceneCard: React.FC<Scene> = ({ duration, caption, image, tint }) => {
       <AbsoluteFill style={{ backgroundColor: tint }} />
       {/* bottom gradient for legibility */}
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.65) 100%)",
-        }}
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.65) 100%)" }}
       />
 
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "flex-end",
           padding: 80,
-          paddingBottom: 220,
-        }}
+          paddingBottom: 220 }}
       >
         <div
           style={{
@@ -108,8 +101,7 @@ const SceneCard: React.FC<Scene> = ({ duration, caption, image, tint }) => {
             lineHeight: 1.1,
             color: "white",
             letterSpacing: "-0.03em",
-            textShadow: "0 6px 40px rgba(0,0,0,0.7)",
-          }}
+            textShadow: "0 6px 40px rgba(0,0,0,0.7)" }}
         >
           {lines.map((l, i) => {
             const lineDelay = i * 4;
@@ -146,21 +138,19 @@ const Outro: React.FC<{ image: string; duration: number }> = ({ image, duration 
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 80px rgba(236,72,153,0.6)",
-            lineHeight: 1,
-          }}
+            lineHeight: 1 }}
         >
           Unique
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 30,
             opacity: urlOp,
             fontFamily: body.fontFamily,
             fontWeight: 700,
             fontSize: 72,
             color: "white",
-            letterSpacing: "0.05em",
-          }}
+            letterSpacing: "0.05em" }}
         >
           uniqueapp.fun
         </div>

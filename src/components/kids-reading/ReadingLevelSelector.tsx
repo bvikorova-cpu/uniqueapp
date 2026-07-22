@@ -2,33 +2,27 @@ import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const levels = [
-  {
-    id: "beginner",
+  { id: "beginner",
     label: "Beginner",
     emoji: "🌱",
     age: "Ages 5-7",
     description: "Simple words, short sentences",
     color: "from-green-500/20 to-emerald-500/20",
-    border: "border-green-500/30",
-  },
-  {
-    id: "intermediate",
+    border: "border-green-500/30" },
+  { id: "intermediate",
     label: "Intermediate",
     emoji: "📗",
     age: "Ages 8-10",
     description: "Longer texts, new vocabulary",
     color: "from-blue-500/20 to-cyan-500/20",
-    border: "border-blue-500/30",
-  },
-  {
-    id: "advanced",
+    border: "border-blue-500/30" },
+  { id: "advanced",
     label: "Advanced",
     emoji: "🎓",
     age: "Ages 11-13",
     description: "Complex texts, critical thinking",
     color: "from-purple-500/20 to-pink-500/20",
-    border: "border-purple-500/30",
-  },
+    border: "border-purple-500/30" },
 ];
 
 interface Props {

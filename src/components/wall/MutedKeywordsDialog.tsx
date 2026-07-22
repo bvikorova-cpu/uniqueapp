@@ -44,12 +44,10 @@ export const MutedKeywordsDialog = ({ trigger }: { trigger?: React.ReactNode }) 
     const { error } = await supabase
       .from("user_muted_keywords")
       .insert({ user_id: me, keyword: kw });
-    if (error) {
-      toast({
+    if (error) { toast({
         title: error.message.includes("duplicate") ? "Already muted" : "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     setInput("");

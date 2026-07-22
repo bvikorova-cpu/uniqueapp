@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -30,8 +28,7 @@ serve(async (req) => {
       "shadow-fortress":   { name: "Shadow Fortress",  difficulty: 2, baseReward: 100, cost: 10 },
       "dragon-lair":       { name: "Dragon's Lair",    difficulty: 3, baseReward: 200, cost: 15 },
       "void-realm":        { name: "Void Realm",       difficulty: 4, baseReward: 350, cost: 20 },
-      "celestial-tower":   { name: "Celestial Tower",  difficulty: 5, baseReward: 500, cost: 25 },
-    };
+      "celestial-tower":   { name: "Celestial Tower",  difficulty: 5, baseReward: 500, cost: 25 } };
     const dungeon = dungeons[dungeonId] || dungeons["crystal-caves"];
 
     const { data: row } = await admin
@@ -46,11 +43,9 @@ serve(async (req) => {
     const requiredPower = dungeon.difficulty * 30;
     const victory = partyPower > requiredPower;
 
-    const encounters = Array.from({ length: dungeon.difficulty + 1 }, (_, i) => ({
-      round: i + 1,
+    const encounters = Array.from({ length: dungeon.difficulty + 1 }, (_, i) => ({ round: i + 1,
       enemy: ["Goblin", "Skeleton", "Ogre", "Dark Mage", "Dragon"][Math.min(i, 4)],
-      survived: i < dungeon.difficulty || victory,
-    }));
+      survived: i < dungeon.difficulty || victory }));
 
     await admin
       .from("character_credits")
@@ -64,8 +59,7 @@ serve(async (req) => {
       encounters,
       rewards: victory ? { coins: dungeon.baseReward, xp: dungeon.baseReward * 2 } : { coins: 10, xp: 20 },
       loot: victory ? [{ name: "Enchanted Gem", rarity: "rare" }] : [],
-      creditsRemaining: balance - dungeon.cost,
-    });
+      creditsRemaining: balance - dungeon.cost });
   } catch (e) {
     return j({ error: e instanceof Error ? e.message : String(e) }, 500);
   }

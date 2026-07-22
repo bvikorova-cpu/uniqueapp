@@ -4,13 +4,11 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Cookie, Settings, Shield, X } from "lucide-react";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CookiePreferences {
@@ -23,15 +21,13 @@ interface CookiePreferences {
 const CONSENT_KEY = "gdpr_cookie_consent";
 const PREFERENCES_KEY = "gdpr_cookie_preferences";
 
-export function CookieConsentBanner() {
-  const [showBanner, setShowBanner] = useState(false);
+export function CookieConsentBanner() { const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [preferences, setPreferences] = useState<CookiePreferences>({
     necessary: true,
     analytics: false,
     marketing: false,
-    personalization: false,
-  });
+    personalization: false });
 
   const safeGet = (key: string) => {
     try {
@@ -75,22 +71,18 @@ export function CookieConsentBanner() {
     setShowSettings(false);
   };
 
-  const acceptAll = () => {
-    saveConsent({
+  const acceptAll = () => { saveConsent({
       necessary: true,
       analytics: true,
       marketing: true,
-      personalization: true,
-    });
+      personalization: true });
   };
 
-  const rejectAll = () => {
-    saveConsent({
+  const rejectAll = () => { saveConsent({
       necessary: true,
       analytics: false,
       marketing: false,
-      personalization: false,
-    });
+      personalization: false });
   };
 
   const savePreferences = () => {

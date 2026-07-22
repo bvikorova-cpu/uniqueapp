@@ -53,8 +53,7 @@ export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
       const { data: urlData } = supabase.storage.from("stock-content").getPublicUrl(filePath);
 
       const { data, error } = await supabase.functions.invoke("remove-background", {
-        body: { imageUrl: urlData.publicUrl, bgColor },
-      });
+        body: { imageUrl: urlData.publicUrl, bgColor } });
       if (error) throw error;
       if (!data?.resultUrl) throw new Error("No result returned");
 
@@ -107,8 +106,7 @@ export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
         license_type: "standard",
         file_url: resultUrl,
         thumbnail_url: resultUrl,
-        is_active: false,
-      }]);
+        is_active: false }]);
       if (error) throw error;
       toast({ title: "Saved", description: "Added to My Content as a draft (inactive)." });
     } catch (error: any) {

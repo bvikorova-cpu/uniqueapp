@@ -27,8 +27,7 @@ export function LiveSkillDemoView({ onBack }: Props) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("skill-swap-ai", {
-        body: { action: "live-demo-script", skillName, targetAudience, duration, strengths },
-      });
+        body: { action: "live-demo-script", skillName, targetAudience, duration, strengths } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Demo script created! (${data.credits_used} credits used)`);

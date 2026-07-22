@@ -117,8 +117,7 @@ export const BrainDuelGame = () => {
     try {
       // 1. Create match
       const { data: matchData, error: matchError } = await supabase.functions.invoke('brain-duel-matchmaking', {
-        body: { category: cat },
-      });
+        body: { category: cat } });
       if (matchError) throw matchError;
       if (matchData?.error) throw new Error(matchData.error);
       
@@ -126,8 +125,7 @@ export const BrainDuelGame = () => {
 
       // 2. Get AI-generated questions
       const { data: qData, error: qError } = await supabase.functions.invoke('brain-duel-get-questions', {
-        body: { match_id: matchData.match.id, category: cat },
-      });
+        body: { match_id: matchData.match.id, category: cat } });
       if (qError) throw qError;
       if (qData?.error) throw new Error(qData.error);
 
@@ -150,14 +148,11 @@ export const BrainDuelGame = () => {
     const timeTaken = Math.round((Date.now() - answerStartTime) / 1000);
 
     try {
-      const { data, error } = await supabase.functions.invoke('brain-duel-submit-answer', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('brain-duel-submit-answer', { body: {
           match_id: matchId,
           question_id: questions[currentIndex].id,
           answer: answer === 'timeout' ? '' : answer,
-          time_taken: timeTaken,
-        },
-      });
+          time_taken: timeTaken } });
       if (error) throw error;
 
       setAnswerResult(data);
@@ -192,8 +187,7 @@ export const BrainDuelGame = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('brain-duel-finish-match', {
-        body: { match_id: matchId },
-      });
+        body: { match_id: matchId } });
       if (error) throw error;
       setMatchResult(data);
     } catch (err: any) {
@@ -208,8 +202,7 @@ export const BrainDuelGame = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('brain-duel-match-analysis', {
-        body: { match_id: matchId },
-      });
+        body: { match_id: matchId } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 

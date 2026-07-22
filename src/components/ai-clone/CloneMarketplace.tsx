@@ -40,8 +40,7 @@ export function CloneMarketplace() {
         clone_name: c.clone_name,
         subscription_tier: c.subscription_tier,
         total_conversations: c.total_conversations,
-        personality_data: { personality: c.personality_summary, tone: c.tone },
-      })));
+        personality_data: { personality: c.personality_summary, tone: c.tone } })));
     } catch (error) {
       console.error('Error fetching clones:', error);
     }

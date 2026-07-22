@@ -27,8 +27,7 @@ export const useComedyCurrency = () => {
         return newData;
       }
       return data;
-    },
-  });
+    } });
 
   return { currency, isLoading, refetch };
 };
@@ -54,8 +53,7 @@ export const useComedyShows = () => {
       if (error) throw error;
       return data;
     },
-    refetchInterval: 10000,
-  });
+    refetchInterval: 10000 });
 
   return { shows, isLoading };
 };
@@ -96,8 +94,7 @@ export const useBuyTicket = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };
 
 export const useComedyBattles = () => {
@@ -120,14 +117,12 @@ export const useComedyBattles = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return { battles, isLoading, refetch };
 };
 
-export const useSendTip = () => {
-  const queryClient = useQueryClient();
+export const useSendTip = () => { const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
@@ -135,8 +130,7 @@ export const useSendTip = () => {
       amount,
       tipType,
       showId,
-      message,
-    }: {
+      message }: {
       comedianId: string;
       amount: number;
       tipType: string;
@@ -144,8 +138,7 @@ export const useSendTip = () => {
       message?: string;
     }) => {
       const { data, error } = await supabase.functions.invoke("send-comedy-tip", {
-        body: { comedianId, amount, tipType, showId, message },
-      });
+        body: { comedianId, amount, tipType, showId, message } });
       if (error) {
         const status = (error as any)?.context?.status;
         if (status === 402) throw new Error("Insufficient coins");
@@ -159,8 +152,7 @@ export const useSendTip = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };
 
 export const useUserTickets = () => {
@@ -184,8 +176,7 @@ export const useUserTickets = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return { tickets, isLoading };
 };
@@ -205,8 +196,7 @@ export const useComedianProfile = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return { profile, isLoading };
 };
@@ -221,11 +211,9 @@ export const useCreateComedianProfile = () => {
 
       const { data, error } = await supabase
         .from("comedian_profiles")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           stage_name: stageName,
-          bio,
-        })
+          bio })
         .select()
         .single();
 
@@ -238,8 +226,7 @@ export const useCreateComedianProfile = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };
 
 export const useComedianEarnings = () => {
@@ -265,8 +252,7 @@ export const useComedianEarnings = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return { earnings, isLoading };
 };
@@ -294,8 +280,7 @@ export const useComedianShows = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return { shows, isLoading };
 };
@@ -310,8 +295,7 @@ export const useComedyClips = () => {
 
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   return { clips, isLoading };
 };
@@ -349,6 +333,5 @@ export const useBuyClip = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };

@@ -16,8 +16,7 @@ export const RedeemGiftDialog = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("gift-subscription", {
-        body: { action: "redeem", code: code.trim().toUpperCase() },
-      });
+        body: { action: "redeem", code: code.trim().toUpperCase() } });
       if (error) throw error;
       toast.success(`Redeemed! ${data.tier} for ${data.months} months.`);
       setOpen(false);

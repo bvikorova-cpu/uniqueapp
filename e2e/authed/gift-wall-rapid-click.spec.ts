@@ -30,8 +30,7 @@ test("Rapid-click SendGiftDialog fires exactly one send-creator-gift call", asyn
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ url: "https://checkout.stripe.com/test_stub_rapid_click" }),
-    });
+      body: JSON.stringify({ url: "https://checkout.stripe.com/test_stub_rapid_click" }) });
   });
   // Block real Stripe navigation.
   await page.route("https://checkout.stripe.com/**", (r) =>

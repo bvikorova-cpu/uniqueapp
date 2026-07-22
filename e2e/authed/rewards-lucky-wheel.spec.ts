@@ -43,8 +43,7 @@ test.describe("Rewards · Lucky Wheel real spin + cooldown", () => {
 
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       global: { headers: { Authorization: `Bearer ${accessToken}` } },
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+      auth: { persistSession: false, autoRefreshToken: false } });
 
     const { data: userRes, error: userErr } = await sb.auth.getUser(accessToken!);
     expect(userErr, "auth.getUser failed").toBeNull();
@@ -71,9 +70,7 @@ test.describe("Rewards · Lucky Wheel real spin + cooldown", () => {
     }
 
     const spinBtn = page.getByRole("button", { name: /spin the wheel/i });
-    await expect(spinBtn, "Spin button should be enabled after pre-clean").toBeEnabled({
-      timeout: 15_000,
-    });
+    await expect(spinBtn, "Spin button should be enabled after pre-clean").toBeEnabled({ timeout: 15_000 });
 
     // --- 3) Click + assert success toast within reveal window (~3s animation + grace).
     await spinBtn.click();

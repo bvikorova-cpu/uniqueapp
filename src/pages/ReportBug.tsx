@@ -36,15 +36,13 @@ export default function ReportBug() {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from("bug_reports").insert({
-      user_id: user?.id ?? null,
+    const { error } = await supabase.from("bug_reports").insert({ user_id: user?.id ?? null,
       email: email || user?.email || null,
       title: title.trim(),
       description: description.trim(),
       steps: steps.trim() || null,
       page_url: pageUrl || null,
-      severity,
-    });
+      severity });
     setSubmitting(false);
     if (error) {
       toast.error(error.message);

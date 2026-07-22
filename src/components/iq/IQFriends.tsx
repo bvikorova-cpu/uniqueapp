@@ -38,11 +38,9 @@ export default function IQFriends() {
   const sendRequest = async () => {
     if (!target.trim() || !uid) return;
     setBusy(true);
-    const { error } = await supabase.from("iq_friendships").insert({
-      requester_id: uid,
+    const { error } = await supabase.from("iq_friendships").insert({ requester_id: uid,
       addressee_id: target.trim(),
-      status: "pending",
-    });
+      status: "pending" });
     setBusy(false);
     if (error) {
       toast.error(error.message);
@@ -67,13 +65,11 @@ export default function IQFriends() {
 
   const challenge = async (friendId: string) => {
     if (!uid) return;
-    const { error } = await supabase.from("iq_friend_challenges").insert({
-      challenger_id: uid,
+    const { error } = await supabase.from("iq_friend_challenges").insert({ challenger_id: uid,
       opponent_id: friendId,
       question_count: 10,
       stake_credits: 0,
-      status: "pending",
-    });
+      status: "pending" });
     if (error) toast.error(error.message);
     else toast.success("1v1 challenge sent");
   };

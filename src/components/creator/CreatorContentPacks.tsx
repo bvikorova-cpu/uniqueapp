@@ -54,30 +54,25 @@ export function CreatorContentPacks({ creatorId, canPurchase }: CreatorContentPa
     setPurchasing(packId);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication Required",
-          description: "Please sign in to purchase content",
-        });
+          description: "Please sign in to purchase content" });
         return;
       }
 
       const { data, error } = await supabase.functions.invoke('purchase-content-pack', {
-        body: { packId },
-      });
+        body: { packId } });
 
       if (error) throw error;
 
       if (data?.url) {
         window.open(data.url, '_blank');
       }
-    } catch (error: any) {
-      console.error('Error purchasing pack:', error);
+    } catch (error: any) { console.error('Error purchasing pack:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to start purchase",
-      });
+        description: "Failed to start purchase" });
     } finally {
       setPurchasing(null);
     }

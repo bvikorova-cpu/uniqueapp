@@ -6,9 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  ShieldCheck, Loader2, AlertTriangle, CheckCircle2, XCircle, RefreshCw, IdCard,
-} from "lucide-react";
+import { ShieldCheck, Loader2, AlertTriangle, CheckCircle2, XCircle, RefreshCw, IdCard } from "lucide-react";
 import { toast } from "sonner";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";

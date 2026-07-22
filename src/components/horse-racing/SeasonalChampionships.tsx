@@ -39,14 +39,12 @@ export const SeasonalChampionships = () => {
         .select("*")
         .eq("user_id", u.id);
       return data || [];
-    },
-  });
+    } });
 
   const enrollMutation = useMutation({
     mutationFn: async ({ seasonId, horseId }: { seasonId: string; horseId: string }) => {
       const { data, error } = await supabase.functions.invoke("horse-championship-enroll", {
-        body: { seasonId, horseId },
-      });
+        body: { seasonId, horseId } });
       if (error) throw error;
       return data;
     },
@@ -57,8 +55,7 @@ export const SeasonalChampionships = () => {
       setEnrollingSeason(null);
       setSelectedHorse("");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const isEnrolled = (seasonId: string) => enrollments.some((e: any) => e.season_id === seasonId);
 

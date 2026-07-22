@@ -32,8 +32,7 @@ export const AIRarityPredictor = ({ onBack }: Props) => {
     setPrediction(null);
     try {
       const { data, error } = await supabase.functions.invoke('mystery-box-ai', {
-        body: { type: analysisType },
-      });
+        body: { type: analysisType } });
       if (error) throw error;
       setPrediction(data.prediction);
       await refresh();

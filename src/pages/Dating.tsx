@@ -132,12 +132,8 @@ const Dating = () => {
   const [newMessage, setNewMessage] = useState("");
   const [showProfileDialog, setShowProfileDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
-  const [editForm, setEditForm] = useState({
-    display_name: "", age: 18, gender: "male", looking_for: "female", bio: "", location: "",
-  });
-  const [profileForm, setProfileForm] = useState({
-    display_name: "", age: 18, gender: "male", looking_for: "female", bio: "", location: "",
-  });
+  const [editForm, setEditForm] = useState({ display_name: "", age: 18, gender: "male", looking_for: "female", bio: "", location: "" });
+  const [profileForm, setProfileForm] = useState({ display_name: "", age: 18, gender: "male", looking_for: "female", bio: "", location: "" });
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadingAdditional, setUploadingAdditional] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
@@ -248,12 +244,10 @@ const Dating = () => {
 
   const loadFilters = async (userId: string) => {
     const { data } = await supabase.from("dating_filters").select("*").eq("user_id", userId).maybeSingle();
-    if (data) setFilters({
-      min_age: data.min_age, max_age: data.max_age,
+    if (data) setFilters({ min_age: data.min_age, max_age: data.max_age,
       max_distance_km: data.max_distance_km,
       preferred_genders: data.preferred_genders,
-      verified_only: data.verified_only,
-    });
+      verified_only: data.verified_only });
   };
 
   const loadSuperLikesRemaining = async (userId: string) => {
@@ -287,17 +281,13 @@ const Dating = () => {
     if (boosting || boostActive || !user) return;
     setBoosting(true);
     try {
-      const { data: ok, error: deductErr } = await supabase.rpc("deduct_ai_credits", {
-        p_user_id: user.id, p_amount: 20, p_reason: "dating_boost_30min", p_source: "dating",
-      });
+      const { data: ok, error: deductErr } = await supabase.rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: 20, p_reason: "dating_boost_30min", p_source: "dating" });
       if (deductErr || ok === false) {
         toast({ title: "Not enough credits", description: "Boost costs 20 credits.", variant: "destructive" });
         return;
       }
       const expiresAt = new Date(Date.now() + 30 * 60_000).toISOString();
-      const { error: insErr } = await supabase.from("dating_boosts").insert({
-        user_id: user.id, expires_at: expiresAt, credits_spent: 20,
-      });
+      const { error: insErr } = await supabase.from("dating_boosts").insert({ user_id: user.id, expires_at: expiresAt, credits_spent: 20 });
       if (insErr) throw insErr;
       setBoostActive(expiresAt);
       toast({ title: "🔥 Boost active!", description: "You're a top profile for 30 minutes." });
@@ -370,8 +360,7 @@ const Dating = () => {
       } else if (discoveryMode === "ai_smart") {
         try {
           const { data: rerank } = await supabase.functions.invoke("dating-ai-coach", {
-            body: { action: "rerank_discovery", me: currentProfile, candidates: ranked.slice(0, 40) },
-          });
+            body: { action: "rerank_discovery", me: currentProfile, candidates: ranked.slice(0, 40) } });
           const scoreMap = new Map<string, number>();
           (rerank?.scores || []).forEach((s: any) => scoreMap.set(s.id, s.p));
           ranked = [...ranked].sort((a, b) => (scoreMap.get(b.user_id) ?? -1) - (scoreMap.get(a.user_id) ?? -1));
@@ -399,10 +388,8 @@ const Dating = () => {
       .in("user_id", partnerIds);
     const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
 
-    setMatches(data.map(m => ({
-      ...m,
-      profile: profileMap.get(m.user1_id === userId ? m.user2_id : m.user1_id),
-    })));
+    setMatches(data.map(m => ({ ...m,
+      profile: profileMap.get(m.user1_id === userId ? m.user2_id : m.user1_id) })));
   };
 
   const loadMessages = async (matchId: string) => {
@@ -446,8 +433,7 @@ const Dating = () => {
     setSubscribing(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { product: planType === 'monthly' ? 'dating_monthly' : 'dating_yearly' },
-      });
+        body: { product: planType === 'monthly' ? 'dating_monthly' : 'dating_yearly' } });
       if (error || !data?.url) throw error || new Error("No checkout URL");
       window.location.href = data.url;
     } catch (e: any) {
@@ -505,12 +491,10 @@ const Dating = () => {
     // AI moderation pre-check
     try {
       const { data: mod } = await supabase.functions.invoke("dating-moderate-message", { body: { content } });
-      if (mod && mod.allow === false) {
-        toast({
+      if (mod && mod.allow === false) { toast({
           title: "Message blocked",
           description: mod.reason || "This message violates community guidelines.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
       if (mod?.severity === "medium") {
@@ -527,8 +511,7 @@ const Dating = () => {
       // A/B conversion tracking: mark experiment as used + led_to_message
       if (pendingStarterExperiment) {
         supabase.functions.invoke("dating-ai-coach", {
-          body: { action: "mark_experiment", experiment_id: pendingStarterExperiment, used: true, led_to_message: true },
-        }).catch(() => {});
+          body: { action: "mark_experiment", experiment_id: pendingStarterExperiment, used: true, led_to_message: true } }).catch(() => {});
         setPendingStarterExperiment(null);
       }
       setNewMessage(""); await loadMessages(selectedMatch.id);

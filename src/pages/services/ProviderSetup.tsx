@@ -61,12 +61,10 @@ export default function ProviderSetup() {
       }
       setRules((r as Rule[]) ?? []);
       setOfferings((o as Offering[]) ?? []);
-      setBlocks(((b as any[]) ?? []).map((x) => ({
-        id: x.id,
+      setBlocks(((b as any[]) ?? []).map((x) => ({ id: x.id,
         starts_at: x.starts_at.slice(0, 16),
         ends_at: x.ends_at.slice(0, 16),
-        reason: x.reason ?? "",
-      })));
+        reason: x.reason ?? "" })));
       setLoading(false);
     })();
   }, [user, navigate]);
@@ -79,12 +77,10 @@ export default function ProviderSetup() {
     const dur = parseInt(durationMin, 10);
     if (!dur || dur < 5 || dur > 480) { toast.error("Default duration must be 5–480 min"); return; }
     setSaving(true);
-    const { error } = await supabase.from("service_providers").upsert({
-      owner_id: user.id,
+    const { error } = await supabase.from("service_providers").upsert({ owner_id: user.id,
       business_name: businessName.trim(),
       category, description: description || null, city: city || null, avatar_url: avatarUrl || null,
-      price_cents: priceCents, duration_min: dur, is_accepting_bookings: accepting,
-    }, { onConflict: "owner_id" });
+      price_cents: priceCents, duration_min: dur, is_accepting_bookings: accepting }, { onConflict: "owner_id" });
     setSaving(false);
     if (error) return toast.error(error.message);
     toast.success("Profile saved");
@@ -183,7 +179,7 @@ export default function ProviderSetup() {
                     <SelectContent>{CATEGORIES.map((c) => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
-                <div><Label>City *</Label><Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Bratislava" /></div>
+                <div><Label>City *</Label><Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" /></div>
                 <div><Label>Photo / logo URL</Label><Input value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://…" /></div>
                 <div><Label>Default price (EUR)</Label><Input type="number" min="1" step="0.5" value={priceEur} onChange={(e) => setPriceEur(e.target.value)} /></div>
                 <div><Label>Default duration (min)</Label><Input type="number" min="5" max="480" step="5" value={durationMin} onChange={(e) => setDurationMin(e.target.value)} /></div>

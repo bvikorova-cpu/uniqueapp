@@ -61,16 +61,14 @@ export const AnimatedLeaderboard = () => {
       });
 
       const entries = Object.entries(playerStats)
-        .map(([userId, stats]) => {
-          const league = leagues.find((l: any) => l.user_id === userId);
+        .map(([userId, stats]) => { const league = leagues.find((l: any) => l.user_id === userId);
           return {
             user_id: userId,
             wins: stats.wins,
             total_games: stats.total,
             win_rate: stats.total > 0 ? (stats.wins / stats.total) * 100 : 0,
             streak: league?.win_streak || 0,
-            elo: league?.league_points || 1000,
-          };
+            elo: league?.league_points || 1000 };
         })
         .filter((e) => e.total_games >= 3)
         .sort((a, b) => b.elo !== a.elo ? b.elo - a.elo : b.wins - a.wins)
@@ -85,11 +83,9 @@ export const AnimatedLeaderboard = () => {
 
       // Compute rank changes
       const prevRankings = prevRankingsRef.current;
-      const result: LeaderEntry[] = entries.map((entry, i) => ({
-        ...entry,
+      const result: LeaderEntry[] = entries.map((entry, i) => ({ ...entry,
         previousRank: prevRankings[entry.user_id],
-        profile: profiles?.find((p) => p.id === entry.user_id) || null,
-      }));
+        profile: profiles?.find((p) => p.id === entry.user_id) || null }));
 
       // Store current rankings for next refresh
       const newRankings: Record<string, number> = {};
@@ -160,8 +156,7 @@ export const AnimatedLeaderboard = () => {
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{
                         layout: { type: "spring", stiffness: 300, damping: 30 },
-                        opacity: { duration: 0.2 },
-                      }}
+                        opacity: { duration: 0.2 } }}
                       onClick={() => navigate(`/profile/${entry.user_id}`)}
                       className={`flex items-center gap-3 p-3 rounded-xl border backdrop-blur-sm cursor-pointer transition-colors hover:bg-primary/5 ${
                         index < 3 ? `bg-gradient-to-r ${RANK_COLORS[index]}` : "bg-muted/10 border-primary/5"

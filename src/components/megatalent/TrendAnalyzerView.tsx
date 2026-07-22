@@ -20,8 +20,7 @@ export const TrendAnalyzerView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("megatalent-ai", {
-        body: { action: "trend_analyzer", category: category || undefined },
-      });
+        body: { action: "trend_analyzer", category: category || undefined } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

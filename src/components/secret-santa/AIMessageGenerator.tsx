@@ -33,14 +33,11 @@ export const AIMessageGenerator = ({ onSelectMessage, giftType, recipientName }:
   const generateMessage = async () => {
     setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("generate-gift-message", { body: {
           style: selectedStyle,
           customPrompt,
           giftType,
-          recipientName,
-        },
-      });
+          recipientName } });
 
       if (error) throw error;
 
@@ -48,20 +45,16 @@ export const AIMessageGenerator = ({ onSelectMessage, giftType, recipientName }:
 
       // Save to history
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from("social_gifts_ai_messages").insert({
+      if (user) { await supabase.from("social_gifts_ai_messages").insert({
           user_id: user.id,
           message_type: selectedStyle,
           prompt: customPrompt || null,
-          generated_message: data.message,
-        });
+          generated_message: data.message });
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Failed to generate message",
         description: "Please try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsGenerating(false);
     }

@@ -8,11 +8,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[SYNC-CHALLENGE-PRO] ${s}${d ? ` ${JSON.stringify(d)}` : ""}`);
@@ -83,14 +81,12 @@ serve(async (req) => {
     const alreadyGranted = (existing as any)?.top_last_grant_period === periodKey;
     const shouldGrantTopXp = tier === "top" && !alreadyGranted;
 
-    const upsertRow: Record<string, unknown> = {
-      user_id: user.id,
+    const upsertRow: Record<string, unknown> = { user_id: user.id,
       tier,
       active_until: activeUntil,
       stripe_subscription_id: match.subId,
       stripe_customer_id: customerId,
-      updated_at: new Date().toISOString(),
-    };
+      updated_at: new Date().toISOString() };
     if (shouldGrantTopXp) upsertRow.top_last_grant_period = periodKey;
 
     const { error: upsertErr } = await admin
@@ -122,8 +118,7 @@ serve(async (req) => {
           type: "challenge_top_monthly",
           title: "👑 TOP monthly bonus",
           message: "You received your guaranteed 500,000 XP for being a Challenge TOP subscriber this month!",
-          data: { xp: grantedXp, period: periodKey },
-        });
+          data: { xp: grantedXp, period: periodKey } });
       }
     }
 
@@ -146,8 +141,7 @@ serve(async (req) => {
             ? `tier=${tier} (only 'top' triggers guaranteed XP)`
             : "xp upsert failed";
 
-    await admin.from("challenge_xp_grant_log").insert({
-      user_id: user.id,
+    await admin.from("challenge_xp_grant_log").insert({ user_id: user.id,
       tier,
       sub_id: match.subId,
       period_key: periodKey,
@@ -155,8 +149,7 @@ serve(async (req) => {
       result: auditResult,
       reason: auditReason,
       upsert_ok: xpUpsertOk,
-      error_message: xpErrorMsg,
-    });
+      error_message: xpErrorMsg });
 
     log("synced", { user: user.id, tier, activeUntil, grantedXp, result: auditResult });
     return json({ active: true, tier, activeUntil, grantedXp, auditResult }, 200);
@@ -172,6 +165,5 @@ serve(async (req) => {
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status,
-  });
+    status });
 }

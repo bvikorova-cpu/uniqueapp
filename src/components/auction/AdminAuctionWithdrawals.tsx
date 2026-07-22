@@ -64,20 +64,17 @@ export function AdminAuctionWithdrawals() {
 
       toast({
         title: "Success",
-        description: `Withdrawal request ${action}d successfully`,
-      });
+        description: `Withdrawal request ${action}d successfully` });
 
       setSelectedRequest(null);
       setAction(null);
       setAdminNotes("");
       setStripePayoutId("");
       refetch();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

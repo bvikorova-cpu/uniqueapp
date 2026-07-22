@@ -64,8 +64,7 @@ export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke("verify-emotion-insurance", {
-          body: { sessionId },
-        });
+          body: { sessionId } });
         if (error) throw error;
         if (data?.success) {
           toast({ title: "Insurance activated", description: `Plan: ${data.level}` });
@@ -91,8 +90,7 @@ export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
         return;
       }
       const { data, error } = await supabase.functions.invoke("create-emotion-insurance-checkout", {
-        body: { level },
-      });
+        body: { level } });
       if (error) throw error;
       if (data?.url) {
         window.location.href = data.url;

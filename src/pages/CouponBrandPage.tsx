@@ -68,8 +68,7 @@ const CouponBrandPage = () => {
     "@type": "CollectionPage",
     name: `${brandName} Coupons & Discount Codes`,
     description: `Buy verified ${brandName} coupons, gift cards and discount codes at up to ${stats_summary.avgDisc}% off.`,
-    numberOfItems: stats_summary.count,
-  };
+    numberOfItems: stats_summary.count };
 
   return (
     <>

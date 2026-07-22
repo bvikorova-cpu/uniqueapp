@@ -6,12 +6,10 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 type Mode = "earners" | "spenders" | "active";
 type Range = "24h" | "7d" | "30d" | "all";
 
-const RANGE_MS: Record<Range, number | null> = {
-  "24h": 86_400_000,
+const RANGE_MS: Record<Range, number | null> = { "24h": 86_400_000,
   "7d": 7 * 86_400_000,
   "30d": 30 * 86_400_000,
-  "all": null,
-};
+  "all": null };
 
 interface Row {
   user_id: string;
@@ -21,17 +19,13 @@ interface Row {
   avatar?: string | null;
 }
 
-const MODE_LABEL: Record<Mode, string> = {
-  earners: "Top Earners",
+const MODE_LABEL: Record<Mode, string> = { earners: "Top Earners",
   spenders: "Top Spenders",
-  active: "Most Active",
-};
+  active: "Most Active" };
 
-const MODE_ICON: Record<Mode, any> = {
-  earners: Crown,
+const MODE_ICON: Record<Mode, any> = { earners: Crown,
   spenders: Flame,
-  active: TrendingUp,
-};
+  active: TrendingUp };
 
 export const TopUsersLeaderboard = () => {
   const [mode, setMode] = useState<Mode>("earners");
@@ -108,13 +102,11 @@ export const TopUsersLeaderboard = () => {
       const byId = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
       if (cancel) return;
       setRows(
-        top.map(([id, v]) => ({
-          user_id: id,
+        top.map(([id, v]) => ({ user_id: id,
           name: byId.get(id)?.full_name || "Unknown",
           email: byId.get(id)?.email,
           avatar: byId.get(id)?.avatar_url,
-          value: v,
-        })),
+          value: v })),
       );
     };
 

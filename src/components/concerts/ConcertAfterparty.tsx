@@ -63,23 +63,19 @@ export const ConcertAfterparty = ({ onBack }: Props) => {
     };
   }, [activeRoom]);
 
-  const sendMessage = () => {
-    if (!newMessage.trim()) return;
+  const sendMessage = () => { if (!newMessage.trim()) return;
     const msg: ChatMessage = {
       id: Date.now().toString(),
       user: "You",
       message: newMessage,
-      timestamp: new Date(),
-    };
+      timestamp: new Date() };
     setMessages(prev => [...prev, msg]);
     setNewMessage("");
 
     // Reuse the already-subscribed channel instead of creating a new one per send.
-    channelRef.current?.send({
-      type: "broadcast",
+    channelRef.current?.send({ type: "broadcast",
       event: "message",
-      payload: msg,
-    });
+      payload: msg });
   };
 
   const joinRoom = (id: string) => {

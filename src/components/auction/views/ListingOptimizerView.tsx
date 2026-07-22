@@ -20,8 +20,7 @@ export const ListingOptimizerView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("auction-ai", {
-        body: { action: "listing_optimizer", listing: input },
-      });
+        body: { action: "listing_optimizer", listing: input } });
       if (error) throw error;
       setResult(data.result);
     } catch (err: any) { toast.error(err.message || "Optimization failed"); }

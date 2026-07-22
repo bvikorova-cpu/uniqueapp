@@ -19,8 +19,7 @@ export function FloatingParticles() {
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     };
 
-    const createParticles = () => {
-      const count = Math.min(60, Math.floor((canvas.offsetWidth * canvas.offsetHeight) / 15000));
+    const createParticles = () => { const count = Math.min(60, Math.floor((canvas.offsetWidth * canvas.offsetHeight) / 15000));
       for (let i = 0; i < count; i++) {
         particles.push({
           x: Math.random() * canvas.offsetWidth,
@@ -29,8 +28,7 @@ export function FloatingParticles() {
           speedX: (Math.random() - 0.5) * 0.3,
           speedY: (Math.random() - 0.5) * 0.3,
           opacity: Math.random() * 0.4 + 0.1,
-          hue: Math.random() > 0.5 ? 270 : 330,
-        });
+          hue: Math.random() > 0.5 ? 270 : 330 });
       }
     };
 

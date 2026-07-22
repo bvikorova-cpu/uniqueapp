@@ -12,36 +12,30 @@ interface ContentSubscriptionsViewProps {
 }
 
 const plans = [
-  {
-    id: "starter",
+  { id: "starter",
     name: "Starter",
     price: 9.99,
     icon: Zap,
     color: "from-blue-500 to-blue-700",
     downloads: 25,
     features: ["25 downloads/month", "Standard resolution", "Personal license", "Email support", "Basic search filters"],
-    popular: false,
-  },
-  {
-    id: "professional",
+    popular: false },
+  { id: "professional",
     name: "Professional",
     price: 29.99,
     icon: Star,
     color: "from-purple-500 to-violet-700",
     downloads: 100,
     features: ["100 downloads/month", "High resolution", "Commercial license", "Priority support", "Advanced filters", "AI-enhanced previews", "Collection access"],
-    popular: true,
-  },
-  {
-    id: "enterprise",
+    popular: true },
+  { id: "enterprise",
     name: "Enterprise",
     price: 79.99,
     icon: Shield,
     color: "from-amber-500 to-orange-700",
     downloads: -1,
     features: ["Unlimited downloads", "Maximum resolution", "Extended commercial license", "Dedicated support", "API access", "Team management", "Custom collections", "Priority AI tools", "White-label rights"],
-    popular: false,
-  },
+    popular: false },
 ];
 
 export function ContentSubscriptionsView({ onBack }: ContentSubscriptionsViewProps) {
@@ -61,9 +55,7 @@ export function ContentSubscriptionsView({ onBack }: ContentSubscriptionsViewPro
           mode: "subscription",
           metadata: { type: "stock_content_subscription", plan: planId },
           successUrl: `${window.location.origin}/stock-content?purchase=success`,
-          cancelUrl: `${window.location.origin}/stock-content?purchase=cancelled`,
-        },
-      });
+          cancelUrl: `${window.location.origin}/stock-content?purchase=cancelled` } });
       if (error) throw error;
       if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
     } catch (error: any) {

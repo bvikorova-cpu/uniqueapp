@@ -4,11 +4,9 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import webpush from "npm:web-push@3.6.7";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const VAPID_PUBLIC = Deno.env.get("VAPID_PUBLIC_KEY")!;
 const VAPID_PRIVATE = Deno.env.get("VAPID_PRIVATE_KEY")!;
@@ -30,15 +28,13 @@ Deno.serve(async (req) => {
     if (!jwt) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const { data: userData, error: userErr } = await admin.auth.getUser(jwt);
     if (userErr || !userData?.user) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const callerId = userData.user.id;
 
@@ -46,17 +42,14 @@ Deno.serve(async (req) => {
     if (!Array.isArray(user_ids) || user_ids.length === 0) {
       return new Response(JSON.stringify({ error: "user_ids required" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // AuthZ: caller may target only self unless admin
     const targetsOthers = user_ids.some((id: string) => id !== callerId);
     if (targetsOthers) {
-      const { data: isAdmin } = await admin.rpc("has_role", {
-        _user_id: callerId,
-        _role: "admin",
-      });
+      const { data: isAdmin } = await admin.rpc("has_role", { _user_id: callerId,
+        _role: "admin" });
       if (!isAdmin) {
         return new Response(
           JSON.stringify({ error: "forbidden: can only push to self" }),
@@ -73,8 +66,7 @@ Deno.serve(async (req) => {
     if (error) throw error;
     if (!subs || subs.length === 0) {
       return new Response(JSON.stringify({ sent: 0 }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const json = JSON.stringify(payload ?? {});
@@ -103,13 +95,11 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ sent, removed: stale.length }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("send-push error", e?.message || e);
     return new Response(JSON.stringify({ error: e?.message || "unknown" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

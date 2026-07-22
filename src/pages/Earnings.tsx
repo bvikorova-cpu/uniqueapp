@@ -8,8 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Clock, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {
-  EarningsHero,
+import { EarningsHero,
   EarningsForecastChart,
   EarningsMilestones,
   EarningsTaxEstimator,
@@ -20,8 +19,7 @@ import {
   EarningsGoalTracker,
   EarningsTipsBanner,
   PayoutMethodsManager,
-  StripeConnectBanner,
-} from "@/components/earnings";
+  StripeConnectBanner } from "@/components/earnings";
 import { PayoutSchedulePicker } from "@/components/earnings/PayoutSchedulePicker";
 import { TaxDocsButton } from "@/components/earnings/TaxDocsButton";
 import { WalletBalanceCard } from "@/components/earnings/WalletBalanceCard";
@@ -49,14 +47,12 @@ const Earnings = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [stats, setStats] = useState({
-    totalEarnings: 0,
+  const [stats, setStats] = useState({ totalEarnings: 0,
     pendingPayouts: 0,
     completedPayouts: 0,
     available: 0,
     monthEarnings: 0,
-    totalSales: 0,
-  });
+    totalSales: 0 });
   const [lastMonthEarnings, setLastMonthEarnings] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasPayoutMethod, setHasPayoutMethod] = useState(false);
@@ -139,14 +135,12 @@ const Earnings = () => {
       })
       .reduce((s, t) => s + Number(t.seller_amount), 0);
     setLastMonthEarnings(lm);
-    setStats({
-      totalEarnings,
+    setStats({ totalEarnings,
       pendingPayouts,
       completedPayouts,
       available: releasedFunds > 0 ? releasedFunds : completedPayouts,
       monthEarnings,
-      totalSales: txs.length,
-    });
+      totalSales: txs.length });
   };
 
   const formatDate = (s: string) =>
@@ -171,50 +165,40 @@ const Earnings = () => {
       toast({ title: "No payout method", description: "Add a payout method first.", variant: "destructive" });
       return;
     }
-    if (!stripeConnect.enabled) {
-      toast({
+    if (!stripeConnect.enabled) { toast({
         title: "Stripe Connect not ready",
         description: stripeConnect.reason || "Complete Stripe Connect onboarding before requesting a payout.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     try {
       const amount_cents = Math.floor(stats.available * 100);
       const { data, error } = await supabase.functions.invoke("stripe-connect-payout", {
-        body: { amount_cents, currency: "eur" },
-      });
+        body: { amount_cents, currency: "eur" } });
       if (error) throw error;
       toast({
         title: "Payout requested",
-        description: `€${(data.amount / 100).toFixed(2)} is on its way. Status: ${data.status}.`,
-      });
+        description: `€${(data.amount / 100).toFixed(2)} is on its way. Status: ${data.status}.` });
       const { data: { user } } = await supabase.auth.getUser();
       if (user) await loadTransactions(user.id);
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Payout failed",
         description: e?.message || "Unable to request payout. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
-  const exportRows = transactions.map(t => ({
-    Date: formatDate(t.created_at),
+  const exportRows = transactions.map(t => ({ Date: formatDate(t.created_at),
     Type: getItemTypeName(t.item_type),
     Buyer: t.buyer_id.slice(0, 8),
     Total: t.amount,
     Commission: t.commission_amount ?? 0,
     Net: t.seller_amount,
-    Status: t.status,
-  }));
+    Status: t.status }));
 
-  const history = transactions.map(t => ({
-    created_at: t.created_at,
+  const history = transactions.map(t => ({ created_at: t.created_at,
     amount: t.seller_amount,
-    item_type: t.item_type,
-  }));
+    item_type: t.item_type }));
 
   if (loading) {
     return (

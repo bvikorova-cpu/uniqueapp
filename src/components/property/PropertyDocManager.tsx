@@ -13,29 +13,20 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 const DOCUMENT_CATEGORIES = [
-  {
-    title: "Personal Documents", emoji: "👤", required: 3,
-    docs: ["Valid ID / Passport", "Proof of Address", "Tax Returns (2 years)"],
-  },
-  {
-    title: "Financial Documents", emoji: "💰", required: 4,
-    docs: ["Bank Statements (3 months)", "Salary Slips", "Pre-Approval Letter", "Credit Report"],
-  },
-  {
-    title: "Property Documents", emoji: "🏠", required: 3,
-    docs: ["Property Valuation Report", "Title Deed Copy", "Floor Plans"],
-  },
-  {
-    title: "Legal Documents", emoji: "⚖️", required: 2,
-    docs: ["Purchase Agreement Draft", "Lawyer Power of Attorney"],
-  },
+  { title: "Personal Documents", emoji: "👤", required: 3,
+    docs: ["Valid ID / Passport", "Proof of Address", "Tax Returns (2 years)"] },
+  { title: "Financial Documents", emoji: "💰", required: 4,
+    docs: ["Bank Statements (3 months)", "Salary Slips", "Pre-Approval Letter", "Credit Report"] },
+  { title: "Property Documents", emoji: "🏠", required: 3,
+    docs: ["Property Valuation Report", "Title Deed Copy", "Floor Plans"] },
+  { title: "Legal Documents", emoji: "⚖️", required: 2,
+    docs: ["Purchase Agreement Draft", "Lawyer Power of Attorney"] },
 ];
 
 const statusConfig = {
   uploaded: { icon: Check, color: "text-emerald-500", bg: "bg-emerald-500/10", label: "Uploaded" },
   pending: { icon: Clock, color: "text-amber-500", bg: "bg-amber-500/10", label: "Pending" },
-  missing: { icon: AlertTriangle, color: "text-red-500", bg: "bg-red-500/10", label: "Missing" },
-};
+  missing: { icon: AlertTriangle, color: "text-red-500", bg: "bg-red-500/10", label: "Missing" } };
 
 interface DocRow {
   id: string;
@@ -99,14 +90,12 @@ export function PropertyDocManager({ onBack }: Props) {
 
       const { data: row, error: insErr } = await supabase
         .from("property_documents")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           category,
           doc_name,
           status: "uploaded",
           file_path: path,
-          original_filename: file.name,
-        })
+          original_filename: file.name })
         .select()
         .single();
       if (insErr) throw insErr;

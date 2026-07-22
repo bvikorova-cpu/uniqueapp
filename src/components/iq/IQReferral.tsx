@@ -22,8 +22,7 @@ export default function IQReferral() {
       const { data, error } = await supabase.rpc("get_or_create_iq_referral_code");
       if (error) throw error;
       return data as string;
-    },
-  });
+    } });
 
   const { data: refs } = useQuery({
     queryKey: ["iq-referrals-list"],
@@ -36,8 +35,7 @@ export default function IQReferral() {
         .eq("referrer_id", user.id)
         .order("created_at", { ascending: false });
       return data ?? [];
-    },
-  });
+    } });
 
   const redeem = useMutation({
     mutationFn: async (c: string) => {
@@ -48,15 +46,13 @@ export default function IQReferral() {
     onSuccess: (data) => {
       toast({
         title: "Code redeemed! 🎉",
-        description: `You earned +${data.referee_credits} credits. Your friend got +${data.referrer_credits}.`,
-      });
+        description: `You earned +${data.referee_credits} credits. Your friend got +${data.referrer_credits}.` });
       setRedeemCode("");
       qc.invalidateQueries({ queryKey: ["iq-credits"] });
     },
     onError: (e: any) => {
       toast({ title: "Could not redeem", description: e.message, variant: "destructive" });
-    },
-  });
+    } });
 
   const shareUrl = code ? `${window.location.origin}/iq?ref=${code}` : "";
 

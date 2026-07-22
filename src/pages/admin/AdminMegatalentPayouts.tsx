@@ -51,10 +51,8 @@ export default function AdminMegatalentPayouts() {
   const markPaid = async (id: string) => {
     setBusyId(id);
     try {
-      const { error } = await (supabase as any).rpc("admin_mark_megatalent_paid", {
-        _winner_id: id,
-        _reference: refs[id] || null,
-      });
+      const { error } = await (supabase as any).rpc("admin_mark_megatalent_paid", { _winner_id: id,
+        _reference: refs[id] || null });
       if (error) throw error;
       toast.success("Marked as paid (80% to creator, 20% platform)");
       await load();

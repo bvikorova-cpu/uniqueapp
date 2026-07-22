@@ -43,8 +43,7 @@ export default function AdminCrawler() {
   async function call(action: string, extra: Record<string, unknown> = {}) {
     // Consolidated into admin-vitals (op: "crawler") to respect Supabase edge-function quota.
     const { data, error } = await supabase.functions.invoke("admin-vitals", {
-      body: { op: "crawler", action, ...extra },
-    });
+      body: { op: "crawler", action, ...extra } });
     if (error) throw error;
     if (!data?.ok) throw new Error(data?.error || "Unknown error");
     return data;

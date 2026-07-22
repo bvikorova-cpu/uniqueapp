@@ -43,8 +43,7 @@ export const GeneticHealthInsights = () => {
         setHealthData({
           health_markers: (data.health_markers as Record<string, string>) || {},
           genetic_traits: (data.genetic_traits as Record<string, string>) || {},
-          heritage_breakdown: (data.heritage_breakdown as Record<string, number>) || {},
-        });
+          heritage_breakdown: (data.heritage_breakdown as Record<string, number>) || {} });
       }
     } catch (e) {
       console.error(e);
@@ -62,9 +61,7 @@ export const GeneticHealthInsights = () => {
           sampleId: `HEALTH-INSIGHT-${Date.now()}`,
           healthMode: true,
           healthMarkers: healthData.health_markers,
-          geneticTraits: healthData.genetic_traits,
-        },
-      });
+          geneticTraits: healthData.genetic_traits } });
 
       if (error) throw error;
 

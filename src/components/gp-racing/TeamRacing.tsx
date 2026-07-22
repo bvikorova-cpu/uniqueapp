@@ -19,8 +19,7 @@ const existingTeams = [
       { name: "Mei L.", role: "Driver", car: "Dragon MK3", wins: 4 },
       { name: "Alex M.", role: "Driver", car: "Bolt V2", wins: 2 },
       { name: "Sofia A.", role: "Reserve", car: "Nova S1", wins: 1 },
-    ],
-  },
+    ] },
   {
     id: "2", name: "Phoenix Racing", tag: "PHX", color: "#ff6b35", members: 3, maxMembers: 5,
     totalWins: 9, rating: 1720, captain: "Priya S.",
@@ -28,8 +27,7 @@ const existingTeams = [
       { name: "Priya S.", role: "Captain", car: "Firebird R7", wins: 4 },
       { name: "Omar H.", role: "Driver", car: "Sandstorm X", wins: 3 },
       { name: "Carlos R.", role: "Driver", car: "Thunder V5", wins: 2 },
-    ],
-  },
+    ] },
   {
     id: "3", name: "Dragon Motorsport", tag: "DRG", color: "#e040fb", members: 5, maxMembers: 5,
     totalWins: 15, rating: 1920, captain: "Yuki T.",
@@ -39,8 +37,7 @@ const existingTeams = [
       { name: "Nina P.", role: "Driver", car: "Aurora X3", wins: 3 },
       { name: "Raj K.", role: "Driver", car: "Monsoon MK2", wins: 1 },
       { name: "Eva M.", role: "Reserve", car: "Frost V1", wins: 1 },
-    ],
-  },
+    ] },
 ];
 
 export function TeamRacing({ onBack }: { onBack: () => void }) {

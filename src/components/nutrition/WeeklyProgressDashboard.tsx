@@ -35,8 +35,7 @@ export default function WeeklyProgressDashboard({ onBack }: Props) {
       return data;
     },
     onSuccess: (data) => { setResult(data.report); toast.success("Progress report generated!"); },
-    onError: (e: any) => toast.error(e.message || "Error generating report"),
-  });
+    onError: (e: any) => toast.error(e.message || "Error generating report") });
 
   return (
     <>

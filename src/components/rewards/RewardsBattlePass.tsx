@@ -92,9 +92,7 @@ export default function RewardsBattlePass() {
     }
     setClaimingKey(key);
     try {
-      const { data, error } = await supabase.rpc("claim_battle_pass_reward", {
-        _season_id: season.id, _tier: tier, _track: track,
-      });
+      const { data, error } = await supabase.rpc("claim_battle_pass_reward", { _season_id: season.id, _tier: tier, _track: track });
       if (error) { toast.error(error.message); return; }
       const res = data as any;
       if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
@@ -110,8 +108,7 @@ export default function RewardsBattlePass() {
     setPurchasingPremium(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: "rewards_checkout", kind: "battle_pass_premium" },
-      });
+        body: { product: "rewards_checkout", kind: "battle_pass_premium" } });
       if (error) throw error;
       const url = (data as any)?.url;
       if (!url) throw new Error("No checkout URL");

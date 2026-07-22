@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 type Action = "shadow_ban" | "unshadow_ban" | "grant_credits" | "send_email" | "delete_user";
 
@@ -25,9 +23,7 @@ Deno.serve(async (req) => {
     const { data: { user } } = await userClient.auth.getUser();
     if (!user) return json({ error: "Unauthorized" }, 401);
 
-    const { data: isAdmin } = await supabase.rpc("has_role", {
-      _user_id: user.id, _role: "admin",
-    });
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
     if (!isAdmin) return json({ error: "Forbidden" }, 403);
 
     const body = await req.json();
@@ -54,15 +50,13 @@ Deno.serve(async (req) => {
           .in("id", userIds);
         if (error) throw error;
         succeeded = userIds.length;
-      } else if (action === "grant_credits") {
-        const amount = Number(params.amount ?? 0);
+      } else if (action === "grant_credits") { const amount = Number(params.amount ?? 0);
         if (amount <= 0) throw new Error("amount required");
         const rows = userIds.map(uid => ({
           user_id: uid,
           amount,
           type: "admin_grant",
-          description: params.note ?? "Admin bulk grant",
-        }));
+          description: params.note ?? "Admin bulk grant" }));
         const { error } = await supabase.from("ai_credit_transactions").insert(rows);
         if (error) throw error;
         succeeded = userIds.length;
@@ -99,11 +93,9 @@ Deno.serve(async (req) => {
     }
 
 
-    await supabase.from("bulk_user_action_log").insert({
-      action, target_user_ids: userIds, params, performed_by: user.id,
+    await supabase.from("bulk_user_action_log").insert({ action, target_user_ids: userIds, params, performed_by: user.id,
       succeeded_count: succeeded, failed_count: failed,
-      notes: errors.slice(0, 20).join("\n") || null,
-    });
+      notes: errors.slice(0, 20).join("\n") || null });
 
     return json({ succeeded, failed, errors: errors.slice(0, 20) });
   } catch (e: any) {
@@ -113,6 +105,5 @@ Deno.serve(async (req) => {
 
 function json(b: unknown, status = 200) {
   return new Response(JSON.stringify(b), {
-    status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

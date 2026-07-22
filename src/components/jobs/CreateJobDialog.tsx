@@ -13,8 +13,7 @@ import { Plus } from "lucide-react";
 
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-const CATEGORIES = {
-  it_software: "IT & Software",
+const CATEGORIES = { it_software: "IT & Software",
   marketing_sales: "Marketing & Sales",
   finance_accounting: "Finance & Accounting",
   healthcare: "Healthcare",
@@ -25,16 +24,13 @@ const CATEGORIES = {
   manufacturing: "Manufacturing",
   construction: "Construction",
   transportation: "Transportation",
-  other: "Other",
-};
+  other: "Other" };
 
-const JOB_TYPES = {
-  full_time: "Full Time",
+const JOB_TYPES = { full_time: "Full Time",
   part_time: "Part Time",
   contract: "Contract",
   internship: "Internship",
-  remote: "Remote",
-};
+  remote: "Remote" };
 
 const JOB_PACKAGES: Array<{ days: number; price: number; popular: boolean; productKey: string }> = [
   { days: 7, price: 19, popular: false, productKey: "job_listing_7" },
@@ -59,8 +55,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
     setShowCreateDialog(true);
   };
 
-  const [newJob, setNewJob] = useState({
-    title: "",
+  const [newJob, setNewJob] = useState({ title: "",
     company_name: "",
     location: "",
     country: "",
@@ -72,16 +67,14 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
     contact_email: "",
     salary_min: "",
     salary_max: "",
-    salary_currency: "EUR",
-  });
+    salary_currency: "EUR" });
 
   // Create job mutation
   const createJobMutation = useMutation({
     mutationFn: async () => {
       if (!selectedPackage) throw new Error("Package not selected");
 
-      const { data: jobData, error } = await supabase.from("job_listings").insert([{
-        employer_id: userId,
+      const { data: jobData, error } = await supabase.from("job_listings").insert([{ employer_id: userId,
         title: newJob.title,
         company_name: newJob.company_name,
         location: newJob.location,
@@ -97,8 +90,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         salary_currency: newJob.salary_currency,
         is_active: false,
         paid_status: 'pending',
-        duration_days: selectedPackage.days,
-      } as any]).select().single();
+        duration_days: selectedPackage.days } as any]).select().single();
 
       if (error) throw error;
       if (!selectedPackage || !jobData) return;
@@ -109,9 +101,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
           {
             body: {
               productKey: selectedPackage.productKey,
-              metadata: { jobListingId: jobData.id },
-            },
-          }
+              metadata: { jobListingId: jobData.id } } }
         );
 
         if (paymentError) throw paymentError;
@@ -128,8 +118,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
       queryClient.invalidateQueries({ queryKey: ['employer-jobs'] });
       setShowPackageDialog(false);
       setShowCreateDialog(false);
-      setNewJob({
-        title: "",
+      setNewJob({ title: "",
         company_name: "",
         location: "",
         country: "",
@@ -141,19 +130,15 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         contact_email: "",
         salary_min: "",
         salary_max: "",
-        salary_currency: "EUR",
-      });
+        salary_currency: "EUR" });
       setSelectedPackage(null);
     },
-    onError: (error: Error) => {
-      console.error('Job creation error:', error);
+    onError: (error: Error) => { console.error('Job creation error:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to create job listing",
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
   return (
     <>
@@ -204,7 +189,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
                   id="location"
                   value={newJob.location}
                   onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
-                  placeholder="e.g. Berlin"
+                  placeholder="e.g. City"
                 />
               </div>
               <div>
@@ -213,7 +198,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
                   id="country"
                   value={newJob.country}
                   onChange={(e) => setNewJob({ ...newJob, country: e.target.value })}
-                  placeholder="e.g. Germany"
+                  placeholder="e.g. Country"
                 />
               </div>
             </div>
@@ -322,13 +307,12 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
             </div>
             <Button 
               className="w-full" 
-              onClick={() => {
+              onClick={ () => {
                 if (!newJob.title || !newJob.company_name || !newJob.location || !newJob.country || !newJob.description || !newJob.contact_email) {
                   toast({
                     title: "❌ Missing Fields",
                     description: "Please fill in all required fields",
-                    variant: "destructive",
-                  });
+                    variant: "destructive" });
                   return;
                 }
                 setShowCreateDialog(false);

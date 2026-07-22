@@ -117,8 +117,7 @@ export const DailySpinWheel = () => {
     const totalRotation = rotation + 1440 + targetAngle;
     setRotation(totalRotation);
 
-    setTimeout(async () => {
-      const selected = WHEEL_SEGMENTS[selectedIndex];
+    setTimeout(async () => { const selected = WHEEL_SEGMENTS[selectedIndex];
       setResult(selected);
       setSpinning(false);
       setCanSpin(false);
@@ -133,8 +132,7 @@ export const DailySpinWheel = () => {
           spin_date: today,
           reward_type: selected.type || 'credits',
           reward_value: selected.value,
-          reward_label: selected.label,
-        } as any);
+          reward_label: selected.label } as any);
 
         if (selected.value > 0 && !selected.type) {
           // Add credits
@@ -157,21 +155,17 @@ export const DailySpinWheel = () => {
           confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
         }
 
-        toast.success(`🎉 You won: ${selected.label}!`, {
-          description: selected.rarity === 'legendary' ? 'JACKPOT! Incredible luck!' : 'Come back tomorrow for another spin!',
-        });
+        toast.success(`🎉 You won: ${selected.label}!`, { description: selected.rarity === 'legendary' ? 'JACKPOT! Incredible luck!' : 'Come back tomorrow for another spin!' });
       } catch (err) {
         console.error('Error saving spin:', err);
       }
     }, 4000);
   };
 
-  const rarityColors: Record<string, string> = {
-    common: 'bg-muted text-muted-foreground',
+  const rarityColors: Record<string, string> = { common: 'bg-muted text-muted-foreground',
     uncommon: 'bg-green-500/20 text-green-400 border-green-500/30',
     rare: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    legendary: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30 animate-pulse',
-  };
+    legendary: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30 animate-pulse' };
 
   return (
     <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">

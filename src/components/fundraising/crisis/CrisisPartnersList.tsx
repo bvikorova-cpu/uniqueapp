@@ -45,14 +45,12 @@ export function CrisisPartnersList({ campaignId, ownerUserId }: Props) {
   const add = async () => {
     if (!form.name.trim()) return;
     const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("crisis_partner_orgs" as any).insert({
-      campaign_id: campaignId,
+    const { error } = await supabase.from("crisis_partner_orgs" as any).insert({ campaign_id: campaignId,
       added_by_user_id: user?.id,
       name: form.name.trim(),
       role: form.role.trim() || null,
       logo_url: form.logo_url.trim() || null,
-      website_url: form.website_url.trim() || null,
-    });
+      website_url: form.website_url.trim() || null });
     if (error) {
       toast({ title: "Could not add partner", description: error.message, variant: "destructive" });
       return;

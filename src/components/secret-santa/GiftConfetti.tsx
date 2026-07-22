@@ -19,8 +19,7 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
             particleCount: 100,
             spread: 70,
             origin: { y: 0.9 },
-            colors: ["#f59e0b", "#f97316", "#fbbf24", "#fcd34d"],
-          });
+            colors: ["#f59e0b", "#f97316", "#fbbf24", "#fcd34d"] });
           break;
         case "receive": {
           // Rain from top with hearts
@@ -34,16 +33,14 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
               spread: 55,
               origin: { x: 0 },
               colors: colors,
-              shapes: ["circle"],
-            });
+              shapes: ["circle"] });
             confetti({
               particleCount: 3,
               angle: 120,
               spread: 55,
               origin: { x: 1 },
               colors: colors,
-              shapes: ["circle"],
-            });
+              shapes: ["circle"] });
 
             if (Date.now() < end) {
               requestAnimationFrame(frame);
@@ -51,29 +48,23 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
           })();
           break;
         }
-        case "badge": {
-          // Star explosion
+        case "badge": { // Star explosion
           const badgeDefaults = {
             spread: 360,
             ticks: 100,
             gravity: 0,
             decay: 0.94,
             startVelocity: 30,
-            colors: ["#ffd700", "#ffb700", "#ff9500", "#ffffff"],
-          };
+            colors: ["#ffd700", "#ffb700", "#ff9500", "#ffffff"] };
           
-          confetti({
-            ...badgeDefaults,
+          confetti({ ...badgeDefaults,
             particleCount: 40,
             scalar: 1.2,
-            shapes: ["star"],
-          });
-          confetti({
-            ...badgeDefaults,
+            shapes: ["star"] });
+          confetti({ ...badgeDefaults,
             particleCount: 10,
             scalar: 0.75,
-            shapes: ["circle"],
-          });
+            shapes: ["circle"] });
           break;
         }
         case "levelup": {
@@ -88,15 +79,13 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
               angle: 60,
               spread: 55,
               origin: { x: 0 },
-              colors: levelColors,
-            });
+              colors: levelColors });
             confetti({
               particleCount: 5,
               angle: 120,
               spread: 55,
               origin: { x: 1 },
-              colors: levelColors,
-            });
+              colors: levelColors });
 
             if (Date.now() < animationEnd) {
               requestAnimationFrame(levelFrame);
@@ -109,8 +98,7 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
               particleCount: 150,
               spread: 100,
               origin: { y: 0.6 },
-              colors: levelColors,
-            });
+              colors: levelColors });
           }, 250);
           break;
         }
@@ -124,8 +112,7 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
             origin: { x: 0.5, y: 0.5 },
             colors: ["#9333ea", "#c084fc", "#e879f9", "#f0abfc", "#faf5ff"],
             shapes: ["star", "circle"],
-            scalar: 1.5,
-          });
+            scalar: 1.5 });
           break;
       }
     };
@@ -150,8 +137,7 @@ export const ParticleEffect = ({ type }: { type: "sparkle" | "hearts" | "stars" 
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
             animationDelay: `${Math.random() * 5}s`,
-            animationDuration: `${3 + Math.random() * 4}s`,
-          }}
+            animationDuration: `${3 + Math.random() * 4}s` }}
         >
           {type === "sparkle" && <span className="text-amber-400 text-lg">✨</span>}
           {type === "hearts" && <span className="text-pink-400 text-lg">💕</span>}

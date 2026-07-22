@@ -38,17 +38,14 @@ export const LastWeekWinners = () => {
       const { data, error } = await supabase.rpc("get_last_week_xp_winners");
       if (error) throw error;
       return (data as WinnerRow[]) || [];
-    },
-  });
+    } });
 
   if (isLoading) return null;
   if (!winners || winners.length === 0) return null;
 
-  const weekLabel = new Date(winners[0].week_start).toLocaleDateString(undefined, {
-    day: "numeric",
+  const weekLabel = new Date(winners[0].week_start).toLocaleDateString(undefined, { day: "numeric",
     month: "short",
-    year: "numeric",
-  });
+    year: "numeric" });
 
   return (
     <Card className="bg-gradient-to-br from-amber-500/5 to-orange-500/5 border-amber-500/20">

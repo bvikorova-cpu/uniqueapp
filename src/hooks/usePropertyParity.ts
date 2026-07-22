@@ -27,13 +27,10 @@ export const usePropertyParity = () => {
     onError: (e: Error) => {
       if (e.message === "INSUFFICIENT_CREDITS") toast.error("Insufficient credits. Please purchase more credits.");
       else toast.error(e.message || "Failed to generate result");
-    },
-  });
+    } });
 
-  return {
-    run: run.mutateAsync,
+  return { run: run.mutateAsync,
     isRunning: run.isPending,
     lastResult: run.data,
-    lastAction: run.variables?.action,
-  };
+    lastAction: run.variables?.action };
 };

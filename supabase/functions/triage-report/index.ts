@@ -3,10 +3,8 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -35,21 +33,17 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
             content:
-              "You are a content moderation triage AI. Return STRICT JSON: { severity: 'low'|'medium'|'high'|'critical', categories: string[], summary: string }. Categories from: spam, harassment, hate, sexual, violence, self_harm, misinformation, illegal, other.",
-          },
+              "You are a content moderation triage AI. Return STRICT JSON: { severity: 'low'|'medium'|'high'|'critical', categories: string[], summary: string }. Categories from: spam, harassment, hate, sexual, violence, self_harm, misinformation, illegal, other." },
           { role: "user", content: snippet },
         ],
-        response_format: { type: "json_object" },
-      }),
-    });
+        response_format: { type: "json_object" } }) });
 
     if (!aiRes.ok) throw new Error(`AI ${aiRes.status}: ${await aiRes.text()}`);
     const aiData = await aiRes.json();
@@ -57,23 +51,19 @@ Deno.serve(async (req) => {
 
     await supabase
       .from("moderation_queue")
-      .update({
-        ai_severity: parsed.severity,
+      .update({ ai_severity: parsed.severity,
         ai_categories: parsed.categories,
-        ai_summary: parsed.summary,
-      })
+        ai_summary: parsed.summary })
       .eq("content_type", content_type)
       .eq("content_id", content_id)
       .eq("status", "pending");
 
     return new Response(JSON.stringify({ ok: true, ...parsed }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("triage-report error", e);
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

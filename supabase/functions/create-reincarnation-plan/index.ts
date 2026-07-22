@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -51,8 +49,7 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
@@ -90,9 +87,7 @@ Generate 3 soul_missions, 3 karmic_lessons, 5 key_life_events. Make everything d
             content: `Create my reincarnation plan. Name: "${planName || "My Next Life Journey"}". Goal: "${goalDescription || "Spiritual growth"}". My active karmic debts: ${debtsContext}. My past lives: ${livesContext}.`
           }
         ],
-        max_completion_tokens: 2000,
-      }),
-    });
+        max_completion_tokens: 2000 }) });
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
@@ -131,8 +126,7 @@ Generate 3 soul_missions, 3 karmic_lessons, 5 key_life_events. Make everything d
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
+        status: 200 }
     );
   } catch (error: unknown) {
     console.error("Error:", error);
@@ -143,8 +137,7 @@ Generate 3 soul_missions, 3 karmic_lessons, 5 key_life_events. Make everything d
       JSON.stringify({ error: errorMessage }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: smartStatus,
-      }
+        status: smartStatus }
     );
   }
 });

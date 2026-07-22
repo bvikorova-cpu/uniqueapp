@@ -4,18 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
-import {
-  History,
+import { History,
   Star,
   Search,
   Calendar,
@@ -23,8 +20,7 @@ import {
   ArrowLeft,
   Filter,
   Download,
-  Sparkles,
-} from "lucide-react";
+  Sparkles } from "lucide-react";
 import { format } from "date-fns";
 
 const LOTTERY_TYPES = [

@@ -21,12 +21,10 @@ export const HorseBreedingLab = () => {
   const horse1 = horses?.find(h => h.id === parent1);
   const horse2 = horses?.find(h => h.id === parent2);
 
-  const predictedStats = horse1 && horse2 ? {
-    speed: Math.round((horse1.speed_stat + horse2.speed_stat) / 2 + Math.random() * 10 - 5),
+  const predictedStats = horse1 && horse2 ? { speed: Math.round((horse1.speed_stat + horse2.speed_stat) / 2 + Math.random() * 10 - 5),
     stamina: Math.round((horse1.stamina_stat + horse2.stamina_stat) / 2 + Math.random() * 10 - 5),
     acceleration: Math.round((horse1.acceleration_stat + horse2.acceleration_stat) / 2 + Math.random() * 10 - 5),
-    temperament: Math.round((horse1.temperament_stat + horse2.temperament_stat) / 2 + Math.random() * 10 - 5),
-  } : null;
+    temperament: Math.round((horse1.temperament_stat + horse2.temperament_stat) / 2 + Math.random() * 10 - 5) } : null;
 
   const handleBreed = () => {
     if (!user) { navigate("/auth"); return; }

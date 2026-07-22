@@ -21,14 +21,12 @@ export function useCouponBattle() {
 
   useEffect(() => { fetchPair(); }, [fetchPair]);
 
-  const vote = useCallback(async (winnerId: string, userId: string | null) => {
-    if (!userId || !pair) return;
+  const vote = useCallback(async (winnerId: string, userId: string | null) => { if (!userId || !pair) return;
     await supabase.from("coupon_battle_votes" as any).insert({
       user_id: userId,
       coupon_a: pair[0].id,
       coupon_b: pair[1].id,
-      winner: winnerId,
-    });
+      winner: winnerId });
     // Add upvote to winner so it boosts the hot ranking
     await supabase.from("coupon_votes" as any).upsert(
       { coupon_id: winnerId, user_id: userId, value: 1 },

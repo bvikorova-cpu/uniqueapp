@@ -4,11 +4,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -92,8 +90,7 @@ serve(async (req) => {
 
     const { data: booking, error: bookErr } = await admin
       .from("service_bookings")
-      .insert({
-        provider_id,
+      .insert({ provider_id,
         customer_id: user.id,
         scheduled_at: scheduledDate.toISOString(),
         duration_minutes: duration,
@@ -102,15 +99,12 @@ serve(async (req) => {
         currency: "EUR",
         customer_notes: customer_notes ?? null,
         offering_id: offering?.id ?? null,
-        offering_name: offeringName,
-      })
+        offering_name: offeringName })
       .select("id")
       .single();
     if (bookErr) throw new Error(bookErr.message);
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", { apiVersion: "2025-08-27.basil" });
     const origin = req.headers.get("origin") || "https://uniqueapp.fun";
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     const customerId = customers.data[0]?.id;
@@ -126,21 +120,15 @@ serve(async (req) => {
             unit_amount: priceCents,
             product_data: {
               name: `${profile.business_name} · ${offeringName ?? profile.category}`,
-              description: `${duration} min · ${scheduledDate.toUTCString()}`,
-            },
-          },
-          quantity: 1,
-        },
+              description: `${duration} min · ${scheduledDate.toUTCString()}` } },
+          quantity: 1 },
       ],
-      metadata: {
-        booking_id: booking.id,
+      metadata: { booking_id: booking.id,
         provider_id,
         customer_id: user.id,
-        type: "service_booking",
-      },
+        type: "service_booking" },
       success_url: `${origin}/services/booking/${booking.id}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/services/${provider_id}?cancelled=1`,
-    });
+      cancel_url: `${origin}/services/${provider_id}?cancelled=1` });
 
     await admin
       .from("service_bookings")
@@ -149,13 +137,11 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ url: session.url, booking_id: booking.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (error: any) {
     console.error("create-service-booking error", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -45,15 +45,13 @@ export const ExplorerAchievements = ({ visitedCount, totalDestinations }: Explor
     if (!user) return;
 
     const explorerAchievements = ACHIEVEMENT_DEFINITIONS.filter(a => a.code.startsWith("explorer_") || a.code === "first_tour");
-    for (const ach of explorerAchievements) {
-      if (visitedCount >= ach.requirement) {
+    for (const ach of explorerAchievements) { if (visitedCount >= ach.requirement) {
         await supabase.from("explorer_achievements").upsert({
           user_id: user.id,
           achievement_code: ach.code,
           achievement_name: ach.name,
           achievement_description: ach.description,
-          icon: ach.icon,
-        }, { onConflict: "user_id,achievement_code" });
+          icon: ach.icon }, { onConflict: "user_id,achievement_code" });
       }
     }
     await loadAchievements();

@@ -9,8 +9,7 @@ export function checkContrastRatio(foreground: string, background: string): {
   passesAA: boolean;
   passesAALarge: boolean;
   passesAAA: boolean;
-} {
-  const fgLuminance = getLuminance(foreground);
+} { const fgLuminance = getLuminance(foreground);
   const bgLuminance = getLuminance(background);
   
   const lighter = Math.max(fgLuminance, bgLuminance);
@@ -22,8 +21,7 @@ export function checkContrastRatio(foreground: string, background: string): {
     ratio,
     passesAA: ratio >= 4.5,
     passesAALarge: ratio >= 3,
-    passesAAA: ratio >= 7,
-  };
+    passesAAA: ratio >= 7 };
 }
 
 /**
@@ -131,8 +129,7 @@ export function applyReducedMotion(reduce: boolean): void {
 /**
  * Keyboard navigation utilities
  */
-export const KeyboardKeys = {
-  ENTER: "Enter",
+export const KeyboardKeys = { ENTER: "Enter",
   SPACE: " ",
   ESCAPE: "Escape",
   TAB: "Tab",
@@ -141,8 +138,7 @@ export const KeyboardKeys = {
   ARROW_LEFT: "ArrowLeft",
   ARROW_RIGHT: "ArrowRight",
   HOME: "Home",
-  END: "End",
-} as const;
+  END: "End" } as const;
 
 /**
  * Check if event is activation key (Enter or Space)
@@ -172,8 +168,7 @@ export function handleAccessibleClick(
 /**
  * ARIA label generator for icons
  */
-export function getIconLabel(iconName: string, context?: string): string {
-  const labels: Record<string, string> = {
+export function getIconLabel(iconName: string, context?: string): string { const labels: Record<string, string> = {
     search: "Search",
     close: "Close",
     menu: "Menu",
@@ -201,15 +196,13 @@ export function getIconLabel(iconName: string, context?: string): string {
     upload: "Upload",
     refresh: "Refresh",
     filter: "Filter",
-    sort: "Sort",
-  };
+    sort: "Sort" };
   
   const label = labels[iconName.toLowerCase()] || iconName;
   return context ? `${label} ${context}` : label;
 }
 
-export default {
-  checkContrastRatio,
+export default { checkContrastRatio,
   createFocusTrap,
   announceToScreenReader,
   generateAriaId,
@@ -219,5 +212,4 @@ export default {
   KeyboardKeys,
   isActivationKey,
   handleAccessibleClick,
-  getIconLabel,
-};
+  getIconLabel };

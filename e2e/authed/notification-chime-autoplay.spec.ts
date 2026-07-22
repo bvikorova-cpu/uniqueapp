@@ -36,15 +36,11 @@ async function insertNotification(page: any, userId: string, accessToken: string
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
-      Prefer: "return=representation",
-    },
-    data: {
-      user_id: userId,
+      Prefer: "return=representation" },
+    data: { user_id: userId,
       type: "like",
       title: "E2E autoplay probe",
-      message: "Playwright autoplay/permission probe",
-    },
-  });
+      message: "Playwright autoplay/permission probe" } });
 }
 
 test("A) suspended AudioContext: resume sa zavolá pri reálnej notifikácii a user-gesture", async ({ page, browserName }) => {
@@ -96,17 +92,14 @@ test("A) suspended AudioContext: resume sa zavolá pri reálnej notifikácii a u
   if (!res.ok()) {
     test.info().annotations.push({
       type: "soft-skip",
-      description: `[${browserName}] insert blocked: ${res.status()}`,
-    });
+      description: `[${browserName}] insert blocked: ${res.status()}` });
     test.skip(true, "RLS blocked notification insert");
     return;
   }
 
   await expect
-    .poll(() => page.evaluate(() => (window as any).__resumeCalls ?? 0), {
-      timeout: 15_000,
-      intervals: [250, 500, 1000],
-    })
+    .poll(() => page.evaluate(() => (window as any).__resumeCalls ?? 0), { timeout: 15_000,
+      intervals: [250, 500, 1000] })
     .toBeGreaterThan(0);
 
   const state = await page.evaluate(() => (window as any).__acState);
@@ -141,8 +134,7 @@ test("B) AudioContext konštruktor throw → app nespadne, žiadne unhandled err
   if (!res.ok()) {
     test.info().annotations.push({
       type: "soft-skip",
-      description: `[${browserName}] insert blocked: ${res.status()}`,
-    });
+      description: `[${browserName}] insert blocked: ${res.status()}` });
     test.skip(true, "RLS blocked notification insert");
     return;
   }

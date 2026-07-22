@@ -8,24 +8,19 @@ interface CreateSaleTransactionParams {
   totalAmount: number;
 }
 
-export const createSaleTransaction = async ({
-  itemId,
+export const createSaleTransaction = async ({ itemId,
   itemType,
   sellerId,
   buyerId,
-  totalAmount,
-}: CreateSaleTransactionParams) => {
+  totalAmount }: CreateSaleTransactionParams) => {
   try {
     // Call secure edge function that performs server-side calculations
-    const { data, error } = await supabase.functions.invoke('process-sale-transaction', {
-      body: {
+    const { data, error } = await supabase.functions.invoke('process-sale-transaction', { body: {
         itemId,
         itemType,
         sellerId,
         buyerId,
-        totalAmount,
-      },
-    });
+        totalAmount } });
 
     if (error) throw error;
     return { data, error: null };

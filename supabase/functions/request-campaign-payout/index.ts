@@ -4,11 +4,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const ALLOWED_TYPES = new Set([
   "medical", "dream", "hero", "pet", "student", "crisis", "talent",
@@ -17,8 +15,7 @@ const ALLOWED_TYPES = new Set([
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -78,17 +75,13 @@ serve(async (req) => {
       .maybeSingle();
 
     const connectAccount = profile?.stripe_connect_account_id;
-    if (!connectAccount) {
-      return json({
+    if (!connectAccount) { return json({
         error: "No Stripe Connect account. Please complete onboarding first.",
-        code: "NO_CONNECT_ACCOUNT",
-      }, 400);
+        code: "NO_CONNECT_ACCOUNT" }, 400);
     }
-    if (!profile?.stripe_connect_payouts_enabled) {
-      return json({
+    if (!profile?.stripe_connect_payouts_enabled) { return json({
         error: "Payouts not yet enabled on your Stripe account. Finish onboarding.",
-        code: "PAYOUTS_DISABLED",
-      }, 400);
+        code: "PAYOUTS_DISABLED" }, 400);
     }
 
     // 2b. Block if there's already an in-flight payout (race-condition guard)
@@ -103,11 +96,9 @@ serve(async (req) => {
       console.error("in-flight check failed", inFlightErr);
       return json({ error: "Payout state check failed" }, 500);
     }
-    if (inFlight && inFlight.length > 0) {
-      return json({
+    if (inFlight && inFlight.length > 0) { return json({
         error: "A payout request is already in progress for this campaign. Wait until it completes or is reviewed.",
-        code: "PAYOUT_IN_FLIGHT",
-      }, 409);
+        code: "PAYOUT_IN_FLIGHT" }, 409);
     }
 
     // 3. Verify available balance covers requested amount
@@ -124,18 +115,15 @@ serve(async (req) => {
       return json({
         error: `Requested amount exceeds available balance (€${(available/100).toFixed(2)})`,
         code: "INSUFFICIENT_BALANCE",
-        available_cents: available,
-      }, 400);
+        available_cents: available }, 400);
     }
 
     // 4. Decide if payout requires manual admin review (Plan B + D + safety net)
     const { data: reviewDecision, error: reviewErr } = await supabase.rpc(
       "payout_requires_review",
-      {
-        _campaign_type: campaign_type,
+      { _campaign_type: campaign_type,
         _campaign_id: campaign_id,
-        _amount_cents: amount_cents,
-      },
+        _amount_cents: amount_cents },
     );
     if (reviewErr) {
       console.error("payout_requires_review failed", reviewErr);
@@ -148,8 +136,7 @@ serve(async (req) => {
     // 5. Insert audit row (status reflects whether review is needed)
     const { data: payoutRow, error: insErr } = await supabase
       .from("campaign_payouts")
-      .insert({
-        campaign_id,
+      .insert({ campaign_id,
         campaign_type,
         owner_user_id: user.id,
         amount_cents,
@@ -157,8 +144,7 @@ serve(async (req) => {
         stripe_destination_account: connectAccount,
         status: needsReview ? "pending_review" : "pending",
         requires_review: needsReview,
-        review_reason: reviewReason,
-      })
+        review_reason: reviewReason })
       .select("id")
       .single();
     if (insErr || !payoutRow) {
@@ -173,17 +159,14 @@ serve(async (req) => {
         type: "campaign_payout_pending_review",
         title: "Payout request submitted for approval",
         message: `Your payout request of €${(amount_cents / 100).toFixed(2)} is awaiting admin approval.${reviewReason ? ` Review reason: ${reviewReason}` : ""}`,
-        related_id: payoutRow.id,
-      });
-      return json({
-        success: true,
+        related_id: payoutRow.id });
+      return json({ success: true,
         status: "pending_review",
         payout_id: payoutRow.id,
         amount_cents,
         currency: "eur",
         review_reason: reviewReason,
-        message: "Your withdrawal request is awaiting admin approval. You will be notified once reviewed.",
-      });
+        message: "Your withdrawal request is awaiting admin approval. You will be notified once reviewed." });
     }
 
     // 6b. Auto-approved path: create Stripe transfer immediately.
@@ -194,21 +177,16 @@ serve(async (req) => {
         currency: "eur",
         destination: connectAccount,
         description: `Campaign payout — ${campaign_type}/${campaign_id}`,
-        metadata: {
-          campaign_type,
+        metadata: { campaign_type,
           campaign_id,
           payout_row_id: payoutRow.id,
-          owner_user_id: user.id,
-        },
-      });
+          owner_user_id: user.id } });
 
       await supabase
         .from("campaign_payouts")
-        .update({
-          status: "completed",
+        .update({ status: "completed",
           stripe_transfer_id: transfer.id,
-          completed_at: new Date().toISOString(),
-        })
+          completed_at: new Date().toISOString() })
         .eq("id", payoutRow.id);
 
       await supabase.from("notifications").insert({
@@ -216,17 +194,14 @@ serve(async (req) => {
         type: "campaign_payout_completed",
         title: "Payout successfully sent",
         message: `€${(amount_cents / 100).toFixed(2)} has been transferred to your Stripe account.`,
-        related_id: payoutRow.id,
-      });
+        related_id: payoutRow.id });
 
-      return json({
-        success: true,
+      return json({ success: true,
         status: "completed",
         transfer_id: transfer.id,
         amount_cents,
         currency: "eur",
-        payout_id: payoutRow.id,
-      });
+        payout_id: payoutRow.id });
     } catch (stripeErr) {
       const msg = stripeErr instanceof Error ? stripeErr.message : String(stripeErr);
       console.error("[stripe.transfers.create]", msg);

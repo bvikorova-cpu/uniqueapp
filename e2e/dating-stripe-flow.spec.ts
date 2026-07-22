@@ -28,21 +28,18 @@ async function stubCheckout(page: Page, opts: { ok: boolean; url?: string }) {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ url: opts.url ?? "https://checkout.stripe.com/test_dating" }),
-        });
+          body: JSON.stringify({ url: opts.url ?? "https://checkout.stripe.com/test_dating" }) });
       }
       return route.fulfill({
         status: 500,
         contentType: "application/json",
-        body: JSON.stringify({ error: "Stripe unavailable" }),
-      });
+        body: JSON.stringify({ error: "Stripe unavailable" }) });
     }
     if (url.includes("check-subscription")) {
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ subscribed: true, tier: "dating_monthly" }),
-      });
+        body: JSON.stringify({ subscribed: true, tier: "dating_monthly" }) });
     }
     return route.continue();
   });
@@ -151,8 +148,7 @@ test.describe("Dating Stripe checkout flow", () => {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ subscribed: true, tier: "dating_monthly" }),
-        });
+          body: JSON.stringify({ subscribed: true, tier: "dating_monthly" }) });
       }
       return route.continue();
     });

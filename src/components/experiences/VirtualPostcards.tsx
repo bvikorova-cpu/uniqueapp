@@ -47,8 +47,7 @@ export const VirtualPostcards = () => {
         return;
       }
       const { data, error } = await supabase.functions.invoke("experience-ai", {
-        body: { action: "virtual-postcard", destination, recipientName, message, style },
-      });
+        body: { action: "virtual-postcard", destination, recipientName, message, style } });
       if (error) throw error;
       toast({ title: "💌 Postcard Created!", description: `Your postcard from ${destination} is ready` });
       await loadPostcards();
@@ -75,7 +74,7 @@ export const VirtualPostcards = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium">Destination</label>
-              <Input placeholder="e.g. Paris, Tokyo, Mars..." value={destination} onChange={e => setDestination(e.target.value)} className="mt-1" />
+              <Input placeholder="e.g. City, City, Mars..." value={destination} onChange={e => setDestination(e.target.value)} className="mt-1" />
             </div>
             <div>
               <label className="text-sm font-medium">Recipient Name</label>

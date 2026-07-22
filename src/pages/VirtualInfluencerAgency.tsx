@@ -56,8 +56,7 @@ const GENERIC_TOOLS: Record<string, { title: string; description: string; icon: 
   "brand-voice": { title: "Brand Voice Coach", description: "Define your unique voice & tone", icon: Bot, action: "brand-voice", credits: 5, placeholder: "Describe your influencer's personality and audience..." },
   "media-kit": { title: "Media Kit Generator", description: "Professional AI media kit", icon: Award, action: "media-kit", credits: 5, placeholder: "Influencer name, niche, follower count, achievements..." },
   "crisis-mgr": { title: "Crisis Manager", description: "AI handles PR crises", icon: Shield, action: "crisis-manager", credits: 5, placeholder: "Describe the situation or controversy..." },
-  "collab-finder": { title: "Collab Finder", description: "Find perfect collaborations", icon: Users, action: "collab-finder", credits: 5, placeholder: "Your niche, audience size, and collaboration goals..." },
-};
+  "collab-finder": { title: "Collab Finder", description: "Find perfect collaborations", icon: Users, action: "collab-finder", credits: 5, placeholder: "Your niche, audience size, and collaboration goals..." } };
 
 const VirtualInfluencerAgency = () => {
   const [activeView, setActiveView] = useState<ViewType>("hub");
@@ -72,8 +71,7 @@ const VirtualInfluencerAgency = () => {
       const { data, error } = await supabase.from("virtual_influencers").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: totalEarnings } = useQuery({
     queryKey: ["total-earnings"],
@@ -83,8 +81,7 @@ const VirtualInfluencerAgency = () => {
       const { data, error } = await supabase.from("influencer_earnings").select("net_amount").eq("user_id", user.id);
       if (error) throw error;
       return data.reduce((sum, e) => sum + Number(e.net_amount), 0);
-    },
-  });
+    } });
 
   const handleToolClick = (id: string) => {
     if (id === "create") { setShowCreateDialog(true); return; }

@@ -13,11 +13,9 @@ interface QuizViewerProps {
   onBack: () => void;
 }
 
-export const QuizViewer = ({
-  questions,
+export const QuizViewer = ({ questions,
   onQuizComplete,
-  onBack,
-}: QuizViewerProps) => {
+  onBack }: QuizViewerProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);

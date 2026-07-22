@@ -5,25 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Check,
+import { Check,
   Crown,
   Zap,
   ExternalLink,
   Sparkles,
   Shield,
   Headphones,
-  Award,
-} from "lucide-react";
+  Award } from "lucide-react";
 import { motion } from "framer-motion";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { SubscriptionHero } from "@/components/subscription/SubscriptionHero";
 import { BillingToggle } from "@/components/subscription/BillingToggle";
 import { ComparisonTable } from "@/components/subscription/ComparisonTable";
@@ -31,11 +27,9 @@ import { SubscriptionFAQ } from "@/components/subscription/SubscriptionFAQ";
 import { SubscriptionTestimonials } from "@/components/subscription/SubscriptionTestimonials";
 import { SavingsCalculator } from "@/components/subscription/SavingsCalculator";
 import { LiveActivityBanner } from "@/components/subscription/LiveActivityBanner";
-import {
-  CurrencySelector,
+import { CurrencySelector,
   useDetectedCurrency,
-  formatPrice,
-} from "@/components/subscription/CurrencySelector";
+  formatPrice } from "@/components/subscription/CurrencySelector";
 import { UrgencyTimer } from "@/components/subscription/UrgencyTimer";
 import { EnterpriseTier } from "@/components/subscription/EnterpriseTier";
 import { WinBackDialog } from "@/components/subscription/WinBackDialog";
@@ -95,8 +89,7 @@ const Subscription = () => {
     if (!user) return;
     try {
       const { data, error } = await supabase.functions.invoke("create-subscription-checkout", {
-        body: { tier, billing: yearly ? "yearly" : "monthly" },
-      });
+        body: { tier, billing: yearly ? "yearly" : "monthly" } });
       if (error) throw error;
       if (data?.url) setStripeUrl(data.url);
     } catch (error) {
@@ -109,21 +102,16 @@ const Subscription = () => {
   const handlePauseSubscription = async () => {
     try {
       const { data, error } = await supabase.functions.invoke("pause-subscription", {
-        body: { months: 1 },
-      });
+        body: { months: 1 } });
       if (error) throw error;
-      toast({
-        title: "Subscription paused ⏸️",
-        description: data?.message || "Your subscription is paused for 1 month.",
-      });
+      toast({ title: "Subscription paused ⏸️",
+        description: data?.message || "Your subscription is paused for 1 month." });
       await checkAuth();
-    } catch (error) {
-      console.error("Pause error:", error);
+    } catch (error) { console.error("Pause error:", error);
       toast({
         title: "Couldn't pause",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -131,18 +119,14 @@ const Subscription = () => {
     try {
       const { data, error } = await supabase.functions.invoke("apply-retention-discount", {});
       if (error) throw error;
-      toast({
-        title: "🎁 Discount applied!",
-        description: data?.message || "50% off applied to your next 3 invoices.",
-      });
+      toast({ title: "🎁 Discount applied!",
+        description: data?.message || "50% off applied to your next 3 invoices." });
       await checkAuth();
-    } catch (error) {
-      console.error("Discount error:", error);
+    } catch (error) { console.error("Discount error:", error);
       toast({
         title: "Couldn't apply discount",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -151,13 +135,10 @@ const Subscription = () => {
     setCanceling(true);
     try {
       const { data, error } = await supabase.functions.invoke("cancel-subscription", {
-        body: { subscriptionType: "general" },
-      });
+        body: { subscriptionType: "general" } });
       if (error) throw error;
-      toast({
-        title: "Subscription cancelled",
-        description: data.message || "Subscription will be cancelled at the end of the current period",
-      });
+      toast({ title: "Subscription cancelled",
+        description: data.message || "Subscription will be cancelled at the end of the current period" });
       setWinBackOpen(false);
       await checkAuth();
     } catch (error) {
@@ -188,11 +169,9 @@ const Subscription = () => {
             break;
           }
         }
-        if (!activated) {
-          toast({
+        if (!activated) { toast({
             title: "Still processing",
-            description: "Subscription activation is taking longer than usual. Refresh in a minute.",
-          });
+            description: "Subscription activation is taking longer than usual. Refresh in a minute." });
         }
         window.history.replaceState({}, "", "/subscription");
       }
@@ -215,8 +194,7 @@ const Subscription = () => {
   const period = yearly ? "/yr" : "/mo";
 
   const plans = [
-    {
-      tier: "basic",
+    { tier: "basic",
       name: "Basic",
       tagline: "Get started for free essentials",
       basePrice: basePrices.basic,
@@ -232,10 +210,8 @@ const Subscription = () => {
         "3% sales commission",
         "20 AI generations/month",
         "Email support",
-      ],
-    },
-    {
-      tier: "premium",
+      ] },
+    { tier: "premium",
       name: "Premium",
       tagline: "Most loved by serious creators",
       basePrice: basePrices.premium,
@@ -252,10 +228,8 @@ const Subscription = () => {
         "Featured listings (3/month)",
         "Priority support",
         "Analytics & statistics",
-      ],
-    },
-    {
-      tier: "business",
+      ] },
+    { tier: "business",
       name: "Business",
       tagline: "Scale without limits",
       basePrice: basePrices.business,
@@ -273,8 +247,7 @@ const Subscription = () => {
         "API access",
         "Dedicated support",
         "Personal account manager",
-      ],
-    },
+      ] },
   ];
 
   const trustBadges = [

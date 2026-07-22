@@ -18,12 +18,10 @@ interface CourseNavigationProps {
   onTopicSelect: (index: number) => void;
 }
 
-export const CourseNavigation = ({
-  topics,
+export const CourseNavigation = ({ topics,
   currentTopic,
   completedTopics,
-  onTopicSelect,
-}: CourseNavigationProps) => {
+  onTopicSelect }: CourseNavigationProps) => {
   const canAccessTopic = (index: number) => {
     // Can access if it's the current topic, already completed, or the next topic
     return (

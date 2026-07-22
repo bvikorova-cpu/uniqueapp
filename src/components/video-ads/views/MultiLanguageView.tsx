@@ -23,8 +23,7 @@ export const MultiLanguageView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("video-ad-tools", {
-        body: { action: "multi_language_translator", script, languages, product },
-      });
+        body: { action: "multi_language_translator", script, languages, product } });
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setResult(data.result);

@@ -17,14 +17,12 @@ interface ComedianEarningsProps {
   onRefresh: () => void;
 }
 
-export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEarningsProps) {
-  const [open, setOpen] = useState(false);
+export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEarningsProps) { const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [withdrawalData, setWithdrawalData] = useState({
     amount: "",
     paymentMethod: "bank_transfer",
-    paymentDetails: "",
-  });
+    paymentDetails: "" });
 
   const handleWithdrawal = async () => {
     const amount = parseFloat(withdrawalData.amount);
@@ -53,8 +51,7 @@ export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEa
           amount,
           payment_method: withdrawalData.paymentMethod,
           payment_details: { details: withdrawalData.paymentDetails },
-          status: "pending",
-        });
+          status: "pending" });
 
       if (error) throw error;
 

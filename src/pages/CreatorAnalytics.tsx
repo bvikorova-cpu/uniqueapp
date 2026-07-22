@@ -5,8 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, TrendingUp, BarChart3, PieChart as PieIcon, Award } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import {
-  ResponsiveContainer,
+import { ResponsiveContainer,
   LineChart,
   Line,
   XAxis,
@@ -16,8 +15,7 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
-} from "recharts";
+  Legend } from "recharts";
 
 const PIE_COLORS = [
   "hsl(var(--primary))",
@@ -58,10 +56,8 @@ export default function CreatorAnalytics() {
       .forEach((r) => {
         map[r.kind] = (map[r.kind] || 0) + Number(r.amount || 0);
       });
-    return Object.entries(map).map(([kind, amount]) => ({
-      name: KIND_LABELS[kind as PayoutKind] ?? kind,
-      value: Number(amount.toFixed(2)),
-    }));
+    return Object.entries(map).map(([kind, amount]) => ({ name: KIND_LABELS[kind as PayoutKind] ?? kind,
+      value: Number(amount.toFixed(2)) }));
   }, [rows]);
 
   const stats = useMemo(() => {
@@ -144,11 +140,10 @@ export default function CreatorAnalytics() {
                         <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
                         <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
                         <Tooltip
-                          contentStyle={{
+                          contentStyle={ {
                             background: "hsl(var(--card))",
                             border: "1px solid hsl(var(--border))",
-                            borderRadius: "0.75rem",
-                          }}
+                            borderRadius: "0.75rem" }}
                           formatter={(v: number) => [`€${v.toFixed(2)}`, "Earned"]}
                         />
                         <Line
@@ -236,12 +231,10 @@ function KpiCard({ label, value, icon }: { label: string; value: string; icon: R
   );
 }
 
-function HealthRow({
-  label,
+function HealthRow({ label,
   value,
   pct,
-  tone,
-}: {
+  tone }: {
   label: string;
   value: number;
   pct: number;

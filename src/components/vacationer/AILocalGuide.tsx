@@ -45,7 +45,7 @@ export const AILocalGuide = ({ onBack }: Props) => {
           <CardTitle className="flex items-center gap-2"><Compass className="w-6 h-6 text-emerald-500" />AI Local Guide<span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full ml-2">3 Credits</span></CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Input placeholder="Location (e.g., Barcelona, Kyoto, New York)" value={form.location} onChange={e => setForm({...form, location: e.target.value})} />
+          <Input placeholder="Location (e.g., City, City, City)" value={form.location} onChange={e => setForm({...form, location: e.target.value})} />
           <Textarea placeholder="Ask a specific question (optional) — e.g., 'Best street food spots?' or 'How to avoid tourist scams?'" value={form.question} onChange={e => setForm({...form, question: e.target.value})} />
           <Button onClick={generate} disabled={loading} className="w-full">
             {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}

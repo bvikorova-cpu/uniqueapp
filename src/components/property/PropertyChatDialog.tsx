@@ -101,13 +101,11 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
     const trimmed = content.trim();
     if (!trimmed) return;
     setSending(true);
-    const { error } = await supabase.from("property_messages").insert({
-      property_id: propertyId,
+    const { error } = await supabase.from("property_messages").insert({ property_id: propertyId,
       buyer_id: buyerId,
       seller_id: sellerId,
       sender_id: user.id,
-      content: trimmed,
-    });
+      content: trimmed });
     setSending(false);
     if (error) { toast.error(error.message); return; }
     setContent("");

@@ -3,11 +3,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -17,8 +15,7 @@ serve(async (req) => {
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Missing authorization header" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+        status: 401 });
     }
 
     const authClient = createClient(
@@ -31,17 +28,14 @@ serve(async (req) => {
     if (userErr || !userData.user) {
       return new Response(JSON.stringify({ error: "Invalid token" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+        status: 401 });
     }
     const authedUserId = userData.user.id;
 
     const { sessionId } = await req.json();
     if (!sessionId) throw new Error("sessionId required");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     const supabase = createClient(
@@ -55,8 +49,7 @@ serve(async (req) => {
     if (buyerId && buyerId !== authedUserId) {
       return new Response(JSON.stringify({ error: "User mismatch" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 403,
-      });
+        status: 403 });
     }
 
     if (session.payment_status !== "paid") {
@@ -70,11 +63,9 @@ serve(async (req) => {
 
     const { data: updated, error } = await supabase
       .from("skill_service_orders")
-      .update({
-        status: "paid",
+      .update({ status: "paid",
         stripe_session_id: sessionId,
-        updated_at: new Date().toISOString(),
-      })
+        updated_at: new Date().toISOString() })
       .eq("id", orderId)
       .select()
       .maybeSingle();

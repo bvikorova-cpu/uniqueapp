@@ -30,13 +30,11 @@ export const CreditOverrideDialog = ({ userId, userName, onUpdate }: CreditOverr
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async () => {
-    if (!amount || isNaN(Number(amount))) {
+  const handleSubmit = async () => { if (!amount || isNaN(Number(amount))) {
       toast({
         title: "Invalid Amount",
         description: "Please enter a valid number",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -75,31 +73,26 @@ export const CreditOverrideDialog = ({ userId, userName, onUpdate }: CreditOverr
           });
 
         if (error) throw error;
-      } else {
-        toast({
+      } else { toast({
           title: "No Credits Found",
           description: "User has no credits to remove",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         setLoading(false);
         return;
       }
 
       toast({
         title: "Credits Updated",
-        description: `${operation === 'add' ? 'Added' : 'Removed'} ${amount} ${selectedType.name} ${operation === 'add' ? 'to' : 'from'} ${userName}`,
-      });
+        description: `${operation === 'add' ? 'Added' : 'Removed'} ${amount} ${selectedType.name} ${operation === 'add' ? 'to' : 'from'} ${userName}` });
 
       setOpen(false);
       setAmount('');
       onUpdate?.();
-    } catch (error) {
-      console.error('Credit override error:', error);
+    } catch (error) { console.error('Credit override error:', error);
       toast({
         title: "Error",
         description: "Failed to update credits",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

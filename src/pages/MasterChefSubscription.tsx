@@ -8,8 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const TIERS = {
-  amateur: {
+const TIERS = { amateur: {
     name: "Amateur",
     price: "€19.99",
     priceId: "price_1SPiaUGaXSfGtYFtpV3Q8jjN",
@@ -22,10 +21,8 @@ const TIERS = {
       "Access to amateur categories",
       "Community recipes",
       "Basic performance statistics",
-    ],
-  },
-  pro: {
-    name: "Pro",
+    ] },
+  pro: { name: "Pro",
     price: "€49.99",
     priceId: "price_1SPiarGaXSfGtYFtBgTuCPiw",
     productId: "prod_TMRTnRIoFKo2US",
@@ -39,10 +36,8 @@ const TIERS = {
       "Detailed statistics and analytics",
       "Priority support",
       "Mystery Box challenges",
-    ],
-  },
-  elite: {
-    name: "Elite",
+    ] },
+  elite: { name: "Elite",
     price: "€99.99",
     priceId: "price_1SPibC0QTWhd4oRpJwaH5vZM",
     productId: "prod_TMRUCoB3rBTawE",
@@ -57,9 +52,7 @@ const TIERS = {
       "Exclusive live events",
       "Priority leaderboard placement",
       "Access to closed premium communities",
-    ],
-  },
-};
+    ] } };
 
 export default function MasterChefSubscription() {
   const [loading, setLoading] = useState<string | null>(null);
@@ -71,35 +64,28 @@ export default function MasterChefSubscription() {
       setLoading(tier);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Login Required",
           description: "Please sign in to continue",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke("create-masterchef-checkout", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("create-masterchef-checkout", { body: {
           priceId: TIERS[tier].priceId,
-          tier: tier,
-        },
-      });
+          tier: tier } });
 
       if (error) throw error;
 
       if (data?.url) {
         window.open(data.url, "_blank");
       }
-    } catch (error) {
-      console.error("Subscription error:", error);
+    } catch (error) { console.error("Subscription error:", error);
       toast({
         title: "Error",
         description: "Failed to start payment. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(null);
     }

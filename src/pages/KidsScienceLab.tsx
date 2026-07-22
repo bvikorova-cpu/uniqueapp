@@ -63,8 +63,7 @@ const KidsScienceLab = () => {
       (async () => {
         try {
           const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
-            body: { session_id: sessionId },
-          });
+            body: { session_id: sessionId } });
           if (error) throw error;
           if (data?.success) {
             toast.success(`Added ${data.credits_added ?? ""} Science credits! 🔬`);
@@ -117,24 +116,20 @@ const KidsScienceLab = () => {
       }
 
       const { data, error } = await supabase.functions.invoke("kids-science-lab", {
-        body: { category, hypothesis, observations, difficulty },
-      });
+        body: { category, hypothesis, observations, difficulty } });
 
       if (error) throw error;
       if (!data || data.error) throw new Error(data?.error || "AI analysis failed");
 
-      setResult({
-        conclusion: String(data.conclusion ?? ""),
+      setResult({ conclusion: String(data.conclusion ?? ""),
         explanation: String(data.explanation ?? ""),
         funFacts: Array.isArray(data.funFacts) ? data.funFacts.map(String) : [],
         quiz: Array.isArray(data.quiz)
           ? data.quiz.map((q: any) => ({
               question: String(q?.question ?? ""),
               options: Array.isArray(q?.options) ? q.options.map(String).slice(0, 3) : [],
-              correctIndex: Math.max(0, Math.min(2, Number(q?.correctIndex ?? 0))),
-            }))
-          : [],
-      });
+              correctIndex: Math.max(0, Math.min(2, Number(q?.correctIndex ?? 0))) }))
+          : [] });
       setShowQuiz(true);
       setAnalysesCompleted((n) => n + 1);
       await credits.refresh();

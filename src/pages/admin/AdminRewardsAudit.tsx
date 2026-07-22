@@ -6,9 +6,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { exportToCsv } from "@/lib/exportCsv";
 
@@ -38,17 +36,14 @@ export default function AdminRewardsAudit() {
         supabase.from("lucky_spin_log").select("xp_awarded").gte("created_at", since24h),
       ]);
       const xpSum = (xpPaid.data ?? []).reduce((a, r: any) => a + (r.xp_awarded ?? 0), 0);
-      return {
-        spins24h: spins.count ?? 0,
+      return { spins24h: spins.count ?? 0,
         betsActive: betsActive.count ?? 0,
         betsStuck: betsStuck.count ?? 0,
         views24h: views.count ?? 0,
         fraud7d: fraud.count ?? 0,
-        xpSum24h: xpSum,
-      };
+        xpSum24h: xpSum };
     },
-    refetchInterval: 30_000,
-  });
+    refetchInterval: 30_000 });
 
   const spins = useQuery({
     queryKey: ["rewards-audit-spins"],
@@ -61,8 +56,7 @@ export default function AdminRewardsAudit() {
         .limit(200);
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   const bets = useQuery({
     queryKey: ["rewards-audit-bets"],
@@ -75,8 +69,7 @@ export default function AdminRewardsAudit() {
         .limit(200);
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   const fraud = useQuery({
     queryKey: ["rewards-audit-fraud"],
@@ -89,8 +82,7 @@ export default function AdminRewardsAudit() {
         .limit(100);
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   if (adminLoading) {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;

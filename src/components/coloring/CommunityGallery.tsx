@@ -29,8 +29,7 @@ export function CommunityGallery() {
         .limit(50);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: myLikes } = useQuery({
     queryKey: ["coloring-my-likes"],
@@ -42,8 +41,7 @@ export function CommunityGallery() {
         .select("gallery_item_id")
         .eq("user_id", user.id);
       return data?.map((l) => l.gallery_item_id) || [];
-    },
-  });
+    } });
 
   const likeMutation = useMutation({
     mutationFn: async (itemId: string) => {
@@ -59,8 +57,7 @@ export function CommunityGallery() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["coloring-community-gallery"] });
       queryClient.invalidateQueries({ queryKey: ["coloring-my-likes"] });
-    },
-  });
+    } });
 
   const handleShare = async () => {
     if (!shareFile || !shareTitle.trim()) return;
@@ -73,12 +70,10 @@ export function CommunityGallery() {
       const { error: upErr } = await supabase.storage.from("coloring-images").upload(fileName, shareFile);
       if (upErr) throw upErr;
       const { data: { publicUrl } } = supabase.storage.from("coloring-images").getPublicUrl(fileName);
-      await supabase.from("coloring_community_gallery").insert({
-        user_id: user.id,
+      await supabase.from("coloring_community_gallery").insert({ user_id: user.id,
         title: shareTitle,
         image_url: publicUrl,
-        is_public: true,
-      });
+        is_public: true });
       toast.success("Shared to community gallery!");
       setShareTitle("");
       setShareFile(null);

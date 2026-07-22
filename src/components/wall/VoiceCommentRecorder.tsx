@@ -72,12 +72,10 @@ export const VoiceCommentRecorder = ({
       timerRef.current = setInterval(() => {
         setDuration(prev => prev + 1);
       }, 1000);
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Microphone access denied",
         description: "Please allow microphone access to record voice comments",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -151,14 +149,12 @@ export const VoiceCommentRecorder = ({
       if (postId) {
         const { error: commentError } = await supabase
           .from("post_comments")
-          .insert({
-            post_id: postId,
+          .insert({ post_id: postId,
             user_id: user.id,
             content: "🎤 Voice comment",
             voice_url: publicUrl,
             voice_duration: duration,
-            parent_comment_id: parentCommentId || null,
-          });
+            parent_comment_id: parentCommentId || null });
 
         if (commentError) throw commentError;
       }

@@ -26,8 +26,7 @@ export const ThreadSubscription = ({ postId, userId }: ThreadSubscriptionProps) 
         .maybeSingle();
       return !!data;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const toggleSub = useMutation({
     mutationFn: async () => {
@@ -41,8 +40,7 @@ export const ThreadSubscription = ({ postId, userId }: ThreadSubscriptionProps) 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forum-sub", postId] });
       toast({ title: isSubscribed ? "Unsubscribed" : "Subscribed to thread" });
-    },
-  });
+    } });
 
   if (!userId) return null;
 

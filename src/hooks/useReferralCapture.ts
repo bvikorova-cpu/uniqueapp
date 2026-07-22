@@ -33,8 +33,7 @@ export function useReferralCapture() {
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke("claim-referral", {
-          body: { code },
-        });
+          body: { code } });
         if (!error) {
           localStorage.setItem(claimedKey, "1");
           localStorage.removeItem(STORAGE_KEY);

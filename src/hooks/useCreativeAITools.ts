@@ -14,8 +14,7 @@ export const useCreativeAITools = () => {
   const styleTransfer = useMutation({
     mutationFn: async ({ text, targetStyle }: { text: string; targetStyle: string }) => {
       const { data, error } = await supabase.functions.invoke("creative-style-transfer", {
-        body: { text, targetStyle },
-      });
+        body: { text, targetStyle } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return data;
@@ -24,14 +23,12 @@ export const useCreativeAITools = () => {
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
       toast.success("Style transformation complete!");
     },
-    onError: (e: Error) => toast.error(e.message || "Style transfer failed"),
-  });
+    onError: (e: Error) => toast.error(e.message || "Style transfer failed") });
 
   const voiceToScript = useMutation({
     mutationFn: async ({ transcript, category }: { transcript: string; category: string }) => {
       const { data, error } = await supabase.functions.invoke("creative-voice-to-script", {
-        body: { transcript, category },
-      });
+        body: { transcript, category } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return data;
@@ -40,14 +37,12 @@ export const useCreativeAITools = () => {
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
       toast.success("Voice transcript turned into a draft!");
     },
-    onError: (e: Error) => toast.error(e.message || "Voice-to-script failed"),
-  });
+    onError: (e: Error) => toast.error(e.message || "Voice-to-script failed") });
 
   const askRoomAI = useMutation({
     mutationFn: async ({ roomId, action, prompt }: { roomId: string; action: "moderate" | "suggest" | "chat"; prompt?: string }) => {
       const { data, error } = await supabase.functions.invoke("creative-room-ai", {
-        body: { roomId, action, prompt },
-      });
+        body: { roomId, action, prompt } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return data;
@@ -56,8 +51,7 @@ export const useCreativeAITools = () => {
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
       queryClient.invalidateQueries({ queryKey: ["room-messages", vars.roomId] });
     },
-    onError: (e: Error) => toast.error(e.message || "AI moderator failed"),
-  });
+    onError: (e: Error) => toast.error(e.message || "AI moderator failed") });
 
   return { styleTransfer, voiceToScript, askRoomAI };
 };
@@ -76,8 +70,7 @@ export const useCreativeRooms = () => {
         .limit(50);
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 };
 
 export const useRoomMessages = (roomId: string | null) => {
@@ -94,6 +87,5 @@ export const useRoomMessages = (roomId: string | null) => {
       return data || [];
     },
     enabled: !!roomId,
-    refetchInterval: 5000,
-  });
+    refetchInterval: 5000 });
 };

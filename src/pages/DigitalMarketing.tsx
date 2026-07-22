@@ -15,8 +15,7 @@ const DigitalMarketing = () => {
   const [enrolling, setEnrolling] = useState<string | null>(null);
   const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+  useEffect(() => { const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
@@ -24,8 +23,7 @@ const DigitalMarketing = () => {
         if (success) {
           toast({
             title: "Enrollment Successful! 🎉",
-            description: "You now have access to your marketing course.",
-          });
+            description: "You now have access to your marketing course." });
           window.history.replaceState({}, '', '/digital-marketing');
         }
       });
@@ -98,12 +96,10 @@ const DigitalMarketing = () => {
     try {
       await purchaseContent(courseId, "marketing-course", title, price);
       setEnrolling(null);
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Enrollment Failed",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setEnrolling(null);
     }
   };
@@ -208,7 +204,7 @@ const DigitalMarketing = () => {
                   </Button>
                 </div>
                 <CourseAcademicActions
-                  meta={{
+                  meta={ {
                     module_key: "digital-marketing",
                     module_label: "Digital Marketing",
                     course_slug: course.id,
@@ -217,8 +213,7 @@ const DigitalMarketing = () => {
                     level: course.level,
                     duration: course.duration,
                     price: course.price,
-                    skills: course.skills,
-                  }}
+                    skills: course.skills }}
                   unlocked={isPurchased(course.id, "marketing-course")}
                 />
               </div>

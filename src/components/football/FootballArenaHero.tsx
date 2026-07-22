@@ -50,13 +50,12 @@ export const FootballArenaHero = ({ stats }: FootballArenaHeroProps) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
           className="text-3xl md:text-5xl font-black mb-2"
-          style={{
+          style={ {
             WebkitTextStroke: "1.5px rgba(0,0,0,0.3)",
             textShadow: "0 0 30px rgba(16,185,129,0.6), 0 0 60px rgba(16,185,129,0.3)",
             background: "linear-gradient(135deg, #10b981, #34d399, #6ee7b7)",
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
+            WebkitTextFillColor: "transparent" }}
         >
           ⚽ Football Arena
         </motion.h1>

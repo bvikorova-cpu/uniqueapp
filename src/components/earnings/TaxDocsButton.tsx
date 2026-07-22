@@ -15,8 +15,7 @@ export const TaxDocsButton = () => {
     setBusy(true);
     try {
       const { data, error } = await supabase.functions.invoke("creator-tax-export", {
-        body: { year: Number(year), format: "pdf", template: "dac7" },
-      });
+        body: { year: Number(year), format: "pdf", template: "dac7" } });
       if (error) throw error;
       if (data?.url) {
         window.open(data.url, "_blank");

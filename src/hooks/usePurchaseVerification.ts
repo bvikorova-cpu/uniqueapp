@@ -19,27 +19,22 @@ export function usePurchaseVerification() {
   const verifyPurchase = async (sessionId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('verify-tip-purchase', {
-        body: { sessionId },
-      });
+        body: { sessionId } });
 
       if (error) throw error;
 
-      toast({
-        title: "Purchase Successful!",
-        description: "Your tip has been unlocked. Check 'My Purchased Tips'.",
-      });
+      toast({ title: "Purchase Successful!",
+        description: "Your tip has been unlocked. Check 'My Purchased Tips'." });
 
       // Redirect to purchased tips page
       setTimeout(() => {
         navigate('/my-purchased-tips');
       }, 2000);
-    } catch (error: any) {
-      console.error('Verification error:', error);
+    } catch (error: any) { console.error('Verification error:', error);
       toast({
         title: "Verification Failed",
         description: error.message || "Failed to verify purchase",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 }

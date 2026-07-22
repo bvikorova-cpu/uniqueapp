@@ -78,28 +78,23 @@ export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps)
           <CardDescription>Limited-time events with exclusive rewards</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          {[
+          { [
             {
               name: "Brain Marathon",
               desc: "50 questions, no breaks, top score wins",
               reward: "1000 Credits + Marathon Badge",
               status: "active",
-              participants: 142,
-            },
-            {
-              name: "Speed Demon Challenge",
+              participants: 142 },
+            { name: "Speed Demon Challenge",
               desc: "Answer 20 questions as fast as possible",
               reward: "750 Credits + Speed Badge",
               status: "upcoming",
-              participants: 0,
-            },
-            {
-              name: "Category Master",
+              participants: 0 },
+            { name: "Category Master",
               desc: "Win in all 10 categories this season",
               reward: "2000 Credits + Legend Badge",
               status: "active",
-              participants: 89,
-            },
+              participants: 89 },
           ].map((event, i) => (
             <motion.div
               key={event.name}

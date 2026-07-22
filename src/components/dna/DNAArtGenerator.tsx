@@ -51,9 +51,7 @@ export const DNAArtGenerator = () => {
           artMode: true,
           style,
           heritage,
-          traits,
-        },
-      });
+          traits } });
 
       if (error) throw error;
 
@@ -64,8 +62,7 @@ export const DNAArtGenerator = () => {
         description: data?.analysis?.art_description ||
           `Your ${styleLabel} artwork has been conceived based on your unique genetic profile. ` +
           `The composition reflects heritage regions across multiple continents, with color intensity ` +
-          `mapped to genetic diversity markers. Each flowing element represents a distinct ancestral pathway.`,
-      });
+          `mapped to genetic diversity markers. Each flowing element represents a distinct ancestral pathway.` });
 
       toast({ title: "Art Generated!", description: `Your ${styleLabel} DNA artwork is ready` });
     } catch (e) {
@@ -142,12 +139,10 @@ export const DNAArtGenerator = () => {
                       height: 20 + Math.random() * 80,
                       left: `${Math.random() * 100}%`,
                       top: `${Math.random() * 100}%`,
-                      background: `radial-gradient(circle, ${['#f0f', '#0ff', '#ff0', '#f00', '#0f0'][i % 5]}44, transparent)`,
-                    }}
-                    animate={{
+                      background: `radial-gradient(circle, ${['#f0f', '#0ff', '#ff0', '#f00', '#0f0'][i % 5]}44, transparent)` }}
+                    animate={ {
                       scale: [1, 1.3, 1],
-                      opacity: [0.3, 0.7, 0.3],
-                    }}
+                      opacity: [0.3, 0.7, 0.3] }}
                     transition={{ duration: 3 + i * 0.5, repeat: Infinity }}
                   />
                 ))}

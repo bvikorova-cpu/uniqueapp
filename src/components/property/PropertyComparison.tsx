@@ -9,21 +9,15 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 const SAMPLE_PROPERTIES = [
-  {
-    name: "Skyline Apartment", price: 285000, area: 85, rooms: 3, floor: 8,
+  { name: "Skyline Apartment", price: 285000, area: 85, rooms: 3, floor: 8,
     location: "Downtown", yearBuilt: 2020, parking: true, balcony: true,
-    monthlyFees: 180, energyClass: "A", score: 92,
-  },
-  {
-    name: "Garden Villa", price: 420000, area: 145, rooms: 5, floor: 0,
+    monthlyFees: 180, energyClass: "A", score: 92 },
+  { name: "Garden Villa", price: 420000, area: 145, rooms: 5, floor: 0,
     location: "Suburbs", yearBuilt: 2018, parking: true, balcony: false,
-    monthlyFees: 120, energyClass: "B", score: 87,
-  },
-  {
-    name: "City Loft", price: 195000, area: 62, rooms: 2, floor: 4,
+    monthlyFees: 120, energyClass: "B", score: 87 },
+  { name: "City Loft", price: 195000, area: 62, rooms: 2, floor: 4,
     location: "City Center", yearBuilt: 2022, parking: false, balcony: true,
-    monthlyFees: 210, energyClass: "A+", score: 78,
-  },
+    monthlyFees: 210, energyClass: "A+", score: 78 },
 ];
 
 const METRICS = [

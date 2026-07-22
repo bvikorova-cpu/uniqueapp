@@ -26,8 +26,7 @@ export const useEventTickets = (eventId?: string, holderId?: string) => {
       if (holderId) q = q.eq("holder_id", holderId);
       const { data } = await q.order("created_at", { ascending: false });
       return (data || []) as unknown as EventTicket[];
-    },
-  });
+    } });
 
   const issueTicket = useMutation({
     mutationFn: async ({ organizerId, seatLabel }: { organizerId: string; seatLabel?: string }) => {
@@ -35,12 +34,10 @@ export const useEventTickets = (eventId?: string, holderId?: string) => {
       if (!user || !eventId) throw new Error("Missing context");
       const { data, error } = await supabase
         .from("event_tickets" as any)
-        .insert({
-          event_id: eventId,
+        .insert({ event_id: eventId,
           organizer_id: organizerId,
           holder_id: user.id,
-          seat_label: seatLabel,
-        } as any)
+          seat_label: seatLabel } as any)
         .select()
         .single();
       if (error) throw error;
@@ -49,8 +46,7 @@ export const useEventTickets = (eventId?: string, holderId?: string) => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["event-tickets"] });
       toast({ title: "Ticket issued 🎫" });
-    },
-  });
+    } });
 
   const checkIn = useMutation({
     mutationFn: async (ticketId: string) => {
@@ -65,8 +61,7 @@ export const useEventTickets = (eventId?: string, holderId?: string) => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["event-tickets"] });
       toast({ title: "Checked in ✓" });
-    },
-  });
+    } });
 
   return { tickets, isLoading, issueTicket: issueTicket.mutate, checkIn: checkIn.mutate };
 };

@@ -30,8 +30,7 @@ export default function IQCertificate() {
       if (!session) { toast({ title: "Please login first", variant: "destructive" }); return; }
 
       const { data, error } = await supabase.functions.invoke("iq-platform-ai", {
-        body: { action: "generate_certificate", fullName },
-      });
+        body: { action: "generate_certificate", fullName } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

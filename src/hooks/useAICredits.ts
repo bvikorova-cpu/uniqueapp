@@ -27,12 +27,10 @@ export interface SpendResult {
  * Exposes BOTH balances separately (free monthly vs. paid AI) and
  * spends free tier FIRST, paid second. UI must never mix the two visually.
  */
-export const useAICredits = () => {
-  const [credits, setCredits] = useState<AICredits>({
+export const useAICredits = () => { const [credits, setCredits] = useState<AICredits>({
     credits_remaining: 0,
     total_credits_purchased: 0,
-    last_used_at: null,
-  });
+    last_used_at: null });
   const [loading, setLoading] = useState(true);
 
   const { data: freeData, refresh: refreshFree, consume: consumeFree } = useFreeTierCredits();
@@ -60,11 +58,9 @@ export const useAICredits = () => {
       } else {
         const { data: newCredits, error: insertError } = await supabase
           .from('ai_credits')
-          .insert({
-            user_id: user.id,
+          .insert({ user_id: user.id,
             credits_remaining: 0,
-            total_credits_purchased: 0,
-          })
+            total_credits_purchased: 0 })
           .select()
           .single();
         if (insertError) throw insertError;
@@ -112,8 +108,7 @@ export const useAICredits = () => {
             user_id: user.id,
             usage_type: type,
             credits_used: 1,
-            description: description ? `[free] ${description}` : '[free]',
-          });
+            description: description ? `[free] ${description}` : '[free]' });
           return { success: true, source: 'free' };
         }
       }
@@ -123,10 +118,8 @@ export const useAICredits = () => {
 
       const { error: updateError } = await supabase
         .from('ai_credits')
-        .update({
-          credits_remaining: paidBalance - 1,
-          last_used_at: new Date().toISOString(),
-        })
+        .update({ credits_remaining: paidBalance - 1,
+          last_used_at: new Date().toISOString() })
         .eq('user_id', user.id);
       if (updateError) throw updateError;
 
@@ -134,14 +127,11 @@ export const useAICredits = () => {
         user_id: user.id,
         usage_type: type,
         credits_used: 1,
-        description: description ? `[paid] ${description}` : '[paid]',
-      });
+        description: description ? `[paid] ${description}` : '[paid]' });
 
-      setCredits((prev) => ({
-        ...prev,
+      setCredits((prev) => ({ ...prev,
         credits_remaining: prev.credits_remaining - 1,
-        last_used_at: new Date().toISOString(),
-      }));
+        last_used_at: new Date().toISOString() }));
 
       return { success: true, source: 'paid' };
     } catch (error) {
@@ -156,8 +146,7 @@ export const useAICredits = () => {
       if (sessionError || !session) throw new Error('Please log in to purchase credits');
 
       const { data, error } = await supabase.functions.invoke('create-credits-payment', {
-        body: { credits: amount, price },
-      });
+        body: { credits: amount, price } });
       if (error) throw new Error(error.message || 'Failed to create payment session');
       if (data?.url) return data.url;
       throw new Error('Failed to retrieve payment link');
@@ -171,8 +160,7 @@ export const useAICredits = () => {
     await Promise.all([loadCredits(), refreshFree()]);
   }, [loadCredits, refreshFree]);
 
-  return {
-    // Legacy shape (paid only) kept for backwards compat
+  return { // Legacy shape (paid only) kept for backwards compat
     credits,
     loading,
     spendCredit,
@@ -182,6 +170,5 @@ export const useAICredits = () => {
     freeBalance,
     paidBalance,
     totalBalance,
-    spendCreditDetailed,
-  };
+    spendCreditDetailed };
 };

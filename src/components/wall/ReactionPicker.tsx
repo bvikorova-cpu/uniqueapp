@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { useReactions } from "@/hooks/useReactions";
 import { supabase } from "@/integrations/supabase/client";
 import { X } from "lucide-react";
@@ -153,10 +151,9 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
       <ReactionsDialog
         open={listOpen}
         onOpenChange={setListOpen}
-        reactions={reactions.map((r: any) => ({
+        reactions={ reactions.map((r: any) => ({
           user_id: r.user_id,
-          reaction_type: r.reaction_type,
-        }))}
+          reaction_type: r.reaction_type }))}
         reactionMeta={REACTIONS}
       />
     </div>

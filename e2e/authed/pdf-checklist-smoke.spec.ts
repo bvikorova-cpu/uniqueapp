@@ -207,15 +207,13 @@ test("PDF checklist – smoke all routes", async ({ page, baseURL }) => {
     page.off("response", onResponse);
     page.off("requestfailed", onRequestFailed);
 
-    findings.push({
-      section: r.section,
+    findings.push({ section: r.section,
       path: r.path,
       consoleErrors,
       netFailures,
       loadOk,
       finalUrl,
-      bodyText,
-    });
+      bodyText });
   }
 
   // Write report

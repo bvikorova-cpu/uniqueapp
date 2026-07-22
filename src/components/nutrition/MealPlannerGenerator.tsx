@@ -42,8 +42,7 @@ export default function MealPlannerGenerator() {
       queryClient.invalidateQueries({ queryKey: ['meal-plans'] });
       toast.success("Meal plan generated successfully!");
     },
-    onError: (error: any) => toast.error(error.message || "Error generating meal plan"),
-  });
+    onError: (error: any) => toast.error(error.message || "Error generating meal plan") });
 
   const handleGenerate = () => {
     if (!title || targetCalories < 500) { toast.error("Please fill in all required fields"); return; }

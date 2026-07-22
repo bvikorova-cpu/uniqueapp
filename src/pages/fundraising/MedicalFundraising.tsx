@@ -52,13 +52,11 @@ export default function MedicalFundraising() {
 
       if (error) throw error;
       setCampaigns((data as unknown as MedicalCampaign[]) || []);
-    } catch (error) {
-      console.error('Error fetching campaigns:', error);
+    } catch (error) { console.error('Error fetching campaigns:', error);
       toast({
         title: 'Error',
         description: 'Failed to load campaigns',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setLoading(false);
     }

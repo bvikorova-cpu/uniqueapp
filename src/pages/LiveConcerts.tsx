@@ -61,8 +61,7 @@ const tools = [
   { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Learn about the concert platform", color: "cyan" },
 ];
 
-const LiveConcerts = () => {
-  const [activeView, setActiveView] = useState<ViewType>("hub");
+const LiveConcerts = () => { const [activeView, setActiveView] = useState<ViewType>("hub");
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
@@ -70,8 +69,7 @@ const LiveConcerts = () => {
   useOneOffPaymentVerify({
     fn: "verify-concert-ticket-payment",
     successTitle: "Ticket confirmed!",
-    successDescription: "Your concert ticket is ready in your account.",
-  });
+    successDescription: "Your concert ticket is ready in your account." });
 
   useEffect(() => {
     const check = async () => {

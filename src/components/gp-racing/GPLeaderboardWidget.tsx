@@ -17,8 +17,7 @@ export function GPLeaderboard() {
       if (error) throw error;
       return data;
     },
-    refetchInterval: 10000,
-  });
+    refetchInterval: 10000 });
 
   const getRankStyle = (index: number) => {
     if (index === 0) return { border: "border-amber-400/60", bg: "from-amber-950/40 to-amber-900/20", glow: "shadow-amber-500/20", badge: "🥇", color: "text-amber-300" };

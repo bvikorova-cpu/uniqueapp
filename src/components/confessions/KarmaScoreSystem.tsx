@@ -83,8 +83,7 @@ export const KarmaScoreSystem = () => {
       const xpToNext = nextLevel ? nextLevel.xp - xp : 0;
 
       // Calculate badges
-      const earnedBadges = BADGES.map(b => ({
-        name: b.name,
+      const earnedBadges = BADGES.map(b => ({ name: b.name,
         icon: b.icon,
         earned:
           (b.name === "First Confession" && confessionsCount >= 1) ||
@@ -93,19 +92,16 @@ export const KarmaScoreSystem = () => {
           (b.name === "Community Pillar" && currentLevel.level >= 5) ||
           (b.name === "Redeemed" && currentLevel.level >= 8) ||
           (b.name === "Transcendent" && currentLevel.level >= 10) ||
-          false,
-      }));
+          false }));
 
-      setKarmaData({
-        level: currentLevel.level,
+      setKarmaData({ level: currentLevel.level,
         xp,
         xpToNext: Math.max(0, xpToNext),
         title: currentLevel.title,
         confessionsCount,
         votesGiven,
         streakDays: Math.min(confessionsCount, 7),
-        badges: earnedBadges,
-      });
+        badges: earnedBadges });
     } catch (error: any) {
       toast({ title: "Failed to load karma", description: error.message, variant: "destructive" });
     } finally {
@@ -120,11 +116,9 @@ export const KarmaScoreSystem = () => {
       if (!user) throw new Error("Not authenticated");
 
       // Log the daily claim as an activity
-      await supabase.from("activity_logs").insert({
-        user_id: user.id,
+      await supabase.from("activity_logs").insert({ user_id: user.id,
         activity_type: "daily_karma_claim",
-        points_earned: 15,
-      });
+        points_earned: 15 });
 
       toast({ title: "Daily Reward Claimed! 🎉", description: "+15 Karma XP added to your score" });
       loadKarmaData();

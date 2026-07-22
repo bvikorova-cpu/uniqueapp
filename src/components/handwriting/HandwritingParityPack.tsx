@@ -8,10 +8,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Layers, Type, Briefcase, HeartPulse, Brain, GraduationCap, Fingerprint, Globe2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  useZoneAnalysis, useLetterDecoder, useCareerMatch, useHealthScreen,
-  useMentalScreen, useCoachPlan, useForensicProfile, useCulturalMatch,
-} from "@/hooks/useHandwritingParity";
+import { useZoneAnalysis, useLetterDecoder, useCareerMatch, useHealthScreen,
+  useMentalScreen, useCoachPlan, useForensicProfile, useCulturalMatch } from "@/hooks/useHandwritingParity";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 async function uploadSample(file: File): Promise<string> {
@@ -29,9 +27,7 @@ async function uploadSample(file: File): Promise<string> {
   return (await getReadableUrl("handwriting-samples", path));
 }
 
-function ToolShell({
-  icon: Icon, title, description, badge, onRun, loading, extra, result,
-}: {
+function ToolShell({ icon: Icon, title, description, badge, onRun, loading, extra, result }: {
   icon: any; title: string; description: string; badge?: string;
   onRun: (imageUrl: string) => void; loading: boolean; extra?: React.ReactNode;
   result?: any;

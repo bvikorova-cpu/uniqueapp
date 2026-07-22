@@ -12,13 +12,11 @@ interface WatchAdButtonProps {
   xpAmount?: number;
 }
 
-export function WatchAdButton({
-  className,
+export function WatchAdButton({ className,
   variant = "default",
   size = "default",
   label,
-  xpAmount = 25,
-}: WatchAdButtonProps) {
+  xpAmount = 25 }: WatchAdButtonProps) {
   const { watchAd, isLoading, cooldownRemaining } = useRewardedAd();
   const onCooldown = cooldownRemaining > 0;
   const seconds = Math.ceil(cooldownRemaining / 1000);

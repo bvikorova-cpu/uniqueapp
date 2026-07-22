@@ -21,8 +21,7 @@ const STATUS_META: Record<string, { icon: typeof Clock; color: string; label: st
   in_progress: { icon: Loader2, color: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30", label: "In progress" },
   resolved: { icon: CheckCircle2, color: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30", label: "Resolved" },
   closed: { icon: CheckCircle2, color: "bg-muted text-muted-foreground border-border", label: "Closed" },
-  waiting: { icon: AlertCircle, color: "bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30", label: "Waiting on you" },
-};
+  waiting: { icon: AlertCircle, color: "bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30", label: "Waiting on you" } };
 
 export const MyTickets = ({ userId }: { userId: string }) => {
   const [tickets, setTickets] = useState<T[]>([]);

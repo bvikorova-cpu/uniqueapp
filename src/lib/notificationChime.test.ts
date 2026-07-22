@@ -8,12 +8,10 @@ class FakeOscillator {
   start = vi.fn();
   stop = vi.fn();
 }
-class FakeGain {
-  gain = {
+class FakeGain { gain = {
     value: 0,
     setValueAtTime: vi.fn(),
-    exponentialRampToValueAtTime: vi.fn(),
-  };
+    exponentialRampToValueAtTime: vi.fn() };
   connect = vi.fn(() => ({ connect: vi.fn() }));
 }
 class FakeAudioContext {

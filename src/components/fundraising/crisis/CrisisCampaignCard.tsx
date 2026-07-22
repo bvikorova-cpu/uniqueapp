@@ -25,9 +25,7 @@ interface CrisisCampaign {
   expires_at: string;
 }
 
-const crisisTypeLabels: Record<string, string> = {
-  fire: "🔥 Fire", flood: "🌊 Flood", accident: "⚠️ Accident", natural_disaster: "🌪️ Disaster", other: "🆘 Other",
-};
+const crisisTypeLabels: Record<string, string> = { fire: "🔥 Fire", flood: "🌊 Flood", accident: "⚠️ Accident", natural_disaster: "🌪️ Disaster", other: "🆘 Other" };
 
 const quickAmounts = [10, 25, 50];
 

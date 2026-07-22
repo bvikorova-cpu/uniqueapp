@@ -39,8 +39,7 @@ export function MultiplayerLobbyView({ onBack }: { onBack: () => void }) {
         .order("created_at", { ascending: false })
         .limit(30);
       if (error) throw error;
-      return (data ?? []).map((r: any) => ({
-        id: r.id,
+      return (data ?? []).map((r: any) => ({ id: r.id,
         name: r.name,
         host_id: r.host_id,
         host_name: r.profiles?.username || r.profiles?.full_name || "Host",
@@ -48,11 +47,9 @@ export function MultiplayerLobbyView({ onBack }: { onBack: () => void }) {
         max_players: r.max_players,
         room: r.escape_rooms?.title || "Any room",
         status: r.status,
-        invite_code: r.invite_code,
-      }));
+        invite_code: r.invite_code }));
     },
-    refetchInterval: 10_000,
-  });
+    refetchInterval: 10_000 });
 
   const createLobby = async () => {
     if (!user) { toast.error("Sign in to create a lobby"); return; }

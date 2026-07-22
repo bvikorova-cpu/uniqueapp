@@ -5,10 +5,8 @@ interface StorySubscriptionManagementProps {
   onManageSubscription: () => void;
 }
 
-export const StorySubscriptionManagement = ({
-  subscribed,
-  onManageSubscription,
-}: StorySubscriptionManagementProps) => (
+export const StorySubscriptionManagement = ({ subscribed,
+  onManageSubscription }: StorySubscriptionManagementProps) => (
   <PremiumManagementCard
     subscribed={subscribed}
     onManage={onManageSubscription}

@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const COST = 10;
 
@@ -64,8 +62,7 @@ serve(async (req) => {
       winner: winner ? { id: winner.id, name: winner.name } : null,
       rounds,
       totalFighters: characterIds.length,
-      creditsRemaining: balance - COST,
-    });
+      creditsRemaining: balance - COST });
   } catch (e) {
     return j({ error: e instanceof Error ? e.message : String(e) }, 500);
   }

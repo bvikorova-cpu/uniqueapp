@@ -36,8 +36,7 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
     try {
       const durationYears = Math.floor((delivery.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 365));
       const { error } = await supabase.functions.invoke("save-time-capsule", {
-        body: { title, message, capsuleType, deliveryDate, recipientEmail, recipientName, durationYears, pricePaid: null, stripePaymentId: null },
-      });
+        body: { title, message, capsuleType, deliveryDate, recipientEmail, recipientName, durationYears, pricePaid: null, stripePaymentId: null } });
       if (error) throw error;
       toast({ title: "Time Capsule Created!", description: `Your message will be delivered on ${delivery.toLocaleDateString()}.` });
       setTitle(""); setMessage(""); setDeliveryDate(""); setRecipientEmail(""); setRecipientName("");

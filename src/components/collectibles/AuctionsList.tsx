@@ -125,22 +125,18 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
     }
     setBiddingId(auctionId);
     try {
-      const { data, error } = await supabase.rpc('place_collectible_bid', {
-        p_auction_id: auctionId,
-        p_bid: amount,
-      });
+      const { data, error } = await supabase.rpc('place_collectible_bid', { p_auction_id: auctionId,
+        p_bid: amount });
       if (error) throw error;
       const row = Array.isArray(data) ? data[0] : data;
-      if (!row?.success) {
-        const reasonMap: Record<string, string> = {
+      if (!row?.success) { const reasonMap: Record<string, string> = {
           not_authenticated: "You must be signed in",
           not_found: "Auction not found",
           not_active: "Auction is no longer active",
           expired: "Auction has expired",
           own_auction: "You cannot bid on your own auction",
           bid_too_low: "Bid must be higher than current price",
-          invalid_bid: "Invalid bid amount",
-        };
+          invalid_bid: "Invalid bid amount" };
         toast.error(reasonMap[row?.reason] || "Failed to place bid");
         return;
       }
@@ -159,20 +155,16 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
     if (buyingOutId) return;
     setBuyingOutId(auctionId);
     try {
-      const { data, error } = await supabase.rpc('buyout_collectible_auction', {
-        p_auction_id: auctionId,
-      });
+      const { data, error } = await supabase.rpc('buyout_collectible_auction', { p_auction_id: auctionId });
       if (error) throw error;
       const row = Array.isArray(data) ? data[0] : data;
-      if (!row?.success) {
-        const reasonMap: Record<string, string> = {
+      if (!row?.success) { const reasonMap: Record<string, string> = {
           not_authenticated: "You must be signed in",
           not_found: "Auction not found",
           not_active: "Auction is no longer active",
           expired: "Auction has expired",
           own_auction: "You cannot buy your own auction",
-          no_buyout: "This auction has no buyout option",
-        };
+          no_buyout: "This auction has no buyout option" };
         toast.error(reasonMap[row?.reason] || "Failed to purchase item");
         return;
       }

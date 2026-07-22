@@ -18,26 +18,16 @@ const TRUST_BADGES = [
 ];
 
 const FAQS = [
-  {
-    q: "How do I win money?",
-    a: "Upload a talent clip, gather votes from the community, and rank in the top of your category. Prizes are paid out weekly via Stripe.",
-  },
-  {
-    q: "Are credits real money?",
-    a: "Credits unlock platform actions (voting, comments, uploads). You can also win cash prizes that are paid directly to your bank account.",
-  },
-  {
-    q: "Can I get a refund?",
-    a: "Yes — unused purchased credits are refundable within 14 days of purchase, no questions asked.",
-  },
-  {
-    q: "Is my data safe?",
-    a: "We are fully GDPR-compliant. Payments are processed by Stripe; we never store your card details. You can delete your account anytime.",
-  },
-  {
-    q: "Who can join?",
-    a: "Anyone 16 or older. Kids Channel is available for ages 6–12 with parental supervision.",
-  },
+  { q: "How do I win money?",
+    a: "Upload a talent clip, gather votes from the community, and rank in the top of your category. Prizes are paid out weekly via Stripe." },
+  { q: "Are credits real money?",
+    a: "Credits unlock platform actions (voting, comments, uploads). You can also win cash prizes that are paid directly to your bank account." },
+  { q: "Can I get a refund?",
+    a: "Yes — unused purchased credits are refundable within 14 days of purchase, no questions asked." },
+  { q: "Is my data safe?",
+    a: "We are fully GDPR-compliant. Payments are processed by Stripe; we never store your card details. You can delete your account anytime." },
+  { q: "Who can join?",
+    a: "Anyone 16 or older. Kids Channel is available for ages 6–12 with parental supervision." },
 ];
 
 export function HowItWorksTrust() {
@@ -122,10 +112,7 @@ export function HowItWorksTrust() {
             mainEntity: FAQS.map((f) => ({
               "@type": "Question",
               name: f.q,
-              acceptedAnswer: { "@type": "Answer", text: f.a },
-            })),
-          }),
-        }}
+              acceptedAnswer: { "@type": "Answer", text: f.a } })) }) }}
       />
     </section>
     </>

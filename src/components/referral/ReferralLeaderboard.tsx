@@ -60,16 +60,14 @@ export const ReferralLeaderboard = ({ currentUserId }: Props) => {
           .select("id, full_name, avatar_url")
           .in("id", ids);
 
-        const merged: LeaderEntry[] = ids.map((id) => {
-          const stats = map.get(id)!;
+        const merged: LeaderEntry[] = ids.map((id) => { const stats = map.get(id)!;
           const p = profiles?.find((pr: any) => pr.id === id);
           return {
             referrer_id: id,
             full_name: p?.full_name || null,
             avatar_url: p?.avatar_url || null,
             referral_count: stats.count,
-            total_earnings: stats.total,
-          };
+            total_earnings: stats.total };
         });
 
         merged.sort((a, b) => b.referral_count - a.referral_count);

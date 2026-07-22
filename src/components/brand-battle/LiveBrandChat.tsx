@@ -58,10 +58,8 @@ export const LiveBrandChat = ({ brandId }: { brandId?: string }) => {
     if (!user) { toast.error("Sign in to chat"); return; }
     if (!text && !reaction) return;
     const username = user.email?.split("@")[0] ?? "Anon";
-    await supabase.from("brand_chat_messages").insert({
-      user_id: user.id, username, brand_id: brandId ?? null,
-      message: text || reaction || "", reaction: reaction ?? null,
-    });
+    await supabase.from("brand_chat_messages").insert({ user_id: user.id, username, brand_id: brandId ?? null,
+      message: text || reaction || "", reaction: reaction ?? null });
     setInput("");
   };
 

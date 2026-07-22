@@ -64,114 +64,90 @@ const CATEGORIES = {
 };
 
 const AI_TOOLS = [
-  {
-    id: "service-optimizer",
+  { id: "service-optimizer",
     title: "AI Service Optimizer",
     description: "Optimize listings for maximum visibility and conversions",
     icon: Wand2,
     badge: "4 CR",
     gradient: "bg-gradient-to-r from-violet-500 to-purple-500",
-    features: ["SEO-optimized titles", "Compelling descriptions", "Keyword suggestions"],
-  },
-  {
-    id: "pricing-advisor",
+    features: ["SEO-optimized titles", "Compelling descriptions", "Keyword suggestions"] },
+  { id: "pricing-advisor",
     title: "AI Pricing Advisor",
     description: "Data-driven pricing recommendations for your services",
     icon: DollarSign,
     badge: "3 CR",
     gradient: "bg-gradient-to-r from-emerald-500 to-teal-500",
-    features: ["Market comparison", "Package pricing", "Value analysis"],
-  },
-  {
-    id: "proposal-writer",
+    features: ["Market comparison", "Package pricing", "Value analysis"] },
+  { id: "proposal-writer",
     title: "AI Proposal Writer",
     description: "Write winning proposals that get you hired",
     icon: FileText,
     badge: "4 CR",
     gradient: "bg-gradient-to-r from-blue-500 to-indigo-500",
-    features: ["Personalized hooks", "Clear deliverables", "Call to action"],
-  },
-  {
-    id: "client-matcher",
+    features: ["Personalized hooks", "Clear deliverables", "Call to action"] },
+  { id: "client-matcher",
     title: "AI Client Matcher",
     description: "Discover ideal client types and niches for your skills",
     icon: Target,
     badge: "5 CR",
     gradient: "bg-gradient-to-r from-orange-500 to-red-500",
-    features: ["Niche discovery", "Outreach templates", "Channel strategy"],
-  },
-  {
-    id: "portfolio-review",
+    features: ["Niche discovery", "Outreach templates", "Channel strategy"] },
+  { id: "portfolio-review",
     title: "AI Portfolio Review",
     description: "Professional profile and personal branding feedback",
     icon: Eye,
     badge: "4 CR",
     gradient: "bg-gradient-to-r from-pink-500 to-rose-500",
-    features: ["Bio rewriting", "Brand positioning", "Testimonial tips"],
-  },
-  {
-    id: "market-analysis",
+    features: ["Bio rewriting", "Brand positioning", "Testimonial tips"] },
+  { id: "market-analysis",
     title: "AI Market Analysis",
     description: "Comprehensive market insights, trends and forecasts",
     icon: BarChart3,
     badge: "5 CR",
     gradient: "bg-gradient-to-r from-cyan-500 to-blue-500",
-    features: ["Demand trends", "Competition level", "Pricing benchmarks"],
-  },
-  {
-    id: "gig-recommendation",
+    features: ["Demand trends", "Competition level", "Pricing benchmarks"] },
+  { id: "gig-recommendation",
     title: "AI Gig Recommendation",
     description: "Personalized gig opportunities matched to your profile",
     icon: Compass,
     badge: "5 CR",
     gradient: "bg-gradient-to-r from-amber-500 to-orange-500",
-    features: ["Gig matching", "Earning estimates", "30-day action plan"],
-  },
-  {
-    id: "milestone-planner",
+    features: ["Gig matching", "Earning estimates", "30-day action plan"] },
+  { id: "milestone-planner",
     title: "AI Milestone Planner",
     description: "Escrow-ready project milestones & payment schedules",
     icon: Flag,
     badge: "4 CR",
     gradient: "bg-gradient-to-r from-teal-500 to-emerald-500",
-    features: ["Payment schedules", "Acceptance criteria", "Risk mitigation"],
-  },
-  {
-    id: "video-portfolio",
+    features: ["Payment schedules", "Acceptance criteria", "Risk mitigation"] },
+  { id: "video-portfolio",
     title: "AI Video Portfolio Script",
     description: "Professional video intro script for your portfolio",
     icon: Video,
     badge: "4 CR",
     gradient: "bg-gradient-to-r from-purple-500 to-fuchsia-500",
-    features: ["60s intro script", "Elevator pitch", "Recording tips"],
-  },
-  {
-    id: "provider-badge",
+    features: ["60s intro script", "Elevator pitch", "Recording tips"] },
+  { id: "provider-badge",
     title: "AI Provider Verification",
     description: "Get AI-verified badge & quality score for your profile",
     icon: ShieldCheck,
     badge: "5 CR",
     gradient: "bg-gradient-to-r from-yellow-500 to-amber-500",
-    features: ["Quality score", "Badge levels", "Trust signals"],
-  },
-  {
-    id: "contract-template",
+    features: ["Quality score", "Badge levels", "Trust signals"] },
+  { id: "contract-template",
     title: "AI Smart Contracts",
     description: "AI-generated service agreements & legal templates",
     icon: ScrollText,
     badge: "4 CR",
     gradient: "bg-gradient-to-r from-slate-600 to-zinc-700",
-    features: ["Full contract", "IP rights", "Payment terms"],
-  },
-  {
-    id: "realtime-bidding",
+    features: ["Full contract", "IP rights", "Payment terms"] },
+  { id: "realtime-bidding",
     title: "AI Bidding Strategy",
     description: "Smart bidding analysis & competitive pricing strategy",
     icon: Gavel,
     badge: "5 CR",
     gradient: "bg-gradient-to-r from-red-500 to-rose-500",
-    features: ["Optimal bid price", "Competitor analysis", "Negotiation tactics"],
-  },
+    features: ["Optimal bid price", "Competitor analysis", "Negotiation tactics"] },
 ];
 
 const Marketplace = () => {
@@ -255,10 +231,8 @@ const Marketplace = () => {
       .from("profiles")
       .select("id, full_name, avatar_url")
       .in("id", userIds);
-    const merged = rows.map(o => ({
-      ...o,
-      profiles: profilesData?.find(p => p.id === o.user_id) || null,
-    }));
+    const merged = rows.map(o => ({ ...o,
+      profiles: profilesData?.find(p => p.id === o.user_id) || null }));
     setOfferings(prev => reset ? merged : [...prev, ...merged]);
     setPage(pageIdx);
     setIsLoadingMore(false);
@@ -379,8 +353,7 @@ const Marketplace = () => {
       "video-portfolio": <VideoPortfolioView onBack={() => setActiveView(null)} />,
       "provider-badge": <ProviderBadgeView onBack={() => setActiveView(null)} />,
       "contract-template": <ContractTemplateView onBack={() => setActiveView(null)} />,
-      "realtime-bidding": <RealtimeBiddingView onBack={() => setActiveView(null)} />,
-    };
+      "realtime-bidding": <RealtimeBiddingView onBack={() => setActiveView(null)} /> };
     return (
       <>
         <FloatingHowItWorks title="How Marketplace works" steps={[

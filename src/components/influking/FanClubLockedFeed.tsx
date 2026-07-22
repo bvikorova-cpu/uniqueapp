@@ -30,8 +30,7 @@ export function FanClubLockedFeed({ creatorId }: Props) {
       if (error) throw error;
       const clubMap = new Map(clubs.map((c) => [c.id, c]));
       return (posts ?? []).map((p) => ({ ...p, club: clubMap.get(p.fan_club_id) }));
-    },
-  });
+    } });
 
   if (isLoading) return <div className="flex justify-center py-4"><Loader2 className="h-5 w-5 animate-spin" /></div>;
   if (!data?.length) {

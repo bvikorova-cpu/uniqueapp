@@ -105,10 +105,8 @@ export const BreathingMeditation = ({ onBack }: Props) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      await (supabase as any).from("psychology_meditation_sessions").insert({
-        user_id: user.id, session_type: selectedExercise.id,
-        duration_seconds: Math.floor(totalElapsed), completed: true,
-      });
+      await (supabase as any).from("psychology_meditation_sessions").insert({ user_id: user.id, session_type: selectedExercise.id,
+        duration_seconds: Math.floor(totalElapsed), completed: true });
       toast.success(`Session complete! ${Math.floor(totalElapsed / 60)} minutes of mindfulness.`);
       loadSessions();
     } catch (e) { console.error(e); }

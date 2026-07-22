@@ -20,8 +20,7 @@ export const usePinnedPosts = (userId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const isPinned = (postId: string) => {
     return pinnedPosts?.some((p) => p.post_id === postId) || false;
@@ -42,26 +41,19 @@ export const usePinnedPosts = (userId?: string) => {
         if (error) throw error;
         return { action: "unpinned" };
       } else {
-        const { error } = await supabase.from("pinned_posts").insert({
-          user_id: user.id,
-          post_id: postId,
-        });
+        const { error } = await supabase.from("pinned_posts").insert({ user_id: user.id,
+          post_id: postId });
         if (error) throw error;
         return { action: "pinned" };
       }
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["pinned-posts"] });
-      toast({
-        title: data.action === "pinned" ? "Post pinned!" : "Post unpinned",
-      });
-    },
-  });
+      toast({ title: data.action === "pinned" ? "Post pinned!" : "Post unpinned" });
+    } });
 
-  return {
-    pinnedPosts: pinnedPosts || [],
+  return { pinnedPosts: pinnedPosts || [],
     isLoading,
     isPinned,
-    togglePin: togglePin.mutate,
-  };
+    togglePin: togglePin.mutate };
 };

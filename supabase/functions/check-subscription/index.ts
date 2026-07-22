@@ -6,10 +6,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: unknown) => console.log(`[CHECK-SUB] ${s}${d ? ` ${JSON.stringify(d)}` : ""}`);
 
@@ -17,8 +15,7 @@ const log = (s: string, d?: unknown) => console.log(`[CHECK-SUB] ${s}${d ? ` ${J
 // SECURITY: tier-specific lists prevent cross-module access (e.g. an Astrology
 // subscriber must NOT unlock F1 / Kids / Companions). Tiers without a list fall
 // back to "any active subscription" — keep that list short and intentional.
-const TIER_PRODUCTS: Record<string, string[]> = {
-  // generic — any active sub
+const TIER_PRODUCTS: Record<string, string[]> = { // generic — any active sub
   premium: [],
   vip: [],
 
@@ -67,8 +64,7 @@ const TIER_PRODUCTS: Record<string, string[]> = {
   // Unique verification tiers (also checked against active Stripe subscriptions)
   verified: ["prod_Uv3ypuicAkRhPQ"],
   plus:     ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ"],
-  pro:      ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ", "prod_Uv3yBGmooRzvPf"],
-};
+  pro:      ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ", "prod_Uv3yBGmooRzvPf"] };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -120,14 +116,12 @@ serve(async (req) => {
       const userRank = tierRank[profileTier] ?? 0;
       const hasAccess = notExpired && userRank >= requestedRank;
 
-      if (hasAccess || tier === "verification") {
-        return json({
+      if (hasAccess || tier === "verification") { return json({
           subscribed: hasAccess,
           tier: profileTier,
           product_id: null,
           subscription_end: expiresAt,
-          verification: true,
-        }, 200);
+          verification: true }, 200);
       }
     }
 
@@ -141,11 +135,9 @@ serve(async (req) => {
     }
     const customerId = customers.data[0].id;
 
-    const subs = await stripe.subscriptions.list({
-      customer: customerId,
+    const subs = await stripe.subscriptions.list({ customer: customerId,
       status: "active",
-      limit: 10,
-    });
+      limit: 10 });
 
     if (subs.data.length === 0) {
       return json({ subscribed: false, tier, product_id: null, subscription_end: null }, 200);
@@ -171,12 +163,10 @@ serve(async (req) => {
       if (hasAccess) break;
     }
 
-    return json({
-      subscribed: hasAccess,
+    return json({ subscribed: hasAccess,
       tier,
       product_id: matchedProduct,
-      subscription_end: subscriptionEnd,
-    }, 200);
+      subscription_end: subscriptionEnd }, 200);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     log("ERROR", msg);
@@ -187,6 +177,5 @@ serve(async (req) => {
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status,
-  });
+    status });
 }

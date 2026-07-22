@@ -16,11 +16,9 @@ const SUPABASE_ANON =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q";
 const STORAGE_KEY = "sb-jufrdzeonywluwutvyxz-auth-token";
 
-test.describe("Megatalent — comments persistence", () => {
-  test("posting a comment writes to talent_comments and renders in UI", async ({
+test.describe("Megatalent — comments persistence", () => { test("posting a comment writes to talent_comments and renders in UI", async ({
     page,
-    request,
-  }) => {
+    request }) => {
     await page.goto("/megatalent/singing", { waitUntil: "domcontentloaded" });
 
     // Scroll the Comments card into view (it lives below the submissions grid).
@@ -43,9 +41,7 @@ test.describe("Megatalent — comments persistence", () => {
     await sendBtn.click();
 
     // UI: the comment body should appear in the list within a few seconds.
-    await expect(page.getByText(unique, { exact: false })).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(page.getByText(unique, { exact: false })).toBeVisible({ timeout: 15_000 });
 
     // DB: verify a row was written for this user with the unique body.
     const raw = await page.evaluate((k) => localStorage.getItem(k), STORAGE_KEY);
@@ -58,9 +54,7 @@ test.describe("Megatalent — comments persistence", () => {
       {
         headers: {
           apikey: SUPABASE_ANON,
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
+          Authorization: `Bearer ${accessToken}` } },
     );
     expect(rowsRes.ok(), `talent_comments GET failed: ${rowsRes.status()}`).toBeTruthy();
     const rows = (await rowsRes.json()) as Array<{ id: string; body: string }>;
@@ -73,9 +67,7 @@ test.describe("Megatalent — comments persistence", () => {
       {
         headers: {
           apikey: SUPABASE_ANON,
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
+          Authorization: `Bearer ${accessToken}` } },
     );
   });
 });

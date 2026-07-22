@@ -25,14 +25,12 @@ export function FashionCloset({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "outfit", prompt: `Create a perfect ${season} outfit for a ${occasion}. Preferences: ${preferences}. Include: top, bottom, shoes, accessories, hairstyle suggestion, and color palette.`, coins: 4 },
-      });
+        body: { type: "outfit", prompt: `Create a perfect ${season} outfit for a ${occasion}. Preferences: ${preferences}. Include: top, bottom, shoes, accessories, hairstyle suggestion, and color palette.`, coins: 4 } });
       if (error) throw error;
       setResult(data.result);
       await supabase.from("glamour_creations").insert({
         user_id: user.id, creation_type: "outfit", title: `${occasion} Outfit`,
-        prompt: preferences, result_text: data.result, credits_used: 4,
-      });
+        prompt: preferences, result_text: data.result, credits_used: 4 });
     } catch (e: any) {
       const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
         if (isCoinsErr) {

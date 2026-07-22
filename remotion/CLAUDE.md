@@ -45,9 +45,7 @@ Bun.serve({
     "/api/users/:id": {
       GET: (req) => {
         return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
+      } } },
   // optional websocket support
   websocket: {
     open: (ws) => {
@@ -60,10 +58,8 @@ Bun.serve({
       // handle close
     }
   },
-  development: {
-    hmr: true,
-    console: true,
-  }
+  development: { hmr: true,
+    console: true }
 })
 ```
 

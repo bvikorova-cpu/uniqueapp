@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const MONTHLY_AMOUNT = 10;
 const BATCH_SIZE = 50;
@@ -74,10 +72,8 @@ Deno.serve(async (req) => {
       }
 
       // 2) atomic credit grant (race-safe against concurrent user spend)
-      const { error: rpcErr } = await supabase.rpc("increment_ai_credits", {
-        p_user_id: userId,
-        p_amount: MONTHLY_AMOUNT,
-      });
+      const { error: rpcErr } = await supabase.rpc("increment_ai_credits", { p_user_id: userId,
+        p_amount: MONTHLY_AMOUNT });
       if (rpcErr) {
         failed++;
         failures.push({ user_id: userId, stage: "credits_rpc", error: rpcErr.message });
@@ -89,17 +85,14 @@ Deno.serve(async (req) => {
       }
 
       // 3) in-app notification (best-effort, do not fail the grant on notify error)
-      const monthLabel = new Date(`${grantMonth}T00:00:00Z`).toLocaleString("en-US", {
-        month: "long", year: "numeric", timeZone: "UTC",
-      });
+      const monthLabel = new Date(`${grantMonth}T00:00:00Z`).toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
       const { error: notifErr } = await supabase.from("notifications").insert({
         user_id: userId,
         type: "monthly_credits",
         title: `+${MONTHLY_AMOUNT} AI credits for ${monthLabel}`,
         message: `Your monthly bonus of ${MONTHLY_AMOUNT} AI credits has been added. Unused credits roll over.`,
         action_url: "/ai-credits-store",
-        metadata: { grant_month: grantMonth, credits_granted: MONTHLY_AMOUNT },
-      });
+        metadata: { grant_month: grantMonth, credits_granted: MONTHLY_AMOUNT } });
       if (notifErr) {
         console.error(`[monthly-credits-grant] notification insert failed user=${userId}`, notifErr);
       }
@@ -150,19 +143,16 @@ Deno.serve(async (req) => {
   );
 
   // best-effort failure notification log row
-  if (failed > 0) {
-    await supabase.from("monthly_credit_grant_failures").insert({
+  if (failed > 0) { await supabase.from("monthly_credit_grant_failures").insert({
       grant_month: grantMonth,
       failure_count: failed,
-      details: failures.slice(0, 100),
-    }).then(({ error }) => {
+      details: failures.slice(0, 100) }).then(({ error }) => {
       if (error) console.error("[monthly-credits-grant] failure log insert error", error);
     });
   }
 
   return new Response(
-    JSON.stringify({
-      ok: failed === 0,
+    JSON.stringify({ ok: failed === 0,
       grantMonth,
       processed,
       granted,
@@ -170,8 +160,7 @@ Deno.serve(async (req) => {
       failed,
       timedOut,
       elapsedMs,
-      failures: failures.slice(0, 50),
-    }),
+      failures: failures.slice(0, 50) }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
   );
 });

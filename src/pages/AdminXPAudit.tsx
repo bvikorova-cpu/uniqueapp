@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import {
-  ArrowLeft,
+import { ArrowLeft,
   Search,
   Shield,
   AlertTriangle,
@@ -14,8 +13,7 @@ import {
   Star,
   Download,
   Filter,
-  User as UserIcon,
-} from "lucide-react";
+  User as UserIcon } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -23,21 +21,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
+  SelectValue } from "@/components/ui/select";
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { exportToCsv } from "@/lib/exportCsv";
 
@@ -50,8 +44,7 @@ const sourceConfig: Record<
   ad: { label: "Rewarded Ad", icon: PlayCircle, color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/30" },
   daily: { label: "Daily Login", icon: Gift, color: "text-green-400", bg: "bg-green-500/10 border-green-500/30" },
   streak: { label: "Streak Bonus", icon: Flame, color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/30" },
-  activity: { label: "Activity", icon: Star, color: "text-primary", bg: "bg-primary/10 border-primary/30" },
-};
+  activity: { label: "Activity", icon: Star, color: "text-primary", bg: "bg-primary/10 border-primary/30" } };
 
 interface SearchResult {
   user_id: string;
@@ -129,8 +122,7 @@ export default function AdminXPAudit() {
       );
       if (error) throw error;
       return (data ?? []) as SearchResult[];
-    },
-  });
+    } });
 
   const eventsQuery = useQuery({
     queryKey: ["admin-xp-events", selectedUserId],
@@ -142,8 +134,7 @@ export default function AdminXPAudit() {
       );
       if (error) throw error;
       return (data ?? []) as XPEvent[];
-    },
-  });
+    } });
 
   const reconQuery = useQuery({
     queryKey: ["admin-xp-recon", selectedUserId],
@@ -155,8 +146,7 @@ export default function AdminXPAudit() {
       );
       if (error) throw error;
       return data as Reconciliation;
-    },
-  });
+    } });
 
   const events = eventsQuery.data ?? [];
   const filtered = useMemo(
@@ -485,12 +475,10 @@ export default function AdminXPAudit() {
   );
 }
 
-function Stat({
-  label,
+function Stat({ label,
   value,
   highlight,
-  danger,
-}: {
+  danger }: {
   label: string;
   value: number;
   highlight?: boolean;

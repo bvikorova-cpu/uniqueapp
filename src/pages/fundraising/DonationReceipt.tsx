@@ -46,17 +46,14 @@ export default function DonationReceipt() {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('get-donation-receipt', {
-        body: { donationId, sessionId },
-      });
+        body: { donationId, sessionId } });
       if (error) throw error;
       if (!data?.receipt) throw new Error('Receipt not found');
       setReceipt(data.receipt);
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: 'Error',
         description: e?.message || 'Receipt could not be loaded',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -97,9 +94,7 @@ export default function DonationReceipt() {
   const formatEUR = (n: number) =>
     new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR' }).format(n);
   const formatDate = (d: string) =>
-    new Date(d).toLocaleDateString('en-GB', {
-      year: 'numeric', month: 'long', day: 'numeric',
-    });
+    new Date(d).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
     <div className="min-h-screen bg-muted/30 py-8 px-4 print:bg-white print:py-0">

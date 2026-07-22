@@ -7,29 +7,21 @@ const getUser = vi.fn();
 const signInWithPassword = vi.fn();
 const rpc = vi.fn();
 
-vi.mock("@/integrations/supabase/client", () => ({
-  supabase: {
+vi.mock("@/integrations/supabase/client", () => ({ supabase: {
     auth: {
       updateUser: (...a: any[]) => updateUser(...a),
       getUser: (...a: any[]) => getUser(...a),
-      signInWithPassword: (...a: any[]) => signInWithPassword(...a),
-    },
-    rpc: (...a: any[]) => rpc(...a),
-  },
-}));
+      signInWithPassword: (...a: any[]) => signInWithPassword(...a) },
+    rpc: (...a: any[]) => rpc(...a) } }));
 
 const toast = vi.fn();
 vi.mock("@/hooks/use-toast", () => ({ useToast: () => ({ toast }) }));
 
-function setLastSignIn(minutesAgo: number, email = "u@x.com") {
-  getUser.mockResolvedValue({
+function setLastSignIn(minutesAgo: number, email = "u@x.com") { getUser.mockResolvedValue({
     data: {
       user: {
         email,
-        last_sign_in_at: new Date(Date.now() - minutesAgo * 60_000).toISOString(),
-      },
-    },
-  });
+        last_sign_in_at: new Date(Date.now() - minutesAgo * 60_000).toISOString() } } });
 }
 
 beforeEach(() => {

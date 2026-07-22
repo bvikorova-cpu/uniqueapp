@@ -41,8 +41,7 @@ export default function FutureFaceGeneticTwin() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate("/auth"); return; }
       const res = await supabase.functions.invoke("future-face-image", {
-        body: { action: "genetic_twin", sourceUrl, params: { ethnicity: ethnicity || undefined } },
-      });
+        body: { action: "genetic_twin", sourceUrl, params: { ethnicity: ethnicity || undefined } } });
       const data = throwIfInvokeError(res);
       setResultUrl(data.resultUrl);
       toast({ title: "Genetic twin generated!", description: `Used ${data.creditsUsed} credits.` });

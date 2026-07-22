@@ -7,10 +7,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const TABLES: { name: string; transferCol: string }[] = [
   { name: "instructor_withdrawal_requests", transferCol: "stripe_transfer_id" },
@@ -45,10 +43,8 @@ serve(async (req) => {
       if (!authHeader) throw new Error("Missing Authorization");
       const { data: u } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
       if (!u?.user) throw new Error("Not authenticated");
-      const { data: isAdmin } = await supabase.rpc("has_role", {
-        _user_id: u.user.id,
-        _role: "admin",
-      });
+      const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: u.user.id,
+        _role: "admin" });
       if (!isAdmin) throw new Error("Admin only");
     }
 
@@ -67,8 +63,7 @@ serve(async (req) => {
       const res: Stripe.ApiList<Stripe.Transfer> = await stripe.transfers.list({
         limit: 100,
         created: { gte: since },
-        starting_after,
-      });
+        starting_after });
       for (const t of res.data) stripeTransfers.set(t.id, t);
       if (!res.has_more) break;
       starting_after = res.data[res.data.length - 1]?.id;
@@ -90,8 +85,7 @@ serve(async (req) => {
 
       if (error) { log("table query failed", { table: name, error: error.message }); report[name] = r; continue; }
 
-      for (const row of rows ?? []) {
-        const transferId = (row as any)[transferCol] as string | null;
+      for (const row of rows ?? []) { const transferId = (row as any)[transferCol] as string | null;
         if (transferId) {
           seenInDb.add(transferId);
           const st = stripeTransfers.get(transferId);
@@ -103,8 +97,7 @@ serve(async (req) => {
                 .from(name)
                 .update({
                   status: "completed",
-                  processed_at: row.processed_at ?? new Date(st.created * 1000).toISOString(),
-                })
+                  processed_at: row.processed_at ?? new Date(st.created * 1000).toISOString() })
                 .eq("id", row.id);
               r.updated++;
             }
@@ -119,13 +112,11 @@ serve(async (req) => {
 
     // 3) Stripe transfers NOT in any DB row → ghost transfers (audit only)
     const ghosts: { id: string; amount: number; destination: string | null }[] = [];
-    for (const [id, t] of stripeTransfers) {
-      if (!seenInDb.has(id)) {
+    for (const [id, t] of stripeTransfers) { if (!seenInDb.has(id)) {
         ghosts.push({
           id,
           amount: t.amount,
-          destination: typeof t.destination === "string" ? t.destination : t.destination?.id ?? null,
-        });
+          destination: typeof t.destination === "string" ? t.destination : t.destination?.id ?? null });
       }
     }
 
@@ -133,21 +124,18 @@ serve(async (req) => {
     if (ghosts.length || Object.values(report).some((r) => r.updated || r.drift_missing_in_stripe)) {
       await supabase.from("admin_audit_log").insert({
         action: "stripe_transfers_reconciled",
-        details: { days, report, ghost_count: ghosts.length, ghosts: ghosts.slice(0, 50) },
-      }).then(({ error }) => error && log("audit insert failed", error.message));
+        details: { days, report, ghost_count: ghosts.length, ghosts: ghosts.slice(0, 50) } }).then(({ error }) => error && log("audit insert failed", error.message));
     }
 
     log("done", { report, ghost_count: ghosts.length });
 
     return new Response(
-      JSON.stringify({
-        ok: true,
+      JSON.stringify({ ok: true,
         days,
         stripe_transfer_count: stripeTransfers.size,
         report,
         ghost_count: ghosts.length,
-        ghosts: ghosts.slice(0, 50),
-      }),
+        ghosts: ghosts.slice(0, 50) }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
   } catch (e) {
@@ -155,7 +143,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

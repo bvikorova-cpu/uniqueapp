@@ -85,16 +85,16 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "What is the symbol for sodium?", options: ["So", "Sd", "Na", "S"], correct: 2 },
   ],
   geography: [
-    { question: "What is the capital of Germany?", options: ["Munich", "Hamburg", "Berlin", "Frankfurt"], correct: 2 },
+    { question: "What is the largest planet in our solar system?", options: ["Earth", "Mars", "Jupiter", "Saturn"], correct: 2 },
     { question: "What is the highest mountain in the world?", options: ["K2", "Kangchenjunga", "Everest", "Makalu"], correct: 2 },
     { question: "How many continents are there?", options: ["5", "6", "7", "8"], correct: 2 },
-    { question: "Which river flows through Berlin?", options: ["Rhine", "Spree", "Elbe", "Danube"], correct: 1 },
-    { question: "In what year did the European Union adopt the euro?", options: ["1997", "1999", "2001", "2002"], correct: 1 },
+    { question: "Which celestial body is the main source of light for Earth?", options: ["Moon", "Mars", "Sun", "Venus"], correct: 2 },
+    { question: "What is the chemical symbol for water?", options: ["HO", "H2O", "O2", "CO2"], correct: 1 },
   ],
   history: [
     { question: "In what year did World War II end?", options: ["1943", "1944", "1945", "1946"], correct: 2 },
     { question: "Who was the first president of the USA?", options: ["Jefferson", "Washington", "Lincoln", "Adams"], correct: 1 },
-    { question: "When did the Berlin Wall fall?", options: ["1987", "1988", "1989", "1990"], correct: 2 },
+    { question: "When did the first moon landing happen?", options: ["1967", "1968", "1969", "1970"], correct: 2 },
     { question: "Who discovered America?", options: ["Magellan", "Columbus", "Vasco da Gama", "Cook"], correct: 1 },
     { question: "In what year did the French Revolution begin?", options: ["1776", "1789", "1804", "1815"], correct: 1 },
   ],
@@ -137,7 +137,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "How many players does a football team have on the field?", options: ["9", "10", "11", "12"], correct: 2 },
     { question: "Which sport does Roger Federer play?", options: ["Tennis", "Badminton", "Squash", "Table tennis"], correct: 0 },
     { question: "How many rings does the Olympic symbol have?", options: ["3", "4", "5", "6"], correct: 2 },
-    { question: "Where were the 2024 Olympics held?", options: ["Tokyo", "Paris", "Los Angeles", "Brisbane"], correct: 1 },
+    { question: "What is the hardest natural substance on Earth?", options: ["Gold", "Iron", "Diamond", "Ruby"], correct: 2 },
     { question: "How often are the Summer Olympic Games held?", options: ["Every 2 years", "Every 3 years", "Every 4 years", "Every 5 years"], correct: 2 },
   ],
   movies: [
@@ -162,16 +162,16 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Which dish is typical for Italy?", options: ["Paella", "Risotto", "Sushi", "Curry"], correct: 1 }
   ],
   travel: [
-    { question: "What is the capital of France?", options: ["Lyon", "Marseille", "Paris", "Nice"], correct: 2 },
+    { question: "What is the largest ocean on Earth?", options: ["Atlantic", "Indian", "Arctic", "Pacific"], correct: 3 },
     { question: "On which continent is Egypt?", options: ["Asia", "Africa", "Europe", "Australia"], correct: 1 },
     { question: "Which country has the most inhabitants?", options: ["India", "China", "USA", "Indonesia"], correct: 1 },
-    { question: "Where is the Eiffel Tower located?", options: ["London", "Rome", "Paris", "Madrid"], correct: 2 },
+    { question: "What do bees collect from flowers?", options: ["Nectar", "Dew", "Rain", "Sap"], correct: 0 },
     { question: "Which country has the shape of a boot?", options: ["Greece", "Spain", "Italy", "Portugal"], correct: 2 },
   ],
   fashion: [
     { question: "Which brand has the 'swoosh' logo?", options: ["Adidas", "Nike", "Puma", "Reebok"], correct: 1 },
     { question: "Who is the founder of Chanel?", options: ["Christian Dior", "Coco Chanel", "Yves Saint Laurent", "Giorgio Armani"], correct: 1 },
-    { question: "In which city is Fashion Week held first in the year?", options: ["Paris", "Milan", "New York", "London"], correct: 2 },
+    { question: "What is the main gas in Earth's atmosphere?", options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], correct: 2 },
     { question: "What does 'haute couture' mean?", options: ["Cheap fashion", "High fashion", "Sportswear", "Casual wear"], correct: 1 },
     { question: "Which color is classic for Tiffany jewelry?", options: ["Pink", "Blue", "Green", "Purple"], correct: 1 },
   ],
@@ -184,8 +184,8 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
   ],
   cars: [
     { question: "Which brand makes the Mustang model?", options: ["Chevrolet", "Ford", "Dodge", "Chrysler"], correct: 1 },
-    { question: "What does BMW stand for?", options: ["Berlin Motor Works", "Bavarian Motor Works", "British Motor Works", "Belgian Motor Works"], correct: 1 },
-    { question: "Which country makes Ferrari?", options: ["Germany", "France", "Italy", "Spain"], correct: 2 },
+    { question: "What does BMW stand for?", options: ["Brand Motor Works", "Bavarian Motor Works", "British Motor Works", "Belgian Motor Works"], correct: 1 },
+    { question: "What is the largest planet in our solar system?", options: ["Earth", "Mars", "Jupiter", "Saturn"], correct: 2 },
     { question: "What powers an electric car?", options: ["Gasoline", "Diesel", "Electricity", "Hydrogen"], correct: 2 },
     { question: "Which brand has a logo with four rings?", options: ["BMW", "Mercedes", "Audi", "Volkswagen"], correct: 2 },
   ],
@@ -202,8 +202,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Which company owns Instagram?", options: ["Google", "Meta", "Twitter", "Microsoft"], correct: 1 },
     { question: "In which city is Wall Street?", options: ["Los Angeles", "Chicago", "New York", "Boston"], correct: 2 },
     { question: "What is Bitcoin?", options: ["Stock", "Cryptocurrency", "Fund", "Bond"], correct: 1 },
-  ],
-};
+  ] };
 
 export default function Quiz() {
   const navigate = useNavigate();

@@ -44,13 +44,11 @@ export function TrackEditor({ onBack }: { onBack: () => void }) {
     { id: "3", type: "straight", length: 300, elevation: 0 },
   ]);
 
-  const addSegment = (type: string) => {
-    setSegments([...segments, {
+  const addSegment = (type: string) => { setSegments([...segments, {
       id: Date.now().toString(),
       type: type as TrackSegment["type"],
       length: 200,
-      elevation: 0,
-    }]);
+      elevation: 0 }]);
   };
 
   const removeSegment = (id: string) => {

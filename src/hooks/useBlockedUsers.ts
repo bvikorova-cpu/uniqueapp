@@ -26,8 +26,7 @@ export const useBlockedUsers = () => {
         .in("id", ids);
       const map = new Map((profiles || []).map((p: any) => [p.id, p]));
       return (data || []).map((b: any) => ({ ...b, profiles: map.get(b.blocked_user_id) || null }));
-    },
-  });
+    } });
 
   const isBlocked = (userId: string) => {
     return blockedUsers?.some((b) => b.blocked_user_id === userId) || false;
@@ -38,18 +37,15 @@ export const useBlockedUsers = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("blocked_users").insert({
-        user_id: user.id,
-        blocked_user_id: blockedUserId,
-      });
+      const { error } = await supabase.from("blocked_users").insert({ user_id: user.id,
+        blocked_user_id: blockedUserId });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
       toast({ title: "User blocked" });
-    },
-  });
+    } });
 
   const unblockUser = useMutation({
     mutationFn: async (blockedUserId: string) => {
@@ -67,14 +63,11 @@ export const useBlockedUsers = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blocked-users"] });
       toast({ title: "User unblocked" });
-    },
-  });
+    } });
 
-  return {
-    blockedUsers: blockedUsers || [],
+  return { blockedUsers: blockedUsers || [],
     isLoading,
     isBlocked,
     blockUser: blockUser.mutate,
-    unblockUser: unblockUser.mutate,
-  };
+    unblockUser: unblockUser.mutate };
 };

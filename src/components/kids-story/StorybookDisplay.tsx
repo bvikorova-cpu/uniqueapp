@@ -100,8 +100,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
 
     try {
       const { data, error } = await supabase.functions.invoke("kids-story-tts", {
-        body: { text },
-      });
+        body: { text } });
 
       if (error) throw error;
 
@@ -153,14 +152,11 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
     }
     setIllustratingPage(pageIndex);
     try {
-      const { data, error } = await supabase.functions.invoke("kids-story-illustrate", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("kids-story-illustrate", { body: {
           pageText: pages[pageIndex],
           storyTitle: story.title,
           style: story.illustrationStyle || "storybook",
-          characters: story.characters || "",
-        },
-      });
+          characters: story.characters || "" } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       const url = (data as any)?.illustration;

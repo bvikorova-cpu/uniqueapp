@@ -39,15 +39,13 @@ export const KarmicAnalytics = () => {
         .eq("user_id", user.id)
         .order("created_at", { ascending: true });
 
-      if (data) {
-        setReadings(data.map((r: any) => ({
+      if (data) { setReadings(data.map((r: any) => ({
           id: r.id,
           era: r.era || "Unknown",
           reading_type: r.reading_type || "standard",
           created_at: r.created_at,
           karmic_lesson: (r.reading_result as any)?.karmic_lesson || "Growth",
-          location: (r.reading_result as any)?.location || "Unknown",
-        })));
+          location: (r.reading_result as any)?.location || "Unknown" })));
       }
     } catch (error) {
       console.error("Error:", error);

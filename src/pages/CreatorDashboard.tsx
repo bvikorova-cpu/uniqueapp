@@ -7,14 +7,12 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import {
-  DollarSign,
+import { DollarSign,
   Users,
   Gift,
   TrendingUp,
   Crown,
-  Plus,
-} from "lucide-react";
+  Plus } from "lucide-react";
 
 interface CreatorProfile {
   id: string;
@@ -43,11 +41,9 @@ export default function CreatorDashboard() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<CreatorProfile | null>(null);
   const [gifts, setGifts] = useState<GiftReceived[]>([]);
-  const [stats, setStats] = useState({
-    monthlyEarnings: 0,
+  const [stats, setStats] = useState({ monthlyEarnings: 0,
     totalGifts: 0,
-    activeSubscribers: 0,
-  });
+    activeSubscribers: 0 });
 
   useEffect(() => {
     loadDashboard();
@@ -71,12 +67,10 @@ export default function CreatorDashboard() {
 
       if (profileError) throw profileError;
 
-      if (!profileData) {
-        toast({
+      if (!profileData) { toast({
           title: "No Creator Profile",
           description: "Please create a creator profile first",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/membership-community");
         return;
       }
@@ -115,18 +109,14 @@ export default function CreatorDashboard() {
         .eq("creator_id", profileData.id)
         .eq("status", "active");
 
-      setStats({
-        monthlyEarnings,
+      setStats({ monthlyEarnings,
         totalGifts: giftsData?.length || 0,
-        activeSubscribers: subscribersCount || 0,
-      });
+        activeSubscribers: subscribersCount || 0 });
 
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

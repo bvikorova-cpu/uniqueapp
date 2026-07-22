@@ -51,8 +51,7 @@ export function BirthdaysWidget() {
         .not("birth_date", "is", null);
       return (profs ?? []) as Friend[];
     },
-    staleTime: 1000 * 60 * 60,
-  });
+    staleTime: 1000 * 60 * 60 });
 
   const upcoming = friends
     .filter((f) => f.birth_date)

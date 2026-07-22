@@ -9,8 +9,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 const STORAGE_KEY_PREFIX = "megatalent_onboarding_done_";
 
 const steps = [
-  {
-    icon: Trophy,
+  { icon: Trophy,
     title: "Welcome to the MegaTalent Contest 🏆",
     description:
       "Participate in monthly contests across 35+ categories — from singing to dancing to art. The best talents win cash prizes, visibility, and a TOP Premium badge.",
@@ -18,10 +17,8 @@ const steps = [
       "Monthly rounds with winners announcement",
       "Real users vote + AI Performance Score",
       "Fair-play: one account = one vote per day",
-    ],
-  },
-  {
-    icon: Upload,
+    ] },
+  { icon: Upload,
     title: "How to upload a photo or video 📸",
     description:
       "In the category, click the 'Upload' button and select a file from your device. We accept photos (JPG, PNG, WEBP up to 10 MB) and videos (MP4, MOV up to 100 MB / max. 60 seconds).",
@@ -29,10 +26,8 @@ const steps = [
       "Choose the correct category (you cannot change it later)",
       "Add a short description and hashtags — this helps the algorithm",
       "The face must be yours — no stolen footage",
-    ],
-  },
-  {
-    icon: Heart,
+    ] },
+  { icon: Heart,
     title: "Hlasovanie a boost ❤️",
     description:
       "Your fans vote with their hearts. Premium subscribers get 2× vote weight, TOP Premium gets up to 3× and a daily vote-boost.",
@@ -40,10 +35,8 @@ const steps = [
       "Share your post via Share — this invites more votes",
       "Use AI Talent Coach to improve performance",
       "Sleduj Live Leaderboard pre real-time poradie",
-    ],
-  },
-  {
-    icon: Award,
+    ] },
+  { icon: Award,
     title: "Contest rules ⚖️",
     description:
       "To make the contest fair, please follow these rules. Violation means disqualification without refund of subscription.",
@@ -52,8 +45,7 @@ const steps = [
       "No buying votes or fake accounts",
       "Content must be your own creation (or with consent)",
       "Age 13+ (younger with parent's consent only)",
-    ],
-  },
+    ] },
 ];
 
 export const MegaTalentOnboarding = () => {

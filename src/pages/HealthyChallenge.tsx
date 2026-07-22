@@ -101,8 +101,7 @@ export default function HealthyChallenge() {
     setLoading(true);
     const today = todayISO();
     let { data: ch } = await (supabase as any).from("healthy_challenges").select("*").eq("challenge_date", today).maybeSingle();
-    if (!ch) {
-      ch = {
+    if (!ch) { ch = {
         id: "fallback",
         challenge_date: today,
         title: "Move for 30 minutes",
@@ -110,8 +109,7 @@ export default function HealthyChallenge() {
         category: "fitness",
         icon: "🏃",
         xp_reward: 50,
-        sponsor_name: null, sponsor_logo_url: null, sponsor_url: null,
-      } as any;
+        sponsor_name: null, sponsor_logo_url: null, sponsor_url: null } as any;
     }
     setChallenge(ch as Challenge);
 
@@ -145,11 +143,9 @@ export default function HealthyChallenge() {
       voteSet = new Set((myVotes || []).map((v: any) => v.submission_id));
     }
 
-    const enriched = (subs || []).map((s: any) => ({
-      ...s,
+    const enriched = (subs || []).map((s: any) => ({ ...s,
       profile: pmap.get(s.user_id) || null,
-      hasVoted: voteSet.has(s.id),
-    }));
+      hasVoted: voteSet.has(s.id) }));
     setSubmissions(enriched);
 
     if (user) {
@@ -208,33 +204,27 @@ export default function HealthyChallenge() {
     if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
     if (!challenge || challenge.id === "fallback") { toast({ title: "No active challenge yet", description: "Admin has not created today's challenge.", variant: "destructive" }); return; }
     if (description.trim().length < 10) { toast({ title: "Describe your effort (min 10 chars)", variant: "destructive" }); return; }
-    if (mySubmissionToday) {
-      toast({
+    if (mySubmissionToday) { toast({
         title: "⚠️ Daily limit reached",
         description: "You have already submitted your proof for today. Only 1 submission per day is allowed. Come back tomorrow for a new challenge!",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     setUploading(true);
     try {
       const { images, video } = await uploadMedia();
-      const { error } = await (supabase as any).from("healthy_submissions").insert({
-        user_id: user.id,
+      const { error } = await (supabase as any).from("healthy_submissions").insert({ user_id: user.id,
         challenge_id: challenge.id,
         challenge_date: challenge.challenge_date,
         description: description.trim(),
         image_urls: images,
-        video_url: video,
-      });
-      if (error) {
-        // Postgres unique_violation (user already submitted today, race-safe)
+        video_url: video });
+      if (error) { // Postgres unique_violation (user already submitted today, race-safe)
         if ((error as any).code === "23505") {
           toast({
             title: "⚠️ Daily limit reached",
             description: "You have already submitted your proof for today. Only 1 submission per day is allowed.",
-            variant: "destructive",
-          });
+            variant: "destructive" });
           await loadAll();
           return;
         }

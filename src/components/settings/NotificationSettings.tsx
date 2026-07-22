@@ -11,15 +11,13 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const LABELS: Record<NotifCategory, string> = {
-  likes: "Likes & reactions",
+const LABELS: Record<NotifCategory, string> = { likes: "Likes & reactions",
   comments: "Comments & replies",
   mentions: "Mentions & tags",
   follows: "New followers",
   messages: "Direct messages",
   marketing: "Promotions & updates",
-  system: "System & security",
-};
+  system: "System & security" };
 
 export function NotificationSettings() {
   const { data, isLoading, save } = useNotificationPreferences();

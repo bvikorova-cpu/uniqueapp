@@ -15,8 +15,7 @@ interface AICreditsFlashSaleProps {
 export const AICreditsFlashSale = ({ onClaim }: AICreditsFlashSaleProps) => {
   const [time, setTime] = useState({ h: 0, m: 0, s: 0 });
 
-  useEffect(() => {
-    const tick = () => {
+  useEffect(() => { const tick = () => {
       const now = new Date();
       const end = new Date();
       end.setHours(24, 0, 0, 0);
@@ -24,8 +23,7 @@ export const AICreditsFlashSale = ({ onClaim }: AICreditsFlashSaleProps) => {
       setTime({
         h: Math.floor(diff / 3_600_000),
         m: Math.floor((diff % 3_600_000) / 60_000),
-        s: Math.floor((diff % 60_000) / 1000),
-      });
+        s: Math.floor((diff % 60_000) / 1000) });
     };
     tick();
     const t = setInterval(tick, 1000);

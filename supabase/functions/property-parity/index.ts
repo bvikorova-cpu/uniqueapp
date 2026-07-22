@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const PARITY_COST = 5;
 
@@ -16,8 +14,7 @@ const ACTIONS: Record<string, { table: string; system: string }> = {
   "staging-brief": { table: "property_parity_staging_briefs", system: "You are an interior staging director. Output JSON: { room_briefs[{room,changes[],budget_eur}], palette[], styling_themes[], photo_shot_list[] }." },
   "neighborhood-pitch": { table: "property_parity_neighborhood_pitches", system: "You are a neighborhood storyteller for buyers. Output JSON: { headline, lifestyle_pitch, amenities[], commute_notes, school_notes, hidden_gems[] }." },
   "rental-yield": { table: "property_parity_rental_yields", system: "You are a rental investment analyst. Output JSON: { monthly_rent_eur, gross_yield_pct, net_yield_pct, occupancy_assumption_pct, expenses_breakdown{}, payback_years, verdict }." },
-  "legal-checklist": { table: "property_parity_legal_checklists", system: "You are a real-estate transaction lawyer. Output JSON: { documents[], steps[{name,who,timeline}], typical_fees_eur{}, common_pitfalls[] }. Generic guidance — not legal advice." },
-};
+  "legal-checklist": { table: "property_parity_legal_checklists", system: "You are a real-estate transaction lawyer. Output JSON: { documents[], steps[{name,who,timeline}], typical_fees_eur{}, common_pitfalls[] }. Generic guidance — not legal advice." } };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -65,9 +62,7 @@ serve(async (req) => {
           { role: "user", content: JSON.stringify(payload ?? {}) },
         ],
         response_format: { type: "json_object" },
-        temperature: 0.7,
-      }),
-    });
+        temperature: 0.7 }) });
     if (!aiRes.ok) {
       const t = await aiRes.text();
       return new Response(JSON.stringify({ error: "AI failed", detail: t }), { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -83,12 +78,10 @@ serve(async (req) => {
       .upsert({ user_id: user.id, balance: balance - PARITY_COST, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
 
     return new Response(JSON.stringify({ result, cost: PARITY_COST, balance: balance - PARITY_COST }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -54,15 +54,13 @@ function aggregate(rows: RouteEvent[]): Aggregate[] {
     }
     const topReferrer =
       [...refs.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
-    out.push({
-      path,
+    out.push({ path,
       hits: events.length,
       uniqueUsers: users.size,
       lastSeen: last,
       topReferrer,
       redirected,
-      hardMisses: hard,
-    });
+      hardMisses: hard });
   }
   return out.sort((a, b) => b.hits - a.hits).slice(0, 50);
 }
@@ -104,8 +102,7 @@ export default function AdminRouteErrors() {
         .limit(5000);
       if (error) throw error;
       return (data ?? []) as RouteEvent[];
-    },
-  });
+    } });
 
   const rows = useMemo(() => aggregate(data ?? []), [data]);
   const totalHits = data?.length ?? 0;

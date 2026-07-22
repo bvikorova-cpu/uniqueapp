@@ -32,8 +32,7 @@ export default function CollectorAchievements({ userId }: Props) {
       const uniqueTypes = new Set(collectibles?.map((c: any) => c.collectible_type)).size;
 
       return { totalItems, uniqueTypes };
-    },
-  });
+    } });
 
   const getProgress = (code: string, target: number) => {
     if (!stats) return 0;

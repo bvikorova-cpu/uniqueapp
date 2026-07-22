@@ -19,20 +19,17 @@ export function BattleVoting({ battle, onVoteSuccess }: BattleVotingProps) {
     setIsVoting(true);
     try {
       const { data, error } = await supabase.functions.invoke("comedy-battle-vote", {
-        body: { battleId: battle.id, participantId },
-      });
+        body: { battleId: battle.id, participantId } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
       toast({ title: "Vote Cast!", description: "Your vote has been counted." });
       onVoteSuccess();
-    } catch (error: any) {
-      console.error(error);
+    } catch (error: any) { console.error(error);
       toast({
         title: "Error",
         description: error.message || "Failed to cast vote",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsVoting(false);
     }

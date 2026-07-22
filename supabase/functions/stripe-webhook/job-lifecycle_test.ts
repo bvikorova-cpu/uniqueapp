@@ -35,21 +35,16 @@ function sb() {
   return createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } });
 }
 
-async function signAndPost(event: unknown): Promise<Response> {
-  const body = JSON.stringify(event);
+async function signAndPost(event: unknown): Promise<Response> { const body = JSON.stringify(event);
   const stripe = new Stripe(STRIPE_KEY || "sk_test_dummy", {
-    apiVersion: "2025-08-27.basil",
-  });
-  const sig = await stripe.webhooks.generateTestHeaderStringAsync({
-    payload: body,
+    apiVersion: "2025-08-27.basil" });
+  const sig = await stripe.webhooks.generateTestHeaderStringAsync({ payload: body,
     secret: WEBHOOK_SECRET,
-    timestamp: Math.floor(Date.now() / 1000),
-  });
+    timestamp: Math.floor(Date.now() / 1000) });
   return await fetch(WEBHOOK_URL, {
     method: "POST",
     headers: { "content-type": "application/json", "stripe-signature": sig },
-    body,
-  });
+    body });
 }
 
 async function seedActiveListing(piId: string): Promise<string | null> {
@@ -63,13 +58,12 @@ async function seedActiveListing(piId: string): Promise<string | null> {
   const employerId = anyEmp?.employer_id ?? SEED_EMPLOYER_ID;
 
   const jobId = crypto.randomUUID();
-  const { error: jErr } = await admin.from("job_listings").insert({
-    id: jobId,
+  const { error: jErr } = await admin.from("job_listings").insert({ id: jobId,
     employer_id: employerId,
     title: "E2E Lifecycle Test Listing",
     description: "Synthetic listing — safe to delete.",
     company_name: "E2E Co",
-    location: "Berlin",
+    location: "City",
     country: "SK",
     category: "engineering" as any,
     job_type: "full_time" as any,
@@ -78,8 +72,7 @@ async function seedActiveListing(piId: string): Promise<string | null> {
     is_active: true,
     duration_days: 7,
     published_at: new Date().toISOString(),
-    expires_at: new Date(Date.now() + 7 * 86400000).toISOString(),
-  });
+    expires_at: new Date(Date.now() + 7 * 86400000).toISOString() });
   if (jErr) {
     console.log("seedActiveListing: insert failed", jErr.message);
     return null;
@@ -93,8 +86,7 @@ async function seedActiveListing(piId: string): Promise<string | null> {
     amount: 2900,
     duration_days: 7,
     status: "completed",
-    expires_at: new Date(Date.now() + 7 * 86400000).toISOString(),
-  });
+    expires_at: new Date(Date.now() + 7 * 86400000).toISOString() });
   return jobId;
 }
 
@@ -127,11 +119,7 @@ Deno.test("refund: charge.refunded deactivates job listing", async () => {
           payment_intent: piId,
           amount_refunded: 2900,
           refunds: {
-            data: [{ id: `re_test_${crypto.randomUUID().replace(/-/g, "")}`, reason: "requested_by_customer" }],
-          },
-        },
-      },
-    };
+            data: [{ id: `re_test_${crypto.randomUUID().replace(/-/g, "")}`, reason: "requested_by_customer" }] } } } };
     const res = await signAndPost(event);
     await res.text();
     assertEquals(res.status, 200);
@@ -185,10 +173,7 @@ Deno.test("dispute: charge.dispute.created flips job listing to disputed", async
           reason: "fraudulent",
           status: "needs_response",
           is_charge_refundable: true,
-          evidence: {},
-        },
-      },
-    };
+          evidence: {} } } };
     const res = await signAndPost(event);
     await res.text();
     assertEquals(res.status, 200);
@@ -229,13 +214,12 @@ Deno.test("expiration: expire_old_job_listings() flips past-due listings", async
 
   const jobId = crypto.randomUUID();
   const yesterday = new Date(Date.now() - 86400000).toISOString();
-  const { error } = await admin.from("job_listings").insert({
-    id: jobId,
+  const { error } = await admin.from("job_listings").insert({ id: jobId,
     employer_id: employerId,
     title: "E2E Expire Test Listing",
     description: "Synthetic — safe to delete.",
     company_name: "E2E Co",
-    location: "Berlin",
+    location: "City",
     country: "SK",
     category: "engineering" as any,
     job_type: "full_time" as any,
@@ -244,8 +228,7 @@ Deno.test("expiration: expire_old_job_listings() flips past-due listings", async
     is_active: true,
     duration_days: 7,
     published_at: new Date(Date.now() - 8 * 86400000).toISOString(),
-    expires_at: yesterday,
-  });
+    expires_at: yesterday });
   if (error) {
     console.log("expire test: insert failed", error.message);
     return;
@@ -285,14 +268,12 @@ Deno.test("employer verification: pending → approved transition", async () => 
 
   // Insert pending verification (service role bypasses FK to auth.users so we
   // use a random id; if FK exists, this will fail and we skip).
-  const { error: insErr } = await admin.from("employer_verifications").insert({
-    employer_id: employerId,
+  const { error: insErr } = await admin.from("employer_verifications").insert({ employer_id: employerId,
     company_name: "E2E Verification Co",
-    company_address: "Main St 1, Berlin",
+    company_address: "Main St 1, City",
     company_phone: "+421900000000",
     verification_status: "pending" as any,
-    submitted_at: new Date().toISOString(),
-  });
+    submitted_at: new Date().toISOString() });
   if (insErr) {
     console.log("verification insert failed (likely auth FK):", insErr.message);
     return;
@@ -302,10 +283,8 @@ Deno.test("employer verification: pending → approved transition", async () => 
     // Approve
     const { error: updErr } = await admin
       .from("employer_verifications")
-      .update({
-        verification_status: "approved" as any,
-        reviewed_at: new Date().toISOString(),
-      })
+      .update({ verification_status: "approved" as any,
+        reviewed_at: new Date().toISOString() })
       .eq("employer_id", employerId);
     assertEquals(updErr, null);
 

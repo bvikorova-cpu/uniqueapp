@@ -47,8 +47,7 @@ export const GiftChallenges = () => {
         .order("challenge_type");
       if (error) throw error;
       return data as Challenge[];
-    },
-  });
+    } });
 
   const { data: progress = [] } = useQuery({
     queryKey: ["santa-challenge-progress", currentUserId],
@@ -61,8 +60,7 @@ export const GiftChallenges = () => {
       if (error) throw error;
       return data as ChallengeProgress[];
     },
-    enabled: !!currentUserId,
-  });
+    enabled: !!currentUserId });
 
   const claimReward = useMutation({
     mutationFn: async ({ challengeId, rewardCredits }: { challengeId: string; rewardCredits: number }) => {
@@ -103,8 +101,7 @@ export const GiftChallenges = () => {
       queryClient.invalidateQueries({ queryKey: ["santa-challenge-progress"] });
       queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
     },
-    onError: () => toast.error("Failed to claim reward"),
-  });
+    onError: () => toast.error("Failed to claim reward") });
 
   const getProgress = (challengeId: string) => progress.find(p => p.challenge_id === challengeId);
 

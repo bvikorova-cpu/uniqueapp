@@ -25,8 +25,7 @@ serve(async (req) => {
       system: "You are a nutritionist. Create a structured meal plan. Return JSON: {plan:[{day, meals:[{type, name, calories, macros:{p,c,f}, ingredients[], prep_minutes}]}], shopping_list[], total_daily_calories}.",
       user: `Goal: ${goal}. Daily calories: ${calories}. Days: ${days}. Diet: ${diet}. Allergies: ${allergies.join(", ") || "none"}. Notes: ${preferences}`,
       json: true,
-      temperature: 0.7,
-    });
+      temperature: 0.7 });
     const plan = safeJson(result);
     return jsonResponse({ success: true, plan, result: plan, text: result });
   } catch (e: any) {

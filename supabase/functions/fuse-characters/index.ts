@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const COST = 30;
 
@@ -37,12 +35,10 @@ serve(async (req) => {
     if (!character1Id || !character2Id) return j({ error: "Two characters required for fusion" }, 400);
 
     const fusedName = `Fusion-${Date.now().toString(36).slice(-4).toUpperCase()}`;
-    const stats = {
-      strength: Math.floor(60 + Math.random() * 40),
+    const stats = { strength: Math.floor(60 + Math.random() * 40),
       speed: Math.floor(60 + Math.random() * 40),
       intelligence: Math.floor(60 + Math.random() * 40),
-      charisma: Math.floor(60 + Math.random() * 40),
-    };
+      charisma: Math.floor(60 + Math.random() * 40) };
 
     await admin
       .from("character_credits")
@@ -50,16 +46,13 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .eq("credits_remaining", balance);
 
-    return j({
-      fusedCharacter: {
+    return j({ fusedCharacter: {
         name: fusedName,
         stats,
         rarity: stats.strength + stats.speed + stats.intelligence + stats.charisma > 320 ? "legendary" : "epic",
-        description: "A powerful fusion warrior born from the combination of two heroes.",
-      },
+        description: "A powerful fusion warrior born from the combination of two heroes." },
       sourceCharacters: [character1Id, character2Id],
-      creditsRemaining: balance - COST,
-    });
+      creditsRemaining: balance - COST });
   } catch (e) {
     return j({ error: e instanceof Error ? e.message : String(e) }, 500);
   }

@@ -2,10 +2,8 @@
 // Routes via { action: "polygraph" | "cross-exam" | "voice" | ... } in body
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const json = (b: any, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -44,9 +42,7 @@ async function callOpenAI(messages: any[], json_mode = true) {
     body: JSON.stringify({
       model: "gpt-4o-mini",
       messages,
-      ...(json_mode ? { response_format: { type: "json_object" } } : {}),
-    }),
-  });
+      ...(json_mode ? { response_format: { type: "json_object" } } : {}) }) });
   if (!resp.ok) return { err: json({ error: "AI failed", details: await resp.text() }, 500) };
   const aj = await resp.json();
   const content = aj.choices[0].message.content;
@@ -80,11 +76,9 @@ async function actionPolygraph(supabase: any, user: any, body: any) {
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  await supabase.from("lie_polygraph_sessions").insert({
-    user_id: user.id, source_text: text.slice(0, 4000),
+  await supabase.from("lie_polygraph_sessions").insert({ user_id: user.id, source_text: text.slice(0, 4000),
     stress_curve: r.stress_curve || [], peak_moments: r.peak_moments || [],
-    overall_stress: r.overall_stress, truthfulness_score: r.truthfulness_score, credits_used: COST,
-  });
+    overall_stress: r.overall_stress, truthfulness_score: r.truthfulness_score, credits_used: COST });
   await deductCredits(supabase, user.id, cc.cr, COST);
   await awardXp(supabase, user.id, 5);
   return json({ ...r, credits_charged: COST });
@@ -107,12 +101,10 @@ async function actionCrossExam(supabase: any, user: any, body: any) {
   const ai = await callOpenAI([{ role: "system", content: sys }, { role: "user", content: userMsg }]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  if (action === "verdict") {
-    await supabase.from("lie_cross_examinations").insert({
+  if (action === "verdict") { await supabase.from("lie_cross_examinations").insert({
       user_id: user.id, subject_text: subject_text.slice(0, 4000),
       qa_thread: thread, contradictions: r.contradictions || [],
-      verdict: r.verdict, credits_used: COST,
-    });
+      verdict: r.verdict, credits_used: COST });
     await deductCredits(supabase, user.id, cc.cr, COST);
   }
   return json({ ...r, credits_charged: action === "verdict" ? COST : 0 });
@@ -144,8 +136,7 @@ async function actionVoice(supabase: any, user: any, body: any) {
   fd.append("model", "whisper-1");
   fd.append("response_format", "verbose_json");
   const wresp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd,
-  });
+    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd });
   if (!wresp.ok) return json({ error: "Transcription failed", details: await wresp.text() }, 500);
   const wjson = await wresp.json();
   const transcript = wjson.text || "";
@@ -159,11 +150,9 @@ async function actionVoice(supabase: any, user: any, body: any) {
   const results = ai.result;
 
   await deductCredits(supabase, user.id, cc.cr, COST);
-  const { data: saved } = await supabase.from("lie_detector_voice_analyses").insert({
-    user_id: user.id, audio_url: audioUrl, transcript, duration_sec: duration,
+  const { data: saved } = await supabase.from("lie_detector_voice_analyses").insert({ user_id: user.id, audio_url: audioUrl, transcript, duration_sec: duration,
     stress_score: results.stress_score, hesitation_score: results.hesitation_score,
-    truthfulness_score: results.truthfulness_score, results, credits_used: COST,
-  }).select().single();
+    truthfulness_score: results.truthfulness_score, results, credits_used: COST }).select().single();
 
   return json({ analysis: saved, results, transcript });
 }
@@ -182,8 +171,7 @@ async function actionVoiceHeatmap(supabase: any, user: any, body: any) {
   fd.append("response_format", "verbose_json");
   fd.append("timestamp_granularities[]", "segment");
   const wResp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd,
-  });
+    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd });
   if (!wResp.ok) return json({ error: "Whisper failed", details: await wResp.text() }, 500);
   const wj = await wResp.json();
   const transcript = wj.text || "";
@@ -195,10 +183,8 @@ async function actionVoiceHeatmap(supabase: any, user: any, body: any) {
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  await supabase.from("lie_voice_heatmaps").insert({
-    user_id: user.id, audio_duration_sec: wj.duration || null,
-    segments: r.segments || [], transcript, overall_score: r.overall_score, credits_used: COST,
-  });
+  await supabase.from("lie_voice_heatmaps").insert({ user_id: user.id, audio_duration_sec: wj.duration || null,
+    segments: r.segments || [], transcript, overall_score: r.overall_score, credits_used: COST });
   await deductCredits(supabase, user.id, cc.cr, COST);
   return json({ ...r, transcript, credits_charged: COST });
 }
@@ -213,8 +199,7 @@ async function actionBodyLanguage(supabase: any, user: any, body: any) {
 
   const imageMessages = frames_base64.map((b64: string) => ({
     type: "image_url",
-    image_url: { url: `data:${mime || "image/jpeg"};base64,${b64}`, detail: "low" },
-  }));
+    image_url: { url: `data:${mime || "image/jpeg"};base64,${b64}`, detail: "low" } }));
   const resp = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
@@ -227,19 +212,15 @@ async function actionBodyLanguage(supabase: any, user: any, body: any) {
           ...imageMessages,
         ]},
       ],
-      response_format: { type: "json_object" },
-    }),
-  });
+      response_format: { type: "json_object" } }) });
   if (!resp.ok) return json({ error: "AI failed", details: await resp.text() }, 500);
   const aj = await resp.json();
   const r = JSON.parse(aj.choices[0].message.content);
-  await supabase.from("lie_body_language_scans").insert({
-    user_id: user.id,
+  await supabase.from("lie_body_language_scans").insert({ user_id: user.id,
     micro_expressions: r.micro_expressions || [],
     blink_rate: r.blink_rate === "elevated" ? 25 : r.blink_rate === "low" ? 8 : 17,
     gaze_pattern: r.gaze_pattern, deception_indicators: r.deception_indicators || [],
-    overall_score: r.overall_score, credits_used: COST,
-  });
+    overall_score: r.overall_score, credits_used: COST });
   await deductCredits(supabase, user.id, cc.cr, COST);
   return json({ ...r, credits_charged: COST });
 }
@@ -255,11 +236,9 @@ async function actionComparison(supabase: any, user: any, body: any) {
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  await supabase.from("lie_comparisons").insert({
-    user_id: user.id, title: title || "Comparison",
+  await supabase.from("lie_comparisons").insert({ user_id: user.id, title: title || "Comparison",
     source_a: source_a.slice(0, 4000), source_b: source_b.slice(0, 4000),
-    diff_findings: r.diff_findings || [], verdict: r.verdict, credits_used: COST,
-  });
+    diff_findings: r.diff_findings || [], verdict: r.verdict, credits_used: COST });
   await deductCredits(supabase, user.id, cc.cr, COST);
   return json({ ...r, credits_charged: COST });
 }
@@ -272,9 +251,7 @@ async function actionBulk(supabase: any, user: any, body: any) {
   const cc = await checkCredits(supabase, user.id, COST); if (cc.err) return cc.err;
   const key = OPENAI(); if (!key) return json({ error: "OPENAI_API_KEY not configured" }, 500);
 
-  const { data: job } = await supabase.from("lie_bulk_jobs").insert({
-    user_id: user.id, job_type: job_type || "messages", total_items: items.length, status: "processing", credits_used: COST,
-  }).select().single();
+  const { data: job } = await supabase.from("lie_bulk_jobs").insert({ user_id: user.id, job_type: job_type || "messages", total_items: items.length, status: "processing", credits_used: COST }).select().single();
 
   const batched = chunks(items, 20);
   const allResults: any[] = [];
@@ -288,9 +265,7 @@ async function actionBulk(supabase: any, user: any, body: any) {
           { role: "system", content: "You score multiple messages for truthfulness. Output JSON only." },
           { role: "user", content: `Messages:\n${batch.map((m: string, i: number) => `[${i}] ${String(m).slice(0,500)}`).join("\n")}\n\nReturn JSON: { results: [{index:number, truthfulness:number, red_flags:string[], summary:string}] }` },
         ],
-        response_format: { type: "json_object" },
-      }),
-    });
+        response_format: { type: "json_object" } }) });
     if (resp.ok) {
       const aj = await resp.json();
       const parsed = JSON.parse(aj.choices[0].message.content);
@@ -321,10 +296,8 @@ async function actionMonitor(supabase: any, user: any, body: any) {
   const sub = body.sub_action ?? body.subAction ?? body.op;
   const { job_id, target_url, target_type, frequency, title } = body;
   if (sub === "create") {
-    const { data } = await supabase.from("lie_monitoring_jobs").insert({
-      user_id: user.id, title: title || "Monitor", target_url, target_type: target_type || "url",
-      frequency: frequency || "daily", is_active: true,
-    }).select().single();
+    const { data } = await supabase.from("lie_monitoring_jobs").insert({ user_id: user.id, title: title || "Monitor", target_url, target_type: target_type || "url",
+      frequency: frequency || "daily", is_active: true }).select().single();
     return json({ job: data });
   }
   if (sub === "toggle") {
@@ -342,10 +315,8 @@ async function actionMonitor(supabase: any, user: any, body: any) {
 async function actionSocialCard(supabase: any, user: any, body: any) {
   const { quote, truth_score, source_type, source_id } = body;
   if (!quote) return json({ error: "quote required" }, 400);
-  const { data } = await supabase.from("lie_social_cards").insert({
-    user_id: user.id, quote: quote.slice(0, 500),
-    truth_score: truth_score ?? null, source_type: source_type || "manual", source_id: source_id || null,
-  }).select().single();
+  const { data } = await supabase.from("lie_social_cards").insert({ user_id: user.id, quote: quote.slice(0, 500),
+    truth_score: truth_score ?? null, source_type: source_type || "manual", source_id: source_id || null }).select().single();
   return json({ card: data });
 }
 
@@ -360,10 +331,8 @@ async function actionReport(supabase: any, user: any, body: any) {
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  const { data: rep } = await supabase.from("lie_truth_reports").insert({
-    user_id: user.id, title: title || r.headline || "Truth Report",
-    source_type, source_id: source_id || null, report_data: r, credits_used: COST,
-  }).select().single();
+  const { data: rep } = await supabase.from("lie_truth_reports").insert({ user_id: user.id, title: title || r.headline || "Truth Report",
+    source_type, source_id: source_id || null, report_data: r, credits_used: COST }).select().single();
   await deductCredits(supabase, user.id, cc.cr, COST);
   return json({ report: rep, ...r, credits_charged: COST });
 }
@@ -384,18 +353,13 @@ async function actionScreenshot(supabase: any, user: any, body: any) {
         role: "user", content: [
           { type: "text", text: "Forensic screenshot analysis. Detect signs of editing, splicing, font inconsistencies, timestamp issues, manipulation. Return JSON: { is_authentic:boolean, confidence:number, manipulation_signals:string[], extracted_text:string, summary:string }" },
           { type: "image_url", image_url: { url: `data:${mime || "image/png"};base64,${image_base64}`, detail: "high" } },
-        ],
-      }],
-      response_format: { type: "json_object" },
-    }),
-  });
+        ] }],
+      response_format: { type: "json_object" } }) });
   if (!resp.ok) return json({ error: "AI failed", details: await resp.text() }, 500);
   const aj = await resp.json();
   const r = JSON.parse(aj.choices[0].message.content);
-  await supabase.from("lie_detector_screenshot_analyses").insert({
-    user_id: user.id, is_authentic: r.is_authentic, confidence: r.confidence,
-    manipulation_signals: r.manipulation_signals || [], extracted_text: r.extracted_text, summary: r.summary, credits_used: COST,
-  });
+  await supabase.from("lie_detector_screenshot_analyses").insert({ user_id: user.id, is_authentic: r.is_authentic, confidence: r.confidence,
+    manipulation_signals: r.manipulation_signals || [], extracted_text: r.extracted_text, summary: r.summary, credits_used: COST });
   await deductCredits(supabase, user.id, cc.cr, COST);
   return json({ ...r, credits_charged: COST });
 }
@@ -411,10 +375,8 @@ async function actionTimeline(supabase: any, user: any, body: any) {
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  const { data: t } = await supabase.from("lie_detector_timelines").insert({
-    user_id: user.id, title: title || "Timeline",
-    messages, timeline_data: r, overall_credibility: r.overall_credibility, credits_used: COST,
-  }).select().single();
+  const { data: t } = await supabase.from("lie_detector_timelines").insert({ user_id: user.id, title: title || "Timeline",
+    messages, timeline_data: r, overall_credibility: r.overall_credibility, credits_used: COST }).select().single();
   await deductCredits(supabase, user.id, cc.cr, COST);
   return json({ timeline: t, ...r, credits_charged: COST });
 }
@@ -449,18 +411,13 @@ async function actionDeepfake(supabase: any, user: any, body: any) {
         role: "user", content: [
           { type: "text", text: "Deepfake detection. Analyze face for AI-generation artifacts: eye asymmetry, ear/teeth distortion, hair edges, lighting mismatch, skin texture. Return JSON: { likely_ai:boolean, confidence:number, artifacts:string[], verdict:string }" },
           { type: "image_url", image_url: { url: `data:${mime || "image/jpeg"};base64,${image_base64}`, detail: "high" } },
-        ],
-      }],
-      response_format: { type: "json_object" },
-    }),
-  });
+        ] }],
+      response_format: { type: "json_object" } }) });
   if (!resp.ok) return json({ error: "AI failed", details: await resp.text() }, 500);
   const aj = await resp.json();
   const r = JSON.parse(aj.choices[0].message.content);
-  await supabase.from("lie_deepfake_scans").insert({
-    user_id: user.id, likely_ai: r.likely_ai, confidence: r.confidence,
-    artifacts: r.artifacts || [], verdict: r.verdict, credits_used: COST,
-  });
+  await supabase.from("lie_deepfake_scans").insert({ user_id: user.id, likely_ai: r.likely_ai, confidence: r.confidence,
+    artifacts: r.artifacts || [], verdict: r.verdict, credits_used: COST });
   await deductCredits(supabase, user.id, cc.cr, COST);
   return json({ ...r, credits_charged: COST });
 }
@@ -493,19 +450,15 @@ async function actionDailyChallenge(supabase: any, user: any, body: any) {
     ]);
     if (ai.err) return ai.err;
     const r = ai.result;
-    const { data: ins } = await supabase.from("lie_daily_challenges").insert({
-      challenge_date: today, statement: r.statement, correct_verdict: r.correct_verdict,
-      explanation: r.explanation, difficulty: r.difficulty,
-    }).select().single();
+    const { data: ins } = await supabase.from("lie_daily_challenges").insert({ challenge_date: today, statement: r.statement, correct_verdict: r.correct_verdict,
+      explanation: r.explanation, difficulty: r.difficulty }).select().single();
     return json({ challenge: ins });
   }
   if (sub === "submit") {
     const { data: ch } = await supabase.from("lie_daily_challenges").select("*").eq("id", challenge_id).maybeSingle();
     if (!ch) return json({ error: "challenge not found" }, 404);
     const correct = ch.correct_verdict === answer;
-    await supabase.from("lie_challenge_attempts").insert({
-      user_id: user.id, challenge_id, answer, is_correct: correct,
-    });
+    await supabase.from("lie_challenge_attempts").insert({ user_id: user.id, challenge_id, answer, is_correct: correct });
     if (correct) await awardXp(supabase, user.id, 10);
     return json({ correct, correct_verdict: ch.correct_verdict, explanation: ch.explanation });
   }
@@ -517,11 +470,9 @@ async function actionVerifyReport(supabase: any, user: any, body: any) {
   if (!report_id) return json({ error: "report_id required" }, 400);
   const { data: rep } = await supabase.from("lie_truth_reports").select("*").eq("id", report_id).maybeSingle();
   if (!rep) return json({ valid: false, error: "Report not found" }, 404);
-  return json({
-    valid: true, report_id: rep.id, title: rep.title,
+  return json({ valid: true, report_id: rep.id, title: rep.title,
     issued_at: rep.created_at, source_type: rep.source_type,
-    watermark: (rep.report_data as any)?.watermark_text || "VERIFIED",
-  });
+    watermark: (rep.report_data as any)?.watermark_text || "VERIFIED" });
 }
 
 // ============ PARITY PACK (6 credits each AI) ============
@@ -539,10 +490,8 @@ async function actionChatImport(supabase: any, user: any, body: any) {
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  await supabase.from("lie_chat_imports").insert({
-    user_id: user.id, source_app: source_app || "whatsapp", raw_text: truncated,
-    message_count: msgCount, analysis: r, overall_score: r.overall_score, credits_used: PARITY_COST,
-  });
+  await supabase.from("lie_chat_imports").insert({ user_id: user.id, source_app: source_app || "whatsapp", raw_text: truncated,
+    message_count: msgCount, analysis: r, overall_score: r.overall_score, credits_used: PARITY_COST });
   await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
   await awardXp(supabase, user.id, 5);
   return json({ ...r, credits_charged: PARITY_COST });
@@ -558,10 +507,8 @@ async function actionEmailScan(supabase: any, user: any, body: any) {
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  await supabase.from("lie_email_scans").insert({
-    user_id: user.id, subject, sender, body: String(emailBody).slice(0,6000),
-    analysis: r, truthfulness_score: r.truthfulness_score, credits_used: PARITY_COST,
-  });
+  await supabase.from("lie_email_scans").insert({ user_id: user.id, subject, sender, body: String(emailBody).slice(0,6000),
+    analysis: r, truthfulness_score: r.truthfulness_score, credits_used: PARITY_COST });
   await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
   return json({ ...r, credits_charged: PARITY_COST });
 }
@@ -576,10 +523,8 @@ async function actionSentimentTimeline(supabase: any, user: any, body: any) {
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  await supabase.from("lie_sentiment_timelines_v2").insert({
-    user_id: user.id, title: title || "Sentiment Timeline",
-    points: r.points || [], summary: r.summary, credits_used: PARITY_COST,
-  });
+  await supabase.from("lie_sentiment_timelines_v2").insert({ user_id: user.id, title: title || "Sentiment Timeline",
+    points: r.points || [], summary: r.summary, credits_used: PARITY_COST });
   await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
   return json({ ...r, credits_charged: PARITY_COST });
 }
@@ -593,9 +538,7 @@ async function actionWatchlist(supabase: any, user: any, body: any) {
   if (op === "create") {
     const { label, keywords, notify } = body;
     if (!label || !Array.isArray(keywords) || !keywords.length) return json({ error: "label & keywords required" }, 400);
-    const { data } = await supabase.from("lie_watchlist_triggers").insert({
-      user_id: user.id, label, keywords: keywords.map((k: string) => String(k).toLowerCase()).slice(0, 50), notify: notify !== false,
-    }).select().single();
+    const { data } = await supabase.from("lie_watchlist_triggers").insert({ user_id: user.id, label, keywords: keywords.map((k: string) => String(k).toLowerCase()).slice(0, 50), notify: notify !== false }).select().single();
     return json({ item: data });
   }
   if (op === "delete") {
@@ -632,9 +575,7 @@ async function actionRedFlagLookup(supabase: any, user: any, body: any) {
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  await supabase.from("lie_red_flag_lookups").insert({
-    user_id: user.id, phrase: String(phrase).slice(0,300), analysis: r, credits_used: PARITY_COST,
-  });
+  await supabase.from("lie_red_flag_lookups").insert({ user_id: user.id, phrase: String(phrase).slice(0,300), analysis: r, credits_used: PARITY_COST });
   await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
   return json({ ...r, credits_charged: PARITY_COST });
 }
@@ -673,9 +614,7 @@ async function actionTruthChat(supabase: any, user: any, body: any) {
       .eq("id", session.id).select().single();
     saved = data;
   } else {
-    const { data } = await supabase.from("lie_truth_chat_sessions").insert({
-      user_id: user.id, title: String(message).slice(0, 60), messages: newMessages, credits_used: PARITY_COST,
-    }).select().single();
+    const { data } = await supabase.from("lie_truth_chat_sessions").insert({ user_id: user.id, title: String(message).slice(0, 60), messages: newMessages, credits_used: PARITY_COST }).select().single();
     saved = data;
   }
   await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
@@ -713,14 +652,10 @@ async function actionTrustScore(supabase: any, user: any, body: any) {
 
     let saved: any;
     if (existing) {
-      const { data } = await supabase.from("lie_trust_scores").update({
-        score: blended, sample_count: newCount, evidence, updated_at: new Date().toISOString(),
-      }).eq("id", existing.id).select().single();
+      const { data } = await supabase.from("lie_trust_scores").update({ score: blended, sample_count: newCount, evidence, updated_at: new Date().toISOString() }).eq("id", existing.id).select().single();
       saved = data;
     } else {
-      const { data } = await supabase.from("lie_trust_scores").insert({
-        user_id: user.id, contact_name, score: r.score, sample_count: 1, evidence,
-      }).select().single();
+      const { data } = await supabase.from("lie_trust_scores").insert({ user_id: user.id, contact_name, score: r.score, sample_count: 1, evidence }).select().single();
       saved = data;
     }
     await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
@@ -739,17 +674,14 @@ async function actionTacticClassify(supabase: any, user: any, body: any) {
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  await supabase.from("lie_tactic_classifications").insert({
-    user_id: user.id, text: String(text).slice(0,4000),
-    tactics: r.tactics || [], summary: r.summary, credits_used: PARITY_COST,
-  });
+  await supabase.from("lie_tactic_classifications").insert({ user_id: user.id, text: String(text).slice(0,4000),
+    tactics: r.tactics || [], summary: r.summary, credits_used: PARITY_COST });
   await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
   return json({ ...r, credits_charged: PARITY_COST });
 }
 
 // ============ ROUTER ============
-const HANDLERS: Record<string, (s: any, u: any, b: any) => Promise<Response>> = {
-  "polygraph": actionPolygraph,
+const HANDLERS: Record<string, (s: any, u: any, b: any) => Promise<Response>> = { "polygraph": actionPolygraph,
   "cross-exam": actionCrossExam,
   "voice": actionVoice,
   "voice-heatmap": actionVoiceHeatmap,
@@ -775,8 +707,7 @@ const HANDLERS: Record<string, (s: any, u: any, b: any) => Promise<Response>> = 
   "red-flag": actionRedFlagLookup,
   "truth-chat": actionTruthChat,
   "trust-score": actionTrustScore,
-  "tactic-classify": actionTacticClassify,
-};
+  "tactic-classify": actionTacticClassify };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });

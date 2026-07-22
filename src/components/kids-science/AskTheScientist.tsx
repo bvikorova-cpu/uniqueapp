@@ -31,8 +31,7 @@ export const AskTheScientist = ({ context, onCreditsChanged }: Props) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("kids-science-helper", {
-        body: { action: "askScientist", question: finalQ, context },
-      });
+        body: { action: "askScientist", question: finalQ, context } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data as AskResult);

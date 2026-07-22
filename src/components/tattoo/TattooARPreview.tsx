@@ -38,14 +38,12 @@ export const TattooARPreview = ({ onBack }: Props) => {
     }
   };
 
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging) return;
+  const handlePointerMove = (e: React.PointerEvent) => { if (!isDragging) return;
     const rect = containerRef.current?.getBoundingClientRect();
     if (rect) {
       setPosition({
         x: Math.max(5, Math.min(95, ((e.clientX - rect.left) / rect.width) * 100)),
-        y: Math.max(5, Math.min(95, ((e.clientY - rect.top) / rect.height) * 100)),
-      });
+        y: Math.max(5, Math.min(95, ((e.clientY - rect.top) / rect.height) * 100)) });
     }
   };
 
@@ -125,8 +123,7 @@ export const TattooARPreview = ({ onBack }: Props) => {
                   maxWidth: "40%",
                   opacity: opacity[0] / 100,
                   mixBlendMode: "multiply",
-                  transition: isDragging ? "none" : "all 0.15s ease",
-                }}
+                  transition: isDragging ? "none" : "all 0.15s ease" }}
               />
             </div>
 

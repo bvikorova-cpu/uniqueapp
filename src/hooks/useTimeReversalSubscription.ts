@@ -8,24 +8,20 @@ interface TimeReversalSubscription {
   loading: boolean;
 }
 
-export const useTimeReversalSubscription = () => {
-  const [subscription, setSubscription] = useState<TimeReversalSubscription>({
+export const useTimeReversalSubscription = () => { const [subscription, setSubscription] = useState<TimeReversalSubscription>({
     subscribed: false,
     activeFeatures: [],
     subscription_end: null,
-    loading: true,
-  });
+    loading: true });
 
   const checkSubscription = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setSubscription({
+      if (!session) { setSubscription({
           subscribed: false,
           activeFeatures: [],
           subscription_end: null,
-          loading: false,
-        });
+          loading: false });
         return;
       }
 
@@ -33,20 +29,16 @@ export const useTimeReversalSubscription = () => {
 
       if (error) throw error;
 
-      setSubscription({
-        subscribed: data.subscribed || false,
+      setSubscription({ subscribed: data.subscribed || false,
         activeFeatures: data.activeFeatures || [],
         subscription_end: data.subscription_end || null,
-        loading: false,
-      });
-    } catch (error) {
-      console.error("Error checking Time Reversal subscription:", error);
+        loading: false });
+    } catch (error) { console.error("Error checking Time Reversal subscription:", error);
       setSubscription({
         subscribed: false,
         activeFeatures: [],
         subscription_end: null,
-        loading: false,
-      });
+        loading: false });
     }
   };
 
@@ -61,9 +53,7 @@ export const useTimeReversalSubscription = () => {
     return subscription.activeFeatures.includes(productId);
   };
 
-  return {
-    ...subscription,
+  return { ...subscription,
     refresh: checkSubscription,
-    hasFeature,
-  };
+    hasFeature };
 };

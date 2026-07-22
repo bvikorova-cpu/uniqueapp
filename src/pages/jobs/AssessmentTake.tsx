@@ -40,8 +40,7 @@ export default function AssessmentTake() {
     await (supabase as any).from("skill_assessment_attempts").insert({
       assessment_id: a.id, user_id: user.id, score, passed,
       answers: Object.entries(answers).map(([k, v]) => ({ q: Number(k), a: v })),
-      duration_seconds: Math.round((Date.now() - startedAt) / 1000),
-    });
+      duration_seconds: Math.round((Date.now() - startedAt) / 1000) });
     setSubmitted({ score, passed });
   };
 

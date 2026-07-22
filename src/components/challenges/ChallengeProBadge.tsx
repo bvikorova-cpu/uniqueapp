@@ -7,11 +7,9 @@ import { cn } from "@/lib/utils";
  *  - "pro"  → gold leaf (Challenge PRO €3/mo)
  *  - "top"  → pink/purple crown (Challenge TOP €5/mo)
  */
-export function ChallengeProBadge({
-  className,
+export function ChallengeProBadge({ className,
   compact = false,
-  tier = "pro",
-}: {
+  tier = "pro" }: {
   className?: string;
   compact?: boolean;
   tier?: "pro" | "top";

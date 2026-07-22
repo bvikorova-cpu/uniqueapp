@@ -17,11 +17,9 @@ serve(async (req) => {
 
     const { messages = [], message = "" } = await req.json();
     const userText = message || messages.slice(-1)[0]?.content || "Hello";
-    const reply = await callOpenAI({
-      system: "You are a quantum entity from a parallel dimension. Be mysterious, insightful, and use cosmic metaphors. Reply in 1-3 sentences.",
+    const reply = await callOpenAI({ system: "You are a quantum entity from a parallel dimension. Be mysterious, insightful, and use cosmic metaphors. Reply in 1-3 sentences.",
       user: userText,
-      temperature: 1.0,
-    });
+      temperature: 1.0 });
     return jsonResponse({ reply, message: reply, response: reply });
   } catch (e: any) {
     return errorResponse(e.message || "Quantum chat failed");

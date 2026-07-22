@@ -54,15 +54,13 @@ export function StudentProgressReports({ campaignId, ownerUserId }: Props) {
     }
     setPosting(true);
     const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("student_progress_reports" as any).insert({
-      campaign_id: campaignId,
+    const { error } = await supabase.from("student_progress_reports" as any).insert({ campaign_id: campaignId,
       author_user_id: user?.id,
       semester: form.semester.trim().slice(0, 80),
       gpa: form.gpa ? parseFloat(form.gpa) : null,
       courses_completed: form.courses_completed ? parseInt(form.courses_completed) : null,
       achievements: form.achievements.trim() || null,
-      transcript_url: form.transcript_url.trim() || null,
-    });
+      transcript_url: form.transcript_url.trim() || null });
     setPosting(false);
     if (error) {
       toast({ title: "Could not post", description: error.message, variant: "destructive" });

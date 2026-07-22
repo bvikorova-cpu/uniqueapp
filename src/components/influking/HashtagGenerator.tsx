@@ -14,8 +14,7 @@ interface HashtagGeneratorProps {
   onBack: () => void;
 }
 
-const HASHTAG_CATEGORIES: Record<string, string[]> = {
-  "Fashion & Beauty": ["#fashion", "#style", "#ootd", "#beauty", "#makeup", "#skincare", "#fashionista", "#beautytips", "#trending", "#glam", "#fashionblogger", "#beautycare", "#lookoftheday", "#styleinspo", "#beautyroutine"],
+const HASHTAG_CATEGORIES: Record<string, string[]> = { "Fashion & Beauty": ["#fashion", "#style", "#ootd", "#beauty", "#makeup", "#skincare", "#fashionista", "#beautytips", "#trending", "#glam", "#fashionblogger", "#beautycare", "#lookoftheday", "#styleinspo", "#beautyroutine"],
   "Gaming": ["#gaming", "#gamer", "#gameplay", "#twitch", "#esports", "#gamingcommunity", "#videogames", "#streamer", "#gaminglife", "#pcgaming", "#consolegaming", "#gamedev", "#retrogaming", "#gamingsetup", "#letsplay"],
   "Fitness & Health": ["#fitness", "#workout", "#gym", "#fitnessmotivation", "#health", "#fitlife", "#training", "#exercise", "#gains", "#healthylifestyle", "#bodybuilding", "#yoga", "#wellness", "#fitfam", "#cardio"],
   "Travel": ["#travel", "#wanderlust", "#adventure", "#explore", "#travelgram", "#vacation", "#travelphotography", "#instatravel", "#roadtrip", "#backpacking", "#travelblogger", "#destination", "#traveler", "#bucketlist", "#luxurytravel"],
@@ -24,8 +23,7 @@ const HASHTAG_CATEGORIES: Record<string, string[]> = {
   "Music": ["#music", "#musician", "#singer", "#songwriter", "#newmusic", "#livemusic", "#musicproduction", "#beats", "#hiphop", "#pop", "#rock", "#musicislife", "#producer", "#rap", "#musicvideo"],
   "Comedy": ["#comedy", "#funny", "#humor", "#memes", "#laugh", "#comedyshow", "#standup", "#viral", "#comedyvideo", "#funnymemes", "#comedyclub", "#lol", "#dailylaugh", "#funnyvideos", "#comedygold"],
   "Education": ["#education", "#learning", "#knowledge", "#studytips", "#teaching", "#onlinecourse", "#studygram", "#edtech", "#motivation", "#facts", "#learnwithme", "#tutorial", "#selfimprovement", "#mindset", "#growthmindset"],
-  "Lifestyle": ["#lifestyle", "#life", "#inspo", "#dailylife", "#liveyourbestlife", "#selfcare", "#positivevibes", "#lifestyleblogger", "#motivation", "#mindfulness", "#goodvibes", "#lifequotes", "#balance", "#minimalism", "#dailyroutine"],
-};
+  "Lifestyle": ["#lifestyle", "#life", "#inspo", "#dailylife", "#liveyourbestlife", "#selfcare", "#positivevibes", "#lifestyleblogger", "#motivation", "#mindfulness", "#goodvibes", "#lifequotes", "#balance", "#minimalism", "#dailyroutine"] };
 
 const HashtagGenerator = ({ onBack }: HashtagGeneratorProps) => {
   const { toast } = useToast();
@@ -41,8 +39,7 @@ const HashtagGenerator = ({ onBack }: HashtagGeneratorProps) => {
       if (!user) return null;
       const { data } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
       return data;
-    },
-  });
+    } });
 
   const generateHashtags = async () => {
     if (!topic.trim() && !selectedCategory) {
@@ -81,8 +78,7 @@ const HashtagGenerator = ({ onBack }: HashtagGeneratorProps) => {
         user_id: user.id,
         usage_type: "hashtag_generator",
         credits_used: 3,
-        description: `Hashtags for: ${topic || selectedCategory}`,
-      });
+        description: `Hashtags for: ${topic || selectedCategory}` });
 
       toast({ title: "✅ Hashtags Generated!", description: "25 optimized hashtags ready (3 credits used)" });
     } catch (error: any) {

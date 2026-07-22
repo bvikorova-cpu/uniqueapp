@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-};
+const corsHeaders = { 'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -39,8 +37,7 @@ serve(async (req) => {
       title: 'New Referral Withdrawal Request',
       message: `${referrerName} has requested a withdrawal of €${amount} from referral earnings.`,
       type: 'admin_withdrawal',
-      is_read: false,
-    }));
+      is_read: false }));
 
     const { error: notificationError } = await supabaseClient
       .from('notifications')

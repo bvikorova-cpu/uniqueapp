@@ -6,13 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  MessageSquareWarning, Mail, LineChart, Bell, BookOpen, Bot, ShieldCheck, Brain, Loader2, Trash2, Send,
-} from "lucide-react";
-import {
-  useChatImport, useEmailScan, useSentimentTimeline, useWatchlist,
-  useRedFlagLookup, useTruthChat, useTrustScore, useTacticClassify,
-} from "@/hooks/useLieDetectorParity";
+import { MessageSquareWarning, Mail, LineChart, Bell, BookOpen, Bot, ShieldCheck, Brain, Loader2, Trash2, Send } from "lucide-react";
+import { useChatImport, useEmailScan, useSentimentTimeline, useWatchlist,
+  useRedFlagLookup, useTruthChat, useTrustScore, useTacticClassify } from "@/hooks/useLieDetectorParity";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const COST = 6;
@@ -232,8 +228,7 @@ function TruthChatTool() {
   const onSend = () => {
     if (!msg.trim()) return;
     send.mutate({ session_id: sessionId, message: msg }, {
-      onSuccess: (data: any) => { setSessionId(data.session?.id); setMsg(""); },
-    });
+      onSuccess: (data: any) => { setSessionId(data.session?.id); setMsg(""); } });
   };
 
   return (

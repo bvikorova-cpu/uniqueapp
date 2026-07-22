@@ -83,37 +83,30 @@ export const ImageTextRemover = () => {
         const base64Image = await imageUrlToBase64(imageInfo.url);
 
         const { data, error } = await supabase.functions.invoke("remove-text-from-image", {
-          body: { imageUrl: base64Image },
-        });
+          body: { imageUrl: base64Image } });
 
         if (error) throw error;
 
-        processedImages.push({
-          name: imageInfo.name,
+        processedImages.push({ name: imageInfo.name,
           url: imageInfo.url,
           processed: true,
-          newUrl: data.editedImageUrl,
-        });
+          newUrl: data.editedImageUrl });
 
         toast({
           title: "Success",
-          description: `Processed ${imageInfo.name}`,
-        });
+          description: `Processed ${imageInfo.name}` });
         
         // Small delay to avoid rate limiting
         await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (error) {
         console.error(`Error processing ${imageInfo.name}:`, error);
-        processedImages.push({
-          name: imageInfo.name,
+        processedImages.push({ name: imageInfo.name,
           url: imageInfo.url,
-          processed: false,
-        });
+          processed: false });
         toast({
           title: "Error",
           description: `Failed to process ${imageInfo.name}`,
-          variant: "destructive",
-        });
+          variant: "destructive" });
       }
 
       setProgress(((i + 1) / imageUrls.length) * 100);
@@ -122,10 +115,8 @@ export const ImageTextRemover = () => {
 
     setImages(processedImages);
     setProcessing(false);
-    toast({
-      title: "Complete",
-      description: "All images processed!",
-    });
+    toast({ title: "Complete",
+      description: "All images processed!" });
   };
 
   const downloadImage = (base64Data: string, fileName: string) => {

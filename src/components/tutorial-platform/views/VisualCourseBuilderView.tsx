@@ -166,8 +166,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
 
       const { data: course, error: courseErr } = await supabase
         .from("courses")
-        .insert({
-          creator_id: user.id,
+        .insert({ creator_id: user.id,
           title,
           description,
           category,
@@ -175,8 +174,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           price: parseFloat(price) || 0,
           duration_minutes: totalDuration,
           total_lessons: modules.length,
-          is_published: publish,
-        })
+          is_published: publish })
         .select()
         .single();
 
@@ -191,15 +189,13 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           setSaving(false);
           return;
         }
-        lessonRows.push({
-          course_id: course.id,
+        lessonRows.push({ course_id: course.id,
           title: m.title,
           description: m.description || null,
           video_url: normalizedUrl,
           duration_minutes: parseInt(m.duration) || 10,
           order_index: i,
-          is_preview: i === 0,
-        });
+          is_preview: i === 0 });
       }
       const { error: lessonsErr } = await supabase.from("course_lessons").insert(lessonRows);
       if (lessonsErr) throw lessonsErr;

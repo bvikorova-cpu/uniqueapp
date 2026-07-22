@@ -38,20 +38,16 @@ export function ContentAnalyticsView({ onBack }: ContentAnalyticsViewProps) {
         .order("total_revenue_eur", { ascending: false })
         .limit(20);
 
-      const rows: AssetRow[] = (items || []).map((it: any) => ({
-        id: it.id,
+      const rows: AssetRow[] = (items || []).map((it: any) => ({ id: it.id,
         name: it.title || "Untitled",
         views: 0,
         downloads: Number(it.total_downloads) || 0,
-        revenue: Number(it.total_revenue_eur) || 0,
-      }));
+        revenue: Number(it.total_revenue_eur) || 0 }));
 
       const t = rows.reduce(
-        (acc, r) => ({
-          views: acc.views + r.views,
+        (acc, r) => ({ views: acc.views + r.views,
           downloads: acc.downloads + r.downloads,
-          revenue: acc.revenue + r.revenue,
-        }),
+          revenue: acc.revenue + r.revenue }),
         { views: 0, downloads: 0, revenue: 0 }
       );
 

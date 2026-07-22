@@ -55,15 +55,12 @@ const CrossPlatformPublisher = ({ onBack }: CrossPlatformPublisherProps) => {
         .order("created_at", { ascending: false })
         .limit(20);
       if (error) throw error;
-      return (data || []).map((item: any) => ({
-        id: item.id,
+      return (data || []).map((item: any) => ({ id: item.id,
         content: item.metadata?.content || "",
         platforms: item.metadata?.platforms || [],
         scheduledTime: item.metadata?.scheduled_time || item.created_at,
-        status: item.metadata?.status || "pending",
-      })) as ScheduledPost[];
-    },
-  });
+        status: item.metadata?.status || "pending" })) as ScheduledPost[];
+    } });
 
   const togglePlatform = (id: string) => {
     setSelectedPlatforms(prev => {
@@ -82,8 +79,7 @@ const CrossPlatformPublisher = ({ onBack }: CrossPlatformPublisherProps) => {
 
       const platformsArray = Array.from(selectedPlatforms);
 
-      const { error } = await supabase.from("activity_feed").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("activity_feed").insert({ user_id: user.id,
         activity_type: "cross_platform_post",
         target_type: "multi_platform",
         metadata: {
@@ -91,30 +87,24 @@ const CrossPlatformPublisher = ({ onBack }: CrossPlatformPublisherProps) => {
           platforms: platformsArray,
           scheduled_time: scheduleTime || new Date().toISOString(),
           status: scheduleTime ? "pending" : "published",
-          auto_adapt: autoAdapt,
-        },
-      });
+          auto_adapt: autoAdapt } });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["scheduled-cross-posts"] });
       toast({
         title: scheduleTime ? "✅ Post Scheduled!" : "✅ Post Published!",
-        description: `Content sent to ${selectedPlatforms.size} platform(s)`,
-      });
+        description: `Content sent to ${selectedPlatforms.size} platform(s)` });
       setContent("");
       setSelectedPlatforms(new Set());
       setScheduleTime("");
     },
     onError: (error: any) => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
-    },
-  });
+    } });
 
-  const getCharCount = () => {
-    const limits: Record<string, number> = {
-      twitter: 280, instagram: 2200, tiktok: 2200, youtube: 5000, facebook: 63206, linkedin: 3000,
-    };
+  const getCharCount = () => { const limits: Record<string, number> = {
+      twitter: 280, instagram: 2200, tiktok: 2200, youtube: 5000, facebook: 63206, linkedin: 3000 };
     const active = Array.from(selectedPlatforms);
     if (active.length === 0) return null;
     const minLimit = Math.min(...active.map(p => limits[p] || 5000));

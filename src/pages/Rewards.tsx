@@ -23,11 +23,9 @@ import { LastWeekWinners } from "@/components/gamification/LastWeekWinners";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
 import { toast } from "sonner";
-import {
-  Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame,
+import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame,
   Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays,
-  Users, Castle, Map, Sparkles as SparklesIcon, PartyPopper, Heart,
-} from "lucide-react";
+  Users, Castle, Map, Sparkles as SparklesIcon, PartyPopper, Heart } from "lucide-react";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const REWARDS_HOW_IT_WORKS = [
@@ -169,8 +167,7 @@ export default function Rewards() {
     const verify = async (sessionId: string) => {
       try {
         const { data, error } = await supabase.functions.invoke("verify-rewards-payment", {
-          body: { sessionId },
-        });
+          body: { sessionId } });
         if (error) throw error;
         if ((data as any)?.ok) {
           toast.success("Purchase confirmed!");
@@ -184,8 +181,7 @@ export default function Rewards() {
         toast.error("Could not verify payment", {
           description: "We couldn't confirm your purchase. Tap retry or contact support if you were charged.",
           action: { label: "Retry", onClick: () => verify(sessionId) },
-          duration: 15000,
-        });
+          duration: 15000 });
       }
     };
     verifiedRef.current = true;

@@ -4,12 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { 
-  DollarSign, 
+import { DollarSign, 
   Smile,
   Gift,
-  Sparkles,
-} from "lucide-react";
+  Sparkles } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TipOption {
@@ -30,10 +28,8 @@ interface TipAnimationProps {
   onTip?: (amount: number) => void;
 }
 
-export const TipAnimation = ({
-  performerName = "Comedian",
-  onTip,
-}: TipAnimationProps) => {
+export const TipAnimation = ({ performerName = "Comedian",
+  onTip }: TipAnimationProps) => {
   const [selectedTip, setSelectedTip] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);

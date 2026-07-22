@@ -5,21 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Coins,
+  SelectValue } from "@/components/ui/select";
+import { Coins,
   RefreshCw,
   Download,
   TrendingUp,
   TrendingDown,
-  ArrowLeft,
-} from "lucide-react";
+  ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { SEO } from "@/components/SEO";
@@ -39,8 +35,7 @@ interface LedgerRow {
 const PAGE_SIZE = 200;
 
 // Friendly labels for known reason codes (prefix match supported via startsWith)
-const REASON_LABELS: Record<string, string> = {
-  manual_add: "Manual add",
+const REASON_LABELS: Record<string, string> = { manual_add: "Manual add",
   manual_deduct: "Manual deduct",
   founding_member_bonus: "Founding member bonus",
   gift_sent: "Gift sent",
@@ -54,8 +49,7 @@ const REASON_LABELS: Record<string, string> = {
   refund: "Credit refund",
   promo_code: "Promo code",
   referral_bonus: "Referral bonus",
-  unknown_update: "Unknown change",
-};
+  unknown_update: "Unknown change" };
 
 function prettyReason(reason: string | null): string {
   if (!reason) return "—";

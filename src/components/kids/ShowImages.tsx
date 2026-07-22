@@ -95,8 +95,7 @@ import peppaEp1 from "@/assets/kids/peppa-ep1.jpg";
 import peppaEp2 from "@/assets/kids/peppa-ep2.jpg";
 import pawEp1 from "@/assets/kids/paw-ep1.jpg";
 
-export const showImages = {
-  // Animated kids shows
+export const showImages = { // Animated kids shows
   peppa: peppaShow,
   pawPatrol: pawPatrolShow,
   bluey: blueyShow,
@@ -193,11 +192,8 @@ export const showImages = {
   robinhood: robinHoodCover,
   ralphbreakstheinternet: wreckItRalphCover,
   
-  default: defaultCover,
-};
+  default: defaultCover };
 
-export const episodeImages = {
-  peppaEp1,
+export const episodeImages = { peppaEp1,
   peppaEp2,
-  pawEp1,
-};
+  pawEp1 };

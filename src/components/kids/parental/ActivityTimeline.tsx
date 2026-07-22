@@ -19,10 +19,8 @@ const timelineEvents: TimelineEvent[] = [
   { id: "8", child: "Emma", childAvatar: "👧", type: "drawing", emoji: "🎨", title: "Paint by numbers", description: "Butterfly in the garden", time: "2 days ago", duration: "22 min" },
 ];
 
-const typeColors: Record<string, string> = {
-  homework: "bg-purple-100 text-purple-700", drawing: "bg-pink-100 text-pink-700",
-  science: "bg-cyan-100 text-cyan-700", story: "bg-green-100 text-green-700", game: "bg-amber-100 text-amber-700",
-};
+const typeColors: Record<string, string> = { homework: "bg-purple-100 text-purple-700", drawing: "bg-pink-100 text-pink-700",
+  science: "bg-cyan-100 text-cyan-700", story: "bg-green-100 text-green-700", game: "bg-amber-100 text-amber-700" };
 
 export const ActivityTimeline = () => {
   const [filterChild, setFilterChild] = useState<string | null>(null);

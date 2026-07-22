@@ -15,8 +15,7 @@ export default function IQLeaderboard() {
       const { data, error } = await supabase.rpc("get_iq_leaderboard", { _limit: 50 });
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   const rankIcon = (rank: number) => {
     if (rank === 1) return <Crown className="h-5 w-5 text-yellow-500" />;

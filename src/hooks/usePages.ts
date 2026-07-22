@@ -15,25 +15,20 @@ export const usePages = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return (data || []).map((p: any) => ({
-        ...p,
-        follower_count: p.page_followers?.[0]?.count ?? 0,
-      }));
-    },
-  });
+      return (data || []).map((p: any) => ({ ...p,
+        follower_count: p.page_followers?.[0]?.count ?? 0 }));
+    } });
 
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: ["pages"] });
     queryClient.invalidateQueries({ queryKey: ["suggested-pages"] });
   };
 
-  const createPage = useMutation({
-    mutationFn: async ({
+  const createPage = useMutation({ mutationFn: async ({
       name,
       description,
       category,
-      coverImage,
-    }: {
+      coverImage }: {
       name: string;
       description?: string;
       category?: string;
@@ -44,13 +39,11 @@ export const usePages = () => {
 
       const { data: page, error: pageError } = await supabase
         .from("pages")
-        .insert({
-          name,
+        .insert({ name,
           description,
           category,
           cover_image_url: coverImage,
-          user_id: user.id,
-        })
+          user_id: user.id })
         .select()
         .single();
 
@@ -59,18 +52,15 @@ export const usePages = () => {
       // Add owner as follower
       const { error: followerError } = await supabase
         .from("page_followers")
-        .insert({
-          page_id: page.id,
-          user_id: user.id,
-        });
+        .insert({ page_id: page.id,
+          user_id: user.id });
 
       if (followerError) throw followerError;
     },
     onSuccess: () => {
       invalidateAll();
       toast({ title: "Page created!" });
-    },
-  });
+    } });
 
   const followPage = useMutation({
     mutationFn: async (pageId: string) => {
@@ -79,14 +69,10 @@ export const usePages = () => {
 
       // Use upsert to avoid duplicate key errors
       const { error } = await supabase.from("page_followers").upsert(
-        {
-          page_id: pageId,
-          user_id: user.id,
-        },
-        {
-          onConflict: "page_id,user_id",
-          ignoreDuplicates: true,
-        }
+        { page_id: pageId,
+          user_id: user.id },
+        { onConflict: "page_id,user_id",
+          ignoreDuplicates: true }
       );
 
       if (error) throw error;
@@ -94,8 +80,7 @@ export const usePages = () => {
     onSuccess: () => {
       invalidateAll();
       toast({ title: "Following page!" });
-    },
-  });
+    } });
 
   const unfollowPage = useMutation({
     mutationFn: async (pageId: string) => {
@@ -113,14 +98,11 @@ export const usePages = () => {
     onSuccess: () => {
       invalidateAll();
       toast({ title: "Unfollowed page" });
-    },
-  });
+    } });
 
-  return {
-    pages: pages || [],
+  return { pages: pages || [],
     isLoading,
     createPage: createPage.mutate,
     followPage: followPage.mutate,
-    unfollowPage: unfollowPage.mutate,
-  };
+    unfollowPage: unfollowPage.mutate };
 };

@@ -14,15 +14,13 @@ const log = (step: string, details?: unknown) => {
 };
 
 type Tier = "verified" | "plus" | "pro";
-const TIER_BY_PRICE: Record<string, Tier> = {
-  "price_1TvEcCGaXSfGtYFtpISbqkdD": "verified",
+const TIER_BY_PRICE: Record<string, Tier> = { "price_1TvEcCGaXSfGtYFtpISbqkdD": "verified",
   "price_1TvEcEGaXSfGtYFtEHzujgoE": "plus",
   "price_1TvEcFGaXSfGtYFtc8kKfh5M": "pro",
   // Legacy price IDs — still honored for existing customers.
   "price_1TvDqrGaXSfGtYFt2g1n3Nuv": "verified",
   "price_1TvDqsGaXSfGtYFtSyfF7vjE": "plus",
-  "price_1TvDqsGaXSfGtYFt6boV1wed": "pro",
-};
+  "price_1TvDqsGaXSfGtYFt6boV1wed": "pro" };
 
 const TIER_RANK: Record<Tier | "none", number> = { none: 0, verified: 1, plus: 2, pro: 3 };
 
@@ -43,9 +41,7 @@ serve(async (req) => {
     const userId = userData.user.id;
     const email = userData.user.email;
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     const admin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -71,14 +67,12 @@ serve(async (req) => {
       }
     };
 
-    for (const c of customers.data) {
-      // Recurring: Plus / Pro
+    for (const c of customers.data) { // Recurring: Plus / Pro
       const subs = await stripe.subscriptions.list({
         customer: c.id,
         status: "all",
         limit: 20,
-        expand: ["data.items.data.price"],
-      });
+        expand: ["data.items.data.price"] });
       for (const sub of subs.data) {
         if (!["active", "trialing", "past_due"].includes(sub.status)) continue;
         const priceId = sub.items.data[0]?.price?.id;
@@ -94,10 +88,8 @@ serve(async (req) => {
       }
 
       // One-off: Verified badge (mode=payment). Look at recent paid sessions.
-      const sessions = await stripe.checkout.sessions.list({
-        customer: c.id,
-        limit: 20,
-      });
+      const sessions = await stripe.checkout.sessions.list({ customer: c.id,
+        limit: 20 });
       for (const s of sessions.data) {
         if (s.mode !== "payment") continue;
         if (s.payment_status !== "paid") continue;
@@ -129,25 +121,21 @@ serve(async (req) => {
     if (needsUpdate) {
       const { error: upErr } = await admin
         .from("profiles")
-        .update({
-          verification_tier: bestTier === "none" ? "none" : bestTier,
-          verification_expires_at: bestTier === "none" ? null : expiresAt,
-        })
+        .update({ verification_tier: bestTier === "none" ? "none" : bestTier,
+          verification_expires_at: bestTier === "none" ? null : expiresAt })
         .eq("id", userId);
       if (upErr) log("profile reconcile failed", { err: upErr.message });
       else log("profile reconciled", { userId, from: dbTier, to: bestTier });
     }
 
     return new Response(
-      JSON.stringify({
-        tier: bestTier,
+      JSON.stringify({ tier: bestTier,
         status,
         expires_at: expiresAt,
         subscription_id: subscriptionId,
         last_session_id: lastSessionId,
         reconciled: needsUpdate,
-        source: "stripe",
-      }),
+        source: "stripe" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (error) {
@@ -155,7 +143,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

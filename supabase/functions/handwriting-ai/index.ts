@@ -11,16 +11,13 @@ const PRICES = {
   hr_pro: "price_1TNs5EGaXSfGtYFt4pks23YW",  // €99/mo
 };
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const json = (b: unknown, status = 200) =>
   new Response(JSON.stringify(b), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 const AI_URL = "https://api.openai.com/v1/chat/completions";
@@ -29,8 +26,7 @@ async function callAI(body: unknown) {
   const res = await fetch(AI_URL, {
     method: "POST",
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+    body: JSON.stringify(body) });
   if (res.status === 429) throw new Error("Rate limited");
   if (res.status === 402) throw new Error("AI credits exhausted");
   if (!res.ok) throw new Error(`AI error ${res.status}`);
@@ -115,12 +111,10 @@ Deno.serve(async (req) => {
         const customerId = await getCustomerId();
         const { data: subRow, error: insErr } = await supabase
           .from("couples_subscriptions")
-          .insert({
-            partner_a_user_id: user.id,
+          .insert({ partner_a_user_id: user.id,
             partner_b_email: partnerEmail,
             status: "pending",
-            stripe_customer_id: customerId,
-          })
+            stripe_customer_id: customerId })
           .select()
           .single();
         if (insErr) return json({ error: "Could not create subscription record" }, 500);
@@ -131,8 +125,7 @@ Deno.serve(async (req) => {
           success_url: `${origin}/handwriting?couples=success&sub_id=${subRow.id}`,
           cancel_url: `${origin}/handwriting?couples=cancelled`,
           metadata: { user_id: user.id, couples_subscription_id: subRow.id, plan: "couples" },
-          subscription_data: { metadata: { user_id: user.id, couples_subscription_id: subRow.id, plan: "couples" } },
-        });
+          subscription_data: { metadata: { user_id: user.id, couples_subscription_id: subRow.id, plan: "couples" } } });
         return json({ url: session.url, subscriptionId: subRow.id, inviteToken: subRow.invite_token });
       }
 
@@ -146,8 +139,7 @@ Deno.serve(async (req) => {
           .limit(1);
         const sub = rows?.[0];
         if (!sub) return json({ active: false });
-        if (sub.stripe_subscription_id) {
-          try {
+        if (sub.stripe_subscription_id) { try {
             const stripeSub = await stripe.subscriptions.retrieve(sub.stripe_subscription_id);
             const isActive = ["active", "trialing"].includes(stripeSub.status);
             const periodEnd = new Date(stripeSub.current_period_end * 1000).toISOString();
@@ -156,8 +148,7 @@ Deno.serve(async (req) => {
               .update({
                 status: isActive ? "active" : stripeSub.status,
                 current_period_end: periodEnd,
-                cancelled_at: stripeSub.cancel_at_period_end ? new Date().toISOString() : null,
-              })
+                cancelled_at: stripeSub.cancel_at_period_end ? new Date().toISOString() : null })
               .eq("id", sub.id);
             return json({ active: isActive, subscription: { ...sub, status: stripeSub.status, current_period_end: periodEnd } });
           } catch (_) { /* fall through */ }
@@ -166,8 +157,7 @@ Deno.serve(async (req) => {
         if (customers.data.length === 0) return json({ active: false, subscription: sub });
         const subs = await stripe.subscriptions.list({ customer: customers.data[0].id, status: "active", limit: 5 });
         const couplesSub = subs.data.find((s) => s.items.data.some((i) => i.price.id === PRICES.couples));
-        if (couplesSub) {
-          const periodEnd = new Date(couplesSub.current_period_end * 1000).toISOString();
+        if (couplesSub) { const periodEnd = new Date(couplesSub.current_period_end * 1000).toISOString();
           await supabase
             .from("couples_subscriptions")
             .update({
@@ -175,8 +165,7 @@ Deno.serve(async (req) => {
               stripe_customer_id: customers.data[0].id,
               status: "active",
               started_at: sub.started_at ?? new Date().toISOString(),
-              current_period_end: periodEnd,
-            })
+              current_period_end: periodEnd })
             .eq("id", sub.id);
           return json({ active: true, subscription: { ...sub, status: "active", current_period_end: periodEnd } });
         }
@@ -236,8 +225,7 @@ Deno.serve(async (req) => {
           success_url: `${origin}/handwriting?hr=success`,
           cancel_url: `${origin}/handwriting?hr=cancelled`,
           metadata: { user_id: user.id, hr_subscription_id: subId, plan: "hr_pro" },
-          subscription_data: { metadata: { user_id: user.id, hr_subscription_id: subId, plan: "hr_pro" } },
-        });
+          subscription_data: { metadata: { user_id: user.id, hr_subscription_id: subId, plan: "hr_pro" } } });
         return json({ url: session.url });
       }
 
@@ -260,13 +248,11 @@ Deno.serve(async (req) => {
         const periodEnd = new Date(hrSub.current_period_end * 1000).toISOString();
         await supabase
           .from("hr_pro_subscriptions")
-          .update({
-            status: "active",
+          .update({ status: "active",
             stripe_subscription_id: hrSub.id,
             stripe_customer_id: customers.data[0].id,
             started_at: hr.started_at ?? new Date().toISOString(),
-            current_period_end: periodEnd,
-          })
+            current_period_end: periodEnd })
           .eq("id", hr.id);
         return json({ active: true, subscription: { ...hr, status: "active", current_period_end: periodEnd, stripe_subscription_id: hrSub.id } });
       }
@@ -277,8 +263,7 @@ Deno.serve(async (req) => {
         if (customers.data.length === 0) return json({ error: "No Stripe customer found" }, 404);
         const portal = await stripe.billingPortal.sessions.create({
           customer: customers.data[0].id,
-          return_url: `${origin}/handwriting`,
-        });
+          return_url: `${origin}/handwriting` });
         return json({ url: portal.url });
       }
     }
@@ -292,12 +277,10 @@ Deno.serve(async (req) => {
       if (!cost) return json({ error: "Invalid analysisType" }, 400);
       await chargeCredits(supabase, user.id, cost);
 
-      const focus: Record<string, string> = {
-        personal: "Focus on: Personal growth, emotional intelligence, self-awareness, relationship compatibility, life balance.",
+      const focus: Record<string, string> = { personal: "Focus on: Personal growth, emotional intelligence, self-awareness, relationship compatibility, life balance.",
         professional: "Focus on: Career strengths, work style, team collaboration, leadership potential, professional development areas.",
         relationship: "Focus on: Communication patterns, emotional availability, conflict resolution style, intimacy indicators, partner compatibility.",
-        business: "Focus on: Decision-making under pressure, risk tolerance, negotiation style, strategic thinking, business acumen.",
-      };
+        business: "Focus on: Decision-making under pressure, risk tolerance, negotiation style, strategic thinking, business acumen." };
       const sys = `You are a professional graphologist with 20+ years of experience. Return ONLY valid JSON with this exact structure: { "personality_traits": { "openness": string, "conscientiousness": string, "extraversion": string, "agreeableness": string, "neuroticism": string }, "strengths": string[], "weaknesses": string[], "emotional_state": string, "communication_style": string, "work_approach": string, "relationship_patterns": string, "decision_making": string, "stress_indicators": string, "creativity_level": string, "leadership_qualities": string, "detailed_analysis": string, "recommendations": string[] }. ${focus[analysisType] ?? ""}`;
 
       const content = await callAI({
@@ -309,21 +292,18 @@ Deno.serve(async (req) => {
             { type: "image_url", image_url: { url: imageUrl } },
           ] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       let parsed: any;
       try { parsed = JSON.parse(content); } catch { return json({ error: "Invalid AI response format" }, 502); }
 
-      const { data: saved, error: insErr } = await supabase.from("handwriting_analyses").insert({
-        user_id: user.id, image_url: imageUrl, analysis_type: analysisType, credits_used: cost,
+      const { data: saved, error: insErr } = await supabase.from("handwriting_analyses").insert({ user_id: user.id, image_url: imageUrl, analysis_type: analysisType, credits_used: cost,
         personality_traits: parsed.personality_traits, strengths: parsed.strengths,
         weaknesses: parsed.weaknesses, emotional_state: parsed.emotional_state,
         communication_style: parsed.communication_style, work_approach: parsed.work_approach,
         relationship_patterns: parsed.relationship_patterns, decision_making: parsed.decision_making,
         stress_indicators: parsed.stress_indicators, creativity_level: parsed.creativity_level,
         leadership_qualities: parsed.leadership_qualities, detailed_analysis: parsed.detailed_analysis,
-        recommendations: parsed.recommendations,
-      }).select().single();
+        recommendations: parsed.recommendations }).select().single();
       if (insErr) return json({ error: insErr.message }, 500);
       return json({ success: true, analysis: saved });
     }
@@ -342,15 +322,12 @@ Deno.serve(async (req) => {
             { type: "image_url", image_url: { url: imageUrl } },
           ] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       const parsed = JSON.parse(content);
-      const { data: row } = await supabase.from("handwriting_signature_analyses").insert({
-        user_id: user.id, image_url: imageUrl,
+      const { data: row } = await supabase.from("handwriting_signature_analyses").insert({ user_id: user.id, image_url: imageUrl,
         ego_score: parsed.ego_score, confidence_score: parsed.confidence_score,
         public_persona: parsed.public_persona, authenticity_score: parsed.authenticity_score,
-        analysis: parsed, credits_used: 5,
-      }).select().single();
+        analysis: parsed, credits_used: 5 }).select().single();
       return json({ analysis: row });
     }
 
@@ -369,15 +346,12 @@ Deno.serve(async (req) => {
             { type: "image_url", image_url: { url: imageBUrl } },
           ] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       const parsed = JSON.parse(content);
-      const { data: row } = await supabase.from("handwriting_compatibility_matches").insert({
-        user_id: user.id, image_a_url: imageAUrl, image_b_url: imageBUrl, context,
+      const { data: row } = await supabase.from("handwriting_compatibility_matches").insert({ user_id: user.id, image_a_url: imageAUrl, image_b_url: imageBUrl, context,
         compatibility_score: parsed.compatibility_score, dynamics: parsed.dynamics,
         strengths: parsed.strengths, challenges: parsed.challenges,
-        full_report: parsed.full_report, credits_used: 12,
-      }).select().single();
+        full_report: parsed.full_report, credits_used: 12 }).select().single();
       return json({ result: row });
     }
 
@@ -395,15 +369,12 @@ Deno.serve(async (req) => {
             { type: "image_url", image_url: { url: imageUrl } },
           ] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       const parsed = JSON.parse(content);
-      const { data: row } = await supabase.from("handwriting_mood_scans").insert({
-        user_id: user.id, image_url: imageUrl, notes,
+      const { data: row } = await supabase.from("handwriting_mood_scans").insert({ user_id: user.id, image_url: imageUrl, notes,
         mood_score: parsed.mood_score, stress_score: parsed.stress_score,
         energy_score: parsed.energy_score, focus_score: parsed.focus_score,
-        ai_insight: parsed.ai_insight, credits_used: 3,
-      }).select().single();
+        ai_insight: parsed.ai_insight, credits_used: 3 }).select().single();
       return json({ scan: row });
     }
 
@@ -422,17 +393,14 @@ Deno.serve(async (req) => {
             { type: "image_url", image_url: { url: suspectUrl } },
           ] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       const parsed = JSON.parse(content);
-      const { data: row } = await supabase.from("handwriting_forgery_checks").insert({
-        user_id: user.id, reference_url: referenceUrl, suspect_url: suspectUrl,
+      const { data: row } = await supabase.from("handwriting_forgery_checks").insert({ user_id: user.id, reference_url: referenceUrl, suspect_url: suspectUrl,
         authenticity_probability: parsed.authenticity_probability,
         forgery_probability: parsed.forgery_probability,
         verdict: parsed.verdict, red_flags: parsed.red_flags,
         matching_traits: parsed.matching_traits, detailed_report: parsed.detailed_report,
-        credits_used: 15,
-      }).select().single();
+        credits_used: 15 }).select().single();
       return json({ check: row });
     }
 
@@ -447,20 +415,15 @@ Deno.serve(async (req) => {
           { role: "system", content: "Extract a numeric trait vector for handwriting matching. Return JSON: { vector: { slant, pressure, size, spacing, loops, angularity, speed, regularity, baseline, creativity, extroversion, analytical }, summary: string } where each value is 0..100." },
           { role: "user", content: [{ type: "image_url", image_url: { url: imageUrl } }] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       const parsed = JSON.parse(content);
-      await supabase.from("handwriting_twin_profiles").upsert({
-        user_id: user.id, display_name: displayName, sample_url: imageUrl,
-        trait_vector: parsed.vector, is_public: isPublic, updated_at: new Date().toISOString(),
-      }, { onConflict: "user_id" });
+      await supabase.from("handwriting_twin_profiles").upsert({ user_id: user.id, display_name: displayName, sample_url: imageUrl,
+        trait_vector: parsed.vector, is_public: isPublic, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
       const { data: others } = await supabase
         .from("handwriting_twin_profiles")
         .select("user_id, display_name, sample_url, trait_vector")
         .neq("user_id", user.id).eq("is_public", true).limit(200);
-      const matches = (others ?? []).map((o: any) => ({
-        ...o, similarity: Math.round(cosine(parsed.vector, o.trait_vector as any) * 100),
-      })).sort((a: any, b: any) => b.similarity - a.similarity).slice(0, 5);
+      const matches = (others ?? []).map((o: any) => ({ ...o, similarity: Math.round(cosine(parsed.vector, o.trait_vector as any) * 100) })).sort((a: any, b: any) => b.similarity - a.similarity).slice(0, 5);
       return json({ matches, your_summary: parsed.summary });
     }
 
@@ -475,14 +438,11 @@ Deno.serve(async (req) => {
           { role: "system", content: "Compare handwriting to famous historical figures (Einstein, Napoleon, Mozart, Marie Curie, Tesla, Da Vinci, Picasso, Hemingway). Pick best match. Return JSON: { matched_figure: string, match_score: 0-100, shared_traits: string[], ai_blurb: short fun paragraph }." },
           { role: "user", content: [{ type: "image_url", image_url: { url: imageUrl } }] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       const parsed = JSON.parse(content);
-      const { data: row } = await supabase.from("handwriting_famous_comparisons").insert({
-        user_id: user.id, image_url: imageUrl,
+      const { data: row } = await supabase.from("handwriting_famous_comparisons").insert({ user_id: user.id, image_url: imageUrl,
         matched_figure: parsed.matched_figure, match_score: parsed.match_score,
-        shared_traits: parsed.shared_traits, ai_blurb: parsed.ai_blurb, credits_used: 5,
-      }).select().single();
+        shared_traits: parsed.shared_traits, ai_blurb: parsed.ai_blurb, credits_used: 5 }).select().single();
       return json({ comparison: row });
     }
 
@@ -492,10 +452,8 @@ Deno.serve(async (req) => {
       if (sub === "complete") {
         const { lessonId, quizScore } = body;
         const xp = Math.max(10, Math.round((quizScore ?? 50) / 10) * 5);
-        await supabase.from("handwriting_academy_progress").upsert({
-          user_id: user.id, lesson_id: lessonId, completed: true,
-          quiz_score: quizScore, xp_earned: xp, completed_at: new Date().toISOString(),
-        }, { onConflict: "user_id,lesson_id" });
+        await supabase.from("handwriting_academy_progress").upsert({ user_id: user.id, lesson_id: lessonId, completed: true,
+          quiz_score: quizScore, xp_earned: xp, completed_at: new Date().toISOString() }, { onConflict: "user_id,lesson_id" });
         return json({ ok: true, xp_earned: xp });
       }
       if (sub === "generate-quiz") {
@@ -506,8 +464,7 @@ Deno.serve(async (req) => {
             { role: "system", content: "Generate a 5-question multiple-choice graphology quiz. Return JSON: { questions: [{ q, options: [string,string,string,string], correct: 0-3 }] }." },
             { role: "user", content: `Lesson topic: ${lessonId}` },
           ],
-          response_format: { type: "json_object" },
-        });
+          response_format: { type: "json_object" } });
         return json(JSON.parse(content));
       }
       const { data } = await supabase
@@ -532,23 +489,19 @@ Deno.serve(async (req) => {
           {
             role: "system",
             content:
-              "You are a hybrid voice-and-handwriting emotional fingerprint analyst. Compare the spoken words (transcript) with the handwriting sample to detect congruence between expressed and unconscious emotional state. Return strict JSON: { mood_score: 0-100, energy_score: 0-100, congruence_score: 0-100 (how much voice matches handwriting), emotional_fingerprint: { dominant_emotion, secondary_emotions: string[], stress_indicators: string[], hidden_signals: string[] }, ai_summary: 2-3 paragraph diary insight }.",
-          },
+              "You are a hybrid voice-and-handwriting emotional fingerprint analyst. Compare the spoken words (transcript) with the handwriting sample to detect congruence between expressed and unconscious emotional state. Return strict JSON: { mood_score: 0-100, energy_score: 0-100, congruence_score: 0-100 (how much voice matches handwriting), emotional_fingerprint: { dominant_emotion, secondary_emotions: string[], stress_indicators: string[], hidden_signals: string[] }, ai_summary: 2-3 paragraph diary insight }." },
           {
             role: "user",
             content: [
               { type: "text", text: `Voice transcript (${voiceDurationSec}s):\n"${(voiceTranscript as string).slice(0, 4000)}"\n\nHandwriting sample below:` },
               { type: "image_url", image_url: { url: handwritingImageUrl } },
-            ],
-          },
+            ] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       const parsed = JSON.parse(content);
       const { data: row } = await supabase
         .from("voice_diaries")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           handwriting_image_url: handwritingImageUrl,
           voice_transcript: voiceTranscript,
           voice_duration_sec: voiceDurationSec,
@@ -558,8 +511,7 @@ Deno.serve(async (req) => {
           emotional_fingerprint: parsed.emotional_fingerprint,
           ai_analysis: parsed,
           ai_summary: parsed.ai_summary,
-          credits_used: 8,
-        })
+          credits_used: 8 })
         .select()
         .single();
       return json({ diary: row });
@@ -605,24 +557,20 @@ Deno.serve(async (req) => {
             {
               role: "system",
               content:
-                "You are an HR-grade graphology expert producing anonymized candidate scoring for ATS export. NEVER mention the candidate's identity, ethnicity, age, or gender. Score professionally and impartially. Return strict JSON: { leadership_score: 0-100, communication_score: 0-100, attention_score: 0-100, integrity_score: 0-100, overall_fit: 0-100, ai_summary: 2-paragraph anonymized professional assessment, ats_export: { strengths: string[], development_areas: string[], recommended_role_fit: string, hiring_recommendation: 'STRONG_HIRE'|'HIRE'|'MAYBE'|'NO_HIRE' } }.",
-            },
+                "You are an HR-grade graphology expert producing anonymized candidate scoring for ATS export. NEVER mention the candidate's identity, ethnicity, age, or gender. Score professionally and impartially. Return strict JSON: { leadership_score: 0-100, communication_score: 0-100, attention_score: 0-100, integrity_score: 0-100, overall_fit: 0-100, ai_summary: 2-paragraph anonymized professional assessment, ats_export: { strengths: string[], development_areas: string[], recommended_role_fit: string, hiring_recommendation: 'STRONG_HIRE'|'HIRE'|'MAYBE'|'NO_HIRE' } }." },
             {
               role: "user",
               content: [
                 { type: "text", text: `Job: ${job?.job_title ?? "Unspecified"}\nRequired traits: ${requiredTraits}\nCandidate alias: ${candidate.candidate_alias}` },
                 { type: "image_url", image_url: { url: candidate.image_url } },
-              ],
-            },
+              ] },
           ],
-          response_format: { type: "json_object" },
-        });
+          response_format: { type: "json_object" } });
         const parsed = JSON.parse(content);
 
         const { data: updated } = await supabase
           .from("hr_bulk_candidates")
-          .update({
-            leadership_score: parsed.leadership_score,
+          .update({ leadership_score: parsed.leadership_score,
             communication_score: parsed.communication_score,
             attention_score: parsed.attention_score,
             integrity_score: parsed.integrity_score,
@@ -631,18 +579,15 @@ Deno.serve(async (req) => {
             ats_export_data: parsed.ats_export,
             credits_used: 4,
             status: "completed",
-            processed_at: new Date().toISOString(),
-          })
+            processed_at: new Date().toISOString() })
           .eq("id", candidateId)
           .select()
           .single();
 
         await supabase
           .from("hr_bulk_jobs")
-          .update({
-            completed_candidates: (job?.completed_candidates ?? 0) + 1,
-            status: ((job?.completed_candidates ?? 0) + 1) >= (job?.total_candidates ?? 0) ? "completed" : "processing",
-          })
+          .update({ completed_candidates: (job?.completed_candidates ?? 0) + 1,
+            status: ((job?.completed_candidates ?? 0) + 1) >= (job?.total_candidates ?? 0) ? "completed" : "processing" })
           .eq("id", job.id);
         await supabase
           .from("hr_pro_subscriptions")
@@ -680,8 +625,7 @@ Deno.serve(async (req) => {
           couples_subscription_id: couplesSubscriptionId,
           compatibility_score: compatibilityScore,
           mood_trend: moodTrend ?? {},
-          full_analysis: fullAnalysis ?? {},
-        })
+          full_analysis: fullAnalysis ?? {} })
         .select()
         .single();
       return json({ timeline: tl });
@@ -711,15 +655,12 @@ Deno.serve(async (req) => {
             { type: "image_url", image_url: { url: b.image_url } },
           ] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       const parsed = JSON.parse(content);
-      const { data: row } = await supabase.from("handwriting_evolution_diffs").insert({
-        user_id: user.id, entry_a_id: entryAId, entry_b_id: entryBId,
+      const { data: row } = await supabase.from("handwriting_evolution_diffs").insert({ user_id: user.id, entry_a_id: entryAId, entry_b_id: entryBId,
         diff_summary: parsed.diff_summary, changes: parsed.changes,
         emotional_shift: parsed.emotional_shift, growth_score: parsed.growth_score,
-        credits_used: 6,
-      }).select().single();
+        credits_used: 6 }).select().single();
       return json({ diff: row, milestones: parsed.milestones ?? [] });
     }
 
@@ -730,27 +671,22 @@ Deno.serve(async (req) => {
         return json({ error: "strokes array required" }, 400);
       }
       await chargeCredits(supabase, user.id, 4);
-      const strokeStats = {
-        stroke_count: strokes.length,
+      const strokeStats = { stroke_count: strokes.length,
         total_points: strokes.reduce((acc: number, s: any) => acc + (s.points?.length ?? 0), 0),
         avg_pressure: pressureAvg ?? 0.5,
         avg_speed: speedAvg ?? 0,
-        duration_ms: durationMs ?? 0,
-      };
+        duration_ms: durationMs ?? 0 };
       const content = await callAI({
         model: "gpt-4o",
         messages: [
           { role: "system", content: "You are a real-time graphology analyst. From stroke statistics (no image), infer personality cues. Return JSON: { energy: 0-100, confidence: 0-100, focus: 0-100, creativity: 0-100, headline: short tagline, insight: 2-3 sentence reading }." },
           { role: "user", content: `Stroke metrics: ${JSON.stringify(strokeStats)}` },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       const parsed = JSON.parse(content);
-      const { data: row } = await supabase.from("handwriting_live_ink_recordings").insert({
-        user_id: user.id, strokes, duration_ms: durationMs ?? 0,
+      const { data: row } = await supabase.from("handwriting_live_ink_recordings").insert({ user_id: user.id, strokes, duration_ms: durationMs ?? 0,
         pressure_avg: pressureAvg ?? null, speed_avg: speedAvg ?? null,
-        ai_reading: parsed, credits_used: 4,
-      }).select().single();
+        ai_reading: parsed, credits_used: 4 }).select().single();
       return json({ recording: row, reading: parsed });
     }
 
@@ -777,8 +713,7 @@ Deno.serve(async (req) => {
             { type: "image_url", image_url: { url: item.image_url } },
           ] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       const parsed = JSON.parse(content);
       const newStatus = parsed.decision === "approved" ? "approved" : "rejected";
       await supabase
@@ -788,8 +723,7 @@ Deno.serve(async (req) => {
           rejection_reason: parsed.rejection_reason ?? null,
           ai_traits: parsed.ai_traits ?? {},
           tags: parsed.suggested_tags ?? item.tags,
-          updated_at: new Date().toISOString(),
-        })
+          updated_at: new Date().toISOString() })
         .eq("id", itemId);
       return json({ status: newStatus, rejection_reason: parsed.rejection_reason ?? null, ai_traits: parsed.ai_traits });
     }
@@ -834,12 +768,10 @@ Deno.serve(async (req) => {
       const { analysisId, source = "main" } = body;
       if (!analysisId) return json({ error: "analysisId required" }, 400);
       await chargeCredits(supabase, user.id, 5);
-      const tableMap: Record<string, string> = {
-        main: "handwriting_analyses",
+      const tableMap: Record<string, string> = { main: "handwriting_analyses",
         signature: "handwriting_signature_analyses",
         forgery: "handwriting_forgery_checks",
-        compatibility: "handwriting_compatibility_matches",
-      };
+        compatibility: "handwriting_compatibility_matches" };
       const tbl = tableMap[source] ?? "handwriting_analyses";
       const { data: analysis } = await supabase
         .from(tbl).select("*").eq("id", analysisId).eq("user_id", user.id).maybeSingle();
@@ -849,13 +781,10 @@ Deno.serve(async (req) => {
         messages: [
           { role: "system", content: "Write a forensic-grade executive summary for a handwriting analysis PDF report. Professional, court-ready tone, 250-400 words." },
           { role: "user", content: JSON.stringify(analysis).slice(0, 6000) },
-        ],
-      });
+        ] });
       const watermark = `UniqueApp Forensic · ${user.id.slice(0, 8)} · ${new Date().toISOString().slice(0, 10)}`;
-      const { data: report } = await supabase.from("handwriting_pdf_reports").insert({
-        user_id: user.id, source_analysis_id: analysisId, report_type: source,
-        watermark, status: "ready", credits_used: 5,
-      }).select().single();
+      const { data: report } = await supabase.from("handwriting_pdf_reports").insert({ user_id: user.id, source_analysis_id: analysisId, report_type: source,
+        watermark, status: "ready", credits_used: 5 }).select().single();
       return json({ report, summary, watermark, source_data: analysis });
     }
 
@@ -873,8 +802,7 @@ Deno.serve(async (req) => {
             { type: "image_url", image_url: { url: imageUrl } },
           ] },
         ],
-        response_format: { type: "json_object" },
-      });
+        response_format: { type: "json_object" } });
       return JSON.parse(content);
     };
 
@@ -887,11 +815,9 @@ Deno.serve(async (req) => {
         "Perform a zonal breakdown of this handwriting.",
         imageUrl,
       );
-      const { data: row } = await supabase.from("handwriting_zone_analyses").insert({
-        user_id: user.id, image_url: imageUrl,
+      const { data: row } = await supabase.from("handwriting_zone_analyses").insert({ user_id: user.id, image_url: imageUrl,
         upper_zone: parsed.upper_zone, middle_zone: parsed.middle_zone, lower_zone: parsed.lower_zone,
-        dominant_zone: parsed.dominant_zone, ai_summary: parsed.ai_summary, credits_used: PARITY_COST,
-      }).select().single();
+        dominant_zone: parsed.dominant_zone, ai_summary: parsed.ai_summary, credits_used: PARITY_COST }).select().single();
       return json({ result: row });
     }
 
@@ -904,10 +830,8 @@ Deno.serve(async (req) => {
         "Decode individual letters in this sample.",
         imageUrl,
       );
-      const { data: row } = await supabase.from("handwriting_letter_decoder").insert({
-        user_id: user.id, image_url: imageUrl,
-        letters: parsed.letters ?? [], ai_summary: parsed.ai_summary, credits_used: PARITY_COST,
-      }).select().single();
+      const { data: row } = await supabase.from("handwriting_letter_decoder").insert({ user_id: user.id, image_url: imageUrl,
+        letters: parsed.letters ?? [], ai_summary: parsed.ai_summary, credits_used: PARITY_COST }).select().single();
       return json({ result: row });
     }
 
@@ -920,11 +844,9 @@ Deno.serve(async (req) => {
         "Match careers to this handwriting.",
         imageUrl,
       );
-      const { data: row } = await supabase.from("handwriting_career_matches").insert({
-        user_id: user.id, image_url: imageUrl,
+      const { data: row } = await supabase.from("handwriting_career_matches").insert({ user_id: user.id, image_url: imageUrl,
         top_careers: parsed.top_careers ?? [], avoid_careers: parsed.avoid_careers ?? [],
-        reasoning: parsed.reasoning, credits_used: PARITY_COST,
-      }).select().single();
+        reasoning: parsed.reasoning, credits_used: PARITY_COST }).select().single();
       return json({ result: row });
     }
 
@@ -937,13 +859,11 @@ Deno.serve(async (req) => {
         "Screen this handwriting for physical wellness signals.",
         imageUrl,
       );
-      const { data: row } = await supabase.from("handwriting_health_screens").insert({
-        user_id: user.id, image_url: imageUrl,
+      const { data: row } = await supabase.from("handwriting_health_screens").insert({ user_id: user.id, image_url: imageUrl,
         tremor_score: parsed.tremor_score, micrographia_score: parsed.micrographia_score,
         fatigue_score: parsed.fatigue_score, flags: parsed.flags ?? [],
         disclaimer: parsed.disclaimer ?? "Educational tool, not a medical diagnosis.",
-        ai_summary: parsed.ai_summary, credits_used: PARITY_COST,
-      }).select().single();
+        ai_summary: parsed.ai_summary, credits_used: PARITY_COST }).select().single();
       return json({ result: row });
     }
 
@@ -956,13 +876,11 @@ Deno.serve(async (req) => {
         "Screen this handwriting for emotional resilience signals.",
         imageUrl,
       );
-      const { data: row } = await supabase.from("handwriting_mental_screens").insert({
-        user_id: user.id, image_url: imageUrl,
+      const { data: row } = await supabase.from("handwriting_mental_screens").insert({ user_id: user.id, image_url: imageUrl,
         anxiety_score: parsed.anxiety_score, depression_score: parsed.depression_score,
         burnout_score: parsed.burnout_score, resilience_score: parsed.resilience_score,
         recommendations: parsed.recommendations ?? [], ai_summary: parsed.ai_summary,
-        credits_used: PARITY_COST,
-      }).select().single();
+        credits_used: PARITY_COST }).select().single();
       return json({ result: row });
     }
 
@@ -975,10 +893,8 @@ Deno.serve(async (req) => {
         `Goal: ${goal ?? "general improvement"}. Build a 7-day plan.`,
         imageUrl,
       );
-      const { data: row } = await supabase.from("handwriting_coach_sessions").insert({
-        user_id: user.id, before_image_url: imageUrl, goal: goal ?? null,
-        exercises: parsed.exercises ?? [], ai_plan: parsed.ai_plan, credits_used: PARITY_COST,
-      }).select().single();
+      const { data: row } = await supabase.from("handwriting_coach_sessions").insert({ user_id: user.id, before_image_url: imageUrl, goal: goal ?? null,
+        exercises: parsed.exercises ?? [], ai_plan: parsed.ai_plan, credits_used: PARITY_COST }).select().single();
       return json({ result: row });
     }
 
@@ -991,8 +907,7 @@ Deno.serve(async (req) => {
         "Build a forensic profile of the unknown writer.",
         imageUrl,
       );
-      const { data: row } = await supabase.from("handwriting_forensic_profiles").insert({
-        user_id: user.id, image_url: imageUrl,
+      const { data: row } = await supabase.from("handwriting_forensic_profiles").insert({ user_id: user.id, image_url: imageUrl,
         estimated_age_range: parsed.estimated_age_range,
         estimated_handedness: parsed.estimated_handedness,
         estimated_gender_tendency: parsed.estimated_gender_tendency,
@@ -1000,8 +915,7 @@ Deno.serve(async (req) => {
         behavioral_markers: parsed.behavioral_markers ?? [],
         confidence: parsed.confidence,
         disclaimer: parsed.disclaimer ?? "Probabilistic estimate, not identification.",
-        credits_used: PARITY_COST,
-      }).select().single();
+        credits_used: PARITY_COST }).select().single();
       return json({ result: row });
     }
 
@@ -1014,11 +928,9 @@ Deno.serve(async (req) => {
         "Identify cultural/era influences in this handwriting.",
         imageUrl,
       );
-      const { data: row } = await supabase.from("handwriting_cultural_matches").insert({
-        user_id: user.id, image_url: imageUrl,
+      const { data: row } = await supabase.from("handwriting_cultural_matches").insert({ user_id: user.id, image_url: imageUrl,
         matched_styles: parsed.matched_styles ?? [], primary_style: parsed.primary_style,
-        era_estimate: parsed.era_estimate, ai_summary: parsed.ai_summary, credits_used: PARITY_COST,
-      }).select().single();
+        era_estimate: parsed.era_estimate, ai_summary: parsed.ai_summary, credits_used: PARITY_COST }).select().single();
       return json({ result: row });
     }
 

@@ -43,14 +43,12 @@ export const CompanionMemory = () => {
             .from("character_messages")
             .select("id", { count: "exact", head: true })
             .eq("conversation_id", conv.id);
-          return {
-            id: conv.id,
+          return { id: conv.id,
             character_name: conv.ai_characters?.name || "Unknown",
             summary: conv.summary,
             memory_context: conv.memory_context,
             created_at: conv.created_at,
-            message_count: count || 0,
-          };
+            message_count: count || 0 };
         }));
         setConversations(withCounts);
       }
@@ -62,8 +60,7 @@ export const CompanionMemory = () => {
     setAnalyzing(conversationId);
     try {
       const { data, error } = await supabase.functions.invoke("companion-ai", {
-        body: { action: "memory-analyze", conversationId },
-      });
+        body: { action: "memory-analyze", conversationId } });
       if (error) throw error;
       toast({ title: "Memory Updated", description: "Companion memory has been analyzed and updated" });
       loadConversations();

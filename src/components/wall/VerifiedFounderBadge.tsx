@@ -1,10 +1,8 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
+import { Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  TooltipTrigger } from "@/components/ui/tooltip";
 import { Shield, Crown, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -25,39 +23,30 @@ interface VerifiedFounderBadgeProps {
  */
 export const isVerifiedFounder = (..._args: unknown[]): boolean => false;
 
-export const VerifiedFounderBadge = ({
-  userName,
+export const VerifiedFounderBadge = ({ userName,
   userId,
   className,
-  size = "md",
-}: VerifiedFounderBadgeProps) => {
+  size = "md" }: VerifiedFounderBadgeProps) => {
   const { data: isFounder } = useQuery({
     queryKey: ["is-verified-founder", userId],
     queryFn: async () => {
       if (!userId) return false;
-      const { data, error } = await supabase.rpc("is_verified_founder", {
-        _user_id: userId,
-      });
+      const { data, error } = await supabase.rpc("is_verified_founder", { _user_id: userId });
       if (error) return false;
       return !!data;
     },
     enabled: !!userId,
-    staleTime: 5 * 60 * 1000,
-  });
+    staleTime: 5 * 60 * 1000 });
 
   if (!isFounder) return null;
 
-  const sizeClasses = {
-    sm: "text-[10px] px-1.5 py-0 h-4",
+  const sizeClasses = { sm: "text-[10px] px-1.5 py-0 h-4",
     md: "text-xs px-2 py-0.5",
-    lg: "text-sm px-3 py-1",
-  };
+    lg: "text-sm px-3 py-1" };
 
-  const iconSizes = {
-    sm: "h-2.5 w-2.5",
+  const iconSizes = { sm: "h-2.5 w-2.5",
     md: "h-3 w-3",
-    lg: "h-4 w-4",
-  };
+    lg: "h-4 w-4" };
 
   return (
     <TooltipProvider>
@@ -74,10 +63,9 @@ export const VerifiedFounderBadge = ({
               sizeClasses[size],
               className
             )}
-            style={{
+            style={ {
               backgroundSize: "200% 100%",
-              animation: "shimmer 3s linear infinite",
-            }}
+              animation: "shimmer 3s linear infinite" }}
           >
             <Crown className={cn("fill-current", iconSizes[size])} />
             <Shield className={cn("fill-current", iconSizes[size])} />

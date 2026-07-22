@@ -21,12 +21,10 @@ interface UseTypingIndicatorOptions {
  * Typing indicator over Supabase Realtime broadcast.
  * Uses a separate channel from presence to avoid resync churn on key strokes.
  */
-export function useTypingIndicator({
-  channelKey,
+export function useTypingIndicator({ channelKey,
   user,
   timeoutMs = 4000,
-  throttleMs = 1500,
-}: UseTypingIndicatorOptions) {
+  throttleMs = 1500 }: UseTypingIndicatorOptions) {
   const [typingUsers, setTypingUsers] = useState<TypingPayload[]>([]);
   const lastSentRef = useRef(0);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
@@ -36,8 +34,7 @@ export function useTypingIndicator({
     if (!channelKey) return;
 
     const channel = supabase.channel(`typing:${channelKey}`, {
-      config: { broadcast: { self: false } },
-    });
+      config: { broadcast: { self: false } } });
 
     channel
       .on("broadcast", { event: "typing" }, ({ payload }) => {
@@ -65,8 +62,7 @@ export function useTypingIndicator({
     };
   }, [channelKey, user?.id, timeoutMs]);
 
-  const notifyTyping = useCallback(() => {
-    if (!user || !channelRef.current) return;
+  const notifyTyping = useCallback(() => { if (!user || !channelRef.current) return;
     const now = Date.now();
     if (now - lastSentRef.current < throttleMs) return;
     lastSentRef.current = now;
@@ -76,9 +72,7 @@ export function useTypingIndicator({
       payload: {
         user_id: user.id,
         display_name: user.display_name ?? null,
-        ts: now,
-      } satisfies TypingPayload,
-    });
+        ts: now } satisfies TypingPayload });
   }, [user, throttleMs]);
 
   return { typingUsers, notifyTyping };

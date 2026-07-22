@@ -19,8 +19,7 @@ export const ConcertGiftsPanel = ({ concertId }: Props) => {
         .from("platform_gifts").select("*").order("price", { ascending: true });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const sendGift = async (giftId: string) => {
     setSendingId(giftId);
@@ -28,8 +27,7 @@ export const ConcertGiftsPanel = ({ concertId }: Props) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
       const { data, error } = await supabase.functions.invoke("send-concert-gift", {
-        body: { concertId, giftId },
-      });
+        body: { concertId, giftId } });
       if (error) throw error;
       const url = (data as any)?.url;
       if (!url) throw new Error("Checkout URL missing");

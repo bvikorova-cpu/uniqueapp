@@ -53,7 +53,7 @@ export default function CompanyNew() {
           ["website", "Website", "https://"],
           ["industry", "Industry", "IT & Software"],
           ["size", "Company size", "11-50"],
-          ["headquarters", "Headquarters", "Berlin, Germany"],
+          ["headquarters", "Headquarters", "Global"],
           ["logo_url", "Logo URL", "https://"],
         ].map(([k, label, ph]) => (
           <div key={k}>

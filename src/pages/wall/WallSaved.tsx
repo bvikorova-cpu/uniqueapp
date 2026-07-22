@@ -9,8 +9,7 @@ import { motion } from "framer-motion";
 export default function WallSaved() {
   const { data: user } = useQuery({
     queryKey: ["current-user"],
-    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; },
-  });
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; } });
 
   const { data: savedPosts = [], isLoading, refetch } = useQuery({
     queryKey: ["saved-posts", user?.id],
@@ -41,8 +40,7 @@ export default function WallSaved() {
         }))
         .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   return (
     <div className="max-w-3xl mx-auto px-4 pt-6 pb-8 space-y-6">

@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import webpush from "npm:web-push@3.6.7";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 async function hmac(secret: string, body: string) {
   const enc = new TextEncoder();
@@ -52,9 +50,7 @@ async function ensureInAppFallback(admin: ReturnType<typeof createClient>, userI
       if (related_id) q = q.eq("related_id", related_id);
       const { count } = await q;
       if ((count ?? 0) > 0) continue;
-      const { error } = await admin.from("notifications").insert({
-        user_id: uid, type, title, message, action_url, related_id, is_read: false,
-      });
+      const { error } = await admin.from("notifications").insert({ user_id: uid, type, title, message, action_url, related_id, is_read: false });
       if (!error) inserted += 1;
       else console.error("fallback notification insert failed", error.message);
     } catch (e) { console.error("fallback err", (e as Error).message); }
@@ -108,15 +104,13 @@ async function sendPushNotifications(admin: ReturnType<typeof createClient>, use
 
   if (stale.length) await admin.from("push_subscriptions").delete().in("id", stale);
 
-  await logRow({
-    user_ids: userIds,
+  await logRow({ user_ids: userIds,
     payload,
     status: sent > 0 ? "sent" : "failed",
     sent_count: sent,
     removed_count: stale.length,
     error: errors.length ? errors.join(" | ").slice(0, 1000) : null,
-    source: "dispatch-webhook",
-  });
+    source: "dispatch-webhook" });
 
   return { sent, removed: stale.length };
 }
@@ -134,16 +128,14 @@ serve(async (req) => {
     if (Array.isArray(body?.user_ids) && body?.payload) {
       const result = await sendPushNotifications(admin, body.user_ids, body.payload);
       return new Response(JSON.stringify(result), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const webhookBody = body as Body;
     if (!webhookBody?.user_id || !webhookBody?.event_type) {
       return new Response(JSON.stringify({ error: "Missing user_id or event_type" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { data: hooks } = await admin
@@ -155,51 +147,42 @@ serve(async (req) => {
     const matching = (hooks ?? []).filter((h: any) => h.events.includes(webhookBody.event_type));
     const results: any[] = [];
 
-    for (const hook of matching) {
-      const payloadStr = JSON.stringify({
+    for (const hook of matching) { const payloadStr = JSON.stringify({
         event: webhookBody.event_type,
         ts: Date.now(),
-        data: webhookBody.payload,
-      });
+        data: webhookBody.payload });
       const signature = await hmac(hook.secret, payloadStr);
       let status = 0;
       let respText = "";
-      try {
-        const r = await fetch(hook.url, {
+      try { const r = await fetch(hook.url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "X-Webhook-Signature": signature,
-            "X-Webhook-Event": webhookBody.event_type,
-          },
+            "X-Webhook-Event": webhookBody.event_type },
           body: payloadStr,
-          signal: AbortSignal.timeout(8000),
-        });
+          signal: AbortSignal.timeout(8000) });
         status = r.status;
         respText = (await r.text()).slice(0, 500);
       } catch (e) {
         respText = (e as Error).message.slice(0, 500);
       }
 
-      await admin.from("webhook_deliveries").insert({
-        webhook_id: hook.id,
+      await admin.from("webhook_deliveries").insert({ webhook_id: hook.id,
         event_type: webhookBody.event_type,
         payload: webhookBody.payload,
         status_code: status,
         response_body: respText,
-        delivered_at: new Date().toISOString(),
-      });
+        delivered_at: new Date().toISOString() });
 
       results.push({ webhook_id: hook.id, status });
     }
 
     return new Response(JSON.stringify({ dispatched: results.length, results }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

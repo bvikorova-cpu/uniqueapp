@@ -4,10 +4,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[request-donation-refund] ${s}${d ? " " + JSON.stringify(d) : ""}`);
@@ -63,27 +61,21 @@ serve(async (req) => {
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     log("issuing refund", { pi: donation.stripe_payment_id, donationId });
-    const refund = await stripe.refunds.create({
-      payment_intent: donation.stripe_payment_id,
+    const refund = await stripe.refunds.create({ payment_intent: donation.stripe_payment_id,
       reason: "requested_by_customer",
       metadata: {
         donation_id: donation.id,
         donor_id: user.id,
-        donor_reason: reason || "",
-      },
-    });
+        donor_reason: reason || "" } });
 
     // Reconcile DB (idempotent). Webhook may also fire charge.refunded.
-    const { data: rpcRes, error: rpcErr } = await supabase.rpc("refund_campaign_donation", {
-      _stripe_payment_id: donation.stripe_payment_id,
+    const { data: rpcRes, error: rpcErr } = await supabase.rpc("refund_campaign_donation", { _stripe_payment_id: donation.stripe_payment_id,
       _stripe_refund_id: refund.id,
-      _refund_amount: (refund.amount ?? 0) / 100,
-    });
+      _refund_amount: (refund.amount ?? 0) / 100 });
     if (rpcErr) log("RPC error (non-fatal)", rpcErr);
 
     // Audit log (best-effort)
-    await supabase.from("admin_audit_log").insert({
-      admin_id: user.id,
+    await supabase.from("admin_audit_log").insert({ admin_id: user.id,
       action: "donor_self_refund",
       target_type: "campaign_donation",
       target_id: donation.id,
@@ -92,9 +84,7 @@ serve(async (req) => {
         amount: refund.amount,
         reason,
         campaign_type: donation.campaign_type,
-        campaign_id: donation.campaign_id,
-      },
-    }).then(() => {}, () => {});
+        campaign_id: donation.campaign_id } }).then(() => {}, () => {});
 
     return json({ success: true, refund_id: refund.id, rpc: rpcRes });
   } catch (e) {
@@ -107,6 +97,5 @@ serve(async (req) => {
 function json(b: unknown, status = 200) {
   return new Response(JSON.stringify(b), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

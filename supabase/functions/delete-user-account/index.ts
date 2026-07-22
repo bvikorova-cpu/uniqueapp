@@ -5,17 +5,14 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -38,8 +35,7 @@ Deno.serve(async (req) => {
     }
 
     const userClient = createClient(SUPABASE_URL, ANON_KEY, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
 
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData?.user) {
@@ -64,8 +60,7 @@ Deno.serve(async (req) => {
 
     // 3. Service-role client for purge + auth deletion.
     const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
+      auth: { autoRefreshToken: false, persistSession: false } });
 
     // 3a. Purge all user-owned data across every public table (GDPR Right to Erasure).
     // The DB function dynamically deletes from every table with a user_id column,
@@ -78,10 +73,8 @@ Deno.serve(async (req) => {
     if (purgeErr) {
       console.error("GDPR purge failed", { userId, error: purgeErr });
       return json(
-        {
-          error:
-            "Failed to erase account data. No changes have been made. Please contact support.",
-        },
+        { error:
+            "Failed to erase account data. No changes have been made. Please contact support." },
         500,
       );
     }
@@ -93,26 +86,20 @@ Deno.serve(async (req) => {
       userId,
     );
 
-    if (deleteErr) {
-      console.error("Failed to delete auth user after purge", {
+    if (deleteErr) { console.error("Failed to delete auth user after purge", {
         userId,
-        error: deleteErr,
-      });
+        error: deleteErr });
       return json(
-        {
-          error:
+        { error:
             "Account data was erased but the auth record could not be removed. Please contact support to finalize deletion.",
-          purge_report: purgeReport,
-        },
+          purge_report: purgeReport },
         500,
       );
     }
 
-    return json({
-      success: true,
+    return json({ success: true,
       deleted_user_id: userId,
-      purge_report: purgeReport,
-    });
+      purge_report: purgeReport });
   } catch (err) {
     console.error("Unexpected error in delete-user-account", err);
     return json({ error: "Unexpected server error" }, 500);

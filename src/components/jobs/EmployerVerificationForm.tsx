@@ -20,24 +20,20 @@ interface DocumentUpload {
   url?: string;
 }
 
-const DOCUMENT_TYPES = {
-  business_license: "Business License",
+const DOCUMENT_TYPES = { business_license: "Business License",
   tax_certificate: "Tax Certificate",
   company_registration: "Company Registration",
   proof_of_address: "Proof of Address",
-  other: "Other Document",
-};
+  other: "Other Document" };
 
 export function EmployerVerificationForm({ userId }: { userId: string }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [formData, setFormData] = useState({
-    company_name: "",
+  const [formData, setFormData] = useState({ company_name: "",
     company_registration_number: "",
     company_address: "",
     company_website: "",
-    company_phone: "",
-  });
+    company_phone: "" });
   const [documents, setDocuments] = useState<DocumentUpload[]>([]);
   const [uploading, setUploading] = useState(false);
 
@@ -53,8 +49,7 @@ export function EmployerVerificationForm({ userId }: { userId: string }) {
       
       if (error && error.code !== 'PGRST116') throw error;
       return data;
-    },
-  });
+    } });
 
   // Submit verification mutation
   const submitVerification = useMutation({
@@ -70,15 +65,13 @@ export function EmployerVerificationForm({ userId }: { userId: string }) {
       setUploading(true);
 
       // Create or update verification record
-      const verificationData: any = {
-        employer_id: userId,
+      const verificationData: any = { employer_id: userId,
         company_name: formData.company_name,
         company_registration_number: formData.company_registration_number || null,
         company_address: formData.company_address,
         company_website: formData.company_website || null,
         company_phone: formData.company_phone,
-        verification_status: 'pending',
-      };
+        verification_status: 'pending' };
 
       const { data: verificationRecord, error: verificationError } = await supabase
         .from('employer_verifications')
@@ -106,12 +99,10 @@ export function EmployerVerificationForm({ userId }: { userId: string }) {
 
           const { error: docError } = await supabase
             .from('employer_verification_documents')
-            .insert({
-              verification_id: verificationRecord.id,
+            .insert({ verification_id: verificationRecord.id,
               document_type: doc.type,
               document_name: doc.name,
-              document_url: publicUrl,
-            });
+              document_url: publicUrl });
 
           if (docError) throw docError;
         }
@@ -121,43 +112,34 @@ export function EmployerVerificationForm({ userId }: { userId: string }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['employer-verification'] });
-      toast({
-        title: "Verification Submitted",
-        description: "Your verification request has been submitted for admin review",
-      });
+      toast({ title: "Verification Submitted",
+        description: "Your verification request has been submitted for admin review" });
       setDocuments([]);
     },
-    onError: (error: Error) => {
-      toast({
+    onError: (error: Error) => { toast({
         title: "Submission Failed",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     },
     onSettled: () => {
       setUploading(false);
-    },
-  });
+    } });
 
-  const handleFileSelect = (type: string, files: FileList | null) => {
-    if (!files || files.length === 0) return;
+  const handleFileSelect = (type: string, files: FileList | null) => { if (!files || files.length === 0) return;
     
     const file = files[0];
     if (file.size > 10 * 1024 * 1024) {
       toast({
         title: "File Too Large",
         description: "File size must be less than 10MB",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
-    setDocuments([...documents, {
-      id: Math.random().toString(36),
+    setDocuments([...documents, { id: Math.random().toString(36),
       type,
       name: file.name,
-      file,
-    }]);
+      file }]);
   };
 
   const removeDocument = (id: string) => {
@@ -244,15 +226,14 @@ export function EmployerVerificationForm({ userId }: { userId: string }) {
             ))}
           </div>
 
-          {(verification.verification_status === 'rejected' || verification.verification_status === 'requires_resubmission') && (
+          { (verification.verification_status === 'rejected' || verification.verification_status === 'requires_resubmission') && (
             <Button onClick={() => {
               setFormData({
                 company_name: verification.company_name,
                 company_registration_number: verification.company_registration_number || "",
                 company_address: verification.company_address,
                 company_website: verification.company_website || "",
-                company_phone: verification.company_phone,
-              });
+                company_phone: verification.company_phone });
               // Would need to allow resubmission here
             }}>
               Resubmit Verification

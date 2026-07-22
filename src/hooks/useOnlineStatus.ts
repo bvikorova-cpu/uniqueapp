@@ -8,9 +8,7 @@ export const useOnlineStatus = (userId: string | null) => {
   const fetchPresence = useCallback(async () => {
     if (!userId) return;
 
-    const { data } = await supabase.rpc("get_my_conversation_presence_v1" as any, {
-      _user_ids: null,
-    });
+    const { data } = await supabase.rpc("get_my_conversation_presence_v1" as any, { _user_ids: null });
 
     if (!Array.isArray(data)) return;
 
@@ -27,8 +25,7 @@ export const useOnlineStatus = (userId: string | null) => {
     setLastSeenMap(seen);
   }, [userId]);
 
-  useEffect(() => {
-    if (!userId) return;
+  useEffect(() => { if (!userId) return;
 
     fetchPresence();
 
@@ -40,8 +37,7 @@ export const useOnlineStatus = (userId: string | null) => {
         {
           event: '*',
           schema: 'public',
-          table: 'user_online_status',
-        },
+          table: 'user_online_status' },
         (payload) => {
           if (payload.new) {
             const newStatus = payload.new as { user_id: string; is_online: boolean; last_seen?: string };

@@ -16,29 +16,25 @@ export const FUNDRAISING_CATEGORIES = [
 
 export type FundraisingCategory = (typeof FUNDRAISING_CATEGORIES)[number]["type"];
 
-const CAMPAIGN_TABLE_TO_TYPE: Record<string, FundraisingCategory> = {
-  medical_campaigns:     "medical",
+const CAMPAIGN_TABLE_TO_TYPE: Record<string, FundraisingCategory> = { medical_campaigns:     "medical",
   dream_campaigns:       "dream",
   hero_campaigns:        "hero",
   pet_rescue_campaigns:  "pet",
   student_campaigns:     "student",
   crisis_campaigns:      "crisis",
-  talent_campaigns:      "talent",
-};
+  talent_campaigns:      "talent" };
 
 export function tableToCategory(table: string): FundraisingCategory {
   return CAMPAIGN_TABLE_TO_TYPE[table] ?? "medical";
 }
 
-const TYPE_TO_TABLE: Record<FundraisingCategory, string> = {
-  medical: "medical_campaigns",
+const TYPE_TO_TABLE: Record<FundraisingCategory, string> = { medical: "medical_campaigns",
   dream:   "dream_campaigns",
   hero:    "hero_campaigns",
   pet:     "pet_rescue_campaigns",
   student: "student_campaigns",
   crisis:  "crisis_campaigns",
-  talent:  "talent_campaigns",
-};
+  talent:  "talent_campaigns" };
 
 export function categoryToTable(type: string): string {
   return TYPE_TO_TABLE[(type as FundraisingCategory)] ?? "medical_campaigns";

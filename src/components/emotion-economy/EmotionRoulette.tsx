@@ -74,18 +74,15 @@ export function EmotionRoulette({ onBack }: Props) {
     setRotation(targetRotation);
 
     const spinPromise = supabase.functions.invoke("emotion-roulette-spin", {
-      body: { bet_emotion: selectedEmotion.toLowerCase() },
-    });
+      body: { bet_emotion: selectedEmotion.toLowerCase() } });
     await new Promise((r) => setTimeout(r, 3000));
     const { data, error } = await spinPromise;
 
-    if (error || (data as any)?.error) {
-      setIsSpinning(false);
+    if (error || (data as any)?.error) { setIsSpinning(false);
       toast({
         title: "Spin failed",
         description: (data as any)?.error || error?.message || "Try again",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -103,8 +100,7 @@ export function EmotionRoulette({ onBack }: Props) {
       title: won ? "🎉 You Won!" : "Better luck next time!",
       description: won
         ? `The wheel landed on ${displayName}! You won ${payout} credits!`
-        : `The wheel landed on ${displayName}. You bet on ${selectedEmotion}.`,
-    });
+        : `The wheel landed on ${displayName}. You bet on ${selectedEmotion}.` });
   };
 
   return (
@@ -178,8 +174,7 @@ export function EmotionRoulette({ onBack }: Props) {
                       className="absolute inset-0 flex items-center justify-center"
                       style={{
                         transform: `rotate(${angle}deg)`,
-                        clipPath: `polygon(50% 50%, 50% 0%, ${50 + 50 * Math.tan(Math.PI / EMOTIONS.length)}% 0%)`,
-                      }}
+                        clipPath: `polygon(50% 50%, 50% 0%, ${50 + 50 * Math.tan(Math.PI / EMOTIONS.length)}% 0%)` }}
                     >
                       <div
                         className="w-full h-full"

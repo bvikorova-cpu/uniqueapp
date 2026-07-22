@@ -8,8 +8,7 @@ Deno.serve(async (req) => {
     const { spaceId, recordingUrl } = await req.json();
     if (!spaceId || !recordingUrl) {
       return new Response(JSON.stringify({ error: 'Missing spaceId or recordingUrl' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
@@ -33,8 +32,7 @@ Deno.serve(async (req) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-      },
+        Authorization: `Bearer ${OPENAI_API_KEY}` },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [{
@@ -42,10 +40,7 @@ Deno.serve(async (req) => {
           content: [
             { type: 'text', text: 'Transcribe this audio recording verbatim. Return only the transcript text.' },
             { type: 'input_audio', input_audio: { data: b64, format: 'webm' } },
-          ],
-        }],
-      }),
-    });
+          ] }] }) });
 
     if (!aiResp.ok) {
       const txt = await aiResp.text();
@@ -54,16 +49,12 @@ Deno.serve(async (req) => {
     const aiJson = await aiResp.json();
     const transcript = aiJson.choices?.[0]?.message?.content ?? '';
 
-    await supabase.from('audio_spaces').update({
-      transcript, transcript_status: 'done',
-    }).eq('id', spaceId);
+    await supabase.from('audio_spaces').update({ transcript, transcript_status: 'done' }).eq('id', spaceId);
 
     return new Response(JSON.stringify({ transcript }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 });

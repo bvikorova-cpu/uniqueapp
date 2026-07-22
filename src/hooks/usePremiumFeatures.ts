@@ -119,10 +119,8 @@ export const usePremiumFeatures = () => {
       // Deduct credits
       const { error: updateError } = await supabase
         .from('ai_credits')
-        .update({
-          credits_remaining: creditsData.credits_remaining - creditsSpent,
-          last_used_at: new Date().toISOString(),
-        })
+        .update({ credits_remaining: creditsData.credits_remaining - creditsSpent,
+          last_used_at: new Date().toISOString() })
         .eq('user_id', user.id);
 
       if (updateError) throw updateError;
@@ -130,22 +128,18 @@ export const usePremiumFeatures = () => {
       // Record purchase
       await supabase
         .from('user_premium_purchases')
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           feature_id: featureId,
           feature_name: featureName,
-          credits_spent: creditsSpent,
-        });
+          credits_spent: creditsSpent });
 
       // Log usage
       await supabase
         .from('ai_usage_history')
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           usage_type: 'premium_feature',
           credits_used: creditsSpent,
-          description: featureName,
-        });
+          description: featureName });
 
       return true;
     } catch (error) {
@@ -154,14 +148,12 @@ export const usePremiumFeatures = () => {
     }
   };
 
-  return {
-    storyEffects,
+  return { storyEffects,
     livestreamGifts,
     datingGifts,
     premiumBadges,
     premiumThemes,
     premiumAvatars,
     purchaseFeature,
-    loading,
-  };
+    loading };
 };

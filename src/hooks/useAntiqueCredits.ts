@@ -35,8 +35,7 @@ export const useAntiqueCredits = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   const identifyAntique = useMutation({
     mutationFn: async ({ imageUrl, analysisType }: { imageUrl: string; analysisType: string }) => {
@@ -58,8 +57,7 @@ export const useAntiqueCredits = () => {
       } else {
         toast.error("Error analyzing antique: " + error.message);
       }
-    },
-  });
+    } });
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {
     try {
@@ -80,11 +78,9 @@ export const useAntiqueCredits = () => {
     }
   };
 
-  return {
-    credits,
+  return { credits,
     isLoading,
     identifyAntique: identifyAntique.mutate,
     isIdentifying: identifyAntique.isPending,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

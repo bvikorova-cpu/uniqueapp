@@ -11,8 +11,7 @@ interface LotterySmartPicksProps {
 }
 
 const SMART_PICKS = [
-  {
-    id: 1,
+  { id: 1,
     name: "Balanced Pick",
     description: "Optimal even/odd and high/low distribution",
     confidence: 87,
@@ -21,10 +20,8 @@ const SMART_PICKS = [
     strategy: "balanced",
     icon: Shield,
     color: "from-blue-500 to-cyan-500",
-    reasoning: "Based on 500+ draws, balanced distributions win 62% more often.",
-  },
-  {
-    id: 2,
+    reasoning: "Based on 500+ draws, balanced distributions win 62% more often." },
+  { id: 2,
     name: "Hot Streak Pick",
     description: "Numbers currently on a hot streak",
     confidence: 91,
@@ -33,10 +30,8 @@ const SMART_PICKS = [
     strategy: "hot",
     icon: Zap,
     color: "from-orange-500 to-red-500",
-    reasoning: "These numbers appeared 40% more than average in the last 30 draws.",
-  },
-  {
-    id: 3,
+    reasoning: "These numbers appeared 40% more than average in the last 30 draws." },
+  { id: 3,
     name: "Pattern Breaker",
     description: "Overdue numbers ready for a comeback",
     confidence: 79,
@@ -45,8 +40,7 @@ const SMART_PICKS = [
     strategy: "overdue",
     icon: Target,
     color: "from-violet-500 to-purple-600",
-    reasoning: "Statistical regression suggests these overdue numbers are likely to appear.",
-  },
+    reasoning: "Statistical regression suggests these overdue numbers are likely to appear." },
 ];
 
 export function LotterySmartPicks({ onBack }: LotterySmartPicksProps) {

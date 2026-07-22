@@ -26,9 +26,7 @@ const KEY_THREAD = (otherUserId?: string) => ["direct-messages", otherUserId];
 const KEY_LIST = ["conversations-list"] as const;
 
 async function ensureDmConversation(otherUserId: string): Promise<string> {
-  const { data, error } = await (supabase as any).rpc("get_or_create_dm_conversation", {
-    _other_user: otherUserId,
-  });
+  const { data, error } = await (supabase as any).rpc("get_or_create_dm_conversation", { _other_user: otherUserId });
   if (error) throw error;
   return data as string;
 }
@@ -52,17 +50,14 @@ export const useDirectMessages = (otherUserId?: string) => {
         .order("created_at", { ascending: true });
       if (error) throw error;
 
-      return (data ?? []).map((m: any): DirectMessage => ({
-        id: m.id,
+      return (data ?? []).map((m: any): DirectMessage => ({ id: m.id,
         sender_id: m.sender_id,
         receiver_id: m.sender_id === user.id ? otherUserId : user.id,
         content: m.content,
         is_read: !!m.is_read,
-        created_at: m.created_at,
-      }));
+        created_at: m.created_at }));
     },
-    enabled: !!otherUserId,
-  });
+    enabled: !!otherUserId });
 
   // Realtime: refresh when new messages arrive in the resolved conversation.
   useEffect(() => {
@@ -82,8 +77,7 @@ export const useDirectMessages = (otherUserId?: string) => {
               event: "*",
               schema: "public",
               table: "conversation_messages",
-              filter: `conversation_id=eq.${convId}`,
-            },
+              filter: `conversation_id=eq.${convId}` },
             () => {
               queryClient.invalidateQueries({ queryKey: KEY_THREAD(otherUserId) });
               queryClient.invalidateQueries({ queryKey: KEY_LIST });
@@ -141,19 +135,16 @@ export const useDirectMessages = (otherUserId?: string) => {
             .order("created_at", { ascending: false })
             .limit(1)
             .maybeSingle();
-          return {
-            userId: row.user_id as string,
+          return { userId: row.user_id as string,
             lastMessage: last?.content ?? "",
-            lastMessageAt: last?.created_at ?? null,
-          };
+            lastMessageAt: last?.created_at ?? null };
         }),
       );
 
       return list
         .filter((x) => x.lastMessageAt)
         .sort((a, b) => (a.lastMessageAt! < b.lastMessageAt! ? 1 : -1));
-    },
-  });
+    } });
 
   const sendMessage = useMutation({
     mutationFn: async ({ receiverId, content }: { receiverId: string; content: string }) => {
@@ -173,11 +164,9 @@ export const useDirectMessages = (otherUserId?: string) => {
 
       const { data, error } = await (supabase as any)
         .from("conversation_messages")
-        .insert({
-          conversation_id: convId,
+        .insert({ conversation_id: convId,
           sender_id: user.id,
-          content,
-        })
+          content })
         .select()
         .single();
       if (error) throw error;
@@ -187,8 +176,7 @@ export const useDirectMessages = (otherUserId?: string) => {
     onSuccess: (_d, vars) => {
       queryClient.invalidateQueries({ queryKey: KEY_THREAD(vars.receiverId) });
       queryClient.invalidateQueries({ queryKey: KEY_LIST });
-    },
-  });
+    } });
 
   const markAsRead = useMutation({
     mutationFn: async (messageId: string) => {
@@ -200,14 +188,11 @@ export const useDirectMessages = (otherUserId?: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: KEY_THREAD(otherUserId) });
-    },
-  });
+    } });
 
-  return {
-    messages: messages || [],
+  return { messages: messages || [],
     conversations: conversations || [],
     isLoading,
     sendMessage: sendMessage.mutate,
-    markAsRead: markAsRead.mutate,
-  };
+    markAsRead: markAsRead.mutate };
 };

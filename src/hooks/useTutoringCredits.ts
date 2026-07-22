@@ -12,26 +12,20 @@ export interface TutoringCredits {
 }
 
 export const TUTORING_CREDIT_PACKAGES = [
-  {
-    id: "price_1ScY0zGaXSfGtYFtoe91oxmX",
+  { id: "price_1ScY0zGaXSfGtYFtoe91oxmX",
     credits: 10,
     price: 5,
-    label: "Starter",
-  },
-  {
-    id: "price_1ScY10GaXSfGtYFt3F1cPJaE",
+    label: "Starter" },
+  { id: "price_1ScY10GaXSfGtYFt3F1cPJaE",
     credits: 30,
     price: 12,
     label: "Popular",
-    popular: true,
-  },
-  {
-    id: "price_1ScY12GaXSfGtYFt3zw96KfT",
+    popular: true },
+  { id: "price_1ScY12GaXSfGtYFt3zw96KfT",
     credits: 100,
     price: 35,
     label: "Best Value",
-    bestValue: true,
-  },
+    bestValue: true },
 ];
 
 export const useTutoringCredits = () => {
@@ -51,8 +45,7 @@ export const useTutoringCredits = () => {
 
       if (error && error.code !== "PGRST116") throw error;
       return data as TutoringCredits | null;
-    },
-  });
+    } });
 
   const spendCredit = useMutation({
     mutationFn: async () => {
@@ -71,24 +64,20 @@ export const useTutoringCredits = () => {
 
       const { error } = await supabase
         .from("tutoring_credits")
-        .update({
-          credits_remaining: currentCredits.credits_remaining - 1,
-          updated_at: new Date().toISOString(),
-        })
+        .update({ credits_remaining: currentCredits.credits_remaining - 1,
+          updated_at: new Date().toISOString() })
         .eq("user_id", user.id);
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tutoring-credits"] });
-    },
-  });
+    } });
 
   const purchaseCredits = useMutation({
     mutationFn: async (priceId: string) => {
       const { data, error } = await supabase.functions.invoke("tutoring-purchase-credits", {
-        body: { priceId },
-      });
+        body: { priceId } });
 
       if (error) throw error;
       if (data?.url) {
@@ -99,16 +88,14 @@ export const useTutoringCredits = () => {
     onError: (error) => {
       console.error("Purchase error:", error);
       toast.error("Failed to start purchase");
-    },
-  });
+    } });
 
   // Activates credits after Stripe redirect. Server verifies the session and
   // resolves the credit amount from the Stripe price id (client value ignored).
   const activatePurchase = useMutation({
     mutationFn: async (sessionId: string) => {
       const { data, error } = await supabase.functions.invoke("tutoring-add-credits", {
-        body: { session_id: sessionId },
-      });
+        body: { session_id: sessionId } });
       if (error) throw error;
       return data as { success: boolean; credits?: number; alreadyCredited?: boolean };
     },
@@ -121,8 +108,7 @@ export const useTutoringCredits = () => {
     onError: (error) => {
       console.error("Activate purchase error:", error);
       toast.error("Could not activate purchase. Contact support.");
-    },
-  });
+    } });
 
   // Refund a previously-deducted credit (used when AI call fails after deduction)
   const refundCredit = useMutation({
@@ -137,26 +123,21 @@ export const useTutoringCredits = () => {
       if (!cur) return;
       await supabase
         .from("tutoring_credits")
-        .update({
-          credits_remaining: cur.credits_remaining + 1,
-          updated_at: new Date().toISOString(),
-        })
+        .update({ credits_remaining: cur.credits_remaining + 1,
+          updated_at: new Date().toISOString() })
         .eq("user_id", user.id);
       console.log("[refundCredit]", reason);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tutoring-credits"] });
-    },
-  });
+    } });
 
-  return {
-    credits: credits?.credits_remaining ?? 0,
+  return { credits: credits?.credits_remaining ?? 0,
     totalPurchased: credits?.total_credits_purchased ?? 0,
     isLoading,
     spendCredit: spendCredit.mutateAsync,
     purchaseCredits: purchaseCredits.mutate,
     activatePurchase: activatePurchase.mutateAsync,
     refundCredit: refundCredit.mutateAsync,
-    isUsingCredit: spendCredit.isPending,
-  };
+    isUsingCredit: spendCredit.isPending };
 };

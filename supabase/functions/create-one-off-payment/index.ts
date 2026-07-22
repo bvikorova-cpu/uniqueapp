@@ -8,11 +8,9 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { createOneOffSession, PRODUCTS } from "../_shared/oneOffCheckout.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, idempotency-key, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, idempotency-key, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -49,8 +47,7 @@ async function handler(req: Request): Promise<Response> {
 
     const origin = req.headers.get("origin") || "https://uniqueapp.fun";
 
-    const { url, sessionId } = await createOneOffSession({
-      productKey,
+    const { url, sessionId } = await createOneOffSession({ productKey,
       amount,
       name,
       description,
@@ -60,20 +57,17 @@ async function handler(req: Request): Promise<Response> {
       userEmail,
       origin,
       successPath,
-      cancelPath,
-    });
+      cancelPath });
 
     return new Response(JSON.stringify({ url, sessionId }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (error: any) {
     console.error("create-one-off-payment error:", error);
     const status = error.message?.includes("Authentication required") ? 401 : 500;
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status,
-    });
+      status });
   }
 }
 

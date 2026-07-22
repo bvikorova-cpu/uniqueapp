@@ -6,22 +6,17 @@ import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 const json = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), {
     status: s,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-const Body = z.object({
-  creatorId: z.string().uuid(),
+const Body = z.object({ creatorId: z.string().uuid(),
   giftId: z.string().uuid(),
-  message: z.string().max(280).optional().transform((v) => v?.trim() || ""),
-});
+  message: z.string().max(280).optional().transform((v) => v?.trim() || "") });
 
 const PLATFORM_FEE = 0.10;
 
@@ -75,16 +70,14 @@ serve(async (req) => {
     // Insert pending row first, get id for redirect
     const { data: pending, error: iErr } = await supabase
       .from("creator_gift_transactions")
-      .insert({
-        creator_id: creatorId,
+      .insert({ creator_id: creatorId,
         sender_id: user.id,
         gift_id: giftId,
         amount: price,
         platform_fee: platformFee,
         creator_payout: creatorPayout,
         message: message || null,
-        status: "pending",
-      })
+        status: "pending" })
       .select("id")
       .single();
     if (iErr || !pending) {
@@ -100,21 +93,15 @@ serve(async (req) => {
           currency: "eur",
           product_data: {
             name: `${gift.icon ?? "🎁"} ${gift.name}`,
-            description: message || "Virtual gift",
-          },
-          unit_amount: amountCents,
-        },
-        quantity: 1,
-      }],
+            description: message || "Virtual gift" },
+          unit_amount: amountCents },
+        quantity: 1 }],
       success_url: `${origin}/gift/success?id=${pending.id}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/gift/canceled?id=${pending.id}`,
-      metadata: {
-        kind: "creator_gift",
+      metadata: { kind: "creator_gift",
         transaction_id: pending.id,
         creator_id: creatorId,
-        sender_id: user.id,
-      },
-    });
+        sender_id: user.id } });
 
     await supabase
       .from("creator_gift_transactions")

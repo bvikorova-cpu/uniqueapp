@@ -17,13 +17,11 @@ interface Insight {
   seen_at: string | null;
 }
 
-const ACTION_LABELS: Record<string, string> = {
-  bio_coach: "Open Bio Coach",
+const ACTION_LABELS: Record<string, string> = { bio_coach: "Open Bio Coach",
   add_photo: "Add photo",
   send_openers: "Send openers",
   update_prompts: "Update prompts",
-  try_video: "Record video",
-};
+  try_video: "Record video" };
 
 interface Props { onAction?: (action: string) => void; }
 

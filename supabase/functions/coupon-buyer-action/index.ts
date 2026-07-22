@@ -2,11 +2,9 @@
 // Action: 'confirm' releases escrow early. 'dispute' freezes auto-release. 'review' inserts/updates rating.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -49,16 +47,14 @@ Deno.serve(async (req) => {
           escrow_status: "released",
           released_at: new Date().toISOString(),
           dispute_resolution: `admin_release: ${note}`,
-          updated_at: new Date().toISOString(),
-        }).eq("id", orderId);
+          updated_at: new Date().toISOString() }).eq("id", orderId);
         return json({ ok: true, escrow_status: "released" });
       } else {
         await supa.from("coupon_orders").update({
           escrow_status: "refunded",
           status: "refunded",
           dispute_resolution: `admin_refund: ${note}`,
-          updated_at: new Date().toISOString(),
-        }).eq("id", orderId);
+          updated_at: new Date().toISOString() }).eq("id", orderId);
         return json({ ok: true, escrow_status: "refunded" });
       }
     }
@@ -66,25 +62,21 @@ Deno.serve(async (req) => {
     if (order.buyer_id !== user.id) throw new Error("Not your order");
     if (order.status !== "completed") throw new Error("Order not completed yet");
 
-    if (action === "confirm") {
-      await supa.from("coupon_orders").update({
+    if (action === "confirm") { await supa.from("coupon_orders").update({
         escrow_status: "released",
         buyer_confirmed_at: new Date().toISOString(),
         released_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }).eq("id", orderId);
+        updated_at: new Date().toISOString() }).eq("id", orderId);
       return json({ ok: true, escrow_status: "released" });
     }
 
-    if (action === "dispute") {
-      const reason = String(body?.reason || "").slice(0, 1000);
+    if (action === "dispute") { const reason = String(body?.reason || "").slice(0, 1000);
       if (!reason) throw new Error("Reason required");
       await supa.from("coupon_orders").update({
         escrow_status: "disputed",
         buyer_disputed_at: new Date().toISOString(),
         dispute_reason: reason,
-        updated_at: new Date().toISOString(),
-      }).eq("id", orderId);
+        updated_at: new Date().toISOString() }).eq("id", orderId);
       return json({ ok: true, escrow_status: "disputed" });
     }
 
@@ -92,14 +84,12 @@ Deno.serve(async (req) => {
       const rating = Number(body?.rating);
       if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new Error("Invalid rating");
       const comment = String(body?.comment || "").slice(0, 500) || null;
-      const { error: rErr } = await supa.from("coupon_buyer_reviews").upsert({
-        order_id: orderId,
+      const { error: rErr } = await supa.from("coupon_buyer_reviews").upsert({ order_id: orderId,
         buyer_id: user.id,
         seller_id: order.seller_id,
         rating,
         comment,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: "order_id" });
+        updated_at: new Date().toISOString() }, { onConflict: "order_id" });
       if (rErr) throw rErr;
       return json({ ok: true, rating });
     }
@@ -113,6 +103,5 @@ Deno.serve(async (req) => {
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

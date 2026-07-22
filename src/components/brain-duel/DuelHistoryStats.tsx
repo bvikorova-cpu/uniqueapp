@@ -67,8 +67,7 @@ export const DuelHistoryStats = () => {
         .select("id, full_name, avatar_url")
         .in("id", opponentIds);
 
-      const records: HeadToHeadRecord[] = opponentIds.map((id) => {
-        const profile = profiles?.find((p) => p.id === id);
+      const records: HeadToHeadRecord[] = opponentIds.map((id) => { const profile = profiles?.find((p) => p.id === id);
         return {
           opponentId: id,
           opponentName: profile?.full_name || "Anonymous",
@@ -76,25 +75,20 @@ export const DuelHistoryStats = () => {
           wins: h2h[id].wins,
           losses: h2h[id].losses,
           totalGames: h2h[id].wins + h2h[id].losses,
-          lastPlayed: h2h[id].lastPlayed,
-        };
+          lastPlayed: h2h[id].lastPlayed };
       }).sort((a, b) => b.totalGames - a.totalGames);
 
       const bestCategory = Object.entries(categoryCounts).sort(([, a], [, b]) => b - a)[0];
 
-      return {
-        records,
+      return { records,
         totalStats: {
           totalMatches: matches.length,
           totalWins,
           totalLosses,
           winRate: matches.length > 0 ? Math.round((totalWins / matches.length) * 100) : 0,
           bestCategory: bestCategory?.[0] || "N/A",
-          uniqueOpponents: opponentIds.length,
-        },
-      };
-    },
-  });
+          uniqueOpponents: opponentIds.length } };
+    } });
 
   const filteredRecords = historyData?.records?.filter((r) =>
     r.opponentName.toLowerCase().includes(searchQuery.toLowerCase())

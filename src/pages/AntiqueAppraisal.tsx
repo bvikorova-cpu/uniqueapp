@@ -44,8 +44,7 @@ const AntiqueAppraisal = () => {
       (async () => {
         try {
           const { data, error } = await supabase.functions.invoke('verify-payment', {
-            body: { session_id: sessionId, product_type: 'antique_credits' },
-          });
+            body: { session_id: sessionId, product_type: 'antique_credits' } });
           if (error) throw error;
           if (data?.paid) {
             toast.success("Payment successful! Your credits have been added.");
@@ -72,12 +71,10 @@ const AntiqueAppraisal = () => {
         supabase.from("antiques").select("id", { count: "exact", head: true }).eq("user_id", user.id),
         (supabase as any).from("antique_collections").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
-      setStats({
-        appraisals: a.count || 0,
+      setStats({ appraisals: a.count || 0,
         collections: c.count || 0,
         authenticity: Math.floor((a.count || 0) * 0.85),
-        value: (a.count || 0) * 125,
-      });
+        value: (a.count || 0) * 125 });
     };
     loadStats();
   }, []);
@@ -108,14 +105,12 @@ const AntiqueAppraisal = () => {
     { label: "Est. Value", value: `€${stats.value}`, icon: TrendingUp },
   ];
 
-  const viewLabels: Record<string, string> = {
-    analyze: "New Analysis", collection: "My Collection", credits: "Buy Credits",
+  const viewLabels: Record<string, string> = { analyze: "New Analysis", collection: "My Collection", credits: "Buy Credits",
     provenance: "Provenance Tracker", forgery: "Forgery Detection",
     "market-trends": "Market Trends", "ar-museum": "AR Museum Display",
     batch: "Batch Appraisal", social: "Social Feed", "price-alert": "Price Alert",
     certificate: "AI Certificate", "ar-room": "AR Try-In-Room",
-    "expert-marketplace": "Expert Marketplace",
-  };
+    "expert-marketplace": "Expert Marketplace" };
 
   if (activeView !== "hub") {
     return (

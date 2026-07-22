@@ -4,11 +4,9 @@ import { useToast } from "@/hooks/use-toast";
 
 export type TuningFeature = "dream_decoder" | "numerology" | "heatmap_analysis";
 
-export const TUNING_COSTS: Record<TuningFeature, number> = {
-  dream_decoder: 5,
+export const TUNING_COSTS: Record<TuningFeature, number> = { dream_decoder: 5,
   numerology: 3,
-  heatmap_analysis: 4,
-};
+  heatmap_analysis: 4 };
 
 export function useLotteryTuningAI() {
   const { toast } = useToast();
@@ -18,8 +16,7 @@ export function useLotteryTuningAI() {
     setLoading(feature);
     try {
       const { data, error } = await supabase.functions.invoke("lottery-tuning-ai", {
-        body: { feature, payload },
-      });
+        body: { feature, payload } });
       if (error) {
         const msg = (error as any)?.message ?? "";
         if (msg.includes("402") || msg.toLowerCase().includes("insufficient")) {

@@ -19,13 +19,11 @@ interface CharacterPreview3DProps {
   isGenerating: boolean;
 }
 
-export function CharacterPreview3D({
-  characterName,
+export function CharacterPreview3D({ characterName,
   generatedImage,
   placeholderImage,
   selections,
-  isGenerating,
-}: CharacterPreview3DProps) {
+  isGenerating }: CharacterPreview3DProps) {
   const stats = [
     { icon: <Zap className="h-3 w-3" />, label: "Power", value: selections.power.name, emoji: selections.power.emoji },
     { icon: <Shield className="h-3 w-3" />, label: "Costume", value: selections.costume.name, emoji: selections.costume.emoji },
@@ -53,11 +51,10 @@ export function CharacterPreview3D({
           <div className="absolute inset-0 opacity-10">
             <div
               className="w-full h-full"
-              style={{
+              style={ {
                 backgroundImage:
                   "linear-gradient(rgba(139,92,246,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.3) 1px, transparent 1px)",
-                backgroundSize: "30px 30px",
-              }}
+                backgroundSize: "30px 30px" }}
             />
           </div>
 

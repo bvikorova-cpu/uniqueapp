@@ -40,8 +40,7 @@ export const VoiceJournalView = () => {
       const fd = new FormData();
       fd.append("audio", blob, "journal.webm");
       const resp = await fetch(`https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-voice-journal`, {
-        method: "POST", headers: { Authorization: `Bearer ${session.access_token}` }, body: fd,
-      });
+        method: "POST", headers: { Authorization: `Bearer ${session.access_token}` }, body: fd });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || "Failed");
       setResult(data);

@@ -42,8 +42,7 @@ export const TattooStyleMixer = ({ onBack }: Props) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("tattoo-ai-tools", {
-        body: { type: "style_mix", style1, style2, description },
-      });
+        body: { type: "style_mix", style1, style2, description } });
       if (error) throw error;
       setResult(data.imageUrl);
       
@@ -54,8 +53,7 @@ export const TattooStyleMixer = ({ onBack }: Props) => {
           prompt: `Style Mix: ${style1} + ${style2} - ${description}`,
           style: `${style1}-${style2}`,
           design_url: data.imageUrl,
-          credits_used: 12,
-        });
+          credits_used: 12 });
       }
       await refresh();
       toast.success("Style mix generated!");

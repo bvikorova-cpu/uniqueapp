@@ -67,8 +67,7 @@ export const CourseDiscussion = ({ courseId, userHasAccess, isInstructor }: Cour
         ...d,
         reply_count: Array.isArray(d.discussion_replies) ? d.discussion_replies.length : 0
       })) as Discussion[];
-    },
-  });
+    } });
 
   const { data: replies = [] } = useQuery({
     queryKey: ["discussion-replies", selectedDiscussion],
@@ -84,8 +83,7 @@ export const CourseDiscussion = ({ courseId, userHasAccess, isInstructor }: Cour
       if (error) throw error;
       return data as Reply[];
     },
-    enabled: !!selectedDiscussion,
-  });
+    enabled: !!selectedDiscussion });
 
   const createDiscussion = useMutation({
     mutationFn: async () => {
@@ -94,12 +92,10 @@ export const CourseDiscussion = ({ courseId, userHasAccess, isInstructor }: Cour
 
       const { error } = await supabase
         .from("course_discussions")
-        .insert({
-          course_id: courseId,
+        .insert({ course_id: courseId,
           user_id: user.id,
           title: newTitle,
-          content: newContent,
-        });
+          content: newContent });
 
       if (error) throw error;
     },
@@ -109,8 +105,7 @@ export const CourseDiscussion = ({ courseId, userHasAccess, isInstructor }: Cour
       setNewContent("");
       setShowNewTopic(false);
       toast({ title: "Success", description: "Discussion topic created" });
-    },
-  });
+    } });
 
   const createReply = useMutation({
     mutationFn: async () => {
@@ -119,12 +114,10 @@ export const CourseDiscussion = ({ courseId, userHasAccess, isInstructor }: Cour
 
       const { error } = await supabase
         .from("discussion_replies")
-        .insert({
-          discussion_id: selectedDiscussion,
+        .insert({ discussion_id: selectedDiscussion,
           user_id: user.id,
           content: replyContent,
-          is_instructor_reply: isInstructor,
-        });
+          is_instructor_reply: isInstructor });
 
       if (error) throw error;
     },
@@ -132,8 +125,7 @@ export const CourseDiscussion = ({ courseId, userHasAccess, isInstructor }: Cour
       queryClient.invalidateQueries({ queryKey: ["discussion-replies", selectedDiscussion] });
       setReplyContent("");
       toast({ title: "Success", description: "Reply posted" });
-    },
-  });
+    } });
 
   const incrementViews = async (discussionId: string) => {
     const { data: discussion } = await supabase
