@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Users, Map, BookOpen, Target, Handshake, Megaphone, Globe2, Award, Sparkles, Loader2,
-} from "lucide-react";
+import { Users, Map, BookOpen, Target, Handshake, Megaphone, Globe2, Award, Sparkles, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -33,8 +31,7 @@ const TOOLS: ToolConfig[] = [
       { name: "offering", label: "Skill you offer", type: "input", placeholder: "e.g. Figma UI design" },
       { name: "wanting", label: "Skill you want", type: "input", placeholder: "e.g. conversational Spanish" },
       { name: "timezone", label: "Your timezone", type: "input", placeholder: "CET / UTC+1" },
-    ],
-  },
+    ] },
   {
     id: "learning-roadmap",
     title: "Learning Roadmap",
@@ -45,8 +42,7 @@ const TOOLS: ToolConfig[] = [
       { name: "skill", label: "Skill to learn", type: "input" },
       { name: "hoursPerWeek", label: "Hours per week", type: "input", placeholder: "5" },
       { name: "currentLevel", label: "Current level", type: "input", placeholder: "absolute beginner" },
-    ],
-  },
+    ] },
   {
     id: "teaching-script",
     title: "Teaching Script",
@@ -57,8 +53,7 @@ const TOOLS: ToolConfig[] = [
       { name: "topic", label: "Topic to teach", type: "input" },
       { name: "durationMinutes", label: "Duration (minutes)", type: "input", placeholder: "60" },
       { name: "audience", label: "Audience", type: "textarea", placeholder: "absolute beginners, age 20-35..." },
-    ],
-  },
+    ] },
   {
     id: "gap-analysis",
     title: "Skill Gap Analysis",
@@ -69,8 +64,7 @@ const TOOLS: ToolConfig[] = [
       { name: "skill", label: "Skill", type: "input" },
       { name: "currentAbilities", label: "What you can do now", type: "textarea" },
       { name: "targetOutcome", label: "Target outcome", type: "textarea" },
-    ],
-  },
+    ] },
   {
     id: "negotiation-helper",
     title: "Negotiation Helper",
@@ -81,8 +75,7 @@ const TOOLS: ToolConfig[] = [
       { name: "yourOffer", label: "What you give", type: "input" },
       { name: "theirOffer", label: "What they give", type: "input" },
       { name: "constraints", label: "Constraints", type: "textarea", placeholder: "only weekends, max 3h/week..." },
-    ],
-  },
+    ] },
   {
     id: "portfolio-pitch",
     title: "Portfolio Pitch",
@@ -92,8 +85,7 @@ const TOOLS: ToolConfig[] = [
     fields: [
       { name: "skill", label: "Skill to pitch", type: "input" },
       { name: "highlights", label: "Highlights / proof", type: "textarea", placeholder: "5 years exp, published in..." },
-    ],
-  },
+    ] },
   {
     id: "cultural-tips",
     title: "Cross-Cultural Tips",
@@ -103,8 +95,7 @@ const TOOLS: ToolConfig[] = [
     fields: [
       { name: "country", label: "Partner's country", type: "input", placeholder: "Japan" },
       { name: "context", label: "Context", type: "textarea", placeholder: "first call, formal exchange..." },
-    ],
-  },
+    ] },
   {
     id: "certification-path",
     title: "Certification Path",
@@ -114,8 +105,7 @@ const TOOLS: ToolConfig[] = [
     fields: [
       { name: "skill", label: "Skill / career", type: "input" },
       { name: "budgetEur", label: "Budget (€)", type: "input", placeholder: "0-500" },
-    ],
-  },
+    ] },
 ];
 
 export const SkillSwapParityPack = () => {

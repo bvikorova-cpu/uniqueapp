@@ -24,26 +24,18 @@ interface AIBot {
 }
 
 const AI_BOTS: AIBot[] = [
-  {
-    id: 'rookie', name: 'Rookie Bot', avatar: '🤖', difficulty: 'easy',
+  { id: 'rookie', name: 'Rookie Bot', avatar: '🤖', difficulty: 'easy',
     description: 'Perfect for beginners. Makes mistakes often and answers slowly.',
-    accuracy: 40, speed: 30, icon: Shield, color: 'text-green-400', bgGlow: 'from-green-500/10 to-green-600/5',
-  },
-  {
-    id: 'scholar', name: 'Scholar Bot', avatar: '🧑‍🎓', difficulty: 'medium',
+    accuracy: 40, speed: 30, icon: Shield, color: 'text-green-400', bgGlow: 'from-green-500/10 to-green-600/5' },
+  { id: 'scholar', name: 'Scholar Bot', avatar: '🧑‍🎓', difficulty: 'medium',
     description: 'A solid opponent. Good accuracy with moderate speed.',
-    accuracy: 65, speed: 55, icon: Brain, color: 'text-blue-400', bgGlow: 'from-blue-500/10 to-blue-600/5',
-  },
-  {
-    id: 'mastermind', name: 'Mastermind Bot', avatar: '🧠', difficulty: 'hard',
+    accuracy: 65, speed: 55, icon: Brain, color: 'text-blue-400', bgGlow: 'from-blue-500/10 to-blue-600/5' },
+  { id: 'mastermind', name: 'Mastermind Bot', avatar: '🧠', difficulty: 'hard',
     description: 'A formidable challenger. High accuracy and quick reflexes.',
-    accuracy: 85, speed: 75, icon: Target, color: 'text-purple-400', bgGlow: 'from-purple-500/10 to-purple-600/5',
-  },
-  {
-    id: 'overlord', name: 'Overlord Bot', avatar: '👾', difficulty: 'extreme',
+    accuracy: 85, speed: 75, icon: Target, color: 'text-purple-400', bgGlow: 'from-purple-500/10 to-purple-600/5' },
+  { id: 'overlord', name: 'Overlord Bot', avatar: '👾', difficulty: 'extreme',
     description: 'Near-perfect AI. Only the best can defeat this opponent.',
-    accuracy: 95, speed: 90, icon: Flame, color: 'text-red-400', bgGlow: 'from-red-500/10 to-red-600/5',
-  },
+    accuracy: 95, speed: 90, icon: Flame, color: 'text-red-400', bgGlow: 'from-red-500/10 to-red-600/5' },
 ];
 
 const CATEGORIES = [
@@ -51,12 +43,10 @@ const CATEGORIES = [
   'Sports', 'Music', 'Food', 'Business', 'Art', 'Gaming'
 ];
 
-const difficultyColors: Record<string, string> = {
-  easy: 'bg-green-500/20 text-green-400 border-green-500/30',
+const difficultyColors: Record<string, string> = { easy: 'bg-green-500/20 text-green-400 border-green-500/30',
   medium: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
   hard: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-  extreme: 'bg-red-500/20 text-red-400 border-red-500/30 animate-pulse',
-};
+  extreme: 'bg-red-500/20 text-red-400 border-red-500/30 animate-pulse' };
 
 export const AIOpponent = () => {
   const [selectedBot, setSelectedBot] = useState<AIBot | null>(null);

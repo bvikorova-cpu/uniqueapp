@@ -17,14 +17,11 @@ const COMBOS: Record<string, { name: string; emoji: string; rarity: string; desc
   "invisibility+talking-to-animals": { name: "Nature Spirit", emoji: "🌿", rarity: "Rare", description: "One with the wild!" },
   "magic-spells+super-speed": { name: "Flash Wizard", emoji: "⚡", rarity: "Epic", description: "Cast spells at light speed!" },
   "magic-spells+talking-to-animals": { name: "Druid Master", emoji: "🌳", rarity: "Rare", description: "Nature magic supreme!" },
-  "super-speed+talking-to-animals": { name: "Cheetah Link", emoji: "🐆", rarity: "Rare", description: "Fast as the fastest animal!" },
-};
+  "super-speed+talking-to-animals": { name: "Cheetah Link", emoji: "🐆", rarity: "Rare", description: "Fast as the fastest animal!" } };
 
-const rarityColors: Record<string, string> = {
-  Rare: "from-blue-400 to-blue-600 text-blue-100",
+const rarityColors: Record<string, string> = { Rare: "from-blue-400 to-blue-600 text-blue-100",
   Epic: "from-purple-400 to-purple-600 text-purple-100",
-  Legendary: "from-yellow-400 to-orange-500 text-yellow-100",
-};
+  Legendary: "from-yellow-400 to-orange-500 text-yellow-100" };
 
 interface PowerCombinationProps {
   selectedPower: string;

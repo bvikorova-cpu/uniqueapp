@@ -19,8 +19,7 @@ export default function PetBreedIdentifier({ onBack }: { onBack: () => void }) {
     if (!desc.trim()) return toast.error("Describe the pet's appearance");
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("pet-translator-ai", {
-      body: { action: "breed_identify", species, photo_description: desc },
-    });
+      body: { action: "breed_identify", species, photo_description: desc } });
     setLoading(false);
     if (error || data?.error) return toast.error(error?.message || data.error);
     setResult(data.result);

@@ -66,8 +66,7 @@ export const DailyChallenges = ({ currentStreak = 0, totalVotesCast = 0 }: Daily
       navigator.share({
         title: "Brand Battle Arena",
         text: `I'm on a ${currentStreak}-day voting streak in Brand Battle! Join the fight 🏆`,
-        url: window.location.href,
-      }).catch(() => {});
+        url: window.location.href }).catch(() => {});
     } else {
       navigator.clipboard.writeText(window.location.href);
       toast.success("Link copied to clipboard!");

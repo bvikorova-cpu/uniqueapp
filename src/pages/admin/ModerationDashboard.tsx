@@ -17,22 +17,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Table,
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
+  TableRow } from "@/components/ui/table";
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { 
@@ -72,14 +68,12 @@ const ModerationDashboard = () => {
       approved: { variant: "default", label: "Approved" },
       rejected: { variant: "secondary", label: "Rejected" },
       deleted: { variant: "outline", label: "Deleted" },
-      hidden: { variant: "outline", label: "Hidden" },
-    };
+      hidden: { variant: "outline", label: "Hidden" } };
     const config = variants[status || "pending"] || variants.pending;
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
-  const getViolationLabel = (violation: string) => {
-    const labels: Record<string, string> = {
+  const getViolationLabel = (violation: string) => { const labels: Record<string, string> = {
       spam: "Spam",
       harassment: "Harassment",
       hate_speech: "Hate Speech",
@@ -89,13 +83,11 @@ const ModerationDashboard = () => {
       scam: "Scam",
       copyright: "Copyright",
       impersonation: "Impersonation",
-      other: "Other",
-    };
+      other: "Other" };
     return labels[violation] || violation;
   };
 
-  const handleAction = async () => {
-    if (!actionDialog.type) return;
+  const handleAction = async () => { if (!actionDialog.type) return;
 
     try {
       switch (actionDialog.type) {
@@ -103,62 +95,47 @@ const ModerationDashboard = () => {
           await updateStatus.mutateAsync({
             reportId: actionDialog.reportId!,
             status: "approved",
-            resolutionNotes: actionNotes,
-          });
+            resolutionNotes: actionNotes });
           break;
         case "delete":
-          await updateStatus.mutateAsync({
-            reportId: actionDialog.reportId!,
+          await updateStatus.mutateAsync({ reportId: actionDialog.reportId!,
             status: "deleted",
-            resolutionNotes: actionNotes,
-          });
-          if (actionDialog.userId) {
-            await takeAction.mutateAsync({
+            resolutionNotes: actionNotes });
+          if (actionDialog.userId) { await takeAction.mutateAsync({
               userId: actionDialog.userId,
               actionType: "content_removed",
               reason: actionNotes,
-              relatedReportId: actionDialog.reportId,
-            });
+              relatedReportId: actionDialog.reportId });
           }
           break;
         case "warn":
-          if (actionDialog.userId) {
-            await warn.mutateAsync({
+          if (actionDialog.userId) { await warn.mutateAsync({
               userId: actionDialog.userId,
               reason: actionNotes,
-              relatedContentId: selectedReport?.content_id,
-            });
-            await takeAction.mutateAsync({
-              userId: actionDialog.userId,
+              relatedContentId: selectedReport?.content_id });
+            await takeAction.mutateAsync({ userId: actionDialog.userId,
               actionType: "warning",
               reason: actionNotes,
-              relatedReportId: actionDialog.reportId,
-            });
+              relatedReportId: actionDialog.reportId });
           }
           await updateStatus.mutateAsync({
             reportId: actionDialog.reportId!,
             status: "approved",
-            resolutionNotes: `Warning issued: ${actionNotes}`,
-          });
+            resolutionNotes: `Warning issued: ${actionNotes}` });
           break;
         case "shadowban":
-          if (actionDialog.userId) {
-            await shadowban.mutateAsync({
+          if (actionDialog.userId) { await shadowban.mutateAsync({
               userId: actionDialog.userId,
-              reason: actionNotes,
-            });
-            await takeAction.mutateAsync({
-              userId: actionDialog.userId,
+              reason: actionNotes });
+            await takeAction.mutateAsync({ userId: actionDialog.userId,
               actionType: "shadowban",
               reason: actionNotes,
-              relatedReportId: actionDialog.reportId,
-            });
+              relatedReportId: actionDialog.reportId });
           }
           await updateStatus.mutateAsync({
             reportId: actionDialog.reportId!,
             status: "approved",
-            resolutionNotes: `User shadowbanned: ${actionNotes}`,
-          });
+            resolutionNotes: `User shadowbanned: ${actionNotes}` });
           break;
       }
     } finally {
@@ -306,7 +283,7 @@ const ModerationDashboard = () => {
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
-                            {report.status === "pending" && (
+                            { report.status === "pending" && (
                               <>
                                 <Button
                                   variant="ghost"
@@ -316,8 +293,7 @@ const ModerationDashboard = () => {
                                     open: true,
                                     type: "approve",
                                     reportId: report.id,
-                                    userId: report.reported_user_id,
-                                  })}
+                                    userId: report.reported_user_id })}
                                   title="Approve (dismiss report)"
                                 >
                                   <CheckCircle className="h-4 w-4" />
@@ -326,12 +302,11 @@ const ModerationDashboard = () => {
                                   variant="ghost"
                                   size="icon"
                                   className="text-destructive"
-                                  onClick={() => setActionDialog({
+                                  onClick={ () => setActionDialog({
                                     open: true,
                                     type: "delete",
                                     reportId: report.id,
-                                    userId: report.reported_user_id,
-                                  })}
+                                    userId: report.reported_user_id })}
                                   title="Delete content"
                                 >
                                   <XCircle className="h-4 w-4" />
@@ -389,7 +364,7 @@ const ModerationDashboard = () => {
                 </div>
               )}
 
-              {selectedReport.status === "pending" && (
+              { selectedReport.status === "pending" && (
                 <div className="flex gap-2 pt-4 border-t">
                   <Button
                     variant="outline"
@@ -398,8 +373,7 @@ const ModerationDashboard = () => {
                         open: true,
                         type: "warn",
                         reportId: selectedReport.id,
-                        userId: selectedReport.reported_user_id,
-                      });
+                        userId: selectedReport.reported_user_id });
                     }}
                   >
                     <AlertTriangle className="h-4 w-4 mr-2" />
@@ -407,13 +381,12 @@ const ModerationDashboard = () => {
                   </Button>
                   <Button
                     variant="destructive"
-                    onClick={() => {
+                    onClick={ () => {
                       setActionDialog({
                         open: true,
                         type: "shadowban",
                         reportId: selectedReport.id,
-                        userId: selectedReport.reported_user_id,
-                      });
+                        userId: selectedReport.reported_user_id });
                     }}
                   >
                     <EyeOff className="h-4 w-4 mr-2" />
@@ -422,13 +395,12 @@ const ModerationDashboard = () => {
                   <Button
                     variant="default"
                     className="ml-auto"
-                    onClick={() => {
+                    onClick={ () => {
                       setActionDialog({
                         open: true,
                         type: "approve",
                         reportId: selectedReport.id,
-                        userId: selectedReport.reported_user_id,
-                      });
+                        userId: selectedReport.reported_user_id });
                     }}
                   >
                     <CheckCircle className="h-4 w-4 mr-2" />

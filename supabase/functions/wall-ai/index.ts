@@ -1,13 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const CREDIT_COSTS: Record<string, number> = {
-  post_enhancer: 4,
+const CREDIT_COSTS: Record<string, number> = { post_enhancer: 4,
   content_calendar: 5,
   audience_insights: 5,
   viral_predictor: 4,
@@ -16,8 +13,7 @@ const CREDIT_COSTS: Record<string, number> = {
   content_repurposer: 4,
   bot_detector: 5,
   mood_feed: 4,
-  voice_post: 4,
-};
+  voice_post: 4 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -48,8 +44,7 @@ serve(async (req) => {
     const remaining = credits?.credits_remaining || 0;
     if (remaining < creditCost) {
       return new Response(JSON.stringify({ error: `Insufficient credits. Need ${creditCost}, have ${remaining}. Purchase more credits to continue.` }), {
-        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     let systemPrompt = "";
@@ -293,9 +288,7 @@ Provide:
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        max_completion_tokens: 3000,
-      }),
-    });
+        max_completion_tokens: 3000 }) });
 
     if (!response.ok) {
       const errText = await response.text();
@@ -316,16 +309,13 @@ Provide:
       user_id: user.id,
       usage_type: `wall_${action}`,
       credits_used: creditCost,
-      description: `Wall AI: ${action}`,
-    });
+      description: `Wall AI: ${action}` });
 
     return new Response(JSON.stringify({ result }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("wall-ai error:", e);
     return new Response(JSON.stringify({ error: e.message || "Internal error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

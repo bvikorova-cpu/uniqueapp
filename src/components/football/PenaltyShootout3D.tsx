@@ -406,30 +406,25 @@ interface PenaltyShootout3DProps {
   onBack: () => void;
 }
 
-export function PenaltyShootout3D({ onBack }: PenaltyShootout3DProps) {
-  const [gameState, setGameState] = useState<GameState>({
+export function PenaltyShootout3D({ onBack }: PenaltyShootout3DProps) { const [gameState, setGameState] = useState<GameState>({
     phase: "aiming",
     round: 1,
     playerScore: 0,
     gkScore: 0,
     shootTarget: [0, 1.2],
     gkDiveDirection: 0,
-    lastResult: "",
-  });
+    lastResult: "" });
 
-  const handleShoot = useCallback((x: number, y: number) => {
-    // GK picks random direction
+  const handleShoot = useCallback((x: number, y: number) => { // GK picks random direction
     const gkDir = (Math.random() - 0.5) * 2; // -1 to 1
     setGameState(prev => ({
       ...prev,
       phase: "shooting",
       shootTarget: [x, y],
-      gkDiveDirection: gkDir,
-    }));
+      gkDiveDirection: gkDir }));
   }, []);
 
-  const handleAnimDone = useCallback((scored: boolean) => {
-    // Check if GK saved it (GK dove in right direction and was close)
+  const handleAnimDone = useCallback((scored: boolean) => { // Check if GK saved it (GK dove in right direction and was close)
     setGameState(prev => {
       const gkSaved = !scored || (Math.abs(prev.gkDiveDirection * 2.5 - prev.shootTarget[0]) < 1.2 && prev.shootTarget[1] < 1.8);
       const actuallyScored = scored && !gkSaved;
@@ -448,32 +443,27 @@ export function PenaltyShootout3D({ onBack }: PenaltyShootout3DProps) {
         phase: isGameOver ? "gameover" : "result",
         playerScore: newPlayerScore,
         gkScore: newGkScore,
-        lastResult,
-      };
+        lastResult };
     });
   }, []);
 
-  const nextRound = useCallback(() => {
-    setGameState(prev => ({
+  const nextRound = useCallback(() => { setGameState(prev => ({
       ...prev,
       phase: "aiming",
       round: prev.round + 1,
       shootTarget: [0, 1.2],
       gkDiveDirection: 0,
-      lastResult: "",
-    }));
+      lastResult: "" }));
   }, []);
 
-  const resetGame = useCallback(() => {
-    setGameState({
+  const resetGame = useCallback(() => { setGameState({
       phase: "aiming",
       round: 1,
       playerScore: 0,
       gkScore: 0,
       shootTarget: [0, 1.2],
       gkDiveDirection: 0,
-      lastResult: "",
-    });
+      lastResult: "" });
   }, []);
 
   return (

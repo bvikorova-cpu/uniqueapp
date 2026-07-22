@@ -7,11 +7,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 const DISPOSABLE_DOMAINS = new Set([
   "mailinator.com", "guerrillamail.com", "10minutemail.com", "tempmail.com",
@@ -139,61 +137,51 @@ serve(async (req) => {
     async function persistAndRespond(finalStatus: string) {
       const { data: attr, error: attrErr } = await supabase
         .from("referral_attributions")
-        .insert({
-          referrer_id: referrerId,
+        .insert({ referrer_id: referrerId,
           referred_user_id: user.id,
           code,
           fraud_score: score,
           status: finalStatus,
-          fraud_reasons: reasons,
-        })
+          fraud_reasons: reasons })
         .select("id")
         .single();
       if (attrErr) return json({ error: attrErr.message }, 500);
 
-      if (reasons.length) {
-        await supabase.from("referral_fraud_flags").insert(
+      if (reasons.length) { await supabase.from("referral_fraud_flags").insert(
           reasons.map((r) => ({
             attribution_id: attr.id,
             referrer_id: referrerId!,
             referred_user_id: user.id,
             reason: r.reason,
             details: r.details,
-            severity: r.severity,
-          })),
+            severity: r.severity })),
         );
       }
 
       // Award XP immediately on approved referral (idempotent via ref_id)
       let xpAwarded = false;
-      if (finalStatus === "approved") {
-        const refId = attr.id;
+      if (finalStatus === "approved") { const refId = attr.id;
         const [r1, r2] = await Promise.all([
           supabase.rpc("award_xp", {
             _user_id: referrerId,
             _amount: 2500,
             _source: "referral_signup",
-            _ref_id: refId,
-          }),
-          supabase.rpc("award_xp", {
-            _user_id: user.id,
+            _ref_id: refId }),
+          supabase.rpc("award_xp", { _user_id: user.id,
             _amount: 1250,
             _source: "referral_welcome",
-            _ref_id: refId,
-          }),
+            _ref_id: refId }),
         ]);
         xpAwarded = !r1.error && !r2.error;
       }
 
-      return json({
-        ok: true,
+      return json({ ok: true,
         status: finalStatus,
         fraud_score: score,
         reasons,
         xp_awarded: xpAwarded,
         referrer_xp: finalStatus === "approved" ? 2500 : 0,
-        welcome_xp: finalStatus === "approved" ? 1250 : 0,
-      });
+        welcome_xp: finalStatus === "approved" ? 1250 : 0 });
     }
   } catch (e) {
     return json({ error: (e as Error).message }, 500);
@@ -203,6 +191,5 @@ serve(async (req) => {
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

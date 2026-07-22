@@ -4,13 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  ArrowLeft, PieChart, Users, MapPin, Clock, TrendingUp, BarChart3, Sparkles, Loader2,
-} from "lucide-react";
-import {
-  PieChart as RechartsPie, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis,
-  CartesianGrid, Tooltip,
-} from "recharts";
+import { ArrowLeft, PieChart, Users, MapPin, Clock, TrendingUp, BarChart3, Sparkles, Loader2 } from "lucide-react";
+import { PieChart as RechartsPie, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis,
+  CartesianGrid, Tooltip } from "recharts";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AudienceInsightsProps {
@@ -55,20 +51,16 @@ const AudienceInsights = ({ onBack }: AudienceInsightsProps) => {
         .eq("user_id", user.id)
         .maybeSingle();
       return data;
-    },
-  });
+    } });
 
   const { data: insights, isLoading } = useQuery({
     queryKey: ["audience-insights-rpc", myProfile?.id],
     enabled: !!myProfile?.id,
     queryFn: async (): Promise<AudienceInsightsPayload | null> => {
-      const { data, error } = await (supabase as any).rpc("get_influencer_audience_insights", {
-        _influencer_id: myProfile!.id,
-      });
+      const { data, error } = await (supabase as any).rpc("get_influencer_audience_insights", { _influencer_id: myProfile!.id });
       if (error) throw error;
       return data as AudienceInsightsPayload;
-    },
-  });
+    } });
 
   const total = insights?.total_followers ?? 0;
   const age = insights?.age_distribution ?? [];

@@ -15,8 +15,7 @@ const LanguageLearning = () => {
   const [enrolling, setEnrolling] = useState<string | null>(null);
   const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+  useEffect(() => { const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
@@ -24,8 +23,7 @@ const LanguageLearning = () => {
         if (success) {
           toast({
             title: "Enrollment Successful! 🎉",
-            description: "You now have access to your language program.",
-          });
+            description: "You now have access to your language program." });
           window.history.replaceState({}, '', '/language-learning');
         }
       });
@@ -101,12 +99,10 @@ const LanguageLearning = () => {
       if (sessionUrl) {
         { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; } }
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Enrollment Failed",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setEnrolling(null);
     }
   };
@@ -215,7 +211,7 @@ const LanguageLearning = () => {
                   </Button>
                 </div>
                 <CourseAcademicActions
-                  meta={{
+                  meta={ {
                     module_key: "language-learning",
                     module_label: "Language Learning",
                     course_slug: program.id,
@@ -224,8 +220,7 @@ const LanguageLearning = () => {
                     level: program.level,
                     duration: program.duration,
                     price: program.price,
-                    skills: program.skills,
-                  }}
+                    skills: program.skills }}
                   unlocked={isPurchased(program.id, "language-program")}
                 />
               </div>

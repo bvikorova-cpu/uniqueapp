@@ -1,14 +1,12 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Audio,
   Img,
   Sequence,
   interpolate,
   spring,
   staticFile,
-  useCurrentFrame,
-} from "remotion";
+  useCurrentFrame } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
 
@@ -17,13 +15,11 @@ const body = loadBody("normal", { weights: ["500", "600", "700", "900"] });
 
 const FPS = 30;
 
-const BRAND = {
-  white: "#ffffff",
+const BRAND = { white: "#ffffff",
   bgDeep: "#07040f",
   purple: "#8b5cf6",
   pink: "#ec4899",
-  gold: "#fbbf24",
-};
+  gold: "#fbbf24" };
 
 const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
@@ -34,10 +30,8 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const tagOp = interpolate(frame, [50, 78], [0, 1], { extrapolateRight: "clamp" });
   const tagY = interpolate(frame, [50, 78], [20, 0], { extrapolateRight: "clamp" });
   const kb = interpolate(frame, [0, duration], [1.08, 1.2], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 20, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 20, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{ transform: `scale(${kb})` }}>
@@ -60,8 +54,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 80px rgba(139,92,246,0.55)",
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em" }}
         >
           Unique
         </div>
@@ -77,8 +70,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             textAlign: "center",
-            textShadow: "0 4px 30px rgba(251,191,36,0.6)",
-          }}
+            textShadow: "0 4px 30px rgba(251,191,36,0.6)" }}
         >
           Learning &amp; Growth
         </div>
@@ -100,10 +92,8 @@ type Beat = {
 const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod }) => {
   const frame = useCurrentFrame();
   const enter = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 18, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   const shellOp = enter * (1 - exit);
   const kbScale = interpolate(frame, [0, duration], [1.1, 1.28], { extrapolateRight: "clamp" });
   const kbX = interpolate(frame, [0, duration], [-20, 20]);
@@ -125,31 +115,27 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
             height: "100%",
             objectFit: "cover",
             transform: `scale(${kbScale}) translate(${kbX}px, ${kbY}px)`,
-            filter: "saturate(1.15) contrast(1.05)",
-          }}
+            filter: "saturate(1.15) contrast(1.05)" }}
         />
       </AbsoluteFill>
       <AbsoluteFill
         style={{
           background: `linear-gradient(160deg, ${mod.accent}33 0%, transparent 40%, ${mod.accent2}55 100%)`,
-          mixBlendMode: "screen",
-        }}
+          mixBlendMode: "screen" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "linear-gradient(180deg, rgba(7,4,15,0.82) 0%, rgba(7,4,15,0.15) 22%, rgba(7,4,15,0) 45%, rgba(7,4,15,0.4) 62%, rgba(7,4,15,0.95) 100%)",
-        }}
+            "linear-gradient(180deg, rgba(7,4,15,0.82) 0%, rgba(7,4,15,0.15) 22%, rgba(7,4,15,0) 45%, rgba(7,4,15,0.4) 62%, rgba(7,4,15,0.95) 100%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "space-between",
           flexDirection: "column",
           padding: 80,
           paddingTop: 160,
-          paddingBottom: 180,
-        }}
+          paddingBottom: 180 }}
       >
         <div
           style={{
@@ -165,8 +151,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
             letterSpacing: "0.24em",
             textTransform: "uppercase",
             boxShadow: `0 20px 60px -15px ${mod.accent}cc`,
-            textAlign: "center",
-          }}
+            textAlign: "center" }}
         >
           {mod.badge}
         </div>
@@ -183,8 +168,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
               letterSpacing: "-0.035em",
               textShadow: "0 8px 40px rgba(0,0,0,0.75)",
               textAlign: "center",
-              whiteSpace: "pre-line",
-            }}
+              whiteSpace: "pre-line" }}
           >
             {mod.title}
           </div>
@@ -200,8 +184,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
               textAlign: "center",
               maxWidth: 900,
               lineHeight: 1.25,
-              textShadow: "0 4px 20px rgba(0,0,0,0.85)",
-            }}
+              textShadow: "0 4px 20px rgba(0,0,0,0.85)" }}
           >
             {mod.subtitle}
           </div>
@@ -223,8 +206,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
                     borderRadius: 22,
                     background: "rgba(7,4,15,0.6)",
                     border: `1px solid ${mod.accent}66`,
-                    boxShadow: `0 10px 40px -20px ${mod.accent}aa`,
-                  }}
+                    boxShadow: `0 10px 40px -20px ${mod.accent}aa` }}
                 >
                   <div
                     style={{
@@ -235,21 +217,19 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      flexShrink: 0,
-                    }}
+                      flexShrink: 0 }}
                   >
                     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </div>
                   <div
-                    style={{
+                    style={ {
                       fontFamily: body.fontFamily,
                       fontWeight: 700,
                       fontSize: 34,
                       color: BRAND.white,
-                      letterSpacing: "-0.01em",
-                    }}
+                      letterSpacing: "-0.01em" }}
                   >
                     {p}
                   </div>
@@ -269,17 +249,14 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   const wordS = spring({ frame: frame - 12, fps: FPS, config: { damping: 14, stiffness: 110 } });
   const urlOp = interpolate(frame, [30, 55], [0, 1], { extrapolateRight: "clamp" });
   const tagOp = interpolate(frame, [45, 70], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 15, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 15, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.5), transparent 60%), radial-gradient(circle at 50% 90%, rgba(251,191,36,0.4), transparent 60%)",
-        }}
+            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.5), transparent 60%), radial-gradient(circle at 50% 90%, rgba(251,191,36,0.4), transparent 60%)" }}
       />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
         <Img
@@ -289,8 +266,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             height: 280,
             borderRadius: 72,
             transform: `scale(${logoS})`,
-            filter: "drop-shadow(0 15px 50px rgba(139,92,246,0.6))",
-          }}
+            filter: "drop-shadow(0 15px 50px rgba(139,92,246,0.6))" }}
         />
         <div
           style={{
@@ -303,8 +279,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(180deg, ${BRAND.white} 0%, #ddd6fe 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 60px rgba(139,92,246,0.5)",
-          }}
+            textShadow: "0 0 60px rgba(139,92,246,0.5)" }}
         >
           Unique
         </div>
@@ -312,7 +287,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
           uniqueapp.fun
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 26,
             opacity: tagOp,
             fontFamily: body.fontFamily,
@@ -322,8 +297,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             textAlign: "center",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           Learn · Grow · Rise
         </div>
@@ -333,69 +307,55 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
 };
 
 const BEATS: Beat[] = [
-  {
-    badge: "01 · Tutorials & Courses",
+  { badge: "01 · Tutorials & Courses",
     title: "Master any\nskill.",
     subtitle: "HD video courses, quizzes and PDF certificates — 80% completion required for the exam.",
     perks: ["HD video lessons", "Verified certificates", "AI-picked videos"],
     image: "learninggrowth/01-tutorial.jpg",
     accent: "#8b5cf6",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "02 · IQ Platform",
+    accent2: "#ec4899" },
+  { badge: "02 · IQ Platform",
     title: "Test your\nmind.",
     subtitle: "Scientifically calibrated IQ tests, brain games and cognitive tracking over time.",
     perks: ["Standardised IQ tests", "Brain training games", "Progress analytics"],
     image: "learninggrowth/02-iq.jpg",
     accent: "#3b82f6",
-    accent2: "#a855f7",
-  },
-  {
-    badge: "03 · Digital Marketing",
+    accent2: "#a855f7" },
+  { badge: "03 · Digital Marketing",
     title: "Grow your\nbrand.",
     subtitle: "SEO, ads, social media and analytics — real playbooks with real EUR case studies.",
     perks: ["SEO & ads playbooks", "Live campaign audits", "Real EUR case studies"],
     image: "learninggrowth/03-marketing.jpg",
     accent: "#ec4899",
-    accent2: "#22d3ee",
-  },
-  {
-    badge: "04 · Public Speaking",
+    accent2: "#22d3ee" },
+  { badge: "04 · Public Speaking",
     title: "Own the\nstage.",
     subtitle: "Voice, posture and story structure — AI feedback on every recorded speech you upload.",
     perks: ["AI voice coaching", "Posture analysis", "Story frameworks"],
     image: "learninggrowth/04-speaking.jpg",
     accent: "#f97316",
-    accent2: "#fbbf24",
-  },
-  {
-    badge: "05 · Creative Writing",
+    accent2: "#fbbf24" },
+  { badge: "05 · Creative Writing",
     title: "Find your\nvoice.",
     subtitle: "Fiction, essays, scripts and copy — AI editor + human writing community.",
     perks: ["AI editing assistant", "Genre-specific prompts", "Writer community"],
     image: "learninggrowth/05-writing.jpg",
     accent: "#a855f7",
-    accent2: "#f59e0b",
-  },
-  {
-    badge: "06 · Language Learning",
+    accent2: "#f59e0b" },
+  { badge: "06 · Language Learning",
     title: "Speak the\nworld.",
     subtitle: "40+ languages with speech recognition, native tutors and streak-based progress.",
     perks: ["40+ languages", "Native tutors", "Speech recognition"],
     image: "learninggrowth/06-language.jpg",
     accent: "#22c55e",
-    accent2: "#22d3ee",
-  },
-  {
-    badge: "07 · Financial Investment",
+    accent2: "#22d3ee" },
+  { badge: "07 · Financial Investment",
     title: "Grow your\nmoney.",
     subtitle: "Stocks, ETFs, crypto and real estate — practical EUR-focused courses for beginners to pros.",
     perks: ["Portfolio simulator", "Tax & risk basics", "EUR-focused examples"],
     image: "learninggrowth/07-finance.jpg",
     accent: "#22c55e",
-    accent2: "#fbbf24",
-  },
+    accent2: "#fbbf24" },
 ];
 
 const INTRO = 120;

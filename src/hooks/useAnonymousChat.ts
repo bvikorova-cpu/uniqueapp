@@ -73,8 +73,7 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
     if (!matchId || !currentUserId) return;
 
     const channel = supabase.channel(`anon-chat:${matchId}`, {
-      config: { presence: { key: currentUserId } },
-    });
+      config: { presence: { key: currentUserId } } });
 
     channel
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "anonymous_dating_messages", filter: `match_id=eq.${matchId}` },
@@ -144,14 +143,12 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
     if (!matchId || !currentUserId) return;
     const trimmed = content.trim();
     if (!trimmed && !voiceUrl) return;
-    const { error } = await supabase.from("anonymous_dating_messages").insert({
-      match_id: matchId,
+    const { error } = await supabase.from("anonymous_dating_messages").insert({ match_id: matchId,
       sender_id: currentUserId,
       content: trimmed || (messageType === "voice" ? "🎤 Voice message" : ""),
       message_type: messageType,
       voice_url: voiceUrl ?? null,
-      is_read: false,
-    });
+      is_read: false });
     if (error) toast({ title: "Send failed", description: error.message, variant: "destructive" });
   }, [matchId, currentUserId, toast]);
 

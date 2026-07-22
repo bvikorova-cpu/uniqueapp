@@ -95,8 +95,7 @@ export function BattleResult({ result, homeName, watermark = "Megatalent", water
     return `battle-${verdict}-${slug}`.slice(0, 80);
   };
 
-  const captureCanvas = async (timestamp: string) => {
-    if (!cardRef.current) throw new Error("Nothing to export");
+  const captureCanvas = async (timestamp: string) => { if (!cardRef.current) throw new Error("Nothing to export");
     // Wait one paint so the watermark/footer becomes visible in the DOM
     await new Promise((r) => requestAnimationFrame(() => r(null)));
     await new Promise((r) => setTimeout(r, 30));
@@ -105,18 +104,15 @@ export function BattleResult({ result, homeName, watermark = "Megatalent", water
       backgroundColor: "#0b0b0f",
       scale: 2,
       useCORS: true,
-      logging: false,
-    });
+      logging: false });
   };
 
   const formatTimestamp = () =>
-    new Date().toLocaleString(undefined, {
-      year: "numeric",
+    new Date().toLocaleString(undefined, { year: "numeric",
       month: "short",
       day: "2-digit",
       hour: "2-digit",
-      minute: "2-digit",
-    });
+      minute: "2-digit" });
 
   const exportPNG = async () => {
     setExporting("png");
@@ -196,10 +192,8 @@ export function BattleResult({ result, homeName, watermark = "Megatalent", water
       setOpacity(0.08);
       pdf.setTextColor(120, 120, 140);
       pdf.setFontSize(48);
-      pdf.text(watermark.toUpperCase(), pageW / 2, pageH / 2 + 70, {
-        align: "center",
-        angle: -20,
-      } as any);
+      pdf.text(watermark.toUpperCase(), pageW / 2, pageH / 2 + 70, { align: "center",
+        angle: -20 } as any);
       setOpacity(1);
 
       // Footer with small logo

@@ -11,8 +11,7 @@ const TIER_META: Record<string, { icon: typeof Award; color: string; gradient: s
   bronze: { icon: Medal, color: "text-amber-700", gradient: "from-amber-700/20 to-amber-900/10" },
   silver: { icon: Award, color: "text-slate-300", gradient: "from-slate-300/20 to-slate-500/10" },
   gold: { icon: Crown, color: "text-yellow-400", gradient: "from-yellow-400/20 to-yellow-600/10" },
-  diamond: { icon: Gem, color: "text-cyan-300", gradient: "from-cyan-300/25 to-purple-500/15" },
-};
+  diamond: { icon: Gem, color: "text-cyan-300", gradient: "from-cyan-300/25 to-purple-500/15" } };
 
 type TierConfig = {
   tier: "bronze" | "silver" | "gold" | "diamond";
@@ -43,11 +42,9 @@ export const AffiliateTierCard = () => {
       ]);
       setConfig((cfg ?? []) as any);
       setStatus(
-        (st as any) ?? {
-          tier: "bronze",
+        (st as any) ?? { tier: "bronze",
           approved_referrals: 0,
-          lifetime_earnings_eur: 0,
-        },
+          lifetime_earnings_eur: 0 },
       );
       setLoading(false);
     })();

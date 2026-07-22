@@ -18,13 +18,11 @@ import { FanClubMembershipsCard } from "@/components/profile/FanClubMembershipsC
 import { ClubMembershipCard } from "@/components/profile/ClubMembershipCard";
 import { BillingOverviewCard } from "@/components/profile/BillingOverviewCard";
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
-import {
-  finishMeTrace,
+import { finishMeTrace,
   markMeFirstPaint,
   readMeProfileSnapshot,
   startMeTrace,
-  tracedQuery,
-} from "@/utils/perfMe";
+  tracedQuery } from "@/utils/perfMe";
 import MePerfOverlay from "@/components/debug/MePerfOverlay";
 
 const PostCard = lazy(() => import("@/components/feed/PostCard"));
@@ -66,8 +64,7 @@ const FamilySection = lazy(() => import("@/components/profile/FamilySection").th
 const PROFILE_POSTS_PAGE_SIZE = 10;
 const LazyProfileSectionFallback = () => <div className="h-24 rounded-xl bg-muted/30 animate-pulse" />;
 
-const createOwnProfileSnapshot = (user: NonNullable<ReturnType<typeof useAuth>["user"]>): Profile => ({
-  id: user.id,
+const createOwnProfileSnapshot = (user: NonNullable<ReturnType<typeof useAuth>["user"]>): Profile => ({ id: user.id,
   full_name: (user.user_metadata?.full_name as string | undefined) || (user.email?.split("@")[0] ?? "Unique user"),
   avatar_url: (user.user_metadata?.avatar_url as string | undefined) || null,
   email: user.email ?? null,
@@ -84,8 +81,7 @@ const createOwnProfileSnapshot = (user: NonNullable<ReturnType<typeof useAuth>["
   open_to_work_details: null,
   profile_music_url: null,
   profile_music_title: null,
-  bio_translations: null,
-});
+  bio_translations: null });
 
 interface Profile {
   id: string;
@@ -132,8 +128,7 @@ interface Post {
   };
 }
 
-const profileFromStoredSnapshot = (userId: string | undefined): Profile | null => {
-  const snap = readMeProfileSnapshot(userId);
+const profileFromStoredSnapshot = (userId: string | undefined): Profile | null => { const snap = readMeProfileSnapshot(userId);
   if (!snap) return null;
   return {
     id: snap.id,
@@ -153,8 +148,7 @@ const profileFromStoredSnapshot = (userId: string | undefined): Profile | null =
     open_to_work_details: null,
     profile_music_url: null,
     profile_music_title: null,
-    bio_translations: null,
-  };
+    bio_translations: null };
 };
 
 const Profile = () => {
@@ -176,16 +170,14 @@ const Profile = () => {
   const [detailsReady, setDetailsReady] = useState(false);
   const [extendedReady, setExtendedReady] = useState(false);
   const { data: followCounts } = useFollowCounts(extendedReady ? userId : undefined);
-  const [stats, setStats] = useState({
-    postsCount: 0,
+  const [stats, setStats] = useState({ postsCount: 0,
     likesGiven: 0,
     commentsGiven: 0,
     friendsCount: 0,
     submissionsCount: 0,
     completedCoursesCount: 0,
     xp: 0,
-    level: 1,
-  });
+    level: 1 });
 
   useEffect(() => {
     startMeTrace();
@@ -252,14 +244,12 @@ const Profile = () => {
       (async () => {
         try {
           const { data, error } = await supabase.functions.invoke('verify-profile-tip', {
-            body: { sessionId },
-          });
+            body: { sessionId } });
           if (error) throw error;
           if (data?.verified) {
             toast({
               title: '🎉 Tip sent successfully!',
-              description: `Thanks for the support (€${((data.tip?.amount_cents ?? 0) / 100).toFixed(2)}).`,
-            });
+              description: `Thanks for the support (€${((data.tip?.amount_cents ?? 0) / 100).toFixed(2)}).` });
           } else {
             toast({ title: 'Tip is being processed', description: 'Please refresh in a moment.' });
           }
@@ -303,12 +293,10 @@ const Profile = () => {
         markMeFirstPaint();
 
         finishMeTrace();
-      } catch (error: any) {
-        toast({
+      } catch (error: any) { toast({
           title: "Error loading profile",
           description: error.message,
-          variant: "destructive",
-        });
+          variant: "destructive" });
         setLoading(false);
         finishMeTrace();
       }
@@ -344,16 +332,14 @@ const Profile = () => {
 
         if (cancelled) return;
         const friendsData = friendsRes.data;
-        setStats({
-          postsCount: postsCountRes.count ?? 0,
+        setStats({ postsCount: postsCountRes.count ?? 0,
           likesGiven: likesRes.count || 0,
           commentsGiven: commentsRes.count || 0,
           friendsCount: friendsData?.length || 0,
           submissionsCount: submissionsRes.count || 0,
           completedCoursesCount: coursesRes.count || 0,
           xp: pointsRes.data?.total_points ?? 0,
-          level: pointsRes.data?.level ?? 1,
-        });
+          level: pointsRes.data?.level ?? 1 });
 
         if (friendsData && friendsData.length > 0) {
           const friendIds = friendsData.map((f) =>
@@ -363,8 +349,7 @@ const Profile = () => {
             "friend_profiles",
             () => supabase.from("public_profiles").select("id, full_name, avatar_url, username").in("id", friendIds),
           );
-          if (!cancelled) {
-            setFriends(
+          if (!cancelled) { setFriends(
               (friendProfiles || []).map((friend) => ({
                 id: friend.id,
                 full_name: friend.full_name,
@@ -375,8 +360,7 @@ const Profile = () => {
                 website: null,
                 interests: null,
                 occupation: null,
-                company: null,
-              })),
+                company: null })),
             );
           }
         }
@@ -410,14 +394,11 @@ const Profile = () => {
         }
 
         if (cancelled) return;
-        const postsWithProfiles = (postsData || []).map((post) => ({
-          ...post,
+        const postsWithProfiles = (postsData || []).map((post) => ({ ...post,
           profiles: {
             id: profile.id,
             full_name: profile.full_name,
-            avatar_url: profile.avatar_url,
-          },
-        }));
+            avatar_url: profile.avatar_url } }));
         setPosts(postsWithProfiles);
       } catch (err) {
         console.warn("[Profile] posts.initial threw", err);
@@ -504,15 +485,11 @@ const Profile = () => {
       if (error) throw error;
 
       setFriendshipStatus('pending_sent');
-      toast({
-        title: "Friend request sent",
-      });
-    } catch (error: any) {
-      toast({
+      toast({ title: "Friend request sent" });
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -556,15 +533,11 @@ const Profile = () => {
         friendsCount: friendsData?.length || 0
       }));
 
-      toast({
-        title: "Friend request accepted",
-      });
-    } catch (error: any) {
-      toast({
+      toast({ title: "Friend request accepted" });
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -586,15 +559,11 @@ const Profile = () => {
         friendsCount: 0
       }));
 
-      toast({
-        title: "Friendship removed",
-      });
-    } catch (error: any) {
-      toast({
+      toast({ title: "Friendship removed" });
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -664,13 +633,12 @@ const Profile = () => {
           currentUserId={currentUserId}
           isOwnProfile={currentUserId === userId}
           onEdit={() => navigate("/edit-profile")}
-          stats={{
+          stats={ {
             posts: stats.postsCount,
             followers: followCounts?.followers || 0,
             following: followCounts?.following || 0,
             xp: stats.xp,
-            level: stats.level,
-          }}
+            level: stats.level }}
           friendsAction={
             <Suspense fallback={null}>
               {friendshipStatus === 'none' && (
@@ -784,15 +752,14 @@ const Profile = () => {
         {/* Trophy Wall */}
         <AchievementsWall
           userId={userId!}
-          stats={{
+          stats={ {
             posts: stats.postsCount,
             friends: stats.friendsCount,
             contests: stats.submissionsCount,
             courses: stats.completedCoursesCount,
             likes: stats.likesGiven,
             comments: stats.commentsGiven,
-            followers: followCounts?.followers || 0,
-          }}
+            followers: followCounts?.followers || 0 }}
         />
 
         {/* Activity Heatmap */}

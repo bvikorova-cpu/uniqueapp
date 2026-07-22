@@ -25,8 +25,7 @@ export const PerformanceScoreView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("megatalent-ai", {
-        body: { action: "performance_score", category, title, description },
-      });
+        body: { action: "performance_score", category, title, description } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

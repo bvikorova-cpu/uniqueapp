@@ -18,7 +18,6 @@ export const test = base.extend({
       } catch {}
     });
     await use(context);
-  },
-});
+  } });
 
 export { expect };

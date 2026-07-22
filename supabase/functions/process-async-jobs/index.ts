@@ -3,10 +3,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const admin = () => createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
@@ -35,10 +33,8 @@ async function handleJob(job: Job): Promise<void> {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
-          ...(job.payload.headers as Record<string, string> | undefined ?? {}),
-        },
-        body: JSON.stringify(job.payload.body ?? {}),
-      });
+          ...(job.payload.headers as Record<string, string> | undefined ?? {}) },
+        body: JSON.stringify(job.payload.body ?? {}) });
       const text = await res.text();
       if (!res.ok) throw new Error(`invoke ${fn} ${res.status}: ${text.slice(0, 300)}`);
       return;
@@ -57,13 +53,10 @@ serve(async (req) => {
   const queue = url.searchParams.get("queue") ?? "default";
   const batch = Math.min(50, Number(url.searchParams.get("batch") ?? "10"));
 
-  const { data: jobs, error } = await sb.rpc("dequeue_async_jobs", {
-    _queue: queue, _worker: worker, _batch: batch,
-  });
+  const { data: jobs, error } = await sb.rpc("dequeue_async_jobs", { _queue: queue, _worker: worker, _batch: batch });
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   const results: Array<{ id: number; ok: boolean; error?: string }> = [];
@@ -80,6 +73,5 @@ serve(async (req) => {
   }
 
   return new Response(JSON.stringify({ worker, queue, processed: results.length, results }), {
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 });

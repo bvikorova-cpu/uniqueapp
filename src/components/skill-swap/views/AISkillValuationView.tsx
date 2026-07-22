@@ -27,8 +27,7 @@ export function AISkillValuationView({ onBack }: Props) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("skill-swap-ai", {
-        body: { action: "skill-valuation", skillName, experienceLevel, location, details },
-      });
+        body: { action: "skill-valuation", skillName, experienceLevel, location, details } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Skill valued! (${data.credits_used} credits used)`);

@@ -30,8 +30,7 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
   breathing: { bg: "bg-sky-500/15 border-sky-500/30", text: "text-sky-400" },
   mindfulness: { bg: "bg-violet-500/15 border-violet-500/30", text: "text-violet-400" },
   gratitude: { bg: "bg-amber-500/15 border-amber-500/30", text: "text-amber-400" },
-  movement: { bg: "bg-emerald-500/15 border-emerald-500/30", text: "text-emerald-400" },
-};
+  movement: { bg: "bg-emerald-500/15 border-emerald-500/30", text: "text-emerald-400" } };
 
 export function DailyWellnessChallenges() {
   const [challenges, setChallenges] = useState(DAILY_CHALLENGES);
@@ -48,8 +47,7 @@ export function DailyWellnessChallenges() {
         if (c.id === id && !c.completed) {
           toast({
             title: "Challenge Completed! 🎉",
-            description: `+${c.xp} XP earned for "${c.title}"`,
-          });
+            description: `+${c.xp} XP earned for "${c.title}"` });
           return { ...c, completed: true };
         }
         return c;

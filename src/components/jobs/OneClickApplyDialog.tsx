@@ -24,8 +24,7 @@ export const OneClickApplyDialog = ({ jobId, jobTitle, companyName }: OneClickAp
   const [uploadProgress, setUploadProgress] = useState<string>("");
   const { toast } = useToast();
 
-  const validateFile = (file: File): boolean => {
-    const validTypes = [
+  const validateFile = (file: File): boolean => { const validTypes = [
       'application/pdf',
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
@@ -35,18 +34,15 @@ export const OneClickApplyDialog = ({ jobId, jobTitle, companyName }: OneClickAp
       toast({
         title: "Invalid File Type",
         description: "Please upload a PDF or Word document (DOC/DOCX)",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return false;
     }
 
     // Max 10MB
-    if (file.size > 10 * 1024 * 1024) {
-      toast({
+    if (file.size > 10 * 1024 * 1024) { toast({
         title: "File Too Large",
         description: "Resume must be less than 10MB",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return false;
     }
 
@@ -67,12 +63,10 @@ export const OneClickApplyDialog = ({ jobId, jobTitle, companyName }: OneClickAp
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Error",
           description: "You must be logged in to apply for a position.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -116,13 +110,11 @@ export const OneClickApplyDialog = ({ jobId, jobTitle, companyName }: OneClickAp
 
       const { error } = await supabase
         .from('job_applications')
-        .insert({
-          job_id: jobId,
+        .insert({ job_id: jobId,
           applicant_id: user.id,
           cover_letter: coverLetter,
           resume_url: resumeUrl,
-          status: 'pending',
-        });
+          status: 'pending' });
 
       if (error) throw error;
 
@@ -132,20 +124,16 @@ export const OneClickApplyDialog = ({ jobId, jobTitle, companyName }: OneClickAp
         console.warn("track_challenge_action failed", e);
       }
 
-      toast({
-        title: "✅ Application Submitted!",
-        description: "Your application has been sent to the employer.",
-      });
+      toast({ title: "✅ Application Submitted!",
+        description: "Your application has been sent to the employer." });
 
       setOpen(false);
       setCoverLetter("");
       setResumeFile(null);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to submit application.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
       setUploadProgress("");

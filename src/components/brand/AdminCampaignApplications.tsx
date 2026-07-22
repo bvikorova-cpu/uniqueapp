@@ -33,18 +33,14 @@ export function AdminCampaignApplications() {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const approveMutation = useMutation({
     mutationFn: async ({ applicationId, action }: { applicationId: string; action: "approve" | "reject" }) => {
-      const { data, error } = await supabase.functions.invoke("approve-campaign-application", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("approve-campaign-application", { body: {
           applicationId,
           action,
-          rejectionReason: action === "reject" ? rejectionReason : null,
-        },
-      });
+          rejectionReason: action === "reject" ? rejectionReason : null } });
 
       if (error) throw error;
       return data;
@@ -61,15 +57,13 @@ export function AdminCampaignApplications() {
     },
     onError: (error: any) => {
       toast.error(error.message || "Failed to process application");
-    },
-  });
+    } });
 
   const getStatusBadge = (status: string) => {
     const config = {
       pending: { variant: "secondary" as const, icon: Clock, label: "Pending" },
       approved: { variant: "default" as const, icon: CheckCircle, label: "Approved" },
-      rejected: { variant: "destructive" as const, icon: XCircle, label: "Rejected" },
-    };
+      rejected: { variant: "destructive" as const, icon: XCircle, label: "Rejected" } };
     const { variant, icon: Icon, label } = config[status as keyof typeof config] || config.pending;
     return (
     <>

@@ -45,40 +45,29 @@ function buildEvent(opts: {
         metadata: {
           jobListingId: opts.jobListingId,
           productKey: opts.productKey,
-          ...(opts.userId ? { userId: opts.userId } : {}),
-        },
-      },
-    },
-  };
+          ...(opts.userId ? { userId: opts.userId } : {}) } } } };
 }
 
-async function postSignedEvent(payload: unknown): Promise<Response> {
-  const body = JSON.stringify(payload);
+async function postSignedEvent(payload: unknown): Promise<Response> { const body = JSON.stringify(payload);
   const stripe = new Stripe(STRIPE_KEY || "sk_test_dummy", {
-    apiVersion: "2025-08-27.basil",
-  });
+    apiVersion: "2025-08-27.basil" });
   const ts = Math.floor(Date.now() / 1000);
-  const sig = await stripe.webhooks.generateTestHeaderStringAsync({
-    payload: body,
+  const sig = await stripe.webhooks.generateTestHeaderStringAsync({ payload: body,
     secret: WEBHOOK_SECRET,
-    timestamp: ts,
-  });
+    timestamp: ts });
 
   return await fetch(WEBHOOK_URL, {
     method: "POST",
     headers: { "content-type": "application/json", "stripe-signature": sig },
-    body,
-  });
+    body });
 }
 
 Deno.test("webhook: missing job_listing → 200 graceful, no DB writes", async () => {
   const sessionId = `cs_test_${crypto.randomUUID().replace(/-/g, "")}`;
   const ghostListingId = crypto.randomUUID();
-  const event = buildEvent({
-    sessionId,
+  const event = buildEvent({ sessionId,
     jobListingId: ghostListingId,
-    productKey: "job_listing_7",
-  });
+    productKey: "job_listing_7" });
   const res = await postSignedEvent(event);
   const text = await res.text();
   console.log("[ghost-listing] status:", res.status, "body:", text);
@@ -92,12 +81,10 @@ Deno.test("webhook: real job_listing → activates listing + creates payment row
     return;
   }
   const sessionId = `cs_test_${crypto.randomUUID().replace(/-/g, "")}`;
-  const event = buildEvent({
-    sessionId,
+  const event = buildEvent({ sessionId,
     jobListingId,
     productKey: "job_listing_7",
-    amount: 2900,
-  });
+    amount: 2900 });
   const res = await postSignedEvent(event);
   await res.text();
   assertEquals(res.status, 200);

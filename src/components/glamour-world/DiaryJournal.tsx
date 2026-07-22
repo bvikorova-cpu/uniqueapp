@@ -23,14 +23,12 @@ export function DiaryJournal({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "diary", prompt: `Respond to this diary entry as a magical AI best friend. Mood: ${mood}. Entry: "${entry}". Give encouragement, fun advice, a motivational quote, and suggest a fun activity for the day.`, coins: 3 },
-      });
+        body: { type: "diary", prompt: `Respond to this diary entry as a magical AI best friend. Mood: ${mood}. Entry: "${entry}". Give encouragement, fun advice, a motivational quote, and suggest a fun activity for the day.`, coins: 3 } });
       if (error) throw error;
       setResult(data.result);
       await supabase.from("glamour_creations").insert({
         user_id: user.id, creation_type: "diary", title: `Diary - ${mood || "Today"}`,
-        prompt: entry, result_text: data.result, credits_used: 3,
-      });
+        prompt: entry, result_text: data.result, credits_used: 3 });
     } catch (e: any) {
       const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
         if (isCoinsErr) {

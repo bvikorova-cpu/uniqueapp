@@ -231,11 +231,10 @@ const AITattoo = () => {
         <Button variant="ghost" onClick={goBack} className="gap-2 mb-4 text-amber-400 hover:text-amber-300">← Back to Atelier</Button>
         <div className="flex items-center gap-3 mb-6">
           <Crown className="h-6 w-6 text-amber-400" />
-          <h2 className="text-3xl font-black" style={{
+          <h2 className="text-3xl font-black" style={ {
             background: "linear-gradient(135deg, #D4AF37, #F5E6C8, #D4AF37)",
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}>My Collection</h2>
+            WebkitTextFillColor: "transparent" }}>My Collection</h2>
         </div>
         {designs.length === 0 ? (
           <Card className="p-16 text-center bg-card/80 backdrop-blur-xl border-amber-500/10">
@@ -339,11 +338,10 @@ const AITattoo = () => {
         {/* Tool Grid */}
         <div className="flex items-center gap-3 mb-5">
           <Crown className="h-5 w-5 text-amber-400" />
-          <h2 className="text-2xl font-black" style={{
+          <h2 className="text-2xl font-black" style={ {
             background: "linear-gradient(135deg, #D4AF37, #F5E6C8, #D4AF37)",
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}>Atelier Studio Tools</h2>
+            WebkitTextFillColor: "transparent" }}>Atelier Studio Tools</h2>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">

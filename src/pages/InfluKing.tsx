@@ -93,8 +93,7 @@ const InfluKing = () => {
   const TOOLS = TOOL_DEFS.map((td) => ({
     ...td,
     label: t(`influking.tools.${td.tKey}.label`),
-    description: t(`influking.tools.${td.tKey}.description`),
-  }));
+    description: t(`influking.tools.${td.tKey}.description`) }));
   const [activeView, setActiveView] = useState<InfluKingView>("hub");
   const [selectedInfluencer, setSelectedInfluencer] = useState<InfluencerProfile | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -106,18 +105,14 @@ const InfluKing = () => {
   const [followStatusMap, setFollowStatusMap] = useState<Record<string, boolean>>({});
   const [showGiftDialog, setShowGiftDialog] = useState(false);
 
-  const [newProfile, setNewProfile] = useState({
-    display_name: "", bio: "", category: CATEGORIES[0],
+  const [newProfile, setNewProfile] = useState({ display_name: "", bio: "", category: CATEGORIES[0],
     profile_photo_url: "", cover_photo_url: "",
-    instagram: "", tiktok: "", youtube: "", twitter: "",
-  });
+    instagram: "", tiktok: "", youtube: "", twitter: "" });
 
   const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
   const [uploadingCoverPhoto, setUploadingCoverPhoto] = useState(false);
 
-  const [newPost, setNewPost] = useState({
-    title: "", content: "", media_url: "", media_type: "image",
-  });
+  const [newPost, setNewPost] = useState({ title: "", content: "", media_url: "", media_type: "image" });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -136,8 +131,7 @@ const InfluKing = () => {
       const { data } = await supabase.from("influencer_profiles").select("*").eq("user_id", user.id).maybeSingle();
       return data as InfluencerProfile | null;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: topInfluencers = [], isLoading } = useQuery({
     queryKey: ["topInfluencers"],
@@ -146,8 +140,7 @@ const InfluKing = () => {
         .eq("is_active", true).order("followers_count", { ascending: false }).limit(50);
       if (error) throw error;
       return data as InfluencerProfile[];
-    },
-  });
+    } });
 
   useEffect(() => {
     if (!user || topInfluencers.length === 0) return;
@@ -170,8 +163,7 @@ const InfluKing = () => {
       if (error) throw error;
       return data as InfluencerPost[];
     },
-    enabled: !!selectedInfluencer,
-  });
+    enabled: !!selectedInfluencer });
 
   const { data: isFollowing } = useQuery({
     queryKey: ["isFollowing", selectedInfluencer?.id, user?.id],
@@ -181,8 +173,7 @@ const InfluKing = () => {
         .eq("influencer_id", selectedInfluencer.id).eq("follower_id", user.id).maybeSingle();
       return !!data;
     },
-    enabled: !!user && !!selectedInfluencer,
-  });
+    enabled: !!user && !!selectedInfluencer });
 
   const totalFollowers = topInfluencers.reduce((sum, i) => sum + (i.followers_count || 0), 0);
   const totalLikes = topInfluencers.reduce((sum, i) => sum + (i.total_likes || 0), 0);
@@ -196,8 +187,7 @@ const InfluKing = () => {
         user_id: user.id, display_name: newProfile.display_name, bio: newProfile.bio,
         category: newProfile.category, profile_photo_url: newProfile.profile_photo_url || null,
         cover_photo_url: newProfile.cover_photo_url || null,
-        social_links: { instagram: newProfile.instagram || null, tiktok: newProfile.tiktok || null, youtube: newProfile.youtube || null, twitter: newProfile.twitter || null },
-      }]);
+        social_links: { instagram: newProfile.instagram || null, tiktok: newProfile.tiktok || null, youtube: newProfile.youtube || null, twitter: newProfile.twitter || null } }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -206,8 +196,7 @@ const InfluKing = () => {
       setShowCreateDialog(false);
       toast({ title: "✅ Profile Created", description: "Your influencer profile is live!" });
     },
-    onError: (error: any) => { toast({ title: "Error", description: error.message, variant: "destructive" }); },
-  });
+    onError: (error: any) => { toast({ title: "Error", description: error.message, variant: "destructive" }); } });
 
   const uploadMediaToStorage = async (file: File): Promise<string | null> => {
     if (!user) return null;
@@ -287,10 +276,8 @@ const InfluKing = () => {
   const createPostMutation = useMutation({
     mutationFn: async () => {
       if (!myProfile) throw new Error("Need influencer profile");
-      const { error } = await supabase.from("influencer_posts").insert([{
-        influencer_id: myProfile.id, title: newPost.title || null, content: newPost.content || null,
-        media_url: newPost.media_url || null, media_type: newPost.media_type,
-      }]);
+      const { error } = await supabase.from("influencer_posts").insert([{ influencer_id: myProfile.id, title: newPost.title || null, content: newPost.content || null,
+        media_url: newPost.media_url || null, media_type: newPost.media_type }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -299,8 +286,7 @@ const InfluKing = () => {
       setNewPost({ title: "", content: "", media_url: "", media_type: "image" });
       toast({ title: "✅ Post Published", description: "Your content is now live!" });
     },
-    onError: (error: any) => { toast({ title: "Error", description: error.message, variant: "destructive" }); },
-  });
+    onError: (error: any) => { toast({ title: "Error", description: error.message, variant: "destructive" }); } });
 
   const followMutation = useMutation({
     mutationFn: async ({ influencerId, follow }: { influencerId: string; follow: boolean }) => {
@@ -318,8 +304,7 @@ const InfluKing = () => {
       queryClient.invalidateQueries({ queryKey: ["isFollowing"] });
       queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
       toast({ title: variables.follow ? "✅ Following" : "Unfollowed" });
-    },
-  });
+    } });
 
   const likePostMutation = useMutation({
     mutationFn: async (postId: string) => {
@@ -334,8 +319,7 @@ const InfluKing = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["influencerPosts"] });
       queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
-    },
-  });
+    } });
 
   if (!user) {
     return (

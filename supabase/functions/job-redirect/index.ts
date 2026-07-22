@@ -59,12 +59,9 @@ Deno.serve(async (req) => {
 
   // Even expired jobs should canonicalize so search engines collapse old URLs.
   const target = `${SITE}/jobs/listing/${data.slug || id}`;
-  return new Response(null, {
-    status: active ? 301 : 308,
+  return new Response(null, { status: active ? 301 : 308,
     headers: {
       ...corsHeaders,
       Location: target,
-      "Cache-Control": "public, max-age=86400",
-    },
-  });
+      "Cache-Control": "public, max-age=86400" } });
 });

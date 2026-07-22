@@ -44,36 +44,30 @@ export function AIStoryGenerator({ campaignType, onGenerated, trigger }: Props) 
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke("generate-campaign-story", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("generate-campaign-story", { body: {
           campaignType,
           summary: summary.trim(),
           tone,
           beneficiaryName: beneficiaryName.trim() || undefined,
-          goalAmount: goalAmount ? Number(goalAmount) : undefined,
-        },
-      });
+          goalAmount: goalAmount ? Number(goalAmount) : undefined } });
 
       if (error) throw error;
       if ((data as any)?.error === "insufficient_credits") {
         toast({
           title: "Not enough credits",
           description: (data as any).message || `You need ${COST} credits.`,
-          variant: "destructive",
-        });
+          variant: "destructive" });
         setLoading(false);
         return;
       }
       setResult({ title: data.title, story: data.story, appeal: data.appeal });
       onGenerated?.({ title: data.title, story: data.story, appeal: data.appeal });
       toast({ title: "Story generated!", description: `${COST} credits used. ${data.credits_remaining} remaining.` });
-    } catch (e: any) {
-      console.error(e);
+    } catch (e: any) { console.error(e);
       toast({
         title: "Generation failed",
         description: e?.message || "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

@@ -11,43 +11,35 @@ interface CreditPackagesProps {
 }
 
 const PACKAGES = [
-  {
-    id: "basic",
+  { id: "basic",
     name: "Basic",
     credits: 10,
     priceEur: 5,
     icon: Sparkles,
     gradient: "from-blue-500 to-cyan-500",
-    features: ["1-2 matches", "Text messages", "Perfect to start"],
-  },
-  {
-    id: "standard",
+    features: ["1-2 matches", "Text messages", "Perfect to start"] },
+  { id: "standard",
     name: "Standard",
     credits: 30,
     priceEur: 12,
     icon: Star,
     gradient: "from-pink-500 to-rose-500",
     popular: true,
-    features: ["5-6 matches", "Voice messages", "Profile hints", "Best value"],
-  },
-  {
-    id: "premium",
+    features: ["5-6 matches", "Voice messages", "Profile hints", "Best value"] },
+  { id: "premium",
     name: "Premium",
     credits: 100,
     priceEur: 25,
     icon: Crown,
     gradient: "from-amber-500 to-orange-500",
-    features: ["20+ matches", "All features", "Early reveal", "Priority matching"],
-  },
-  {
-    id: "ultimate",
+    features: ["20+ matches", "All features", "Early reveal", "Priority matching"] },
+  { id: "ultimate",
     name: "Ultimate",
     credits: 300,
     priceEur: 60,
     icon: Zap,
     gradient: "from-primary to-accent",
-    features: ["Unlimited matches", "Premium features", "VIP support", "Max freedom"],
-  },
+    features: ["Unlimited matches", "Premium features", "VIP support", "Max freedom"] },
 ];
 
 const BASE_RATE = PACKAGES[0].priceEur / PACKAGES[0].credits; // €/credit baseline (Basic)

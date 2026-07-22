@@ -2,17 +2,13 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const VOTE_PACKAGES: Record<string, number> = {
-  "price_1SSDabGaXSfGtYFtjBhb6kVr": 5,
+const VOTE_PACKAGES: Record<string, number> = { "price_1SSDabGaXSfGtYFtjBhb6kVr": 5,
   "price_1SSDacGaXSfGtYFtYnW8omLQ": 10,
   "price_1SSDadGaXSfGtYFthJDJ0sYd": 50,
-  "price_1SSDmg0QTWhd4oRp8S8VrIeM": 100,
-};
+  "price_1SSDmg0QTWhd4oRp8S8VrIeM": 100 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -53,21 +49,17 @@ serve(async (req) => {
         alreadyProcessed: true
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+        status: 200 });
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     
     if (session.payment_status !== "paid") {
       return new Response(JSON.stringify({ success: false, message: "Payment not completed" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      });
+        status: 400 });
     }
 
     if (session.metadata?.user_id !== user.id) {
@@ -84,15 +76,13 @@ serve(async (req) => {
     const votesToAdd = VOTE_PACKAGES[priceId];
 
     // Record verification
-    await supabaseAdmin.from("payment_verifications").upsert({
-      stripe_session_id: sessionId,
+    await supabaseAdmin.from("payment_verifications").upsert({ stripe_session_id: sessionId,
       user_id: user.id,
       credit_type: "brand_battle_votes",
       credits_amount: votesToAdd,
       amount_paid: session.amount_total ? session.amount_total / 100 : 0,
       payment_status: "completed",
-      processed_at: new Date().toISOString(),
-    });
+      processed_at: new Date().toISOString() });
 
     // Add votes
     const today = new Date().toISOString().split('T')[0];
@@ -116,8 +106,7 @@ serve(async (req) => {
     }
 
     // Audit trail
-    await supabaseAdmin.from("transactions").insert({
-      user_id: user.id,
+    await supabaseAdmin.from("transactions").insert({ user_id: user.id,
       transaction_type: "credit_purchase",
       amount: session.amount_total ? session.amount_total / 100 : 0,
       commission_rate: 0,
@@ -125,18 +114,15 @@ serve(async (req) => {
       seller_amount: 0,
       status: "completed",
       item_type: "brand_battle_votes",
-      stripe_session_id: sessionId,
-    });
+      stripe_session_id: sessionId });
 
     return new Response(JSON.stringify({ success: true, votesAdded: votesToAdd }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (error: any) {
     console.error("Error verifying payment:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

@@ -22,8 +22,7 @@ export const DayInLifeSimulator = ({ onCredits }: Props) => {
     setLoading(true);
     try {
       const { data: res, error } = await supabase.functions.invoke("teen-career-counselor", {
-        body: { action: "dayInLife", career },
-      });
+        body: { action: "dayInLife", career } });
       if (error || res?.error) {
         const msg = res?.error || error?.message || "Failed";
         if (String(msg).toLowerCase().includes("insufficient")) {

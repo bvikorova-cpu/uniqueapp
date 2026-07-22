@@ -52,8 +52,7 @@ const AIContentPlanner = ({ onBack }: AIContentPlannerProps) => {
         .eq("user_id", user.id)
         .maybeSingle();
       return data;
-    },
-  });
+    } });
 
   const generatePlan = async () => {
     if (!niche.trim()) {
@@ -82,8 +81,7 @@ const AIContentPlanner = ({ onBack }: AIContentPlannerProps) => {
         user_id: user.id,
         usage_type: "content_planner",
         credits_used: 5,
-        description: `Content plan generated for niche: ${niche}`,
-      });
+        description: `Content plan generated for niche: ${niche}` });
 
       toast({ title: "✅ Plan Generated!", description: "Your 7-day content plan is ready (5 credits used)" });
     } catch (error: any) {

@@ -5,13 +5,11 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-const rarityColors: Record<string, string> = {
-  Common: "text-gray-500 bg-gray-500/10",
+const rarityColors: Record<string, string> = { Common: "text-gray-500 bg-gray-500/10",
   Uncommon: "text-green-500 bg-green-500/10",
   Rare: "text-blue-500 bg-blue-500/10",
   Epic: "text-purple-500 bg-purple-500/10",
-  Legendary: "text-amber-500 bg-amber-500/10",
-};
+  Legendary: "text-amber-500 bg-amber-500/10" };
 
 function rarityFromPoints(points: number | null | undefined): keyof typeof rarityColors {
   const p = points ?? 0;
@@ -42,8 +40,7 @@ export default function WallCreatorBadges() {
         .order("points_reward", { ascending: true });
       if (error) throw error;
       return (data ?? []) as BadgeRow[];
-    },
-  });
+    } });
 
   const { data: unlockedIds = new Set<string>() } = useQuery<Set<string>>({
     queryKey: ["user-badges-set", user?.id],
@@ -55,8 +52,7 @@ export default function WallCreatorBadges() {
         .eq("user_id", user!.id);
       if (error) throw error;
       return new Set((data ?? []).map((r: any) => r.badge_id as string));
-    },
-  });
+    } });
 
   const unlockedCount = allBadges.filter((b) => unlockedIds.has(b.id)).length;
   const total = allBadges.length;

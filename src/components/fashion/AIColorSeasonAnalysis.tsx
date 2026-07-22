@@ -42,8 +42,7 @@ export default function AIColorSeasonAnalysis() {
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "color-season", skin_tone: skinTone, hair_color: hairColor, eye_color: eyeColor, undertone },
-      });
+        body: { action: "color-season", skin_tone: skinTone, hair_color: hairColor, eye_color: eyeColor, undertone } });
       if (error) throw error;
       return data as SeasonResult;
     },
@@ -51,15 +50,12 @@ export default function AIColorSeasonAnalysis() {
       setResult(data);
       toast.success("Your color season has been determined!");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
-  const seasonIcons: Record<string, React.ReactNode> = {
-    Spring: <Flower2 className="h-6 w-6 text-pink-400" />,
+  const seasonIcons: Record<string, React.ReactNode> = { Spring: <Flower2 className="h-6 w-6 text-pink-400" />,
     Summer: <Sun className="h-6 w-6 text-amber-400" />,
     Autumn: <Leaf className="h-6 w-6 text-orange-400" />,
-    Winter: <Snowflake className="h-6 w-6 text-blue-400" />,
-  };
+    Winter: <Snowflake className="h-6 w-6 text-blue-400" /> };
 
   return (
     <>

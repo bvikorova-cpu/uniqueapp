@@ -47,9 +47,8 @@ export function RaceReplayViewer({ onBack }: { onBack: () => void }) {
               <div className="absolute bottom-16 right-3 w-8 h-8 border-r-2 border-b-2 border-cyan-400/50 rounded-br" />
 
               {/* Scanlines */}
-              <div className="absolute inset-0 pointer-events-none" style={{
-                background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,229,255,0.02) 3px, rgba(0,229,255,0.02) 6px)',
-              }} />
+              <div className="absolute inset-0 pointer-events-none" style={ {
+                background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,229,255,0.02) 3px, rgba(0,229,255,0.02) 6px)' }} />
 
               {/* Center play icon */}
               {!isPlaying && (
@@ -84,8 +83,7 @@ export function RaceReplayViewer({ onBack }: { onBack: () => void }) {
                       className="absolute top-0 h-full w-3 rounded-full"
                       style={{ backgroundColor: i === 0 ? '#00e5ff' : `hsl(${i * 40}, 70%, 50%)` }}
                       animate={isPlaying ? {
-                        left: [`${10 + i * 8}%`, `${90 - i * 5}%`, `${50 + Math.random() * 30}%`],
-                      } : {}}
+                        left: [`${10 + i * 8}%`, `${90 - i * 5}%`, `${50 + Math.random() * 30}%`] } : {}}
                       transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", delay: i * 0.2 }}
                     />
                   ))}

@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -28,13 +26,11 @@ interface UserProfile {
   avatar_url: string | null;
 }
 
-export const FollowersModal = ({
-  userId,
+export const FollowersModal = ({ userId,
   currentUserId,
   isOpen,
   onClose,
-  defaultTab = "followers",
-}: FollowersModalProps) => {
+  defaultTab = "followers" }: FollowersModalProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(defaultTab);
 
@@ -62,8 +58,7 @@ export const FollowersModal = ({
 
       return profilesData as UserProfile[];
     },
-    enabled: isOpen,
-  });
+    enabled: isOpen });
 
   // Fetch following
   const { data: following, isLoading: followingLoading } = useQuery({
@@ -89,8 +84,7 @@ export const FollowersModal = ({
 
       return profilesData as UserProfile[];
     },
-    enabled: isOpen,
-  });
+    enabled: isOpen });
 
   const handleUserClick = (userId: string) => {
     navigate(`/profile/${userId}`);

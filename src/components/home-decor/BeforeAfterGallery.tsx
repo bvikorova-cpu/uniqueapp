@@ -79,15 +79,13 @@ export function BeforeAfterGallery({ onBack }: BeforeAfterGalleryProps) {
       const beforeUrl = await uploadFile(beforeFile, "before");
       const afterUrl = await uploadFile(afterFile, "after");
 
-      const { error } = await supabase.from("home_transformations").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("home_transformations").insert({ user_id: user.id,
         before_image_url: beforeUrl,
         after_image_url: afterUrl,
         title,
         description,
         room_type: roomType,
-        style,
-      });
+        style });
 
       if (error) throw error;
 

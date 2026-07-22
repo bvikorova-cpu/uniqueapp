@@ -91,8 +91,7 @@ export const MeditationChamber = () => {
         user_id: session.user.id,
         activity_type: "reincarnation_meditation",
         target_type: selectedMeditation,
-        metadata: { completed: true },
-      });
+        metadata: { completed: true } });
 
       setTotalSessions((prev) => prev + 1);
       toast({ title: "Meditation Complete!", description: "Your soul thanks you for this practice." });

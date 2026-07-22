@@ -3,11 +3,9 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { z } from "https://esm.sh/zod@3.23.8";
 import { spendAiCredits } from "../_shared/spendCredits.ts";
 
-const Body = z.object({
-  action: z.enum(["buy-car", "join-race", "shop-purchase"]),
+const Body = z.object({ action: z.enum(["buy-car", "join-race", "shop-purchase"]),
   item_name: z.string().min(1).max(100).optional(),
-  metadata: z.record(z.unknown()).optional(),
-});
+  metadata: z.record(z.unknown()).optional() });
 
 const COST = 2;
 
@@ -39,13 +37,11 @@ Deno.serve(async (req) => {
       action_type: parsed.data.action,
       item_name: parsed.data.item_name ?? null,
       metadata: parsed.data.metadata ?? {},
-      credits_spent: COST,
-    }).select().single();
+      credits_spent: COST }).select().single();
     if (error) throw error;
 
     return new Response(JSON.stringify({ ok: true, entry: data, credits_remaining: spend.remaining }), {
-      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }

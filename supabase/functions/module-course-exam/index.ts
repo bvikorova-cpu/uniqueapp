@@ -27,18 +27,15 @@ function rateLimit(key: string, max: number, windowMs: number) {
 }
 
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -50,17 +47,14 @@ async function aiJson(system: string, user: string): Promise<any> {
     method: "POST",
     headers: {
       Authorization: `Bearer ${LOVABLE_API_KEY}`,
-      "Content-Type": "application/json",
-    },
+      "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "google/gemini-2.5-flash",
       messages: [
         { role: "system", content: system },
         { role: "user", content: user },
       ],
-      response_format: { type: "json_object" },
-    }),
-  });
+      response_format: { type: "json_object" } }) });
   if (res.status === 402) throw new Error("ai_credits_exhausted");
   if (!res.ok) throw new Error(`ai_error_${res.status}`);
   const data = await res.json();
@@ -121,15 +115,13 @@ async function loadOrCreateCache(meta: any) {
     cached?.quiz_pool && Array.isArray(cached.quiz_pool) && cached.quiz_pool.length >= 10
       ? cached.quiz_pool
       : await generateQuizPool(meta, content);
-  const row = {
-    course_key,
+  const row = { course_key,
     module_key: meta.module_key,
     course_slug: meta.course_slug,
     course_title: meta.course_title,
     content,
     quiz_pool,
-    updated_at: new Date().toISOString(),
-  };
+    updated_at: new Date().toISOString() };
   await admin.from("module_course_content_cache").upsert(row);
   return row;
 }
@@ -203,8 +195,7 @@ async function generatePdf(opts: {
       errorCorrectionLevel: "M",
       margin: 0,
       width: 220,
-      color: { dark: "#1a1a26", light: "#ffffff" },
-    });
+      color: { dark: "#1a1a26", light: "#ffffff" } });
     const b64 = qrDataUrl.split(",")[1];
     const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
     const qrImg = await pdf.embedPng(bin);
@@ -320,8 +311,7 @@ Deno.serve(async (req) => {
     const authHeader = req.headers.get("Authorization") ?? "";
     const token = authHeader.replace("Bearer ", "");
     const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: `Bearer ${token}` } },
-    });
+      global: { headers: { Authorization: `Bearer ${token}` } } });
     const { data: userRes } = await userClient.auth.getUser(token);
     const user = userRes?.user ?? null;
 
@@ -352,8 +342,7 @@ Deno.serve(async (req) => {
         videos: [
           { title: `Tutorial: ${lessonTitle}`, embed_url: `https://www.youtube.com/embed?listType=search&list=${q1}` },
           { title: `Masterclass: ${lessonTitle}`, embed_url: `https://www.youtube.com/embed?listType=search&list=${q2}` },
-        ],
-      });
+        ] });
     }
 
     if (action === "progress_get") {
@@ -423,11 +412,9 @@ Deno.serve(async (req) => {
       const rl = rateLimit(`exam:${user.id}`, 10, 60 * 60 * 1000); // 10 exam starts/hour
       if (!rl.ok) return json({ error: "rate_limited", retry_in_ms: rl.resetIn }, 429);
       const cached = await loadOrCreateCache(meta);
-      const questions = pickExamQuestions(cached.quiz_pool as any[]).map((q: any, i: number) => ({
-        id: i,
+      const questions = pickExamQuestions(cached.quiz_pool as any[]).map((q: any, i: number) => ({ id: i,
         q: q.q,
-        options: q.options,
-      }));
+        options: q.options }));
       const answerKey = pickAnswerKey(cached.quiz_pool, questions);
       const sig = await signKey(answerKey);
       return json({ questions, exam_token: sig });
@@ -462,14 +449,12 @@ Deno.serve(async (req) => {
       const originHeader = req.headers.get("origin") || "https://uniqueapp.fun";
       const verifyUrl = `${originHeader.replace(/\/$/, "")}/cert/${certNumber}`;
 
-      const pdfBytes = await generatePdf({
-        recipient,
+      const pdfBytes = await generatePdf({ recipient,
         course: meta.course_title,
         module: meta.module_label ?? meta.module_key,
         score,
         certNumber,
-        verifyUrl,
-      });
+        verifyUrl });
 
       const objectPath = `${user.id}/${certNumber}.pdf`;
       const { error: upErr } = await admin.storage
@@ -487,8 +472,7 @@ Deno.serve(async (req) => {
           score,
           recipient_name: recipient,
           certificate_code: certNumber,
-          pdf_url,
-        })
+          pdf_url })
         .select()
         .single();
       if (insErr) throw insErr;

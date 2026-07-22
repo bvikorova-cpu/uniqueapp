@@ -33,8 +33,7 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
     setIsJoining(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-holographic-avatar-checkout", {
-        body: { priceId: "price_1SPjGQGaXSfGtYFtDYtm4aC2", featureName: `Battle Entry: ${mode.name}`, metadata: { mode: mode.id } },
-      });
+        body: { priceId: "price_1SPjGQGaXSfGtYFtDYtm4aC2", featureName: `Battle Entry: ${mode.name}`, metadata: { mode: mode.id } } });
       if (error) throw error;
       if (data?.url) {
         try { localStorage.setItem("pendingHoloAction", JSON.stringify({ kind: "battle", mode: mode.id })); } catch {}

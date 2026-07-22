@@ -38,14 +38,12 @@ export const SoulJourneyMap = () => {
         .order("created_at", { ascending: true })
         .limit(20);
 
-      if (data && data.length > 0) {
-        const nodes: LifeNode[] = data.map((r: any) => ({
+      if (data && data.length > 0) { const nodes: LifeNode[] = data.map((r: any) => ({
           era: r.era || "Unknown Era",
           location: (r.reading_result as any)?.location || "Unknown",
           role: (r.reading_result as any)?.occupation || "Unknown",
           lesson: (r.reading_result as any)?.karmic_lesson || "Self-discovery",
-          year_range: r.era || "Ancient",
-        }));
+          year_range: r.era || "Ancient" }));
         setJourneyNodes(nodes);
       }
     } catch (error) {
@@ -67,13 +65,11 @@ export const SoulJourneyMap = () => {
       const { data, error } = await supabase.functions.invoke("generate-past-life-regression");
       if (error) throw error;
 
-      const newNode: LifeNode = {
-        era: data.regression?.life_era || "Unknown",
+      const newNode: LifeNode = { era: data.regression?.life_era || "Unknown",
         location: data.regression?.life_location || "Unknown",
         role: data.regression?.life_name || "Unknown",
         lesson: data.regression?.karmic_theme || "Growth",
-        year_range: data.regression?.life_era || "Ancient",
-      };
+        year_range: data.regression?.life_era || "Ancient" };
       setJourneyNodes((prev) => [...prev, newNode]);
       toast({ title: "New past life discovered!", description: `${newNode.role} in ${newNode.location}` });
     } catch (error) {

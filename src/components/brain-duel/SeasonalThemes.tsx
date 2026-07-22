@@ -14,8 +14,7 @@ export const SeasonalThemes = () => {
         .select("*")
         .order("is_active", { ascending: false });
       return data || [];
-    },
-  });
+    } });
 
   const activeTheme = themes?.find((t: any) => t.is_active);
 
@@ -28,14 +27,12 @@ export const SeasonalThemes = () => {
       <Card
         className="border-primary/20 overflow-hidden relative"
         style={{
-          background: `linear-gradient(135deg, ${activeTheme.gradient_from}15, ${activeTheme.gradient_to}15)`,
-        }}
+          background: `linear-gradient(135deg, ${activeTheme.gradient_from}15, ${activeTheme.gradient_to}15)` }}
       >
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            background: `linear-gradient(135deg, ${activeTheme.gradient_from}, ${activeTheme.gradient_to})`,
-          }}
+            background: `linear-gradient(135deg, ${activeTheme.gradient_from}, ${activeTheme.gradient_to})` }}
         />
         <CardContent className="relative p-4 flex items-center gap-4">
           <motion.span
@@ -51,8 +48,7 @@ export const SeasonalThemes = () => {
               <Badge
                 className="text-[10px] border-0 text-white shadow-md"
                 style={{
-                  background: `linear-gradient(90deg, ${activeTheme.gradient_from}, ${activeTheme.gradient_to})`,
-                }}
+                  background: `linear-gradient(90deg, ${activeTheme.gradient_from}, ${activeTheme.gradient_to})` }}
               >
                 ACTIVE
               </Badge>

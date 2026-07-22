@@ -40,8 +40,7 @@ test("realtime notification triggers chime in UI", async ({ page }) => {
       gain = {
         value: 0,
         setValueAtTime() {},
-        exponentialRampToValueAtTime() {},
-      };
+        exponentialRampToValueAtTime() {} };
       connect() { return { connect() { return {}; } }; }
     }
     class FakeAC {
@@ -87,23 +86,18 @@ test("realtime notification triggers chime in UI", async ({ page }) => {
         apikey: SUPABASE_ANON_KEY,
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
-        Prefer: "return=representation",
-      },
-      data: {
-        user_id: userId,
+        Prefer: "return=representation" },
+      data: { user_id: userId,
         type: "like",
         title: "E2E chime",
-        message: "Playwright chime probe",
-      },
-    },
+        message: "Playwright chime probe" } },
   );
 
   if (!insertRes.ok()) {
     const body = await insertRes.text();
     test.info().annotations.push({
       type: "soft-skip",
-      description: `notifications insert blocked (${insertRes.status()}): ${body.slice(0, 200)}`,
-    });
+      description: `notifications insert blocked (${insertRes.status()}): ${body.slice(0, 200)}` });
     test.skip(true, "Cannot insert notification under current RLS — chime path unreachable from client");
     return;
   }

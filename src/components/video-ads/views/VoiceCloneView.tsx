@@ -32,8 +32,7 @@ export const VoiceCloneView = ({ onBack }: { onBack: () => void }) => {
       let bin = ""; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
       const audioBase64 = btoa(bin);
       const { data, error } = await supabase.functions.invoke('video-ad-voice-clone', {
-        body: { name, description, audioBase64, mimeType: file.type || 'audio/mpeg' },
-      });
+        body: { name, description, audioBase64, mimeType: file.type || 'audio/mpeg' } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Voice Clone' }); return; }
       setVoiceId(data.voiceId);
       try {

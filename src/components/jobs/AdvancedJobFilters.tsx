@@ -13,10 +13,8 @@ export interface AdvancedFiltersState {
   fundingStage: string;
 }
 
-export const DEFAULT_ADVANCED: AdvancedFiltersState = {
-  remote: false, fourDayWeek: false, equity: false,
-  industry: "", companySize: "", fundingStage: "",
-};
+export const DEFAULT_ADVANCED: AdvancedFiltersState = { remote: false, fourDayWeek: false, equity: false,
+  industry: "", companySize: "", fundingStage: "" };
 
 interface Props {
   value: AdvancedFiltersState;

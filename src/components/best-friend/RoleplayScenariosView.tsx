@@ -41,8 +41,7 @@ export const RoleplayScenariosView = () => {
       const resp = await fetch(CHAT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ scenario_id: scenario, messages: newMsgs }),
-      });
+        body: JSON.stringify({ scenario_id: scenario, messages: newMsgs }) });
       if (!resp.ok || !resp.body) throw new Error("Failed");
       const reader = resp.body.getReader(); const dec = new TextDecoder();
       let buf = "", asst = "";

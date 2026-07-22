@@ -1,8 +1,6 @@
 import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-  apiVersion: "2025-08-27.basil",
-});
+const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
 interface PaymentVerificationResult {
   success: boolean;
@@ -40,8 +38,7 @@ const CREDIT_TABLE_CONFIG: Record<string, CreditTableConfig> = {
   character_credits: { tableName: "character_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
   coloring_credits: { tableName: "coloring_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
   antique_credits: { tableName: "antique_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  astrology_credits: { tableName: "astrology_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-};
+  astrology_credits: { tableName: "astrology_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" } };
 
 /**
  * Verifies a Stripe payment and adds credits with idempotency protection
@@ -63,11 +60,9 @@ export async function verifyAndProcessPayment(
 
   if (existingVerification && existingVerification.payment_status === "completed") {
     console.log(`[PAYMENT-VERIFICATION] Session ${sessionId} already processed`);
-    return {
-      success: true,
+    return { success: true,
       alreadyProcessed: true,
-      credits: existingVerification.credits_amount,
-    };
+      credits: existingVerification.credits_amount };
   }
 
   // 2. Retrieve session from Stripe
@@ -107,16 +102,14 @@ export async function verifyAndProcessPayment(
   }
 
   // 6. Record the verification attempt (or update existing pending)
-  const verificationData = {
-    stripe_session_id: sessionId,
+  const verificationData = { stripe_session_id: sessionId,
     user_id: userId,
     credit_type: creditType,
     credits_amount: creditsToAdd,
     amount_paid: session.amount_total ? session.amount_total / 100 : 0,
     currency: session.currency || "eur",
     payment_status: "processing",
-    metadata: session.metadata,
-  };
+    metadata: session.metadata };
 
   if (existingVerification) {
     await supabaseAdmin
@@ -149,11 +142,9 @@ export async function verifyAndProcessPayment(
       .eq("user_id", userId)
       .maybeSingle();
 
-    if (currentCredits) {
-      // Update existing record
+    if (currentCredits) { // Update existing record
       const updateData: Record<string, any> = {
-        updated_at: new Date().toISOString(),
-      };
+        updated_at: new Date().toISOString() };
       updateData[tableConfig.creditsColumn] = (currentCredits[tableConfig.creditsColumn] || 0) + creditsToAdd;
       if (tableConfig.totalColumn !== tableConfig.creditsColumn) {
         updateData[tableConfig.totalColumn] = (currentCredits[tableConfig.totalColumn] || 0) + creditsToAdd;
@@ -167,11 +158,9 @@ export async function verifyAndProcessPayment(
       if (updateError) {
         throw updateError;
       }
-    } else {
-      // Create new record
+    } else { // Create new record
       const insertData: Record<string, any> = {
-        user_id: userId,
-      };
+        user_id: userId };
       insertData[tableConfig.creditsColumn] = creditsToAdd;
       if (tableConfig.totalColumn !== tableConfig.creditsColumn) {
         insertData[tableConfig.totalColumn] = creditsToAdd;
@@ -202,15 +191,12 @@ export async function verifyAndProcessPayment(
   // 8. Mark as completed
   await supabaseAdmin
     .from("payment_verifications")
-    .update({
-      payment_status: "completed",
-      processed_at: new Date().toISOString(),
-    })
+    .update({ payment_status: "completed",
+      processed_at: new Date().toISOString() })
     .eq("stripe_session_id", sessionId);
 
   // 9. Create audit trail in transactions table
-  try {
-    await supabaseAdmin
+  try { await supabaseAdmin
       .from("transactions")
       .insert({
         user_id: userId,
@@ -221,19 +207,16 @@ export async function verifyAndProcessPayment(
         seller_amount: 0,
         status: "completed",
         item_type: creditType,
-        stripe_session_id: sessionId,
-      });
+        stripe_session_id: sessionId });
     console.log(`[PAYMENT-VERIFICATION] Audit trail created for session ${sessionId}`);
   } catch (auditError) {
     // Don't fail the whole process for audit logging issues
     console.error(`[PAYMENT-VERIFICATION] Failed to create audit trail:`, auditError);
   }
 
-  return {
-    success: true,
+  return { success: true,
     alreadyProcessed: false,
-    credits: creditsToAdd,
-  };
+    credits: creditsToAdd };
 }
 
 /**

@@ -1,11 +1,9 @@
 import { Globe, Users, Heart, Lock } from "lucide-react";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 
 export type PostAudience = "public" | "friends" | "close_friends" | "private";
 

@@ -35,8 +35,7 @@ export const TattooMeaningEncyclopedia = ({ onBack }: Props) => {
     setQuery(term);
     try {
       const { data, error } = await supabase.functions.invoke("tattoo-ai-tools", {
-        body: { type: "meaning_lookup", symbol: term },
-      });
+        body: { type: "meaning_lookup", symbol: term } });
       if (error) throw error;
       setResult(data);
       await refresh();

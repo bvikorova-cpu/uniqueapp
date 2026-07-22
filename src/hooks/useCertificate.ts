@@ -26,25 +26,19 @@ export const useCertificate = () => {
       const { data, error } = await supabase.functions.invoke("generate-course-certificate", {
         body: { courseId, courseName, studentName },
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+          Authorization: `Bearer ${session.access_token}` } });
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Certificate generated successfully!",
-      });
+      toast({ title: "Success",
+        description: "Certificate generated successfully!" });
 
       return data;
-    } catch (error: any) {
-      console.error("Error generating certificate:", error);
+    } catch (error: any) { console.error("Error generating certificate:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to generate certificate",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return null;
     } finally {
       setIsGenerating(false);
@@ -71,9 +65,7 @@ export const useCertificate = () => {
     }
   };
 
-  return {
-    generateCertificate,
+  return { generateCertificate,
     getCertificate,
-    isGenerating,
-  };
+    isGenerating };
 };

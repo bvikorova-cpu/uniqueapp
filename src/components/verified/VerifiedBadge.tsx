@@ -13,44 +13,35 @@ export interface TierMeta {
   tooltip: string;
 }
 
-export const TIER_META: Record<VerifiedTier, TierMeta> = {
-  verified: {
+export const TIER_META: Record<VerifiedTier, TierMeta> = { verified: {
     label: "Verified",
     gradient: "from-yellow-400 via-amber-300 to-yellow-600",
     ring: "#f59e0b",
     ringClass: "ring-2 ring-amber-400/70",
     glowClass: "shadow-lg shadow-amber-500/25",
     icon: "✓",
-    tooltip: "Unique Verified — identity confirmed (€15)",
-  },
-  plus: {
-    label: "Plus",
+    tooltip: "Unique Verified — identity confirmed (€15)" },
+  plus: { label: "Plus",
     gradient: "from-pink-400 via-rose-300 to-pink-600",
     ring: "#ec4899",
     ringClass: "ring-2 ring-pink-400/70",
     glowClass: "shadow-lg shadow-pink-500/25",
     icon: "+",
-    tooltip: "Unique Plus — verified + 100 AI credits / month (€40)",
-  },
-  pro: {
-    label: "Pro",
+    tooltip: "Unique Plus — verified + 100 AI credits / month (€40)" },
+  pro: { label: "Pro",
     gradient: "from-purple-400 via-violet-300 to-fuchsia-500",
     ring: "ring-2 ring-purple-400/70",
     ringClass: "ring-2 ring-purple-400/70",
     glowClass: "shadow-lg shadow-purple-500/30",
     icon: "★",
-    tooltip: "Unique Pro — top tier, 150 AI credits + priority reach (€150)",
-  },
-  none: {
-    label: "",
+    tooltip: "Unique Pro — top tier, 150 AI credits + priority reach (€150)" },
+  none: { label: "",
     gradient: "",
     ring: "",
     ringClass: "",
     glowClass: "",
     icon: "",
-    tooltip: "",
-  },
-};
+    tooltip: "" } };
 
 export function normalizeTier(tier: string | null | undefined): VerifiedTier {
   const t = (tier ?? "none") as VerifiedTier;
@@ -73,12 +64,10 @@ interface VerifiedBadgeProps {
   withTooltip?: boolean;
 }
 
-export const VerifiedBadge: React.FC<VerifiedBadgeProps> = ({
-  tier = "none",
+export const VerifiedBadge: React.FC<VerifiedBadgeProps> = ({ tier = "none",
   size = "md",
   showLabel = true,
-  withTooltip = true,
-}) => {
+  withTooltip = true }) => {
   const normalized = normalizeTier(tier);
   if (normalized === "none") return null;
 
@@ -86,8 +75,7 @@ export const VerifiedBadge: React.FC<VerifiedBadgeProps> = ({
   const sizeClasses = {
     sm: { wrap: "w-4 h-4", icon: "text-[8px]", label: "text-[10px]" },
     md: { wrap: "w-5 h-5", icon: "text-[10px]", label: "text-xs" },
-    lg: { wrap: "w-7 h-7", icon: "text-[14px]", label: "text-sm" },
-  }[size];
+    lg: { wrap: "w-7 h-7", icon: "text-[14px]", label: "text-sm" } }[size];
 
   const badge = (
     <span className="inline-flex items-center gap-1 align-middle" aria-label={cfg.tooltip}>

@@ -8,9 +8,7 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const PROJECT_REF = "jufrdzeonywluwutvyxz";
 const POSTBACK_URL =
@@ -43,8 +41,7 @@ export default function AdminMonetagStats() {
         .limit(5000);
       if (error) throw error;
       return (data ?? []) as Row[];
-    },
-  });
+    } });
 
   const summary = useMemo(() => {
     const rows = data ?? [];
@@ -185,9 +182,7 @@ export default function AdminMonetagStats() {
   );
 }
 
-function Stat({
-  icon: Icon, label, value, sub,
-}: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; sub?: string }) {
+function Stat({ icon: Icon, label, value, sub }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; sub?: string }) {
   return (
     <Card className="bg-gradient-to-br from-card/90 to-card/70 border border-primary/20">
       <CardContent className="p-4">

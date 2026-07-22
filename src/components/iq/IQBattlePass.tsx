@@ -99,20 +99,16 @@ export default function IQBattlePass() {
           productType: "iq_battle_pass",
           metadata: { season_id: season.id, season_number: season.season_number },
           successUrl: window.location.origin + "/iq-platform?bp=success",
-          cancelUrl: window.location.origin + "/iq-platform",
-        },
-      });
+          cancelUrl: window.location.origin + "/iq-platform" } });
       if (error) throw error;
       if (data?.url) {
         const w = window.open(data.url, "_blank", "noopener,noreferrer");
         if (!w) window.location.href = data.url;
       }
-    } catch (e) {
-      toast({
+    } catch (e) { toast({
         title: "Premium unlock",
         description: "Checkout not yet configured for Battle Pass — contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

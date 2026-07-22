@@ -4,15 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Heart, ExternalLink } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const tableByType: Record<string, string> = {
-  medical: "medical_campaigns",
+const tableByType: Record<string, string> = { medical: "medical_campaigns",
   dream: "dream_campaigns",
   hero: "hero_campaigns",
   crisis: "crisis_campaigns",
   pet: "pet_rescue_campaigns",
   student: "student_campaigns",
-  talent: "talent_campaigns",
-};
+  talent: "talent_campaigns" };
 
 interface CampaignLite {
   id: string;

@@ -52,21 +52,16 @@ export const GroupConversations = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("companion-ai", {
-        body: { action: "group-chat",
+      const { data, error } = await supabase.functions.invoke("companion-ai", { body: { action: "group-chat",
           characterIds: selectedCompanions,
           message: userMsg,
-          conversationHistory: messages.filter(m => m.role !== "system"),
-        },
-      });
+          conversationHistory: messages.filter(m => m.role !== "system") } });
       if (error) throw error;
 
-      if (data?.responses) {
-        const newMsgs = data.responses.map((r: any) => ({
+      if (data?.responses) { const newMsgs = data.responses.map((r: any) => ({
           role: "assistant",
           content: r.response,
-          name: r.companion_name,
-        }));
+          name: r.companion_name }));
         setMessages((prev) => [...prev, ...newMsgs]);
       }
     } catch (error: any) {
@@ -76,11 +71,9 @@ export const GroupConversations = () => {
     }
   };
 
-  const colorMap: Record<number, string> = {
-    0: "bg-pink-500",
+  const colorMap: Record<number, string> = { 0: "bg-pink-500",
     1: "bg-blue-500",
-    2: "bg-green-500",
-  };
+    2: "bg-green-500" };
 
   if (!chatStarted) {
     return (

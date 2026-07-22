@@ -1,30 +1,24 @@
 import { useState } from "react";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
+  DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -53,15 +47,13 @@ interface Props {
   className?: string;
 }
 
-export function ChatSafetyMenu({
-  blockedByMe,
+export function ChatSafetyMenu({ blockedByMe,
   submitting,
   onReport,
   onBlock,
   onUnblock,
   onBlocked,
-  className,
-}: Props) {
+  className }: Props) {
   const [reportOpen, setReportOpen] = useState(false);
   const [blockOpen, setBlockOpen] = useState(false);
   const [reason, setReason] = useState(REPORT_REASONS[0].value);

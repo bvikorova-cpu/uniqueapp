@@ -11,16 +11,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { LessonPlayer } from "@/components/course-creator/LessonPlayer";
 import { QuizTaker } from "@/components/student-learning/QuizTaker";
 import { useCertificate } from "@/hooks/useCertificate";
-import {
-  BookOpen,
+import { BookOpen,
   CheckCircle,
   Circle,
   Clock,
   Award,
   ChevronRight,
   PlayCircle,
-  Download,
-} from "lucide-react";
+  Download } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Course {
@@ -85,12 +83,10 @@ export default function CourseLearnPage() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Authentication Required",
           description: "Please sign in to access this course",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
@@ -117,12 +113,10 @@ export default function CourseLearnPage() {
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (!enrollment) {
-        toast({
+      if (!enrollment) { toast({
           title: "Access Denied",
           description: "You need to purchase this course first",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate(`/course/${courseId}`);
         return;
       }
@@ -168,12 +162,10 @@ export default function CourseLearnPage() {
       );
       setCurrentLesson(firstIncomplete || lessonsData?.[0] || null);
 
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -183,20 +175,17 @@ export default function CourseLearnPage() {
     try {
       const { error } = await supabase
         .from("lesson_progress")
-        .upsert({
-          enrollment_id: enrollmentId,
+        .upsert({ enrollment_id: enrollmentId,
           lesson_id: lessonId,
           is_completed: true,
           last_watched_at: new Date().toISOString(),
           completed_at: new Date().toISOString(),
-          watch_time_seconds: 0,
-        });
+          watch_time_seconds: 0 });
 
       if (error) throw error;
 
       // Update local progress
-      setProgress({
-        ...progress,
+      setProgress({ ...progress,
         [lessonId]: {
           id: progress[lessonId]?.id || "",
           enrollment_id: enrollmentId,
@@ -204,26 +193,20 @@ export default function CourseLearnPage() {
           is_completed: true,
           last_watched_at: new Date().toISOString(),
           completed_at: new Date().toISOString(),
-          watch_time_seconds: 0,
-        },
-      });
+          watch_time_seconds: 0 } });
 
-      toast({
-        title: "Lesson Completed!",
-        description: "Great job! Moving to the next lesson.",
-      });
+      toast({ title: "Lesson Completed!",
+        description: "Great job! Moving to the next lesson." });
 
       // Move to next lesson
       const currentIndex = lessons.findIndex((l) => l.id === lessonId);
       if (currentIndex < lessons.length - 1) {
         setCurrentLesson(lessons[currentIndex + 1]);
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -238,18 +221,14 @@ export default function CourseLearnPage() {
       if (quiz) {
         setCurrentQuiz(quiz);
         setIsQuizOpen(true);
-      } else {
-        toast({
+      } else { toast({
           title: "No Quiz Available",
-          description: "This lesson doesn't have a quiz yet.",
-        });
+          description: "This lesson doesn't have a quiz yet." });
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

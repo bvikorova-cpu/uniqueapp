@@ -33,14 +33,12 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "most-donors", label: "Most Donors" },
 ];
 
-export function MedicalFilters({
-  search,
+export function MedicalFilters({ search,
   onSearchChange,
   diagnosis,
   onDiagnosisChange,
   sort,
-  onSortChange,
-}: MedicalFiltersProps) {
+  onSortChange }: MedicalFiltersProps) {
   return (
     <>
       <FloatingHowItWorks title={"Medical Filters - How it works"} steps={[{ title: 'Open', desc: 'Access the Medical Filters section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Medical Filters.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />

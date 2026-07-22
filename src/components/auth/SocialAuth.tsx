@@ -28,18 +28,14 @@ export function SocialAuth() {
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-        queryParams: { prompt: "select_account" },
-      },
-    });
-    if (error) {
-      setLoadingGoogle(false);
+        queryParams: { prompt: "select_account" } } });
+    if (error) { setLoadingGoogle(false);
       toast({
         title: "Google sign-in unavailable",
         description:
           error.message ||
           "The Google provider is not enabled yet. Please try email sign-in.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
     // On success the browser is redirected — no cleanup needed.
   };
@@ -53,23 +49,18 @@ export function SocialAuth() {
       email,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
-        shouldCreateUser: true,
-      },
-    });
+        shouldCreateUser: true } });
     setLoadingMagic(false);
-    if (error) {
-      toast({
+    if (error) { toast({
         title: "Could not send magic link",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     setMagicSent(true);
     toast({
       title: "Check your inbox",
-      description: `We sent a sign-in link to ${email}.`,
-    });
+      description: `We sent a sign-in link to ${email}.` });
   };
 
   return (

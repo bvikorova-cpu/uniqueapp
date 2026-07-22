@@ -68,8 +68,7 @@ export const WeeklyXPLeaderboard = () => {
       if (error) throw error;
       return (data as LeaderboardRow[]) || [];
     },
-    refetchInterval: 60_000,
-  });
+    refetchInterval: 60_000 });
 
   const { data: myRank } = useQuery<MyRankRow | null>({
     queryKey: ["my-weekly-xp-rank"],
@@ -81,8 +80,7 @@ export const WeeklyXPLeaderboard = () => {
       const rows = (data as MyRankRow[]) || [];
       return rows[0] ?? null;
     },
-    refetchInterval: 60_000,
-  });
+    refetchInterval: 60_000 });
 
   const isInTop10 = !!(myRank && leaders?.some((l) => Number(l.rank) === Number(myRank.rank) && Number(myRank.rank) <= 10));
 
@@ -94,13 +92,11 @@ export const WeeklyXPLeaderboard = () => {
 
   const resetDate = getNextResetDate();
   const countdown = formatCountdown(resetDate.getTime() - now);
-  const resetLabel = resetDate.toLocaleString(undefined, {
-    weekday: "long",
+  const resetLabel = resetDate.toLocaleString(undefined, { weekday: "long",
     day: "numeric",
     month: "short",
     hour: "2-digit",
-    minute: "2-digit",
-  });
+    minute: "2-digit" });
 
   const TimeBox = ({ value, label }: { value: number; label: string }) => (
     <div className="flex flex-col items-center min-w-[44px] px-2 py-1.5 rounded-lg bg-background/60 border border-primary/20">

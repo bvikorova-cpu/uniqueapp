@@ -233,8 +233,7 @@ test("crawl every route and click every safe button", async ({ page, browserName
                     ? "skipped_harness_noise"
                     : undefined,
 
-          navigatedTo: navigated ? page.url() : undefined,
-        });
+          navigatedTo: navigated ? page.url() : undefined });
 
         if (navigated) {
           await page.goto(route, { waitUntil: "domcontentloaded", timeout: ROUTE_TIMEOUT }).catch(() => {});
@@ -266,8 +265,7 @@ test("crawl every route and click every safe button", async ({ page, browserName
       screenshot = path;
     }
 
-    const entry: RouteResult = {
-      route,
+    const entry: RouteResult = { route,
       index: START_INDEX + i,
       loadedUrl,
       durationMs: Date.now() - started,
@@ -277,8 +275,7 @@ test("crawl every route and click every safe button", async ({ page, browserName
       clicksAttempted,
       clicks,
       ok,
-      screenshot,
-    };
+      screenshot };
     results.push(entry);
 
     // checkpoint every route so a mid-run crash still leaves evidence

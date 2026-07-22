@@ -44,15 +44,13 @@ export function AgeBattleArena({ onBack }: Props) {
 
       const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(path);
 
-      await supabase.from("time_reversal_posts").insert({
-        user_id: session.user.id,
+      await supabase.from("time_reversal_posts").insert({ user_id: session.user.id,
         content: "Battle entry - My reverse aging transformation! 🔄",
         image_url: publicUrl,
         age_at_post: 30,
         post_type: "battle",
         likes_count: 0,
-        comments_count: 0,
-      } as any);
+        comments_count: 0 } as any);
 
       toast({ title: "Entry Submitted!", description: "Your battle entry is now live. Good luck!" });
       setSelectedFile(null);

@@ -53,13 +53,10 @@ export function AITagSuggesterView({ onBack }: Props) {
     }
     setLoading(true); setResult(null);
     try {
-      const { data, error } = await supabase.functions.invoke("stock-ai-tags", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("stock-ai-tags", { body: {
           imageDataUrl: imageDataUrl || undefined,
           description: description.trim() || undefined,
-          language: "en",
-        },
-      });
+          language: "en" } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       setResult((data as any).result);

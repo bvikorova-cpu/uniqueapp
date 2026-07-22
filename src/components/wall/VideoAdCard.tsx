@@ -55,10 +55,8 @@ export function VideoAdCard({ adIndex }: VideoAdCardProps) {
       setXpEarned(true);
       queryClient.invalidateQueries({ queryKey: ["gamification"] });
       
-      toast({
-        title: "🎉 +1 XP!",
-        description: "Thanks for watching the ad!",
-      });
+      toast({ title: "🎉 +1 XP!",
+        description: "Thanks for watching the ad!" });
     } catch (error) {
       console.error("Error awarding XP:", error);
     }

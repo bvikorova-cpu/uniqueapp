@@ -24,24 +24,18 @@ import {
   BarChart3,
   Mic
 } from "lucide-react";
-import {
-  Tooltip,
+import { Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Select,
+  TooltipTrigger } from "@/components/ui/tooltip";
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Popover,
+  SelectValue } from "@/components/ui/select";
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { PostTemplatesDialog } from "./PostTemplatesDialog";
 import { SchedulePostDialog } from "./SchedulePostDialog";
 import { CreatePollDialog } from "./CreatePollDialog";
@@ -145,15 +139,13 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
 
     if (!content.trim() && files.length === 0) {
       toast({
         title: "Empty post",
         description: "Add text or media",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -176,8 +168,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
       const { data: post, error: postError } = await supabase
         .from("posts")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           content: content.trim(),
           feeling: feeling || undefined,
           location: location || undefined,
@@ -185,8 +176,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           audience: privacy,
           is_sensitive: isSensitive,
           sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
-          background_style: useBackground ? backgroundStyle : null,
-        })
+          background_style: useBackground ? backgroundStyle : null })
         .select()
         .single();
 
@@ -197,22 +187,18 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       await createHashtagsForPost(post.id, content);
 
       // Create poll if added
-      if (pollData) {
-        createPoll({
+      if (pollData) { createPoll({
           postId: post.id,
           question: pollData.question,
           options: pollData.options,
-          endsAt: pollData.endsAt,
-        });
+          endsAt: pollData.endsAt });
       }
 
       // Add tagged friends
-      if (taggedFriends.length > 0) {
-        for (const friendId of taggedFriends) {
+      if (taggedFriends.length > 0) { for (const friendId of taggedFriends) {
           await supabase.from("post_tags").insert({
             post_id: post.id,
-            tagged_user_id: friendId,
-          });
+            tagged_user_id: friendId });
         }
       }
 
@@ -239,12 +225,10 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             }
           }
 
-          await supabase.from("media").insert({
-            post_id: post.id,
+          await supabase.from("media").insert({ post_id: post.id,
             file_url: publicUrl,
             file_type: fileType,
-            file_name: file.name,
-          });
+            file_name: file.name });
         }
       }
 
@@ -267,11 +251,9 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
     }
   };
 
-  const privacyIcons = {
-    public: <Globe className="h-4 w-4" />,
+  const privacyIcons = { public: <Globe className="h-4 w-4" />,
     friends: <Users2 className="h-4 w-4" />,
-    private: <Lock className="h-4 w-4" />,
-  };
+    private: <Lock className="h-4 w-4" /> };
 
   return (
     <div className="glass-post-card p-6">

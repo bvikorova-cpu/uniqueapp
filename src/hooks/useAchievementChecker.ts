@@ -35,10 +35,8 @@ export const useAchievementChecker = () => {
     // Award achievement
     const { error } = await supabase
       .from("user_achievements")
-      .insert({
-        user_id: userId,
-        achievement_id: achievement.id,
-      });
+      .insert({ user_id: userId,
+        achievement_id: achievement.id });
 
     if (error) {
       console.error("Failed to award achievement:", error);
@@ -55,8 +53,7 @@ export const useAchievementChecker = () => {
     // Show toast
     toast({
       title: `🏆 Achievement Unlocked!`,
-      description: `${achievement.icon} ${achievement.name} (+${achievement.points} pts)`,
-    });
+      description: `${achievement.icon} ${achievement.name} (+${achievement.points} pts)` });
 
     // Invalidate queries
     queryClient.invalidateQueries({ queryKey: ["user-achievements"] });
@@ -321,8 +318,7 @@ export const useAchievementChecker = () => {
     checkPurchaseAchievements,
   ]);
 
-  return {
-    awardAchievement,
+  return { awardAchievement,
     checkAllAchievements,
     checkFollowerAchievements,
     checkPostAchievements,
@@ -332,6 +328,5 @@ export const useAchievementChecker = () => {
     checkProfileAchievements,
     checkStreakAchievements,
     checkStoryAchievements,
-    checkPurchaseAchievements,
-  };
+    checkPurchaseAchievements };
 };

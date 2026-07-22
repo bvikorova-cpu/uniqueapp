@@ -127,11 +127,9 @@ const MyAuctions = () => {
     }
   };
 
-  const AuctionCard = ({
-    auction,
+  const AuctionCard = ({ auction,
     myBid,
-    badge,
-  }: {
+    badge }: {
     auction: AuctionItem;
     myBid?: number;
     badge?: { label: string; variant?: "default" | "secondary" | "destructive" | "outline"; className?: string };
@@ -240,10 +238,9 @@ const MyAuctions = () => {
                   key={b.auction_id}
                   auction={b.auction}
                   myBid={b.bid_amount}
-                  badge={{
+                  badge={ {
                     label: b.bid_amount >= b.auction.current_price ? "Highest bidder" : "Outbid",
-                    variant: b.bid_amount >= b.auction.current_price ? "default" : "destructive",
-                  }}
+                    variant: b.bid_amount >= b.auction.current_price ? "default" : "destructive" }}
                 />
               ))
             )}
@@ -257,10 +254,9 @@ const MyAuctions = () => {
                 <AuctionCard
                   key={a.id}
                   auction={a}
-                  badge={{
+                  badge={ {
                     label: a.delivered_at ? "Delivered" : a.shipped_at ? "Shipped" : a.paid_at ? "Paid" : "Pending payment",
-                    className: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
-                  }}
+                    className: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30" }}
                 />
               ))
             )}
@@ -289,12 +285,11 @@ const MyAuctions = () => {
                 <AuctionCard
                   key={a.id}
                   auction={a}
-                  badge={{
+                  badge={ {
                     label: a.is_active === false || new Date(a.ends_at).getTime() < Date.now()
                       ? a.winner_id ? "Sold" : "Ended"
                       : "Active",
-                    variant: a.winner_id ? "default" : "secondary",
-                  }}
+                    variant: a.winner_id ? "default" : "secondary" }}
                 />
               ))
             )}

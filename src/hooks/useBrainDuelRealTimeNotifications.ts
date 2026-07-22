@@ -15,11 +15,9 @@ export const useBrainDuelRealTimeNotifications = () => {
       .channel(`brain-duel-achievements-toast-${user.id}`)
       .on(
         'postgres_changes',
-        {
-          event: 'INSERT',
+        { event: 'INSERT',
           schema: 'public',
-          table: 'brain_duel_friend_achievements',
-        },
+          table: 'brain_duel_friend_achievements' },
         async (payload) => {
           const newAchievement = payload.new as { user_id: string; achievement_type: string };
           
@@ -38,8 +36,7 @@ export const useBrainDuelRealTimeNotifications = () => {
           if (achievement && profile) {
             toast.success(`🎉 ${profile.full_name} unlocked an achievement!`, {
               description: `${achievement.name}: ${achievement.description}`,
-              duration: 5000,
-            });
+              duration: 5000 });
           }
         }
       )
@@ -50,11 +47,9 @@ export const useBrainDuelRealTimeNotifications = () => {
       .channel(`brain-duel-challenges-toast-${user.id}`)
       .on(
         'postgres_changes',
-        {
-          event: 'INSERT',
+        { event: 'INSERT',
           schema: 'public',
-          table: 'brain_duel_friend_challenges',
-        },
+          table: 'brain_duel_friend_challenges' },
         async (payload) => {
           const newChallenge = payload.new as { challenged_id: string; challenger_id: string; stake_credits: number };
           
@@ -71,8 +66,7 @@ export const useBrainDuelRealTimeNotifications = () => {
           if (profile) {
             toast.info(`⚔️ ${profile.full_name} challenged you!`, {
               description: `Stake: ${newChallenge.stake_credits} credits`,
-              duration: 7000,
-            });
+              duration: 7000 });
           }
         }
       )

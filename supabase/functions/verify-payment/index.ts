@@ -6,10 +6,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (step: string, data?: unknown) => {
   console.log(`[VERIFY-PAYMENT] ${step}${data ? ` - ${JSON.stringify(data)}` : ""}`);
@@ -58,9 +56,7 @@ serve(async (req) => {
     );
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const session = await stripe.checkout.sessions.retrieve(session_id, {
-      expand: ["payment_intent", "subscription", "line_items"],
-    });
+    const session = await stripe.checkout.sessions.retrieve(session_id, { expand: ["payment_intent", "subscription", "line_items"] });
 
     const isPaid = session.payment_status === "paid" || session.status === "complete";
     const detectedType = product_type || session.metadata?.product_type || session.metadata?.type || "unknown";
@@ -77,8 +73,7 @@ serve(async (req) => {
       payment_intent_id:
         typeof session.payment_intent === "string"
           ? session.payment_intent
-          : session.payment_intent?.id,
-    };
+          : session.payment_intent?.id };
 
     log("Stripe result", { isPaid, type: detectedType, amount });
 
@@ -103,8 +98,7 @@ serve(async (req) => {
       const { error: upsertErr } = await supabaseAdmin
         .from("payment_records")
         .upsert(
-          {
-            user_id: userId,
+          { user_id: userId,
             product_type: detectedType,
             product_id: session.metadata?.product_id ?? null,
             amount_cents: amount,
@@ -114,8 +108,7 @@ serve(async (req) => {
             stripe_payment_intent_id: result.payment_intent_id ?? null,
             stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
             metadata: result.metadata,
-            verified_at: existingRecord?.verified_at ?? (isPaid ? new Date().toISOString() : null),
-          },
+            verified_at: existingRecord?.verified_at ?? (isPaid ? new Date().toISOString() : null) },
           { onConflict: "stripe_session_id" }
         );
       if (upsertErr) log("upsert error", upsertErr);
@@ -147,8 +140,7 @@ serve(async (req) => {
             session.id;
           const { data: rpcRes, error: rpcErr } = await supabaseAdmin.rpc(
             "process_campaign_donation",
-            {
-              _campaign_id: campaignId,
+            { _campaign_id: campaignId,
               _campaign_type: campaignType,
               _donor_id: userId,
               _donor_email: md.donor_email || result.customer_email || null,
@@ -157,8 +149,7 @@ serve(async (req) => {
               _is_monthly: md.is_monthly === "true",
               _is_anonymous: md.is_anonymous === "true",
               _message: md.donation_message || null,
-              _stripe_payment_id: paymentId,
-            }
+              _stripe_payment_id: paymentId }
           );
           if (rpcErr) log("donation RPC error", rpcErr);
           else log("donation recorded", rpcRes);
@@ -172,8 +163,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     log("ERROR", msg);
@@ -181,8 +171,7 @@ serve(async (req) => {
     const smartStatus = (lower.includes("authorization") || lower.includes("authenticated") || lower.includes("bearer") || lower.includes("unauthorized") || lower.includes("jwt")) ? 401 : (lower.includes("required") || lower.includes("missing") || lower.includes("invalid")) ? 400 : 500;
     return new Response(JSON.stringify({ verified: false, error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: smartStatus,
-    });
+      status: smartStatus });
   }
 });
 
@@ -192,8 +181,7 @@ async function applyPurchase(
   userId: string,
   productType: string,
   result: VerifyResult
-) {
-  const md = result.metadata;
+) { const md = result.metadata;
   const credits = parseInt(md.credits ?? "0", 10);
   const coins = parseInt(md.coins ?? "0", 10);
 
@@ -211,60 +199,49 @@ async function applyPurchase(
       emotion_credits: "emotion_credits",
       video_ad_credits: "ai_credits",
       lie_detector_credits: "ai_credits",
-      collectibles_credits: "ai_credits",
-    };
+      collectibles_credits: "ai_credits" };
     const table = tableMap[productType];
     if (table) {
       // @ts-ignore dynamic table name
       const { data: existing } = await db.from(table).select("*").eq("user_id", userId).maybeSingle();
-      if (existing) {
-        // @ts-ignore
+      if (existing) { // @ts-ignore
         await db.from(table)
           .update({
             credits_remaining: (existing.credits_remaining ?? 0) + credits,
-            total_credits_purchased: (existing.total_credits_purchased ?? 0) + credits,
-          })
+            total_credits_purchased: (existing.total_credits_purchased ?? 0) + credits })
           .eq("user_id", userId);
-      } else {
-        // @ts-ignore
+      } else { // @ts-ignore
         await db.from(table).insert({
           user_id: userId,
           credits_remaining: credits,
-          total_credits_purchased: credits,
-        });
+          total_credits_purchased: credits });
       }
     }
     return;
   }
 
   // Generic coins handler — sport coins
-  if (productType.endsWith("_coins") && coins > 0) {
-    const sportMap: Record<string, string> = {
+  if (productType.endsWith("_coins") && coins > 0) { const sportMap: Record<string, string> = {
       football_coins: "football_coins",
       basketball_coins: "basketball_coins",
       hockey_coins: "hockey_coins",
       tennis_coins: "tennis_coins",
-      af_coins: "american_football_coins",
-    };
+      af_coins: "american_football_coins" };
     const table = sportMap[productType];
     if (table) {
       // @ts-ignore
       const { data: existing } = await db.from(table).select("*").eq("user_id", userId).maybeSingle();
-      if (existing) {
-        // @ts-ignore
+      if (existing) { // @ts-ignore
         await db.from(table)
           .update({
             balance: (existing.balance ?? 0) + coins,
-            total_purchased: (existing.total_purchased ?? 0) + coins,
-          })
+            total_purchased: (existing.total_purchased ?? 0) + coins })
           .eq("user_id", userId);
-      } else {
-        // @ts-ignore
+      } else { // @ts-ignore
         await db.from(table).insert({
           user_id: userId,
           balance: coins,
-          total_purchased: coins,
-        });
+          total_purchased: coins });
       }
     }
     return;
@@ -273,14 +250,12 @@ async function applyPurchase(
   // AI Personality Clone subscriptions — record in clone_subscriptions
   if (productType === "clone_subscription" && md.tier) {
     const tierPrices: Record<string, number> = { basic: 9.99, advanced: 29.99, celebrity: 99.0 };
-    await db.from("clone_subscriptions").insert({
-      user_id: userId,
+    await db.from("clone_subscriptions").insert({ user_id: userId,
       tier: md.tier,
       price: tierPrices[md.tier] ?? 0,
       status: "active",
       started_at: new Date().toISOString(),
-      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-    });
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() });
     return;
   }
 
@@ -299,44 +274,36 @@ async function applyPurchase(
       .select("id").neq("user_id", userId).eq("is_active", true).limit(20);
     const clone2 = opp?.length ? opp[Math.floor(Math.random() * opp.length)].id : null;
     if (!clone2) return;
-    await db.from("clone_dating_sessions").insert({
-      clone_1_id: clone1,
+    await db.from("clone_dating_sessions").insert({ clone_1_id: clone1,
       clone_2_id: clone2,
       payment_amount: (result.amount_cents || 0) / 100,
-      status: "active",
-    });
+      status: "active" });
     return;
   }
 
   // Quantum Social subscriptions — unlock features in quantum_profiles + insert quantum_subscriptions row
-  if (productType === "quantum_profiles" || productType === "observer_mode" || productType === "quantum_entanglement") {
-    const priceMap: Record<string, number> = {
+  if (productType === "quantum_profiles" || productType === "observer_mode" || productType === "quantum_entanglement") { const priceMap: Record<string, number> = {
       quantum_profiles: 12.99,
       observer_mode: 19.99,
-      quantum_entanglement: 9.99,
-    };
+      quantum_entanglement: 9.99 };
     const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
     // Insert subscription row (idempotency guarded by alreadyCredited above)
-    await db.from("quantum_subscriptions").insert({
-      user_id: userId,
+    await db.from("quantum_subscriptions").insert({ user_id: userId,
       subscription_type: productType,
       price: priceMap[productType],
       status: "active",
       started_at: new Date().toISOString(),
-      expires_at: expiresAt,
-    });
+      expires_at: expiresAt });
 
     // Ensure quantum_profile exists, then unlock relevant flag
     // @ts-ignore
     const { data: prof } = await db.from("quantum_profiles").select("id").eq("user_id", userId).maybeSingle();
-    if (!prof) {
-      await db.from("quantum_profiles").insert({
+    if (!prof) { await db.from("quantum_profiles").insert({
         user_id: userId,
         is_premium: productType === "quantum_profiles" ? true : false,
         observer_mode_active: productType === "observer_mode",
-        reality_versions: productType === "quantum_profiles" ? 3 : 1,
-      });
+        reality_versions: productType === "quantum_profiles" ? 3 : 1 });
     } else {
       const patch: Record<string, unknown> = {};
       if (productType === "quantum_profiles") { patch.is_premium = true; patch.reality_versions = 3; }
@@ -345,15 +312,13 @@ async function applyPurchase(
     }
 
     // Entanglement: insert pairing row
-    if (productType === "quantum_entanglement" && md.target_user_id) {
-      await db.from("quantum_entanglements").insert({
+    if (productType === "quantum_entanglement" && md.target_user_id) { await db.from("quantum_entanglements").insert({
         user_id_1: userId,
         user_id_2: md.target_user_id,
         entanglement_strength: 1.0,
         shared_reality: true,
         price_paid: 9.99,
-        expires_at: expiresAt,
-      });
+        expires_at: expiresAt });
     }
     return;
   }
@@ -363,19 +328,15 @@ async function applyPurchase(
     const auctionId = md.auction_id;
     const winnerId = md.winner_id || userId;
     if (auctionId) {
-      const { error } = await db.rpc("complete_auction_buyout" as any, {
-        p_auction_id: auctionId,
+      const { error } = await db.rpc("complete_auction_buyout" as any, { p_auction_id: auctionId,
         p_winner_id: winnerId,
-        p_stripe_session_id: result.metadata?.session_id ?? "",
-      });
-      if (error) {
-        console.log("[VERIFY-PAYMENT] auction_buyout RPC err", error.message);
+        p_stripe_session_id: result.metadata?.session_id ?? "" });
+      if (error) { console.log("[VERIFY-PAYMENT] auction_buyout RPC err", error.message);
         // Race: another buyer already won. Flag this payment for refund.
         if (/already sold to another buyer|refund_required/i.test(error.message)) {
           await db.from("payment_records").update({
             status: "refund_pending",
-            refund_reason: "auction_race_lost",
-          } as any).eq("stripe_session_id", result.metadata?.session_id ?? "");
+            refund_reason: "auction_race_lost" } as any).eq("stripe_session_id", result.metadata?.session_id ?? "");
         }
       }
     }

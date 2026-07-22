@@ -3,40 +3,32 @@ import { Eye, Lock, Sparkles, Crown } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 
-export const HowItWorksCard = () => {
-  const items = [
+export const HowItWorksCard = () => { const items = [
     {
       icon: Eye,
       title: "Browse",
       desc: "Free preview of posts",
       color: "text-emerald-400",
       bg: "bg-emerald-500/10",
-      border: "border-emerald-500/20",
-    },
-    {
-      icon: Lock,
+      border: "border-emerald-500/20" },
+    { icon: Lock,
       title: "Interact",
       desc: "Login to post, like & vote",
       color: "text-blue-400",
       bg: "bg-blue-500/10",
-      border: "border-blue-500/20",
-    },
-    {
-      icon: Sparkles,
+      border: "border-blue-500/20" },
+    { icon: Sparkles,
       title: "AI Tools",
       desc: "3–5 credits per use",
       color: "text-purple-400",
       bg: "bg-purple-500/10",
-      border: "border-purple-500/20",
-    },
-    {
-      icon: Crown,
+      border: "border-purple-500/20" },
+    { icon: Crown,
       title: "Premium",
       desc: "Subscription unlocks all",
       color: "text-amber-400",
       bg: "bg-amber-500/10",
-      border: "border-amber-500/20",
-    },
+      border: "border-amber-500/20" },
   ];
 
   return (

@@ -31,8 +31,7 @@ export function ListingOptimizerView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke("bazaar-ai", {
         body: { action: "listing-optimizer", title, description, category, condition, price },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

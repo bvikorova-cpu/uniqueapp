@@ -25,8 +25,7 @@ export const MusicAdvisorView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("megatalent-ai", {
-        body: { action: "music_advisor", category, contentType, description, mood },
-      });
+        body: { action: "music_advisor", category, contentType, description, mood } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

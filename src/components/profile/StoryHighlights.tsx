@@ -31,8 +31,7 @@ export const StoryHighlights = ({ userId, isOwnProfile }: StoryHighlightsProps) 
         .order("order_index", { ascending: true });
       return ((data || []) as unknown) as Highlight[];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   if (!highlights || (highlights.length === 0 && !isOwnProfile)) return null;
 

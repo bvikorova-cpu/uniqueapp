@@ -39,8 +39,7 @@ export const CourseReviews = ({ courseId, userHasAccess }: CourseReviewsProps) =
 
       if (error) throw error;
       return data as Review[];
-    },
-  });
+    } });
 
   const { data: userReview } = useQuery({
     queryKey: ["user-review", courseId],
@@ -58,20 +57,17 @@ export const CourseReviews = ({ courseId, userHasAccess }: CourseReviewsProps) =
       if (error) throw error;
       return data as Review | null;
     },
-    enabled: userHasAccess,
-  });
+    enabled: userHasAccess });
 
   const submitReview = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const reviewData = {
-        course_id: courseId,
+      const reviewData = { course_id: courseId,
         user_id: user.id,
         rating,
-        comment: comment.trim() || null,
-      };
+        comment: comment.trim() || null };
 
       if (userReview) {
         const { error } = await supabase
@@ -89,23 +85,18 @@ export const CourseReviews = ({ courseId, userHasAccess }: CourseReviewsProps) =
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["course-reviews", courseId] });
       queryClient.invalidateQueries({ queryKey: ["user-review", courseId] });
-      toast({
-        title: "Success",
-        description: userReview ? "Review updated successfully" : "Review submitted successfully",
-      });
+      toast({ title: "Success",
+        description: userReview ? "Review updated successfully" : "Review submitted successfully" });
       if (!userReview) {
         setRating(0);
         setComment("");
       }
     },
-    onError: (error: Error) => {
-      toast({
+    onError: (error: Error) => { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
   const averageRating = reviews.length > 0
     ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length

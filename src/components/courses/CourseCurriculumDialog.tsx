@@ -8,18 +8,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import {
-  moduleCourseApi,
+import { moduleCourseApi,
   lessonKey,
   type Curriculum,
   type CourseMetaLite,
   type LessonVideo,
-  type ExerciseFeedback,
-} from "@/lib/moduleCourseApi";
-import {
-  BookOpen, Sparkles, Target, Loader2, PlayCircle, FileDown,
-  ChevronDown, Lock, Send, CheckCircle2,
-} from "lucide-react";
+  type ExerciseFeedback } from "@/lib/moduleCourseApi";
+import { BookOpen, Sparkles, Target, Loader2, PlayCircle, FileDown,
+  ChevronDown, Lock, Send, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
@@ -89,10 +85,8 @@ export const CourseCurriculumDialog = ({ open, onOpenChange, meta, purchased, on
     const txt = (subs[key] || "").trim();
     if (txt.length < 20) { toast.error("Please write at least 20 characters."); return; }
     setFeedbackLoading((s) => ({ ...s, [key]: true }));
-    try {
-      const res = await moduleCourseApi.feedback(meta, {
-        lesson_key: key, lesson_title: title, exercise, submission: txt,
-      });
+    try { const res = await moduleCourseApi.feedback(meta, {
+        lesson_key: key, lesson_title: title, exercise, submission: txt });
       setFeedbacks((s) => ({ ...s, [key]: res.feedback }));
       toast.success(`AI feedback ready — score ${res.score}/100`);
     } catch (e: any) { toast.error(e?.message || "Failed to get feedback"); }

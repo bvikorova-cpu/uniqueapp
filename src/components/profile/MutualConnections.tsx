@@ -14,10 +14,8 @@ interface MutualUser {
  * Shows count + small stack of mutual followers/follows between the
  * currently logged-in user and the visited profile owner.
  */
-export const MutualConnections = ({
-  viewerId,
-  profileUserId,
-}: {
+export const MutualConnections = ({ viewerId,
+  profileUserId }: {
   viewerId: string | null;
   profileUserId: string;
 }) => {

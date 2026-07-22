@@ -2,11 +2,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -14,18 +12,15 @@ const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 // Module → credit cost matrix (must match src/hooks/useTeenCredits.ts)
-const COSTS: Record<string, number> = {
-  homework_pro: 4,
+const COSTS: Record<string, number> = { homework_pro: 4,
   essay_coach: 5,
   mental_wellness: 3,
   study_planner: 3,
   skill_builder: 4,
-  social_coach: 3,
-};
+  social_coach: 3 };
 
 // System prompts per module (age-appropriate, safe, no medical claims)
-const SYSTEM_PROMPTS: Record<string, string> = {
-  homework_pro:
+const SYSTEM_PROMPTS: Record<string, string> = { homework_pro:
     "You are a high-school tutor for ages 13-17. Explain concepts step-by-step, show working, give one worked example then a similar practice problem. Keep answers concise.",
   essay_coach:
     "You are an essay coach for teens. Review structure, thesis, evidence, transitions, and grammar. Return feedback as: Strengths, Improvements, Revised Opening, Score (1-10).",
@@ -36,8 +31,7 @@ const SYSTEM_PROMPTS: Record<string, string> = {
   skill_builder:
     "You are a skill-acquisition mentor for teens. Break down any skill into a 4-week roadmap with weekly milestones, daily 30-min tasks, and free resources.",
   social_coach:
-    "You are a social-skills coach for teens. Give practical scripts and role-play examples for the situation (friendship, conflict, public speaking, dating boundaries). Emphasize consent, respect, and safety.",
-};
+    "You are a social-skills coach for teens. Give practical scripts and role-play examples for the situation (friendship, conflict, public speaking, dating boundaries). Emphasize consent, respect, and safety." };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -49,8 +43,7 @@ serve(async (req) => {
     }
 
     const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userRes } = await supabaseUser.auth.getUser();
     const user = userRes?.user;
     if (!user) return json({ error: "Unauthorized" }, 401);
@@ -82,16 +75,13 @@ serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: SYSTEM_PROMPTS[module] },
           { role: "user", content: prompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (aiRes.status === 429) return json({ error: "Rate limit, try again soon" }, 429);
     if (aiRes.status === 402) return json({ error: "AI credits exhausted" }, 402);
@@ -115,8 +105,7 @@ serve(async (req) => {
       module,
       action: "ai_generate",
       credits_used: cost,
-      metadata: { prompt_length: prompt.length },
-    });
+      metadata: { prompt_length: prompt.length } });
 
     return json({ reply, credits_remaining: balance - cost, cost });
   } catch (e) {
@@ -127,6 +116,5 @@ serve(async (req) => {
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

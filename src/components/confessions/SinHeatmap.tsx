@@ -81,8 +81,7 @@ export const SinHeatmap = () => {
     });
     setHeatmapData(Object.entries(hourCounts).map(([hour, count]) => ({
       hour: `${hour}:00`,
-      confessions: count,
-    })));
+      confessions: count })));
 
     // Weekly trend
     const dayMap: Record<string, number> = {};
@@ -98,8 +97,7 @@ export const SinHeatmap = () => {
     });
     setWeeklyData(Object.entries(dayMap).map(([date, count]) => ({
       date: new Date(date).toLocaleDateString("en", { weekday: "short" }),
-      confessions: count,
-    })));
+      confessions: count })));
   };
 
   if (loading) {
@@ -240,8 +238,7 @@ export const SinHeatmap = () => {
                 className="aspect-square rounded-lg flex flex-col items-center justify-center text-[9px] font-mono cursor-default"
                 style={{
                   backgroundColor: `rgba(139, 92, 246, ${0.1 + intensity * 0.8})`,
-                  color: intensity > 0.5 ? "white" : "inherit",
-                }}
+                  color: intensity > 0.5 ? "white" : "inherit" }}
                 whileHover={{ scale: 1.2 }}
                 title={`${h.hour}: ${h.confessions} confessions`}
               >

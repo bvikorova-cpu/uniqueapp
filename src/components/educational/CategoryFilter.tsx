@@ -16,15 +16,13 @@ interface CategoryFilterProps {
 
 const difficultyOptions = ["All", "Easy", "Medium", "Hard"];
 
-export const CategoryFilter = ({
-  categories,
+export const CategoryFilter = ({ categories,
   selectedCategory,
   onCategoryChange,
   searchQuery,
   onSearchChange,
   selectedDifficulty,
-  onDifficultyChange,
-}: CategoryFilterProps) => {
+  onDifficultyChange }: CategoryFilterProps) => {
   return (
     <>
       <FloatingHowItWorks title="How Category Filter works" steps={[

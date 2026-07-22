@@ -6,17 +6,13 @@ interface OnlineIndicatorProps {
   lastSeen?: string | null;
 }
 
-export const OnlineIndicator = ({
-  isOnline,
+export const OnlineIndicator = ({ isOnline,
   size = "sm",
   showLabel = false,
-  lastSeen,
-}: OnlineIndicatorProps) => {
-  const sizeClasses = {
+  lastSeen }: OnlineIndicatorProps) => { const sizeClasses = {
     sm: "w-2.5 h-2.5",
     md: "w-3 h-3",
-    lg: "w-4 h-4",
-  };
+    lg: "w-4 h-4" };
 
   const formatLastSeen = (date: string | null) => {
     if (!date) return "Unknown";

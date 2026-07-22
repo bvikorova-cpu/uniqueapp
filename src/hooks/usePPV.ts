@@ -25,8 +25,7 @@ export function usePPVCheckout() {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("ppv-checkout", {
-        body: { postId },
-      });
+        body: { postId } });
       if (error) throw error;
       if (data?.alreadyUnlocked) {
         toast({ title: "Already unlocked", description: "You already own this post." });

@@ -20,13 +20,11 @@ export function useDreamInterpreter() {
       const { data } = await supabase.from("wellness_dream_interpretations")
         .select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20);
       return data || [];
-    },
-  });
+    } });
   const interpret = useMutation({
     mutationFn: (dream_text: string) => invokeAction("dream", { dream_text }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["wellness-dreams"] }); toast.success("Dream interpreted"); },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
   return { dreams: list.data || [], isLoading: list.isLoading, interpret };
 }
 
@@ -41,14 +39,12 @@ export function usePersonalizedMeditation() {
       const { data } = await supabase.from("wellness_personalized_meditations")
         .select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20);
       return data || [];
-    },
-  });
+    } });
   const generate = useMutation({
     mutationFn: (vars: { topic: string; duration_minutes?: number; voice_id?: string }) =>
       invokeAction("meditation", vars),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["wellness-pers-meditations"] }); toast.success("Meditation generated"); },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
   return { meditations: list.data || [], isLoading: list.isLoading, generate };
 }
 
@@ -63,13 +59,11 @@ export function useMoodMirror() {
       const { data } = await supabase.from("wellness_mood_mirror")
         .select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10);
       return data || [];
-    },
-  });
+    } });
   const analyze = useMutation({
     mutationFn: (selfie_data_url: string) => invokeAction("mood", { selfie_data_url }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["wellness-mood-mirror"] }); toast.success("Mood analyzed"); },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
   return { history: list.data || [], isLoading: list.isLoading, analyze };
 }
 
@@ -84,13 +78,11 @@ export function useAiSleepStory() {
       const { data } = await supabase.from("wellness_ai_sleep_stories")
         .select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20);
       return data || [];
-    },
-  });
+    } });
   const generate = useMutation({
     mutationFn: (vars: { theme: string; protagonist?: string; setting?: string; duration_minutes?: number; voice_id?: string }) =>
       invokeAction("sleep", vars),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["wellness-ai-sleep"] }); toast.success("Sleep story ready"); },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
   return { stories: list.data || [], isLoading: list.isLoading, generate };
 }

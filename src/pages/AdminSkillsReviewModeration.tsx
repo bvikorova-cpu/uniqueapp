@@ -54,11 +54,9 @@ export default function AdminSkillsReviewModeration() {
     const { data: { user } } = await supabase.auth.getUser();
     const { error } = await supabase
       .from("seller_reviews")
-      .update({
-        is_hidden: hide,
+      .update({ is_hidden: hide,
         hidden_at: hide ? new Date().toISOString() : null,
-        hidden_by: hide ? user?.id : null,
-      } as any)
+        hidden_by: hide ? user?.id : null } as any)
       .eq("id", review.id);
     if (error) { toast({ title: "Failed", description: error.message, variant: "destructive" }); return; }
     toast({ title: hide ? "Review hidden" : "Review restored" });

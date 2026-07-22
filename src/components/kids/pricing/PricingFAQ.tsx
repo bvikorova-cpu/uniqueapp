@@ -1,11 +1,9 @@
 import { motion } from "framer-motion";
 import { HelpCircle } from "lucide-react";
-import {
-  Accordion,
+import { Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  AccordionTrigger } from "@/components/ui/accordion";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const faqs = [

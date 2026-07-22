@@ -29,8 +29,7 @@ export default function WallEvents() {
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
-    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; },
-  });
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; } });
 
   const { data: myEvents = [], refetch: refetchEvents } = useQuery({
     queryKey: ["my-events", user?.id],
@@ -39,16 +38,14 @@ export default function WallEvents() {
       const { data: events } = await supabase.from("events").select("*").eq("creator_id", user.id).order("start_time", { ascending: true });
       return events || [];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: upcomingEvents = [], refetch: refetchUpcoming } = useQuery({
     queryKey: ["upcoming-events"],
     queryFn: async () => {
       const { data: events } = await supabase.from("events").select("*").gte("start_time", new Date().toISOString()).order("start_time", { ascending: true }).limit(10);
       return events || [];
-    },
-  });
+    } });
 
   const createEvent = async () => {
     if (!user || !newEventTitle.trim() || !newEventStartTime) return;
@@ -58,10 +55,8 @@ export default function WallEvents() {
       return;
     }
     try {
-      const { error } = await supabase.from("events").insert({
-        title: newEventTitle, description: newEventDescription, location: newEventLocation,
-        start_time: newEventStartTime, end_time: endTime, cover_image: newEventCoverImage || null, creator_id: user.id,
-      });
+      const { error } = await supabase.from("events").insert({ title: newEventTitle, description: newEventDescription, location: newEventLocation,
+        start_time: newEventStartTime, end_time: endTime, cover_image: newEventCoverImage || null, creator_id: user.id });
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
       toast({ title: "Success", description: "Event created!" });
       setIsCreateDialogOpen(false); setNewEventTitle(""); setNewEventDescription(""); setNewEventLocation(""); setNewEventStartTime(""); setNewEventEndTime(""); setNewEventCoverImage(undefined);

@@ -17,11 +17,9 @@ import CompetitorAnalyzer from "@/components/brand/CompetitorAnalyzer";
 import SocialMediaKit from "@/components/brand/SocialMediaKit";
 import BrandStyleGuidePDF from "@/components/brand/BrandStyleGuidePDF";
 import heroVideo from "@/assets/brand-builder-hero.mp4.asset.json";
-import {
-  Loader2, Sparkles, Palette, Lightbulb, Share2, Target, TrendingUp,
+import { Loader2, Sparkles, Palette, Lightbulb, Share2, Target, TrendingUp,
   Download, Play, Pause, Volume2, VolumeX, Zap, Crown, Star,
-  FileText, Globe, CheckCircle, ArrowLeft,
-} from "lucide-react";
+  FileText, Globe, CheckCircle, ArrowLeft } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ActiveView = "hub" | "create" | "history" | "name-generator" | "competitor-analyzer" | "social-kit" | "style-guide";
@@ -82,8 +80,7 @@ const BrandBuilder = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase.functions.invoke("generate-brand-kit", {
-        body: { businessName, businessType, targetAudience, brandValues },
-      });
+        body: { businessName, businessType, targetAudience, brandValues } });
       if (error) throw error;
       toast({ title: "✨ Brand Kit Generated!", description: `Brand identity for ${businessName} is ready` });
       setBusinessName(""); setBusinessType(""); setTargetAudience(""); setBrandValues("");
@@ -321,12 +318,11 @@ const BrandBuilder = () => {
             <motion.h1
               initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15 }}
               className="text-[clamp(2.2rem,11vw,3.5rem)] md:text-6xl lg:text-7xl font-black mb-3 leading-[1.02] max-w-[14ch]"
-              style={{
+              style={ {
                 WebkitTextStroke: "1.5px rgba(0,0,0,0.5)",
                 textShadow: "0 0 40px rgba(168,85,247,0.3), 0 4px 15px rgba(0,0,0,0.8)",
                 background: "linear-gradient(135deg, #fff 0%, #c084fc 40%, #a855f7 70%, #7c3aed 100%)",
-                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-              }}
+                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
             >
               Build Your Brand Empire
             </motion.h1>

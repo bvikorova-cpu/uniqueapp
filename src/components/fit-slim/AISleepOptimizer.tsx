@@ -24,8 +24,7 @@ export default function AISleepOptimizer({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Sleep Optimizer");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are an expert sleep scientist and fitness recovery specialist. Analyze the user's sleep habits and fitness routine, then provide: 1) Sleep Quality Score (1-10 with explanation), 2) Sleep-Fitness Connection (how their sleep affects training), 3) Optimal Sleep Schedule (exact bedtime/wake time), 4) Pre-Sleep Routine (step-by-step, 60 min before bed), 5) Sleep Environment Checklist (temperature, light, noise), 6) Supplement Suggestions (melatonin, magnesium, etc.), 7) Recovery Optimization Tips (naps, sleep cycles). User info: ${input}` },
-      });
+        body: { prompt: `You are an expert sleep scientist and fitness recovery specialist. Analyze the user's sleep habits and fitness routine, then provide: 1) Sleep Quality Score (1-10 with explanation), 2) Sleep-Fitness Connection (how their sleep affects training), 3) Optimal Sleep Schedule (exact bedtime/wake time), 4) Pre-Sleep Routine (step-by-step, 60 min before bed), 5) Sleep Environment Checklist (temperature, light, noise), 6) Supplement Suggestions (melatonin, magnesium, etc.), 7) Recovery Optimization Tips (naps, sleep cycles). User info: ${input}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }

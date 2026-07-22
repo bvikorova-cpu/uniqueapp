@@ -19,13 +19,11 @@ interface TournamentBracketProps {
   sponsors: BrandSponsor[];
 }
 
-const SEASON_INFO = {
-  name: "Season Q2 2026",
+const SEASON_INFO = { name: "Season Q2 2026",
   status: "active",
   startDate: "Apr 1",
   endDate: "Jun 30",
-  prizePool: "€10,000",
-};
+  prizePool: "€10,000" };
 
 export const TournamentBracket = ({ sponsors }: TournamentBracketProps) => {
   const sorted = [...sponsors].sort((a, b) => b.total_votes - a.total_votes);

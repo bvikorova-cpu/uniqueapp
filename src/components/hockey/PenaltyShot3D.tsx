@@ -186,17 +186,14 @@ function Scene({ gs, onShoot, onAnimDone }: { gs: GameState; onShoot: (x: number
   );
 }
 
-export function PenaltyShot3D({ onBack }: { onBack: () => void }) {
-  const [gs, setGs] = useState<GameState>({
-    phase: "aiming", round: 1, scored: 0, saved: 0, shootTarget: [0, 0.5], gkDir: 0, lastResult: "",
-  });
+export function PenaltyShot3D({ onBack }: { onBack: () => void }) { const [gs, setGs] = useState<GameState>({
+    phase: "aiming", round: 1, scored: 0, saved: 0, shootTarget: [0, 0.5], gkDir: 0, lastResult: "" });
 
   const handleShoot = useCallback((x: number, y: number) => {
     setGs(p => ({ ...p, phase: "shooting", shootTarget: [x, y], gkDir: (Math.random() - 0.5) * 2 }));
   }, []);
 
-  const handleAnimDone = useCallback((scored: boolean) => {
-    setGs(p => {
+  const handleAnimDone = useCallback((scored: boolean) => { setGs(p => {
       const gkSaved = scored && Math.abs(p.gkDir * 1.5 - p.shootTarget[0]) < 0.6 && p.shootTarget[1] < 0.8;
       const actuallyScored = scored && !gkSaved;
       const isOver = p.round >= 5;
@@ -204,8 +201,7 @@ export function PenaltyShot3D({ onBack }: { onBack: () => void }) {
         ...p, phase: isOver ? "gameover" : "result",
         scored: p.scored + (actuallyScored ? 1 : 0),
         saved: p.saved + (actuallyScored ? 0 : 1),
-        lastResult: !scored ? "WIDE! 😱" : gkSaved ? "SAVED! 🧤" : "GOAL! 🏒🔥",
-      };
+        lastResult: !scored ? "WIDE! 😱" : gkSaved ? "SAVED! 🧤" : "GOAL! 🏒🔥" };
     });
   }, []);
 

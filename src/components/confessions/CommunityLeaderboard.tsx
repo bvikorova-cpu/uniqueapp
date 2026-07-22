@@ -44,8 +44,7 @@ export const CommunityLeaderboard = () => {
             user_id: uid,
             display_name: `Member #${uid.substring(0, 6).toUpperCase()}`,
             total_votes: count,
-            rank: i + 1,
-          }));
+            rank: i + 1 }));
 
         setLeaders(sorted.slice(0, 20));
 

@@ -40,14 +40,13 @@ export const CharacterArenaHero = ({ stats }: CharacterArenaHeroProps) => {
           >
             <h1
               className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 leading-tight"
-              style={{
+              style={ {
                 WebkitTextStroke: "2px rgba(0,0,0,0.6)",
                 textShadow: "0 0 40px rgba(245,158,11,0.6), 0 0 80px rgba(220,38,38,0.4), 0 4px 20px rgba(0,0,0,0.9)",
                 background: "linear-gradient(135deg, #f59e0b, #ffffff, #ef4444, #f59e0b)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.8))",
-              }}
+                filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.8))" }}
             >
               ⚔️ Character Creator Arena
             </h1>

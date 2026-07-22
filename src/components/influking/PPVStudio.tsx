@@ -35,10 +35,8 @@ export default function PPVStudio({ onBack }: Props) {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
-    title: "", description: "", preview_url: "", content_url: "",
-    content_type: "image", price_eur: "4.99",
-  });
+  const [form, setForm] = useState({ title: "", description: "", preview_url: "", content_url: "",
+    content_type: "image", price_eur: "4.99" });
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -75,8 +73,7 @@ export default function PPVStudio({ onBack }: Props) {
       return;
     }
     setSaving(true);
-    const { error } = await supabase.from("influking_ppv_posts").insert({
-      creator_id: userId,
+    const { error } = await supabase.from("influking_ppv_posts").insert({ creator_id: userId,
       title: form.title.trim(),
       description: form.description.trim() || null,
       preview_url: form.preview_url || null,
@@ -84,8 +81,7 @@ export default function PPVStudio({ onBack }: Props) {
       content_type: form.content_type,
       price_cents: price,
       currency: "eur",
-      is_active: true,
-    });
+      is_active: true });
     setSaving(false);
     if (error) { toast({ title: "Save failed", description: error.message, variant: "destructive" }); return; }
     toast({ title: "PPV post created", description: "It's live and buyable." });

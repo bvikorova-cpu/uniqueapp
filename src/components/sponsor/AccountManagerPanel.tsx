@@ -93,16 +93,14 @@ export function PrioritySupportPanel({ sponsorId: _sponsorId }: Props) {
     setCreating(true);
     const { data, error } = await supabase
       .from("support_tickets")
-      .insert({
-        user_id: userId,
+      .insert({ user_id: userId,
         name: userName,
         email: userEmail,
         subject: newSubject.trim(),
         message: newMessage.trim(),
         category: "priority_support",
         priority: "urgent",
-        status: "open",
-      })
+        status: "open" })
       .select("id, ticket_number, subject, status, created_at, sla_response_due_at, first_response_at, sla_breached_at")
       .single();
     setCreating(false);
@@ -110,12 +108,10 @@ export function PrioritySupportPanel({ sponsorId: _sponsorId }: Props) {
       toast({ title: "Couldn't open ticket", description: error?.message, variant: "destructive" });
       return;
     }
-    await supabase.from("support_ticket_messages").insert({
-      ticket_id: data.id,
+    await supabase.from("support_ticket_messages").insert({ ticket_id: data.id,
       sender_id: userId,
       sender_role: "sponsor",
-      content: newMessage.trim(),
-    });
+      content: newMessage.trim() });
     setTickets((t) => [data as Ticket, ...t]);
     setActive(data as Ticket);
     setNewSubject("");
@@ -127,12 +123,10 @@ export function PrioritySupportPanel({ sponsorId: _sponsorId }: Props) {
     if (!active || !userId || !reply.trim()) return;
     const content = reply.trim();
     setReply("");
-    const { error } = await supabase.from("support_ticket_messages").insert({
-      ticket_id: active.id,
+    const { error } = await supabase.from("support_ticket_messages").insert({ ticket_id: active.id,
       sender_id: userId,
       sender_role: "sponsor",
-      content,
-    });
+      content });
     if (error) toast({ title: "Send failed", description: error.message, variant: "destructive" });
   };
 

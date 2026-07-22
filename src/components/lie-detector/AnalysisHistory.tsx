@@ -23,8 +23,7 @@ export const AnalysisHistory = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const getTypeIcon = (type: string) => {
     switch (type) {

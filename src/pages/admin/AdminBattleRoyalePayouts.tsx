@@ -65,8 +65,7 @@ const AdminBattleRoyalePayouts = () => {
   const decide = async (id: string, action: "approve" | "reject", rejection_reason?: string) => {
     try {
       const { data, error } = await supabase.functions.invoke("admin-approve-campaign-payout", {
-        body: { payout_id: id, action, rejection_reason },
-      });
+        body: { payout_id: id, action, rejection_reason } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       toast.success(action === "approve" ? "Transfer sent via Stripe" : "Payout rejected");

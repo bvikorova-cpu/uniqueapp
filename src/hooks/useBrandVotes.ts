@@ -28,12 +28,9 @@ export const useBrandVotes = () => {
       const usedVotes = voteTracking?.votes_used || 0;
       const remainingVotes = totalVotes - usedVotes;
 
-      return {
-        total: totalVotes,
+      return { total: totalVotes,
         used: usedVotes,
         remaining: Math.max(0, remainingVotes),
-        purchased: purchasedVotes,
-      };
-    },
-  });
+        purchased: purchasedVotes };
+    } });
 };

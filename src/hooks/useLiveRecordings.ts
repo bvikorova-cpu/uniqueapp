@@ -27,37 +27,30 @@ export const useLiveRecordings = (ownerId?: string) => {
       if (ownerId) q = q.eq("owner_id", ownerId);
       const { data } = await q;
       return (data || []) as unknown as LiveRecording[];
-    },
-  });
+    } });
 
   const createRecording = useMutation({
     mutationFn: async (input: Omit<LiveRecording, "id" | "owner_id" | "created_at" | "views_count">) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-      const { error } = await supabase.from("live_recordings" as any).insert({
-        ...input,
-        owner_id: user.id,
-      } as any);
+      const { error } = await supabase.from("live_recordings" as any).insert({ ...input,
+        owner_id: user.id } as any);
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["live-recordings"] });
       toast({ title: "Recording archived" });
-    },
-  });
+    } });
 
   const deleteRecording = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("live_recordings" as any).delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["live-recordings"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["live-recordings"] }) });
 
-  return {
-    recordings,
+  return { recordings,
     isLoading,
     createRecording: createRecording.mutate,
-    deleteRecording: deleteRecording.mutate,
-  };
+    deleteRecording: deleteRecording.mutate };
 };

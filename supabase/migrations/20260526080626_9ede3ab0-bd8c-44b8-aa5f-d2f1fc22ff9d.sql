@@ -38,7 +38,7 @@ WITH new_job AS (
     'a8f98c5c-3ce8-4928-bfaf-061a700411c6',
     'Senior React Developer (E2E TEST)',
     'E2E Test Company',
-    'Bratislava', 'Slovakia',
+    'City', 'Country',
     'it_software', 'full_time',
     'We are looking for a senior React dev. E2E test listing.',
     'React, TypeScript, 5+ years',

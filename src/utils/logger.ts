@@ -44,16 +44,14 @@ async function persistLog(severity: Severity, payload: LogPayload): Promise<void
 
     const { data: { session } } = await supabase.auth.getSession();
 
-    await (supabase.from("app_error_logs") as any).insert({
-      user_id: session?.user?.id ?? null,
+    await (supabase.from("app_error_logs") as any).insert({ user_id: session?.user?.id ?? null,
       severity,
       error_message: payload.message.slice(0, 2000),
       error_stack: payload.stack?.slice(0, 5000) ?? null,
       component_stack: payload.componentStack?.slice(0, 5000) ?? null,
       route: typeof window !== "undefined" ? window.location.pathname : null,
       user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
-      metadata: payload.metadata ?? null,
-    });
+      metadata: payload.metadata ?? null });
   } catch {
     // Never let logging break the app
   }
@@ -68,31 +66,25 @@ export const logger = {
     if (isDev) console.warn("[WARN]", message, metadata);
     void persistLog("warning", { message, metadata });
   },
-  error(error: unknown, metadata?: Record<string, unknown>) {
-    const err = error instanceof Error ? error : new Error(String(error));
+  error(error: unknown, metadata?: Record<string, unknown>) { const err = error instanceof Error ? error : new Error(String(error));
     if (isDev) console.error("[ERROR]", err, metadata);
     void persistLog("error", {
       message: err.message,
       stack: err.stack,
-      metadata,
-    });
+      metadata });
   },
-  reactError(error: Error, componentStack: string) {
-    if (isDev) console.error("[REACT ERROR]", error, componentStack);
+  reactError(error: Error, componentStack: string) { if (isDev) console.error("[REACT ERROR]", error, componentStack);
     void persistLog("error", {
       message: error.message,
       stack: error.stack,
-      componentStack,
-    });
-  },
-};
+      componentStack });
+  } };
 
 /**
  * Install global handlers for uncaught errors and unhandled promise rejections.
  * Call once at app startup.
  */
-export function installGlobalErrorHandlers(): void {
-  if (typeof window === "undefined") return;
+export function installGlobalErrorHandlers(): void { if (typeof window === "undefined") return;
   if (isButtonTesterFrame) return;
 
   window.addEventListener("error", (event) => {
@@ -100,8 +92,7 @@ export function installGlobalErrorHandlers(): void {
       filename: event.filename,
       lineno: event.lineno,
       colno: event.colno,
-      type: "window.onerror",
-    });
+      type: "window.onerror" });
   });
 
   window.addEventListener("unhandledrejection", (event) => {

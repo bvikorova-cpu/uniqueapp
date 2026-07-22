@@ -42,8 +42,7 @@ export default function WardrobeAnalytics() {
       if (!session) return [];
       const { data } = await supabase.from("wardrobe_items").select("*").eq("user_id", session.user.id);
       return data || [];
-    },
-  });
+    } });
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -56,8 +55,7 @@ export default function WardrobeAnalytics() {
       }
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "wardrobe-analytics", items: wardrobeItems },
-      });
+        body: { action: "wardrobe-analytics", items: wardrobeItems } });
       if (error) throw error;
       return data;
     },
@@ -65,8 +63,7 @@ export default function WardrobeAnalytics() {
       setResult(data.analytics);
       toast.success("Wardrobe analyzed!");
     },
-    onError: (e: any) => toast.error(e.message || "Analysis failed"),
-  });
+    onError: (e: any) => toast.error(e.message || "Analysis failed") });
 
   return (
     <>

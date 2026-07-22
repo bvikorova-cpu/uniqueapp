@@ -28,8 +28,7 @@ export type ServiceType =
   | "phobia";
 
 /** Hardcoded percentage defaults (0-100). Single source of truth if DB is unreachable. */
-export const FEE_DEFAULTS: Record<ServiceType, number> = {
-  creator_subscription: 15,
+export const FEE_DEFAULTS: Record<ServiceType, number> = { creator_subscription: 15,
   tip_jar: 10,
   brand_collaboration: 20,
   megatalent: 20,
@@ -45,8 +44,7 @@ export const FEE_DEFAULTS: Record<ServiceType, number> = {
   property: 5,
   skill_swap: 0,
   job_portal: 0,
-  phobia: 0,
-};
+  phobia: 0 };
 
 interface CacheEntry { rate: number; exp: number }
 const CACHE_TTL_MS = 5 * 60 * 1000;

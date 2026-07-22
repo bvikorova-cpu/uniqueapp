@@ -33,12 +33,10 @@ export default function IQDuels() {
       setSearching(modeId);
       const { data, error } = await supabase.functions.invoke("iq-duel-matchmaking", { body: { mode: modeId } });
       if (error) throw error;
-      if (data?.duel?.id) {
-        setActiveDuelId(data.duel.id);
+      if (data?.duel?.id) { setActiveDuelId(data.duel.id);
         toast({
           title: data.role === "opponent" ? "Match found!" : "Searching…",
-          description: data.role === "opponent" ? "Opponent ready, starting now." : "Waiting for an opponent.",
-        });
+          description: data.role === "opponent" ? "Opponent ready, starting now." : "Waiting for an opponent." });
       }
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Failed", variant: "destructive" });

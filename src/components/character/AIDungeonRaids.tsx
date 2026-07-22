@@ -30,14 +30,12 @@ export const AIDungeonRaids = () => {
       const { data, error } = await supabase.from("characters").select("*").eq("user_id", user.id);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const raidMutation = useMutation({
     mutationFn: async ({ dungeonId, partyIds }: { dungeonId: string; partyIds: string[] }) => {
       const { data, error } = await supabase.functions.invoke("dungeon-raid", {
-        body: { dungeonId, characterIds: partyIds },
-      });
+        body: { dungeonId, characterIds: partyIds } });
       if (error) throw error;
       return data;
     },
@@ -47,8 +45,7 @@ export const AIDungeonRaids = () => {
       queryClient.invalidateQueries({ queryKey: ["characters"] });
       queryClient.invalidateQueries({ queryKey: ["character-credits"] });
     },
-    onError: (error: Error) => toast.error(error.message || "Raid failed to start"),
-  });
+    onError: (error: Error) => toast.error(error.message || "Raid failed to start") });
 
   const togglePartyMember = (id: string) => {
     setSelectedParty((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : prev.length < 4 ? [...prev, id] : prev);

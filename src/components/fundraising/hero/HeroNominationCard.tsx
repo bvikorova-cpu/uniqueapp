@@ -15,8 +15,7 @@ export function HeroNominationCard({ nominatorName, consentStatus, nominationSto
     granted: { label: "Hero consented", variant: "default" },
     pending: { label: "Awaiting hero consent", variant: "secondary" },
     not_required: { label: "Public-figure nomination", variant: "outline" },
-    declined: { label: "Hero declined", variant: "outline" },
-  };
+    declined: { label: "Hero declined", variant: "outline" } };
   const consent = consentStatus ? consentLabel[consentStatus] : null;
 
   return (

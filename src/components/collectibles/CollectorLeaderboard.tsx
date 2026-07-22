@@ -27,16 +27,13 @@ export default function CollectorLeaderboard({ userId }: Props) {
       });
 
       return Object.entries(userMap)
-        .map(([uid, info]) => ({
-          userId: uid,
+        .map(([uid, info]) => ({ userId: uid,
           itemCount: info.count,
           uniqueTypes: info.types.size,
-          isYou: uid === userId,
-        }))
+          isYou: uid === userId }))
         .sort((a, b) => b.itemCount - a.itemCount)
         .slice(0, 50);
-    },
-  });
+    } });
 
   const medals = ["🥇", "🥈", "🥉"];
 

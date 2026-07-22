@@ -39,10 +39,8 @@ async function rpc(name: string, body: Record<string, unknown>) {
     headers: {
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      "Content-Type": "application/json",
-    },
-    data: body,
-  });
+      "Content-Type": "application/json" },
+    data: body });
   let json: any = null;
   try {
     json = await res.json();
@@ -86,60 +84,46 @@ test.describe("Rewards / XP RPC contract — anonymous callers", () => {
   });
 
   test("redeem_shop_item is gated", async () => {
-    const { status, json } = await rpc("redeem_shop_item", {
-      _item_code: "streak-shield",
-    });
+    const { status, json } = await rpc("redeem_shop_item", { _item_code: "streak-shield" });
     expectGated("redeem_shop_item", status, json);
   });
 
   test("gift_xp is gated", async () => {
-    const { status, json } = await rpc("gift_xp", {
-      _recipient: ZERO_UUID,
+    const { status, json } = await rpc("gift_xp", { _recipient: ZERO_UUID,
       _amount: 10,
-      _message: "e2e",
-    });
+      _message: "e2e" });
     expectGated("gift_xp", status, json);
   });
 
   test("place_xp_bet is gated", async () => {
-    const { status, json } = await rpc("place_xp_bet", {
-      _challenge_type: "daily_xp",
+    const { status, json } = await rpc("place_xp_bet", { _challenge_type: "daily_xp",
       _target: 100,
       _amount: 20,
-      _hours: 24,
-    });
+      _hours: 24 });
     expectGated("place_xp_bet", status, json);
   });
 
   test("claim_quest_node is gated and signature is current", async () => {
-    const { status, json } = await rpc("claim_quest_node", {
-      _path_id: ZERO_UUID,
-      _node_index: 0,
-    });
+    const { status, json } = await rpc("claim_quest_node", { _path_id: ZERO_UUID,
+      _node_index: 0 });
     expectGated("claim_quest_node", status, json);
   });
 
   test("claim_battle_pass_reward is gated", async () => {
-    const { status, json } = await rpc("claim_battle_pass_reward", {
-      _season_id: ZERO_UUID,
+    const { status, json } = await rpc("claim_battle_pass_reward", { _season_id: ZERO_UUID,
       _tier: 1,
-      _track: "free",
-    });
+      _track: "free" });
     expectGated("claim_battle_pass_reward", status, json);
   });
 
   test("claim_calendar_day is gated", async () => {
-    const { status, json } = await rpc("claim_calendar_day", {
-      _month_key: "2026-05",
-      _day_number: 1,
-    });
+    const { status, json } = await rpc("claim_calendar_day", { _month_key: "2026-05",
+      _day_number: 1 });
     expectGated("claim_calendar_day", status, json);
   });
 
   test("acquire_cosmetic_item is gated", async () => {
-    const { status, json } = await rpc("acquire_cosmetic_item", {
-      _item_id: ZERO_UUID,
-    });
+    const { status, json } = await rpc("acquire_cosmetic_item", { _item_id: ZERO_UUID });
     expectGated("acquire_cosmetic_item", status, json);
   });
 
@@ -161,11 +145,9 @@ test.describe("Rewards / XP RPC contract — anonymous callers", () => {
  */
 test.describe("add_user_points overloads exist", () => {
   test("3-arg overload is resolvable", async () => {
-    const { json } = await rpc("add_user_points", {
-      p_user_id: ZERO_UUID,
+    const { json } = await rpc("add_user_points", { p_user_id: ZERO_UUID,
       p_points: 1,
-      p_activity_type: "e2e_probe",
-    });
+      p_activity_type: "e2e_probe" });
     expect(
       json?.code,
       `3-arg add_user_points missing: ${json?.message ?? ""}`
@@ -177,8 +159,7 @@ test.describe("add_user_points overloads exist", () => {
       p_user_id: ZERO_UUID,
       p_points: 1,
       p_activity_type: "e2e_probe",
-      p_meta: "{}",
-    });
+      p_meta: "{}" });
     expect(
       json?.code,
       `4-arg add_user_points missing — this caused the spin/redeem/gift/bet outage: ${json?.message ?? ""}`

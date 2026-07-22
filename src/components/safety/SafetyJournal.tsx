@@ -22,12 +22,10 @@ const incidentTypes = [
   "Social exclusion", "Harassment", "Threats", "Other",
 ];
 
-const SafetyJournal = () => {
-  const queryClient = useQueryClient();
+const SafetyJournal = () => { const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    incident_type: "", description: "", location: "", witnesses: "", mood_rating: 5,
-  });
+    incident_type: "", description: "", location: "", witnesses: "", mood_rating: 5 });
 
   const { data: entries = [], isLoading } = useQuery({
     queryKey: ["safety-journal"],
@@ -39,8 +37,7 @@ const SafetyJournal = () => {
         .eq("user_id", user.id).order("created_at", { ascending: false });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const addEntry = useMutation({
     mutationFn: async () => {
@@ -55,8 +52,7 @@ const SafetyJournal = () => {
       setShowForm(false);
       setFormData({ incident_type: "", description: "", location: "", witnesses: "", mood_rating: 5 });
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const moodIcon = (r: number) =>
     r <= 3 ? <Frown className="h-4 w-4 text-red-400" /> : r <= 6 ? <Meh className="h-4 w-4 text-amber-400" /> : <Smile className="h-4 w-4 text-emerald-400" />;

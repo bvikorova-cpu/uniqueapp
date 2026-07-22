@@ -31,8 +31,7 @@ export function VoiceCoaching() {
     setResponse(null);
     try {
       const { data, error } = await supabase.functions.invoke("mentor-ai-tools", {
-        body: { action: "voice-coaching", mentorArea: area, message: msg },
-      });
+        body: { action: "voice-coaching", mentorArea: area, message: msg } });
       if (error) throw error;
       setResponse(data.reply);
       setMessage("");

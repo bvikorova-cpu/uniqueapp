@@ -29,8 +29,7 @@ export const usePhotoTags = (postId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
   const createTag = useMutation({
     mutationFn: async ({ 
@@ -48,21 +47,18 @@ export const usePhotoTags = (postId?: string) => {
     }) => {
       const { error } = await supabase
         .from("photo_tags")
-        .insert({
-          post_id: postId,
+        .insert({ post_id: postId,
           tagged_user_id: taggedUserId,
           photo_url: photoUrl,
           x_position: xPosition,
-          y_position: yPosition,
-        });
+          y_position: yPosition });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["photo-tags"] });
       toast({ title: "User tagged in photo!" });
-    },
-  });
+    } });
 
   const deleteTag = useMutation({
     mutationFn: async (tagId: string) => {
@@ -76,12 +72,9 @@ export const usePhotoTags = (postId?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["photo-tags"] });
       toast({ title: "Tag removed" });
-    },
-  });
+    } });
 
-  return {
-    tags: tags || [],
+  return { tags: tags || [],
     createTag: createTag.mutate,
-    deleteTag: deleteTag.mutate,
-  };
+    deleteTag: deleteTag.mutate };
 };

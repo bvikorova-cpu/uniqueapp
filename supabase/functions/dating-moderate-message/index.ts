@@ -2,10 +2,8 @@
 // Returns { allow: boolean, reason?: string, severity?: 'low'|'medium'|'high' }
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const json = (b: unknown, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -40,22 +38,18 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
             content:
-              "You are a dating-app safety classifier. Reply ONLY valid JSON: {\"severity\":\"none|low|medium|high\",\"category\":\"none|harassment|sexual_minor|threat|hate|scam|self_harm\",\"reason\":\"short\"} . high = block (minors, threats, doxing, scams, slurs, explicit sexual harassment). medium = warn (mild insults, pressure). low/none = allow.",
-          },
+              "You are a dating-app safety classifier. Reply ONLY valid JSON: {\"severity\":\"none|low|medium|high\",\"category\":\"none|harassment|sexual_minor|threat|hate|scam|self_harm\",\"reason\":\"short\"} . high = block (minors, threats, doxing, scams, slurs, explicit sexual harassment). medium = warn (mild insults, pressure). low/none = allow." },
           { role: "user", content: trimmed },
         ],
         temperature: 0,
-        max_tokens: 120,
-      }),
-    });
+        max_tokens: 120 }) });
 
     if (resp.status === 429 || resp.status === 402) return json({ allow: true });
     const data = await resp.json();

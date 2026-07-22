@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  getMeSnapshot,
+import { getMeSnapshot,
   isPerfEnabled,
-  subscribeMe,
-} from "@/utils/perfMe";
+  subscribeMe } from "@/utils/perfMe";
 
 /**
  * Tiny fixed overlay showing profile-page load metrics on mobile.

@@ -28,8 +28,7 @@ export const HorseAuctionHouse = () => {
       if (!u) return [];
       const { data } = await supabase.from("horses").select("*").eq("user_id", u.id);
       return data || [];
-    },
-  });
+    } });
 
   const { data: listings = [], isLoading } = useQuery({
     queryKey: ["horse-marketplace"],
@@ -41,16 +40,13 @@ export const HorseAuctionHouse = () => {
         .order("listed_at", { ascending: false });
       return data || [];
     },
-    refetchInterval: 15000,
-  });
+    refetchInterval: 15000 });
 
   const listHorse = useMutation({
     mutationFn: async ({ horseId, price }: { horseId: string; price: number }) => {
       const { data: { user: u } } = await supabase.auth.getUser();
       if (!u) throw new Error("Not authenticated");
-      const { error } = await supabase.from("horse_market_listings").insert({
-        horse_id: horseId, seller_id: u.id, price_coins: price,
-      });
+      const { error } = await supabase.from("horse_market_listings").insert({ horse_id: horseId, seller_id: u.id, price_coins: price });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -58,8 +54,7 @@ export const HorseAuctionHouse = () => {
       setShowSell(false); setSelectedHorse(""); setSellPrice("");
       queryClient.invalidateQueries({ queryKey: ["horse-marketplace"] });
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const buyHorse = useMutation({
     mutationFn: async (listingId: string) => {
@@ -74,8 +69,7 @@ export const HorseAuctionHouse = () => {
       queryClient.invalidateQueries({ queryKey: ["my-horses-auction"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const getPowerScore = (h: any) => (h.speed_stat || 0) + (h.stamina_stat || 0) + (h.acceleration_stat || 0) + (h.temperament_stat || 0);
 

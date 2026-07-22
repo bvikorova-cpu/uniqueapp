@@ -37,21 +37,18 @@ export const CharacterCreator = () => {
     onSuccess: async (aiResult) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { error } = await supabase.from('characters').insert({
-        user_id: user.id, name, category, description,
+      const { error } = await supabase.from('characters').insert({ user_id: user.id, name, category, description,
         backstory: aiResult.backstory, image_url: aiResult.imageUrl,
         hp: aiResult.stats.hp, attack: aiResult.stats.attack,
         defense: aiResult.stats.defense, speed: aiResult.stats.speed,
-        is_premium: isPremium,
-      });
+        is_premium: isPremium });
       if (error) throw error;
       toast.success("Warrior forged successfully!");
       queryClient.invalidateQueries({ queryKey: ["character-credits"] });
       queryClient.invalidateQueries({ queryKey: ["characters"] });
       setName(""); setCategory(""); setDescription(""); setIsPremium(false);
     },
-    onError: (error: Error) => toast.error(error.message || "Failed to forge warrior"),
-  });
+    onError: (error: Error) => toast.error(error.message || "Failed to forge warrior") });
 
   return (
     <>

@@ -75,8 +75,7 @@ export default function AdminIQDashboard() {
         .limit(10);
 
       return { counts, topIq: topIq ?? [], recentTests: recentTests ?? [], promos: promos ?? [] };
-    },
-  });
+    } });
 
   return (
     <AdminGuard>

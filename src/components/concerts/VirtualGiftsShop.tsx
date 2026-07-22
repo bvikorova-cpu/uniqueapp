@@ -15,8 +15,7 @@ export const VirtualGiftsShop = ({ onBack }: Props) => {
       const { data, error } = await supabase.from("platform_gifts").select("*").order("price", { ascending: true });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return (
     <>

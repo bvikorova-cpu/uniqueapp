@@ -22,8 +22,7 @@ Reply in plain text/markdown.`
     const r = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'gpt-4o-mini', messages }),
-    })
+      body: JSON.stringify({ model: 'gpt-4o-mini', messages }) })
     if (!r.ok) return json({ error: 'AI error', detail: await r.text() }, r.status)
     const data = await r.json()
     return json({ result: data.choices?.[0]?.message?.content ?? '' })

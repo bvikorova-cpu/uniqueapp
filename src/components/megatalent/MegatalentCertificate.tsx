@@ -166,8 +166,7 @@ export default function MegatalentCertificate({ userId, category }: Props) {
               style={{
                 borderColor: tier.color,
                 boxShadow: `0 0 30px ${tier.glow}`,
-                background: `linear-gradient(135deg, ${tier.glow}, transparent)`,
-              }}
+                background: `linear-gradient(135deg, ${tier.glow}, transparent)` }}
             >
               <p className="text-[10px] uppercase tracking-widest opacity-70">
                 Certificate of Talent

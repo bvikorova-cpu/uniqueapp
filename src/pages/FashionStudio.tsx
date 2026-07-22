@@ -74,15 +74,12 @@ const useFashionStats = () => {
         supabase.from("fashion_challenges").select("id", { count: "exact", head: true }).eq("is_active", true),
         supabase.from("fashion_style_battles").select("id", { count: "exact", head: true }).eq("status", "active"),
       ]);
-      return {
-        designs: designs.count || 0,
+      return { designs: designs.count || 0,
         wardrobeItems: items.count || 0,
         challenges: challenges.count || 0,
-        battles: battles.count || 0,
-      };
+        battles: battles.count || 0 };
     },
-    refetchInterval: 30000,
-  });
+    refetchInterval: 30000 });
 };
 
 export default function FashionStudio() {
@@ -225,13 +222,12 @@ export default function FashionStudio() {
 
             <h1
               className="text-3xl sm:text-4xl md:text-5xl font-black mb-2"
-              style={{
+              style={ {
                 background: "linear-gradient(135deg, #fff, #f0abfc, #e879f9, #d946ef)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 WebkitTextStroke: "1.5px rgba(0,0,0,0.3)",
-                textShadow: "0 0 40px rgba(217,70,239,0.5), 0 0 80px rgba(217,70,239,0.3)",
-              }}
+                textShadow: "0 0 40px rgba(217,70,239,0.5), 0 0 80px rgba(217,70,239,0.3)" }}
             >
               Fashion Studio
             </h1>

@@ -4,13 +4,12 @@
 
 export const MAX_MESSAGE_LEN = 2000;
 
-export const sanitizeMessageContent = (raw: string): string => {
-  if (!raw) return "";
+export const sanitizeMessageContent = (raw: string): string => { if (!raw) return "";
   // Strip zero-width and most control chars (keep \n, \r, \t), normalize whitespace runs.
   // eslint-disable-next-line no-control-regex
   const cleaned = raw.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200B-\u200F\u202A-\u202E\uFEFF]/g, "");
   // Collapse 3+ blank lines.
-  const collapsed = cleaned.replace(/\n{3,}/g, "\n\n");
+  const collapsed = cleaned.replace(/\n{3 }/g, "\n\n");
   // Hard cap length.
   return collapsed.slice(0, MAX_MESSAGE_LEN).trim();
 };

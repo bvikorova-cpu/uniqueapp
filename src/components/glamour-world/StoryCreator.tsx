@@ -26,8 +26,7 @@ export function StoryCreator({ onBack }: { onBack: () => void }) {
       if (!user) return [];
       const { data } = await supabase.from("glamour_stories").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5);
       return data || [];
-    },
-  });
+    } });
 
   const generate = async () => {
     if (!title || !genre) return toast({ title: "Add title and genre", variant: "destructive" });
@@ -36,14 +35,11 @@ export function StoryCreator({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "story", prompt: `Write a magical ${genre} story titled "${title}". Characters: ${characters || "a brave princess"}. Make it enchanting, fun, and with a happy ending. Include dialogue and vivid descriptions.`, coins: 5 },
-      });
+        body: { type: "story", prompt: `Write a magical ${genre} story titled "${title}". Characters: ${characters || "a brave princess"}. Make it enchanting, fun, and with a happy ending. Include dialogue and vivid descriptions.`, coins: 5 } });
       if (error) throw error;
       setResult(data.result);
-      await supabase.from("glamour_stories").insert({
-        user_id: user.id, title, genre: genre.toLowerCase().replace(/ /g, "_"),
-        story_text: data.result, credits_used: 5,
-      });
+      await supabase.from("glamour_stories").insert({ user_id: user.id, title, genre: genre.toLowerCase().replace(/ /g, "_"),
+        story_text: data.result, credits_used: 5 });
     } catch (e: any) {
       const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
         if (isCoinsErr) {

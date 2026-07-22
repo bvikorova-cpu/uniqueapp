@@ -2,12 +2,10 @@ import { useEffect, useState } from "react";
 import { Bell, BellOff, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import {
-  enablePushForCurrentUser,
+import { enablePushForCurrentUser,
   disablePushForCurrentUser,
   getPushStatus,
-  isPushSupported,
-} from "@/lib/pushNotifications";
+  isPushSupported } from "@/lib/pushNotifications";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Status = "unsupported" | "denied" | "default" | "granted";

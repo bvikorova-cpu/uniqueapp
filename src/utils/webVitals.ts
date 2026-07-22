@@ -83,8 +83,7 @@ function flush() {
   }
 }
 
-function handleMetric(m: Metric) {
-  queue.push({
+function handleMetric(m: Metric) { queue.push({
     metric: m.name,
     value: Number(m.value.toFixed(4)),
     rating: m.rating,
@@ -92,8 +91,7 @@ function handleMetric(m: Metric) {
     route: location.pathname,
     device: detectDevice(),
     connection: detectConnection(),
-    session_id: getSessionId(),
-  });
+    session_id: getSessionId() });
   // Flush opportunistically when we have a few samples, to avoid losing
   // them if the user navigates away.
   if (queue.length >= 3) flush();

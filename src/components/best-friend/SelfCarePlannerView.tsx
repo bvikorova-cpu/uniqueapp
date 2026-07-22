@@ -20,8 +20,7 @@ export const SelfCarePlannerView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "self_care_planner", needs: needs || undefined, timeAvailable: timeAvailable || undefined },
-      });
+        body: { action: "self_care_planner", needs: needs || undefined, timeAvailable: timeAvailable || undefined } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

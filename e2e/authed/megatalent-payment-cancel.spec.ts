@@ -30,8 +30,7 @@ async function installUnsubscribedStubs(page: Page) {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ subscribed: false }),
-    }),
+      body: JSON.stringify({ subscribed: false }) }),
   );
   await page.route("https://checkout.stripe.com/**", (r) =>
     r.fulfill({ status: 200, body: "<html>stub</html>" }),
@@ -49,13 +48,10 @@ for (const query of ["canceled=true", "payment=failed"]) {
         return route.fallback();
       }
       checkoutCalled = true;
-      await route.fulfill({
-        status: 200,
+      await route.fulfill({ status: 200,
         contentType: "application/json",
         body: JSON.stringify({
-          url: "https://checkout.stripe.com/test_session_megatalent_cancel",
-        }),
-      });
+          url: "https://checkout.stripe.com/test_session_megatalent_cancel" }) });
     });
 
     // 1) Paywall up.

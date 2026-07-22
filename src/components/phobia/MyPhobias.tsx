@@ -6,14 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Brain, Loader2, TrendingUp, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MyPhobiasProps {
@@ -82,13 +80,11 @@ const MyPhobias = ({ onPhobiaListed, onOpenPricing }: MyPhobiasProps) => {
     loadPhobias();
   }, []);
 
-  const handleListForTrade = async () => {
-    if (!selectedPhobia || price <= 0) {
+  const handleListForTrade = async () => { if (!selectedPhobia || price <= 0) {
       toast({
         title: "Invalid Data",
         description: "Please enter a valid price",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -96,12 +92,10 @@ const MyPhobias = ({ onPhobiaListed, onOpenPricing }: MyPhobiasProps) => {
       setListingPhobia(selectedPhobia.id);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication Required",
           description: "Please sign in to list phobias",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -117,21 +111,18 @@ const MyPhobias = ({ onPhobiaListed, onOpenPricing }: MyPhobiasProps) => {
 
       toast({
         title: "Listed for Trade",
-        description: `${selectedPhobia.phobia_name} is now available in the marketplace`,
-      });
+        description: `${selectedPhobia.phobia_name} is now available in the marketplace` });
 
       setOpenDialog(false);
       setSelectedPhobia(null);
       setPrice(0);
       loadPhobias();
       onPhobiaListed?.();
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Listing Failed",
         description: "Please try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setListingPhobia(null);
     }

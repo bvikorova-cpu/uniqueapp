@@ -24,8 +24,7 @@ export async function spendSportCoins(
   reward = 0
 ): Promise<{ ok: true; balance: number } | { ok: false; error: string; balance?: number }> {
   const { data, error } = await supabase.functions.invoke("spend-sport-coins", {
-    body: { table, amount, reward },
-  });
+    body: { table, amount, reward } });
   if (error) {
     const msg = (data as any)?.error || error.message || "spend_failed";
     return { ok: false as const, error: msg, balance: (data as any)?.balance };

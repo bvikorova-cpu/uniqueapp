@@ -44,8 +44,7 @@ export async function createSubscriptionCheckout(
     mode: opts.mode ?? "subscription",
     success_url: `${origin}${opts.successPath}`,
     cancel_url: `${origin}${opts.cancelPath}`,
-    metadata: { user_id: userData.user.id, ...(opts.metadata ?? {}) },
-  });
+    metadata: { user_id: userData.user.id, ...(opts.metadata ?? {}) } });
 
   return { url: session.url };
 }

@@ -10,14 +10,12 @@ interface SubscriptionStatus {
   loading: boolean;
 }
 
-export const useHealthcareSubscription = () => {
-  const [status, setStatus] = useState<SubscriptionStatus>({
+export const useHealthcareSubscription = () => { const [status, setStatus] = useState<SubscriptionStatus>({
     subscribed: false,
     subscription_tier: null,
     subscription_status: null,
     subscription_end: null,
-    loading: true,
-  });
+    loading: true });
   const { toast } = useToast();
 
   const checkSubscription = async () => {
@@ -25,14 +23,12 @@ export const useHealthcareSubscription = () => {
       setStatus(prev => ({ ...prev, loading: true }));
       
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setStatus({
+      if (!session) { setStatus({
           subscribed: false,
           subscription_tier: null,
           subscription_status: null,
           subscription_end: null,
-          loading: false,
-        });
+          loading: false });
         return;
       }
 
@@ -44,13 +40,11 @@ export const useHealthcareSubscription = () => {
         return;
       }
 
-      setStatus({
-        subscribed: data.subscribed,
+      setStatus({ subscribed: data.subscribed,
         subscription_tier: data.subscription_tier,
         subscription_status: data.subscription_status,
         subscription_end: data.subscription_end,
-        loading: false,
-      });
+        loading: false });
     } catch (error) {
       console.error('Error checking subscription:', error);
       setStatus(prev => ({ ...prev, loading: false }));
@@ -60,12 +54,10 @@ export const useHealthcareSubscription = () => {
   const openCustomerPortal = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication Required",
           description: "Please sign in to manage your subscription",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -75,12 +67,10 @@ export const useHealthcareSubscription = () => {
       if (data?.url) {
         window.open(data.url, '_blank');
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Error",
         description: "Failed to open customer portal",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -101,9 +91,7 @@ export const useHealthcareSubscription = () => {
     };
   }, []);
 
-  return {
-    ...status,
+  return { ...status,
     checkSubscription,
-    openCustomerPortal,
-  };
+    openCustomerPortal };
 };

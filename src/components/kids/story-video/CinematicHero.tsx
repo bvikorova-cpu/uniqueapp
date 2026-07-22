@@ -26,18 +26,15 @@ export const CinematicHero = () => {
           className="absolute"
           style={{
             left: `${10 + Math.random() * 80}%`,
-            top: `${15 + Math.random() * 70}%`,
-          }}
-          animate={{
+            top: `${15 + Math.random() * 70}%` }}
+          animate={ {
             y: [-10, 10, -10],
             opacity: [0.3, 0.8, 0.3],
-            scale: [0.8, 1.2, 0.8],
-          }}
-          transition={{
+            scale: [0.8, 1.2, 0.8] }}
+          transition={ {
             duration: 3 + Math.random() * 2,
             repeat: Infinity,
-            delay: Math.random() * 2,
-          }}
+            delay: Math.random() * 2 }}
         >
           {i % 3 === 0 ? (
             <Star className="w-3 h-3 text-amber-300" fill="currentColor" />

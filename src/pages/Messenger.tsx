@@ -36,25 +36,19 @@ import { ChatGames } from "@/components/messenger/ChatGames";
 import { SmartNotifications } from "@/components/messenger/SmartNotifications";
 import { motion } from "framer-motion";
 import { playMessageChime } from "@/lib/messageChime";
-import {
-  requestNotificationPermission,
+import { requestNotificationPermission,
   showMessageNotification,
   incrementUnreadBadge,
   installUnreadBadgeAutoClear,
-  clearUnreadBadge,
-} from "@/lib/messageNotifications";
-import {
-  fetchProfileCached,
+  clearUnreadBadge } from "@/lib/messageNotifications";
+import { fetchProfileCached,
   fetchProfilesCachedBatch,
-  primeProfileCache,
-} from "@/lib/profileCache";
+  primeProfileCache } from "@/lib/profileCache";
 import { sanitizeMessageContent, checkRateLimit, MAX_MESSAGE_LEN } from "@/lib/messageSafety";
 
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 
 type MessengerView = "hub" | "chat" | "analytics" | "themes" | "voice" | "scheduler" | "receipts" | "backup" | "mood" | "emoji" | "games" | "notifications";
 
@@ -443,11 +437,9 @@ const Messenger = () => {
       const lastByConv = new Map<string, any>();
       (msgsRes.data || []).forEach((m: any) => { if (!lastByConv.has(m.conversation_id)) lastByConv.set(m.conversation_id, m); });
       const profileMap = await fetchProfilesCachedBatch(Array.from(new Set(otherByConv.values())));
-      conversationsWithDetails = convRes.data.map((conv: any) => ({
-        ...conv,
+      conversationsWithDetails = convRes.data.map((conv: any) => ({ ...conv,
         otherUser: otherByConv.get(conv.id) ? (profileMap.get(otherByConv.get(conv.id)!) as any) ?? null : null,
-        lastMessage: lastByConv.get(conv.id),
-      }));
+        lastMessage: lastByConv.get(conv.id) }));
     }
 
     // Prime profile cache for downstream avatars.
@@ -542,17 +534,14 @@ const Messenger = () => {
     ]);
     const reactionsData: any[] = (reactionsRes as any).data || [];
 
-    const messagesWithProfiles = rows.map((msg) => {
-      const profile = profilesMap.get(msg.sender_id) || {
+    const messagesWithProfiles = rows.map((msg) => { const profile = profilesMap.get(msg.sender_id) || {
         id: msg.sender_id,
         full_name: null,
-        avatar_url: null,
-      };
+        avatar_url: null };
       const reactions = reactionsData.filter((r) => r.message_id === msg.id);
 
       let replyTo: any = null;
-      if (msg.reply_to_id) {
-        const replyMsg = rows.find((m) => m.id === msg.reply_to_id);
+      if (msg.reply_to_id) { const replyMsg = rows.find((m) => m.id === msg.reply_to_id);
         if (replyMsg) {
           replyTo = {
             ...replyMsg,
@@ -560,18 +549,14 @@ const Messenger = () => {
               profilesMap.get(replyMsg.sender_id) || {
                 id: replyMsg.sender_id,
                 full_name: null,
-                avatar_url: null,
-              },
-          };
+                avatar_url: null } };
         }
       }
 
-      return {
-        ...msg,
+      return { ...msg,
         sender_profile: profile,
         reactions,
-        reply_to: replyTo,
-      };
+        reply_to: replyTo };
     });
 
     // Guard: if user switched conversations during the fetch, ignore stale results.
@@ -618,10 +603,8 @@ const Messenger = () => {
           event: "INSERT",
           schema: "public",
           table: "messages",
-          filter: `conversation_id=eq.${selectedConversation}`,
-        },
-        async (payload) => {
-          const profile = await getProfile(payload.new.sender_id);
+          filter: `conversation_id=eq.${selectedConversation}` },
+        async (payload) => { const profile = await getProfile(payload.new.sender_id);
           setMessages((prev) => [
             ...prev,
             {
@@ -629,10 +612,8 @@ const Messenger = () => {
               sender_profile: profile || {
                 id: payload.new.sender_id,
                 full_name: null,
-                avatar_url: null,
-              },
-              reactions: [],
-            } as MessageWithProfile,
+                avatar_url: null },
+              reactions: [] } as MessageWithProfile,
           ]);
           
           // Mark as read + play unique chime if it's from other user
@@ -649,11 +630,9 @@ const Messenger = () => {
       )
       .on(
         "postgres_changes",
-        {
-          event: "*",
+        { event: "*",
           schema: "public",
-          table: "message_reactions",
-        },
+          table: "message_reactions" },
         async (payload) => {
           // Surgical: only refresh reactions for the affected message
           // instead of re-fetching the entire conversation.
@@ -694,8 +673,7 @@ const Messenger = () => {
           event: "*",
           schema: "public",
           table: "typing_indicators",
-          filter: `conversation_id=eq.${selectedConversation}`,
-        },
+          filter: `conversation_id=eq.${selectedConversation}` },
         (payload) => {
           if (payload.new && (payload.new as any).user_id !== user.id) {
             const isTyping = (payload.new as any).is_typing;
@@ -725,8 +703,7 @@ const Messenger = () => {
     };
   };
 
-  const updateTypingStatus = useCallback(async (typing: boolean) => {
-    if (!selectedConversation || !user) return;
+  const updateTypingStatus = useCallback(async (typing: boolean) => { if (!selectedConversation || !user) return;
 
     try {
       await supabase
@@ -735,8 +712,7 @@ const Messenger = () => {
           conversation_id: selectedConversation,
           user_id: user.id,
           is_typing: typing,
-          updated_at: new Date().toISOString(),
-        }, {
+          updated_at: new Date().toISOString() }, {
           onConflict: 'conversation_id,user_id'
         });
     } catch (error) {
@@ -777,14 +753,12 @@ const Messenger = () => {
           .from("message_reactions")
           .delete()
           .eq("id", existing.id);
-      } else {
-        await supabase
+      } else { await supabase
           .from("message_reactions")
           .insert({
             message_id: messageId,
             user_id: user.id,
-            reaction,
-          });
+            reaction });
       }
     } catch (error) {
       console.error("Error adding reaction:", error);
@@ -818,13 +792,11 @@ const Messenger = () => {
       .from("conversations")
       .insert({ id: newConvId, created_by: user.id });
 
-    if (convError) {
-      console.error("createConversation insert error:", convError);
+    if (convError) { console.error("createConversation insert error:", convError);
       toast({
         title: "Error",
         description: "Failed to create conversation",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -835,13 +807,11 @@ const Messenger = () => {
         { conversation_id: newConvId, user_id: otherUserId },
       ]);
 
-    if (participantsError) {
-      console.error("createConversation participants error:", participantsError);
+    if (participantsError) { console.error("createConversation participants error:", participantsError);
       toast({
         title: "Error",
         description: "Failed to add participants",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -860,8 +830,7 @@ const Messenger = () => {
       toast({
         title: "Slow down",
         description: `Too many messages. Try again in ${Math.ceil(rl.retryAfterMs / 1000)}s.`,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -885,13 +854,11 @@ const Messenger = () => {
       setReplyingTo(null);
     }
 
-    const { error } = await supabase.from("messages").insert({
-      conversation_id: selectedConversation,
+    const { error } = await supabase.from("messages").insert({ conversation_id: selectedConversation,
       sender_id: user.id,
       content: text,
       reply_to_id: replyId,
-      expires_at: expiresAt,
-    });
+      expires_at: expiresAt });
 
     if (error) {
       // Restore the text so nothing is lost, and offer a retry.
@@ -906,8 +873,7 @@ const Messenger = () => {
           <ToastAction altText="Retry" onClick={() => sendMessage(text, replyId)}>
             Retry
           </ToastAction>
-        ),
-      });
+        ) });
       return;
     }
 
@@ -915,13 +881,11 @@ const Messenger = () => {
   };
 
   // Voice recording functions
-  const startRecording = async () => {
-    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+  const startRecording = async () => { if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
       toast({
         title: "Microphone unavailable",
         description: "This browser does not support voice recording.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -951,8 +915,7 @@ const Messenger = () => {
       recordingIntervalRef.current = setInterval(() => {
         setRecordingDuration(prev => prev + 1);
       }, 1000);
-    } catch (error: any) {
-      const description = error?.name === "NotAllowedError"
+    } catch (error: any) { const description = error?.name === "NotAllowedError"
         ? "Allow microphone access in your browser settings."
         : error?.name === "NotFoundError"
           ? "No microphone was found on this device."
@@ -962,8 +925,7 @@ const Messenger = () => {
       toast({
         title: "Microphone not working",
         description,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -988,13 +950,11 @@ const Messenger = () => {
       .from('messenger-attachments')
       .upload(fileName, blob, { contentType: blob.type || "audio/webm", upsert: false });
 
-    if (uploadError) {
-      setUploadingAttachment(false);
+    if (uploadError) { setUploadingAttachment(false);
       toast({
         title: "Error",
         description: "Failed to upload voice message",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -1005,31 +965,26 @@ const Messenger = () => {
       attachment_url: `messenger-attachments/${fileName}`,
       attachment_type: "voice",
       voice_duration: duration,
-      reply_to_id: replyingTo?.id || null,
-    });
+      reply_to_id: replyingTo?.id || null });
 
-    if (error) {
-      toast({
+    if (error) { toast({
         title: "Error",
         description: "Failed to send voice message",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
     setUploadingAttachment(false);
     setReplyingTo(null);
   };
 
   // Attachment upload
-  const handleAttachmentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleAttachmentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0];
     if (!file || !selectedConversation || !user) return;
 
     if (file.size > MAX_MESSENGER_ATTACHMENT_BYTES) {
       toast({
         title: "File too large",
         description: "Maximum attachment size is 20 MB.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       e.target.value = "";
       return;
     }
@@ -1043,13 +998,11 @@ const Messenger = () => {
       .from('messenger-attachments')
       .upload(fileName, file, { contentType: file.type || "application/octet-stream", upsert: false });
 
-    if (uploadError) {
-      setUploadingAttachment(false);
+    if (uploadError) { setUploadingAttachment(false);
       toast({
         title: "Error",
         description: "Failed to upload attachment",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -1059,15 +1012,12 @@ const Messenger = () => {
       content: label,
       attachment_url: `messenger-attachments/${fileName}`,
       attachment_type: attachmentType,
-      reply_to_id: replyingTo?.id || null,
-    });
+      reply_to_id: replyingTo?.id || null });
 
-    if (error) {
-      toast({
+    if (error) { toast({
         title: "Error",
         description: "Failed to send attachment",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
     setUploadingAttachment(false);
     setReplyingTo(null);
@@ -1150,8 +1100,7 @@ const Messenger = () => {
     );
   }
 
-  if (activeView === "hub") {
-    const colorMap: Record<string, string> = {
+  if (activeView === "hub") { const colorMap: Record<string, string> = {
       cyan: "from-cyan-500 to-blue-500",
       blue: "from-blue-500 to-indigo-500",
       purple: "from-purple-500 to-pink-500",
@@ -1162,20 +1111,18 @@ const Messenger = () => {
       rose: "from-rose-500 to-pink-500",
       pink: "from-pink-500 to-fuchsia-500",
       indigo: "from-indigo-500 to-violet-500",
-      lime: "from-lime-500 to-green-500",
-    };
+      lime: "from-lime-500 to-green-500" };
 
     return (
       <div className="min-h-screen bg-background pt-20 pb-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <MessengerHero
             onOpenChat={() => setActiveView("chat")}
-            stats={{
+            stats={ {
               totalMessages,
               activeChats: conversations.length,
               friendsOnline: friendsOnlineCount,
-              aiCredits: 50,
-            }}
+              aiCredits: 50 }}
           />
 
           <div className="mb-6 flex justify-end">
@@ -1640,10 +1587,9 @@ const Messenger = () => {
                             
                             <div className="flex items-center justify-between mt-1 gap-2">
                               <span className="text-xs opacity-70">
-                                {new Date(msg.created_at).toLocaleTimeString("en-US", {
+                                { new Date(msg.created_at).toLocaleTimeString("en-US", {
                                   hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
+                                  minute: "2-digit" })}
                               </span>
                               {msg.sender_id === user.id && (
                                 msg.is_read ? (
@@ -1819,11 +1765,10 @@ const Messenger = () => {
                         <MessengerAIFeatures
                           userId={user.id}
                           selectedText={selectedMessageText}
-                          messages={messages.map(m => ({
+                          messages={ messages.map(m => ({
                             sender_id: m.sender_id,
                             content: m.content,
-                            sender_name: m.sender_profile?.full_name || undefined,
-                          }))}
+                            sender_name: m.sender_profile?.full_name || undefined }))}
                           onInsertText={(text) => setNewMessage(text)}
                         />
                       </div>

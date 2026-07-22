@@ -39,8 +39,7 @@ export default function WallAIToolsGrid() {
       if (!session) throw new Error("Please sign in to use AI tools");
 
       const { data, error } = await supabase.functions.invoke("wall-ai", {
-        body: { action: activeTool, ...formData },
-      });
+        body: { action: activeTool, ...formData } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

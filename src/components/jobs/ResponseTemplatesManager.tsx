@@ -20,8 +20,7 @@ interface Template {
   is_default: boolean;
 }
 
-export const ResponseTemplatesManager = () => {
-  const [templates, setTemplates] = useState<Template[]>([]);
+export const ResponseTemplatesManager = () => { const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
@@ -29,8 +28,7 @@ export const ResponseTemplatesManager = () => {
     name: "",
     subject: "",
     body: "",
-    template_type: "general",
-  });
+    template_type: "general" });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -50,12 +48,10 @@ export const ResponseTemplatesManager = () => {
 
       if (error) throw error;
       setTemplates(data || []);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to load templates.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -78,10 +74,8 @@ export const ResponseTemplatesManager = () => {
       } else {
         const { error } = await supabase
           .from('job_response_templates')
-          .insert({
-            ...formData,
-            employer_id: user.id,
-          });
+          .insert({ ...formData,
+            employer_id: user.id });
 
         if (error) throw error;
         toast({ title: "Template created" });
@@ -90,12 +84,10 @@ export const ResponseTemplatesManager = () => {
       setOpen(false);
       resetForm();
       loadTemplates();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -111,34 +103,28 @@ export const ResponseTemplatesManager = () => {
       if (error) throw error;
       toast({ title: "Template deleted" });
       loadTemplates();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
-  const handleEdit = (template: Template) => {
-    setEditingTemplate(template);
+  const handleEdit = (template: Template) => { setEditingTemplate(template);
     setFormData({
       name: template.name,
       subject: template.subject,
       body: template.body,
-      template_type: template.template_type,
-    });
+      template_type: template.template_type });
     setOpen(true);
   };
 
-  const resetForm = () => {
-    setEditingTemplate(null);
+  const resetForm = () => { setEditingTemplate(null);
     setFormData({
       name: "",
       subject: "",
       body: "",
-      template_type: "general",
-    });
+      template_type: "general" });
   };
 
   const getTypeLabel = (type: string) => {

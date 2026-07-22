@@ -5,15 +5,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Search } from "lucide-react";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
-export const SeoPreview = ({
-  title,
+export const SeoPreview = ({ title,
   description,
   fallbackTitle,
   fallbackDescription,
   url,
   onTitleChange,
-  onDescriptionChange,
-}: {
+  onDescriptionChange }: {
   title: string;
   description: string;
   fallbackTitle: string;

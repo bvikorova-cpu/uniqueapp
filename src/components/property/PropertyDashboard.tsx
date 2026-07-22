@@ -37,12 +37,10 @@ export function PropertyDashboard() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           variant: "destructive",
           title: "Authentication required",
-          description: "Please sign in to view your properties.",
-        });
+          description: "Please sign in to view your properties." });
         return;
       }
 
@@ -64,13 +62,11 @@ export function PropertyDashboard() {
 
       if (error) throw error;
       setProperties(data || []);
-    } catch (error) {
-      console.error('Error loading properties:', error);
+    } catch (error) { console.error('Error loading properties:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load properties.",
-      });
+        description: "Failed to load properties." });
     } finally {
       setLoading(false);
     }

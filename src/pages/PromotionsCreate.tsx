@@ -60,10 +60,8 @@ export default function PromotionsCreate() {
     try {
       const ext = file.name.split(".").pop() || "bin";
       const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("promotions").upload(path, file, {
-        cacheControl: "3600",
-        upsert: false,
-      });
+      const { error: upErr } = await supabase.storage.from("promotions").upload(path, file, { cacheControl: "3600",
+        upsert: false });
       if (upErr) throw upErr;
 
       const mediaType = file.type.startsWith("video") ? "video" : "image";
@@ -71,8 +69,7 @@ export default function PromotionsCreate() {
 
       const { data: inserted, error: insErr } = await supabase
         .from("promo_listings")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           title: title.trim(),
           description: description.trim() || null,
           media_url: publicPath,
@@ -81,8 +78,7 @@ export default function PromotionsCreate() {
           tier,
           category,
           city: city.trim() || null,
-          status: "pending",
-        })
+          status: "pending" })
         .select()
         .single();
       if (insErr) throw insErr;
@@ -137,7 +133,7 @@ export default function PromotionsCreate() {
                 </div>
                 <div>
                   <Label htmlFor="promo-city">City / area</Label>
-                  <Input id="promo-city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Bratislava" />
+                  <Input id="promo-city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
                 </div>
               </div>
               <div>

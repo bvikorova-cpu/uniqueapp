@@ -15,13 +15,11 @@ const HOW_STEPS_DIVERSITYSELFID = [
   { title: "Data is anonymized", desc: "Employers see aggregate numbers only \u2014 never individual answers." },
 ];
 
-const OPTS = {
-  gender: ["Prefer not to say", "Female", "Male", "Non-binary", "Other"],
+const OPTS = { gender: ["Prefer not to say", "Female", "Male", "Non-binary", "Other"],
   ethnicity: ["Prefer not to say", "Asian", "Black/African", "Hispanic/Latino", "Middle Eastern", "White/European", "Mixed", "Other"],
   age_range: ["Prefer not to say", "18-24", "25-34", "35-44", "45-54", "55-64", "65+"],
   veteran_status: ["Prefer not to say", "Veteran", "Not a veteran"],
-  disability_status: ["Prefer not to say", "Yes", "No"],
-};
+  disability_status: ["Prefer not to say", "Yes", "No"] };
 
 export default function DiversitySelfId() {
   const [data, setData] = useState<any>({});

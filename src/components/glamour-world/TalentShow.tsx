@@ -23,14 +23,12 @@ export function TalentShow({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "talent_show", prompt: `Create a ${talent} talent show performance plan. ${details}. Include: performance routine, outfit suggestion, stage setup, music/props needed, practice tips, and audience engagement ideas.`, coins: 4 },
-      });
+        body: { type: "talent_show", prompt: `Create a ${talent} talent show performance plan. ${details}. Include: performance routine, outfit suggestion, stage setup, music/props needed, practice tips, and audience engagement ideas.`, coins: 4 } });
       if (error) throw error;
       setResult(data.result);
       await supabase.from("glamour_creations").insert({
         user_id: user.id, creation_type: "talent_show", title: `${talent} Performance`,
-        prompt: details, result_text: data.result, credits_used: 4,
-      });
+        prompt: details, result_text: data.result, credits_used: 4 });
     } catch (e: any) {
       const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
         if (isCoinsErr) {

@@ -34,11 +34,9 @@ export const LearningProgressTracker = ({ onBack }: LearningProgressTrackerProps
       // Group by category
       const categoryMap = new Map<string, { total: number; completed: number; title: string; lastDate: string }>();
 
-      const categoryEmojis: Record<string, string> = {
-        'Technology': '💻', 'Creative': '🎨', 'Teaching': '📚',
+      const categoryEmojis: Record<string, string> = { 'Technology': '💻', 'Creative': '🎨', 'Teaching': '📚',
         'Music': '🎵', 'Sports': '⚽', 'Cooking': '🍳',
-        'Language': '🗣️', 'Other': '✨',
-      };
+        'Language': '🗣️', 'Other': '✨' };
 
       conversations.forEach(c => {
         const offering = c.skill_offerings as any;
@@ -58,10 +56,8 @@ export const LearningProgressTracker = ({ onBack }: LearningProgressTrackerProps
         progress: data.total > 0 ? Math.round((data.completed / data.total) * 100) : 0,
         totalSessions: data.total,
         completedSessions: data.completed,
-        lastSession: data.lastDate ? new Date(data.lastDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—',
-      }));
-    },
-  });
+        lastSession: data.lastDate ? new Date(data.lastDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—' }));
+    } });
 
   const totalCompleted = goals.reduce((sum, g) => sum + g.completedSessions, 0);
   const avgProgress = goals.length > 0 ? Math.round(goals.reduce((sum, g) => sum + g.progress, 0) / goals.length) : 0;

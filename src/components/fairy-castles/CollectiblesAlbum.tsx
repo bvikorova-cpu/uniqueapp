@@ -14,8 +14,7 @@ const rarityConfig: Record<string, { label: string; color: string; glow: string 
   common: { label: "Common", color: "border-gray-400", glow: "" },
   rare: { label: "Rare", color: "border-blue-500", glow: "shadow-blue-500/20" },
   epic: { label: "Epic", color: "border-purple-500", glow: "shadow-purple-500/30" },
-  legendary: { label: "Legendary", color: "border-amber-500", glow: "shadow-amber-500/40" },
-};
+  legendary: { label: "Legendary", color: "border-amber-500", glow: "shadow-amber-500/40" } };
 
 export function CollectiblesAlbum({ collectibles, collectedIds, isVisible, onClose }: CollectiblesAlbumProps) {
   if (!isVisible) return null;

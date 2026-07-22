@@ -15,33 +15,28 @@ export const usePriceAlerts = (productId?: string) => {
       if (productId) q = q.eq("product_id", productId);
       const { data } = await q.order("created_at", { ascending: false });
       return (data || []) as any[];
-    },
-  });
+    } });
 
   const createAlert = useMutation({
     mutationFn: async ({ productId, targetCents }: { productId: string; targetCents: number }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-      const { error } = await supabase.from("product_price_alerts" as any).insert({
-        user_id: user.id,
+      const { error } = await supabase.from("product_price_alerts" as any).insert({ user_id: user.id,
         product_id: productId,
-        target_price_cents: targetCents,
-      } as any);
+        target_price_cents: targetCents } as any);
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["price-alerts"] });
       toast({ title: "Price alert set" });
-    },
-  });
+    } });
 
   const removeAlert = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("product_price_alerts" as any).delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["price-alerts"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["price-alerts"] }) });
 
   return { alerts, createAlert: createAlert.mutate, removeAlert: removeAlert.mutate };
 };

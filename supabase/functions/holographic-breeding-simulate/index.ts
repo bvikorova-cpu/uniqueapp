@@ -4,10 +4,8 @@
 // (user, session, parent1, parent2) inputs always yield the same offspring.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const STYLES = ["Cyberpunk", "Crystal", "Shadow", "Cosmic", "Bio-Organic", "Ethereal"];
 const TRAITS = [
@@ -20,8 +18,7 @@ const SUFFIX = ["wraith", "song", "blade", "heart", "veil", "storm", "frost", "f
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 async function makeSeededRng(seed: string) {
@@ -53,8 +50,7 @@ Deno.serve(async (req) => {
     if (!authHeader) return json({ error: "Not authenticated" }, 401);
 
     const auth = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData } = await auth.auth.getUser();
     const user = userData?.user;
     if (!user) return json({ error: "Not authenticated" }, 401);
@@ -124,8 +120,7 @@ Deno.serve(async (req) => {
 
     const { data: result, error } = await admin
       .from("holographic_breeding_results")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         parent1_id: p1,
         parent2_id: p2,
         offspring_name: offspringName,
@@ -133,8 +128,7 @@ Deno.serve(async (req) => {
         offspring_traits: offspringTraits,
         offspring_level: level,
         rarity,
-        stripe_session_id: sessionId,
-      })
+        stripe_session_id: sessionId })
       .select()
       .single();
     if (error) throw error;

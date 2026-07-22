@@ -48,8 +48,7 @@ export default function AIPersonalShopper() {
       setMessages(newMessages);
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "personal-shopper", messages: newMessages },
-      });
+        body: { action: "personal-shopper", messages: newMessages } });
       if (error) throw error;
       return data.reply;
     },
@@ -59,8 +58,7 @@ export default function AIPersonalShopper() {
     onError: (e: any) => {
       toast.error(e.message);
       setMessages(prev => prev.slice(0, -1));
-    },
-  });
+    } });
 
   const sendMessage = (msg?: string) => {
     const text = msg || input.trim();

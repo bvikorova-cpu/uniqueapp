@@ -51,8 +51,7 @@ export default function FutureFaceMoodEmotion() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate("/auth"); return; }
       const res = await supabase.functions.invoke("future-face-image", {
-        body: { action: "mood_emotion", sourceUrl, params: { mood } },
-      });
+        body: { action: "mood_emotion", sourceUrl, params: { mood } } });
       const data = throwIfInvokeError(res);
       setResultUrl(data.resultUrl);
       toast({ title: "Mood applied!", description: `Used ${data.creditsUsed} credits.` });

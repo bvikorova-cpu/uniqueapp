@@ -16,12 +16,10 @@ interface ContestPeriod {
   title: string | null;
 }
 
-const empty = {
-  period_start: "",
+const empty = { period_start: "",
   period_end: "",
   prize_pool_eur: 10000,
-  title: "",
-};
+  title: "" };
 
 export default function AdminContestPeriods() {
   const [rows, setRows] = useState<ContestPeriod[]>([]);
@@ -54,12 +52,10 @@ export default function AdminContestPeriods() {
       return;
     }
     setSaving(true);
-    const { error } = await (supabase as any).from("mt_contest_settings").insert({
-      period_start: draft.period_start,
+    const { error } = await (supabase as any).from("mt_contest_settings").insert({ period_start: draft.period_start,
       period_end: draft.period_end,
       prize_pool_eur: Number(draft.prize_pool_eur) || 0,
-      title: draft.title || null,
-    });
+      title: draft.title || null });
     setSaving(false);
     if (error) return toast.error(error.message);
     toast.success("Period added");
@@ -70,12 +66,10 @@ export default function AdminContestPeriods() {
   const update = async (row: ContestPeriod) => {
     const { error } = await (supabase as any)
       .from("mt_contest_settings")
-      .update({
-        period_start: row.period_start,
+      .update({ period_start: row.period_start,
         period_end: row.period_end,
         prize_pool_eur: Number(row.prize_pool_eur) || 0,
-        title: row.title,
-      })
+        title: row.title })
       .eq("id", row.id);
     if (error) return toast.error(error.message);
     toast.success("Saved");
@@ -151,11 +145,10 @@ export default function AdminContestPeriods() {
                 type="number"
                 min={0}
                 value={draft.prize_pool_eur}
-                onChange={(e) =>
+                onChange={ (e) =>
                   setDraft({
                     ...draft,
-                    prize_pool_eur: Number(e.target.value),
-                  })
+                    prize_pool_eur: Number(e.target.value) })
                 }
               />
             </div>
@@ -253,10 +246,9 @@ export default function AdminContestPeriods() {
                             type="number"
                             min={0}
                             value={r.prize_pool_eur}
-                            onChange={(e) =>
+                            onChange={ (e) =>
                               setRow(r.id, {
-                                prize_pool_eur: Number(e.target.value),
-                              })
+                                prize_pool_eur: Number(e.target.value) })
                             }
                             className="h-8 w-[120px]"
                           />

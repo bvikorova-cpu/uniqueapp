@@ -355,8 +355,7 @@ export default function TeacherDashboard() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
       const { error } = await supabase.functions.invoke("cancel-subscription", {
-        body: { type: "school" },
-      });
+        body: { type: "school" } });
       if (error) throw error;
       toast.success("Subscription cancelled. You'll retain access until the end of the billing period.");
     } catch {

@@ -27,10 +27,8 @@ export const PromoteListingDialog = ({ open, onOpenChange, itemId, itemTitle, on
 
   const promote = async (plan: "bump" | "top") => {
     setSubmitting(plan);
-    const { data, error } = await supabase.rpc("bazaar_promote_listing" as any, {
-      p_item_id: itemId,
-      p_plan: plan,
-    });
+    const { data, error } = await supabase.rpc("bazaar_promote_listing" as any, { p_item_id: itemId,
+      p_plan: plan });
     setSubmitting(null);
     if (error) {
       toast({ title: "Could not promote", description: error.message, variant: "destructive" });
@@ -39,8 +37,7 @@ export const PromoteListingDialog = ({ open, onOpenChange, itemId, itemTitle, on
     const result: any = data;
     toast({
       title: plan === "top" ? "Listing TOP'd 👑" : "Listing bumped 🔥",
-      description: `Active for 7 days. ${result?.credits_remaining ?? 0} credits left.`,
-    });
+      description: `Active for 7 days. ${result?.credits_remaining ?? 0} credits left.` });
     onPromoted?.();
     onOpenChange(false);
   };

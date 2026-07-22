@@ -37,8 +37,7 @@ export const SkillMap = ({ onBack }: SkillMapProps) => {
 
       const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
 
-      return offerings.map((o, i) => {
-        const profile = profileMap.get(o.user_id);
+      return offerings.map((o, i) => { const profile = profileMap.get(o.user_id);
         // Distribute pins pseudo-randomly based on index
         const x = 15 + ((i * 37) % 70);
         const y = 20 + ((i * 53) % 55);
@@ -50,11 +49,9 @@ export const SkillMap = ({ onBack }: SkillMapProps) => {
           category: o.category,
           x,
           y,
-          userId: o.user_id,
-        };
+          userId: o.user_id };
       });
-    },
-  });
+    } });
 
   if (isLoading) {
     return (

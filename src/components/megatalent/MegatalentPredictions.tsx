@@ -68,10 +68,8 @@ const MegatalentPredictions = ({ category, userId }: { category?: string; userId
     setBusy(true);
     const { data, error } = await supabase
       .from("battle_royale_predictions")
-      .insert({
-        tournament_id: tournament.id, round: tournament.current_round,
-        user_id: userId, predicted_participant_id: participantId,
-      })
+      .insert({ tournament_id: tournament.id, round: tournament.current_round,
+        user_id: userId, predicted_participant_id: participantId })
       .select("id, predicted_participant_id, awarded").single();
     setBusy(false);
     if (error) { toast.error("Couldn't lock prediction", { description: error.message }); return; }

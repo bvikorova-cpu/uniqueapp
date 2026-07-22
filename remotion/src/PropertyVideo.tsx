@@ -48,8 +48,7 @@ const Scene = ({ emoji, title, sub, index }: { emoji: string; title: string; sub
             background: "rgba(255,255,255,0.08)",
             left: `${15 + i * 18}%`,
             top: `${20 + (i % 3) * 25}%`,
-            transform: `translate(${floatX}px, ${floatY}px)`,
-          }} />
+            transform: `translate(${floatX}px, ${floatY}px)` }} />
         );
       })}
       <AbsoluteFill style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8 }}>
@@ -61,8 +60,7 @@ const Scene = ({ emoji, title, sub, index }: { emoji: string; title: string; sub
           textShadow: "0 4px 30px rgba(0,0,0,0.3)",
           transform: `translateY(${titleY}px)`,
           opacity: titleOp,
-          letterSpacing: -1,
-        }}>
+          letterSpacing: -1 }}>
           {title}
         </div>
         <div style={{
@@ -70,8 +68,7 @@ const Scene = ({ emoji, title, sub, index }: { emoji: string; title: string; sub
           color: "rgba(255,255,255,0.85)",
           transform: `translateY(${subY}px)`,
           opacity: subOp,
-          fontWeight: 400,
-        }}>
+          fontWeight: 400 }}>
           {sub}
         </div>
       </AbsoluteFill>

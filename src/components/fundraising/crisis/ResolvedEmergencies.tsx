@@ -6,7 +6,7 @@ import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const resolved = [
   { title: "Flood Relief — Manila", raised: 12400, helped: 340, days: 5, emoji: "🌊", type: "Flood" },
-  { title: "Wildfire Recovery — Athens", raised: 8700, helped: 180, days: 8, emoji: "🔥", type: "Fire" },
+  { title: "Wildfire Recovery — Region", raised: 8700, helped: 180, days: 8, emoji: "🔥", type: "Fire" },
   { title: "Earthquake Aid — Istanbul", raised: 25300, helped: 890, days: 3, emoji: "🏚️", type: "Disaster" },
   { title: "Tornado Relief — Oklahoma", raised: 6200, helped: 120, days: 6, emoji: "🌪️", type: "Disaster" },
 ];

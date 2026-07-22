@@ -26,40 +26,32 @@ export function checkRateLimit(key: string, config: RateLimitConfig): {
   if (!state || now - state.windowStart >= config.windowMs) {
     // New window
     rateLimitStates.set(key, { requests: 1, windowStart: now });
-    return {
-      allowed: true,
+    return { allowed: true,
       remaining: config.maxRequests - 1,
-      resetIn: config.windowMs,
-    };
+      resetIn: config.windowMs };
   }
   
-  if (state.requests >= config.maxRequests) {
-    return {
+  if (state.requests >= config.maxRequests) { return {
       allowed: false,
       remaining: 0,
-      resetIn: config.windowMs - (now - state.windowStart),
-    };
+      resetIn: config.windowMs - (now - state.windowStart) };
   }
   
   state.requests++;
   rateLimitStates.set(key, state);
   
-  return {
-    allowed: true,
+  return { allowed: true,
     remaining: config.maxRequests - state.requests,
-    resetIn: config.windowMs - (now - state.windowStart),
-  };
+    resetIn: config.windowMs - (now - state.windowStart) };
 }
 
 /**
  * Rate limiter for API calls
  */
-export function createRateLimiter(config: RateLimitConfig) {
-  return {
+export function createRateLimiter(config: RateLimitConfig) { return {
     check: (key: string) => checkRateLimit(key, config),
     reset: (key: string) => rateLimitStates.delete(key),
-    clear: () => rateLimitStates.clear(),
-  };
+    clear: () => rateLimitStates.clear() };
 }
 
 /**
@@ -134,10 +126,8 @@ export function throttleWithRateLimit<T extends (...args: unknown[]) => unknown>
   };
 }
 
-export default {
-  checkRateLimit,
+export default { checkRateLimit,
   createRateLimiter,
   rateLimiters,
   debounceWithRateLimit,
-  throttleWithRateLimit,
-};
+  throttleWithRateLimit };

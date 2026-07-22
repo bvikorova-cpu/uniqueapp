@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 function score(jobText: string, skills: string[]): { score: number; reasons: string[] } {
   const lower = jobText.toLowerCase();
@@ -54,13 +52,11 @@ serve(async (req) => {
     const jobText = `${job.title} ${job.description || ""} ${job.requirements || ""}`;
     const result = score(jobText, skills);
 
-    await admin.from("job_match_scores").upsert({
-      user_id: user.id,
+    await admin.from("job_match_scores").upsert({ user_id: user.id,
       job_id: jobId,
       score: result.score,
       reasons: result.reasons,
-      computed_at: new Date().toISOString(),
-    }, { onConflict: "user_id,job_id" });
+      computed_at: new Date().toISOString() }, { onConflict: "user_id,job_id" });
 
     return new Response(JSON.stringify(result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {

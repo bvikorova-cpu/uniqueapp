@@ -31,8 +31,7 @@ export const useQuizzes = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 };
 
 export const useQuiz = (quizId: string | undefined) => {
@@ -59,8 +58,7 @@ export const useQuiz = (quizId: string | undefined) => {
 
       return { quiz, questions };
     },
-    enabled: !!quizId,
-  });
+    enabled: !!quizId });
 };
 
 export const useCreateQuiz = () => {
@@ -78,14 +76,12 @@ export const useCreateQuiz = () => {
       if (quizError) throw quizError;
 
       // Create questions
-      const questionsWithQuizId = questions.map((q, index) => ({
-        quiz_id: quizData.id,
+      const questionsWithQuizId = questions.map((q, index) => ({ quiz_id: quizData.id,
         question: q.question,
         options: q.options,
         correct_answer: q.correct_answer,
         explanation: q.explanation,
-        order_index: index,
-      }));
+        order_index: index }));
 
       const { error: questionsError } = await supabase
         .from("quiz_questions")
@@ -102,20 +98,17 @@ export const useCreateQuiz = () => {
     onError: (error) => {
       console.error("Error creating quiz:", error);
       toast.error("Failed to create quiz");
-    },
-  });
+    } });
 };
 
-export const useSubmitQuizAttempt = () => {
-  const queryClient = useQueryClient();
+export const useSubmitQuizAttempt = () => { const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
       quizId,
       answers,
       score,
-      passed,
-    }: {
+      passed }: {
       quizId: string;
       answers: Record<string, string>;
       score: number;
@@ -126,13 +119,11 @@ export const useSubmitQuizAttempt = () => {
 
       const { data, error } = await supabase
         .from("quiz_attempts")
-        .insert({
-          quiz_id: quizId,
+        .insert({ quiz_id: quizId,
           user_id: user.id,
           answers,
           score,
-          passed,
-        })
+          passed })
         .select()
         .single();
 
@@ -145,8 +136,7 @@ export const useSubmitQuizAttempt = () => {
     },
     onError: () => {
       toast.error("Failed to submit quiz");
-    },
-  });
+    } });
 };
 
 export const useQuizAttempts = (quizId: string | undefined) => {
@@ -168,6 +158,5 @@ export const useQuizAttempts = (quizId: string | undefined) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!quizId,
-  });
+    enabled: !!quizId });
 };

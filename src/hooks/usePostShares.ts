@@ -22,8 +22,7 @@ export const usePostShares = (postId?: string) => {
       if (error) throw error;
       return data || [];
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
   const sharePost = useMutation({
     mutationFn: async ({ postId, shareType, metadata }: {
@@ -34,24 +33,19 @@ export const usePostShares = (postId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("post_shares").insert({
-        original_post_id: postId,
+      const { error } = await supabase.from("post_shares").insert({ original_post_id: postId,
         user_id: user.id,
-        share_text: shareType,
-      });
+        share_text: shareType });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-shares"] });
       toast({ title: "Post shared!" });
-    },
-  });
+    } });
 
-  return {
-    shares: shares || [],
+  return { shares: shares || [],
     shareCount: shares?.length || 0,
     isLoading,
-    sharePost: sharePost.mutate,
-  };
+    sharePost: sharePost.mutate };
 };

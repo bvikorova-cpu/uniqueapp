@@ -32,9 +32,7 @@ export const PsychologicalProfile = () => {
     const validMessages = messages.filter(m => m.trim());
     if (validMessages.length === 0) return;
     const formatted = validMessages.map(text => ({ text }));
-    analyzeProfile({ messages: formatted, context }, {
-      onSuccess: (data) => setResult(data.analysis),
-    });
+    analyzeProfile({ messages: formatted, context }, { onSuccess: (data) => setResult(data.analysis) });
   };
 
   return (

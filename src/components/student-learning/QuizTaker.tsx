@@ -57,22 +57,18 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
 
       if (error) throw error;
       setQuestions((data as Question[]) || []);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAnswerSelect = (questionId: string, answer: string) => {
-    setAnswers({
+  const handleAnswerSelect = (questionId: string, answer: string) => { setAnswers({
       ...answers,
-      [questionId]: answer,
-    });
+      [questionId]: answer });
   };
 
   const handleNext = () => {
@@ -92,10 +88,8 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
     const results: Record<string, { is_correct: boolean; explanation?: string }> = {};
     let correctAnswers = 0;
     for (const q of questions) {
-      const { data } = await (supabase as any).rpc("grade_quiz_answer", {
-        _question_id: q.id,
-        _submitted_answer: answers[q.id] ?? "",
-      });
+      const { data } = await (supabase as any).rpc("grade_quiz_answer", { _question_id: q.id,
+        _submitted_answer: answers[q.id] ?? "" });
       const res = (data as any) || {};
       results[q.id] = { is_correct: !!res.is_correct, explanation: res.explanation };
       if (res.is_correct) correctAnswers++;
@@ -108,35 +102,29 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
 
     // Save quiz attempt
     try {
-      const { error } = await supabase.from("quiz_attempts").insert({
-        user_id: userId,
+      const { error } = await supabase.from("quiz_attempts").insert({ user_id: userId,
         quiz_id: quiz.id,
         score: scorePercentage,
         passed: scorePercentage >= quiz.passing_score,
-        answers: answers,
-      });
+        answers: answers });
 
       if (error) throw error;
 
       if (scorePercentage >= quiz.passing_score) {
         toast({
           title: "Quiz Passed! 🎉",
-          description: `You scored ${scorePercentage}%! Great job!`,
-        });
+          description: `You scored ${scorePercentage}%! Great job!` });
         onComplete();
       } else {
         toast({
           title: "Keep Trying!",
           description: `You scored ${scorePercentage}%. You need ${quiz.passing_score}% to pass.`,
-          variant: "destructive",
-        });
+          variant: "destructive" });
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

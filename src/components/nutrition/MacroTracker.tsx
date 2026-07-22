@@ -54,8 +54,7 @@ export default function MacroTracker() {
       setMealName(""); setCalories(0); setProtein(0); setCarbs(0); setFats(0);
       toast.success("Meal logged!");
     },
-    onError: (error: any) => toast.error(error.message || "Error logging meal"),
-  });
+    onError: (error: any) => toast.error(error.message || "Error logging meal") });
 
   const goals = { calories: 2000, protein: 150, carbs: 200, fats: 65 };
   const current = { calories: tracking?.calories || 0, protein: tracking?.protein || 0, carbs: tracking?.carbs || 0, fats: tracking?.fats || 0 };

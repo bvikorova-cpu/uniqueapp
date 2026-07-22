@@ -26,8 +26,7 @@ const typeMeta: Record<string, { label: string; icon: any; color: string }> = {
   situation: { label: "Situation", icon: AlertCircle, color: "text-orange-500" },
   distribution: { label: "Distribution", icon: Package, color: "text-blue-500" },
   milestone: { label: "Milestone", icon: Trophy, color: "text-primary" },
-  closure: { label: "Closure", icon: Flag, color: "text-muted-foreground" },
-};
+  closure: { label: "Closure", icon: Flag, color: "text-muted-foreground" } };
 
 interface Props {
   campaignId: string;
@@ -75,14 +74,12 @@ export function CrisisUpdatesTimeline({ campaignId, ownerUserId }: Props) {
     }
     setPosting(true);
     const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("crisis_updates" as any).insert({
-      campaign_id: campaignId,
+    const { error } = await supabase.from("crisis_updates" as any).insert({ campaign_id: campaignId,
       author_user_id: user?.id,
       title: form.title.trim().slice(0, 200),
       body: form.body.trim().slice(0, 5000),
       update_type: form.update_type,
-      image_url: form.image_url.trim() || null,
-    });
+      image_url: form.image_url.trim() || null });
     setPosting(false);
     if (error) {
       toast({ title: "Could not post", description: error.message, variant: "destructive" });

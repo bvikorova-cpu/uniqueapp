@@ -26,11 +26,9 @@ interface FloatingEmoji {
  * Lightweight realtime spectator chat + emoji reactions for an IQ duel.
  * Uses Supabase broadcast (no DB writes) — scoped per duel id.
  */
-export default function IQDuelChat({
-  duelId,
+export default function IQDuelChat({ duelId,
   myUserId,
-  myName,
-}: {
+  myName }: {
   duelId: string;
   myUserId: string;
   myName: string;
@@ -43,8 +41,7 @@ export default function IQDuelChat({
 
   useEffect(() => {
     const ch = supabase.channel(`duel-chat:${duelId}`, {
-      config: { broadcast: { self: true } },
-    });
+      config: { broadcast: { self: true } } });
     ch.on("broadcast", { event: "msg" }, ({ payload }) => {
       setMessages((m) => [...m.slice(-49), payload as ChatMsg]);
     });
@@ -52,8 +49,7 @@ export default function IQDuelChat({
       const fe: FloatingEmoji = {
         id: crypto.randomUUID(),
         emoji: (payload as { emoji: string }).emoji,
-        x: Math.random() * 80 + 10,
-      };
+        x: Math.random() * 80 + 10 };
       setFloats((f) => [...f, fe]);
       setTimeout(() => setFloats((f) => f.filter((x) => x.id !== fe.id)), 2200);
     });
@@ -69,8 +65,7 @@ export default function IQDuelChat({
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
-  const send = () => {
-    const trimmed = text.trim().slice(0, 200);
+  const send = () => { const trimmed = text.trim().slice(0, 200);
     if (!trimmed || !channelRef.current) return;
     channelRef.current.send({
       type: "broadcast",
@@ -80,9 +75,7 @@ export default function IQDuelChat({
         user_id: myUserId,
         name: myName || "Spectator",
         text: trimmed,
-        ts: Date.now(),
-      } satisfies ChatMsg,
-    });
+        ts: Date.now() } satisfies ChatMsg });
     setText("");
   };
 
@@ -90,8 +83,7 @@ export default function IQDuelChat({
     channelRef.current?.send({
       type: "broadcast",
       event: "emoji",
-      payload: { emoji },
-    });
+      payload: { emoji } });
   };
 
   return (

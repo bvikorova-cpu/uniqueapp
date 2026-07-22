@@ -45,10 +45,8 @@ export default function CampaignSuccess() {
         break;
       case 'copy':
         navigator.clipboard.writeText(campaignUrl);
-        toast({
-          title: 'Link Copied!',
-          description: 'Campaign link has been copied to your clipboard',
-        });
+        toast({ title: 'Link Copied!',
+          description: 'Campaign link has been copied to your clipboard' });
         return;
     }
 

@@ -19,8 +19,7 @@ export const RealtimeView = ({ onCreditsUsed }: { onCreditsUsed: () => void }) =
       setLoading(true);
       try {
         const { data, error } = await supabase.functions.invoke("ai-image-tools", {
-          body: { action: "generate", prompt },
-        });
+          body: { action: "generate", prompt } });
         if (error) throw error;
         if (data?.imageUrl) { setImageUrl(data.imageUrl); onCreditsUsed(); }
       } catch (e: any) { toast.error(e.message || "Failed"); }

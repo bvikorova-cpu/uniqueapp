@@ -15,8 +15,7 @@ const STATUS_META: Record<string, { icon: typeof CheckCircle2; color: string; la
   operational: { icon: CheckCircle2, color: "text-emerald-500", label: "Operational" },
   degraded: { icon: AlertTriangle, color: "text-amber-500", label: "Degraded" },
   outage: { icon: XCircle, color: "text-destructive", label: "Outage" },
-  maintenance: { icon: Activity, color: "text-blue-500", label: "Maintenance" },
-};
+  maintenance: { icon: Activity, color: "text-blue-500", label: "Maintenance" } };
 
 export const SystemStatusWidget = () => {
   const [components, setComponents] = useState<Component[]>([]);

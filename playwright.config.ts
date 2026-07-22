@@ -18,35 +18,24 @@ export default defineConfig({
     navigationTimeout: 20_000,
     screenshot: "only-on-failure",
     video: "retain-on-failure",
-    launchOptions: {
-      executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || "/bin/chromium",
-      args: ["--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"],
-    },
-  },
+    launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || "/bin/chromium",
+      args: ["--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"] } },
   projects: [
     { name: "setup", testMatch: /auth\.setup\.ts/ },
-    {
-      name: "chromium-authed",
+    { name: "chromium-authed",
       testDir: "./e2e/authed",
       dependencies: ["setup"],
       use: {
         browserName: "chromium",
-        storageState: "e2e/.auth/authed-state.json",
-      },
-    },
-    {
-      name: "crawler",
+        storageState: "e2e/.auth/authed-state.json" } },
+    { name: "crawler",
       testDir: "./e2e/crawler",
       dependencies: ["setup"],
       use: {
         browserName: "chromium",
-        storageState: "e2e/.auth/authed-state.json",
-      },
-    },
+        storageState: "e2e/.auth/authed-state.json" } },
     {
       name: "chromium",
       testIgnore: [/auth\.setup\.ts/, /authed\//],
-      use: { browserName: "chromium" },
-    },
-  ],
-});
+      use: { browserName: "chromium" } },
+  ] });

@@ -3,20 +3,16 @@ import { MessageCircle, Send, MoreHorizontal, ExternalLink, BellOff, Bell, User,
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
+  DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDirectMessages } from "@/hooks/useDirectMessages";
@@ -34,11 +30,9 @@ interface DirectMessagesDialogProps {
   userAvatar?: string;
 }
 
-export const DirectMessagesDialog = ({
-  userId,
+export const DirectMessagesDialog = ({ userId,
   userName,
-  userAvatar,
-}: DirectMessagesDialogProps) => {
+  userAvatar }: DirectMessagesDialogProps) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const { isMuted: isDmMuted, toggle: toggleDmMute } = useDmMutes();
@@ -111,8 +105,7 @@ export const DirectMessagesDialog = ({
       title: wasMuted ? "Notifications enabled" : "Notifications muted",
       description: wasMuted
         ? `You will receive notifications from ${userName}`
-        : `You won't receive notifications from ${userName}`,
-    });
+        : `You won't receive notifications from ${userName}` });
   };
 
   const handleViewProfile = () => {
@@ -120,18 +113,14 @@ export const DirectMessagesDialog = ({
     navigate(`/profile/${userId}`);
   };
 
-  const handleDeleteConversation = () => {
-    toast({
+  const handleDeleteConversation = () => { toast({
       title: "Conversation deleted",
-      description: "This conversation has been removed",
-    });
+      description: "This conversation has been removed" });
   };
 
-  const handleReport = () => {
-    toast({
+  const handleReport = () => { toast({
       title: "Report submitted",
-      description: "Thank you for your feedback",
-    });
+      description: "Thank you for your feedback" });
   };
 
   const handleQuickReaction = () => {

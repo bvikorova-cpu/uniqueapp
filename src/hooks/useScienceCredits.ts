@@ -14,12 +14,10 @@ interface ScienceCreditsState {
  * Paid-only science credits (4 credits per AI analysis).
  * Backed by `science_credits` table + universal `create-checkout` router.
  */
-export const useScienceCredits = () => {
-  const [state, setState] = useState<ScienceCreditsState>({
+export const useScienceCredits = () => { const [state, setState] = useState<ScienceCreditsState>({
     credits_remaining: 0,
     total_credits_purchased: 0,
-    loading: true,
-  });
+    loading: true });
 
   const refresh = useCallback(async () => {
     try {
@@ -37,12 +35,10 @@ export const useScienceCredits = () => {
 
       if (error && error.code !== "PGRST116") throw error;
 
-      if (data) {
-        setState({
+      if (data) { setState({
           credits_remaining: data.credits_remaining ?? 0,
           total_credits_purchased: data.total_credits_purchased ?? 0,
-          loading: false,
-        });
+          loading: false });
       } else {
         // Lazy-create row
         await supabase
@@ -64,8 +60,7 @@ export const useScienceCredits = () => {
         return null;
       }
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { credits, creditType: "science" },
-      });
+        body: { credits, creditType: "science" } });
       if (error) throw error;
       return data?.url || null;
     } catch (e: any) {
@@ -79,10 +74,8 @@ export const useScienceCredits = () => {
     refresh();
   }, [refresh]);
 
-  return {
-    ...state,
+  return { ...state,
     canRun: state.credits_remaining >= SCIENCE_CREDITS_PER_RUN,
     refresh,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

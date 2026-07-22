@@ -4,7 +4,7 @@ import { Sparkles, TrendingUp, Users } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const NAMES = ["Sarah", "Marco", "Yuki", "Alex", "Priya", "Liam", "Emma", "Noah", "Zara", "Diego", "Sofia", "Kai"];
-const COUNTRIES = ["🇩🇪", "🇫🇷", "🇮🇹", "🇪🇸", "🇬🇧", "🇺🇸", "🇯🇵", "🇧🇷", "🇮🇳", "🇨🇦", "🇦🇺", "🇸🇰"];
+const COUNTRIES = ["", "🇫🇷", "🇮🇹", "🇪🇸", "🇬🇧", "🇺🇸", "🇯🇵", "🇧🇷", "🇮🇳", "🇨🇦", "🇦🇺", "🇸🇰"];
 const ACTIONS = [
   "upgraded to Premium",
   "joined Business plan",

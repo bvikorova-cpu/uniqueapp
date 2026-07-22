@@ -26,14 +26,11 @@ export default function AchievementProgressCards({ userId }: { userId: string })
         .from("user_badges" as any)
         .select("*", { count: "exact", head: true })
         .eq("user_id", userId);
-      return {
-        total_xp: pts?.total_points || 0,
+      return { total_xp: pts?.total_points || 0,
         login_streak: pts?.login_streak || 0,
         level: pts?.level || 1,
-        badges_earned: badgeCount || 0,
-      };
-    },
-  });
+        badges_earned: badgeCount || 0 };
+    } });
 
   const computeProgress = (b: any): number => {
     if (!stats || !b.requirement_value) return 0;

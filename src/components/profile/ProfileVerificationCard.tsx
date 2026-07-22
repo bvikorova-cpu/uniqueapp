@@ -20,34 +20,28 @@ const TIERS: Array<{
   highlights: string[];
   popular?: boolean;
 }> = [
-  {
-    key: "verified",
+  { key: "verified",
     name: "Verified",
     price: "15",
     period: "one-time",
     icon: Shield,
     accent: "from-amber-400 to-yellow-600",
-    highlights: ["Golden badge", "Feed priority", "50 AI credits"],
-  },
-  {
-    key: "plus",
+    highlights: ["Golden badge", "Feed priority", "50 AI credits"] },
+  { key: "plus",
     name: "Plus",
     price: "40",
     period: "/mo",
     icon: Crown,
     accent: "from-pink-500 to-rose-600",
     popular: true,
-    highlights: ["Everything in Verified", "100 AI credits / mo", "Top feed priority"],
-  },
-  {
-    key: "pro",
+    highlights: ["Everything in Verified", "100 AI credits / mo", "Top feed priority"] },
+  { key: "pro",
     name: "Pro",
     price: "150",
     period: "/mo",
     icon: Star,
     accent: "from-purple-500 to-fuchsia-600",
-    highlights: ["Everything in Plus", "150 AI credits / mo", "Personal manager"],
-  },
+    highlights: ["Everything in Plus", "150 AI credits / mo", "Personal manager"] },
 
 ];
 
@@ -72,8 +66,7 @@ export function ProfileVerificationCard() {
     setOpeningPortal(true);
     try {
       const { data, error } = await supabase.functions.invoke("billing-portal", {
-        body: { return_url: window.location.href },
-      });
+        body: { return_url: window.location.href } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       if ((data as any)?.url) window.open((data as any).url, "_blank");
@@ -90,12 +83,10 @@ export function ProfileVerificationCard() {
     try {
       const { data, error } = await supabase.functions.invoke("check-verification", {});
       if (error) throw error;
-      if (data && typeof data.tier === "string") {
-        setLive({
+      if (data && typeof data.tier === "string") { setLive({
           tier: data.tier,
           status: (data.status ?? "none") as StripeStatus,
-          expiresAt: data.expires_at ?? null,
-        });
+          expiresAt: data.expires_at ?? null });
       }
     } catch (e: any) {
       // Non-fatal: fall back to AuthContext tier
@@ -147,8 +138,7 @@ export function ProfileVerificationCard() {
     setProcessing(key);
     try {
       const { data, error } = await supabase.functions.invoke("manage-verification", {
-        body: { action, target_tier: targetTier },
-      });
+        body: { action, target_tier: targetTier } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       toast.success(
@@ -177,8 +167,7 @@ export function ProfileVerificationCard() {
     setProcessing(tier);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: "verification", tier },
-      });
+        body: { product: "verification", tier } });
       if (error) throw error;
       if (data?.url) {
         window.location.href = data.url;
@@ -193,11 +182,9 @@ export function ProfileVerificationCard() {
 
   const expiryLabel =
     expiresAt && effectiveTier !== "verified" && effectiveTier !== "none"
-      ? new Date(expiresAt).toLocaleDateString(undefined, {
-          year: "numeric",
+      ? new Date(expiresAt).toLocaleDateString(undefined, { year: "numeric",
           month: "short",
-          day: "numeric",
-        })
+          day: "numeric" })
       : null;
 
   return (

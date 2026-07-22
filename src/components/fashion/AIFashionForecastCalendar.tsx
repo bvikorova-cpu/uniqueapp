@@ -48,8 +48,7 @@ export default function AIFashionForecastCalendar() {
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "forecast-calendar", location, preferred_style: style },
-      });
+        body: { action: "forecast-calendar", location, preferred_style: style } });
       if (error) throw error;
       return data as ForecastResult;
     },
@@ -57,12 +56,9 @@ export default function AIFashionForecastCalendar() {
       setResult(data);
       toast.success("Your 7-day fashion forecast is ready!");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
-  const weatherIcons: Record<string, string> = {
-    sunny: "☀️", cloudy: "☁️", rainy: "🌧️", snowy: "❄️", windy: "💨", warm: "🌤️", cool: "🍂",
-  };
+  const weatherIcons: Record<string, string> = { sunny: "☀️", cloudy: "☁️", rainy: "🌧️", snowy: "❄️", windy: "💨", warm: "🌤️", cool: "🍂" };
 
   return (
     <>
@@ -87,7 +83,7 @@ export default function AIFashionForecastCalendar() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div>
             <Label>Your Location</Label>
-            <Input placeholder="e.g. New York, London, Tokyo" value={location} onChange={e => setLocation(e.target.value)} />
+            <Input placeholder="e.g. City, City, City" value={location} onChange={e => setLocation(e.target.value)} />
           </div>
           <div>
             <Label>Preferred Style</Label>

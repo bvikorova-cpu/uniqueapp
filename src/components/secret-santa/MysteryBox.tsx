@@ -86,8 +86,7 @@ export const MysteryBox = () => {
       if (error) throw error;
       return (data || []).map((u: any) => ({ id: u.id, username: u.full_name || "User", avatar_url: u.avatar_url }));
     },
-    enabled: searchQuery.length >= 2,
-  });
+    enabled: searchQuery.length >= 2 });
 
   const selectedUserData = users.find(u => u.id === selectedRecipient);
   const selectedTierData = MYSTERY_BOX_TIERS.find(t => t.id === selectedTier);
@@ -128,16 +127,14 @@ export const MysteryBox = () => {
       // Record mystery box
       const { error: boxError } = await supabase
         .from("social_gifts_mystery_boxes")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           recipient_id: selectedRecipient,
           box_tier: selectedTier,
           cost: selectedTierData.cost,
           revealed_gift_type: randomGift.type,
           revealed_gift_value: randomGift.value,
           message: message || null,
-          is_anonymous: isAnonymous,
-        });
+          is_anonymous: isAnonymous });
 
       if (boxError) throw boxError;
 
@@ -152,8 +149,7 @@ export const MysteryBox = () => {
           gift_value: randomGift.value,
           message: `🎲 Mystery Box ${selectedTierData.name}! ${message || ""}`.trim(),
           is_anonymous: isAnonymous,
-          animation_type: "mystery",
-        });
+          animation_type: "mystery" });
 
       if (giftError) throw giftError;
 
@@ -169,8 +165,7 @@ export const MysteryBox = () => {
     },
     onError: (error: Error) => {
       toast({ title: error.message, variant: "destructive" });
-    },
-  });
+    } });
 
   const handleSend = () => {
     sendMysteryBox.mutate();

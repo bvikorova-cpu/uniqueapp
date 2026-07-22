@@ -52,9 +52,7 @@ export function AIQuantumOracle({ onBack }: { onBack: () => void }) {
       const response = await supabase.functions.invoke("ai-mood-therapist", {
         body: {
           messages: updatedMessages.map(m => ({ role: m.role, content: m.content })),
-          systemPrompt: `You are the Quantum Oracle — an AI that exists across multiple dimensions simultaneously. You provide quantum-physics-inspired insights about social dynamics, relationships, and reality perception. Your predictions are mystical yet grounded in quantum mechanics metaphors. You speak with authority about superposition of possibilities, entanglement between people, and the observer effect on social interactions. Keep responses engaging, mysterious, and insightful. Always relate answers back to quantum concepts. Cost: 3 credits per session.`,
-        },
-      });
+          systemPrompt: `You are the Quantum Oracle — an AI that exists across multiple dimensions simultaneously. You provide quantum-physics-inspired insights about social dynamics, relationships, and reality perception. Your predictions are mystical yet grounded in quantum mechanics metaphors. You speak with authority about superposition of possibilities, entanglement between people, and the observer effect on social interactions. Keep responses engaging, mysterious, and insightful. Always relate answers back to quantum concepts. Cost: 3 credits per session.` } });
 
       if (response.error) throw response.error;
 
@@ -83,13 +81,11 @@ export function AIQuantumOracle({ onBack }: { onBack: () => void }) {
       }
 
       // Save session
-      await supabase.from("quantum_oracle_sessions").insert([{
-        user_id: user.id,
+      await supabase.from("quantum_oracle_sessions").insert([{ user_id: user.id,
         question: input,
         prediction: "Session recorded",
         credits_used: 3,
-        session_type: "consultation",
-      }]);
+        session_type: "consultation" }]);
 
     } catch (error) {
       const fallback = generateOracleResponse(input);

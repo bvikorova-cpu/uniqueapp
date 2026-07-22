@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
@@ -89,13 +87,11 @@ export function AdminWithdrawalManagement() {
       } else {
         setRequests([]);
       }
-    } catch (error: any) {
-      console.error("Error loading requests:", error);
+    } catch (error: any) { console.error("Error loading requests:", error);
       toast({
         title: "Error",
         description: "Failed to load withdrawal requests",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -110,31 +106,26 @@ export function AdminWithdrawalManagement() {
       
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.rpc("process_withdrawal_request", {
-        p_request_id: selectedRequest.id,
+      const { error } = await supabase.rpc("process_withdrawal_request", { p_request_id: selectedRequest.id,
         p_admin_id: user.id,
         p_status: status,
-        p_admin_notes: adminNotes || null,
-      });
+        p_admin_notes: adminNotes || null });
 
       if (error) throw error;
 
       toast({
         title: "Success",
-        description: `Withdrawal request ${status}`,
-      });
+        description: `Withdrawal request ${status}` });
 
       setShowDetailsDialog(false);
       setSelectedRequest(null);
       setAdminNotes("");
       loadRequests();
-    } catch (error: any) {
-      console.error("Error processing request:", error);
+    } catch (error: any) { console.error("Error processing request:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to process request",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setProcessing(false);
     }

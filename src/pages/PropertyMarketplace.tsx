@@ -200,9 +200,7 @@ export default function PropertyMarketplace() {
         body: {
           ...body,
           successUrl: `${window.location.origin}/property-marketplace?payment=success`,
-          cancelUrl: `${window.location.origin}/property-marketplace?payment=canceled`,
-        },
-      });
+          cancelUrl: `${window.location.origin}/property-marketplace?payment=canceled` } });
       if (error) throw error;
       if (data?.url) {
         window.location.href = data.url;

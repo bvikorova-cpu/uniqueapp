@@ -15,15 +15,13 @@ export const CouponHero = ({ couponCount }: CouponHeroProps) => {
     const target = { coupons: couponCount || 156, sellers: 72, saved: 8400, satisfaction: 97 };
     const steps = 60;
     let step = 0;
-    const timer = setInterval(() => {
-      step++;
+    const timer = setInterval(() => { step++;
       const ease = 1 - Math.pow(1 - Math.min(step / steps, 1), 3);
       setStats({
         coupons: Math.round(target.coupons * ease),
         sellers: Math.round(target.sellers * ease),
         saved: Math.round(target.saved * ease),
-        satisfaction: Math.round(target.satisfaction * ease),
-      });
+        satisfaction: Math.round(target.satisfaction * ease) });
       if (step >= steps) clearInterval(timer);
     }, 33);
     return () => clearInterval(timer);

@@ -28,8 +28,7 @@ export function AIColorSuggestions() {
     setIsGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke("coloring-ai-tools", {
-        body: { action: "color-suggestions", pageDescription: description, mood },
-      });
+        body: { action: "color-suggestions", pageDescription: description, mood } });
       if (error) throw new Error(data?.error || error.message);
       if (data?.error) throw new Error(data.error);
       setPalettes(data.palettes || []);

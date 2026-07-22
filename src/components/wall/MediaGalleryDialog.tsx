@@ -1,12 +1,10 @@
 import { Image as ImageIcon, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMediaGallery } from "@/hooks/useMediaGallery";

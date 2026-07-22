@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -20,8 +18,7 @@ Deno.serve(async (req) => {
     if (!authHeader) throw new Error("Missing auth");
 
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: { user } } = await sb.auth.getUser();
     if (!user) throw new Error("Unauthorized");
 
@@ -44,16 +41,13 @@ ${JSON.stringify(answers, null, 2)}`;
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You output ONLY raw JSON. No markdown, no commentary." },
           { role: "user", content: prompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (!ai.ok) {
       const t = await ai.text();
@@ -67,24 +61,20 @@ ${JSON.stringify(answers, null, 2)}`;
     const parsed = JSON.parse(content);
 
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-    await admin.from("profile_personality").upsert({
-      user_id: user.id,
+    await admin.from("profile_personality").upsert({ user_id: user.id,
       archetype: parsed.archetype,
       summary: parsed.summary,
       traits: parsed.traits,
       suggested_interests: parsed.suggested_interests,
       suggested_tone: parsed.suggested_tone,
-      raw_answers: answers,
-    }, { onConflict: "user_id" });
+      raw_answers: answers }, { onConflict: "user_id" });
 
     return new Response(JSON.stringify(parsed), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("[personality-test]", e);
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

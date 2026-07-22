@@ -141,10 +141,9 @@ const Home = () => {
               src={image}
               alt={`Hero slide ${index + 1}`}
               className="absolute inset-0 w-full h-full object-cover"
-              style={{
+              style={ {
                 imageRendering: "auto",
-                opacity: 1,
-              }}
+                opacity: 1 }}
             />
           </div>
         ))}

@@ -12,8 +12,7 @@ import { ComedyRoastArena } from "@/components/comedy/ComedyRoastArena";
 import { JokeWritingWorkshop } from "@/components/comedy/JokeWritingWorkshop";
 import { ComedyOpenMicNight } from "@/components/comedy/ComedyOpenMicNight";
 import { ComedianHallOfFame } from "@/components/comedy/ComedianHallOfFame";
-import {
-  useComedyShows,
+import { useComedyShows,
   useBuyTicket,
   useComedyBattles,
   useSendTip,
@@ -21,12 +20,9 @@ import {
   useComedianProfile,
   useCreateComedianProfile,
   useComedyClips,
-  useBuyClip,
-} from "@/hooks/useComedy";
-import {
-  Mic2, Trophy, Video, TrendingUp, Ticket, User, Flame,
-  PenTool, Crown, Star, Sparkles, Swords,
-} from "lucide-react";
+  useBuyClip } from "@/hooks/useComedy";
+import { Mic2, Trophy, Video, TrendingUp, Ticket, User, Flame,
+  PenTool, Crown, Star, Sparkles, Swords } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,8 +52,7 @@ export default function ComedyClub() {
   const handleCreateProfile = () => {
     if (!stageName) return;
     createProfile.mutate({ stageName, bio }, {
-      onSuccess: () => { setShowCreateProfile(false); setStageName(""); setBio(""); },
-    });
+      onSuccess: () => { setShowCreateProfile(false); setStageName(""); setBio(""); } });
   };
 
   const tipOptions = [

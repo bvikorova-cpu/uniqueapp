@@ -8,9 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
-import {
-  ArrowLeft, Plus, Pencil, Trash2, Eye, ListOrdered, MessageSquare, Euro,
-} from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Eye, ListOrdered, MessageSquare, Euro } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Offering = {

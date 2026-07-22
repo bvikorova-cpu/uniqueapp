@@ -5,8 +5,7 @@ import { Sparkles } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQCustomSummary() {
   const [data, setData] = useState({ avatar: "", theme: "", title: "", banner: "", frame: "", nick: "", bio: "", sound: true });
-  useEffect(() => {
-    setData({
+  useEffect(() => { setData({
       avatar: localStorage.getItem("iq_avatar") || "—",
       theme: localStorage.getItem("iq_theme_accent") || "—",
       title: localStorage.getItem("iq_title") || "—",
@@ -14,8 +13,7 @@ export default function IQCustomSummary() {
       frame: localStorage.getItem("iq_frame") || "none",
       nick: localStorage.getItem("iq_nickname") || "—",
       bio: localStorage.getItem("iq_bio") || "—",
-      sound: localStorage.getItem("iq_sound_enabled") !== "0",
-    });
+      sound: localStorage.getItem("iq_sound_enabled") !== "0" });
   }, []);
   const items = [
     ["Avatar", data.avatar], ["Theme", data.theme], ["Title", data.title],

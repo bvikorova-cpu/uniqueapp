@@ -72,26 +72,21 @@ export const GiftRoulette = () => {
           p_gift_value: tier.cost,
           p_message: `🎲 Gift Roulette surprise! You received a ${randomGift.label}!`,
           p_is_anonymous: true,
-          p_animation_type: "roulette",
-        });
+          p_animation_type: "roulette" });
         if (rpcErr) throw rpcErr;
       } else {
         // No match — just deduct cost (still pays for the spin)
-        const { error: dedErr } = await supabase.rpc("deduct_secret_santa_credits", {
-          p_user_id: user.id,
-          p_amount: tier.cost,
-        });
+        const { error: dedErr } = await supabase.rpc("deduct_secret_santa_credits", { p_user_id: user.id,
+          p_amount: tier.cost });
         if (dedErr) throw dedErr;
       }
 
       // Stop animation after delay
-      setTimeout(() => {
-        clearInterval(animInterval);
+      setTimeout(() => { clearInterval(animInterval);
         setIsSpinning(false);
         setResult({
           gift: randomGift,
-          matchedUser: matchedUser?.full_name || "a random user",
-        });
+          matchedUser: matchedUser?.full_name || "a random user" });
         setShowConfetti(true);
         setTimeout(() => setShowConfetti(false), 100);
         queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });

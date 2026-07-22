@@ -44,14 +44,12 @@ export const LifeLessonJournal = () => {
         .eq("activity_type", "life_lesson_journal")
         .order("created_at", { ascending: false });
 
-      if (data) {
-        setEntries(data.map((d: any) => ({
+      if (data) { setEntries(data.map((d: any) => ({
           id: d.id,
           title: (d.metadata as any)?.title || "Untitled",
           content: (d.metadata as any)?.content || "",
           tags: (d.metadata as any)?.tags || [],
-          created_at: d.created_at,
-        })));
+          created_at: d.created_at })));
       }
     } catch (error) {
       console.error("Error:", error);
@@ -78,18 +76,15 @@ export const LifeLessonJournal = () => {
       const { data, error } = await supabase.from("activity_feed").insert({
         user_id: session.user.id,
         activity_type: "life_lesson_journal",
-        metadata: { title: title.trim(), content: content.trim(), tags },
-      }).select().single();
+        metadata: { title: title.trim(), content: content.trim(), tags } }).select().single();
 
       if (error) throw error;
 
-      setEntries((prev) => [{
-        id: data.id,
+      setEntries((prev) => [{ id: data.id,
         title: title.trim(),
         content: content.trim(),
         tags,
-        created_at: data.created_at,
-      }, ...prev]);
+        created_at: data.created_at }, ...prev]);
       setTitle("");
       setContent("");
       setTagInput("");

@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
 import { Smile, X } from "lucide-react";
 import { ReactionsDialog } from "@/components/wall/ReactionsDialog";
@@ -64,13 +62,11 @@ export const CommentReactionPicker = ({ commentId }: CommentReactionPickerProps)
         .eq("comment_id", commentId)
         .eq("user_id", user.id);
       setUserReaction(null);
-    } else {
-      // Upsert reaction
+    } else { // Upsert reaction
       await supabase.from("comment_reactions").upsert({
         comment_id: commentId,
         user_id: user.id,
-        reaction_type: type,
-      }, { onConflict: "comment_id,user_id" });
+        reaction_type: type }, { onConflict: "comment_id,user_id" });
       setUserReaction(type);
     }
     
@@ -140,10 +136,9 @@ export const CommentReactionPicker = ({ commentId }: CommentReactionPickerProps)
       <ReactionsDialog
         open={listOpen}
         onOpenChange={setListOpen}
-        reactions={reactions.map((r) => ({
+        reactions={ reactions.map((r) => ({
           user_id: r.user_id,
-          reaction_type: r.reaction_type,
-        }))}
+          reaction_type: r.reaction_type }))}
         reactionMeta={REACTIONS}
       />
     </div>

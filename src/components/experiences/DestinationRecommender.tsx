@@ -38,8 +38,7 @@ export const DestinationRecommender = () => {
         return;
       }
       const { data, error } = await supabase.functions.invoke("experience-ai", {
-        body: { action: "destination-recommender", travelStyle, climate, budgetLevel, interests },
-      });
+        body: { action: "destination-recommender", travelStyle, climate, budgetLevel, interests } });
       if (error) throw error;
       setRecommendations(data.recommendations || []);
       toast({ title: "🌍 Recommendations Ready!", description: "Check out your personalized destinations" });

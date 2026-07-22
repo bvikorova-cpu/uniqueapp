@@ -46,9 +46,7 @@ export default function Onboarding() {
 
   const saveTemplate = async () => {
     if (!name || tasks.length === 0) return toast.error("Name + at least one task");
-    const { error } = await (supabase as any).from("onboarding_templates").insert({
-      employer_id: userId, name, tasks,
-    });
+    const { error } = await (supabase as any).from("onboarding_templates").insert({ employer_id: userId, name, tasks });
     if (error) return toast.error(error.message);
     toast.success("Template saved"); setName(""); setTasks([]); load();
   };

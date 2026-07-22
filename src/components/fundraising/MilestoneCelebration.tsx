@@ -86,12 +86,11 @@ export function MilestoneCelebration({ pct, onMilestone }: Props) {
                 key={i}
                 className="absolute text-2xl pointer-events-none"
                 initial={{ x: 0, y: 0, opacity: 1, rotate: 0 }}
-                animate={{
+                animate={ {
                   x: (Math.random() - 0.5) * 400,
                   y: (Math.random() - 0.5) * 300 - 100,
                   opacity: 0,
-                  rotate: Math.random() * 720,
-                }}
+                  rotate: Math.random() * 720 }}
                 transition={{ duration: 2.5, ease: "easeOut" }}
                 style={{ left: "50%", top: "50%" }}
               >

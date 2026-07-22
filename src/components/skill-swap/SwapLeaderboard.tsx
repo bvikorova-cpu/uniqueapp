@@ -57,8 +57,7 @@ export const SwapLeaderboard = ({ onBack }: SwapLeaderboardProps) => {
       // Build leaderboard entries
       const entries = profiles
         .filter(p => userStats.has(p.id))
-        .map(p => {
-          const s = userStats.get(p.id)!;
+        .map(p => { const s = userStats.get(p.id)!;
           return {
             name: p.full_name || 'User',
             avatar: p.avatar_url || '👤',
@@ -66,16 +65,14 @@ export const SwapLeaderboard = ({ onBack }: SwapLeaderboardProps) => {
             exchanges: s.exchanges,
             rating: s.reviewCount > 0 ? Math.round((s.totalRating / s.reviewCount) * 10) / 10 : 0,
             reviews: s.reviewCount,
-            isAvatarUrl: !!p.avatar_url,
-          };
+            isAvatarUrl: !!p.avatar_url };
         })
         .sort((a, b) => b.exchanges - a.exchanges)
         .slice(0, 20)
         .map((e, i) => ({ ...e, rank: i + 1 }));
 
       return entries;
-    },
-  });
+    } });
 
   const sorted = [...leaderboard].sort((a, b) => {
     if (sortBy === "rating") return b.rating - a.rating;

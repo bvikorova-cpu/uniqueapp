@@ -23,14 +23,12 @@ export function TreasureHunt({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "treasure_hunt", prompt: `Create a magical treasure hunt for ${location}. ${details}. Include: 10 clues with riddles, hiding spots, a treasure map description, prize ideas, and theme decorations.`, coins: 4 },
-      });
+        body: { type: "treasure_hunt", prompt: `Create a magical treasure hunt for ${location}. ${details}. Include: 10 clues with riddles, hiding spots, a treasure map description, prize ideas, and theme decorations.`, coins: 4 } });
       if (error) throw error;
       setResult(data.result);
       await supabase.from("glamour_creations").insert({
         user_id: user.id, creation_type: "treasure_hunt", title: `Treasure Hunt - ${location}`,
-        prompt: details, result_text: data.result, credits_used: 4,
-      });
+        prompt: details, result_text: data.result, credits_used: 4 });
     } catch (e: any) {
       const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
         if (isCoinsErr) {

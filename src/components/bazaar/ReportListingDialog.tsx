@@ -33,12 +33,10 @@ export const ReportListingDialog = ({ open, onOpenChange, itemId, itemTitle, rep
 
   const submit = async () => {
     setSubmitting(true);
-    const { error } = await supabase.from("bazaar_item_reports" as any).insert({
-      item_id: itemId,
+    const { error } = await supabase.from("bazaar_item_reports" as any).insert({ item_id: itemId,
       reporter_id: reporterId,
       reason,
-      details: details.trim() || null,
-    });
+      details: details.trim() || null });
     setSubmitting(false);
     if (error) {
       toast({ title: "Could not report", description: error.message, variant: "destructive" });

@@ -71,8 +71,7 @@ export function InstallPromptBanner() {
       platform,
       runningStandalone,
       installed,
-      metadata: { mode: showOpenMode ? "open" : "install" },
-    });
+      metadata: { mode: showOpenMode ? "open" : "install" } });
   }, [shouldRender, platform, runningStandalone, installed, showOpenMode]);
 
   if (!shouldRender) return null;
@@ -86,8 +85,7 @@ export function InstallPromptBanner() {
       runningStandalone,
       installed,
       metadata: { mode: showOpenMode ? "open" : "install" },
-      allowRepeat: true,
-    });
+      allowRepeat: true });
     setDismissedThisSession(true);
   };
 
@@ -134,7 +132,7 @@ export function InstallPromptBanner() {
             </button>
           </div>
 
-          {showOpenMode ? (
+          { showOpenMode ? (
             <div className="mt-3 flex gap-2">
               <Button
                 size="sm"
@@ -145,8 +143,7 @@ export function InstallPromptBanner() {
                     platform,
                     runningStandalone,
                     installed,
-                    allowRepeat: true,
-                  });
+                    allowRepeat: true });
                   openApp();
                   setDismissedThisSession(true);
                 }}
@@ -162,31 +159,26 @@ export function InstallPromptBanner() {
               <Button
                 size="sm"
                 className="flex-1"
-                onClick={async () => {
+                onClick={ async () => {
                   trackPwaInstallEvent({
                     eventType: "install_click",
                     platform,
                     runningStandalone,
                     installed,
-                    allowRepeat: true,
-                  });
+                    allowRepeat: true });
                   const outcome = await promptInstall();
-                  if (outcome === "accepted") {
-                    trackPwaInstallEvent({
+                  if (outcome === "accepted") { trackPwaInstallEvent({
                       eventType: "install_accepted",
                       platform,
                       runningStandalone,
                       installed: true,
-                      allowRepeat: true,
-                    });
-                  } else if (outcome === "dismissed") {
-                    trackPwaInstallEvent({
+                      allowRepeat: true });
+                  } else if (outcome === "dismissed") { trackPwaInstallEvent({
                       eventType: "install_dismissed",
                       platform,
                       runningStandalone,
                       installed,
-                      allowRepeat: true,
-                    });
+                      allowRepeat: true });
                   }
                   if (outcome !== "unsupported") setDismissedThisSession(true);
                 }}

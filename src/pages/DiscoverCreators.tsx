@@ -40,13 +40,11 @@ export default function DiscoverCreators() {
 
       if (error) throw error;
       setCreators(data || []);
-    } catch (error: any) {
-      console.error('Error loading creators:', error);
+    } catch (error: any) { console.error('Error loading creators:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load creators",
-      });
+        description: "Failed to load creators" });
     } finally {
       setLoading(false);
     }

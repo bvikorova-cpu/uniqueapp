@@ -2,24 +2,20 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const PARITY_COST = 5;
 
-const ACTION_TABLE: Record<string, string> = {
-  "wheel-builder": "lottery_parity_wheel_builders",
+const ACTION_TABLE: Record<string, string> = { "wheel-builder": "lottery_parity_wheel_builders",
   "syndicate-strategy": "lottery_parity_syndicate_strategies",
   "tax-planner": "lottery_parity_tax_planners",
   "claim-checklist": "lottery_parity_claim_checklists",
   "budget-coach": "lottery_parity_budget_coaches",
   "lucky-charm": "lottery_parity_lucky_charms",
   "pattern-detector": "lottery_parity_pattern_detectors",
-  "winner-mindset": "lottery_parity_winner_mindsets",
-};
+  "winner-mindset": "lottery_parity_winner_mindsets" };
 
 const SYSTEM_PROMPTS: Record<string, string> = {
   "wheel-builder": `You are a lottery wheeling-system designer. Return ONLY JSON: {"system_name":"string","key_numbers":[int],"combinations":[[int]],"coverage":"plain language description","tickets_needed":number,"estimated_cost_eur":"approx range","strategy_notes":"2-3 sentences"}. Produce 6-10 combinations.`,
@@ -29,8 +25,7 @@ const SYSTEM_PROMPTS: Record<string, string> = {
   "budget-coach": `You are a responsible play budget coach. Return ONLY JSON: {"monthly_cap_eur":number,"weekly_cap_eur":number,"rules":["..."],"warning_signs":["..."],"alternatives":["..."],"helpline":"region-appropriate problem gambling helpline"}. Produce 5-7 rules, 4-6 warning signs, and 3-5 alternatives. Always promote responsible play.`,
   "lucky-charm": `You are a personalized lucky number designer. Use the user's name, birthdate, and meaningful dates. Return ONLY JSON: {"primary_numbers":[int],"backup_numbers":[int],"meaning":[{"number":int,"why":"string"}],"ritual":"2-3 sentence pre-play ritual","best_day":"string"}. Produce 6 primary and 4 backup numbers.`,
   "pattern-detector": `You are a lottery pattern analyst. Return ONLY JSON: {"hot_numbers":[int],"cold_numbers":[int],"overdue_numbers":[int],"detected_patterns":["..."],"avoid_combinations":["..."],"caveat":"randomness disclaimer"}. Produce 5-8 numbers per array and 4-6 patterns.`,
-  "winner-mindset": `You are a winner psychology coach. Return ONLY JSON: {"pre_play_mindset":"paragraph","loss_resilience":["..."],"win_protocol":["..."],"family_communication":"paragraph","long_term_plan":["..."]}. Produce 5-7 items per array.`,
-};
+  "winner-mindset": `You are a winner psychology coach. Return ONLY JSON: {"pre_play_mindset":"paragraph","loss_resilience":["..."],"win_protocol":["..."],"family_communication":"paragraph","long_term_plan":["..."]}. Produce 5-7 items per array.` };
 
 interface Body { action: string; payload?: Record<string, unknown>; }
 
@@ -87,9 +82,7 @@ serve(async (req) => {
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (!aiResp.ok) {
       const errText = await aiResp.text();
@@ -131,6 +124,5 @@ serve(async (req) => {
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status,
-  });
+    status });
 }

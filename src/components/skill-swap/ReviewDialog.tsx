@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Star, Sparkles } from "lucide-react";
@@ -17,9 +15,7 @@ interface ReviewDialogProps {
   onReviewSubmitted: () => void;
 }
 
-export const ReviewDialog = ({
-  open, onOpenChange, conversationId, reviewedUserId, reviewedUserName, onReviewSubmitted,
-}: ReviewDialogProps) => {
+export const ReviewDialog = ({ open, onOpenChange, conversationId, reviewedUserId, reviewedUserName, onReviewSubmitted }: ReviewDialogProps) => {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -31,10 +27,8 @@ export const ReviewDialog = ({
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in first"); return; }
-      const { error } = await supabase.from('skill_swap_reviews').insert([{
-        reviewer_id: session.user.id, reviewed_user_id: reviewedUserId,
-        conversation_id: conversationId, rating, comment: comment.trim() || null,
-      }]);
+      const { error } = await supabase.from('skill_swap_reviews').insert([{ reviewer_id: session.user.id, reviewed_user_id: reviewedUserId,
+        conversation_id: conversationId, rating, comment: comment.trim() || null }]);
       if (error) throw error;
       toast.success("Review submitted successfully!");
       onReviewSubmitted(); onOpenChange(false); setRating(0); setComment("");

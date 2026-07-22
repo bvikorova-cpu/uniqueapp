@@ -1,10 +1,8 @@
 import { Palette, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { POST_BACKGROUNDS } from "@/lib/postBackgrounds";
 import { cn } from "@/lib/utils";
 

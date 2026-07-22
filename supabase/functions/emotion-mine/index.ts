@@ -1,10 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 const ALLOWED_EMOTIONS = new Set([
   "joy", "love", "motivation", "peace", "excitement", "curiosity",
@@ -22,8 +20,7 @@ Deno.serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -31,13 +28,11 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const userId = userData.user.id;
 
@@ -46,8 +41,7 @@ Deno.serve(async (req) => {
     const miningMethod = String(body.mining_method ?? "content_creation");
     if (!ALLOWED_EMOTIONS.has(emotionType) || !ALLOWED_METHODS.has(miningMethod)) {
       return new Response(JSON.stringify({ error: "Invalid input" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Server-controlled mining outcome (anti-cheat)
@@ -66,36 +60,30 @@ Deno.serve(async (req) => {
       .gte("created_at", since);
     if ((count ?? 0) > 0) {
       return new Response(JSON.stringify({ error: "Mining cooldown — wait 30s" }), {
-        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { data: row, error: insErr } = await admin
       .from("emotion_mining_activities")
-      .insert({
-        miner_id: userId,
+      .insert({ miner_id: userId,
         emotion_type: emotionType,
         amount_mined: amountMined,
         commission_earned: commissionEarned,
-        mining_method: miningMethod,
-      })
+        mining_method: miningMethod })
       .select()
       .single();
     if (insErr) throw insErr;
 
     return new Response(
-      JSON.stringify({
-        success: true,
+      JSON.stringify({ success: true,
         amount_mined: amountMined,
         commission_earned: commissionEarned,
-        activity: row,
-      }),
+        activity: row }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
     console.error("emotion-mine error", e);
     return new Response(JSON.stringify({ error: (e as Error).message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

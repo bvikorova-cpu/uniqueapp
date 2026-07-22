@@ -45,8 +45,7 @@ export function Leaderboard({ playerScore, playerName = "You" }: LeaderboardProp
       const entries: Entry[] = (data || []).map((r: any, i: number) => ({
         name: pmap.get(r.child_id) || `Player ${i + 1}`,
         score: Number(r.total_xp) || 0,
-        avatar: AVATARS[i % AVATARS.length],
-      }));
+        avatar: AVATARS[i % AVATARS.length] }));
 
       if (!cancelled) {
         setLeaders(entries);

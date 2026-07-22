@@ -45,14 +45,12 @@ export function useCreatorTiers(creatorId?: string) {
     if (!user) return;
     const { error } = await (supabase as any)
       .from("creator_subscription_tiers")
-      .insert({
-        creator_id: user.id,
+      .insert({ creator_id: user.id,
         name: input.name,
         description: input.description ?? null,
         price: input.price,
         benefits: input.benefits ?? [],
-        is_active: true,
-      });
+        is_active: true });
     if (!error) await fetchTiers();
     return error;
   };
@@ -67,8 +65,7 @@ export function useCreatorTiers(creatorId?: string) {
 
   const subscribe = async (tierId: string) => {
     const { data, error } = await supabase.functions.invoke("subscribe-to-creator", {
-      body: { tierId },
-    });
+      body: { tierId } });
     if (error) throw error;
     if (data?.url) window.location.href = data.url as string;
   };

@@ -28,10 +28,8 @@ interface Props {
  * - Embeddable iframe snippet pointing to /embed/campaign/:type/:id
  * - QR code for offline sharing
  */
-export function CampaignShareWidget({
-  campaignType, campaignId, title, description,
-  goalAmount, raisedAmount, referralCode,
-}: Props) {
+export function CampaignShareWidget({ campaignType, campaignId, title, description,
+  goalAmount, raisedAmount, referralCode }: Props) {
   const [copied, setCopied] = useState<string | null>(null);
 
   const origin = typeof window !== "undefined" ? window.location.origin : "https://www.uniqueapp.fun";
@@ -65,8 +63,7 @@ export function CampaignShareWidget({
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${enc(shareUrl)}&quote=${enc(shareText)}`,
       twitter: `https://twitter.com/intent/tweet?text=${enc(shareText)}&url=${enc(shareUrl)}&hashtags=fundraising,unique`,
       whatsapp: `https://wa.me/?text=${enc(`${shareText} ${shareUrl}`)}`,
-      email: `mailto:?subject=${enc(title)}&body=${enc(`${description}\n\n${shareUrl}`)}`,
-    };
+      email: `mailto:?subject=${enc(title)}&body=${enc(`${description}\n\n${shareUrl}`)}` };
     if (network === "native" && typeof navigator !== "undefined" && navigator.share) {
       navigator.share({ title, text: shareText, url: shareUrl }).catch(() => {});
       return;

@@ -13,14 +13,12 @@ interface VideoHeroProps {
   ctaLink?: string;
 }
 
-export const VideoHero = ({
-  videoSrc = "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-city-traffic-at-night-11-large.mp4",
+export const VideoHero = ({ videoSrc = "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-city-traffic-at-night-11-large.mp4",
   posterSrc,
   title = "Objavte svoj talent",
   subtitle = "Join thousands of creative people and share your passion with the world",
   ctaText = "Start now",
-  ctaLink = "/auth",
-}: VideoHeroProps) => {
+  ctaLink = "/auth" }: VideoHeroProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);

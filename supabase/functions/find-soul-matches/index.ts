@@ -1,17 +1,14 @@
 // Returns simulated soul matches for the user from soul_profiles.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 const CONNECTION_TYPES = ["twin_flame", "soul_mate", "karmic_partner", "soul_family"];
@@ -33,8 +30,7 @@ Deno.serve(async (req) => {
     if (!authHeader) return json({ error: "Not authenticated" }, 401);
 
     const auth = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData } = await auth.auth.getUser();
     const user = userData?.user;
     if (!user) return json({ error: "Not authenticated" }, 401);
@@ -67,8 +63,7 @@ Deno.serve(async (req) => {
         connection_type: ctype,
         karmic_lessons: lessons,
         soul_contract: `A ${ctype.replace("_", " ")} bond formed across ${(i % 5) + 2} past lives, here to teach ${lessons.map(l => l.lesson).join(" & ")}.`,
-        past_lives_together: (i % 5) + 1,
-      };
+        past_lives_together: (i % 5) + 1 };
     });
 
     return json({ matches });

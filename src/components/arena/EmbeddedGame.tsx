@@ -8,13 +8,11 @@ interface EmbeddedGameProps {
 }
 
 // Poki slugs for each sport — guaranteed to work in a new tab
-const pokiSlugs: Record<string, string> = {
-  football: "football-legends",
+const pokiSlugs: Record<string, string> = { football: "football-legends",
   basketball: "basketball-stars",
   hockey: "hockey-legends",
   tennis: "tennis-masters",
-  "american-football": "touchdown-rush",
-};
+  "american-football": "touchdown-rush" };
 
 export const EmbeddedGame = ({ onBack, title, gameUrl, sport }: EmbeddedGameProps) => {
   useEffect(() => {

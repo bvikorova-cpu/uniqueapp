@@ -16,16 +16,14 @@ export const SubscriptionHero = ({ currentTier }: SubscriptionHeroProps) => {
     const duration = 1800;
     const steps = 60;
     let step = 0;
-    const timer = setInterval(() => {
-      step++;
+    const timer = setInterval(() => { step++;
       const p = Math.min(step / steps, 1);
       const ease = 1 - Math.pow(1 - p, 3);
       setStats({
         members: Math.round(target.members * ease),
         saved: +(target.saved * ease).toFixed(1),
         rating: +(target.rating * ease).toFixed(1),
-        countries: Math.round(target.countries * ease),
-      });
+        countries: Math.round(target.countries * ease) });
       if (step >= steps) clearInterval(timer);
     }, duration / steps);
     return () => clearInterval(timer);

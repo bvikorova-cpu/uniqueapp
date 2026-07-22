@@ -5,19 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Loader2, Mail, KeyRound, ShieldCheck } from "lucide-react";
-import {
-  requireRecentAuth,
-  reauthenticateWithPassword,
-} from "@/lib/requireRecentAuth";
+import { requireRecentAuth,
+  reauthenticateWithPassword } from "@/lib/requireRecentAuth";
 import { logSecurityEvent } from "@/lib/securityAudit";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
@@ -57,10 +53,8 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
         throw error;
       }
       logSecurityEvent("email_change_requested");
-      toast({
-        title: "Check your inbox",
-        description: "We sent a confirmation link to the new email address.",
-      });
+      toast({ title: "Check your inbox",
+        description: "We sent a confirmation link to the new email address." });
       setNewEmail("");
     } else {
       const { error } = await supabase.auth.updateUser({ password: action.value });
@@ -84,12 +78,10 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
         return;
       }
       await applyAction(action);
-    } catch (err: any) {
-      toast({
+    } catch (err: any) { toast({
         title: "Update failed",
         description: err?.message ?? String(err),
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
@@ -132,12 +124,10 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
       await applyAction(pending);
       setPending(null);
       setReauthPassword("");
-    } catch (err: any) {
-      toast({
+    } catch (err: any) { toast({
         title: "Update failed",
         description: err?.message ?? String(err),
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setReauthBusy(false);
     }

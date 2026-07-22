@@ -57,8 +57,7 @@ export const ReputationSystem = ({ onBack }: ReputationSystemProps) => {
         return newRep;
       }
       return data;
-    },
-  });
+    } });
 
   const { data: leaderboard = [] } = useQuery({
     queryKey: ["forum-leaderboard"],
@@ -70,8 +69,7 @@ export const ReputationSystem = ({ onBack }: ReputationSystemProps) => {
         .limit(20);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: leaderProfiles = {} } = useQuery({
     queryKey: ["leaderboard-profiles", leaderboard.map((l: any) => l.user_id)],
@@ -83,8 +81,7 @@ export const ReputationSystem = ({ onBack }: ReputationSystemProps) => {
       data?.forEach(p => { map[p.id] = p; });
       return map;
     },
-    enabled: leaderboard.length > 0,
-  });
+    enabled: leaderboard.length > 0 });
 
   const currentLevel = [...LEVELS].reverse().find(l => (myRep?.points || 0) >= l.minPoints) || LEVELS[0];
   const nextLevel = LEVELS.find(l => l.minPoints > (myRep?.points || 0));

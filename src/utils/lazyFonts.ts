@@ -10,12 +10,10 @@
  * mount; the stylesheet is injected once and cached.
  */
 
-const FONT_URLS: Record<string, string> = {
-  signature:
+const FONT_URLS: Record<string, string> = { signature:
     "https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap",
   gothic:
-    "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Creepster&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap",
-};
+    "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Creepster&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" };
 
 const loaded = new Set<string>();
 

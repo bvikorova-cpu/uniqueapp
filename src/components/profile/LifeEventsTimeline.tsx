@@ -4,27 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Select,
+  DialogFooter } from "@/components/ui/dialog";
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { Plus, Sparkles, Trash2, MapPin, Calendar } from "lucide-react";
-import {
-  useLifeEvents,
+import { useLifeEvents,
   LIFE_EVENT_LABELS,
-  type LifeEventKind,
-} from "@/hooks/useLifeEvents";
+  type LifeEventKind } from "@/hooks/useLifeEvents";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -54,8 +48,7 @@ export function LifeEventsTimeline({ userId, isOwnProfile }: Props) {
     setVisibility("public");
   };
 
-  const handleCreate = async () => {
-    if (!title.trim()) return;
+  const handleCreate = async () => { if (!title.trim()) return;
     await create.mutateAsync({
       user_id: userId,
       kind,
@@ -64,8 +57,7 @@ export function LifeEventsTimeline({ userId, isOwnProfile }: Props) {
       location: location.trim() || null,
       event_date: eventDate || null,
       cover_image_url: null,
-      visibility,
-    });
+      visibility });
     reset();
     setOpen(false);
   };

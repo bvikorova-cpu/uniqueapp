@@ -35,16 +35,13 @@ const OnlinePsychologist = () => {
       }
 
       const { data, error } = await supabase.functions.invoke("psychology-session", {
-        body: { action: "init", session_token: token },
-      });
+        body: { action: "init", session_token: token } });
 
-      if (error || !data?.id) {
-        console.error("Error initializing session:", error);
+      if (error || !data?.id) { console.error("Error initializing session:", error);
         toast({
           title: "Error",
           description: "Failed to create session. Please try again.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -62,18 +59,15 @@ const OnlinePsychologist = () => {
   // Load existing messages via secure edge function (token-validated)
   const loadMessages = async (token: string) => {
     const { data, error } = await supabase.functions.invoke("psychology-session", {
-      body: { action: "messages", session_token: token },
-    });
+      body: { action: "messages", session_token: token } });
 
     if (error) {
       console.error("Error loading messages:", error);
       return;
     }
 
-    const loadedMessages = (data?.messages ?? []).map((msg: any) => ({
-      role: msg.role as "user" | "assistant",
-      content: msg.content,
-    }));
+    const loadedMessages = (data?.messages ?? []).map((msg: any) => ({ role: msg.role as "user" | "assistant",
+      content: msg.content }));
 
     setMessages(loadedMessages);
   };
@@ -95,15 +89,12 @@ const OnlinePsychologist = () => {
     setIsLoading(true);
 
     // Save user message via secure edge function
-    if (sessionToken) {
-      await supabase.functions.invoke("psychology-session", {
+    if (sessionToken) { await supabase.functions.invoke("psychology-session", {
         body: {
           action: "insert-message",
           session_token: sessionToken,
           role: "user",
-          content: userMessage.content,
-        },
-      });
+          content: userMessage.content } });
     }
 
     try {
@@ -118,13 +109,9 @@ const OnlinePsychologist = () => {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${session.access_token}`,
-          "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? import.meta.env.VITE_SUPABASE_ANON_KEY,
-        },
-        body: JSON.stringify({
-          messages: [...messages, userMessage],
-          sessionId,
-        }),
-      });
+          "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? import.meta.env.VITE_SUPABASE_ANON_KEY },
+        body: JSON.stringify({ messages: [...messages, userMessage],
+          sessionId }) });
 
       if (!response.ok || !response.body) {
         throw new Error("Error communicating with server");
@@ -177,15 +164,12 @@ const OnlinePsychologist = () => {
       }
 
       // Save assistant response via secure edge function
-      if (assistantContent && sessionToken) {
-        await supabase.functions.invoke("psychology-session", {
+      if (assistantContent && sessionToken) { await supabase.functions.invoke("psychology-session", {
           body: {
             action: "insert-message",
             session_token: sessionToken,
             role: "assistant",
-            content: assistantContent,
-          },
-        });
+            content: assistantContent } });
       }
     } catch (error) {
       console.error("Error:", error);

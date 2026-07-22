@@ -20,30 +20,25 @@ interface RequestMetrics {
 /**
  * Log a metric in a structured format for easy parsing
  */
-export function logMetric(metric: MetricData): void {
-  console.log(JSON.stringify({
+export function logMetric(metric: MetricData): void { console.log(JSON.stringify({
     type: 'metric',
     ...metric,
-    timestamp: metric.timestamp || Date.now(),
-  }));
+    timestamp: metric.timestamp || Date.now() }));
 }
 
 /**
  * Log request metrics for observability
  */
-export function logRequestMetrics(metrics: RequestMetrics): void {
-  console.log(JSON.stringify({
+export function logRequestMetrics(metrics: RequestMetrics): void { console.log(JSON.stringify({
     type: 'request_metrics',
     ...metrics,
-    timestamp: Date.now(),
-  }));
+    timestamp: Date.now() }));
 }
 
 /**
  * Create a request context for tracking
  */
-export function createRequestContext(req: Request, functionName: string) {
-  const startTime = performance.now();
+export function createRequestContext(req: Request, functionName: string) { const startTime = performance.now();
   const url = new URL(req.url);
   const requestId = crypto.randomUUID();
 
@@ -53,11 +48,9 @@ export function createRequestContext(req: Request, functionName: string) {
     functionName,
     method: req.method,
     path: url.pathname,
-    timestamp: Date.now(),
-  }));
+    timestamp: Date.now() }));
 
-  return {
-    requestId,
+  return { requestId,
     functionName,
     method: req.method,
     path: url.pathname,
@@ -76,24 +69,20 @@ export function createRequestContext(req: Request, functionName: string) {
         statusCode,
         durationMs,
         userId,
-        error,
-      });
+        error });
 
-      console.log(JSON.stringify({
-        type: 'request_complete',
+      console.log(JSON.stringify({ type: 'request_complete',
         requestId,
         functionName,
         statusCode,
         durationMs,
-        timestamp: Date.now(),
-      }));
+        timestamp: Date.now() }));
     },
 
     /**
      * Log a span within the request
      */
-    span(name: string): { end: () => void } {
-      const spanStart = performance.now();
+    span(name: string): { end: () => void } { const spanStart = performance.now();
       
       return {
         end: () => {
@@ -103,12 +92,9 @@ export function createRequestContext(req: Request, functionName: string) {
             requestId,
             name,
             durationMs: spanDuration,
-            timestamp: Date.now(),
-          }));
-        },
-      };
-    },
-  };
+            timestamp: Date.now() }));
+        } };
+    } };
 }
 
 /**
@@ -122,8 +108,7 @@ export function trackError(
     userId?: string;
     metadata?: Record<string, unknown>;
   }
-): void {
-  const errorMessage = error instanceof Error ? error.message : String(error);
+): void { const errorMessage = error instanceof Error ? error.message : String(error);
   const errorStack = error instanceof Error ? error.stack : undefined;
 
   console.error(JSON.stringify({
@@ -131,8 +116,7 @@ export function trackError(
     message: errorMessage,
     stack: errorStack,
     ...context,
-    timestamp: Date.now(),
-  }));
+    timestamp: Date.now() }));
 }
 
 /**
@@ -142,8 +126,7 @@ export async function trackPerformance<T>(
   name: string,
   fn: () => Promise<T>,
   requestId?: string
-): Promise<T> {
-  const start = performance.now();
+): Promise<T> { const start = performance.now();
   
   try {
     const result = await fn();
@@ -155,12 +138,10 @@ export async function trackPerformance<T>(
       durationMs: duration,
       success: true,
       requestId,
-      timestamp: Date.now(),
-    }));
+      timestamp: Date.now() }));
     
     return result;
-  } catch (error) {
-    const duration = Math.round(performance.now() - start);
+  } catch (error) { const duration = Math.round(performance.now() - start);
     
     console.log(JSON.stringify({
       type: 'performance',
@@ -169,8 +150,7 @@ export async function trackPerformance<T>(
       success: false,
       error: error instanceof Error ? error.message : String(error),
       requestId,
-      timestamp: Date.now(),
-    }));
+      timestamp: Date.now() }));
     
     throw error;
   }
@@ -179,18 +159,15 @@ export async function trackPerformance<T>(
 /**
  * Health check response builder
  */
-export function buildHealthResponse(checks: Record<string, boolean>): Response {
-  const allHealthy = Object.values(checks).every(Boolean);
+export function buildHealthResponse(checks: Record<string, boolean>): Response { const allHealthy = Object.values(checks).every(Boolean);
   
   return new Response(
     JSON.stringify({
       status: allHealthy ? 'healthy' : 'unhealthy',
       checks,
-      timestamp: Date.now(),
-    }),
+      timestamp: Date.now() }),
     {
       status: allHealthy ? 200 : 503,
-      headers: { 'Content-Type': 'application/json' },
-    }
+      headers: { 'Content-Type': 'application/json' } }
   );
 }

@@ -19,8 +19,7 @@ interface AchievementBadgesProps {
   quizzesPassed: number;
 }
 
-export const AchievementBadges = ({ completedTopics, totalStars, streak, quizzesPassed }: AchievementBadgesProps) => {
-  const achievements: Achievement[] = [
+export const AchievementBadges = ({ completedTopics, totalStars, streak, quizzesPassed }: AchievementBadgesProps) => { const achievements: Achievement[] = [
     {
       id: "first-star",
       icon: <Star className="w-6 h-6" />,
@@ -28,53 +27,42 @@ export const AchievementBadges = ({ completedTopics, totalStars, streak, quizzes
       description: "Earn your first star",
       unlocked: totalStars >= 1,
       progress: Math.min(totalStars, 1),
-      maxProgress: 1,
-    },
-    {
-      id: "topic-master",
+      maxProgress: 1 },
+    { id: "topic-master",
       icon: <BookOpen className="w-6 h-6" />,
       title: "Topic Explorer",
       description: "Complete 5 topics",
       unlocked: completedTopics >= 5,
       progress: Math.min(completedTopics, 5),
-      maxProgress: 5,
-    },
-    {
-      id: "quiz-genius",
+      maxProgress: 5 },
+    { id: "quiz-genius",
       icon: <Brain className="w-6 h-6" />,
       title: "Quiz Genius",
       description: "Pass 10 quizzes",
       unlocked: quizzesPassed >= 10,
       progress: Math.min(quizzesPassed, 10),
-      maxProgress: 10,
-    },
-    {
-      id: "streak-fire",
+      maxProgress: 10 },
+    { id: "streak-fire",
       icon: <Flame className="w-6 h-6" />,
       title: "On Fire",
       description: "7-day learning streak",
       unlocked: streak >= 7,
       progress: Math.min(streak, 7),
-      maxProgress: 7,
-    },
-    {
-      id: "star-collector",
+      maxProgress: 7 },
+    { id: "star-collector",
       icon: <Trophy className="w-6 h-6" />,
       title: "Star Collector",
       description: "Earn 30 stars",
       unlocked: totalStars >= 30,
       progress: Math.min(totalStars, 30),
-      maxProgress: 30,
-    },
-    {
-      id: "completionist",
+      maxProgress: 30 },
+    { id: "completionist",
       icon: <Award className="w-6 h-6" />,
       title: "Completionist",
       description: "Complete all 19 topics",
       unlocked: completedTopics >= 19,
       progress: Math.min(completedTopics, 19),
-      maxProgress: 19,
-    },
+      maxProgress: 19 },
   ];
 
   return (

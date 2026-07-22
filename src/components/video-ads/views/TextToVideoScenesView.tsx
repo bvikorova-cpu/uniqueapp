@@ -32,8 +32,7 @@ export const TextToVideoScenesView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true); setSplitResult(null); setFrames([]);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {
-        body: { action: 'text_to_video_split', script, aspect, style, sceneCount },
-      });
+        body: { action: 'text_to_video_split', script, aspect, style, sceneCount } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Text-to-Video' }); return; }
       setSplitResult(data.result);
       toast.success(`${data.result.totalScenes} scenes ready (${data.credits_used} CR)`);

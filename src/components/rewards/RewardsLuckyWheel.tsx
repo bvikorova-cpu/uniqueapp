@@ -86,15 +86,13 @@ export default function RewardsLuckyWheel() {
         net?: number;
         balance_after?: number;
       };
-      if (res.error) {
-        const isCooldown = res.error === "already_spun_today";
+      if (res.error) { const isCooldown = res.error === "already_spun_today";
         toast({
           title: isCooldown ? "Come back tomorrow!" : "Spin failed",
           description: isCooldown
             ? "You've already spun the wheel today. New spin available tomorrow."
             : res.error.replace(/_/g, " "),
-          variant: isCooldown ? "default" : "destructive",
-        });
+          variant: isCooldown ? "default" : "destructive" });
         if (isCooldown && mounted.current) setCanSpin(false);
         if (mounted.current) setSpinning(false);
         return;
@@ -121,20 +119,17 @@ export default function RewardsLuckyWheel() {
           description:
             prizeNum > 0
               ? `Net: ${netNum >= 0 ? "+" : ""}${netNum} CR · Balance: ${balanceAfter} CR`
-              : `Lost 5 CR · Balance: ${balanceAfter} CR`,
-        });
+              : `Lost 5 CR · Balance: ${balanceAfter} CR` });
         qc.invalidateQueries({ queryKey: ["rewards-stats"] });
         qc.invalidateQueries({ queryKey: ["gamification"] });
         qc.invalidateQueries({ queryKey: ["ai-credits"] });
         window.dispatchEvent(new Event("ai-credits-updated"));
       }, 3000);
-    } catch (e) {
-      if (mounted.current) setSpinning(false);
+    } catch (e) { if (mounted.current) setSpinning(false);
       toast({
         title: "Error",
         description: e instanceof Error ? e.message : "Spin failed",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       spinLock.current = false;
     }
@@ -175,8 +170,7 @@ export default function RewardsLuckyWheel() {
                   className="absolute text-lg"
                   style={{
                     transform: `rotate(${angle}deg) translateY(-70px) rotate(${-angle}deg)`,
-                    transformOrigin: "center center",
-                  }}
+                    transformOrigin: "center center" }}
                 >
                   {prize.emoji}
                 </div>

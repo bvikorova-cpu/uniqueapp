@@ -46,8 +46,7 @@ const VoiceTutor = () => {
       await spendCredit();
       credited = true;
       const { data, error } = await supabase.functions.invoke("tutoring-chat", {
-        body: { message: text, history: [] },
-      });
+        body: { message: text, history: [] } });
       if (error) throw error;
       const answer = (data as any)?.message || (data as any)?.reply || (data as any)?.response || "";
       if (!answer) throw new Error("Empty AI reply");

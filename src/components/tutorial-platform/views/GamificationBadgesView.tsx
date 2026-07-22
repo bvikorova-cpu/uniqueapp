@@ -35,13 +35,11 @@ const badges: BadgeItem[] = [
   { id: "legend", name: "Platform Legend", description: "Earn 1000 total XP", icon: Trophy, color: "from-amber-400 to-orange-600", progress: 385, requirement: 1000, unit: "XP", unlocked: false, rarity: "Legendary", xp: 500 },
 ];
 
-const rarityColors: Record<string, string> = {
-  Common: "bg-slate-500/10 text-slate-600",
+const rarityColors: Record<string, string> = { Common: "bg-slate-500/10 text-slate-600",
   Uncommon: "bg-emerald-500/10 text-emerald-600",
   Rare: "bg-blue-500/10 text-blue-600",
   Epic: "bg-purple-500/10 text-purple-600",
-  Legendary: "bg-amber-500/10 text-amber-600",
-};
+  Legendary: "bg-amber-500/10 text-amber-600" };
 
 interface Props { onBack: () => void; }
 

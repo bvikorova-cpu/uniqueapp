@@ -39,10 +39,8 @@ async function rpc(name: string, body: Record<string, unknown>) {
     headers: {
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      "Content-Type": "application/json",
-    },
-    data: body,
-  });
+      "Content-Type": "application/json" },
+    data: body });
   let json: any = null;
   try {
     json = await res.json();
@@ -58,10 +56,8 @@ async function restPost(table: string, row: Record<string, unknown>) {
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
       "Content-Type": "application/json",
-      Prefer: "return=minimal",
-    },
-    data: row,
-  });
+      Prefer: "return=minimal" },
+    data: row });
   return { status: res.status(), body: await res.text() };
 }
 
@@ -69,9 +65,7 @@ async function restGet(table: string, query = "select=*&limit=5") {
   const res = await ctx.get(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
     headers: {
       apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-    },
-  });
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}` } });
   let json: any = null;
   try {
     json = await res.json();
@@ -114,9 +108,7 @@ test.describe("Megatalent pages render", () => {
 // ---------------------------------------------------------------------------
 test.describe("Megatalent RPC contract", () => {
   test("has_active_megatalent_subscription signature is current", async () => {
-    const { status, json } = await rpc("has_active_megatalent_subscription", {
-      _user_id: ZERO_UUID,
-    });
+    const { status, json } = await rpc("has_active_megatalent_subscription", { _user_id: ZERO_UUID });
     assertNoSigDrift("has_active_megatalent_subscription", json);
     // May require auth (401) or return boolean; never grant a true to anon for an unknown id.
     expect([200, 401, 403]).toContain(status);
@@ -124,39 +116,29 @@ test.describe("Megatalent RPC contract", () => {
   });
 
   test("is_megatalent_vip signature is current", async () => {
-    const { status, json } = await rpc("is_megatalent_vip", {
-      _user_id: ZERO_UUID,
-    });
+    const { status, json } = await rpc("is_megatalent_vip", { _user_id: ZERO_UUID });
     assertNoSigDrift("is_megatalent_vip", json);
     expect([200, 401, 403]).toContain(status);
     if (status === 200) expect(json).toBeFalsy();
   });
 
   test("get_megatalent_challenge_progress signature is current", async () => {
-    const { json } = await rpc("get_megatalent_challenge_progress", {
-      _user_id: ZERO_UUID,
-    });
+    const { json } = await rpc("get_megatalent_challenge_progress", { _user_id: ZERO_UUID });
     assertNoSigDrift("get_megatalent_challenge_progress", json);
   });
 
   test("get_megatalent_tip_stats signature is current", async () => {
-    const { json } = await rpc("get_megatalent_tip_stats", {
-      _creator_id: ZERO_UUID,
-    });
+    const { json } = await rpc("get_megatalent_tip_stats", { _creator_id: ZERO_UUID });
     assertNoSigDrift("get_megatalent_tip_stats", json);
   });
 
   test("get_megatalent_bracket signature is current", async () => {
-    const { json } = await rpc("get_megatalent_bracket", {
-      _category: "singers",
-    });
+    const { json } = await rpc("get_megatalent_bracket", { _category: "singers" });
     assertNoSigDrift("get_megatalent_bracket", json);
   });
 
   test("generate_megatalent_bracket refuses anonymous caller", async () => {
-    const { status, json } = await rpc("generate_megatalent_bracket", {
-      _category: "singers",
-    });
+    const { status, json } = await rpc("generate_megatalent_bracket", { _category: "singers" });
     assertNoSigDrift("generate_megatalent_bracket", json);
     // Should either reject (403/4xx) or fail safely; never silently create rows.
     if (status === 200) {
@@ -170,9 +152,7 @@ test.describe("Megatalent RPC contract", () => {
   });
 
   test("advance_megatalent_bracket refuses anonymous caller", async () => {
-    const { status, json } = await rpc("advance_megatalent_bracket", {
-      _bracket_id: ZERO_UUID,
-    });
+    const { status, json } = await rpc("advance_megatalent_bracket", { _bracket_id: ZERO_UUID });
     assertNoSigDrift("advance_megatalent_bracket", json);
     if (status === 200) {
       if (json && typeof json === "object" && "ok" in json) {
@@ -191,37 +171,28 @@ test.describe("Megatalent table RLS — anon writes blocked", () => {
   const writes: Array<{ table: string; row: Record<string, unknown> }> = [
     {
       table: "talent_votes",
-      row: { submission_id: ZERO_UUID, voter_id: ZERO_UUID, vote_type: "like" },
-    },
+      row: { submission_id: ZERO_UUID, voter_id: ZERO_UUID, vote_type: "like" } },
     {
       table: "talent_comments",
-      row: { submission_id: ZERO_UUID, user_id: ZERO_UUID, body: "anon test" },
-    },
-    {
-      table: "talent_submissions",
+      row: { submission_id: ZERO_UUID, user_id: ZERO_UUID, body: "anon test" } },
+    { table: "talent_submissions",
       row: {
         user_id: ZERO_UUID,
         category: "singers",
         title: "anon",
-        media_url: "https://example.com/x.mp4",
-      },
-    },
+        media_url: "https://example.com/x.mp4" } },
     {
       table: "megatalent_tips",
-      row: { sender_id: ZERO_UUID, recipient_id: ZERO_UUID, amount: 1 },
-    },
+      row: { sender_id: ZERO_UUID, recipient_id: ZERO_UUID, amount: 1 } },
     {
       table: "megatalent_subscriptions",
-      row: { user_id: ZERO_UUID, status: "active", tier: "premium" },
-    },
+      row: { user_id: ZERO_UUID, status: "active", tier: "premium" } },
     {
       table: "megatalent_boosts",
-      row: { user_id: ZERO_UUID, submission_id: ZERO_UUID, amount: 1 },
-    },
+      row: { user_id: ZERO_UUID, submission_id: ZERO_UUID, amount: 1 } },
     {
       table: "talent_reports",
-      row: { reporter_id: ZERO_UUID, submission_id: ZERO_UUID, reason: "spam" },
-    },
+      row: { reporter_id: ZERO_UUID, submission_id: ZERO_UUID, reason: "spam" } },
   ];
 
   for (const w of writes) {

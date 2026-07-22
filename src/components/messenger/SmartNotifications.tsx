@@ -82,8 +82,7 @@ export const SmartNotifications = ({ onBack, userId }: SmartNotificationsProps) 
     const rule = rules.find(r => r.id === ruleId);
     toast({
       title: rule?.enabled ? "Rule Disabled" : "Rule Enabled",
-      description: `${rule?.label} has been ${rule?.enabled ? "disabled" : "enabled"}.`,
-    });
+      description: `${rule?.label} has been ${rule?.enabled ? "disabled" : "enabled"}.` });
   };
 
   const setPriority = (contactId: string, priority: "high" | "normal" | "muted") => {
@@ -91,11 +90,9 @@ export const SmartNotifications = ({ onBack, userId }: SmartNotificationsProps) 
     toast({ title: "Priority Updated", description: `Contact priority set to ${priority}.` });
   };
 
-  const priorityColors = {
-    high: "bg-amber-500/20 text-amber-500 border-amber-500/30",
+  const priorityColors = { high: "bg-amber-500/20 text-amber-500 border-amber-500/30",
     normal: "bg-muted/30 text-foreground border-border/40",
-    muted: "bg-muted/10 text-muted-foreground border-border/20 opacity-60",
-  };
+    muted: "bg-muted/10 text-muted-foreground border-border/20 opacity-60" };
 
   return (
     <div className="space-y-6">

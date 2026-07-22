@@ -28,9 +28,7 @@ const ReportButton = ({ targetType, targetId, reporterId, size = "icon", classNa
     if (!reporterId) { toast.error("Sign in to report"); return; }
     setBusy(true);
     try {
-      const { error } = await (supabase as any).from("talent_reports").insert({
-        reporter_id: reporterId, target_type: targetType, target_id: targetId, reason, details: details.trim() || null,
-      });
+      const { error } = await (supabase as any).from("talent_reports").insert({ reporter_id: reporterId, target_type: targetType, target_id: targetId, reason, details: details.trim() || null });
       if (error) throw error;
       toast.success("Report submitted. Thanks for helping keep Megatalent safe.");
       setOpen(false); setDetails(""); setReason("spam");

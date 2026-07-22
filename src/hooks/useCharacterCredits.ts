@@ -2,16 +2,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const CREDIT_COSTS = {
-  basic_character: 5,
+export const CREDIT_COSTS = { basic_character: 5,
   premium_character: 15,
   quick_battle: 2,
   tournament_entry: 5,
   popularity_vote: 1,
   character_fusion: 30,
   equipment: 10,
-  training: 10,
-} as const;
+  training: 10 } as const;
 
 export type CharacterServiceType = keyof typeof CREDIT_COSTS;
 
@@ -48,8 +46,7 @@ export const useCharacterCredits = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {
     try {
@@ -70,9 +67,7 @@ export const useCharacterCredits = () => {
     }
   };
 
-  return {
-    credits,
+  return { credits,
     isLoading,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

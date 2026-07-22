@@ -3,37 +3,31 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import {
-  ArrowLeft,
+import { ArrowLeft,
   Zap,
   Gift,
   PlayCircle,
   Flame,
   Star,
   Download,
-  Filter,
-} from "lucide-react";
+  Filter } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
+  SelectValue } from "@/components/ui/select";
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { exportToCsv } from "@/lib/exportCsv";
 
@@ -52,32 +46,23 @@ interface XPEvent {
 const sourceConfig: Record<
   Source,
   { label: string; icon: typeof Zap; color: string; bg: string }
-> = {
-  ad: {
+> = { ad: {
     label: "Rewarded Ad",
     icon: PlayCircle,
     color: "text-purple-400",
-    bg: "bg-purple-500/10 border-purple-500/30",
-  },
-  daily: {
-    label: "Daily Login",
+    bg: "bg-purple-500/10 border-purple-500/30" },
+  daily: { label: "Daily Login",
     icon: Gift,
     color: "text-green-400",
-    bg: "bg-green-500/10 border-green-500/30",
-  },
-  streak: {
-    label: "Streak Bonus",
+    bg: "bg-green-500/10 border-green-500/30" },
+  streak: { label: "Streak Bonus",
     icon: Flame,
     color: "text-orange-400",
-    bg: "bg-orange-500/10 border-orange-500/30",
-  },
-  activity: {
-    label: "Activity",
+    bg: "bg-orange-500/10 border-orange-500/30" },
+  activity: { label: "Activity",
     icon: Star,
     color: "text-primary",
-    bg: "bg-primary/10 border-primary/30",
-  },
-};
+    bg: "bg-primary/10 border-primary/30" } };
 
 export default function XPAuditLog() {
   const { user } = useAuth();
@@ -126,8 +111,7 @@ export default function XPAuditLog() {
           description: `Watched ad in ${r.section_key ?? "unknown section"}`,
           xp: r.xp_awarded ?? 0,
           timestamp: r.created_at,
-          meta: r.section_key,
-        });
+          meta: r.section_key });
       });
 
       (dailyRes.data ?? []).forEach((r: any) => {
@@ -139,8 +123,7 @@ export default function XPAuditLog() {
             ? "Daily claim (ad-boosted)"
             : "Daily claim",
           xp: r.xp_earned ?? 0,
-          timestamp: r.claimed_at,
-        });
+          timestamp: r.claimed_at });
       });
 
       (dailyRewardsRes.data ?? []).forEach((r: any) => {
@@ -151,8 +134,7 @@ export default function XPAuditLog() {
           type: isStreak ? "Login streak bonus" : "Daily login reward",
           description: `Day ${r.day_streak ?? 1} of streak`,
           xp: r.points_earned ?? 0,
-          timestamp: r.claimed_at,
-        });
+          timestamp: r.claimed_at });
       });
 
       (activityRes.data ?? []).forEach((r: any) => {
@@ -162,8 +144,7 @@ export default function XPAuditLog() {
           type: r.activity_type,
           description: r.activity_type.replace(/_/g, " "),
           xp: r.points_earned ?? 0,
-          timestamp: r.created_at,
-        });
+          timestamp: r.created_at });
       });
 
       events.sort(
@@ -173,8 +154,7 @@ export default function XPAuditLog() {
 
       return events;
     },
-    staleTime: 30_000,
-  });
+    staleTime: 30_000 });
 
   const events = data ?? [];
   const filtered = useMemo(

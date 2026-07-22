@@ -1,11 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Info, Heart, MessageCircle, Share2, Repeat2, Bookmark, Image, Video, Smile, MapPin,
+import { Info, Heart, MessageCircle, Share2, Repeat2, Bookmark, Image, Video, Smile, MapPin,
   Clock, Hash, AtSign, Users, Bell, Lock, Sparkles, TrendingUp, Calendar, Flag, Eye,
   ThumbsUp, Star, Zap, Camera, FileImage, MessageSquare, UserPlus, Search, Filter,
-  Radio, Mic, BarChart3, Crown, Gift, Shield, Globe, Palette, ShoppingBag, EyeOff,
-} from "lucide-react";
+  Radio, Mic, BarChart3, Crown, Gift, Shield, Globe, Palette, ShoppingBag, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface FeatureSection {
@@ -29,8 +27,7 @@ export default function WallInfo() {
         { name: "Hashtags", description: "Use #hashtags to categorize posts and improve discoverability.", icon: <Hash className="h-4 w-4" /> },
         { name: "User Mentions", description: "Mention users with @username to notify and link to profiles.", icon: <AtSign className="h-4 w-4" /> },
         { name: "Post Scheduling", description: "Schedule posts for future publishing with the creator tools.", icon: <Clock className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Post Interactions",
       icon: <Heart className="h-5 w-5" />,
@@ -42,8 +39,7 @@ export default function WallInfo() {
         { name: "Repost / Quote Post", description: "Repost content with your own commentary.", icon: <Repeat2 className="h-4 w-4" /> },
         { name: "Save Posts", description: "Bookmark posts and access them later in the Saved section.", icon: <Bookmark className="h-4 w-4" /> },
         { name: "Quick Polls", description: "Create and vote on quick polls directly in the feed.", icon: <BarChart3 className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Stories & Reels",
       icon: <Camera className="h-5 w-5" />,
@@ -51,8 +47,7 @@ export default function WallInfo() {
         { name: "Stories", description: "Share ephemeral photo/video stories that disappear after 24 hours.", icon: <Camera className="h-4 w-4" /> },
         { name: "Story Reactions", description: "React to friends' stories with emojis and quick replies.", icon: <Heart className="h-4 w-4" /> },
         { name: "Reels", description: "Create and discover short-form video content.", icon: <Video className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Feed & Discovery",
       icon: <Search className="h-5 w-5" />,
@@ -62,8 +57,7 @@ export default function WallInfo() {
         { name: "Search", description: "Search posts by content, hashtags, or author. Find users by name.", icon: <Search className="h-4 w-4" /> },
         { name: "Hashtag Discovery", description: "Explore posts by clicking hashtags to find related content.", icon: <Hash className="h-4 w-4" /> },
         { name: "Videos Section", description: "Browse and watch video content from creators and the community.", icon: <Video className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Social & Friends",
       icon: <Users className="h-5 w-5" />,
@@ -73,8 +67,7 @@ export default function WallInfo() {
         { name: "Friend Suggestions", description: "Discover people you may know based on mutual friends.", icon: <Sparkles className="h-4 w-4" /> },
         { name: "User Profiles", description: "View profiles with bio, posts, followers, and activity.", icon: <Eye className="h-4 w-4" /> },
         { name: "Notifications", description: "Real-time notifications for likes, comments, follows, and mentions.", icon: <Bell className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Messenger",
       icon: <MessageCircle className="h-5 w-5" />,
@@ -86,8 +79,7 @@ export default function WallInfo() {
         { name: "Media Sharing", description: "Share photos, videos, and files in conversations.", icon: <Image className="h-4 w-4" /> },
         { name: "Message Reactions", description: "React to messages with emojis.", icon: <ThumbsUp className="h-4 w-4" /> },
         { name: "Read Receipts", description: "See when messages have been read.", icon: <Eye className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "AI Studio",
       icon: <Sparkles className="h-5 w-5" />,
@@ -99,8 +91,7 @@ export default function WallInfo() {
         { name: "AI Mood Trends", description: "Track emotional journey with AI trend analysis and recommendations.", icon: <TrendingUp className="h-4 w-4" /> },
         { name: "Journal with AI Insights", description: "Private journal entries with AI emotional analysis and feedback.", icon: <FileImage className="h-4 w-4" /> },
         { name: "Time Capsule Messages", description: "Write messages to your future self with scheduled delivery.", icon: <Calendar className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Creator Tools",
       icon: <Crown className="h-5 w-5" />,
@@ -111,8 +102,7 @@ export default function WallInfo() {
         { name: "Subscription Tiers", description: "Create subscription tiers with different benefits and pricing.", icon: <Star className="h-4 w-4" /> },
         { name: "Exclusive Content", description: "Post content visible only to paying subscribers.", icon: <Lock className="h-4 w-4" /> },
         { name: "Earnings Tracking", description: "Track earnings from subscriptions and tips in real-time.", icon: <Zap className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Groups",
       icon: <Users className="h-5 w-5" />,
@@ -121,8 +111,7 @@ export default function WallInfo() {
         { name: "Group Discussions", description: "Post, share media, and engage in group conversations.", icon: <MessageCircle className="h-4 w-4" /> },
         { name: "Group Management", description: "Manage members, assign admin roles, and moderate content.", icon: <Shield className="h-4 w-4" /> },
         { name: "Member Stats", description: "View member counts and group activity statistics.", icon: <TrendingUp className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Pages",
       icon: <Flag className="h-5 w-5" />,
@@ -131,8 +120,7 @@ export default function WallInfo() {
         { name: "Page Categories", description: "Categories: Business, Entertainment, Community, Art, Technology, Sports.", icon: <Filter className="h-4 w-4" /> },
         { name: "Page Followers", description: "Build a following separate from personal connections.", icon: <UserPlus className="h-4 w-4" /> },
         { name: "Discover Pages", description: "Search and browse pages by name or category.", icon: <Search className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Events",
       icon: <Calendar className="h-5 w-5" />,
@@ -141,8 +129,7 @@ export default function WallInfo() {
         { name: "RSVP", description: "RSVP as 'Going' or 'Interested' to community events.", icon: <ThumbsUp className="h-4 w-4" /> },
         { name: "Upcoming Events", description: "Discover upcoming events in your network.", icon: <Clock className="h-4 w-4" /> },
         { name: "Event Management", description: "Manage your created events and track attendees.", icon: <Star className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Live Streaming",
       icon: <Radio className="h-5 w-5" />,
@@ -151,8 +138,7 @@ export default function WallInfo() {
         { name: "Live Chat", description: "Real-time chat with viewers during live streams.", icon: <MessageCircle className="h-4 w-4" /> },
         { name: "Live Reactions", description: "Viewers can send floating emoji reactions during streams.", icon: <Heart className="h-4 w-4" /> },
         { name: "Viewer Count", description: "Track live viewer count in real-time.", icon: <Eye className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Gamification",
       icon: <Gift className="h-5 w-5" />,
@@ -161,8 +147,7 @@ export default function WallInfo() {
         { name: "XP & Levels", description: "Earn experience points and level up through engagement.", icon: <TrendingUp className="h-4 w-4" /> },
         { name: "Achievements & Badges", description: "Unlock badges for milestones and special activities.", icon: <Star className="h-4 w-4" /> },
         { name: "Challenges", description: "Participate in community challenges to earn rewards.", icon: <Gift className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Privacy & Security",
       icon: <Shield className="h-5 w-5" />,
@@ -171,8 +156,7 @@ export default function WallInfo() {
         { name: "Block Users", description: "Block users from seeing your content or contacting you.", icon: <Shield className="h-4 w-4" /> },
         { name: "Report Content", description: "Report inappropriate posts or users for moderation.", icon: <Flag className="h-4 w-4" /> },
         { name: "Post Visibility", description: "Set visibility per post: Everyone, Friends Only, or Only Me.", icon: <Eye className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Platform Features",
       icon: <Globe className="h-5 w-5" />,
@@ -182,8 +166,7 @@ export default function WallInfo() {
         { name: "Real-time Updates", description: "Live updates via Supabase for posts, messages, and notifications.", icon: <Zap className="h-4 w-4" /> },
         { name: "Infinite Scroll", description: "Seamless content loading as you scroll through your feed.", icon: <Filter className="h-4 w-4" /> },
         { name: "Media Gallery", description: "Browse all uploaded photos and videos in gallery format.", icon: <Image className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Marketplace (Bazaar)",
       icon: <ShoppingBag className="h-5 w-5" />,
@@ -192,8 +175,7 @@ export default function WallInfo() {
         { name: "Categories & Search", description: "Filter listings by category, price and condition with full-text search.", icon: <Search className="h-4 w-4" /> },
         { name: "EUR Payments", description: "Secure checkout in EUR (€) via Stripe with buyer protection.", icon: <Zap className="h-4 w-4" /> },
         { name: "Seller Profiles", description: "View seller ratings, reviews and other listings before buying.", icon: <Star className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Dating",
       icon: <Heart className="h-5 w-5" />,
@@ -202,8 +184,7 @@ export default function WallInfo() {
         { name: "Smart Matching", description: "Curated suggestions powered by your profile and engagement signals.", icon: <Sparkles className="h-4 w-4" /> },
         { name: "Private Chat", description: "Message matches in a safe, moderated chat space.", icon: <MessageCircle className="h-4 w-4" /> },
         { name: "Photo Verification", description: "Verified photo badges to keep the community authentic.", icon: <Shield className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Anonymous Dating",
       icon: <EyeOff className="h-5 w-5" />,
@@ -212,8 +193,7 @@ export default function WallInfo() {
         { name: "Personality First", description: "Match by vibe, interests and conversation rather than appearance.", icon: <Heart className="h-4 w-4" /> },
         { name: "Mutual Reveal", description: "Photos unlock only when both sides opt in.", icon: <Eye className="h-4 w-4" /> },
         { name: "Safe & Moderated", description: "Built-in moderation, blocking and reporting to keep the space safe.", icon: <Shield className="h-4 w-4" /> },
-      ],
-    },
+      ] },
     {
       title: "Memories",
       icon: <Sparkles className="h-5 w-5" />,
@@ -221,8 +201,7 @@ export default function WallInfo() {
         { name: "On This Day", description: "Relive your past posts from previous years on the same date.", icon: <Calendar className="h-4 w-4" /> },
         { name: "Year Highlights", description: "Beautiful tiles like '2 years ago' or '1 year ago' with original media.", icon: <Sparkles className="h-4 w-4" /> },
         { name: "Re-share", description: "Re-share old memories to your current feed with one tap.", icon: <Share2 className="h-4 w-4" /> },
-      ],
-    },
+      ] },
   ];
 
   const totalFeatures = featureSections.reduce((a, s) => a + s.features.length, 0);

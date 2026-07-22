@@ -15,8 +15,7 @@ const GraphicDesign = () => {
   const [enrolling, setEnrolling] = useState<string | null>(null);
   const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+  useEffect(() => { const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
@@ -24,8 +23,7 @@ const GraphicDesign = () => {
         if (success) {
           toast({
             title: "Enrollment Successful! 🎉",
-            description: "You now have access to your design training.",
-          });
+            description: "You now have access to your design training." });
           window.history.replaceState({}, '', '/graphic-design');
         }
       });
@@ -101,12 +99,10 @@ const GraphicDesign = () => {
       if (sessionUrl) {
         { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; } }
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Enrollment Failed",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setEnrolling(null);
     }
   };
@@ -208,7 +204,7 @@ const GraphicDesign = () => {
                   </Button>
                 </div>
                 <CourseAcademicActions
-                  meta={{
+                  meta={ {
                     module_key: "graphic-design",
                     module_label: "Graphic Design",
                     course_slug: training.id,
@@ -217,8 +213,7 @@ const GraphicDesign = () => {
                     level: training.level,
                     duration: training.duration,
                     price: training.price,
-                    skills: training.skills,
-                  }}
+                    skills: training.skills }}
                   unlocked={isPurchased(training.id, "design-training")}
                 />
               </div>

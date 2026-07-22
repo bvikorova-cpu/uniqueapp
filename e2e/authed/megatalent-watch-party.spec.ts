@@ -57,9 +57,7 @@ test.describe("Watch Party — authed E2E", () => {
           {
             headers: {
               apikey: ANON_KEY,
-              Authorization: `Bearer ${token}`,
-            },
-          },
+              Authorization: `Bearer ${token}` } },
         )
         .catch(() => {});
     }
@@ -142,15 +140,11 @@ test.describe("Watch Party — authed E2E", () => {
         headers: {
           apikey: ANON_KEY,
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        data: {
-          host_user_id: other,
+          "Content-Type": "application/json" },
+        data: { host_user_id: other,
           category: STREAM_CATEGORY,
           title: "rls-impersonation",
-          status: "live",
-        },
-      },
+          status: "live" } },
     );
     expect(insertStream.status(), "RLS must reject host_user_id ≠ auth.uid()").toBeGreaterThanOrEqual(400);
     expect(insertStream.status()).toBeLessThan(500);
@@ -161,14 +155,10 @@ test.describe("Watch Party — authed E2E", () => {
         headers: {
           apikey: ANON_KEY,
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        data: {
-          stream_id: "00000000-0000-0000-0000-000000000000",
+          "Content-Type": "application/json" },
+        data: { stream_id: "00000000-0000-0000-0000-000000000000",
           user_id: other,
-          content: "rls-impersonation",
-        },
-      },
+          content: "rls-impersonation" } },
     );
     expect(insertMsg.status()).toBeGreaterThanOrEqual(400);
     expect(insertMsg.status()).toBeLessThan(500);

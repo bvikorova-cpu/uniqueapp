@@ -26,8 +26,7 @@ const availableBets: RaceBet[] = [
       { name: "Mei L.", odds: 4.0, trend: "down" },
       { name: "Carlos R.", odds: 6.5, trend: "up" },
       { name: "Sofia A.", odds: 8.0, trend: "stable" },
-    ],
-  },
+    ] },
   {
     id: "2", raceName: "Solar Flare GP", status: "open", startTime: "Starting in 1h 30min",
     drivers: [
@@ -35,16 +34,14 @@ const availableBets: RaceBet[] = [
       { name: "James K.", odds: 3.0, trend: "stable" },
       { name: "Omar H.", odds: 5.5, trend: "down" },
       { name: "Alex M.", odds: 7.0, trend: "up" },
-    ],
-  },
+    ] },
   {
     id: "3", raceName: "Quantum Horizon GP", status: "live", startTime: "Lap 23/45",
     drivers: [
       { name: "Priya S.", odds: 1.5, trend: "up" },
       { name: "Mei L.", odds: 2.8, trend: "down" },
       { name: "James K.", odds: 4.2, trend: "down" },
-    ],
-  },
+    ] },
 ];
 
 const betHistory = [

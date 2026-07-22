@@ -32,8 +32,7 @@ export function StoryboardView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); return; }
       const { data, error } = await supabase.functions.invoke("video-ad-tools", {
         body: { action: "storyboard", product, audience, message, duration, platform, style },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Storyboard created! (${data.credits_used} credits)`);

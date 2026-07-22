@@ -47,13 +47,11 @@ export function ExclusivePostsList({ creatorId, userTierId, isSubscribed }: Excl
       if (error) throw error;
 
       setPosts(data || []);
-    } catch (error: any) {
-      console.error('Error loading posts:', error);
+    } catch (error: any) { console.error('Error loading posts:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load exclusive posts",
-      });
+        description: "Failed to load exclusive posts" });
     } finally {
       setLoading(false);
     }
@@ -77,21 +75,17 @@ export function ExclusivePostsList({ creatorId, userTierId, isSubscribed }: Excl
           user_id: user.id
         });
 
-      if (error) {
-        if (error.code === '23505') {
+      if (error) { if (error.code === '23505') {
           toast({
             title: "Already Liked",
-            description: "You've already liked this post",
-          });
+            description: "You've already liked this post" });
         } else {
           throw error;
         }
-      } else {
-        loadPosts();
+      } else { loadPosts();
         toast({
           title: "Liked!",
-          description: "Post liked successfully",
-        });
+          description: "Post liked successfully" });
       }
     } catch (error) {
       console.error('Error liking post:', error);
@@ -202,8 +196,7 @@ export function ExclusivePostsList({ creatorId, userTierId, isSubscribed }: Excl
                       } else {
                         toast({
                           title: "💬 Comments",
-                          description: `${post.comments_count || 0} comments on this post`,
-                        });
+                          description: `${post.comments_count || 0} comments on this post` });
                       }
                     }}>
                     <MessageCircle className="h-4 w-4" />

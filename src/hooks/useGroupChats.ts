@@ -38,8 +38,7 @@ export const useGroupChats = () => {
 
       if (error) throw error;
       return (data ?? []) as GroupChat[];
-    },
-  });
+    } });
 
   const createGroup = useMutation({
     mutationFn: async ({ name, memberIds }: { name: string; memberIds: string[] }) => {
@@ -60,8 +59,7 @@ export const useGroupChats = () => {
       if (e2) throw e2;
       return conv;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["group-chats"] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["group-chats"] }) });
 
   return { groups, isLoading, createGroup: createGroup.mutateAsync };
 };
@@ -81,8 +79,7 @@ export const useGroupMessages = (conversationId?: string) => {
       if (error) throw error;
       return data ?? [];
     },
-    enabled: !!conversationId,
-  });
+    enabled: !!conversationId });
 
   // P1 — realtime so new messages appear instantly.
   useEffect(() => {
@@ -102,16 +99,13 @@ export const useGroupMessages = (conversationId?: string) => {
     mutationFn: async ({ content, sharedPostId }: { content: string; sharedPostId?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !conversationId) throw new Error("Missing context");
-      const { error } = await supabase.from("conversation_messages").insert({
-        conversation_id: conversationId,
+      const { error } = await supabase.from("conversation_messages").insert({ conversation_id: conversationId,
         sender_id: user.id,
         content,
-        shared_post_id: sharedPostId,
-      });
+        shared_post_id: sharedPostId });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["group-messages", conversationId] }),
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["group-messages", conversationId] }) });
 
   return { messages, send: send.mutate };
 };

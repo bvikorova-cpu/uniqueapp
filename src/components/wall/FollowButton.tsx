@@ -2,11 +2,9 @@ import { UserPlus, UserMinus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  useIsFollowing,
+import { useIsFollowing,
   useFollowMutation,
-  useUnfollowMutation,
-} from "@/hooks/useFollow";
+  useUnfollowMutation } from "@/hooks/useFollow";
 
 interface FollowButtonProps {
   userId: string;
@@ -20,8 +18,7 @@ export const FollowButton = ({ userId, variant = "default", size = "default" }: 
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: isFollowing = false } = useIsFollowing(currentUser?.id, userId);
   const followMutation = useFollowMutation();

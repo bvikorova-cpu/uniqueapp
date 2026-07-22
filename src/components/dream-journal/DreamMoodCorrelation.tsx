@@ -53,8 +53,7 @@ const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
 
       const res = await supabase.functions.invoke("dream-ai", {
         body: { action: "mood-correlation", dreams, moods },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       const data = throwIfInvokeError(res);
       setResult(data.analysis);
       toast.success("Correlation analysis ready!");

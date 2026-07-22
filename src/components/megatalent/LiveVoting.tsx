@@ -29,13 +29,11 @@ interface LiveVotingProps {
   userVotedFor?: string | null;
 }
 
-export const LiveVoting = ({
-  contestants = [],
+export const LiveVoting = ({ contestants = [],
   totalVotes = 0,
   isVotingOpen = true,
   onVote,
-  userVotedFor = null,
-}: LiveVotingProps) => {
+  userVotedFor = null }: LiveVotingProps) => {
   const [selectedId, setSelectedId] = useState<string | null>(userVotedFor);
   const [hasVoted, setHasVoted] = useState(!!userVotedFor);
 

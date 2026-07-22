@@ -109,8 +109,7 @@ export default function EducationalStories() {
   const completedTopics = totalProgress && typeof totalProgress === 'object' ? totalProgress.completedTopics : 0;
 
   // Build topic progress list for dashboard
-  const topicProgressList = useMemo(() => {
-    if (!progress || !Array.isArray(progress)) return [];
+  const topicProgressList = useMemo(() => { if (!progress || !Array.isArray(progress)) return [];
     return (progress as any[]).map(p => {
       const topic = topics.find(t => t.id === p.topic_id);
       return {
@@ -121,8 +120,7 @@ export default function EducationalStories() {
         totalLessons: p.total_lessons || 3,
         quizScore: p.quiz_score || 0,
         starsEarned: p.stars_earned || 0,
-        isCompleted: p.is_completed || false,
-      };
+        isCompleted: p.is_completed || false };
     });
   }, [progress]);
 
@@ -331,12 +329,11 @@ export default function EducationalStories() {
                     key={topic.id}
                     topic={topic}
                     index={index}
-                    progress={topicProg ? {
+                    progress={ topicProg ? {
                       lessonsCompleted: topicProg.lessonsCompleted,
                       totalLessons: topicProg.totalLessons,
                       starsEarned: topicProg.starsEarned,
-                      isCompleted: topicProg.isCompleted,
-                    } : undefined}
+                      isCompleted: topicProg.isCompleted } : undefined}
                     onStart={() => handleStartLearning(topic)}
                   />
                 );

@@ -1,12 +1,10 @@
 import { Suspense, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Sparkles, Wand2, Pencil, Brush, ArrowUpRight, BookOpen, CreditCard, ArrowLeft, Copy,
+import { Sparkles, Wand2, Pencil, Brush, ArrowUpRight, BookOpen, CreditCard, ArrowLeft, Copy,
   Globe, Eraser, Layers, History, ScanSearch,
   Scissors, Image as ImageIcon, Maximize2, Target, Type, PenTool,
   UserCheck, VenetianMask, PersonStanding, Grid3x3, Users, Film,
-  Folder, Share2, Settings, Zap,
-} from "lucide-react";
+  Folder, Share2, Settings, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";

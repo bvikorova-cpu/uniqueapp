@@ -46,13 +46,10 @@ export default function BadgeLeaderboard() {
 
       const profileMap = new Map(profiles?.map((p: any) => [p.id, p]) || []);
       
-      return topUsers.map(([userId, count]) => ({
-        user_id: userId,
+      return topUsers.map(([userId, count]) => ({ user_id: userId,
         badge_count: count,
-        profile: profileMap.get(userId) || null,
-      })) as BadgeLeaderEntry[];
-    },
-  });
+        profile: profileMap.get(userId) || null })) as BadgeLeaderEntry[];
+    } });
 
   const getRankIcon = (index: number) => {
     if (index === 0) return <Crown className="h-5 w-5 text-yellow-500" />;

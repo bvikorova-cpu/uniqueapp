@@ -150,8 +150,7 @@ const Auth = () => {
     const { error } = await supabase.auth.resend({
       type: "signup",
       email: unconfirmedEmail,
-      options: { emailRedirectTo: `${window.location.origin}/` },
-    });
+      options: { emailRedirectTo: `${window.location.origin}/` } });
     if (error) {
       toast({ variant: "destructive", title: "Resend failed", description: error.message });
     } else {
@@ -159,33 +158,27 @@ const Auth = () => {
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => { e.preventDefault();
 
     if (!privacyConsent || !termsConsent) {
       toast({
         variant: "destructive",
         title: "Consent Required",
-        description: "Please agree to the Privacy Policy and Terms of Use to continue.",
-      });
+        description: "Please agree to the Privacy Policy and Terms of Use to continue." });
       return;
     }
 
-    if (!captchaVerified) {
-      toast({
+    if (!captchaVerified) { toast({
         variant: "destructive",
         title: "Captcha required",
-        description: "Please complete the captcha to prove you're not a robot.",
-      });
+        description: "Please complete the captcha to prove you're not a robot." });
       return;
     }
 
-    if (!birthDate) {
-      toast({
+    if (!birthDate) { toast({
         variant: "destructive",
         title: "Date of birth required",
-        description: "Please select your date of birth to continue.",
-      });
+        description: "Please select your date of birth to continue." });
       return;
     }
 
@@ -225,8 +218,7 @@ const Auth = () => {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/`,
-        data: {
-          full_name: fullName,
+        data: { full_name: fullName,
           phone: phone,
           company_name: companyName || null,
           preferred_language: selectedLanguage,
@@ -234,10 +226,7 @@ const Auth = () => {
           // GDPR consent audit — server trigger reads these and writes an append-only row.
           privacy_consent_version: PRIVACY_POLICY_VERSION,
           terms_consent_version: TERMS_OF_USE_VERSION,
-          signup_user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
-        },
-      },
-    });
+          signup_user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null } } });
 
     // Profile fields (birth_date, preferred_language) are persisted server-side by
     // the public.handle_new_user trigger from raw_user_meta_data. Do NOT update from
@@ -253,17 +242,13 @@ const Auth = () => {
         setShowAgeBlock(true);
         return;
       }
-      toast({
-        variant: "destructive",
+      toast({ variant: "destructive",
         title: "Registration error",
-        description: error.message,
-      });
-    } else {
-      setUnconfirmedEmail(email);
+        description: error.message });
+    } else { setUnconfirmedEmail(email);
       toast({
         title: "Registration successful!",
-        description: "Check your email for confirmation.",
-      });
+        description: "Check your email for confirmation." });
     }
   };
 
@@ -275,10 +260,8 @@ const Auth = () => {
     const email = ((formData.get("email") as string) || "").trim().toLowerCase();
     const password = (formData.get("password") as string) || "";
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await supabase.auth.signInWithPassword({ email,
+      password });
 
     setLoading(false);
 
@@ -301,17 +284,13 @@ const Auth = () => {
       const isUnconfirmed = msg.includes("not confirmed") || msg.includes("email not confirmed");
       if (isUnconfirmed) setUnconfirmedEmail(email);
 
-      toast({
-        variant: "destructive",
+      toast({ variant: "destructive",
         title: isUnavailable ? "Service temporarily unavailable" : "Login error",
         description: isUnavailable
           ? "Please try again in a moment."
-          : error.message,
-      });
-    } else {
-      toast({
-        title: "Login successful!",
-      });
+          : error.message });
+    } else { toast({
+        title: "Login successful!" });
       navigate(safeRedirect, { replace: true });
     }
   };
@@ -330,14 +309,12 @@ const Auth = () => {
       toast({
         variant: "destructive",
         title: "Reset email recently requested",
-        description: `Please wait ${Math.ceil(remaining / 60)} minute${remaining > 60 ? "s" : ""} before requesting another link.`,
-      });
+        description: `Please wait ${Math.ceil(remaining / 60)} minute${remaining > 60 ? "s" : ""} before requesting another link.` });
       return;
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
+      redirectTo: `${window.location.origin}/reset-password` });
 
     setLoading(false);
 
@@ -346,20 +323,16 @@ const Auth = () => {
         setResetCooldown(email, RESET_EMAIL_COOLDOWN_SECONDS);
         setResetCooldownState(RESET_EMAIL_COOLDOWN_SECONDS);
       }
-      toast({
-        variant: "destructive",
+      toast({ variant: "destructive",
         title: isEmailRateLimitError(error.message) ? "Too many email requests" : "Error",
         description: isEmailRateLimitError(error.message)
           ? "Please wait a while before requesting another password reset email. Your previous link may still arrive."
-          : error.message,
-      });
-    } else {
-      setResetCooldown(email, RESET_EMAIL_COOLDOWN_SECONDS);
+          : error.message });
+    } else { setResetCooldown(email, RESET_EMAIL_COOLDOWN_SECONDS);
       setResetCooldownState(RESET_EMAIL_COOLDOWN_SECONDS);
       toast({
         title: "Password reset link sent!",
-        description: "Check your email for the reset link.",
-      });
+        description: "Check your email for the reset link." });
       setShowForgotPassword(false);
     }
   };

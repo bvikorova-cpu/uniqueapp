@@ -25,8 +25,7 @@ export const PhotoShareView = () => {
       const { data: { publicUrl } } = supabase.storage.from("best-friend-media").getPublicUrl(path);
 
       const { data, error } = await supabase.functions.invoke("best-friend-photo-react", {
-        body: { image_url: publicUrl, caption: caption.trim() || undefined },
-      });
+        body: { image_url: publicUrl, caption: caption.trim() || undefined } });
       if (error) throw error;
       setReaction({ url: publicUrl, reaction: data.reaction });
       setCaption("");

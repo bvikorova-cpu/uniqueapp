@@ -24,10 +24,8 @@ const rpc = async (name: string, body: Record<string, unknown>) => {
     headers: {
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      "Content-Type": "application/json",
-    },
-    data: body,
-  });
+      "Content-Type": "application/json" },
+    data: body });
   let json: any = null;
   try { json = await res.json(); } catch { /* empty */ }
   return { status: res.status(), json };
@@ -55,11 +53,9 @@ test.describe("Rewards load — race safety", () => {
   test("30 parallel claim_battle_pass_reward calls all refused", async () => {
     const results = await Promise.all(
       Array.from({ length: 30 }, () =>
-        rpc("claim_battle_pass_reward", {
-          _season_id: "00000000-0000-0000-0000-000000000000",
+        rpc("claim_battle_pass_reward", { _season_id: "00000000-0000-0000-0000-000000000000",
           _tier: 1,
-          _track: "free",
-        })
+          _track: "free" })
       )
     );
     const grantedOk = results.filter((r) => r.status === 200 && r.json?.ok === true);

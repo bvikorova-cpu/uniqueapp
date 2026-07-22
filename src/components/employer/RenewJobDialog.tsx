@@ -28,8 +28,7 @@ export function RenewJobDialog({ jobId, jobTitle, open, onOpenChange }: Props) {
     setLoading(productKey);
     try {
       const { data, error } = await supabase.functions.invoke("create-one-off-payment", {
-        body: { productKey, metadata: { jobListingId: jobId } },
-      });
+        body: { productKey, metadata: { jobListingId: jobId } } });
       if (error) throw error;
       if (data?.url) {
         const w = window.open(data.url, "_blank", "noopener,noreferrer");
@@ -38,12 +37,10 @@ export function RenewJobDialog({ jobId, jobTitle, open, onOpenChange }: Props) {
       } else {
         throw new Error("No checkout URL returned");
       }
-    } catch (err: any) {
-      toast({
+    } catch (err: any) { toast({
         title: "Renewal failed",
         description: err?.message || "Could not start checkout.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(null);
     }

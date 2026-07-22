@@ -33,8 +33,7 @@ async function signIn(request: APIRequestContext) {
     `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
     {
       headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
-      data: { email: EMAIL, password: PASSWORD },
-    },
+      data: { email: EMAIL, password: PASSWORD } },
   );
   expect(res.ok(), `sign-in failed: ${res.status()} ${await res.text()}`).toBeTruthy();
   const json = await res.json();
@@ -45,17 +44,14 @@ function authHeaders(token: string) {
   return {
     apikey: SUPABASE_ANON_KEY,
     Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  } as const;
+    "Content-Type": "application/json" } as const;
 }
 
-test.describe("Concert ticket — real Stripe test card checkout + verify", () => {
-  test.setTimeout(120_000);
+test.describe("Concert ticket — real Stripe test card checkout + verify", () => { test.setTimeout(120_000);
 
   test("checkout → pay with 4242 → verify flips row to completed", async ({
     browser,
-    request,
-  }) => {
+    request }) => {
     // 1. Auth
     const { accessToken, userId } = await signIn(request);
 
@@ -71,8 +67,7 @@ test.describe("Concert ticket — real Stripe test card checkout + verify", () =
       `${SUPABASE_URL}/functions/v1/create-concert-ticket-checkout`,
       {
         headers: authHeaders(accessToken),
-        data: { concertId: CONCERT_ID, ticketTypeId: TICKET_TYPE_ID },
-      },
+        data: { concertId: CONCERT_ID, ticketTypeId: TICKET_TYPE_ID } },
     );
     expect(
       createRes.ok(),
@@ -98,8 +93,7 @@ test.describe("Concert ticket — real Stripe test card checkout + verify", () =
 
     // 5. Drive Stripe Checkout with test card 4242 4242 4242 4242
     const context = await browser.newContext({
-      viewport: { width: 1280, height: 900 },
-    });
+      viewport: { width: 1280, height: 900 } });
     const page = await context.newPage();
     await page.goto(checkoutUrl, { waitUntil: "domcontentloaded" });
 
@@ -135,7 +129,7 @@ test.describe("Concert ticket — real Stripe test card checkout + verify", () =
     // Country/postal may be required — fill if visible
     const country = page.locator("#billingCountry");
     if (await country.count()) {
-      await country.selectOption({ label: "Slovakia" }).catch(() => {});
+      await country.selectOption({ label: "Country" }).catch(() => {});
     }
     const postal = page.locator("#billingPostalCode");
     if (await postal.count()) {

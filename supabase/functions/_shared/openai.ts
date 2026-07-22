@@ -9,16 +9,13 @@
 const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 export const DEFAULT_MODEL = "gpt-4o";
 
-export const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+export const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 export function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 export function errorResponse(message: string, status = 500): Response {
@@ -55,14 +52,12 @@ function buildMessages(opts: CallOptions): ChatMessage[] {
   return m;
 }
 
-export async function callOpenAIRaw(opts: CallOptions): Promise<any> {
-  const key = Deno.env.get("OPENAI_API_KEY");
+export async function callOpenAIRaw(opts: CallOptions): Promise<any> { const key = Deno.env.get("OPENAI_API_KEY");
   if (!key) throw new OpenAIError("OPENAI_API_KEY is not configured", 500);
 
   const body: Record<string, unknown> = {
     model: opts.model || DEFAULT_MODEL,
-    messages: buildMessages(opts),
-  };
+    messages: buildMessages(opts) };
   if (opts.temperature !== undefined) body.temperature = opts.temperature;
   if (opts.max_tokens !== undefined) body.max_tokens = opts.max_tokens;
   if (opts.response_format) body.response_format = opts.response_format;
@@ -71,8 +66,7 @@ export async function callOpenAIRaw(opts: CallOptions): Promise<any> {
   const res = await fetch(OPENAI_URL, {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+    body: JSON.stringify(body) });
 
   if (res.status === 429) throw new OpenAIError("Rate limit exceeded, please try again later.", 429);
   if (res.status === 402 || res.status === 401) {

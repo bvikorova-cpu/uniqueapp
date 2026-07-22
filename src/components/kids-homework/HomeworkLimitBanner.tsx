@@ -9,11 +9,9 @@ interface HomeworkLimitBannerProps {
   onBuyCredits: () => void;
 }
 
-export const HomeworkLimitBanner = ({
-  creditsRemaining,
+export const HomeworkLimitBanner = ({ creditsRemaining,
   creditsPerQuestion,
-  onBuyCredits,
-}: HomeworkLimitBannerProps) => {
+  onBuyCredits }: HomeworkLimitBannerProps) => {
   const canAsk = creditsRemaining >= creditsPerQuestion;
   const questionsLeft = Math.floor(creditsRemaining / creditsPerQuestion);
 

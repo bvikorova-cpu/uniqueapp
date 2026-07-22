@@ -22,8 +22,7 @@ export interface BioToolkitProps {
   onTranslationsUpdate: (translations: Record<string, string>) => void;
 }
 
-export const BioToolkit = ({
-  bio,
+export const BioToolkit = ({ bio,
   score,
   feedback,
   variants,
@@ -31,8 +30,7 @@ export const BioToolkit = ({
   onApplyBio,
   onScoreUpdate,
   onVariantsUpdate,
-  onTranslationsUpdate,
-}: BioToolkitProps) => {
+  onTranslationsUpdate }: BioToolkitProps) => {
   const { toast } = useToast();
   const [scoring, setScoring] = useState(false);
   const [generating, setGenerating] = useState(false);

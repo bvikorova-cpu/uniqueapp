@@ -48,21 +48,17 @@ export default function AdminSportsMatches() {
   const [showPredictionDialog, setShowPredictionDialog] = useState(false);
   const [savingPrediction, setSavingPrediction] = useState(false);
   
-  const [formData, setFormData] = useState({
-    sport: "",
+  const [formData, setFormData] = useState({ sport: "",
     league: "",
     homeTeam: "",
     awayTeam: "",
     matchDate: "",
-    matchTime: "",
-  });
+    matchTime: "" });
 
-  const [predictionData, setPredictionData] = useState({
-    predictionType: "",
+  const [predictionData, setPredictionData] = useState({ predictionType: "",
     confidence: "",
     odds: "",
-    analysis: "",
-  });
+    analysis: "" });
 
   useEffect(() => {
     fetchMatches();
@@ -77,38 +73,32 @@ export default function AdminSportsMatches() {
 
       if (error) throw error;
       setMatches(data || []);
-    } catch (error) {
-      console.error('Error fetching matches:', error);
+    } catch (error) { console.error('Error fetching matches:', error);
       toast({
         title: "Error",
         description: "Failed to load matches",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoadingMatches(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
     
     if (!user) {
       toast({
         title: "Error",
         description: "You must be logged in",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/auth");
       return;
     }
 
     if (!formData.sport || !formData.league || !formData.homeTeam || 
-        !formData.awayTeam || !formData.matchDate || !formData.matchTime) {
-      toast({
+        !formData.awayTeam || !formData.matchDate || !formData.matchTime) { toast({
         title: "Error",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -119,42 +109,34 @@ export default function AdminSportsMatches() {
       
       const { error } = await supabase
         .from('sports_matches')
-        .insert({
-          sport: formData.sport,
+        .insert({ sport: formData.sport,
           league: formData.league,
           home_team: formData.homeTeam,
           away_team: formData.awayTeam,
           match_date: matchDateTime,
           match_time: formData.matchTime,
-          status: 'scheduled',
-        });
+          status: 'scheduled' });
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Match added successfully",
-      });
+      toast({ title: "Success",
+        description: "Match added successfully" });
 
       // Reset form
-      setFormData({
-        sport: "",
+      setFormData({ sport: "",
         league: "",
         homeTeam: "",
         awayTeam: "",
         matchDate: "",
-        matchTime: "",
-      });
+        matchTime: "" });
 
       // Refresh matches list
       fetchMatches();
-    } catch (error) {
-      console.error('Error adding match:', error);
+    } catch (error) { console.error('Error adding match:', error);
       toast({
         title: "Error",
         description: "Failed to add match",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -174,45 +156,37 @@ export default function AdminSportsMatches() {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Match deleted successfully",
-      });
+      toast({ title: "Success",
+        description: "Match deleted successfully" });
 
       // Refresh matches list
       fetchMatches();
-    } catch (error) {
-      console.error('Error deleting match:', error);
+    } catch (error) { console.error('Error deleting match:', error);
       toast({
         title: "Error",
         description: "Failed to delete match",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setDeletingId(null);
     }
   };
 
-  const handleAddPrediction = (match: Match) => {
-    setSelectedMatch(match);
+  const handleAddPrediction = (match: Match) => { setSelectedMatch(match);
     setPredictionData({
       predictionType: "",
       confidence: "",
       odds: "",
-      analysis: "",
-    });
+      analysis: "" });
     setShowPredictionDialog(true);
   };
 
-  const handleSavePrediction = async () => {
-    if (!selectedMatch || !user) return;
+  const handleSavePrediction = async () => { if (!selectedMatch || !user) return;
 
     if (!predictionData.predictionType || !predictionData.confidence) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -220,30 +194,24 @@ export default function AdminSportsMatches() {
     try {
       const { error } = await supabase
         .from('sports_predictions')
-        .insert({
-          match_id: selectedMatch.id,
+        .insert({ match_id: selectedMatch.id,
           tipster_id: user.id,
           prediction_type: predictionData.predictionType,
           confidence: parseInt(predictionData.confidence),
           odds: predictionData.odds ? parseFloat(predictionData.odds) : null,
-          analysis: predictionData.analysis || null,
-        } as any);
+          analysis: predictionData.analysis || null } as any);
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Prediction added successfully",
-      });
+      toast({ title: "Success",
+        description: "Prediction added successfully" });
 
       setShowPredictionDialog(false);
-    } catch (error) {
-      console.error('Error adding prediction:', error);
+    } catch (error) { console.error('Error adding prediction:', error);
       toast({
         title: "Error",
         description: "Failed to add prediction",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setSavingPrediction(false);
     }

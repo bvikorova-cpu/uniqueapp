@@ -53,13 +53,11 @@ export function PayoutRequestCard({ enabled, onPaid }: Props) {
   const feeInstant = +(requested * INSTANT_FEE).toFixed(2);
   const netInstant = +(requested - feeInstant).toFixed(2);
 
-  const run = async (method: "standard" | "instant") => {
-    if (!enabled) {
+  const run = async (method: "standard" | "instant") => { if (!enabled) {
       toast({
         title: "Stripe Connect required",
         description: "Complete onboarding to receive payouts.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     const min = method === "instant" ? MIN_INSTANT : MIN_STANDARD;
@@ -67,28 +65,23 @@ export function PayoutRequestCard({ enabled, onPaid }: Props) {
       toast({
         title: "Amount too low",
         description: `Minimum ${method} payout is €${min.toFixed(2)}.`,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     if (requested > available) {
       toast({
         title: "Insufficient balance",
         description: `Available: €${available.toFixed(2)}.`,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
     setSubmitting(method);
     try {
-      const { data, error } = await supabase.functions.invoke("stripe-connect-payout", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("stripe-connect-payout", { body: {
           amount_cents: Math.floor(requested * 100),
           currency: "eur",
-          method,
-        },
-      });
+          method } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       toast({
@@ -96,17 +89,14 @@ export function PayoutRequestCard({ enabled, onPaid }: Props) {
         description:
           method === "instant"
             ? `€${netInstant.toFixed(2)} on its way (€${feeInstant} fee).`
-            : `€${requested.toFixed(2)} will arrive in 1–2 business days.`,
-      });
+            : `€${requested.toFixed(2)} will arrive in 1–2 business days.` });
       setAmount("");
       loadBalance();
       onPaid?.();
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Payout failed",
         description: e?.message || "Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setSubmitting(null);
     }

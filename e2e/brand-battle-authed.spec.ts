@@ -23,11 +23,9 @@ const FN_RE = /\/functions\/v1\//;
 const FAKE_JWT =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." +
   btoa(
-    JSON.stringify({
-      sub: "00000000-0000-0000-0000-000000000bba",
+    JSON.stringify({ sub: "00000000-0000-0000-0000-000000000bba",
       email: "nathalie@test.local",
-      exp: 9999999999,
-    }),
+      exp: 9999999999 }),
   ).replace(/=+$/, "") +
   ".sig";
 
@@ -45,9 +43,7 @@ async function injectFakeSession(page: Page) {
         aud: "authenticated",
         role: "authenticated",
         app_metadata: {},
-        user_metadata: {},
-      },
-    };
+        user_metadata: {} } };
     for (const k of Object.keys(localStorage)) {
       if (k.startsWith("sb-") && k.endsWith("-auth-token")) localStorage.removeItem(k);
     }
@@ -73,19 +69,16 @@ async function stubFunctions(page: Page, router: RouterStub) {
     const fn = m?.[1] ?? "";
 
     const r = router(fn, body);
-    if (r) {
-      return route.fulfill({
+    if (r) { return route.fulfill({
         status: r.status ?? 200,
         contentType: "application/json",
-        body: JSON.stringify(r.body),
-      });
+        body: JSON.stringify(r.body) });
     }
     // Default: harmless 200
     return route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ ok: true }),
-    });
+      body: JSON.stringify({ ok: true }) });
   });
 
   await page.route("https://checkout.stripe.com/**", (r) =>
@@ -102,8 +95,7 @@ test.describe("Brand Arena Hub — authenticated user flow", () => {
       r.fulfill({
         status: 401,
         contentType: "application/json",
-        body: JSON.stringify({ error: "Unauthorized" }),
-      }),
+        body: JSON.stringify({ error: "Unauthorized" }) }),
     );
 
     await page.goto("/brand-battle/hub");
@@ -162,10 +154,7 @@ test.describe("Brand Arena Hub — authenticated user flow", () => {
             analysis: {
               brand: "Nike",
               swot: { strengths: ["Brand power"], weaknesses: [], opportunities: [], threats: [] },
-              sentiment: 0.78,
-            },
-          },
-        };
+              sentiment: 0.78 } } };
       }
       return undefined;
     });
@@ -194,9 +183,7 @@ test.describe("Brand Arena Hub — authenticated user flow", () => {
           body: {
             records: created
               ? [{ id: "rec-1", payload: created.payload, kind: created.kind }]
-              : [],
-          },
-        };
+              : [] } };
       }
       if (body.action === "records.create") {
         created = { kind: body.kind, payload: body.payload };

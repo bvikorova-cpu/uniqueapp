@@ -35,11 +35,9 @@ serve(async (req) => {
     );
 
     // Look up canonical price from DB (NEVER trust client)
-    const tableMap: Record<string, string> = {
-      accessory: "pet_accessories",
+    const tableMap: Record<string, string> = { accessory: "pet_accessories",
       mystery: "pet_mystery_boxes",
-      pet_type: "pet_types",
-    };
+      pet_type: "pet_types" };
     const { data: item, error: itemErr } = await admin.from(tableMap[itemType]).select("*").eq("id", itemId).maybeSingle();
     if (itemErr || !item) return errorResponse("Item not found", 404);
     const price = Number(item.price) || 0;
@@ -66,9 +64,7 @@ serve(async (req) => {
     // Grant the item
     let reward: any = null;
     if (itemType === "accessory") {
-      const { error: grantErr } = await admin.from("user_pet_accessories").insert({
-        user_id: user.id, accessory_id: itemId,
-      });
+      const { error: grantErr } = await admin.from("user_pet_accessories").insert({ user_id: user.id, accessory_id: itemId });
       if (grantErr) return errorResponse(grantErr.message, 500);
       reward = { type: "accessory", name: item.name };
     } else if (itemType === "mystery") {
@@ -77,9 +73,7 @@ serve(async (req) => {
       reward = { type: "mystery", boxName: item.name, reward: drawn };
     } else {
       // pet_type adoption
-      const { data: pet, error: petErr } = await admin.from("pets").insert({
-        user_id: user.id, pet_type_id: itemId, name: String(petName).trim(),
-      }).select().single();
+      const { data: pet, error: petErr } = await admin.from("pets").insert({ user_id: user.id, pet_type_id: itemId, name: String(petName).trim() }).select().single();
       if (petErr) return errorResponse(petErr.message, 500);
       reward = { type: "pet", pet };
     }
@@ -89,12 +83,10 @@ serve(async (req) => {
         itemType === "accessory" ? `Purchased ${item.name}` :
         itemType === "mystery" ? `Opened ${item.name} → ${reward.reward}` :
         `Adopted ${item.name} as "${petName}"`;
-      await admin.from("ai_usage_history").insert({
-        user_id: user.id,
+      await admin.from("ai_usage_history").insert({ user_id: user.id,
         usage_type: itemType === "pet_type" ? "pet_adoption" : "custom_generation",
         credits_used: price,
-        description: desc,
-      });
+        description: desc });
     }
 
     return jsonResponse({ success: true, reward, creditsRemaining: remaining - (price > 0 ? price : 0) });

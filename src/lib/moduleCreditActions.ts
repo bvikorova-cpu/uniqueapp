@@ -18,8 +18,7 @@ async function callFn(fn: string, body: Record<string, unknown>): Promise<Invoke
       if (/402|insufficient|requiresPayment/i.test(msg) || (data as any)?.requiresPayment) {
         toast.error("Not enough credits", {
           description: "This action costs 2 credits. Top up to continue.",
-          action: { label: "Top up", onClick: () => (window.location.href = "/ai-credits-store") },
-        });
+          action: { label: "Top up", onClick: () => (window.location.href = "/ai-credits-store") } });
       } else {
         toast.error(msg || "Action failed");
       }
@@ -28,8 +27,7 @@ async function callFn(fn: string, body: Record<string, unknown>): Promise<Invoke
     if ((data as any)?.requiresPayment) {
       toast.error("Not enough credits", {
         description: "This action costs 2 credits. Top up to continue.",
-        action: { label: "Top up", onClick: () => (window.location.href = "/ai-credits-store") },
-      });
+        action: { label: "Top up", onClick: () => (window.location.href = "/ai-credits-store") } });
       return { ok: false };
     }
     return { ok: true, credits_remaining: (data as any)?.credits_remaining ?? 0 };

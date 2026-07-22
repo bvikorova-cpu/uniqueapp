@@ -12,38 +12,28 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 const COLLECTIBLE_TICKETS = [
-  {
-    id: "1", artist: "Luna Wave", event: "Neon Dreams Tour", date: "Mar 15, 2026",
+  { id: "1", artist: "Luna Wave", event: "Neon Dreams Tour", date: "Mar 15, 2026",
     venue: "Virtual Arena", edition: "Gold", number: 142, totalMinted: 500,
     gradient: "from-amber-500 via-yellow-400 to-amber-600", price: 9.99,
-    rarity: "Rare", perks: ["Backstage video", "Signed poster digital"],
-  },
-  {
-    id: "2", artist: "DJ Pulse", event: "Bass Drop Festival", date: "Apr 2, 2026",
+    rarity: "Rare", perks: ["Backstage video", "Signed poster digital"] },
+  { id: "2", artist: "DJ Pulse", event: "Bass Drop Festival", date: "Apr 2, 2026",
     venue: "Cyber Stadium", edition: "Diamond", number: 23, totalMinted: 100,
     gradient: "from-violet-500 via-purple-400 to-indigo-600", price: 24.99,
-    rarity: "Legendary", perks: ["1-on-1 video call", "Exclusive remix", "Name in credits"],
-  },
-  {
-    id: "3", artist: "The Vibes", event: "Acoustic Sessions", date: "Apr 10, 2026",
+    rarity: "Legendary", perks: ["1-on-1 video call", "Exclusive remix", "Name in credits"] },
+  { id: "3", artist: "The Vibes", event: "Acoustic Sessions", date: "Apr 10, 2026",
     venue: "Harmony Hall", edition: "Silver", number: 378, totalMinted: 1000,
     gradient: "from-gray-400 via-slate-300 to-gray-500", price: 4.99,
-    rarity: "Common", perks: ["Concert replay access"],
-  },
-  {
-    id: "4", artist: "Echo Chamber", event: "Rhythm Revolution", date: "May 1, 2026",
+    rarity: "Common", perks: ["Concert replay access"] },
+  { id: "4", artist: "Echo Chamber", event: "Rhythm Revolution", date: "May 1, 2026",
     venue: "Sound Dome", edition: "Platinum", number: 67, totalMinted: 250,
     gradient: "from-cyan-400 via-teal-300 to-emerald-500", price: 14.99,
-    rarity: "Epic", perks: ["Priority song request", "Exclusive merch discount"],
-  },
+    rarity: "Epic", perks: ["Priority song request", "Exclusive merch discount"] },
 ];
 
-const RARITY_COLORS: Record<string, string> = {
-  Common: "bg-gray-500/20 text-gray-400 border-gray-500/30",
+const RARITY_COLORS: Record<string, string> = { Common: "bg-gray-500/20 text-gray-400 border-gray-500/30",
   Rare: "bg-amber-500/20 text-amber-400 border-amber-500/30",
   Epic: "bg-violet-500/20 text-violet-400 border-violet-500/30",
-  Legendary: "bg-pink-500/20 text-pink-400 border-pink-500/30",
-};
+  Legendary: "bg-pink-500/20 text-pink-400 border-pink-500/30" };
 
 export const CollectibleTickets = ({ onBack }: Props) => {
   const [purchasing, setPurchasing] = useState<string | null>(null);
@@ -57,9 +47,7 @@ export const CollectibleTickets = ({ onBack }: Props) => {
         body: {
           type: "collectible_ticket",
           amount: Math.round(ticket.price * 100),
-          metadata: { ticketId: ticket.id, artist: ticket.artist, edition: ticket.edition },
-        },
-      });
+          metadata: { ticketId: ticket.id, artist: ticket.artist, edition: ticket.edition } } });
       if (error) throw error;
       if (data?.url) {
         window.open(data.url, "_blank");
@@ -172,8 +160,7 @@ export const CollectibleTickets = ({ onBack }: Props) => {
                       const shareData = {
                         title: `${ticket.artist} — ${ticket.event}`,
                         text: `I own ticket #${ticket.number}/${ticket.totalMinted} (${ticket.edition}) for ${ticket.artist}'s ${ticket.event}!`,
-                        url: window.location.href,
-                      };
+                        url: window.location.href };
                       try {
                         if (navigator.share) await navigator.share(shareData);
                         else { await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`); toast({ description: "Copied to clipboard" }); }

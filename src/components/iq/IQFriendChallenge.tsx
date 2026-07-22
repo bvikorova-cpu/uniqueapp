@@ -6,9 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, Copy, Check, Loader2, Swords } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import IQDuelGame from "./IQDuelGame";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";

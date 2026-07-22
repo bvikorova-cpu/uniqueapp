@@ -10,8 +10,7 @@ import { trackIQEvent } from "@/lib/iqAnalytics";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const TIERS = [
-  {
-    id: "pro",
+  { id: "pro",
     name: "IQ Pro",
     price: "9.99",
     icon: Sparkles,
@@ -20,10 +19,8 @@ const TIERS = [
       "+50 monthly credits",
       "Pro-only AI tools",
       "No cooldowns",
-    ],
-  },
-  {
-    id: "elite",
+    ] },
+  { id: "elite",
     name: "IQ Elite",
     price: "19.99",
     icon: Crown,
@@ -33,8 +30,7 @@ const TIERS = [
       "Tournament priority entry",
       "Personal AI coach",
       "Verified Elite badge",
-    ],
-  },
+    ] },
 ];
 
 export default function IQSubscription() {
@@ -47,8 +43,7 @@ export default function IQSubscription() {
       if (error) throw error;
       return data as { subscribed: boolean; tier: string; current_period_end?: string };
     },
-    refetchInterval: 60_000,
-  });
+    refetchInterval: 60_000 });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -63,8 +58,7 @@ export default function IQSubscription() {
     trackIQEvent("iq_subscription_click", { tier });
     try {
       const { data, error } = await supabase.functions.invoke("iq-create-subscription", {
-        body: { tier },
-      });
+        body: { tier } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
     } catch (e: any) {

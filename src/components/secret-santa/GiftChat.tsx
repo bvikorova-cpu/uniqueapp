@@ -87,8 +87,7 @@ export const GiftChat = () => {
 
       return Array.from(userMap.values());
     },
-    enabled: !!currentUserId,
-  });
+    enabled: !!currentUserId });
 
   // Fetch messages for selected user
   const { data: messages = [] } = useQuery({
@@ -110,8 +109,7 @@ export const GiftChat = () => {
       return data as ChatMessage[];
     },
     enabled: !!currentUserId && !!selectedUser,
-    refetchInterval: 3000,
-  });
+    refetchInterval: 3000 });
 
   // Send message mutation
   const sendMessageMutation = useMutation({
@@ -120,11 +118,9 @@ export const GiftChat = () => {
 
       const { error } = await supabase
         .from("gift_chat_messages")
-        .insert({
-          sender_id: currentUserId,
+        .insert({ sender_id: currentUserId,
           receiver_id: selectedUser.id,
-          content,
-        });
+          content });
 
       if (error) throw error;
     },
@@ -134,8 +130,7 @@ export const GiftChat = () => {
     },
     onError: () => {
       toast.error("Failed to send message");
-    },
-  });
+    } });
 
   // Scroll to bottom on new messages
   useEffect(() => {

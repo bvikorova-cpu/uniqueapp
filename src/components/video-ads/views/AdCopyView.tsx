@@ -31,8 +31,7 @@ export function AdCopyView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); return; }
       const { data, error } = await supabase.functions.invoke("video-ad-tools", {
         body: { action: "ad_copy", product, audience, message, platform, tone },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Ad copy optimized! (${data.credits_used} credits)`);

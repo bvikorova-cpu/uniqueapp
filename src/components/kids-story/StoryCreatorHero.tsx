@@ -18,20 +18,17 @@ export const StoryCreatorHero = () => {
           className="absolute text-lg pointer-events-none select-none"
           style={{
             left: `${8 + Math.random() * 84}%`,
-            top: `${10 + Math.random() * 80}%`,
-          }}
-          animate={{
+            top: `${10 + Math.random() * 80}%` }}
+          animate={ {
             y: [-12, 12, -12],
             x: [-6, 6, -6],
             opacity: [0.2, 0.7, 0.2],
             scale: [0.7, 1.1, 0.7],
-            rotate: [0, 15, -15, 0],
-          }}
-          transition={{
+            rotate: [0, 15, -15, 0] }}
+          transition={ {
             duration: 4 + Math.random() * 3,
             repeat: Infinity,
-            delay: Math.random() * 3,
-          }}
+            delay: Math.random() * 3 }}
         >
           {emoji}
         </motion.span>
@@ -53,8 +50,7 @@ export const StoryCreatorHero = () => {
                 style={{
                   left: `${50 + 45 * Math.cos(angle)}%`,
                   top: `${50 + 45 * Math.sin(angle)}%`,
-                  transform: "translate(-50%, -50%)",
-                }}
+                  transform: "translate(-50%, -50%)" }}
                 animate={{ rotate: -360 }}
                 transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
               >

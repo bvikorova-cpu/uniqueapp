@@ -102,19 +102,16 @@ export const AnonymousDateHero = () => {
           style={{
             left: `${10 + i * 15}%`,
             top: `${25 + (i % 3) * 18}%`,
-            fontSize: `${14 + (i % 3) * 6}px`,
-          }}
-          animate={{
+            fontSize: `${14 + (i % 3) * 6}px` }}
+          animate={ {
             y: [0, -40, 0],
             opacity: [0.3, 0.9, 0.3],
-            scale: [1, 1.4, 1],
-          }}
-          transition={{
+            scale: [1, 1.4, 1] }}
+          transition={ {
             duration: 4 + i * 0.5,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: i * 0.4,
-          }}
+            delay: i * 0.4 }}
         >
           ♥
         </motion.div>

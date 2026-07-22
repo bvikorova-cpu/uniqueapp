@@ -31,22 +31,18 @@ export function TimeReversalProfile({ onBack }: Props) {
         setTargetAge([data.target_age || 20]);
         setSpeed([data.aging_speed || 1]);
       } else {
-        const { data: newProfile } = await supabase.from("time_reversal_profiles").insert({
-          user_id: session.user.id, current_age: 80, starting_age: 80, target_age: 20, aging_speed: 1.0,
-        }).select().single();
+        const { data: newProfile } = await supabase.from("time_reversal_profiles").insert({ user_id: session.user.id, current_age: 80, starting_age: 80, target_age: 20, aging_speed: 1.0 }).select().single();
         setProfile(newProfile);
       }
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   };
 
-  const handleSave = async () => {
-    if (!profile) return;
+  const handleSave = async () => { if (!profile) return;
     setSaving(true);
     try {
       await supabase.from("time_reversal_profiles").update({
-        target_age: targetAge[0], aging_speed: speed[0],
-      }).eq("id", profile.id);
+        target_age: targetAge[0], aging_speed: speed[0] }).eq("id", profile.id);
       toast({ title: "Profile Updated! ⏪" });
     } catch (e) { console.error(e); toast({ title: "Error", variant: "destructive" }); }
     finally { setSaving(false); }

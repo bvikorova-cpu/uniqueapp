@@ -31,8 +31,7 @@ export const useMediaGallery = (userId?: string) => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: albums } = useQuery({
     queryKey: ["media-albums", userId],
@@ -51,17 +50,14 @@ export const useMediaGallery = (userId?: string) => {
       // Get unique album names
       const uniqueAlbums = [...new Set(data.map((item) => item.album_name))];
       return uniqueAlbums.filter(Boolean) as string[];
-    },
-  });
+    } });
 
-  const addToGallery = useMutation({
-    mutationFn: async ({
+  const addToGallery = useMutation({ mutationFn: async ({
       mediaUrl,
       mediaType,
       postId,
       albumName,
-      description,
-    }: {
+      description }: {
       mediaUrl: string;
       mediaType: string;
       postId?: string;
@@ -71,22 +67,19 @@ export const useMediaGallery = (userId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("user_media_gallery").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("user_media_gallery").insert({ user_id: user.id,
         media_url: mediaUrl,
         media_type: mediaType,
         post_id: postId,
         album_name: albumName,
-        description,
-      });
+        description });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["media-gallery"] });
       queryClient.invalidateQueries({ queryKey: ["media-albums"] });
-    },
-  });
+    } });
 
   const deleteMedia = useMutation({
     mutationFn: async (mediaId: string) => {
@@ -100,19 +93,16 @@ export const useMediaGallery = (userId?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["media-gallery"] });
       toast({ title: "Media deleted" });
-    },
-  });
+    } });
 
   const photos = media?.filter((m) => m.media_type === "image") || [];
   const videos = media?.filter((m) => m.media_type === "video") || [];
 
-  return {
-    media: media || [],
+  return { media: media || [],
     albums: albums || [],
     photos,
     videos,
     isLoading,
     addToGallery: addToGallery.mutate,
-    deleteMedia: deleteMedia.mutate,
-  };
+    deleteMedia: deleteMedia.mutate };
 };

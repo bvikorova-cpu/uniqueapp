@@ -49,8 +49,7 @@ const TOOL_FIELDS: Record<string, { key: string; label: string; type: "input" | 
     { key: "skills", label: "Current Skills", type: "textarea" },
     { key: "years_experience", label: "Years of Experience", type: "input" },
     { key: "goals", label: "Career Goals", type: "textarea" },
-  ],
-};
+  ] };
 
 export default function JobsToolsGrid() {
   const [activeTool, setActiveTool] = useState<string | null>(null);
@@ -67,8 +66,7 @@ export default function JobsToolsGrid() {
 
       const { data, error } = await supabase.functions.invoke("jobs-ai", {
         body: { action: toolId, ...formData },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);
@@ -79,8 +77,7 @@ export default function JobsToolsGrid() {
           user_id: session.user.id,
           usage_type: toolId,
           credits_used: TOOLS.find((t) => t.id === toolId)?.credits ?? 0,
-          description: `Jobs AI: ${toolId}`,
-        });
+          description: `Jobs AI: ${toolId}` });
         await (supabase as any).rpc("track_challenge_action", { _action: "job_tool_use" });
       } catch (e) {
         console.warn("usage tracking failed", e);

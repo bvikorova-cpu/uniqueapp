@@ -12,11 +12,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { classifyVerifyResult, classifyVerifyError, type VerifyNotice } from "@/lib/fanclubVerifyStatus";
 
 const TIER_ICON = { bronze: Star, silver: Crown, gold: Sparkles } as const;
-const TIER_COLOR = {
-  bronze: "text-orange-500",
+const TIER_COLOR = { bronze: "text-orange-500",
   silver: "text-gray-400",
-  gold: "text-amber-400",
-} as const;
+  gold: "text-amber-400" } as const;
 
 interface Props {
   creatorId: string;
@@ -45,10 +43,8 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
   const qc = useQueryClient();
   const [params, setParams] = useSearchParams();
 
-  const { data: user } = useQuery({
-    queryKey: ["auth-user"],
-    queryFn: async () => (await supabase.auth.getUser()).data.user,
-  });
+  const { data: user } = useQuery({ queryKey: ["auth-user"],
+    queryFn: async () => (await supabase.auth.getUser()).data.user });
 
   const { data: clubs = [], isLoading } = useQuery<ClubRow[]>({
     queryKey: ["public-fan-clubs", creatorId],
@@ -60,12 +56,9 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
         .eq("is_active", true)
         .order("price_cents", { ascending: true });
       if (error) throw error;
-      return (data ?? []).map((r: any) => ({
-        ...r,
-        perks: Array.isArray(r.perks) ? r.perks : [],
-      })) as ClubRow[];
-    },
-  });
+      return (data ?? []).map((r: any) => ({ ...r,
+        perks: Array.isArray(r.perks) ? r.perks : [] })) as ClubRow[];
+    } });
 
   const { data: memberships = [] } = useQuery<MembershipRow[]>({
     queryKey: ["my-fan-club-memberships", user?.id, creatorId],
@@ -79,8 +72,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
       if (error) throw error;
       return (data ?? []) as MembershipRow[];
     },
-    enabled: !!user && clubs.length > 0,
-  });
+    enabled: !!user && clubs.length > 0 });
 
   const [verifyNotice, setVerifyNotice] = useState<null | { clubId: string | null; notice: VerifyNotice }>(null);
   const [verifying, setVerifying] = useState(false);
@@ -89,8 +81,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
     setVerifying(true);
     try {
       const { data, error } = await supabase.functions.invoke("fanclub-verify", {
-        body: { fan_club_id: clubId },
-      });
+        body: { fan_club_id: clubId } });
       if (error) throw new Error(error.message || "Verification failed");
       if ((data as any)?.error) throw new Error((data as any).error);
 
@@ -117,12 +108,10 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
       }
 
       setVerifyNotice({ clubId, notice });
-      if (!opts?.silent) {
-        toast({
+      if (!opts?.silent) { toast({
           title: notice.title,
           description: notice.reason,
-          variant: notice.tone === "success" ? "default" : "destructive",
-        });
+          variant: notice.tone === "success" ? "default" : "destructive" });
       }
       return false;
     } catch (e: any) {
@@ -157,8 +146,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
     mutationFn: async (fan_club_id: string) => {
       if (!user) throw new Error("Sign in to subscribe");
       const { data, error } = await supabase.functions.invoke("fanclub-checkout", {
-        body: { fan_club_id },
-      });
+        body: { fan_club_id } });
       if (error) throw error;
       if (data?.already_member) {
         qc.invalidateQueries({ queryKey: ["my-fan-club-memberships"] });
@@ -166,8 +154,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
       }
       if (data?.url) window.location.href = data.url;
     },
-    onError: (e: any) => toast({ title: "Checkout error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Checkout error", description: e.message, variant: "destructive" }) });
 
   const cancel = useMutation({
     mutationFn: async (fan_club_id: string) => {
@@ -178,8 +165,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
       qc.invalidateQueries({ queryKey: ["my-fan-club-memberships"] });
       toast({ title: "Subscription will end at period end" });
     },
-    onError: (e: any) => toast({ title: "Cancel failed", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Cancel failed", description: e.message, variant: "destructive" }) });
 
   const resume = useMutation({
     mutationFn: async (fan_club_id: string) => {
@@ -190,14 +176,12 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
       qc.invalidateQueries({ queryKey: ["my-fan-club-memberships"] });
       toast({ title: "Membership resumed" });
     },
-    onError: (e: any) => toast({ title: "Resume failed", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Resume failed", description: e.message, variant: "destructive" }) });
 
   const swap = useMutation({
     mutationFn: async ({ from_fan_club_id, to_fan_club_id }: { from_fan_club_id: string; to_fan_club_id: string }) => {
       const { error } = await supabase.functions.invoke("fanclub-swap", {
-        body: { from_fan_club_id, to_fan_club_id },
-      });
+        body: { from_fan_club_id, to_fan_club_id } });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -205,20 +189,17 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
       qc.invalidateQueries({ queryKey: ["fan-club-locked-posts"] });
       toast({ title: "Tier changed", description: "Proration applied on your next invoice." });
     },
-    onError: (e: any) => toast({ title: "Swap failed", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Swap failed", description: e.message, variant: "destructive" }) });
 
   const openPortal = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke("billing-portal", {
-        body: { return_url: window.location.href },
-      });
+        body: { return_url: window.location.href } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       if ((data as any)?.url) window.open((data as any).url, "_blank");
     },
-    onError: (e: any) => toast({ title: "Billing portal error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Billing portal error", description: e.message, variant: "destructive" }) });
 
   const activeMembership = memberships.find((m) => m.status === "active");
   const hasAnyMembership = memberships.length > 0;
@@ -233,8 +214,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
     return activeMembership ?? memberships[0] ?? null;
   })();
 
-  const guideNotice: VerifyNotice = (() => {
-    if (!guideMembership) {
+  const guideNotice: VerifyNotice = (() => { if (!guideMembership) {
       return {
         kind: "missing",
         title: "How to subscribe and manage a Fan Club",
@@ -247,8 +227,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
         ],
         tone: "info",
         showPortal: false,
-        showRetry: false,
-      };
+        showRetry: false };
     }
     if (guideMembership.status === "active" && guideMembership.cancel_at_period_end) {
       return {
@@ -262,13 +241,10 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
         ],
         tone: "warn",
         showPortal: true,
-        showRetry: false,
-      };
+        showRetry: false };
     }
-    return classifyVerifyResult({
-      active: guideMembership.status === "active",
-      status: guideMembership.status,
-    });
+    return classifyVerifyResult({ active: guideMembership.status === "active",
+      status: guideMembership.status });
   })();
 
   if (isLoading) {

@@ -15,24 +15,21 @@ interface ReadingSubscription {
 
 export const useKidsReadingSubscription = () => {
   const { toast } = useToast();
-  const [subscription, setSubscription] = useState<ReadingSubscription>({
-    subscribed: false,
+  const [subscription, setSubscription] = useState<ReadingSubscription>({ subscribed: false,
     product_id: null,
     subscription_end: null,
     analyses_used: 0,
     analyses_limit: 1,
     quizzes_used: 0,
     quizzes_limit: 1,
-    loading: true,
-  });
+    loading: true });
 
   const checkSubscription = async () => {
     try {
       setSubscription(prev => ({ ...prev, loading: true }));
       
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setSubscription({
+      if (!session) { setSubscription({
           subscribed: false,
           product_id: null,
           subscription_end: null,
@@ -40,36 +37,29 @@ export const useKidsReadingSubscription = () => {
           analyses_limit: 0,
           quizzes_used: 0,
           quizzes_limit: 0,
-          loading: false,
-        });
+          loading: false });
         return;
       }
 
       const { data, error } = await supabase.functions.invoke('check-kids-reading-subscription', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+          Authorization: `Bearer ${session.access_token}` } });
 
       if (error) throw error;
 
-      setSubscription({
-        subscribed: data.subscribed || false,
+      setSubscription({ subscribed: data.subscribed || false,
         product_id: data.product_id || null,
         subscription_end: data.subscription_end || null,
         analyses_used: data.analyses_used || 0,
         analyses_limit: data.analyses_limit || 1,
         quizzes_used: data.quizzes_used || 0,
         quizzes_limit: data.quizzes_limit || 1,
-        loading: false,
-      });
-    } catch (error: any) {
-      console.error('Error checking subscription:', error);
+        loading: false });
+    } catch (error: any) { console.error('Error checking subscription:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to check subscription status",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setSubscription(prev => ({ ...prev, loading: false }));
     }
   };
@@ -77,37 +67,29 @@ export const useKidsReadingSubscription = () => {
   const createCheckout = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication required",
           description: "Please sign in to subscribe",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
       const { data, error } = await supabase.functions.invoke('create-kids-reading-checkout', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+          Authorization: `Bearer ${session.access_token}` } });
 
       if (error) throw error;
 
-      if (data.url) {
-        window.open(data.url, '_blank');
+      if (data.url) { window.open(data.url, '_blank');
         toast({
           title: "Redirecting to checkout",
-          description: "Opening Stripe checkout in a new tab...",
-        });
+          description: "Opening Stripe checkout in a new tab..." });
       }
-    } catch (error: any) {
-      console.error('Error creating checkout:', error);
+    } catch (error: any) { console.error('Error creating checkout:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to create checkout session",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -167,11 +149,9 @@ export const useKidsReadingSubscription = () => {
     return () => clearInterval(interval);
   }, []);
 
-  return {
-    subscription,
+  return { subscription,
     refresh: checkSubscription,
     createCheckout,
     incrementAnalysisUsage,
-    incrementQuizUsage,
-  };
+    incrementQuizUsage };
 };

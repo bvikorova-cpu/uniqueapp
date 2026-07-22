@@ -48,8 +48,7 @@ export default function AIFabricAnalyzer() {
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "fabric-analyzer", image: preview },
-      });
+        body: { action: "fabric-analyzer", image: preview } });
       if (error) throw error;
       return data as FabricResult;
     },
@@ -57,8 +56,7 @@ export default function AIFabricAnalyzer() {
       setResult(data);
       toast.success("Fabric analysis complete!");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const scoreColor = (score: number) => score >= 80 ? "text-green-500" : score >= 60 ? "text-amber-500" : "text-red-500";
 

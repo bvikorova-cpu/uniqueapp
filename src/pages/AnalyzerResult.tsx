@@ -88,8 +88,7 @@ export default function AnalyzerResult() {
 
   if (!analysis) return null;
   const rawInfo: any = analysis.detailed_info || {};
-  const info: any = {
-    mainIdentification: rawInfo.mainIdentification || analysis.main_identification || "Analysis result",
+  const info: any = { mainIdentification: rawInfo.mainIdentification || analysis.main_identification || "Analysis result",
     confidence: typeof rawInfo.confidence === "number" ? rawInfo.confidence : (analysis.confidence_score ?? 0),
     category: rawInfo.category || analysis.category,
     details: rawInfo.details || {
@@ -98,12 +97,10 @@ export default function AnalyzerResult() {
       careInstructions: "",
       safety: "",
       value: "",
-      whereToFind: "",
-    },
+      whereToFind: "" },
     tags: rawInfo.tags || [],
     additionalInfo: rawInfo.additionalInfo || "",
-    shopping: rawInfo.shopping,
-  };
+    shopping: rawInfo.shopping };
   const confidencePercent = Math.round((info.confidence || 0) * 100);
 
   return (

@@ -20,15 +20,12 @@ export const useVoicePosts = (postId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
-  const createVoicePost = useMutation({
-    mutationFn: async ({
+  const createVoicePost = useMutation({ mutationFn: async ({
       postId,
       audioFile,
-      transcript,
-    }: {
+      transcript }: {
       postId: string;
       audioFile: File;
       transcript?: string;
@@ -51,12 +48,10 @@ export const useVoicePosts = (postId?: string) => {
         .getPublicUrl(fileName);
 
       // Create voice post record
-      const { error } = await supabase.from("voice_posts").insert({
-        post_id: postId,
+      const { error } = await supabase.from("voice_posts").insert({ post_id: postId,
         audio_url: publicUrl,
         duration: Math.floor(audioFile.size / 16000), // Rough estimate
-        transcript,
-      });
+        transcript });
 
       if (error) throw error;
     },
@@ -66,12 +61,9 @@ export const useVoicePosts = (postId?: string) => {
     },
     onError: () => {
       toast({ title: "Failed to create voice post", variant: "destructive" });
-    },
-  });
+    } });
 
-  return {
-    voicePost,
+  return { voicePost,
     isLoading,
-    createVoicePost: createVoicePost.mutate,
-  };
+    createVoicePost: createVoicePost.mutate };
 };

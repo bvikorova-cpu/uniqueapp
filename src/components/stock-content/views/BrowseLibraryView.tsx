@@ -67,13 +67,9 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
           resolution,
           amount: amountCents,
           productName: `${selectedItem.title} (${chosenLicense.type} · ${resolution})`,
-          metadata: {
-            content_id: selectedItem.id,
+          metadata: { content_id: selectedItem.id,
             license_type: chosenLicense.type,
-            resolution,
-          },
-        },
-      });
+            resolution } } });
       if (error) throw error;
       if (data?.url) window.open(data.url, '_blank');
     } catch (error: any) {

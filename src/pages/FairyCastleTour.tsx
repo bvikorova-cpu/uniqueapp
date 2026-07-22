@@ -57,8 +57,7 @@ export default function FairyCastleTour() {
       if (error) throw error;
       return data;
     },
-    enabled: !!castleId,
-  });
+    enabled: !!castleId });
 
   const { data: visit } = useQuery({
     queryKey: ["castle-visit", castleId],
@@ -74,8 +73,7 @@ export default function FairyCastleTour() {
       if (error) return null;
       return data;
     },
-    enabled: !!castleId,
-  });
+    enabled: !!castleId });
 
   useEffect(() => {
     if (castle && !visit && tourStarted) {
@@ -115,12 +113,10 @@ export default function FairyCastleTour() {
           if (!hasStamp) {
             earnStamp.mutate({ castleId });
           }
-          saveCertificate.mutate({
-            castleId,
+          saveCertificate.mutate({ castleId,
             completionTimeMs: Date.now() - tourStartTime,
             unlockedMilestones,
-            totalRooms: rooms?.length || 0,
-          });
+            totalRooms: rooms?.length || 0 });
         }
         // Show quiz before certificate
         setShowQuiz(true);

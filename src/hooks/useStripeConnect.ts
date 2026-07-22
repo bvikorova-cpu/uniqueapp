@@ -29,8 +29,7 @@ export function useStripeConnect() {
 
   const liveStatus = async () => {
     const { data, error } = await supabase.functions.invoke('check-connect-status', {
-      body: { action: 'live_status' },
-    });
+      body: { action: 'live_status' } });
     if (error) throw error;
     return data;
   };
@@ -39,8 +38,7 @@ export function useStripeConnect() {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('check-connect-status', {
-        body: { action: 'connect_login' },
-      });
+        body: { action: 'connect_login' } });
       if (error) throw error;
       if (data?.url) {
         window.open(data.url, '_blank');

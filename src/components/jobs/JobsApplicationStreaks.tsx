@@ -44,8 +44,7 @@ export default function JobsApplicationStreaks() {
       return (
         data ?? { current_streak: 0, longest_streak: 0, last_check_in_date: null, total_check_ins: 0 }
       );
-    },
-  });
+    } });
 
   const currentStreak = streak?.current_streak ?? 0;
   const today = new Date().toISOString().slice(0, 10);
@@ -80,8 +79,7 @@ export default function JobsApplicationStreaks() {
       qc.invalidateQueries({ queryKey: ["rewards-stats"] });
       qc.invalidateQueries({ queryKey: ["my-progress-days", user?.id] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Check-in failed"),
-  });
+    onError: (e: any) => toast.error(e.message ?? "Check-in failed") });
 
   return (
     <>

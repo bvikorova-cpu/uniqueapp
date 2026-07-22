@@ -23,14 +23,12 @@ export function DanceStudio({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "dance", prompt: `Create a ${style} dance choreography for ${level || "beginners"}. Include: warm-up, step-by-step moves, counts, music suggestion, outfit recommendation, and cool-down stretches.`, coins: 4 },
-      });
+        body: { type: "dance", prompt: `Create a ${style} dance choreography for ${level || "beginners"}. Include: warm-up, step-by-step moves, counts, music suggestion, outfit recommendation, and cool-down stretches.`, coins: 4 } });
       if (error) throw error;
       setResult(data.result);
       await supabase.from("glamour_creations").insert({
         user_id: user.id, creation_type: "dance", title: `${style} Choreography`,
-        prompt: level, result_text: data.result, credits_used: 4,
-      });
+        prompt: level, result_text: data.result, credits_used: 4 });
     } catch (e: any) {
       const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
         if (isCoinsErr) {

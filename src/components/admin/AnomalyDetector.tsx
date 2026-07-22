@@ -12,18 +12,14 @@ interface Anomaly {
   recommendation: string;
 }
 
-const SEV_STYLES: Record<string, string> = {
-  info: "border-cyan-500/50 bg-cyan-500/10 text-cyan-900 dark:text-cyan-200",
+const SEV_STYLES: Record<string, string> = { info: "border-cyan-500/50 bg-cyan-500/10 text-cyan-900 dark:text-cyan-200",
   warn: "border-amber-500/50 bg-amber-500/10 text-amber-900 dark:text-amber-200",
-  danger: "border-rose-500/60 bg-rose-500/15 text-rose-900 dark:text-rose-200",
-};
+  danger: "border-rose-500/60 bg-rose-500/15 text-rose-900 dark:text-rose-200" };
 
-const RISK_COLOR: Record<string, string> = {
-  low: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/50 text-emerald-900 dark:text-emerald-200",
+const RISK_COLOR: Record<string, string> = { low: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/50 text-emerald-900 dark:text-emerald-200",
   medium: "from-amber-500/20 to-amber-500/5 border-amber-500/50 text-amber-900 dark:text-amber-200",
   high: "from-orange-500/20 to-orange-500/5 border-orange-500/50 text-orange-900 dark:text-orange-200",
-  critical: "from-rose-500/30 to-rose-500/10 border-rose-500/60 text-rose-900 dark:text-rose-200",
-};
+  critical: "from-rose-500/30 to-rose-500/10 border-rose-500/60 text-rose-900 dark:text-rose-200" };
 
 export const AnomalyDetector = () => {
   const [loading, setLoading] = useState(false);

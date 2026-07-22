@@ -18,12 +18,10 @@ const QUICK_PROMPTS = [
 
 type Message = { role: "user" | "assistant"; content: string };
 
-const AI_RESPONSES: Record<string, string> = {
-  "Best areas to invest?": "Based on current market trends, here are the top investment areas:\n\n🏙️ **Downtown West** — 12% YoY appreciation, high rental demand\n🌿 **Green Valley** — Emerging area, affordable entry points, 8% growth\n🏗️ **Tech District** — New developments, 15% projected growth\n\nWould you like detailed analytics for any of these areas?",
+const AI_RESPONSES: Record<string, string> = { "Best areas to invest?": "Based on current market trends, here are the top investment areas:\n\n🏙️ **Downtown West** — 12% YoY appreciation, high rental demand\n🌿 **Green Valley** — Emerging area, affordable entry points, 8% growth\n🏗️ **Tech District** — New developments, 15% projected growth\n\nWould you like detailed analytics for any of these areas?",
   "How much can I afford?": "Let me help you calculate! Based on typical lending criteria:\n\n💰 **Rule of thumb**: You can afford 3-4x your annual income\n📊 **Monthly payment**: Should be <30% of monthly income\n🏦 **Down payment**: Typically 10-20% of property value\n\nFor a precise calculation, try our **Mortgage Calculator** tool! Would you like me to run specific numbers?",
   "Compare neighborhoods": "I can compare any neighborhoods! Here's a quick overview of popular areas:\n\n📍 **Downtown** — Score: 92/100 | Avg price: €3,200/m²\n📍 **Suburbs** — Score: 85/100 | Avg price: €1,800/m²\n📍 **City Center** — Score: 88/100 | Avg price: €4,100/m²\n\nUse our **Neighborhood Insights** tool for detailed analysis!",
-  "Documents needed to buy": "Here's your complete buying checklist:\n\n📋 **Required Documents:**\n1. Valid ID / Passport\n2. Proof of income (last 3 months)\n3. Bank statements\n4. Tax returns (last 2 years)\n5. Pre-approval letter from bank\n6. Property valuation report\n\n📝 Use our **Document Manager** to organize everything!",
-};
+  "Documents needed to buy": "Here's your complete buying checklist:\n\n📋 **Required Documents:**\n1. Valid ID / Passport\n2. Proof of income (last 3 months)\n3. Bank statements\n4. Tax returns (last 2 years)\n5. Pre-approval letter from bank\n6. Property valuation report\n\n📝 Use our **Document Manager** to organize everything!" };
 
 export function PropertyChatbot({ onBack }: Props) {
   const [messages, setMessages] = useState<Message[]>([

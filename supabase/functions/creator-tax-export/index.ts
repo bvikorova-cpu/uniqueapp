@@ -6,11 +6,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const KIND_MAP = {
   instructor: { table: "instructor_withdrawal_requests", userCol: "instructor_id" },
@@ -19,8 +17,7 @@ const KIND_MAP = {
   influencer: { table: "influencer_withdrawal_requests", userCol: "influencer_id" },
   auction:    { table: "auction_withdrawal_requests",    userCol: "seller_id" },
   referral:   { table: "referral_withdrawal_requests",   userCol: "referrer_id" },
-  campaign:   { table: "withdrawal_requests",            userCol: "user_id" },
-} as const;
+  campaign:   { table: "withdrawal_requests",            userCol: "user_id" } } as const;
 
 const log = (s: string, d?: unknown) =>
   console.log(`[CREATOR-TAX-EXPORT] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
@@ -42,8 +39,7 @@ serve(async (req) => {
     const supaUrl = Deno.env.get("SUPABASE_URL")!;
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const userClient = createClient(supaUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: u, error: uErr } = await userClient.auth.getUser();
     if (uErr || !u.user) throw new Error("Not authenticated");
     const userId = u.user.id;
@@ -59,8 +55,7 @@ serve(async (req) => {
     log("export start", { userId, year });
 
     const admin = createClient(supaUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
-      auth: { persistSession: false },
-    });
+      auth: { persistSession: false } });
 
     type Row = {
       hub: string;
@@ -83,14 +78,12 @@ serve(async (req) => {
         log(`fetch failed for ${hub}`, { msg: error.message });
         continue;
       }
-      for (const r of data || []) {
-        all.push({
+      for (const r of data || []) { all.push({
           hub,
           id: r.id,
           amount_eur: Number(r.amount) || 0,
           processed_at: r.processed_at,
-          stripe_transfer_id: (r as any).stripe_transfer_id ?? (r as any).stripe_payout_id ?? null,
-        });
+          stripe_transfer_id: (r as any).stripe_transfer_id ?? (r as any).stripe_payout_id ?? null });
       }
     }
 
@@ -135,15 +128,12 @@ serve(async (req) => {
       headers: {
         ...corsHeaders,
         "Content-Type": "text/csv; charset=utf-8",
-        "Content-Disposition": `attachment; filename="tax-export-${year}.csv"`,
-      },
-    });
+        "Content-Disposition": `attachment; filename="tax-export-${year}.csv"` } });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

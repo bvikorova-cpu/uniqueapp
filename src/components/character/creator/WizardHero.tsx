@@ -3,14 +3,12 @@ import { Sparkles, Wand2, Star } from "lucide-react";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export function WizardHero() {
-  const particles = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
+  const particles = Array.from({ length: 20 }, (_, i) => ({ id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
     size: Math.random() * 8 + 4,
     delay: Math.random() * 3,
-    duration: Math.random() * 3 + 2,
-  }));
+    duration: Math.random() * 3 + 2 }));
 
   return (
     <>
@@ -22,18 +20,16 @@ export function WizardHero() {
           key={p.id}
           className="absolute text-yellow-300/60 pointer-events-none"
           style={{ left: `${p.x}%`, top: `${p.y}%` }}
-          animate={{
+          animate={ {
             y: [0, -30, 0],
             opacity: [0.3, 1, 0.3],
             scale: [0.8, 1.2, 0.8],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
+            rotate: [0, 180, 360] }}
+          transition={ {
             duration: p.duration,
             delay: p.delay,
             repeat: Infinity,
-            ease: "easeInOut",
-          }}
+            ease: "easeInOut" }}
         >
           {p.id % 3 === 0 ? "✨" : p.id % 3 === 1 ? "⭐" : "🌟"}
         </motion.div>

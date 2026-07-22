@@ -21,8 +21,7 @@ export const FriendshipHoroscopeView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "friendship_horoscope", zodiacSign: zodiac || undefined, friendSign: friendSign || undefined },
-      });
+        body: { action: "friendship_horoscope", zodiacSign: zodiac || undefined, friendSign: friendSign || undefined } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

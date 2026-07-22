@@ -19,25 +19,21 @@ export default function MasterChefCompetitions() {
     checkAuth();
   }, []);
 
-  useEffect(() => {
-    if (!subscriptionLoading && !subscribed) {
+  useEffect(() => { if (!subscriptionLoading && !subscribed) {
       toast({
         title: "Subscription Required",
         description: "You need an active KitchenStars subscription to view competitions",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/masterchef-subscription");
     }
   }, [subscribed, subscriptionLoading, navigate, toast]);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      toast({
+    if (!session) { toast({
         title: "Login Required",
         description: "Please sign in to continue",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/auth");
       return;
     }
@@ -45,8 +41,7 @@ export default function MasterChefCompetitions() {
   };
 
   const competitions = [
-    {
-      id: 1,
+    { id: 1,
       title: "Master of Desserts",
       category: "Desserts",
       startDate: "2024-12-01",
@@ -54,10 +49,8 @@ export default function MasterChefCompetitions() {
       participants: 24,
       prize: "€500",
       status: "active",
-      difficulty: "Advanced",
-    },
-    {
-      id: 2,
+      difficulty: "Advanced" },
+    { id: 2,
       title: "Quick Fire Challenge",
       category: "Speed Cooking",
       startDate: "2024-12-05",
@@ -65,10 +58,8 @@ export default function MasterChefCompetitions() {
       participants: 48,
       prize: "€300",
       status: "active",
-      difficulty: "Intermediate",
-    },
-    {
-      id: 3,
+      difficulty: "Intermediate" },
+    { id: 3,
       title: "Regional Cuisine Championship",
       category: "Fine Dining",
       startDate: "2024-12-10",
@@ -76,8 +67,7 @@ export default function MasterChefCompetitions() {
       participants: 16,
       prize: "€1000",
       status: "upcoming",
-      difficulty: "Professional",
-    },
+      difficulty: "Professional" },
   ];
 
   if (loading || subscriptionLoading) {

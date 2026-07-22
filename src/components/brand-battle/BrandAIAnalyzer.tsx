@@ -29,8 +29,7 @@ export const BrandAIAnalyzer = ({ brands }: { brands: Brand[] }) => {
     setRunning(insightType);
     try {
       const { data, error } = await supabase.functions.invoke("brand-ai-analyzer", {
-        body: { brandId: selectedBrand, insightType },
-      });
+        body: { brandId: selectedBrand, insightType } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       const insight = (data as any).insight;

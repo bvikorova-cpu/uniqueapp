@@ -2,8 +2,7 @@ import "@testing-library/jest-dom";
 import { vi } from "vitest";
 
 // jsdom matchMedia polyfill
-Object.defineProperty(window, "matchMedia", {
-  writable: true,
+Object.defineProperty(window, "matchMedia", { writable: true,
   value: (query: string) => ({
     matches: false,
     media: query,
@@ -12,9 +11,7 @@ Object.defineProperty(window, "matchMedia", {
     removeListener: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  }),
-});
+    dispatchEvent: vi.fn() }) });
 
 // IntersectionObserver polyfill
 class IO {

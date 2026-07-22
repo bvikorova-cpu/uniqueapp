@@ -11,11 +11,9 @@ interface Pulse {
   ts: number;
 }
 
-const COLORS: Record<string, string> = {
-  signup: "bg-cyan-400 shadow-[0_0_20px_hsl(190_90%_60%/0.9)]",
+const COLORS: Record<string, string> = { signup: "bg-cyan-400 shadow-[0_0_20px_hsl(190_90%_60%/0.9)]",
   tx: "bg-emerald-400 shadow-[0_0_20px_hsl(150_85%_55%/0.9)]",
-  msg: "bg-fuchsia-400 shadow-[0_0_20px_hsl(300_85%_65%/0.9)]",
-};
+  msg: "bg-fuchsia-400 shadow-[0_0_20px_hsl(300_85%_65%/0.9)]" };
 
 // Approx normalized lat/lng → x/y of background world map
 const seedHotspots = [
@@ -32,16 +30,14 @@ export const ActivityHeatmap = () => {
   const [pulses, setPulses] = useState<Pulse[]>([]);
   const [counts, setCounts] = useState({ signup: 0, tx: 0, msg: 0 });
 
-  const addPulse = (type: Pulse["type"]) => {
-    const spot = seedHotspots[Math.floor(Math.random() * seedHotspots.length)];
+  const addPulse = (type: Pulse["type"]) => { const spot = seedHotspots[Math.floor(Math.random() * seedHotspots.length)];
     const jitter = () => (Math.random() - 0.5) * 8;
     const p: Pulse = {
       id: crypto.randomUUID(),
       x: spot.x + jitter(),
       y: spot.y + jitter(),
       type,
-      ts: Date.now(),
-    };
+      ts: Date.now() };
     setPulses((prev) => [...prev.slice(-40), p]);
     setCounts((c) => ({ ...c, [type]: c[type] + 1 }));
     setTimeout(() => setPulses((prev) => prev.filter((x) => x.id !== p.id)), 4000);
@@ -97,11 +93,10 @@ export const ActivityHeatmap = () => {
       <div className="relative w-full aspect-[2/1] rounded-xl overflow-hidden border border-cyan-500/20 bg-[radial-gradient(ellipse_at_center,hsl(220_60%_15%)_0%,hsl(230_60%_8%)_70%)]">
         {/* Grid lines */}
         <div className="absolute inset-0 opacity-30"
-          style={{
+          style={ {
             backgroundImage:
               "linear-gradient(hsl(190 90% 60% / .12) 1px, transparent 1px), linear-gradient(90deg, hsl(190 90% 60% / .12) 1px, transparent 1px)",
-            backgroundSize: "8% 12%",
-          }}
+            backgroundSize: "8% 12%" }}
         />
         {/* Continent silhouettes (abstract) */}
         <svg viewBox="0 0 100 50" className="absolute inset-0 w-full h-full opacity-40">

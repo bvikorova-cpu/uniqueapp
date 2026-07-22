@@ -79,10 +79,8 @@ test.describe("Wall podstránky – tlačidlá", () => {
       .first()
       .isVisible({ timeout: 5_000 })
       .catch(() => false);
-    test.info().annotations.push({
-      type: "event-created",
-      description: inList ? "event sa zobrazil v zozname" : "event nie je v zozname (RLS alebo refetch lag)",
-    });
+    test.info().annotations.push({ type: "event-created",
+      description: inList ? "event sa zobrazil v zozname" : "event nie je v zozname (RLS alebo refetch lag)" });
 
     // RSVP buttons existujú pre upcoming events (ak je aspoň jeden)
     const goingBtn = page.getByRole("button", { name: /going/i }).first();
@@ -186,9 +184,7 @@ test.describe("Wall podstránky – tlačidlá", () => {
   for (const p of SUBPAGES) {
     test(`SUB-PAGE: ${p.path} sa načíta bez chyby`, async ({ page }) => {
       await goto(page, p.path);
-      await expect(page.getByRole("heading", { name: p.heading }).first()).toBeVisible({
-        timeout: 10_000,
-      });
+      await expect(page.getByRole("heading", { name: p.heading }).first()).toBeVisible({ timeout: 10_000 });
       await noRuntimeError(page);
     });
   }

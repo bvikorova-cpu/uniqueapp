@@ -31,8 +31,7 @@ export const useDrafts = () => {
 
       if (error) throw error;
       return data as PostDraft[];
-    },
-  });
+    } });
 
   const saveDraft = useMutation({
     mutationFn: async ({ content, mediaUrls, draftData }: {
@@ -45,12 +44,10 @@ export const useDrafts = () => {
 
       const { data, error } = await supabase
         .from("post_drafts")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           content,
           media_urls: mediaUrls,
-          draft_data: draftData,
-        })
+          draft_data: draftData })
         .select()
         .single();
 
@@ -60,8 +57,7 @@ export const useDrafts = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-drafts"] });
       toast({ title: "Draft saved!" });
-    },
-  });
+    } });
 
   const updateDraft = useMutation({
     mutationFn: async ({ id, content, mediaUrls, draftData }: {
@@ -72,12 +68,10 @@ export const useDrafts = () => {
     }) => {
       const { error } = await supabase
         .from("post_drafts")
-        .update({
-          content,
+        .update({ content,
           media_urls: mediaUrls,
           draft_data: draftData,
-          updated_at: new Date().toISOString(),
-        })
+          updated_at: new Date().toISOString() })
         .eq("id", id);
 
       if (error) throw error;
@@ -85,8 +79,7 @@ export const useDrafts = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-drafts"] });
       toast({ title: "Draft updated!" });
-    },
-  });
+    } });
 
   const deleteDraft = useMutation({
     mutationFn: async (draftId: string) => {
@@ -100,14 +93,11 @@ export const useDrafts = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-drafts"] });
       toast({ title: "Draft deleted" });
-    },
-  });
+    } });
 
-  return {
-    drafts: drafts || [],
+  return { drafts: drafts || [],
     isLoading,
     saveDraft: saveDraft.mutate,
     updateDraft: updateDraft.mutate,
-    deleteDraft: deleteDraft.mutate,
-  };
+    deleteDraft: deleteDraft.mutate };
 };

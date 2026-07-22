@@ -5,11 +5,9 @@ import { Lock, Trophy } from "lucide-react";
 import { useEffect, useRef, useMemo } from "react";
 import { triggerBadgeConfetti } from "@/utils/confetti";
 import { motion } from "framer-motion";
-import {
-  Tooltip,
+import { Tooltip,
   TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -41,14 +39,12 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
     return groups;
   }, [sortedBadges]);
 
-  const categoryLabels: Record<string, string> = {
-    level: "🎮 Level", posts: "📝 Posts", comments: "💬 Comments", likes: "❤️ Likes",
+  const categoryLabels: Record<string, string> = { level: "🎮 Level", posts: "📝 Posts", comments: "💬 Comments", likes: "❤️ Likes",
     friends: "👫 Friends", login_streak: "🔥 Streaks", videos: "🎬 Videos", shares: "📤 Shares",
     events: "🎉 Events", groups: "👥 Groups", photos: "📷 Photos", messages: "💌 Messages",
     reactions: "😊 Reactions", followers: "👁️ Followers", stories: "📖 Stories",
     challenges: "⚔️ Challenges", achievements: "🏆 Achievements", xp: "⭐ XP",
-    trades: "🔄 Trades", donations: "🎁 Donations", other: "🏅 Other",
-  };
+    trades: "🔄 Trades", donations: "🎁 Donations", other: "🏅 Other" };
 
   useEffect(() => {
     if (previousBadgeCount.current > 0 && userBadges.length > previousBadgeCount.current) {

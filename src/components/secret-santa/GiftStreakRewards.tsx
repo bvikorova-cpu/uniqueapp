@@ -62,8 +62,7 @@ export const GiftStreakRewards = () => {
       if (error) throw error;
       return data.map(r => r.streak_milestone);
     },
-    enabled: !!currentUserId,
-  });
+    enabled: !!currentUserId });
 
   const claimReward = useMutation({
     mutationFn: async ({ milestone, reward }: { milestone: number; reward: number }) => {
@@ -101,8 +100,7 @@ export const GiftStreakRewards = () => {
       queryClient.invalidateQueries({ queryKey: ["santa-streak-rewards"] });
       queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
     },
-    onError: () => toast.error("Failed to claim reward"),
-  });
+    onError: () => toast.error("Failed to claim reward") });
 
   const tierColor = (tier: string) => {
     switch (tier) {

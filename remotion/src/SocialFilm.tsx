@@ -1,14 +1,12 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Audio,
   Img,
   Sequence,
   interpolate,
   spring,
   staticFile,
-  useCurrentFrame,
-} from "remotion";
+  useCurrentFrame } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
 
@@ -17,13 +15,11 @@ const body = loadBody("normal", { weights: ["500", "600", "700", "900"] });
 
 const FPS = 30;
 
-const BRAND = {
-  white: "#ffffff",
+const BRAND = { white: "#ffffff",
   bgDeep: "#0b0416",
   purple: "#8b5cf6",
   pink: "#ec4899",
-  gold: "#fbbf24",
-};
+  gold: "#fbbf24" };
 
 const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
@@ -34,10 +30,8 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const tagOp = interpolate(frame, [50, 78], [0, 1], { extrapolateRight: "clamp" });
   const tagY = interpolate(frame, [50, 78], [20, 0], { extrapolateRight: "clamp" });
   const kb = interpolate(frame, [0, duration], [1.08, 1.2], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 20, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 20, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{ transform: `scale(${kb})` }}>
@@ -48,12 +42,11 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
         <AbsoluteFill style={{ backgroundColor: "rgba(6,2,18,0.65)" }} />
       </AbsoluteFill>
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          opacity: 1 - exit,
-        }}
+          opacity: 1 - exit }}
       >
         <div style={{ transform: `scale(${logoScale}) rotate(${logoRot}deg)`, filter: "drop-shadow(0 20px 60px rgba(236,72,153,0.6))" }}>
           <Img src={staticFile("home/logo.png")} style={{ width: 340, height: 340, borderRadius: 84 }} />
@@ -70,8 +63,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 80px rgba(236,72,153,0.55)",
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em" }}
         >
           Unique
         </div>
@@ -86,8 +78,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             color: "rgba(255,255,255,0.94)",
             letterSpacing: "0.28em",
             textTransform: "uppercase",
-            textAlign: "center",
-          }}
+            textAlign: "center" }}
         >
           Social & Dating
         </div>
@@ -96,12 +87,10 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   );
 };
 
-const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
-  const frame = useCurrentFrame();
+const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => { const frame = useCurrentFrame();
   const opacity = interpolate(frame, [0, 12, duration - 20, duration], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+    extrapolateRight: "clamp" });
   const l1o = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
   const l1y = interpolate(frame, [0, 18], [40, 0], { extrapolateRight: "clamp" });
   const l2o = interpolate(frame, [16, 34], [0, 1], { extrapolateRight: "clamp" });
@@ -111,20 +100,18 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 30% 30%, rgba(236,72,153,0.55), transparent 55%), radial-gradient(circle at 70% 70%, rgba(139,92,246,0.5), transparent 55%)",
-        }}
+            "radial-gradient(circle at 30% 30%, rgba(236,72,153,0.55), transparent 55%), radial-gradient(circle at 70% 70%, rgba(139,92,246,0.5), transparent 55%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
           padding: 80,
           textAlign: "center",
-          opacity,
-        }}
+          opacity }}
       >
         <div
           style={{
@@ -133,8 +120,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             fontFamily: body.fontFamily,
             fontWeight: 500,
             fontSize: 72,
-            color: "rgba(255,255,255,0.82)",
-          }}
+            color: "rgba(255,255,255,0.82)" }}
         >
           Every connection counts.
         </div>
@@ -150,8 +136,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "-0.04em",
             background: `linear-gradient(90deg, ${BRAND.pink} 0%, ${BRAND.purple} 50%, ${BRAND.gold} 100%)`,
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
+            WebkitTextFillColor: "transparent" }}
         >
           Find your people.
         </div>
@@ -164,8 +149,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             fontWeight: 600,
             fontSize: 48,
             color: "rgba(255,255,255,0.9)",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           9 ways to meet, chat, love and belong.
         </div>
@@ -187,10 +171,8 @@ type Module = {
 const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mod }) => {
   const frame = useCurrentFrame();
   const enter = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 18, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   const shellOp = enter * (1 - exit);
   const kbScale = interpolate(frame, [0, duration], [1.1, 1.28], { extrapolateRight: "clamp" });
   const kbX = interpolate(frame, [0, duration], [-20, 20]);
@@ -212,31 +194,27 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
             height: "100%",
             objectFit: "cover",
             transform: `scale(${kbScale}) translate(${kbX}px, ${kbY}px)`,
-            filter: "saturate(1.15) contrast(1.05)",
-          }}
+            filter: "saturate(1.15) contrast(1.05)" }}
         />
       </AbsoluteFill>
       <AbsoluteFill
         style={{
           background: `linear-gradient(160deg, ${mod.accent}33 0%, transparent 40%, ${mod.accent2}55 100%)`,
-          mixBlendMode: "screen",
-        }}
+          mixBlendMode: "screen" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "linear-gradient(180deg, rgba(11,4,22,0.78) 0%, rgba(11,4,22,0.15) 22%, rgba(11,4,22,0) 45%, rgba(11,4,22,0.35) 62%, rgba(11,4,22,0.94) 100%)",
-        }}
+            "linear-gradient(180deg, rgba(11,4,22,0.78) 0%, rgba(11,4,22,0.15) 22%, rgba(11,4,22,0) 45%, rgba(11,4,22,0.35) 62%, rgba(11,4,22,0.94) 100%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "space-between",
           flexDirection: "column",
           padding: 80,
           paddingTop: 160,
-          paddingBottom: 180,
-        }}
+          paddingBottom: 180 }}
       >
         <div
           style={{
@@ -252,8 +230,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
             letterSpacing: "0.28em",
             textTransform: "uppercase",
             boxShadow: `0 20px 60px -15px ${mod.accent}cc`,
-            textAlign: "center",
-          }}
+            textAlign: "center" }}
         >
           {mod.badge}
         </div>
@@ -269,8 +246,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
               color: BRAND.white,
               letterSpacing: "-0.035em",
               textShadow: "0 8px 40px rgba(0,0,0,0.75)",
-              textAlign: "center",
-            }}
+              textAlign: "center" }}
           >
             {mod.title}
           </div>
@@ -286,8 +262,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
               textAlign: "center",
               maxWidth: 900,
               lineHeight: 1.25,
-              textShadow: "0 4px 20px rgba(0,0,0,0.85)",
-            }}
+              textShadow: "0 4px 20px rgba(0,0,0,0.85)" }}
           >
             {mod.subtitle}
           </div>
@@ -309,8 +284,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
                     borderRadius: 22,
                     background: "rgba(11,4,22,0.55)",
                     border: `1px solid ${mod.accent}66`,
-                    boxShadow: `0 10px 40px -20px ${mod.accent}aa`,
-                  }}
+                    boxShadow: `0 10px 40px -20px ${mod.accent}aa` }}
                 >
                   <div
                     style={{
@@ -321,21 +295,19 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      flexShrink: 0,
-                    }}
+                      flexShrink: 0 }}
                   >
                     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                     </svg>
                   </div>
                   <div
-                    style={{
+                    style={ {
                       fontFamily: body.fontFamily,
                       fontWeight: 700,
                       fontSize: 34,
                       color: BRAND.white,
-                      letterSpacing: "-0.01em",
-                    }}
+                      letterSpacing: "-0.01em" }}
                   >
                     {p}
                   </div>
@@ -355,17 +327,14 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   const wordS = spring({ frame: frame - 12, fps: FPS, config: { damping: 14, stiffness: 110 } });
   const urlOp = interpolate(frame, [30, 55], [0, 1], { extrapolateRight: "clamp" });
   const tagOp = interpolate(frame, [45, 70], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 15, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 15, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 50% 45%, rgba(236,72,153,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(139,92,246,0.4), transparent 60%)",
-        }}
+            "radial-gradient(circle at 50% 45%, rgba(236,72,153,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(139,92,246,0.4), transparent 60%)" }}
       />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
         <Img
@@ -375,8 +344,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             height: 280,
             borderRadius: 72,
             transform: `scale(${logoS})`,
-            filter: "drop-shadow(0 15px 50px rgba(236,72,153,0.6))",
-          }}
+            filter: "drop-shadow(0 15px 50px rgba(236,72,153,0.6))" }}
         />
         <div
           style={{
@@ -389,26 +357,24 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(180deg, ${BRAND.white} 0%, #fbcfe8 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 60px rgba(236,72,153,0.5)",
-          }}
+            textShadow: "0 0 60px rgba(236,72,153,0.5)" }}
         >
           Unique
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 40,
             opacity: urlOp,
             fontFamily: body.fontFamily,
             fontWeight: 700,
             fontSize: 68,
             color: BRAND.white,
-            letterSpacing: "0.05em",
-          }}
+            letterSpacing: "0.05em" }}
         >
           uniqueapp.fun
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 26,
             opacity: tagOp,
             fontFamily: body.fontFamily,
@@ -418,8 +384,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             textAlign: "center",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           Meet · Chat · Belong
         </div>
@@ -429,87 +394,69 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
 };
 
 const MODULES: Module[] = [
-  {
-    badge: "Anonymous Date",
+  { badge: "Anonymous Date",
     title: "Behind the mask.",
     subtitle: "Match by mind and vibe — reveal identity only when both agree.",
     perks: ["Total privacy", "Vibe-first matching", "Mutual reveal"],
     image: "social/01-anonymous.jpg",
     accent: "#ec4899",
-    accent2: "#8b5cf6",
-  },
-  {
-    badge: "Dating",
+    accent2: "#8b5cf6" },
+  { badge: "Dating",
     title: "Real love, real people.",
     subtitle: "Modern dating with rich profiles, smart matches and safety first.",
     perks: ["Verified profiles", "Smart matches", "Voice & video chat"],
     image: "social/02-dating.jpg",
     accent: "#f43f5e",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "Best Friend",
+    accent2: "#ec4899" },
+  { badge: "Best Friend",
     title: "Your kind of people.",
     subtitle: "Meet real friends who share your interests, humor and rhythm.",
     perks: ["Friend matching", "Shared interests", "Group hangouts"],
     image: "social/03-bestfriend.jpg",
     accent: "#fbbf24",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "Membership Community",
+    accent2: "#ec4899" },
+  { badge: "Membership Community",
     title: "Belong somewhere.",
     subtitle: "Exclusive circles where members create, share and connect.",
     perks: ["Private groups", "Members-only chat", "Real belonging"],
     image: "social/04-community.jpg",
     accent: "#a855f7",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "Messenger",
+    accent2: "#ec4899" },
+  { badge: "Messenger",
     title: "Talk about anything.",
     subtitle: "Fast, private, expressive chat — with voice, video and reactions.",
     perks: ["End-to-end encryption", "Voice & video calls", "Rich reactions"],
     image: "social/05-messenger.jpg",
     accent: "#ec4899",
-    accent2: "#22d3ee",
-  },
-  {
-    badge: "Megaforum",
+    accent2: "#22d3ee" },
+  { badge: "Megaforum",
     title: "The world debates.",
     subtitle: "Global discussions on every topic — read, post, vote, decide.",
     perks: ["Trending topics", "Live debates", "Community voting"],
     image: "social/06-megaforum.jpg",
     accent: "#8b5cf6",
-    accent2: "#fbbf24",
-  },
-  {
-    badge: "Character Companions",
+    accent2: "#fbbf24" },
+  { badge: "Character Companions",
     title: "AI that gets you.",
     subtitle: "Chat with AI characters that listen, entertain and inspire.",
     perks: ["Custom personalities", "24/7 companionship", "Roleplay & fun"],
     image: "social/07-character.jpg",
     accent: "#22d3ee",
-    accent2: "#a855f7",
-  },
-  {
-    badge: "Emotion Economy",
+    accent2: "#a855f7" },
+  { badge: "Emotion Economy",
     title: "Feelings, valued.",
     subtitle: "Send hearts, gifts and reactions that actually mean something.",
     perks: ["Reward creators", "Send real gifts", "Track your vibes"],
     image: "social/08-emotion.jpg",
     accent: "#fbbf24",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "Invite Friend",
+    accent2: "#ec4899" },
+  { badge: "Invite Friend",
     title: "Better together.",
     subtitle: "Bring your people — earn rewards every time they join.",
     perks: ["One-tap invites", "Referral rewards", "Grow your circle"],
     image: "social/09-invite.jpg",
     accent: "#8b5cf6",
-    accent2: "#ec4899",
-  },
+    accent2: "#ec4899" },
 ];
 
 const INTRO = 130;

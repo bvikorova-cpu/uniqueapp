@@ -25,14 +25,12 @@ interface AuditRow {
   created_at: string;
 }
 
-const OUTCOME_COLORS: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-  success: "default",
+const OUTCOME_COLORS: Record<string, "default" | "secondary" | "destructive" | "outline"> = { success: "default",
   no_customer: "secondary",
   partial_error: "destructive",
   stripe_error: "destructive",
   auth_error: "destructive",
-  no_email: "destructive",
-};
+  no_email: "destructive" };
 
 const Inner = () => {
   const [rows, setRows] = useState<AuditRow[]>([]);

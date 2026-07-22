@@ -13,8 +13,7 @@ export default function AchievementBadge({
   achievementType, 
   size = 'md',
   showLabel = false 
-}: AchievementBadgeProps) {
-  const achievement = FRIEND_CHALLENGE_ACHIEVEMENTS[achievementType];
+}: AchievementBadgeProps) { const achievement = FRIEND_CHALLENGE_ACHIEVEMENTS[achievementType];
 
   if (!achievement) return null;
 
@@ -22,14 +21,11 @@ export default function AchievementBadge({
   const sizeClasses = {
     sm: 'h-7 w-7',
     md: 'h-9 w-9',
-    lg: 'h-14 w-14',
-  };
+    lg: 'h-14 w-14' };
   
-  const iconSizes = {
-    sm: 'h-3.5 w-3.5',
+  const iconSizes = { sm: 'h-3.5 w-3.5',
     md: 'h-4.5 w-4.5',
-    lg: 'h-7 w-7',
-  };
+    lg: 'h-7 w-7' };
 
   return (
     <TooltipProvider>

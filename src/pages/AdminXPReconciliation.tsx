@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { format, formatDistanceToNow } from "date-fns";
-import {
-  ArrowLeft,
+import { ArrowLeft,
   Shield,
   AlertTriangle,
   CheckCircle2,
@@ -12,8 +11,7 @@ import {
   Search,
   ExternalLink,
   TrendingUp,
-  TrendingDown,
-} from "lucide-react";
+  TrendingDown } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -23,14 +21,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import {
-  Table,
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { exportToCsv } from "@/lib/exportCsv";
 
@@ -69,16 +65,13 @@ export default function AdminXPReconciliation() {
     queryFn: async (): Promise<ReconRow[]> => {
       const { data, error } = await supabase.rpc(
         "admin_get_xp_reconciliation_report" as any,
-        {
-          _only_mismatches: onlyMismatches,
+        { _only_mismatches: onlyMismatches,
           _min_abs_mismatch: minMismatch,
-          _limit: limit,
-        }
+          _limit: limit }
       );
       if (error) throw error;
       return (data ?? []) as ReconRow[];
-    },
-  });
+    } });
 
   const rows = reportQuery.data ?? [];
 
@@ -116,11 +109,9 @@ export default function AdminXPReconciliation() {
       { key: "daily_xp_claims_xp", label: "Daily XP" },
       { key: "daily_rewards_xp", label: "Daily Rewards" },
       { key: "activity_logs_xp", label: "Activity XP" },
-      {
-        key: "last_event_at",
+      { key: "last_event_at",
         label: "Last Event",
-        format: (v) => (v ? format(new Date(v), "yyyy-MM-dd HH:mm") : ""),
-      },
+        format: (v) => (v ? format(new Date(v), "yyyy-MM-dd HH:mm") : "") },
     ]);
   };
 
@@ -364,10 +355,9 @@ export default function AdminXPReconciliation() {
                         )}
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-                        {r.last_event_at
+                        { r.last_event_at
                           ? formatDistanceToNow(new Date(r.last_event_at), {
-                              addSuffix: true,
-                            })
+                              addSuffix: true })
                           : "—"}
                       </TableCell>
                       <TableCell>
@@ -389,13 +379,11 @@ export default function AdminXPReconciliation() {
   );
 }
 
-function SummaryCard({
-  label,
+function SummaryCard({ label,
   value,
   hint,
   tone,
-  icon: Icon,
-}: {
+  icon: Icon }: {
   label: string;
   value: number;
   hint?: string;

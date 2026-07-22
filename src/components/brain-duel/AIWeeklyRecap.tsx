@@ -28,8 +28,7 @@ export const AIWeeklyRecap = () => {
         .limit(10);
 
       return data || [];
-    },
-  });
+    } });
 
   const generateRecap = useMutation({
     mutationFn: async () => {
@@ -51,8 +50,7 @@ export const AIWeeklyRecap = () => {
       } else {
         toast.error(err.message);
       }
-    },
-  });
+    } });
 
   const renderMarkdown = (text: string) => {
     // Escape HTML first so AI prompt-injection can't ship raw tags, then apply markdown.

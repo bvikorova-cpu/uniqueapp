@@ -23,12 +23,10 @@ export default function TimeReversalTimeline() {
   const checkAuthAndLoad = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Login Required",
           description: "Please sign in to continue",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
@@ -58,13 +56,11 @@ export default function TimeReversalTimeline() {
       // Create default profile
       const { data: newProfile, error: insertError } = await supabase
         .from("time_reversal_profiles")
-        .insert({
-          user_id: userId,
+        .insert({ user_id: userId,
           current_age: 80,
           starting_age: 80,
           target_age: 20,
-          aging_speed: 1.0,
-        })
+          aging_speed: 1.0 })
         .select()
         .single();
 

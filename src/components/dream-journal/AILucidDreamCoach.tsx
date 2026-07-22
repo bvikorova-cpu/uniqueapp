@@ -46,8 +46,7 @@ const AILucidDreamCoach = ({ onBack }: AILucidDreamCoachProps) => {
       }
       const res = await supabase.functions.invoke("dream-ai", {
         body: { action: "lucid-coach", experience, goal },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       const data = throwIfInvokeError(res);
       setResult(data.coaching);
       toast.success("Lucid dream coaching ready!");

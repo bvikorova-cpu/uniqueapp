@@ -94,8 +94,7 @@ export default function KidsVoiceChat() {
       (async () => {
         try {
           await supabase.functions.invoke("verify-credits-payment", {
-            body: { session_id: sessionId },
-          });
+            body: { session_id: sessionId } });
           await refreshCredits();
           toast({ title: "Credits added! 🎉", description: "You can now keep chatting." });
         } catch (e) {
@@ -111,8 +110,7 @@ export default function KidsVoiceChat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const sendMessage = async (overrideMessage?: string) => {
-    const msgText = overrideMessage || inputMessage.trim();
+  const sendMessage = async (overrideMessage?: string) => { const msgText = overrideMessage || inputMessage.trim();
     if (!msgText || !selectedCharacter || isLoading) return;
 
     // Paid-only guard
@@ -120,8 +118,7 @@ export default function KidsVoiceChat() {
       toast({
         title: "Out of Chat credits",
         description: "Buy more credits to keep chatting with your characters!",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/kids-voice-chat-pricing");
       return;
     }
@@ -144,14 +141,10 @@ export default function KidsVoiceChat() {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${session?.access_token ?? SUPABASE_ANON}`,
-            'apikey': SUPABASE_ANON,
-          },
-          body: JSON.stringify({
-            messages: newMessages,
+            'apikey': SUPABASE_ANON },
+          body: JSON.stringify({ messages: newMessages,
             characterName: selectedCharacter.name,
-            characterPersonality: selectedCharacter.personality,
-          }),
-        }
+            characterPersonality: selectedCharacter.personality }) }
       );
 
       if (response.status === 401) {
@@ -159,12 +152,10 @@ export default function KidsVoiceChat() {
         navigate("/auth");
         return;
       }
-      if (response.status === 402) {
-        toast({
+      if (response.status === 402) { toast({
           title: "Out of credits",
           description: "You need more Chat credits to continue.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         setMessages(prev => prev.slice(0, -1));
         await refreshCredits();
         navigate("/kids-voice-chat-pricing");

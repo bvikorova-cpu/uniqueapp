@@ -10,8 +10,7 @@ import { triggerBadgeConfetti } from "@/utils/confetti";
  * after returning from Stripe Checkout, verifies the payment, and triggers a
  * refresh callback so the campaign UI reflects the new totals.
  */
-export function useDonationReturn(onVerified?: () => void) {
-  const [searchParams, setSearchParams] = useSearchParams();
+export function useDonationReturn(onVerified?: () => void) { const [searchParams, setSearchParams] = useSearchParams();
   const handled = useRef(false);
 
   useEffect(() => {
@@ -23,8 +22,7 @@ export function useDonationReturn(onVerified?: () => void) {
       handled.current = true;
       toast({
         title: "Donation canceled",
-        description: "No payment was taken.",
-      });
+        description: "No payment was taken." });
       const next = new URLSearchParams(searchParams);
       next.delete("donation");
       next.delete("session_id");
@@ -37,31 +35,24 @@ export function useDonationReturn(onVerified?: () => void) {
       (async () => {
         try {
           const { data, error } = await supabase.functions.invoke("verify-donation", {
-            body: { session_id: sessionId },
-          });
+            body: { session_id: sessionId } });
           if (error) throw error;
           if (data?.verified) {
             const eur = ((data?.amount_cents ?? 0) / 100).toFixed(2);
             triggerBadgeConfetti();
             toast({
               title: "🎉 Thank you for your donation!",
-              description: `Your contribution of €${eur} was received. You're a hero!`,
-            });
+              description: `Your contribution of €${eur} was received. You're a hero!` });
             onVerified?.();
-          } else {
-
-            toast({
+          } else { toast({
               title: "Payment pending",
-              description: "We could not confirm the payment yet. It may take a moment.",
-            });
+              description: "We could not confirm the payment yet. It may take a moment." });
           }
-        } catch (e) {
-          console.error("verify-donation error", e);
+        } catch (e) { console.error("verify-donation error", e);
           toast({
             title: "Verification failed",
             description: "We could not verify your donation. Please contact support if you were charged.",
-            variant: "destructive",
-          });
+            variant: "destructive" });
         } finally {
           const next = new URLSearchParams(searchParams);
           next.delete("donation");

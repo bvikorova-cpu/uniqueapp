@@ -10,8 +10,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
-export const PropertyMortgageCalc = ({ onBack }: Props) => {
-  const [price, setPrice] = useState(150000);
+export const PropertyMortgageCalc = ({ onBack }: Props) => { const [price, setPrice] = useState(150000);
   const [downPayment, setDownPayment] = useState(20);
   const [interestRate, setInterestRate] = useState(4.5);
   const [years, setYears] = useState(25);
@@ -29,8 +28,7 @@ export const PropertyMortgageCalc = ({ onBack }: Props) => {
       totalPaid: Math.round(totalPaid),
       totalInterest: Math.round(totalInterest),
       principal: Math.round(principal),
-      downPaymentAmount: Math.round(price * downPayment / 100),
-    };
+      downPaymentAmount: Math.round(price * downPayment / 100) };
   }, [price, downPayment, interestRate, years]);
 
   return (

@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { usePostReactions, ReactionType } from "@/hooks/usePostReactions";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 interface ReactionsBarProps {

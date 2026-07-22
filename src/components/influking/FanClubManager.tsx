@@ -8,15 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  ArrowLeft, Crown, Users, Star, Lock, Unlock, Plus, Loader2, Heart,
+import { ArrowLeft, Crown, Users, Star, Lock, Unlock, Plus, Loader2, Heart,
   DollarSign, Sparkles, Trash2, FileText,
-  ChevronDown, ChevronUp,
-} from "lucide-react";
+  ChevronDown, ChevronUp } from "lucide-react";
 import FanClubMembersCard from "./FanClubMembersCard";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface FanClubManagerProps { onBack: () => void; }
 
@@ -27,8 +23,7 @@ const TIER_CONFIG: Record<Tier, {
 }> = {
   bronze: { color: "text-orange-600", bg: "bg-orange-500/10", border: "border-orange-500/20", price: 4.99, icon: Star },
   silver: { color: "text-gray-400",   bg: "bg-gray-500/10",   border: "border-gray-500/20",   price: 9.99, icon: Crown },
-  gold:   { color: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/20",  price: 19.99, icon: Sparkles },
-};
+  gold:   { color: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/20",  price: 19.99, icon: Sparkles } };
 
 interface FanClubRow {
   id: string;
@@ -47,15 +42,11 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
   const [showCreate, setShowCreate] = useState(false);
   const [expandedMembers, setExpandedMembers] = useState<Record<string, boolean>>({});
   const [postDialogClub, setPostDialogClub] = useState<FanClubRow | null>(null);
-  const [newClub, setNewClub] = useState<{ name: string; description: string; tier: Tier; perks: string }>({
-    name: "", description: "", tier: "bronze", perks: "",
-  });
+  const [newClub, setNewClub] = useState<{ name: string; description: string; tier: Tier; perks: string }>({ name: "", description: "", tier: "bronze", perks: "" });
   const [newPost, setNewPost] = useState({ title: "", body: "", media_url: "" });
 
-  const { data: user } = useQuery({
-    queryKey: ["auth-user"],
-    queryFn: async () => (await supabase.auth.getUser()).data.user,
-  });
+  const { data: user } = useQuery({ queryKey: ["auth-user"],
+    queryFn: async () => (await supabase.auth.getUser()).data.user });
 
   const { data: clubs = [], isLoading } = useQuery<FanClubRow[]>({
     queryKey: ["influencer-fan-clubs", user?.id],
@@ -67,26 +58,21 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
         .eq("creator_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data ?? []).map((r: any) => ({
-        ...r,
-        perks: Array.isArray(r.perks) ? r.perks : [],
-      })) as FanClubRow[];
+      return (data ?? []).map((r: any) => ({ ...r,
+        perks: Array.isArray(r.perks) ? r.perks : [] })) as FanClubRow[];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const createClub = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
       const perks = newClub.perks.split("\n").map((s) => s.trim()).filter(Boolean);
-      const { error } = await supabase.from("influencer_fan_clubs").insert({
-        creator_id: user.id,
+      const { error } = await supabase.from("influencer_fan_clubs").insert({ creator_id: user.id,
         tier: newClub.tier,
         name: newClub.name.trim(),
         description: newClub.description.trim(),
         price_cents: Math.round(TIER_CONFIG[newClub.tier].price * 100),
-        perks,
-      });
+        perks });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -95,8 +81,7 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
       setNewClub({ name: "", description: "", tier: "bronze", perks: "" });
       toast({ title: "✅ Fan Club created", description: "Members can now subscribe via Stripe." });
     },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   const toggleActive = useMutation({
     mutationFn: async (row: FanClubRow) => {
@@ -106,8 +91,7 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
         .eq("id", row.id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["influencer-fan-clubs"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["influencer-fan-clubs"] }) });
 
   const removeClub = useMutation({
     mutationFn: async (id: string) => {
@@ -118,19 +102,16 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
       qc.invalidateQueries({ queryKey: ["influencer-fan-clubs"] });
       toast({ title: "Fan Club deleted" });
     },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   const createPost = useMutation({
     mutationFn: async () => {
       if (!user || !postDialogClub) throw new Error("Missing context");
-      const { error } = await supabase.from("influencer_fan_club_posts").insert({
-        fan_club_id: postDialogClub.id,
+      const { error } = await supabase.from("influencer_fan_club_posts").insert({ fan_club_id: postDialogClub.id,
         creator_id: user.id,
         title: newPost.title.trim(),
         body: newPost.body.trim(),
-        media_url: newPost.media_url.trim() || null,
-      });
+        media_url: newPost.media_url.trim() || null });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -138,8 +119,7 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
       setNewPost({ title: "", body: "", media_url: "" });
       toast({ title: "🔒 Exclusive post published", description: "Only active members can view it." });
     },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   return (
     <div className="space-y-6">

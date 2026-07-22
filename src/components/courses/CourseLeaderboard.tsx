@@ -48,10 +48,8 @@ export const CourseLeaderboard = ({ courseId }: CourseLeaderboardProps) => {
         score: entry.test_score || 0,
         completion_date: entry.completion_date,
         time_spent_minutes: entry.time_spent_minutes || 0,
-        rank: index + 1,
-      })) as LeaderboardEntry[];
-    },
-  });
+        rank: index + 1 })) as LeaderboardEntry[];
+    } });
 
   const getRankIcon = (rank: number) => {
     switch (rank) {

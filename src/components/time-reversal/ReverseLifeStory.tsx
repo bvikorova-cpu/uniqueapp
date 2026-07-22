@@ -43,9 +43,7 @@ Structure:
 - Chapter 5: The Innocent Child (18-0 years) - Returning to pure innocence, final moments as a baby
 
 Make it emotional, imaginative, and about 800 words. Include specific sensory details and emotions at each stage.`,
-          type: "reverse-biography",
-        },
-      });
+          type: "reverse-biography" } });
 
       if (error) throw error;
       setStory(data?.text || data?.generated_text || generateFallbackStory(name, tone));

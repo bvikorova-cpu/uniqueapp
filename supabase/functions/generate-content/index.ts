@@ -2,19 +2,15 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const CREDIT_COSTS = {
-  social_post: 1,
+const CREDIT_COSTS = { social_post: 1,
   blog_article: 3,
   video_script: 2,
   cv: 2,
   cover_letter: 1,
-  business_document: 2,
-};
+  business_document: 2 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -65,14 +61,12 @@ serve(async (req) => {
 
 
     // Generate content based on type
-    const systemPrompts = {
-      social_post: "You are a social media expert. Create engaging, viral-worthy social media posts with emojis and hashtags.",
+    const systemPrompts = { social_post: "You are a social media expert. Create engaging, viral-worthy social media posts with emojis and hashtags.",
       blog_article: "You are a professional content writer. Create well-structured, SEO-optimized blog articles with headings and clear paragraphs.",
       video_script: "You are a video scriptwriter. Create engaging video scripts with clear scenes, dialogue, and visual descriptions.",
       cv: "You are a professional CV writer. Create professional, ATS-friendly CV content highlighting skills and experience.",
       cover_letter: "You are a career consultant. Write compelling, personalized cover letters that highlight candidate strengths.",
-      business_document: "You are a business writer. Create professional, clear business documents with proper structure.",
-    };
+      business_document: "You are a business writer. Create professional, clear business documents with proper structure." };
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) {
@@ -83,22 +77,15 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+        "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
-            content: systemPrompts[contentType as keyof typeof systemPrompts] || "You are a helpful assistant.",
-          },
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-      }),
-    });
+            content: systemPrompts[contentType as keyof typeof systemPrompts] || "You are a helpful assistant." },
+          { role: "user",
+            content: prompt },
+        ] }) });
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -116,18 +103,15 @@ serve(async (req) => {
     // ✅ Deduct credits only after successful AI generation
     await supabaseClient
       .from("ai_credits")
-      .update({
-        credits_remaining: creditData.credits_remaining - creditsNeeded,
-        last_used_at: new Date().toISOString(),
-      })
+      .update({ credits_remaining: creditData.credits_remaining - creditsNeeded,
+        last_used_at: new Date().toISOString() })
       .eq("user_id", user.id);
 
     await supabaseClient.from("ai_usage_history").insert({
       user_id: user.id,
       usage_type: `content_${contentType}`,
       credits_used: creditsNeeded,
-      description: `Generated ${contentType}: ${title}`,
-    });
+      description: `Generated ${contentType}: ${title}` });
 
 
 
@@ -142,8 +126,7 @@ serve(async (req) => {
         generated_text: generatedText,
         metadata: metadata || {},
         status: "generated",
-        credits_used: creditsNeeded,
-      })
+        credits_used: creditsNeeded })
       .select()
       .single();
 
@@ -153,10 +136,8 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({
-        content: savedContent,
-        creditsRemaining: creditData.credits_remaining - creditsNeeded,
-      }),
+      JSON.stringify({ content: savedContent,
+        creditsRemaining: creditData.credits_remaining - creditsNeeded }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {

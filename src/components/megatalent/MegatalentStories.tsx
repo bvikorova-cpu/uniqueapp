@@ -85,11 +85,9 @@ const MegatalentStories = () => {
       const { error: upErr } = await supabase.storage.from(bucket).upload(path, file, { contentType: file.type });
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from(bucket).getPublicUrl(path);
-      const { error: insErr } = await (supabase as any).from("mt_stories").insert({
-        user_id: userId,
+      const { error: insErr } = await (supabase as any).from("mt_stories").insert({ user_id: userId,
         media_url: pub.publicUrl,
-        media_type: isVideo ? "video" : "image",
-      });
+        media_type: isVideo ? "video" : "image" });
       if (insErr) throw insErr;
       toast.success("Story posted! Visible for 24h");
       load();

@@ -10,22 +10,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import {
-  Table,
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Tabs,
+  TableRow } from "@/components/ui/table";
+import { Tabs,
   TabsContent,
   TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import {
-  Wallet,
+  TabsTrigger } from "@/components/ui/tabs";
+import { Wallet,
   Clock,
   CheckCircle2,
   XCircle,
@@ -33,8 +28,7 @@ import {
   RefreshCw,
   Loader2,
   Banknote,
-  BarChart3,
-} from "lucide-react";
+  BarChart3 } from "lucide-react";
 
 type ConnectStatus = {
   connected: boolean;

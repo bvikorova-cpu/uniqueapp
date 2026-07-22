@@ -22,10 +22,8 @@ export function CouponSellerDashboard({ userId }: { userId: string | null }) {
   useEffect(() => {
     if (!userId) return;
     supabase.from("coupon_seller_analytics").select("*").eq("seller_id", userId).maybeSingle()
-      .then(({ data }) => setS((data as any) ?? {
-        orders_completed: 0, gross_revenue_eur: 0, disputes: 0, dispute_rate_pct: 0,
-        listings_total: 0, listings_active: 0, avg_rating: 0, review_count: 0,
-      }));
+      .then(({ data }) => setS((data as any) ?? { orders_completed: 0, gross_revenue_eur: 0, disputes: 0, dispute_rate_pct: 0,
+        listings_total: 0, listings_active: 0, avg_rating: 0, review_count: 0 }));
   }, [userId]);
 
   if (!s) return null;

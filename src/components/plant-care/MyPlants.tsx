@@ -50,10 +50,8 @@ export const MyPlants = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Plant Removed",
-        description: "Plant has been removed from your garden",
-      });
+      toast({ title: "Plant Removed",
+        description: "Plant has been removed from your garden" });
 
       fetchPlants();
     } catch (error: any) {

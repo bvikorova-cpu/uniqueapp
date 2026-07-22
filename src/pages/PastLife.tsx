@@ -28,33 +28,27 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "basic" | "full" | "soulmate" | "history" | "credits";
 
 const PAST_LIFE_TOOLS = [
-  {
-    id: "basic",
+  { id: "basic",
     title: "Basic Reading",
     description: "Discover a single past life with detailed karmic lessons",
     icon: Clock,
     credits: 5,
     gradient: "bg-gradient-to-r from-blue-500 to-cyan-500",
-    features: ["1 detailed past life story", "Historical period & location", "Profession & life events", "Karmic lesson"],
-  },
-  {
-    id: "full",
+    features: ["1 detailed past life story", "Historical period & location", "Profession & life events", "Karmic lesson"] },
+  { id: "full",
     title: "Full Reading",
     description: "Deep dive into 3 past lives with AI illustrations",
     icon: Sparkles,
     credits: 15,
     gradient: "bg-gradient-to-r from-primary to-accent",
-    features: ["3 complete past life stories", "AI-generated illustrations", "Overall karmic theme", "Soul evolution analysis"],
-  },
-  {
-    id: "soulmate",
+    features: ["3 complete past life stories", "AI-generated illustrations", "Overall karmic theme", "Soul evolution analysis"] },
+  { id: "soulmate",
     title: "Soul Mate Connection",
     description: "Discover past life connections with your partner",
     icon: Heart,
     credits: 20,
     gradient: "bg-gradient-to-r from-pink-500 to-rose-500",
-    features: ["Your 3 past lives + illustrations", "Partner's past life analysis", "Shared past life connections", "Relationship karmic patterns"],
-  },
+    features: ["Your 3 past lives + illustrations", "Partner's past life analysis", "Shared past life connections", "Relationship karmic patterns"] },
 ];
 
 const PastLife = () => {

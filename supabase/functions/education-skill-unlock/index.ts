@@ -8,8 +8,7 @@ Deno.serve(async (req) => {
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
     const supabase = createClient(
@@ -22,8 +21,7 @@ Deno.serve(async (req) => {
     )
     if (userErr || !userData?.user) {
       return new Response(JSON.stringify({ error: 'Invalid session' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
     const userId = userData.user.id
 
@@ -31,8 +29,7 @@ Deno.serve(async (req) => {
     const nodeId = typeof body?.nodeId === 'string' ? body.nodeId : null
     if (!nodeId) {
       return new Response(JSON.stringify({ error: 'nodeId required' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
     // Load target node
@@ -43,8 +40,7 @@ Deno.serve(async (req) => {
       .maybeSingle()
     if (nodeErr || !node) {
       return new Response(JSON.stringify({ error: 'Node not found' }), {
-        status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+        status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
     // Validate prerequisite completion
@@ -57,8 +53,7 @@ Deno.serve(async (req) => {
         .maybeSingle()
       if (!parentProgress || parentProgress.status !== 'completed') {
         return new Response(JSON.stringify({ error: 'Complete prerequisite skill first' }), {
-          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        })
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
       }
     }
 
@@ -77,21 +72,17 @@ Deno.serve(async (req) => {
           .update({ status: 'unlocked', updated_at: new Date().toISOString() })
           .eq('id', existing.id)
       }
-    } else {
-      await supabase.from('education_user_skill_progress').insert({
+    } else { await supabase.from('education_user_skill_progress').insert({
         user_id: userId,
         node_id: nodeId,
         status: 'unlocked',
-        mastery_score: 0,
-      })
+        mastery_score: 0 })
     }
 
     return new Response(JSON.stringify({ ok: true, status: 'unlocked' }), {
-      status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+      status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   }
 })

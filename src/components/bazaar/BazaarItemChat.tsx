@@ -90,12 +90,10 @@ export const BazaarItemChat = ({ itemId, sellerId, currentUserId }: Props) => {
     }
     if (!otherUserId) return;
     setSending(true);
-    const { error } = await supabase.from("bazaar_messages").insert({
-      item_id: itemId,
+    const { error } = await supabase.from("bazaar_messages").insert({ item_id: itemId,
       sender_id: currentUserId,
       receiver_id: otherUserId,
-      message: input.trim(),
-    });
+      message: input.trim() });
     setSending(false);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });

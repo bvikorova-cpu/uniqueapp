@@ -25,12 +25,10 @@ type Event = {
   actor_id: string | null; note: string | null; created_at: string;
 };
 
-const STATUS_COLOR: Record<string, string> = {
-  pending: "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400",
+const STATUS_COLOR: Record<string, string> = { pending: "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400",
   paid: "bg-blue-500/15 text-blue-700 dark:text-blue-400",
   completed: "bg-green-500/15 text-green-700 dark:text-green-400",
-  cancelled: "bg-red-500/15 text-red-700 dark:text-red-400",
-};
+  cancelled: "bg-red-500/15 text-red-700 dark:text-red-400" };
 
 export default function SkillsMarketplaceOrderDetail() {
   const { id } = useParams<{ id: string }>();

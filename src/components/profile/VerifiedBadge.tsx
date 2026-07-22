@@ -8,19 +8,15 @@ interface VerifiedBadgeProps {
   className?: string;
 }
 
-const COLORS = {
-  basic: "text-sky-400",
+const COLORS = { basic: "text-sky-400",
   creator: "text-primary",
-  official: "text-amber-400",
-};
+  official: "text-amber-400" };
 
 const SIZES = { sm: "h-3.5 w-3.5", md: "h-4 w-4", lg: "h-5 w-5" };
 
-const LABELS = {
-  basic: "Verified account",
+const LABELS = { basic: "Verified account",
   creator: "Verified creator",
-  official: "Official partner",
-};
+  official: "Official partner" };
 
 /** Inline verified checkmark for usernames/handles. */
 export const VerifiedBadge = ({ level = "basic", size = "sm", className }: VerifiedBadgeProps) => {

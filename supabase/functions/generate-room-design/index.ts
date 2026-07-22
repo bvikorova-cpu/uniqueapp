@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -40,15 +38,13 @@ serve(async (req) => {
     if (!subscription || subscription.status !== "active") {
       return new Response(JSON.stringify({ error: "Active subscription required" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 403,
-      });
+        status: 403 });
     }
 
     if (subscription.designs_used >= subscription.designs_limit) {
       return new Response(JSON.stringify({ error: "Design limit reached for this month" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 403,
-      });
+        status: 403 });
     }
 
     // Generate AI design using OpenAI
@@ -72,16 +68,13 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: aiPrompt }
-        ],
-      }),
-    });
+        ] }) });
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -90,8 +83,7 @@ serve(async (req) => {
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "AI service rate limited. Please try again later." }), {
           status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       
       throw new Error("OpenAI API error");
@@ -103,13 +95,11 @@ serve(async (req) => {
     // Save design to database
     const { data: design } = await supabaseClient
       .from("ai_room_designs")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         room_image_url: "placeholder",
         style: style,
         ai_design_url: designSuggestion,
-        is_saved: true,
-      })
+        is_saved: true })
       .select()
       .single();
 
@@ -126,13 +116,11 @@ serve(async (req) => {
       design_id: design?.id 
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (error) {
     console.error("Generate room design error:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

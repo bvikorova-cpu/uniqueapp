@@ -16,8 +16,7 @@ const Masterclasses = () => {
   const [registering, setRegistering] = useState<string | null>(null);
   const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+  useEffect(() => { const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
@@ -25,8 +24,7 @@ const Masterclasses = () => {
         if (success) {
           toast({
             title: "Registration Confirmed! 🎉",
-            description: "You now have access to your ProClass.",
-          });
+            description: "You now have access to your ProClass." });
           window.history.replaceState({}, '', '/proclasses');
         }
       });
@@ -112,22 +110,18 @@ const Masterclasses = () => {
 
     setRegistering(classId);
     
-    try {
-      const sessionUrl = await purchaseContent(classId, "masterclass", title, price);
+    try { const sessionUrl = await purchaseContent(classId, "masterclass", title, price);
       
       if (sessionUrl) {
         window.open(sessionUrl, '_blank');
         toast({
           title: "Redirecting to Payment",
-          description: "Complete your payment to access the ProClass.",
-        });
+          description: "Complete your payment to access the ProClass." });
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Registration Failed",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setRegistering(null);
     }

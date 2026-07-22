@@ -9,14 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Heart, Send, Sparkles, Upload, Coins, Image as ImageIcon, Crown } from "lucide-react";
-import {
-  useGalleryItems,
+import { useGalleryItems,
   useMyGalleryLikes,
   useToggleGalleryLike,
   useSubmitGalleryItem,
   useMyGallerySubmissions,
-  useGalleryTour,
-} from "@/hooks/useHandwritingGallery";
+  useGalleryTour } from "@/hooks/useHandwritingGallery";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -48,8 +46,7 @@ export function PublicGalleryCard() {
         onSuccess: () => {
           setFile(null); setFigureName(""); setEra(""); setRegion(""); setStory("");
           setSubmitOpen(false);
-        },
-      },
+        } },
     );
   };
 
@@ -93,7 +90,7 @@ export function PublicGalleryCard() {
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Region</Label>
-                    <Input value={region} onChange={(e) => setRegion(e.target.value)} placeholder="Germany" maxLength={40} />
+                    <Input value={region} onChange={(e) => setRegion(e.target.value)} placeholder="Country" maxLength={40} />
                   </div>
                 </div>
                 <div className="space-y-1">

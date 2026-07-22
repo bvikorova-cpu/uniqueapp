@@ -8,10 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import {
-  ArrowLeft, Plus, Calendar as CalendarIcon, Clock, Trash2,
-  ChevronLeft, ChevronRight, Loader2, CheckCircle, AlertCircle,
-} from "lucide-react";
+import { ArrowLeft, Plus, Calendar as CalendarIcon, Clock, Trash2,
+  ChevronLeft, ChevronRight, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday } from "date-fns";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -32,8 +30,7 @@ interface Props {
 const PLATFORMS = ["Instagram", "Twitter/X", "LinkedIn", "Facebook", "TikTok", "Blog", "Email", "YouTube"];
 const CONTENT_TYPES = ["Post", "Story", "Reel", "Article", "Newsletter", "Video", "Thread", "Ad"];
 
-const ContentCalendar = ({ onBack }: Props) => {
-  const [entries, setEntries] = useState<CalendarEntry[]>([]);
+const ContentCalendar = ({ onBack }: Props) => { const [entries, setEntries] = useState<CalendarEntry[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -44,8 +41,7 @@ const ContentCalendar = ({ onBack }: Props) => {
     title: "",
     content_type: "Post",
     platform: "Instagram",
-    notes: "",
-  });
+    notes: "" });
 
   useEffect(() => { loadEntries(); }, [currentMonth]);
 
@@ -71,15 +67,13 @@ const ContentCalendar = ({ onBack }: Props) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-      const { error } = await (supabase as any).from("content_calendar").insert({
-        user_id: user.id,
+      const { error } = await (supabase as any).from("content_calendar").insert({ user_id: user.id,
         title: form.title,
         content_type: form.content_type,
         platform: form.platform,
         scheduled_date: selectedDate.toISOString(),
         notes: form.notes || null,
-        status: "planned",
-      });
+        status: "planned" });
       if (error) throw error;
       toast.success("Content scheduled!");
       setForm({ title: "", content_type: "Post", platform: "Instagram", notes: "" });

@@ -19,14 +19,12 @@ interface TopicContentProps {
   timeSpent?: number;
 }
 
-export const TopicContent = ({
-  topic,
+export const TopicContent = ({ topic,
   topicIndex,
   totalTopics,
   isCompleted,
   onComplete,
-  timeSpent = 0,
-}: TopicContentProps) => {
+  timeSpent = 0 }: TopicContentProps) => {
   const progress = ((topicIndex + 1) / totalTopics) * 100;
 
   return (

@@ -1,13 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock supabase client BEFORE importing module under test
-vi.mock("@/integrations/supabase/client", () => ({
-  supabase: {
+vi.mock("@/integrations/supabase/client", () => ({ supabase: {
     functions: {
-      invoke: vi.fn(),
-    },
-  },
-}));
+      invoke: vi.fn() } } }));
 
 import { safeInvoke, invokeOrThrow } from "./safeInvoke";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,21 +22,17 @@ describe("safeInvoke", () => {
     expect(result.data).toEqual({ ok: true });
   });
 
-  it("returns error message when SDK reports error", async () => {
-    mockInvoke.mockResolvedValue({
+  it("returns error message when SDK reports error", async () => { mockInvoke.mockResolvedValue({
       data: null,
-      error: new Error("Boom"),
-    });
+      error: new Error("Boom") });
     const result = await safeInvoke("fn");
     expect(result.data).toBeNull();
     expect(result.error).toBe("Boom");
   });
 
-  it("hides technical non-2xx noise", async () => {
-    mockInvoke.mockResolvedValue({
+  it("hides technical non-2xx noise", async () => { mockInvoke.mockResolvedValue({
       data: null,
-      error: new Error("Edge Function returned a non-2xx status code"),
-    });
+      error: new Error("Edge Function returned a non-2xx status code") });
     const result = await safeInvoke("fn");
     expect(result.error).toMatch(/temporarily unavailable/i);
   });
@@ -48,8 +40,7 @@ describe("safeInvoke", () => {
   it("treats 200 body { error } as failure", async () => {
     mockInvoke.mockResolvedValue({
       data: { error: "Not enough credits" },
-      error: null,
-    });
+      error: null });
     const result = await safeInvoke("fn");
     expect(result.data).toBeNull();
     expect(result.error).toBe("Not enough credits");

@@ -43,15 +43,13 @@ export const DailyChallengeCard = ({ challenge, progress, isCompleted }: DailyCh
           angle: 60,
           spread: 55,
           origin: { x: 0 },
-          colors: ['#10b981', '#f59e0b', '#3b82f6', '#ec4899'],
-        });
+          colors: ['#10b981', '#f59e0b', '#3b82f6', '#ec4899'] });
         confetti({
           particleCount: 3,
           angle: 120,
           spread: 55,
           origin: { x: 1 },
-          colors: ['#10b981', '#f59e0b', '#3b82f6', '#ec4899'],
-        });
+          colors: ['#10b981', '#f59e0b', '#3b82f6', '#ec4899'] });
 
         if (Date.now() < end) {
           requestAnimationFrame(frame);
@@ -64,8 +62,7 @@ export const DailyChallengeCard = ({ challenge, progress, isCompleted }: DailyCh
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#10b981', '#f59e0b', '#3b82f6', '#ec4899'],
-      });
+        colors: ['#10b981', '#f59e0b', '#3b82f6', '#ec4899'] });
     }
     prevIsCompleted.current = isCompleted;
   }, [isCompleted]);

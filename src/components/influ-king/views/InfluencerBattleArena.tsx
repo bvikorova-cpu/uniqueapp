@@ -20,8 +20,7 @@ export default function InfluencerBattleArena({ onBack }: Props) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("influ-king-ai", {
-        body: { action: "battle", player1, player2 },
-      });
+        body: { action: "battle", player1, player2 } });
       if (error) throw error;
       setBattle(data);
       toast.success("Battle complete!");

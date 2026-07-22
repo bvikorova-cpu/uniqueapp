@@ -93,8 +93,7 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
     setReleaseStatus((prev) => ({ ...prev, [orderId]: "loading" }));
     setReleasing(orderId);
     const { data, error } = await supabase.functions.invoke("mt-release-funds", {
-      body: { kind: "marketplace", id: orderId },
-    });
+      body: { kind: "marketplace", id: orderId } });
     setReleasing(null);
     if (error || (data as any)?.error) {
       setReleaseStatus((prev) => ({ ...prev, [orderId]: "error" }));
@@ -119,8 +118,7 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
     setBuying(l.id);
     // Server creates the order (service_role) and opens Stripe Checkout in one call.
     const { data: co, error: coErr } = await supabase.functions.invoke("mt-checkout", {
-      body: { kind: "marketplace", listing_id: l.id },
-    });
+      body: { kind: "marketplace", listing_id: l.id } });
     setBuying(null);
     if (coErr || !(co as any)?.url) {
       toast.error("Checkout failed", { description: coErr?.message || (co as any)?.error });
@@ -136,15 +134,13 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
       return;
     }
     setSubmitting(true);
-    const { error } = await (supabase as any).from("mt_marketplace_listings").insert({
-      seller_id: userId,
+    const { error } = await (supabase as any).from("mt_marketplace_listings").insert({ seller_id: userId,
       title: form.title.trim(),
       description: form.description.trim() || null,
       price_cents: Math.max(100, Math.round(form.price * 100)),
       eta_days: Math.max(1, Math.min(60, form.eta_days)),
       emoji: form.emoji || "🎁",
-      category: category || null,
-    });
+      category: category || null });
     setSubmitting(false);
     if (error) {
       toast.error("Create failed", { description: error.message });

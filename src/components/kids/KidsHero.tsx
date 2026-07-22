@@ -16,18 +16,15 @@ export const KidsHero = () => {
           className="absolute text-3xl pointer-events-none"
           style={{
             left: `${10 + (i * 12) % 80}%`,
-            top: `${10 + (i * 17) % 60}%`,
-          }}
-          animate={{
+            top: `${10 + (i * 17) % 60}%` }}
+          animate={ {
             y: [0, -15, 0],
             rotate: [0, i % 2 === 0 ? 10 : -10, 0],
-            opacity: [0.4, 0.8, 0.4],
-          }}
-          transition={{
+            opacity: [0.4, 0.8, 0.4] }}
+          transition={ {
             duration: 3 + i * 0.5,
             repeat: Infinity,
-            delay: i * 0.3,
-          }}
+            delay: i * 0.3 }}
         >
           {emoji}
         </motion.div>

@@ -49,9 +49,7 @@ const HomeDesigner = () => {
   const [uploading, setUploading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [items, setItems] = useState<DecorItem[]>([]);
-  const [formData, setFormData] = useState({
-    title: "", price: "", description: "", category: "furniture", condition: "Like New",
-  });
+  const [formData, setFormData] = useState({ title: "", price: "", description: "", category: "furniture", condition: "Like New" });
 
   // Stats
   const [stats, setStats] = useState({ designs: 0, items: 0, transformations: 0, palettes: 0 });
@@ -74,12 +72,10 @@ const HomeDesigner = () => {
       supabase.from("home_transformations").select("*", { count: "exact", head: true }),
       supabase.from("home_color_palettes").select("*", { count: "exact", head: true }),
     ]);
-    setStats({
-      designs: d.count || 0,
+    setStats({ designs: d.count || 0,
       items: i.count || 0,
       transformations: t.count || 0,
-      palettes: p.count || 0,
-    });
+      palettes: p.count || 0 });
   };
 
   const loadItems = async () => {
@@ -115,9 +111,7 @@ const HomeDesigner = () => {
     try {
       setUploading(true);
       const imageUrl = await uploadMarketplaceImage();
-      const { error } = await supabase.from('home_decor_items').insert({
-        ...formData, price: parseFloat(formData.price), image_url: imageUrl, user_id: currentUserId,
-      });
+      const { error } = await supabase.from('home_decor_items').insert({ ...formData, price: parseFloat(formData.price), image_url: imageUrl, user_id: currentUserId });
       if (error) throw error;
       toast({ title: "Success", description: "Item listed successfully" });
       setFormData({ title: "", price: "", description: "", category: "furniture", condition: "Like New" });

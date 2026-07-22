@@ -42,16 +42,14 @@ Deno.serve(async (req) => {
 
       const { data: royalty, error: rErr } = await supabase
         .from("music_royalties")
-        .insert({
-          track_id: trackId,
+        .insert({ track_id: trackId,
           creator_id: track.creator_id,
           stream_count: count,
           gross_eur: gross,
           creator_amount_eur: creatorAmount,
           platform_amount_eur: platformAmount,
           period_start: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
-          period_end: new Date().toISOString(),
-        })
+          period_end: new Date().toISOString() })
         .select("id")
         .single();
       if (rErr) throw rErr;
@@ -66,12 +64,10 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ ok: true, processed, tracks: counts.size }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: String(e) }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

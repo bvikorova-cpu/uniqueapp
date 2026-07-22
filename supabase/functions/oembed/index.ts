@@ -6,21 +6,17 @@
 import "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "GET, OPTIONS" };
 
-const CATEGORY_TABLE: Record<string, string> = {
-  medical: "medical_campaigns",
+const CATEGORY_TABLE: Record<string, string> = { medical: "medical_campaigns",
   dream: "dream_campaigns",
   hero: "hero_campaigns",
   crisis: "crisis_campaigns",
   pet: "pet_rescue_campaigns",
   student: "student_campaigns",
-  talent: "talent_campaigns",
-};
+  talent: "talent_campaigns" };
 
 const PROVIDER_NAME = "Unique";
 const PROVIDER_URL = "https://www.uniqueapp.fun";
@@ -55,31 +51,26 @@ Deno.serve(async (req) => {
   if (!target) {
     return new Response(JSON.stringify({ error: "Missing required ?url parameter" }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
-  if (format !== "json") {
-    // XML not supported per oEmbed spec 501
+  if (format !== "json") { // XML not supported per oEmbed spec 501
     return new Response("XML format not implemented", {
       status: 501,
-      headers: corsHeaders,
-    });
+      headers: corsHeaders });
   }
 
   const parsed = parseCampaign(target);
   if (!parsed) {
     return new Response(JSON.stringify({ error: "URL is not a recognized Unique campaign URL" }), {
       status: 404,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   const table = CATEGORY_TABLE[parsed.type];
   if (!table) {
     return new Response(JSON.stringify({ error: "Unknown campaign category" }), {
       status: 404,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   const supabase = createClient(
@@ -97,8 +88,7 @@ Deno.serve(async (req) => {
   if (error || !data) {
     return new Response(JSON.stringify({ error: "Campaign not found" }), {
       status: 404,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   const width = Math.max(280, Math.min(1200, maxwidth));
@@ -107,8 +97,7 @@ Deno.serve(async (req) => {
 
   const html = `<iframe src="${embedSrc}" width="${width}" height="${height}" frameborder="0" scrolling="no" style="border:0;max-width:100%;border-radius:16px;overflow:hidden" loading="lazy" title="${(data as any).title || "Support this campaign"}"></iframe>`;
 
-  const body = {
-    version: "1.0",
+  const body = { version: "1.0",
     type: "rich",
     provider_name: PROVIDER_NAME,
     provider_url: PROVIDER_URL,
@@ -121,15 +110,11 @@ Deno.serve(async (req) => {
     thumbnail_url: (data as any).image_url || undefined,
     thumbnail_width: (data as any).image_url ? 480 : undefined,
     thumbnail_height: (data as any).image_url ? 270 : undefined,
-    cache_age: 300,
-  };
+    cache_age: 300 };
 
-  return new Response(JSON.stringify(body), {
-    status: 200,
+  return new Response(JSON.stringify(body), { status: 200,
     headers: {
       ...corsHeaders,
       "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "public, max-age=300",
-    },
-  });
+      "Cache-Control": "public, max-age=300" } });
 });

@@ -23,8 +23,7 @@ export function useAnonymousDateParity() {
     setLoadingKey(feature);
     try {
       const { data, error } = await supabase.functions.invoke("anonymous-date-ai", {
-        body: { feature, payload, matchId },
-      });
+        body: { feature, payload, matchId } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).message || (data as any).error);
       setResults((r) => ({ ...r, [feature]: (data as any).output }));

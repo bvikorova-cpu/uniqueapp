@@ -208,8 +208,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "149", title: "Terms", category: "Account", path: "/terms" },
 ];
 
-const CATEGORY_COLORS: Record<string, string> = {
-  "Main": "bg-primary/10 text-primary",
+const CATEGORY_COLORS: Record<string, string> = { "Main": "bg-primary/10 text-primary",
   "Social": "bg-pink-500/10 text-pink-500",
   "Communication": "bg-blue-500/10 text-blue-500",
   "Entertainment": "bg-yellow-500/10 text-yellow-500",
@@ -227,8 +226,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   "Mystical": "bg-violet-500/10 text-violet-500",
   "Community": "bg-sky-500/10 text-sky-500",
   "Rewards": "bg-fuchsia-500/10 text-fuchsia-500",
-  "Account": "bg-slate-500/10 text-slate-500",
-};
+  "Account": "bg-slate-500/10 text-slate-500" };
 
 export function GlobalSearch() {
   const [open, setOpen] = useState(false);

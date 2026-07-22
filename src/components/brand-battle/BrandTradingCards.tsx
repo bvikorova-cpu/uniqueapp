@@ -16,8 +16,7 @@ const RARITY = {
   common: { color: "from-zinc-500 to-zinc-700", border: "border-zinc-500/40", text: "text-zinc-300" },
   rare: { color: "from-blue-400 to-blue-600", border: "border-blue-500/40", text: "text-blue-300" },
   epic: { color: "from-violet-400 to-purple-600", border: "border-violet-500/40", text: "text-violet-300" },
-  legendary: { color: "from-amber-300 to-yellow-600", border: "border-amber-400/60", text: "text-amber-300" },
-};
+  legendary: { color: "from-amber-300 to-yellow-600", border: "border-amber-400/60", text: "text-amber-300" } };
 
 export const BrandTradingCards = () => {
   const { data: votes, refetch } = useBrandVotes();
@@ -48,9 +47,7 @@ export const BrandTradingCards = () => {
       await spendBrandCredits(card.base_price);
 
       const serial = card.minted_count + 1;
-      const { error } = await supabase.from("user_brand_cards").insert({
-        user_id: user.id, card_id: card.id, serial_number: serial,
-      });
+      const { error } = await supabase.from("user_brand_cards").insert({ user_id: user.id, card_id: card.id, serial_number: serial });
       if (error) throw error;
       await supabase.from("brand_cards").update({ minted_count: serial }).eq("id", card.id);
 

@@ -38,21 +38,17 @@ export function QuizBuilder({ courseId }: QuizBuilderProps) {
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
-  const [quizForm, setQuizForm] = useState({
-    lesson_id: "",
+  const [quizForm, setQuizForm] = useState({ lesson_id: "",
     title: "",
-    passing_score: "70",
-  });
-  const [questionForm, setQuestionForm] = useState({
-    question_text: "",
+    passing_score: "70" });
+  const [questionForm, setQuestionForm] = useState({ question_text: "",
     question_type: "multiple_choice",
     option1: "",
     option2: "",
     option3: "",
     option4: "",
     correct_answer: "",
-    points: "1",
-  });
+    points: "1" });
 
   useEffect(() => {
     loadData();
@@ -76,12 +72,10 @@ export function QuizBuilder({ courseId }: QuizBuilderProps) {
         .in("lesson_id", (lessonsData || []).map((l) => l.id));
 
       setQuizzes(quizzesData || []);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -97,114 +91,92 @@ export function QuizBuilder({ courseId }: QuizBuilderProps) {
 
       if (error) throw error;
       setQuestions(data || []);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
-  const handleCreateQuiz = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreateQuiz = async (e: React.FormEvent) => { e.preventDefault();
 
     if (!quizForm.lesson_id || !quizForm.title) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
     try {
       const { data, error } = await supabase
         .from("course_quizzes")
-        .insert([{
-          lesson_id: quizForm.lesson_id,
+        .insert([{ lesson_id: quizForm.lesson_id,
           title: quizForm.title,
-          passing_score: parseInt(quizForm.passing_score),
-        }])
+          passing_score: parseInt(quizForm.passing_score) }])
         .select()
         .single();
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Quiz created successfully",
-      });
+      toast({ title: "Success",
+        description: "Quiz created successfully" });
 
       setQuizForm({ lesson_id: "", title: "", passing_score: "70" });
       loadData();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
-  const handleAddQuestion = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddQuestion = async (e: React.FormEvent) => { e.preventDefault();
 
     if (!selectedQuiz || !questionForm.question_text || !questionForm.correct_answer) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
-    try {
-      const options = {
+    try { const options = {
         options: [
           questionForm.option1,
           questionForm.option2,
           questionForm.option3,
           questionForm.option4,
-        ].filter(Boolean),
-      };
+        ].filter(Boolean) };
 
       const { error } = await supabase
         .from("quiz_questions")
-        .insert([{
-          quiz_id: selectedQuiz.id,
+        .insert([{ quiz_id: selectedQuiz.id,
           question: questionForm.question_text,
           order_index: questions.length,
           options,
           correct_answer: questionForm.correct_answer,
-          explanation: "",
-        }]);
+          explanation: "" }]);
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Question added successfully",
-      });
+      toast({ title: "Success",
+        description: "Question added successfully" });
 
-      setQuestionForm({
-        question_text: "",
+      setQuestionForm({ question_text: "",
         question_type: "multiple_choice",
         option1: "",
         option2: "",
         option3: "",
         option4: "",
         correct_answer: "",
-        points: "1",
-      });
+        points: "1" });
       
       loadQuestions(selectedQuiz.id);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -217,20 +189,16 @@ export function QuizBuilder({ courseId }: QuizBuilderProps) {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Question deleted successfully",
-      });
+      toast({ title: "Success",
+        description: "Question deleted successfully" });
       
       if (selectedQuiz) {
         loadQuestions(selectedQuiz.id);
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

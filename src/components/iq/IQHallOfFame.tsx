@@ -47,14 +47,11 @@ export default function IQHallOfFame() {
       const compMap = new Map((comps ?? []).map((c: any) => [c.id, c]));
       const profMap = new Map((profs ?? []).map((p: any) => [p.id, p]));
 
-      return rows.map(r => ({
-        ...r,
+      return rows.map(r => ({ ...r,
         iq_competitions: compMap.get(r.competition_id) ?? null,
-        profiles: profMap.get(r.user_id) ?? null,
-      }));
+        profiles: profMap.get(r.user_id) ?? null }));
     },
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 
   // Group by competition
   const grouped = (data ?? []).reduce<Record<string, PayoutRow[]>>((acc, row) => {

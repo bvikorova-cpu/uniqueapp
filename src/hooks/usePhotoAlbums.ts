@@ -20,15 +20,12 @@ export const usePhotoAlbums = (userId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
-  const createAlbum = useMutation({
-    mutationFn: async ({
+  const createAlbum = useMutation({ mutationFn: async ({
       title,
       description,
-      isPublic,
-    }: {
+      isPublic }: {
       title: string;
       description?: string;
       isPublic?: boolean;
@@ -36,26 +33,21 @@ export const usePhotoAlbums = (userId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("photo_albums").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("photo_albums").insert({ user_id: user.id,
         title,
         description,
-        is_public: isPublic !== false,
-      });
+        is_public: isPublic !== false });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["photo-albums"] });
       toast({ title: "Album created!" });
-    },
-  });
+    } });
 
-  const addPhotos = useMutation({
-    mutationFn: async ({
+  const addPhotos = useMutation({ mutationFn: async ({
       albumId,
-      photos,
-    }: {
+      photos }: {
       albumId: string;
       photos: { file: File; caption?: string }[];
     }) => {
@@ -78,11 +70,9 @@ export const usePhotoAlbums = (userId?: string) => {
           .getPublicUrl(fileName);
 
         // Add to album
-        const { error } = await supabase.from("album_photos").insert({
-          album_id: albumId,
+        const { error } = await supabase.from("album_photos").insert({ album_id: albumId,
           photo_url: publicUrl,
-          caption: photo.caption,
-        });
+          caption: photo.caption });
 
         if (error) throw error;
       }
@@ -90,13 +80,10 @@ export const usePhotoAlbums = (userId?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["photo-albums"] });
       toast({ title: "Photos added!" });
-    },
-  });
+    } });
 
-  return {
-    albums: albums || [],
+  return { albums: albums || [],
     isLoading,
     createAlbum: createAlbum.mutate,
-    addPhotos: addPhotos.mutate,
-  };
+    addPhotos: addPhotos.mutate };
 };

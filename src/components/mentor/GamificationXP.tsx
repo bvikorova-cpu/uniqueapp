@@ -23,8 +23,7 @@ const BADGE_CONFIG: Record<string, { label: string; icon: typeof Trophy; color: 
   streak_7: { label: "7-Day Streak", icon: Flame, color: "text-orange-400" },
   streak_30: { label: "30-Day Streak", icon: Flame, color: "text-red-400" },
   first_plan: { label: "First Plan", icon: Target, color: "text-green-400" },
-  mood_master: { label: "Mood Master", icon: Medal, color: "text-pink-400" },
-};
+  mood_master: { label: "Mood Master", icon: Medal, color: "text-pink-400" } };
 
 const LEVEL_TITLES = [
   "", "Beginner", "Apprentice", "Student", "Practitioner", "Adept",

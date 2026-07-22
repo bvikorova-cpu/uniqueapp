@@ -73,12 +73,10 @@ export const FinalExamDialog = ({ open, onOpenChange, meta }: Props) => {
       return;
     }
     setStage("submitting");
-    try {
-      const res = await moduleCourseApi.submitExam(meta, {
+    try { const res = await moduleCourseApi.submitExam(meta, {
         answers,
         exam_token: examToken,
-        recipient_name: recipient,
-      });
+        recipient_name: recipient });
       setResult(res);
       setStage("result");
     } catch (e: any) {

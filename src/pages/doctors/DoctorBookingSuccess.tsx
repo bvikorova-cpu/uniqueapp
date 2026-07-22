@@ -35,8 +35,7 @@ export default function DoctorBookingSuccess() {
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke("verify-doctor-booking", {
-          body: { appointment_id: appointmentId, session_id: sessionId },
-        });
+          body: { appointment_id: appointmentId, session_id: sessionId } });
         if (error) throw error;
         setResult(data as VerifyResult);
         if (data?.status === "confirmed") setState("confirmed");

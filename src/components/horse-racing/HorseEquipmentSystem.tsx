@@ -52,8 +52,7 @@ const RARITY_STYLES = {
   common: { border: "border-gray-500/30", bg: "bg-gray-500/10", text: "text-gray-300", badge: "bg-gray-600" },
   rare: { border: "border-blue-500/30", bg: "bg-blue-500/10", text: "text-blue-300", badge: "bg-blue-600" },
   epic: { border: "border-purple-500/30", bg: "bg-purple-500/10", text: "text-purple-300", badge: "bg-purple-600" },
-  legendary: { border: "border-amber-500/30", bg: "bg-amber-500/10", text: "text-amber-300", badge: "bg-amber-600" },
-};
+  legendary: { border: "border-amber-500/30", bg: "bg-amber-500/10", text: "text-amber-300", badge: "bg-amber-600" } };
 
 const SLOT_LABELS = { saddle: "Saddle", horseshoes: "Horseshoes", bridle: "Bridle", blanket: "Blanket" };
 
@@ -69,8 +68,7 @@ export const HorseEquipmentSystem = () => {
   const purchaseEquipment = useMutation({
     mutationFn: async ({ itemId, horseId }: { itemId: string; horseId: string }) => {
       const { data, error } = await supabase.functions.invoke("horse-purchase-equipment", {
-        body: { itemId, horseId },
-      });
+        body: { itemId, horseId } });
       if (error) throw error;
       return data;
     },
@@ -79,8 +77,7 @@ export const HorseEquipmentSystem = () => {
       queryClient.invalidateQueries({ queryKey: ["user-horses"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const filteredItems = EQUIPMENT.filter(e => e.slot === selectedSlot);
 

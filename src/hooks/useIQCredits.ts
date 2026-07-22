@@ -34,8 +34,7 @@ export const useIQCredits = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   const purchaseCredits = useMutation({
     mutationFn: async (credits: number) => {
@@ -45,9 +44,7 @@ export const useIQCredits = () => {
       const { data, error } = await supabase.functions.invoke("create-iq-payment", {
         body: { credits },
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+          Authorization: `Bearer ${session.access_token}` } });
 
       if (error) throw error;
       return data.url;
@@ -57,14 +54,11 @@ export const useIQCredits = () => {
         { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
       }
     },
-    onError: (error) => {
-      toast({
+    onError: (error) => { toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to initiate payment",
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
   const spendCredits = useMutation({
     mutationFn: async (amount: number) => {
@@ -84,14 +78,11 @@ export const useIQCredits = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["iq-credits"] });
-    },
-  });
+    } });
 
-  return {
-    credits: credits?.balance || 0,
+  return { credits: credits?.balance || 0,
     isLoading,
     purchaseCredits: purchaseCredits.mutate,
     isPurchasing: purchaseCredits.isPending,
-    spendCredits: spendCredits.mutateAsync,
-  };
+    spendCredits: spendCredits.mutateAsync };
 };

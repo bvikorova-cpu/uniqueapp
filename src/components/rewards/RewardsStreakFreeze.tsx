@@ -52,8 +52,7 @@ export default function RewardsStreakFreeze() {
       if (method === "eur") {
         try {
           const { data, error } = await supabase.functions.invoke("create-checkout", {
-            body: { product: "rewards_checkout", kind: "streak_freeze", qty: pack.qty },
-          });
+            body: { product: "rewards_checkout", kind: "streak_freeze", qty: pack.qty } });
           if (error) throw error;
           const url = (data as any)?.url;
           if (!url) throw new Error("No checkout URL");
@@ -63,10 +62,8 @@ export default function RewardsStreakFreeze() {
         }
         return;
       }
-      const { data, error } = await supabase.rpc("buy_streak_freeze_xp" as any, {
-        _qty: pack.qty,
-        _cost_xp: pack.xp,
-      });
+      const { data, error } = await supabase.rpc("buy_streak_freeze_xp" as any, { _qty: pack.qty,
+        _cost_xp: pack.xp });
       if (error) return toast.error(error.message);
       const res = data as any;
       if (!res?.ok) {

@@ -28,8 +28,7 @@ export default function AICuisineConverter({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Cuisine Converter");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are a world-renowned chef specializing in fusion cuisine. Convert the following recipe into authentic ${targetCuisine} style. Include: 1) Converted recipe name (in the target language + English), 2) Ingredient swaps with authentic alternatives, 3) Technique modifications, 4) Flavor profile changes, 5) Traditional serving suggestions, 6) Cultural context and tips, 7) Full step-by-step instructions. Original recipe: ${input}` },
-      });
+        body: { prompt: `You are a world-renowned chef specializing in fusion cuisine. Convert the following recipe into authentic ${targetCuisine} style. Include: 1) Converted recipe name (in the target language + English), 2) Ingredient swaps with authentic alternatives, 3) Technique modifications, 4) Flavor profile changes, 5) Traditional serving suggestions, 6) Cultural context and tips, 7) Full step-by-step instructions. Original recipe: ${input}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }

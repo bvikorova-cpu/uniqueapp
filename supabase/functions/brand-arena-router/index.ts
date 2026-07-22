@@ -1,24 +1,20 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-api-key",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
-const CREDIT_COSTS: Record<string, number> = {
-  "ai.brandAnalyzer": 5,
+const CREDIT_COSTS: Record<string, number> = { "ai.brandAnalyzer": 5,
   "ai.battlePredictor": 3,
   "ai.battlePost": 4,
   "ai.sentimentHeatmap": 3,
   "ai.demoBreakdown": 3,
   "ai.trendTimeline": 3,
-  "share.unlockVote": 0,
-};
+  "share.unlockVote": 0 };
 
 async function spendCredits(admin: any, userId: string, amount: number) {
   if (amount <= 0) return;
@@ -33,13 +29,11 @@ async function spendCredits(admin: any, userId: string, amount: number) {
     e.status = 402;
     throw e;
   }
-  if (row) {
-    await admin
+  if (row) { await admin
       .from("brand_battle_credits")
       .update({
         credits_balance: bal - amount,
-        total_credits_spent: (row.total_credits_spent ?? 0) + amount,
-      })
+        total_credits_spent: (row.total_credits_spent ?? 0) + amount })
       .eq("user_id", userId);
   } else {
     await admin
@@ -55,9 +49,7 @@ async function callAI(prompt: string, system = "You are a brand analyst. Reply w
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "gpt-4o-mini",
-      messages: [{ role: "system", content: system }, { role: "user", content: prompt }],
-    }),
-  });
+      messages: [{ role: "system", content: system }, { role: "user", content: prompt }] }) });
   if (!res.ok) throw new Error(`AI gateway error ${res.status}`);
   const j = await res.json();
   return { text: j.choices?.[0]?.message?.content ?? "" };
@@ -84,8 +76,7 @@ Deno.serve(async (req) => {
         .maybeSingle();
       if (!keyRow) {
         return new Response(JSON.stringify({ error: "invalid_api_key" }), {
-          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       const { data: sponsor } = await admin
         .from("brand_sponsors").select("*").eq("id", keyRow.sponsor_id).maybeSingle();
@@ -130,8 +121,7 @@ Deno.serve(async (req) => {
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const body = await req.json().catch(() => ({}));
@@ -262,13 +252,11 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err: any) {
     const status = err?.status ?? 500;
     return new Response(JSON.stringify({ error: err?.message ?? "Server error" }), {
       status,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

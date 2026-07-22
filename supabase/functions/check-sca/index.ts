@@ -3,16 +3,13 @@
 // race conditions when the SCABanner mounts before the lazy patcher loads).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -39,16 +36,13 @@ Deno.serve(async (req) => {
       .limit(1);
     if (error || !rows || rows.length === 0) return json({ has_pending: false });
     const p = rows[0];
-    return json({
-      has_pending: true,
+    return json({ has_pending: true,
       pending: {
         invoice_id: p.stripe_invoice_id,
         amount_cents: p.amount_cents,
         currency: p.currency,
         hosted_invoice_url: p.hosted_invoice_url,
-        next_action_url: p.next_action_url,
-      },
-    });
+        next_action_url: p.next_action_url } });
   } catch (e) {
     console.error("[check-sca]", e instanceof Error ? e.message : e);
     return json({ has_pending: false, check_unavailable: true });

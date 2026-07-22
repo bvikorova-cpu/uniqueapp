@@ -8,10 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Sparkles, Undo2, Loader2, Bell, AlertTriangle, CheckCircle2, XCircle, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -43,20 +41,16 @@ interface DunningNotification {
   created_at: string;
 }
 
-const typeLabels: Record<string, string> = {
-  medical: "🏥 Medical",
+const typeLabels: Record<string, string> = { medical: "🏥 Medical",
   dream: "✨ Dream",
   hero: "🦸 Hero",
   crisis: "🚨 Crisis",
   pet: "🐾 Pet",
   student: "🎓 Student",
-  talent: "🎭 Talent",
-};
+  talent: "🎭 Talent" };
 
-const typeRoutes: Record<string, string> = {
-  medical: "medical", dream: "dream", hero: "hero",
-  crisis: "crisis", pet: "pet", student: "student", talent: "talent",
-};
+const typeRoutes: Record<string, string> = { medical: "medical", dream: "dream", hero: "hero",
+  crisis: "crisis", pet: "pet", student: "student", talent: "talent" };
 
 export default function DonorDashboard() {
   const navigate = useNavigate();
@@ -162,15 +156,13 @@ export default function DonorDashboard() {
     paid.forEach(d => {
       byType[d.campaign_type] = (byType[d.campaign_type] || 0) + Number(d.amount);
     });
-    return {
-      total,
+    return { total,
       count: paid.length,
       monthlyCount: monthly.length,
       monthlyAmount: monthly.reduce((s, d) => s + Number(d.amount), 0),
       byType,
       thisYear: paid.filter(d => new Date(d.created_at).getFullYear() === new Date().getFullYear())
-        .reduce((s, d) => s + Number(d.amount), 0),
-    };
+        .reduce((s, d) => s + Number(d.amount), 0) };
   }, [donations]);
 
   const monthlyDonations = donations.filter(d => d.is_monthly && (d.status === "paid" || d.status === "completed"));
@@ -193,8 +185,7 @@ export default function DonorDashboard() {
     setRefundingId(donationId);
     try {
       const { data, error } = await supabase.functions.invoke("request-donation-refund", {
-        body: { donationId, reason: refundReason },
-      });
+        body: { donationId, reason: refundReason } });
       if (error || (data as any)?.error) {
         throw new Error((data as any)?.error || error?.message || "Refund failed");
       }

@@ -7,14 +7,12 @@ export interface Y8Game {
   rating?: number;
 }
 
-export const gameCategories = {
-  girls: "For Girls",
+export const gameCategories = { girls: "For Girls",
   action: "Action",
   puzzle: "Puzzle",
   sports: "Sports",
   adventure: "Adventure",
-  racing: "Racing",
-} as const;
+  racing: "Racing" } as const;
 
 export type GameCategory = keyof typeof gameCategories;
 

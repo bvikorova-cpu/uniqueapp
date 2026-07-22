@@ -20,8 +20,7 @@ export const BucketListView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "bucket_list", interests: interests || undefined, budget: budget || undefined },
-      });
+        body: { action: "bucket_list", interests: interests || undefined, budget: budget || undefined } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

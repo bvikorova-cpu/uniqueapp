@@ -14,9 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePsychologySubscription } from "@/hooks/usePsychologySubscription";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
-import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PsychologyHero } from "@/components/psychologist/PsychologyHero";
 import { MoodTracker } from "@/components/psychologist/MoodTracker";
 import { BreathingMeditation } from "@/components/psychologist/BreathingMeditation";
@@ -76,8 +74,7 @@ const Psychology = () => {
       const response = await fetch(CHAT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ messages: [...messages, { role: "user", content: userMessage }] }),
-      });
+        body: JSON.stringify({ messages: [...messages, { role: "user", content: userMessage }] }) });
       if (!response.ok) {
         if (response.status === 402) {
           const data = await response.json();
@@ -149,8 +146,7 @@ const Psychology = () => {
     dreams: <AIDreamJournal onBack={() => setActiveView('main')} />,
     cbt: <GuidedCBT onBack={() => setActiveView('main')} />,
     sounds: <AmbientSounds onBack={() => setActiveView('main')} />,
-    report: <WeeklyWellnessReport onBack={() => setActiveView('main')} />,
-  };
+    report: <WeeklyWellnessReport onBack={() => setActiveView('main')} /> };
 
   if (activeView !== 'main' && activeView !== 'chat' && viewMap[activeView]) {
     return (

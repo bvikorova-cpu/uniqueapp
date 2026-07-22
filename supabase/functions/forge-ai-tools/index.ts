@@ -3,11 +3,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 const CREDIT_COST = 6;
 const MODEL = "gpt-4o-mini";
@@ -41,8 +39,7 @@ const SYSTEM_PROMPTS: Record<Action, string> = {
   translate:
     "You are a literary translator. Translate the text to the target language preserving voice, style and cultural nuance. Return only the translation.",
   score_content:
-    "You are a literary critic. Score the text on quality, readability, emotional resonance and structure. Return JSON: {\"overall\":0-100,\"breakdown\":{\"quality\":0-100,\"readability\":0-100,\"emotion\":0-100,\"structure\":0-100},\"suggestions\":[\"...\"]}",
-};
+    "You are a literary critic. Score the text on quality, readability, emotional resonance and structure. Return JSON: {\"overall\":0-100,\"breakdown\":{\"quality\":0-100,\"readability\":0-100,\"emotion\":0-100,\"structure\":0-100},\"suggestions\":[\"...\"]}" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -107,9 +104,7 @@ serve(async (req) => {
         messages: [
           { role: "system", content: SYSTEM_PROMPTS[action] },
           { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (!ai.ok) {
       const errText = await ai.text();
@@ -136,9 +131,7 @@ serve(async (req) => {
     }
 
     // Atomic credit deduction AFTER successful AI call (race-safe)
-    const { data: newRemaining, error: dedErr } = await supabase.rpc("deduct_creative_forge_credits", {
-      _user_id: user.id, _amount: CREDIT_COST,
-    });
+    const { data: newRemaining, error: dedErr } = await supabase.rpc("deduct_creative_forge_credits", { _user_id: user.id, _amount: CREDIT_COST });
     if (dedErr) {
       if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
         return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -156,19 +149,16 @@ serve(async (req) => {
         overall_score: parsed.score ?? parsed.overall ?? parsed.originality_score ?? null,
         breakdown: parsed.breakdown ?? parsed.keyword_density ?? {},
         suggestions: Array.isArray(parsed.suggestions) ? parsed.suggestions : [],
-        source_excerpt: text.slice(0, 500),
-      });
+        source_excerpt: text.slice(0, 500) });
       if (insErr) console.error("Score persist failed (non-fatal):", insErr);
     }
 
     return new Response(
-      JSON.stringify({
-        action,
+      JSON.stringify({ action,
         content,
         parsed,
         creditsUsed: CREDIT_COST,
-        creditsRemaining: newRemaining,
-      }),
+        creditsRemaining: newRemaining }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
 

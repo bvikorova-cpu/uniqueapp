@@ -24,13 +24,10 @@ const accentMap: Record<string, { from: string; via: string; to: string; ring: s
   rose:    { from: "from-rose-200",   via: "via-pink-300",    to: "to-rose-200",   ring: "rgba(244,63,94,0.4)",   stroke: "rgba(244,63,94,0.4)",   chip: "border-rose-400/40 shadow-[0_0_30px_rgba(244,63,94,0.3)]" },
   purple:  { from: "from-purple-200", via: "via-fuchsia-300", to: "to-purple-200", ring: "rgba(168,85,247,0.4)",  stroke: "rgba(168,85,247,0.4)",  chip: "border-purple-400/40 shadow-[0_0_30px_rgba(168,85,247,0.3)]" },
   cyan:    { from: "from-cyan-200",   via: "via-sky-300",     to: "to-cyan-200",   ring: "rgba(34,211,238,0.4)",  stroke: "rgba(34,211,238,0.4)",  chip: "border-cyan-400/40 shadow-[0_0_30px_rgba(34,211,238,0.3)]" },
-  emerald: { from: "from-emerald-200",via: "via-green-300",   to: "to-emerald-200",ring: "rgba(16,185,129,0.4)",  stroke: "rgba(16,185,129,0.4)",  chip: "border-emerald-400/40 shadow-[0_0_30px_rgba(16,185,129,0.3)]" },
-};
+  emerald: { from: "from-emerald-200",via: "via-green-300",   to: "to-emerald-200",ring: "rgba(16,185,129,0.4)",  stroke: "rgba(16,185,129,0.4)",  chip: "border-emerald-400/40 shadow-[0_0_30px_rgba(16,185,129,0.3)]" } };
 
-export function PremiumCategoryHero({
-  badge, badgeIcon: BadgeIcon, title, subtitle, description,
-  ctaLabel, ctaIcon: CtaIcon = Sparkles, onCta, stats = [], accentColor = "amber",
-}: PremiumCategoryHeroProps) {
+export function PremiumCategoryHero({ badge, badgeIcon: BadgeIcon, title, subtitle, description,
+  ctaLabel, ctaIcon: CtaIcon = Sparkles, onCta, stats = [], accentColor = "amber" }: PremiumCategoryHeroProps) {
   const a = accentMap[accentColor];
 
   return (
@@ -60,8 +57,7 @@ export function PremiumCategoryHero({
           className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-2 drop-shadow-lg"
           style={{
             WebkitTextStroke: "1.5px rgba(0,0,0,0.4)",
-            textShadow: `0 0 50px ${a.ring}, 0 4px 20px rgba(0,0,0,0.6)`,
-          }}
+            textShadow: `0 0 50px ${a.ring}, 0 4px 20px rgba(0,0,0,0.6)` }}
         >
           <span className={`bg-gradient-to-r ${a.from} ${a.via} ${a.to} bg-clip-text text-transparent`}>
             {title}

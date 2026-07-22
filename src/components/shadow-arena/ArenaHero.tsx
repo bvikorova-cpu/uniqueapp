@@ -8,8 +8,7 @@ const fogParticles = Array.from({ length: 20 }).map((_, i) => ({
   top: `${20 + Math.random() * 60}%`,
   size: 40 + Math.random() * 80,
   duration: 6 + Math.random() * 8,
-  delay: Math.random() * 4,
-}));
+  delay: Math.random() * 4 }));
 
 export function ArenaHero() {
   return (

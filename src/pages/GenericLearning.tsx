@@ -111,28 +111,23 @@ const GenericLearning = () => {
         await updateProgress(contentId, "course", newProgress, currentModule, newCompleted);
       }
 
-      toast({
-        title: "Lesson Completed! 🎉",
-        description: "Keep up the great work!",
-      });
+      toast({ title: "Lesson Completed! 🎉",
+        description: "Keep up the great work!" });
     }
   };
 
-  const handleGenerateCertificate = async () => {
-    if (!contentId) return;
+  const handleGenerateCertificate = async () => { if (!contentId) return;
     
     if (progress < 100) {
       toast({
         title: "Course Not Complete",
         description: "Complete all lessons to generate your certificate.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
     setIsGeneratingCert(true);
-    try {
-      const cert = await generateCertificate(
+    try { const cert = await generateCertificate(
         contentId,
         "course",
         content.title,
@@ -143,17 +138,14 @@ const GenericLearning = () => {
       if (cert) {
         toast({
           title: "Certificate Generated! 🎓",
-          description: "Your certificate is ready for download.",
-        });
+          description: "Your certificate is ready for download." });
         
         window.open(cert.certificate_url, '_blank');
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Generation Failed",
         description: "Please try again later.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsGeneratingCert(false);
     }

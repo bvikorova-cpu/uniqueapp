@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -36,12 +34,10 @@ export default function ReportReviewButton({ reviewId }: { reviewId: string }) {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Sign in required");
-      const { error } = await supabase.from("review_reports").insert({
-        review_id: reviewId,
+      const { error } = await supabase.from("review_reports").insert({ review_id: reviewId,
         reporter_id: user.id,
         reason,
-        description: description.trim() || null,
-      } as any);
+        description: description.trim() || null } as any);
       if (error) throw error;
       toast({ title: "Report submitted", description: "Our moderators will review it." });
       setOpen(false);

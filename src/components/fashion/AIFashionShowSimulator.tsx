@@ -40,8 +40,7 @@ export default function AIFashionShowSimulator() {
       }
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "show-simulator", outfitDescriptions: outfits.filter(o => o.trim()), theme, mood },
-      });
+        body: { action: "show-simulator", outfitDescriptions: outfits.filter(o => o.trim()), theme, mood } });
       if (error) throw error;
       return data;
     },
@@ -49,8 +48,7 @@ export default function AIFashionShowSimulator() {
       setResult(data.showConcept);
       toast.success("Fashion show generated!");
     },
-    onError: (e: any) => toast.error(e.message || "Failed to generate show"),
-  });
+    onError: (e: any) => toast.error(e.message || "Failed to generate show") });
 
   return (
     <>

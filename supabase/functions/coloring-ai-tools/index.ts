@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -51,16 +49,13 @@ serve(async (req) => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "gpt-4o-mini",
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt },
-          ],
-        }),
-      });
+          ] }) });
       if (res.status === 429) throw new Error("Rate limited. Please try again later.");
       if (res.status === 402) throw new Error("AI credits exhausted. Please add funds.");
       if (!res.ok) throw new Error("AI request failed");
@@ -74,15 +69,11 @@ serve(async (req) => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "gpt-image-1",
+          "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "gpt-image-1",
           prompt: prompt,
         n: 1,
-        size: "1024x1024",
-        }),
-      });
+        size: "1024x1024" }) });
       if (res.status === 429) throw new Error("Rate limited. Please try again later.");
       if (res.status === 402) throw new Error("AI credits exhausted. Please add funds.");
       if (!res.ok) throw new Error("AI image generation failed");
@@ -108,8 +99,7 @@ serve(async (req) => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "gpt-4o-mini",
           messages: [
@@ -117,9 +107,7 @@ serve(async (req) => {
             { role: "user", content: userPrompt },
           ],
           tools: [{ type: "function", function: toolDef }],
-          tool_choice: { type: "function", function: { name: toolDef.name } },
-        }),
-      });
+          tool_choice: { type: "function", function: { name: toolDef.name } } }) });
       if (!res.ok) throw new Error("AI structured request failed");
       const data = await res.json();
       const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
@@ -134,14 +122,12 @@ serve(async (req) => {
         // AI Style Transfer: generate coloring page in a specific art style
         await checkCredits(2);
         const { description, style } = params;
-        const styleMap: Record<string, string> = {
-          "van-gogh": "Van Gogh's Starry Night swirling post-impressionist style with bold brushstroke outlines",
+        const styleMap: Record<string, string> = { "van-gogh": "Van Gogh's Starry Night swirling post-impressionist style with bold brushstroke outlines",
           "manga": "Japanese manga anime style with clean precise lines and expressive details",
           "pop-art": "Roy Lichtenstein pop art style with bold outlines, Ben-Day dots pattern areas",
           "art-nouveau": "Alphonse Mucha art nouveau style with flowing organic curves and decorative borders",
           "pixel-art": "retro pixel art style with blocky geometric shapes on a grid",
-          "watercolor": "loose watercolor sketch style with soft flowing outlines and splashy edges",
-        };
+          "watercolor": "loose watercolor sketch style with soft flowing outlines and splashy edges" };
         const styleDesc = styleMap[style] || style;
         const prompt = `Create a black and white coloring page in ${styleDesc}. Subject: ${description}. 
 Line art only, no shading, no filled areas, clear outlines suitable for coloring. High detail, professional quality.`;
@@ -177,29 +163,18 @@ Each palette should have 6-8 colors with hex codes and names. Include a palette 
                           type: "object",
                           properties: {
                             hex: { type: "string" },
-                            name: { type: "string" },
-                          },
-                          required: ["hex", "name"],
-                        },
-                      },
-                    },
-                    required: ["name", "description", "colors"],
-                  },
-                },
-              },
-              required: ["palettes"],
-            },
-          }
+                            name: { type: "string" } },
+                          required: ["hex", "name"] } } },
+                    required: ["name", "description", "colors"] } } },
+              required: ["palettes"] } }
         );
 
         // Save to DB
-        await supabase.from("coloring_color_suggestions").insert({
-          user_id: user.id,
+        await supabase.from("coloring_color_suggestions").insert({ user_id: user.id,
           page_image_url: pageDescription,
           palette: suggestions.palettes,
           style: mood || "vibrant",
-          ai_description: suggestions.palettes.map((p: any) => p.description).join("; "),
-        });
+          ai_description: suggestions.palettes.map((p: any) => p.description).join("; ") });
 
         result = suggestions;
         break;
@@ -228,8 +203,7 @@ Each palette should have 6-8 colors with hex codes and names. Include a palette 
             difficulty: diff,
             prompt: challengePrompt,
             sample_image_url: sampleUrl,
-            xp_reward: diff === "easy" ? 30 : diff === "medium" ? 50 : 80,
-          })
+            xp_reward: diff === "easy" ? 30 : diff === "medium" ? 50 : 80 })
           .select()
           .single();
 
@@ -243,12 +217,10 @@ Each palette should have 6-8 colors with hex codes and names. Include a palette 
         const { challengeId, imageUrl: submissionUrl } = params;
         const { data: sub, error: subErr } = await supabase
           .from("coloring_challenge_submissions")
-          .insert({
-            user_id: user.id,
+          .insert({ user_id: user.id,
             challenge_id: challengeId,
             image_url: submissionUrl,
-            xp_earned: params.xpReward || 50,
-          })
+            xp_earned: params.xpReward || 50 })
           .select()
           .single();
         if (subErr) throw subErr;
@@ -265,8 +237,7 @@ Each palette should have 6-8 colors with hex codes and names. Include a palette 
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("coloring-ai-tools error:", error);
     return new Response(

@@ -10,13 +10,11 @@ import {
   ChefHat, Car, MessageCircle, Star, MessageSquare, Brain, Palette, Apple,
   PawPrint, Trophy, Mic2, Image as ImageIcon, Gift, Plane, Heart, Bot, Globe, Atom
 } from "lucide-react";
-import {
-  Sheet,
+import { Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  SheetTrigger } from "@/components/ui/sheet";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { NotificationBell } from "./NotificationBell";
 import { PrivacySettingsDialog } from "./PrivacySettingsDialog";
@@ -157,8 +155,7 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -171,8 +168,7 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
         .single();
       return data;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const handleNavigate = (path: string) => {
     navigate(path);

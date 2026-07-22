@@ -19,8 +19,7 @@ export const useUserActivity = (userId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const updateStatus = useMutation({
     mutationFn: async ({ status, customStatus }: { status: string; customStatus?: string }) => {
@@ -36,29 +35,24 @@ export const useUserActivity = (userId?: string) => {
       if (existing) {
         const { error } = await supabase
           .from("user_activity")
-          .update({
-            status,
+          .update({ status,
             custom_status: customStatus,
             last_seen: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
+            updated_at: new Date().toISOString() })
           .eq("user_id", user.id);
 
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("user_activity").insert({
-          user_id: user.id,
+        const { error } = await supabase.from("user_activity").insert({ user_id: user.id,
           status,
-          custom_status: customStatus,
-        });
+          custom_status: customStatus });
 
         if (error) throw error;
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-activity"] });
-    },
-  });
+    } });
 
   // Auto-update user as online when they're active
   useEffect(() => {
@@ -94,10 +88,8 @@ export const useUserActivity = (userId?: string) => {
     return activity.status === "online" || activity.status === "away";
   };
 
-  return {
-    activity,
+  return { activity,
     isOnline: isOnline(),
     updateStatus: updateStatus.mutate,
-    isLoading,
-  };
+    isLoading };
 };

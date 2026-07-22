@@ -4,13 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Clock, DollarSign } from "lucide-react";
 import { toast } from "sonner";
@@ -70,11 +68,9 @@ export const AdminInfluencerWithdrawals = () => {
 
       const profilesMap = new Map<string, any>(profiles.map((p: any) => [p.id, p]));
 
-      const enrichedRequests = (data || []).map(req => ({
-        ...req,
+      const enrichedRequests = (data || []).map(req => ({ ...req,
         influencer_name: req.influencer_profiles.display_name || "Unknown Influencer",
-        influencer_email: profilesMap.get(req.influencer_profiles.user_id)?.email || "N/A",
-      }));
+        influencer_email: profilesMap.get(req.influencer_profiles.user_id)?.email || "N/A" }));
 
       setRequests(enrichedRequests);
     } catch (error: any) {
@@ -97,12 +93,10 @@ export const AdminInfluencerWithdrawals = () => {
         return;
       }
 
-      const { error } = await supabase.rpc("process_influencer_withdrawal", {
-        p_request_id: selectedRequest.id,
+      const { error } = await supabase.rpc("process_influencer_withdrawal", { p_request_id: selectedRequest.id,
         p_admin_id: session.user.id,
         p_status: status,
-        p_admin_notes: adminNotes || null,
-      });
+        p_admin_notes: adminNotes || null });
 
       if (error) throw error;
 

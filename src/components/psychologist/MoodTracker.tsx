@@ -51,10 +51,8 @@ export const MoodTracker = ({ onBack }: Props) => {
       if (!user) { toast.error("Please sign in"); return; }
 
       const mood = MOODS.find(m => m.score === selectedMood)!;
-      const { error } = await (supabase as any).from("psychology_mood_entries").insert({
-        user_id: user.id, mood_score: selectedMood, mood_label: mood.label,
-        journal_entry: journal || null, tags: selectedTags,
-      });
+      const { error } = await (supabase as any).from("psychology_mood_entries").insert({ user_id: user.id, mood_score: selectedMood, mood_label: mood.label,
+        journal_entry: journal || null, tags: selectedTags });
       if (error) throw error;
       toast.success("Mood logged successfully!");
       setSelectedMood(null); setJournal(""); setSelectedTags([]);

@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -28,12 +26,10 @@ interface SendInfluencerGiftDialogProps {
   influencerName: string;
 }
 
-export const SendInfluencerGiftDialog = ({
-  open,
+export const SendInfluencerGiftDialog = ({ open,
   onOpenChange,
   influencerId,
-  influencerName,
-}: SendInfluencerGiftDialogProps) => {
+  influencerName }: SendInfluencerGiftDialogProps) => {
   const [gifts, setGifts] = useState<Gift[]>([]);
   const [selectedGift, setSelectedGift] = useState<string | null>(null);
   const [message, setMessage] = useState("");
@@ -70,13 +66,10 @@ export const SendInfluencerGiftDialog = ({
     try {
       setLoading(true);
 
-      const { data, error } = await supabase.functions.invoke("send-influencer-gift", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("send-influencer-gift", { body: {
           influencerId,
           giftId: selectedGift,
-          message: message.trim(),
-        },
-      });
+          message: message.trim() } });
 
       if (error) throw error;
 

@@ -1,11 +1,9 @@
 // Quantum Social — Generate alternate post versions using OpenAI.
 // One call per post returns N stylistic rewrites of the same base content.
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 interface VersionOut {
   tone: string;
@@ -61,17 +59,14 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        response_format: { type: "json_object" },
-      }),
-    });
+        response_format: { type: "json_object" } }) });
 
     if (aiResp.status === 429) {
       return new Response(
@@ -116,8 +111,7 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({ versions }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (err) {
     return new Response(
       JSON.stringify({ error: String(err?.message ?? err) }),

@@ -16,13 +16,10 @@ export const ConcertAnalytics = ({ onBack }: Props) => {
         supabase.from("musician_profiles").select("id", { count: "exact", head: true }),
         supabase.from("platform_gifts").select("id", { count: "exact", head: true }),
       ]);
-      return {
-        totalConcerts: concerts.count || 0,
+      return { totalConcerts: concerts.count || 0,
         totalMusicians: musicians.count || 0,
-        totalGifts: gifts.count || 0,
-      };
-    },
-  });
+        totalGifts: gifts.count || 0 };
+    } });
 
   const cards = [
     { icon: Music, label: "Total Concerts", value: stats?.totalConcerts || 0, color: "text-primary" },

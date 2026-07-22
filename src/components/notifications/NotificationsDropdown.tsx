@@ -2,12 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -66,8 +64,7 @@ export const NotificationsDropdown = () => {
     audio.play().catch(err => console.log('Could not play sound:', err));
   };
 
-  useEffect(() => {
-    fetchNotifications();
+  useEffect(() => { fetchNotifications();
 
     // Subscribe to real-time notifications
     const channel = supabase
@@ -77,8 +74,7 @@ export const NotificationsDropdown = () => {
         {
           event: "INSERT",
           schema: "public",
-          table: "notifications",
-        },
+          table: "notifications" },
         async (payload) => {
           // Play sound based on notification type
           const notificationType = payload.new.type;
@@ -124,8 +120,7 @@ export const NotificationsDropdown = () => {
         actor_id: notification.actor_id,
         is_read: notification.is_read,
         created_at: notification.created_at,
-        actor: profilesMap.get(notification.actor_id) || { id: notification.actor_id, full_name: null, username: null, avatar_url: null },
-      } as Notification));
+        actor: profilesMap.get(notification.actor_id) || { id: notification.actor_id, full_name: null, username: null, avatar_url: null } } as Notification));
 
       setNotifications(notificationsWithProfiles);
       setUnreadCount(notificationsWithProfiles.filter(n => !n.is_read).length);
@@ -168,16 +163,12 @@ export const NotificationsDropdown = () => {
       );
       setUnreadCount(0);
 
-      toast({
-        title: "Success",
-        description: "All notifications marked as read",
-      });
-    } catch (error: any) {
-      toast({
+      toast({ title: "Success",
+        description: "All notifications marked as read" });
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -190,14 +181,12 @@ export const NotificationsDropdown = () => {
     }
   };
 
-  const toggleSound = () => {
-    const newValue = !soundEnabled;
+  const toggleSound = () => { const newValue = !soundEnabled;
     setSoundEnabled(newValue);
     localStorage.setItem('notificationSoundEnabled', String(newValue));
     toast({
       title: newValue ? "Sounds enabled" : "Sounds disabled",
-      description: newValue ? "You will hear sounds for new notifications" : "Notification sounds are disabled",
-    });
+      description: newValue ? "You will hear sounds for new notifications" : "Notification sounds are disabled" });
   };
 
   const getNotificationIcon = (type: string) => {
@@ -307,10 +296,9 @@ export const NotificationsDropdown = () => {
                           {getNotificationText(notification)}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {formatDistanceToNow(new Date(notification.created_at), {
+                          { formatDistanceToNow(new Date(notification.created_at), {
                             addSuffix: true,
-                            locale: enUS,
-                          })}
+                            locale: enUS })}
                         </p>
                       </div>
                     </div>

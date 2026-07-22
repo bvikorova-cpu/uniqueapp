@@ -35,8 +35,7 @@ const PlagiarismChecker = ({ onBack }: Props) => {
     setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
-        body: { action: "plagiarism", content },
-      });
+        body: { action: "plagiarism", content } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

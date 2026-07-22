@@ -7,11 +7,9 @@ export function useConversationState() {
   const qc = useQueryClient();
   const { toast } = useToast();
 
-  const update = useMutation({
-    mutationFn: async ({
+  const update = useMutation({ mutationFn: async ({
       conversationId,
-      patch,
-    }: {
+      patch }: {
       conversationId: string;
       patch: Partial<{ is_pinned: boolean; is_archived: boolean; muted_until: string | null; pinned_at: string | null }>;
     }) => {
@@ -25,8 +23,7 @@ export function useConversationState() {
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["conversations"] }),
-    onError: (e: any) => toast({ title: "Update failed", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Update failed", description: e.message, variant: "destructive" }) });
 
   return {
     pin: (conversationId: string) => update.mutate({ conversationId, patch: { is_pinned: true, pinned_at: new Date().toISOString() } }),
@@ -36,8 +33,6 @@ export function useConversationState() {
     mute: (conversationId: string, hours: number) =>
       update.mutate({
         conversationId,
-        patch: { muted_until: new Date(Date.now() + hours * 3600_000).toISOString() },
-      }),
-    unmute: (conversationId: string) => update.mutate({ conversationId, patch: { muted_until: null } }),
-  };
+        patch: { muted_until: new Date(Date.now() + hours * 3600_000).toISOString() } }),
+    unmute: (conversationId: string) => update.mutate({ conversationId, patch: { muted_until: null } }) };
 }

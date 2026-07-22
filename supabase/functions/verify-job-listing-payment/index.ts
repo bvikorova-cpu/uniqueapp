@@ -4,11 +4,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -19,8 +17,7 @@ serve(async (req) => {
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const token = authHeader.replace("Bearer ", "");
 
@@ -33,8 +30,7 @@ serve(async (req) => {
     if (claimsErr || !claimsData?.claims?.sub) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const callerId = claimsData.claims.sub as string;
 
@@ -44,13 +40,10 @@ serve(async (req) => {
     if (!sessionId || !/^cs_(test|live)_[A-Za-z0-9]+$/.test(sessionId)) {
       return new Response(JSON.stringify({ error: "Invalid sessionId" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
@@ -62,14 +55,12 @@ serve(async (req) => {
     if (!jobListingId) {
       return new Response(JSON.stringify({ error: "Missing jobListingId in metadata" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (ownerId && ownerId !== callerId) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (session.payment_status !== "paid") {
@@ -93,14 +84,12 @@ serve(async (req) => {
     if (listingErr || !listing) {
       return new Response(JSON.stringify({ error: "Listing not found" }), {
         status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (listing.employer_id !== callerId) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Determine duration
@@ -118,8 +107,7 @@ serve(async (req) => {
       ? session.payment_intent
       : (session.payment_intent as any)?.id ?? null;
     await admin.from("job_listing_payments").upsert(
-      {
-        user_id: callerId,
+      { user_id: callerId,
         job_id: jobListingId,
         stripe_session_id: sessionId,
         stripe_payment_intent_id: piId,
@@ -128,8 +116,7 @@ serve(async (req) => {
         status: "completed",
         expires_at: new Date(
           Date.now() + Math.max(durationDays, 30) * 86400000,
-        ).toISOString(),
-      },
+        ).toISOString() },
       { onConflict: "stripe_session_id" }
     );
 
@@ -162,13 +149,11 @@ serve(async (req) => {
       const expiresAt = new Date(baseDate.getTime() + durationDays * 86400000);
       await admin
         .from("job_listings")
-        .update({
-          paid_status: "active",
+        .update({ paid_status: "active",
           is_active: true,
           published_at: cur?.published_at ?? now.toISOString(),
           expires_at: expiresAt.toISOString(),
-          duration_days: durationDays,
-        })
+          duration_days: durationDays })
         .eq("id", jobListingId);
 
       // Notify renewal success
@@ -178,8 +163,7 @@ serve(async (req) => {
         title: "Job listing renewed",
         message: `Your listing is active until ${expiresAt.toISOString().slice(0,10)}.`,
         related_id: jobListingId,
-        action_url: "/employer/dashboard",
-      });
+        action_url: "/employer/dashboard" });
     }
 
     return new Response(
@@ -190,7 +174,6 @@ serve(async (req) => {
     console.error("verify-job-listing-payment error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

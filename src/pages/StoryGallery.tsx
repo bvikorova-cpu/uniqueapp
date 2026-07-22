@@ -5,23 +5,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Play, Trash2, Clock, ArrowLeft, Loader2, Share2, Copy, Check } from 'lucide-react';
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
+  DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { StoryVideoPlayer } from '@/components/kids/StoryVideoPlayer';
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";

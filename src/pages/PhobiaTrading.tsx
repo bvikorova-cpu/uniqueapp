@@ -4,11 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Brain, ShoppingCart, HeartPulse, TrendingUp, Shield, Zap, ArrowLeft,
+import { Brain, ShoppingCart, HeartPulse, TrendingUp, Shield, Zap, ArrowLeft,
   Flame, Trophy, Check, BarChart3, BookOpen, Users, Eye, Activity,
-  Bot, MessageCircle, Star, Play, Pause, Volume2, VolumeX, ArrowRightLeft, CreditCard,
-} from "lucide-react";
+  Bot, MessageCircle, Star, Play, Pause, Volume2, VolumeX, ArrowRightLeft, CreditCard } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -172,10 +170,9 @@ const PhobiaTrading = () => {
             <motion.h1
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
               className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 text-cyan-100"
-              style={{
+              style={ {
                 WebkitTextStroke: "1px rgba(6, 182, 212, 0.6)",
-                textShadow: "0 0 30px rgba(6, 182, 212, 0.5), 0 0 60px rgba(6, 182, 212, 0.3), 0 2px 4px rgba(0,0,0,0.8)",
-              }}
+                textShadow: "0 0 30px rgba(6, 182, 212, 0.5), 0 0 60px rgba(6, 182, 212, 0.3), 0 2px 4px rgba(0,0,0,0.8)" }}
             >
               Phobia Trading Network
             </motion.h1>

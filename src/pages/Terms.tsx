@@ -65,7 +65,7 @@ const Terms = () => {
 
           <main className="flex-1 space-y-5 min-w-0">
             <LegalSection id="scope" number="§1" title="Scope & Acceptance">
-              <p><strong>1.1.</strong> These terms govern the relationship between the Operator (UNIQUE s.r.o., Germany) and all Users/Creators.</p>
+              <p><strong>1.1.</strong> These terms govern the relationship between the Operator (UNIQUE) and all Users/Creators.</p>
               <p><strong>1.2.</strong> By accessing or using the platform you unconditionally and immediately agree to be bound.</p>
               <p><strong>1.3.</strong> If you disagree with any part, you must stop using the service.</p>
               <p><strong>1.4. Age rating — 16+.</strong> The main platform is rated <strong>16+</strong>. See <a href="#registration" className="text-amber-400 underline">§3 Registration & Age</a> for full details and the Kids Channel for ages 6–12.</p>
@@ -73,7 +73,7 @@ const Terms = () => {
 
             <LegalSection id="definitions" number="§2" title="Definitions">
               <ul>
-                <li><strong>Operator</strong> — UNIQUE s.r.o.</li>
+                <li><strong>Operator</strong> — UNIQUE</li>
                 <li><strong>User</strong> — any registered account holder.</li>
                 <li><strong>Creator</strong> — a User who monetizes content.</li>
                 <li><strong>Credits</strong> — platform consumables purchased via Stripe.</li>
@@ -144,7 +144,7 @@ const Terms = () => {
               </ul>
 
               <h3>AI Credits</h3>
-              <p>Credits are non-refundable consumables purchased in EUR via Stripe. New accounts receive 10 free credits; +10 free credits are granted monthly on the 1st (Europe/Bratislava). AI tools cost 1–5 credits per use depending on the module.</p>
+              <p>Credits are non-refundable consumables purchased in EUR via Stripe. New accounts receive 10 free credits; +10 free credits are granted monthly on the 1st. AI tools cost 1–5 credits per use depending on the module.</p>
 
               <p className="text-xs mt-4"><strong>6.2.</strong> Commissions may be adjusted with 30 days' notice via in-app banner and email. The live rate at the moment of transaction always applies. <strong>6.3.</strong> Refund handling is governed by the <Link to="/legal/refund" className="text-amber-400 underline">Refund Policy</Link>.</p>
             </LegalSection>
@@ -187,10 +187,10 @@ const Terms = () => {
             </LegalSection>
 
             <LegalSection id="law" number="§12" title="Governing Law & Disputes">
-              <p><strong>12.1.</strong> UNIQUE operates as a global platform and complies with international standards including GDPR (EU), CCPA (California), UK Data Protection Act, LGPD (Brazil), PIPEDA (Canada), and equivalent privacy and consumer protection laws worldwide.</p>
+              <p><strong>12.1.</strong> UNIQUE operates as a global platform and complies with applicable international privacy and consumer protection standards.</p>
               <p><strong>12.2.</strong> Disputes are first addressed through good-faith negotiation, then through binding arbitration under the rules of the International Chamber of Commerce (ICC), with proceedings conducted online in English.</p>
-              <p><strong>12.3.</strong> Mandatory consumer protection rights granted to you by the laws of your country of residence are not affected by these terms.</p>
-              <p><strong>12.4.</strong> Where local law requires, users may also bring claims in the competent courts of their country of residence.</p>
+              <p><strong>12.3.</strong> Mandatory consumer protection rights granted to you by the laws of your jurisdiction are not affected by these terms.</p>
+              <p><strong>12.4.</strong> Where local law requires, users may also bring claims in the competent courts of their jurisdiction.</p>
             </LegalSection>
 
             <LegalSection id="changes" number="§13" title="Changes to Terms">

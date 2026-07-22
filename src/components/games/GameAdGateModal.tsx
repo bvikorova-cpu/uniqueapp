@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-  showMonetagRewarded,
+import { showMonetagRewarded,
   MONETAG_ZONES,
   loadMonetagZone,
-  trackMonetagEvent,
-} from "@/lib/monetag";
+  trackMonetagEvent } from "@/lib/monetag";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 

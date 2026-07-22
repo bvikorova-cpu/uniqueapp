@@ -47,14 +47,11 @@ const CharacterArena = () => {
         supabase.from("character_battles").select("id", { count: "exact", head: true }),
         supabase.from("tournaments").select("id", { count: "exact", head: true }).eq("status", "registration"),
       ]);
-      return {
-        totalCharacters: chars.count || 0,
+      return { totalCharacters: chars.count || 0,
         totalBattles: battles.count || 0,
         activeTournaments: tournaments.count || 0,
-        onlineWarriors: 0,
-      };
-    },
-  });
+        onlineWarriors: 0 };
+    } });
 
   const renderView = () => {
     switch (activeView) {

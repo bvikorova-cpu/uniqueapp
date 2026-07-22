@@ -102,11 +102,9 @@ export default function SearchResults() {
           .limit(30);
       }
 
-      setResults({
-        posts: postsResult.data || [],
+      setResults({ posts: postsResult.data || [],
         users: usersResult.data || [],
-        hashtags: hashtagsResult.data || [],
-      });
+        hashtags: hashtagsResult.data || [] });
     } catch (error) {
       console.error("Search error:", error);
     } finally {

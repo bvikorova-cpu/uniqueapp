@@ -17,8 +17,7 @@ interface PremiumCastleCardProps {
 const difficultyConfig: Record<string, { label: string; color: string; stars: number }> = {
   easy: { label: "Easy", color: "bg-green-500", stars: 1 },
   medium: { label: "Medium", color: "bg-amber-500", stars: 2 },
-  hard: { label: "Hard", color: "bg-red-500", stars: 3 },
-};
+  hard: { label: "Hard", color: "bg-red-500", stars: 3 } };
 
 export function PremiumCastleCard({ castle, image, isVisited, hasStamp, countryFlag, onExplore, index }: PremiumCastleCardProps) {
   const difficulty = difficultyConfig[castle.difficulty] || difficultyConfig.medium;

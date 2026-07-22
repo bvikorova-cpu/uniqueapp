@@ -17,11 +17,9 @@ interface HandwritingUploadProps {
   preselectedType?: string;
 }
 
-export const HandwritingUpload = ({
-  onAnalysisComplete,
+export const HandwritingUpload = ({ onAnalysisComplete,
   isAnalyzing,
-  preselectedType = "personal",
-}: HandwritingUploadProps) => {
+  preselectedType = "personal" }: HandwritingUploadProps) => {
   const [imageUrl, setImageUrl] = useState("");
   const [analysisType, setAnalysisType] = useState(preselectedType);
   const [uploadMethod, setUploadMethod] = useState<"url" | "file">("url");

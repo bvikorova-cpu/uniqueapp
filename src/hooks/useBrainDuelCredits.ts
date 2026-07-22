@@ -36,8 +36,7 @@ export const useBrainDuelCredits = () => {
       }
 
       return data.credits;
-    },
-  });
+    } });
 
   const spendCredits = useMutation({
     mutationFn: async (amount: number) => {
@@ -46,34 +45,27 @@ export const useBrainDuelCredits = () => {
 
       // Atomic decrement with row lock (race-condition safe).
       // RPC throws 'insufficient_credits' / 'not_authenticated' / 'invalid_amount'.
-      const { data, error } = await supabase.rpc('brain_duel_spend_credits', {
-        _amount: Math.floor(amount),
-      });
+      const { data, error } = await supabase.rpc('brain_duel_spend_credits', { _amount: Math.floor(amount) });
       if (error) throw error;
       return data as number;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
     },
-    onError: (error: any) => {
-      const msg = (error?.message || '').toString();
+    onError: (error: any) => { const msg = (error?.message || '').toString();
       toast({
         title: 'Error',
         description: msg.includes('insufficient_credits')
           ? 'Not enough credits to start this game'
           : 'Failed to spend credits',
-        variant: 'destructive',
-      });
-    },
-  });
+        variant: 'destructive' });
+    } });
 
   // NOTE: `earnCredits` was removed — client cannot increase balance (DB trigger blocks it).
   // Credit awards now happen exclusively server-side via brain-duel-router on verified events.
 
-  return {
-    credits: credits || 0,
+  return { credits: credits || 0,
     isLoading,
     spendCredits: spendCredits.mutate,
-    isSpending: spendCredits.isPending,
-  };
+    isSpending: spendCredits.isPending };
 };

@@ -63,8 +63,7 @@ export async function reportError(err: unknown, opts: ReportOptions = {}) {
   }
 
   // 2) Supabase log — always attempted
-  try {
-    const uid =
+  try { const uid =
       opts.user_id ??
       (await supabase.auth.getUser()).data.user?.id ??
       null;
@@ -77,8 +76,7 @@ export async function reportError(err: unknown, opts: ReportOptions = {}) {
       route: typeof window !== "undefined" ? window.location.pathname : null,
       user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
       context: (opts.context ?? null) as unknown,
-      user_id: uid,
-    };
+      user_id: uid };
     // Types may be stale until Supabase typegen refreshes; cast safely.
     await supabase.from("client_error_events" as never).insert(row as never);
   } catch {
@@ -99,8 +97,7 @@ export function installGlobalErrorReporter() {
     if (STACK_OVERFLOW_RE.test(msg)) return;
     void reportError(ev.error ?? new Error(msg), {
       source: "window.error",
-      context: { filename: ev.filename, lineno: ev.lineno, colno: ev.colno },
-    });
+      context: { filename: ev.filename, lineno: ev.lineno, colno: ev.colno } });
   });
 
   window.addEventListener("unhandledrejection", (ev) => {

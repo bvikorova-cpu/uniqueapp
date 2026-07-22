@@ -10,12 +10,10 @@ import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const MAX_BYTES = 6 * 1024 * 1024; // 6MB
 
-export const ProfileMusicEditor = ({
-  userId,
+export const ProfileMusicEditor = ({ userId,
   url,
   title,
-  onChange,
-}: {
+  onChange }: {
   userId: string;
   url?: string | null;
   title?: string | null;

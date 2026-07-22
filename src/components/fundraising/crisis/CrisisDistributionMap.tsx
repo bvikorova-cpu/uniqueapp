@@ -46,15 +46,13 @@ export function CrisisDistributionMap({ campaignId, ownerUserId }: Props) {
   const add = async () => {
     if (!form.name.trim()) return;
     const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("crisis_distribution_points" as any).insert({
-      campaign_id: campaignId,
+    const { error } = await supabase.from("crisis_distribution_points" as any).insert({ campaign_id: campaignId,
       added_by_user_id: user?.id,
       name: form.name.trim(),
       address: form.address.trim() || null,
       latitude: form.latitude ? parseFloat(form.latitude) : null,
       longitude: form.longitude ? parseFloat(form.longitude) : null,
-      items_distributed: parseInt(form.items_distributed) || 0,
-    });
+      items_distributed: parseInt(form.items_distributed) || 0 });
     if (error) {
       toast({ title: "Could not add point", description: error.message, variant: "destructive" });
       return;

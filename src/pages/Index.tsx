@@ -238,8 +238,7 @@ const Index = () => {
           url: "https://uniqueapp.fun/",
           applicationCategory: "SocialNetworkingApplication",
           operatingSystem: "Web",
-          offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-        }}
+          offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" } }}
       />
     <div className="min-h-screen bg-background">
       {/* ── Hero Section ─────────────────────────────── */}

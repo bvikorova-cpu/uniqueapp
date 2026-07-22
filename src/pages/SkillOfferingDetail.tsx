@@ -59,8 +59,7 @@ export default function SkillOfferingDetail() {
 
       const { data: order, error: insertErr } = await supabase
         .from("skill_service_orders")
-        .insert({
-          offering_id: offering.id,
+        .insert({ offering_id: offering.id,
           buyer_id: user.id,
           seller_id: offering.user_id,
           hours,
@@ -68,8 +67,7 @@ export default function SkillOfferingDetail() {
           amount_cents,
           currency: "eur",
           status: "pending",
-          buyer_message: orderNote.trim() || null,
-        })
+          buyer_message: orderNote.trim() || null })
         .select()
         .single();
       if (insertErr || !order) throw insertErr ?? new Error("Could not create order");
@@ -80,14 +78,10 @@ export default function SkillOfferingDetail() {
           amount: amount_cents,
           name: `${offering.title} – ${hours}h`,
           description: offering.description?.slice(0, 200),
-          metadata: {
-            order_id: order.id,
+          metadata: { order_id: order.id,
             buyer_id: user.id,
             seller_id: offering.user_id,
-            offering_id: offering.id,
-          },
-        },
-      });
+            offering_id: offering.id } } });
       if (error) throw error;
       if (data?.url) {
         window.location.href = data.url;
@@ -130,12 +124,10 @@ export default function SkillOfferingDetail() {
       return;
     }
     setSending(true);
-    const { error } = await supabase.from("marketplace_responses").insert({
-      offering_id: offering.id,
+    const { error } = await supabase.from("marketplace_responses").insert({ offering_id: offering.id,
       sender_id: user.id,
       receiver_id: offering.user_id,
-      message: message.trim(),
-    });
+      message: message.trim() });
     setSending(false);
     if (error) {
       toast({ title: "Could not send", description: error.message, variant: "destructive" });

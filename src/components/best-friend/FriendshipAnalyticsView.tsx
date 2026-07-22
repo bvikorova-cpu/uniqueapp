@@ -18,8 +18,7 @@ export const FriendshipAnalyticsView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "friendship_analytics", messageCount: parseInt(messageCount) || 50 },
-      });
+        body: { action: "friendship_analytics", messageCount: parseInt(messageCount) || 50 } });
       if (error) throw error;
       setResult(data);
       toast.success("Analytics generated! (4 credits used)");

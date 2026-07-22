@@ -20,8 +20,7 @@ const childrenAchievements: ChildAchievement[] = [
       { id: "4", name: "Streak Master", emoji: "🔥", description: "7-day streak", earned: true, earnedDate: "Mar 22", progress: 100 },
       { id: "5", name: "Artist", emoji: "🎨", description: "10 drawings", earned: false, progress: 70 },
       { id: "6", name: "Mathematician", emoji: "🧮", description: "50 math tasks", earned: false, progress: 45 },
-    ],
-  },
+    ] },
   {
     childName: "Emma", childAvatar: "👧", totalPoints: 180, level: 3,
     achievements: [
@@ -31,8 +30,7 @@ const childrenAchievements: ChildAchievement[] = [
       { id: "4", name: "Streak Master", emoji: "🔥", description: "7-day streak", earned: false, progress: 57 },
       { id: "5", name: "Artist", emoji: "🎨", description: "10 drawings", earned: true, earnedDate: "Mar 24", progress: 100 },
       { id: "6", name: "Mathematician", emoji: "🧮", description: "50 math tasks", earned: false, progress: 20 },
-    ],
-  },
+    ] },
 ];
 
 export const AchievementTracking = () => {

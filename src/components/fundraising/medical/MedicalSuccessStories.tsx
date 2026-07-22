@@ -3,27 +3,21 @@ import { CheckCircle, PartyPopper, Heart } from "lucide-react";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const SUCCESS_PLACEHOLDERS = [
-  {
-    emoji: "🎉",
+  { emoji: "🎉",
     title: "Goal Reached — Treatment Started",
     desc: "A campaign successfully funded a life-changing medical procedure",
     raised: "€12,400",
-    donors: 187,
-  },
-  {
-    emoji: "💪",
+    donors: 187 },
+  { emoji: "💪",
     title: "Surgery Funded Successfully",
     desc: "Community donors came together to cover surgery costs",
     raised: "€8,750",
-    donors: 124,
-  },
-  {
-    emoji: "❤️‍🩹",
+    donors: 124 },
+  { emoji: "❤️‍🩹",
     title: "Recovery in Progress",
     desc: "Thanks to generous donors, treatment is underway",
     raised: "€5,200",
-    donors: 93,
-  },
+    donors: 93 },
 ];
 
 export function MedicalSuccessStories() {

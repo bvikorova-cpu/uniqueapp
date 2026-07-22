@@ -7,9 +7,7 @@ const fromMock = vi.fn();
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     auth: { getSession: () => getSessionMock() },
-    from: (t: string) => fromMock(t),
-  },
-}));
+    from: (t: string) => fromMock(t) } }));
 
 import { useIsAdmin } from "./useIsAdmin";
 
@@ -19,11 +17,7 @@ function rolesTable(found: boolean) {
       eq: () => ({
         eq: () => ({
           maybeSingle: () =>
-            Promise.resolve({ data: found ? { role: "admin" } : null, error: null }),
-        }),
-      }),
-    }),
-  };
+            Promise.resolve({ data: found ? { role: "admin" } : null, error: null }) }) }) }) };
 }
 
 describe("useIsAdmin", () => {
@@ -41,8 +35,7 @@ describe("useIsAdmin", () => {
 
   it("returns true when admin role exists", async () => {
     getSessionMock.mockResolvedValue({
-      data: { session: { user: { id: "u1" } } },
-    });
+      data: { session: { user: { id: "u1" } } } });
     fromMock.mockImplementation(() => rolesTable(true));
     const { result } = renderHook(() => useIsAdmin());
     await waitFor(() => expect(result.current.loading).toBe(false));
@@ -51,8 +44,7 @@ describe("useIsAdmin", () => {
 
   it("returns false when no admin role", async () => {
     getSessionMock.mockResolvedValue({
-      data: { session: { user: { id: "u1" } } },
-    });
+      data: { session: { user: { id: "u1" } } } });
     fromMock.mockImplementation(() => rolesTable(false));
     const { result } = renderHook(() => useIsAdmin());
     await waitFor(() => expect(result.current.loading).toBe(false));
@@ -61,8 +53,7 @@ describe("useIsAdmin", () => {
 
   it("queries user_roles, not profiles (no privilege escalation)", async () => {
     getSessionMock.mockResolvedValue({
-      data: { session: { user: { id: "u1" } } },
-    });
+      data: { session: { user: { id: "u1" } } } });
     fromMock.mockImplementation(() => rolesTable(false));
     renderHook(() => useIsAdmin());
     await waitFor(() => expect(fromMock).toHaveBeenCalled());

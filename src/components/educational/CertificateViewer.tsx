@@ -11,8 +11,7 @@ interface CertificateViewerProps {
   certificate: Certificate;
 }
 
-export const CertificateViewer = ({ certificate }: CertificateViewerProps) => {
-  const certificateRef = useRef<HTMLDivElement>(null);
+export const CertificateViewer = ({ certificate }: CertificateViewerProps) => { const certificateRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = async () => {
@@ -22,15 +21,12 @@ export const CertificateViewer = ({ certificate }: CertificateViewerProps) => {
     try {
       const canvas = await html2canvas(certificateRef.current, {
         scale: 2,
-        backgroundColor: "#ffffff",
-      });
+        backgroundColor: "#ffffff" });
       
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "landscape",
+      const pdf = new jsPDF({ orientation: "landscape",
         unit: "mm",
-        format: "a4",
-      });
+        format: "a4" });
       
       const imgWidth = 297; // A4 landscape width
       const imgHeight = (canvas.height * imgWidth) / canvas.width;

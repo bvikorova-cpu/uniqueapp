@@ -8,39 +8,31 @@ interface SkillSwapSubscription {
   loading: boolean;
 }
 
-export const useSkillSwap = () => {
-  const [subscription, setSubscription] = useState<SkillSwapSubscription>({
+export const useSkillSwap = () => { const [subscription, setSubscription] = useState<SkillSwapSubscription>({
     hasSubscription: false,
-    loading: true,
-  });
+    loading: true });
 
   const checkSubscription = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        setSubscription({
+      if (!session) { setSubscription({
           hasSubscription: false,
-          loading: false,
-        });
+          loading: false });
         return;
       }
 
       const { data, error } = await supabase.functions.invoke('check-skill-swap-subscription', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+          Authorization: `Bearer ${session.access_token}` } });
 
       if (error) throw error;
 
       // check-subscription edge function vracia { subscribed, subscription_end, ... }
       // Akceptujeme aj legacy { hasSubscription, subscriptionEnd } pre forward-compat.
-      setSubscription({
-        hasSubscription: Boolean(data?.subscribed ?? data?.hasSubscription),
+      setSubscription({ hasSubscription: Boolean(data?.subscribed ?? data?.hasSubscription),
         subscriptionEnd: data?.subscription_end ?? data?.subscriptionEnd,
-        loading: false,
-      });
+        loading: false });
     } catch (error: any) {
       console.error('Subscription check error:', error);
       setSubscription(prev => ({ ...prev, loading: false }));
@@ -73,10 +65,8 @@ export const useSkillSwap = () => {
 
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: { product: 'skill_swap' },
-      });
+          Authorization: `Bearer ${session.access_token}` },
+        body: { product: 'skill_swap' } });
 
       if (error) throw error;
 
@@ -88,10 +78,8 @@ export const useSkillSwap = () => {
     }
   };
 
-  return {
-    subscription,
+  return { subscription,
     loading: subscription.loading,
     createCheckout,
-    checkSubscription,
-  };
+    checkSubscription };
 };

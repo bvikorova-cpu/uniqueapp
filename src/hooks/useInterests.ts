@@ -20,8 +20,7 @@ export const useInterests = (userId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const addInterest = useMutation({
     mutationFn: async ({ interest, level }: {
@@ -33,19 +32,16 @@ export const useInterests = (userId?: string) => {
 
       const { error } = await supabase
         .from("user_interests")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           interest: interest.toLowerCase(),
-          interest_level: level || 5,
-        });
+          interest_level: level || 5 });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-interests"] });
       toast({ title: "Interest added!" });
-    },
-  });
+    } });
 
   const removeInterest = useMutation({
     mutationFn: async (interestId: string) => {
@@ -59,12 +55,9 @@ export const useInterests = (userId?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-interests"] });
       toast({ title: "Interest removed" });
-    },
-  });
+    } });
 
-  return {
-    interests: interests || [],
+  return { interests: interests || [],
     addInterest: addInterest.mutate,
-    removeInterest: removeInterest.mutate,
-  };
+    removeInterest: removeInterest.mutate };
 };

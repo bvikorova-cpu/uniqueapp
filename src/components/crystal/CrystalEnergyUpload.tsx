@@ -62,8 +62,7 @@ export default function CrystalEnergyUpload() {
       }
 
       const response = await supabase.functions.invoke('analyze-crystal-energy', {
-        body: { imageUrl: url },
-      });
+        body: { imageUrl: url } });
 
       if (response.error) throw response.error;
 

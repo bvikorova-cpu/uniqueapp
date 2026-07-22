@@ -6,21 +6,17 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Table,
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
+  TableRow } from "@/components/ui/table";
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+  DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ChefHat, Euro, CheckCircle, XCircle, Clock, Download } from "lucide-react";
@@ -75,12 +71,10 @@ export default function AdminMasterChefPayouts() {
         .eq('role', 'admin')
         .maybeSingle();
 
-      if (!roles) {
-        toast({
+      if (!roles) { toast({
           title: "Access Denied",
           description: "You don't have permission to access admin panel",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate('/');
         return;
       }
@@ -136,13 +130,11 @@ export default function AdminMasterChefPayouts() {
       }));
 
       setEarnings(formattedEarnings);
-    } catch (error) {
-      console.error('Error loading earnings:', error);
+    } catch (error) { console.error('Error loading earnings:', error);
       toast({
         title: "Error",
         description: "Failed to load earnings data",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -172,20 +164,17 @@ export default function AdminMasterChefPayouts() {
 
       toast({
         title: "Payout Processed",
-        description: `€${selectedEarning.chef_amount.toFixed(2)} marked as paid to ${selectedEarning.chef_name}`,
-      });
+        description: `€${selectedEarning.chef_amount.toFixed(2)} marked as paid to ${selectedEarning.chef_name}` });
 
       setIsPayoutDialogOpen(false);
       setSelectedEarning(null);
       setAdminNotes("");
       await loadEarnings();
-    } catch (error) {
-      console.error('Error processing payout:', error);
+    } catch (error) { console.error('Error processing payout:', error);
       toast({
         title: "Error",
         description: "Failed to process payout",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setProcessing(false);
     }

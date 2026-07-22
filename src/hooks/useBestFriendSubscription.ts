@@ -11,16 +11,14 @@ export interface BestFriendSubscription {
   loading: boolean;
 }
 
-export function useBestFriendSubscription() {
-  const [subscription, setSubscription] = useState<BestFriendSubscription>({
+export function useBestFriendSubscription() { const [subscription, setSubscription] = useState<BestFriendSubscription>({
     subscribed: false,
     freeMessagesUsed: 0,
     freeMessagesLimit: 5,
     monthlyMessagesUsed: 0,
     monthlyMessagesLimit: 1000,
     bonusMessages: 0,
-    loading: true,
-  });
+    loading: true });
 
   const checkSubscription = async () => {
     try {
@@ -34,15 +32,13 @@ export function useBestFriendSubscription() {
 
       if (error) throw error;
 
-      setSubscription({
-        subscribed: data?.subscribed || false,
+      setSubscription({ subscribed: data?.subscribed || false,
         freeMessagesUsed: data?.free_messages_used || 0,
         freeMessagesLimit: 5,
         monthlyMessagesUsed: data?.monthly_messages_used || 0,
         monthlyMessagesLimit: 1000,
         bonusMessages: data?.bonus_messages || 0,
-        loading: false,
-      });
+        loading: false });
     } catch (err: any) {
       console.error('Error checking subscription:', err);
       setSubscription(prev => ({ ...prev, loading: false }));
@@ -112,11 +108,9 @@ export function useBestFriendSubscription() {
     return () => clearInterval(interval);
   }, []);
 
-  return {
-    subscription,
+  return { subscription,
     refresh: checkSubscription,
     createCheckout,
     purchaseMessages,
-    manageSubscription,
-  };
+    manageSubscription };
 }

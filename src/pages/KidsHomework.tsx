@@ -45,13 +45,11 @@ const KidsHomework = () => {
   const queryClient = useQueryClient();
   const { points, achievements, unlockedAchievements, isLoading: progressLoading } = useKidsHomeworkProgress();
   const { challenge, progress, isCompleted, isLoading: challengeLoading } = useKidsDailyChallenge();
-  const {
-    credits_remaining,
+  const { credits_remaining,
     canAsk,
     loading: usageLoading,
     refresh: refreshCredits,
-    purchaseCredits,
-  } = useHomeworkCredits();
+    purchaseCredits } = useHomeworkCredits();
 
   const [subject, setSubject] = useState<string>(() => {
     try { return localStorage.getItem("kids_homework_subject") || ""; } catch { return ""; }
@@ -136,8 +134,7 @@ const KidsHomework = () => {
     setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("kids-homework-helper", {
-        body: { subject, question, difficulty, imageBase64: photo },
-      });
+        body: { subject, question, difficulty, imageBase64: photo } });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

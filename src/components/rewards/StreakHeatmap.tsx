@@ -21,8 +21,7 @@ export default function StreakHeatmap({ userId }: { userId: string }) {
         .order("claimed_at", { ascending: true });
       return data || [];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   // Build 42-day grid (6 weeks)
   const days: { date: string; active: boolean; label: string }[] = [];
@@ -35,8 +34,7 @@ export default function StreakHeatmap({ userId }: { userId: string }) {
     days.push({
       date: dateStr,
       active: claimDates.has(dateStr),
-      label: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-    });
+      label: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) });
   }
 
   const weekDays = ["M", "T", "W", "T", "F", "S", "S"];

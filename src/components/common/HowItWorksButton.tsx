@@ -1,14 +1,12 @@
 import { useState, type ReactNode } from "react";
 import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
+import { Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  SheetTrigger } from "@/components/ui/sheet";
 
 export interface HowItWorksStep {
   title: string;
@@ -36,14 +34,12 @@ interface HowItWorksButtonProps {
  * feature in numbered steps. Use it in the header of any module or page so
  * users can discover how the feature works.
  */
-export const HowItWorksButton = ({
-  title,
+export const HowItWorksButton = ({ title,
   intro,
   steps,
   footer,
   variant = "icon",
-  className,
-}: HowItWorksButtonProps) => {
+  className }: HowItWorksButtonProps) => {
   const [open, setOpen] = useState(false);
 
   return (

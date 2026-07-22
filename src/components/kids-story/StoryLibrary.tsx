@@ -9,16 +9,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 import { StoryDetailModal } from "./StoryDetailModal";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Story {
@@ -45,16 +43,14 @@ const CATEGORIES = [
   { value: "fairy-tale", label: "Fairy Tale", emoji: "👑" },
 ];
 
-const CATEGORY_COLORS: Record<string, string> = {
-  adventure: "bg-orange-100 text-orange-800 border-orange-300",
+const CATEGORY_COLORS: Record<string, string> = { adventure: "bg-orange-100 text-orange-800 border-orange-300",
   fantasy: "bg-purple-100 text-purple-800 border-purple-300",
   educational: "bg-blue-100 text-blue-800 border-blue-300",
   mystery: "bg-gray-100 text-gray-800 border-gray-300",
   friendship: "bg-pink-100 text-pink-800 border-pink-300",
   animal: "bg-green-100 text-green-800 border-green-300",
   space: "bg-indigo-100 text-indigo-800 border-indigo-300",
-  "fairy-tale": "bg-yellow-100 text-yellow-800 border-yellow-300",
-};
+  "fairy-tale": "bg-yellow-100 text-yellow-800 border-yellow-300" };
 
 export const StoryLibrary = () => {
   const { user } = useAuth();

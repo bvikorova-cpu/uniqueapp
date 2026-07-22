@@ -42,16 +42,14 @@ interface ProfileHeroProps {
   deferExtras?: boolean;
 }
 
-export const ProfileHero = ({
-  profile,
+export const ProfileHero = ({ profile,
   userId,
   currentUserId,
   isOwnProfile,
   onEdit,
   stats,
   friendsAction,
-  deferExtras = false,
-}: ProfileHeroProps) => {
+  deferExtras = false }: ProfileHeroProps) => {
   const initial = profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || "U";
 
   const liveStats = [

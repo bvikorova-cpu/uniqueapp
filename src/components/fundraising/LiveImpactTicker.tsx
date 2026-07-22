@@ -10,10 +10,8 @@ interface RecentDonation {
   created_at: string;
 }
 
-const CATEGORY_EMOJI: Record<string, string> = {
-  medical: "💊", dream: "✨", hero: "🦸", crisis: "🆘",
-  pet: "🐾", student: "🎓", talent: "🎭",
-};
+const CATEGORY_EMOJI: Record<string, string> = { medical: "💊", dream: "✨", hero: "🦸", crisis: "🆘",
+  pet: "🐾", student: "🎓", talent: "🎭" };
 
 function formatMsg(d: RecentDonation): string {
   const emoji = CATEGORY_EMOJI[d.campaign_type] || "❤️";
@@ -45,15 +43,13 @@ export function LiveImpactTicker() {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "campaign_donations" },
-        (payload) => {
-          const row = payload.new as any;
+        (payload) => { const row = payload.new as any;
           if (!row || !["succeeded", "completed", "paid"].includes(row.status)) return;
           const msg = formatMsg({
             donor_name: row.is_anonymous ? "Anonymous" : (row.donor_name || "Someone"),
             amount: row.amount,
             campaign_type: row.campaign_type || "campaign",
-            created_at: row.created_at,
-          });
+            created_at: row.created_at });
           setMessages((prev) => [msg, ...prev].slice(0, 30));
         }
       )

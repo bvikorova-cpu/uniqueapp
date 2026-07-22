@@ -2,11 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { Trophy, Play, Tv, CheckCircle, Clock, Sparkles, RefreshCw } from "lucide-react";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useAchievementChecker } from "@/hooks/useAchievementChecker";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -116,10 +114,8 @@ export const AchievementsBadge = () => {
       queryClient.invalidateQueries({ queryKey: ["user-achievements"] });
       queryClient.invalidateQueries({ queryKey: ["gamification", userId] });
 
-      toast({
-        title: "🎉 +1 XP!",
-        description: "You earned 1 XP for watching the ad!",
-      });
+      toast({ title: "🎉 +1 XP!",
+        description: "You earned 1 XP for watching the ad!" });
 
       setTimeout(() => setShowAdDialog(false), 1500);
     } catch (error: any) {

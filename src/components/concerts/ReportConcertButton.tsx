@@ -24,13 +24,11 @@ export const ReportConcertButton = ({ concertId }: { concertId: string }) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Login required"); return; }
-      const { error } = await supabase.from("concert_reports").insert({
-        concert_id: concertId,
+      const { error } = await supabase.from("concert_reports").insert({ concert_id: concertId,
         reporter_id: session.user.id,
         category,
         reason: category,
-        details: details.trim(),
-      });
+        details: details.trim() });
       if (error) throw error;
       toast.success("Report submitted — admin will review");
       setOpen(false);

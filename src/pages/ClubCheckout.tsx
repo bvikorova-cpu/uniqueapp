@@ -43,8 +43,7 @@ export default function ClubCheckout() {
         const referralCode = refFromUrl ?? localStorage.getItem("unique_club_ref") ?? "";
 
         const { data, error: invokeError } = await supabase.functions.invoke("create-club-checkout", {
-          body: { tier: selectedTier, referralCode },
-        });
+          body: { tier: selectedTier, referralCode } });
         if (invokeError) throw invokeError;
 
         const url = (data as any)?.url;

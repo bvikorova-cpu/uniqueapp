@@ -8,13 +8,11 @@ export interface CompanionsSubscription {
   loading: boolean;
 }
 
-export function useCompanionsSubscription() {
-  const [subscription, setSubscription] = useState<CompanionsSubscription>({
+export function useCompanionsSubscription() { const [subscription, setSubscription] = useState<CompanionsSubscription>({
     subscribed: false,
     freeMessagesUsed: 0,
     freeMessagesLimit: 5,
-    loading: true,
-  });
+    loading: true });
 
   const checkSubscription = async () => {
     try {
@@ -25,17 +23,14 @@ export function useCompanionsSubscription() {
       }
 
       const { data, error } = await supabase.functions.invoke('check-subscription', {
-        body: { tier: 'companions' },
-      });
+        body: { tier: 'companions' } });
 
       if (error) throw error;
 
-      setSubscription({
-        subscribed: data?.subscribed || false,
+      setSubscription({ subscribed: data?.subscribed || false,
         freeMessagesUsed: data?.free_messages_used || 0,
         freeMessagesLimit: 5,
-        loading: false,
-      });
+        loading: false });
     } catch (err: any) {
       console.error('Error checking companions subscription:', err);
       setSubscription(prev => ({ ...prev, loading: false }));
@@ -45,8 +40,7 @@ export function useCompanionsSubscription() {
   const createCheckout = async () => {
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { product: 'companions' },
-      });
+        body: { product: 'companions' } });
 
       if (error) throw error;
       if (data?.url) {
@@ -78,10 +72,8 @@ export function useCompanionsSubscription() {
     return () => clearInterval(interval);
   }, []);
 
-  return {
-    subscription,
+  return { subscription,
     refresh: checkSubscription,
     createCheckout,
-    manageSubscription,
-  };
+    manageSubscription };
 }

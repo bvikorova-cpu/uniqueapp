@@ -26,15 +26,10 @@ export const useRecommendations = () => {
         .select("*")
         .in("id", userIds);
 
-      return data.map((rec) => ({
-        ...rec,
-        profile: profiles?.find((p) => p.id === rec.recommended_user_id),
-      }));
-    },
-  });
+      return data.map((rec) => ({ ...rec,
+        profile: profiles?.find((p) => p.id === rec.recommended_user_id) }));
+    } });
 
-  return {
-    recommendations,
-    isLoading,
-  };
+  return { recommendations,
+    isLoading };
 };

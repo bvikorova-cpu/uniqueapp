@@ -23,8 +23,7 @@ export const LifeCoachView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "life_coach", topic: topic.trim() },
-      });
+        body: { action: "life_coach", topic: topic.trim() } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

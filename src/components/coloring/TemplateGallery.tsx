@@ -54,11 +54,9 @@ const TEMPLATES = [
   { id: "16", name: "Zen Garden", category: "mandala", difficulty: "medium", prompt: "A peaceful zen garden with raked sand patterns and stones for coloring", image: templateZenGarden },
 ];
 
-const difficultyColors: Record<string, string> = {
-  easy: "bg-green-500/10 text-green-600 border-green-500/30",
+const difficultyColors: Record<string, string> = { easy: "bg-green-500/10 text-green-600 border-green-500/30",
   medium: "bg-amber-500/10 text-amber-600 border-amber-500/30",
-  hard: "bg-red-500/10 text-red-600 border-red-500/30",
-};
+  hard: "bg-red-500/10 text-red-600 border-red-500/30" };
 
 interface TemplateGalleryProps {
   onSelectTemplate: (prompt: string, difficulty: string) => void;

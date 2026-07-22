@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Trophy, Crown, Medal, Award, User, Loader2, Globe, Flag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LeaderboardEntry {

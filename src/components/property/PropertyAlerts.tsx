@@ -26,13 +26,11 @@ export const PropertyAlerts = ({ onBack }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [newAlert, setNewAlert] = useState({ location: "", type: "", maxPrice: "", minArea: "" });
 
-  const [notifications, setNotifications] = useState({
-    email: true,
+  const [notifications, setNotifications] = useState({ email: true,
     push: true,
     priceDrops: true,
     newListings: true,
-    openHouses: false,
-  });
+    openHouses: false });
 
   const handleAddAlert = () => {
     if (!newAlert.location) {

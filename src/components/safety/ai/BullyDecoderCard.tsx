@@ -7,12 +7,10 @@ import { ScanText, Sparkles, AlertTriangle } from "lucide-react";
 import { useBullyDecoder } from "@/hooks/useSafetyAIFeatures";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
-const SEVERITY_COLORS: Record<string, string> = {
-  low: "bg-emerald-500",
+const SEVERITY_COLORS: Record<string, string> = { low: "bg-emerald-500",
   medium: "bg-amber-500",
   high: "bg-orange-500",
-  critical: "bg-red-600",
-};
+  critical: "bg-red-600" };
 
 export function BullyDecoderCard() {
   const [open, setOpen] = useState(false);

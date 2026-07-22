@@ -77,8 +77,7 @@ export function CloneSubscriptions() {
       }
 
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { productKey: `clone_${tier}` },
-      });
+        body: { productKey: `clone_${tier}` } });
 
       if (error) throw error;
       if (data?.url) {

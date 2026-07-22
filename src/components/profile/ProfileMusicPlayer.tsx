@@ -2,10 +2,8 @@ import { useRef, useState } from "react";
 import { Music2, Pause, Play } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-export const ProfileMusicPlayer = ({
-  url,
-  title,
-}: {
+export const ProfileMusicPlayer = ({ url,
+  title }: {
   url?: string | null;
   title?: string | null;
 }) => {

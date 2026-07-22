@@ -48,8 +48,7 @@ const SafetyPrevention = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke("safety-prevention-chat", {
-        body: { messages: [...messages, userMessage] },
-      });
+        body: { messages: [...messages, userMessage] } });
       if (error) throw error;
       setMessages((prev) => [...prev, { role: "assistant", content: data.message || "I'm here to help." }]);
     } catch (error) {

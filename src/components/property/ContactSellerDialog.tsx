@@ -48,44 +48,36 @@ export function ContactSellerDialog({
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           variant: "destructive",
           title: "Authentication required",
-          description: "Please sign in to contact the seller.",
-        });
+          description: "Please sign in to contact the seller." });
         return;
       }
 
       const { error } = await supabase
         .from('property_inquiries')
-        .insert({
-          property_id: propertyId,
+        .insert({ property_id: propertyId,
           sender_id: user.id,
           sender_name: trimmedName,
           // Always use authenticated user's verified email — prevents spoofing
           sender_email: user.email ?? email.trim(),
           sender_phone: phone.trim() || null,
           message: trimmedMsg,
-          inquiry_type: inquiryType,
-        });
+          inquiry_type: inquiryType });
 
       if (error) throw error;
 
-      toast({
-        title: "Message sent!",
-        description: "The property owner will contact you soon.",
-      });
+      toast({ title: "Message sent!",
+        description: "The property owner will contact you soon." });
 
       setName(""); setEmail(""); setPhone(""); setMessage("");
       onOpenChange(false);
-    } catch (error) {
-      console.error('Error sending inquiry:', error);
+    } catch (error) { console.error('Error sending inquiry:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to send message. Please try again.",
-      });
+        description: "Failed to send message. Please try again." });
     } finally {
       setLoading(false);
     }

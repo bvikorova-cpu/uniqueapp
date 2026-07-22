@@ -29,8 +29,7 @@ export function GraphicDesignAI() {
     setKit(null);
     try {
       const { data, error } = await supabase.functions.invoke("graphic-design-ai", {
-        body: { brief, industry: industry || "general", style: style || "modern" },
-      });
+        body: { brief, industry: industry || "general", style: style || "modern" } });
       if (error) throw error;
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       setKit((data as { kit: Kit }).kit);

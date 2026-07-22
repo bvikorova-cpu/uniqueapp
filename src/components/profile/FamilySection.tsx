@@ -6,32 +6,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Select,
+  DialogFooter } from "@/components/ui/dialog";
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { Plus, Heart, Search, Check, X } from "lucide-react";
-import {
-  useFamilyRelationships,
-  type FamilyRelationKind,
-} from "@/hooks/useFamilyRelationships";
+import { useFamilyRelationships,
+  type FamilyRelationKind } from "@/hooks/useFamilyRelationships";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const RELATION_LABELS: Record<FamilyRelationKind, string> = {
-  spouse: "Spouse",
+const RELATION_LABELS: Record<FamilyRelationKind, string> = { spouse: "Spouse",
   partner: "Partner",
   parent: "Parent",
   child: "Child",
@@ -40,8 +33,7 @@ const RELATION_LABELS: Record<FamilyRelationKind, string> = {
   grandchild: "Grandchild",
   cousin: "Cousin",
   in_law: "In-law",
-  other: "Family",
-};
+  other: "Family" };
 
 interface Props {
   userId: string;
@@ -67,8 +59,7 @@ export function FamilySection({ userId, currentUserId, isOwnProfile }: Props) {
         .neq("id", currentUserId || "")
         .limit(10);
       return data ?? [];
-    },
-  });
+    } });
 
   const items = list.data ?? [];
   const confirmed = items.filter((i) => i.status === "confirmed");
@@ -150,13 +141,12 @@ export function FamilySection({ userId, currentUserId, isOwnProfile }: Props) {
               <DialogFooter>
                 <Button
                   disabled={!picked || propose.isPending}
-                  onClick={async () => {
+                  onClick={ async () => {
                     if (!picked || !currentUserId) return;
                     await propose.mutateAsync({
                       currentUserId,
                       otherUserId: picked.id,
-                      kind,
-                    });
+                      kind });
                     setPicked(null);
                     setOpen(false);
                   }}
@@ -211,11 +201,9 @@ export function FamilySection({ userId, currentUserId, isOwnProfile }: Props) {
   );
 }
 
-function FamilyCard({
-  item,
+function FamilyCard({ item,
   isOwner,
-  onRemove,
-}: {
+  onRemove }: {
   item: any;
   isOwner: boolean;
   onRemove: () => void;

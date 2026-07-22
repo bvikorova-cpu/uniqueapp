@@ -31,13 +31,11 @@ export function useHolographicAccess(serviceType: string) {
 
       setHasAccess(data.hasAccess || false);
       setPurchase(data.purchase || null);
-    } catch (error) {
-      console.error('Error checking holographic access:', error);
+    } catch (error) { console.error('Error checking holographic access:', error);
       toast({
         title: "Error",
         description: "Failed to verify access. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setHasAccess(false);
     } finally {
       setLoading(false);

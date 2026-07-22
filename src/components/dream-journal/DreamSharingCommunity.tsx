@@ -54,13 +54,11 @@ const DreamSharingCommunity = ({ onBack }: DreamSharingCommunityProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("dream_entries").insert({
-        title: title || "Shared Dream",
+      const { error } = await supabase.from("dream_entries").insert({ title: title || "Shared Dream",
         content,
         dream_date: new Date().toISOString().split("T")[0],
         themes: tags.split(",").map(t => t.trim()).filter(Boolean),
-        user_id: user.id,
-      } as any);
+        user_id: user.id } as any);
 
       if (error) throw error;
       toast.success("Dream shared with the community!");

@@ -61,8 +61,7 @@ export const LiveDuelChat = ({ matchId, isMinimized: externalMinimized, onToggle
     if (isOpen && !isMinimized) setUnreadCount(0);
   }, [isOpen, isMinimized]);
 
-  const sendMessage = async (content: string, type: "message" | "emote" = "message") => {
-    if (!content.trim() || !user) return;
+  const sendMessage = async (content: string, type: "message" | "emote" = "message") => { if (!content.trim() || !user) return;
 
     const msg: ChatMessage = {
       id: crypto.randomUUID(),
@@ -70,14 +69,11 @@ export const LiveDuelChat = ({ matchId, isMinimized: externalMinimized, onToggle
       username: user.email?.split("@")[0] || "Player",
       content: content.trim(),
       timestamp: new Date().toISOString(),
-      type,
-    };
+      type };
 
-    await supabase.channel(channelName).send({
-      type: "broadcast",
+    await supabase.channel(channelName).send({ type: "broadcast",
       event: "chat_message",
-      payload: msg,
-    });
+      payload: msg });
 
     setMessages(prev => [...prev.slice(-99), msg]);
     setInput("");

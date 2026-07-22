@@ -26,9 +26,7 @@ async function stubAll(page: Page) {
       contentType: "application/json",
       body: JSON.stringify({
         url: `${new URL(page.url() || "http://localhost").origin}/doctors/booking/${STUB_APPT_ID}?session_id=${STUB_SESSION}`,
-        appointment_id: STUB_APPT_ID,
-      }),
-    }),
+        appointment_id: STUB_APPT_ID }) }),
   );
 
   await page.route(/\/functions\/v1\/doctor-availability-slots.*/i, async (r: Route) =>
@@ -36,12 +34,8 @@ async function stubAll(page: Page) {
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        slots: Array.from({ length: 3 }).map((_, i) => ({
-          starts_at: new Date(Date.now() + (i + 1) * 86400000).toISOString(),
-          ends_at: new Date(Date.now() + (i + 1) * 86400000 + 30 * 60000).toISOString(),
-        })),
-      }),
-    }),
+        slots: Array.from({ length: 3 }).map((_, i) => ({ starts_at: new Date(Date.now() + (i + 1) * 86400000).toISOString(),
+          ends_at: new Date(Date.now() + (i + 1) * 86400000 + 30 * 60000).toISOString() })) }) }),
   );
 
   await page.route(/\/functions\/v1\/verify-doctor-booking.*/i, async (r: Route) =>
@@ -53,9 +47,7 @@ async function stubAll(page: Page) {
         patient_email: PATIENT_EMAIL,
         doctor_email: DOCTOR_EMAIL,
         doctor_name: DOCTOR_NAME,
-        appointment: { scheduled_at: SCHEDULED_AT },
-      }),
-    }),
+        appointment: { scheduled_at: SCHEDULED_AT } }) }),
   );
 }
 
@@ -75,9 +67,7 @@ test.describe("Doctor booking — success page + mailto", () => {
     expect(verifyReq.url()).toMatch(/verify-doctor-booking/);
 
     // Confirmation UI
-    await expect(page.getByRole("heading", { name: /appointment confirmed/i })).toBeVisible({
-      timeout: 15000,
-    });
+    await expect(page.getByRole("heading", { name: /appointment confirmed/i })).toBeVisible({ timeout: 15000 });
     await expect(page.getByText(DOCTOR_NAME)).toBeVisible();
     await expect(page.getByText(DOCTOR_EMAIL)).toBeVisible();
     await expect(page.getByText(PATIENT_EMAIL)).toBeVisible();
@@ -111,15 +101,11 @@ test.describe("Doctor booking — success page + mailto", () => {
     );
 
     await page.goto("/doctors");
-    await expect(page.getByRole("heading", { name: /find a doctor/i })).toBeVisible({
-      timeout: 15000,
-    });
+    await expect(page.getByRole("heading", { name: /find a doctor/i })).toBeVisible({ timeout: 15000 });
 
     // Directly navigate to the success page as the checkout stub cannot redirect back
     await page.goto(`/doctors/booking/${STUB_APPT_ID}?session_id=${STUB_SESSION}`);
-    await expect(page.getByRole("heading", { name: /appointment confirmed/i })).toBeVisible({
-      timeout: 15000,
-    });
+    await expect(page.getByRole("heading", { name: /appointment confirmed/i })).toBeVisible({ timeout: 15000 });
     await expect(page.getByRole("link", { name: /email the doctor/i })).toHaveAttribute(
       "href",
       /^mailto:.*@example\.com/,

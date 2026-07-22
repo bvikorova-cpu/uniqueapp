@@ -85,16 +85,14 @@ export function ReleaseManagerDialog({ open, onOpenChange, contentItemId, conten
         documentUrl = path;
       }
 
-      const { error } = await supabase.from("stock_content_releases").insert({
-        content_item_id: contentItemId,
+      const { error } = await supabase.from("stock_content_releases").insert({ content_item_id: contentItemId,
         creator_id: userId,
         release_type: type,
         signer_name: signerName.trim(),
         signer_email: signerEmail.trim() || null,
         signed_date: signedDate || null,
         document_url: documentUrl,
-        notes: notes.trim() || null,
-      });
+        notes: notes.trim() || null });
       if (error) throw error;
 
       await supabase

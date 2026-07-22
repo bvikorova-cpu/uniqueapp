@@ -1,11 +1,9 @@
 import { describe, it, expect } from "vitest";
-import {
-  displayNameOf,
+import { displayNameOf,
   hasActor,
   getNotificationText,
   getAvatarFallbackChar,
-  type NotificationLike,
-} from "../notificationText";
+  type NotificationLike } from "../notificationText";
 
 const FORBIDDEN = ["Someone", "Unknown user", "Unknown User"];
 

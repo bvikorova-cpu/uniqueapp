@@ -40,12 +40,10 @@ export default function MasterChefCookingTimer() {
 
   const logSession = async (label: string, seconds: number) => {
     if (!userId) return;
-    const { error } = await supabase.from("masterchef_cooking_sessions" as any).insert({
-      user_id: userId,
+    const { error } = await supabase.from("masterchef_cooking_sessions" as any).insert({ user_id: userId,
       dish_name: label,
       duration_seconds: seconds,
-      completed: true,
-    });
+      completed: true });
     if (!error) qc.invalidateQueries({ queryKey: ["masterchef-cooking-sessions"] });
   };
 
@@ -81,8 +79,7 @@ export default function MasterChefCookingTimer() {
         .limit(10);
       if (error) throw error;
       return (data ?? []) as unknown as Session[];
-    },
-  });
+    } });
 
   const addTimer = () => {
     const mins = parseInt(newMinutes) || 5;

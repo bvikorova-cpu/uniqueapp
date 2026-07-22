@@ -24,9 +24,7 @@ export default function AIMealAnalyzer({ onBack }: { onBack: () => void }) {
           message: `Analyze this meal nutritionally: "${meal}".
 Provide: estimated calories, protein, carbs, fats, fiber, vitamins/minerals highlights.
 Rate it 1-10 for weight loss suitability. Suggest improvements to make it healthier.
-Include a "Verdict" section with emoji rating.`,
-        },
-      });
+Include a "Verdict" section with emoji rating.` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
     } catch (e: any) {

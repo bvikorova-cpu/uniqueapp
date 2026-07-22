@@ -42,9 +42,7 @@ export default function JobPostingTemplates() {
   const save = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user || !name.trim() || !title.trim() || !description.trim()) return toast.error("Fill required fields");
-    const { error } = await (supabase as any).from("job_posting_templates").insert({
-      employer_id: user.id, name, category, title, description, requirements, benefits,
-    });
+    const { error } = await (supabase as any).from("job_posting_templates").insert({ employer_id: user.id, name, category, title, description, requirements, benefits });
     if (error) return toast.error(error.message);
     toast.success("Template saved");
     setName(""); setCategory(""); setTitle(""); setDescription(""); setRequirements(""); setBenefits("");

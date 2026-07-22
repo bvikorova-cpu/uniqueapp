@@ -1,11 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
@@ -49,13 +47,10 @@ export const ViewersList = ({ storyId, viewsCount, open, onOpenChange }: Viewers
         .in("id", userIds);
 
       // Combine views with profiles
-      return (views || []).map(view => ({
-        ...view,
-        profiles: profiles?.find(p => p.id === view.user_id) || null,
-      })) as StoryView[];
+      return (views || []).map(view => ({ ...view,
+        profiles: profiles?.find(p => p.id === view.user_id) || null })) as StoryView[];
     },
-    enabled: open,
-  });
+    enabled: open });
 
   return (
     <>
@@ -93,10 +88,9 @@ export const ViewersList = ({ storyId, viewsCount, open, onOpenChange }: Viewers
                       {view.profiles?.full_name || "Unknown user"}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {formatDistanceToNow(new Date(view.viewed_at), {
+                      { formatDistanceToNow(new Date(view.viewed_at), {
                         addSuffix: true,
-                        locale: sk,
-                      })}
+                        locale: sk })}
                     </p>
                   </div>
                 </div>

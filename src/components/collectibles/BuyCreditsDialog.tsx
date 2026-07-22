@@ -51,23 +51,19 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
   const [loading, setLoading] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handlePurchase = async (credits: number, price: number) => {
-    try {
+  const handlePurchase = async (credits: number, price: number) => { try {
       setLoading(credits.toString());
       
       toast({
         title: "Creating payment session",
-        description: "Please wait...",
-      });
+        description: "Please wait..." });
 
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication error",
           description: "You must be logged in to purchase credits",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         setLoading(null);
         return;
       }
@@ -78,23 +74,19 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
 
       if (error) throw error;
 
-      if (data?.url) {
-        toast({
+      if (data?.url) { toast({
           title: "Redirecting to Stripe",
-          description: "Opening secure checkout...",
-        });
+          description: "Opening secure checkout..." });
         window.location.href = data.url;
         return;
       }
       setLoading(null);
       
-    } catch (error: any) {
-      console.error('Purchase error:', error);
+    } catch (error: any) { console.error('Purchase error:', error);
       toast({
         title: "Payment error",
         description: error.message || "An error occurred",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setLoading(null);
     }
   };

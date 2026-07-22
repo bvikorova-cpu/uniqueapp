@@ -23,14 +23,12 @@ export const AISpiritualAdvisor = () => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (messages.length === 0) {
+  useEffect(() => { if (messages.length === 0) {
       setMessages([{
         id: "welcome",
         role: "assistant",
         content: "Welcome, seeker. I am your AI Spiritual Advisor. Share what weighs on your soul, and I will offer guidance, perspective, and paths toward inner peace. Whether you seek forgiveness, understanding, or spiritual growth — I am here to listen.\n\nWhat would you like to discuss?",
-        timestamp: new Date().toISOString(),
-      }]);
+        timestamp: new Date().toISOString() }]);
     }
   }, []);
 
@@ -49,12 +47,10 @@ export const AISpiritualAdvisor = () => {
       return;
     }
 
-    const userMsg: Message = {
-      id: Date.now().toString(),
+    const userMsg: Message = { id: Date.now().toString(),
       role: "user",
       content: input.trim(),
-      timestamp: new Date().toISOString(),
-    };
+      timestamp: new Date().toISOString() };
 
     setMessages(prev => [...prev, userMsg]);
     setInput("");
@@ -77,9 +73,7 @@ ${conversationContext}
 
 Seeker's latest message: ${userMsg.content}
 
-Provide thoughtful spiritual guidance addressing their concern.`,
-        },
-      });
+Provide thoughtful spiritual guidance addressing their concern.` } });
 
       if (error) throw error;
 
@@ -87,12 +81,10 @@ Provide thoughtful spiritual guidance addressing their concern.`,
         data?.plan?.soul_missions?.[0]?.mission ||
         "I sense the depth of your concern. Let us explore this together. Consider that every burden carried is also an opportunity for growth. What specific aspect would you like to examine further?";
 
-      const aiMsg: Message = {
-        id: (Date.now() + 1).toString(),
+      const aiMsg: Message = { id: (Date.now() + 1).toString(),
         role: "assistant",
         content: advisorResponse,
-        timestamp: new Date().toISOString(),
-      };
+        timestamp: new Date().toISOString() };
 
       setMessages(prev => [...prev, aiMsg]);
     } catch (error: any) {

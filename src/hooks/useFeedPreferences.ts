@@ -30,12 +30,10 @@ export const useFeedPreferences = () => {
       if (!data) {
         const { data: newPrefs, error: insertError } = await supabase
           .from("feed_preferences")
-          .insert({
-            user_id: user.id,
+          .insert({ user_id: user.id,
             preferred_categories: [],
             hidden_users: [],
-            sort_preference: "smart",
-          })
+            sort_preference: "smart" })
           .select()
           .single();
 
@@ -44,8 +42,7 @@ export const useFeedPreferences = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   const updatePreferences = useMutation({
     mutationFn: async (updates: Partial<FeedPreferences>) => {
@@ -61,12 +58,9 @@ export const useFeedPreferences = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feed-preferences"] });
-    },
-  });
+    } });
 
-  return {
-    preferences,
+  return { preferences,
     isLoading,
-    updatePreferences: updatePreferences.mutate,
-  };
+    updatePreferences: updatePreferences.mutate };
 };

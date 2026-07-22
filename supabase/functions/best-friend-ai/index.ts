@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -14,8 +12,7 @@ serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -35,8 +32,7 @@ serve(async (req) => {
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
-    const creditCosts: Record<string, number> = {
-      mood_journal: 3,
+    const creditCosts: Record<string, number> = { mood_journal: 3,
       conversation_starters: 2,
       encouragement_cards: 3,
       life_coach: 4,
@@ -50,8 +46,7 @@ serve(async (req) => {
       friendship_horoscope: 2,
       conflict_resolver: 4,
       bucket_list: 3,
-      self_care_planner: 3,
-    };
+      self_care_planner: 3 };
 
     const cost = creditCosts[action];
     if (!cost) throw new Error(`Unknown action: ${action}`);
@@ -274,9 +269,7 @@ serve(async (req) => {
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        response_format: { type: "json_object" },
-      }),
-    });
+        response_format: { type: "json_object" } }) });
 
     if (!response.ok) {
       const errText = await response.text();
@@ -288,28 +281,23 @@ serve(async (req) => {
     const result = JSON.parse(aiData.choices[0].message.content);
 
     // Deduct credits
-    await supabase.from("ai_credits").update({
-      credits_remaining: remaining - cost,
-    }).eq("user_id", user.id);
+    await supabase.from("ai_credits").update({ credits_remaining: remaining - cost }).eq("user_id", user.id);
 
     // Log usage
     await supabase.from("ai_usage_history").insert({
       user_id: user.id,
       usage_type: `best_friend_${action}`,
       credits_used: cost,
-      description: `Best Friend AI: ${action.replace(/_/g, " ")}`,
-    });
+      description: `Best Friend AI: ${action.replace(/_/g, " ")}` });
 
     // If mood journal, save entry
-    if (action === "mood_journal" && result.mood_score) {
-      await supabase.from("best_friend_mood_journal").insert({
+    if (action === "mood_journal" && result.mood_score) { await supabase.from("best_friend_mood_journal").insert({
         user_id: user.id,
         mood_score: result.mood_score,
         mood_label: result.mood_label,
         journal_entry: params.entry,
         ai_insight: result.insight,
-        tags: result.patterns || [],
-      });
+        tags: result.patterns || [] });
     }
 
     return new Response(JSON.stringify({ ...result, credits_remaining: remaining - cost }), {
@@ -320,7 +308,6 @@ serve(async (req) => {
     console.error("best-friend-ai error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: error.message === "Unauthorized" ? 401 : 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

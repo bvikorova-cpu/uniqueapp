@@ -18,11 +18,9 @@ export interface DatingFilters {
   verified_only: boolean;
 }
 
-const DEFAULT: DatingFilters = {
-  min_age: 18, max_age: 60, max_distance_km: 100,
+const DEFAULT: DatingFilters = { min_age: 18, max_age: 60, max_distance_km: 100,
   preferred_genders: ["male", "female", "other"],
-  verified_only: false,
-};
+  verified_only: false };
 
 interface Props {
   open: boolean;
@@ -41,24 +39,20 @@ export const FiltersDialog = ({ open, onOpenChange, userId, onSaved }: Props) =>
     if (!open || !userId) return;
     setLoading(true);
     supabase.from("dating_filters").select("*").eq("user_id", userId).maybeSingle()
-      .then(({ data }) => {
-        if (data) setFilters({
+      .then(({ data }) => { if (data) setFilters({
           min_age: data.min_age, max_age: data.max_age,
           max_distance_km: data.max_distance_km,
           preferred_genders: data.preferred_genders,
-          verified_only: data.verified_only,
-        });
+          verified_only: data.verified_only });
         setLoading(false);
       });
   }, [open, userId]);
 
-  const toggleGender = (g: string) => {
-    setFilters(f => ({
+  const toggleGender = (g: string) => { setFilters(f => ({
       ...f,
       preferred_genders: f.preferred_genders.includes(g)
         ? f.preferred_genders.filter(x => x !== g)
-        : [...f.preferred_genders, g],
-    }));
+        : [...f.preferred_genders, g] }));
   };
 
   const save = async () => {
@@ -66,9 +60,7 @@ export const FiltersDialog = ({ open, onOpenChange, userId, onSaved }: Props) =>
       toast({ title: "Select at least one gender", variant: "destructive" }); return;
     }
     setSaving(true);
-    const { error } = await supabase.from("dating_filters").upsert({
-      user_id: userId, ...filters,
-    });
+    const { error } = await supabase.from("dating_filters").upsert({ user_id: userId, ...filters });
     setSaving(false);
     if (error) { toast({ title: "Save failed", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Filters saved" });

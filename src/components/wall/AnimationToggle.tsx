@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Sparkles, Zap } from "lucide-react";
 import { useAnimations } from "@/contexts/AnimationContext";
-import {
-  Tooltip,
+import { Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  TooltipTrigger } from "@/components/ui/tooltip";
 
 export const AnimationToggle = () => {
   const { animationsEnabled, toggleAnimations } = useAnimations();

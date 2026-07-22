@@ -6,11 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Flame, Trophy, Heart } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const LEVEL_NAMES: Record<number, string> = {
-  1: "New Friend", 2: "Acquaintance", 3: "Buddy", 4: "Close Friend",
+const LEVEL_NAMES: Record<number, string> = { 1: "New Friend", 2: "Acquaintance", 3: "Buddy", 4: "Close Friend",
   5: "Best Friend", 6: "Confidant", 7: "Inner Circle", 8: "Lifelong Bond",
-  9: "Kindred Spirit", 10: "Soulmate",
-};
+  9: "Kindred Spirit", 10: "Soulmate" };
 
 export const FriendshipHUD = () => {
   const [progress, setProgress] = useState<any>(null);

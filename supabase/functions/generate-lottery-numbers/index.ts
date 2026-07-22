@@ -2,11 +2,9 @@
 // Disclaimer: results are random; no guarantee of winning. Compliance note: 16+.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const LOTTERY_CONFIGS: Record<string, { count: number; max: number; bonus?: { count: number; max: number } }> = {
   euromillions: { count: 5, max: 50, bonus: { count: 2, max: 12 } },
@@ -14,8 +12,7 @@ const LOTTERY_CONFIGS: Record<string, { count: number; max: number; bonus?: { co
   powerball:    { count: 5, max: 69, bonus: { count: 1, max: 26 } },
   megamillions: { count: 5, max: 70, bonus: { count: 1, max: 25 } },
   loto:         { count: 6, max: 49 },
-  default:      { count: 6, max: 49 },
-};
+  default:      { count: 6, max: 49 } };
 
 function pickUnique(count: number, max: number): number[] {
   const set = new Set<number>();
@@ -35,13 +32,11 @@ serve(async (req) => {
     const bonus = cfg.bonus ? pickUnique(cfg.bonus.count, cfg.bonus.max) : [];
 
     return new Response(
-      JSON.stringify({
-        lotteryType,
+      JSON.stringify({ lotteryType,
         numbers,
         bonus,
         generated_at: new Date().toISOString(),
-        disclaimer: "For entertainment only. Numbers are random; no winning guarantee.",
-      }),
+        disclaimer: "For entertainment only. Numbers are random; no winning guarantee." }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (e) {

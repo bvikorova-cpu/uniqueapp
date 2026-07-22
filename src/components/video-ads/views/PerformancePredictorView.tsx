@@ -31,8 +31,7 @@ export function PerformancePredictorView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); return; }
       const { data, error } = await supabase.functions.invoke("video-ad-tools", {
         body: { action: "performance_predictor", product, audience, message, platform, duration, budget },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Predictions ready! (${data.credits_used} credits)`);

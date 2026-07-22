@@ -1,14 +1,12 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Audio,
   Img,
   Sequence,
   interpolate,
   spring,
   staticFile,
-  useCurrentFrame,
-} from "remotion";
+  useCurrentFrame } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
 
@@ -17,13 +15,11 @@ const body = loadBody("normal", { weights: ["500", "600", "700", "900"] });
 
 const FPS = 30;
 
-const BRAND = {
-  white: "#ffffff",
+const BRAND = { white: "#ffffff",
   bgDeep: "#0b0416",
   purple: "#8b5cf6",
   pink: "#ec4899",
-  gold: "#fbbf24",
-};
+  gold: "#fbbf24" };
 
 const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
@@ -34,10 +30,8 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const tagOp = interpolate(frame, [50, 78], [0, 1], { extrapolateRight: "clamp" });
   const tagY = interpolate(frame, [50, 78], [20, 0], { extrapolateRight: "clamp" });
   const kb = interpolate(frame, [0, duration], [1.08, 1.2], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 20, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 20, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{ transform: `scale(${kb})` }}>
@@ -48,12 +42,11 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
         <AbsoluteFill style={{ backgroundColor: "rgba(6,2,18,0.65)" }} />
       </AbsoluteFill>
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          opacity: 1 - exit,
-        }}
+          opacity: 1 - exit }}
       >
         <div style={{ transform: `scale(${logoScale}) rotate(${logoRot}deg)`, filter: "drop-shadow(0 20px 60px rgba(236,72,153,0.6))" }}>
           <Img src={staticFile("home/logo.png")} style={{ width: 340, height: 340, borderRadius: 84 }} />
@@ -70,8 +63,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 80px rgba(236,72,153,0.55)",
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em" }}
         >
           Unique
         </div>
@@ -86,8 +78,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             color: "rgba(255,255,255,0.94)",
             letterSpacing: "0.28em",
             textTransform: "uppercase",
-            textAlign: "center",
-          }}
+            textAlign: "center" }}
         >
           Health & Wellness
         </div>
@@ -96,12 +87,10 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   );
 };
 
-const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
-  const frame = useCurrentFrame();
+const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => { const frame = useCurrentFrame();
   const opacity = interpolate(frame, [0, 12, duration - 20, duration], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+    extrapolateRight: "clamp" });
   const l1o = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
   const l1y = interpolate(frame, [0, 18], [40, 0], { extrapolateRight: "clamp" });
   const l2o = interpolate(frame, [16, 34], [0, 1], { extrapolateRight: "clamp" });
@@ -111,20 +100,18 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 30% 30%, rgba(236,72,153,0.55), transparent 55%), radial-gradient(circle at 70% 70%, rgba(139,92,246,0.5), transparent 55%)",
-        }}
+            "radial-gradient(circle at 30% 30%, rgba(236,72,153,0.55), transparent 55%), radial-gradient(circle at 70% 70%, rgba(139,92,246,0.5), transparent 55%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
           padding: 80,
           textAlign: "center",
-          opacity,
-        }}
+          opacity }}
       >
         <div
           style={{
@@ -133,8 +120,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             fontFamily: body.fontFamily,
             fontWeight: 500,
             fontSize: 72,
-            color: "rgba(255,255,255,0.82)",
-          }}
+            color: "rgba(255,255,255,0.82)" }}
         >
           Your body. Your mind.
         </div>
@@ -150,8 +136,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "-0.04em",
             background: `linear-gradient(90deg, ${BRAND.pink} 0%, ${BRAND.purple} 50%, ${BRAND.gold} 100%)`,
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
+            WebkitTextFillColor: "transparent" }}
         >
           Feel your best.
         </div>
@@ -164,8 +149,7 @@ const ScenePromise: React.FC<{ duration: number }> = ({ duration }) => {
             fontWeight: 600,
             fontSize: 48,
             color: "rgba(255,255,255,0.9)",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           9 ways to heal, grow and thrive.
         </div>
@@ -187,10 +171,8 @@ type Module = {
 const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mod }) => {
   const frame = useCurrentFrame();
   const enter = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 18, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   const shellOp = enter * (1 - exit);
   const kbScale = interpolate(frame, [0, duration], [1.1, 1.28], { extrapolateRight: "clamp" });
   const kbX = interpolate(frame, [0, duration], [-20, 20]);
@@ -212,31 +194,27 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
             height: "100%",
             objectFit: "cover",
             transform: `scale(${kbScale}) translate(${kbX}px, ${kbY}px)`,
-            filter: "saturate(1.15) contrast(1.05)",
-          }}
+            filter: "saturate(1.15) contrast(1.05)" }}
         />
       </AbsoluteFill>
       <AbsoluteFill
         style={{
           background: `linear-gradient(160deg, ${mod.accent}33 0%, transparent 40%, ${mod.accent2}55 100%)`,
-          mixBlendMode: "screen",
-        }}
+          mixBlendMode: "screen" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "linear-gradient(180deg, rgba(11,4,22,0.78) 0%, rgba(11,4,22,0.15) 22%, rgba(11,4,22,0) 45%, rgba(11,4,22,0.35) 62%, rgba(11,4,22,0.94) 100%)",
-        }}
+            "linear-gradient(180deg, rgba(11,4,22,0.78) 0%, rgba(11,4,22,0.15) 22%, rgba(11,4,22,0) 45%, rgba(11,4,22,0.35) 62%, rgba(11,4,22,0.94) 100%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "space-between",
           flexDirection: "column",
           padding: 80,
           paddingTop: 160,
-          paddingBottom: 180,
-        }}
+          paddingBottom: 180 }}
       >
         <div
           style={{
@@ -252,8 +230,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
             letterSpacing: "0.28em",
             textTransform: "uppercase",
             boxShadow: `0 20px 60px -15px ${mod.accent}cc`,
-            textAlign: "center",
-          }}
+            textAlign: "center" }}
         >
           {mod.badge}
         </div>
@@ -269,8 +246,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
               color: BRAND.white,
               letterSpacing: "-0.035em",
               textShadow: "0 8px 40px rgba(0,0,0,0.75)",
-              textAlign: "center",
-            }}
+              textAlign: "center" }}
           >
             {mod.title}
           </div>
@@ -286,8 +262,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
               textAlign: "center",
               maxWidth: 900,
               lineHeight: 1.25,
-              textShadow: "0 4px 20px rgba(0,0,0,0.85)",
-            }}
+              textShadow: "0 4px 20px rgba(0,0,0,0.85)" }}
           >
             {mod.subtitle}
           </div>
@@ -309,8 +284,7 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
                     borderRadius: 22,
                     background: "rgba(11,4,22,0.55)",
                     border: `1px solid ${mod.accent}66`,
-                    boxShadow: `0 10px 40px -20px ${mod.accent}aa`,
-                  }}
+                    boxShadow: `0 10px 40px -20px ${mod.accent}aa` }}
                 >
                   <div
                     style={{
@@ -321,21 +295,19 @@ const ModuleScene: React.FC<{ duration: number; mod: Module }> = ({ duration, mo
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      flexShrink: 0,
-                    }}
+                      flexShrink: 0 }}
                   >
                     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                     </svg>
                   </div>
                   <div
-                    style={{
+                    style={ {
                       fontFamily: body.fontFamily,
                       fontWeight: 700,
                       fontSize: 34,
                       color: BRAND.white,
-                      letterSpacing: "-0.01em",
-                    }}
+                      letterSpacing: "-0.01em" }}
                   >
                     {p}
                   </div>
@@ -355,17 +327,14 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   const wordS = spring({ frame: frame - 12, fps: FPS, config: { damping: 14, stiffness: 110 } });
   const urlOp = interpolate(frame, [30, 55], [0, 1], { extrapolateRight: "clamp" });
   const tagOp = interpolate(frame, [45, 70], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 15, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 15, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 50% 45%, rgba(236,72,153,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(139,92,246,0.4), transparent 60%)",
-        }}
+            "radial-gradient(circle at 50% 45%, rgba(236,72,153,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(139,92,246,0.4), transparent 60%)" }}
       />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
         <Img
@@ -375,8 +344,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             height: 280,
             borderRadius: 72,
             transform: `scale(${logoS})`,
-            filter: "drop-shadow(0 15px 50px rgba(236,72,153,0.6))",
-          }}
+            filter: "drop-shadow(0 15px 50px rgba(236,72,153,0.6))" }}
         />
         <div
           style={{
@@ -389,26 +357,24 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(180deg, ${BRAND.white} 0%, #fbcfe8 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 60px rgba(236,72,153,0.5)",
-          }}
+            textShadow: "0 0 60px rgba(236,72,153,0.5)" }}
         >
           Unique
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 40,
             opacity: urlOp,
             fontFamily: body.fontFamily,
             fontWeight: 700,
             fontSize: 68,
             color: BRAND.white,
-            letterSpacing: "0.05em",
-          }}
+            letterSpacing: "0.05em" }}
         >
           uniqueapp.fun
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 26,
             opacity: tagOp,
             fontFamily: body.fontFamily,
@@ -418,8 +384,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             textAlign: "center",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           Heal · Move · Thrive
         </div>
@@ -429,87 +394,69 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
 };
 
 const MODULES: Module[] = [
-  {
-    badge: "Wellness & Relaxation",
+  { badge: "Wellness & Relaxation",
     title: "Breathe. Reset.",
     subtitle: "Guided meditations, sound baths and rituals to melt the stress away.",
     perks: ["Guided sessions", "Breathwork & sleep", "Daily rituals"],
     image: "health/01-wellness.jpg",
     accent: "#f9a8d4",
-    accent2: "#8b5cf6",
-  },
-  {
-    badge: "Psychologist",
+    accent2: "#8b5cf6" },
+  { badge: "Psychologist",
     title: "Talk it out.",
     subtitle: "Verified therapists ready to listen — online sessions, real progress.",
     perks: ["Licensed therapists", "Private video sessions", "24h refund window"],
     image: "health/02-psychologist.jpg",
     accent: "#a855f7",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "First Aid",
+    accent2: "#ec4899" },
+  { badge: "First Aid",
     title: "Know what to do.",
     subtitle: "Life-saving instructions and step-by-step guides for real emergencies.",
     perks: ["Emergency guides", "CPR & choking", "Offline access"],
     image: "health/03-firstaid.jpg",
     accent: "#ef4444",
-    accent2: "#fbbf24",
-  },
-  {
-    badge: "Fit & Slim",
+    accent2: "#fbbf24" },
+  { badge: "Fit & Slim",
     title: "Stronger every day.",
     subtitle: "Personalised workouts and habit tracking to reach your body goals.",
     perks: ["Custom plans", "Progress tracking", "Coach chat"],
     image: "health/04-fitslim.jpg",
     accent: "#22d3ee",
-    accent2: "#8b5cf6",
-  },
-  {
-    badge: "Nutrition Hub",
+    accent2: "#8b5cf6" },
+  { badge: "Nutrition Hub",
     title: "Eat like you mean it.",
     subtitle: "Meal plans, macro tracking and recipes tailored to your body.",
     perks: ["Meal plans", "Macro tracking", "Recipe library"],
     image: "health/05-nutrition.jpg",
     accent: "#84cc16",
-    accent2: "#fbbf24",
-  },
-  {
-    badge: "Phobia Trading Network",
+    accent2: "#fbbf24" },
+  { badge: "Phobia Trading Network",
     title: "Face your fears.",
     subtitle: "Trade support with people who understand — beat phobias together.",
     perks: ["Peer support", "Gradual exposure", "Anonymous groups"],
     image: "health/06-phobia.jpg",
     accent: "#8b5cf6",
-    accent2: "#22d3ee",
-  },
-  {
-    badge: "Safety & Bullying Prevention",
+    accent2: "#22d3ee" },
+  { badge: "Safety & Bullying Prevention",
     title: "You are protected.",
     subtitle: "Report, block and get help — tools that keep kids and teens safe.",
     perks: ["One-tap report", "Trusted circle", "Expert response"],
     image: "health/07-safety.jpg",
     accent: "#fbbf24",
-    accent2: "#a855f7",
-  },
-  {
-    badge: "Lie Detector Chat",
+    accent2: "#a855f7" },
+  { badge: "Lie Detector Chat",
     title: "Truth, revealed.",
     subtitle: "AI-powered analysis of chats to spot inconsistencies and red flags.",
     perks: ["AI truth scoring", "Chat analysis", "Red-flag alerts"],
     image: "health/08-liedetector.jpg",
     accent: "#22c55e",
-    accent2: "#ef4444",
-  },
-  {
-    badge: "Fitness & Wellness",
+    accent2: "#ef4444" },
+  { badge: "Fitness & Wellness",
     title: "Whole body. Whole mind.",
     subtitle: "Yoga, mobility and mindfulness — one place for total wellbeing.",
     perks: ["Yoga & mobility", "Mindfulness", "Recovery tools"],
     image: "health/09-fitness.jpg",
     accent: "#fb923c",
-    accent2: "#ec4899",
-  },
+    accent2: "#ec4899" },
 ];
 
 const INTRO = 130;

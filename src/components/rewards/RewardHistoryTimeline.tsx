@@ -25,8 +25,7 @@ const typeConfig = {
   comment_added: { icon: Star, color: "text-blue-500", bg: "bg-blue-500/10", label: "Comment" },
   like_received: { icon: Star, color: "text-pink-500", bg: "bg-pink-500/10", label: "Like Received" },
   badge_earned: { icon: Medal, color: "text-yellow-500", bg: "bg-yellow-500/10", label: "Badge Earned" },
-  level_up: { icon: Trophy, color: "text-amber-500", bg: "bg-amber-500/10", label: "Level Up" },
-};
+  level_up: { icon: Trophy, color: "text-amber-500", bg: "bg-amber-500/10", label: "Level Up" } };
 
 export default function RewardHistoryTimeline({ userId }: { userId: string }) {
   const { data: events = [], isLoading } = useQuery({
@@ -40,8 +39,7 @@ export default function RewardHistoryTimeline({ userId }: { userId: string }) {
         .limit(20);
       return data || [];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   return (
     <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
@@ -73,13 +71,12 @@ export default function RewardHistoryTimeline({ userId }: { userId: string }) {
             <div className="absolute left-4 top-0 bottom-0 w-px bg-border" />
 
             <div className="space-y-1">
-              {events.map((event: any, i: number) => {
+              { events.map((event: any, i: number) => {
                 const config = typeConfig[event.activity_type as keyof typeof typeConfig] || {
                   icon: Star,
                   color: "text-muted-foreground",
                   bg: "bg-muted/10",
-                  label: event.activity_type,
-                };
+                  label: event.activity_type };
                 const Icon = config.icon;
 
                 return (

@@ -73,8 +73,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
             left: `${(i * 11) % 100}%`,
             top: `${20 + ((i * 17) % 60)}%`,
             width: 80 + (i % 4) * 40,
-            height: 80 + (i % 4) * 40,
-          }}
+            height: 80 + (i % 4) * 40 }}
           animate={{ x: [-30, 30, -30], opacity: [0.1, 0.35, 0.1] }}
           transition={{ duration: 8 + i, repeat: Infinity, delay: i * 0.4, ease: "easeInOut" }}
         />

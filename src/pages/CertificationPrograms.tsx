@@ -13,8 +13,7 @@ const CertificationPrograms = () => {
   const navigate = useNavigate();
   const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+  useEffect(() => { const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
@@ -22,8 +21,7 @@ const CertificationPrograms = () => {
         if (success) {
           toast({
             title: "Payment Successful! 🎉",
-            description: "You now have access to your certification program.",
-          });
+            description: "You now have access to your certification program." });
           window.history.replaceState({}, '', '/certification-programs');
         }
       });
@@ -179,22 +177,18 @@ const CertificationPrograms = () => {
 
     setEnrolling(certId);
     
-    try {
-      const sessionUrl = await purchaseContent(certId, "certification", title, price);
+    try { const sessionUrl = await purchaseContent(certId, "certification", title, price);
       
       if (sessionUrl) {
         window.open(sessionUrl, '_blank');
         toast({
           title: "Redirecting to Payment",
-          description: "Complete your payment to access the certification program.",
-        });
+          description: "Complete your payment to access the certification program." });
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Enrollment Failed",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setEnrolling(null);
     }

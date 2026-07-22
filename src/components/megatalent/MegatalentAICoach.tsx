@@ -31,8 +31,7 @@ export default function MegatalentAICoach({ category }: Props) {
     setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("megatalent-ai", {
-        body: { action: "talent_coach", title, description, category, mediaType: "video" },
-      });
+        body: { action: "talent_coach", title, description, category, mediaType: "video" } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       setResult(data);

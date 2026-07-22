@@ -19,7 +19,7 @@ export const CharacterConsistencyView = ({ onCreditsUsed }: { onCreditsUsed: () 
       <label className="text-sm font-bold block mt-2">Character description (locked features)</label>
       <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="e.g., 25yo Asian woman, short black bob, hazel eyes, freckles, denim jacket, white tee" rows={3} className="resize-none" />
       <label className="text-sm font-bold block mt-2">Current scene</label>
-      <Textarea value={scene} onChange={(e) => setScene(e.target.value)} placeholder="e.g., reading a book in a Parisian café" rows={2} className="resize-none" />
+      <Textarea value={scene} onChange={(e) => setScene(e.target.value)} placeholder="e.g., reading a book in a cozy café" rows={2} className="resize-none" />
     </SimpleAITool>
     </>
   );

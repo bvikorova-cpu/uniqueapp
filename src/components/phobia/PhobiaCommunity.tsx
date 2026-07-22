@@ -59,8 +59,7 @@ export const PhobiaCommunity = () => {
         prompt: title,
         generated_text: content,
         metadata: { category, type: "phobia_community", likes: 0 },
-        status: "completed" as any,
-      });
+        status: "completed" as any });
       if (error) throw error;
       toast.success("Post shared with the community!");
       setTitle(""); setContent(""); setShowForm(false);

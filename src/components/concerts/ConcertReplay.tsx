@@ -21,8 +21,7 @@ export const ConcertReplay = ({ onBack }: Props) => {
         .limit(20);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return (
     <>

@@ -53,8 +53,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
         toast({
           title: "File rejected",
           description: `${f.name}: ${!okType ? "unsupported type" : "exceeds 25 MB"}`,
-          variant: "destructive",
-        });
+          variant: "destructive" });
         continue;
       }
       accepted.push(f);
@@ -65,8 +64,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
         toast({
           title: "Too many files",
           description: `Max ${MAX_FILES} per post`,
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return merged.slice(0, MAX_FILES);
       }
       return merged;
@@ -79,8 +77,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
     if (submittingRef.current) return;
 
     const trimmed = content.trim();
@@ -88,16 +85,14 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
       toast({
         title: "Empty post",
         description: "Add text or media",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     if (trimmed.length > MAX_CONTENT) {
       toast({
         title: "Too long",
         description: `Max ${MAX_CONTENT} characters`,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -109,12 +104,10 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "You must be logged in",
           description: "Please log in to add posts",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -165,12 +158,10 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
           }
         }
 
-        const { error: mediaError } = await supabase.from("media").insert({
-          post_id: post.id,
+        const { error: mediaError } = await supabase.from("media").insert({ post_id: post.id,
           file_url: publicUrl,
           file_type: fileType,
-          file_name: file.name,
-        });
+          file_name: file.name });
         if (mediaError) throw mediaError;
       }
 
@@ -186,11 +177,9 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
       if (createdPostId && files.length > 0 && uploadedPaths.length < files.length) {
         try { await supabase.from("posts").delete().eq("id", createdPostId); } catch {}
       }
-      toast({
-        title: "Error",
+      toast({ title: "Error",
         description: error?.message ?? "Failed to create post",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       submittingRef.current = false;
       setUploading(false);

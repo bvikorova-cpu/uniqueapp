@@ -21,9 +21,7 @@ export default function BazaarCreate() {
     if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     if (!title || !priceEur) { toast({ title: "Title and price are required", variant: "destructive" }); return; }
     setSaving(true);
-    const { error } = await supabase.from("bazaar_listings" as any).insert({
-      user_id: user.id, title, description, price_eur: Number(priceEur), currency: "EUR", status: "active",
-    });
+    const { error } = await supabase.from("bazaar_listings" as any).insert({ user_id: user.id, title, description, price_eur: Number(priceEur), currency: "EUR", status: "active" });
     setSaving(false);
     if (error) return toast({ title: "Failed", description: error.message, variant: "destructive" });
     toast({ title: "Listing created" });

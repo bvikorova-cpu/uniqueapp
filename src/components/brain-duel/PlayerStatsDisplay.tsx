@@ -39,15 +39,13 @@ const ELO_RANKS = [
   { min: 2000, name: "Grandmaster", color: "text-primary", bg: "bg-primary/10" },
 ];
 
-export const PlayerStatsDisplay = ({
-  xp = 0,
+export const PlayerStatsDisplay = ({ xp = 0,
   level = 1,
   elo = 1000,
   eloChange = 0,
   wins = 0,
   losses = 0,
-  streak = 0,
-}: PlayerStatsDisplayProps) => {
+  streak = 0 }: PlayerStatsDisplayProps) => {
   const currentLevelData = LEVELS.find(l => l.level === level) || LEVELS[0];
   const nextLevelData = LEVELS.find(l => l.level === level + 1);
   const xpProgress = nextLevelData

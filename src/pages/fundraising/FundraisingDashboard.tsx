@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import {
-  Heart,
+import { Heart,
   TrendingUp,
   Users,
   Euro,
@@ -15,8 +14,7 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  LayoutDashboard,
-} from 'lucide-react';
+  LayoutDashboard } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { campaignDetailRoute, campaignDashboardRoute, tableToCategory } from '@/lib/fundraisingRoutes';
 import { NewCampaignPicker } from '@/components/fundraising/NewCampaignPicker';
@@ -43,14 +41,12 @@ interface DonationStat {
   monthly_amount: number;
 }
 
-export default function FundraisingDashboard() {
-  const navigate = useNavigate();
+export default function FundraisingDashboard() { const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [stats, setStats] = useState<DonationStat>({
     total_donations: 0,
     total_amount: 0,
-    monthly_amount: 0,
-  });
+    monthly_amount: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,12 +57,10 @@ export default function FundraisingDashboard() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         navigate('/auth');
         return;
       }
@@ -139,8 +133,7 @@ export default function FundraisingDashboard() {
 
       if (error) throw error;
 
-      if (data) {
-        const totalAmount = data.reduce((sum, d) => sum + Number(d.amount || 0), 0);
+      if (data) { const totalAmount = data.reduce((sum, d) => sum + Number(d.amount || 0), 0);
         const monthlyAmount = data
           .filter(d => d.is_monthly)
           .reduce((sum, d) => sum + Number(d.amount || 0), 0);
@@ -148,8 +141,7 @@ export default function FundraisingDashboard() {
         setStats({
           total_donations: data.length,
           total_amount: totalAmount,
-          monthly_amount: monthlyAmount,
-        });
+          monthly_amount: monthlyAmount });
       }
     } catch (error) {
       console.error('Error fetching stats:', error);

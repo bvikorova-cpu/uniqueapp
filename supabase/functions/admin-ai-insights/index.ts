@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -13,8 +11,7 @@ Deno.serve(async (req) => {
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supabase = createClient(
@@ -27,8 +24,7 @@ Deno.serve(async (req) => {
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Verify admin
@@ -42,8 +38,7 @@ Deno.serve(async (req) => {
     if (!roleCheck) {
       return new Response(JSON.stringify({ error: "Admin access required" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     let body: unknown = {};
@@ -59,8 +54,7 @@ Deno.serve(async (req) => {
     if (isRecord(body) && body["__probe"] === true) {
       return new Response(JSON.stringify({ ok: true, function: "admin-ai-insights" }), {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const statsPayload = isRecord(body) && isRecord(body.stats) ? body.stats : {};
@@ -93,8 +87,7 @@ Return JSON only.`;
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
@@ -118,31 +111,20 @@ Return JSON only.`;
                       body: { type: "string", description: "1-2 sentence insight with numbers" },
                       action: { type: "string", description: "One concrete recommendation" },
                       sentiment: { type: "string", enum: ["positive", "warning", "neutral", "critical"] },
-                      icon: { type: "string", enum: ["trending-up", "alert-triangle", "lightbulb", "target", "trending-down", "zap"] },
-                    },
-                    required: ["title", "body", "action", "sentiment", "icon"],
-                  },
+                      icon: { type: "string", enum: ["trending-up", "alert-triangle", "lightbulb", "target", "trending-down", "zap"] } },
+                    required: ["title", "body", "action", "sentiment", "icon"] },
                   minItems: 4,
-                  maxItems: 4,
-                },
-              },
-              required: ["insights"],
-            },
-          },
-        }],
-        tool_choice: { type: "function", function: { name: "produce_insights" } },
-      }),
-    });
+                  maxItems: 4 } },
+              required: ["insights"] } } }],
+        tool_choice: { type: "function", function: { name: "produce_insights" } } }) });
 
     if (aiResp.status === 429) {
       return new Response(JSON.stringify({ error: "Rate limit exceeded, try again in a moment." }), {
-        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (aiResp.status === 402) {
       return new Response(JSON.stringify({ error: "AI credits exhausted." }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (!aiResp.ok) {
       const t = await aiResp.text();
@@ -155,13 +137,11 @@ Return JSON only.`;
     const insights = toolCall ? JSON.parse(toolCall.function.arguments).insights : [];
 
     return new Response(JSON.stringify({ insights }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("admin-ai-insights error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

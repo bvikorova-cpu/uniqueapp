@@ -50,12 +50,10 @@ export const useFanClubAutoResync = () => {
 
         // Seed / refresh the known-broken map from live DB state.
         const currentBroken = new Map<string, { status: string; name: string }>();
-        for (const r of before) {
-          if (BROKEN.has(r.status)) {
+        for (const r of before) { if (BROKEN.has(r.status)) {
             currentBroken.set(r.fan_club_id, {
               status: r.status,
-              name: r.fan_club?.name || "Fan Club",
-            });
+              name: r.fan_club?.name || "Fan Club" });
           }
         }
 
@@ -91,20 +89,16 @@ export const useFanClubAutoResync = () => {
           } else if (now && !BROKEN.has(now.status)) {
             // e.g. canceled — remove from tracking without a toast
             knownBrokenRef.current.delete(id);
-          } else if (now) {
-            knownBrokenRef.current.set(id, {
+          } else if (now) { knownBrokenRef.current.set(id, {
               status: now.status,
-              name: now.fan_club?.name || info.name,
-            });
+              name: now.fan_club?.name || info.name });
           }
         }
 
         if (fixed.length === 1) {
           toast.success(`Fan Club status repaired: ${fixed[0]} is now verified.`);
         } else if (fixed.length > 1) {
-          toast.success(`${fixed.length} fan-club memberships auto-repaired.`, {
-            description: fixed.slice(0, 3).join(", ") + (fixed.length > 3 ? "…" : ""),
-          });
+          toast.success(`${fixed.length} fan-club memberships auto-repaired.`, { description: fixed.slice(0, 3).join(", ") + (fixed.length > 3 ? "…" : "") });
         }
       } catch {
         /* swallow — background job must never break the app */

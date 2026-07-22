@@ -8,8 +8,7 @@ import { resolve } from "node:path";
 
 const FN_ROOT = resolve(__dirname, "../../supabase/functions");
 
-const GROUPS: Record<string, string[]> = {
-  withdrawals: [
+const GROUPS: Record<string, string[]> = { withdrawals: [
     "admin-payout-withdrawal",
     "auto-payout-pending-withdrawals",
     "process-referral-withdrawal",
@@ -23,8 +22,7 @@ const GROUPS: Record<string, string[]> = {
     "stripe-connect-payout",
   ],
   "mt-*": ["mt-router"],
-  "notify-admin": ["notify-admin-referral-withdrawal"],
-};
+  "notify-admin": ["notify-admin-referral-withdrawal"] };
 
 describe("Group 7 edge functions present", () => {
   for (const [group, fns] of Object.entries(GROUPS)) {

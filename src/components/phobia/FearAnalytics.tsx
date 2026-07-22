@@ -29,11 +29,9 @@ export const FearAnalytics = () => {
         .order("created_at", { ascending: true })
         .limit(30);
 
-      if (journals) {
-        const trendData = journals.map((j, i) => ({
+      if (journals) { const trendData = journals.map((j, i) => ({
           day: i + 1,
-          level: (j.metadata as any)?.fear_level || 5,
-        }));
+          level: (j.metadata as any)?.fear_level || 5 }));
         setJournalData(trendData);
       }
 

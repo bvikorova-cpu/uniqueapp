@@ -20,8 +20,7 @@ export const usePostPolls = (postId?: string) => {
       if (error && error.code !== "PGRST116") throw error;
       return data;
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
   const createPoll = useMutation({
     mutationFn: async ({ postId, question, options, multipleChoice, endsAt }: {
@@ -36,16 +35,14 @@ export const usePostPolls = (postId?: string) => {
         question,
         options: options.map((text, index) => ({ index, text, votes: 0 })),
         multiple_choice: multipleChoice,
-        ends_at: endsAt?.toISOString(),
-      });
+        ends_at: endsAt?.toISOString() });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-poll"] });
       toast({ title: "Poll created!" });
-    },
-  });
+    } });
 
   const vote = useMutation({
     mutationFn: async ({ pollId, optionIndex }: {
@@ -58,21 +55,17 @@ export const usePostPolls = (postId?: string) => {
       const { error } = await supabase.from("poll_votes").insert({
         poll_id: pollId,
         user_id: user.id,
-        option_id: `option_${optionIndex}`,
-      });
+        option_id: `option_${optionIndex}` });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-poll"] });
       toast({ title: "Vote recorded!" });
-    },
-  });
+    } });
 
-  return {
-    poll,
+  return { poll,
     isLoading,
     createPoll: createPoll.mutate,
-    vote: vote.mutate,
-  };
+    vote: vote.mutate };
 };

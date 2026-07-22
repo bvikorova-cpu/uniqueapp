@@ -1,13 +1,11 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Img,
   Sequence,
   interpolate,
   spring,
   staticFile,
-  useCurrentFrame,
-} from "remotion";
+  useCurrentFrame } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
 
@@ -16,13 +14,11 @@ const body = loadBody("normal", { weights: ["500", "600", "700", "900"] });
 
 const FPS = 30;
 
-const BRAND = {
-  white: "#ffffff",
+const BRAND = { white: "#ffffff",
   bgDeep: "#07040f",
   purple: "#8b5cf6",
   pink: "#ec4899",
-  gold: "#fbbf24",
-};
+  gold: "#fbbf24" };
 
 const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
@@ -33,10 +29,8 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const tagOp = interpolate(frame, [50, 78], [0, 1], { extrapolateRight: "clamp" });
   const tagY = interpolate(frame, [50, 78], [20, 0], { extrapolateRight: "clamp" });
   const kb = interpolate(frame, [0, duration], [1.08, 1.2], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 20, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 20, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   // pulsing orb ring
   const pulse = Math.sin(frame / 6) * 0.05 + 1;
   return (
@@ -54,8 +48,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
         <div
           style={{
             transform: `scale(${logoScale * pulse}) rotate(${logoRot}deg)`,
-            filter: "drop-shadow(0 20px 80px rgba(139,92,246,0.75))",
-          }}
+            filter: "drop-shadow(0 20px 80px rgba(139,92,246,0.75))" }}
         >
           <Img src={staticFile("home/logo.png")} style={{ width: 340, height: 340, borderRadius: 84 }} />
         </div>
@@ -71,8 +64,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 80px rgba(236,72,153,0.55)",
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em" }}
         >
           Unique
         </div>
@@ -88,8 +80,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             textAlign: "center",
-            textShadow: "0 4px 30px rgba(251,191,36,0.6)",
-          }}
+            textShadow: "0 4px 30px rgba(251,191,36,0.6)" }}
         >
           Uni · Voice AI
         </div>
@@ -111,10 +102,8 @@ type Beat = {
 const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod }) => {
   const frame = useCurrentFrame();
   const enter = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 18, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   const shellOp = enter * (1 - exit);
   const kbScale = interpolate(frame, [0, duration], [1.1, 1.28], { extrapolateRight: "clamp" });
   const kbX = interpolate(frame, [0, duration], [-20, 20]);
@@ -136,31 +125,27 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
             height: "100%",
             objectFit: "cover",
             transform: `scale(${kbScale}) translate(${kbX}px, ${kbY}px)`,
-            filter: "saturate(1.15) contrast(1.05)",
-          }}
+            filter: "saturate(1.15) contrast(1.05)" }}
         />
       </AbsoluteFill>
       <AbsoluteFill
         style={{
           background: `linear-gradient(160deg, ${mod.accent}33 0%, transparent 40%, ${mod.accent2}55 100%)`,
-          mixBlendMode: "screen",
-        }}
+          mixBlendMode: "screen" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "linear-gradient(180deg, rgba(7,4,15,0.82) 0%, rgba(7,4,15,0.15) 22%, rgba(7,4,15,0) 45%, rgba(7,4,15,0.4) 62%, rgba(7,4,15,0.95) 100%)",
-        }}
+            "linear-gradient(180deg, rgba(7,4,15,0.82) 0%, rgba(7,4,15,0.15) 22%, rgba(7,4,15,0) 45%, rgba(7,4,15,0.4) 62%, rgba(7,4,15,0.95) 100%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "space-between",
           flexDirection: "column",
           padding: 80,
           paddingTop: 160,
-          paddingBottom: 180,
-        }}
+          paddingBottom: 180 }}
       >
         <div
           style={{
@@ -176,8 +161,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
             letterSpacing: "0.24em",
             textTransform: "uppercase",
             boxShadow: `0 20px 60px -15px ${mod.accent}cc`,
-            textAlign: "center",
-          }}
+            textAlign: "center" }}
         >
           {mod.badge}
         </div>
@@ -193,8 +177,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
               color: BRAND.white,
               letterSpacing: "-0.035em",
               textShadow: "0 8px 40px rgba(0,0,0,0.75)",
-              textAlign: "center",
-            }}
+              textAlign: "center" }}
           >
             {mod.title}
           </div>
@@ -210,8 +193,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
               textAlign: "center",
               maxWidth: 920,
               lineHeight: 1.25,
-              textShadow: "0 4px 20px rgba(0,0,0,0.85)",
-            }}
+              textShadow: "0 4px 20px rgba(0,0,0,0.85)" }}
           >
             {mod.subtitle}
           </div>
@@ -233,8 +215,7 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
                     borderRadius: 22,
                     background: "rgba(7,4,15,0.6)",
                     border: `1px solid ${mod.accent}66`,
-                    boxShadow: `0 10px 40px -20px ${mod.accent}aa`,
-                  }}
+                    boxShadow: `0 10px 40px -20px ${mod.accent}aa` }}
                 >
                   <div
                     style={{
@@ -245,21 +226,19 @@ const BeatScene: React.FC<{ duration: number; mod: Beat }> = ({ duration, mod })
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      flexShrink: 0,
-                    }}
+                      flexShrink: 0 }}
                   >
                     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </div>
                   <div
-                    style={{
+                    style={ {
                       fontFamily: body.fontFamily,
                       fontWeight: 700,
                       fontSize: 32,
                       color: BRAND.white,
-                      letterSpacing: "-0.01em",
-                    }}
+                      letterSpacing: "-0.01em" }}
                   >
                     {p}
                   </div>
@@ -279,17 +258,14 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   const wordS = spring({ frame: frame - 12, fps: FPS, config: { damping: 14, stiffness: 110 } });
   const urlOp = interpolate(frame, [30, 55], [0, 1], { extrapolateRight: "clamp" });
   const tagOp = interpolate(frame, [45, 70], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 15, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 15, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.4), transparent 60%)",
-        }}
+            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.4), transparent 60%)" }}
       />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
         <Img
@@ -299,8 +275,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             height: 280,
             borderRadius: 72,
             transform: `scale(${logoS})`,
-            filter: "drop-shadow(0 15px 50px rgba(139,92,246,0.75))",
-          }}
+            filter: "drop-shadow(0 15px 50px rgba(139,92,246,0.75))" }}
         />
         <div
           style={{
@@ -313,26 +288,24 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(180deg, ${BRAND.white} 0%, #fbcfe8 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 60px rgba(236,72,153,0.55)",
-          }}
+            textShadow: "0 0 60px rgba(236,72,153,0.55)" }}
         >
           Unique
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 40,
             opacity: urlOp,
             fontFamily: body.fontFamily,
             fontWeight: 700,
             fontSize: 68,
             color: BRAND.white,
-            letterSpacing: "0.05em",
-          }}
+            letterSpacing: "0.05em" }}
         >
           uniqueapp.fun
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 26,
             opacity: tagOp,
             fontFamily: body.fontFamily,
@@ -342,8 +315,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             textAlign: "center",
-            maxWidth: 900,
-          }}
+            maxWidth: 900 }}
         >
           Just say "Hey Uni"
         </div>
@@ -353,51 +325,41 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
 };
 
 const BEATS: Beat[] = [
-  {
-    badge: "Talk to Uni",
+  { badge: "Talk to Uni",
     title: "Your voice AI.",
     subtitle: "Tap the orb, speak naturally — Uni listens, understands and answers instantly.",
     perks: ["Natural voice conversation", "Real-time speech to text", "Warm, human-like replies"],
     image: "uni/02-speak.jpg",
     accent: "#ec4899",
-    accent2: "#8b5cf6",
-  },
-  {
-    badge: "Navigate by voice",
+    accent2: "#8b5cf6" },
+  { badge: "Navigate by voice",
     title: "Skip the menus.",
     subtitle: "Say where you want to go — Uni jumps to any module, page or feature for you.",
     perks: ['"Open Dating" · "Go to Wall"', "Jump across 60+ modules", "No tapping, no scrolling"],
     image: "uni/03-navigate.jpg",
     accent: "#a855f7",
-    accent2: "#ec4899",
-  },
-  {
-    badge: "Smart answers",
+    accent2: "#ec4899" },
+  { badge: "Smart answers",
     title: "Ask anything.",
     subtitle: "Knowledge of the whole platform — features, prices, credits, how things work.",
     perks: ["Explains any module", "Guides you step by step", "Instant, context-aware answers"],
     image: "uni/04-smart.jpg",
     accent: "#8b5cf6",
-    accent2: "#22d3ee",
-  },
-  {
-    badge: "Hands-free",
+    accent2: "#22d3ee" },
+  { badge: "Hands-free",
     title: "Wake word ready.",
     subtitle: 'Enable "Hey Uni" and talk without touching your phone — perfect on the go.',
     perks: ['"Hey Uni" activation', "Works with earbuds", "Great while driving or cooking"],
     image: "uni/05-handsfree.jpg",
     accent: "#22d3ee",
-    accent2: "#8b5cf6",
-  },
-  {
-    badge: "12 languages",
+    accent2: "#8b5cf6" },
+  { badge: "12 languages",
     title: "Speaks your language.",
     subtitle: "EN · SK · CZ · DE · HU · ES · FR · IT · JA · KO · ZH · RU — Uni adapts to you.",
     perks: ["Auto-detects your language", "Native-sounding voice", "Switch anytime"],
     image: "uni/06-languages.jpg",
     accent: "#fbbf24",
-    accent2: "#ec4899",
-  },
+    accent2: "#ec4899" },
 ];
 
 const INTRO = 130;

@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -74,8 +72,7 @@ serve(async (req) => {
     const { data: updated } = await svc.from("iq_duels").update(update).eq("id", duelId).select().single();
 
     // If both finished → determine winner & award prize
-    if (updated && updated.host_finished && updated.opponent_finished && updated.status === "active") {
-      let winnerId: string | null = null;
+    if (updated && updated.host_finished && updated.opponent_finished && updated.status === "active") { let winnerId: string | null = null;
       if (updated.host_score > updated.opponent_score) winnerId = updated.host_id;
       else if (updated.opponent_score > updated.host_score) winnerId = updated.opponent_id;
       // tie → no winner, no prize, both keep stake refunded? For now: no prize, no refund.
@@ -83,8 +80,7 @@ serve(async (req) => {
       await svc.from("iq_duels").update({
         status: "finished",
         winner_id: winnerId,
-        finished_at: new Date().toISOString(),
-      }).eq("id", duelId);
+        finished_at: new Date().toISOString() }).eq("id", duelId);
 
       if (winnerId) {
         const { data: wc } = await svc.from("iq_credits").select("balance").eq("user_id", winnerId).maybeSingle();

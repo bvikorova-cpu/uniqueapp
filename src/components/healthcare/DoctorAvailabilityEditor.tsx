@@ -67,14 +67,12 @@ export default function DoctorAvailabilityEditor({ doctorId, timezone }: Props) 
         setSaving(false);
         return toast({ variant: "destructive", title: "Invalid time", description: `Weekday ${WEEKDAYS[rule.weekday]}: end must be after start.` });
       }
-      const payload = {
-        doctor_id: doctorId,
+      const payload = { doctor_id: doctorId,
         weekday: rule.weekday,
         start_time: rule.start_time,
         end_time: rule.end_time,
         timezone: rule.timezone,
-        is_active: rule.is_active,
-      };
+        is_active: rule.is_active };
       const res = rule.id
         ? await supabase.from("doctor_availability_rules").update(payload).eq("id", rule.id)
         : await supabase.from("doctor_availability_rules").insert(payload);

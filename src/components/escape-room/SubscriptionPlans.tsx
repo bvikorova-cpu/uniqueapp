@@ -112,8 +112,7 @@ const SubscriptionPlans = () => {
                          productName: `Escape Room ${plan.name} Plan`,
                          amount: Math.round(plan.price * 100),
                          mode: "subscription",
-                         metadata: { plan_name: plan.name, interval: plan.period },
-                       }
+                         metadata: { plan_name: plan.name, interval: plan.period } }
                      });
                      if (error) throw error;
                      if (data?.url) window.open(data.url, "_blank");

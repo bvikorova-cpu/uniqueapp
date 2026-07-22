@@ -69,11 +69,9 @@ export function FurnitureRecommender({ subscription, onBack }: FurnitureRecommen
   };
 
   const hasSubscription = subscription?.subscribed || false;
-  const priorityColors: Record<string, string> = {
-    essential: "bg-red-500/10 text-red-500",
+  const priorityColors: Record<string, string> = { essential: "bg-red-500/10 text-red-500",
     recommended: "bg-yellow-500/10 text-yellow-500",
-    optional: "bg-green-500/10 text-green-500",
-  };
+    optional: "bg-green-500/10 text-green-500" };
 
   return (
     <>

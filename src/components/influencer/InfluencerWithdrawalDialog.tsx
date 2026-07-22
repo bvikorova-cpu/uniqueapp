@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,22 +20,18 @@ interface InfluencerWithdrawalDialogProps {
   onSuccess?: () => void;
 }
 
-export const InfluencerWithdrawalDialog = ({
-  open,
+export const InfluencerWithdrawalDialog = ({ open,
   onOpenChange,
   influencerId,
   availableBalance,
-  onSuccess,
-}: InfluencerWithdrawalDialogProps) => {
-  const [loading, setLoading] = useState(false);
+  onSuccess }: InfluencerWithdrawalDialogProps) => { const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     amount: "",
     paymentMethod: "bank_transfer",
     accountHolder: "",
     iban: "",
     bankName: "",
-    paypalEmail: "",
-  });
+    paypalEmail: "" });
 
   useEffect(() => {
     if (open) {
@@ -90,29 +84,23 @@ export const InfluencerWithdrawalDialog = ({
       }
     }
 
-    try {
-      setLoading(true);
+    try { setLoading(true);
 
       const paymentDetails =
         formData.paymentMethod === "bank_transfer"
           ? {
               accountHolder: formData.accountHolder,
               iban: formData.iban,
-              bankName: formData.bankName,
-            }
-          : {
-              email: formData.paypalEmail,
-            };
+              bankName: formData.bankName }
+          : { email: formData.paypalEmail };
 
       const { error } = await supabase
         .from("influencer_withdrawal_requests")
-        .insert({
-          influencer_id: influencerId,
+        .insert({ influencer_id: influencerId,
           amount,
           payment_method: formData.paymentMethod,
           payment_details: paymentDetails,
-          status: "pending",
-        });
+          status: "pending" });
 
       if (error) throw error;
 
@@ -128,14 +116,12 @@ export const InfluencerWithdrawalDialog = ({
       }
 
       toast.success("Withdrawal request submitted successfully");
-      setFormData({
-        amount: "",
+      setFormData({ amount: "",
         paymentMethod: "bank_transfer",
         accountHolder: "",
         iban: "",
         bankName: "",
-        paypalEmail: "",
-      });
+        paypalEmail: "" });
       onOpenChange(false);
       onSuccess?.();
     } catch (error: any) {
@@ -207,11 +193,10 @@ export const InfluencerWithdrawalDialog = ({
                 <Input
                   id="accountHolder"
                   value={formData.accountHolder}
-                  onChange={(e) =>
+                  onChange={ (e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      accountHolder: e.target.value,
-                    }))
+                      accountHolder: e.target.value }))
                   }
                   placeholder="John Doe"
                   required
@@ -236,11 +221,10 @@ export const InfluencerWithdrawalDialog = ({
                 <Input
                   id="bankName"
                   value={formData.bankName}
-                  onChange={(e) =>
+                  onChange={ (e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      bankName: e.target.value,
-                    }))
+                      bankName: e.target.value }))
                   }
                   placeholder="Bank Name"
                 />
@@ -253,11 +237,10 @@ export const InfluencerWithdrawalDialog = ({
                 id="paypalEmail"
                 type="email"
                 value={formData.paypalEmail}
-                onChange={(e) =>
+                onChange={ (e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    paypalEmail: e.target.value,
-                  }))
+                    paypalEmail: e.target.value }))
                 }
                 placeholder="your@email.com"
                 required

@@ -76,11 +76,9 @@ export const ChatBackupExport = ({ onBack, userId }: ChatBackupExportProps) => {
           .select("full_name")
           .eq("id", msg.sender_id)
           .single();
-        return {
-          sender: profile?.full_name || "Unknown",
+        return { sender: profile?.full_name || "Unknown",
           content: msg.content,
-          timestamp: new Date(msg.created_at).toLocaleString(),
-        };
+          timestamp: new Date(msg.created_at).toLocaleString() };
       })
     );
   };

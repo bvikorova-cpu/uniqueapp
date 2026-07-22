@@ -6,8 +6,7 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  BarChart,
+import { BarChart,
   Bar,
   XAxis,
   YAxis,
@@ -16,10 +15,8 @@ import {
   CartesianGrid,
   LineChart,
   Line,
-  Legend,
-} from "recharts";
-import {
-  Download,
+  Legend } from "recharts";
+import { Download,
   RefreshCw,
   Smartphone,
   Monitor,
@@ -28,8 +25,7 @@ import {
   MousePointerClick,
   CheckCircle2,
   XCircle,
-  TrendingUp,
-} from "lucide-react";
+  TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 type EventRow = {
@@ -96,16 +92,13 @@ export default function AdminPwaStats() {
     const overallRate = shown ? Math.round((accepted / shown) * 1000) / 10 : 0;
 
     const daysArr = Object.keys(daily).sort();
-    const funnelSeries = daysArr.map((d) => ({
-      day: d,
+    const funnelSeries = daysArr.map((d) => ({ day: d,
       shown: daily[d]["banner_shown"] || 0,
       click: daily[d]["install_click"] || 0,
       accepted: daily[d]["install_accepted"] || 0,
-      openClick: daily[d]["open_click"] || 0,
-    }));
+      openClick: daily[d]["open_click"] || 0 }));
 
-    return {
-      counts,
+    return { counts,
       shown,
       click,
       accepted,
@@ -116,8 +109,7 @@ export default function AdminPwaStats() {
       acceptRate,
       overallRate,
       byPlatform,
-      funnelSeries,
-    };
+      funnelSeries };
   }, [rows]);
 
   const statCards = stats
@@ -238,11 +230,10 @@ export default function AdminPwaStats() {
                       allowDecimals={false}
                     />
                     <Tooltip
-                      contentStyle={{
+                      contentStyle={ {
                         backgroundColor: "hsl(var(--card))",
                         border: "1px solid hsl(var(--border))",
-                        borderRadius: 8,
-                      }}
+                        borderRadius: 8 }}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line
@@ -295,13 +286,11 @@ export default function AdminPwaStats() {
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                      data={Object.entries(stats?.byPlatform ?? {}).map(([platform, events]) => ({
-                        platform,
+                      data={Object.entries(stats?.byPlatform ?? {}).map(([platform, events]) => ({ platform,
                         shown: events["banner_shown"] || 0,
                         click: events["install_click"] || 0,
                         accepted: events["install_accepted"] || 0,
-                        open: events["open_click"] || 0,
-                      }))}
+                        open: events["open_click"] || 0 }))}
                       margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.4)" />
@@ -316,11 +305,10 @@ export default function AdminPwaStats() {
                         allowDecimals={false}
                       />
                       <Tooltip
-                        contentStyle={{
+                        contentStyle={ {
                           backgroundColor: "hsl(var(--card))",
                           border: "1px solid hsl(var(--border))",
-                          borderRadius: 8,
-                        }}
+                          borderRadius: 8 }}
                       />
                       <Legend wrapperStyle={{ fontSize: 12 }} />
                       <Bar dataKey="shown" name="Shown" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />

@@ -23,19 +23,15 @@ export const usePostEdit = () => {
       // Save edit history
       await supabase
         .from("post_edit_history")
-        .insert({
-          post_id: postId,
+        .insert({ post_id: postId,
           previous_content: post.content,
-          edited_by: user.id,
-        });
+          edited_by: user.id });
 
       // Update post
       const { error } = await supabase
         .from("posts")
-        .update({
-          content: newContent,
-          edited_at: new Date().toISOString(),
-        })
+        .update({ content: newContent,
+          edited_at: new Date().toISOString() })
         .eq("id", postId);
 
       if (error) throw error;
@@ -44,18 +40,13 @@ export const usePostEdit = () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast({ title: "Post updated successfully!" });
     },
-    onError: () => {
-      toast({
+    onError: () => { toast({
         title: "Failed to update post",
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
-  return {
-    editPost: editPost.mutate,
-    isEditing: editPost.isPending,
-  };
+  return { editPost: editPost.mutate,
+    isEditing: editPost.isPending };
 };
 
 export const usePostHistory = (postId: string) => {
@@ -70,8 +61,7 @@ export const usePostHistory = (postId: string) => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return { history, isLoading };
 };

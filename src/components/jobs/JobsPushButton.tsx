@@ -35,20 +35,16 @@ export function JobsPushButton() {
       const reg = await navigator.serviceWorker.ready;
       const perm = await Notification.requestPermission();
       if (perm !== "granted") { toast.error("Permission denied"); return; }
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
-      });
+      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC) });
       const json: any = sub.toJSON();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast.error("Sign in first"); return; }
-      await supabase.from("push_subscriptions").upsert({
-        user_id: user.id,
+      await supabase.from("push_subscriptions").upsert({ user_id: user.id,
         endpoint: json.endpoint,
         p256dh: json.keys.p256dh,
         auth: json.keys.auth,
-        user_agent: navigator.userAgent,
-      }, { onConflict: "endpoint" });
+        user_agent: navigator.userAgent }, { onConflict: "endpoint" });
       setEnabled(true);
       toast.success("Push notifications enabled");
     } catch (e: any) {

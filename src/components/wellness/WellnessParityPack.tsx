@@ -8,14 +8,10 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import {
-  Brain, Sparkles, ClipboardList, Activity, Timer, Footprints,
-  Music2, AlarmClock, Users, ShieldAlert, Coins,
-} from "lucide-react";
-import {
-  useCBTReframer, useMHAssessment, useWalkingMeditation,
-  useStressCheckins, usePomodoro, useSoundscapePresets, useWakeAlarms, useGroupSessions,
-} from "@/hooks/useWellnessParity";
+import { Brain, Sparkles, ClipboardList, Activity, Timer, Footprints,
+  Music2, AlarmClock, Users, ShieldAlert, Coins } from "lucide-react";
+import { useCBTReframer, useMHAssessment, useWalkingMeditation,
+  useStressCheckins, usePomodoro, useSoundscapePresets, useWakeAlarms, useGroupSessions } from "@/hooks/useWellnessParity";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 // ============ 1. SOS Panic Relief ============

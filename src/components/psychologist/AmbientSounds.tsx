@@ -126,15 +126,13 @@ export const AmbientSounds = ({ onBack }: Props) => {
     }
   }, [timer, isPlaying]);
 
-  const ensureGenerator = () => {
-    if (!generatorRef.current) {
+  const ensureGenerator = () => { if (!generatorRef.current) {
       generatorRef.current = new NoiseGenerator();
       // Initialize all channels
       const noiseChannels = ["rain", "wind", "waves", "forest", "fire", "cafe"];
       const filterSettings: Record<string, [number, number]> = {
         rain: [2000, 0.5], wind: [400, 1], waves: [600, 0.8],
-        forest: [3000, 0.3], fire: [800, 0.5], cafe: [4000, 0.2],
-      };
+        forest: [3000, 0.3], fire: [800, 0.5], cafe: [4000, 0.2] };
       noiseChannels.forEach(id => {
         const [freq, q] = filterSettings[id];
         generatorRef.current!.createWhiteNoise(id, freq, q);

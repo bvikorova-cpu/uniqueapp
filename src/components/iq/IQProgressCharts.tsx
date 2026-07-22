@@ -1,8 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
 import { Brain, TrendingUp, BarChart3, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIQProgress, useIQUserStats } from "@/hooks/useIQUserStats";
@@ -20,13 +18,10 @@ export default function IQProgressCharts() {
     .map((r, i) => ({
       label: `#${i + 1}`,
       iq: r.iq_score,
-      percentile: r.percentile,
-    }));
+      percentile: r.percentile }));
 
-  const radarData = DOMAINS.map((d) => ({
-    domain: d,
-    score: Number(stats?.sub_scores?.[d.toLowerCase()] ?? 0),
-  }));
+  const radarData = DOMAINS.map((d) => ({ domain: d,
+    score: Number(stats?.sub_scores?.[d.toLowerCase()] ?? 0) }));
 
   const noData = !loadingProgress && trendData.length === 0;
 

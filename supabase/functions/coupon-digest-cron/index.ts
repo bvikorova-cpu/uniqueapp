@@ -3,10 +3,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -48,8 +46,7 @@ serve(async (req) => {
         title: `🔥 ${matches.length} new deal(s) match your alerts`,
         message: matches.slice(0, 3).map(m => `${m.store_name} — €${Number(m.selling_price).toFixed(2)}`).join(" · "),
         link: "/coupon-marketplace",
-        is_read: false,
-      });
+        is_read: false });
     }
 
     if (notifsToInsert.length > 0) {
@@ -58,12 +55,10 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ sent: notifsToInsert.length, hot_count: hotCoupons?.length ?? 0 }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

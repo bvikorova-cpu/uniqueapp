@@ -21,8 +21,7 @@ export default function PetVideoAnalysis({ onBack }: { onBack: () => void }) {
     if (!file && !desc.trim()) return toast.error("Upload video or describe behavior");
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("pet-translator-ai", {
-      body: { action: "video_analyze", description: desc, duration, species: active?.species || "dog" },
-    });
+      body: { action: "video_analyze", description: desc, duration, species: active?.species || "dog" } });
     setLoading(false);
     if (error || data?.error) return toast.error(error?.message || data.error);
     setResult(data.result);

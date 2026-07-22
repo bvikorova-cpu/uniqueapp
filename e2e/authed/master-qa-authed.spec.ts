@@ -74,14 +74,12 @@ async function goto(page: Page, url: string) {
 
 test.describe.configure({ mode: "parallel" });
 
-test.describe("Master QA (authed) — content behind login", () => {
-  test.afterAll(async () => {
+test.describe("Master QA (authed) — content behind login", () => { test.afterAll(async () => {
     fs.writeFileSync(REPORT, JSON.stringify({
       generatedAt: new Date().toISOString(),
       baseURL: process.env.PLAYWRIGHT_BASE_URL ?? null,
       results,
-      criticalConsoleErrors,
-    }, null, 2));
+      criticalConsoleErrors }, null, 2));
     const pass = results.filter((r) => r.status === "pass").length;
     const fail = results.filter((r) => r.status === "fail").length;
     // eslint-disable-next-line no-console
@@ -183,11 +181,9 @@ test.describe("Master QA (authed) — content behind login", () => {
           headers: {
             "content-type": "application/json",
             apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q",
-            authorization: `Bearer ${token}`,
-          },
+            authorization: `Bearer ${token}` },
           data: { creditType: "iq", credits: 10 },
-          timeout: 15_000,
-        }
+          timeout: 15_000 }
       );
       const status = res.status();
       if (status >= 400) throw new Error(`create-checkout HTTP ${status}: ${await res.text()}`);
@@ -207,8 +203,7 @@ test.describe("Master QA (authed) — content behind login", () => {
       results.push({
         name: "console-errors-authed",
         status: "fail",
-        detail: `${criticalConsoleErrors.length}; first: ${criticalConsoleErrors[0]}`,
-      });
+        detail: `${criticalConsoleErrors.length}; first: ${criticalConsoleErrors[0]}` });
       throw new Error(
         `Critical console errors:\n` + criticalConsoleErrors.slice(0, 10).join("\n")
       );

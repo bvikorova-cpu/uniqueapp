@@ -51,11 +51,9 @@ export const useCourseProgress = (courseName: string) => {
     if (stored) {
       return JSON.parse(stored);
     }
-    return {
-      current_topic: 0,
+    return { current_topic: 0,
       completed_topics: [],
-      time_spent_minutes: 0,
-    };
+      time_spent_minutes: 0 };
   };
 
   // Save to localStorage
@@ -80,8 +78,7 @@ export const useCourseProgress = (courseName: string) => {
       if (error) throw error;
       return data as CourseProgress | null;
     },
-    enabled: isAuthenticated === true,
-  });
+    enabled: isAuthenticated === true });
 
   // Fetch statistics (only if authenticated)
   const { data: dbStatistics } = useQuery({
@@ -100,34 +97,27 @@ export const useCourseProgress = (courseName: string) => {
       if (error) throw error;
       return data as CourseStatistics | null;
     },
-    enabled: isAuthenticated === true,
-  });
+    enabled: isAuthenticated === true });
 
   // Merge local and DB progress
   const localProgress = loadLocalProgress();
-  const progress = isAuthenticated && dbProgress ? dbProgress : {
-    current_topic: localProgress.current_topic,
-    completed_topics: localProgress.completed_topics,
-  };
-  const statistics = isAuthenticated && dbStatistics ? dbStatistics : {
-    time_spent_minutes: localProgress.time_spent_minutes,
-  };
+  const progress = isAuthenticated && dbProgress ? dbProgress : { current_topic: localProgress.current_topic,
+    completed_topics: localProgress.completed_topics };
+  const statistics = isAuthenticated && dbStatistics ? dbStatistics : { time_spent_minutes: localProgress.time_spent_minutes };
 
   // Update progress mutation
   const updateProgressMutation = useMutation({
     mutationFn: async (data: {
       current_topic: number;
       completed_topics: number[];
-    }) => {
-      console.log('updateProgressMutation called with:', data);
+    }) => { console.log('updateProgressMutation called with:', data);
       
       // Always save to localStorage
       const localData = loadLocalProgress();
       saveLocalProgress({
         ...localData,
         current_topic: data.current_topic,
-        completed_topics: data.completed_topics,
-      });
+        completed_topics: data.completed_topics });
 
       // Also save to DB if authenticated
       const { data: { user } } = await supabase.auth.getUser();
@@ -140,15 +130,11 @@ export const useCourseProgress = (courseName: string) => {
 
       const { error } = await supabase
         .from("course_progress")
-        .upsert({
-          user_id: user.id,
+        .upsert({ user_id: user.id,
           course_name: courseName,
           current_topic: data.current_topic,
           completed_topics: data.completed_topics,
-          last_accessed_at: new Date().toISOString(),
-        }, {
-          onConflict: "user_id,course_name",
-        });
+          last_accessed_at: new Date().toISOString() }, { onConflict: "user_id,course_name" });
 
       if (error) {
         console.error('Error updating progress:', error);
@@ -166,42 +152,33 @@ export const useCourseProgress = (courseName: string) => {
     },
     onError: (error) => {
       console.error('Error in updateProgressMutation:', error);
-    },
-  });
+    } });
 
   // Update statistics mutation
   const updateStatisticsMutation = useMutation({
     mutationFn: async (data: {
       time_spent_minutes?: number;
       topics_completed?: number;
-    }) => {
-      // Always save to localStorage
+    }) => { // Always save to localStorage
       const localData = loadLocalProgress();
       saveLocalProgress({
         ...localData,
-        time_spent_minutes: data.time_spent_minutes ?? localData.time_spent_minutes,
-      });
+        time_spent_minutes: data.time_spent_minutes ?? localData.time_spent_minutes });
 
       // Also save to DB if authenticated
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const currentStats = dbStatistics || {
-        time_spent_minutes: 0,
-        topics_completed: 0,
-      };
+      const currentStats = dbStatistics || { time_spent_minutes: 0,
+        topics_completed: 0 };
 
       const { error } = await supabase
         .from("course_statistics")
-        .upsert({
-          user_id: user.id,
+        .upsert({ user_id: user.id,
           course_name: courseName,
           time_spent_minutes: data.time_spent_minutes ?? currentStats.time_spent_minutes,
           topics_completed: data.topics_completed ?? currentStats.topics_completed,
-          last_activity: new Date().toISOString(),
-        }, {
-          onConflict: "user_id,course_name",
-        });
+          last_activity: new Date().toISOString() }, { onConflict: "user_id,course_name" });
 
       if (error) throw error;
     },
@@ -209,8 +186,7 @@ export const useCourseProgress = (courseName: string) => {
       if (isAuthenticated) {
         queryClient.invalidateQueries({ queryKey: ["course-statistics", courseName] });
       }
-    },
-  });
+    } });
 
   // Save completed course
   const saveCompletedCourseMutation = useMutation({
@@ -228,21 +204,17 @@ export const useCourseProgress = (courseName: string) => {
 
       const { error } = await supabase
         .from("completed_courses")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           course_name: courseName,
           test_score: data.test_score,
           time_spent_minutes: timeSpent,
-          completion_date: new Date().toISOString(),
-        });
+          completion_date: new Date().toISOString() });
 
       if (error) throw error;
-    },
-  });
+    } });
 
   // Auto-save time tracking
-  useEffect(() => {
-    startTimeRef.current = new Date();
+  useEffect(() => { startTimeRef.current = new Date();
 
     const timer = setInterval(() => {
       const now = new Date();
@@ -253,8 +225,7 @@ export const useCourseProgress = (courseName: string) => {
       if (minutesElapsed > 0) {
         const currentMinutes = (isAuthenticated && dbStatistics?.time_spent_minutes) || localProgress.time_spent_minutes || 0;
         updateStatisticsMutation.mutate({
-          time_spent_minutes: currentMinutes + minutesElapsed,
-        });
+          time_spent_minutes: currentMinutes + minutesElapsed });
         startTimeRef.current = now;
       }
     }, 60000); // Every minute
@@ -279,6 +250,5 @@ export const useCourseProgress = (courseName: string) => {
       return updateProgressMutation.mutateAsync(data);
     },
     updateStatistics: updateStatisticsMutation.mutate,
-    saveCompletedCourse: saveCompletedCourseMutation.mutate,
-  };
+    saveCompletedCourse: saveCompletedCourseMutation.mutate };
 };

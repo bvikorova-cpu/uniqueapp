@@ -13,14 +13,12 @@ const stats = [
 export function GlamourHero() {
   const [liveStats, setLiveStats] = useState({ creations: 0, outfits: 0, stories: 0, pets: 0 });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
+  useEffect(() => { const interval = setInterval(() => {
       setLiveStats({
         creations: Math.floor(Math.random() * 500) + 1200,
         outfits: Math.floor(Math.random() * 300) + 800,
         stories: Math.floor(Math.random() * 200) + 400,
-        pets: Math.floor(Math.random() * 150) + 350,
-      });
+        pets: Math.floor(Math.random() * 150) + 350 });
     }, 3000);
     setLiveStats({ creations: 1456, outfits: 923, stories: 512, pets: 387 });
     return () => clearInterval(interval);

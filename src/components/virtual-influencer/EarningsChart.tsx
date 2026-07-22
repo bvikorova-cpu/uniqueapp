@@ -24,11 +24,9 @@ const EarningsChart = ({ earnings }: EarningsChartProps) => {
     
     if (existing) {
       existing.earnings += Number(earning.net_amount);
-    } else {
-      acc.push({
+    } else { acc.push({
         date,
-        earnings: Number(earning.net_amount),
-      });
+        earnings: Number(earning.net_amount) });
     }
     
     return acc;

@@ -3,25 +3,20 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { checkTestMode } from "../_shared/testMode.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 const VALID_STATS = ["speed", "stamina", "acceleration", "temperament"] as const;
 const TRAINING_COST = 20;
 const STAT_INCREASE = 5;
-const EQUIPMENT_PRICES: Record<string, number> = {
-  "racing-saddle": 200, "speed-horseshoes": 300, "stamina-feed": 150,
-  "premium-saddle": 500, "golden-horseshoes": 800, "champion-armor": 1000,
-};
+const EQUIPMENT_PRICES: Record<string, number> = { "racing-saddle": 200, "speed-horseshoes": 300, "stamina-feed": 150,
+  "premium-saddle": 500, "golden-horseshoes": 800, "champion-armor": 1000 };
 const CHAMPIONSHIP_FEE = 500;
 
 const HORSE_ACTIONS = ["ping", "create", "train", "join_race", "purchase_equipment", "championship_enroll", "claim_quest_reward"];
@@ -86,12 +81,10 @@ Deno.serve(async (req) => {
         if (dedErr) throw dedErr;
         if (!deducted) return json({ error: "Concurrent modification, retry" }, 409);
 
-        const stats = {
-          speed_stat: Math.floor(Math.random() * 30) + 40,
+        const stats = { speed_stat: Math.floor(Math.random() * 30) + 40,
           stamina_stat: Math.floor(Math.random() * 30) + 40,
           acceleration_stat: Math.floor(Math.random() * 30) + 40,
-          temperament_stat: Math.floor(Math.random() * 30) + 40,
-        };
+          temperament_stat: Math.floor(Math.random() * 30) + 40 };
         const { data: horse, error: hErr } = await admin
           .from("horses")
           .insert({ user_id: user.id, name, breed, color, ...stats })

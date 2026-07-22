@@ -5,17 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Search,
+import { Search,
   TrendingUp,
   GraduationCap,
   Star,
@@ -25,8 +22,7 @@ import {
   DollarSign,
   Award,
   Download,
-  Clock,
-} from "lucide-react";
+  Clock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { CourseForm } from "@/components/course-creator/CourseForm";
 import { CoursesList } from "@/components/course-creator/CoursesList";
@@ -130,13 +126,11 @@ export default function CoursesHub() {
 
       setCourses(coursesWithData);
       setFilteredCourses(coursesWithData);
-    } catch (error) {
-      console.error("Error loading courses:", error);
+    } catch (error) { console.error("Error loading courses:", error);
       toast({
         title: "Error",
         description: "Failed to load courses",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

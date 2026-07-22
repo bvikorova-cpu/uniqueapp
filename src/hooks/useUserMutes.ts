@@ -28,8 +28,7 @@ export const useUserMutes = () => {
         .in("id", ids);
       const map = new Map((profs || []).map((p: any) => [p.id, p]));
       return active.map((m: any) => ({ ...m, profiles: map.get(m.muted_user_id) || null }));
-    },
-  });
+    } });
 
   const mute = useMutation({
     mutationFn: async ({ userId, durationHours }: { userId: string; durationHours?: number }) => {
@@ -49,8 +48,7 @@ export const useUserMutes = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["user-mutes"] });
       toast({ title: "User muted" });
-    },
-  });
+    } });
 
   const unmute = useMutation({
     mutationFn: async (userId: string) => {
@@ -66,14 +64,11 @@ export const useUserMutes = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["user-mutes"] });
       toast({ title: "User unmuted" });
-    },
-  });
+    } });
 
-  return {
-    mutes,
+  return { mutes,
     mutedIds: mutes.map((m: any) => m.muted_user_id),
     isLoading,
     muteUser: mute.mutate,
-    unmuteUser: unmute.mutate,
-  };
+    unmuteUser: unmute.mutate };
 };

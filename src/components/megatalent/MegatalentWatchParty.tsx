@@ -7,23 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import {
-  Form,
+import { Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Radio,
+  FormMessage } from "@/components/ui/form";
+import { Radio,
   Send,
   Users,
   Tv,
   ImagePlus,
   X,
-  Loader2,
-} from "lucide-react";
+  Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -52,8 +48,7 @@ interface Props {
   category: string;
 }
 
-const goLiveSchema = z.object({
-  title: z
+const goLiveSchema = z.object({ title: z
     .string()
     .min(3, "Title must be at least 3 characters")
     .max(100, "Title can be at most 100 characters"),
@@ -61,8 +56,7 @@ const goLiveSchema = z.object({
     .string()
     .max(500, "Description can be at most 500 characters")
     .optional()
-    .or(z.literal("")),
-});
+    .or(z.literal("")) });
 
 type GoLiveValues = z.infer<typeof goLiveSchema>;
 
@@ -86,8 +80,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
 
   const form = useForm<GoLiveValues>({
     resolver: zodResolver(goLiveSchema),
-    defaultValues: { title: "", description: "" },
-  });
+    defaultValues: { title: "", description: "" } });
 
   const loadStreams = useCallback(async () => {
     const { data } = await (supabase as any)
@@ -217,8 +210,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
         description: values.description?.trim() || null,
         status: "live",
         started_at: new Date().toISOString(),
-        ...(thumbnailUrl ? { thumbnail_url: thumbnailUrl } : {}),
-      })
+        ...(thumbnailUrl ? { thumbnail_url: thumbnailUrl } : {}) })
       .select()
       .single();
 
@@ -247,11 +239,9 @@ export const MegatalentWatchParty = ({ category }: Props) => {
     }
     const text = input.trim();
     setInput("");
-    const { error } = await (supabase as any).from("megatalent_watch_party_messages").insert({
-      stream_id: activeStream.id,
+    const { error } = await (supabase as any).from("megatalent_watch_party_messages").insert({ stream_id: activeStream.id,
       user_id: u.user.id,
-      content: text,
-    });
+      content: text });
     if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
   };
 

@@ -2,23 +2,19 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[VISION] ${s}${d ? ` ${JSON.stringify(d)}` : ""}`);
 
 // Per-task credit cost. Vision tasks default to 3 credits; heavy/premium tasks 5.
-const TASK_COST: Record<string, number> = {
-  antique_identify: 5, antique_forgery: 5, antique_provenance: 5, antique_certificate: 5,
+const TASK_COST: Record<string, number> = { antique_identify: 5, antique_forgery: 5, antique_provenance: 5, antique_certificate: 5,
   beauty_skin: 4, beauty_transform: 4, beauty_celebrity: 4, beauty_tutorial: 4, beauty_nail_art: 4, beauty_recommend: 4,
   home_staging: 4, home_palette: 4, home_furniture: 4,
   wine_label: 4, car_identify: 4, coin_identify: 4, landmark_identify: 4,
-  math_solve: 4, homework_help: 4,
-};
+  math_solve: 4, homework_help: 4 };
 const DEFAULT_TASK_COST = 3;
 
 const TASK_PROMPTS: Record<string, { prompt: string; visionRequired?: boolean }> = {
@@ -77,8 +73,7 @@ const TASK_PROMPTS: Record<string, { prompt: string; visionRequired?: boolean }>
   drawing_identify:      { prompt: "You analyze sketches/drawings/doodles. Identify what the drawing represents, its style, possible meaning/symbolism, and skill level. Be encouraging.", visionRequired: true },
   math_solve:            { prompt: "You are a math tutor. Read the math problem from the image (or text) and solve it step-by-step. Show every step clearly using LaTeX-style formatting where useful, then give the final answer. If multiple problems are visible, solve each.", visionRequired: true },
   homework_help:         { prompt: "You are a patient tutor for any school subject. Read the homework question from the image and: 1) explain what is being asked, 2) walk through the solution step by step, 3) give the final answer, 4) add a brief tip to remember.", visionRequired: true },
-  reverse_image_describe:{ prompt: "Describe this image in extreme detail so it can be used for reverse-image search: main subject, key visual features, colors, style, text/logos visible, likely category. Output 4-6 search-friendly keyword phrases at the end as 'Keywords: ...'.", visionRequired: true },
-};
+  reverse_image_describe:{ prompt: "Describe this image in extreme detail so it can be used for reverse-image search: main subject, key visual features, colors, style, text/logos visible, likely category. Output 4-6 search-friendly keyword phrases at the end as 'Keywords: ...'.", visionRequired: true } };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -115,9 +110,7 @@ serve(async (req) => {
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        messages: [{ role: "system", content: cfg.prompt }, { role: "user", content: userContent }],
-      }),
-    });
+        messages: [{ role: "system", content: cfg.prompt }, { role: "user", content: userContent }] }) });
 
     if (aiRes.status === 429) return json({ error: "Rate limit exceeded. Try again shortly." }, 429);
     if (aiRes.status === 402) return json({ error: "AI credits exhausted." }, 402);

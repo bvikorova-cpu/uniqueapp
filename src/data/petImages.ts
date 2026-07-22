@@ -28,8 +28,7 @@ import butterfly from "@/assets/pets/butterfly.png";
 import ladybug from "@/assets/pets/ladybug.png";
 import sloth from "@/assets/pets/sloth.png";
 
-export const petImages: Record<string, string> = {
-  // Mythical
+export const petImages: Record<string, string> = { // Mythical
   dragon,
   unicorn,
   phoenix,
@@ -73,5 +72,4 @@ export const petImages: Record<string, string> = {
   
   // Insects
   butterfly,
-  ladybug,
-};
+  ladybug };

@@ -58,8 +58,7 @@ export const PetShop = () => {
   const purchaseMutation = useMutation({
     mutationFn: async (accessory: any) => {
       const { data, error } = await supabase.functions.invoke('pet-purchase-item', {
-        body: { itemType: 'accessory', itemId: accessory.id },
-      });
+        body: { itemType: 'accessory', itemId: accessory.id } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return { data, accessory };
@@ -69,14 +68,12 @@ export const PetShop = () => {
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast.success(`Purchased ${accessory.name}! 🛍️`);
     },
-    onError: (error: any) => toast.error(error.message || 'Failed to purchase'),
-  });
+    onError: (error: any) => toast.error(error.message || 'Failed to purchase') });
 
   const openMysteryBoxMutation = useMutation({
     mutationFn: async (box: any) => {
       const { data, error } = await supabase.functions.invoke('pet-purchase-item', {
-        body: { itemType: 'mystery', itemId: box.id },
-      });
+        body: { itemType: 'mystery', itemId: box.id } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return { data, box };
@@ -86,8 +83,7 @@ export const PetShop = () => {
       const reward = data?.reward?.reward ?? 'a surprise';
       toast.success(`🎉 Opened ${box.name}! You got: ${String(reward).replace(/_/g, ' ')}`);
     },
-    onError: (error: any) => toast.error(error.message || 'Failed to open box'),
-  });
+    onError: (error: any) => toast.error(error.message || 'Failed to open box') });
 
   const battleItems = accessories?.filter(a => getBattlePower(a.effect) > 0) || [];
   const cosmeticItems = accessories?.filter(a => getBattlePower(a.effect) === 0) || [];

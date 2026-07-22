@@ -34,15 +34,13 @@ export function CollectionsView({ onBack }: CollectionsViewProps) {
         .eq("is_active", true)
         .order("created_at", { ascending: false })
         .limit(30);
-      if (!cancelled) {
-        setPacks(((data || []) as any[]).map((p: any) => ({
+      if (!cancelled) { setPacks(((data || []) as any[]).map((p: any) => ({
           id: p.id,
           title: p.title || "Untitled pack",
           description: p.description,
           content_count: Number(p.content_count) || 0,
           content_type: p.content_type,
-          price: Number(p.price) || 0,
-        })));
+          price: Number(p.price) || 0 })));
         setLoading(false);
       }
     })();
@@ -56,8 +54,7 @@ export function CollectionsView({ onBack }: CollectionsViewProps) {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please log in first"); return; }
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product_type: "stock_bundle", name: pack.title, amount: pack.price, bundle_id: pack.id },
-      });
+        body: { product_type: "stock_bundle", name: pack.title, amount: pack.price, bundle_id: pack.id } });
       if (error) throw error;
       if ((data as any)?.url) window.open((data as any).url, "_blank");
     } catch (e: any) {

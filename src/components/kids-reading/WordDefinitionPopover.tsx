@@ -32,8 +32,7 @@ export const WordDefinitionPopover = ({ word, context, level, onClose, onCredits
       setLoading(true); setDef(null);
       try {
         const { data, error } = await supabase.functions.invoke("kids-reading-companion", {
-          body: { action: "define", word, context, level },
-        });
+          body: { action: "define", word, context, level } });
         if (error) throw error;
         if (cancelled) return;
         setDef(data);

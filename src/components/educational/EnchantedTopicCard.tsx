@@ -32,14 +32,12 @@ const categoryColors: Record<string, { bg: string; border: string; badge: string
   Health: { bg: "from-red-50 to-orange-50", border: "border-red-200 hover:border-red-400", badge: "bg-red-100 text-red-700" },
   Social: { bg: "from-amber-50 to-yellow-50", border: "border-amber-200 hover:border-amber-400", badge: "bg-amber-100 text-amber-700" },
   "Life Skills": { bg: "from-cyan-50 to-sky-50", border: "border-cyan-200 hover:border-cyan-400", badge: "bg-cyan-100 text-cyan-700" },
-  Culture: { bg: "from-orange-50 to-amber-50", border: "border-orange-200 hover:border-orange-400", badge: "bg-orange-100 text-orange-700" },
-};
+  Culture: { bg: "from-orange-50 to-amber-50", border: "border-orange-200 hover:border-orange-400", badge: "bg-orange-100 text-orange-700" } };
 
 const difficultyConfig = {
   easy: { label: "Easy", color: "bg-green-400" },
   medium: { label: "Medium", color: "bg-amber-400" },
-  hard: { label: "Hard", color: "bg-red-400" },
-};
+  hard: { label: "Hard", color: "bg-red-400" } };
 
 export const EnchantedTopicCard = ({ topic, index, progress, onStart }: EnchantedTopicCardProps) => {
   const colors = categoryColors[topic.category] || categoryColors.Science;

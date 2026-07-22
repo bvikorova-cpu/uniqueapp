@@ -5,11 +5,9 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Upload, FileText, Trash2, Download } from "lucide-react";
-import {
-  Collapsible,
+import { Collapsible,
   CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+  CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface Material {
   id: string;
@@ -28,11 +26,9 @@ export function MaterialUploader({ lessonId }: MaterialUploaderProps) {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
+  const [formData, setFormData] = useState({ title: "",
     file_url: "",
-    file_type: "",
-  });
+    file_type: "" });
 
   useEffect(() => {
     loadMaterials();
@@ -52,15 +48,13 @@ export function MaterialUploader({ lessonId }: MaterialUploaderProps) {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
 
     if (!formData.title || !formData.file_url) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -68,29 +62,23 @@ export function MaterialUploader({ lessonId }: MaterialUploaderProps) {
     try {
       const { error } = await supabase
         .from("course_materials")
-        .insert([{
-          lesson_id: lessonId,
+        .insert([{ lesson_id: lessonId,
           title: formData.title,
           file_url: formData.file_url,
           file_type: formData.file_type || "pdf",
-          file_size_mb: 0,
-        }]);
+          file_size_mb: 0 }]);
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Material added successfully",
-      });
+      toast({ title: "Success",
+        description: "Material added successfully" });
 
       setFormData({ title: "", file_url: "", file_type: "" });
       loadMaterials();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -105,18 +93,14 @@ export function MaterialUploader({ lessonId }: MaterialUploaderProps) {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Material deleted successfully",
-      });
+      toast({ title: "Success",
+        description: "Material deleted successfully" });
       
       loadMaterials();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

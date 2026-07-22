@@ -55,12 +55,10 @@ export async function enablePushForCurrentUser(): Promise<{ ok: boolean; reason?
   if (!reg) return { ok: false, reason: "no-sw" };
 
   let sub = await reg.pushManager.getSubscription();
-  if (!sub) {
-    try {
+  if (!sub) { try {
       sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as BufferSource,
-      });
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as BufferSource });
     } catch (e: any) {
       console.warn("[push] subscribe failed", e);
       return { ok: false, reason: "subscribe-failed" };
@@ -73,13 +71,11 @@ export async function enablePushForCurrentUser(): Promise<{ ok: boolean; reason?
   if (!p256dh || !auth) return { ok: false, reason: "bad-sub" };
 
   const { error } = await supabase.from("push_subscriptions").upsert(
-    {
-      user_id: user.id,
+    { user_id: user.id,
       endpoint: sub.endpoint,
       p256dh,
       auth,
-      user_agent: navigator.userAgent.slice(0, 240),
-    },
+      user_agent: navigator.userAgent.slice(0, 240) },
     { onConflict: "endpoint" }
   );
   if (error) {

@@ -40,9 +40,7 @@ export default function Numerology() {
     try {
       const { data, error } = await supabase.functions.invoke("ai-text-generator", {
         body: {
-          prompt: `You are an expert numerologist. Give a concise mystical, encouraging reading in 4-6 sentences.\n\nNumerology reading: "${tool}" for ${name}, born ${dob}.`,
-        },
-      });
+          prompt: `You are an expert numerologist. Give a concise mystical, encouraging reading in 4-6 sentences.\n\nNumerology reading: "${tool}" for ${name}, born ${dob}.` } });
       if (error) throw error;
       setResult(data?.text ?? data?.result ?? "No reading produced.");
     } catch (e: any) {

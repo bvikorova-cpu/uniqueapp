@@ -2,32 +2,26 @@ import { motion } from "framer-motion";
 import { Flame, Wallet, Trophy } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-export function EmotionEconomyEngagement() {
-  const items = [
+export function EmotionEconomyEngagement() { const items = [
     {
       icon: Flame,
       label: "Daily Streak",
       value: "0 days",
       sub: "Start trading to build your streak",
       gradient: "from-pink-500/20 to-pink-500/5",
-      iconColor: "text-pink-400",
-    },
-    {
-      icon: Wallet,
+      iconColor: "text-pink-400" },
+    { icon: Wallet,
       label: "Portfolio Value",
       value: "€0.00",
       sub: "Total emotional asset value",
       gradient: "from-violet-500/20 to-violet-500/5",
-      iconColor: "text-violet-400",
-    },
-    {
-      icon: Trophy,
+      iconColor: "text-violet-400" },
+    { icon: Trophy,
       label: "Achievements",
       value: "0 / 12",
       sub: "Unlock by trading & mining",
       gradient: "from-cyan-500/20 to-cyan-500/5",
-      iconColor: "text-cyan-400",
-    },
+      iconColor: "text-cyan-400" },
   ];
 
   return (

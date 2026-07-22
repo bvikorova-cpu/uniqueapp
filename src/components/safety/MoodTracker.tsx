@@ -16,12 +16,10 @@ export function MoodTracker() {
   const [energy, setEnergy] = useState(5);
   const [anxiety, setAnxiety] = useState(4);
 
-  const chartData = logs.map((l: any) => ({
-    date: format(parseISO(l.logged_at), "MM/dd"),
+  const chartData = logs.map((l: any) => ({ date: format(parseISO(l.logged_at), "MM/dd"),
     Mood: l.mood_score,
     Energy: l.energy_score || 0,
-    Anxiety: l.anxiety_score || 0,
-  }));
+    Anxiety: l.anxiety_score || 0 }));
 
   const TrendIcon = insight?.trend === "improving" ? TrendingUp : insight?.trend === "declining" ? TrendingDown : Minus;
   const trendColor = insight?.trend === "improving" ? "text-emerald-400" : insight?.trend === "declining" ? "text-red-400" : "text-muted-foreground";

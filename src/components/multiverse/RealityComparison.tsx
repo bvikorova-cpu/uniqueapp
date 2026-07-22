@@ -51,8 +51,7 @@ const RealityComparison = ({ onBack }: RealityComparisonProps) => {
           score: u.success_score,
           description: u.universe_description,
           divergence: u.divergence_point,
-          parameters: u.parameters || {},
-        }))
+          parameters: u.parameters || {} }))
       };
       setComparison(comparisonData);
     } finally { setComparing(false); }

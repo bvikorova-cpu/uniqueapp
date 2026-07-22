@@ -18,13 +18,11 @@ export function QuantumSocialHero() {
 
   useEffect(() => {
     const colors = ["#06b6d4", "#8b5cf6", "#10b981", "#ec4899"];
-    const p = Array.from({ length: 25 }, (_, i) => ({
-      id: i,
+    const p = Array.from({ length: 25 }, (_, i) => ({ id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
       delay: Math.random() * 5,
-      color: colors[i % colors.length],
-    }));
+      color: colors[i % colors.length] }));
     setParticles(p);
   }, []);
 
@@ -64,11 +62,10 @@ export function QuantumSocialHero() {
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
       {/* Matrix rain effect */}
-      <div className="absolute inset-0 opacity-10" style={{
+      <div className="absolute inset-0 opacity-10" style={ {
         backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(6,182,212,0.1) 2px, rgba(6,182,212,0.1) 4px)`,
         backgroundSize: '100% 4px',
-        animation: 'pulse 4s ease-in-out infinite',
-      }} />
+        animation: 'pulse 4s ease-in-out infinite' }} />
 
       {/* Floating particles */}
       {particles.map((p) => (
@@ -81,19 +78,16 @@ export function QuantumSocialHero() {
             left: `${p.x}%`,
             top: `${p.y}%`,
             backgroundColor: p.color,
-            boxShadow: `0 0 10px ${p.color}, 0 0 20px ${p.color}`,
-          }}
-          animate={{
+            boxShadow: `0 0 10px ${p.color}, 0 0 20px ${p.color}` }}
+          animate={ {
             y: [0, -40, 0],
             opacity: [0.2, 0.9, 0.2],
-            scale: [1, 1.8, 1],
-          }}
-          transition={{
+            scale: [1, 1.8, 1] }}
+          transition={ {
             duration: 3.5,
             delay: p.delay,
             repeat: Infinity,
-            ease: "easeInOut",
-          }}
+            ease: "easeInOut" }}
         />
       ))}
 

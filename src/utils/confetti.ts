@@ -21,13 +21,11 @@ export const triggerRewardConfetti = () => {
     confetti({
       ...defaults,
       particleCount,
-      origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-    });
+      origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
     confetti({
       ...defaults,
       particleCount,
-      origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-    });
+      origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
   }, 250);
 };
 
@@ -35,43 +33,30 @@ export const triggerBadgeConfetti = () => {
   const count = 200;
   const defaults = {
     origin: { y: 0.7 },
-    zIndex: 0,
-  };
+    zIndex: 0 };
 
-  const fire = (particleRatio: number, opts: confetti.Options) => {
-    confetti({
+  const fire = (particleRatio: number, opts: confetti.Options) => { confetti({
       ...defaults,
       ...opts,
-      particleCount: Math.floor(count * particleRatio),
-    });
+      particleCount: Math.floor(count * particleRatio) });
   };
 
-  fire(0.25, {
-    spread: 26,
-    startVelocity: 55,
-  });
+  fire(0.25, { spread: 26,
+    startVelocity: 55 });
 
-  fire(0.2, {
-    spread: 60,
-  });
+  fire(0.2, { spread: 60 });
 
-  fire(0.35, {
-    spread: 100,
+  fire(0.35, { spread: 100,
     decay: 0.91,
-    scalar: 0.8,
-  });
+    scalar: 0.8 });
 
-  fire(0.1, {
-    spread: 120,
+  fire(0.1, { spread: 120,
     startVelocity: 25,
     decay: 0.92,
-    scalar: 1.2,
-  });
+    scalar: 1.2 });
 
-  fire(0.1, {
-    spread: 120,
-    startVelocity: 45,
-  });
+  fire(0.1, { spread: 120,
+    startVelocity: 45 });
 };
 
 export const triggerLevelUpConfetti = () => {
@@ -87,8 +72,7 @@ export const triggerLevelUpConfetti = () => {
       spread: 55,
       origin: { x: 0 },
       colors: colors,
-      zIndex: 9999,
-    });
+      zIndex: 9999 });
 
     confetti({
       particleCount: 5,
@@ -96,8 +80,7 @@ export const triggerLevelUpConfetti = () => {
       spread: 55,
       origin: { x: 1 },
       colors: colors,
-      zIndex: 9999,
-    });
+      zIndex: 9999 });
 
     if (Date.now() < animationEnd) {
       requestAnimationFrame(frame);
@@ -113,8 +96,7 @@ export const triggerLevelUpConfetti = () => {
       spread: 70,
       origin: { y: 0.6 },
       colors: colors,
-      zIndex: 9999,
-    });
+      zIndex: 9999 });
   }, 250);
 };
 
@@ -134,8 +116,7 @@ export const triggerTopPremiumConfetti = () => {
     colors: goldColors,
     zIndex: 9999,
     shapes: ['circle', 'square'],
-    scalar: 1.2,
-  });
+    scalar: 1.2 });
 
   // Side cannons
   const frame = () => {
@@ -146,8 +127,7 @@ export const triggerTopPremiumConfetti = () => {
       origin: { x: 0, y: 0.7 },
       colors: goldColors,
       zIndex: 9999,
-      ticks: 200,
-    });
+      ticks: 200 });
 
     confetti({
       particleCount: 3,
@@ -156,8 +136,7 @@ export const triggerTopPremiumConfetti = () => {
       origin: { x: 1, y: 0.7 },
       colors: goldColors,
       zIndex: 9999,
-      ticks: 200,
-    });
+      ticks: 200 });
 
     if (Date.now() < animationEnd) {
       requestAnimationFrame(frame);
@@ -173,8 +152,7 @@ export const triggerTopPremiumConfetti = () => {
       spread: 60,
       origin: { y: 0.4, x: 0.3 },
       colors: goldColors,
-      zIndex: 9999,
-    });
+      zIndex: 9999 });
   }, 500);
 
   setTimeout(() => {
@@ -183,7 +161,6 @@ export const triggerTopPremiumConfetti = () => {
       spread: 60,
       origin: { y: 0.4, x: 0.7 },
       colors: goldColors,
-      zIndex: 9999,
-    });
+      zIndex: 9999 });
   }, 1000);
 };

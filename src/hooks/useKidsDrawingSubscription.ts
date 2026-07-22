@@ -15,21 +15,17 @@ export const useKidsDrawingSubscription = () => {
     queryFn: async (): Promise<SubscriptionStatus> => {
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        return {
+      if (!session) { return {
           subscribed: false,
           tutorials_used: 0,
-          tutorials_limit: 0,
-        };
+          tutorials_limit: 0 };
       }
 
       const { data, error } = await supabase.functions.invoke(
         "check-kids-drawing-subscription",
         {
           headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        }
+            Authorization: `Bearer ${session.access_token}` } }
       );
 
       if (error) throw error;
@@ -52,9 +48,7 @@ export const useCreateDrawingCheckout = () => {
         "create-kids-drawing-checkout",
         {
           headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        }
+            Authorization: `Bearer ${session.access_token}` } }
       );
 
       if (error) throw error;
@@ -66,8 +60,7 @@ export const useCreateDrawingCheckout = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to create checkout session");
-    },
-  });
+    } });
 };
 
 export const useIncrementDrawingUsage = () => {
@@ -84,15 +77,13 @@ export const useIncrementDrawingUsage = () => {
         .eq("user_id", user.id)
         .single();
 
-      if (!usage) {
-        // Create initial record
+      if (!usage) { // Create initial record
         await supabase
           .from("kids_drawing_usage")
           .insert({
             user_id: user.id,
             tutorials_used: 1,
-            tutorials_limit: 1,
-          });
+            tutorials_limit: 1 });
       } else {
         // Increment usage
         await supabase
@@ -103,8 +94,7 @@ export const useIncrementDrawingUsage = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["kids-drawing-subscription"] });
-    },
-  });
+    } });
 };
 
 export const useOpenDrawingCustomerPortal = () => {
@@ -120,9 +110,7 @@ export const useOpenDrawingCustomerPortal = () => {
         "kids-drawing-customer-portal",
         {
           headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        }
+            Authorization: `Bearer ${session.access_token}` } }
       );
 
       if (error) throw error;
@@ -134,6 +122,5 @@ export const useOpenDrawingCustomerPortal = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to open customer portal");
-    },
-  });
+    } });
 };

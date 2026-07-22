@@ -32,8 +32,7 @@ export function CloneVoice() {
     setIsGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { type: "voice_transform", prompt: text.trim(), style: voiceStyle },
-      });
+        body: { type: "voice_transform", prompt: text.trim(), style: voiceStyle } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setGeneratedText(data.transformed || data.message || data.text || data.result);

@@ -39,13 +39,11 @@ const isAllowedResumeUrl = (raw: string): boolean => {
   }
 };
 
-const applicationSchema = z.object({
-  cover_letter: z.string().trim().min(20, "Cover letter must be at least 20 characters").max(5000, "Cover letter must be under 5000 characters"),
+const applicationSchema = z.object({ cover_letter: z.string().trim().min(20, "Cover letter must be at least 20 characters").max(5000, "Cover letter must be under 5000 characters"),
   resume_url: z.string().trim().max(500, "Resume URL too long").refine(
     (v) => v === "" || isAllowedResumeUrl(v),
     "Resume URL must be https and from a trusted host (Drive, Dropbox, LinkedIn, GitHub, …) or a direct .pdf"
-  ),
-});
+  ) });
 import { ResumeManagerDialog } from "@/components/jobs/ResumeManagerDialog";
 import CandidateSearchProfileDialog from "@/components/jobs/CandidateSearchProfileDialog";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
@@ -105,8 +103,7 @@ interface JobListing {
   created_at: string;
 }
 
-const CATEGORIES = {
-  it_software: "IT & Software",
+const CATEGORIES = { it_software: "IT & Software",
   marketing_sales: "Marketing & Sales",
   finance_accounting: "Finance & Accounting",
   healthcare: "Healthcare",
@@ -117,16 +114,13 @@ const CATEGORIES = {
   manufacturing: "Manufacturing",
   construction: "Construction",
   transportation: "Transportation",
-  other: "Other",
-};
+  other: "Other" };
 
-const JOB_TYPES = {
-  full_time: "Full Time",
+const JOB_TYPES = { full_time: "Full Time",
   part_time: "Part Time",
   contract: "Contract",
   internship: "Internship",
-  remote: "Remote",
-};
+  remote: "Remote" };
 
 type ActiveTab = "jobs" | "companies" | "map" | "saved" | "applications" | "tools" | "streaks" | "leaderboard" | "achievements" | "challenges";
 
@@ -169,8 +163,7 @@ const Jobs = () => {
       const activateJob = async () => {
         try {
           const { data, error } = await supabase.functions.invoke('verify-job-listing-payment', {
-            body: { sessionId },
-          });
+            body: { sessionId } });
           if (error) throw error;
           if (data?.verified) {
             toast({ title: "✅ Payment Successful!", description: "Your job listing is now active and visible to candidates" });
@@ -212,19 +205,16 @@ const Jobs = () => {
       setIsEmployer(!!data);
       return data;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const debouncedSearch = useDebounce(searchQuery, 300);
 
   const PAGE_SIZE = 50;
-  const {
-    data: jobsPages,
+  const { data: jobsPages,
     isLoading,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
+    isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["jobs", debouncedSearch, selectedCategory, selectedType, selectedCountry],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
@@ -247,8 +237,7 @@ const Jobs = () => {
       return (data as JobListing[]) ?? [];
     },
     getNextPageParam: (lastPage, allPages) =>
-      lastPage.length === PAGE_SIZE ? allPages.length : undefined,
-  });
+      lastPage.length === PAGE_SIZE ? allPages.length : undefined });
 
   const jobs: JobListing[] = jobsPages?.pages.flat() ?? [];
 
@@ -261,12 +250,10 @@ const Jobs = () => {
       if (!parsed.success) {
         throw new Error(parsed.error.issues[0]?.message || "Invalid application");
       }
-      const { error } = await supabase.from("job_applications").insert({
-        job_id: selectedJob.id,
+      const { error } = await supabase.from("job_applications").insert({ job_id: selectedJob.id,
         applicant_id: user.id,
         cover_letter: parsed.data.cover_letter,
-        resume_url: parsed.data.resume_url || null,
-      });
+        resume_url: parsed.data.resume_url || null });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -283,8 +270,7 @@ const Jobs = () => {
       else if (/Daily application limit/i.test(msg)) friendly = "Daily limit reached (20 applications / 24h). Try again tomorrow.";
       else if (/Resume URL/i.test(msg)) friendly = msg;
       toast({ title: "❌ Error", description: friendly, variant: "destructive" });
-    },
-  });
+    } });
 
   const registerEmployerMutation = useMutation({
     mutationFn: async () => {
@@ -297,8 +283,7 @@ const Jobs = () => {
       toast({ title: "✅ Registered as Employer", description: "Please complete verification to post jobs" });
       navigate('/employer-verification');
     },
-    onError: (error: Error) => { toast({ title: "❌ Registration Failed", description: error.message, variant: "destructive" }); },
-  });
+    onError: (error: Error) => { toast({ title: "❌ Registration Failed", description: error.message, variant: "destructive" }); } });
 
   const filteredJobs = jobs.filter((job) => {
     if (!quickFilter) return true;
@@ -630,7 +615,7 @@ const Jobs = () => {
         {/* Job Details Dialog */}
         <Dialog open={showJobDetailsDialog} onOpenChange={setShowJobDetailsDialog}>
           <DialogContent className="w-[min(calc(100vw-1rem),56rem)] max-w-[calc(100vw-1rem)] max-h-[90dvh] min-w-0 overflow-y-auto overflow-x-hidden box-border p-3 sm:p-6">
-            {selectedJob && (
+            { selectedJob && (
               <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
@@ -643,32 +628,22 @@ const Jobs = () => {
                     employmentType: selectedJob.job_type,
                     hiringOrganization: {
                       "@type": "Organization",
-                      name: selectedJob.company_name,
-                    },
-                    jobLocation: {
-                      "@type": "Place",
+                      name: selectedJob.company_name },
+                    jobLocation: { "@type": "Place",
                       address: {
                         "@type": "PostalAddress",
                         addressLocality: selectedJob.location,
-                        addressCountry: selectedJob.country,
-                      },
-                    },
+                        addressCountry: selectedJob.country } },
                     ...(selectedJob.salary_min && selectedJob.salary_max
-                      ? {
-                          baseSalary: {
+                      ? { baseSalary: {
                             "@type": "MonetaryAmount",
                             currency: selectedJob.salary_currency || "EUR",
                             value: {
                               "@type": "QuantitativeValue",
                               minValue: Number(selectedJob.salary_min),
                               maxValue: Number(selectedJob.salary_max),
-                              unitText: "YEAR",
-                            },
-                          },
-                        }
-                      : {}),
-                  }),
-                }}
+                              unitText: "YEAR" } } }
+                      : {}) }) }}
               />
             )}
             <DialogHeader className="min-w-0 text-left">

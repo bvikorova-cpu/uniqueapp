@@ -3,11 +3,9 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { z } from "https://esm.sh/zod@3.23.8";
 import { spendAiCredits } from "../_shared/spendCredits.ts";
 
-const Body = z.object({
-  action: z.enum(["buy-horse", "enter-race", "train"]),
+const Body = z.object({ action: z.enum(["buy-horse", "enter-race", "train"]),
   horse_name: z.string().min(1).max(100).optional(),
-  metadata: z.record(z.unknown()).optional(),
-});
+  metadata: z.record(z.unknown()).optional() });
 
 const COST = 2;
 
@@ -19,8 +17,7 @@ Deno.serve(async (req) => {
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -28,22 +25,19 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const parsed = Body.safeParse(await req.json());
     if (!parsed.success) {
       return new Response(JSON.stringify({ error: parsed.error.flatten() }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const admin = createClient(supabaseUrl, serviceKey);
@@ -53,8 +47,7 @@ Deno.serve(async (req) => {
     if (!spend.ok) {
       return new Response(JSON.stringify({ error: spend.error, requiresPayment: true }), {
         status: 402,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { data, error } = await admin
@@ -64,20 +57,17 @@ Deno.serve(async (req) => {
         action_type: parsed.data.action,
         horse_name: parsed.data.horse_name ?? null,
         metadata: parsed.data.metadata ?? {},
-        credits_spent: COST,
-      })
+        credits_spent: COST })
       .select()
       .single();
     if (error) throw error;
 
     return new Response(JSON.stringify({ ok: true, entry: data, credits_remaining: spend.remaining }), {
       status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -68,11 +68,9 @@ export default function RewardsFriendQuests() {
         toast.error("You already have a pending invite for this friend & quest");
         return;
       }
-      const { error } = await supabase.from("friend_quest_invites").insert({
-        from_user: user.id,
+      const { error } = await supabase.from("friend_quest_invites").insert({ from_user: user.id,
         to_user: target,
-        quest_type: QUEST_TYPES[questIdx].id,
-      });
+        quest_type: QUEST_TYPES[questIdx].id });
       if (error) return toast.error("Failed: " + error.message);
       toast.success("Invite sent!");
       setFriendId("");

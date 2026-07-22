@@ -62,18 +62,15 @@ export const MegatalentDailyChallenge = () => {
       if ((res as any)?.success) {
         toast({
           title: "🎉 Challenge complete!",
-          description: `+${(res as any).bonus_votes} bonus votes awarded`,
-        });
+          description: `+${(res as any).bonus_votes} bonus votes awarded` });
         await load();
       } else if ((res as any)?.already_claimed) {
         toast({ title: "Already claimed today" });
       }
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Could not claim",
         description: e?.message ?? "Try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setClaiming(false);
     }

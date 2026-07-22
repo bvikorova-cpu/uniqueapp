@@ -12,7 +12,7 @@ DECLARE
   _exists int;
   _rtype text;
   _rvalue numeric;
-  _local timestamptz := now() AT TIME ZONE 'Europe/Bratislava';
+  _local timestamptz := now() AT TIME ZONE 'Europe/City';
 BEGIN
   IF _uid IS NULL THEN RETURN jsonb_build_object('ok', false, 'error', 'unauthenticated'); END IF;
 

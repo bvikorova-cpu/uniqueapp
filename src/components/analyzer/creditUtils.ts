@@ -40,6 +40,5 @@ export async function reserveAnalyzerCredits(cost: number): Promise<{
         committed = false;
         throw upErr;
       }
-    },
-  };
+    } };
 }

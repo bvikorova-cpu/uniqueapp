@@ -11,11 +11,9 @@ export async function rateLimit(
   max: number,
   windowSeconds: number
 ): Promise<boolean> {
-  const { data, error } = await supabase.rpc("check_rate_limit", {
-    _bucket: bucket,
+  const { data, error } = await supabase.rpc("check_rate_limit", { _bucket: bucket,
     _max: max,
-    _window_seconds: windowSeconds,
-  });
+    _window_seconds: windowSeconds });
   if (error) {
     console.warn("[rateLimit] rpc failed, fail-open:", error.message);
     return true;

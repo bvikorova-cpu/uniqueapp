@@ -39,8 +39,7 @@ function generateQuizQuestions(subject: string): Array<{ question: string; optio
       { question: "What is the largest continent?", options: ["Africa", "Europe", "Asia", "America"], correct: 2 },
       { question: "What is the longest river?", options: ["Amazon", "Nile", "Mississippi", "Danube"], correct: 1 },
       { question: "Which ocean is the biggest?", options: ["Atlantic", "Indian", "Pacific", "Arctic"], correct: 2 },
-    ],
-  };
+    ] };
   return quizzes[subject] || quizzes.math;
 }
 

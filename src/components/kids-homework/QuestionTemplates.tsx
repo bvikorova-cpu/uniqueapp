@@ -32,8 +32,7 @@ const TEMPLATES: Record<string, Array<{ question: string; emoji: string }>> = {
     { question: "Why do volcanoes erupt?", emoji: "🌋" },
     { question: "What's the deepest ocean?", emoji: "🌊" },
     { question: "How are mountains formed?", emoji: "🏔️" },
-  ],
-};
+  ] };
 
 interface QuestionTemplatesProps {
   subject: string;

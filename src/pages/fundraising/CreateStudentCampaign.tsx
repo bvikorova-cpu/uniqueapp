@@ -22,8 +22,7 @@ const supportTypes = [
   { value: 'other', label: '📝 Other Educational Needs' },
 ];
 
-export default function CreateStudentCampaign() {
-  const navigate = useNavigate();
+export default function CreateStudentCampaign() { const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
@@ -38,19 +37,16 @@ export default function CreateStudentCampaign() {
     target_amount: '',
     pay_it_forward: false,
     image_url: '',
-    ends_at: '',
-  });
+    ends_at: '' });
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: 'Error',
         description: 'Image is too large (max 5MB)',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
@@ -58,12 +54,10 @@ export default function CreateStudentCampaign() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in to upload images',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         return;
       }
 
@@ -81,59 +75,47 @@ export default function CreateStudentCampaign() {
         .getPublicUrl(data.path);
 
       setFormData({ ...formData, image_url: publicUrl });
-      toast({
-        title: 'Success',
-        description: 'Image uploaded successfully',
-      });
-    } catch (error) {
-      console.error('Error uploading image:', error);
+      toast({ title: 'Success',
+        description: 'Image uploaded successfully' });
+    } catch (error) { console.error('Error uploading image:', error);
       toast({
         title: 'Error',
         description: 'Failed to upload image',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setUploading(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
     
     if (!formData.title || !formData.description || !formData.story || !formData.support_type || !formData.target_amount) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
-    if (!consentChecked) {
-      toast({
+    if (!consentChecked) { toast({
         title: 'Error',
         description: 'You must confirm the consent checkbox',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
-    if (!ageConfirmed) {
-      toast({
+    if (!ageConfirmed) { toast({
         title: 'Age verification required',
         description: 'You must be 18+ or have verified parental consent on file.',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
     const targetAmount = parseFloat(formData.target_amount);
-    if (isNaN(targetAmount) || targetAmount < 100) {
-      toast({
+    if (isNaN(targetAmount) || targetAmount < 100) { toast({
         title: 'Error',
         description: 'Minimum target amount is €100',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
@@ -142,20 +124,17 @@ export default function CreateStudentCampaign() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in to create a campaign',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         navigate('/auth');
         return;
       }
 
       const { data, error } = await supabase
         .from('student_campaigns')
-        .insert({
-          user_id: session.user.id,
+        .insert({ user_id: session.user.id,
           title: formData.title,
           description: formData.description,
           story: formData.story,
@@ -166,26 +145,21 @@ export default function CreateStudentCampaign() {
           pay_it_forward: formData.pay_it_forward,
           image_url: formData.image_url || null,
           ends_at: formData.ends_at || null,
-          status: 'pending',
-        })
+          status: 'pending' })
         .select()
         .single();
 
       if (error) throw error;
 
-      toast({
-        title: 'Success!',
-        description: 'Your student support campaign has been submitted for admin approval',
-      });
+      toast({ title: 'Success!',
+        description: 'Your student support campaign has been submitted for admin approval' });
 
       navigate(`/fundraising/student/${data.id}/success?action=created`);
-    } catch (error) {
-      console.error('Error creating campaign:', error);
+    } catch (error) { console.error('Error creating campaign:', error);
       toast({
         title: 'Error',
         description: 'Failed to create campaign',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setCreating(false);
     }

@@ -6,18 +6,12 @@ const useAuthMock = vi.fn();
 const fromMock = vi.fn();
 const savePendingActionMock = vi.fn();
 
-vi.mock("@/contexts/AuthContext", () => ({
-  useAuth: () => useAuthMock(),
-}));
+vi.mock("@/contexts/AuthContext", () => ({ useAuth: () => useAuthMock() }));
 vi.mock("@/hooks/use-toast", () => ({
-  useToast: () => ({ toast: vi.fn() }),
-}));
+  useToast: () => ({ toast: vi.fn() }) }));
 vi.mock("@/integrations/supabase/client", () => ({
-  supabase: { from: (t: string) => fromMock(t) },
-}));
-vi.mock("@/lib/pendingAction", () => ({
-  savePendingAction: (...args: unknown[]) => savePendingActionMock(...args),
-}));
+  supabase: { from: (t: string) => fromMock(t) } }));
+vi.mock("@/lib/pendingAction", () => ({ savePendingAction: (...args: unknown[]) => savePendingActionMock(...args) }));
 
 import { ProtectedRoute } from "./ProtectedRoute";
 
@@ -27,11 +21,7 @@ function roleRow(found: boolean) {
       eq: () => ({
         eq: () => ({
           maybeSingle: () =>
-            Promise.resolve({ data: found ? { role: "admin" } : null, error: null }),
-        }),
-      }),
-    }),
-  };
+            Promise.resolve({ data: found ? { role: "admin" } : null, error: null }) }) }) }) };
 }
 
 function renderApp(node: React.ReactNode) {

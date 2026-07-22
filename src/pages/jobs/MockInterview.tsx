@@ -39,18 +39,15 @@ export default function MockInterview() {
   const ask = async (current: Msg[], action: "next_question" | "evaluate") => {
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("mock-interview-ai", {
-      body: { role, interview_type: type, transcript: current, action },
-    });
+      body: { role, interview_type: type, transcript: current, action } });
     setLoading(false);
     if (error) return toast.error(error.message);
     if (action === "evaluate") {
       setFeedback(data.result);
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) await (supabase as any).from("mock_interview_sessions").insert({
-        user_id: user.id, role, interview_type: type,
+      if (user) await (supabase as any).from("mock_interview_sessions").insert({ user_id: user.id, role, interview_type: type,
         transcript: current, feedback: data.result,
-        duration_seconds: Math.round((Date.now() - startedAt) / 1000),
-      });
+        duration_seconds: Math.round((Date.now() - startedAt) / 1000) });
     } else {
       setTranscript([...current, { role: "assistant", content: data.result }]);
     }

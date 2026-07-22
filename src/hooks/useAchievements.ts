@@ -19,8 +19,7 @@ export const useAchievements = () => {
         ...ua.achievements,
         earned_at: ua.unlocked_at
       })) as Achievement[];
-    },
-  });
+    } });
 
   const { data: allAchievements, isLoading: loadingAll } = useQuery<Achievement[]>({
     queryKey: ["all-achievements"],
@@ -32,15 +31,12 @@ export const useAchievements = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const totalPoints = userAchievements?.reduce((sum, a) => sum + (a.points || 0), 0) || 0;
 
-  return {
-    userAchievements: userAchievements || [],
+  return { userAchievements: userAchievements || [],
     allAchievements: allAchievements || [],
     totalPoints,
-    isLoading: loadingUser || loadingAll,
-  };
+    isLoading: loadingUser || loadingAll };
 };

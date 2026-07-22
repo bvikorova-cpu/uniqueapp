@@ -19,8 +19,7 @@ export const useKidsHomeworkProgress = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: achievements, isLoading: achievementsLoading } = useQuery({
     queryKey: ['kids-homework-achievements'],
@@ -32,8 +31,7 @@ export const useKidsHomeworkProgress = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: unlockedAchievements, isLoading: unlockedLoading } = useQuery({
     queryKey: ['kids-homework-user-achievements', user?.id],
@@ -52,13 +50,10 @@ export const useKidsHomeworkProgress = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
-  return {
-    points,
+  return { points,
     achievements,
     unlockedAchievements,
-    isLoading: pointsLoading || achievementsLoading || unlockedLoading,
-  };
+    isLoading: pointsLoading || achievementsLoading || unlockedLoading };
 };

@@ -33,8 +33,7 @@ const commentSchema = z.object({
     .string()
     .trim()
     .min(1, { message: "Comment cannot be empty" })
-    .max(500, { message: "Comment can have a maximum of 500 characters" }),
-});
+    .max(500, { message: "Comment can have a maximum of 500 characters" }) });
 
 export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountChange }: Props) {
   const { toast } = useToast();
@@ -60,35 +59,28 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
     setCheckoutLoading(tierToBuy);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Login required",
           description: "Please log in first to purchase a subscription.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         window.location.href = "/auth?redirect=/megatalent";
         return;
       }
       const { data, error } = await supabase.functions.invoke("create-megatalent-checkout", {
         body: { tier: tierToBuy },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
-      if (data?.url) {
-        window.open(data.url, "_blank");
+      if (data?.url) { window.open(data.url, "_blank");
         toast({
           title: "Presmerovanie na Stripe…",
-          description: "After completing the payment, go back and refresh the page.",
-        });
+          description: "After completing the payment, go back and refresh the page." });
       } else {
         throw new Error("Checkout URL was not returned");
       }
-    } catch (err: any) {
-      toast({
+    } catch (err: any) { toast({
         title: "Checkout error",
         description: err?.message || "Failed to initiate payment.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setCheckoutLoading(null);
     }
@@ -274,18 +266,14 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
       }
       const paid = await spend("megatalent_comment", { description: "talent_comment" });
       if (!paid) { setSubmitting(false); return; }
-      const { error } = await supabase.from("talent_comments").insert({
-        submission_id: submissionId,
+      const { error } = await supabase.from("talent_comments").insert({ submission_id: submissionId,
         user_id: user.id,
-        comment_text: parsed.data.comment_text,
-      });
-      if (error) {
-        if (error.message?.toLowerCase().includes("row-level security")) {
+        comment_text: parsed.data.comment_text });
+      if (error) { if (error.message?.toLowerCase().includes("row-level security")) {
           toast({
             title: "Subscription required",
             description: "Only members with an active Megatalent subscription can comment.",
-            variant: "destructive",
-          });
+            variant: "destructive" });
         } else {
           throw error;
         }
@@ -312,13 +300,11 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
     }
   };
 
-  const startEdit = (c: TalentComment) => {
-    if (!subLoading && !isSubscribed) {
+  const startEdit = (c: TalentComment) => { if (!subLoading && !isSubscribed) {
       toast({
         title: "Megatalent subscription required",
         description: "To edit a comment, you need an active Megatalent subscription (from €10/month).",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     setEditingId(c.id);
@@ -341,20 +327,16 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
     // Local pre-flight: must be signed in and must own the comment
     const target = comments.find((c) => c.id === editingId);
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({
+    if (!user) { toast({
         title: "Login required",
         description: "Please log in first to edit the comment.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
-    if (target && target.user_id !== user.id) {
-      toast({
+    if (target && target.user_id !== user.id) { toast({
         title: "You are not authorized",
         description: "You can only edit your own comments.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -367,8 +349,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
         .select("id, comment_text, updated_at")
         .maybeSingle();
 
-      if (error) {
-        const msg = (error.message || "").toLowerCase();
+      if (error) { const msg = (error.message || "").toLowerCase();
         const code = (error as any).code;
         if (msg.includes("row-level security") || code === "42501") {
           // Could be: not the owner, OR no active Megatalent subscription
@@ -376,29 +357,24 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
             title: "Edit denied",
             description:
               "You can only edit the comment as its author and with an active Megatalent subscription. Check your subscription and try again.",
-            variant: "destructive",
-          });
-        } else if (msg.includes("jwt") || msg.includes("not authenticated")) {
-          toast({
+            variant: "destructive" });
+        } else if (msg.includes("jwt") || msg.includes("not authenticated")) { toast({
             title: "Session expired",
             description: "Please log in again and try to repeat the edit.",
-            variant: "destructive",
-          });
+            variant: "destructive" });
         } else {
           throw error;
         }
         return;
       }
 
-      if (!data) {
-        // No row returned → RLS silently filtered it (no active subscription
+      if (!data) { // No row returned → RLS silently filtered it (no active subscription
         // or no longer the owner) or the comment was deleted in the meantime.
         toast({
           title: "Failed to save edit",
           description:
             "You probably don't have an active Megatalent subscription, or the comment has been removed in the meantime.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -409,13 +385,11 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
       );
       toast({ title: "Comment edited" });
       cancelEdit();
-    } catch (err: any) {
-      console.error("Error updating comment:", err);
+    } catch (err: any) { console.error("Error updating comment:", err);
       toast({
         title: "Error saving",
         description: err?.message || "Failed to edit comment. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setSavingEdit(false);
     }
@@ -514,12 +488,11 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                             {c.profiles?.full_name || "User"}
                           </p>
                           <span className="text-[10px] text-muted-foreground whitespace-nowrap">
-                            {new Date(c.created_at).toLocaleDateString("sk-SK", {
+                            { new Date(c.created_at).toLocaleDateString("sk-SK", {
                               day: "numeric",
                               month: "short",
                               hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                              minute: "2-digit" })}
                             {c.updated_at && new Date(c.updated_at).getTime() - new Date(c.created_at).getTime() > 2000 && (
                               <span className="ml-1 italic">(edited)</span>
                             )}

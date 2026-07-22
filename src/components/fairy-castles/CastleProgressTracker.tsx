@@ -26,46 +26,36 @@ interface Milestone {
 }
 
 const MILESTONES: Milestone[] = [
-  {
-    percentage: 25,
+  { percentage: 25,
     icon: <Star className="h-6 w-6" />,
     title: "Explorer",
     description: "Visited 25% of the castle",
-    color: "text-blue-500",
-  },
-  {
-    percentage: 50,
+    color: "text-blue-500" },
+  { percentage: 50,
     icon: <Award className="h-6 w-6" />,
     title: "Adventurer",
     description: "Halfway through your journey",
-    color: "text-purple-500",
-  },
-  {
-    percentage: 75,
+    color: "text-purple-500" },
+  { percentage: 75,
     icon: <Trophy className="h-6 w-6" />,
     title: "Castle Master",
     description: "Almost complete!",
-    color: "text-yellow-500",
-  },
-  {
-    percentage: 100,
+    color: "text-yellow-500" },
+  { percentage: 100,
     icon: <Crown className="h-6 w-6" />,
     title: "Royal Champion",
     description: "Tour complete! You're amazing!",
-    color: "text-amber-500",
-  },
+    color: "text-amber-500" },
 ];
 
-export const CastleProgressTracker = ({
-  currentRoomIndex,
+export const CastleProgressTracker = ({ currentRoomIndex,
   totalRooms,
   visitedRoomIds,
   startTime,
   isVisible,
   onClose,
   unlockedMilestones,
-  onMilestoneUnlock,
-}: CastleProgressTrackerProps) => {
+  onMilestoneUnlock }: CastleProgressTrackerProps) => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -120,10 +110,8 @@ export const CastleProgressTracker = ({
         audio.play().catch(console.error);
 
         // Show toast notification
-        toast.success(`🎉 ${milestone.title} Unlocked!`, {
-          description: milestone.description,
-          duration: 4000,
-        });
+        toast.success(`🎉 ${milestone.title} Unlocked!`, { description: milestone.description,
+          duration: 4000 });
       }
     });
   }, [progressPercentage]);
@@ -309,8 +297,7 @@ export const CastleProgressTracker = ({
                 <div
                   className="h-full bg-gradient-to-r from-primary to-primary/50 transition-all duration-500"
                   style={{
-                    width: `${(progressPercentage / nextMilestone.percentage) * 100}%`,
-                  }}
+                    width: `${(progressPercentage / nextMilestone.percentage) * 100}%` }}
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-2">

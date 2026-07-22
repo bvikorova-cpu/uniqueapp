@@ -4,12 +4,10 @@ import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { Info, Volume2, VolumeX, Sparkles, Languages, Crosshair, BookOpen, Crown, Gem, Wand2, MapPin, RotateCcw } from "lucide-react";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 
 // Magical Dreams (Hong Kong) - 10 rooms
@@ -90,8 +88,7 @@ export type GuideVoice = "princess" | "wizard" | "explorer";
 const GUIDE_INTRO: Record<GuideVoice, { label: string; emoji: string; prefix: string }> = {
   princess: { label: "Princess", emoji: "👸", prefix: "Welcome, dear traveler — let me tell you the elegant tale of this room. " },
   wizard:   { label: "Wizard",   emoji: "🧙", prefix: "Ahh… step closer, and I shall reveal the magic hidden within these walls. " },
-  explorer: { label: "Explorer", emoji: "🗺️", prefix: "Adventurer! Get ready — here are the fun facts you cannot miss. " },
-};
+  explorer: { label: "Explorer", emoji: "🗺️", prefix: "Adventurer! Get ready — here are the fun facts you cannot miss. " } };
 
 interface FairyPanoramaViewerProps {
   imageUrl: string;
@@ -115,8 +112,7 @@ interface FairyPanoramaViewerProps {
   collectedIds?: string[];
 }
 
-function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
-  const meshRef = useRef<THREE.Mesh>(null);
+function PanoramaSphere({ imageUrl }: { imageUrl: string }) { const meshRef = useRef<THREE.Mesh>(null);
   const [texture, setTexture] = useState<THREE.Texture | null>(null);
 
   useEffect(() => {
@@ -195,8 +191,7 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       'shanghai-storybook-7': shanghaiStorybook7,
       'shanghai-storybook-8': shanghaiStorybook8,
       'shanghai-storybook-9': shanghaiStorybook9,
-      'shanghai-storybook-10': shanghaiStorybook10,
-    };
+      'shanghai-storybook-10': shanghaiStorybook10 };
 
     // Check if imageUrl is a key in imageMap or a direct URL
     const actualImageUrl = imageMap[imageUrl] || imageUrl;
@@ -376,14 +371,12 @@ function buildPoisFromRoom(roomKey: string, roomName: string, audioGuideText: st
   }
 
   // If we have audio guide text, use the FIRST sentence as a featured story POI
-  if (audioGuideText) {
-    const firstSentence = audioGuideText.split(/[.!?]/)[0]?.trim();
+  if (audioGuideText) { const firstSentence = audioGuideText.split(/[.!?]/)[0]?.trim();
     if (firstSentence && firstSentence.length > 10) {
       palette.unshift({
         kind: "story",
         title: "Begin the Story",
-        narrative: firstSentence + ".",
-      });
+        narrative: firstSentence + "." });
     }
   }
 
@@ -397,8 +390,7 @@ function buildPoisFromRoom(roomKey: string, roomName: string, audioGuideText: st
       ...p,
       id: `${roomKey}-poi-${i}`,
       yaw,
-      pitch,
-    };
+      pitch };
   });
 }
 
@@ -417,17 +409,14 @@ const POI_ICON: Record<PoiKind, { color: string; emissive: string; emoji: string
   info: { color: "#3b82f6", emissive: "#60a5fa", emoji: "ℹ️" },
   treasure: { color: "#f59e0b", emissive: "#fbbf24", emoji: "💎" },
   character: { color: "#ec4899", emissive: "#f472b6", emoji: "👤" },
-  landmark: { color: "#10b981", emissive: "#34d399", emoji: "🏛️" },
-};
+  landmark: { color: "#10b981", emissive: "#34d399", emoji: "🏛️" } };
 
-function PoiMarker({
-  poi,
+function PoiMarker({ poi,
   onClick,
   onGazeEnter,
   onGazeLeave,
   isActive,
-  isVisited,
-}: {
+  isVisited }: {
   poi: Poi;
   onClick: () => void;
   onGazeEnter: () => void;
@@ -482,12 +471,10 @@ function PoiMarker({
 }
 
 // Tracks where the camera is looking and reports the closest POI within an angular threshold.
-function GazeTracker({
-  pois,
+function GazeTracker({ pois,
   onGazeStart,
   onGazeEnd,
-  thresholdDeg = 14,
-}: {
+  thresholdDeg = 14 }: {
   pois: Poi[];
   onGazeStart: (poiId: string) => void;
   onGazeEnd: (poiId: string) => void;
@@ -541,7 +528,7 @@ function GazeTracker({
 
 const LANGUAGES = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'de', name: 'Deutsch', flag: '' },
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
   { code: 'es', name: 'Español', flag: '🇪🇸' },
   { code: 'sk', name: 'Slovak', flag: '🇸🇰' },
@@ -741,8 +728,7 @@ export function FairyPanoramaViewer({
     if (!url) {
       try {
         const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
-          body: { text: `${poi.title}. ${poi.narrative}`, language: selectedLanguage },
-        });
+          body: { text: `${poi.title}. ${poi.narrative}`, language: selectedLanguage } });
         if (error) throw error;
         if (data?.audioContent) {
           const binaryString = atob(data.audioContent);
@@ -888,12 +874,9 @@ export function FairyPanoramaViewer({
     // Generate new audio
     setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', { body: {
           text: narratedText,
-          language: selectedLanguage,
-        },
-      });
+          language: selectedLanguage } });
 
       if (error) throw error;
 
@@ -956,15 +939,13 @@ export function FairyPanoramaViewer({
   return (
     <div className="relative w-full h-screen">
       <Canvas
-        camera={{ 
+        camera={ { 
           position: [0, 0, 0.1],
-          fov: 75,
-        }}
-        gl={{ 
+          fov: 75 }}
+        gl={ { 
           antialias: true,
           alpha: false,
-          powerPreference: "high-performance",
-        }}
+          powerPreference: "high-performance" }}
         dpr={[1, 2]}
       >
         <ambientLight intensity={0.5} />
@@ -1191,8 +1172,7 @@ export function FairyPanoramaViewer({
                       style={{
                         height: `${20 + Math.random() * 80}%`,
                         animationDelay: `${i * 0.1}s`,
-                        animationDuration: '0.5s',
-                      }}
+                        animationDuration: '0.5s' }}
                     />
                   ))}
                 </div>

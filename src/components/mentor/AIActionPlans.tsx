@@ -48,8 +48,7 @@ export function AIActionPlans() {
     setGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke("mentor-ai-tools", {
-        body: { action: "generate-action-plan", mentorArea: selectedArea },
-      });
+        body: { action: "generate-action-plan", mentorArea: selectedArea } });
       if (error) throw error;
       toast({ title: "Action Plan Generated! 🎯", description: `${data.title} — 5 credits used` });
       await loadPlans();

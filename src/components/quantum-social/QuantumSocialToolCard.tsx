@@ -14,8 +14,7 @@ interface QuantumSocialToolCardProps {
   delay?: number;
 }
 
-export function QuantumSocialToolCard({
-  icon: Icon,
+export function QuantumSocialToolCard({ icon: Icon,
   title,
   description,
   badge,
@@ -23,8 +22,7 @@ export function QuantumSocialToolCard({
   gradient,
   iconColor,
   onClick,
-  delay = 0,
-}: QuantumSocialToolCardProps) {
+  delay = 0 }: QuantumSocialToolCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

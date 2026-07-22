@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { FileText, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDrafts } from "@/hooks/useDrafts";
 import { formatDistanceToNow } from "date-fns";
@@ -55,9 +53,8 @@ export const DraftsDialog = ({ onSelectDraft }: DraftsDialogProps) => {
                         {draft.content || "Empty draft"}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Saved {formatDistanceToNow(new Date(draft.updated_at), {
-                          addSuffix: true,
-                        })}
+                        Saved { formatDistanceToNow(new Date(draft.updated_at), {
+                          addSuffix: true })}
                       </p>
                     </div>
                     <Button

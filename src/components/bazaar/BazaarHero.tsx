@@ -18,16 +18,14 @@ export const BazaarHero = ({ itemCount }: BazaarHeroProps) => {
     const interval = duration / steps;
     let step = 0;
 
-    const timer = setInterval(() => {
-      step++;
+    const timer = setInterval(() => { step++;
       const progress = Math.min(step / steps, 1);
       const ease = 1 - Math.pow(1 - progress, 3);
       setStats({
         items: Math.round(target.items * ease),
         sellers: Math.round(target.sellers * ease),
         orders: Math.round(target.orders * ease),
-        satisfaction: Math.round(target.satisfaction * ease),
-      });
+        satisfaction: Math.round(target.satisfaction * ease) });
       if (step >= steps) clearInterval(timer);
     }, interval);
 

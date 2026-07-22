@@ -71,9 +71,7 @@ async function gotoAndAssertHealthy(page: Page, path: string) {
     .catch(() => false);
   expect(has404, `${path} renderuje 404 fallback`).toBeFalsy();
 
-  await expect(page.locator('main, [role="main"], h1, h2').first()).toBeVisible({
-    timeout: 8000,
-  });
+  await expect(page.locator('main, [role="main"], h1, h2').first()).toBeVisible({ timeout: 8000 });
 
   expect(consoleErrors, `console errors on ${path}:\n${consoleErrors.join('\n')}`).toHaveLength(0);
 }

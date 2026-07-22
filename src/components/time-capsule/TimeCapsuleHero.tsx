@@ -55,8 +55,7 @@ export const TimeCapsuleHero = () => {
               background: i % 2 === 0 ? 'hsl(var(--primary))' : '#f59e0b',
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              boxShadow: `0 0 8px ${i % 2 === 0 ? 'hsl(var(--primary) / 0.6)' : 'rgba(245,158,11,0.6)'}`,
-            }}
+              boxShadow: `0 0 8px ${i % 2 === 0 ? 'hsl(var(--primary) / 0.6)' : 'rgba(245,158,11,0.6)'}` }}
             animate={{ y: [0, -25, 0], opacity: [0.3, 0.8, 0.3], scale: [1, 1.3, 1] }}
             transition={{ duration: 3 + Math.random() * 4, repeat: Infinity, delay: Math.random() * 3, ease: "easeInOut" }}
           />
@@ -72,11 +71,10 @@ export const TimeCapsuleHero = () => {
 
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-3 text-primary"
-          style={{
+          style={ {
             WebkitTextStroke: '1.5px rgba(30, 64, 175, 0.8)',
             textShadow: '0 0 30px hsl(var(--primary) / 0.6), 0 0 60px hsl(var(--primary) / 0.3), 0 2px 10px rgba(0,0,0,0.8), 0 4px 20px rgba(0,0,0,0.5)',
-            filter: 'drop-shadow(0 0 8px hsl(var(--primary) / 0.5))',
-          }}>
+            filter: 'drop-shadow(0 0 8px hsl(var(--primary) / 0.5))' }}>
           Time Capsule 2.0
         </motion.h1>
 

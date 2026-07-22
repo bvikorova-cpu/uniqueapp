@@ -34,8 +34,7 @@ export default function PetPhotoAnalysis({ onBack }: { onBack: () => void }) {
 
       const { data, error } = await supabase.functions.invoke("pet-translator-ai", {
         body: { action: "photo_emotion", pet_type: petType, image_description: "User uploaded a photo of their pet for emotion analysis" },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

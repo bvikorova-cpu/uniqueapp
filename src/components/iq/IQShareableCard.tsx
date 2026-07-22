@@ -45,8 +45,7 @@ export default function IQShareableCard() {
     const url = encodeURIComponent(window.location.href);
     const links = {
       twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`,
-    };
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}` };
     window.open(links[platform], "_blank", "width=600,height=500");
   };
 
@@ -72,9 +71,8 @@ export default function IQShareableCard() {
           <div
             ref={cardRef}
             className="relative aspect-[16/9] w-full max-w-2xl mx-auto rounded-2xl overflow-hidden p-8 flex flex-col justify-between"
-            style={{
-              background: "linear-gradient(135deg, hsl(270 91% 25%), hsl(330 100% 35%))",
-            }}
+            style={ {
+              background: "linear-gradient(135deg, hsl(270 91% 25%), hsl(330 100% 35%))" }}
           >
             <div className="flex items-center justify-between text-white">
               <div className="flex items-center gap-2">

@@ -10,12 +10,10 @@ interface Props {
   averagePledge?: number;
 }
 
-export function DreamSocialProof({
-  backersCount,
+export function DreamSocialProof({ backersCount,
   supportersCount,
   recentDonationsLast24h = 0,
-  averagePledge,
-}: Props) {
+  averagePledge }: Props) {
   const total = backersCount + supportersCount;
   if (total === 0 && recentDonationsLast24h === 0) return null;
 

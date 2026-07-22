@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -11,20 +10,17 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Coffee,
+import { Coffee,
   Heart,
   TrendingUp,
   CheckCircle2,
   Clock,
   XCircle,
   Undo2,
-  Loader2,
-} from "lucide-react";
+  Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -54,28 +50,19 @@ interface Stats {
 const STATUS_META: Record<
   string,
   { label: string; icon: any; cls: string }
-> = {
-  completed: {
+> = { completed: {
     label: "Received",
     icon: CheckCircle2,
-    cls: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
-  },
-  pending: {
-    label: "Processing",
+    cls: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30" },
+  pending: { label: "Processing",
     icon: Clock,
-    cls: "bg-amber-500/15 text-amber-300 border-amber-400/30",
-  },
-  failed: {
-    label: "Failed",
+    cls: "bg-amber-500/15 text-amber-300 border-amber-400/30" },
+  failed: { label: "Failed",
     icon: XCircle,
-    cls: "bg-rose-500/15 text-rose-300 border-rose-400/30",
-  },
-  refunded: {
-    label: "Refunded",
+    cls: "bg-rose-500/15 text-rose-300 border-rose-400/30" },
+  refunded: { label: "Refunded",
     icon: Undo2,
-    cls: "bg-slate-500/20 text-slate-300 border-slate-400/30",
-  },
-};
+    cls: "bg-slate-500/20 text-slate-300 border-slate-400/30" } };
 
 export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
   const { toast } = useToast();
@@ -132,19 +119,16 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
     setRefundingId(tipId);
     try {
       const { data, error } = await supabase.functions.invoke("refund-profile-tip", {
-        body: { tipId, reason: "requested_by_recipient" },
-      });
+        body: { tipId, reason: "requested_by_recipient" } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       toast({ title: "Tip refunded", description: "The transfer was cancelled via Stripe." });
       setConfirmId(null);
       await load();
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Refund zlyhal",
         description: e?.message || "Try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setConfirmId(null);
     } finally {
       setRefundingId(null);

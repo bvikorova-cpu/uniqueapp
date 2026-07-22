@@ -15,7 +15,7 @@ const HOTLINES = [
   { country: "Canada", name: "Talk Suicide Canada", contact: "1-833-456-4566", type: "phone", available: "24/7", url: "https://talksuicide.ca" },
   { country: "Australia", name: "Lifeline", contact: "13 11 14", type: "phone", available: "24/7", url: "https://www.lifeline.org.au" },
   { country: "EU", name: "European Emergency", contact: "112", type: "phone", available: "24/7", url: "" },
-  { country: "Germany", name: "Telefonseelsorge", contact: "0800 111 0 111", type: "phone", available: "24/7", url: "https://online.telefonseelsorge.de" },
+  { country: "Local", name: "Telefonseelsorge", contact: "0800 111 0 111", type: "phone", available: "24/7", url: "https://online.telefonseelsorge.de" },
   { country: "France", name: "SOS Amitié", contact: "09 72 39 40 50", type: "phone", available: "24/7", url: "https://www.sos-amitie.com" },
   { country: "India", name: "iCall", contact: "9152987821", type: "phone", available: "Mon-Sat 8am-10pm", url: "https://icallhelpline.org" },
   { country: "Japan", name: "TELL Lifeline", contact: "03-5774-0992", type: "phone", available: "24/7", url: "https://telljp.com" },

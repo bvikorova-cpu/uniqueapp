@@ -26,8 +26,7 @@ export const StockFootageView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true); setR(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {
-        body: { action: 'stock_footage', script, mood },
-      });
+        body: { action: 'stock_footage', script, mood } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Stock Footage' }); return; }
       setR(data.result);
       toast.success(`${data.result.scenes.length} scenes matched (${data.credits_used} CR)`);

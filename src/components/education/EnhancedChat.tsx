@@ -27,16 +27,14 @@ interface EnhancedChatProps {
   isUsingCredit: boolean;
 }
 
-export const EnhancedChat = ({
-  chatHistory,
+export const EnhancedChat = ({ chatHistory,
   chatMessage,
   setChatMessage,
   handleSendMessage,
   isLoading,
   credits,
   creditsLoading,
-  isUsingCredit,
-}: EnhancedChatProps) => {
+  isUsingCredit }: EnhancedChatProps) => {
   return (
     <>
       <FloatingHowItWorks title="How Enhanced Chat works" steps={[

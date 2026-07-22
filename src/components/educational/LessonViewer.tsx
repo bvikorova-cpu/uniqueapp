@@ -13,12 +13,10 @@ interface LessonViewerProps {
   onBack: () => void;
 }
 
-export const LessonViewer = ({
-  lessons,
+export const LessonViewer = ({ lessons,
   currentLesson,
   onLessonComplete,
-  onBack,
-}: LessonViewerProps) => {
+  onBack }: LessonViewerProps) => {
   const lesson = lessons[currentLesson];
   const progress = ((currentLesson + 1) / lessons.length) * 100;
   const isLastLesson = currentLesson === lessons.length - 1;

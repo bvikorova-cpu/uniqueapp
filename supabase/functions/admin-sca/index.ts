@@ -1,11 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -15,8 +13,7 @@ serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -62,28 +59,23 @@ serve(async (req) => {
     await supabase.from("admin_audit_log").insert({
       admin_id: user.id,
       action: "view_sca_dashboard",
-      details: { count: list.length },
-    }).then(() => {}, () => {});
+      details: { count: list.length } }).then(() => {}, () => {});
 
     return new Response(
-      JSON.stringify({
-        kpis: {
+      JSON.stringify({ kpis: {
           pending_count: pending.length,
           confirmed_count: confirmed.length,
           abandoned_count: abandoned.length,
           at_risk_cents: totalAtRisk,
           confirmed_cents: totalConfirmedAmt,
-          success_rate: successRate,
-        },
-        rows: list,
-      }),
+          success_rate: successRate },
+        rows: list }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

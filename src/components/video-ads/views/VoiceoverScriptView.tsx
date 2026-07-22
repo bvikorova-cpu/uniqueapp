@@ -31,8 +31,7 @@ export function VoiceoverScriptView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); return; }
       const { data, error } = await supabase.functions.invoke("video-ad-tools", {
         body: { action: "voiceover_script", product, message, tone, duration, platform },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Voiceover script ready! (${data.credits_used} credits)`);

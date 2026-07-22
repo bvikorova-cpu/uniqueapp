@@ -30,13 +30,11 @@ export function LessonManager({ courseId }: LessonManagerProps) {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
-  const [formData, setFormData] = useState({
-    title: "",
+  const [formData, setFormData] = useState({ title: "",
     description: "",
     video_url: "",
     duration_minutes: "",
-    is_preview: false,
-  });
+    is_preview: false });
 
   useEffect(() => {
     loadLessons();
@@ -52,39 +50,33 @@ export function LessonManager({ courseId }: LessonManagerProps) {
 
       if (error) throw error;
       setLessons(data || []);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
 
     if (!formData.title || !formData.video_url) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
-    try {
-      const lessonData = {
+    try { const lessonData = {
         course_id: courseId,
         title: formData.title,
         description: formData.description || null,
         video_url: formData.video_url,
         duration_minutes: parseInt(formData.duration_minutes) || 0,
         is_preview: formData.is_preview,
-        order_index: editingLesson ? editingLesson.order_index : lessons.length,
-      };
+        order_index: editingLesson ? editingLesson.order_index : lessons.length };
 
       if (editingLesson) {
         const { error } = await supabase
@@ -103,29 +95,24 @@ export function LessonManager({ courseId }: LessonManagerProps) {
 
       toast({
         title: "Success",
-        description: `Lesson ${editingLesson ? "updated" : "created"} successfully`,
-      });
+        description: `Lesson ${editingLesson ? "updated" : "created"} successfully` });
 
       resetForm();
       loadLessons();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
-  const handleEdit = (lesson: Lesson) => {
-    setEditingLesson(lesson);
+  const handleEdit = (lesson: Lesson) => { setEditingLesson(lesson);
     setFormData({
       title: lesson.title,
       description: lesson.description || "",
       video_url: lesson.video_url || "",
       duration_minutes: lesson.duration_minutes?.toString() || "",
-      is_preview: lesson.is_preview || false,
-    });
+      is_preview: lesson.is_preview || false });
   };
 
   const handleDelete = async (lessonId: string) => {
@@ -137,30 +124,24 @@ export function LessonManager({ courseId }: LessonManagerProps) {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Lesson deleted successfully",
-      });
+      toast({ title: "Success",
+        description: "Lesson deleted successfully" });
       
       loadLessons();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
-  const resetForm = () => {
-    setEditingLesson(null);
+  const resetForm = () => { setEditingLesson(null);
     setFormData({
       title: "",
       description: "",
       video_url: "",
       duration_minutes: "",
-      is_preview: false,
-    });
+      is_preview: false });
   };
 
   return (

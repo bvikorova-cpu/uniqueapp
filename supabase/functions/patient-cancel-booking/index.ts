@@ -4,11 +4,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -46,22 +44,16 @@ serve(async (req) => {
     const hoursUntil = (new Date(appt.scheduled_at).getTime() - now.getTime()) / 3600000;
     const eligibleForRefund = hoursUntil >= 24;
 
-    const update: Record<string, unknown> = {
-      status: "cancelled_by_patient",
+    const update: Record<string, unknown> = { status: "cancelled_by_patient",
       cancelled_at: now.toISOString(),
       cancelled_by: "patient",
-      cancellation_reason: reason ?? null,
-    };
+      cancellation_reason: reason ?? null };
 
-    if (eligibleForRefund && appt.stripe_payment_intent_id) {
-      const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
-        apiVersion: "2025-08-27.basil",
-      });
-      try {
-        await stripe.refunds.create({
+    if (eligibleForRefund && appt.stripe_payment_intent_id) { const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
+        apiVersion: "2025-08-27.basil" });
+      try { await stripe.refunds.create({
           payment_intent: appt.stripe_payment_intent_id,
-          reason: "requested_by_customer",
-        });
+          reason: "requested_by_customer" });
         update.refunded_at = now.toISOString();
         update.refund_amount_cents = appt.price_cents;
       } catch (e) {
@@ -79,8 +71,7 @@ serve(async (req) => {
       user_id: appt.provider_id,
       type: "doctor_appointment_cancelled_by_patient",
       title: "Appointment cancelled by patient",
-      message: `Appointment on ${new Date(appt.scheduled_at).toUTCString()} was cancelled by the patient${eligibleForRefund ? " (refunded)" : " (no refund, <24h)"}.`,
-    });
+      message: `Appointment on ${new Date(appt.scheduled_at).toUTCString()} was cancelled by the patient${eligibleForRefund ? " (refunded)" : " (no refund, <24h)"}.` });
 
     return new Response(
       JSON.stringify({ ok: true, refunded: eligibleForRefund }),
@@ -90,7 +81,6 @@ serve(async (req) => {
     console.error("patient-cancel-booking error", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

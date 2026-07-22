@@ -41,8 +41,7 @@ export default function JobBoost() {
     setLoading(t.tier);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: "job_boost", module: "job_boost", job_id: jobId, boost_tier: t.tier, duration_days: t.days, amount_eur: t.price },
-      });
+        body: { product: "job_boost", module: "job_boost", job_id: jobId, boost_tier: t.tier, duration_days: t.days, amount_eur: t.price } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
     } catch (e: any) { toast.error(e.message); }

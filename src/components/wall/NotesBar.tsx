@@ -44,10 +44,8 @@ export const NotesBar = () => {
       : { data: [] as any[] };
     const profileMap = new Map((profiles ?? []).map((p: any) => [p.id, p as any]));
     setNotes(
-      (notesData ?? []).map((n) => ({
-        ...n,
-        profile: (profileMap.get(n.user_id) as any) ?? null,
-      }))
+      (notesData ?? []).map((n) => ({ ...n,
+        profile: (profileMap.get(n.user_id) as any) ?? null }))
     );
   }, []);
 
@@ -59,11 +57,9 @@ export const NotesBar = () => {
   const submit = async () => {
     if (!content.trim() || !me) return;
     setSubmitting(true);
-    const { error } = await supabase.from("user_notes").insert({
-      user_id: me,
+    const { error } = await supabase.from("user_notes").insert({ user_id: me,
       content: content.trim().slice(0, 280),
-      emoji,
-    });
+      emoji });
     setSubmitting(false);
     if (error) {
       toast({ title: "Could not post note", description: error.message, variant: "destructive" });

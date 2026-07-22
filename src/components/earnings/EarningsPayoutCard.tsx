@@ -20,16 +20,14 @@ interface EarningsPayoutCardProps {
 /**
  * Premium payout request card — replaces all role-specific withdrawal CTAs.
  */
-export const EarningsPayoutCard = ({
-  available,
+export const EarningsPayoutCard = ({ available,
   minimum = 25,
   hasPayoutMethod,
   onRequest,
   onSetupMethod,
   methodLabel = "IBAN / Stripe Connect",
   stripePayoutsEnabled = true,
-  payoutsBlockReason = null,
-}: EarningsPayoutCardProps) => {
+  payoutsBlockReason = null }: EarningsPayoutCardProps) => {
   const canPayout = available >= minimum && hasPayoutMethod && stripePayoutsEnabled;
   const progress = Math.min(100, (available / minimum) * 100);
 

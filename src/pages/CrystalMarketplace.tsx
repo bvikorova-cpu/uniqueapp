@@ -10,21 +10,17 @@ import { useNavigate } from "react-router-dom";
 import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
+  SelectValue } from "@/components/ui/select";
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -41,8 +37,7 @@ interface CrystalItem {
   views_count: number;
 }
 
-export default function CrystalMarketplace() {
-  const [items, setItems] = useState<CrystalItem[]>([]);
+export default function CrystalMarketplace() { const [items, setItems] = useState<CrystalItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [purchasingItem, setPurchasingItem] = useState<string | null>(null);
@@ -52,18 +47,15 @@ export default function CrystalMarketplace() {
     description: "",
     crystal_type: "",
     weight_grams: "",
-    price: "",
-  });
+    price: "" });
   const [submittingListing, setSubmittingListing] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  useOneOffPaymentVerify({
-    fn: "verify-crystal-purchase",
+  useOneOffPaymentVerify({ fn: "verify-crystal-purchase",
     successTitle: "Crystal purchased!",
     successDescription: "Your order has been confirmed. The seller will ship it shortly.",
-    onSuccess: () => loadItems(),
-  });
+    onSuccess: () => loadItems() });
 
   useEffect(() => {
     loadItems();
@@ -79,13 +71,11 @@ export default function CrystalMarketplace() {
 
       if (error) throw error;
       setItems(data || []);
-    } catch (error) {
-      console.error("Error loading items:", error);
+    } catch (error) { console.error("Error loading items:", error);
       toast({
         title: "Error",
         description: "Failed to load marketplace items",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -96,40 +86,33 @@ export default function CrystalMarketplace() {
       setPurchasingItem(itemId);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Login Required",
           description: "Please sign in to purchase crystals",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
 
       // For demo, use mock shipping address
-      const shippingAddress = {
-        street: "123 Crystal Street",
+      const shippingAddress = { street: "123 Crystal Street",
         city: "Energy City",
         country: "Crystal Kingdom",
-        postal_code: "12345",
-      };
+        postal_code: "12345" };
 
       const { data, error } = await supabase.functions.invoke("create-crystal-purchase", {
-        body: { itemId, shippingAddress },
-      });
+        body: { itemId, shippingAddress } });
 
       if (error) throw error;
 
       if (data?.url) {
         window.open(data.url, "_blank");
       }
-    } catch (error) {
-      console.error("Purchase error:", error);
+    } catch (error) { console.error("Purchase error:", error);
       toast({
         title: "Error",
         description: "Failed to start purchase. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setPurchasingItem(null);
     }
@@ -151,15 +134,13 @@ export default function CrystalMarketplace() {
         return;
       }
 
-      const { error } = await supabase.from("crystal_marketplace_items").insert({
-        seller_id: session.user.id,
+      const { error } = await supabase.from("crystal_marketplace_items").insert({ seller_id: session.user.id,
         title: listingForm.title,
         description: listingForm.description,
         crystal_type: listingForm.crystal_type,
         weight_grams: listingForm.weight_grams ? parseFloat(listingForm.weight_grams) : null,
         price: parseFloat(listingForm.price),
-        is_available: true,
-      });
+        is_available: true });
 
       if (error) throw error;
 

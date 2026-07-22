@@ -80,9 +80,7 @@ const MegatalentJudgePanel = ({ category, categories, userId }: Props) => {
     if (!pickFor) return;
     setPosting(true);
     try {
-      const { error } = await (supabase as any).from("talent_judge_picks").insert({
-        judge_id: userId, submission_id: pickFor, category: category || null, note: note.trim() || null,
-      });
+      const { error } = await (supabase as any).from("talent_judge_picks").insert({ judge_id: userId, submission_id: pickFor, category: category || null, note: note.trim() || null });
       if (error) throw error;
       setNote("");
       toast.success("Pick added");

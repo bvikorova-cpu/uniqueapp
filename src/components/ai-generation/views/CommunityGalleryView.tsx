@@ -22,8 +22,7 @@ export const CommunityGalleryView = () => {
         .limit(50);
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   const toggleLike = async (itemId: string) => {
     setLiking(itemId);

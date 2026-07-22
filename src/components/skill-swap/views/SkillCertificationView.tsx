@@ -28,8 +28,7 @@ export function SkillCertificationView({ onBack }: Props) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("skill-swap-ai", {
-        body: { action: "skill-certification", skillName, experience, answers, portfolio },
-      });
+        body: { action: "skill-certification", skillName, experience, answers, portfolio } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Assessment complete! (${data.credits_used} credits used)`);

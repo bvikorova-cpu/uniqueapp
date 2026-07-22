@@ -28,8 +28,7 @@ export default function RestaurantAnalyzer() {
       return data;
     },
     onSuccess: (data) => { setAnalysis(data.analysis); toast.success("Menu analyzed!"); },
-    onError: (error: any) => toast.error(error.message || "Error analyzing menu"),
-  });
+    onError: (error: any) => toast.error(error.message || "Error analyzing menu") });
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

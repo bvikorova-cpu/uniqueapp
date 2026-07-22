@@ -10,21 +10,15 @@ import { withIdempotency } from "../_shared/idempotency.ts";
 const log = createLogger("CREATE-CHECKOUT");
 
 // Per-category platform fee percentages — mirror process_campaign_donation RPC
-const CAMPAIGN_FEE_PCT: Record<string, number> = {
-  medical: 0.06, dream: 0.07, hero: 0.05, pet: 0.06,
-  student: 0.05, crisis: 0.08, talent: 0.10,
-};
-const CAMPAIGN_TABLE: Record<string, string> = {
-  medical: "medical_campaigns", dream: "dream_campaigns", hero: "hero_campaigns",
+const CAMPAIGN_FEE_PCT: Record<string, number> = { medical: 0.06, dream: 0.07, hero: 0.05, pet: 0.06,
+  student: 0.05, crisis: 0.08, talent: 0.10 };
+const CAMPAIGN_TABLE: Record<string, string> = { medical: "medical_campaigns", dream: "dream_campaigns", hero: "hero_campaigns",
   pet: "pet_rescue_campaigns", student: "student_campaigns",
-  crisis: "crisis_campaigns", talent: "talent_campaigns",
-};
+  crisis: "crisis_campaigns", talent: "talent_campaigns" };
 
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const DEFAULT_APP_ORIGIN = "https://uniqueapp.fun";
 
@@ -38,12 +32,10 @@ function normalizeOrigin(value: string | null) {
   }
 }
 
-const ANTIQUE_PRICE_IDS: Record<number, string> = {
-  10: "price_1SOII2GaXSfGtYFtPltUZvxb",
+const ANTIQUE_PRICE_IDS: Record<number, string> = { 10: "price_1SOII2GaXSfGtYFtPltUZvxb",
   25: "price_1SOIIMGaXSfGtYFtonaY4jqs",
   60: "price_1SOIItGaXSfGtYFtvHTuEutU",
-  150: "price_1SOIJE0QTWhd4oRpow80Xeyd",
-};
+  150: "price_1SOIJE0QTWhd4oRpow80Xeyd" };
 
 // ─── Universal credit pack price-ID map ───
 // All AI-credit modules. Frontend sends: { creditType: "iq", credits: 10 }
@@ -52,208 +44,162 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
   antique: {
     prices: ANTIQUE_PRICE_IDS,
     successPath: "/antique-appraisal?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/antique-appraisal?payment=canceled",
-  },
+    cancelPath: "/antique-appraisal?payment=canceled" },
   collectibles: {
     // Reuses antique price IDs (same pack sizes 10/25/60/150 at €5/€10/€20/€40).
     // Credits land in `ai_credits` via verify-payment mapping.
     prices: ANTIQUE_PRICE_IDS,
     successPath: "/collectibles?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/collectibles?payment=canceled",
-  },
-  handwriting: {
-    prices: {
+    cancelPath: "/collectibles?payment=canceled" },
+  handwriting: { prices: {
       10: "price_1SZppoGaXSfGtYFt9LcYpN4i",
       25: "price_1SZppoGaXSfGtYFtj5zdmxHz",
       50: "price_1SZpppGaXSfGtYFt8FztYCdY",
-      100: "price_1SZppqGaXSfGtYFt7w4oht6d",
-    },
+      100: "price_1SZppqGaXSfGtYFt7w4oht6d" },
     successPath: "/handwriting?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/handwriting?payment=cancelled",
-  },
-  iq: {
-    prices: {
+    cancelPath: "/handwriting?payment=cancelled" },
+  iq: { prices: {
       10: "price_1SX7FLGaXSfGtYFtf8qA5DjG",
       20: "price_1SX7FNGaXSfGtYFtdIP9DTj6",
-      50: "price_1SX7FOGaXSfGtYFtIoxAWZen",
-    },
+      50: "price_1SX7FOGaXSfGtYFtIoxAWZen" },
     successPath: "/iq-platform?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/iq-platform?payment=canceled",
-  },
-  analyzer: {
-    prices: {
+    cancelPath: "/iq-platform?payment=canceled" },
+  analyzer: { prices: {
       10: "price_1TPJLxGaXSfGtYFtRTA10da3",
       25: "price_1TPJLyGaXSfGtYFt43bltMZ4",
       50: "price_1TPJLzGaXSfGtYFti6HMW0YE",
-      100: "price_1TPJM0GaXSfGtYFtng6TFukX",
-    },
+      100: "price_1TPJM0GaXSfGtYFtng6TFukX" },
     successPath: "/analyzer?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/analyzer?payment=canceled",
-  },
-  cooking: {
-    prices: {
+    cancelPath: "/analyzer?payment=canceled" },
+  cooking: { prices: {
       10: "price_1TPJM0GaXSfGtYFtB3lzN2mp",
       25: "price_1TPJM1GaXSfGtYFthFsY16up",
       50: "price_1TPJM2GaXSfGtYFtCTo0uRPg",
-      100: "price_1TPJM2GaXSfGtYFt3L149zZd",
-    },
+      100: "price_1TPJM2GaXSfGtYFt3L149zZd" },
     successPath: "/cooking?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/cooking?payment=canceled",
-  },
-  video_ad: {
-    prices: {
+    cancelPath: "/cooking?payment=canceled" },
+  video_ad: { prices: {
       10: "price_1TPJM3GaXSfGtYFtC5i9Zn9A",
       25: "price_1TPJM4GaXSfGtYFthfHhDpTD",
       50: "price_1TPJM5GaXSfGtYFttZadmLHY",
-      100: "price_1TPJM6GaXSfGtYFtmFAObbIW",
-    },
+      100: "price_1TPJM6GaXSfGtYFtmFAObbIW" },
     successPath: "/video-ad-creator?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/video-ad-creator?payment=canceled",
-  },
+    cancelPath: "/video-ad-creator?payment=canceled" },
   astrology: {
     // Stale fixed price IDs were not present in Stripe — use dynamic price_data
     // (€0.50/credit fallback in the credits branch). 10→€5, 25→€12.50, 50→€25, 100→€50.
     prices: {},
     successPath: "/astrology?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/astrology?payment=canceled",
-  },
+    cancelPath: "/astrology?payment=canceled" },
   // Character Arena credits — dynamic price_data. 50 → €9.99, 200 → €29.99
   character_arena: {
     prices: {},
     successPath: "/character-arena?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/character-arena?payment=canceled",
-  },
+    cancelPath: "/character-arena?payment=canceled" },
   // Science Lab credits — dynamic price_data fallback (€0.50/credit) until fixed prices created
   science: {
     prices: {},
     successPath: "/kids-science-lab?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/kids-science-lab?payment=canceled",
-  },
+    cancelPath: "/kids-science-lab?payment=canceled" },
   // Homework Helper credits — dynamic price_data (€0.50/credit) until fixed prices created
   homework: {
     prices: {},
     successPath: "/kids-homework?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/kids-homework?payment=canceled",
-  },
+    cancelPath: "/kids-homework?payment=canceled" },
   // Character Chat credits — dynamic price_data (€0.10/message, 1 credit = 1 message)
   chat: {
     prices: {},
     successPath: "/kids-voice-chat?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/kids-voice-chat?payment=canceled",
-  },
+    cancelPath: "/kids-voice-chat?payment=canceled" },
   // Kids Drawing Buddy credits — dynamic price_data (€0.50/credit) — AI image analysis & transformation
   kids_drawing: {
     prices: {},
     successPath: "/kids-drawing-buddy?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/kids-drawing-buddy?payment=canceled",
-  },
+    cancelPath: "/kids-drawing-buddy?payment=canceled" },
   // Kids Reading Companion credits — dynamic price_data (€0.50/credit) — AI reading analysis & quizzes
   kids_reading: {
     prices: {},
     successPath: "/kids-reading-companion?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/kids-reading-companion?payment=canceled",
-  },
+    cancelPath: "/kids-reading-companion?payment=canceled" },
   // Kids Story Creator credits — dynamic price_data (€0.50/credit) — AI story generation
   kids_story: {
     prices: {},
     successPath: "/kids-story-creator?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/kids-story-creator?payment=canceled",
-  },
+    cancelPath: "/kids-story-creator?payment=canceled" },
   // Kids Academy Hub credits — daily plans, recommendations, parent digest
   kids_academy: {
     prices: {},
     successPath: "/kids-academy?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/kids-academy?payment=canceled",
-  },
+    cancelPath: "/kids-academy?payment=canceled" },
   // Teen Career Counselor credits — dynamic price_data (€0.50/credit) — AI guidance sessions (5 credits/session)
   teen_career: {
     prices: {},
     successPath: "/teen-career-counselor?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/teen-career-counselor?payment=canceled",
-  },
+    cancelPath: "/teen-career-counselor?payment=canceled" },
   // Teen Hub — unified credits for all Teen AI modules (€0.50/credit, dynamic)
   teen_hub: {
     prices: {},
     successPath: "/teen-hub?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/teen-hub?payment=canceled",
-  },
+    cancelPath: "/teen-hub?payment=canceled" },
   // Coloring Pages credits — dynamic price_data (€0.50/credit) — 5 credits per page
   coloring: {
     prices: {},
     successPath: "/coloring-pages?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/coloring-pages?payment=canceled",
-  },
+    cancelPath: "/coloring-pages?payment=canceled" },
   // ─── Newly created Phase 3 packs ───
-  character: {
-    prices: {
+  character: { prices: {
       10: "price_1TOwfSGaXSfGtYFtapoRaNMl",
       30: "price_1TOwfTGaXSfGtYFtyBmPvW8q",
-      100: "price_1TOwfUGaXSfGtYFtCCUOJzbI",
-    },
+      100: "price_1TOwfUGaXSfGtYFtCCUOJzbI" },
     successPath: "/ai-characters?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/ai-characters?payment=canceled",
-  },
-  creative_forge: {
-    // Legacy fixed Stripe prices (10/30/100). Public packages 30/75/150/400
+    cancelPath: "/ai-characters?payment=canceled" },
+  creative_forge: { // Legacy fixed Stripe prices (10/30/100). Public packages 30/75/150/400
     // fall through to dynamic price_data below using CREATIVE_FORGE_PRICES.
     prices: {
       10: "price_1TOwfVGaXSfGtYFtTuoGa1FZ",
       30: "price_1TOwfWGaXSfGtYFt6V478VoY",
-      100: "price_1TOwfXGaXSfGtYFtTWK7Sbf8",
-    },
+      100: "price_1TOwfXGaXSfGtYFtTWK7Sbf8" },
     successPath: "/creative-forge?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/creative-forge?payment=canceled",
-  },
-  coloring: {
-    prices: {
+    cancelPath: "/creative-forge?payment=canceled" },
+  coloring: { prices: {
       10: "price_1TOwfYGaXSfGtYFtHr3dSsW1",
       30: "price_1TOwfZGaXSfGtYFthcYmlxhm",
-      100: "price_1TOwfaGaXSfGtYFtlqeVcsSl",
-    },
+      100: "price_1TOwfaGaXSfGtYFtlqeVcsSl" },
     successPath: "/coloring?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/coloring?payment=canceled",
-  },
+    cancelPath: "/coloring?payment=canceled" },
   // Shadow Arena AI credits — dynamic pricing via SHADOW_ARENA_TOTALS below.
   // Public packages: 30 (€4.99), 100 (€12.99), 280 (€29.99).
   shadow_arena: {
     prices: {},
     successPath: "/shadow-arena/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}",
-    cancelPath: "/shadow-arena/dashboard?payment=canceled",
-  },
-};
+    cancelPath: "/shadow-arena/dashboard?payment=canceled" } };
 
 const SPORTS_PACKS: Record<string, Record<string, { amount: number; coins: number }>> = {
   football_coins: {
     price_football_1000: { amount: 299, coins: 1000 },
     price_football_5000: { amount: 999, coins: 5000 },
     price_football_15000: { amount: 2499, coins: 15000 },
-    price_football_50000: { amount: 4999, coins: 50000 },
-  },
+    price_football_50000: { amount: 4999, coins: 50000 } },
   basketball_coins: {
     price_basketball_1000: { amount: 499, coins: 1000 },
     price_basketball_3000: { amount: 999, coins: 3000 },
     price_basketball_7000: { amount: 1999, coins: 7000 },
-    price_basketball_15000: { amount: 3999, coins: 15000 },
-  },
+    price_basketball_15000: { amount: 3999, coins: 15000 } },
   hockey_coins: {
     price_hockey_1000: { amount: 499, coins: 1000 },
     price_hockey_3000: { amount: 999, coins: 3000 },
     price_hockey_7000: { amount: 1999, coins: 7000 },
-    price_hockey_15000: { amount: 3999, coins: 15000 },
-  },
+    price_hockey_15000: { amount: 3999, coins: 15000 } },
   tennis_coins: {
     price_tennis_1000: { amount: 499, coins: 1000 },
     price_tennis_3000: { amount: 999, coins: 3000 },
     price_tennis_7000: { amount: 1999, coins: 7000 },
-    price_tennis_15000: { amount: 3999, coins: 15000 },
-  },
+    price_tennis_15000: { amount: 3999, coins: 15000 } },
   af_coins: {
     price_af_1000: { amount: 499, coins: 1000 },
     price_af_3000: { amount: 999, coins: 3000 },
     price_af_7000: { amount: 1999, coins: 7000 },
-    price_af_15000: { amount: 3999, coins: 15000 },
-  },
-};
+    price_af_15000: { amount: 3999, coins: 15000 } } };
 
 const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   antique_credits: { success: "/antique-appraisal?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/antique-appraisal?payment=canceled" },
@@ -279,35 +225,29 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   challenge_pro: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
   challenge_top: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
   exclusive: { success: "/exclusive?success=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/exclusive?canceled=true" },
-  skill_swap: { success: "/skill-swap?subscribed=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/skill-swap?subscribed=canceled" },
-};
+  skill_swap: { success: "/skill-swap?subscribed=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/skill-swap?subscribed=canceled" } };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
   clone_basic: {
     amount: 999,
     mode: "subscription",
     name: "AI Clone Basic",
-    metadata: { type: "clone_subscription", tier: "basic" },
-  },
+    metadata: { type: "clone_subscription", tier: "basic" } },
   clone_advanced: {
     amount: 2999,
     mode: "subscription",
     name: "AI Clone Advanced",
-    metadata: { type: "clone_subscription", tier: "advanced" },
-  },
+    metadata: { type: "clone_subscription", tier: "advanced" } },
   clone_celebrity: {
     amount: 9900,
     mode: "subscription",
     name: "AI Clone Celebrity",
-    metadata: { type: "clone_subscription", tier: "celebrity" },
-  },
+    metadata: { type: "clone_subscription", tier: "celebrity" } },
   clone_dating: {
     amount: 499,
     mode: "payment",
     name: "Clone Dating Session",
-    metadata: { type: "clone_dating" },
-  },
-};
+    metadata: { type: "clone_dating" } } };
 
 function stringifyMetadata(input: Record<string, unknown> = {}) {
   return Object.fromEntries(
@@ -326,8 +266,7 @@ function resolveUrls(origin: string, successUrl?: string, cancelUrl?: string, fa
 
   return {
     successUrl: successUrl || `${origin}${fallback?.success || "/?payment=success&session_id={CHECKOUT_SESSION_ID}"}`,
-    cancelUrl: cancelUrl || `${origin}${fallback?.cancel || "/?payment=canceled"}`,
-  };
+    cancelUrl: cancelUrl || `${origin}${fallback?.cancel || "/?payment=canceled"}` };
 }
 
 serve(async (req) => {
@@ -389,8 +328,7 @@ async function handler(req: Request): Promise<Response> {
         mode,
         success_url: `${origin}/verified?success=true&tier=${tier}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/verified?canceled=true&tier=${tier}`,
-        metadata: { user_id: userId ?? "", module: "verification", tier, price_id: priceId },
-      });
+        metadata: { user_id: userId ?? "", module: "verification", tier, price_id: priceId } });
       return successResponse({ url: session.url, mode });
     }
 
@@ -400,8 +338,7 @@ async function handler(req: Request): Promise<Response> {
       if (!userId) {
         return new Response(JSON.stringify({ error: "Authentication required for Exclusive." }), {
           status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       const EXCLUSIVE_PRICE_ID = "price_1TvKozGaXSfGtYFtBc5ZV6td"; // €100,000 / month
       const session = await stripe.checkout.sessions.create({
@@ -413,9 +350,7 @@ async function handler(req: Request): Promise<Response> {
         cancel_url: `${origin}/exclusive?canceled=true`,
         metadata: { user_id: userId, module: "exclusive", price_id: EXCLUSIVE_PRICE_ID },
         subscription_data: {
-          metadata: { user_id: userId, module: "exclusive" },
-        },
-      });
+          metadata: { user_id: userId, module: "exclusive" } } });
       return successResponse({ url: session.url, mode: "subscription" });
     }
 
@@ -445,8 +380,7 @@ async function handler(req: Request): Promise<Response> {
         success_url: `${origin}${successPath}`,
         cancel_url: `${origin}/pet-translator-pricing?payment=canceled`,
         allow_promotion_codes: true,
-        metadata: { user_id: userId ?? "", module: "pet_translator", price_id: priceId },
-      };
+        metadata: { user_id: userId ?? "", module: "pet_translator", price_id: priceId } };
       if (customerId) sessionParams.customer = customerId;
       else if (email) sessionParams.customer_email = email;
       const session = await stripe.checkout.sessions.create(sessionParams);
@@ -501,17 +435,14 @@ async function handler(req: Request): Promise<Response> {
           customer: customer.id,
           payment_method_types: ["card"],
           success_url: `${origin}/ai-credits-store?autorecharge=setup_success&session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${origin}/ai-credits-store?autorecharge=setup_canceled`,
-        });
+          cancel_url: `${origin}/ai-credits-store?autorecharge=setup_canceled` });
 
-        await supa.from("ai_credits_auto_recharge").upsert({
-          user_id: userId,
+        await supa.from("ai_credits_auto_recharge").upsert({ user_id: userId,
           stripe_customer_id: customer.id,
           enabled: row?.enabled ?? false,
           threshold: row?.threshold ?? 10,
           package_credits: row?.package_credits ?? 25,
-          package_price_eur: row?.package_price_eur ?? 10.00,
-        }, { onConflict: "user_id" });
+          package_price_eur: row?.package_price_eur ?? 10.00 }, { onConflict: "user_id" });
 
         return successResponse({ url: session.url });
       }
@@ -527,21 +458,18 @@ async function handler(req: Request): Promise<Response> {
         await stripe.paymentMethods.attach(paymentMethodId, { customer: customer.id }).catch(() => {});
         await stripe.customers.update(customer.id, { invoice_settings: { default_payment_method: paymentMethodId } });
 
-        await supa.from("ai_credits_auto_recharge").upsert({
-          user_id: userId,
+        await supa.from("ai_credits_auto_recharge").upsert({ user_id: userId,
           stripe_customer_id: customer.id,
           stripe_payment_method_id: paymentMethodId,
           enabled: true,
           threshold: row?.threshold ?? 10,
           package_credits: row?.package_credits ?? 25,
-          package_price_eur: row?.package_price_eur ?? 10.00,
-        }, { onConflict: "user_id" });
+          package_price_eur: row?.package_price_eur ?? 10.00 }, { onConflict: "user_id" });
 
         return successResponse({ ok: true });
       }
 
-      if (action === "save_settings") {
-        const enabled = body.enabled === true;
+      if (action === "save_settings") { const enabled = body.enabled === true;
         const threshold = Math.max(1, Math.min(500, Number(body.threshold ?? 10)));
         const packageCredits = Number(body.package_credits ?? 25);
         const packagePriceEur = Number(body.package_price_eur ?? 10);
@@ -554,8 +482,7 @@ async function handler(req: Request): Promise<Response> {
           package_credits: packageCredits,
           package_price_eur: packagePriceEur,
           stripe_customer_id: row?.stripe_customer_id ?? null,
-          stripe_payment_method_id: row?.stripe_payment_method_id ?? null,
-        }, { onConflict: "user_id" });
+          stripe_payment_method_id: row?.stripe_payment_method_id ?? null }, { onConflict: "user_id" });
 
         return successResponse({ ok: true });
       }
@@ -586,43 +513,33 @@ async function handler(req: Request): Promise<Response> {
             off_session: true,
             confirm: true,
             description: `AI Credits auto-recharge: ${row.package_credits} credits`,
-            metadata: { user_id: userId, credits: String(row.package_credits), kind: "ai_credits_auto_recharge" },
-          });
+            metadata: { user_id: userId, credits: String(row.package_credits), kind: "ai_credits_auto_recharge" } });
 
           const totalPurchased = Number(creditsRow?.total_credits_purchased ?? 0) + Number(row.package_credits);
           const newBalance = current + Number(row.package_credits);
-          if (creditsRow) {
-            await supa.from("ai_credits").update({
+          if (creditsRow) { await supa.from("ai_credits").update({
               credits_remaining: newBalance,
-              total_credits_purchased: totalPurchased,
-            }).eq("user_id", userId);
-          } else {
-            await supa.from("ai_credits").insert({
+              total_credits_purchased: totalPurchased }).eq("user_id", userId);
+          } else { await supa.from("ai_credits").insert({
               user_id: userId,
               credits_remaining: newBalance,
-              total_credits_purchased: totalPurchased,
-            });
+              total_credits_purchased: totalPurchased });
           }
 
-          await supa.from("ai_credits_auto_recharge").update({
-            last_recharge_at: new Date().toISOString(),
+          await supa.from("ai_credits_auto_recharge").update({ last_recharge_at: new Date().toISOString(),
             last_recharge_status: "succeeded",
-            last_error: null,
-          }).eq("user_id", userId);
+            last_error: null }).eq("user_id", userId);
 
           return successResponse({ ok: true, charged: row.package_price_eur, credits_added: row.package_credits, intent_id: intent.id });
-        } catch (e) {
-          const message = e instanceof Error ? e.message : String(e);
+        } catch (e) { const message = e instanceof Error ? e.message : String(e);
           await supa.from("ai_credits_auto_recharge").update({
             last_recharge_at: new Date().toISOString(),
             last_recharge_status: "failed",
-            last_error: message.slice(0, 500),
-          }).eq("user_id", userId);
+            last_error: message.slice(0, 500) }).eq("user_id", userId);
           if ((e as any)?.code === "authentication_required") {
             return new Response(JSON.stringify({ error: "authentication_required", message: "Card needs re-authentication. Please update payment method." }), {
               status: 402,
-              headers: { ...corsHeaders, "Content-Type": "application/json" },
-            });
+              headers: { ...corsHeaders, "Content-Type": "application/json" } });
           }
           throw e;
         }
@@ -653,15 +570,13 @@ async function handler(req: Request): Promise<Response> {
       if (body.action === "verify") {
         const sessionId = body.sessionId || body.session_id;
         if (!sessionId) return successResponse({ hasAccess: false, verified: false, error: "Missing sessionId" });
-        try {
-          const session = await stripe.checkout.sessions.retrieve(sessionId);
+        try { const session = await stripe.checkout.sessions.retrieve(sessionId);
           const paid = session.payment_status === "paid" || session.status === "complete";
           if (paid && userId) {
             await supa.from("coupon_marketplace_access").insert({
               user_id: userId,
               amount: (session.amount_total ?? 100) / 100,
-              stripe_session_id: sessionId,
-            });
+              stripe_session_id: sessionId });
           }
           return successResponse({ verified: paid, hasAccess: paid });
         } catch (e) {
@@ -678,15 +593,12 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             unit_amount: 100,
             recurring: { interval: "month" as const },
-            product_data: { name: "Coupon Marketplace Access" },
-          },
-          quantity: 1,
-        }],
+            product_data: { name: "Coupon Marketplace Access" } },
+          quantity: 1 }],
         mode: "subscription",
         success_url: `${origin}/coupon-marketplace?access=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/coupon-marketplace?access=cancelled`,
-        metadata: { user_id: userId ?? "", type: "coupon_marketplace", product: "coupon_marketplace" },
-      });
+        metadata: { user_id: userId ?? "", type: "coupon_marketplace", product: "coupon_marketplace" } });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -717,16 +629,14 @@ async function handler(req: Request): Promise<Response> {
 
       const { data: order, error: oErr } = await supa
         .from("coupon_orders")
-        .insert({
-          coupon_id: coupon.id,
+        .insert({ coupon_id: coupon.id,
           buyer_id: userId,
           seller_id: coupon.user_id,
           amount: Number(coupon.selling_price),
           commission_amount: commission / 100,
           seller_payout: sellerPayout / 100,
           status: "pending",
-          buyer_email: email,
-        })
+          buyer_email: email })
         .select()
         .single();
       if (oErr || !order) throw new Error(oErr?.message || "Failed to create order");
@@ -738,21 +648,16 @@ async function handler(req: Request): Promise<Response> {
           price_data: {
             currency: "eur",
             unit_amount: amountCents,
-            product_data: { name: `Coupon: ${coupon.title}` },
-          },
-          quantity: 1,
-        }],
+            product_data: { name: `Coupon: ${coupon.title}` } },
+          quantity: 1 }],
         mode: "payment",
         success_url: `${origin}/coupon-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
         cancel_url: `${origin}/coupon-marketplace?payment=cancelled`,
-        metadata: {
-          user_id: userId,
+        metadata: { user_id: userId,
           type: "coupon",
           product: "coupon",
           coupon_id: coupon.id,
-          order_id: order.id,
-        },
-      });
+          order_id: order.id } });
 
       await supa.from("coupon_orders").update({ stripe_session_id: session.id }).eq("id", order.id);
 
@@ -771,8 +676,7 @@ async function handler(req: Request): Promise<Response> {
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
       );
 
-      try {
-        const session = await stripe.checkout.sessions.retrieve(sessionId);
+      try { const session = await stripe.checkout.sessions.retrieve(sessionId);
         const paid = session.payment_status === "paid" || session.status === "complete";
 
         if (paid && orderId) {
@@ -784,8 +688,7 @@ async function handler(req: Request): Promise<Response> {
             paid_at: nowIso,
             delivered_at: nowIso,
             escrow_status: "held",
-            auto_release_at: autoReleaseAt,
-          }).eq("id", orderId);
+            auto_release_at: autoReleaseAt }).eq("id", orderId);
 
           const { data: ord } = await supa
             .from("coupon_orders")
@@ -813,8 +716,7 @@ async function handler(req: Request): Promise<Response> {
       if (!sessionId) {
         return successResponse({ verified: false, error: "Missing sessionId" });
       }
-      try {
-        const session = await stripe.checkout.sessions.retrieve(sessionId);
+      try { const session = await stripe.checkout.sessions.retrieve(sessionId);
         const paid = session.payment_status === "paid" || session.status === "complete";
         return successResponse({
           verified: paid,
@@ -822,8 +724,7 @@ async function handler(req: Request): Promise<Response> {
           payment_status: session.payment_status,
           amount: session.amount_total,
           metadata: session.metadata,
-          product: body.product || session.metadata?.type || null,
-        });
+          product: body.product || session.metadata?.type || null });
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
         return successResponse({ verified: false, error: msg });
@@ -895,17 +796,13 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             unit_amount: amountCents,
             product_data: {
-              name: isMonthly ? `Monthly donation – ${campaignType} campaign` : `Donation – ${campaignType} campaign`,
-            },
-            ...(isMonthly ? { recurring: { interval: "month" as const } } : {}),
-          },
-          quantity: 1,
-        }],
+              name: isMonthly ? `Monthly donation – ${campaignType} campaign` : `Donation – ${campaignType} campaign` },
+            ...(isMonthly ? { recurring: { interval: "month" as const } } : {}) },
+          quantity: 1 }],
         mode: isMonthly ? "subscription" : "payment",
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: {
-          type: "campaign_donation",
+        metadata: { type: "campaign_donation",
           product: "campaign_donation",
           product_type: "donation",
           campaign_id: campaignId,
@@ -919,21 +816,17 @@ async function handler(req: Request): Promise<Response> {
           owner_user_id: ownerUserId || "",
           platform_fee_pct: String(feePct),
           platform_fee_cents: String(feeCents),
-          connect_account_id: connectAccountId || "",
-        },
-      };
+          connect_account_id: connectAccountId || "" } };
 
       if (connectAccountId) {
         if (isMonthly) {
           sessionParams.subscription_data = {
             application_fee_percent: Math.round(feePct * 100),
-            transfer_data: { destination: connectAccountId },
-          };
+            transfer_data: { destination: connectAccountId } };
         } else {
           sessionParams.payment_intent_data = {
             application_fee_amount: feeCents,
-            transfer_data: { destination: connectAccountId },
-          };
+            transfer_data: { destination: connectAccountId } };
         }
       }
 
@@ -954,8 +847,7 @@ async function handler(req: Request): Promise<Response> {
       const TIERS: Record<string, { monthly: number; yearly: number; name: string }> = {
         basic:    { monthly: 500,  yearly: 4800,  name: "Unique Basic" },
         premium:  { monthly: 1500, yearly: 14400, name: "Unique Premium" },
-        business: { monthly: 5000, yearly: 48000, name: "Unique Business" },
-      };
+        business: { monthly: 5000, yearly: 48000, name: "Unique Business" } };
       const t = TIERS[String(body.tier)];
       if (t) {
         body.amount = billing === "yearly" ? t.yearly : t.monthly;
@@ -973,8 +865,7 @@ async function handler(req: Request): Promise<Response> {
       const KIDS_TIERS: Record<string, { priceId: string; name: string }> = {
         monthly:   { priceId: "price_1SShj2GaXSfGtYFtcKlTJYGa", name: "Unique Kids Monthly" },
         annual:    { priceId: "price_1SShj3GaXSfGtYFtGEneXVhs", name: "Unique Kids Annual" },
-        gold_pass: { priceId: "price_1Tc1kyGaXSfGtYFtcfVW1fcY", name: "Unique Kids Gold Pass" },
-      };
+        gold_pass: { priceId: "price_1Tc1kyGaXSfGtYFtcfVW1fcY", name: "Unique Kids Gold Pass" } };
       const kt = KIDS_TIERS[String(body.tier)];
       if (kt) {
         body.priceId = kt.priceId;
@@ -991,32 +882,25 @@ async function handler(req: Request): Promise<Response> {
     const PRICEID_PASSTHROUGH: Record<
       string,
       { mode: "subscription" | "payment"; successPath: string; cancelPath: string; type: string }
-    > = {
-      masterchef: {
+    > = { masterchef: {
         mode: "subscription",
         successPath: "/masterchef/dashboard?success=true",
         cancelPath: "/masterchef-subscription?canceled=true",
-        type: "masterchef_subscription",
-      },
-      time_reversal: {
-        mode: "subscription",
+        type: "masterchef_subscription" },
+      time_reversal: { mode: "subscription",
         successPath: "/time-reversal/timeline?success=true",
         cancelPath: "/time-reversal-subscription?canceled=true",
-        type: "time_reversal_subscription",
-      },
+        type: "time_reversal_subscription" },
       time_capsule: {
         mode: "payment",
         successPath: "/time-capsule?success=true&session_id={CHECKOUT_SESSION_ID}",
         cancelPath: "/time-capsule-subscription?canceled=true",
-        type: "time_capsule",
-      },
+        type: "time_capsule" },
       holographic_avatar: {
         mode: "payment",
         successPath: "/holographic-avatars?success=true&session_id={CHECKOUT_SESSION_ID}",
         cancelPath: "/holographic-avatars?canceled=true",
-        type: "holographic_avatar",
-      },
-    };
+        type: "holographic_avatar" } };
     if (body.product && body.priceId && PRICEID_PASSTHROUGH[String(body.product)]) {
       const cfg = PRICEID_PASSTHROUGH[String(body.product)];
       // holographic_avatar: only the Premium AI Avatar price is a subscription
@@ -1036,8 +920,7 @@ async function handler(req: Request): Promise<Response> {
           ? {
               tax_id_collection: { enabled: true },
               billing_address_collection: "required" as const,
-              customer_update: customerId ? { address: "auto" as const, name: "auto" as const } : undefined,
-            }
+              customer_update: customerId ? { address: "auto" as const, name: "auto" as const } : undefined }
           : {}),
         metadata: {
           user_id: userId ?? "",
@@ -1046,9 +929,7 @@ async function handler(req: Request): Promise<Response> {
           ...(body.tier ? { tier: String(body.tier) } : {}),
           ...(body.featureName ? { feature: String(body.featureName) } : {}),
           ...(body.durationYears ? { duration_years: String(body.durationYears) } : {}),
-          ...stringifyMetadata(body.metadata || {}),
-        },
-      });
+          ...stringifyMetadata(body.metadata || {}) } });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -1067,34 +948,28 @@ async function handler(req: Request): Promise<Response> {
         packages: {
           "20":  { amount: 500,  credits: 20,  name: "20 Messenger AI Credits" },
           "50":  { amount: 1000, credits: 50,  name: "50 Messenger AI Credits" },
-          "150": { amount: 2500, credits: 150, name: "150 Messenger AI Credits" },
-        },
+          "150": { amount: 2500, credits: 150, name: "150 Messenger AI Credits" } },
         mode: "payment",
         successPath: "/messenger?payment=success&credits={CREDITS}",
         cancelPath: "/messenger?payment=cancelled",
-        type: "messenger_ai_credits",
-      },
+        type: "messenger_ai_credits" },
       coloring_pay_per_use: {
         packages: {
-          "1": { amount: 200, credits: 1, name: "1 Coloring Page Credit" },
-        },
+          "1": { amount: 200, credits: 1, name: "1 Coloring Page Credit" } },
         mode: "payment",
         successPath: "/coloring-pages?success=true&session_id={CHECKOUT_SESSION_ID}",
         cancelPath: "/coloring-pages?canceled=true",
-        type: "coloring_pay_per_use",
-      },
+        type: "coloring_pay_per_use" },
       anonymous_date: {
         packages: {
           basic:    { amount: 500,  credits: 10,  name: "Anonymous Date — Basic (10 credits)" },
           standard: { amount: 1200, credits: 30,  name: "Anonymous Date — Standard (30 credits)" },
           premium:  { amount: 2500, credits: 100, name: "Anonymous Date — Premium (100 credits)" },
-          ultimate: { amount: 6000, credits: 300, name: "Anonymous Date — Ultimate (300 credits)" },
-        },
+          ultimate: { amount: 6000, credits: 300, name: "Anonymous Date — Ultimate (300 credits)" } },
         mode: "payment",
         successPath: "/anonymous-date?success=true&session_id={CHECKOUT_SESSION_ID}",
         cancelPath: "/anonymous-date?canceled=true",
-        type: "anonymous_date_credits",
-      },
+        type: "anonymous_date_credits" },
       secret_santa: {
         packages: {
           "15":   { amount: 500,   credits: 15,   name: "Secret Santa 365 - 15 Credits" },
@@ -1106,25 +981,20 @@ async function handler(req: Request): Promise<Response> {
           "500":  { amount: 7500,  credits: 500,  name: "Secret Santa 365 - 500 Credits" },
           "750":  { amount: 10000, credits: 750,  name: "Secret Santa 365 - 750 Credits" },
           "1000": { amount: 13000, credits: 1000, name: "Secret Santa 365 - 1000 Credits" },
-          "1500": { amount: 18000, credits: 1500, name: "Secret Santa 365 - 1500 Credits" },
-        },
+          "1500": { amount: 18000, credits: 1500, name: "Secret Santa 365 - 1500 Credits" } },
         mode: "payment",
         successPath: "/secret-santa?success=true&credits={CREDITS}",
         cancelPath: "/secret-santa?canceled=true",
-        type: "secret_santa_credits",
-      },
+        type: "secret_santa_credits" },
       emotion_insurance: {
         packages: {
           basic:    { amount: 999,  credits: 5,    name: "Emotion Insurance — Basic Protection" },
           standard: { amount: 1499, credits: 10,   name: "Emotion Insurance — Standard Protection" },
-          premium:  { amount: 2499, credits: 9999, name: "Emotion Insurance — Premium Protection" },
-        },
+          premium:  { amount: 2499, credits: 9999, name: "Emotion Insurance — Premium Protection" } },
         mode: "subscription",
         successPath: "/emotion-economy?insurance=success&level={KEY}&session_id={CHECKOUT_SESSION_ID}",
         cancelPath: "/emotion-economy?insurance=canceled",
-        type: "emotion_insurance",
-      },
-    };
+        type: "emotion_insurance" } };
     if (body.product && DYNAMIC_PACKS[String(body.product)]) {
       const def = DYNAMIC_PACKS[String(body.product)];
       const rawKey =
@@ -1141,8 +1011,7 @@ async function handler(req: Request): Promise<Response> {
       const successPath = def.successPath
         .replace("{CREDITS}", String(pkg.credits))
         .replace("{KEY}", key);
-      const metadata: Record<string, string> = {
-        user_id: userId ?? "",
+      const metadata: Record<string, string> = { user_id: userId ?? "",
         credits: String(pkg.credits),
         type: def.type,
         product: String(body.product),
@@ -1150,11 +1019,9 @@ async function handler(req: Request): Promise<Response> {
           ? {
               coverage_level: key,
               max_claims: String(pkg.credits),
-              monthly_price: String(pkg.amount / 100),
-            }
+              monthly_price: String(pkg.amount / 100) }
           : { package_type: key }),
-        ...stringifyMetadata(body.metadata || {}),
-      };
+        ...stringifyMetadata(body.metadata || {}) };
       const sessionParams: Record<string, unknown> = {
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
@@ -1163,23 +1030,17 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             product_data: { name: pkg.name },
             unit_amount: pkg.amount,
-            ...(isSub ? { recurring: { interval: "month" } } : {}),
-          },
-          quantity: 1,
-        }],
+            ...(isSub ? { recurring: { interval: "month" } } : {}) },
+          quantity: 1 }],
         mode: def.mode,
         success_url: `${origin}${successPath}`,
         cancel_url: `${origin}${def.cancelPath}`,
-        metadata,
-      };
-      if (isSub) {
-        (sessionParams as any).subscription_data = {
+        metadata };
+      if (isSub) { (sessionParams as any).subscription_data = {
           metadata: {
             product_type: def.type,
             coverage_level: key,
-            user_id: userId ?? "",
-          },
-        };
+            user_id: userId ?? "" } };
       }
       const session = await stripe.checkout.sessions.create(sessionParams as any);
       return successResponse({ url: session.url, session_id: session.id });
@@ -1199,24 +1060,21 @@ async function handler(req: Request): Promise<Response> {
       "crystal_purchase",
       "auction_buyout",
     ]);
-    if (body.product && SIDE_EFFECT_PRODUCTS.has(String(body.product))) {
-      const admin = createSupabaseAdminClient();
+    if (body.product && SIDE_EFFECT_PRODUCTS.has(String(body.product))) { const admin = createSupabaseAdminClient();
       const uid = userId ?? "";
 
       // ── FITSLIM ──
       if (body.product === "fitslim") {
         const FITSLIM_PLANS: Record<string, string> = {
           weekly: "price_1T279R0QTWhd4oRpQKxVJFQe",
-          monthly: "price_1T279R0QTWhd4oRpH4sC3gb9",
-        };
+          monthly: "price_1T279R0QTWhd4oRpH4sC3gb9" };
         const planType = String(body.planType || "");
         const priceId = FITSLIM_PLANS[planType];
         if (!priceId) return errorResponse("Invalid fitslim planType", 400);
         const pd = body.profileData || {};
         const { data: planRecord, error: planError } = await admin
           .from("fitness_plans")
-          .insert({
-            user_id: uid,
+          .insert({ user_id: uid,
             plan_type: planType,
             status: "pending",
             payment_status: "unpaid",
@@ -1228,8 +1086,7 @@ async function handler(req: Request): Promise<Response> {
             activity_level: pd.activity_level,
             fitness_goal: pd.fitness_goal,
             dietary_restrictions: pd.dietary_restrictions || [],
-            health_conditions: pd.health_conditions || [],
-          })
+            health_conditions: pd.health_conditions || [] })
           .select()
           .single();
         if (planError) throw planError;
@@ -1240,14 +1097,11 @@ async function handler(req: Request): Promise<Response> {
           mode: "payment",
           success_url: `${origin}/fit-slim?success=true&plan_id=${planRecord.id}`,
           cancel_url: `${origin}/fit-slim?canceled=true`,
-          metadata: {
-            type: "fitslim_plan",
+          metadata: { type: "fitslim_plan",
             plan_id: planRecord.id,
             plan_type: planType,
             user_id: uid,
-            product: "fitslim",
-          },
-        });
+            product: "fitslim" } });
         await admin.from("fitness_plans").update({ stripe_session_id: session.id }).eq("id", planRecord.id);
         return successResponse({ url: session.url, session_id: session.id, plan_id: planRecord.id });
       }
@@ -1258,8 +1112,7 @@ async function handler(req: Request): Promise<Response> {
           coins_100: { coins: 100, gems: 0, price: 1.99, name: "100 Horse Coins" },
           coins_500: { coins: 500, gems: 0, price: 8.99, name: "500 Horse Coins (Bonus)" },
           gems_50: { coins: 0, gems: 50, price: 4.99, name: "50 Horse Gems" },
-          gems_200: { coins: 0, gems: 200, price: 18.99, name: "200 Horse Gems (Bonus)" },
-        };
+          gems_200: { coins: 0, gems: 200, price: 18.99, name: "200 Horse Gems (Bonus)" } };
         const pkgKey = String(body.packageType || "");
         const pkg = HORSE_PACKS[pkgKey];
         if (!pkg) return errorResponse("Invalid horse_currency package", 400);
@@ -1272,30 +1125,23 @@ async function handler(req: Request): Promise<Response> {
             price_data: {
               currency: "eur",
               product_data: { name: pkg.name, description: "Horse Racing Arena currency" },
-              unit_amount: Math.round(pkg.price * 100),
-            },
-          }],
+              unit_amount: Math.round(pkg.price * 100) } }],
           success_url: `${origin}/horse-racing?currency_purchased=true`,
           cancel_url: `${origin}/horse-racing?currency_canceled=true`,
-          metadata: {
-            user_id: uid,
+          metadata: { user_id: uid,
             package_type: pkgKey,
             coins: String(pkg.coins),
             gems: String(pkg.gems),
             feature: "horse_racing_currency",
             type: "horse_currency",
-            product: "horse_currency",
-          },
-        });
-        await admin.from("horse_currency_purchases").insert({
-          user_id: uid,
+            product: "horse_currency" } });
+        await admin.from("horse_currency_purchases").insert({ user_id: uid,
           package_type: pkgKey,
           coins_added: pkg.coins,
           gems_added: pkg.gems,
           amount_eur: pkg.price,
           stripe_session_id: session.id,
-          status: "pending",
-        });
+          status: "pending" });
         return successResponse({ url: session.url, session_id: session.id });
       }
 
@@ -1312,19 +1158,14 @@ async function handler(req: Request): Promise<Response> {
             price_data: {
               currency: "eur",
               product_data: { name: "AR Product Preview", description: "AR preview session" },
-              unit_amount: 99,
-            },
-          }],
+              unit_amount: 99 } }],
           success_url: `${origin}/home-decor?ar_success=true&product_id=${productId}`,
           cancel_url: `${origin}/home-decor?ar_canceled=true`,
-          metadata: { user_id: uid, product_id: productId, type: "ar_preview", product: "ar_preview" },
-        });
-        await admin.from("ar_preview_sessions").insert({
-          user_id: uid,
+          metadata: { user_id: uid, product_id: productId, type: "ar_preview", product: "ar_preview" } });
+        await admin.from("ar_preview_sessions").insert({ user_id: uid,
           product_id: productId,
           payment_status: "pending",
-          amount: 0.99,
-        });
+          amount: 0.99 });
         return successResponse({ url: session.url, session_id: session.id });
       }
 
@@ -1344,16 +1185,14 @@ async function handler(req: Request): Promise<Response> {
         const sellerAmount = Number((item.price - platformCommission).toFixed(2));
         const { data: order, error: orderError } = await admin
           .from("crystal_marketplace_orders")
-          .insert({
-            item_id: itemId,
+          .insert({ item_id: itemId,
             buyer_id: uid,
             seller_id: item.seller_id,
             amount: item.price,
             platform_commission: platformCommission,
             seller_amount: sellerAmount,
             shipping_address: body.shippingAddress,
-            status: "pending",
-          })
+            status: "pending" })
           .select()
           .single();
         if (orderError) throw orderError;
@@ -1368,22 +1207,16 @@ async function handler(req: Request): Promise<Response> {
               product_data: {
                 name: item.title,
                 description: `${item.crystal_type} - ${item.weight_grams}g`,
-                ...(item.image_url ? { images: [item.image_url] } : {}),
-              },
-              unit_amount: Math.round(Number(item.price) * 100),
-            },
-          }],
+                ...(item.image_url ? { images: [item.image_url] } : {}) },
+              unit_amount: Math.round(Number(item.price) * 100) } }],
           success_url: `${origin}/crystal-marketplace?success=true&order_id=${order.id}`,
           cancel_url: `${origin}/crystal-marketplace?canceled=true`,
-          metadata: {
-            type: "crystal_purchase",
+          metadata: { type: "crystal_purchase",
             product: "crystal_purchase",
             order_id: order.id,
             item_id: itemId,
             buyer_id: uid,
-            user_id: uid,
-          },
-        });
+            user_id: uid } });
         await admin
           .from("crystal_marketplace_orders")
           .update({ stripe_payment_id: session.id })
@@ -1444,13 +1277,10 @@ async function handler(req: Request): Promise<Response> {
             price_data: {
               currency: "eur",
               unit_amount: Math.round(amount * 100),
-              product_data: { name: `Auction buyout: ${auction.title}`.slice(0, 250) },
-            },
-          }],
+              product_data: { name: `Auction buyout: ${auction.title}`.slice(0, 250) } } }],
           success_url: `${origin}/auction?payment=success&session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${origin}/auction?payment=canceled`,
-          metadata: {
-            product_type: "auction_buyout",
+          metadata: { product_type: "auction_buyout",
             product: "auction_buyout",
             type: "auction_buyout",
             auction_id: auction.id,
@@ -1458,14 +1288,11 @@ async function handler(req: Request): Promise<Response> {
             seller_id: auction.user_id,
             user_id: uid,
             commission_amount: String(commissionAmount),
-            auto_split: sellerConnectId ? "true" : "false",
-          },
-        };
+            auto_split: sellerConnectId ? "true" : "false" } };
         if (sellerConnectId) {
           (sessionParams as any).payment_intent_data = {
             application_fee_amount: Math.round(commissionAmount * 100),
-            transfer_data: { destination: sellerConnectId },
-          };
+            transfer_data: { destination: sellerConnectId } };
         }
         const session = await stripe.checkout.sessions.create(sessionParams as any);
         return successResponse({ url: session.url, session_id: session.id, auto_split: !!sellerConnectId });
@@ -1479,33 +1306,26 @@ async function handler(req: Request): Promise<Response> {
     const B18B_FIXED_SUB: Record<
       string,
       { priceId: string; successPath: string; cancelPath: string; type: string; allowPromo?: boolean }
-    > = {
-      decor_pro_sub: {
+    > = { decor_pro_sub: {
         priceId: "price_1SVAKhGaXSfGtYFtK1yiOMde",
         successPath: "/home-decor?success=true",
         cancelPath: "/home-decor?canceled=true",
-        type: "decor_pro_subscription",
-      },
+        type: "decor_pro_subscription" },
       phobia_subscription: {
         priceId: "price_1TG6WjGaXSfGtYFtV33gzF2d",
         successPath: "/phobia-trading?payment=success&session_id={CHECKOUT_SESSION_ID}&type=subscription",
         cancelPath: "/phobia-trading?payment=canceled",
-        type: "phobia_subscription",
-      },
+        type: "phobia_subscription" },
       premium_all_modules: {
         priceId: "price_1TPJMBGaXSfGtYFtkhWbCu4V",
         successPath: "/premium?status=success&session_id={CHECKOUT_SESSION_ID}",
         cancelPath: "/premium?status=canceled",
         type: "premium_all_modules",
-        allowPromo: true,
-      },
-      time_capsule_premium: {
-        priceId: "price_1SQAPtGaXSfGtYFtuhuiyuUV",
+        allowPromo: true },
+      time_capsule_premium: { priceId: "price_1SQAPtGaXSfGtYFtuhuiyuUV",
         successPath: "/time-capsule?premium_success=true",
         cancelPath: "/time-capsule-subscription?canceled=true",
-        type: "time_capsule_premium",
-      },
-    };
+        type: "time_capsule_premium" } };
     if (body.product && B18B_FIXED_SUB[String(body.product)]) {
       const cfg = B18B_FIXED_SUB[String(body.product)];
       const session = await stripe.checkout.sessions.create({
@@ -1520,19 +1340,15 @@ async function handler(req: Request): Promise<Response> {
           user_id: userId ?? "",
           type: cfg.type,
           product: String(body.product),
-          ...stringifyMetadata(body.metadata || {}),
-        },
-      });
+          ...stringifyMetadata(body.metadata || {}) } });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
     // School subscription — 3 tiers
-    if (body.product === "school_subscription") {
-      const SCHOOL_TIERS: Record<string, string> = {
+    if (body.product === "school_subscription") { const SCHOOL_TIERS: Record<string, string> = {
         kindergarten: "price_1SMprw0QTWhd4oRpQWjUkKA2",
         elementary:   "price_1SMpsK0QTWhd4oRp7oXQpFXh",
-        premium:      "price_1SMpsg0QTWhd4oRpAIDNGOvv",
-      };
+        premium:      "price_1SMpsg0QTWhd4oRpAIDNGOvv" };
       const tier = String(body.tier || "");
       const priceId = SCHOOL_TIERS[tier];
       if (!priceId) return errorResponse(`Invalid school tier: ${tier}. Valid: ${Object.keys(SCHOOL_TIERS).join(", ")}`, 400);
@@ -1543,13 +1359,10 @@ async function handler(req: Request): Promise<Response> {
         mode: "subscription",
         success_url: `${origin}/schools?success=true&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/schools?canceled=true`,
-        metadata: {
-          user_id: userId ?? "",
+        metadata: { user_id: userId ?? "",
           tier,
           type: "school_subscription",
-          product: "school_subscription",
-        },
-      });
+          product: "school_subscription" } });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -1569,9 +1382,7 @@ async function handler(req: Request): Promise<Response> {
           type: "lottery_subscription",
           product: "lottery_subscription",
           ...(body.tier ? { tier: String(body.tier) } : {}),
-          is_lifetime: String(isLifetime),
-        },
-      });
+          is_lifetime: String(isLifetime) } });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -1601,16 +1412,13 @@ async function handler(req: Request): Promise<Response> {
           price_data: {
             currency: "eur",
             product_data: { name: `Battle Pass Premium · ${season.name}` },
-            unit_amount: Math.round(eur * 100),
-          },
-          quantity: 1,
-        }];
+            unit_amount: Math.round(eur * 100) },
+          quantity: 1 }];
       } else if (kind === "streak_freeze") {
         const FREEZE_PACKS: Record<number, { eur: number; label: string }> = {
           1: { eur: 0.99, label: "Single Freeze" },
           3: { eur: 2.49, label: "Triple Pack" },
-          7: { eur: 4.99, label: "Week Shield" },
-        };
+          7: { eur: 4.99, label: "Week Shield" } };
         const qty = Number(body.qty || 0);
         const pack = FREEZE_PACKS[qty];
         if (!pack) return errorResponse("Invalid streak freeze pack", 400);
@@ -1619,10 +1427,8 @@ async function handler(req: Request): Promise<Response> {
           price_data: {
             currency: "eur",
             product_data: { name: `Streak Freeze · ${pack.label} (×${qty})` },
-            unit_amount: Math.round(pack.eur * 100),
-          },
-          quantity: 1,
-        }];
+            unit_amount: Math.round(pack.eur * 100) },
+          quantity: 1 }];
       } else {
         return errorResponse(`Unknown rewards kind: ${kind}`, 400);
       }
@@ -1635,8 +1441,7 @@ async function handler(req: Request): Promise<Response> {
         success_url: `${origin}${successPath}`,
         cancel_url: `${origin}${cancelPath}`,
         metadata,
-        payment_intent_data: { metadata },
-      });
+        payment_intent_data: { metadata } });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -1664,41 +1469,31 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             product_data: {
               name: `Live Stream Access: ${stream.title}`,
-              description: stream.description || "Exclusive live stream access",
-            },
-            unit_amount: Math.round(Number(stream.access_price) * 100),
-          },
-          quantity: 1,
-        }],
+              description: stream.description || "Exclusive live stream access" },
+            unit_amount: Math.round(Number(stream.access_price) * 100) },
+          quantity: 1 }],
         success_url: `${origin}/creator/${stream.creator_id}?stream=success`,
         cancel_url: `${origin}/creator/${stream.creator_id}?stream=canceled`,
-        metadata: {
-          type: "stream_access",
+        metadata: { type: "stream_access",
           product: "stream_access",
           user_id: uid,
           stream_id: streamId,
           creator_id: stream.creator_id,
           platform_fee: platformFee.toString(),
-          creator_payout: creatorPayout.toString(),
-        },
-      });
-      await admin.from("creator_live_stream_access").insert({
-        stream_id: streamId,
+          creator_payout: creatorPayout.toString() } });
+      await admin.from("creator_live_stream_access").insert({ stream_id: streamId,
         user_id: uid,
         amount_paid: stream.access_price,
         platform_fee: platformFee,
         creator_payout: creatorPayout,
-        stripe_session_id: session.id,
-      });
+        stripe_session_id: session.id });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
     // ─── B18a — Megatalent (subscription, boost, tip, vip) ───
-    if (body.product === "megatalent_subscription") {
-      const PRICE_IDS: Record<string, string> = {
+    if (body.product === "megatalent_subscription") { const PRICE_IDS: Record<string, string> = {
         premium: "price_1TOvuRGaXSfGtYFt6sfpt2Dy",
-        top_premium: "price_1TOvuTGaXSfGtYFtIheCgIzQ",
-      };
+        top_premium: "price_1TOvuTGaXSfGtYFtIheCgIzQ" };
       const tier = String(body.tier || "");
       const priceId = PRICE_IDS[tier];
       if (!priceId) return errorResponse(`Invalid tier: ${tier}. Use 'premium' or 'top_premium'.`, 400);
@@ -1710,22 +1505,16 @@ async function handler(req: Request): Promise<Response> {
         mode: "subscription",
         success_url: `${origin}/megatalent/success?session_id={CHECKOUT_SESSION_ID}&tier=${tier}`,
         cancel_url: `${origin}/megatalent?canceled=true`,
-        metadata: {
-          user_id: userId ?? "",
+        metadata: { user_id: userId ?? "",
           tier,
           referral_code: referralCode,
           module: "megatalent",
-          product: "megatalent_subscription",
-        },
-        subscription_data: {
-          metadata: {
+          product: "megatalent_subscription" },
+        subscription_data: { metadata: {
             user_id: userId ?? "",
             tier,
             referral_code: referralCode,
-            module: "megatalent",
-          },
-        },
-      });
+            module: "megatalent" } } });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -1743,28 +1532,21 @@ async function handler(req: Request): Promise<Response> {
           price_data: {
             currency: "eur",
             product_data: { name: "Megatalent Spotlight Boost (24h)" },
-            unit_amount: 499,
-          },
-          quantity: 1,
-        }],
+            unit_amount: 499 },
+          quantity: 1 }],
         success_url: `${origin}/megatalent/${category}?boost=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/megatalent/${category}?boost=cancel`,
-        metadata: {
-          user_id: userId ?? "",
+        metadata: { user_id: userId ?? "",
           submission_id,
           category,
           kind: "megatalent_boost",
-          product: "megatalent_boost",
-        },
-      });
-      await admin.from("megatalent_boosts").insert({
-        user_id: userId,
+          product: "megatalent_boost" } });
+      await admin.from("megatalent_boosts").insert({ user_id: userId,
         submission_id,
         category,
         amount_cents: 499,
         stripe_session_id: session.id,
-        status: "pending",
-      });
+        status: "pending" });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -1791,24 +1573,17 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             product_data: {
               name: "Megatalent Tip",
-              description: safeMessage ?? `Support for talent ${creatorId.slice(0, 8)}`,
-            },
-            unit_amount: amt,
-          },
-          quantity: 1,
-        }],
+              description: safeMessage ?? `Support for talent ${creatorId.slice(0, 8)}` },
+            unit_amount: amt },
+          quantity: 1 }],
         success_url: `${origin}/megatalent?tip=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/megatalent?tip=cancel`,
-        metadata: {
-          type: "megatalent_tip",
+        metadata: { type: "megatalent_tip",
           product: "megatalent_tip",
           creatorId,
           tipperId: userId ?? "",
-          categorySlug,
-        },
-      });
-      await admin.from("megatalent_tips").insert({
-        creator_id: creatorId,
+          categorySlug } });
+      await admin.from("megatalent_tips").insert({ creator_id: creatorId,
         tipper_id: userId,
         category_slug: categorySlug || null,
         amount_cents: amt,
@@ -1816,8 +1591,7 @@ async function handler(req: Request): Promise<Response> {
         creator_amount_cents: creatorAmount,
         message: safeMessage,
         stripe_session_id: session.id,
-        status: "pending",
-      });
+        status: "pending" });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -1830,22 +1604,15 @@ async function handler(req: Request): Promise<Response> {
           price_data: {
             currency: "eur",
             recurring: { interval: "month" },
-            product_data: {
-              name: "Megatalent VIP Viewer Pass",
-              description: "Ad-free viewing, early voting access, exclusive behind-the-scenes content, VIP badge.",
-            },
-            unit_amount: 499,
-          },
-          quantity: 1,
-        }],
+            product_data: { name: "Megatalent VIP Viewer Pass",
+              description: "Ad-free viewing, early voting access, exclusive behind-the-scenes content, VIP badge." },
+            unit_amount: 499 },
+          quantity: 1 }],
         success_url: `${origin}/megatalent?vip=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/megatalent?vip=cancel`,
-        metadata: {
-          user_id: userId ?? "",
+        metadata: { user_id: userId ?? "",
           kind: "megatalent_vip_viewer",
-          product: "megatalent_vip",
-        },
-      });
+          product: "megatalent_vip" } });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -1869,19 +1636,14 @@ async function handler(req: Request): Promise<Response> {
           price_data: {
             currency: "eur",
             product_data: { name },
-            unit_amount: amount,
-          },
-          quantity: 1,
-        }],
+            unit_amount: amount },
+          quantity: 1 }],
         success_url: `${origin}/live-concerts?purchase=success&type=${type}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/live-concerts?purchase=canceled`,
-        metadata: {
-          user_id: userId ?? "",
+        metadata: { user_id: userId ?? "",
           type,
           product: "concert_payment",
-          ...(Object.fromEntries(Object.entries(metadata).map(([k, v]) => [k, String(v)]))),
-        },
-      });
+          ...(Object.fromEntries(Object.entries(metadata).map(([k, v]) => [k, String(v)]))) } });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -1925,28 +1687,21 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             product_data: {
               name: `${String((ticketType as any).name).toUpperCase()} Ticket - ${(ticketType as any).live_concert_streams.title}`,
-              description: `Live concert by ${musician?.stage_name || "Artist"}`,
-            },
-            unit_amount: unit,
-          },
-          quantity: 1,
-        }],
+              description: `Live concert by ${musician?.stage_name || "Artist"}` },
+            unit_amount: unit },
+          quantity: 1 }],
         success_url: `${origin}/live-concerts?success=true&type=ticket&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/live-concerts?canceled=true`,
-        metadata: {
-          user_id: userId ?? "",
+        metadata: { user_id: userId ?? "",
           concert_id: concertId,
           ticket_type_id: ticketTypeId,
           musician_id: (ticketType as any).live_concert_streams.musician_id,
           type: "concert_ticket",
-          product: "concert_ticket",
-        },
-      });
+          product: "concert_ticket" } });
 
       const concertFeePct = await getFeeRate("megatalent");
       const concertFeeRate = concertFeePct / 100;
-      await admin.from("concert_ticket_purchases").insert({
-        user_id: userId,
+      await admin.from("concert_ticket_purchases").insert({ user_id: userId,
         concert_id: concertId,
         ticket_type_id: ticketTypeId,
         amount: priceEur,
@@ -1954,8 +1709,7 @@ async function handler(req: Request): Promise<Response> {
         platform_commission: Number((priceEur * concertFeeRate).toFixed(2)),
         commission_rate: concertFeeRate,
         payment_status: "pending",
-        stripe_session_id: session.id,
-      });
+        stripe_session_id: session.id });
 
       return successResponse({ url: session.url, session_id: session.id });
     }
@@ -1971,13 +1725,10 @@ async function handler(req: Request): Promise<Response> {
         mode: "payment",
         success_url: `${origin}/comedy-club?payment=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/comedy-club?payment=canceled`,
-        metadata: {
-          user_id: userId ?? "",
+        metadata: { user_id: userId ?? "",
           type: "comedy_coins",
           product: "comedy_coins",
-          coins: String(coins),
-        },
-      });
+          coins: String(coins) } });
       return successResponse({ url: session.url, session_id: session.id });
     }
 
@@ -1991,9 +1742,7 @@ async function handler(req: Request): Promise<Response> {
       ];
       const theme = String(body.theme || THEMES[Math.floor(Math.random() * THEMES.length)]);
       const description = String(body.description || `Compete with your best dish around: ${theme}`);
-      const { data, error } = await admin.from("kitchen_battles").insert({
-        theme, description, created_by: userId,
-      }).select().single();
+      const { data, error } = await admin.from("kitchen_battles").insert({ theme, description, created_by: userId }).select().single();
       if (error) return errorResponse(error.message, 400);
       return successResponse({ battle: data });
     }
@@ -2020,35 +1769,27 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             product_data: {
               name: "Paid Message to Creator",
-              description: `Direct message to the creator (${message.substring(0, 50)}...)`,
-            },
-            unit_amount: Math.round(pricePerMessage * 100),
-          },
-          quantity: 1,
-        }],
+              description: `Direct message to the creator (${message.substring(0, 50)}...)` },
+            unit_amount: Math.round(pricePerMessage * 100) },
+          quantity: 1 }],
         mode: "payment",
         success_url: `${origin}/creator/${creatorId}?message=success`,
         cancel_url: `${origin}/creator/${creatorId}?message=canceled`,
-        metadata: {
-          type: "paid_message",
+        metadata: { type: "paid_message",
           product: "paid_message",
           sender_id: userId ?? "",
           creator_id: creatorId,
           message: message.substring(0, 500),
           platform_fee: String(platformFee),
-          creator_payout: String(creatorPayout),
-        },
-      });
-      await admin.from("creator_paid_messages").insert({
-        sender_id: userId,
+          creator_payout: String(creatorPayout) } });
+      await admin.from("creator_paid_messages").insert({ sender_id: userId,
         creator_id: creatorId,
         content: message,
         amount_paid: pricePerMessage,
         platform_fee: platformFee,
         creator_payout: creatorPayout,
         stripe_session_id: session.id,
-        status: "pending",
-      });
+        status: "pending" });
       return successResponse({ url: session.url });
     }
 
@@ -2079,33 +1820,25 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             product_data: {
               name: `Tip for ${recipient.full_name ?? recipient.username ?? "creator"}`,
-              description: safeMessage ?? "Profile tip",
-            },
-            unit_amount: amt,
-          },
-          quantity: 1,
-        }],
+              description: safeMessage ?? "Profile tip" },
+            unit_amount: amt },
+          quantity: 1 }],
         success_url: `${origin}/profile/${recipientId}?tip=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/profile/${recipientId}?tip=cancel`,
-        metadata: {
-          type: "profile_tip",
+        metadata: { type: "profile_tip",
           product: "profile_tip",
           recipientId,
-          senderId: userId ?? "",
-        },
-      };
+          senderId: userId ?? "" } };
       if (customerId) sessionParams.customer = customerId;
       else if (email) sessionParams.customer_email = email;
       if (useConnect) {
         sessionParams.payment_intent_data = {
           application_fee_amount: platformFee,
           transfer_data: { destination: recipient.stripe_connect_account_id! },
-          description: `Tip from ${email ?? userId} → ${recipientId}`,
-        };
+          description: `Tip from ${email ?? userId} → ${recipientId}` };
       }
       const session = await stripe.checkout.sessions.create(sessionParams as any);
-      const { error: insertErr } = await admin.from("profile_tips").insert({
-        sender_id: userId,
+      const { error: insertErr } = await admin.from("profile_tips").insert({ sender_id: userId,
         recipient_id: recipientId,
         amount_cents: amt,
         platform_fee_cents: platformFee,
@@ -2114,8 +1847,7 @@ async function handler(req: Request): Promise<Response> {
         stripe_session_id: session.id,
         destination_account_id: useConnect ? recipient.stripe_connect_account_id : null,
         status: "pending",
-        currency: "eur",
-      });
+        currency: "eur" });
       if (insertErr) log.error("profile_tip insert error", insertErr);
       return successResponse({ url: session.url, sessionId: session.id, connectEnabled: useConnect });
     }
@@ -2139,8 +1871,7 @@ async function handler(req: Request): Promise<Response> {
       const totalAmount = Number((merch.price * quantity).toFixed(2));
       const platformFee = Number((totalAmount * 0.1).toFixed(2));
       const creatorPayout = Number((totalAmount - platformFee).toFixed(2));
-      const sessionConfig: Record<string, unknown> = {
-        customer: customerId || undefined,
+      const sessionConfig: Record<string, unknown> = { customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
@@ -2148,34 +1879,25 @@ async function handler(req: Request): Promise<Response> {
             product_data: {
               name: merch.name,
               description: merch.description || undefined,
-              images: merch.image_url ? [merch.image_url] : undefined,
-            },
-            unit_amount: Math.round(merch.price * 100),
-          },
-          quantity,
-        }],
+              images: merch.image_url ? [merch.image_url] : undefined },
+            unit_amount: Math.round(merch.price * 100) },
+          quantity }],
         mode: "payment",
         success_url: `${origin}/creator/${merch.creator_id}?merch=success`,
         cancel_url: `${origin}/creator/${merch.creator_id}?merch=canceled`,
-        metadata: {
-          type: "merch_purchase",
+        metadata: { type: "merch_purchase",
           product: "merch_purchase",
           buyer_id: userId ?? "",
           merch_id: merchId,
           creator_id: merch.creator_id,
           quantity: String(quantity),
           platform_fee: String(platformFee),
-          creator_payout: String(creatorPayout),
-        },
-      };
-      if (!merch.is_digital) {
-        sessionConfig.shipping_address_collection = {
-          allowed_countries: ["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE"],
-        };
+          creator_payout: String(creatorPayout) } };
+      if (!merch.is_digital) { sessionConfig.shipping_address_collection = {
+          allowed_countries: ["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE"] };
       }
       const session = await stripe.checkout.sessions.create(sessionConfig as any);
-      await admin.from("creator_merch_orders").insert({
-        buyer_id: userId,
+      await admin.from("creator_merch_orders").insert({ buyer_id: userId,
         creator_id: merch.creator_id,
         merch_id: merchId,
         quantity,
@@ -2183,8 +1905,7 @@ async function handler(req: Request): Promise<Response> {
         platform_fee: platformFee,
         creator_payout: creatorPayout,
         stripe_session_id: session.id,
-        status: "pending",
-      });
+        status: "pending" });
       return successResponse({ url: session.url });
     }
 
@@ -2211,8 +1932,7 @@ async function handler(req: Request): Promise<Response> {
       deliveryDeadline.setDate(deliveryDeadline.getDate() + deliveryDays);
       const { data: order, error: orderError } = await admin
         .from("service_orders")
-        .insert({
-          offering_id: offeringId,
+        .insert({ offering_id: offeringId,
           buyer_id: userId,
           seller_id: offering.user_id,
           requirements,
@@ -2221,8 +1941,7 @@ async function handler(req: Request): Promise<Response> {
           commission_amount: commissionAmount,
           seller_payout: sellerPayout,
           delivery_deadline: deliveryDeadline.toISOString(),
-          status: "pending",
-        })
+          status: "pending" })
         .select()
         .single();
       if (orderError || !order) {
@@ -2237,24 +1956,18 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             product_data: {
               name: offering.title,
-              description: `Service order: ${requirements.substring(0, 100)}...`,
-            },
-            unit_amount: Math.round(totalAmount * 100),
-          },
-          quantity: 1,
-        }],
+              description: `Service order: ${requirements.substring(0, 100)}...` },
+            unit_amount: Math.round(totalAmount * 100) },
+          quantity: 1 }],
         mode: "payment",
         success_url: `${origin}/marketplace?order_success=${order.id}`,
         cancel_url: `${origin}/marketplace?order_cancelled=${order.id}`,
-        metadata: {
-          type: "service_order",
+        metadata: { type: "service_order",
           product: "service_order",
           order_id: order.id,
           seller_id: offering.user_id,
           commission_amount: String(commissionAmount),
-          seller_payout: String(sellerPayout),
-        },
-      });
+          seller_payout: String(sellerPayout) } });
       await admin.from("service_orders").update({ stripe_session_id: session.id }).eq("id", order.id);
       return successResponse({ url: session.url, orderId: order.id });
     }
@@ -2299,37 +2012,27 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             product_data: {
               name: `Brand campaign: ${campaign.campaign_name}`,
-              description: `Escrow for influencer ${influencer.name}. Released after work is marked completed.`,
-            },
-            unit_amount: amountCents,
-          },
-          quantity: 1,
-        }],
+              description: `Escrow for influencer ${influencer.name}. Released after work is marked completed.` },
+            unit_amount: amountCents },
+          quantity: 1 }],
         payment_intent_data: {
           description: `Brand Campaign Escrow — ${campaign.campaign_name}`,
-          metadata: {
-            type: "brand_campaign_escrow",
+          metadata: { type: "brand_campaign_escrow",
             application_id: applicationId,
             campaign_id: campaign.id,
             brand_user_id: userId,
             influencer_id: influencer.id,
             influencer_user_id: influencer.user_id,
             platform_fee_cents: String(platformFeeCents),
-            net_cents: String(netCents),
-          },
-        },
-        metadata: {
-          type: "brand_campaign_escrow",
+            net_cents: String(netCents) } },
+        metadata: { type: "brand_campaign_escrow",
           product: "brand_campaign_escrow",
-          application_id: applicationId,
-        },
+          application_id: applicationId },
         success_url: `${origin}/brand-collaboration?escrow=success&app=${applicationId}`,
-        cancel_url: `${origin}/brand-collaboration?escrow=cancelled&app=${applicationId}`,
-      });
+        cancel_url: `${origin}/brand-collaboration?escrow=cancelled&app=${applicationId}` });
       const { error: escrowErr } = await admin
         .from("campaign_escrow")
-        .insert({
-          application_id: applicationId,
+        .insert({ application_id: applicationId,
           campaign_id: campaign.id,
           brand_user_id: userId,
           influencer_id: influencer.id,
@@ -2339,32 +2042,27 @@ async function handler(req: Request): Promise<Response> {
           net_cents: netCents,
           currency: "eur",
           status: "awaiting_payment",
-          stripe_session_id: session.id,
-        });
+          stripe_session_id: session.id });
       if (escrowErr) log.error("Failed to insert escrow row", escrowErr);
       await admin
         .from("campaign_applications")
-        .update({
-          status: "approved",
+        .update({ status: "approved",
           approved_by: userId,
           approved_at: new Date().toISOString(),
           agreed_amount: agreedEur,
-          payment_status: "pending",
-        })
+          payment_status: "pending" })
         .eq("id", applicationId);
       return successResponse({ url: session.url, sessionId: session.id });
     }
 
     // ─── B18e — Brand sponsorship subscription (legacy: create-brand-sponsorship) ───
-    if (body.product === "brand_sponsorship") {
-      if (!userId || !email) return errorResponse("Login required", 401);
+    if (body.product === "brand_sponsorship") { if (!userId || !email) return errorResponse("Login required", 401);
       const TIER_PRICES: Record<string, string> = {
         bronze: "price_1SSD7e0QTWhd4oRpbo9399Fq",
         silver: "price_1SSD8C0QTWhd4oRpvFe7cP4z",
         gold: "price_1SSD8O0QTWhd4oRpihR2CucC",
         platinum: "price_1SSD8O0QTWhd4oRpD269KcUs",
-        enterprise: "price_1TfxBOGaXSfGtYFtgWu0U3QY",
-      };
+        enterprise: "price_1TfxBOGaXSfGtYFtgWu0U3QY" };
       const tier = String(body.tier || "");
       if (!tier || !TIER_PRICES[tier]) return errorResponse("Invalid tier", 400);
       const admin = createSupabaseAdminClient();
@@ -2373,8 +2071,7 @@ async function handler(req: Request): Promise<Response> {
         .select("id")
         .eq("user_id", userId)
         .maybeSingle();
-      if (!existingSponsor && body.brandData) {
-        await admin.from("brand_sponsors").insert({
+      if (!existingSponsor && body.brandData) { await admin.from("brand_sponsors").insert({
           user_id: userId,
           name: body.brandData.name,
           logo: body.brandData.logo,
@@ -2382,8 +2079,7 @@ async function handler(req: Request): Promise<Response> {
           category: body.brandData.category,
           description: body.brandData.description,
           website: body.brandData.website,
-          subscription_status: "pending",
-        });
+          subscription_status: "pending" });
       }
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
@@ -2392,13 +2088,10 @@ async function handler(req: Request): Promise<Response> {
         mode: "subscription",
         success_url: `${origin}/brand-battle?success=true`,
         cancel_url: `${origin}/brand-battle?canceled=true`,
-        metadata: {
-          user_id: userId,
+        metadata: { user_id: userId,
           type: "brand_sponsorship",
           product: "brand_sponsorship",
-          tier,
-        },
-      });
+          tier } });
       return successResponse({ url: session.url });
     }
 
@@ -2414,13 +2107,10 @@ async function handler(req: Request): Promise<Response> {
         mode: "payment",
         success_url: `${origin}/brand-battle?payment=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/brand-battle?payment=canceled`,
-        metadata: {
-          user_id: userId,
+        metadata: { user_id: userId,
           type: "brand_votes",
           product: "brand_votes",
-          price_id: priceId,
-        },
-      });
+          price_id: priceId } });
       return successResponse({ url: session.url });
     }
 
@@ -2458,16 +2148,14 @@ async function handler(req: Request): Promise<Response> {
       const influencerAmount = Math.round(amount * (1 - brandFeeRate) * 100) / 100;
       const { data: payment, error: paymentError } = await admin
         .from("campaign_payments")
-        .insert({
-          campaign_id: campaign.id,
+        .insert({ campaign_id: campaign.id,
           application_id: applicationId,
           brand_user_id: userId,
           influencer_user_id: application.user_id,
           amount,
           platform_fee: platformFee,
           influencer_amount: influencerAmount,
-          status: "pending",
-        })
+          status: "pending" })
         .select()
         .single();
       if (paymentError || !payment) {
@@ -2482,23 +2170,17 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             product_data: {
               name: `Campaign: ${campaign.campaign_name}`,
-              description: `Payment to ${influencerName} for brand collaboration`,
-            },
-            unit_amount: Math.round(amount * 100),
-          },
-          quantity: 1,
-        }],
+              description: `Payment to ${influencerName} for brand collaboration` },
+            unit_amount: Math.round(amount * 100) },
+          quantity: 1 }],
         mode: "payment",
         success_url: `${origin}/brand-collaboration?payment=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/brand-collaboration?payment=canceled`,
-        metadata: {
-          type: "campaign_payment",
+        metadata: { type: "campaign_payment",
           product: "campaign_payment",
           payment_id: payment.id,
           application_id: applicationId,
-          campaign_id: campaign.id,
-        },
-      });
+          campaign_id: campaign.id } });
       await admin
         .from("campaign_payments")
         .update({ stripe_session_id: session.id })
@@ -2556,8 +2238,7 @@ async function handler(req: Request): Promise<Response> {
 
       const { data: order, error: orderErr } = await admin
         .from("bazaar_orders")
-        .insert({
-          item_id: item.id,
+        .insert({ item_id: item.id,
           buyer_id: userId,
           seller_id: item.user_id,
           amount,
@@ -2565,8 +2246,7 @@ async function handler(req: Request): Promise<Response> {
           seller_payout: sellerPayout,
           status: "pending",
           shipping_address: String(shippingAddress).trim(),
-          buyer_notes: buyerNotes,
-        })
+          buyer_notes: buyerNotes })
         .select()
         .single();
       if (orderErr || !order) {
@@ -2582,29 +2262,22 @@ async function handler(req: Request): Promise<Response> {
             unit_amount: Math.round(amount * 100),
             product_data: {
               name: `Bazaar: ${item.title}`.slice(0, 250),
-              description: `Order ${order.id.slice(0, 8)}`,
-            },
-          },
-          quantity: 1,
-        }],
+              description: `Order ${order.id.slice(0, 8)}` } },
+          quantity: 1 }],
         mode: "payment",
         success_url: `${origin}/bazaar?payment=success&session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
         cancel_url: `${origin}/bazaar?payment=cancelled&order_id=${order.id}`,
-        metadata: {
-          type: "bazaar_order",
+        metadata: { type: "bazaar_order",
           product: "bazaar_order",
           order_id: order.id,
           item_id: item.id,
           buyer_id: userId,
           seller_id: item.user_id,
-          auto_split: sellerConnectId ? "true" : "false",
-        },
-      };
+          auto_split: sellerConnectId ? "true" : "false" } };
       if (sellerConnectId) {
         (sessionParams as any).payment_intent_data = {
           application_fee_amount: Math.round(commissionAmount * 100),
-          transfer_data: { destination: sellerConnectId },
-        };
+          transfer_data: { destination: sellerConnectId } };
       }
       const session = await stripe.checkout.sessions.create(sessionParams as any);
       await admin.from("bazaar_orders").update({ stripe_session_id: session.id }).eq("id", order.id);
@@ -2617,8 +2290,7 @@ async function handler(req: Request): Promise<Response> {
       const TIERS: Record<string, { amount: number; label: string }> = {
         bronze: { amount: 499, label: "Bronze Patron — €4.99/mo" },
         silver: { amount: 999, label: "Silver Patron — €9.99/mo" },
-        gold: { amount: 1999, label: "Gold Patron — €19.99/mo" },
-      };
+        gold: { amount: 1999, label: "Gold Patron — €19.99/mo" } };
       const tier = String((body as any).tier || "");
       const authorUserId = String((body as any).authorUserId || "");
       if (!authorUserId || !TIERS[tier]) return errorResponse("Invalid tier or authorUserId", 400);
@@ -2632,29 +2304,22 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             recurring: { interval: "month" },
             product_data: { name: `Patron — ${tier.toUpperCase()}` },
-            unit_amount: t.amount,
-          },
-          quantity: 1,
-        }],
-        metadata: {
-          type: "shadow_patron",
+            unit_amount: t.amount },
+          quantity: 1 }],
+        metadata: { type: "shadow_patron",
           product: "shadow_patron",
           patron_user_id: userId,
           author_user_id: authorUserId,
-          tier,
-        },
+          tier },
         success_url: `${origin}/shadow-arena/dashboard?patron=success`,
-        cancel_url: `${origin}/shadow-arena/dashboard?patron=cancel`,
-      });
+        cancel_url: `${origin}/shadow-arena/dashboard?patron=cancel` });
       return successResponse({ url: session.url });
     }
 
     // ─── B18f — Shadow gift (pre-insert pending shadow_gifts row) ───
-    if (body.product === "shadow_gift") {
-      if (!userId || !email) return errorResponse("Login required", 401);
+    if (body.product === "shadow_gift") { if (!userId || !email) return errorResponse("Login required", 401);
       const GIFT_PRICES: Record<string, number> = {
-        rose: 199, candle: 299, skull: 499, raven: 999, pact: 1999,
-      };
+        rose: 199, candle: 299, skull: 499, raven: 999, pact: 1999 };
       const battleId = String((body as any).battleId || "");
       const participantId = String((body as any).participantId || "");
       const giftType = String((body as any).giftType || "");
@@ -2665,14 +2330,12 @@ async function handler(req: Request): Promise<Response> {
       const admin = createSupabaseAdminClient();
       const { data: gift, error: gErr } = await admin
         .from("shadow_gifts")
-        .insert({
-          battle_id: battleId,
+        .insert({ battle_id: battleId,
           participant_id: participantId,
           sender_id: userId,
           gift_type: giftType,
           gift_amount: amount,
-          status: "pending",
-        })
+          status: "pending" })
         .select()
         .single();
       if (gErr || !gift) {
@@ -2685,36 +2348,29 @@ async function handler(req: Request): Promise<Response> {
           price_data: {
             currency: "eur",
             unit_amount: amount,
-            product_data: { name: `Shadow Arena gift: ${giftType}` },
-          },
-          quantity: 1,
-        }],
+            product_data: { name: `Shadow Arena gift: ${giftType}` } },
+          quantity: 1 }],
         mode: "payment",
         success_url: `${origin}/shadow-arena/battle/${battleId}?gift=success`,
         cancel_url: `${origin}/shadow-arena/battle/${battleId}?gift=canceled`,
-        metadata: {
-          type: "shadow_gift",
+        metadata: { type: "shadow_gift",
           product: "shadow_gift",
           user_id: userId,
           gift_id: gift.id,
           battle_id: battleId,
-          participant_id: participantId,
-        },
-      });
+          participant_id: participantId } });
       await admin.from("shadow_gifts").update({ stripe_payment_id: session.id }).eq("id", gift.id);
       return successResponse({ url: session.url, session_id: session.id });
     }
 
 
-    if (body.product && !body.priceId && !body.productKey && !body.credits) {
-      // Free actions (e.g. create-character, create-universe) just return ok
+    if (body.product && !body.priceId && !body.productKey && !body.credits) { // Free actions (e.g. create-character, create-universe) just return ok
       if (body.free === true) {
         return successResponse({
           ok: true,
           free: true,
           product: body.product,
-          message: "No payment required for this action.",
-        });
+          message: "No payment required for this action." });
       }
 
       const productKey = String(body.product);
@@ -2800,8 +2456,7 @@ async function handler(req: Request): Promise<Response> {
         dating_monthly:          { amount: 200,  mode: "subscription", name: "Dating Premium (Monthly)" },
         dating_yearly:           { amount: 2000, mode: "subscription", name: "Dating Premium (Yearly)" },
         challenge_pro:           { amount: 300,  mode: "subscription", name: "Challenge PRO (Eco + Healthy)" },
-        challenge_top:           { amount: 500,  mode: "subscription", name: "Challenge TOP (Eco + Healthy)" },
-      };
+        challenge_top:           { amount: 500,  mode: "subscription", name: "Challenge TOP (Eco + Healthy)" } };
 
       const def = PRODUCT_DEFAULTS[productKey];
 
@@ -2809,8 +2464,7 @@ async function handler(req: Request): Promise<Response> {
       const PROPERTY_PACKAGES: Record<string, { amount: number; name: string }> = {
         basic:    { amount: 2900, name: "Basic Property Listing (30 days)" },
         premium:  { amount: 7900, name: "Premium Property Listing (60 days)" },
-        featured: { amount: 14900, name: "Featured Property Listing (90 days)" },
-      };
+        featured: { amount: 14900, name: "Featured Property Listing (90 days)" } };
       const pkgOverride =
         productKey === "property_listing" && typeof body.packageType === "string"
           ? PROPERTY_PACKAGES[body.packageType]
@@ -2840,10 +2494,8 @@ async function handler(req: Request): Promise<Response> {
                   currency: "eur",
                   unit_amount: amount,
                   product_data: { name: productName },
-                  ...(isSubscription ? { recurring: { interval: ((body.interval as "month" | "year") || (productKey === "dating_yearly" ? "year" : "month")) as "month" | "year" } } : {}),
-                },
-                quantity: 1,
-              },
+                  ...(isSubscription ? { recurring: { interval: ((body.interval as "month" | "year") || (productKey === "dating_yearly" ? "year" : "month")) as "month" | "year" } } : {}) },
+                quantity: 1 },
         ],
         mode,
         success_url: successUrl,
@@ -2854,22 +2506,16 @@ async function handler(req: Request): Promise<Response> {
               tax_id_collection: { enabled: true },
               billing_address_collection: "required" as const,
               customer_update: customerId ? { address: "auto" as const, name: "auto" as const } : undefined,
-              subscription_data: {
-                metadata: {
+              subscription_data: { metadata: {
                   user_id: userId ?? "",
                   type: productKey,
-                  product: productKey,
-                },
-              },
-            }
+                  product: productKey } } }
           : {}),
         metadata: {
           user_id: userId,
           type: productKey,
           product: productKey,
-          ...stringifyMetadata(body.metadata || {}),
-        },
-      });
+          ...stringifyMetadata(body.metadata || {}) } });
 
       return successResponse({ url: session.url, session_id: session.id });
     }
@@ -2888,17 +2534,11 @@ async function handler(req: Request): Promise<Response> {
       // - chat: €0.10/credit
       // - creative_forge public packages (30/75/150/400 → €8/€18/€32/€75) — override below
       // - default: €0.50/credit
-      const CREATIVE_FORGE_TOTALS: Record<number, number> = {
-        30: 800, 75: 1800, 150: 3200, 400: 7500,
-      };
+      const CREATIVE_FORGE_TOTALS: Record<number, number> = { 30: 800, 75: 1800, 150: 3200, 400: 7500 };
       // Shadow Arena: 30 → €4.99, 100 → €12.99, 280 → €29.99
-      const SHADOW_ARENA_TOTALS: Record<number, number> = {
-        30: 499, 100: 1299, 280: 2999,
-      };
+      const SHADOW_ARENA_TOTALS: Record<number, number> = { 30: 499, 100: 1299, 280: 2999 };
       // Character Arena: 50 → €9.99, 200 → €29.99
-      const CHARACTER_ARENA_TOTALS: Record<number, number> = {
-        50: 999, 200: 2999,
-      };
+      const CHARACTER_ARENA_TOTALS: Record<number, number> = { 50: 999, 200: 2999 };
       const unitAmount = creditType === "chat" ? 10 : 50;
       const minTotal = creditType === "chat" ? 99 : 99; // €0.99 minimum
       const cfTotal = creditType === "creative_forge" ? CREATIVE_FORGE_TOTALS[credits] : undefined;
@@ -2910,10 +2550,8 @@ async function handler(req: Request): Promise<Response> {
             price_data: {
               currency: "eur" as const,
               unit_amount: cfTotal ?? saTotal ?? caTotal ?? Math.max(minTotal, credits * unitAmount),
-              product_data: { name: `${creditType} Credits - ${credits} Pack` },
-            },
-            quantity: 1,
-          }];
+              product_data: { name: `${creditType} Credits - ${credits} Pack` } },
+            quantity: 1 }];
 
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
@@ -2945,9 +2583,7 @@ async function handler(req: Request): Promise<Response> {
             : creditType === "iq" ? "iq_credits"
             : creditType === "handwriting" ? "handwriting_credits"
             : creditType === "creative_forge" ? "creative_forge_credits"
-            : creditType,
-        },
-      });
+            : creditType } });
 
       return successResponse({ url: session.url, session_id: session.id });
     }
@@ -2968,15 +2604,12 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             unit_amount: cloneProduct.amount,
             product_data: { name: cloneProduct.name },
-            ...(cloneProduct.mode === "subscription" ? { recurring: { interval: "month" as const } } : {}),
-          },
-          quantity: 1,
-        }],
+            ...(cloneProduct.mode === "subscription" ? { recurring: { interval: "month" as const } } : {}) },
+          quantity: 1 }],
         mode: cloneProduct.mode,
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: { user_id: userId, ...cloneProduct.metadata, ...requestMetadata },
-      });
+        metadata: { user_id: userId, ...cloneProduct.metadata, ...requestMetadata } });
 
       return successResponse({ url: session.url, session_id: session.id });
     }
@@ -2992,21 +2625,16 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             unit_amount: 2900,
             recurring: { interval: "month" },
-            product_data: { name: "Crystal Subscription Box" },
-          },
-          quantity: 1,
-        }],
+            product_data: { name: "Crystal Subscription Box" } },
+          quantity: 1 }],
         mode: "subscription",
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: {
-          user_id: userId,
+        metadata: { user_id: userId,
           type: "crystal_energy",
           feature: "Crystal Subscription Box",
           feature_key: "crystal_sub_box",
-          ...requestMetadata,
-        },
-      });
+          ...requestMetadata } });
 
       return successResponse({ url: session.url, session_id: session.id });
     }
@@ -3030,21 +2658,16 @@ async function handler(req: Request): Promise<Response> {
           price_data: {
             currency: "eur",
             unit_amount: selectedPack.amount,
-            product_data: { name: `${productKey.replace(/_/g, " ")} - ${selectedPack.coins} coins` },
-          },
-          quantity: 1,
-        }],
+            product_data: { name: `${productKey.replace(/_/g, " ")} - ${selectedPack.coins} coins` } },
+          quantity: 1 }],
         mode: "payment",
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: {
-          user_id: userId,
+        metadata: { user_id: userId,
           type: productKey,
           credits: String(requestMetadata.coins || selectedPack.coins),
           coins: String(requestMetadata.coins || selectedPack.coins),
-          ...requestMetadata,
-        },
-      });
+          ...requestMetadata } });
 
       return successResponse({ url: session.url, session_id: session.id });
     }
@@ -3063,15 +2686,12 @@ async function handler(req: Request): Promise<Response> {
             currency: "eur",
             unit_amount: Number(body.amount),
             product_data: { name: String(body.productName) },
-            ...(isSub ? { recurring: { interval } } : {}),
-          },
-          quantity: 1,
-        }],
+            ...(isSub ? { recurring: { interval } } : {}) },
+          quantity: 1 }],
         mode: isSub ? "subscription" : "payment",
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: { user_id: userId, ...requestMetadata },
-      });
+        metadata: { user_id: userId, ...requestMetadata } });
 
       return successResponse({ url: session.url, session_id: session.id });
     }
@@ -3087,8 +2707,7 @@ async function handler(req: Request): Promise<Response> {
         mode: body.mode === "subscription" ? "subscription" : "payment",
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: { user_id: userId, ...requestMetadata },
-      });
+        metadata: { user_id: userId, ...requestMetadata } });
 
       return successResponse({ url: session.url, session_id: session.id });
     }

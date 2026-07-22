@@ -38,8 +38,7 @@ async function anonSelect(
     async ({ url, key, table, columns, limit }) => {
       const mod = await import("https://esm.sh/@supabase/supabase-js@2");
       const client = mod.createClient(url, key, {
-        auth: { persistSession: false, autoRefreshToken: false },
-      });
+        auth: { persistSession: false, autoRefreshToken: false } });
       await client.auth.signOut().catch(() => {});
 
       const { data, error, status } = await client
@@ -47,12 +46,10 @@ async function anonSelect(
         .select(columns)
         .limit(limit);
 
-      return {
-        status,
+      return { status,
         rows: data ?? [],
         errorCode: error?.code ?? null,
-        errorMessage: error?.message ?? null,
-      };
+        errorMessage: error?.message ?? null };
     },
     { url: SUPABASE_URL, key: SUPABASE_ANON_KEY, table, columns, limit },
   );

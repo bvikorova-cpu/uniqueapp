@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { ShoppingBag, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useShoppableTags } from "@/hooks/useShoppableTags";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,8 +23,7 @@ export function ShoppableTagsDialog({ postId, postOwnerId }: Props) {
   const [form, setForm] = useState({ product_name: "", product_url: "", price_eur: "", image_url: "" });
   const [adding, setAdding] = useState(false);
 
-  const submit = async () => {
-    if (!form.product_name || !form.product_url) return;
+  const submit = async () => { if (!form.product_name || !form.product_url) return;
     setAdding(true);
     await addTag({
       post_id: postId,
@@ -36,8 +33,7 @@ export function ShoppableTagsDialog({ postId, postOwnerId }: Props) {
       currency: "EUR",
       image_url: form.image_url || null,
       position_x: null,
-      position_y: null,
-    });
+      position_y: null });
     setForm({ product_name: "", product_url: "", price_eur: "", image_url: "" });
     setAdding(false);
   };

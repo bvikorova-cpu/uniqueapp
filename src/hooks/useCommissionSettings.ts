@@ -38,22 +38,18 @@ export function useCommissionRate(serviceType: CommissionServiceType) {
   
   const setting = settings?.find(s => s.service_type === serviceType);
   
-  return {
-    commissionRate: setting?.commission_rate ?? null,
+  return { commissionRate: setting?.commission_rate ?? null,
     sellerPayout: setting ? 100 - setting.commission_rate : null,
     setting,
-    ...rest,
-  };
+    ...rest };
 }
 
-export function calculateCommission(amount: number, commissionRate: number) {
-  const commissionAmount = (amount * commissionRate) / 100;
+export function calculateCommission(amount: number, commissionRate: number) { const commissionAmount = (amount * commissionRate) / 100;
   const sellerPayout = amount - commissionAmount;
   
   return {
     total: amount,
     commission: commissionAmount,
     payout: sellerPayout,
-    commissionRate,
-  };
+    commissionRate };
 }

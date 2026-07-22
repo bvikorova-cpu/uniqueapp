@@ -19,15 +19,12 @@ export const useTranslations = (postId?: string, targetLanguage?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!postId && !!targetLanguage,
-  });
+    enabled: !!postId && !!targetLanguage });
 
-  const translatePost = useMutation({
-    mutationFn: async ({
+  const translatePost = useMutation({ mutationFn: async ({
       postId,
       language,
-      content,
-    }: {
+      content }: {
       postId: string;
       language: string;
       content: string;
@@ -37,21 +34,17 @@ export const useTranslations = (postId?: string, targetLanguage?: string) => {
       const { error } = await supabase.from("post_translations").upsert({
         post_id: postId,
         language,
-        translated_content: `[${language.toUpperCase()}] ${content}`,
-      });
+        translated_content: `[${language.toUpperCase()}] ${content}` });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["translation"] });
-    },
-  });
+    } });
 
-  return {
-    translation,
+  return { translation,
     isLoading,
-    translatePost: translatePost.mutate,
-  };
+    translatePost: translatePost.mutate };
 };
 
 export const LANGUAGES = [

@@ -1,19 +1,16 @@
 // Chats with a digital_offspring using its system_prompt, persists conversation rows.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 Deno.serve(async (req) => {
@@ -26,8 +23,7 @@ Deno.serve(async (req) => {
     if (!authHeader) return json({ error: "Not authenticated" }, 401);
 
     const auth = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData } = await auth.auth.getUser();
     const user = userData?.user;
     if (!user) return json({ error: "Not authenticated" }, 401);
@@ -62,8 +58,7 @@ Deno.serve(async (req) => {
     const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "gpt-4o-mini", messages }),
-    });
+      body: JSON.stringify({ model: "gpt-4o-mini", messages }) });
     if (aiResp.status === 429) return json({ error: "Rate limited" }, 429);
     if (aiResp.status === 402) return json({ error: "AI credits exhausted" }, 402);
     if (!aiResp.ok) {

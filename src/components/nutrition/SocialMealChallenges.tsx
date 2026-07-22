@@ -32,8 +32,7 @@ export default function SocialMealChallenges({ onBack }: Props) {
       return data;
     },
     onSuccess: (data) => { setResult(data.challenge); toast.success("Challenge generated!"); },
-    onError: (e: any) => toast.error(e.message || "Error generating challenge"),
-  });
+    onError: (e: any) => toast.error(e.message || "Error generating challenge") });
 
   return (
     <>

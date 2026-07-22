@@ -38,9 +38,7 @@ export const usePrivacySettings = () => {
       if (!data) {
         const { data: newSettings, error: insertError } = await supabase
           .from("privacy_settings")
-          .insert({
-            user_id: user.id,
-          })
+          .insert({ user_id: user.id })
           .select()
           .single();
 
@@ -49,8 +47,7 @@ export const usePrivacySettings = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   const updateSettings = useMutation({
     mutationFn: async (updates: Partial<PrivacySettings>) => {
@@ -59,10 +56,8 @@ export const usePrivacySettings = () => {
 
       const { error } = await supabase
         .from("privacy_settings")
-        .update({
-          ...updates,
-          updated_at: new Date().toISOString(),
-        })
+        .update({ ...updates,
+          updated_at: new Date().toISOString() })
         .eq("user_id", user.id);
 
       if (error) throw error;
@@ -70,12 +65,9 @@ export const usePrivacySettings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["privacy-settings"] });
       toast({ title: "Privacy settings updated!" });
-    },
-  });
+    } });
 
-  return {
-    settings,
+  return { settings,
     isLoading,
-    updateSettings: updateSettings.mutate,
-  };
+    updateSettings: updateSettings.mutate };
 };

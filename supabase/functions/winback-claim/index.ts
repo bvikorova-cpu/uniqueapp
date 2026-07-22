@@ -4,11 +4,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -18,8 +16,7 @@ serve(async (req) => {
     if (!token || !priceId) {
       return new Response(JSON.stringify({ error: "Missing token or priceId" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supabase = createClient(
@@ -37,27 +34,22 @@ serve(async (req) => {
     if (error || !campaign) {
       return new Response(JSON.stringify({ error: "Offer not found" }), {
         status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (campaign.status === "claimed") {
       return new Response(JSON.stringify({ error: "Offer already claimed" }), {
         status: 410,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (new Date(campaign.offer_expires_at).getTime() < Date.now()) {
       await supabase.from("winback_campaigns").update({ status: "expired" }).eq("id", campaign.id);
       return new Response(JSON.stringify({ error: "Offer expired" }), {
         status: 410,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", { apiVersion: "2025-08-27.basil" });
 
     // Lazy create coupon if missing
     let couponId = campaign.offer_coupon_id;
@@ -67,8 +59,7 @@ serve(async (req) => {
         duration: "repeating",
         duration_in_months: campaign.offer_duration_months,
         name: `Win-back ${campaign.offer_percent_off}% off`,
-        metadata: { campaign_id: campaign.id, user_id: campaign.user_id },
-      });
+        metadata: { campaign_id: campaign.id, user_id: campaign.user_id } });
       couponId = coupon.id;
       await supabase
         .from("winback_campaigns")
@@ -85,25 +76,17 @@ serve(async (req) => {
       discounts: [{ coupon: couponId }],
       success_url: `${origin}/winback/${token}?success=1`,
       cancel_url: `${origin}/winback/${token}`,
-      metadata: {
-        winback_campaign_id: campaign.id,
-        user_id: campaign.user_id,
-      },
-      subscription_data: {
-        metadata: {
+      metadata: { winback_campaign_id: campaign.id,
+        user_id: campaign.user_id },
+      subscription_data: { metadata: {
           winback_campaign_id: campaign.id,
-          user_id: campaign.user_id,
-        },
-      },
-    });
+          user_id: campaign.user_id } } });
 
     return new Response(JSON.stringify({ url: session.url }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

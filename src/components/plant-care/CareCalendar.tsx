@@ -75,8 +75,7 @@ export const CareCalendar = () => {
 
       toast({
         title: "Task Completed!",
-        description: `Next ${schedule.care_type} scheduled for ${format(nextDue, 'MMM d')}`,
-      });
+        description: `Next ${schedule.care_type} scheduled for ${format(nextDue, 'MMM d')}` });
 
       fetchSchedules();
     } catch (error: any) {

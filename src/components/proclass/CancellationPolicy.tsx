@@ -11,11 +11,9 @@ interface CancellationPolicyProps {
   classStartAt?: string;
 }
 
-export function CancellationPolicy({
-  fullRefundHours = 48,
+export function CancellationPolicy({ fullRefundHours = 48,
   partialRefundHours = 24,
-  classStartAt,
-}: CancellationPolicyProps) {
+  classStartAt }: CancellationPolicyProps) {
   let currentTier: "full" | "partial" | "none" | null = null;
   if (classStartAt) {
     const hoursLeft = (new Date(classStartAt).getTime() - Date.now()) / 3_600_000;

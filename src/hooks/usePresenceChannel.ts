@@ -29,11 +29,9 @@ interface UsePresenceChannelOptions {
  * Returns a deduped list of currently-present users + a stable channel ref
  * that callers (e.g. typing indicator) can reuse to avoid double-subscribing.
  */
-export function usePresenceChannel({
-  channelKey,
+export function usePresenceChannel({ channelKey,
   user,
-  enabled = true,
-}: UsePresenceChannelOptions) {
+  enabled = true }: UsePresenceChannelOptions) {
   const [presentUsers, setPresentUsers] = useState<PresenceUser[]>([]);
   const channelRef = useRef<RealtimeChannel | null>(null);
 
@@ -45,8 +43,7 @@ export function usePresenceChannel({
     // under Supabase's ~500 clients-per-channel soft cap.
     const topic = shouldShard(baseTopic) ? shardedChannel(baseTopic, user?.id) : baseTopic;
     const channel = supabase.channel(topic, {
-      config: { presence: { key: user?.id ?? `anon-${crypto.randomUUID()}` } },
-    });
+      config: { presence: { key: user?.id ?? `anon-${crypto.randomUUID()}` } } });
 
     channel
       .on("presence", { event: "sync" }, () => {
@@ -63,14 +60,12 @@ export function usePresenceChannel({
         }
         setPresentUsers(flat);
       })
-      .subscribe(async (status) => {
-        if (status === "SUBSCRIBED" && user) {
+      .subscribe(async (status) => { if (status === "SUBSCRIBED" && user) {
           await channel.track({
             user_id: user.id,
             display_name: user.display_name ?? null,
             avatar_url: user.avatar_url ?? null,
-            online_at: new Date().toISOString(),
-          } satisfies PresenceUser);
+            online_at: new Date().toISOString() } satisfies PresenceUser);
         }
       });
 
@@ -83,9 +78,7 @@ export function usePresenceChannel({
     };
   }, [channelKey, user?.id, user?.display_name, user?.avatar_url, enabled]);
 
-  return {
-    presentUsers,
+  return { presentUsers,
     channel: channelRef,
-    count: presentUsers.length,
-  };
+    count: presentUsers.length };
 }

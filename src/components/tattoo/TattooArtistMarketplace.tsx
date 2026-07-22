@@ -13,7 +13,7 @@ const ARTISTS = [
   { id: 1, name: "Marcus Steele", specialty: "Realistic & Portrait", rating: 4.9, reviews: 342, location: "London, UK", hourlyRate: 180, avatar: "MS", styles: ["Realistic", "Portrait", "Color"], portfolio: 89, verified: true },
   { id: 2, name: "Yuki Tanaka", specialty: "Japanese Traditional", rating: 4.8, reviews: 275, location: "Tokyo, Japan", hourlyRate: 200, avatar: "YT", styles: ["Japanese", "Traditional", "Irezumi"], portfolio: 124, verified: true },
   { id: 3, name: "Elena Vasquez", specialty: "Watercolor & Fine Line", rating: 5.0, reviews: 198, location: "Barcelona, Spain", hourlyRate: 150, avatar: "EV", styles: ["Watercolor", "Fine Line", "Minimalist"], portfolio: 67, verified: true },
-  { id: 4, name: "Dmitri Volkov", specialty: "Blackwork & Geometric", rating: 4.7, reviews: 412, location: "Berlin, Germany", hourlyRate: 160, avatar: "DV", styles: ["Blackwork", "Geometric", "Dotwork"], portfolio: 156, verified: false },
+  { id: 4, name: "Dmitri Volkov", specialty: "Blackwork & Geometric", rating: 4.7, reviews: 412, location: "Global", hourlyRate: 160, avatar: "DV", styles: ["Blackwork", "Geometric", "Dotwork"], portfolio: 156, verified: false },
   { id: 5, name: "Priya Sharma", specialty: "Neo-Traditional", rating: 4.9, reviews: 231, location: "Mumbai, India", hourlyRate: 120, avatar: "PS", styles: ["Neo-Traditional", "Color", "Illustrative"], portfolio: 93, verified: true },
   { id: 6, name: "James Carter", specialty: "Biomechanical", rating: 4.8, reviews: 167, location: "New York, USA", hourlyRate: 220, avatar: "JC", styles: ["Biomechanical", "Surrealist", "3D"], portfolio: 78, verified: true },
 ];
@@ -44,11 +44,10 @@ export const TattooArtistMarketplace = ({ onBack }: Props) => {
           <span className="text-amber-400/80 text-xs font-semibold tracking-[0.2em] uppercase">Curated Collection</span>
           <Crown className="h-5 w-5 text-amber-400" />
         </div>
-        <h2 className="text-3xl md:text-4xl font-black" style={{
+        <h2 className="text-3xl md:text-4xl font-black" style={ {
           background: "linear-gradient(135deg, #D4AF37, #F5E6C8, #D4AF37)",
           WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-        }}>
+          WebkitTextFillColor: "transparent" }}>
           Artist Marketplace
         </h2>
         <p className="text-muted-foreground mt-1">Connect with world-class tattoo masters</p>
@@ -103,11 +102,10 @@ export const TattooArtistMarketplace = ({ onBack }: Props) => {
               </div>
 
               <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-black" style={{
+                <span className="text-lg font-black" style={ {
                   background: "linear-gradient(135deg, #D4AF37, #F5E6C8)",
                   WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}>€{artist.hourlyRate}/hr</span>
+                  WebkitTextFillColor: "transparent" }}>€{artist.hourlyRate}/hr</span>
                 <span className="text-xs text-muted-foreground">{artist.portfolio} works</span>
               </div>
 

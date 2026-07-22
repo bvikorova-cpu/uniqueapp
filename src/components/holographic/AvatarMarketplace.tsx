@@ -24,12 +24,10 @@ const MARKETPLACE_ITEMS = [
   { id: 8, name: "Quantum Glitch Skin", category: "Skins", price: 3.99, rarity: "Rare", seller: "PixelGhost", rating: 4.4, sales: 89 },
 ];
 
-const rarityColors: Record<string, string> = {
-  "Legendary": "text-amber-500 bg-amber-500/10 border-amber-500/30",
+const rarityColors: Record<string, string> = { "Legendary": "text-amber-500 bg-amber-500/10 border-amber-500/30",
   "Epic": "text-violet-500 bg-violet-500/10 border-violet-500/30",
   "Rare": "text-blue-500 bg-blue-500/10 border-blue-500/30",
-  "Uncommon": "text-emerald-500 bg-emerald-500/10 border-emerald-500/30",
-};
+  "Uncommon": "text-emerald-500 bg-emerald-500/10 border-emerald-500/30" };
 
 export const AvatarMarketplace = ({ onBack }: Props) => {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -46,8 +44,7 @@ export const AvatarMarketplace = ({ onBack }: Props) => {
     setBuyingId(item.id);
     try {
       const { data, error } = await supabase.functions.invoke("create-holographic-avatar-checkout", {
-        body: { priceId: "price_1SPjFUGaXSfGtYFtNiiQEQcT", featureName: `Marketplace: ${item.name}`, metadata: { itemId: item.id, itemName: item.name } },
-      });
+        body: { priceId: "price_1SPjFUGaXSfGtYFtNiiQEQcT", featureName: `Marketplace: ${item.name}`, metadata: { itemId: item.id, itemName: item.name } } });
       if (error) throw error;
       if (data?.url) { window.open(data.url, "_blank"); toast({ title: "Purchase Started", description: `Buying ${item.name}` }); }
     } catch { toast({ title: "Error", description: "Failed to start purchase", variant: "destructive" }); }

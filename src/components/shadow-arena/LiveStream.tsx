@@ -27,8 +27,7 @@ export function LiveStream({ participantId, battleId, isStreamer }: LiveStreamPr
     iceServers: [
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' },
-    ],
-  };
+    ] };
 
   // Track viewer count via Supabase presence
   useEffect(() => {
@@ -73,9 +72,7 @@ export function LiveStream({ participantId, battleId, isStreamer }: LiveStreamPr
       // Setup Supabase Realtime channel for signaling
       const channel = supabase.channel(`battle:${battleId}:stream`, {
         config: {
-          broadcast: { self: true },
-        },
-      });
+          broadcast: { self: true } } });
 
       channelRef.current = channel;
 
@@ -137,16 +134,13 @@ export function LiveStream({ participantId, battleId, isStreamer }: LiveStreamPr
     });
 
     // Handle ICE candidates
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate && channelRef.current) {
+    peerConnection.onicecandidate = (event) => { if (event.candidate && channelRef.current) {
         channelRef.current.send({
           type: 'broadcast',
           event: 'ice-candidate',
           payload: {
             candidate: event.candidate,
-            targetId: viewerId,
-          },
-        });
+            targetId: viewerId } });
       }
     };
 
@@ -154,15 +148,12 @@ export function LiveStream({ participantId, battleId, isStreamer }: LiveStreamPr
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
 
-    if (channelRef.current) {
-      channelRef.current.send({
+    if (channelRef.current) { channelRef.current.send({
         type: 'broadcast',
         event: 'offer',
         payload: {
           offer: offer,
-          targetId: viewerId,
-        },
-      });
+          targetId: viewerId } });
     }
   };
 
@@ -174,9 +165,7 @@ export function LiveStream({ participantId, battleId, isStreamer }: LiveStreamPr
       // Setup Supabase Realtime channel
       const channel = supabase.channel(`battle:${battleId}:stream`, {
         config: {
-          broadcast: { self: true },
-        },
-      });
+          broadcast: { self: true } } });
 
       channelRef.current = channel;
 
@@ -204,13 +193,10 @@ export function LiveStream({ participantId, battleId, isStreamer }: LiveStreamPr
 
       // Notify broadcaster that viewer joined
       const { data: { user } } = await supabase.auth.getUser();
-      channel.send({
-        type: 'broadcast',
+      channel.send({ type: 'broadcast',
         event: 'viewer-join',
         payload: {
-          viewerId: user?.id,
-        },
-      });
+          viewerId: user?.id } });
 
       setIsConnecting(false);
     } catch (error) {
@@ -235,15 +221,12 @@ export function LiveStream({ participantId, battleId, isStreamer }: LiveStreamPr
     };
 
     // Handle ICE candidates
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate && channelRef.current) {
+    peerConnection.onicecandidate = (event) => { if (event.candidate && channelRef.current) {
         channelRef.current.send({
           type: 'broadcast',
           event: 'ice-candidate',
           payload: {
-            candidate: event.candidate,
-          },
-        });
+            candidate: event.candidate } });
       }
     };
 
@@ -253,14 +236,11 @@ export function LiveStream({ participantId, battleId, isStreamer }: LiveStreamPr
     await peerConnection.setLocalDescription(answer);
 
     // Send answer back
-    if (channelRef.current) {
-      channelRef.current.send({
+    if (channelRef.current) { channelRef.current.send({
         type: 'broadcast',
         event: 'answer',
         payload: {
-          answer: answer,
-        },
-      });
+          answer: answer } });
     }
   };
 

@@ -22,8 +22,7 @@ const THRESHOLDS: Record<MetricName, { good: number; poor: number; unit: string;
   INP:  { good: 200,  poor: 500,  unit: "ms",  icon: MousePointerClick, label: "Interaction to Next Paint" },
   CLS:  { good: 0.1,  poor: 0.25, unit: "",    icon: Layers,            label: "Cumulative Layout Shift" },
   FCP:  { good: 1800, poor: 3000, unit: "ms",  icon: Activity,          label: "First Contentful Paint" },
-  TTFB: { good: 800,  poor: 1800, unit: "ms",  icon: Clock,             label: "Time to First Byte" },
-};
+  TTFB: { good: 800,  poor: 1800, unit: "ms",  icon: Clock,             label: "Time to First Byte" } };
 
 function ratingColor(metric: MetricName, value: number | null | undefined) {
   if (value == null) return "text-muted-foreground";
@@ -53,8 +52,7 @@ const AdminVitals = () => {
     const load = async () => {
       setLoading(true);
       const { data, error } = await supabase.functions.invoke("admin-vitals", {
-        body: { days, metric: chartMetric },
-      });
+        body: { days, metric: chartMetric } });
       if (cancelled) return;
       if (error) {
         toast({ title: "Failed to load Web Vitals", description: error.message, variant: "destructive" });

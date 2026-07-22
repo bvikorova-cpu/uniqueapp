@@ -30,8 +30,7 @@ const questions = [
       { emoji: "🎬", label: "Entertainment & Media" },
       { emoji: "🌍", label: "Travel & Nature" },
       { emoji: "⚖️", label: "Law & Justice" },
-    ],
-  },
+    ] },
   {
     title: "How do you prefer to work?",
     subtitle: "Pick all that apply",
@@ -43,8 +42,7 @@ const questions = [
       { emoji: "✈️", label: "Traveling" },
       { emoji: "🎤", label: "Leading others" },
       { emoji: "🔧", label: "Hands-on work" },
-    ],
-  },
+    ] },
   {
     title: "What matters most to you?",
     subtitle: "Pick your top values",
@@ -56,8 +54,7 @@ const questions = [
       { emoji: "🚀", label: "Innovation" },
       { emoji: "🏆", label: "Recognition" },
       { emoji: "📚", label: "Continuous learning" },
-    ],
-  },
+    ] },
   {
     title: "Favorite school subjects?",
     subtitle: "Pick all that apply",
@@ -71,31 +68,26 @@ const questions = [
       { emoji: "🏃", label: "Physical Education" },
       { emoji: "📜", label: "History" },
       { emoji: "🎵", label: "Music" },
-    ],
-  },
+    ] },
 ];
 
-export const CareerQuiz = ({ onComplete }: CareerQuizProps) => {
-  const [currentQ, setCurrentQ] = useState(0);
+export const CareerQuiz = ({ onComplete }: CareerQuizProps) => { const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswers>({
     interests: [],
     workStyle: [],
     values: [],
-    subjects: [],
-  });
+    subjects: [] });
 
   const question = questions[currentQ];
 
-  const toggleOption = (label: string) => {
-    setAnswers(prev => {
+  const toggleOption = (label: string) => { setAnswers(prev => {
       const key = question.key;
       const current = prev[key];
       return {
         ...prev,
         [key]: current.includes(label)
           ? current.filter(v => v !== label)
-          : [...current, label],
-      };
+          : [...current, label] };
     });
   };
 

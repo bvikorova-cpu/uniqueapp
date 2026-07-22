@@ -11,24 +11,18 @@ interface SmartSleepTimerProps {
 }
 
 const BREAK_MESSAGES = [
-  {
-    character: "🦄",
+  { character: "🦄",
     title: "Time for a Magical Break!",
     message: "Hey little adventurer! You've been having so much fun learning, but even heroes need rest. Why not go play outside or have a snack?",
-    icon: Sun,
-  },
-  {
-    character: "🐻",
+    icon: Sun },
+  { character: "🐻",
     title: "Bear Says Take a Break!",
     message: "Roar! You've done amazing today! How about reading a real book, playing with toys, or helping your family with something fun?",
-    icon: BookOpen,
-  },
-  {
-    character: "🧚",
+    icon: BookOpen },
+  { character: "🧚",
     title: "Fairy's Rest Time!",
     message: "Sparkle sparkle! Your brain has learned so much today! Time to rest your eyes and maybe play in nature or cuddle with family!",
-    icon: TreeDeciduous,
-  },
+    icon: TreeDeciduous },
 ];
 
 export function SmartSleepTimer({ children }: SmartSleepTimerProps = {}) {

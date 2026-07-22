@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -26,20 +24,16 @@ serve(async (req) => {
           { role: "system", content: "You are a children's story writer. Write gentle, magical bedtime stories suitable for children ages 3-10. Keep stories warm, positive, and with happy endings. Use simple language." },
           { role: "user", content: `Write a bedtime story titled "${title || 'A Magical Adventure'}". ${prompt || ''}` },
         ],
-        max_completion_tokens: 1500,
-      }),
-    });
+        max_completion_tokens: 1500 }) });
 
     const data = await res.json();
     const story = data.choices?.[0]?.message?.content || "";
 
     await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ title: title || "A Magical Adventure", story, content: story }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -2,8 +2,7 @@
 // Used by the patched supabase.functions.invoke() in client.ts.
 // DO NOT EDIT BY HAND - regenerate by running the proxy consolidation script.
 
-export const AI_PROXY_MAP: Record<string, string> = {
-  "activate-job-listing": "activate_job_listing",
+export const AI_PROXY_MAP: Record<string, string> = { "activate-job-listing": "activate_job_listing",
   "add-teen-career-generation": "add_teen_career_generation",
   "ai-mentor-chat": "ai_mentor_chat",
   "ai-stock-content-generator": "ai_stock_content_generator",
@@ -111,8 +110,7 @@ export const AI_PROXY_MAP: Record<string, string> = {
   "trade-phobia": "trade_phobia",
   "translate-and-generate-audio": "translate_and_generate_audio",
   "virtual-tryon": "virtual_tryon",
-  "vote-fashion-challenge": "vote_fashion_challenge",
-};
+  "vote-fashion-challenge": "vote_fashion_challenge" };
 
 export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: string }> = {
   "create-analyzer-credits-payment": { product: "analyzer_credits", module: "analyzer_credits" },
@@ -180,12 +178,10 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "create-f1-currency-checkout": { product: "f1_currency", module: "f1_currency" },
   "create-kids-drawing-checkout": { product: "kids_drawing", module: "kids_drawing" },
   "create-lead-boost-payment": { product: "lead_boost", module: "lead_boost" },
-  "create-tipster-checkout": { product: "tipster", module: "tipster" },
-};
+  "create-tipster-checkout": { product: "tipster", module: "tipster" } };
 
 
-export const VERIFY_PROXY_MAP: Record<string, string> = {
-  // "verify-bazaar-order-payment": REAL edge function — do not proxy
+export const VERIFY_PROXY_MAP: Record<string, string> = { // "verify-bazaar-order-payment": REAL edge function — do not proxy
   // Product types use snake_case to align with verify-payment applyPurchase table map.
   "verify-brain-duel-payment": "brain_duel",
   "verify-coupon-payment": "coupon",
@@ -198,13 +194,11 @@ export const VERIFY_PROXY_MAP: Record<string, string> = {
   "verify-tip-purchase": "tip",
   // Batch 15 — final verify consolidation
   "verify-bazaar-payment": "bazaar",
-  "verify-gift-payment": "gift",
-};
+  "verify-gift-payment": "gift" };
 
 
 // Nutrition router consolidation: 9 nutrition-* functions merged into nutrition-router.
-export const NUTRITION_ROUTER_MAP: Record<string, string> = {
-  "nutrition-coach-chat": "coach_chat",
+export const NUTRITION_ROUTER_MAP: Record<string, string> = { "nutrition-coach-chat": "coach_chat",
   "nutrition-allergy-scanner": "allergy_scanner",
   "nutrition-barcode-scanner": "barcode_scanner",
   "nutrition-body-predictor": "body_predictor",
@@ -212,26 +206,21 @@ export const NUTRITION_ROUTER_MAP: Record<string, string> = {
   "nutrition-hydration-coach": "hydration_coach",
   "nutrition-meal-challenge": "meal_challenge",
   "nutrition-supplement-advisor": "supplement_advisor",
-  "nutrition-weekly-progress": "weekly_progress",
-};
+  "nutrition-weekly-progress": "weekly_progress" };
 
 // Horse router consolidation: 6 horse-* functions merged into horse-router.
-export const HORSE_ROUTER_MAP: Record<string, string> = {
-  "horse-create": "create",
+export const HORSE_ROUTER_MAP: Record<string, string> = { "horse-create": "create",
   "horse-train": "train",
   "horse-join-race": "join_race",
   "horse-purchase-equipment": "purchase_equipment",
   "horse-championship-enroll": "championship_enroll",
-  "horse-claim-quest-reward": "claim_quest_reward",
-};
+  "horse-claim-quest-reward": "claim_quest_reward" };
 
 // Video-ad router consolidation: 4 video-ad-* media functions merged into video-ad-tools.
-export const VIDEO_AD_ROUTER_MAP: Record<string, string> = {
-  "video-ad-scenes": "scenes",
+export const VIDEO_AD_ROUTER_MAP: Record<string, string> = { "video-ad-scenes": "scenes",
   "video-ad-sfx": "sfx",
   "video-ad-tts": "tts",
-  "video-ad-voice-clone": "voice_clone",
-};
+  "video-ad-voice-clone": "voice_clone" };
 
 /**
  * Resolve a function name to a universal router + augmented body.
@@ -249,8 +238,7 @@ export function resolveProxy(
   if (functionName === "character-battle" || functionName === "football-simulate-match") {
     return {
       target: "battle-characters",
-      body: { ...b, source: (b as any).source ?? functionName },
-    };
+      body: { ...b, source: (b as any).source ?? functionName } };
   }
 
   if (functionName === "contact-live-chat") {
@@ -291,8 +279,7 @@ export function resolveProxy(
   }
 
   // Batch 15 — final subscription-check consolidation (audit 2026-06-13)
-  const SUBSCRIPTION_CHECK_MAP: Record<string, string> = {
-    "check-best-friend-subscription": "best_friend",
+  const SUBSCRIPTION_CHECK_MAP: Record<string, string> = { "check-best-friend-subscription": "best_friend",
     "check-companions-subscription": "companions",
     "check-employer-subscription": "employer",
     "check-f1-subscription": "f1",
@@ -306,24 +293,21 @@ export function resolveProxy(
     "check-skill-swap-subscription": "skill_swap",
     "check-sports-subscription": "sports",
     "check-vip-subscription": "vip",
-    "check-wellness-subscription": "wellness",
-  };
+    "check-wellness-subscription": "wellness" };
   const subTier = SUBSCRIPTION_CHECK_MAP[functionName];
   if (subTier) {
     return { target: "check-subscription", body: { ...b, tier: subTier } };
   }
 
   // Batch 15 — remaining *-customer-portal aliases route to check-connect-status
-  const CUSTOMER_PORTAL_MODULES: Record<string, string> = {
-    "companions-customer-portal": "/companions",
+  const CUSTOMER_PORTAL_MODULES: Record<string, string> = { "companions-customer-portal": "/companions",
     "customer-portal-creator": "/creator-dashboard",
     "employer-customer-portal": "/employer",
     "f1-customer-portal": "/gp-racing",
     "healthcare-customer-portal": "/healthcare",
     "kids-drawing-customer-portal": "/kids-drawing",
     "kids-story-customer-portal": "/kids-story",
-    "psychology-customer-portal": "/psychology",
-  };
+    "psychology-customer-portal": "/psychology" };
   const portalPath = CUSTOMER_PORTAL_MODULES[functionName];
   if (portalPath) {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -332,9 +316,7 @@ export function resolveProxy(
       body: {
         ...b,
         action: "customer_portal",
-        return_url: (b as any).return_url ?? `${origin}${portalPath}`,
-      },
-    };
+        return_url: (b as any).return_url ?? `${origin}${portalPath}` } };
   }
 
   // return_url=/account; module aliases inject return_url to preserve the
@@ -352,9 +334,7 @@ export function resolveProxy(
       body: {
         ...b,
         action: "customer_portal",
-        return_url: (b as any).return_url ?? `${origin}/megatalent`,
-      },
-    };
+        return_url: (b as any).return_url ?? `${origin}/megatalent` } };
   }
   if (functionName === "customer-portal-anonymous-date") {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -363,9 +343,7 @@ export function resolveProxy(
       body: {
         ...b,
         action: "customer_portal",
-        return_url: (b as any).return_url ?? `${origin}/anonymous-date`,
-      },
-    };
+        return_url: (b as any).return_url ?? `${origin}/anonymous-date` } };
   }
 
   // Batch 11 — coupon specialized functions merged into coupon-ai with action switch.
@@ -408,16 +386,14 @@ export function resolveProxy(
   }
 
   // Batch 15 — all mt-* functions merged into mt-router via action switch.
-  const MT_ROUTER_MAP: Record<string, string> = {
-    "mt-checkout": "checkout",
+  const MT_ROUTER_MAP: Record<string, string> = { "mt-checkout": "checkout",
     "mt-release-funds": "release_funds",
     "mt-claim-streak": "claim_streak",
     "mt-claim-achievement": "claim_achievement",
     "mt-quest-increment": "quest_increment",
     "mt-season-claim-tier": "season_claim_tier",
     "mt-stories-cleanup": "stories_cleanup",
-    "mt-escrow-auto-release": "escrow_auto_release",
-  };
+    "mt-escrow-auto-release": "escrow_auto_release" };
   const mt = MT_ROUTER_MAP[functionName];
   if (mt) {
     return { target: "mt-router", body: { ...b, action: mt } };
@@ -425,16 +401,14 @@ export function resolveProxy(
 
   // Batch 16 — check-* subscription/credit checks merged into check-router.
   // Batch 17 — anonymous-date-access, dunning, sca also merged.
-  const CHECK_ROUTER_MAP: Record<string, string> = {
-    "check-lottery-subscription": "lottery",
+  const CHECK_ROUTER_MAP: Record<string, string> = { "check-lottery-subscription": "lottery",
     "check-phobia-subscription": "phobia",
     "check-tipster-subscription": "tipster",
     "check-megatalent-subscription": "megatalent_sub",
     "check-megatalent-vip": "megatalent_vip",
     "check-anonymous-date-access": "anonymous_date_access",
     "check-dunning": "dunning",
-    "check-sca": "sca",
-  };
+    "check-sca": "sca" };
   const chk2 = CHECK_ROUTER_MAP[functionName];
   if (chk2) {
     return { target: "check-router", body: { ...b, action: chk2 } };
@@ -445,8 +419,7 @@ export function resolveProxy(
   if (functionName === "check-router" || functionName === "check-connect-status") {
     return {
       target: "check-router",
-      body: { ...b, action: (b as any).action ?? "connect_status" },
-    };
+      body: { ...b, action: (b as any).action ?? "connect_status" } };
   }
 
 
@@ -479,32 +452,27 @@ export function resolveProxy(
   if (functionName === "create-messenger-ai-credits-payment") {
     return {
       target: "create-checkout",
-      body: { ...b, product: "messenger_ai", packKey: String((b as any).credits ?? "") },
-    };
+      body: { ...b, product: "messenger_ai", packKey: String((b as any).credits ?? "") } };
   }
   if (functionName === "create-coloring-payment") {
     return {
       target: "create-checkout",
-      body: { ...b, product: "coloring_pay_per_use", packKey: "1" },
-    };
+      body: { ...b, product: "coloring_pay_per_use", packKey: "1" } };
   }
   if (functionName === "create-anonymous-date-payment") {
     return {
       target: "create-checkout",
-      body: { ...b, product: "anonymous_date", packKey: String((b as any).packageType ?? "") },
-    };
+      body: { ...b, product: "anonymous_date", packKey: String((b as any).packageType ?? "") } };
   }
   if (functionName === "create-secret-santa-payment") {
     return {
       target: "create-checkout",
-      body: { ...b, product: "secret_santa", packKey: String((b as any).credits ?? "") },
-    };
+      body: { ...b, product: "secret_santa", packKey: String((b as any).credits ?? "") } };
   }
   if (functionName === "create-emotion-insurance-checkout") {
     return {
       target: "create-checkout",
-      body: { ...b, product: "emotion_insurance", packKey: String((b as any).level ?? "").toLowerCase() },
-    };
+      body: { ...b, product: "emotion_insurance", packKey: String((b as any).level ?? "").toLowerCase() } };
   }
 
   // ─── B18f Phase 3 — DB side-effect heavy checkouts merged into create-checkout ───
@@ -649,15 +617,12 @@ export function resolveProxy(
   }
 
   const chk = CHECKOUT_PROXY_MAP[functionName];
-  if (chk) {
-    return {
+  if (chk) { return {
       target: "create-checkout",
       body: {
         ...b,
         product: (b as any).product ?? (b as any).module ?? chk.product,
-        module: (b as any).module ?? chk.module,
-      },
-    };
+        module: (b as any).module ?? chk.module } };
   }
 
   const vrf = VERIFY_PROXY_MAP[functionName];

@@ -36,11 +36,9 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
   const { toast } = useToast();
   const access = useQuantumAccess();
 
-  const [newPost, setNewPost] = useState({
-    content: "",
+  const [newPost, setNewPost] = useState({ content: "",
     versionsCount: 3,
-    tones: ["professional", "casual", "humorous"],
-  });
+    tones: ["professional", "casual", "humorous"] });
 
   useEffect(() => {
     fetchPosts();
@@ -85,15 +83,13 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
         .select("*")
         .eq("post_id", postId);
 
-      if (versions && versions.length > 0) {
-        const randomVersion = versions[Math.floor(Math.random() * versions.length)];
+      if (versions && versions.length > 0) { const randomVersion = versions[Math.floor(Math.random() * versions.length)];
         versionId = randomVersion.id;
 
         await supabase.from("quantum_observations").insert([{
           post_id: postId,
           observer_id: user.id,
-          version_id: versionId,
-        }]);
+          version_id: versionId }]);
 
         setPostVersions((prev) => ({ ...prev, [postId]: randomVersion }));
       }
@@ -136,8 +132,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
     let aiVersions: { tone: string; content: string }[] = [];
     try {
       const { data, error: aiErr } = await supabase.functions.invoke("quantum-generate-versions", {
-        body: { baseContent: newPost.content, tones: selectedTones },
-      });
+        body: { baseContent: newPost.content, tones: selectedTones } });
       if (aiErr) throw aiErr;
       aiVersions = Array.isArray(data?.versions) ? data.versions : [];
     } catch (e) {
@@ -148,12 +143,10 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
 
     for (let i = 0; i < newPost.versionsCount; i++) {
       const v = aiVersions[i] ?? { tone: selectedTones[i], content: newPost.content };
-      await supabase.from("quantum_post_versions").insert([{
-        post_id: post.id,
+      await supabase.from("quantum_post_versions").insert([{ post_id: post.id,
         version_number: i + 1,
         content: v.content,
-        personality_tone: v.tone,
-      }]);
+        personality_tone: v.tone }]);
     }
 
     toast({ title: "Success", description: `Post created with ${newPost.versionsCount} quantum versions` });
@@ -191,9 +184,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
     const version = postVersions[postId];
     if (!version) return;
 
-    const { error } = await supabase.from("quantum_collapses").insert([{
-      post_id: postId, user_id: user.id, collapsed_version_id: version.id, price_paid: 2.99,
-    }]);
+    const { error } = await supabase.from("quantum_collapses").insert([{ post_id: postId, user_id: user.id, collapsed_version_id: version.id, price_paid: 2.99 }]);
 
     if (!error) {
       await supabase.from("quantum_posts").update({ is_collapsed: true }).eq("id", postId);

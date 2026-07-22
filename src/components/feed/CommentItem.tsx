@@ -95,10 +95,9 @@ export const CommentItem = ({
           {/* Actions row */}
           <div className="flex items-center gap-2 mt-1">
             <p className="text-[10px] text-muted-foreground">
-              {formatDistanceToNow(new Date(comment.created_at), {
+              { formatDistanceToNow(new Date(comment.created_at), {
                 addSuffix: true,
-                locale: enUS,
-              })}
+                locale: enUS })}
             </p>
             
             <CommentReactionPicker commentId={comment.id} />

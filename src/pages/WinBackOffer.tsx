@@ -32,8 +32,7 @@ const WinBackOffer = () => {
     (async () => {
       setLoading(true);
       const { data, error } = await supabase.functions.invoke("winback-get-offer", {
-        body: { token },
-      });
+        body: { token } });
       if (error || (data as any)?.error) {
         toast.error("Offer not found or expired");
       } else {
@@ -47,8 +46,7 @@ const WinBackOffer = () => {
     if (!token) return;
     setClaiming(true);
     const { data, error } = await supabase.functions.invoke("winback-claim", {
-      body: { token, priceId: DEFAULT_PRICE_ID },
-    });
+      body: { token, priceId: DEFAULT_PRICE_ID } });
     setClaiming(false);
     if (error || !(data as any)?.url) {
       toast.error((data as any)?.error || "Couldn't start checkout");

@@ -26,8 +26,7 @@ export const HotTopicsAI = ({ onBack }: HotTopicsAIProps) => {
     setIsGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke("megaforum-ai", {
-        body: { action: "trending_topics" },
-      });
+        body: { action: "trending_topics" } });
       if (error) throw error;
       setTopics(data.topics || []);
     } catch (e: any) {
@@ -42,8 +41,7 @@ export const HotTopicsAI = ({ onBack }: HotTopicsAIProps) => {
     setIsSummarizing(true);
     try {
       const { data, error } = await supabase.functions.invoke("megaforum-ai", {
-        body: { action: "summarize", content: summaryInput },
-      });
+        body: { action: "summarize", content: summaryInput } });
       if (error) throw error;
       setSummary(data.summary || "");
     } catch (e: any) {

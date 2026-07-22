@@ -18,8 +18,7 @@ const PUZZLES: { board: Cell[][]; sol: number[][] }[] = [
       [{ type: "clue", rs: 17 }, { type: "num" }, { type: "num" }, { type: "clue" }],
       [{ type: "clue" }, { type: "clue" }, { type: "clue" }, { type: "clue" }],
     ],
-    sol: [[0,0,0,0],[0,8,3,0],[0,9,8,0],[0,0,0,0]],
-  },
+    sol: [[0,0,0,0],[0,8,3,0],[0,9,8,0],[0,0,0,0]] },
 ];
 
 const IQKakuro4 = () => {

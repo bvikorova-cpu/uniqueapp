@@ -560,8 +560,7 @@ export const useSecretSanta = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Get received gifts
   const { data: receivedGifts = [], isLoading: giftsLoading } = useQuery({
@@ -578,8 +577,7 @@ export const useSecretSanta = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Get sent gifts
   const { data: sentGifts = [], isLoading: sentLoading } = useQuery({
@@ -596,8 +594,7 @@ export const useSecretSanta = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Get active stories (non-expired)
   const { data: stories = [], isLoading: storiesLoading } = useQuery({
@@ -611,8 +608,7 @@ export const useSecretSanta = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Get leaderboard
   const { data: leaderboard = [], isLoading: leaderboardLoading } = useQuery({
@@ -641,27 +637,22 @@ export const useSecretSanta = () => {
         .select("id, full_name, avatar_url")
         .in("id", topSenders.map(([id]) => id));
 
-      return topSenders.map(([id, total], index) => {
-        const profile = (profiles || []).find((p: any) => p.id === id) as any;
+      return topSenders.map(([id, total], index) => { const profile = (profiles || []).find((p: any) => p.id === id) as any;
         return {
           rank: index + 1,
           userId: id,
           username: profile?.full_name || "Anonymous",
           avatarUrl: profile?.avatar_url,
-          totalGiftsValue: total,
-        };
+          totalGiftsValue: total };
       });
-    },
-  });
+    } });
 
   // Send gift mutation
-  const sendGift = useMutation({
-    mutationFn: async ({
+  const sendGift = useMutation({ mutationFn: async ({
       recipientId,
       giftType,
       message,
-      isAnonymous = true,
-    }: {
+      isAnonymous = true }: {
       recipientId: string;
       giftType: string;
       message?: string;
@@ -673,15 +664,13 @@ export const useSecretSanta = () => {
       const gift = GIFT_CATALOG.find(g => g.type === giftType);
       if (!gift) throw new Error("Invalid gift type");
 
-      const { error } = await supabase.rpc("send_secret_santa_gift", {
-        p_recipient_id: recipientId,
+      const { error } = await supabase.rpc("send_secret_santa_gift", { p_recipient_id: recipientId,
         p_gift_type: giftType,
         p_gift_emoji: gift.emoji,
         p_gift_value: gift.value,
         p_message: message ?? null,
         p_is_anonymous: isAnonymous,
-        p_animation_type: null,
-      });
+        p_animation_type: null });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -691,8 +680,7 @@ export const useSecretSanta = () => {
     },
     onError: (error: Error) => {
       toast({ title: error.message, variant: "destructive" });
-    },
-  });
+    } });
 
   // Share to stories mutation
   const shareToStory = useMutation({
@@ -700,10 +688,8 @@ export const useSecretSanta = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("secret_santa_stories").insert({
-        gift_id: giftId,
-        user_id: user.id,
-      });
+      const { error } = await supabase.from("secret_santa_stories").insert({ gift_id: giftId,
+        user_id: user.id });
 
       if (error) throw error;
     },
@@ -713,11 +699,9 @@ export const useSecretSanta = () => {
     },
     onError: () => {
       toast({ title: "Failed to share", variant: "destructive" });
-    },
-  });
+    } });
 
-  return {
-    credits: credits?.credits_remaining || 0,
+  return { credits: credits?.credits_remaining || 0,
     creditsLoading,
     receivedGifts,
     giftsLoading,
@@ -729,6 +713,5 @@ export const useSecretSanta = () => {
     leaderboardLoading,
     sendGift: sendGift.mutate,
     shareToStory: shareToStory.mutate,
-    isSending: sendGift.isPending,
-  };
+    isSending: sendGift.isPending };
 };

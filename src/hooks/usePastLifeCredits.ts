@@ -32,8 +32,7 @@ export const usePastLifeCredits = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   const analyzePastLife = useMutation({
     mutationFn: async (params: {
@@ -43,10 +42,8 @@ export const usePastLifeCredits = () => {
       readingType: string;
       partnerBirthDate?: string;
       partnerInfo?: string;
-    }) => {
-      const result = await invokeOrThrow("analyze-past-life", {
-        body: params,
-      });
+    }) => { const result = await invokeOrThrow("analyze-past-life", {
+        body: params });
 
       if (result?.requiresPayment) {
         throw new Error("INSUFFICIENT_CREDITS");
@@ -64,8 +61,7 @@ export const usePastLifeCredits = () => {
       } else {
         toast.error(error.message || "Failed to generate past life reading");
       }
-    },
-  });
+    } });
 
   const purchaseCredits = async (amount: number) => {
     const { data, error } = await safeInvoke(
@@ -80,11 +76,9 @@ export const usePastLifeCredits = () => {
     return data?.url || null;
   };
 
-  return {
-    credits,
+  return { credits,
     isLoading,
     analyzePastLife: analyzePastLife.mutate,
     isAnalyzing: analyzePastLife.isPending,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

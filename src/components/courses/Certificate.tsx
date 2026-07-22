@@ -19,8 +19,7 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
   const certificateRef = useRef<HTMLDivElement>(null);
   const certificateNumber = `UNIQUE-${Date.now().toString().slice(-8)}`;
 
-  const handleDownloadPDF = async () => {
-    if (!certificateRef.current) return;
+  const handleDownloadPDF = async () => { if (!certificateRef.current) return;
 
     try {
       toast.loading("Generating PDF certificate...");
@@ -30,15 +29,12 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
         backgroundColor: "#ffffff",
         logging: false,
         useCORS: true,
-        allowTaint: true,
-      });
+        allowTaint: true });
 
       const imgData = canvas.toDataURL("image/png", 1.0);
-      const pdf = new jsPDF({
-        orientation: "landscape",
+      const pdf = new jsPDF({ orientation: "landscape",
         unit: "mm",
-        format: "a4",
-      });
+        format: "a4" });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();

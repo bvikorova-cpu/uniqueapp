@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -20,12 +18,10 @@ interface PaidMessageDialogProps {
   creatorName: string;
 }
 
-export function PaidMessageDialog({
-  open,
+export function PaidMessageDialog({ open,
   onOpenChange,
   creatorId,
-  creatorName,
-}: PaidMessageDialogProps) {
+  creatorName }: PaidMessageDialogProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -55,25 +51,21 @@ export function PaidMessageDialog({
   const currentPrice = tab === "shoutout" ? shoutoutPrice : pricePerMessage;
   const currentEnabled = tab === "shoutout" ? shoutoutEnabled : messageEnabled;
 
-  const handleSend = async () => {
-    const trimmed = message.trim();
+  const handleSend = async () => { const trimmed = message.trim();
     if (trimmed.length < 3) {
       toast({
         title: "Message too short",
         description: "Please write at least 3 characters.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Sign in required",
           description: "Please sign in to continue",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
       const { data, error } = await supabase.functions.invoke(
@@ -86,12 +78,10 @@ export function PaidMessageDialog({
         onOpenChange(false);
         setMessage("");
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error?.message ?? "Failed to start checkout",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

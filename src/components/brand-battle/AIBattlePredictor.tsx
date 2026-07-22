@@ -30,8 +30,7 @@ export const AIBattlePredictor = ({ brands }: { brands: Brand[] }) => {
     setPred(null);
     try {
       const { data, error } = await supabase.functions.invoke("brand-battle-predictor", {
-        body: { brandAId: a, brandBId: b },
-      });
+        body: { brandAId: a, brandBId: b } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       setPred(data as Prediction);

@@ -35,8 +35,7 @@ export function usePhobiaCredits() {
       if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
 
       const { data, error } = await supabase.functions.invoke("purchase-phobia-credits", {
-        body: { credits },
-      });
+        body: { credits } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
     } catch (err: any) {

@@ -19,15 +19,13 @@ interface PostFiltersProps {
   onReset: () => void;
 }
 
-export const PostFilters = ({
-  sortBy,
+export const PostFilters = ({ sortBy,
   timeFilter,
   categoryFilter,
   onSortChange,
   onTimeChange,
   onCategoryChange,
-  onReset,
-}: PostFiltersProps) => {
+  onReset }: PostFiltersProps) => {
   const hasActiveFilters = sortBy !== "newest" || timeFilter !== "all" || categoryFilter !== "all";
 
   return (

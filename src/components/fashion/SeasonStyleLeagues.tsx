@@ -53,8 +53,7 @@ export default function SeasonStyleLeagues() {
         .map(([id, data]) => ({ id, ...data, league: LEAGUES.find(l => data.score >= l.min && data.score <= l.max) || LEAGUES[0] }))
         .sort((a, b) => b.score - a.score)
         .slice(0, 50);
-    },
-  });
+    } });
 
   const joinMutation = useMutation({
     mutationFn: async () => {
@@ -69,8 +68,7 @@ export default function SeasonStyleLeagues() {
       toast.success("Successfully joined the league! Start competing in Style Battles to earn points.");
       queryClient.invalidateQueries({ queryKey: ["fashion-league-leaderboard"] });
     },
-    onError: (e: any) => toast.error(e.message),
-  });
+    onError: (e: any) => toast.error(e.message) });
 
   const currentLeague = LEAGUES[0];
 

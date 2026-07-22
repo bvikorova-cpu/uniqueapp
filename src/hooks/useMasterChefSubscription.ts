@@ -8,24 +8,20 @@ interface MasterChefSubscription {
   loading: boolean;
 }
 
-export const useMasterChefSubscription = () => {
-  const [subscription, setSubscription] = useState<MasterChefSubscription>({
+export const useMasterChefSubscription = () => { const [subscription, setSubscription] = useState<MasterChefSubscription>({
     subscribed: false,
     tier: null,
     subscription_end: null,
-    loading: true,
-  });
+    loading: true });
 
   const checkSubscription = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setSubscription({
+      if (!session) { setSubscription({
           subscribed: false,
           tier: null,
           subscription_end: null,
-          loading: false,
-        });
+          loading: false });
         return;
       }
 
@@ -33,20 +29,16 @@ export const useMasterChefSubscription = () => {
 
       if (error) throw error;
 
-      setSubscription({
-        subscribed: data.subscribed || false,
+      setSubscription({ subscribed: data.subscribed || false,
         tier: data.tier || null,
         subscription_end: data.subscription_end || null,
-        loading: false,
-      });
-    } catch (error) {
-      console.error("Error checking MasterChef subscription:", error);
+        loading: false });
+    } catch (error) { console.error("Error checking MasterChef subscription:", error);
       setSubscription({
         subscribed: false,
         tier: null,
         subscription_end: null,
-        loading: false,
-      });
+        loading: false });
     }
   };
 
@@ -57,8 +49,6 @@ export const useMasterChefSubscription = () => {
     return () => clearInterval(interval);
   }, []);
 
-  return {
-    ...subscription,
-    refresh: checkSubscription,
-  };
+  return { ...subscription,
+    refresh: checkSubscription };
 };

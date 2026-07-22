@@ -71,10 +71,8 @@ export const PlantDiagnosis = () => {
       setResult(data.diagnosis);
       await refresh();
       
-      toast({
-        title: "Diagnosis Complete!",
-        description: "Review the health assessment and recommendations",
-      });
+      toast({ title: "Diagnosis Complete!",
+        description: "Review the health assessment and recommendations" });
     } catch (error: any) {
       console.error('Error diagnosing plant:', error);
       toast({

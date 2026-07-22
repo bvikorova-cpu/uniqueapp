@@ -87,13 +87,11 @@ export const useLearningContent = () => {
       if (certificatesData.data) {
         setCertificates(certificatesData.data);
       }
-    } catch (error) {
-      console.error('Error loading learning content:', error);
+    } catch (error) { console.error('Error loading learning content:', error);
       toast({
         title: "Error",
         description: "Failed to load your content",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -118,12 +116,10 @@ export const useLearningContent = () => {
     try {
       // Re-validate session against Auth server (getUser), not just local storage
       const { data: userRes, error: userErr } = await supabase.auth.getUser();
-      if (userErr || !userRes?.user) {
-        toast({
+      if (userErr || !userRes?.user) { toast({
           title: "Please log in",
           description: "Your session expired. Sign in to complete the purchase.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return null;
       }
 
@@ -138,9 +134,7 @@ export const useLearningContent = () => {
           productName: title,
           product: 'learning',
           successUrl: `${window.location.origin}${window.location.pathname}?purchase=success`,
-          cancelUrl: `${window.location.origin}${window.location.pathname}?purchase=cancelled`,
-        },
-      });
+          cancelUrl: `${window.location.origin}${window.location.pathname}?purchase=cancelled` } });
 
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
@@ -151,14 +145,11 @@ export const useLearningContent = () => {
         return url;
       }
 
-      toast({
-        title: "Checkout error",
+      toast({ title: "Checkout error",
         description: "The payment provider did not return a checkout URL. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return null;
-    } catch (error) {
-      console.error('Purchase error:', error);
+    } catch (error) { console.error('Purchase error:', error);
       const msg = error instanceof Error ? error.message : String(error);
       const friendly = /Failed to send|network|fetch/i.test(msg)
         ? "Could not reach the payment service. Check your connection and that you are logged in, then try again."
@@ -166,8 +157,7 @@ export const useLearningContent = () => {
       toast({
         title: "Purchase Failed",
         description: friendly,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return null;
     }
   };
@@ -175,28 +165,23 @@ export const useLearningContent = () => {
   const verifyPurchase = async (sessionId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('verify-learning-payment', {
-        body: { session_id: sessionId },
-      });
+        body: { session_id: sessionId } });
 
       if (error) throw error;
 
-      if (data.success) {
-        toast({
+      if (data.success) { toast({
           title: "Purchase Confirmed!",
-          description: "You now have access to this content",
-        });
+          description: "You now have access to this content" });
         await loadPurchasedContent();
         return true;
       }
 
       return false;
-    } catch (error) {
-      console.error('Verification error:', error);
+    } catch (error) { console.error('Verification error:', error);
       toast({
         title: "Verification Failed",
         description: error instanceof Error ? error.message : "Unknown error",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return false;
     }
   };
@@ -216,16 +201,14 @@ export const useLearningContent = () => {
 
       const { error } = await supabase
         .from('learning_progress')
-        .upsert({
-          user_id: user.id,
+        .upsert({ user_id: user.id,
           content_id: contentId,
           content_type: contentType,
           progress_percentage: progressPercentage,
           current_module: currentModule,
           completed_modules: completedModules,
           completed_at: isCompleted ? new Date().toISOString() : null,
-          last_accessed: new Date().toISOString(),
-        }, {
+          last_accessed: new Date().toISOString() }, {
           onConflict: 'user_id,content_id,content_type'
         });
 
@@ -251,34 +234,29 @@ export const useLearningContent = () => {
       if (!session) return null;
 
       const { data, error } = await supabase.functions.invoke('generate-certificate', {
-        body: { contentId, contentType, title, instructorName, completionScore },
-      });
+        body: { contentId, contentType, title, instructorName, completionScore } });
 
       if (error) throw error;
 
       if (data.success) {
         toast({
           title: "Certificate Generated!",
-          description: `Certificate ${data.certificate.certificate_number} has been created`,
-        });
+          description: `Certificate ${data.certificate.certificate_number} has been created` });
         await loadPurchasedContent();
         return data.certificate;
       }
 
       return null;
-    } catch (error) {
-      console.error('Certificate generation error:', error);
+    } catch (error) { console.error('Certificate generation error:', error);
       toast({
         title: "Generation Failed",
         description: error instanceof Error ? error.message : "Unknown error",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return null;
     }
   };
 
-  return {
-    purchased,
+  return { purchased,
     progress,
     certificates,
     loading,
@@ -288,6 +266,5 @@ export const useLearningContent = () => {
     verifyPurchase,
     updateProgress,
     generateCertificate,
-    refresh: loadPurchasedContent,
-  };
+    refresh: loadPurchasedContent };
 };

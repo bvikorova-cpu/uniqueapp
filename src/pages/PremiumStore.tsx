@@ -26,8 +26,7 @@ import { GiftDialog } from "@/components/store/GiftDialog";
 import { ConfettiBurst } from "@/components/store/ConfettiBurst";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-const LEVEL_REQUIREMENTS: Record<string, number> = {
-  'visibility_boost': 5,
+const LEVEL_REQUIREMENTS: Record<string, number> = { 'visibility_boost': 5,
   'featured_listing': 10,
   'employer_branding': 15,
   'premium_analytics': 20,
@@ -37,8 +36,7 @@ const LEVEL_REQUIREMENTS: Record<string, number> = {
   'basic_theme': 5,
   'premium_theme': 15,
   'basic_avatar': 5,
-  'animated_avatar': 20,
-};
+  'animated_avatar': 20 };
 
 const VISIBILITY_BOOSTERS = [
   { id: 'boost_24h', name: '24h Visibility Boost', description: 'Double your listing views for 24 hours', credits: 10, levelRequired: 5, icon: '🚀', multiplier: '2x' },
@@ -118,10 +116,8 @@ const PremiumStore = () => {
         setConfettiTrigger((t) => t + 1);
         // Log to leaderboard
         const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          await supabase.from('premium_store_purchases').insert({
-            user_id: user.id, item_type: type, item_id: id, item_name: name, credits_spent: cost, is_gift: false,
-          });
+        if (user) { await supabase.from('premium_store_purchases').insert({
+            user_id: user.id, item_type: type, item_id: id, item_name: name, credits_spent: cost, is_gift: false });
         }
       } else {
         throw new Error("Purchase failed");

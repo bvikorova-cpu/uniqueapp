@@ -1,10 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -37,16 +35,13 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+        "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
             content:
-              "You are a fraud and anomaly detection AI for a multi-creator platform. Analyse the past 24h stats and flag suspicious patterns. Respond ONLY by calling the report_anomalies tool.",
-          },
+              "You are a fraud and anomaly detection AI for a multi-creator platform. Analyse the past 24h stats and flag suspicious patterns. Respond ONLY by calling the report_anomalies tool." },
           { role: "user", content: `Stats (24h): ${JSON.stringify(stats)}` },
         ],
         tools: [
@@ -67,44 +62,31 @@ Deno.serve(async (req) => {
                         title: { type: "string" },
                         severity: { type: "string", enum: ["info", "warn", "danger"] },
                         description: { type: "string" },
-                        recommendation: { type: "string" },
-                      },
-                      required: ["title", "severity", "description", "recommendation"],
-                    },
-                  },
-                },
-                required: ["risk_level", "anomalies"],
-              },
-            },
-          },
+                        recommendation: { type: "string" } },
+                      required: ["title", "severity", "description", "recommendation"] } } },
+                required: ["risk_level", "anomalies"] } } },
         ],
-        tool_choice: { type: "function", function: { name: "report_anomalies" } },
-      }),
-    });
+        tool_choice: { type: "function", function: { name: "report_anomalies" } } }) });
 
     if (aiResp.status === 429)
       return new Response(JSON.stringify({ error: "Rate limited" }), {
         status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     if (aiResp.status === 402)
       return new Response(JSON.stringify({ error: "Add credits to OpenAI workspace" }), {
         status: 402,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const aiData = await aiResp.json();
     const tool = aiData.choices?.[0]?.message?.tool_calls?.[0];
     const args = tool ? JSON.parse(tool.function.arguments) : { risk_level: "low", anomalies: [] };
 
     return new Response(JSON.stringify({ ...args, stats }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("anomaly error", e);
     return new Response(JSON.stringify({ error: String(e) }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

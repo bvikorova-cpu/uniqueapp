@@ -30,8 +30,7 @@ export const CaptionsView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true); setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {
-        body: { action: 'caption_generator', script, duration, style, language, platform: 'tiktok' },
-      });
+        body: { action: 'caption_generator', script, duration, style, language, platform: 'tiktok' } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Captions' }); return; }
       setResult(data.result);
       toast.success(`${data.result.captions.length} captions created (${data.credits_used} CR)`);

@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -66,8 +64,7 @@ serve(async (req) => {
       const strategyBonus: Record<string, { engine: number; aero: number; tires: number; handling: number }> = {
         aggressive: { engine: 1.3, aero: 1.1, tires: 0.8, handling: 0.9 },
         balanced: { engine: 1.0, aero: 1.0, tires: 1.0, handling: 1.0 },
-        conservative: { engine: 0.9, aero: 0.9, tires: 1.3, handling: 1.1 },
-      };
+        conservative: { engine: 0.9, aero: 0.9, tires: 1.3, handling: 1.1 } };
 
       const bonus = strategyBonus[strategy] || strategyBonus.balanced;
 
@@ -92,13 +89,11 @@ serve(async (req) => {
         performance *= 1.1;
       }
 
-      return {
-        participantId: p.id,
+      return { participantId: p.id,
         carId: p.car_id,
         userId: p.user_id,
         carName: car.name,
-        performance,
-      };
+        performance };
     });
 
     // Sort by performance (highest first)
@@ -132,13 +127,11 @@ serve(async (req) => {
         .eq("id", result.carId)
         .single();
 
-      if (car) {
-        await supabaseAdmin
+      if (car) { await supabaseAdmin
           .from("f1_cars")
           .update({
             total_races: (car.total_races || 0) + 1,
-            total_wins: position === 1 ? (car.total_wins || 0) + 1 : car.total_wins,
-          })
+            total_wins: position === 1 ? (car.total_wins || 0) + 1 : car.total_wins })
           .eq("id", result.carId);
       }
 
@@ -150,12 +143,10 @@ serve(async (req) => {
           .eq("user_id", result.userId)
           .single();
 
-        if (currency) {
-          await supabaseAdmin
+        if (currency) { await supabaseAdmin
             .from("f1_currency")
             .update({
-              coins: currency.coins + prize,
-            })
+              coins: currency.coins + prize })
             .eq("user_id", result.userId);
           
           console.log(`Awarded ${prize} coins to user ${result.userId}`);
@@ -172,19 +163,15 @@ serve(async (req) => {
     console.log("Race results calculated successfully");
 
     return new Response(
-      JSON.stringify({
-        success: true,
+      JSON.stringify({ success: true,
         results: results.map((r: any, i: number) => ({
           position: i + 1,
           carName: r.carName,
           userId: r.userId,
-          prize: i < 3 ? Math.floor(totalPrize * prizeDistribution[i]) : 0,
-        })),
-      }),
+          prize: i < 3 ? Math.floor(totalPrize * prizeDistribution[i]) : 0 })) }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
+        status: 200 }
     );
   } catch (error) {
     console.error("F1 Race calculation error:", error);
@@ -192,8 +179,7 @@ serve(async (req) => {
       JSON.stringify({ error: (error as Error).message }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
+        status: 500 }
     );
   }
 });

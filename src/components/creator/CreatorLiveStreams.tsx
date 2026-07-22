@@ -77,30 +77,25 @@ export function CreatorLiveStreams({ creatorId }: CreatorLiveStreamsProps) {
     setPurchasingId(stream.id);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Sign In Required",
           description: "Please sign in to purchase stream access",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
       const { data, error } = await supabase.functions.invoke("create-stream-access-checkout", {
-        body: { streamId: stream.id },
-      });
+        body: { streamId: stream.id } });
 
       if (error) throw error;
 
       if (data?.url) {
         window.open(data.url, "_blank");
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setPurchasingId(null);
     }

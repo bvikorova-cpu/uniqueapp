@@ -50,8 +50,7 @@ export const SCABanner = () => {
     let url = pending.hosted_invoice_url || pending.next_action_url;
     if (!url) {
       const { data, error } = await supabase.functions.invoke("sca-confirm-url", {
-        body: { invoice_id: pending.invoice_id },
-      });
+        body: { invoice_id: pending.invoice_id } });
       if (error || !(data as any)?.url) {
         setOpening(false);
         toast.error("Couldn't open authentication page");

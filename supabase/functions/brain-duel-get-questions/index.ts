@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -43,8 +41,7 @@ serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
@@ -97,19 +94,16 @@ CRITICAL RULES:
           }
         ],
         tool_choice: { type: "function", function: { name: "generate_questions" } }
-      }),
-    });
+      }) });
 
     if (!aiResponse.ok) {
       if (aiResponse.status === 429) {
         return new Response(JSON.stringify({ error: "AI rate limit exceeded. Please try again in a moment." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       if (aiResponse.status === 402) {
         return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds to workspace." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       throw new Error(`AI error: ${aiResponse.status}`);
     }
@@ -135,10 +129,8 @@ CRITICAL RULES:
     // Store questions in DB — derive correct_answer letter from text to prevent AI mislabeling
     const norm = (s: string) => (s || "").trim().toLowerCase();
     const questionsToInsert = generatedQuestions
-      .map((q: any) => {
-        const opts: Record<string, string> = {
-          a: q.option_a, b: q.option_b, c: q.option_c, d: q.option_d,
-        };
+      .map((q: any) => { const opts: Record<string, string> = {
+          a: q.option_a, b: q.option_b, c: q.option_c, d: q.option_d };
         const target = norm(q.correct_answer_text || q.correct_answer || "");
         let letter = (["a", "b", "c", "d"] as const).find((k) => norm(opts[k]) === target);
         // Fallback: if AI returned a single letter, accept it
@@ -146,16 +138,14 @@ CRITICAL RULES:
           letter = norm(q.correct_answer) as "a" | "b" | "c" | "d";
         }
         if (!letter) return null;
-        return {
-          category,
+        return { category,
           question: q.question,
           option_a: q.option_a,
           option_b: q.option_b,
           option_c: q.option_c,
           option_d: q.option_d,
           correct_answer: letter,
-          difficulty: q.difficulty || "medium",
-        };
+          difficulty: q.difficulty || "medium" };
       })
       .filter(Boolean);
 
@@ -169,23 +159,19 @@ CRITICAL RULES:
     if (qError) throw qError;
 
     // Return questions without correct_answer
-    const clientQuestions = savedQuestions.map((q: any) => ({
-      id: q.id,
+    const clientQuestions = savedQuestions.map((q: any) => ({ id: q.id,
       question: q.question,
       option_a: q.option_a,
       option_b: q.option_b,
       option_c: q.option_c,
       option_d: q.option_d,
-      difficulty: q.difficulty,
-    }));
+      difficulty: q.difficulty }));
 
     return new Response(JSON.stringify({ questions: clientQuestions }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("Get questions error:", e);
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

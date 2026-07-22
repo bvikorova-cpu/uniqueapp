@@ -21,12 +21,10 @@ interface Proof {
   achieved_on: string | null;
 }
 
-const typeIcons: Record<string, any> = {
-  achievement: Trophy,
+const typeIcons: Record<string, any> = { achievement: Trophy,
   performance: Music,
   award: Award,
-  release: Disc3,
-};
+  release: Disc3 };
 
 export const MilestoneProofs = ({ campaignId, isOwner }: { campaignId: string; isOwner: boolean }) => {
   const [proofs, setProofs] = useState<Proof[]>([]);
@@ -50,15 +48,13 @@ export const MilestoneProofs = ({ campaignId, isOwner }: { campaignId: string; i
       toast({ title: "Title required", variant: "destructive" });
       return;
     }
-    const { error } = await (supabase as any).from("talent_milestone_proofs").insert({
-      campaign_id: campaignId,
+    const { error } = await (supabase as any).from("talent_milestone_proofs").insert({ campaign_id: campaignId,
       title: form.title,
       description: form.description || null,
       proof_type: form.proof_type,
       media_url: form.media_url || null,
       external_url: form.external_url || null,
-      achieved_on: form.achieved_on || null,
-    });
+      achieved_on: form.achieved_on || null });
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
       return;

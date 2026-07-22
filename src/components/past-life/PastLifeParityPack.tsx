@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Globe2, Scale, History, Users, BookOpen, PawPrint, Crown, Feather, Sparkles, Loader2,
-} from "lucide-react";
+import { Globe2, Scale, History, Users, BookOpen, PawPrint, Crown, Feather, Sparkles, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -30,8 +28,7 @@ const TOOLS: ToolConfig[] = [
     fields: [
       { name: "birthDate", label: "Birth date", type: "date" },
       { name: "intuition", label: "Recurring intuition or feeling", type: "textarea", placeholder: "e.g. drawn to stars, oceans..." },
-    ],
-  },
+    ] },
   {
     id: "karmic-debt",
     title: "Karmic Debt Calculator",
@@ -40,8 +37,7 @@ const TOOLS: ToolConfig[] = [
     fields: [
       { name: "birthDate", label: "Birth date", type: "date" },
       { name: "recurringStruggles", label: "Recurring struggles", type: "textarea", placeholder: "patterns that keep returning" },
-    ],
-  },
+    ] },
   {
     id: "reincarnation-timeline",
     title: "Reincarnation Timeline",
@@ -50,8 +46,7 @@ const TOOLS: ToolConfig[] = [
     fields: [
       { name: "birthDate", label: "Birth date", type: "date" },
       { name: "talents", label: "Talents or strong interests", type: "textarea" },
-    ],
-  },
+    ] },
   {
     id: "soul-tribe",
     title: "Soul Tribe Finder",
@@ -60,8 +55,7 @@ const TOOLS: ToolConfig[] = [
     fields: [
       { name: "birthDate", label: "Birth date", type: "date" },
       { name: "closeBonds", label: "Closest people in this life", type: "textarea" },
-    ],
-  },
+    ] },
   {
     id: "lesson-workbook",
     title: "7-Day Lesson Workbook",
@@ -69,8 +63,7 @@ const TOOLS: ToolConfig[] = [
     icon: BookOpen,
     fields: [
       { name: "focusArea", label: "Focus area", type: "input", placeholder: "trust, forgiveness, courage..." },
-    ],
-  },
+    ] },
   {
     id: "animal-elemental",
     title: "Animal / Elemental Life",
@@ -79,8 +72,7 @@ const TOOLS: ToolConfig[] = [
     fields: [
       { name: "birthDate", label: "Birth date", type: "date" },
       { name: "naturePull", label: "Element you feel pulled to", type: "input", placeholder: "fire, water, forest..." },
-    ],
-  },
+    ] },
   {
     id: "famous-match",
     title: "Famous Past Life Match",
@@ -89,8 +81,7 @@ const TOOLS: ToolConfig[] = [
     fields: [
       { name: "birthDate", label: "Birth date", type: "date" },
       { name: "passions", label: "Passions / talents", type: "textarea" },
-    ],
-  },
+    ] },
   {
     id: "death-reflection",
     title: "Death Transition Reflection",
@@ -99,8 +90,7 @@ const TOOLS: ToolConfig[] = [
     fields: [
       { name: "birthDate", label: "Birth date", type: "date" },
       { name: "phobias", label: "Phobias or strong aversions", type: "textarea" },
-    ],
-  },
+    ] },
 ];
 
 export const PastLifeParityPack = () => {

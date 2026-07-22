@@ -46,25 +46,20 @@ const AICreditsStore = () => {
       (async () => {
         try {
           await supabase.functions.invoke("verify-payment", {
-            body: { session_id: sessionId },
-          });
+            body: { session_id: sessionId } });
         } catch (e) {
           console.warn("verify-payment failed", e);
         }
         await refresh();
-        toast({
-          title: "Payment successful",
-          description: "Your AI credits have been added to your account.",
-        });
+        toast({ title: "Payment successful",
+          description: "Your AI credits have been added to your account." });
         // Clean URL
         window.history.replaceState({}, "", "/ai-credits-store");
       })();
-    } else if (status === "canceled") {
-      toast({
+    } else if (status === "canceled") { toast({
         title: "Payment canceled",
         description: "No charge was made. You can try again anytime.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       window.history.replaceState({}, "", "/ai-credits-store");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,9 +96,7 @@ const AICreditsStore = () => {
           mode: "payment",
           metadata: { credits: String(pkg.credits) },
           successUrl: `${window.location.origin}/ai-credits-store?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-          cancelUrl: `${window.location.origin}/ai-credits-store?payment=canceled`,
-        },
-      });
+          cancelUrl: `${window.location.origin}/ai-credits-store?payment=canceled` } });
       if (error) throw error;
       if (data?.url) {
         const w = window.open(data.url, '_blank', 'noopener,noreferrer');

@@ -30,8 +30,7 @@ export default function AIBarcodeScanner({ onBack }: Props) {
       return data;
     },
     onSuccess: (data) => { setResult(data.product); toast.success("Product analyzed!"); },
-    onError: (e: any) => toast.error(e.message || "Error scanning"),
-  });
+    onError: (e: any) => toast.error(e.message || "Error scanning") });
 
   return (
     <>

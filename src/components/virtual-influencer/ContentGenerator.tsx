@@ -5,13 +5,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, Wand2 } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -42,8 +40,7 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
         `Create a ${contentType} for ${influencer.name}, a ${influencer.niche} influencer with ${influencer.personality} personality. Professional, engaging, Instagram-worthy content.`;
 
       const { data, error } = await supabase.functions.invoke("ai-image-generation", {
-        body: { prompt },
-      });
+        body: { prompt } });
 
       if (error) throw error;
       return data;
@@ -55,20 +52,15 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
       const caption = `✨ New ${contentType} from ${influencer.name}! ${influencer.niche} content that inspires. #${influencer.niche.replace(/\s+/g, '')} #influencer #contentcreator`;
       setGeneratedCaption(caption);
 
-      toast({
-        title: "Content Generated!",
-        description: "Your content is ready to publish",
-      });
+      toast({ title: "Content Generated!",
+        description: "Your content is ready to publish" });
     },
-    onError: (error) => {
-      console.error("Generation error:", error);
+    onError: (error) => { console.error("Generation error:", error);
       toast({
         title: "Generation Failed",
         description: "Failed to generate content. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
   const publishMutation = useMutation({
     mutationFn: async () => {
@@ -85,16 +77,14 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
       // Save content
       const { error: contentError } = await supabase
         .from("influencer_content")
-        .insert([{
-          influencer_id: influencerId,
+        .insert([{ influencer_id: influencerId,
           content_type: contentType,
           content_url: generatedContent,
           caption: generatedCaption,
           likes,
           comments,
           shares,
-          earnings: Number(netEarnings),
-        }]);
+          earnings: Number(netEarnings) }]);
 
       if (contentError) throw contentError;
 
@@ -102,10 +92,8 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
       const newFollowers = influencer.followers + Math.floor(Math.random() * 100) + 50;
       const { error: updateError } = await supabase
         .from("virtual_influencers")
-        .update({
-          followers: newFollowers,
-          total_earnings: Number(influencer.total_earnings) + Number(netEarnings),
-        })
+        .update({ followers: newFollowers,
+          total_earnings: Number(influencer.total_earnings) + Number(netEarnings) })
         .eq("id", influencerId);
 
       if (updateError) throw updateError;
@@ -117,36 +105,30 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
         .eq("influencer_id", influencerId)
         .maybeSingle();
 
-      if (existingBalance) {
-        await supabase
+      if (existingBalance) { await supabase
           .from("influencer_balances")
           .update({
-            total_earned: Number(existingBalance.total_earned) + Number(netEarnings),
-          })
+            total_earned: Number(existingBalance.total_earned) + Number(netEarnings) })
           .eq("influencer_id", influencerId);
-      } else {
-        // Fallback in case trigger didn't fire (legacy rows)
+      } else { // Fallback in case trigger didn't fire (legacy rows)
         await supabase
           .from("influencer_balances")
           .insert({
             influencer_id: influencerId,
             total_earned: Number(netEarnings),
             withdrawn: 0,
-            pending_withdrawal: 0,
-          });
+            pending_withdrawal: 0 });
       }
 
       // Record earnings
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from("influencer_earnings").insert([{
+      if (user) { await supabase.from("influencer_earnings").insert([{
           influencer_id: influencerId,
           user_id: user.id,
           amount: Number(earnings),
           platform_fee: Number(platformFee),
           net_amount: Number(netEarnings),
-          source: "content_views",
-        }]);
+          source: "content_views" }]);
       }
 
       return { netEarnings, likes };
@@ -154,8 +136,7 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
     onSuccess: (data) => {
       toast({
         title: "Content Published!",
-        description: `Earned €${data.netEarnings} with ${data.likes} likes`,
-      });
+        description: `Earned €${data.netEarnings} with ${data.likes} likes` });
       
       queryClient.invalidateQueries({ queryKey: ["influencer", influencerId] });
       queryClient.invalidateQueries({ queryKey: ["influencer-content", influencerId] });
@@ -166,15 +147,12 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
       setGeneratedCaption("");
       setCustomPrompt("");
     },
-    onError: (error) => {
-      console.error("Publish error:", error);
+    onError: (error) => { console.error("Publish error:", error);
       toast({
         title: "Publish Failed",
         description: "Failed to publish content. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
   return (
     <>

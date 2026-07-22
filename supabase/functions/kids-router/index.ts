@@ -1,17 +1,14 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -24,8 +21,7 @@ serve(async (req) => {
   try {
     const auth = req.headers.get("Authorization") || "";
     const userClient = createClient(SUPABASE_URL, ANON, {
-      global: { headers: { Authorization: auth } },
-    });
+      global: { headers: { Authorization: auth } } });
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE, { auth: { persistSession: false } });
 
     const { data: ud } = await userClient.auth.getUser();
@@ -49,9 +45,7 @@ serve(async (req) => {
       case "children.create": {
         const { name, age, avatar, pet } = body;
         if (!name || !age) return json({ error: "name and age required" }, 400);
-        const { data, error } = await admin.from("kids_child_profiles").insert({
-          parent_id: user.id, name, age, avatar: avatar || "fox", pet: pet || "cat",
-        }).select().single();
+        const { data, error } = await admin.from("kids_child_profiles").insert({ parent_id: user.id, name, age, avatar: avatar || "fox", pet: pet || "cat" }).select().single();
         if (error) return json({ error: error.message }, 400);
         const band = age <= 8 ? "6-8" : age <= 10 ? "9-10" : "11-12";
         await admin.from("kids_age_bands").insert({ child_id: data.id, band });
@@ -84,9 +78,7 @@ serve(async (req) => {
         if (!path) {
           const themes = ["Space Day","Ocean Day","Math Quest","Story Magic","Nature Lab"];
           const theme = themes[new Date().getDay() % themes.length];
-          const { data: created } = await admin.from("kids_learning_paths").insert({
-            child_id: body.child_id, day_date: today, theme,
-          }).select().single();
+          const { data: created } = await admin.from("kids_learning_paths").insert({ child_id: body.child_id, day_date: today, theme }).select().single();
           const steps = [
             { title: "Warm-up: Phonics", kind: "minigame", payload: { game: "phonics" } },
             { title: "Read a Story", kind: "story", payload: { topic: theme } },
@@ -123,8 +115,7 @@ serve(async (req) => {
       case "saved.add": {
         await ensureChild(body.child_id);
         const { data, error } = await admin.from("kids_saved_content").insert({
-          child_id: body.child_id, kind: body.kind, title: body.title, payload: body.payload || {},
-        }).select().single();
+          child_id: body.child_id, kind: body.kind, title: body.title, payload: body.payload || {} }).select().single();
         if (error) return json({ error: error.message }, 400);
         return json({ item: data });
       }
@@ -135,11 +126,9 @@ serve(async (req) => {
       }
 
       // --- Activity log + Parental reports ---
-      case "activity.log": {
-        await ensureChild(body.child_id);
+      case "activity.log": { await ensureChild(body.child_id);
         await admin.from("kids_activity_log").insert({
-          child_id: body.child_id, topic: body.topic, duration_seconds: body.duration_seconds || 0, score: body.score ?? null,
-        });
+          child_id: body.child_id, topic: body.topic, duration_seconds: body.duration_seconds || 0, score: body.score ?? null });
         return json({ ok: true });
       }
       case "reports.summary": {
@@ -169,14 +158,12 @@ serve(async (req) => {
       }
       case "screen.update": {
         await ensureChild(body.child_id);
-        const { data, error } = await admin.from("kids_screen_time_rules").upsert({
-          child_id: body.child_id,
+        const { data, error } = await admin.from("kids_screen_time_rules").upsert({ child_id: body.child_id,
           daily_minutes: body.daily_minutes,
           bedtime_start: body.bedtime_start,
           bedtime_end: body.bedtime_end,
           hard_lock: body.hard_lock,
-          updated_at: new Date().toISOString(),
-        }).select().single();
+          updated_at: new Date().toISOString() }).select().single();
         if (error) return json({ error: error.message }, 400);
         return json({ rules: data });
       }
@@ -193,9 +180,7 @@ serve(async (req) => {
         const { data: cur } = await admin.from("kids_curriculum_progress").select("*").eq("child_id", body.child_id).eq("subject", subject).maybeSingle();
         const xp = (cur?.xp || 0) + (body.xp || 10);
         const level = Math.max(cur?.level || 1, Math.floor(xp / 100) + 1);
-        const { data, error } = await admin.from("kids_curriculum_progress").upsert({
-          child_id: body.child_id, subject, xp, level, updated_at: new Date().toISOString(),
-        }, { onConflict: "child_id,subject" }).select().single();
+        const { data, error } = await admin.from("kids_curriculum_progress").upsert({ child_id: body.child_id, subject, xp, level, updated_at: new Date().toISOString() }, { onConflict: "child_id,subject" }).select().single();
         if (error) return json({ error: error.message }, 400);
         return json({ progress: data });
       }
@@ -208,9 +193,7 @@ serve(async (req) => {
       }
       case "age_band.update": {
         await ensureChild(body.child_id);
-        const { data, error } = await admin.from("kids_age_bands").upsert({
-          child_id: body.child_id, band: body.band, allow_videos: body.allow_videos, allow_ai_chat: body.allow_ai_chat, updated_at: new Date().toISOString(),
-        }).select().single();
+        const { data, error } = await admin.from("kids_age_bands").upsert({ child_id: body.child_id, band: body.band, allow_videos: body.allow_videos, allow_ai_chat: body.allow_ai_chat, updated_at: new Date().toISOString() }).select().single();
         if (error) return json({ error: error.message }, 400);
         return json({ band: data });
       }
@@ -221,15 +204,13 @@ serve(async (req) => {
         return json({ safety: data || { parent_id: user.id, block_violence: true, block_scary: true, block_external_links: true, block_unknown_topics: false, custom_blocklist: [] } });
       }
       case "safety.update": {
-        const { data, error } = await admin.from("kids_safety_flags").upsert({
-          parent_id: user.id,
+        const { data, error } = await admin.from("kids_safety_flags").upsert({ parent_id: user.id,
           block_violence: body.block_violence,
           block_scary: body.block_scary,
           block_external_links: body.block_external_links,
           block_unknown_topics: body.block_unknown_topics,
           custom_blocklist: body.custom_blocklist || [],
-          updated_at: new Date().toISOString(),
-        }).select().single();
+          updated_at: new Date().toISOString() }).select().single();
         if (error) return json({ error: error.message }, 400);
         return json({ safety: data });
       }
@@ -260,10 +241,7 @@ serve(async (req) => {
                 model: "gpt-4o-mini",
                 messages: [{
                   role: "user",
-                  content: `Suggest 4 short kid-safe learning activities for age ${body.age || 8}. Reply JSON array [{title,reason,target_route}].`,
-                }],
-              }),
-            });
+                  content: `Suggest 4 short kid-safe learning activities for age ${body.age || 8}. Reply JSON array [{title,reason,target_route}].` }] }) });
             const j = await r.json();
             const text = j.choices?.[0]?.message?.content || "[]";
             const m = text.match(/\[[\s\S]*\]/);
@@ -273,9 +251,7 @@ serve(async (req) => {
         if (recs.length === 0) {
           recs = [{ title: "Read a story", reason: "Daily reading", target_route: "/kids-story-creator" }];
         }
-        await admin.from("kids_recommendations").insert(recs.map(r => ({
-          child_id: body.child_id, title: r.title, reason: r.reason, target_route: r.target_route || "/kids-channel/hub",
-        })));
+        await admin.from("kids_recommendations").insert(recs.map(r => ({ child_id: body.child_id, title: r.title, reason: r.reason, target_route: r.target_route || "/kids-channel/hub" })));
         const { data } = await admin.from("kids_recommendations").select("*").eq("child_id", body.child_id).order("created_at", { ascending: false }).limit(10);
         return json({ recs: data || [] });
       }
@@ -283,9 +259,7 @@ serve(async (req) => {
       // --- Pending AI outputs (approval) ---
       case "approval.submit": {
         await ensureChild(body.child_id);
-        const { data, error } = await admin.from("kids_pending_outputs").insert({
-          child_id: body.child_id, kind: body.kind, content: body.content,
-        }).select().single();
+        const { data, error } = await admin.from("kids_pending_outputs").insert({ child_id: body.child_id, kind: body.kind, content: body.content }).select().single();
         if (error) return json({ error: error.message }, 400);
         return json({ item: data });
       }
@@ -308,27 +282,21 @@ serve(async (req) => {
       }
       case "narration.update": {
         await ensureChild(body.child_id);
-        const { data, error } = await admin.from("kids_narration_prefs").upsert({
-          child_id: body.child_id, voice: body.voice, speed: body.speed, auto_read: body.auto_read, updated_at: new Date().toISOString(),
-        }).select().single();
+        const { data, error } = await admin.from("kids_narration_prefs").upsert({ child_id: body.child_id, voice: body.voice, speed: body.speed, auto_read: body.auto_read, updated_at: new Date().toISOString() }).select().single();
         if (error) return json({ error: error.message }, 400);
         return json({ prefs: data });
       }
 
       // --- Mini games ---
-      case "minigame.submit": {
-        await ensureChild(body.child_id);
+      case "minigame.submit": { await ensureChild(body.child_id);
         await admin.from("kids_minigame_scores").insert({
-          child_id: body.child_id, game: body.game, score: body.score, max_score: body.max_score,
-        });
+          child_id: body.child_id, game: body.game, score: body.score, max_score: body.max_score });
         // adaptive difficulty
         const pct = body.max_score ? body.score / body.max_score : 0;
         const { data: cur } = await admin.from("kids_difficulty_state").select("*").eq("child_id", body.child_id).eq("subject", body.game).maybeSingle();
         const newDiff = Math.max(1, Math.min(10, (cur?.difficulty || 1) + (pct >= 0.8 ? 1 : pct <= 0.4 ? -1 : 0)));
-        await admin.from("kids_difficulty_state").upsert({
-          child_id: body.child_id, subject: body.game, difficulty: newDiff,
-          streak: (cur?.streak || 0) + (pct >= 0.6 ? 1 : 0), updated_at: new Date().toISOString(),
-        }, { onConflict: "child_id,subject" });
+        await admin.from("kids_difficulty_state").upsert({ child_id: body.child_id, subject: body.game, difficulty: newDiff,
+          streak: (cur?.streak || 0) + (pct >= 0.6 ? 1 : 0), updated_at: new Date().toISOString() }, { onConflict: "child_id,subject" });
         await awardEconomy(admin, body.child_id, body.score, Math.round(body.score / 2));
         await admin.from("kids_activity_log").insert({ child_id: body.child_id, topic: body.game, duration_seconds: body.duration_seconds || 60, score: body.score });
         return json({ ok: true, new_difficulty: newDiff });
@@ -360,10 +328,8 @@ serve(async (req) => {
       }
       case "assignments.create": {
         await ensureChild(body.child_id);
-        const { data, error } = await admin.from("kids_assignments").insert({
-          parent_id: user.id, child_id: body.child_id, title: body.title, description: body.description,
-          due_date: body.due_date, reward_coins: body.reward_coins || 10,
-        }).select().single();
+        const { data, error } = await admin.from("kids_assignments").insert({ parent_id: user.id, child_id: body.child_id, title: body.title, description: body.description,
+          due_date: body.due_date, reward_coins: body.reward_coins || 10 }).select().single();
         if (error) return json({ error: error.message }, 400);
         return json({ item: data });
       }
@@ -389,8 +355,7 @@ serve(async (req) => {
         await ensureChild(body.child_id);
         const { data, error } = await admin.from("kids_family_shares").insert({
           parent_id: user.id, child_id: body.child_id, kind: body.kind, title: body.title, payload: body.payload || {},
-          expires_at: body.expires_at || null,
-        }).select().single();
+          expires_at: body.expires_at || null }).select().single();
         if (error) return json({ error: error.message }, 400);
         return json({ item: data });
       }
@@ -422,12 +387,10 @@ async function awardEconomy(admin: any, child_id: string, xp: number, coins: num
     const yest = new Date(Date.now() - 86400000).toISOString().slice(0,10);
     streak = last === yest ? streak + 1 : 1;
   }
-  await admin.from("kids_economy").upsert({
-    child_id,
+  await admin.from("kids_economy").upsert({ child_id,
     xp: (cur?.xp || 0) + xp,
     coins: (cur?.coins || 0) + coins,
     streak_days: streak,
     last_active_date: today,
-    updated_at: new Date().toISOString(),
-  });
+    updated_at: new Date().toISOString() });
 }

@@ -12,52 +12,44 @@ interface PetSubscription {
   loading: boolean;
 }
 
-export function usePetSubscription() {
-  const [subscription, setSubscription] = useState<PetSubscription>({
+export function usePetSubscription() { const [subscription, setSubscription] = useState<PetSubscription>({
     subscribed: false,
     product_id: null,
     tier: null,
     subscription_end: null,
     max_pets: 0,
     pets_tracked: 0,
-    loading: true,
-  });
+    loading: true });
 
   const checkSubscription = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        setSubscription({
+      if (!session) { setSubscription({
           subscribed: false,
           product_id: null,
           tier: null,
           subscription_end: null,
           max_pets: 0,
           pets_tracked: 0,
-          loading: false,
-        });
+          loading: false });
         return;
       }
 
       const { data, error } = await supabase.functions.invoke('check-subscription', {
         body: { tier: 'pet' },
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+          Authorization: `Bearer ${session.access_token}` } });
 
       if (error) throw error;
 
-      setSubscription({
-        subscribed: data.subscribed || false,
+      setSubscription({ subscribed: data.subscribed || false,
         product_id: data.product_id || null,
         tier: data.tier || null,
         subscription_end: data.subscription_end || null,
         max_pets: data.max_pets || 0,
         pets_tracked: data.pets_tracked || 0,
-        loading: false,
-      });
+        loading: false });
     } catch (error: any) {
       console.error('Subscription check error:', error);
       toast.error('Failed to check subscription status');
@@ -76,10 +68,8 @@ export function usePetSubscription() {
 
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: { product: 'pet', priceId },
-      });
+          Authorization: `Bearer ${session.access_token}` },
+        body: { product: 'pet', priceId } });
 
       if (error) throw error;
 
@@ -101,10 +91,8 @@ export function usePetSubscription() {
     return () => clearInterval(interval);
   }, []);
 
-  return {
-    subscription,
+  return { subscription,
     loading: subscription.loading,
     refresh: checkSubscription,
-    createCheckout,
-  };
+    createCheckout };
 }

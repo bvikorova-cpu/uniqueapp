@@ -85,16 +85,16 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "What is the symbol for sodium?", options: ["So", "Sd", "Na", "S"], correct: 2 },
   ],
   geography: [
-    { question: "What is the capital of Germany?", options: ["Munich", "Hamburg", "Berlin", "Frankfurt"], correct: 2 },
+    { question: "What is the largest planet in our solar system?", options: ["Earth", "Mars", "Jupiter", "Saturn"], correct: 2 },
     { question: "What is the highest mountain in the world?", options: ["K2", "Kangchenjunga", "Everest", "Makalu"], correct: 2 },
     { question: "How many continents are there?", options: ["5", "6", "7", "8"], correct: 2 },
-    { question: "Which river flows through Berlin?", options: ["Rhine", "Spree", "Elbe", "Danube"], correct: 1 },
-    { question: "In what year did the European Union adopt the euro?", options: ["1997", "1999", "2001", "2002"], correct: 1 },
+    { question: "Which celestial body is the main source of light for Earth?", options: ["Moon", "Mars", "Sun", "Venus"], correct: 2 },
+    { question: "What is the chemical symbol for water?", options: ["HO", "H2O", "O2", "CO2"], correct: 1 },
   ],
   history: [
     { question: "In what year did World War II end?", options: ["1943", "1944", "1945", "1946"], correct: 2 },
     { question: "Who was the first president of the USA?", options: ["Jefferson", "Washington", "Lincoln", "Adams"], correct: 1 },
-    { question: "When did the Berlin Wall fall?", options: ["1987", "1988", "1989", "1990"], correct: 2 },
+    { question: "When did the first moon landing happen?", options: ["1967", "1968", "1969", "1970"], correct: 2 },
     { question: "Who discovered America?", options: ["Magellan", "Columbus", "Vasco da Gama", "Cook"], correct: 1 },
     { question: "In what year did the French Revolution begin?", options: ["1776", "1789", "1804", "1815"], correct: 1 },
   ],
@@ -185,7 +185,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
   cars: [
     { question: "Which brand makes the Mustang model?", options: ["Chevrolet", "Ford", "Dodge", "Chrysler"], correct: 1 },
     { question: "What does BMW stand for?", options: ["Berlin Motor Works", "Bavarian Motor Works", "British Motor Works", "Belgian Motor Works"], correct: 1 },
-    { question: "Which country makes Ferrari?", options: ["Germany", "France", "Italy", "Spain"], correct: 2 },
+    { question: "What is the largest planet in our solar system?", options: ["Earth", "Mars", "Jupiter", "Saturn"], correct: 2 },
     { question: "What powers an electric car?", options: ["Gasoline", "Diesel", "Electricity", "Hydrogen"], correct: 2 },
     { question: "Which brand has a logo with four rings?", options: ["BMW", "Mercedes", "Audi", "Volkswagen"], correct: 2 },
   ],
@@ -202,8 +202,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Which company owns Instagram?", options: ["Google", "Meta", "Twitter", "Microsoft"], correct: 1 },
     { question: "In which city is Wall Street?", options: ["Los Angeles", "Chicago", "New York", "Boston"], correct: 2 },
     { question: "What is Bitcoin?", options: ["Stock", "Cryptocurrency", "Fund", "Bond"], correct: 1 },
-  ],
-};
+  ] };
 
 export default function Quiz() {
   const navigate = useNavigate();

@@ -72,13 +72,10 @@ export default function MemoryAuctions() {
     setCreating(true);
     const { data: mem, error: mErr } = await supabase.from("memories").insert({
       user_id: user.id, title: form.title, description: form.description,
-      content: {}, category: form.category, price,
-    }).select("id").single();
+      content: {}, category: form.category, price }).select("id").single();
     if (mErr) { toast.error(mErr.message); setCreating(false); return; }
     const endsAt = new Date(Date.now() + 24 * 3600 * 1000).toISOString();
-    const { error: aErr } = await supabase.from("memory_auctions").insert({
-      memory_id: mem.id, starting_price: price, current_bid: price, ends_at: endsAt, status: "active",
-    });
+    const { error: aErr } = await supabase.from("memory_auctions").insert({ memory_id: mem.id, starting_price: price, current_bid: price, ends_at: endsAt, status: "active" });
     setCreating(false);
     if (aErr) { toast.error(aErr.message); return; }
     toast.success("Auction created — live for 24h");

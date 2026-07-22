@@ -111,14 +111,12 @@ export default function GoogleTranslateWidget({ docked = false }: GoogleTranslat
       return;
     }
 
-    window.googleTranslateElementInit = () => {
-      try {
+    window.googleTranslateElementInit = () => { try {
         new window.google.translate.TranslateElement(
           {
             pageLanguage: "en",
             autoDisplay: false,
-            layout: window.google.translate.TranslateElement.InlineLayout.HORIZONTAL,
-          },
+            layout: window.google.translate.TranslateElement.InlineLayout.HORIZONTAL },
           "google_translate_element"
         );
       } catch {}

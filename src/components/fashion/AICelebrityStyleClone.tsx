@@ -50,8 +50,7 @@ export default function AICelebrityStyleClone() {
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "celebrity-clone", celebrity, budget_level: budget },
-      });
+        body: { action: "celebrity-clone", celebrity, budget_level: budget } });
       if (error) throw error;
       return data as CloneResult;
     },
@@ -59,8 +58,7 @@ export default function AICelebrityStyleClone() {
       setResult(data);
       toast.success("Celebrity style breakdown ready!");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   return (
     <>

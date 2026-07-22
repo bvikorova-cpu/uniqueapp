@@ -26,10 +26,8 @@ export const AdminPageShell = ({ children, className = "" }: Props) => {
 };
 
 /** Glass card wrapper for admin content */
-export const AdminGlassCard = ({
-  children,
-  className = "",
-}: {
+export const AdminGlassCard = ({ children,
+  className = "" }: {
   children: ReactNode;
   className?: string;
 }) => (

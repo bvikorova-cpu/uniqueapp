@@ -9,8 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { CalendarClock, Stethoscope, Loader2, XCircle } from "lucide-react";
 import { Helmet } from "react-helmet-async";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -18,8 +17,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface Appointment {
   id: string;
@@ -44,8 +42,7 @@ const STATUS_BADGE: Record<string, { label: string; variant: "default" | "second
   no_show: { label: "No-show", variant: "destructive" },
   no_show_auto_refund: { label: "Auto-refunded", variant: "secondary" },
   cancelled_by_patient: { label: "Cancelled by you", variant: "secondary" },
-  cancelled_by_doctor: { label: "Cancelled by doctor", variant: "secondary" },
-};
+  cancelled_by_doctor: { label: "Cancelled by doctor", variant: "secondary" } };
 
 export default function MyDoctorBookings() {
   const { user } = useAuth();
@@ -88,17 +85,14 @@ export default function MyDoctorBookings() {
     setCancelling(id);
     try {
       const { error } = await supabase.functions.invoke("patient-cancel-booking", {
-        body: { appointment_id: id },
-      });
+        body: { appointment_id: id } });
       if (error) throw error;
       const hoursUntil = (new Date(scheduledAt).getTime() - Date.now()) / 3600000;
-      toast({
-        title: "Appointment cancelled",
+      toast({ title: "Appointment cancelled",
         description:
           hoursUntil >= 24
             ? "Full refund is being processed."
-            : "Cancelled without refund (less than 24h notice).",
-      });
+            : "Cancelled without refund (less than 24h notice)." });
       await load();
     } catch (e: any) {
       toast({ title: "Cancellation failed", description: e.message, variant: "destructive" });

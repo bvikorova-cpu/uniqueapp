@@ -82,11 +82,10 @@ export function ForgeHero({ credits, creditsLoading, onStartCreating, onOpenCowr
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="text-4xl md:text-6xl lg:text-7xl font-black text-center mb-4 drop-shadow-lg"
-          style={{
+          style={ {
             fontFamily: "'Playfair Display', Georgia, serif",
             WebkitTextStroke: "1.5px rgba(0,0,0,0.4)",
-            textShadow: "0 0 60px rgba(251,191,36,0.45), 0 0 120px rgba(190,18,60,0.3), 0 4px 20px rgba(0,0,0,0.6)",
-          }}
+            textShadow: "0 0 60px rgba(251,191,36,0.45), 0 0 120px rgba(190,18,60,0.3), 0 4px 20px rgba(0,0,0,0.6)" }}
         >
           <span className="bg-gradient-to-r from-amber-200 via-rose-200 to-amber-200 bg-clip-text text-transparent italic">
             Where Words

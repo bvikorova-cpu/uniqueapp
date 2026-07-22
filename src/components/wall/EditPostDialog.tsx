@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { usePostEdit } from "@/hooks/usePostEdit";
 
@@ -28,8 +26,7 @@ export const EditPostDialog = ({ postId, currentContent }: EditPostDialogProps) 
         {
           onSuccess: () => {
             setOpen(false);
-          },
-        }
+          } }
       );
     }
   };

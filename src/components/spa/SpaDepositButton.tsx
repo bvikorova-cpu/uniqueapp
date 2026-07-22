@@ -19,8 +19,7 @@ export const SpaDepositButton = ({ amountCents, salonId, bookingId, description 
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-spa-deposit", {
-        body: { amount_cents: amountCents, salon_id: salonId, booking_id: bookingId, description },
-      });
+        body: { amount_cents: amountCents, salon_id: salonId, booking_id: bookingId, description } });
       if (error) throw error;
       const url = (data as any)?.url;
       if (!url) throw new Error("No checkout URL");

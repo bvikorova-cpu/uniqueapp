@@ -31,10 +31,8 @@ export const useRealTimeNotifications = () => {
           event: "INSERT",
           schema: "public",
           table: "notifications",
-          filter: `user_id=eq.${user.id}`,
-        },
-        (payload) => {
-          const newNotification = payload.new as any;
+          filter: `user_id=eq.${user.id}` },
+        (payload) => { const newNotification = payload.new as any;
           
           // Show toast notification
           const icons: Record<string, React.ReactNode> = {
@@ -42,17 +40,14 @@ export const useRealTimeNotifications = () => {
             comment: <MessageCircle className="h-4 w-4 text-blue-500" />,
             follow: <UserPlus className="h-4 w-4 text-green-500" />,
             mention: <AtSign className="h-4 w-4 text-purple-500" />,
-            message: <Bell className="h-4 w-4 text-yellow-500" />,
-          };
+            message: <Bell className="h-4 w-4 text-yellow-500" /> };
 
           // Play distinct notification chime (different from message chime)
           if (newNotification.type !== "message") {
             playNotificationChime();
           }
 
-          toast(newNotification.message || "New notification", {
-            icon: icons[newNotification.type] || <Bell className="h-4 w-4" />,
-          });
+          toast(newNotification.message || "New notification", { icon: icons[newNotification.type] || <Bell className="h-4 w-4" /> });
 
           setNotifications((prev) => [newNotification, ...prev]);
           setUnreadCount((prev) => prev + 1);
@@ -106,12 +101,10 @@ export const useRealTimeNotifications = () => {
     setUnreadCount(0);
   };
 
-  return {
-    notifications,
+  return { notifications,
     unreadCount,
     markAsRead,
-    markAllAsRead,
-  };
+    markAllAsRead };
 };
 
 export default useRealTimeNotifications;

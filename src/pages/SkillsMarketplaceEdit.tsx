@@ -17,23 +17,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CATEGORIES = ["construction", "repairs", "cleaning", "gardening", "technology", "teaching", "creative", "other"] as const;
 
-const Schema = z.object({
-  title: z.string().trim().min(5, "At least 5 characters").max(120),
+const Schema = z.object({ title: z.string().trim().min(5, "At least 5 characters").max(120),
   description: z.string().trim().min(20, "At least 20 characters").max(2000),
   category: z.enum(CATEGORIES),
   price_per_hour: z.coerce.number().min(1).max(10000),
-  location: z.string().trim().max(120).optional().or(z.literal("")),
-});
+  location: z.string().trim().max(120).optional().or(z.literal("")) });
 
 export default function SkillsMarketplaceEdit() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    title: "", description: "", category: "other" as typeof CATEGORIES[number],
-    price_per_hour: "", location: "", is_active: true, image_url: null as string | null,
-  });
+  const [form, setForm] = useState({ title: "", description: "", category: "other" as typeof CATEGORIES[number],
+    price_per_hour: "", location: "", is_active: true, image_url: null as string | null });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -58,15 +54,13 @@ export default function SkillsMarketplaceEdit() {
         setLoading(false);
         return;
       }
-      setForm({
-        title: data.title,
+      setForm({ title: data.title,
         description: data.description,
         category: data.category as typeof CATEGORIES[number],
         price_per_hour: data.price_per_hour ? String(data.price_per_hour) : "",
         location: data.location ?? "",
         is_active: !!data.is_active,
-        image_url: data.image_url,
-      });
+        image_url: data.image_url });
       setLoading(false);
     })();
   }, [id, user, toast]);
@@ -109,15 +103,13 @@ export default function SkillsMarketplaceEdit() {
       }
       const { error } = await supabase
         .from("skill_offerings")
-        .update({
-          title: parsed.data.title,
+        .update({ title: parsed.data.title,
           description: parsed.data.description,
           category: parsed.data.category,
           price_per_hour: parsed.data.price_per_hour,
           location: parsed.data.location || null,
           is_active: form.is_active,
-          image_url,
-        })
+          image_url })
         .eq("id", id!);
       if (error) throw error;
       toast({ title: "Offering updated" });

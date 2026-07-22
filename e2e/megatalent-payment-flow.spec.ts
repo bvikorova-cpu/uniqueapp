@@ -30,8 +30,7 @@ test.describe("Megatalent paywall — anonymous", () => {
       await route.fulfill({
         status: 401,
         contentType: "application/json",
-        body: JSON.stringify({ error: "Authentication required" }),
-      });
+        body: JSON.stringify({ error: "Authentication required" }) });
     });
 
     context.on("page", (p) => {

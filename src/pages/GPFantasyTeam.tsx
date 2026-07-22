@@ -97,13 +97,11 @@ const GPFantasyTeam = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const teamData = {
-        user_id: session.user.id,
+      const teamData = { user_id: session.user.id,
         team_name: teamName,
         driver1_id: selectedDriver1,
         driver2_id: selectedDriver2,
-        constructor_id: selectedConstructor,
-      };
+        constructor_id: selectedConstructor };
 
       if (existingTeam) {
         const { error } = await supabase

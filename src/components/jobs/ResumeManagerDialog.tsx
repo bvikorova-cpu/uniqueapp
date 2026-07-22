@@ -51,8 +51,7 @@ export function ResumeManagerDialog() {
     const blob = new Blob([text], { type: "text/plain" });
     await supabase.storage.from("resumes").upload(path, blob);
 
-    await supabase.from("candidate_resumes").insert({
-      user_id: user.id,
+    await supabase.from("candidate_resumes").insert({ user_id: user.id,
       file_url: path,
       file_name: name,
       is_primary: resumes.length === 0,
@@ -61,8 +60,7 @@ export function ResumeManagerDialog() {
       parsed_education: parsed?.education || [],
       parsed_summary: parsed?.summary || null,
       parsed_full_text: text,
-      years_experience: parsed?.years_experience || null,
-    });
+      years_experience: parsed?.years_experience || null });
 
     toast({ title: "Resume saved & parsed!", description: `Found ${(parsed?.skills || []).length} skills` });
     setText(""); setName(""); setParsing(false); load();

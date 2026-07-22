@@ -1,24 +1,20 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
-const CREDIT_COSTS: Record<string, number> = {
-  "ai.generateQuiz": 5,
+const CREDIT_COSTS: Record<string, number> = { "ai.generateQuiz": 5,
   "ai.ocrScan": 5,
   "ai.voiceQuiz": 3,
   "ai.cheatScan": 2,
   "ai.shareCard": 2,
   "deck.publish": 4,
-  "tournament.enter": 10,
-};
+  "tournament.enter": 10 };
 
 const TIERS = [
   { min: 0, name: "iron" }, { min: 1100, name: "bronze" }, { min: 1250, name: "silver" },
@@ -60,9 +56,7 @@ async function callAI(prompt: string, system = "You are a precise quiz generator
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "gpt-4o-mini",
-      messages: [{ role: "system", content: system }, { role: "user", content: prompt }],
-    }),
-  });
+      messages: [{ role: "system", content: system }, { role: "user", content: prompt }] }) });
   if (!res.ok) throw new Error(`AI gateway error ${res.status}`);
   const j = await res.json();
   return { text: j.choices?.[0]?.message?.content ?? "" };
@@ -95,8 +89,7 @@ Deno.serve(async (req) => {
     const user = userData?.user;
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const body = await req.json().catch(() => ({}));
@@ -104,16 +97,13 @@ Deno.serve(async (req) => {
     if (!action) throw new Error("Missing action");
 
     // Rate limit: 120 router calls / min per user (covers AI-heavy paths).
-    const { data: allowed } = await admin.rpc("check_rate_limit", {
-      p_identifier: user.id,
+    const { data: allowed } = await admin.rpc("check_rate_limit", { p_identifier: user.id,
       p_action_type: "brain_duel_router",
       p_max_requests: 120,
-      p_window_seconds: 60,
-    });
+      p_window_seconds: 60 });
     if (allowed === false) {
       return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
-        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
 
@@ -257,8 +247,7 @@ Deno.serve(async (req) => {
         const { matchId } = body;
         if (!matchId) {
           return new Response(JSON.stringify({ error: "matchId required" }), {
-            status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
+            status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         }
         const { data: match } = await admin
           .from("brain_duel_matches")
@@ -267,18 +256,15 @@ Deno.serve(async (req) => {
           .maybeSingle();
         if (!match) {
           return new Response(JSON.stringify({ error: "match_not_found" }), {
-            status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
+            status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         }
         if (match.player1_id !== user.id && match.player2_id !== user.id) {
           return new Response(JSON.stringify({ error: "not_a_participant" }), {
-            status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
+            status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         }
         if (!match.finished_at || !match.winner_id) {
           return new Response(JSON.stringify({ error: "match_not_finished" }), {
-            status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
+            status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         }
         if (match.elo_reported) {
           // Idempotent: already applied, just return current rating.
@@ -299,16 +285,12 @@ Deno.serve(async (req) => {
         const opp = await ensure(opponentId);
         const newMe = eloUpdate(me.rating, opp.rating, won ? 1 : 0);
         const newOpp = eloUpdate(opp.rating, me.rating, won ? 0 : 1);
-        await admin.from("brain_duel_elo").update({
-          rating: newMe, tier: tierFor(newMe),
+        await admin.from("brain_duel_elo").update({ rating: newMe, tier: tierFor(newMe),
           wins: me.wins + (won ? 1 : 0), losses: me.losses + (won ? 0 : 1),
-          peak_rating: Math.max(me.peak_rating, newMe),
-        }).eq("user_id", user.id);
-        await admin.from("brain_duel_elo").update({
-          rating: newOpp, tier: tierFor(newOpp),
+          peak_rating: Math.max(me.peak_rating, newMe) }).eq("user_id", user.id);
+        await admin.from("brain_duel_elo").update({ rating: newOpp, tier: tierFor(newOpp),
           wins: opp.wins + (won ? 0 : 1), losses: opp.losses + (won ? 1 : 0),
-          peak_rating: Math.max(opp.peak_rating, newOpp),
-        }).eq("user_id", opponentId);
+          peak_rating: Math.max(opp.peak_rating, newOpp) }).eq("user_id", opponentId);
 
         // Mark idempotent flag; if race, second caller will hit alreadyReported branch.
         await admin.from("brain_duel_matches").update({ elo_reported: true }).eq("id", matchId).eq("elo_reported", false);
@@ -350,8 +332,7 @@ Deno.serve(async (req) => {
           .insert({
             user_id: user.id, kind: "tournament_entry",
             parent_id: tournamentId, payload: { entered_at: new Date().toISOString(), entry_fee: 10 },
-            is_public: false,
-          }).select().single();
+            is_public: false }).select().single();
         if (error) throw error;
         result = { entry: data };
         break;
@@ -363,8 +344,7 @@ Deno.serve(async (req) => {
         const { data, error } = await admin.from("brain_duel_records")
           .insert({
             user_id: user.id, kind: "async_move", parent_id: matchId,
-            payload: { move, at: new Date().toISOString() }, is_public: true,
-          }).select().single();
+            payload: { move, at: new Date().toISOString() }, is_public: true }).select().single();
         if (error) throw error;
         result = { move: data };
         break;
@@ -382,12 +362,10 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err: any) {
     const status = err?.status ?? 500;
     return new Response(JSON.stringify({ error: err?.message ?? "Server error" }), {
-      status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

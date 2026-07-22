@@ -9,11 +9,9 @@
 //   - 404                     → broken (function not deployed under this name)
 //   - 5xx                     → broken (worker crashed / boot error)
 //   - network / 0             → broken (unreachable)
-const corsHeaders: Record<string, string> = {
-  'Access-Control-Allow-Origin': '*',
+const corsHeaders: Record<string, string> = { 'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-}
+  'Access-Control-Allow-Methods': 'POST, OPTIONS' }
 
 const PROJECT_URL = Deno.env.get('SUPABASE_URL') ?? 'https://jufrdzeonywluwutvyxz.supabase.co'
 const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
@@ -52,11 +50,9 @@ async function probeOne(name: string): Promise<ProbeResult> {
       headers: {
         'Content-Type': 'application/json',
         apikey: key,
-        Authorization: `Bearer ${key}`,
-      },
+        Authorization: `Bearer ${key}` },
       body: JSON.stringify({ __probe: true }),
-      signal: AbortSignal.timeout(8000),
-    })
+      signal: AbortSignal.timeout(8000) })
     try { await res.text() } catch { /* ignore */ }
     const { status, detail } = classify(res.status)
     return { name, code: res.status, ms: Math.round(performance.now() - t0), status, detail }
@@ -72,16 +68,14 @@ Deno.serve(async (req) => {
     const body = req.method === 'POST' ? await req.json().catch(() => ({})) : {}
     if (body?.__probe) {
       return new Response(JSON.stringify({ probe: true }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
     const names: string[] = Array.isArray(body?.names)
       ? body.names.filter((n: unknown) => typeof n === 'string')
       : []
     if (names.length === 0) {
       return new Response(JSON.stringify({ results: [] }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
     const capped = names.slice(0, 600)
     const CONCURRENCY = 12
@@ -96,12 +90,10 @@ Deno.serve(async (req) => {
     }
     await Promise.all(Array.from({ length: CONCURRENCY }, worker))
     return new Response(JSON.stringify({ results }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   }
 })

@@ -3,15 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Video, Radio } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -22,14 +20,12 @@ interface GoLiveButtonProps {
   influencerId: string;
 }
 
-export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
-  const navigate = useNavigate();
+export function GoLiveButton({ influencerId }: GoLiveButtonProps) { const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [streamData, setStreamData] = useState({
     title: "",
-    description: "",
-  });
+    description: "" });
 
   const startStream = async () => {
     if (!streamData.title.trim()) {
@@ -44,14 +40,12 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
 
       const { data, error } = await supabase
         .from("live_streams")
-        .insert({
-          influencer_id: influencerId,
+        .insert({ influencer_id: influencerId,
           title: streamData.title,
           description: streamData.description,
           stream_key: streamKey,
           is_live: true,
-          started_at: new Date().toISOString(),
-        })
+          started_at: new Date().toISOString() })
         .select()
         .single();
 

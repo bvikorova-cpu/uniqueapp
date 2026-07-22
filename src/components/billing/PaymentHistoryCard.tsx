@@ -4,14 +4,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Loader2, ExternalLink } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -51,12 +49,10 @@ export function PaymentHistoryCard() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(50);
-      if (error) {
-        toast({
+      if (error) { toast({
           title: "Couldn't load payments",
           description: error.message,
-          variant: "destructive",
-        });
+          variant: "destructive" });
       } else {
         setRows(data || []);
       }
@@ -68,18 +64,15 @@ export function PaymentHistoryCard() {
     setBusyId(id);
     try {
       const { data, error } = await supabase.functions.invoke("get-payment-invoice-url", {
-        body: { paymentRecordId: id },
-      });
+        body: { paymentRecordId: id } });
       if (error) throw error;
       const url = (data as any)?.url;
       if (!url) throw new Error("No invoice URL returned");
       window.open(url, "_blank");
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Invoice unavailable",
         description: e?.message || "Stripe didn't return a hosted invoice for this payment.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setBusyId(null);
     }

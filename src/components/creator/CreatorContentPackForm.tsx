@@ -18,13 +18,11 @@ interface CreatorContentPackFormProps {
 export function CreatorContentPackForm({ creatorId, onSuccess }: CreatorContentPackFormProps) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    title: "",
+  const [formData, setFormData] = useState({ title: "",
     description: "",
     content_count: 5,
     content_type: "photos",
-    price: 3.00,
-  });
+    price: 3.00 });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,34 +31,26 @@ export function CreatorContentPackForm({ creatorId, onSuccess }: CreatorContentP
     try {
       const { error } = await supabase
         .from('creator_content_packs')
-        .insert({
-          creator_id: creatorId,
-          ...formData,
-        });
+        .insert({ creator_id: creatorId,
+          ...formData });
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Content pack created successfully",
-      });
+      toast({ title: "Success",
+        description: "Content pack created successfully" });
 
-      setFormData({
-        title: "",
+      setFormData({ title: "",
         description: "",
         content_count: 5,
         content_type: "photos",
-        price: 3.00,
-      });
+        price: 3.00 });
 
       onSuccess();
-    } catch (error: any) {
-      console.error('Error creating pack:', error);
+    } catch (error: any) { console.error('Error creating pack:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to create content pack",
-      });
+        description: "Failed to create content pack" });
     } finally {
       setLoading(false);
     }

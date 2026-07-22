@@ -25,8 +25,7 @@ export const CaptionWriterView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("megatalent-ai", {
-        body: { action: "caption_writer", category, title, description, tone },
-      });
+        body: { action: "caption_writer", category, title, description, tone } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

@@ -9,8 +9,7 @@ const MOOD_CONFIG: Record<Mood, { emoji: string; label: string; bg: string }> = 
   excited: { emoji: "🤩", label: "Excited", bg: "from-pink-200 to-red-200" },
   curious: { emoji: "🤔", label: "Curious", bg: "from-blue-200 to-cyan-200" },
   thoughtful: { emoji: "💭", label: "Thinking", bg: "from-purple-200 to-indigo-200" },
-  surprised: { emoji: "😲", label: "Surprised", bg: "from-green-200 to-teal-200" },
-};
+  surprised: { emoji: "😲", label: "Surprised", bg: "from-green-200 to-teal-200" } };
 
 interface CharacterMoodIndicatorProps {
   character: Character;

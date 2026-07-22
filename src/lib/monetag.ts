@@ -13,14 +13,12 @@ const REWARDED_FROM_ENV = (
     ?.VITE_MONETAG_REWARDED_ZONE_ID ?? ""
 ).trim();
 
-export const MONETAG_ZONES = {
-  // Rewarded Interstitial — proper rewarded protocol (Promise resolves on full view).
+export const MONETAG_ZONES = { // Rewarded Interstitial — proper rewarded protocol (Promise resolves on full view).
   // Defaults to the vignette zone until a dedicated rewarded zone is provisioned.
   REWARDED_INTERSTITIAL: REWARDED_FROM_ENV || "11037515",
   // Vignette Banner — fullscreen banner; no rewarded protocol (kept for legacy callers).
   REWARDED_VIGNETTE: "11037515",
-  SAFE_VIDEO: "safe-video-reward",
-} as const;
+  SAFE_VIDEO: "safe-video-reward" } as const;
 
 export const MONETAG_ZONE_IDS = Array.from(
   new Set(Object.values(MONETAG_ZONES).filter((z) => z !== "safe-video-reward"))
@@ -140,8 +138,7 @@ export function trackMonetagEvent(
         revenue: 0,
         currency: "USD",
         sub_id: sectionKey,
-        raw: { source: "app_watch_ad" },
-      });
+        raw: { source: "app_watch_ad" } });
       if (error) console.warn("Monetag tracking skipped", error.message);
     } catch {
       // Tracking must never block the ad or XP flow.

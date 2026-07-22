@@ -34,10 +34,9 @@ export function CastleHero({ stampsCount, totalCastles, visitedCount }: CastleHe
           key={i}
           className="absolute text-2xl md:text-3xl pointer-events-none select-none opacity-60"
           style={{ left: `${item.left}%`, top: `${item.top}%` }}
-          animate={{
+          animate={ {
             y: [0, -15, 0],
-            rotate: [0, i % 2 === 0 ? 10 : -10, 0],
-          }}
+            rotate: [0, i % 2 === 0 ? 10 : -10, 0] }}
           transition={{ duration: 3 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.15 }}
         >
           {item.emoji}

@@ -7,25 +7,19 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, stripe-signature",
-};
+    "authorization, x-client-info, apikey, content-type, stripe-signature" };
 
 const log = (step: string, details?: unknown) => {
   console.log(`[STRIPE-WEBHOOK] ${step}${details ? " " + JSON.stringify(details) : ""}`);
 };
 
 // ─── Megatalent: price → tier mapping (mirrors check-megatalent-subscription) ──
-const MEGATALENT_PRICE_TO_TIER: Record<string, "premium" | "top_premium"> = {
-  price_1TOvuRGaXSfGtYFt6sfpt2Dy: "premium",
-  price_1TOvuTGaXSfGtYFtIheCgIzQ: "top_premium",
-};
-const MEGATALENT_TIER_PRICE: Record<string, number> = {
-  premium: 10,
-  top_premium: 15,
-};
+const MEGATALENT_PRICE_TO_TIER: Record<string, "premium" | "top_premium"> = { price_1TOvuRGaXSfGtYFt6sfpt2Dy: "premium",
+  price_1TOvuTGaXSfGtYFtIheCgIzQ: "top_premium" };
+const MEGATALENT_TIER_PRICE: Record<string, number> = { premium: 10,
+  top_premium: 15 };
 
 /**
  * Upsert megatalent_subscriptions from a Stripe Subscription.
@@ -71,8 +65,7 @@ async function syncMegatalentSubscription(
     ? new Date(sub.current_period_end * 1000).toISOString()
     : null;
 
-  const payload = {
-    user_id: userId,
+  const payload = { user_id: userId,
     tier,
     price: MEGATALENT_TIER_PRICE[tier],
     bonus_votes: 0,
@@ -82,8 +75,7 @@ async function syncMegatalentSubscription(
     stripe_customer_id: customerId ?? null,
     stripe_subscription_id: sub.id,
     current_period_end: periodEnd,
-    updated_at: new Date().toISOString(),
-  };
+    updated_at: new Date().toISOString() };
 
   // Upsert by user_id (one row per user)
   const { data: existing } = await supabase
@@ -108,8 +100,7 @@ async function syncMegatalentSubscription(
   }
 
   // Notify the user that premium is unlocked (only on first activation).
-  if (isActive && !existing) {
-    try {
+  if (isActive && !existing) { try {
       await supabase.from("notifications").insert({
         user_id: userId,
         type: "megatalent_premium_unlocked",
@@ -117,8 +108,7 @@ async function syncMegatalentSubscription(
         message: tier === "top_premium"
           ? "Your Megatalent Top Premium features are unlocked: +100% ranking boost (real votes × 2) and €5/month referral rewards."
           : "Your Megatalent Premium features are unlocked.",
-        is_read: false,
-      });
+        is_read: false });
     } catch (e) {
       log("megatalent unlock notification failed", { err: (e as Error).message });
     }
@@ -179,16 +169,14 @@ async function syncFanClubMembership(
     ? new Date((sub as any).current_period_end * 1000).toISOString()
     : null;
 
-  const payload: Record<string, unknown> = {
-    fan_club_id: fanClubId,
+  const payload: Record<string, unknown> = { fan_club_id: fanClubId,
     user_id: userId,
     status,
     stripe_customer_id: customerId,
     stripe_subscription_id: sub.id,
     current_period_end: periodEnd,
     cancel_at_period_end: !!sub.cancel_at_period_end,
-    updated_at: new Date().toISOString(),
-  };
+    updated_at: new Date().toISOString() };
 
   // Detect status transition for targeted notifications
   const { data: prior } = await supabase
@@ -216,8 +204,7 @@ async function syncFanClubMembership(
         subscriptions_found: 1,
         memberships_synced: 0,
         status_summary: { stripe_status: sub.status, mapped: status, prior: priorStatus },
-        duration_ms: Date.now() - startedAt,
-      });
+        duration_ms: Date.now() - startedAt });
     } catch (_e) { /* best-effort */ }
     return;
   }
@@ -234,8 +221,7 @@ async function syncFanClubMembership(
       subscriptions_found: 1,
       memberships_synced: 1,
       status_summary: { stripe_status: sub.status, mapped: status, prior: priorStatus },
-      duration_ms: Date.now() - startedAt,
-    });
+      duration_ms: Date.now() - startedAt });
   } catch (_e) { /* best-effort */ }
 
   // Notify user on status transitions
@@ -250,9 +236,7 @@ async function syncFanClubMembership(
   } catch (_e) { /* ignore */ }
 
   const notif = (type: string, title: string, message: string) =>
-    supabase.from("notifications").insert({
-      user_id: userId, type, title, message, related_id: fanClubId, is_read: false,
-    }).then(() => {}, () => {});
+    supabase.from("notifications").insert({ user_id: userId, type, title, message, related_id: fanClubId, is_read: false }).then(() => {}, () => {});
 
   if (status === "active" && priorStatus !== "active") {
     await notif(
@@ -327,8 +311,7 @@ serve(async (req) => {
       log("duplicate event, skipping", { id: event.id });
       return new Response(JSON.stringify({ received: true, duplicate: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+        status: 200 });
     }
     log("dedup insert failed", { err: dedupErr.message });
   }
@@ -340,11 +323,9 @@ serve(async (req) => {
         const pi = event.data.object as Stripe.PaymentIntent;
         const { error } = await supabase
           .from("payment_records")
-          .update({
-            status: "paid",
+          .update({ status: "paid",
             verified_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
+            updated_at: new Date().toISOString() })
           .eq("stripe_payment_intent_id", pi.id)
           .neq("status", "refunded");
         if (error) log("update paid failed", { error: error.message });
@@ -355,11 +336,9 @@ serve(async (req) => {
           const mtRowId = pi.metadata?.mt_row_id as string | undefined;
           if (mtKind && mtRowId) {
             const table = mtKind === "mentorship" ? "mt_mentorship_bookings" : "mt_marketplace_orders";
-            const { error: mtErr } = await supabase.from(table).update({
-              status: "paid",
+            const { error: mtErr } = await supabase.from(table).update({ status: "paid",
               stripe_payment_intent_id: pi.id,
-              paid_at: new Date().toISOString(),
-            }).eq("id", mtRowId).eq("status", "pending");
+              paid_at: new Date().toISOString() }).eq("id", mtRowId).eq("status", "pending");
             if (mtErr) log("mt order update failed", { error: mtErr.message });
             else log("mt order marked paid", { kind: mtKind, id: mtRowId });
           }
@@ -370,8 +349,7 @@ serve(async (req) => {
       }
 
       // ─── CHECKOUT COMPLETED (fallback if frontend verify never fires) ─
-      case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
+      case "checkout.session.completed": { const session = event.data.object as Stripe.Checkout.Session;
 
         // ── Megatalent: flip pending → paid by session metadata ─────────
         try {
@@ -386,8 +364,7 @@ serve(async (req) => {
               status: "paid",
               stripe_payment_intent_id: pi ?? null,
               stripe_session_id: session.id,
-              paid_at: new Date().toISOString(),
-            }).eq("id", mtRowId).eq("status", "pending");
+              paid_at: new Date().toISOString() }).eq("id", mtRowId).eq("status", "pending");
             log("mt order marked paid via session", { kind: mtKind, id: mtRowId });
           }
         } catch (e) {
@@ -425,8 +402,7 @@ serve(async (req) => {
                 type: "creator_gift_received",
                 title: "New gift received 🎁",
                 message: `${senderName} sent you ${giftName} (${amountStr})${msgSuffix}`,
-                related_id: updated.id,
-              });
+                related_id: updated.id });
               log("creator_gift marked paid via webhook", { id: updated.id });
             }
           }
@@ -435,18 +411,14 @@ serve(async (req) => {
         }
 
 
-        if (session.payment_status === "paid") {
-          // ── Tutoring credits auto-activation (safety net if user closes tab
+        if (session.payment_status === "paid") { // ── Tutoring credits auto-activation (safety net if user closes tab
           //    before frontend redirect runs `tutoring-add-credits`) ─────────
           try {
             const TUTORING_PRICE_TO_CREDITS: Record<string, number> = {
               price_1ScY0zGaXSfGtYFtoe91oxmX: 10,
               price_1ScY10GaXSfGtYFt3F1cPJaE: 30,
-              price_1ScY12GaXSfGtYFt3zw96KfT: 100,
-            };
-            const full = await stripe.checkout.sessions.retrieve(session.id, {
-              expand: ["line_items"],
-            });
+              price_1ScY12GaXSfGtYFt3zw96KfT: 100 };
+            const full = await stripe.checkout.sessions.retrieve(session.id, { expand: ["line_items"] });
             const priceId = full.line_items?.data?.[0]?.price?.id;
             if (priceId && priceId in TUTORING_PRICE_TO_CREDITS) {
               // Idempotency: skip if already credited via tutoring-add-credits
@@ -467,28 +439,20 @@ serve(async (req) => {
                       .select("*")
                       .eq("user_id", prof.id)
                       .maybeSingle();
-                    if (cur) {
-                      await supabase.from("tutoring_credits").update({
+                    if (cur) { await supabase.from("tutoring_credits").update({
                         credits_remaining: cur.credits_remaining + credits,
                         total_credits_purchased: cur.total_credits_purchased + credits,
-                        updated_at: new Date().toISOString(),
-                      }).eq("user_id", prof.id);
-                    } else {
-                      await supabase.from("tutoring_credits").insert({
+                        updated_at: new Date().toISOString() }).eq("user_id", prof.id);
+                    } else { await supabase.from("tutoring_credits").insert({
                         user_id: prof.id,
                         credits_remaining: credits,
-                        total_credits_purchased: credits,
-                      });
+                        total_credits_purchased: credits });
                     }
-                    await supabase.from("tutoring_credit_transactions").insert({
-                      user_id: prof.id,
+                    await supabase.from("tutoring_credit_transactions").insert({ user_id: prof.id,
                       delta: credits,
                       reason: "stripe_webhook",
-                      stripe_session_id: session.id,
-                    });
-                    log("tutoring credits auto-credited via webhook", {
-                      user: prof.id, credits, sessionId: session.id,
-                    });
+                      stripe_session_id: session.id });
+                    log("tutoring credits auto-credited via webhook", { user: prof.id, credits, sessionId: session.id });
                   }
                 }
               }
@@ -512,19 +476,13 @@ serve(async (req) => {
                 const { data: cur } = await supabase
                   .from("horse_currency").select("coins,gems")
                   .eq("user_id", userId).maybeSingle();
-                if (cur) {
-                  await supabase.from("horse_currency").update({
+                if (cur) { await supabase.from("horse_currency").update({
                     coins: (cur.coins || 0) + coins,
-                    gems: (cur.gems || 0) + gems,
-                  }).eq("user_id", userId);
-                } else {
-                  await supabase.from("horse_currency").insert({
-                    user_id: userId, coins, gems,
-                  });
+                    gems: (cur.gems || 0) + gems }).eq("user_id", userId);
+                } else { await supabase.from("horse_currency").insert({
+                    user_id: userId, coins, gems });
                 }
-                await supabase.from("horse_currency_purchases").update({
-                  status: "fulfilled", fulfilled_at: new Date().toISOString(),
-                }).eq("stripe_session_id", session.id);
+                await supabase.from("horse_currency_purchases").update({ status: "fulfilled", fulfilled_at: new Date().toISOString() }).eq("stripe_session_id", session.id);
                 log("horse currency fulfilled", { userId, coins, gems });
               }
             }
@@ -564,8 +522,7 @@ serve(async (req) => {
                       status: "paid",
                       product_type: "anonymous_date_credits",
                       metadata: { credits, package_type: session.metadata.package_type ?? null },
-                      verified_at: new Date().toISOString(),
-                    }, { onConflict: "stripe_session_id" });
+                      verified_at: new Date().toISOString() }, { onConflict: "stripe_session_id" });
                   }
                 }
               }
@@ -599,8 +556,7 @@ serve(async (req) => {
               if (!existingDon && amountEur > 0) {
                 const { error: donErr } = await supabase.rpc(
                   "process_campaign_donation",
-                  {
-                    _campaign_id: md.campaign_id,
+                  { _campaign_id: md.campaign_id,
                     _campaign_type: md.campaign_type,
                     _donor_id: md.user_id || null,
                     _donor_email: md.donor_email || session.customer_details?.email || null,
@@ -609,8 +565,7 @@ serve(async (req) => {
                     _is_monthly: false,
                     _is_anonymous: md.is_anonymous === "true",
                     _message: md.donation_message || null,
-                    _stripe_payment_id: paymentId,
-                  },
+                    _stripe_payment_id: paymentId },
                 );
                 if (donErr) log("donation fallback RPC failed", { err: donErr.message });
                 else log("donation fallback recorded via webhook", { paymentId, amountEur });
@@ -630,11 +585,9 @@ serve(async (req) => {
             if (isAuctionBuyout && session.mode === "payment" && md.auction_id && md.winner_id) {
               const { error: abErr } = await supabase.rpc(
                 "complete_auction_buyout" as any,
-                {
-                  p_auction_id: md.auction_id,
+                { p_auction_id: md.auction_id,
                   p_winner_id: md.winner_id,
-                  p_stripe_session_id: session.id,
-                },
+                  p_stripe_session_id: session.id },
               );
               if (abErr) log("auction_buyout webhook fallback failed", { err: abErr.message });
               else log("auction_buyout completed via webhook", { auction_id: md.auction_id });
@@ -647,14 +600,12 @@ serve(async (req) => {
 
           const { error } = await supabase
             .from("payment_records")
-            .update({
-              status: "paid",
+            .update({ status: "paid",
               stripe_payment_intent_id: session.payment_intent as string,
               stripe_customer_id:
                 typeof session.customer === "string" ? session.customer : null,
               verified_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            })
+              updated_at: new Date().toISOString() })
             .eq("stripe_session_id", session.id)
             .neq("status", "refunded");
           if (error) log("checkout sync failed", { error: error.message });
@@ -667,12 +618,10 @@ serve(async (req) => {
             const nowIso = new Date().toISOString();
             const { error: escErr } = await supabase
               .from("campaign_escrow")
-              .update({
-                status: "held",
+              .update({ status: "held",
                 stripe_payment_intent_id: piId,
                 paid_at: nowIso,
-                updated_at: nowIso,
-              })
+                updated_at: nowIso })
               .eq("stripe_session_id", session.id)
               .eq("status", "awaiting_payment");
             if (escErr) log("escrow flip failed", { error: escErr.message });
@@ -695,8 +644,7 @@ serve(async (req) => {
                   user_id: esc.influencer_user_id,
                   type: "campaign_escrow_funded",
                   title: "Campaign funded — start the work!",
-                  message: `The brand has paid €${(esc.amount_cents / 100).toFixed(2)} into escrow. Deliver the agreed content; you'll be paid out when the brand confirms.`,
-                });
+                  message: `The brand has paid €${(esc.amount_cents / 100).toFixed(2)} into escrow. Deliver the agreed content; you'll be paid out when the brand confirms.` });
               }
             }
           }
@@ -732,14 +680,12 @@ serve(async (req) => {
                 if (!existing) {
                   const { error: hErr } = await supabase
                     .from("holographic_purchases")
-                    .insert({
-                      user_id: userId,
+                    .insert({ user_id: userId,
                       service_type: serviceSlug,
                       stripe_session_id: session.id,
                       stripe_subscription_id: subId,
                       status: "active",
-                      expires_at: expiresAt,
-                    });
+                      expires_at: expiresAt });
                   if (hErr) log("holographic insert failed", { error: hErr.message });
                   else log("holographic purchase recorded", { userId, serviceSlug, isSubscription });
                 }
@@ -796,10 +742,8 @@ serve(async (req) => {
 
                   const { error: upErr } = await supabase
                     .from("profiles")
-                    .update({
-                      verification_tier: tier,
-                      verification_expires_at: expiresAt.toISOString(),
-                    })
+                    .update({ verification_tier: tier,
+                      verification_expires_at: expiresAt.toISOString() })
                     .eq("id", userId);
                   if (upErr) throw new Error(`profile update: ${upErr.message}`);
 
@@ -822,12 +766,10 @@ serve(async (req) => {
                       amount: creditsToGrant,
                       balance_after: newBalance,
                       transaction_type: "verification_grant",
-                      description: `Unique ${tier} verification bonus (webhook)`,
-                    });
+                      description: `Unique ${tier} verification bonus (webhook)` });
                   }
 
-                  await supabase.from("verification_benefits_log").insert({
-                    user_id: userId,
+                  await supabase.from("verification_benefits_log").insert({ user_id: userId,
                     benefit_type: "verification_purchase",
                     tier,
                     credits_granted: creditsToGrant,
@@ -835,16 +777,12 @@ serve(async (req) => {
                       session_id: session.id,
                       price_id: priceId,
                       payment_status: session.payment_status,
-                      source: "stripe_webhook",
-                    },
-                  });
+                      source: "stripe_webhook" } });
 
                   log("verification applied via webhook", { user: userId, tier, session: session.id });
                 }
-              } else {
-                log("verification webhook missing fields", {
-                  user: userId, tier, session: session.id,
-                });
+              } else { log("verification webhook missing fields", {
+                  user: userId, tier, session: session.id });
               }
             } catch (vErr) {
               log("verification webhook error", { err: (vErr as Error).message });
@@ -876,8 +814,7 @@ serve(async (req) => {
                     currency: session.currency ?? "eur",
                     status: "active",
                     current_period_end: periodEnd,
-                    metadata: { source: "stripe_webhook" },
-                  }, { onConflict: "user_id" });
+                    metadata: { source: "stripe_webhook" } }, { onConflict: "user_id" });
                 if (exErr) throw new Error(`exclusive upsert: ${exErr.message}`);
                 log("exclusive membership activated", { user: userId, sub: subId });
               }
@@ -915,8 +852,7 @@ serve(async (req) => {
                     stripe_subscription_id: subId,
                     subscription_start: startIso,
                     subscription_end: endIso,
-                    ...(tier ? { tier } : {}),
-                  })
+                    ...(tier ? { tier } : {}) })
                   .eq("user_id", ownerId)
                   .select("id")
                   .maybeSingle();
@@ -932,11 +868,9 @@ serve(async (req) => {
                     .maybeSingle();
                   if (!existingKey) {
                     const key = `ba_live_${crypto.randomUUID().replace(/-/g, "")}`;
-                    await supabase.from("brand_sponsor_api_keys").insert({
-                      sponsor_id: spRow.id,
+                    await supabase.from("brand_sponsor_api_keys").insert({ sponsor_id: spRow.id,
                       user_id: ownerId,
-                      api_key: key,
-                    });
+                      api_key: key });
                     log("enterprise api key provisioned", { sponsor: spRow.id });
                   }
                 }
@@ -984,16 +918,14 @@ serve(async (req) => {
                   const { error: payErr } = await supabase
                     .from("job_listing_payments")
                     .upsert(
-                      {
-                        user_id: listing.employer_id,
+                      { user_id: listing.employer_id,
                         job_id: jobListingId,
                         stripe_session_id: session.id,
                         stripe_payment_intent_id: piIdFb,
                         amount: session.amount_total ?? 0,
                         duration_days: durationDays,
                         status: "completed",
-                        expires_at: payExpiresAt,
-                      },
+                        expires_at: payExpiresAt },
                       { onConflict: "stripe_session_id" },
                     );
                   if (payErr) log("job_listing_payments upsert error", { err: payErr.message });
@@ -1007,8 +939,7 @@ serve(async (req) => {
                       .from("job_listings")
                       .update({ is_featured: true, featured_until: featuredUntil.toISOString() })
                       .eq("id", jobListingId);
-                  } else {
-                    const now = new Date();
+                  } else { const now = new Date();
                     const baseDate = listing.expires_at && new Date(listing.expires_at) > now
                       ? new Date(listing.expires_at)
                       : now;
@@ -1020,8 +951,7 @@ serve(async (req) => {
                         is_active: true,
                         published_at: listing.published_at ?? now.toISOString(),
                         expires_at: expiresAt.toISOString(),
-                        duration_days: durationDays,
-                      })
+                        duration_days: durationDays })
                       .eq("id", jobListingId);
 
                     await supabase.from("notifications").insert({
@@ -1030,12 +960,9 @@ serve(async (req) => {
                       title: "Job listing activated",
                       message: `Your listing is active until ${expiresAt.toISOString().slice(0, 10)}.`,
                       related_id: jobListingId,
-                      action_url: "/employer/dashboard",
-                    });
+                      action_url: "/employer/dashboard" });
                   }
-                  log("job listing activated via webhook fallback", {
-                    jobListingId, productKey, sessionId: session.id,
-                  });
+                  log("job listing activated via webhook fallback", { jobListingId, productKey, sessionId: session.id });
                 }
               }
             }
@@ -1101,23 +1028,18 @@ serve(async (req) => {
                   const { data: cur } = await supabase
                     .from("glamour_coins").select("balance")
                     .eq("user_id", userId).maybeSingle();
-                  if (cur) {
-                    await supabase.from("glamour_coins")
+                  if (cur) { await supabase.from("glamour_coins")
                       .update({
                         balance: (cur.balance || 0) + coins,
                         total_purchased: ((cur as any).total_purchased || 0) + coins,
-                        updated_at: new Date().toISOString(),
-                      })
+                        updated_at: new Date().toISOString() })
                       .eq("user_id", userId);
-                  } else {
-                    await supabase.from("glamour_coins").insert({
-                      user_id: userId, balance: coins, total_purchased: coins,
-                    });
+                  } else { await supabase.from("glamour_coins").insert({
+                      user_id: userId, balance: coins, total_purchased: coins });
                   }
                   if (pr?.id) {
                     await supabase.from("payment_records").update({
-                      metadata: { ...(pr.metadata as any || {}), glamour_credited: true },
-                    }).eq("id", pr.id);
+                      metadata: { ...(pr.metadata as any || {}), glamour_credited: true } }).eq("id", pr.id);
                   }
                   log("glamour coins credited", { userId, coins, sessionId: session.id });
                 }
@@ -1139,15 +1061,12 @@ serve(async (req) => {
                   .eq("stripe_session_id", session.id)
                   .maybeSingle();
                 const alreadyCredited = (pr?.metadata as any)?.santa_credited === true;
-                if (!alreadyCredited) {
-                  await supabase.rpc("add_secret_santa_credits", {
+                if (!alreadyCredited) { await supabase.rpc("add_secret_santa_credits", {
                     p_user_id: userId,
-                    p_amount: credits,
-                  });
+                    p_amount: credits });
                   if (pr?.id) {
                     await supabase.from("payment_records").update({
-                      metadata: { ...(pr.metadata as any || {}), santa_credited: true },
-                    }).eq("id", pr.id);
+                      metadata: { ...(pr.metadata as any || {}), santa_credited: true } }).eq("id", pr.id);
                   }
                   log("secret santa credits credited", { userId, credits, sessionId: session.id });
                 }
@@ -1158,8 +1077,7 @@ serve(async (req) => {
           }
 
           // ── Dating Premium subscription fulfillment ──
-          try {
-            const dt = session.metadata?.type;
+          try { const dt = session.metadata?.type;
             if (dt === "dating_monthly" || dt === "dating_yearly") {
               const userId = session.metadata?.user_id;
               if (userId && session.mode === "subscription") {
@@ -1177,8 +1095,7 @@ serve(async (req) => {
                   price: isYearly ? 20.00 : 2.00,
                   expires_at: expiresAt,
                   stripe_subscription_id: subId,
-                  updated_at: new Date().toISOString(),
-                }, { onConflict: "user_id" });
+                  updated_at: new Date().toISOString() }, { onConflict: "user_id" });
                 log("dating subscription activated", { userId, type: dt, sessionId: session.id });
               }
             }
@@ -1203,26 +1120,21 @@ serve(async (req) => {
                     .select("bonus_messages")
                     .eq("user_id", userId)
                     .maybeSingle();
-                  if (cur) {
-                    await supabase.from("best_friend_subscriptions")
+                  if (cur) { await supabase.from("best_friend_subscriptions")
                       .update({
                         bonus_messages: (cur.bonus_messages || 0) + 100,
-                        updated_at: new Date().toISOString(),
-                      })
+                        updated_at: new Date().toISOString() })
                       .eq("user_id", userId);
-                  } else {
-                    await supabase.from("best_friend_subscriptions").insert({
+                  } else { await supabase.from("best_friend_subscriptions").insert({
                       user_id: userId,
                       subscription_status: "free",
                       free_messages_used: 0,
                       monthly_messages_used: 0,
-                      bonus_messages: 100,
-                    });
+                      bonus_messages: 100 });
                   }
                   if (pr?.id) {
                     await supabase.from("payment_records").update({
-                      metadata: { ...(pr.metadata as any || {}), best_friend_messages_credited: true },
-                    }).eq("id", pr.id);
+                      metadata: { ...(pr.metadata as any || {}), best_friend_messages_credited: true } }).eq("id", pr.id);
                   }
                   log("best friend bonus messages credited", { userId, amount: 100, sessionId: session.id });
                 }
@@ -1246,23 +1158,19 @@ serve(async (req) => {
 
         const { error } = await supabase
           .from("payment_records")
-          .update({
-            status: "refunded",
+          .update({ status: "refunded",
             refunded_at: new Date().toISOString(),
             refund_amount_cents: refundAmount,
             stripe_refund_id: lastRefund?.id ?? null,
             refund_reason: lastRefund?.reason ?? "stripe_dashboard",
-            updated_at: new Date().toISOString(),
-          })
+            updated_at: new Date().toISOString() })
           .eq("stripe_payment_intent_id", piId);
         if (error) log("refund sync failed", { error: error.message });
 
         // ── Megatalent refund: flip mt_* row to refunded ────────────────
-        try {
-          for (const t of ["mt_mentorship_bookings", "mt_marketplace_orders"]) {
+        try { for (const t of ["mt_mentorship_bookings", "mt_marketplace_orders"]) {
             await supabase.from(t).update({
-              status: "refunded",
-            }).eq("stripe_payment_intent_id", piId);
+              status: "refunded" }).eq("stripe_payment_intent_id", piId);
           }
         } catch (e) {
           log("mt refund handler error", { err: (e as Error).message });
@@ -1274,11 +1182,9 @@ serve(async (req) => {
         try {
           const { data: drRes, error: drErr } = await supabase.rpc(
             "refund_campaign_donation",
-            {
-              _stripe_payment_id: piId,
+            { _stripe_payment_id: piId,
               _stripe_refund_id: lastRefund?.id ?? null,
-              _refund_amount: refundAmount > 0 ? refundAmount / 100 : null,
-            },
+              _refund_amount: refundAmount > 0 ? refundAmount / 100 : null },
           );
           if (drErr) log("donation refund rpc failed", { err: drErr.message });
           else if ((drRes as any)?.status === "refunded") {
@@ -1295,22 +1201,18 @@ serve(async (req) => {
             .select("id, job_id")
             .eq("stripe_payment_intent_id", piId)
             .maybeSingle();
-          if (jlPay?.job_id) {
-            await supabase
+          if (jlPay?.job_id) { await supabase
               .from("job_listing_payments")
               .update({
                 status: "refunded",
                 refunded_at: new Date().toISOString(),
-                refund_amount: refundAmount,
-              })
+                refund_amount: refundAmount })
               .eq("id", jlPay.id);
             await supabase
               .from("job_listings")
-              .update({
-                paid_status: "refunded",
+              .update({ paid_status: "refunded",
                 is_active: false,
-                updated_at: new Date().toISOString(),
-              })
+                updated_at: new Date().toISOString() })
               .eq("id", jlPay.job_id);
             log("job listing refunded via webhook", { jobId: jlPay.job_id, piId });
           }
@@ -1372,33 +1274,27 @@ serve(async (req) => {
               is_charge_refundable: dispute.is_charge_refundable ?? true,
               resolved_at: resolution ? new Date().toISOString() : null,
               resolution,
-              updated_at: new Date().toISOString(),
-            },
+              updated_at: new Date().toISOString() },
             { onConflict: "stripe_dispute_id" },
           );
         if (dispErr) log("dispute upsert failed", { error: dispErr.message });
 
         // Mark payment as disputed (only on first event)
-        if (event.type === "charge.dispute.created" && piId) {
-          await supabase
+        if (event.type === "charge.dispute.created" && piId) { await supabase
             .from("payment_records")
             .update({
               status: "disputed",
-              updated_at: new Date().toISOString(),
-            })
+              updated_at: new Date().toISOString() })
             .eq("stripe_payment_intent_id", piId);
 
-          await supabase.from("admin_audit_log").insert({
-            admin_id: "00000000-0000-0000-0000-000000000000",
+          await supabase.from("admin_audit_log").insert({ admin_id: "00000000-0000-0000-0000-000000000000",
             action: "stripe_dispute_opened",
             target_type: "payment_records",
             target_id: piId,
             details: {
               dispute_id: dispute.id,
               reason: dispute.reason,
-              amount: dispute.amount,
-            },
-          });
+              amount: dispute.amount } });
         }
 
         // ── Job listing dispute: deactivate listing on dispute.created ─────
@@ -1416,11 +1312,9 @@ serve(async (req) => {
                 .eq("id", jlPay.id);
               await supabase
                 .from("job_listings")
-                .update({
-                  paid_status: "disputed",
+                .update({ paid_status: "disputed",
                   is_active: false,
-                  updated_at: new Date().toISOString(),
-                })
+                  updated_at: new Date().toISOString() })
                 .eq("id", jlPay.job_id);
               log("job listing disputed via webhook", { jobId: jlPay.job_id, piId });
             }
@@ -1459,8 +1353,7 @@ serve(async (req) => {
             .from("brand_sponsors")
             .update({
               subscription_status: targetStatus,
-              ...(endIso ? { subscription_end: endIso } : {}),
-            })
+              ...(endIso ? { subscription_end: endIso } : {}) })
             .eq("stripe_subscription_id", sub.id);
         } catch (e) {
           log("brand sponsor status sync error", { err: (e as Error).message });
@@ -1470,14 +1363,12 @@ serve(async (req) => {
 
         // Win-back claim detection via metadata
         const winbackId = sub.metadata?.winback_campaign_id;
-        if (winbackId) {
-          await supabase
+        if (winbackId) { await supabase
             .from("winback_campaigns")
             .update({
               status: "claimed",
               claimed_at: new Date().toISOString(),
-              claimed_subscription_id: sub.id,
-            })
+              claimed_subscription_id: sub.id })
             .eq("id", winbackId)
             .neq("status", "claimed");
           log("winback claimed", { campaign: winbackId, sub: sub.id });
@@ -1518,16 +1409,12 @@ serve(async (req) => {
         // the attribution to mark the first activation.
         await supabase
           .from("referral_attributions")
-          .update({
-            rewarded_at: new Date().toISOString(),
-            first_subscription_id: sub.id,
-          })
+          .update({ rewarded_at: new Date().toISOString(),
+            first_subscription_id: sub.id })
           .eq("id", attr.id);
 
-        log("referral attribution marked active (credit fires on invoice)", {
-          referrer: attr.referrer_id,
-          sub: sub.id,
-        });
+        log("referral attribution marked active (credit fires on invoice)", { referrer: attr.referrer_id,
+          sub: sub.id });
         break;
       }
 
@@ -1544,13 +1431,11 @@ serve(async (req) => {
         // ── Unique VIP Club: mark canceled ──────────────────────────────────
         try {
           const meta = (sub.metadata ?? {}) as Record<string, string>;
-          if (meta.product === "unique_club") {
-            await supabase
+          if (meta.product === "unique_club") { await supabase
               .from("club_memberships")
               .update({
                 status: "canceled",
-                canceled_at: new Date().toISOString(),
-              })
+                canceled_at: new Date().toISOString() })
               .eq("stripe_subscription_id", sub.id);
           }
         } catch (e) {
@@ -1563,10 +1448,8 @@ serve(async (req) => {
           const nowIso = new Date().toISOString();
           const { error: cdErr } = await supabase
             .from("campaign_donations")
-            .update({
-              subscription_status: "cancelled",
-              cancelled_at: nowIso,
-            })
+            .update({ subscription_status: "cancelled",
+              cancelled_at: nowIso })
             .eq("stripe_subscription_id", sub.id);
           if (cdErr) log("donation cancel update failed", { err: cdErr.message });
         } catch (e) {
@@ -1605,16 +1488,14 @@ serve(async (req) => {
         if (existing) { log("winback skip: already exists"); break; }
 
         const lastAmount = sub.items.data[0]?.price.unit_amount ?? null;
-        const { error: wErr } = await supabase.from("winback_campaigns").insert({
-          user_id: prof.id,
+        const { error: wErr } = await supabase.from("winback_campaigns").insert({ user_id: prof.id,
           email,
           stripe_customer_id: customerId,
           stripe_subscription_id: sub.id,
           last_amount_cents: lastAmount,
           currency: (sub.currency ?? "eur").toLowerCase(),
           status: "sent",
-          sent_at: new Date().toISOString(),
-        });
+          sent_at: new Date().toISOString() });
         if (wErr) log("winback insert failed", { err: wErr.message });
         else log("winback campaign created", { user: prof.id, sub: sub.id });
         break;
@@ -1656,8 +1537,7 @@ serve(async (req) => {
         const kind = event.type === "invoice.payment_action_required"
           ? "requires_action" : "failed";
 
-        const { error: dErr } = await supabase.from("dunning_events").insert({
-          stripe_event_id: event.id,
+        const { error: dErr } = await supabase.from("dunning_events").insert({ stripe_event_id: event.id,
           stripe_customer_id: customerId,
           stripe_subscription_id: subId,
           stripe_invoice_id: inv.id,
@@ -1670,8 +1550,7 @@ serve(async (req) => {
             ? new Date(inv.next_payment_attempt * 1000).toISOString()
             : null,
           hosted_invoice_url: inv.hosted_invoice_url ?? null,
-          kind,
-        });
+          kind });
         if (dErr && !dErr.message.includes("duplicate")) {
           log("dunning insert failed", { err: dErr.message });
         } else {
@@ -1682,10 +1561,8 @@ serve(async (req) => {
         try {
           const { data: dons, error: cdErr } = await supabase
             .from("campaign_donations")
-            .update({
-              subscription_status: "past_due",
-              past_due_since: new Date().toISOString(),
-            })
+            .update({ subscription_status: "past_due",
+              past_due_since: new Date().toISOString() })
             .eq("stripe_subscription_id", subId)
             .is("past_due_since", null)
             .select("id, donor_id, campaign_id, campaign_type, amount, currency");
@@ -1702,22 +1579,17 @@ serve(async (req) => {
             targets = (existing ?? []).filter((d: any) => (d.dunning_notifications_sent ?? 0) === 0);
           }
 
-          for (const d of targets as any[]) {
-            if (!d.donor_id) continue;
+          for (const d of targets as any[]) { if (!d.donor_id) continue;
             await supabase.from("notifications").insert({
               user_id: d.donor_id,
               type: "donation_payment_failed",
               title: "Monthly donation payment failed",
               message: `We couldn't charge your card for your recurring donation. Please update your payment method to keep supporting this campaign.`,
-              related_id: d.campaign_id,
-              
-            });
+              related_id: d.campaign_id });
             await supabase
               .from("campaign_donations")
-              .update({
-                dunning_notifications_sent: 1,
-                last_dunning_at: new Date().toISOString(),
-              })
+              .update({ dunning_notifications_sent: 1,
+                last_dunning_at: new Date().toISOString() })
               .eq("id", d.id);
           }
         } catch (e) {
@@ -1756,8 +1628,7 @@ serve(async (req) => {
               .eq("stripe_subscription_id", subId)
               .maybeSingle();
 
-            if (mem && (mem as any).user_id) {
-              const periodEndTs = (subObj as any).current_period_end
+            if (mem && (mem as any).user_id) { const periodEndTs = (subObj as any).current_period_end
                 ? new Date((subObj as any).current_period_end * 1000).toISOString()
                 : null;
               await supabase
@@ -1765,28 +1636,24 @@ serve(async (req) => {
                 .update({
                   status: "active",
                   current_period_end: periodEndTs,
-                  monthly_credits_granted_at: new Date().toISOString(),
-                })
+                  monthly_credits_granted_at: new Date().toISOString() })
                 .eq("id", (mem as any).id);
 
               const periodKey = (inv as any).period_end
                 ? String((inv as any).period_end)
                 : inv.id ?? String(Date.now());
 
-              await grantClubAiCredits(supabase as any, {
-                userId: (mem as any).user_id,
+              await grantClubAiCredits(supabase as any, { userId: (mem as any).user_id,
                 membershipId: (mem as any).id,
                 perk: "monthly_ai_credits",
                 periodKey,
                 amount: CLUB_MONTHLY_AI_CREDITS,
-                stripeEventId: inv.id ?? undefined,
-              });
+                stripeEventId: inv.id ?? undefined });
               await contributeToGoodFund(supabase as any, {
                 membershipId: (mem as any).id,
                 amountEur: CLUB_MONTHLY_GOOD_FUND_EUR,
                 source: "monthly",
-                stripeEventId: inv.id ?? `${subId}:${periodKey}`,
-              });
+                stripeEventId: inv.id ?? `${subId}:${periodKey}` });
             }
           }
         } catch (e) {
@@ -1797,11 +1664,9 @@ serve(async (req) => {
         // Mark any open dunning rows for this sub as recovered
         const { error: rErr } = await supabase
           .from("dunning_events")
-          .update({
-            kind: "recovered",
+          .update({ kind: "recovered",
             recovered_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
+            updated_at: new Date().toISOString() })
           .eq("stripe_subscription_id", subId)
           .in("kind", ["failed", "requires_action"]);
         if (rErr) log("dunning recover failed", { err: rErr.message });
@@ -1827,8 +1692,7 @@ serve(async (req) => {
 
               const { error: earnErr } = await supabase
                 .from("creator_subscription_earnings")
-                .insert({
-                  creator_id: meta.creator_id,
+                .insert({ creator_id: meta.creator_id,
                   subscriber_id: meta.subscriber_id,
                   tier_id: meta.tier_id,
                   stripe_subscription_id: subId,
@@ -1840,30 +1704,25 @@ serve(async (req) => {
                   currency: (inv.currency ?? "eur").toLowerCase(),
                   period_start: periodStart,
                   period_end: periodEnd,
-                  payout_state: "available",
-                });
+                  payout_state: "available" });
               if (earnErr) {
                 if (!earnErr.message?.toLowerCase().includes("duplicate")) {
                   log("creator earnings insert failed", { err: earnErr.message });
                 }
-              } else {
-                log("creator subscription earning recorded", {
+              } else { log("creator subscription earning recorded", {
                   invoice: inv.id, creator: meta.creator_id,
-                  gross: grossCents, net: netCents, fee: platformFeeCents,
-                });
+                  gross: grossCents, net: netCents, fee: platformFeeCents });
               }
 
               // Upsert active creator_subscriptions row (period end refresh)
               await supabase
                 .from("creator_subscriptions")
-                .upsert({
-                  subscriber_id: meta.subscriber_id,
+                .upsert({ subscriber_id: meta.subscriber_id,
                   creator_id: meta.creator_id,
                   tier_id: meta.tier_id,
                   stripe_subscription_id: subId,
                   status: "active",
-                  current_period_end: periodEnd,
-                }, { onConflict: "subscriber_id,tier_id" });
+                  current_period_end: periodEnd }, { onConflict: "subscriber_id,tier_id" });
             }
           }
         } catch (e) {
@@ -1895,8 +1754,7 @@ serve(async (req) => {
             if (paidCents > 0 && renewalPaymentId) {
               const { data: rpcRes, error: rpcErr } = await supabase.rpc(
                 "process_campaign_donation",
-                {
-                  _campaign_id: parent.campaign_id,
+                { _campaign_id: parent.campaign_id,
                   _campaign_type: parent.campaign_type,
                   _donor_id: parent.donor_id,
                   _donor_email: parent.donor_email,
@@ -1905,8 +1763,7 @@ serve(async (req) => {
                   _is_monthly: true,
                   _is_anonymous: parent.is_anonymous ?? false,
                   _message: parent.message,
-                  _stripe_payment_id: renewalPaymentId,
-                },
+                  _stripe_payment_id: renewalPaymentId },
               );
               if (rpcErr) log("donation renewal RPC failed", { err: rpcErr.message });
               else log("donation renewal recorded", rpcRes);
@@ -1915,13 +1772,11 @@ serve(async (req) => {
             // Re-activate parent donation row + clear dunning state
             await supabase
               .from("campaign_donations")
-              .update({
-                subscription_status: "active",
+              .update({ subscription_status: "active",
                 next_billing_at: nextBilling,
                 past_due_since: null,
                 dunning_notifications_sent: 0,
-                last_dunning_at: null,
-              })
+                last_dunning_at: null })
               .eq("stripe_subscription_id", subId);
           }
         } catch (e) {
@@ -1989,8 +1844,7 @@ serve(async (req) => {
 
           const { error: earnErr } = await supabase
             .from("megatalent_referral_earnings")
-            .insert({
-              referrer_id: attr.referrer_id,
+            .insert({ referrer_id: attr.referrer_id,
               referred_user_id: buyerProfile.id,
               amount: referrerRewardEur,
               paid: false,
@@ -1999,8 +1853,7 @@ serve(async (req) => {
               source_subscription_id: subId,
               source_invoice_id: inv.id,
               source_kind: "subscription",
-              auto_credited: true,
-            });
+              auto_credited: true });
 
           if (earnErr) {
             if (earnErr.message?.toLowerCase().includes("duplicate")) {
@@ -2012,18 +1865,15 @@ serve(async (req) => {
           }
 
           // Mark first-payment timestamp on the attribution (one-shot)
-          if (!(await hasRewardedAt(supabase, attr.id))) {
-            await supabase
+          if (!(await hasRewardedAt(supabase, attr.id))) { await supabase
               .from("referral_attributions")
               .update({
                 rewarded_at: new Date().toISOString(),
-                first_subscription_id: subId,
-              })
+                first_subscription_id: subId })
               .eq("id", attr.id);
           }
 
-          await supabase.from("admin_audit_log").insert({
-            admin_id: "00000000-0000-0000-0000-000000000000",
+          await supabase.from("admin_audit_log").insert({ admin_id: "00000000-0000-0000-0000-000000000000",
             action: "referral_recurring_reward_credited",
             target_type: "megatalent_referral_earnings",
             target_id: attr.referrer_id,
@@ -2034,9 +1884,7 @@ serve(async (req) => {
               invoice_id: inv.id,
               tier: invoiceTier ?? "premium",
               referrer_amount_eur: referrerRewardEur,
-              platform_amount_eur: platformShareEur,
-            },
-          });
+              platform_amount_eur: platformShareEur } });
           // Notification: referrer only
           try {
             await supabase.from("notifications").insert({
@@ -2044,22 +1892,17 @@ serve(async (req) => {
               type: "referral_bonus",
               title: `+${referrerRewardEur} € referral bonus`,
               message: `Your invited user paid for a subscription — we credited you a €${referrerRewardEur} bonus.`,
-              is_read: false,
-            });
+              is_read: false });
           } catch (notifErr) {
             log("notification insert failed", { err: (notifErr as Error).message });
           }
 
-          log("recurring referral reward credited", {
-            referrer: attr.referrer_id,
+          log("recurring referral reward credited", { referrer: attr.referrer_id,
             referred: buyerProfile.id,
             invoice: inv.id,
-            referrer_amount: referrerRewardEur,
-          });
-        } catch (refErr) {
-          log("recurring referral handler error", {
-            err: (refErr as Error).message,
-          });
+            referrer_amount: referrerRewardEur });
+        } catch (refErr) { log("recurring referral handler error", {
+            err: (refErr as Error).message });
         }
         break;
       }
@@ -2078,8 +1921,7 @@ serve(async (req) => {
         const reqs = (acct.requirements ?? {}) as Stripe.Account.Requirements;
         const caps = (acct.capabilities ?? {}) as Record<string, string>;
         const sched = (acct.settings?.payouts?.schedule ?? null) as any;
-        const { error } = await supabase.from("profiles").update({
-          stripe_connect_charges_enabled: !!acct.charges_enabled,
+        const { error } = await supabase.from("profiles").update({ stripe_connect_charges_enabled: !!acct.charges_enabled,
           stripe_connect_payouts_enabled: !!acct.payouts_enabled,
           stripe_connect_onboarding_complete: !!acct.details_submitted,
           stripe_connect_details_submitted: !!acct.details_submitted,
@@ -2092,8 +1934,7 @@ serve(async (req) => {
           stripe_connect_country: acct.country ?? null,
           stripe_connect_capabilities: caps,
           stripe_connect_account_type: acct.type ?? null,
-          stripe_connect_synced_at: new Date().toISOString(),
-        }).eq("stripe_connect_account_id", acct.id);
+          stripe_connect_synced_at: new Date().toISOString() }).eq("stripe_connect_account_id", acct.id);
         if (error) log("account.updated sync failed", { err: error.message });
         else log("account.updated synced", { acct: acct.id, payouts: acct.payouts_enabled });
         break;
@@ -2129,8 +1970,7 @@ serve(async (req) => {
             message: trialEnd
               ? `Your free trial ends on ${trialEnd.toLocaleDateString()}. Update payment to keep your subscription active.`
               : "Your free trial ends in 3 days. Update payment to keep your subscription active.",
-            is_read: false,
-          });
+            is_read: false });
           log("trial_will_end notified", { user: prof.id, sub: sub.id });
         } catch (e) {
           log("trial_will_end handler error", { err: (e as Error).message });
@@ -2156,15 +1996,13 @@ serve(async (req) => {
             .from("profiles").select("id").eq("email", email).maybeSingle();
           if (!prof?.id) break;
           const paused = event.type === "customer.subscription.paused";
-          await supabase.from("notifications").insert({
-            user_id: prof.id,
+          await supabase.from("notifications").insert({ user_id: prof.id,
             type: paused ? "subscription_paused" : "subscription_resumed",
             title: paused ? "Subscription paused ⏸️" : "Subscription resumed ▶️",
             message: paused
               ? "Your subscription is paused — no charges until you resume it."
               : "Welcome back! Your subscription is active again.",
-            is_read: false,
-          });
+            is_read: false });
           log("subscription pause/resume notified", { user: prof.id, type: event.type });
         } catch (e) {
           log("pause/resume handler error", { err: (e as Error).message });
@@ -2183,8 +2021,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ received: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     log("handler error", { msg });
@@ -2195,8 +2032,7 @@ serve(async (req) => {
     // Return 200 anyway so Stripe doesn't retry forever on logic bugs.
     return new Response(JSON.stringify({ received: true, error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   }
 });
 

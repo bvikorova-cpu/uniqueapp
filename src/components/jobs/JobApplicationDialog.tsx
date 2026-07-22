@@ -28,12 +28,10 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Error",
           description: "You must be logged in to apply for a position.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -57,13 +55,11 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
 
       const { error } = await supabase
         .from('job_applications')
-        .insert({
-          job_id: jobId,
+        .insert({ job_id: jobId,
           applicant_id: user.id,
           cover_letter: coverLetter,
           resume_url: resumeUrl,
-          status: 'pending',
-        });
+          status: 'pending' });
 
       if (error) throw error;
 
@@ -74,20 +70,16 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
         console.warn("track_challenge_action failed", e);
       }
 
-      toast({
-        title: "Success",
-        description: "Your application has been submitted successfully.",
-      });
+      toast({ title: "Success",
+        description: "Your application has been submitted successfully." });
 
       setOpen(false);
       setCoverLetter("");
       setResumeFile(null);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message || "Failed to submit application.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

@@ -20,8 +20,7 @@ export const CategoryRecommenderView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("auction-ai", {
-        body: { action: "category_recommender", item_description: input },
-      });
+        body: { action: "category_recommender", item_description: input } });
       if (error) throw error;
       setResult(data.result);
     } catch (err: any) { toast.error(err.message || "Recommendation failed"); }

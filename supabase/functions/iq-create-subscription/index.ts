@@ -2,17 +2,14 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 // Configurable via env so admin can swap price IDs without redeploy.
 const TIERS: Record<string, { name: string; price_eur: number; default_price_env: string }> = {
   pro:   { name: "IQ Pro",   price_eur: 9.99,  default_price_env: "IQ_PRO_PRICE_ID" },
-  elite: { name: "IQ Elite", price_eur: 19.99, default_price_env: "IQ_ELITE_PRICE_ID" },
-};
+  elite: { name: "IQ Elite", price_eur: 19.99, default_price_env: "IQ_ELITE_PRICE_ID" } };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -50,8 +47,7 @@ serve(async (req) => {
       mode: "subscription",
       success_url: `${origin}/iq?subscribed=true`,
       cancel_url: `${origin}/iq?subscribed=false`,
-      metadata: { user_id: user.id, iq_tier: tier },
-    };
+      metadata: { user_id: user.id, iq_tier: tier } };
 
     if (resolvedPrice) {
       sessionParams.line_items = [{ price: resolvedPrice, quantity: 1 }];
@@ -62,21 +58,17 @@ serve(async (req) => {
           currency: "eur",
           recurring: { interval: "month" },
           unit_amount: Math.round(tierCfg.price_eur * 100),
-          product_data: { name: tierCfg.name },
-        },
-        quantity: 1,
-      }];
+          product_data: { name: tierCfg.name } },
+        quantity: 1 }];
     }
 
     const session = await stripe.checkout.sessions.create(sessionParams);
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

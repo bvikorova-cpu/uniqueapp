@@ -9,15 +9,13 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Plus, Calendar, Euro, Tag } from "lucide-react";
 import { BrandCampaignPayments } from "@/components/brand/BrandCampaignPayments";
@@ -77,8 +75,7 @@ function CreateCampaignDialog({ onCreated }: { onCreated: () => void }) {
         .map((t) => t.trim())
         .filter(Boolean);
 
-      const { error } = await supabase.from("brand_campaigns").insert({
-        user_id: auth.user.id,
+      const { error } = await supabase.from("brand_campaigns").insert({ user_id: auth.user.id,
         brand_name: brandName.trim(),
         campaign_name: campaignName.trim(),
         description: description.trim() ? description.trim() : null,
@@ -86,8 +83,7 @@ function CreateCampaignDialog({ onCreated }: { onCreated: () => void }) {
         budget_max: max,
         deadline,
         status: "active",
-        tags: parsedTags.length ? parsedTags : null,
-      });
+        tags: parsedTags.length ? parsedTags : null });
 
       if (error) throw error;
     },
@@ -99,8 +95,7 @@ function CreateCampaignDialog({ onCreated }: { onCreated: () => void }) {
     },
     onError: (e: any) => {
       toast.error(e?.message ?? "Failed to create campaign");
-    },
-  });
+    } });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -241,8 +236,7 @@ export default function BrandDashboard() {
     queryFn: async () => {
       const { data } = await supabase.auth.getUser();
       return data.user;
-    },
-  });
+    } });
 
   const { data: campaigns, isLoading } = useQuery({
     queryKey: ["brand-campaigns"],
@@ -256,8 +250,7 @@ export default function BrandDashboard() {
 
       if (error) throw error;
       return (data ?? []) as BrandCampaign[];
-    },
-  });
+    } });
 
   const stats = useMemo(() => {
     const total = campaigns?.length ?? 0;

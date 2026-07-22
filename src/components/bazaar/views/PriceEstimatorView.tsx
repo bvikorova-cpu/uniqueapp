@@ -31,8 +31,7 @@ export function PriceEstimatorView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke("bazaar-ai", {
         body: { action: "price-estimator", title, category, condition, description, askingPrice },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

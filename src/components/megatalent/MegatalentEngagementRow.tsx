@@ -25,10 +25,8 @@ const MegatalentEngagementRow = ({ totalVotes, subscriptionTier }: Props) => {
       label: "Voting Streak",
       value: `${streakDays} ${streakDays === 1 ? "day" : "days"}`,
       sub: longest > 0 ? `Longest: ${longest} days` : "Vote daily to start a streak",
-      color: "text-orange-500",
-    },
-    {
-      icon: Trophy,
+      color: "text-orange-500" },
+    { icon: Trophy,
       label: "Your Votes",
       value: totalVotes.toLocaleString(),
       sub: subscriptionTier === "top_premium"
@@ -36,8 +34,7 @@ const MegatalentEngagementRow = ({ totalVotes, subscriptionTier }: Props) => {
         : subscriptionTier === "premium"
           ? "Premium tier"
           : "Subscribe to enter the contest",
-      color: "text-yellow-500",
-    },
+      color: "text-yellow-500" },
     {
       icon: Star,
       label: "Categories",
@@ -45,8 +42,7 @@ const MegatalentEngagementRow = ({ totalVotes, subscriptionTier }: Props) => {
       sub: activeTalents
         ? `${activeTalents.toLocaleString()} active talents`
         : "Talent categories available",
-      color: "text-amber-500",
-    },
+      color: "text-amber-500" },
   ];
   return (
     <>

@@ -36,8 +36,7 @@ async function trySubscribe(
       // @ts-expect-error — load supabase-js from CDN inside the page
       const mod = await import("https://esm.sh/@supabase/supabase-js@2");
       const client = mod.createClient(url, key, {
-        auth: { persistSession: false, autoRefreshToken: false },
-      });
+        auth: { persistSession: false, autoRefreshToken: false } });
       // Ensure no session
       await client.auth.signOut().catch(() => {});
 

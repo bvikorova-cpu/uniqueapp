@@ -1,12 +1,10 @@
-import {
-  createContext,
+import { createContext,
   useContext,
   useEffect,
   useRef,
   useState,
   useCallback,
-  type ReactNode,
-} from "react";
+  type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
@@ -57,8 +55,7 @@ const ICE_CONFIG: RTCConfiguration = {
   iceServers: [
     { urls: "stun:stun.l.google.com:19302" },
     { urls: "stun:stun1.l.google.com:19302" },
-  ],
-};
+  ] };
 
 type CallState =
   | { status: "idle" }
@@ -90,23 +87,19 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     async (targetUserId: string, event: string, payload: Record<string, unknown>, conversationId?: string) => {
       if (!user?.id) return false;
       try {
-        const { error } = await (supabase as any).from("call_signals").insert({
-          conversation_id: conversationId || (payload.conversationId as string | undefined) || null,
+        const { error } = await (supabase as any).from("call_signals").insert({ conversation_id: conversationId || (payload.conversationId as string | undefined) || null,
           sender_id: user.id,
           receiver_id: targetUserId,
           event,
-          payload,
-        });
+          payload });
         if (error) throw error;
         console.log("[call] signal saved", event, "→", targetUserId);
         return true;
-      } catch (e) {
-        console.error("[call] sendToUser failed", event, e);
+      } catch (e) { console.error("[call] sendToUser failed", event, e);
         toast({
           title: "Call signal failed",
           description: "Could not reach the other user. Please try again.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return false;
       }
     },
@@ -181,12 +174,10 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           remoteVideoRef.current.srcObject = event.streams[0];
         }
       };
-      pc.onicecandidate = (event) => {
-        if (event.candidate) {
+      pc.onicecandidate = (event) => { if (event.candidate) {
           void sendToUser(peerId, "ice-candidate", {
             from: user?.id,
-            candidate: event.candidate.toJSON(),
-          }, callRef.current.status !== "idle" ? callRef.current.conversationId : undefined);
+            candidate: event.candidate.toJSON() }, callRef.current.status !== "idle" ? callRef.current.conversationId : undefined);
         }
       };
       pc.onconnectionstatechange = () => {
@@ -229,20 +220,17 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           void sendToUser(row.sender_id, "decline-call", { from: user.id, reason: "busy" }, row.conversation_id);
           return;
         }
-        setCall({
-          status: "incoming",
+        setCall({ status: "incoming",
           peerId: row.sender_id,
           peerName: payload.fromName || "Someone",
           conversationId: row.conversation_id || payload.conversationId || "",
-          offer: payload.offer,
-        });
+          offer: payload.offer });
         startRingtone();
         try {
           if (typeof Notification !== "undefined" && Notification.permission === "granted") {
             const n = new Notification("Incoming call", {
               body: `${payload.fromName || "Someone"} is calling you`,
-              tag: "unique-incoming-call",
-            });
+              tag: "unique-incoming-call" });
             n.onclick = () => { try { window.focus(); n.close(); } catch {} };
           }
         } catch {}
@@ -286,11 +274,9 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
 
-      if (row.event === "decline-call") {
-        toast({
+      if (row.event === "decline-call") { toast({
           title: "Call declined",
-          description: payload?.reason === "busy" ? "User is on another call." : "The other party declined.",
-        });
+          description: payload?.reason === "busy" ? "User is on another call." : "The other party declined." });
         resetCall();
       }
     };
@@ -303,8 +289,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           event: "INSERT",
           schema: "public",
           table: "call_signals",
-          filter: `receiver_id=eq.${user.id}`,
-        },
+          filter: `receiver_id=eq.${user.id}` },
         (payload) => { void handleSignal(payload.new); },
       )
       .subscribe((status, err) => {
@@ -341,12 +326,10 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
         setCall({ status: "outgoing", peerId: otherUserId, peerName: otherUserName, conversationId });
 
-        const delivered = await sendToUser(otherUserId, "offer", {
-          from: user.id,
+        const delivered = await sendToUser(otherUserId, "offer", { from: user.id,
           fromName: myName,
           conversationId,
-          offer,
-        }, conversationId);
+          offer }, conversationId);
         if (!delivered) resetCall();
       } catch (err: any) {
         console.error("[call] startCall failed", err);
@@ -375,12 +358,10 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
       await sendToUser(call.peerId, "answer", { from: user!.id, answer }, call.conversationId);
 
-      setCall({
-        status: "in-call",
+      setCall({ status: "in-call",
         peerId: call.peerId,
         peerName: call.peerName,
-        conversationId: call.conversationId,
-      });
+        conversationId: call.conversationId });
     } catch (err: any) {
       console.error("acceptIncoming failed", err);
       toast({ title: "Error", description: explainMediaError(err), variant: "destructive" });

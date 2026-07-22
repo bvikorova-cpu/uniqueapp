@@ -1,35 +1,28 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const ACTION_COST: Record<string, number> = {
-  "ab-test": 4, "brand-voice": 3, "bulk-generate": 5, "plagiarism": 3,
-  "repurpose": 4, "seo-analyze": 4, "templates": 3,
-};
+const ACTION_COST: Record<string, number> = { "ab-test": 4, "brand-voice": 3, "bulk-generate": 5, "plagiarism": 3,
+  "repurpose": 4, "seo-analyze": 4, "templates": 3 };
 
 async function callAI(apiKey: string, messages: any[]) {
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "gpt-4o-mini", messages }),
-  });
+    body: JSON.stringify({ model: "gpt-4o-mini", messages }) });
   if (!response.ok) throw new Error(`AI error: ${response.status}`);
   const data = await response.json();
   const content = data.choices?.[0]?.message?.content || "";
   try { return JSON.parse(content); } catch { return { result: content }; }
 }
 
-const platformGuide: Record<string, string> = {
-  instagram: "Visual-first, 2200 char limit, hashtag-driven",
+const platformGuide: Record<string, string> = { instagram: "Visual-first, 2200 char limit, hashtag-driven",
   twitter: "280 char limit, conversational, thread-friendly",
   linkedin: "Professional tone, 3000 char limit, B2B focused",
   tiktok: "Casual, trendy, hook-driven, 150 char description",
-  facebook: "Conversational, sharable, 63k char limit",
-};
+  facebook: "Conversational, sharable, 63k char limit" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });

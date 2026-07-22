@@ -22,15 +22,13 @@ export default function IQPromoCode() {
     onSuccess: (d) => {
       toast({
         title: "Promo redeemed! 🎟️",
-        description: `+${d.credits} IQ credits added to your balance.`,
-      });
+        description: `+${d.credits} IQ credits added to your balance.` });
       setCode("");
       qc.invalidateQueries({ queryKey: ["iq-credits"] });
     },
     onError: (e: any) => {
       toast({ title: "Could not redeem", description: e.message, variant: "destructive" });
-    },
-  });
+    } });
 
   return (
     <>

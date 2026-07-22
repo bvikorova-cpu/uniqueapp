@@ -12,8 +12,7 @@ import { toast } from '@/hooks/use-toast';
 import { AIStoryGenerator } from '@/components/fundraising/AIStoryGenerator';
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-export default function CreateMedicalCampaign() {
-  const navigate = useNavigate();
+export default function CreateMedicalCampaign() { const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
@@ -27,19 +26,16 @@ export default function CreateMedicalCampaign() {
     target_amount: '',
     image_url: '',
     ends_at: '',
-    proof_document_url: '',
-  });
+    proof_document_url: '' });
 
-  const handleProofUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleProofUpload = async (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
       toast({
         title: 'Error',
         description: 'File is too large (max 10MB)',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
@@ -47,12 +43,10 @@ export default function CreateMedicalCampaign() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         return;
       }
 
@@ -71,60 +65,48 @@ export default function CreateMedicalCampaign() {
 
       setFormData({ ...formData, proof_document_url: publicUrl });
 
-      toast({
-        title: 'Success',
-        description: 'Medical documentation uploaded',
-      });
-    } catch (error) {
-      console.error('Error uploading proof:', error);
+      toast({ title: 'Success',
+        description: 'Medical documentation uploaded' });
+    } catch (error) { console.error('Error uploading proof:', error);
       toast({
         title: 'Error',
         description: 'Failed to upload documentation',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setUploading(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
     
     // Validation
     if (!formData.title || !formData.description || !formData.story || !formData.patient_name || !formData.diagnosis || !formData.target_amount) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
-    if (!formData.proof_document_url) {
-      toast({
+    if (!formData.proof_document_url) { toast({
         title: 'Error',
         description: 'Medical documentation is required for verification',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
-    if (!consentChecked) {
-      toast({
+    if (!consentChecked) { toast({
         title: 'Error',
         description: 'You must confirm the consent checkbox',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
     const targetAmount = parseFloat(formData.target_amount);
-    if (isNaN(targetAmount) || targetAmount < 100) {
-      toast({
+    if (isNaN(targetAmount) || targetAmount < 100) { toast({
         title: 'Error',
         description: 'Minimum target amount is 100€',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
@@ -133,12 +115,10 @@ export default function CreateMedicalCampaign() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in to create a campaign',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         navigate('/auth');
         return;
       }
@@ -163,45 +143,37 @@ export default function CreateMedicalCampaign() {
 
       if (error) throw error;
 
-      toast({
-        title: 'Success!',
-        description: 'Campaign created and waiting for admin approval',
-      });
+      toast({ title: 'Success!',
+        description: 'Campaign created and waiting for admin approval' });
 
       navigate(`/fundraising/medical/${data.id}/success?action=created`);
-    } catch (error) {
-      console.error('Error creating campaign:', error);
+    } catch (error) { console.error('Error creating campaign:', error);
       toast({
         title: 'Error',
         description: 'Failed to create campaign',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setCreating(false);
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: 'Error',
         description: 'Image is too large (max 5MB)',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         return;
       }
 
@@ -220,17 +192,13 @@ export default function CreateMedicalCampaign() {
 
       setFormData({ ...formData, image_url: publicUrl });
 
-      toast({
-        title: 'Success',
-        description: 'Image uploaded',
-      });
-    } catch (error) {
-      console.error('Error uploading image:', error);
+      toast({ title: 'Success',
+        description: 'Image uploaded' });
+    } catch (error) { console.error('Error uploading image:', error);
       toast({
         title: 'Error',
         description: 'Failed to upload image',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     }
   };
 

@@ -24,13 +24,11 @@ export const CSATWidget = ({ userId, ticketId, channel = "live_chat", onSubmitte
   const submit = async () => {
     if (!rating) return;
     setBusy(true);
-    const { error } = await supabase.from("csat_ratings").insert({
-      user_id: userId,
+    const { error } = await supabase.from("csat_ratings").insert({ user_id: userId,
       ticket_id: ticketId || null,
       channel,
       rating,
-      comment: comment.trim() || null,
-    });
+      comment: comment.trim() || null });
     setBusy(false);
     if (error) {
       toast.error(error.message);

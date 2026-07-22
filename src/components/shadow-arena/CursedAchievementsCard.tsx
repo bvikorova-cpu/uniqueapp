@@ -7,8 +7,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const RARITY_STYLES: Record<string, { color: string; glow: string; icon: typeof Trophy }> = {
   common: { color: "text-gray-300 border-gray-600/40", glow: "shadow-[0_0_15px_rgba(156,163,175,0.3)]", icon: Trophy },
   rare: { color: "text-blue-300 border-blue-600/50", glow: "shadow-[0_0_20px_rgba(59,130,246,0.4)]", icon: Sparkles },
-  legendary: { color: "text-yellow-300 border-yellow-600/60", glow: "shadow-[0_0_25px_rgba(251,191,36,0.5)]", icon: Skull },
-};
+  legendary: { color: "text-yellow-300 border-yellow-600/60", glow: "shadow-[0_0_25px_rgba(251,191,36,0.5)]", icon: Skull } };
 
 export function CursedAchievementsCard() {
   const { data: achievements, isLoading } = useCursedAchievements();

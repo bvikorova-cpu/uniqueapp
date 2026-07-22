@@ -14,9 +14,7 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
-  const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
-    apiVersion: "2024-12-18.acacia" as any,
-  });
+  const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, { apiVersion: "2024-12-18.acacia" as any });
 
   const now = Date.now();
   const DAY = 24 * 3600 * 1000;
@@ -31,8 +29,7 @@ Deno.serve(async (req) => {
     log("query failed", { err: error.message });
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   let notified = 0, cancelled = 0;
@@ -54,35 +51,29 @@ Deno.serve(async (req) => {
         }
         await supabase
           .from("campaign_donations")
-          .update({
-            subscription_status: "cancelled",
-            cancelled_at: new Date().toISOString(),
-          })
+          .update({ subscription_status: "cancelled",
+            cancelled_at: new Date().toISOString() })
           .eq("id", d.id);
 
-        if (d.donor_id) {
-          await supabase.from("notifications").insert({
+        if (d.donor_id) { await supabase.from("notifications").insert({
             user_id: d.donor_id,
             type: "donation_cancelled_dunning",
             title: "Recurring donation cancelled",
             message: "After 14 days of failed payment attempts, your monthly donation has been cancelled. You can start a new one anytime.",
-            related_id: d.campaign_id,
-          });
+            related_id: d.campaign_id });
         }
         cancelled++;
         continue;
       }
 
       // ── Day 7: third reminder ──
-      if (ageDays >= 7 && sent < 3) {
-        if (d.donor_id) {
+      if (ageDays >= 7 && sent < 3) { if (d.donor_id) {
           await supabase.from("notifications").insert({
             user_id: d.donor_id,
             type: "donation_payment_failed",
             title: "Final reminder — payment still failing",
             message: "Your monthly donation will be cancelled in 7 days unless you update your payment method.",
-            related_id: d.campaign_id,
-          });
+            related_id: d.campaign_id });
         }
         await supabase
           .from("campaign_donations")
@@ -93,15 +84,13 @@ Deno.serve(async (req) => {
       }
 
       // ── Day 4: second reminder ──
-      if (ageDays >= 4 && sent < 2) {
-        if (d.donor_id) {
+      if (ageDays >= 4 && sent < 2) { if (d.donor_id) {
           await supabase.from("notifications").insert({
             user_id: d.donor_id,
             type: "donation_payment_failed",
             title: "Reminder — donation payment failed",
             message: "We still couldn't charge your card. Please update your payment method to keep your monthly donation active.",
-            related_id: d.campaign_id,
-          });
+            related_id: d.campaign_id });
         }
         await supabase
           .from("campaign_donations")
@@ -116,6 +105,5 @@ Deno.serve(async (req) => {
 
   log("done", { scanned: rows?.length ?? 0, notified, cancelled });
   return new Response(JSON.stringify({ scanned: rows?.length ?? 0, notified, cancelled }), {
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 });

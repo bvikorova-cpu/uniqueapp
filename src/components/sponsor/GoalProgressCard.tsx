@@ -5,8 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Target, Trophy, TrendingUp, Calendar, CheckCircle2, AlertCircle, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -14,8 +13,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface GoalProgressCardProps {

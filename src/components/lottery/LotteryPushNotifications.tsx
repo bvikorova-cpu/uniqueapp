@@ -13,38 +13,30 @@ interface LotteryPushNotificationsProps {
 }
 
 const NOTIFICATION_TYPES = [
-  {
-    id: "lucky_days",
+  { id: "lucky_days",
     label: "Lucky Day Alerts",
     description: "Get notified when AI detects high-probability patterns",
     icon: Sparkles,
     color: "from-violet-500 to-purple-600",
-    enabled: true,
-  },
-  {
-    id: "draw_reminder",
+    enabled: true },
+  { id: "draw_reminder",
     label: "Draw Reminders",
     description: "Never miss a lottery draw with timely reminders",
     icon: Calendar,
     color: "from-blue-500 to-cyan-500",
-    enabled: false,
-  },
-  {
-    id: "pattern_alert",
+    enabled: false },
+  { id: "pattern_alert",
     label: "Pattern Alerts",
     description: "Receive alerts when rare number patterns are detected",
     icon: TrendingUp,
     color: "from-emerald-500 to-green-600",
-    enabled: false,
-  },
-  {
-    id: "hot_streak",
+    enabled: false },
+  { id: "hot_streak",
     label: "Hot Streak Notifications",
     description: "Know when certain numbers enter a hot streak",
     icon: Zap,
     color: "from-orange-500 to-red-500",
-    enabled: true,
-  },
+    enabled: true },
 ];
 
 const LUCKY_DAYS_PREVIEW = [
@@ -65,18 +57,14 @@ export function LotteryPushNotifications({ onBack }: LotteryPushNotificationsPro
     setNotifications(prev =>
       prev.map(n => n.id === id ? { ...n, enabled: !n.enabled } : n)
     );
-    toast({
-      title: "Preference Updated",
-      description: "Your notification settings have been saved.",
-    });
+    toast({ title: "Preference Updated",
+      description: "Your notification settings have been saved." });
   };
 
-  const enablePush = () => {
-    setPushEnabled(true);
+  const enablePush = () => { setPushEnabled(true);
     toast({
       title: "Push Notifications Enabled! 🔔",
-      description: "You'll now receive AI-powered lottery alerts.",
-    });
+      description: "You'll now receive AI-powered lottery alerts." });
   };
 
   return (

@@ -6,13 +6,13 @@ import { AlertTriangle, Phone, Heart, Loader2 } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const HOTLINES = [
-  { country: "🇨🇿 Czech Republic", name: "Safety Line", phone: "116 111", hours: "24/7" },
-  { country: "🇭🇺 Hungary", name: "Mental Health First Aid", phone: "116 123", hours: "24/7" },
-  { country: "🇵🇱 Polska", name: "Telefon Zaufania", phone: "116 123", hours: "14:00–22:00" },
-  { country: "🇩🇪 Deutschland", name: "TelefonSeelsorge", phone: "0800 111 0 111", hours: "24/7" },
-  { country: "🇬🇧 UK", name: "Samaritans", phone: "116 123", hours: "24/7" },
-  { country: "🇺🇸 USA", name: "988 Suicide & Crisis Lifeline", phone: "988", hours: "24/7" },
-  { country: "🌍 EU", name: "European Emergency", phone: "112", hours: "24/7" },
+  { country: "🌍 Region 1", name: "Safety Line", phone: "116 111", hours: "24/7" },
+  { country: "🌍 Region 2", name: "Mental Health First Aid", phone: "116 123", hours: "24/7" },
+  { country: "🌍 Region 3", name: "Telefon Zaufania", phone: "116 123", hours: "14:00–22:00" },
+  { country: "🌍 Region 4", name: "TelefonSeelsorge", phone: "0800 111 0 111", hours: "24/7" },
+  { country: "🌍 Region 5", name: "Samaritans", phone: "116 123", hours: "24/7" },
+  { country: "🌍 Region 6", name: "988 Suicide & Crisis Lifeline", phone: "988", hours: "24/7" },
+  { country: "🌍 Emergency", name: "Local Emergency", phone: "112", hours: "24/7" },
 ];
 
 export const CrisisResourcesView = () => {

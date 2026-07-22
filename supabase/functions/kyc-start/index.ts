@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[KYC-START] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
@@ -77,27 +75,21 @@ serve(async (req) => {
       provided_details: { email: user.email },
       metadata: { user_id: user.id, email: user.email },
       return_url: `${origin}/account/verification?session=${"{VERIFICATION_SESSION_ID}"}`,
-      options: {
-        document: {
+      options: { document: {
           allowed_types: ["driving_license", "passport", "id_card"],
           require_matching_selfie: true,
-          require_live_capture: true,
-        },
-      },
-    });
+          require_live_capture: true } } });
 
     log("session created", { id: session.id });
 
     await supabase.from("creator_kyc_verifications").upsert(
-      {
-        user_id: user.id,
+      { user_id: user.id,
         email: user.email,
         status: "pending",
         stripe_verification_session_id: session.id,
         stripe_verification_url: session.url,
         submitted_at: new Date().toISOString(),
-        rejection_reason: null,
-      },
+        rejection_reason: null },
       { onConflict: "user_id" },
     );
 
@@ -110,7 +102,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

@@ -4,11 +4,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -43,9 +41,7 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `You extract durable personal facts about a user from their chat messages. Output JSON: {"memories":[{"category":"fact|person|preference|event|goal|dislike","content":"<short third-person fact>","importance":1-10}]} Only include things worth long-term remembering (names of friends/family/pets, hobbies, job, big goals, important dates, dislikes). Skip ephemeral things ("had coffee today"). Max 8 items. Keep content under 140 chars.` },
           { role: "user", content: text },
-        ],
-      }),
-    });
+        ] }) });
     if (!aiResp.ok) return j({ error: "ai" }, 502);
     const data = await aiResp.json();
     let parsed: any = {};
@@ -60,12 +56,10 @@ serve(async (req) => {
 
     const toInsert = items
       .filter(i => i?.content && !existingSet.has(String(i.content).toLowerCase().trim()))
-      .map(i => ({
-        user_id: u.user.id,
+      .map(i => ({ user_id: u.user.id,
         category: ["fact","person","preference","event","goal","dislike"].includes(i.category) ? i.category : "fact",
         content: String(i.content).slice(0, 280),
-        importance: Math.min(10, Math.max(1, Number(i.importance) || 5)),
-      }));
+        importance: Math.min(10, Math.max(1, Number(i.importance) || 5)) }));
     if (toInsert.length === 0) return j({ extracted: 0 });
 
     await admin.from("best_friend_memories").insert(toInsert);

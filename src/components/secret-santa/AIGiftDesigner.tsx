@@ -54,8 +54,7 @@ export const AIGiftDesigner = () => {
       const prompt = selectedPrompt === "custom" ? customPrompt : promptData?.prompt || "";
 
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { type: "gift_designer", customPrompt: prompt },
-      });
+        body: { type: "gift_designer", customPrompt: prompt } });
 
       if (error) throw error;
 
@@ -63,15 +62,13 @@ export const AIGiftDesigner = () => {
       try {
         const parsed = JSON.parse(data.message);
         setDesignedGift(parsed);
-      } catch {
-        // If not valid JSON, create a structured response
+      } catch { // If not valid JSON, create a structured response
         setDesignedGift({
           name: "Custom AI Gift",
           description: data.message,
           emoji: "✨",
           value: 50,
-          theme: selectedPrompt,
-        });
+          theme: selectedPrompt });
       }
 
       queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });

@@ -18,9 +18,7 @@ export function CloneCreator() {
   const [checking, setChecking] = useState(true);
   const [tier, setTier] = useState<string | null>(null);
   const [usedSlots, setUsedSlots] = useState(0);
-  const [formData, setFormData] = useState({
-    cloneName: "", personality: "", interests: "", communicationStyle: "", tone: "friendly",
-  });
+  const [formData, setFormData] = useState({ cloneName: "", personality: "", interests: "", communicationStyle: "", tone: "friendly" });
 
   useEffect(() => { checkSubscription(); }, []);
 
@@ -63,18 +61,15 @@ export function CloneCreator() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
-      const { error } = await supabase.from("personality_clones").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("personality_clones").insert({ user_id: user.id,
         clone_name: formData.cloneName,
         personality_data: {
           personality: formData.personality,
           interests: formData.interests,
           communicationStyle: formData.communicationStyle,
-          tone: formData.tone,
-        },
+          tone: formData.tone },
         subscription_tier: tier,
-        training_status: "active",
-      });
+        training_status: "active" });
       if (error) throw error;
       toast({ title: "Clone Created! 🤖", description: "Your AI clone is live." });
       setFormData({ cloneName: "", personality: "", interests: "", communicationStyle: "", tone: "friendly" });

@@ -75,20 +75,15 @@ export function OrderActions({
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("escrow-release", {
-        body: { orderId },
-      });
+        body: { orderId } });
 
       if (error) throw error;
 
-      toast.success("Funds released to seller", {
-        description: "Thank you for your purchase!",
-      });
+      toast.success("Funds released to seller", { description: "Thank you for your purchase!" });
       onStatusChange();
-    } catch (error) {
-      console.error("Error releasing funds:", error);
+    } catch (error) { console.error("Error releasing funds:", error);
       toast.error("Failed to release funds", {
-        description: error instanceof Error ? error.message : "Please try again",
-      });
+        description: error instanceof Error ? error.message : "Please try again" });
     } finally {
       setLoading(false);
     }

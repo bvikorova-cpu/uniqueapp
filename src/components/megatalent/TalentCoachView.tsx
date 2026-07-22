@@ -24,8 +24,7 @@ export const TalentCoachView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("megatalent-ai", {
-        body: { action: "talent_coach", category, title, description },
-      });
+        body: { action: "talent_coach", category, title, description } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

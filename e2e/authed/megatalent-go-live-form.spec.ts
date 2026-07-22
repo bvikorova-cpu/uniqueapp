@@ -59,8 +59,7 @@ test.describe("MegaTalent Go Live form — validations + thumbnail", () => {
     for (const id of CREATED_STREAM_IDS) {
       await request
         .delete(`${SUPABASE_URL}/rest/v1/megatalent_live_streams?id=eq.${id}`, {
-          headers: { apikey: ANON_KEY, Authorization: `Bearer ${token}` },
-        })
+          headers: { apikey: ANON_KEY, Authorization: `Bearer ${token}` } })
         .catch(() => {});
     }
   });
@@ -74,37 +73,31 @@ test.describe("MegaTalent Go Live form — validations + thumbnail", () => {
     await expect(page.getByRole("button", { name: /End stream/i })).toHaveCount(0);
   });
 
-  test("thumbnail TYPE validation rejects non-image files", async ({ page }) => {
-    await openGoLiveForm(page);
+  test("thumbnail TYPE validation rejects non-image files", async ({ page }) => { await openGoLiveForm(page);
     await page.setInputFiles('input[type="file"]', {
       name: "notes.txt",
       mimeType: "text/plain",
-      buffer: Buffer.from("not an image"),
-    });
+      buffer: Buffer.from("not an image") });
     await expect(page.getByText(/Podporované formáty: JPG, PNG, WebP/i)).toBeVisible();
     // No preview img rendered.
     await expect(page.getByAltText(/Thumbnail preview/i)).toHaveCount(0);
   });
 
-  test("thumbnail SIZE validation rejects files > 5 MB", async ({ page }) => {
-    await openGoLiveForm(page);
+  test("thumbnail SIZE validation rejects files > 5 MB", async ({ page }) => { await openGoLiveForm(page);
     const big = Buffer.alloc(5 * 1024 * 1024 + 10, 0); // 5MB + 10B
     await page.setInputFiles('input[type="file"]', {
       name: "huge.png",
       mimeType: "image/png",
-      buffer: big,
-    });
+      buffer: big });
     await expect(page.getByText(/najviac 5 MB/i)).toBeVisible();
     await expect(page.getByAltText(/Thumbnail preview/i)).toHaveCount(0);
   });
 
-  test("valid image shows preview and clear button removes it", async ({ page }) => {
-    await openGoLiveForm(page);
+  test("valid image shows preview and clear button removes it", async ({ page }) => { await openGoLiveForm(page);
     await page.setInputFiles('input[type="file"]', {
       name: "thumb.png",
       mimeType: "image/png",
-      buffer: TINY_PNG,
-    });
+      buffer: TINY_PNG });
     const preview = page.getByAltText(/Thumbnail preview/i);
     await expect(preview).toBeVisible();
     const src = await preview.getAttribute("src");
@@ -117,21 +110,17 @@ test.describe("MegaTalent Go Live form — validations + thumbnail", () => {
     await expect(page.getByText(/Klikni pre výber obrázka/i)).toBeVisible();
   });
 
-  test("Go Live with thumbnail renders preview in active view + stream list", async ({
-    page,
-    request,
-  }) => {
+  test("Go Live with thumbnail renders preview in active view + stream list", async ({ page,
+    request }) => {
     const { token, userId } = readAccessToken();
     const title = `E2E Thumb ${Date.now()}`;
 
     await openGoLiveForm(page);
     await page.getByLabel(/Názov streamu/i).fill(title);
     await page.getByLabel(/Popis/i).fill("E2E description");
-    await page.setInputFiles('input[type="file"]', {
-      name: "thumb.png",
+    await page.setInputFiles('input[type="file"]', { name: "thumb.png",
       mimeType: "image/png",
-      buffer: TINY_PNG,
-    });
+      buffer: TINY_PNG });
     await expect(page.getByAltText(/Thumbnail preview/i)).toBeVisible();
 
     await page.getByRole("button", { name: /^Start$|^Spúšťam/i }).click();
@@ -146,11 +135,9 @@ test.describe("MegaTalent Go Live form — validations + thumbnail", () => {
       uploadError.waitFor({ state: "visible", timeout: 15_000 }).catch(() => null),
     ]);
 
-    if (await uploadError.isVisible().catch(() => false)) {
-      test.info().annotations.push({
+    if (await uploadError.isVisible().catch(() => false)) { test.info().annotations.push({
         type: "skip-reason",
-        description: "Storage bucket megatalent-thumbnails not provisioned — upload path skipped.",
-      });
+        description: "Storage bucket megatalent-thumbnails not provisioned — upload path skipped." });
       return;
     }
 
@@ -193,10 +180,8 @@ test.describe("MegaTalent Go Live form — validations + thumbnail", () => {
             apikey: ANON_KEY,
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-            Prefer: "return=minimal",
-          },
-          data: { status: "ended", ended_at: new Date().toISOString() },
-        },
+            Prefer: "return=minimal" },
+          data: { status: "ended", ended_at: new Date().toISOString() } },
       )
       .catch(() => {});
   });

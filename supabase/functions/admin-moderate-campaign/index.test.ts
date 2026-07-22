@@ -11,10 +11,8 @@ async function call(body: unknown, auth?: string) {
     headers: {
       "Content-Type": "application/json",
       apikey: ANON,
-      ...(auth ? { Authorization: `Bearer ${auth}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
+      ...(auth ? { Authorization: `Bearer ${auth}` } : {}) },
+    body: JSON.stringify(body) });
   const json = await res.json().catch(() => ({}));
   return { status: res.status, json };
 }

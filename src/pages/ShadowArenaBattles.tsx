@@ -102,8 +102,7 @@ export default function ShadowArenaBattles() {
     waiting_for_participants: { label: "Open", className: "bg-yellow-600/80 text-yellow-100" },
     active: { label: "Live", className: "bg-green-600/80 text-green-100" },
     completed: { label: "Ended", className: "bg-muted text-muted-foreground" },
-    expired: { label: "Expired", className: "bg-red-900/60 text-red-300" },
-  };
+    expired: { label: "Expired", className: "bg-red-900/60 text-red-300" } };
 
   const infoItems = [
     { icon: Sparkles, label: "AI-generated themes every month" },

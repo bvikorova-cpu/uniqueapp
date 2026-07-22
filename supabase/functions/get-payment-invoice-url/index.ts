@@ -5,11 +5,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[GET-INVOICE-URL] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
@@ -24,8 +22,7 @@ serve(async (req) => {
     const supaUrl = Deno.env.get("SUPABASE_URL")!;
     const anon = Deno.env.get("SUPABASE_ANON_KEY")!;
     const userClient = createClient(supaUrl, anon, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: u, error: uErr } = await userClient.auth.getUser();
     if (uErr || !u.user) throw new Error("Not authenticated");
 
@@ -33,8 +30,7 @@ serve(async (req) => {
     if (!paymentRecordId) throw new Error("paymentRecordId required");
 
     const admin = createClient(supaUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
-      auth: { persistSession: false },
-    });
+      auth: { persistSession: false } });
     const { data: rec, error: rErr } = await admin
       .from("payment_records")
       .select("id, user_id, stripe_payment_intent_id, stripe_session_id")
@@ -51,20 +47,16 @@ serve(async (req) => {
     let receiptUrl: string | null = null;
     let invoiceUrl: string | null = null;
 
-    if (rec.stripe_payment_intent_id) {
-      const pi = await stripe.paymentIntents.retrieve(rec.stripe_payment_intent_id, {
-        expand: ["latest_charge", "invoice"],
-      });
+    if (rec.stripe_payment_intent_id) { const pi = await stripe.paymentIntents.retrieve(rec.stripe_payment_intent_id, {
+        expand: ["latest_charge", "invoice"] });
       const charge = pi.latest_charge as Stripe.Charge | null;
       if (charge?.receipt_url) receiptUrl = charge.receipt_url;
       const inv = pi.invoice as Stripe.Invoice | null;
       if (inv?.hosted_invoice_url) invoiceUrl = inv.hosted_invoice_url;
     }
 
-    if (!receiptUrl && !invoiceUrl && rec.stripe_session_id) {
-      const session = await stripe.checkout.sessions.retrieve(rec.stripe_session_id, {
-        expand: ["invoice", "payment_intent.latest_charge"],
-      });
+    if (!receiptUrl && !invoiceUrl && rec.stripe_session_id) { const session = await stripe.checkout.sessions.retrieve(rec.stripe_session_id, {
+        expand: ["invoice", "payment_intent.latest_charge"] });
       const inv = session.invoice as Stripe.Invoice | null;
       if (inv?.hosted_invoice_url) invoiceUrl = inv.hosted_invoice_url;
       const pi = session.payment_intent as Stripe.PaymentIntent | null;
@@ -79,10 +71,8 @@ serve(async (req) => {
     log("returning url", { receiptUrl: !!receiptUrl, invoiceUrl: !!invoiceUrl });
 
     return new Response(
-      JSON.stringify({
-        url: invoiceUrl || receiptUrl,
-        type: invoiceUrl ? "invoice" : "receipt",
-      }),
+      JSON.stringify({ url: invoiceUrl || receiptUrl,
+        type: invoiceUrl ? "invoice" : "receipt" }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
@@ -90,7 +80,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -18,9 +18,7 @@ export function CouponExtensionTeaser() {
     const { data: { user } } = await supabase.auth.getUser();
     const browser = navigator.userAgent.includes("Chrome") ? "chrome" :
       navigator.userAgent.includes("Firefox") ? "firefox" : "other";
-    const { error } = await supabase.from("coupon_extension_waitlist" as any).insert({
-      email, user_id: user?.id ?? null, browser,
-    });
+    const { error } = await supabase.from("coupon_extension_waitlist" as any).insert({ email, user_id: user?.id ?? null, browser });
     setBusy(false);
     if (error && !error.message.includes("duplicate")) {
       toast.error(error.message); return;

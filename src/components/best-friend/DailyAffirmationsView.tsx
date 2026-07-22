@@ -19,8 +19,7 @@ export const DailyAffirmationsView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "daily_affirmations", focus, challenges },
-      });
+        body: { action: "daily_affirmations", focus, challenges } });
       if (error) throw error;
       setResult(data);
       toast.success("Affirmations created! (2 credits used)");
@@ -28,13 +27,11 @@ export const DailyAffirmationsView = () => {
     finally { setLoading(false); }
   };
 
-  const categoryColors: Record<string, string> = {
-    Confidence: "text-yellow-400",
+  const categoryColors: Record<string, string> = { Confidence: "text-yellow-400",
     Gratitude: "text-green-400",
     Growth: "text-blue-400",
     Love: "text-pink-400",
-    Strength: "text-red-400",
-  };
+    Strength: "text-red-400" };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

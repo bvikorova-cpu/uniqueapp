@@ -43,14 +43,12 @@ export async function createEscrowHold(
 
   const { data, error } = await supabase
     .from('bazaar_escrow')
-    .insert({
-      order_id: orderId,
+    .insert({ order_id: orderId,
       amount,
       commission_amount: commissionAmount,
       seller_payout: sellerPayout,
       status: 'held',
-      auto_release_at: autoReleaseAt.toISOString(),
-    })
+      auto_release_at: autoReleaseAt.toISOString() })
     .select()
     .single();
 
@@ -90,17 +88,14 @@ export async function releaseEscrow(
   let transferId: string | undefined;
 
   // If seller has Stripe Connect account, transfer funds
-  if (sellerStripeAccountId) {
-    try {
+  if (sellerStripeAccountId) { try {
       const transfer = await stripe.transfers.create({
         amount: Math.round(escrow.seller_payout * 100),
         currency: 'eur',
         destination: sellerStripeAccountId,
         metadata: {
           escrow_id: escrowId,
-          order_id: escrow.order_id,
-        },
-      });
+          order_id: escrow.order_id } });
       transferId = transfer.id;
       logStep('ESCROW', 'Stripe transfer created', { transferId });
     } catch (err) {
@@ -112,11 +107,9 @@ export async function releaseEscrow(
   // Update escrow status
   const { error: updateError } = await supabase
     .from('bazaar_escrow')
-    .update({
-      status: 'released',
+    .update({ status: 'released',
       released_at: new Date().toISOString(),
-      stripe_transfer_id: transferId,
-    })
+      stripe_transfer_id: transferId })
     .eq('id', escrowId);
 
   if (updateError) throw new Error(`Failed to update escrow: ${updateError.message}`);
@@ -155,15 +148,12 @@ export async function refundEscrow(
   let refundId: string | undefined;
 
   // Create Stripe refund
-  try {
-    const refund = await stripe.refunds.create({
+  try { const refund = await stripe.refunds.create({
       payment_intent: stripePaymentIntentId,
       amount: Math.round(escrow.amount * 100),
       metadata: {
         escrow_id: escrowId,
-        order_id: escrow.order_id,
-      },
-    });
+        order_id: escrow.order_id } });
     refundId = refund.id;
     logStep('ESCROW', 'Stripe refund created', { refundId });
   } catch (err) {
@@ -174,10 +164,8 @@ export async function refundEscrow(
   // Update escrow status
   const { error: updateError } = await supabase
     .from('bazaar_escrow')
-    .update({
-      status: 'refunded',
-      refunded_at: new Date().toISOString(),
-    })
+    .update({ status: 'refunded',
+      refunded_at: new Date().toISOString() })
     .eq('id', escrowId);
 
   if (updateError) throw new Error(`Failed to update escrow: ${updateError.message}`);
@@ -210,14 +198,12 @@ export async function openDispute(
   // Create dispute
   const { data: dispute, error } = await supabase
     .from('bazaar_disputes')
-    .insert({
-      order_id: orderId,
+    .insert({ order_id: orderId,
       escrow_id: escrow?.id,
       opened_by: userId,
       reason,
       description,
-      evidence_urls: evidenceUrls || [],
-    })
+      evidence_urls: evidenceUrls || [] })
     .select()
     .single();
 

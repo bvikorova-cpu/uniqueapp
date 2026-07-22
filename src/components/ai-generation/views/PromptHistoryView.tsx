@@ -24,8 +24,7 @@ export const PromptHistoryView = ({ onSelectPrompt }: Props) => {
       const { data, error } = await query;
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   const toggleFavorite = async (id: string, current: boolean) => {
     await supabase.from("ai_prompt_history").update({ is_favorite: !current }).eq("id", id);

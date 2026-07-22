@@ -48,8 +48,7 @@ export function TimeLapseCreator({ onBack }: Props) {
 
       // Generate AI frames via edge function
       const { data, error } = await supabase.functions.invoke("time-reversal-timelapse", {
-        body: { imageUrl: publicUrl, startAge: startAge[0], endAge: endAge[0], frames: 8 },
-      });
+        body: { imageUrl: publicUrl, startAge: startAge[0], endAge: endAge[0], frames: 8 } });
 
       if (error) throw error;
 

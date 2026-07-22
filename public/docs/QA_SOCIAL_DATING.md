@@ -8,8 +8,8 @@ Mena: EUR. Veková brána: 16+ (Dating). Predpokladá sa prihlásený používat
 ## 0. Príprava
 
 ### Účty
-- **U1 (Alice)** — vek 25, ženské pohlavie, lokalita Bratislava, 100+ kreditov, Stripe karta `4242 4242 4242 4242`.
-- **U2 (Bob)** — vek 28, mužské pohlavie, lokalita Bratislava, 30 kreditov, karta `4000 0027 6000 3184` (3DS).
+- **U1 (Alice)** — vek 25, ženské pohlavie, lokalita City, 100+ kreditov, Stripe karta `4242 4242 4242 4242`.
+- **U2 (Bob)** — vek 28, mužské pohlavie, lokalita City, 30 kreditov, karta `4000 0027 6000 3184` (3DS).
 - **U3 (Carol)** — vek 17 (alebo bez vyplneného DOB), 0 kreditov, karta `4000 0000 0000 0002` (decline). Slúži na testy age-gate a edge cases.
 - **U4 (Admin)** — admin role pre `/admin/dating-moderation`.
 

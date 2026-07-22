@@ -31,14 +31,12 @@ Deno.serve(async (req) => {
     const serviceRole = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     const userClient = createClient(supabaseUrl, anon, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: { user } } = await userClient.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Admin gate
@@ -51,8 +49,7 @@ Deno.serve(async (req) => {
     if (!roleRow) {
       return new Response(JSON.stringify({ error: "forbidden" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const body = await req.json().catch(() => ({}));
@@ -69,12 +66,10 @@ Deno.serve(async (req) => {
       results.megatalent_deleted = mt ?? 0;
       results.forum_deleted = fp ?? 0;
       return new Response(JSON.stringify({ ok: true, results }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    if (target === "megatalent" || target === "all") {
-      const rows = DEMO_MEGATALENT.map((d) => ({
+    if (target === "megatalent" || target === "all") { const rows = DEMO_MEGATALENT.map((d) => ({
         user_id: user.id, // admin owns the seed rows; can be reassigned later
         title: d.title,
         description: d.description,
@@ -82,8 +77,7 @@ Deno.serve(async (req) => {
         media_url: "https://placehold.co/800x450/120024/FFFFFF/png?text=DEMO",
         media_type: "image",
         votes_count: Math.floor(Math.random() * 80) + 10,
-        status: "approved",
-      }));
+        status: "approved" }));
       const { data: mt, error: mtErr } = await admin
         .from("megatalent_submissions")
         .insert(rows)
@@ -92,13 +86,11 @@ Deno.serve(async (req) => {
       results.megatalent_inserted = mt?.length ?? 0;
     }
 
-    if (target === "forum" || target === "all") {
-      const rows = DEMO_FORUM.map((d) => ({
+    if (target === "forum" || target === "all") { const rows = DEMO_FORUM.map((d) => ({
         user_id: user.id,
         title: d.title,
         body: d.body,
-        category: "general",
-      }));
+        category: "general" }));
       const { data: fp, error: fpErr } = await admin
         .from("forum_posts")
         .insert(rows)
@@ -108,13 +100,11 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ ok: true, results }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

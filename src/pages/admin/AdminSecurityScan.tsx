@@ -28,12 +28,10 @@ interface Snapshot {
   created_at: string;
 }
 
-const sevColor: Record<Severity, string> = {
-  critical: "bg-destructive text-destructive-foreground",
+const sevColor: Record<Severity, string> = { critical: "bg-destructive text-destructive-foreground",
   high: "bg-orange-500/90 text-white",
   medium: "bg-amber-500/90 text-white",
-  low: "bg-muted text-muted-foreground",
-};
+  low: "bg-muted text-muted-foreground" };
 
 const Counters = ({ s }: { s: Snapshot }) => (
   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -82,15 +80,13 @@ const FindingRow = ({ f, type }: { f: any; type: Snapshot["scan_type"] }) => (
   </div>
 );
 
-const ScanCard = ({
-  type,
+const ScanCard = ({ type,
   icon: Icon,
   title,
   fnName,
   history,
   onScan,
-  scanning,
-}: {
+  scanning }: {
   type: Snapshot["scan_type"];
   icon: typeof Server;
   title: string;

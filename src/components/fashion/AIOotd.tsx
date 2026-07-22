@@ -31,8 +31,7 @@ export default function AIOotd() {
         .limit(10);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -45,18 +44,15 @@ export default function AIOotd() {
       }
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "ootd-score", outfitDescription: description, occasion, season },
-      });
+        body: { action: "ootd-score", outfitDescription: description, occasion, season } });
       if (error) throw error;
 
-      await supabase.from("fashion_ootd").insert({
-        user_id: session.user.id,
+      await supabase.from("fashion_ootd").insert({ user_id: session.user.id,
         outfit_description: description,
         ai_score: data.score?.overall_score,
         ai_feedback: JSON.stringify(data.score),
         style_tags: data.score?.style_tags || [],
-        credits_used: CREDIT_COST,
-      });
+        credits_used: CREDIT_COST });
 
       return data.score;
     },
@@ -64,8 +60,7 @@ export default function AIOotd() {
       setResult(score);
       toast.success(`Your outfit scored ${score?.overall_score}/100!`);
     },
-    onError: (e: any) => toast.error(e.message),
-  });
+    onError: (e: any) => toast.error(e.message) });
 
   const ScoreBar = ({ label, value }: { label: string; value: number }) => (
     <div className="space-y-1">

@@ -26,11 +26,10 @@ export function TypingIndicator({ character }: TypingIndicatorProps) {
               key={i}
               className="w-2.5 h-2.5 rounded-full bg-white/80"
               animate={{ y: [0, -8, 0] }}
-              transition={{
+              transition={ {
                 duration: 0.6,
                 repeat: Infinity,
-                delay: i * 0.15,
-              }}
+                delay: i * 0.15 }}
             />
           ))}
         </div>

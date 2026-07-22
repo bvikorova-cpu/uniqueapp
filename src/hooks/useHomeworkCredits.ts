@@ -14,12 +14,10 @@ interface HomeworkCreditsState {
  * Paid-only homework credits (3 credits per AI question).
  * Backed by `homework_credits` table + universal `create-checkout` router.
  */
-export const useHomeworkCredits = () => {
-  const [state, setState] = useState<HomeworkCreditsState>({
+export const useHomeworkCredits = () => { const [state, setState] = useState<HomeworkCreditsState>({
     credits_remaining: 0,
     total_credits_purchased: 0,
-    loading: true,
-  });
+    loading: true });
 
   const refresh = useCallback(async () => {
     try {
@@ -37,12 +35,10 @@ export const useHomeworkCredits = () => {
 
       if (error && error.code !== "PGRST116") throw error;
 
-      if (data) {
-        setState({
+      if (data) { setState({
           credits_remaining: data.credits_remaining ?? 0,
           total_credits_purchased: data.total_credits_purchased ?? 0,
-          loading: false,
-        });
+          loading: false });
       } else {
         // Lazy-create row
         await supabase
@@ -64,8 +60,7 @@ export const useHomeworkCredits = () => {
         return null;
       }
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { credits, creditType: "homework" },
-      });
+        body: { credits, creditType: "homework" } });
       if (error) throw error;
       return data?.url || null;
     } catch (e: any) {
@@ -79,10 +74,8 @@ export const useHomeworkCredits = () => {
     refresh();
   }, [refresh]);
 
-  return {
-    ...state,
+  return { ...state,
     canAsk: state.credits_remaining >= HOMEWORK_CREDITS_PER_QUESTION,
     refresh,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

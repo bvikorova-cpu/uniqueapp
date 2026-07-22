@@ -49,9 +49,7 @@ export const SinPatternAnalyzer = () => {
 
 User's description: ${input}
 
-Provide a compassionate, insightful analysis in markdown format. Be specific and actionable.`,
-        },
-      });
+Provide a compassionate, insightful analysis in markdown format. Be specific and actionable.` } });
 
       if (error) throw error;
 
@@ -59,11 +57,9 @@ Provide a compassionate, insightful analysis in markdown format. Be specific and
         data?.plan?.soul_missions?.map((m: any) => m.mission).join("\n\n") ||
         "Analysis could not be generated. Please try again.";
 
-      setAnalyses(prev => [{
-        input: input.trim(),
+      setAnalyses(prev => [{ input: input.trim(),
         analysis,
-        timestamp: new Date().toISOString(),
-      }, ...prev]);
+        timestamp: new Date().toISOString() }, ...prev]);
 
       setInput("");
       toast({ title: "Pattern Analysis Complete!" });

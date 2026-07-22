@@ -42,8 +42,7 @@ export const ImageToPromptView = ({ onCreditsUsed, onUsePrompt }: Props) => {
     setAnalyzing(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-image-tools", {
-        body: { action: "image_to_prompt", imageUrl: imageUrl.trim() },
-      });
+        body: { action: "image_to_prompt", imageUrl: imageUrl.trim() } });
       if (error) throw error;
       setResult(data);
       onCreditsUsed();

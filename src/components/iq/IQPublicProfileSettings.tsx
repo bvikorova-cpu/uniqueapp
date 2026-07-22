@@ -25,8 +25,7 @@ export default function IQPublicProfileSettings() {
       if (!user) return null;
       const { data } = await supabase.from("iq_public_profiles").select("*").eq("user_id", user.id).maybeSingle();
       return data;
-    },
-  });
+    } });
 
   useEffect(() => {
     if (profile) {
@@ -42,13 +41,11 @@ export default function IQPublicProfileSettings() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
       const slug = profile?.share_slug ?? `${(displayName || "user").toLowerCase().replace(/[^a-z0-9]/g, "-")}-${user.id.slice(0, 6)}`;
-      const { error } = await supabase.from("iq_public_profiles").upsert({
-        user_id: user.id,
+      const { error } = await supabase.from("iq_public_profiles").upsert({ user_id: user.id,
         share_slug: slug,
         display_name: displayName || null,
         bio: bio || null,
-        is_public: isPublic,
-      }, { onConflict: "user_id" });
+        is_public: isPublic }, { onConflict: "user_id" });
       if (error) throw error;
       toast({ title: "Saved", description: "Public profile updated" });
       qc.invalidateQueries({ queryKey: ["iq-my-public-profile"] });

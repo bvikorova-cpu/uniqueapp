@@ -23,13 +23,11 @@ interface SendGiftDialogProps {
   competitionId?: string;
 }
 
-export function SendGiftDialog({
-  open,
+export function SendGiftDialog({ open,
   onOpenChange,
   chefId,
   chefName,
-  competitionId,
-}: SendGiftDialogProps) {
+  competitionId }: SendGiftDialogProps) {
   const [gifts, setGifts] = useState<GiftOption[]>([]);
   const [selectedGift, setSelectedGift] = useState<string | null>(null);
   const [message, setMessage] = useState("");
@@ -49,26 +47,22 @@ export function SendGiftDialog({
       .eq("is_active", true)
       .order("price", { ascending: true });
 
-    if (error) {
-      console.error("Error loading gifts:", error);
+    if (error) { console.error("Error loading gifts:", error);
       toast({
         title: "Error",
         description: "Failed to load gifts. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
     setGifts(data || []);
   };
 
-  const handleSendGift = async () => {
-    if (!selectedGift) {
+  const handleSendGift = async () => { if (!selectedGift) {
       toast({
         title: "Select a gift",
         description: "Please choose a gift to send",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -76,41 +70,32 @@ export function SendGiftDialog({
       setLoading(true);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Login Required",
           description: "Please sign in to send gifts",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke("send-masterchef-gift", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("send-masterchef-gift", { body: {
           chefId,
           giftId: selectedGift,
           competitionId,
-          message: message.trim(),
-        },
-      });
+          message: message.trim() } });
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, "_blank");
+      if (data?.url) { window.open(data.url, "_blank");
         onOpenChange(false);
         toast({
           title: "Payment Started",
-          description: "Complete the payment to send your gift",
-        });
+          description: "Complete the payment to send your gift" });
       }
-    } catch (error) {
-      console.error("Gift send error:", error);
+    } catch (error) { console.error("Gift send error:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to send gift. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

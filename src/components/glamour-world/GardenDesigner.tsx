@@ -23,14 +23,11 @@ export function GardenDesigner({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "garden", prompt: `Design a ${type}. ${details}. Include: plant list, layout plan, decorations, care schedule, and seasonal tips.`, coins: 3 },
-      });
+        body: { type: "garden", prompt: `Design a ${type}. ${details}. Include: plant list, layout plan, decorations, care schedule, and seasonal tips.`, coins: 3 } });
       if (error) throw error;
       setResult(data.result);
-      await supabase.from("glamour_creations").insert({
-        user_id: user.id, creation_type: "garden", title: type,
-        prompt: details, result_text: data.result, credits_used: 3,
-      });
+      await supabase.from("glamour_creations").insert({ user_id: user.id, creation_type: "garden", title: type,
+        prompt: details, result_text: data.result, credits_used: 3 });
     } catch (e: any) {
       const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
         if (isCoinsErr) {

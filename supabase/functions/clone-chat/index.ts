@@ -3,10 +3,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { callOpenAI, OpenAIError } from "../_shared/openai.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const DAILY_LIMIT = 20;
 

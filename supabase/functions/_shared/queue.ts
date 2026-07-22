@@ -60,27 +60,23 @@ export async function enqueueJob(
   jobType: JobType,
   payload: Record<string, unknown>,
   options: EnqueueOptions = {}
-): Promise<string | null> {
-  const supabase = getSupabaseAdmin();
+): Promise<string | null> { const supabase = getSupabaseAdmin();
   
   const {
     priority = 0,
     maxAttempts = 3,
     scheduledAt = new Date(),
-    userId,
-  } = options;
+    userId } = options;
   
   try {
     const { data, error } = await supabase
       .from('job_queue')
-      .insert({
-        job_type: jobType,
+      .insert({ job_type: jobType,
         payload,
         priority,
         max_attempts: maxAttempts,
         scheduled_at: scheduledAt.toISOString(),
-        user_id: userId,
-      })
+        user_id: userId })
       .select('id')
       .single();
     
@@ -104,9 +100,7 @@ export async function getNextJob(jobTypes?: JobType[]): Promise<Job | null> {
   const supabase = getSupabaseAdmin();
   
   try {
-    const { data, error } = await supabase.rpc('get_next_job', {
-      p_job_types: jobTypes || null,
-    });
+    const { data, error } = await supabase.rpc('get_next_job', { p_job_types: jobTypes || null });
     
     if (error) {
       console.error('[Queue] Get next job error:', error);
@@ -143,10 +137,8 @@ export async function completeJob(jobId: string, result?: unknown): Promise<bool
   const supabase = getSupabaseAdmin();
   
   try {
-    const { error } = await supabase.rpc('complete_job', {
-      p_job_id: jobId,
-      p_result: result || null,
-    });
+    const { error } = await supabase.rpc('complete_job', { p_job_id: jobId,
+      p_result: result || null });
     
     if (error) {
       console.error('[Queue] Complete job error:', error);
@@ -168,10 +160,8 @@ export async function failJob(jobId: string, errorMessage?: string): Promise<boo
   const supabase = getSupabaseAdmin();
   
   try {
-    const { error } = await supabase.rpc('fail_job', {
-      p_job_id: jobId,
-      p_error: errorMessage || null,
-    });
+    const { error } = await supabase.rpc('fail_job', { p_job_id: jobId,
+      p_error: errorMessage || null });
     
     if (error) {
       console.error('[Queue] Fail job error:', error);
@@ -304,13 +294,11 @@ export async function cleanupOldJobs(): Promise<number> {
   }
 }
 
-export default {
-  enqueueJob,
+export default { enqueueJob,
   getNextJob,
   completeJob,
   failJob,
   getJobStatus,
   getUserJobs,
   processJobs,
-  cleanupOldJobs,
-};
+  cleanupOldJobs };

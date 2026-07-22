@@ -36,15 +36,13 @@ const categories = [
 export function CourseForm({ courseId, onSuccess, onCancel }: CourseFormProps) {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
+  const [formData, setFormData] = useState({ title: "",
     description: "",
     category: "",
     difficulty_level: "beginner",
     price: "",
     thumbnail_url: "",
-    is_published: false,
-  });
+    is_published: false });
 
   useEffect(() => {
     if (courseId) {
@@ -62,33 +60,27 @@ export function CourseForm({ courseId, onSuccess, onCancel }: CourseFormProps) {
 
       if (error) throw error;
 
-      setFormData({
-        title: data.title,
+      setFormData({ title: data.title,
         description: data.description,
         category: data.category,
         difficulty_level: data.difficulty_level || "beginner",
         price: data.price.toString(),
         thumbnail_url: data.thumbnail_url || "",
-        is_published: data.is_published || false,
-      });
-    } catch (error: any) {
-      toast({
+        is_published: data.is_published || false });
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
     
     if (!formData.title || !formData.description || !formData.category || !formData.price) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -97,16 +89,14 @@ export function CourseForm({ courseId, onSuccess, onCancel }: CourseFormProps) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const courseData = {
-        title: formData.title,
+      const courseData = { title: formData.title,
         description: formData.description,
         category: formData.category,
         difficulty_level: formData.difficulty_level,
         price: parseFloat(formData.price),
         thumbnail_url: formData.thumbnail_url || null,
         is_published: formData.is_published,
-        creator_id: user.id,
-      };
+        creator_id: user.id };
 
       if (courseId) {
         const { error } = await supabase
@@ -124,12 +114,10 @@ export function CourseForm({ courseId, onSuccess, onCancel }: CourseFormProps) {
       }
 
       onSuccess();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setSaving(false);
     }

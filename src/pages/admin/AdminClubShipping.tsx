@@ -39,8 +39,7 @@ export default function AdminClubShipping() {
       const status =
         nextFilter === "all" ? ["pending", "shipped"] : [nextFilter];
       const { data, error } = await supabase.functions.invoke("admin-club-shipping", {
-        body: { action: "list", status },
-      });
+        body: { action: "list", status } });
       if (error) throw error;
       setRows((data as any)?.items ?? []);
     } catch (e) {
@@ -56,8 +55,7 @@ export default function AdminClubShipping() {
     try {
       const t = (tracking[row.id] ?? "").trim();
       const { error } = await supabase.functions.invoke("admin-club-shipping", {
-        body: { action: "mark_shipped", membershipId: row.id, trackingNumber: t || null },
-      });
+        body: { action: "mark_shipped", membershipId: row.id, trackingNumber: t || null } });
       if (error) throw error;
       toast({ title: "Marked as shipped" });
       load();
@@ -69,8 +67,7 @@ export default function AdminClubShipping() {
   const markDelivered = async (row: ShippingRow) => {
     try {
       const { error } = await supabase.functions.invoke("admin-club-shipping", {
-        body: { action: "mark_delivered", membershipId: row.id },
-      });
+        body: { action: "mark_delivered", membershipId: row.id } });
       if (error) throw error;
       toast({ title: "Marked as delivered" });
       load();

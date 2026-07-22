@@ -19,8 +19,7 @@ export const ConversationStartersView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "conversation_starters", context: context.trim() || undefined },
-      });
+        body: { action: "conversation_starters", context: context.trim() || undefined } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);

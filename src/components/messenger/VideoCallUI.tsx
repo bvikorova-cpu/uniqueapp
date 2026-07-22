@@ -34,8 +34,7 @@ export const VideoCallUI = ({
   duration = '03:45',
   onEndCall,
   onToggleVideo,
-  onToggleAudio,
-}: VideoCallUIProps) => {
+  onToggleAudio }: VideoCallUIProps) => {
   const [isVideoEnabled, setIsVideoEnabled] = useState(initialVideo);
   const [isAudioEnabled, setIsAudioEnabled] = useState(initialAudio);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -196,8 +195,7 @@ export const IncomingCallUI = ({
   caller = { name: 'Jane Doe', avatar: '' },
   isVideoCall = true,
   onAccept,
-  onDecline,
-}: {
+  onDecline }: {
   caller?: { name: string; avatar?: string };
   isVideoCall?: boolean;
   onAccept?: () => void;

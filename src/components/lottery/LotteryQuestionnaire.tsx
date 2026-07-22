@@ -23,8 +23,7 @@ const questions: Question[] = [
       { label: "Weekly", value: "weekly", emoji: "📆" },
       { label: "Monthly", value: "monthly", emoji: "🗓️" },
       { label: "Occasionally", value: "occasional", emoji: "🎲" },
-    ],
-  },
+    ] },
   {
     id: "strategy",
     question: "What's your number picking strategy?",
@@ -34,8 +33,7 @@ const questions: Question[] = [
       { label: "Statistics", value: "stats", emoji: "📊" },
       { label: "Lucky Numbers", value: "lucky", emoji: "🍀" },
       { label: "Mixed", value: "mixed", emoji: "🔀" },
-    ],
-  },
+    ] },
   {
     id: "preference",
     question: "Do you prefer hot or cold numbers?",
@@ -45,8 +43,7 @@ const questions: Question[] = [
       { label: "Cold Numbers", value: "cold", emoji: "❄️" },
       { label: "Balanced", value: "balanced", emoji: "⚖️" },
       { label: "No Preference", value: "none", emoji: "🤷" },
-    ],
-  },
+    ] },
   {
     id: "budget",
     question: "What's your typical lottery budget?",
@@ -56,8 +53,7 @@ const questions: Question[] = [
       { label: "€5-€20", value: "medium", emoji: "💵" },
       { label: "€20-€50", value: "high", emoji: "💶" },
       { label: "€50+", value: "premium", emoji: "💎" },
-    ],
-  },
+    ] },
   {
     id: "goal",
     question: "What's your primary goal?",
@@ -67,8 +63,7 @@ const questions: Question[] = [
       { label: "Analysis", value: "analysis", emoji: "🔬" },
       { label: "Tracking", value: "tracking", emoji: "📈" },
       { label: "Win Big", value: "win", emoji: "🏆" },
-    ],
-  },
+    ] },
 ];
 
 export const LotteryQuestionnaire = () => {

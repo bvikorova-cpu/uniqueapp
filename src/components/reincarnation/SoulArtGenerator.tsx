@@ -55,15 +55,13 @@ export const SoulArtGenerator = () => {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (data) {
-        setPastLives(data.map((r: any) => ({
+      if (data) { setPastLives(data.map((r: any) => ({
           id: r.id,
           era: r.era || "Unknown Era",
           location: (r.reading_result as any)?.location || "Unknown",
           name: (r.reading_result as any)?.occupation || "Past Life",
           story: (r.reading_result as any)?.story || "",
-          karmic_theme: (r.reading_result as any)?.karmic_lesson || "Growth",
-        })));
+          karmic_theme: (r.reading_result as any)?.karmic_lesson || "Growth" })));
       }
     } catch (error) {
       console.error("Error:", error);
@@ -103,12 +101,10 @@ export const SoulArtGenerator = () => {
 
       if (error) throw error;
 
-      const newArt = {
-        prompt: data?.plan?.next_life_goal || prompt,
+      const newArt = { prompt: data?.plan?.next_life_goal || prompt,
         style: styleLabel,
         life: life?.name || "Custom Vision",
-        timestamp: new Date().toISOString(),
-      };
+        timestamp: new Date().toISOString() };
 
       setGeneratedArts(prev => [newArt, ...prev]);
 
@@ -119,12 +115,9 @@ export const SoulArtGenerator = () => {
         title: `Soul Art: ${life?.name || "Custom Vision"}`,
         prompt: prompt,
         generated_text: data?.plan?.next_life_goal || prompt,
-        metadata: {
-          type: "soul_art",
+        metadata: { type: "soul_art",
           art_style: styleLabel,
-          source_life: life?.name || "Custom",
-        },
-      });
+          source_life: life?.name || "Custom" } });
 
       toast({ title: "Soul Art Generated!", description: `${styleLabel} vision created for ${life?.name || "your custom vision"}` });
     } catch (error: any) {

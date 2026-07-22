@@ -1,21 +1,17 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const ALLOWED_TYPES = ["medical", "dream", "hero", "crisis", "pet", "student", "talent"] as const;
-const TABLE_MAP: Record<string, string> = {
-  medical: "medical_campaigns",
+const TABLE_MAP: Record<string, string> = { medical: "medical_campaigns",
   dream: "dream_campaigns",
   hero: "hero_campaigns",
   crisis: "crisis_campaigns",
   pet: "pet_rescue_campaigns",
   student: "student_campaigns",
-  talent: "talent_campaigns",
-};
+  talent: "talent_campaigns" };
 const ALLOWED_ACTIONS = ["approve", "reject", "ban", "flag", "unflag"] as const;
 
 serve(async (req) => {
@@ -35,10 +31,8 @@ serve(async (req) => {
     if (userErr || !user) return json({ error: "Invalid auth" }, 401);
 
     // Check admin role
-    const { data: isAdmin } = await supabase.rpc("has_role", {
-      _user_id: user.id,
-      _role: "admin",
-    });
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: user.id,
+      _role: "admin" });
     if (!isAdmin) return json({ error: "Admin role required" }, 403);
 
     const body = await req.json();
@@ -49,13 +43,11 @@ serve(async (req) => {
     if (!campaignId || typeof campaignId !== "string") return json({ error: "Invalid campaignId" }, 400);
 
     const table = TABLE_MAP[campaignType];
-    const statusMap: Record<string, string> = {
-      approve: "approved",
+    const statusMap: Record<string, string> = { approve: "approved",
       reject: "rejected",
       ban: "banned",
       flag: "flagged",
-      unflag: "approved",
-    };
+      unflag: "approved" };
 
     const { error: updErr } = await supabase
       .from(table)
@@ -65,8 +57,7 @@ serve(async (req) => {
         approved_by: user.id,
         approved_at: new Date().toISOString(),
         ...(action === "approve" ? { status: "active", verified: true } : {}),
-        ...(action === "reject" || action === "ban" ? { status: "rejected" } : {}),
-      })
+        ...(action === "reject" || action === "ban" ? { status: "rejected" } : {}) })
       .eq("id", campaignId);
 
     if (updErr) return json({ error: updErr.message }, 500);
@@ -77,8 +68,7 @@ serve(async (req) => {
       action: "fundraising_moderation",
       target_type: table,
       target_id: campaignId,
-      details: { campaign_type: campaignType, moderation_action: action, notes: notes ?? null },
-    });
+      details: { campaign_type: campaignType, moderation_action: action, notes: notes ?? null } });
 
     return json({ success: true, action, status: statusMap[action] });
   } catch (e: any) {
@@ -90,6 +80,5 @@ serve(async (req) => {
 function json(payload: unknown, status = 200) {
   return new Response(JSON.stringify(payload), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

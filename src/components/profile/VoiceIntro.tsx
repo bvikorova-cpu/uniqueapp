@@ -31,8 +31,7 @@ export const VoiceIntro = ({ userId, isOwnProfile }: VoiceIntroProps) => {
         .maybeSingle();
       return data;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   if (!intro && !isOwnProfile) return null;
 
@@ -59,8 +58,7 @@ export const VoiceIntro = ({ userId, isOwnProfile }: VoiceIntroProps) => {
     setGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-voice-intro", {
-        body: { text: text.trim() },
-      });
+        body: { text: text.trim() } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       toast.success("Voice intro saved!");

@@ -50,16 +50,14 @@ export const PastLifeAudioStories = () => {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (data) {
-        setStories(data.map((r: any) => ({
+      if (data) { setStories(data.map((r: any) => ({
           id: r.id,
           era: r.era || "Unknown Era",
           location: (r.reading_result as any)?.location || "Unknown",
           name: (r.reading_result as any)?.occupation || "Past Life",
           story: (r.reading_result as any)?.story || (r.reading_result as any)?.narrative || r.reading_type || "",
           karmic_theme: (r.reading_result as any)?.karmic_lesson || "Growth",
-          created_at: r.created_at,
-        })));
+          created_at: r.created_at })));
       }
     } catch (error) {
       console.error("Error loading stories:", error);

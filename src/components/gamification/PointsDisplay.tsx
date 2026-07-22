@@ -9,8 +9,7 @@ import LevelUpModal from "./LevelUpModal";
 import { triggerLevelUpConfetti } from "@/utils/confetti";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const calculateLevelProgress = (currentLevel: number, totalPoints: number) => {
-  // XP needed for next level = current_level * 100
+const calculateLevelProgress = (currentLevel: number, totalPoints: number) => { // XP needed for next level = current_level * 100
   const xpForCurrentLevel = (currentLevel - 1) * 100;
   const xpForNextLevel = currentLevel * 100;
   const xpInCurrentLevel = totalPoints - xpForCurrentLevel;
@@ -21,8 +20,7 @@ const calculateLevelProgress = (currentLevel: number, totalPoints: number) => {
     current: xpInCurrentLevel,
     needed: xpNeededForLevel,
     percentage: progressPercentage,
-    nextLevel: currentLevel + 1,
-  };
+    nextLevel: currentLevel + 1 };
 };
 
 export const PointsDisplay = () => {

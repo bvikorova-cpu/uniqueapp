@@ -5,8 +5,7 @@ import { CoffeeEvents } from '@/components/coffee/CoffeeEvents';
 import { CoffeePreferences } from '@/components/coffee/CoffeePreferences';
 import { Users, Calendar, Settings, Coffee } from 'lucide-react';
 
-const CoffeeBuddy = () => {
-  return (
+const CoffeeBuddy = () => { return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-6 mt-12 sm:mt-0">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-amber-500/60 bg-card/80 backdrop-blur-md mb-3 animate-pulse">
@@ -16,8 +15,7 @@ const CoffeeBuddy = () => {
             style={{
               background: "linear-gradient(135deg, hsl(var(--foreground)), hsl(30 80% 50%), hsl(var(--accent)))",
               WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
+              WebkitTextFillColor: "transparent" }}
           >
             Coffee Buddy Matching
           </h1>

@@ -32,8 +32,7 @@ export const usePaintByNumbers = (category?: string) => {
       const { data, error } = await query;
       if (error) throw error;
       return data as unknown as PaintByNumbers[];
-    },
-  });
+    } });
 };
 
 export const usePaintById = (paintId: string) => {
@@ -49,8 +48,7 @@ export const usePaintById = (paintId: string) => {
       if (error) throw error;
       return data as unknown as PaintByNumbers;
     },
-    enabled: !!paintId,
-  });
+    enabled: !!paintId });
 };
 
 export const useUserPaintPurchases = () => {
@@ -67,8 +65,7 @@ export const useUserPaintPurchases = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 };
 
 export const useUserPaintProgress = (paintId?: string) => {
@@ -88,8 +85,7 @@ export const useUserPaintProgress = (paintId?: string) => {
       if (error && error.code !== "PGRST116") throw error;
       return data;
     },
-    enabled: !!paintId,
-  });
+    enabled: !!paintId });
 };
 
 export const usePurchasePaint = () => {
@@ -149,19 +145,16 @@ export const usePurchasePaint = () => {
       } else {
         toast.error("Failed to unlock painting");
       }
-    },
-  });
+    } });
 };
 
-export const useUpdatePaintProgress = () => {
-  const queryClient = useQueryClient();
+export const useUpdatePaintProgress = () => { const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
       paintId,
       sectionId,
-      totalSections,
-    }: {
+      totalSections }: {
       paintId: string;
       sectionId: number;
       totalSections: number;
@@ -190,11 +183,9 @@ export const useUpdatePaintProgress = () => {
         // Update existing progress
         const { error } = await supabase
           .from("user_paint_progress")
-          .update({
-            completed_sections: completedSections,
+          .update({ completed_sections: completedSections,
             is_completed: isCompleted,
-            completed_at: isCompleted ? new Date().toISOString() : null,
-          })
+            completed_at: isCompleted ? new Date().toISOString() : null })
           .eq("id", progress.id);
 
         if (error) throw error;
@@ -202,13 +193,11 @@ export const useUpdatePaintProgress = () => {
         // Create new progress
         const { error } = await supabase
           .from("user_paint_progress")
-          .insert({
-            user_id: user.id,
+          .insert({ user_id: user.id,
             paint_id: paintId,
             completed_sections: completedSections,
             is_completed: isCompleted,
-            completed_at: isCompleted ? new Date().toISOString() : null,
-          });
+            completed_at: isCompleted ? new Date().toISOString() : null });
 
         if (error) throw error;
       }
@@ -238,6 +227,5 @@ export const useUpdatePaintProgress = () => {
         queryClient.invalidateQueries({ queryKey: ["user-profile"] });
         toast.success("🎉 Painting completed! +50 coins");
       }
-    },
-  });
+    } });
 };

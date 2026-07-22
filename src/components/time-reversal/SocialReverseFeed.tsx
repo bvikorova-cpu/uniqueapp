@@ -48,15 +48,13 @@ export function SocialReverseFeed({ onBack }: Props) {
 
       const { data: profile } = await supabase.from("time_reversal_profiles").select("current_age").eq("user_id", session.user.id).maybeSingle();
 
-      await supabase.from("time_reversal_posts").insert({
-        user_id: session.user.id,
+      await supabase.from("time_reversal_posts").insert({ user_id: session.user.id,
         content: newPost,
         image_url: imageUrl,
         age_at_post: profile?.current_age || 80,
         post_type: "social",
         likes_count: 0,
-        comments_count: 0,
-      } as any);
+        comments_count: 0 } as any);
 
       setNewPost("");
       setSelectedImage(null);

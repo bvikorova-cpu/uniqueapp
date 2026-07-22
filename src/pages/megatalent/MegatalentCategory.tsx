@@ -72,8 +72,7 @@ const categoryConfig: Record<string, { title: string; icon: string; categories: 
   photography: { title: "Photography", icon: "📸", categories: ["photography"] },
   cooking: { title: "Cooking & Baking", icon: "👨‍🍳", categories: ["cooking"] },
   digital_art: { title: "Digital Art", icon: "💻", categories: ["digital_art"] },
-  makeup_art: { title: "Makeup Art", icon: "💄", categories: ["makeup_art"] },
-};
+  makeup_art: { title: "Makeup Art", icon: "💄", categories: ["makeup_art"] } };
 
 const MegatalentCategory = () => {
   const { category } = useParams<{ category: string }>();
@@ -119,8 +118,7 @@ const MegatalentCategory = () => {
             sonnerToast.error("Could not verify boost", {
               description: "We couldn't confirm your boost purchase. Tap retry or contact support if you were charged.",
               action: { label: "Retry", onClick: () => verifyBoost(sessionId) },
-              duration: 15000,
-            });
+              duration: 15000 });
           });
       };
       verifyBoost(sid);
@@ -210,12 +208,10 @@ const MegatalentCategory = () => {
     }
   };
 
-  const applyDelta = (id: string, likeDelta: number, dislikeDelta: number) => {
-    setSubmissions(prev => prev.map(s => s.id === id ? {
+  const applyDelta = (id: string, likeDelta: number, dislikeDelta: number) => { setSubmissions(prev => prev.map(s => s.id === id ? {
       ...s,
       votes_count: Math.max(0, (s.votes_count || 0) + likeDelta),
-      dislikes_count: Math.max(0, (s.dislikes_count || 0) + dislikeDelta),
-    } : s));
+      dislikes_count: Math.max(0, (s.dislikes_count || 0) + dislikeDelta) } : s));
   };
 
   const handleVote = async (submissionId: string, voteType: 'like' | 'dislike') => {

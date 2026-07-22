@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createSubscriptionCheckout } from "../_shared/subscriptionCheckout.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -14,16 +12,13 @@ serve(async (req) => {
       successPath: "/wellness?payment=success&session_id={CHECKOUT_SESSION_ID}",
       cancelPath: "/wellness?payment=canceled",
       mode: isLifetime ? "payment" : "subscription",
-      metadata: { module: "wellness", tier: tier ?? "" },
-    });
+      metadata: { module: "wellness", tier: tier ?? "" } });
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e) {
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

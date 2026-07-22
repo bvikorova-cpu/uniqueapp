@@ -3,11 +3,9 @@ import { Bell, Check, X, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -111,17 +109,14 @@ export function NotificationBell() {
 
       toast({
         title: "Tipster approved",
-        description: `${notification.metadata.tipster_name} has been approved`,
-      });
+        description: `${notification.metadata.tipster_name} has been approved` });
 
       await markAsRead(notification.id);
-    } catch (error) {
-      console.error("Error approving tipster:", error);
+    } catch (error) { console.error("Error approving tipster:", error);
       toast({
         title: "Error",
         description: "Failed to approve tipster",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setActionLoading(null);
     }
@@ -141,17 +136,14 @@ export function NotificationBell() {
 
       toast({
         title: "Tipster rejected",
-        description: `${notification.metadata.tipster_name} has been rejected`,
-      });
+        description: `${notification.metadata.tipster_name} has been rejected` });
 
       await markAsRead(notification.id);
-    } catch (error) {
-      console.error("Error rejecting tipster:", error);
+    } catch (error) { console.error("Error rejecting tipster:", error);
       toast({
         title: "Error",
         description: "Failed to reject tipster",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setActionLoading(null);
     }

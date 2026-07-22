@@ -28,8 +28,7 @@ const CATEGORIES: Category[] = [
       { value: "turtle", label: "Turtle", emoji: "🐢" },
       { value: "panda", label: "Panda", emoji: "🐼" },
       { value: "dinosaur", label: "Dinosaur", emoji: "🦕" },
-    ],
-  },
+    ] },
   {
     id: "fantasy",
     label: "Fantasy",
@@ -44,8 +43,7 @@ const CATEGORIES: Category[] = [
       { value: "robot", label: "Robot", emoji: "🤖" },
       { value: "superhero", label: "Superhero", emoji: "🦸" },
       { value: "phoenix", label: "Phoenix", emoji: "🔥" },
-    ],
-  },
+    ] },
   {
     id: "nature",
     label: "Nature",
@@ -58,8 +56,7 @@ const CATEGORIES: Category[] = [
       { value: "rainbow", label: "Rainbow", emoji: "🌈" },
       { value: "mountain", label: "Mountain", emoji: "⛰️" },
       { value: "ocean", label: "Ocean", emoji: "🌊" },
-    ],
-  },
+    ] },
   {
     id: "vehicles",
     label: "Vehicles",
@@ -72,8 +69,7 @@ const CATEGORIES: Category[] = [
       { value: "train", label: "Train", emoji: "🚂" },
       { value: "boat", label: "Boat", emoji: "⛵" },
       { value: "helicopter", label: "Helicopter", emoji: "🚁" },
-    ],
-  },
+    ] },
   {
     id: "food",
     label: "Food",
@@ -86,8 +82,7 @@ const CATEGORIES: Category[] = [
       { value: "donut", label: "Donut", emoji: "🍩" },
       { value: "burger", label: "Burger", emoji: "🍔" },
       { value: "watermelon", label: "Watermelon", emoji: "🍉" },
-    ],
-  },
+    ] },
   {
     id: "people",
     label: "People",
@@ -100,8 +95,7 @@ const CATEGORIES: Category[] = [
       { value: "pirate", label: "Pirate", emoji: "🏴‍☠️" },
       { value: "ballerina", label: "Ballerina", emoji: "🩰" },
       { value: "cowboy", label: "Cowboy", emoji: "🤠" },
-    ],
-  },
+    ] },
 ];
 
 interface Props {
@@ -111,12 +105,10 @@ interface Props {
   onSelectTopic: (topic: string) => void;
 }
 
-export const DrawingCategorySelector = ({
-  selectedCategory,
+export const DrawingCategorySelector = ({ selectedCategory,
   selectedTopic,
   onSelectCategory,
-  onSelectTopic,
-}: Props) => {
+  onSelectTopic }: Props) => {
   const activeCategory = CATEGORIES.find((c) => c.id === selectedCategory);
 
   return (

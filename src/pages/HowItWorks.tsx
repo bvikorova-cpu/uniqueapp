@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Video,
+import { Video,
   Users,
   MessageSquare,
   Monitor,
@@ -10,8 +9,7 @@ import {
   BookOpen,
   Award,
   PlayCircle,
-  CheckCircle,
-} from "lucide-react";
+  CheckCircle } from "lucide-react";
 
 export default function HowItWorks() {
   return (

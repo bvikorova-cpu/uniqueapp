@@ -47,8 +47,7 @@ export const GiftWishlist = () => {
       if (error) throw error;
       return data as WishlistItem[];
     },
-    enabled: !!currentUserId,
-  });
+    enabled: !!currentUserId });
 
   const addToWishlist = useMutation({
     mutationFn: async (gift: { type: string; emoji: string; label: string; priority: string; note?: string }) => {
@@ -58,22 +57,19 @@ export const GiftWishlist = () => {
       const exists = wishlist.find(w => w.gift_type === gift.type);
       if (exists) throw new Error("This gift is already in your wishlist!");
 
-      const { error } = await supabase.from("secret_santa_wishlists").insert({
-        user_id: currentUserId,
+      const { error } = await supabase.from("secret_santa_wishlists").insert({ user_id: currentUserId,
         gift_type: gift.type,
         gift_emoji: gift.emoji,
         gift_label: gift.label,
         priority: gift.priority,
-        note: gift.note || null,
-      });
+        note: gift.note || null });
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Added to wishlist! ❤️");
       queryClient.invalidateQueries({ queryKey: ["santa-wishlist"] });
     },
-    onError: (err: Error) => toast.error(err.message),
-  });
+    onError: (err: Error) => toast.error(err.message) });
 
   const removeFromWishlist = useMutation({
     mutationFn: async (id: string) => {
@@ -83,8 +79,7 @@ export const GiftWishlist = () => {
     onSuccess: () => {
       toast.success("Removed from wishlist");
       queryClient.invalidateQueries({ queryKey: ["santa-wishlist"] });
-    },
-  });
+    } });
 
   const filteredGifts = GIFT_CATALOG.filter(g => {
     const matchesSearch = g.label.toLowerCase().includes(searchQuery.toLowerCase());
@@ -218,12 +213,11 @@ export const GiftWishlist = () => {
                   <motion.div key={gift.type} whileTap={{ scale: 0.97 }}>
                     <Card
                       className="p-3 cursor-pointer hover:border-pink-300 transition-all text-center border-gray-100"
-                      onClick={() => addToWishlist.mutate({
+                      onClick={ () => addToWishlist.mutate({
                         type: gift.type,
                         emoji: gift.emoji,
                         label: gift.label,
-                        priority: "medium",
-                      })}
+                        priority: "medium" })}
                     >
                       <span className="text-2xl block mb-1">{gift.emoji}</span>
                       <p className="text-xs font-bold text-gray-800 truncate">{gift.label}</p>

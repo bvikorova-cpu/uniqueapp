@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const LEVEL_LIMITS: Record<string, number> = { basic: 5, standard: 10, premium: 9999 };
 
@@ -37,8 +35,7 @@ serve(async (req) => {
     if (session.payment_status !== "paid") {
       return new Response(JSON.stringify({ success: false, status: session.payment_status }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+        status: 200 });
     }
     if (session.metadata?.user_id !== user.id) throw new Error("Session/user mismatch");
     const level = String(session.metadata?.coverage_level ?? "");
@@ -65,8 +62,7 @@ serve(async (req) => {
         status: "paid",
         product_type: "emotion_insurance",
         metadata: { coverage_level: level },
-        verified_at: new Date().toISOString(),
-      });
+        verified_at: new Date().toISOString() });
 
       const monthlyPrice = (session.amount_total ?? 0) / 100;
       const expiresAt = new Date();
@@ -79,26 +75,22 @@ serve(async (req) => {
         .eq("user_id", user.id)
         .eq("status", "active");
 
-      await admin.from("emotion_insurance").insert({
-        user_id: user.id,
+      await admin.from("emotion_insurance").insert({ user_id: user.id,
         coverage_level: level,
         monthly_price: monthlyPrice,
         max_claims: LEVEL_LIMITS[level],
         status: "active",
-        expires_at: expiresAt.toISOString(),
-      });
+        expires_at: expiresAt.toISOString() });
     }
 
     return new Response(JSON.stringify({ success: true, level }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error("[verify-emotion-insurance]", msg);
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

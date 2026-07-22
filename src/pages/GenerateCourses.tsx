@@ -14,8 +14,7 @@ export default function GenerateCourses() {
   const [generatedContent, setGeneratedContent] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleGenerate = async () => {
-    setIsGenerating(true);
+  const handleGenerate = async () => { setIsGenerating(true);
     setProgress(0);
     setStatus("Starting course generation...");
     
@@ -31,16 +30,13 @@ export default function GenerateCourses() {
       
       toast({
         title: "Success",
-        description: "All course content has been generated. Download the file below.",
-      });
-    } catch (error) {
-      console.error("Generation error:", error);
+        description: "All course content has been generated. Download the file below." });
+    } catch (error) { console.error("Generation error:", error);
       setStatus("Error generating courses");
       toast({
         title: "Error",
         description: "Failed to generate course content",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsGenerating(false);
     }
@@ -59,10 +55,8 @@ export default function GenerateCourses() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
-    toast({
-      title: "Downloaded",
-      description: "Course content file downloaded successfully",
-    });
+    toast({ title: "Downloaded",
+      description: "Course content file downloaded successfully" });
   };
 
   return (

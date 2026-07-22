@@ -13,8 +13,7 @@ export const useFairyCastles = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return { castles, isLoading };
 };
@@ -32,8 +31,7 @@ export const useCastleRooms = (castleId: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!castleId,
-  });
+    enabled: !!castleId });
 
   return { rooms, isLoading };
 };
@@ -52,8 +50,7 @@ export const useUserVisits = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return { visits, isLoading };
 };
@@ -72,8 +69,7 @@ export const useUserStamps = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   return { stamps, isLoading };
 };
@@ -104,10 +100,8 @@ export const useStartTour = () => {
       // Record visit
       const { data, error } = await supabase
         .from("user_castle_visits")
-        .insert({
-          user_id: user.id,
-          castle_id: castleId,
-        })
+        .insert({ user_id: user.id,
+          castle_id: castleId })
         .select()
         .single();
 
@@ -120,8 +114,7 @@ export const useStartTour = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };
 
 export const useCompleteRoom = () => {
@@ -152,8 +145,7 @@ export const useCompleteRoom = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-castle-visits"] });
-    },
-  });
+    } });
 };
 
 export const useEarnStamp = () => {
@@ -166,10 +158,8 @@ export const useEarnStamp = () => {
 
       const { data, error } = await supabase
         .from("user_castle_stamps")
-        .insert({
-          user_id: user.id,
-          castle_id: castleId,
-        })
+        .insert({ user_id: user.id,
+          castle_id: castleId })
         .select()
         .single();
 
@@ -179,8 +169,7 @@ export const useEarnStamp = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-castle-stamps"] });
       toast.success("🏆 New stamp earned! You're a true Disney Explorer!");
-    },
-  });
+    } });
 };
 
 // Backward compatibility alias

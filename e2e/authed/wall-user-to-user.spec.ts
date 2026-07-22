@@ -41,8 +41,7 @@ async function findForeignPost(page: Page) {
   const withFollow = page
     .locator(".glass-post-card")
     .filter({
-      has: page.getByRole("button", { name: /^follow$|^unfollow$|sledovať|nesledovať/i }),
-    })
+      has: page.getByRole("button", { name: /^follow$|^unfollow$|sledovať|nesledovať/i }) })
     .first();
   if (await withFollow.isVisible({ timeout: 2000 }).catch(() => false)) return withFollow;
   return page.locator(".glass-post-card").first();
@@ -295,8 +294,7 @@ test.describe("Wall – user ↔ user interakcie", () => {
     if (r && r.status() >= 400) {
       test.info().annotations.push({
         type: "soft-skip",
-        description: `Follow vrátil ${r.status()} – label nezmenený (RLS).`,
-      });
+        description: `Follow vrátil ${r.status()} – label nezmenený (RLS).` });
       return;
     }
 

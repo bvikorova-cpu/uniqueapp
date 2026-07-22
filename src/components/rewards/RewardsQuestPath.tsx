@@ -47,10 +47,8 @@ export default function RewardsQuestPath() {
     if (claimingIdx !== null) return;
     setClaimingIdx(nodeIndex);
     try {
-      const { data, error } = await supabase.rpc("claim_quest_node" as any, {
-        _path_id: path.id,
-        _node_index: nodeIndex,
-      });
+      const { data, error } = await supabase.rpc("claim_quest_node" as any, { _path_id: path.id,
+        _node_index: nodeIndex });
       if (error) return toast.error(error.message);
       const res = data as any;
       if (!res?.ok) return toast.error(res?.error || "Failed to claim");

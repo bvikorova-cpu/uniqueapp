@@ -5,11 +5,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: any) =>
   console.log(`[RESUME-SUB] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
@@ -47,19 +45,15 @@ serve(async (req) => {
     }
 
     // Resume from paused state OR clear cancel_at_period_end
-    const updated = await stripe.subscriptions.update(subscription_id, {
-      pause_collection: "" as any, // clears pause
-      cancel_at_period_end: false,
-    });
+    const updated = await stripe.subscriptions.update(subscription_id, { pause_collection: "" as any, // clears pause
+      cancel_at_period_end: false });
 
     log("resumed", { id: updated.id });
 
     return new Response(
-      JSON.stringify({
-        success: true,
+      JSON.stringify({ success: true,
         message: "Subscription resumed",
-        subscription_id: updated.id,
-      }),
+        subscription_id: updated.id }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
   } catch (error) {
@@ -67,7 +61,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

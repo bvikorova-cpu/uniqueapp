@@ -36,8 +36,7 @@ export const SuggestedPages = () => {
       const { data, error } = await query;
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   if (isLoading || !suggestedPages?.length) return null;
 

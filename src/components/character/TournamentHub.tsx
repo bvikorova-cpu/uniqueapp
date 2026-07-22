@@ -25,14 +25,12 @@ export const TournamentHub = () => {
   const [creating, setCreating] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const [form, setForm] = useState({
-    name: "",
+  const [form, setForm] = useState({ name: "",
     description: "",
     entry_fee: 100,
     prize_pool: 1000,
     max_participants: 16,
-    starts_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-  });
+    starts_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16) });
 
   const { data: tournaments } = useQuery({
     queryKey: ["tournaments"],
@@ -44,8 +42,7 @@ export const TournamentHub = () => {
         .limit(10);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: myCharacters } = useQuery({
     queryKey: ["my-characters", user?.id],
@@ -58,8 +55,7 @@ export const TournamentHub = () => {
         .order("battle_rating", { ascending: false });
       return data || [];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: bracket } = useQuery({
     queryKey: ["tournament-bracket", expandedId],
@@ -72,8 +68,7 @@ export const TournamentHub = () => {
         .order("placement", { ascending: true, nullsFirst: false });
       return data || [];
     },
-    enabled: !!expandedId,
-  });
+    enabled: !!expandedId });
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -111,12 +106,10 @@ export const TournamentHub = () => {
         setJoining(false);
         return;
       }
-      const { error } = await supabase.from("tournament_participants").insert({
-        tournament_id: joinFor.id,
+      const { error } = await supabase.from("tournament_participants").insert({ tournament_id: joinFor.id,
         user_id: user.id,
         character_id: selectedCharId,
-        eliminated: false,
-      });
+        eliminated: false });
       if (error) throw error;
       toast.success(`Joined ${joinFor.name}! Entry fee: ${joinFor.entry_fee} credits`);
       setJoinFor(null);
@@ -139,15 +132,13 @@ export const TournamentHub = () => {
     }
     setCreating(true);
     try {
-      const { error } = await supabase.from("tournaments").insert({
-        name: form.name,
+      const { error } = await supabase.from("tournaments").insert({ name: form.name,
         description: form.description || null,
         entry_fee: form.entry_fee,
         prize_pool: form.prize_pool,
         max_participants: form.max_participants,
         status: "registration",
-        starts_at: new Date(form.starts_at).toISOString(),
-      });
+        starts_at: new Date(form.starts_at).toISOString() });
       if (error) throw error;
       toast.success("Tournament created!");
       setCreateOpen(false);

@@ -63,15 +63,12 @@ export function PendingPayoutsCard() {
       if (error) throw error;
       toast({
         title: "Auto-payout sweep complete",
-        description: `Paid: ${(data as any)?.paid ?? 0} · Skipped: ${(data as any)?.skipped ?? 0} · Failed: ${(data as any)?.failed ?? 0}`,
-      });
+        description: `Paid: ${(data as any)?.paid ?? 0} · Skipped: ${(data as any)?.skipped ?? 0} · Failed: ${(data as any)?.failed ?? 0}` });
       await load();
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Sweep failed",
         description: e?.message || "Unknown error",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setRunning(false);
     }

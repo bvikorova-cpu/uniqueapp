@@ -34,41 +34,31 @@ interface ParentalDashboardProps {
 }
 
 const defaultChildren: ChildProfile[] = [
-  {
-    id: "1",
+  { id: "1",
     name: "Tommy",
     age: 7,
     watchTime: 45,
     maxWatchTime: 60,
     completedLessons: 12,
-    earnedStars: 35,
-  },
-  {
-    id: "2",
+    earnedStars: 35 },
+  { id: "2",
     name: "Emma",
     age: 5,
     watchTime: 30,
     maxWatchTime: 45,
     completedLessons: 8,
-    earnedStars: 22,
-  },
+    earnedStars: 22 },
 ];
 
-export const ParentalDashboard = ({
-  children = defaultChildren,
-}: ParentalDashboardProps) => {
-  const [settings, setSettings] = useState({
+export const ParentalDashboard = ({ children = defaultChildren }: ParentalDashboardProps) => { const [settings, setSettings] = useState({
     contentFilter: true,
     ageRestriction: true,
     adsFree: true,
     notifications: true,
-    downloadEnabled: false,
-  });
+    downloadEnabled: false });
 
-  const [timeLimits, setTimeLimits] = useState<Record<string, number>>({
-    "1": 60,
-    "2": 45,
-  });
+  const [timeLimits, setTimeLimits] = useState<Record<string, number>>({ "1": 60,
+    "2": 45 });
 
   return (
     <>
@@ -124,8 +114,7 @@ export const ParentalDashboard = ({
                       width: `${Math.min(
                         (child.watchTime / child.maxWatchTime) * 100,
                         100
-                      )}%`,
-                    }}
+                      )}%` }}
                   />
                 </div>
               </div>
@@ -170,37 +159,28 @@ export const ParentalDashboard = ({
           <CardTitle>Safety Settings</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {[
+          { [
             {
               key: "contentFilter",
               icon: Eye,
               label: "Content Filter",
-              description: "Block inappropriate content",
-            },
-            {
-              key: "ageRestriction",
+              description: "Block inappropriate content" },
+            { key: "ageRestriction",
               icon: Users,
               label: "Age Restriction",
-              description: "Show only age-appropriate content",
-            },
-            {
-              key: "adsFree",
+              description: "Show only age-appropriate content" },
+            { key: "adsFree",
               icon: Shield,
               label: "Ad-Free",
-              description: "Remove all advertisements",
-            },
-            {
-              key: "notifications",
+              description: "Remove all advertisements" },
+            { key: "notifications",
               icon: Bell,
               label: "Notifications",
-              description: "Get notified about child activity",
-            },
-            {
-              key: "downloadEnabled",
+              description: "Get notified about child activity" },
+            { key: "downloadEnabled",
               icon: BarChart3,
               label: "Downloads",
-              description: "Allow video downloads",
-            },
+              description: "Allow video downloads" },
           ].map((setting) => (
             <div
               key={setting.key}

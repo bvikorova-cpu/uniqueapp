@@ -20,8 +20,7 @@ export const MoodTrackerCard = () => {
 
   const chartData = (history ?? []).slice().reverse().map((s: any) => ({
     date: new Date(s.scan_date).toLocaleDateString(undefined, { month: "short", day: "numeric" }),
-    Mood: s.mood_score, Stress: s.stress_score, Energy: s.energy_score, Focus: s.focus_score,
-  }));
+    Mood: s.mood_score, Stress: s.stress_score, Energy: s.energy_score, Focus: s.focus_score }));
 
   return (
     <>

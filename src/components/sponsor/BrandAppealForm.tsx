@@ -22,12 +22,10 @@ type Appeal = {
   reviewed_at: string | null;
 };
 
-const STATUS_LABEL: Record<string, string> = {
-  pending: "Pending review",
+const STATUS_LABEL: Record<string, string> = { pending: "Pending review",
   under_review: "Under review",
   accepted: "Accepted",
-  dismissed: "Dismissed",
-};
+  dismissed: "Dismissed" };
 
 export function BrandAppealForm({ brandId, brandUserId }: { brandId: string; brandUserId: string }) {
   const qc = useQueryClient();
@@ -46,8 +44,7 @@ export function BrandAppealForm({ brandId, brandUserId }: { brandId: string; bra
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as Appeal[];
-    },
-  });
+    } });
 
   const latest = appeals[0];
   const hasOpen = latest && (latest.status === "pending" || latest.status === "under_review");
@@ -60,13 +57,11 @@ export function BrandAppealForm({ brandId, brandUserId }: { brandId: string; bra
     setBusy(true);
     const { error } = await (supabase as any)
       .from("brand_moderation_appeals")
-      .insert({
-        brand_id: brandId,
+      .insert({ brand_id: brandId,
         user_id: brandUserId,
         appeal_text: text.trim(),
         supporting_url: url.trim() || null,
-        status: "pending",
-      });
+        status: "pending" });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Appeal submitted — an admin will review shortly.");

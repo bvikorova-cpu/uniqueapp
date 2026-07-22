@@ -27,8 +27,7 @@ const STATUS_META: Record<string, { label: string; color: string; Icon: typeof C
   active:     { label: "Active",    color: "bg-green-500/15 text-green-500",  Icon: CheckCircle2 },
   past_due:   { label: "Past due",  color: "bg-yellow-500/15 text-yellow-500", Icon: Clock },
   canceled:   { label: "Canceled",  color: "bg-red-500/15 text-red-500",       Icon: Ban },
-  paused:     { label: "Paused",    color: "bg-blue-500/15 text-blue-500",     Icon: Clock },
-};
+  paused:     { label: "Paused",    color: "bg-blue-500/15 text-blue-500",     Icon: Clock } };
 
 const fmt = (d: string | null) =>
   d ? new Date(d).toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" }) : "—";
@@ -56,31 +55,26 @@ const FanClubMembersCard = ({ fanClubId, fanClubName, tier }: Props) => {
         .in("id", ids);
       const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
       return rows.map((r) => ({ ...r, profile: map.get(r.user_id) ?? null }));
-    },
-  });
+    } });
 
   const cancel = useMutation({
     mutationFn: async ({ userId, immediate }: { userId: string; immediate: boolean }) => {
       setCancelingId(userId);
       const { data, error } = await supabase.functions.invoke("fanclub-creator-cancel", {
-        body: { fan_club_id: fanClubId, member_user_id: userId, immediate },
-      });
+        body: { fan_club_id: fanClubId, member_user_id: userId, immediate } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
     },
-    onSuccess: (_, vars) => {
-      toast({
+    onSuccess: (_, vars) => { toast({
         title: vars.immediate ? "Subscription canceled" : "Cancellation scheduled",
         description: vars.immediate
           ? "Member access ended immediately."
-          : "Access continues until the current period ends.",
-      });
+          : "Access continues until the current period ends." });
       qc.invalidateQueries({ queryKey: ["fanclub-members", fanClubId] });
       qc.invalidateQueries({ queryKey: ["influencer-fan-clubs"] });
     },
     onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-    onSettled: () => setCancelingId(null),
-  });
+    onSettled: () => setCancelingId(null) });
 
   return (
     <Card className="backdrop-blur-xl bg-card/80 border-primary/10">

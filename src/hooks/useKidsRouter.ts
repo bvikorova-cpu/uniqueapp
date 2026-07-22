@@ -3,8 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export async function kidsCall<T = any>(action: string, payload: Record<string, any> = {}): Promise<T> {
   const { data, error } = await supabase.functions.invoke("kids-router", {
-    body: { action, ...payload },
-  });
+    body: { action, ...payload } });
   if (error) throw error;
   if ((data as any)?.error) throw new Error((data as any).error);
   return data as T;

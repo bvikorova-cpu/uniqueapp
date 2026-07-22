@@ -1,13 +1,11 @@
 import React from "react";
-import {
-  AbsoluteFill,
+import { AbsoluteFill,
   Img,
   Sequence,
   interpolate,
   spring,
   staticFile,
-  useCurrentFrame,
-} from "remotion";
+  useCurrentFrame } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
 
@@ -16,14 +14,12 @@ const body = loadBody("normal", { weights: ["500", "600", "700", "900"] });
 
 const FPS = 30;
 
-const BRAND = {
-  white: "#ffffff",
+const BRAND = { white: "#ffffff",
   bgDeep: "#07040f",
   purple: "#8b5cf6",
   pink: "#ec4899",
   gold: "#fbbf24",
-  sky: "#38bdf8",
-};
+  sky: "#38bdf8" };
 
 const CheckIcon: React.FC<{ size: number; color: string; glow: string }> = ({ size, color, glow }) => (
   <svg
@@ -50,10 +46,8 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
   const tagOp = interpolate(frame, [50, 78], [0, 1], { extrapolateRight: "clamp" });
   const tagY = interpolate(frame, [50, 78], [20, 0], { extrapolateRight: "clamp" });
   const kb = interpolate(frame, [0, duration], [1.08, 1.2], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 20, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 20, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   const pulse = Math.sin(frame / 6) * 0.05 + 1;
   return (
     <AbsoluteFill>
@@ -70,8 +64,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
         <div
           style={{
             transform: `scale(${logoScale * pulse}) rotate(${logoRot}deg)`,
-            filter: "drop-shadow(0 20px 80px rgba(139,92,246,0.75))",
-          }}
+            filter: "drop-shadow(0 20px 80px rgba(139,92,246,0.75))" }}
         >
           <Img src={staticFile("home/logo.png")} style={{ width: 340, height: 340, borderRadius: 84 }} />
         </div>
@@ -87,8 +80,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             textShadow: "0 0 80px rgba(236,72,153,0.55)",
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em" }}
         >
           Unique
         </div>
@@ -104,8 +96,7 @@ const SceneIntro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             textAlign: "center",
-            textShadow: "0 4px 30px rgba(251,191,36,0.6)",
-          }}
+            textShadow: "0 4px 30px rgba(251,191,36,0.6)" }}
         >
           Verified
         </div>
@@ -129,10 +120,8 @@ type Tier = {
 const TierScene: React.FC<{ duration: number; tier: Tier }> = ({ duration, tier }) => {
   const frame = useCurrentFrame();
   const enter = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 18, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 18, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
   const shellOp = enter * (1 - exit);
   const kbScale = interpolate(frame, [0, duration], [1.1, 1.28], { extrapolateRight: "clamp" });
   const kbX = interpolate(frame, [0, duration], [-20, 20]);
@@ -158,37 +147,32 @@ const TierScene: React.FC<{ duration: number; tier: Tier }> = ({ duration, tier 
             height: "100%",
             objectFit: "cover",
             transform: `scale(${kbScale}) translate(${kbX}px, ${kbY}px)`,
-            filter: "saturate(1.15) contrast(1.05)",
-          }}
+            filter: "saturate(1.15) contrast(1.05)" }}
         />
       </AbsoluteFill>
       <AbsoluteFill
         style={{
           background: `linear-gradient(160deg, ${tier.color}55 0%, transparent 40%, ${tier.color2}66 100%)`,
-          mixBlendMode: "screen",
-        }}
+          mixBlendMode: "screen" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "linear-gradient(180deg, rgba(7,4,15,0.85) 0%, rgba(7,4,15,0.2) 22%, rgba(7,4,15,0) 45%, rgba(7,4,15,0.45) 62%, rgba(7,4,15,0.96) 100%)",
-        }}
+            "linear-gradient(180deg, rgba(7,4,15,0.85) 0%, rgba(7,4,15,0.2) 22%, rgba(7,4,15,0) 45%, rgba(7,4,15,0.45) 62%, rgba(7,4,15,0.96) 100%)" }}
       />
       <AbsoluteFill
-        style={{
+        style={ {
           alignItems: "center",
           justifyContent: "space-between",
           flexDirection: "column",
           padding: 80,
           paddingTop: 120,
-          paddingBottom: 160,
-        }}
+          paddingBottom: 160 }}
       >
         {/* Big animated badge check */}
         <div
           style={{
-            transform: `scale(${badgeScale * pulse}) rotate(${badgeRot}deg)`,
-          }}
+            transform: `scale(${badgeScale * pulse}) rotate(${badgeRot}deg)` }}
         >
           <CheckIcon size={280} color={tier.color} glow={tier.ringColor} />
         </div>
@@ -207,8 +191,7 @@ const TierScene: React.FC<{ duration: number; tier: Tier }> = ({ duration, tier 
               WebkitTextFillColor: "transparent",
               letterSpacing: "-0.035em",
               textShadow: "0 8px 40px rgba(0,0,0,0.75)",
-              textAlign: "center",
-            }}
+              textAlign: "center" }}
           >
             {tier.title}
           </div>
@@ -226,8 +209,7 @@ const TierScene: React.FC<{ duration: number; tier: Tier }> = ({ duration, tier 
               color: BRAND.white,
               letterSpacing: "-0.02em",
               boxShadow: `0 20px 60px -15px ${tier.color}cc`,
-              textShadow: "0 2px 12px rgba(0,0,0,0.4)",
-            }}
+              textShadow: "0 2px 12px rgba(0,0,0,0.4)" }}
           >
             {tier.price}
           </div>
@@ -243,8 +225,7 @@ const TierScene: React.FC<{ duration: number; tier: Tier }> = ({ duration, tier 
               textAlign: "center",
               maxWidth: 1100,
               lineHeight: 1.25,
-              textShadow: "0 4px 20px rgba(0,0,0,0.85)",
-            }}
+              textShadow: "0 4px 20px rgba(0,0,0,0.85)" }}
           >
             {tier.subtitle}
           </div>
@@ -266,8 +247,7 @@ const TierScene: React.FC<{ duration: number; tier: Tier }> = ({ duration, tier 
                     borderRadius: 22,
                     background: "rgba(7,4,15,0.6)",
                     border: `1px solid ${tier.color}66`,
-                    boxShadow: `0 10px 40px -20px ${tier.color}aa`,
-                  }}
+                    boxShadow: `0 10px 40px -20px ${tier.color}aa` }}
                 >
                   <div
                     style={{
@@ -278,21 +258,19 @@ const TierScene: React.FC<{ duration: number; tier: Tier }> = ({ duration, tier 
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      flexShrink: 0,
-                    }}
+                      flexShrink: 0 }}
                   >
                     <svg viewBox="0 0 24 24" width={26} height={26} fill="none" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </div>
                   <div
-                    style={{
+                    style={ {
                       fontFamily: body.fontFamily,
                       fontWeight: 700,
                       fontSize: 32,
                       color: BRAND.white,
-                      letterSpacing: "-0.01em",
-                    }}
+                      letterSpacing: "-0.01em" }}
                   >
                     {p}
                   </div>
@@ -320,8 +298,7 @@ const TierScene: React.FC<{ duration: number; tier: Tier }> = ({ duration, tier 
           textTransform: "uppercase",
           boxShadow: `0 15px 50px -15px ${tier.color}cc`,
           opacity: enter,
-          transform: `translateY(${(1 - enter) * -30}px)`,
-        }}
+          transform: `translateY(${(1 - enter) * -30}px)` }}
       >
         {tier.badge}
       </div>
@@ -335,10 +312,8 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   const wordS = spring({ frame: frame - 12, fps: FPS, config: { damping: 14, stiffness: 110 } });
   const urlOp = interpolate(frame, [30, 55], [0, 1], { extrapolateRight: "clamp" });
   const tagOp = interpolate(frame, [45, 70], [0, 1], { extrapolateRight: "clamp" });
-  const exit = interpolate(frame, [duration - 15, duration], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const exit = interpolate(frame, [duration - 15, duration], [0, 1], { extrapolateLeft: "clamp",
+    extrapolateRight: "clamp" });
 
   // Three floating checkmarks
   const badges = [
@@ -350,10 +325,9 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: 1 - exit }}>
       <AbsoluteFill
-        style={{
+        style={ {
           background:
-            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.4), transparent 60%)",
-        }}
+            "radial-gradient(circle at 50% 45%, rgba(139,92,246,0.55), transparent 60%), radial-gradient(circle at 50% 90%, rgba(236,72,153,0.4), transparent 60%)" }}
       />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
         <div style={{ display: "flex", gap: 60, marginBottom: 50 }}>
@@ -374,8 +348,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             height: 220,
             borderRadius: 60,
             transform: `scale(${logoS})`,
-            filter: "drop-shadow(0 15px 50px rgba(139,92,246,0.75))",
-          }}
+            filter: "drop-shadow(0 15px 50px rgba(139,92,246,0.75))" }}
         />
         <div
           style={{
@@ -388,26 +361,24 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             background: `linear-gradient(180deg, ${BRAND.white} 0%, #fbcfe8 100%)`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 0 60px rgba(236,72,153,0.55)",
-          }}
+            textShadow: "0 0 60px rgba(236,72,153,0.55)" }}
         >
           Unique
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 32,
             opacity: urlOp,
             fontFamily: body.fontFamily,
             fontWeight: 700,
             fontSize: 60,
             color: BRAND.white,
-            letterSpacing: "0.05em",
-          }}
+            letterSpacing: "0.05em" }}
         >
           uniqueapp.fun/verified
         </div>
         <div
-          style={{
+          style={ {
             marginTop: 22,
             opacity: tagOp,
             fontFamily: body.fontFamily,
@@ -417,8 +388,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
             letterSpacing: "0.22em",
             textTransform: "uppercase",
             textAlign: "center",
-            maxWidth: 1100,
-          }}
+            maxWidth: 1100 }}
         >
           Get Verified · Stand out · Reign
         </div>
@@ -428,8 +398,7 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
 };
 
 const TIERS: Tier[] = [
-  {
-    badge: "Verified",
+  { badge: "Verified",
     title: "Verified.",
     price: "€15 / mo",
     subtitle: "Prove you're real. Get the gold check next to your name across the whole app.",
@@ -437,10 +406,8 @@ const TIERS: Tier[] = [
     image: "verified/01-verified.jpg",
     color: "#fbbf24",
     color2: "#f59e0b",
-    ringColor: "rgba(251,191,36,0.9)",
-  },
-  {
-    badge: "Verified Plus",
+    ringColor: "rgba(251,191,36,0.9)" },
+  { badge: "Verified Plus",
     title: "Plus.",
     price: "€40 / mo · +100 credits",
     subtitle: "Everything in Verified — plus 100 AI credits every month and a hot-pink ring around your avatar.",
@@ -448,10 +415,8 @@ const TIERS: Tier[] = [
     image: "verified/02-plus.jpg",
     color: "#ec4899",
     color2: "#db2777",
-    ringColor: "rgba(236,72,153,0.9)",
-  },
-  {
-    badge: "Verified Pro",
+    ringColor: "rgba(236,72,153,0.9)" },
+  { badge: "Verified Pro",
     title: "Pro.",
     price: "€150 / mo · +150 credits",
     subtitle: "Top tier. Purple crown badge, glowing ring, 150 AI credits and official-partner status across Unique.",
@@ -459,8 +424,7 @@ const TIERS: Tier[] = [
     image: "verified/03-pro.jpg",
     color: "#a855f7",
     color2: "#7e22ce",
-    ringColor: "rgba(168,85,247,0.9)",
-  },
+    ringColor: "rgba(168,85,247,0.9)" },
 
 ];
 

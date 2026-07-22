@@ -25,11 +25,9 @@ type Branding = {
   tagline?: string | null;
 };
 
-const DEFAULTS = {
-  primary_color: "#7c3aed",
+const DEFAULTS = { primary_color: "#7c3aed",
   accent_color: "#ec4899",
-  background_color: "#0b0b1a",
-};
+  background_color: "#0b0b1a" };
 
 const isHex = (v: string) => /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v);
 

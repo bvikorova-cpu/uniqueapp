@@ -48,13 +48,11 @@ const UniverseCreator = ({ onUniverseCreated }: UniverseCreatorProps) => {
     }
   };
 
-  const handleCreate = async () => {
-    if (!universeName.trim() || !divergencePoint.trim()) {
+  const handleCreate = async () => { if (!universeName.trim() || !divergencePoint.trim()) {
       toast({
         title: "Missing Information",
         description: "Please fill in all fields",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -62,12 +60,10 @@ const UniverseCreator = ({ onUniverseCreated }: UniverseCreatorProps) => {
       setLoading(true);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication Required",
           description: "Please sign in to create universes",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -75,27 +71,23 @@ const UniverseCreator = ({ onUniverseCreated }: UniverseCreatorProps) => {
         body: {
           universeName,
           divergencePoint,
-          parameters: {},
-        }
+          parameters: {} }
       });
 
       if (error) throw error;
 
       toast({
         title: "Universe Created",
-        description: `${universeName} has been generated!`,
-      });
+        description: `${universeName} has been generated!` });
 
       setUniverseName("");
       setDivergencePoint("");
       onUniverseCreated();
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Creation Failed",
         description: "Please try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -128,20 +120,16 @@ const UniverseCreator = ({ onUniverseCreated }: UniverseCreatorProps) => {
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, '_blank');
+      if (data?.url) { window.open(data.url, '_blank');
         toast({
           title: "Opening Checkout",
-          description: "Complete your purchase to unlock Universe Creation",
-        });
+          description: "Complete your purchase to unlock Universe Creation" });
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Error",
         description: "Failed to open checkout. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

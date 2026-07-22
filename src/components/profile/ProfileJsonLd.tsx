@@ -21,8 +21,7 @@ interface ProfileJsonLdProps {
  * Injects schema.org Person JSON-LD into <head> + sets <title> / meta description.
  * Cleans itself up on unmount.
  */
-export const ProfileJsonLd = ({ profile }: ProfileJsonLdProps) => {
-  useEffect(() => {
+export const ProfileJsonLd = ({ profile }: ProfileJsonLdProps) => { useEffect(() => {
     const name = profile.full_name || profile.username || "Profile";
     const description = (profile.headline || profile.bio || "").slice(0, 160);
     const url = typeof window !== "undefined" ? window.location.href : "";
@@ -35,8 +34,7 @@ export const ProfileJsonLd = ({ profile }: ProfileJsonLdProps) => {
       "@context": "https://schema.org",
       "@type": "Person",
       name,
-      url,
-    };
+      url };
     if (description) data.description = description;
     if (profile.avatar_url) data.image = profile.avatar_url;
     if (profile.occupation) data.jobTitle = profile.occupation;

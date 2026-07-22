@@ -30,8 +30,7 @@ export function FraudScannerView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke("coupon-ai", {
         body: { action: "fraud-scanner", title, storeName, originalValue, sellingPrice, discount: discount.toString(), description, sellerInfo },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

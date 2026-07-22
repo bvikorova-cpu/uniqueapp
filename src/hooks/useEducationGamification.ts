@@ -6,8 +6,7 @@ import { toast } from "sonner";
 export const useDailyChallenge = () => {
   return useQuery({
     queryKey: ["daily-challenge"],
-    queryFn: async () => eduCall<{ challenge: any; completed: boolean; score: number | null }>("daily.today"),
-  });
+    queryFn: async () => eduCall<{ challenge: any; completed: boolean; score: number | null }>("daily.today") });
 };
 
 export const useSubmitDaily = () => {
@@ -20,8 +19,7 @@ export const useSubmitDaily = () => {
       qc.invalidateQueries({ queryKey: ["education-stats"] });
       qc.invalidateQueries({ queryKey: ["league"] });
       toast.success(`+${data.xp_awarded} XP`);
-    },
-  });
+    } });
 };
 
 export const useAchievements = () => {
@@ -37,8 +35,7 @@ export const useAchievements = () => {
       ]);
       const unlocked = new Set((mine ?? []).map((m: any) => m.achievement_id));
       return (all ?? []).map((a: any) => ({ ...a, unlocked: unlocked.has(a.id) }));
-    },
-  });
+    } });
 };
 
 export const useCheckAchievements = () => {
@@ -55,15 +52,13 @@ export const useCheckAchievements = () => {
         toast.info("No new achievements yet — keep learning!");
       }
     },
-    onError: (e: any) => toast.error(e?.message ?? "Failed to check achievements"),
-  });
+    onError: (e: any) => toast.error(e?.message ?? "Failed to check achievements") });
 };
 
 export const useLeague = (tier = "bronze") => {
   return useQuery({
     queryKey: ["league", tier],
-    queryFn: async () => eduCall<{ rows: any[]; week_start: string; tier: string }>("league.top", { tier }),
-  });
+    queryFn: async () => eduCall<{ rows: any[]; week_start: string; tier: string }>("league.top", { tier }) });
 };
 
 export const useCertificates = () => {
@@ -78,8 +73,7 @@ export const useCertificates = () => {
         .eq("user_id", user.id)
         .order("issued_at", { ascending: false });
       return data ?? [];
-    },
-  });
+    } });
 };
 
 export const useIssueCertificate = () => {
@@ -91,6 +85,5 @@ export const useIssueCertificate = () => {
       qc.invalidateQueries({ queryKey: ["certificates"] });
       toast.success("Certificate issued!");
     },
-    onError: (e: any) => toast.error(e?.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e?.message ?? "Failed") });
 };

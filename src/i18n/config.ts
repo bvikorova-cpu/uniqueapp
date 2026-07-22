@@ -20,8 +20,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
-      en: { translation: en },
-    },
+      en: { translation: en } },
     lng: 'en',
     fallbackLng: 'en',
     initImmediate: false,
@@ -30,13 +29,8 @@ i18n
       // Surface untranslated keys in the browser console for QA.
       console.warn(`[i18n] Missing key "${key}" for language(s): ${Array.isArray(lngs) ? lngs.join(', ') : lngs}`);
     },
-    interpolation: {
-      escapeValue: false,
-    },
-    react: {
-      useSuspense: false,
-    },
-  });
+    interpolation: { escapeValue: false },
+    react: { useSuspense: false } });
 
 export async function loadLocale(lng: string) {
   if (!lng) return;

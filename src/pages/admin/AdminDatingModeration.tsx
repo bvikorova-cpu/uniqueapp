@@ -76,11 +76,9 @@ export default function AdminDatingModeration() {
     setBusyId(id);
     const { error } = await supabase
       .from("dating_reports")
-      .update({
-        status: action,
+      .update({ status: action,
         resolved_at: new Date().toISOString(),
-        moderator_notes: notes[id] || null,
-      })
+        moderator_notes: notes[id] || null })
       .eq("id", id);
     setBusyId(null);
     if (error) return toast({ title: "Failed", description: error.message, variant: "destructive" });

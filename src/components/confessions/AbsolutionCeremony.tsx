@@ -23,8 +23,7 @@ const ceremonies = [
       { time: 110, instruction: "Feel the lightness in your hands. The burden is lifting.", duration: 30 },
       { time: 140, instruction: "Breathe deeply. You are forgiven. You are free.", duration: 20 },
       { time: 160, instruction: "When you're ready, open your eyes. Carry this peace with you.", duration: 20 },
-    ],
-  },
+    ] },
   {
     id: "forgiveness",
     title: "Self-Forgiveness Ritual",
@@ -39,8 +38,7 @@ const ceremonies = [
       { time: 160, instruction: "The light grows brighter. Every part of you is bathed in forgiveness.", duration: 40 },
       { time: 200, instruction: "Take a deep breath. You are renewed. You are at peace.", duration: 20 },
       { time: 220, instruction: "Open your eyes gently. Carry this forgiveness forward.", duration: 20 },
-    ],
-  },
+    ] },
   {
     id: "gratitude",
     title: "Gratitude Absolution",
@@ -53,8 +51,7 @@ const ceremonies = [
       { time: 80, instruction: "Now, think of the lesson your mistake has taught you.", duration: 30 },
       { time: 110, instruction: "Be grateful for this lesson. It has made you wiser.", duration: 20 },
       { time: 130, instruction: "Open your eyes. You are absolved through gratitude.", duration: 20 },
-    ],
-  },
+    ] },
 ];
 
 export const AbsolutionCeremony = () => {
@@ -90,8 +87,7 @@ export const AbsolutionCeremony = () => {
                 title: `Ceremony: ${ceremony.title}`,
                 prompt: "ceremony_completion",
                 generated_text: `Completed the ${ceremony.title} absolution ceremony. Duration: ${Math.round(ceremony.duration / 60)} minutes.`,
-                metadata: { type: "ceremony_completion", ceremony_id: ceremony.id },
-              });
+                metadata: { type: "ceremony_completion", ceremony_id: ceremony.id } });
             }
           });
 

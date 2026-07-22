@@ -12,8 +12,7 @@ const TYPE_META: Record<string, { label: string; icon: any; color: string }> = {
   custom_generation: { label: "Custom generation", icon: Sparkles, color: "text-purple-400" },
   effect: { label: "Style transfer", icon: Brush, color: "text-pink-400" },
   avatar: { label: "Avatar", icon: Cpu, color: "text-amber-400" },
-  course: { label: "AI mentor", icon: Wand2, color: "text-emerald-400" },
-};
+  course: { label: "AI mentor", icon: Wand2, color: "text-emerald-400" } };
 
 /**
  * Last-30-days usage chart + breakdown by tool.

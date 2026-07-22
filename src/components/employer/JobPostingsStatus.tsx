@@ -29,8 +29,7 @@ function PaymentBadge({ status }: { status: string }) {
     active: { label: "Paid", cls: "bg-emerald-500/15 text-emerald-600 border-emerald-500/20", Icon: CheckCircle2 },
     pending: { label: "Pending", cls: "bg-amber-500/15 text-amber-600 border-amber-500/20", Icon: Clock },
     failed: { label: "Failed", cls: "bg-destructive/15 text-destructive border-destructive/20", Icon: XCircle },
-    expired: { label: "Expired", cls: "bg-muted text-muted-foreground border-border", Icon: AlertCircle },
-  };
+    expired: { label: "Expired", cls: "bg-muted text-muted-foreground border-border", Icon: AlertCircle } };
   const cfg = map[status] ?? map.pending;
   const { Icon } = cfg;
   return (

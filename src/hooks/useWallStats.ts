@@ -8,13 +8,11 @@ export interface WallStats {
   streak: number;
 }
 
-export function useWallStats(userId?: string | null, enabled = true) {
-  const [stats, setStats] = useState<WallStats>({
+export function useWallStats(userId?: string | null, enabled = true) { const [stats, setStats] = useState<WallStats>({
     postsToday: 0,
     activeUsers: 0,
     interactionsToday: 0,
-    streak: 0,
-  });
+    streak: 0 });
 
   useEffect(() => {
     if (!enabled) return;
@@ -42,12 +40,10 @@ export function useWallStats(userId?: string | null, enabled = true) {
       }
 
       if (cancelled) return;
-      setStats({
-        postsToday: postsRes.count ?? 0,
+      setStats({ postsToday: postsRes.count ?? 0,
         activeUsers: (activeRes.count ?? 0) || (usersRes.count ?? 0),
         interactionsToday: (likesRes.count ?? 0) + (commentsRes.count ?? 0),
-        streak,
-      });
+        streak });
     };
 
     load();

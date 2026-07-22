@@ -18,8 +18,7 @@ export function AppointmentsPanel() {
         .order("scheduled_at", { ascending: true })
         .limit(50);
       return (data as any[]) ?? [];
-    },
-  });
+    } });
 
   if (isLoading) return <div className="p-6 text-sm text-muted-foreground">Loading appointments…</div>;
 

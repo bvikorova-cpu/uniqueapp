@@ -19,36 +19,28 @@ export const useBrainDuelPowerups = () => {
 
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   const purchasePowerup = useMutation({
     mutationFn: async ({ type, price }: { type: string; price: number }) => {
-      const { error } = await supabase.rpc('purchase_brain_duel_powerup', {
-        p_powerup_type: type,
-        p_price: price,
-      });
+      const { error } = await supabase.rpc('purchase_brain_duel_powerup', { p_powerup_type: type,
+        p_price: price });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['brain-duel-powerups'] });
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
-      toast({
-        title: 'Power-up purchased!',
-        description: 'Your power-up has been added to your inventory',
-      });
+      toast({ title: 'Power-up purchased!',
+        description: 'Your power-up has been added to your inventory' });
     },
-    onError: (error: Error) => {
-      toast({
+    onError: (error: Error) => { toast({
         title: 'Purchase failed',
         description: error.message === 'Insufficient credits'
           ? 'Not enough credits to buy this power-up'
           : 'Failed to purchase power-up',
-        variant: 'destructive',
-      });
-    },
-  });
+        variant: 'destructive' });
+    } });
 
   const usePowerupMutation = useMutation({
     mutationFn: async ({ powerupId, quantity }: { powerupId: string; quantity: number }) => {
@@ -64,14 +56,11 @@ export const useBrainDuelPowerups = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['brain-duel-powerups'] });
-    },
-  });
+    } });
 
-  return {
-    powerups: powerups || [],
+  return { powerups: powerups || [],
     isLoading,
     purchasePowerup: purchasePowerup.mutate,
     isPurchasing: purchasePowerup.isPending,
-    consumePowerup: usePowerupMutation.mutateAsync,
-  };
+    consumePowerup: usePowerupMutation.mutateAsync };
 };

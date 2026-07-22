@@ -22,8 +22,7 @@ export function CustomSoundDesignerView({ onBack }: { onBack: () => void }) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("stock-content-ai", {
-        body: { action: "escape-sound-design", roomTheme, mood, sceneDesc },
-      });
+        body: { action: "escape-sound-design", roomTheme, mood, sceneDesc } });
       if (error) throw error;
       setResult(data.result);
       toast.success("Sound design generated! (5 credits used)");

@@ -72,13 +72,11 @@ export default function HealthcareContentLibrary() {
       }
       
       setLibraryItems(items || []);
-    } catch (error) {
-      console.error('Error loading data:', error);
+    } catch (error) { console.error('Error loading data:', error);
       toast({
         title: 'Error',
         description: 'Failed to load library items',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -97,13 +95,11 @@ export default function HealthcareContentLibrary() {
     return userTierIndex >= itemTierIndex;
   };
 
-  const handleAddToCollection = (item: LibraryItem) => {
-    if (!isSubscribed) {
+  const handleAddToCollection = (item: LibraryItem) => { if (!isSubscribed) {
       toast({
         title: 'Subscription Required',
         description: 'Please subscribe to add items to your collections',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       navigate('/healthcare');
       return;
     }
@@ -112,8 +108,7 @@ export default function HealthcareContentLibrary() {
       toast({
         title: 'Upgrade Required',
         description: `This item requires a ${item.tier_required} subscription`,
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
@@ -138,51 +133,42 @@ export default function HealthcareContentLibrary() {
         toast({
           title: 'Collection Limit Reached',
           description: `Your subscription allows up to ${limits.maxPagesPerCollection} pages per collection`,
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         return;
       }
 
       // Add the item to the collection
       const { error } = await supabase
         .from('healthcare_coloring_pages')
-        .insert({
-          collection_id: selectedCollection,
+        .insert({ collection_id: selectedCollection,
           created_by: session.user.id,
           title: selectedItem.title,
           description: selectedItem.description,
-          image_url: selectedItem.image_url,
-        });
+          image_url: selectedItem.image_url });
 
       if (error) throw error;
 
-      toast({
-        title: 'Success',
-        description: 'Item added to collection',
-      });
+      toast({ title: 'Success',
+        description: 'Item added to collection' });
 
       setAddDialogOpen(false);
       setSelectedItem(null);
       setSelectedCollection('');
       loadData();
-    } catch (error) {
-      console.error('Error adding item:', error);
+    } catch (error) { console.error('Error adding item:', error);
       toast({
         title: 'Error',
         description: 'Failed to add item to collection',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setAdding(false);
     }
   };
 
-  const getTierBadge = (tier: string) => {
-    const colors = {
+  const getTierBadge = (tier: string) => { const colors = {
       free: 'bg-secondary',
       basic: 'bg-primary',
-      professional: 'bg-accent',
-    };
+      professional: 'bg-accent' };
     return <Badge className={colors[tier as keyof typeof colors]}>{tier}</Badge>;
   };
 

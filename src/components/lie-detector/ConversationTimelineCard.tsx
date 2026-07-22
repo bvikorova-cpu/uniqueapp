@@ -30,8 +30,7 @@ export const ConversationTimelineCard = () => {
 
   const chartData = (result?.results?.trustworthiness_curve || []).map((v: number, i: number) => ({
     msg: `#${i + 1}`,
-    trust: v,
-  }));
+    trust: v }));
 
   return (
     <>

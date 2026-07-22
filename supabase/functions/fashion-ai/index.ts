@@ -1,13 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 // Per-action credit cost. Mirrors the "X Credits" labels shown in /fashion-studio.
-const ACTION_COSTS: Record<string, number> = {
-  "battle-score": 5,
+const ACTION_COSTS: Record<string, number> = { "battle-score": 5,
   "body-shape": 8,
   "celebrity-clone": 15,
   "color-harmony": 5,
@@ -34,8 +31,7 @@ const ACTION_COSTS: Record<string, number> = {
   "virtual-stylist": 15,
   "wardrobe-analytics": 10,
   "capsule-wardrobe": 15,
-  "street-style": 3,
-};
+  "street-style": 3 };
 
 async function callAI(apiKey: string, apiUrl: string, model: string, messages: any[], tools?: any[], toolChoice?: any) {
   const body: any = { model, messages };
@@ -43,8 +39,7 @@ async function callAI(apiKey: string, apiUrl: string, model: string, messages: a
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+    body: JSON.stringify(body) });
   if (!response.ok) {
     if (response.status === 429) throw { status: 429, message: "Rate limited" };
     throw new Error("OpenAI API error");
@@ -68,8 +63,7 @@ function makeTool(name: string, props: Record<string, { type: string }>) {
 function jsonResponse(data: any, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 Deno.serve(async (req) => {

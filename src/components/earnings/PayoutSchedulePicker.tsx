@@ -20,8 +20,7 @@ export const PayoutSchedulePicker = () => {
   const load = async () => {
     setLoading(true);
     const { data } = await supabase.functions.invoke("check-connect-status", {
-      body: { action: "live_status" },
-    });
+      body: { action: "live_status" } });
     if (data?.connected) {
       setConnected(true);
       const sched = data.payout_schedule;
@@ -36,14 +35,11 @@ export const PayoutSchedulePicker = () => {
 
   const save = async () => {
     setSaving(true);
-    const { error } = await supabase.functions.invoke("check-connect-status", {
-      body: {
+    const { error } = await supabase.functions.invoke("check-connect-status", { body: {
         action: "update_payout_schedule",
         interval,
         weekly_anchor: interval === "weekly" ? weekdayAnchor : undefined,
-        monthly_anchor: interval === "monthly" ? Number(monthlyAnchor) : undefined,
-      },
-    });
+        monthly_anchor: interval === "monthly" ? Number(monthlyAnchor) : undefined } });
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Payout schedule updated");

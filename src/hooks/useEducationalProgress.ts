@@ -44,8 +44,7 @@ export const useEducationalProgress = (topicId?: string) => {
         if (error) throw error;
         return data;
       }
-    },
-  });
+    } });
 
   const updateProgress = useMutation({
     mutationFn: async (params: {
@@ -70,24 +69,21 @@ export const useEducationalProgress = (topicId?: string) => {
       if (existing) {
         const { error } = await supabase
           .from("educational_progress")
-          .update({
-            lessons_completed: params.lessonsCompleted ?? existing.lessons_completed,
+          .update({ lessons_completed: params.lessonsCompleted ?? existing.lessons_completed,
             total_lessons: params.totalLessons,
             quiz_score: params.quizScore ?? existing.quiz_score,
             quiz_attempts: params.quizScore !== undefined ? existing.quiz_attempts + 1 : existing.quiz_attempts,
             stars_earned: params.starsEarned ?? existing.stars_earned,
             is_completed: isCompleted,
             completed_at: isCompleted ? new Date().toISOString() : existing.completed_at,
-            last_accessed_at: new Date().toISOString(),
-          })
+            last_accessed_at: new Date().toISOString() })
           .eq("id", existing.id);
 
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from("educational_progress")
-          .insert({
-            user_id: user.id,
+          .insert({ user_id: user.id,
             topic_id: params.topicId,
             lessons_completed: params.lessonsCompleted ?? 0,
             total_lessons: params.totalLessons,
@@ -95,8 +91,7 @@ export const useEducationalProgress = (topicId?: string) => {
             quiz_attempts: params.quizScore !== undefined ? 1 : 0,
             stars_earned: params.starsEarned ?? 0,
             is_completed: isCompleted,
-            completed_at: isCompleted ? new Date().toISOString() : null,
-          });
+            completed_at: isCompleted ? new Date().toISOString() : null });
 
         if (error) throw error;
       }
@@ -107,8 +102,7 @@ export const useEducationalProgress = (topicId?: string) => {
     onError: (error) => {
       console.error("Error updating progress:", error);
       toast.error("Failed to save progress");
-    },
-  });
+    } });
 
   const saveQuizAnswer = useMutation({
     mutationFn: async (params: {
@@ -122,17 +116,14 @@ export const useEducationalProgress = (topicId?: string) => {
 
       const { error } = await supabase
         .from("educational_quiz_answers")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           topic_id: params.topicId,
           question_id: params.questionId,
           selected_answer: params.selectedAnswer,
-          is_correct: params.isCorrect,
-        });
+          is_correct: params.isCorrect });
 
       if (error) throw error;
-    },
-  });
+    } });
 
   const calculateTotalProgress = () => {
     if (!progressData || Array.isArray(progressData)) {
@@ -151,11 +142,9 @@ export const useEducationalProgress = (topicId?: string) => {
     return null;
   };
 
-  return {
-    progress: progressData,
+  return { progress: progressData,
     isLoading,
     updateProgress: updateProgress.mutate,
     saveQuizAnswer: saveQuizAnswer.mutate,
-    calculateTotalProgress,
-  };
+    calculateTotalProgress };
 };

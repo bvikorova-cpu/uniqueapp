@@ -72,9 +72,7 @@ Include ALL of these sections:
 - List what NOT to do
 
 🏥 WHEN TO SEE A DOCTOR:
-- Specific criteria for professional care`,
-        },
-      });
+- Specific criteria for professional care` } });
       if (error) throw error;
       setAnalysis(data?.message || data?.analysis || "Analysis unavailable.");
     } catch (e) {

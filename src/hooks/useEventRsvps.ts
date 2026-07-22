@@ -27,8 +27,7 @@ export const useEventRsvps = (eventId?: string, capacity?: number) => {
         .eq("event_id", eventId)
         .order("created_at", { ascending: true });
       return (data || []) as unknown as EventRsvp[];
-    },
-  });
+    } });
 
   const goingCount = rsvps.filter((r) => r.status === "going").length;
   const waitlistCount = rsvps.filter((r) => r.status === "waitlist").length;
@@ -47,12 +46,10 @@ export const useEventRsvps = (eventId?: string, capacity?: number) => {
       }
 
       const { error } = await supabase.from("event_rsvps" as any).upsert(
-        {
-          event_id: eventId,
+        { event_id: eventId,
           user_id: user.id,
           status: finalStatus,
-          waitlist_position,
-        } as any,
+          waitlist_position } as any,
         { onConflict: "event_id,user_id" }
       );
       if (error) throw error;
@@ -60,16 +57,13 @@ export const useEventRsvps = (eventId?: string, capacity?: number) => {
     },
     onSuccess: (finalStatus) => {
       qc.invalidateQueries({ queryKey: ["event-rsvps", eventId] });
-      toast({
-        title:
+      toast({ title:
           finalStatus === "waitlist"
             ? "Added to waitlist"
             : finalStatus === "going"
             ? "You're going! 🎉"
-            : "RSVP updated",
-      });
-    },
-  });
+            : "RSVP updated" });
+    } });
 
   const cancelRsvp = useMutation({
     mutationFn: async () => {
@@ -82,8 +76,7 @@ export const useEventRsvps = (eventId?: string, capacity?: number) => {
         .eq("user_id", user.id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["event-rsvps", eventId] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["event-rsvps", eventId] }) });
 
   return { rsvps, isLoading, goingCount, waitlistCount, setRsvp: setRsvp.mutate, cancelRsvp: cancelRsvp.mutate };
 };

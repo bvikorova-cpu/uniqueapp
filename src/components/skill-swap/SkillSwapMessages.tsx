@@ -76,11 +76,9 @@ export const SkillSwapMessages = () => {
         .or(`user1_id.eq.${currentUserId},user2_id.eq.${currentUserId}`)
         .order('last_message_at', { ascending: false });
       if (error) throw error;
-      const mapped = (data || []).map(conv => ({
-        ...conv,
+      const mapped = (data || []).map(conv => ({ ...conv,
         other_user_id: conv.user1_id === currentUserId ? conv.user2_id : conv.user1_id,
-        offering_title: conv.skill_offerings?.title,
-      })) as Conversation[];
+        offering_title: conv.skill_offerings?.title })) as Conversation[];
       setConversations(mapped);
 
       const otherIds = Array.from(new Set(mapped.map(c => c.other_user_id).filter(Boolean) as string[]));
@@ -130,9 +128,7 @@ export const SkillSwapMessages = () => {
     if (!conv?.other_user_id) return;
     setSending(true);
     try {
-      const { error } = await supabase.from('skill_swap_messages').insert([{
-        sender_id: currentUserId, receiver_id: conv.other_user_id, message: trimmed, offering_id: conv.offering_id,
-      }]);
+      const { error } = await supabase.from('skill_swap_messages').insert([{ sender_id: currentUserId, receiver_id: conv.other_user_id, message: trimmed, offering_id: conv.offering_id }]);
       if (error) throw error;
       await supabase.from('skill_swap_conversations').update({ last_message_at: new Date().toISOString() }).eq('id', selectedConversation);
       setNewMessage(""); loadMessages(); loadConversations();

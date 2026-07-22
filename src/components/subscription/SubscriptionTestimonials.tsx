@@ -3,54 +3,42 @@ import { Star, Quote } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TESTIMONIALS = [
-  {
-    name: "Maria K.",
-    role: "Bazaar seller, Germany",
+  { name: "Maria K.",
+    role: "Bazaar seller",
     avatar: "🌸",
     text: "Switched to Premium and my listings tripled overnight. Zero commission means I keep every euro I earn.",
     rating: 5,
-    plan: "Premium",
-  },
-  {
-    name: "Lukas B.",
-    role: "AI Creator, Germany",
+    plan: "Premium" },
+  { name: "Lukas B.",
+    role: "AI Creator",
     avatar: "⚡",
     text: "Unlimited AI generations on Business changed everything. I built 12 monetized projects in 3 months.",
     rating: 5,
-    plan: "Business",
-  },
-  {
-    name: "Sofia R.",
+    plan: "Business" },
+  { name: "Sofia R.",
     role: "Mom of two, Spain",
     avatar: "💜",
     text: "Kids Academy alone is worth the Premium price. My children learn AND I earn from my own bazaar shop.",
     rating: 5,
-    plan: "Premium",
-  },
-  {
-    name: "James T.",
+    plan: "Premium" },
+  { name: "James T.",
     role: "Pro auctioneer, UK",
     avatar: "🏆",
     text: "The analytics dashboard alone made me close 40% more auctions. Best €15/month I spend.",
     rating: 5,
-    plan: "Premium",
-  },
-  {
-    name: "Aiko M.",
+    plan: "Premium" },
+  { name: "Aiko M.",
     role: "Studio owner, Japan",
     avatar: "🎨",
     text: "Custom branding + API access lets us white-label for clients. Unique = our entire backend now.",
     rating: 5,
-    plan: "Business",
-  },
-  {
-    name: "Pavol N.",
+    plan: "Business" },
+  { name: "Pavol N.",
     role: "Hobbyist → Full-time",
     avatar: "🚀",
     text: "Started Basic, hit Premium in a month, now on Business with 8 income streams. Surreal.",
     rating: 5,
-    plan: "Business",
-  },
+    plan: "Business" },
 ];
 
 export const SubscriptionTestimonials = () => {

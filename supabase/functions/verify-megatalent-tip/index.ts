@@ -9,18 +9,14 @@ Deno.serve(async (req) => {
     const { sessionId } = await req.json();
     if (!sessionId || typeof sessionId !== 'string') {
       return new Response(JSON.stringify({ error: 'sessionId required' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
-      apiVersion: '2024-11-20.acacia',
-    });
+    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, { apiVersion: '2024-11-20.acacia' });
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     if (session.metadata?.type !== 'megatalent_tip') {
       return new Response(JSON.stringify({ error: 'Wrong session type' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     const admin = createClient(
@@ -38,17 +34,14 @@ Deno.serve(async (req) => {
         .maybeSingle();
       if (error) throw error;
       return new Response(JSON.stringify({ verified: true, tip: updated }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     return new Response(JSON.stringify({ verified: false, payment_status: session.payment_status }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (e: any) {
     console.error('[verify-megatalent-tip] error', e);
     return new Response(JSON.stringify({ error: e.message ?? 'Unknown error' }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 });

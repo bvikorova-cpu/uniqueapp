@@ -21,8 +21,7 @@ export const usePostHighlights = (userId?: string) => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const addHighlight = useMutation({
     mutationFn: async ({ postId, category }: {
@@ -32,19 +31,16 @@ export const usePostHighlights = (userId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("post_highlights").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("post_highlights").insert({ user_id: user.id,
         post_id: postId,
-        category,
-      } as any);
+        category } as any);
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-highlights"] });
       toast({ title: "Added to highlights!" });
-    },
-  });
+    } });
 
   const removeHighlight = useMutation({
     mutationFn: async (highlightId: string) => {
@@ -58,13 +54,10 @@ export const usePostHighlights = (userId?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-highlights"] });
       toast({ title: "Removed from highlights" });
-    },
-  });
+    } });
 
-  return {
-    highlights: highlights || [],
+  return { highlights: highlights || [],
     isLoading,
     addHighlight: addHighlight.mutate,
-    removeHighlight: removeHighlight.mutate,
-  };
+    removeHighlight: removeHighlight.mutate };
 };

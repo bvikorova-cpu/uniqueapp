@@ -18,35 +18,30 @@ export function useStarredMessages() {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   const star = useMutation({
     mutationFn: async ({ messageId, conversationId, note }: { messageId: string; conversationId: string; note?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Sign in required");
-      const { error } = await supabase.from("starred_messages").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("starred_messages").insert({ user_id: user.id,
         message_id: messageId,
         conversation_id: conversationId,
-        note: note ?? null,
-      });
+        note: note ?? null });
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["starred-messages"] });
       toast({ title: "Message starred" });
     },
-    onError: (e: any) => toast({ title: "Could not star", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Could not star", description: e.message, variant: "destructive" }) });
 
   const unstar = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("starred_messages").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["starred-messages"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["starred-messages"] }) });
 
   return { ...query, star: star.mutate, unstar: unstar.mutate };
 }

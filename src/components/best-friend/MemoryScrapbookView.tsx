@@ -19,8 +19,7 @@ export const MemoryScrapbookView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "memory_scrapbook", memory },
-      });
+        body: { action: "memory_scrapbook", memory } });
       if (error) throw error;
       setResult(data);
       toast.success("Scrapbook entry created! (3 credits used)");

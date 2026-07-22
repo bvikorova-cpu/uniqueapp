@@ -2,17 +2,13 @@
 // referral reward logic. Mirrors literals from index.ts; any drift fails here.
 // Run with: deno test --allow-net --allow-env
 
-import {
-  assertEquals,
+import { assertEquals,
   assertNotEquals,
-  assert,
-} from "https://deno.land/std@0.224.0/assert/mod.ts";
+  assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
 // ── Mirror of constants / logic in index.ts ────────────────────────────────
-const MEGATALENT_TIER_PRICE: Record<string, number> = {
-  premium: 10,
-  top_premium: 15,
-};
+const MEGATALENT_TIER_PRICE: Record<string, number> = { premium: 10,
+  top_premium: 15 };
 
 type Tier = "premium" | "top_premium";
 
@@ -25,8 +21,7 @@ function buildMtPayload(args: {
   periodEnd: string | null;
 }) {
   const { userId, tier, customerId, subscriptionId, isActive, periodEnd } = args;
-  return {
-    user_id: userId,
+  return { user_id: userId,
     tier,
     price: MEGATALENT_TIER_PRICE[tier],
     bonus_votes: 0,
@@ -35,8 +30,7 @@ function buildMtPayload(args: {
     stripe_customer_id: customerId,
     stripe_subscription_id: subscriptionId,
     current_period_end: periodEnd,
-    updated_at: new Date().toISOString(),
-  };
+    updated_at: new Date().toISOString() };
 }
 
 function unlockNotificationMessage(tier: Tier) {
@@ -53,68 +47,58 @@ function computeReferralReward(amountPaidCents: number): number | null {
 
 // ── MT subscription payload tests ──────────────────────────────────────────
 
-Deno.test("TOP Premium sub payload: win_chance_boost=100, bonus_votes=0, €15", () => {
-  const p = buildMtPayload({
+Deno.test("TOP Premium sub payload: win_chance_boost=100, bonus_votes=0, €15", () => { const p = buildMtPayload({
     userId: "u-1",
     tier: "top_premium",
     customerId: "cus_x",
     subscriptionId: "sub_x",
     isActive: true,
-    periodEnd: "2030-01-01T00:00:00.000Z",
-  });
+    periodEnd: "2030-01-01T00:00:00.000Z" });
   assertEquals(p.win_chance_boost, 100);
   assertEquals(p.bonus_votes, 0);
   assertEquals(p.price, 15);
   assertEquals(p.status, "active");
 });
 
-Deno.test("Premium sub payload: no boost, no bonus_votes, €10", () => {
-  const p = buildMtPayload({
+Deno.test("Premium sub payload: no boost, no bonus_votes, €10", () => { const p = buildMtPayload({
     userId: "u-2",
     tier: "premium",
     customerId: "cus_y",
     subscriptionId: "sub_y",
     isActive: true,
-    periodEnd: null,
-  });
+    periodEnd: null });
   assertEquals(p.win_chance_boost, 0);
   assertEquals(p.bonus_votes, 0);
   assertEquals(p.price, 10);
 });
 
-Deno.test("inactive subscription still writes status='inactive' without granting boost", () => {
-  const p = buildMtPayload({
+Deno.test("inactive subscription still writes status='inactive' without granting boost", () => { const p = buildMtPayload({
     userId: "u-3",
     tier: "top_premium",
     customerId: "cus_z",
     subscriptionId: "sub_z",
     isActive: false,
-    periodEnd: null,
-  });
+    periodEnd: null });
   // Boost is set by tier — but status is inactive so the user is gated by status.
   assertEquals(p.status, "inactive");
   assertEquals(p.win_chance_boost, 100);
   assertEquals(p.bonus_votes, 0);
 });
 
-Deno.test("legacy 100,000 bonus votes are never granted (regression guard)", () => {
-  for (const tier of ["premium", "top_premium"] as const) {
+Deno.test("legacy 100,000 bonus votes are never granted (regression guard)", () => { for (const tier of ["premium", "top_premium"] as const) {
     const p = buildMtPayload({
       userId: "u", tier,
       customerId: "cus", subscriptionId: "sub",
-      isActive: true, periodEnd: null,
-    });
+      isActive: true, periodEnd: null });
     assertEquals(p.bonus_votes, 0);
     assertNotEquals(p.bonus_votes as number, 100_000);
   }
 });
 
-Deno.test("win_chance_boost is exactly 100 for top_premium (not legacy 50)", () => {
-  const p = buildMtPayload({
+Deno.test("win_chance_boost is exactly 100 for top_premium (not legacy 50)", () => { const p = buildMtPayload({
     userId: "u", tier: "top_premium",
     customerId: "cus", subscriptionId: "sub",
-    isActive: true, periodEnd: null,
-  });
+    isActive: true, periodEnd: null });
   assertEquals(p.win_chance_boost, 100);
   assertNotEquals(p.win_chance_boost, 50);
 });
@@ -181,16 +165,14 @@ function referralShouldCredit(args: {
 Deno.test("error: no invoice id → no referral credit", () => {
   const r = referralShouldCredit({
     invoiceId: null, amountPaidCents: 1500, email: "a@b.c",
-    buyerProfileId: "p", attribution: { id: "a", referrer_id: "r", status: "approved" },
-  });
+    buyerProfileId: "p", attribution: { id: "a", referrer_id: "r", status: "approved" } });
   assertEquals(r.credit, false);
 });
 
 Deno.test("error: missing email → no referral credit", () => {
   const r = referralShouldCredit({
     invoiceId: "in_1", amountPaidCents: 1500, email: null,
-    buyerProfileId: "p", attribution: { id: "a", referrer_id: "r", status: "approved" },
-  });
+    buyerProfileId: "p", attribution: { id: "a", referrer_id: "r", status: "approved" } });
   assertEquals(r.credit, false);
   assertEquals(r.reason, "no email");
 });
@@ -198,8 +180,7 @@ Deno.test("error: missing email → no referral credit", () => {
 Deno.test("error: no profile for email → no referral credit", () => {
   const r = referralShouldCredit({
     invoiceId: "in_1", amountPaidCents: 1500, email: "ghost@x.y",
-    buyerProfileId: null, attribution: { id: "a", referrer_id: "r", status: "approved" },
-  });
+    buyerProfileId: null, attribution: { id: "a", referrer_id: "r", status: "approved" } });
   assertEquals(r.credit, false);
   assertEquals(r.reason, "no profile for email");
 });
@@ -207,8 +188,7 @@ Deno.test("error: no profile for email → no referral credit", () => {
 Deno.test("error: attribution not approved → no referral credit", () => {
   const r = referralShouldCredit({
     invoiceId: "in_1", amountPaidCents: 1500, email: "a@b.c",
-    buyerProfileId: "p", attribution: { id: "a", referrer_id: "r", status: "pending" },
-  });
+    buyerProfileId: "p", attribution: { id: "a", referrer_id: "r", status: "pending" } });
   assertEquals(r.credit, false);
   assertEquals(r.reason, "status=pending");
 });
@@ -216,8 +196,7 @@ Deno.test("error: attribution not approved → no referral credit", () => {
 Deno.test("happy path: approved attribution + TOP Premium invoice → €5 credited", () => {
   const r = referralShouldCredit({
     invoiceId: "in_top", amountPaidCents: 1500, email: "buyer@x.y",
-    buyerProfileId: "p1", attribution: { id: "a1", referrer_id: "r1", status: "approved" },
-  });
+    buyerProfileId: "p1", attribution: { id: "a1", referrer_id: "r1", status: "approved" } });
   assertEquals(r.credit, true);
   assertEquals(computeReferralReward(1500), 5);
 });
@@ -225,8 +204,7 @@ Deno.test("happy path: approved attribution + TOP Premium invoice → €5 credi
 Deno.test("happy path: approved attribution + Premium invoice → €5 credited (same as TOP)", () => {
   const r = referralShouldCredit({
     invoiceId: "in_prem", amountPaidCents: 1000, email: "buyer@x.y",
-    buyerProfileId: "p1", attribution: { id: "a1", referrer_id: "r1", status: "approved" },
-  });
+    buyerProfileId: "p1", attribution: { id: "a1", referrer_id: "r1", status: "approved" } });
   assertEquals(r.credit, true);
   assertEquals(computeReferralReward(1000), 5);
 });
@@ -274,8 +252,7 @@ function makeLedger() {
       return rows
         .filter((r) => r.referrer_id === referrerId)
         .reduce((s, r) => s + r.amount, 0);
-    },
-  };
+    } };
 }
 
 function processWebhook(
@@ -293,13 +270,11 @@ function processWebhook(
   if (!gate.credit) return { credited: false, reason: gate.reason };
   const reward = computeReferralReward(args.amountPaidCents);
   if (reward == null) return { credited: false, reason: "zero reward" };
-  const res = ledger.insert({
-    referrer_id: args.attribution!.referrer_id,
+  const res = ledger.insert({ referrer_id: args.attribution!.referrer_id,
     referred_user_id: args.buyerProfileId!,
     amount: reward,
     source_invoice_id: args.invoiceId!,
-    source_kind: args.tier,
-  });
+    source_kind: args.tier });
   return { credited: res === "inserted", result: res };
 }
 
@@ -311,8 +286,7 @@ Deno.test("idempotency: replaying TOP Premium webhook never double-credits €5"
     email: "buyer@x.y",
     buyerProfileId: "p1",
     attribution: { id: "a1", referrer_id: "r1", status: "approved" } as Attribution,
-    tier: "top_premium" as Tier,
-  };
+    tier: "top_premium" as Tier };
   assertEquals(processWebhook(ledger, base).credited, true);
   // 5 retries from Stripe — all must be duplicates.
   for (let i = 0; i < 5; i++) {
@@ -332,8 +306,7 @@ Deno.test("idempotency: replaying Premium webhook never double-credits €5", ()
     email: "buyer@x.y",
     buyerProfileId: "p1",
     attribution: { id: "a1", referrer_id: "r1", status: "approved" } as Attribution,
-    tier: "premium" as Tier,
-  };
+    tier: "premium" as Tier };
   assertEquals(processWebhook(ledger, base).credited, true);
   for (let i = 0; i < 3; i++) {
     assertEquals(processWebhook(ledger, base).credited, false);
@@ -348,8 +321,7 @@ Deno.test("two distinct invoices for same referee each credit €5 (monthly rene
     email: "buyer@x.y",
     buyerProfileId: "p1",
     attribution: { id: "a1", referrer_id: "r1", status: "approved" } as Attribution,
-    tier: "top_premium" as Tier,
-  };
+    tier: "top_premium" as Tier };
   processWebhook(ledger, { ...common, invoiceId: "in_top_month1" });
   processWebhook(ledger, { ...common, invoiceId: "in_top_month2" });
   assertEquals(ledger.totalFor("r1"), 10);
@@ -365,8 +337,7 @@ Deno.test("missing email: no credit even on replay (TOP + Premium)", () => {
       email: null,
       buyerProfileId: "p1",
       attribution: { id: "a", referrer_id: "r1", status: "approved" },
-      tier,
-    });
+      tier });
     assertEquals(r.credited, false);
     assertEquals(r.reason, "no email");
     assertEquals(ledger.totalFor("r1"), 0);
@@ -381,8 +352,7 @@ Deno.test("empty-string email is treated as missing → no credit", () => {
     email: "",
     buyerProfileId: "p1",
     attribution: { id: "a", referrer_id: "r1", status: "approved" },
-    tier: "top_premium",
-  });
+    tier: "top_premium" });
   assertEquals(r.credited, false);
   assertEquals(r.reason, "no email");
 });
@@ -396,24 +366,21 @@ Deno.test("email present but no matching profile → no credit (TOP + Premium)",
       email: "ghost@x.y",
       buyerProfileId: null,
       attribution: { id: "a", referrer_id: "r1", status: "approved" },
-      tier,
-    });
+      tier });
     assertEquals(r.credited, false);
     assertEquals(r.reason, "no profile for email");
     assertEquals(ledger.totalFor("r1"), 0);
   }
 });
 
-Deno.test("missing attribution → no credit even with valid email/profile", () => {
-  const ledger = makeLedger();
+Deno.test("missing attribution → no credit even with valid email/profile", () => { const ledger = makeLedger();
   const r = processWebhook(ledger, {
     invoiceId: "in_no_attr",
     amountPaidCents: 1500,
     email: "buyer@x.y",
     buyerProfileId: "p1",
     attribution: null,
-    tier: "top_premium",
-  });
+    tier: "top_premium" });
   assertEquals(r.credited, false);
   assertEquals(r.reason, "no attribution");
 });
@@ -427,8 +394,7 @@ Deno.test("non-approved attribution statuses are all rejected", () => {
       email: "buyer@x.y",
       buyerProfileId: "p1",
       attribution: { id: "a", referrer_id: "r1", status },
-      tier: "top_premium",
-    });
+      tier: "top_premium" });
     assertEquals(r.credited, false);
     assertEquals(r.reason, `status=${status}`);
   }
@@ -443,8 +409,7 @@ Deno.test("bad-data webhook then corrected replay: only the corrected one credit
     email: "buyer@x.y",
     buyerProfileId: null,
     attribution: { id: "a", referrer_id: "r1", status: "approved" },
-    tier: "top_premium",
-  });
+    tier: "top_premium" });
   assertEquals(bad.credited, false);
   // Stripe replays after the profile exists — same invoice id, now resolvable.
   const good = processWebhook(ledger, {
@@ -453,8 +418,7 @@ Deno.test("bad-data webhook then corrected replay: only the corrected one credit
     email: "buyer@x.y",
     buyerProfileId: "p1",
     attribution: { id: "a", referrer_id: "r1", status: "approved" },
-    tier: "top_premium",
-  });
+    tier: "top_premium" });
   assertEquals(good.credited, true);
   // And a further replay must not double-pay.
   assertEquals(processWebhook(ledger, {
@@ -463,8 +427,7 @@ Deno.test("bad-data webhook then corrected replay: only the corrected one credit
     email: "buyer@x.y",
     buyerProfileId: "p1",
     attribution: { id: "a", referrer_id: "r1", status: "approved" },
-    tier: "top_premium",
-  }).result, "duplicate");
+    tier: "top_premium" }).result, "duplicate");
   assertEquals(ledger.totalFor("r1"), 5);
 });
 
@@ -477,8 +440,7 @@ Deno.test("zero-amount invoice never credits, even with valid attribution", () =
       email: "buyer@x.y",
       buyerProfileId: "p1",
       attribution: { id: "a", referrer_id: "r1", status: "approved" },
-      tier,
-    });
+      tier });
     assertEquals(r.credited, false);
   }
   assertEquals(ledger.totalFor("r1"), 0);

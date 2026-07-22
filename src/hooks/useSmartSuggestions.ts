@@ -63,8 +63,7 @@ export const useSmartSuggestions = (limit = 8) => {
         .in("id", ids);
 
       return profiles || [];
-    },
-  });
+    } });
 
   const { data: suggestedHashtags = [], isLoading: loadingTags } = useQuery({
     queryKey: ["smart-suggested-hashtags", limit],
@@ -76,12 +75,9 @@ export const useSmartSuggestions = (limit = 8) => {
         .limit(limit);
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
-  return {
-    suggestedUsers,
+  return { suggestedUsers,
     suggestedHashtags,
-    isLoading: loadingUsers || loadingTags,
-  };
+    isLoading: loadingUsers || loadingTags };
 };

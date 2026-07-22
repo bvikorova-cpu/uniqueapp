@@ -49,43 +49,32 @@ interface BrandSponsor {
   tier_priority?: number;
 }
 
-const SPONSOR_TIERS = {
-  bronze: {
+const SPONSOR_TIERS = { bronze: {
     name: "Bronze Sponsor",
     price: 200,
     color: "from-amber-600 to-amber-800",
     features: ["Listed in footer", "Basic brand visibility", "Monthly analytics report"],
-    icon: Award,
-  },
-  silver: {
-    name: "Silver Sponsor",
+    icon: Award },
+  silver: { name: "Silver Sponsor",
     price: 500,
     color: "from-gray-400 to-gray-600",
     features: ["Sidebar banner placement", "Vote count display", "Advanced analytics", "Featured badge"],
-    icon: Star,
-  },
-  gold: {
-    name: "Gold Sponsor",
+    icon: Star },
+  gold: { name: "Gold Sponsor",
     price: 1500,
     color: "from-yellow-400 to-yellow-600",
     features: ["Homepage hero placement", "Featured article", "Full analytics dashboard", "Priority placement", "Priority support"],
-    icon: Crown,
-  },
-  platinum: {
-    name: "Platinum Sponsor",
+    icon: Crown },
+  platinum: { name: "Platinum Sponsor",
     price: 3000,
     color: "from-purple-400 to-purple-600",
     features: ["All Gold features", "Top priority placement", "Dedicated support", "Exclusive features"],
-    icon: Zap,
-  },
-  enterprise: {
-    name: "Enterprise Sponsor",
+    icon: Zap },
+  enterprise: { name: "Enterprise Sponsor",
     price: 10000,
     color: "from-amber-400 via-yellow-500 to-amber-600",
     features: ["Highest priority placement", "Full REST API access", "Dedicated account manager", "Co-branded events", "White-label options"],
-    icon: Building2,
-  },
-};
+    icon: Building2 } };
 
 const CATEGORIES = ["Tech", "Fashion", "Food", "Services", "Healthcare", "Education"];
 
@@ -123,8 +112,7 @@ export default function BrandBattle() {
   const handlePaymentSuccess = async (sessionId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke("verify-brand-votes-payment", {
-        body: { sessionId },
-      });
+        body: { sessionId } });
       if (error) throw error;
       if (data?.success) {
         toast.success(`Success! We've added ${data.votesAdded} votes to your account.`);
@@ -138,8 +126,7 @@ export default function BrandBattle() {
       toast.error("Could not verify payment", {
         description: "We were unable to confirm your vote purchase. Tap retry or contact support if you were charged.",
         action: { label: "Retry", onClick: () => handlePaymentSuccess(sessionId) },
-        duration: 15000,
-      });
+        duration: 15000 });
     }
   };
 
@@ -154,8 +141,7 @@ export default function BrandBattle() {
         .order("total_votes", { ascending: false });
       if (error) throw error;
       return data as BrandSponsor[];
-    },
-  });
+    } });
 
   // Campaign stats
   const { data: campaignStats } = useQuery({
@@ -170,8 +156,7 @@ export default function BrandBattle() {
         .eq("subscription_status", "active")
         .eq("moderation_status", "approved");
       return { totalVotes: totalVotes || 0, totalSponsors: totalSponsors || 0 };
-    },
-  });
+    } });
 
   useEffect(() => {
     const channel = supabase
@@ -187,8 +172,7 @@ export default function BrandBattle() {
   const voteMutation = useMutation({
     mutationFn: async (brandId: string) => {
       const { data, error } = await supabase.functions.invoke("vote-for-brand", {
-        body: { brandId },
-      });
+        body: { brandId } });
       if (error) throw error;
       return data;
     },
@@ -202,8 +186,7 @@ export default function BrandBattle() {
     },
     onError: (error: any) => {
       toast.error(error.message || "Failed to vote");
-    },
-  });
+    } });
 
   const handleVote = async (brandId: string, _brandName?: string) => {
     if (!user) {

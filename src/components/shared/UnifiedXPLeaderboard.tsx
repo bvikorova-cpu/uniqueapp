@@ -26,8 +26,7 @@ interface Props {
 const hubMeta = {
   megatalent: { icon: Sparkles, label: "Megatalent", color: "text-primary" },
   kitchenstars: { icon: ChefHat, label: "KitchenStars", color: "text-orange-400" },
-  proclass: { icon: GraduationCap, label: "ProClass", color: "text-blue-400" },
-} as const;
+  proclass: { icon: GraduationCap, label: "ProClass", color: "text-blue-400" } } as const;
 
 export const UnifiedXPLeaderboard = ({ hub, limit = 10 }: Props) => {
   const { data: rows = [], isLoading } = useQuery({
@@ -37,8 +36,7 @@ export const UnifiedXPLeaderboard = ({ hub, limit = 10 }: Props) => {
       if (error) throw error;
       return (data ?? []) as Row[];
     },
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 
   const rankIcon = (i: number) =>
     i === 0 ? <Crown className="h-5 w-5 text-yellow-500" /> :

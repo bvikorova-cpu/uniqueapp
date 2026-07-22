@@ -19,13 +19,11 @@ const LISTING_PACKAGES = [
   { id: "featured", name: "Featured", price: 149, duration: 90, features: ["TOP position", "Maximum visibility", "90 days active"], color: "from-amber-500/10 to-yellow-500/10", border: "border-amber-500/20" },
 ];
 
-export default function PropertySubmissionForm() {
-  const navigate = useNavigate();
+export default function PropertySubmissionForm() { const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState("basic");
   const [formData, setFormData] = useState({
-    title: "", description: "", price: "", location: "", propertyType: "", area: "", rooms: "",
-  });
+    title: "", description: "", price: "", location: "", propertyType: "", area: "", rooms: "" });
   const [images, setImages] = useState<File[]>([]);
   const [videos, setVideos] = useState<File[]>([]);
 
@@ -68,8 +66,7 @@ export default function PropertySubmissionForm() {
 
       const { data: property, error: propertyError } = await supabase
         .from("properties")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           title: formData.title.trim().slice(0, 200),
           description: formData.description.trim().slice(0, 5000),
           price: priceNum,
@@ -79,8 +76,7 @@ export default function PropertySubmissionForm() {
           property_type: formData.propertyType || 'apartment',
           area_sqm: formData.area ? parseInt(formData.area) : 50,
           rooms: formData.rooms ? parseInt(formData.rooms) : undefined,
-          status: 'draft',
-        } as any)
+          status: 'draft' } as any)
         .select().single();
 
       if (propertyError) throw propertyError;

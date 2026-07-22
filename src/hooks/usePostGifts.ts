@@ -20,15 +20,12 @@ export const usePostGifts = (postId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
-  const sendGift = useMutation({
-    mutationFn: async ({
+  const sendGift = useMutation({ mutationFn: async ({
       postId,
       giftType,
-      message,
-    }: {
+      message }: {
       postId: string;
       giftType: string;
       message?: string;
@@ -38,13 +35,11 @@ export const usePostGifts = (postId?: string) => {
 
       const giftValue = GIFT_VALUES[giftType as keyof typeof GIFT_VALUES] || 0;
 
-      const { error } = await supabase.from("post_gifts").insert({
-        post_id: postId,
+      const { error } = await supabase.from("post_gifts").insert({ post_id: postId,
         sender_id: user.id,
         gift_type: giftType,
         gift_value: giftValue,
-        message,
-      });
+        message });
 
       if (error) throw error;
     },
@@ -54,17 +49,14 @@ export const usePostGifts = (postId?: string) => {
     },
     onError: () => {
       toast({ title: "Failed to send gift", variant: "destructive" });
-    },
-  });
+    } });
 
   const totalValue = gifts.reduce((sum, gift) => sum + (gift.gift_value || 0), 0);
 
-  return {
-    gifts,
+  return { gifts,
     isLoading,
     sendGift: sendGift.mutate,
-    totalValue,
-  };
+    totalValue };
 };
 
 export const GIFT_TYPES = [
@@ -76,11 +68,9 @@ export const GIFT_TYPES = [
   { type: "diamond", emoji: "💎", label: "Diamond", value: 500 },
 ];
 
-const GIFT_VALUES: Record<string, number> = {
-  heart: 10,
+const GIFT_VALUES: Record<string, number> = { heart: 10,
   star: 25,
   fire: 50,
   trophy: 100,
   crown: 250,
-  diamond: 500,
-};
+  diamond: 500 };

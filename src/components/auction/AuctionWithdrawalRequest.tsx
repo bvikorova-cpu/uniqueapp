@@ -133,10 +133,8 @@ export function AuctionWithdrawalRequest() {
         }
       });
 
-      toast({
-        title: "Withdrawal requested",
-        description: "Your withdrawal request has been submitted. An admin will review it shortly.",
-      });
+      toast({ title: "Withdrawal requested",
+        description: "Your withdrawal request has been submitted. An admin will review it shortly." });
 
       setAmount("");
       setPaymentMethod("");
@@ -150,12 +148,10 @@ export function AuctionWithdrawalRequest() {
         address: ""
       });
       refetch();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

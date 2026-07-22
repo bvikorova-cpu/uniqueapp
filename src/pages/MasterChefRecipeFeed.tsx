@@ -48,8 +48,7 @@ export default function MasterChefRecipeFeed() {
         const { data: profiles } = await (supabase as any).from("profiles_public").select("id, full_name").in("id", userIds);
         const profileMap = new Map((profiles || []).map(p => [p.id, p.full_name || "Chef"]));
 
-        setPosts(data.map((p: any) => ({
-          id: p.id,
+        setPosts(data.map((p: any) => ({ id: p.id,
           title: p.title,
           description: p.description,
           image_url: p.image_url,
@@ -57,8 +56,7 @@ export default function MasterChefRecipeFeed() {
           comments: p.comments_count || 0,
           author_name: profileMap.get(p.user_id) || "Chef",
           created_at: p.created_at,
-          hasLiked: false,
-        })));
+          hasLiked: false })));
       }
     } catch (error) {
       console.error(error);
@@ -74,11 +72,9 @@ export default function MasterChefRecipeFeed() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate("/auth"); return; }
 
-      await (supabase as any).from("masterchef_recipe_posts").insert({
-        user_id: session.user.id,
+      await (supabase as any).from("masterchef_recipe_posts").insert({ user_id: session.user.id,
         title: newTitle.trim(),
-        description: newDesc.trim(),
-      });
+        description: newDesc.trim() });
       setNewTitle("");
       setNewDesc("");
       setShowForm(false);

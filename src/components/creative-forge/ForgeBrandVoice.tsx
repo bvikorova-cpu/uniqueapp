@@ -29,9 +29,7 @@ interface Props {
   onSelect?: (voice: BrandVoice) => void;
 }
 
-const EMPTY: Omit<BrandVoice, "id" | "is_default"> = {
-  name: "", description: "", tone: "", audience: "", do_use: "", dont_use: "", sample_text: "",
-};
+const EMPTY: Omit<BrandVoice, "id" | "is_default"> = { name: "", description: "", tone: "", audience: "", do_use: "", dont_use: "", sample_text: "" };
 
 export function ForgeBrandVoice({ open, onClose, onSelect }: Props) {
   const [voices, setVoices] = useState<BrandVoice[]>([]);

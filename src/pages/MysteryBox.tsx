@@ -111,11 +111,10 @@ const MysteryBoxPage = () => {
           <Flame className="h-5 w-5 text-yellow-400" />
           <h2
             className="text-2xl font-black"
-            style={{
+            style={ {
               background: "linear-gradient(135deg, #FFD700, #FFF8DC, #FFD700)",
               WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
+              WebkitTextFillColor: "transparent" }}
           >
             The Vault Tools
           </h2>

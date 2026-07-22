@@ -16,19 +16,16 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-cron-secret",
-};
+    "authorization, x-client-info, apikey, content-type, x-cron-secret" };
 
 const SELLER_PCT = 80;
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 function admin() {
@@ -118,16 +115,14 @@ async function actionCheckout(req: Request, body: any) {
       else {
         const { data: ins, error: insErr } = await sb
           .from("mt_marketplace_orders")
-          .insert({
-            listing_id,
+          .insert({ listing_id,
             buyer_id: user.id,
             seller_id: listing.seller_id,
             price_cents: listing.price_cents,
             status: "pending",
             delivery_due_at: new Date(
               Date.now() + listing.eta_days * 86400000,
-            ).toISOString(),
-          })
+            ).toISOString() })
           .select("id")
           .single();
         if (insErr || !ins) throw new Error(insErr?.message || "Order insert failed");
@@ -162,17 +157,13 @@ async function actionCheckout(req: Request, body: any) {
       price_data: {
         currency: "eur",
         unit_amount: amountCents,
-        product_data: { name: title },
-      },
-      quantity: 1,
-    }],
+        product_data: { name: title } },
+      quantity: 1 }],
     metadata: { mt_kind: kind, mt_row_id: id, user_id: user.id },
     payment_intent_data: {
-      metadata: { mt_kind: kind, mt_row_id: id, user_id: user.id },
-    },
+      metadata: { mt_kind: kind, mt_row_id: id, user_id: user.id } },
     success_url: `${origin}/megatalent?mt_paid=1`,
-    cancel_url: `${origin}/megatalent?mt_cancelled=1`,
-  });
+    cancel_url: `${origin}/megatalent?mt_cancelled=1` });
 
   const table = kind === "mentorship" ? "mt_mentorship_bookings" : "mt_marketplace_orders";
   await sb.from(table).update({ stripe_session_id: session.id }).eq("id", id);
@@ -231,17 +222,14 @@ async function actionReleaseFunds(req: Request, body: any) {
       currency: "eur",
       destination: profile.stripe_connect_account_id,
       description: `MT ${kind} ${id} (80%)`,
-      metadata: { mt_kind: kind, mt_row_id: id, seller_user_id: sellerUserId },
-    },
+      metadata: { mt_kind: kind, mt_row_id: id, seller_user_id: sellerUserId } },
     { idempotencyKey: `mt-release-${kind}-${id}` },
   );
 
   const now = new Date().toISOString();
-  const update: Record<string, unknown> = {
-    status: "completed",
+  const update: Record<string, unknown> = { status: "completed",
     stripe_transfer_id: transfer.id,
-    completed_at: now,
-  };
+    completed_at: now };
   if (kind === "marketplace") update.delivered_at = now;
   const { error: upErr } = await sb.from(table).update(update).eq("id", id);
   if (upErr) {
@@ -249,20 +237,17 @@ async function actionReleaseFunds(req: Request, body: any) {
     throw new Error(`Transfer ${transfer.id} succeeded but DB update failed: ${upErr.message}`);
   }
 
-  return json({
-    success: true,
+  return json({ success: true,
     transfer_id: transfer.id,
     seller_cents: sellerCents,
-    platform_cents: grossCents - sellerCents,
-  });
+    platform_cents: grossCents - sellerCents });
 }
 
 const STREAK_REWARDS: Record<number, { label: string; xp: number; boost?: boolean; premiumDays?: number }> = {
   3: { label: "+50 XP", xp: 50 },
   7: { label: "+200 XP", xp: 200 },
   14: { label: "Boost x1", xp: 0, boost: true },
-  30: { label: "Premium 1d", xp: 0, premiumDays: 1 },
-};
+  30: { label: "Premium 1d", xp: 0, premiumDays: 1 } };
 
 async function actionClaimStreak(req: Request, body: any) {
   const user = await requireUser(req);
@@ -302,9 +287,7 @@ async function actionClaimStreak(req: Request, body: any) {
   }
   if (streak < day) return json({ error: "streak_insufficient", streak }, 400);
 
-  const { error: insErr } = await sb.from("mt_streak_claims").insert({
-    user_id: userId, day, reward_label: reward.label,
-  });
+  const { error: insErr } = await sb.from("mt_streak_claims").insert({ user_id: userId, day, reward_label: reward.label });
   if (insErr) {
     if ((insErr as any).code === "23505") return json({ error: "already_claimed" }, 409);
     throw insErr;
@@ -315,11 +298,9 @@ async function actionClaimStreak(req: Request, body: any) {
     if (row) await sb.from("hub_xp").update({ xp: (row.xp ?? 0) + reward.xp }).eq("user_id", userId).eq("hub", "megatalent");
     else await sb.from("hub_xp").insert({ user_id: userId, hub: "megatalent", xp: reward.xp });
   }
-  if (reward.boost) {
-    await sb.from("megatalent_boosts").insert({
+  if (reward.boost) { await sb.from("megatalent_boosts").insert({
       user_id: userId, boost_type: "streak", multiplier: 2,
-      expires_at: new Date(Date.now() + 86400000).toISOString(),
-    }).select();
+      expires_at: new Date(Date.now() + 86400000).toISOString() }).select();
   }
   if (reward.premiumDays) {
     const expires = new Date(Date.now() + reward.premiumDays * 86400000).toISOString();
@@ -392,12 +373,10 @@ async function actionQuestIncrement(req: Request, body: any) {
   const inc = Math.max(1, Math.min(100, Number(body?.amount) || 1));
 
   const sb = admin();
-  const { data: allowed } = await sb.rpc("mt_rate_limit_check", {
-    _user_id: user.id,
+  const { data: allowed } = await sb.rpc("mt_rate_limit_check", { _user_id: user.id,
     _action: "quest_increment",
     _window_seconds: 10,
-    _max_count: 30,
-  });
+    _max_count: 30 });
   if (allowed === false) return json({ error: "rate_limited" }, 429);
 
   const { data: quest, error: qerr } = await sb
@@ -454,9 +433,7 @@ async function actionSeasonClaimTier(req: Request, body: any) {
   const userXp = (xpRow as any)?.total_xp ?? 0;
   if (userXp < reward.xp_required) throw new Error("Not enough XP");
 
-  const { error: insErr } = await sb.from("mt_season_pass_claims").insert({
-    user_id: user.id, season_id, tier_level, reward_label: reward.reward_label,
-  });
+  const { error: insErr } = await sb.from("mt_season_pass_claims").insert({ user_id: user.id, season_id, tier_level, reward_label: reward.reward_label });
   if (insErr) {
     if ((insErr as any).code === "23505") throw new Error("Already claimed");
     throw insErr;
@@ -469,8 +446,7 @@ async function actionSeasonClaimTier(req: Request, body: any) {
         p_user_id: user.id,
         p_amount: amt,
         p_reason: `season_pass:${season_id}:tier_${tier_level}`,
-        p_source: `season_pass_tier:${season_id}:${tier_level}`,
-      });
+        p_source: `season_pass_tier:${season_id}:${tier_level}` });
       if (addErr) {
         console.error("[mt-router/season_claim_tier] add_ai_credits failed", addErr);
         await sb.from("mt_season_pass_claims").delete()
@@ -528,12 +504,10 @@ async function actionStoriesCleanup(req: Request) {
     deleted = count ?? ids.length;
   }
 
-  return json({
-    success: true,
+  return json({ success: true,
     deleted,
     storage_buckets: Array.from(perBucket.keys()),
-    storage_errors: storageErrors,
-  });
+    storage_errors: storageErrors });
 }
 
 async function actionEscrowAutoRelease(req: Request) {
@@ -541,12 +515,10 @@ async function actionEscrowAutoRelease(req: Request) {
   const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", { apiVersion: "2025-08-27.basil" });
   const sb = admin();
 
-  const results = {
-    marketplace_released: 0,
+  const results = { marketplace_released: 0,
     mentorship_released: 0,
     mentorship_cancelled: 0,
-    errors: [] as string[],
-  };
+    errors: [] as string[] };
 
   const releaseRow = async (kind: "marketplace" | "mentorship", row: any) => {
     const table = kind === "mentorship" ? "mt_mentorship_bookings" : "mt_marketplace_orders";
@@ -588,14 +560,11 @@ async function actionEscrowAutoRelease(req: Request) {
           currency: "eur",
           destination: profile.stripe_connect_account_id,
           description: `MT ${kind} ${row.id} (auto 80%)`,
-          metadata: { mt_kind: kind, mt_row_id: row.id, auto: "1" },
-        },
+          metadata: { mt_kind: kind, mt_row_id: row.id, auto: "1" } },
         { idempotencyKey: `mt-auto-release-${kind}-${row.id}` },
       );
       const now = new Date().toISOString();
-      const upd: Record<string, unknown> = {
-        status: "completed", stripe_transfer_id: transfer.id, completed_at: now,
-      };
+      const upd: Record<string, unknown> = { status: "completed", stripe_transfer_id: transfer.id, completed_at: now };
       if (kind === "marketplace") upd.delivered_at = now;
       await sb.from(table).update(upd).eq("id", row.id);
       if (kind === "mentorship") results.mentorship_released++;

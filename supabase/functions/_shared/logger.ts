@@ -31,8 +31,7 @@ export function createAdvancedLogger(prefix: string) {
     debug: (step: string, details?: Record<string, unknown>) => {
       const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
       console.log(`[${formattedPrefix}] DEBUG: ${step}${detailsStr}`);
-    },
-  };
+    } };
 }
 
 /**
@@ -47,6 +46,5 @@ export function createTimedLogger(prefix: string) {
       const elapsed = Date.now() - startTime;
       log(step, { ...details, elapsed_ms: elapsed });
     },
-    elapsed: () => Date.now() - startTime,
-  };
+    elapsed: () => Date.now() - startTime };
 }

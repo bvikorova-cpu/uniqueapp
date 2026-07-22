@@ -20,8 +20,7 @@ export const useFriendChallengeAchievements = (userId?: string) => {
       if (error) throw error;
       return data || [];
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const checkAndAwardAchievements = useMutation({
     mutationFn: async (userId: string) => {
@@ -136,30 +135,24 @@ export const useFriendChallengeAchievements = (userId?: string) => {
         const achievement = FRIEND_CHALLENGE_ACHIEVEMENTS[achievementId];
         if (achievement) {
           toast.success(`🏆 Achievement Unlocked!`, {
-            description: `${achievement.name}: ${achievement.description}`,
-          });
+            description: `${achievement.name}: ${achievement.description}` });
         }
       });
-    },
-  });
+    } });
 
   const awardAchievement = async (userId: string, achievementType: string) => {
     const { error } = await supabase
       .from('brain_duel_friend_achievements')
-      .insert({
-        user_id: userId,
-        achievement_type: achievementType,
-      });
+      .insert({ user_id: userId,
+        achievement_type: achievementType });
 
     if (error && !error.message.includes('duplicate key')) {
       console.error('Error awarding achievement:', error);
     }
   };
 
-  return {
-    achievements,
+  return { achievements,
     isLoading,
     checkAndAwardAchievements: checkAndAwardAchievements.mutate,
-    isChecking: checkAndAwardAchievements.isPending,
-  };
+    isChecking: checkAndAwardAchievements.isPending };
 };

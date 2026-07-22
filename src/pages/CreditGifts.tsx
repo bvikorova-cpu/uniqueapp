@@ -61,11 +61,9 @@ export default function CreditGifts() {
 
     setSending(true);
     try {
-      const { data, error } = await supabase.rpc("send_credit_gift", {
-        p_recipient_email: email.trim(),
+      const { data, error } = await supabase.rpc("send_credit_gift", { p_recipient_email: email.trim(),
         p_amount: n,
-        p_message: message.trim() || null,
-      });
+        p_message: message.trim() || null });
       if (error) throw error;
       const r = data as unknown as GiftResult;
       setLastResult(r);

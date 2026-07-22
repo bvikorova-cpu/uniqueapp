@@ -1,18 +1,15 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const ai = (body: unknown, key: string) =>
   fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+    body: JSON.stringify(body) });
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -39,34 +36,28 @@ serve(async (req) => {
       if (!imageDataUrl || !String(imageDataUrl).startsWith("data:image/")) {
         return new Response(JSON.stringify({ error: "imageDataUrl required" }), {
           status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-      const res = await ai({
-        model: "gpt-4o-mini",
+      const res = await ai({ model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
             content:
-              "You are a brilliant math tutor. Look at the photo of the math problem and explain the solution step by step. Use LaTeX ($...$ inline, $$...$$ block). Always answer in English. If not a math problem, say so politely.",
-          },
+              "You are a brilliant math tutor. Look at the photo of the math problem and explain the solution step by step. Use LaTeX ($...$ inline, $$...$$ block). Always answer in English. If not a math problem, say so politely." },
           {
             role: "user",
             content: [
               { type: "text", text: question || "Solve this problem step by step." },
               { type: "image_url", image_url: { url: imageDataUrl } },
-            ],
-          },
-        ],
-      }, OPENAI_API_KEY);
+            ] },
+        ] }, OPENAI_API_KEY);
 
       if (res.status === 429) return new Response(JSON.stringify({ error: "Rate limit" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       if (res.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       if (!res.ok) throw new Error(`AI error: ${res.status}`);
       const data = await res.json();
       return new Response(JSON.stringify({ solution: data?.choices?.[0]?.message?.content ?? "" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // ─── PDF → QUIZ ───
@@ -76,18 +67,15 @@ serve(async (req) => {
       if (safeText.trim().length < 50) {
         return new Response(JSON.stringify({ error: "Text too short" }), {
           status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       const safeN = Math.max(3, Math.min(20, Number(numQuestions) || 8));
-      const res = await ai({
-        model: "gpt-4o-mini",
+      const res = await ai({ model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
             content:
-              "You are a quiz designer. From the study text, generate a multiple-choice quiz. Always English. Each question has 4 options and one correct index (0-3). Respond ONLY by calling the create_quiz tool.",
-          },
+              "You are a quiz designer. From the study text, generate a multiple-choice quiz. Always English. Each question has 4 options and one correct index (0-3). Respond ONLY by calling the create_quiz tool." },
           { role: "user", content: `Difficulty: ${difficulty}. Create ${safeN} questions from:\n\n${safeText}` },
         ],
         tools: [{
@@ -107,20 +95,12 @@ serve(async (req) => {
                       question: { type: "string" },
                       options: { type: "array", items: { type: "string" }, minItems: 4, maxItems: 4 },
                       correct_index: { type: "integer", minimum: 0, maximum: 3 },
-                      explanation: { type: "string" },
-                    },
+                      explanation: { type: "string" } },
                     required: ["question", "options", "correct_index", "explanation"],
-                    additionalProperties: false,
-                  },
-                },
-              },
+                    additionalProperties: false } } },
               required: ["title", "questions"],
-              additionalProperties: false,
-            },
-          },
-        }],
-        tool_choice: { type: "function", function: { name: "create_quiz" } },
-      }, OPENAI_API_KEY);
+              additionalProperties: false } } }],
+        tool_choice: { type: "function", function: { name: "create_quiz" } } }, OPENAI_API_KEY);
 
       if (res.status === 429) return new Response(JSON.stringify({ error: "Rate limit" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       if (res.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -129,20 +109,17 @@ serve(async (req) => {
       const args = data?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
       if (!args) throw new Error("AI did not return quiz");
       return new Response(JSON.stringify({ quiz: JSON.parse(args) }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     return new Response(JSON.stringify({ error: "Unknown action" }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[education-ai] ERROR", msg);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

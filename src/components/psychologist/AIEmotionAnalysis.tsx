@@ -39,8 +39,7 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
       if (!user) { toast.error("Please sign in"); return; }
 
       const { data, error } = await supabase.functions.invoke("psychology-ai", {
-        body: { action: "emotion-analysis", text: text.trim() },
-      });
+        body: { action: "emotion-analysis", text: text.trim() } });
       if (error) throw error;
       setResult(data);
       loadHistory();
@@ -54,13 +53,11 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
     } finally { setAnalyzing(false); }
   };
 
-  const getEmotionColor = (emotion: string) => {
-    const map: Record<string, string> = {
+  const getEmotionColor = (emotion: string) => { const map: Record<string, string> = {
       joy: "bg-yellow-500/20 text-yellow-600", sadness: "bg-blue-500/20 text-blue-600",
       anger: "bg-red-500/20 text-red-600", fear: "bg-purple-500/20 text-purple-600",
       surprise: "bg-orange-500/20 text-orange-600", disgust: "bg-green-500/20 text-green-600",
-      trust: "bg-emerald-500/20 text-emerald-600", anticipation: "bg-pink-500/20 text-pink-600",
-    };
+      trust: "bg-emerald-500/20 text-emerald-600", anticipation: "bg-pink-500/20 text-pink-600" };
     return map[emotion.toLowerCase()] || "bg-muted text-muted-foreground";
   };
 

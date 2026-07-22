@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -24,8 +22,7 @@ serve(async (req) => {
 
     const { action, ...params } = await req.json();
 
-    const creditCosts: Record<string, number> = {
-      "service-optimizer": 4,
+    const creditCosts: Record<string, number> = { "service-optimizer": 4,
       "pricing-advisor": 3,
       "proposal-writer": 4,
       "client-matcher": 5,
@@ -36,8 +33,7 @@ serve(async (req) => {
       "video-portfolio": 4,
       "provider-badge": 5,
       "contract-template": 4,
-      "realtime-bidding": 5,
-    };
+      "realtime-bidding": 5 };
 
     const cost = creditCosts[action];
     if (!cost) throw new Error("Unknown action: " + action);
@@ -125,17 +121,14 @@ serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        max_completion_tokens: 1500,
-      }),
-    });
+        max_completion_tokens: 1500 }) });
 
     if (!response.ok) {
       const errText = await response.text();
@@ -149,10 +142,8 @@ serve(async (req) => {
     // Deduct credits
     await supabase
       .from("ai_credits")
-      .update({
-        credits_remaining: credits.credits_remaining - cost,
-        last_used_at: new Date().toISOString(),
-      })
+      .update({ credits_remaining: credits.credits_remaining - cost,
+        last_used_at: new Date().toISOString() })
       .eq("user_id", user.id);
 
     return new Response(

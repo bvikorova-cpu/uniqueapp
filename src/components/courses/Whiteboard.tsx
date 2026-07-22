@@ -36,8 +36,7 @@ export function Whiteboard({ lessonId, isInstructor }: WhiteboardProps) {
           event: "INSERT",
           schema: "public",
           table: "whiteboard_strokes",
-          filter: `lesson_id=eq.${lessonId}`,
-        },
+          filter: `lesson_id=eq.${lessonId}` },
         (payload) => {
       if (payload.new.stroke_data) {
         const strokeData = payload.new.stroke_data as unknown as Stroke;
@@ -123,19 +122,15 @@ export function Whiteboard({ lessonId, isInstructor }: WhiteboardProps) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const stroke: Stroke = {
-        id: crypto.randomUUID(),
+      const stroke: Stroke = { id: crypto.randomUUID(),
         points: currentStroke,
         color: currentColor,
         width: currentWidth,
-        tool: currentTool,
-      };
+        tool: currentTool };
 
-      await supabase.from("whiteboard_strokes").insert([{
-        lesson_id: lessonId,
+      await supabase.from("whiteboard_strokes").insert([{ lesson_id: lessonId,
         user_id: user.id,
-        stroke_data: stroke as any,
-      }]);
+        stroke_data: stroke as any }]);
 
       setCurrentStroke([]);
     }

@@ -31,8 +31,7 @@ export const useFavoriteSections = () => {
       if (error) throw error;
       return (data || []) as FavoriteSection[];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const isFavorite = (path: string) => favorites.some((f) => f.path === path);
 
@@ -48,38 +47,29 @@ export const useFavoriteSections = () => {
         if (error) throw error;
         return { action: "removed" as const };
       }
-      const { error } = await supabase.from("favorite_sections").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("favorite_sections").insert({ user_id: user.id,
         path: input.path,
         title: input.title ?? null,
         category: input.category ?? null,
-        position: favorites.length,
-      });
+        position: favorites.length });
       if (error) throw error;
       return { action: "added" as const };
     },
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ["favorite-sections"] });
-      toast({
-        title:
+      toast({ title:
           data.action === "added"
             ? "Added to your favorites"
-            : "Removed from favorites",
-      });
+            : "Removed from favorites" });
     },
-    onError: (e: any) => {
-      toast({
+    onError: (e: any) => { toast({
         title: "Could not update favorites",
         description: e?.message ?? "Please sign in and try again.",
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
-  return {
-    favorites,
+  return { favorites,
     isLoading,
     isFavorite,
-    toggleFavorite: toggleFavorite.mutate,
-  };
+    toggleFavorite: toggleFavorite.mutate };
 };

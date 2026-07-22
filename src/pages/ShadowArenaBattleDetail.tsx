@@ -139,8 +139,7 @@ export default function ShadowArenaBattleDetail() {
   const statusConfig: Record<string, { label: string; className: string }> = {
     waiting_for_participants: { label: "Open", className: "bg-yellow-600/80 text-yellow-100" },
     active: { label: "Live", className: "bg-green-600/80 text-green-100" },
-    completed: { label: "Ended", className: "bg-muted text-muted-foreground" },
-  };
+    completed: { label: "Ended", className: "bg-muted text-muted-foreground" } };
 
   const cfg = statusConfig[battle.status] || { label: battle.status, className: "bg-muted" };
 

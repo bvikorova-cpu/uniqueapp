@@ -37,8 +37,7 @@ const SafetySupportWall = () => {
         .order("created_at", { ascending: false }).limit(50);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const ids = useMemo(() => messages.map((m: any) => m.id), [messages]);
   const { data: reactions = {} } = useWallReactions(ids);
@@ -57,8 +56,7 @@ const SafetySupportWall = () => {
       setMessage("");
       setFilterResult(null);
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const handleSubmit = async () => {
     const result = await filter.mutateAsync(message);

@@ -34,11 +34,10 @@ type PaginationLinkProps = {
 const PaginationLink = ({ className, isActive, size = "icon", ...props }: PaginationLinkProps) => (
   <a
     aria-current={isActive ? "page" : undefined}
-    className={cn(
+    className={ cn(
       buttonVariants({
         variant: isActive ? "outline" : "ghost",
-        size,
-      }),
+        size }),
       className,
     )}
     {...props}
@@ -70,12 +69,10 @@ const PaginationEllipsis = ({ className, ...props }: React.ComponentProps<"span"
 );
 PaginationEllipsis.displayName = "PaginationEllipsis";
 
-export {
-  Pagination,
+export { Pagination,
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
-  PaginationPrevious,
-};
+  PaginationPrevious };

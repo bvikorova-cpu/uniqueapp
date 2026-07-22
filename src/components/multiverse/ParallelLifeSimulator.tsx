@@ -64,14 +64,12 @@ const ParallelLifeSimulator = ({ onBack }: ParallelLifeSimulatorProps) => {
     } finally { setLoading(false); }
   };
 
-  const moodColors: Record<string, string> = {
-    Energized: "text-cyan-400 bg-cyan-500/20 border-cyan-500/30",
+  const moodColors: Record<string, string> = { Energized: "text-cyan-400 bg-cyan-500/20 border-cyan-500/30",
     Focused: "text-blue-400 bg-blue-500/20 border-blue-500/30",
     Reflective: "text-violet-400 bg-violet-500/20 border-violet-500/30",
     Stressed: "text-red-400 bg-red-500/20 border-red-500/30",
     Excited: "text-amber-400 bg-amber-500/20 border-amber-500/30",
-    Contemplative: "text-indigo-400 bg-indigo-500/20 border-indigo-500/30",
-  };
+    Contemplative: "text-indigo-400 bg-indigo-500/20 border-indigo-500/30" };
 
   return (
     <>

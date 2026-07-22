@@ -73,8 +73,7 @@ export const GameModeSelector = ({ onSelectMode, isSearching = false }: GameMode
       toast({
         title: 'Insufficient Credits',
         description: `You need ${mode.entry} credits for ${mode.name}. You have ${credits}.`,
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
     setSelectedMode(mode.id);

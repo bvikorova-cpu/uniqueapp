@@ -11,35 +11,28 @@ export interface SubscriptionLimits {
   hasAnalytics: boolean;
 }
 
-const SUBSCRIPTION_LIMITS: Record<string, SubscriptionLimits> = {
-  basic: {
+const SUBSCRIPTION_LIMITS: Record<string, SubscriptionLimits> = { basic: {
     tier: 'basic',
     bazaarListingsPerMonth: 5,
     auctionListingsPerMonth: 5,
     commissionRate: 3,
     aiGenerationsPerMonth: 20, // Basic: 20 included monthly
     featuredListingsPerMonth: 1,
-    hasAnalytics: false,
-  },
-  premium: {
-    tier: 'premium',
+    hasAnalytics: false },
+  premium: { tier: 'premium',
     bazaarListingsPerMonth: -1, // unlimited
     auctionListingsPerMonth: -1, // unlimited
     commissionRate: 0,
     aiGenerationsPerMonth: 50,
     featuredListingsPerMonth: 3,
-    hasAnalytics: true,
-  },
-  business: {
-    tier: 'business',
+    hasAnalytics: true },
+  business: { tier: 'business',
     bazaarListingsPerMonth: -1,
     auctionListingsPerMonth: -1,
     commissionRate: 0,
     aiGenerationsPerMonth: -1,
     featuredListingsPerMonth: -1,
-    hasAnalytics: true,
-  },
-};
+    hasAnalytics: true } };
 
 export const useSubscription = () => {
   const [limits, setLimits] = useState<SubscriptionLimits>(SUBSCRIPTION_LIMITS.basic);
@@ -129,11 +122,9 @@ export const useSubscription = () => {
     return (amount * limits.commissionRate) / 100;
   };
 
-  return {
-    limits,
+  return { limits,
     loading,
     canCreateListing,
     calculateCommission,
-    refresh: loadSubscription,
-  };
+    refresh: loadSubscription };
 };

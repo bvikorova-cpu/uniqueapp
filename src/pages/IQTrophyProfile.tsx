@@ -34,16 +34,14 @@ interface TourneyWin {
   completed_at: string | null;
 }
 
-const tierColor: Record<string, string> = {
-  novice: "from-slate-500 to-slate-700",
+const tierColor: Record<string, string> = { novice: "from-slate-500 to-slate-700",
   bronze: "from-amber-700 to-amber-900",
   silver: "from-slate-300 to-slate-500",
   gold: "from-yellow-400 to-amber-600",
   platinum: "from-cyan-300 to-blue-500",
   diamond: "from-fuchsia-400 to-purple-600",
   master: "from-pink-500 to-rose-600",
-  grandmaster: "from-purple-600 to-indigo-800",
-};
+  grandmaster: "from-purple-600 to-indigo-800" };
 
 export default function IQTrophyProfile() {
   const { userId } = useParams<{ userId: string }>();

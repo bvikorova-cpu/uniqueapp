@@ -45,9 +45,7 @@ export const FeatureFlagsPanel = () => {
 
   const create = async () => {
     if (!newKey.trim()) return;
-    const { error } = await supabase.from("feature_flags").insert({
-      key: newKey.trim(), description: newDesc.trim() || null, enabled: false,
-    });
+    const { error } = await supabase.from("feature_flags").insert({ key: newKey.trim(), description: newDesc.trim() || null, enabled: false });
     if (error) toast.error(error.message);
     else { setNewKey(""); setNewDesc(""); load(); toast.success("Flag created"); }
   };

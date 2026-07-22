@@ -73,8 +73,7 @@ const baseSubmission = {
   created_at: new Date().toISOString(),
   user_id: "owner-id",
   profiles: { full_name: "Alice" },
-  subscriptionTier: "premium",
-};
+  subscriptionTier: "premium" };
 
 // ────────────────────────────────────────────────────────────────────────────
 // 1. Pure gating logic
@@ -92,40 +91,35 @@ describe("Megatalent voting gating logic", () => {
   it("BLOCKS when subscription exists but status is 'incomplete' (payment not confirmed)", () => {
     const r = canPerformGatedAction({
       user,
-      subscription: { tier: "premium", status: "incomplete", price_eur: 10 },
-    });
+      subscription: { tier: "premium", status: "incomplete", price_eur: 10 } });
     expect(r.allowed).toBe(false);
   });
 
   it("BLOCKS when subscription is 'past_due' (payment failed renewal)", () => {
     const r = canPerformGatedAction({
       user,
-      subscription: { tier: "premium", status: "past_due", price_eur: 10 },
-    });
+      subscription: { tier: "premium", status: "past_due", price_eur: 10 } });
     expect(r.allowed).toBe(false);
   });
 
   it("BLOCKS when subscription is 'canceled'", () => {
     const r = canPerformGatedAction({
       user,
-      subscription: { tier: "premium", status: "canceled", price_eur: 10 },
-    });
+      subscription: { tier: "premium", status: "canceled", price_eur: 10 } });
     expect(r.allowed).toBe(false);
   });
 
   it("BLOCKS when active but tier is below €10 (e.g. 'free' / under-priced)", () => {
     const r = canPerformGatedAction({
       user,
-      subscription: { tier: "free", status: "active", price_eur: 0 },
-    });
+      subscription: { tier: "free", status: "active", price_eur: 0 } });
     expect(r.allowed).toBe(false);
   });
 
   it("BLOCKS unauthenticated users even if a subscription row is provided", () => {
     const r = canPerformGatedAction({
       user: null,
-      subscription: { tier: "premium", status: "active", price_eur: 10 },
-    });
+      subscription: { tier: "premium", status: "active", price_eur: 10 } });
     expect(r.allowed).toBe(false);
     expect(r.reason).toBe("Login Required");
   });
@@ -133,16 +127,14 @@ describe("Megatalent voting gating logic", () => {
   it("ALLOWS when active €10 Premium subscription is confirmed", () => {
     const r = canPerformGatedAction({
       user,
-      subscription: { tier: "premium", status: "active", price_eur: 10 },
-    });
+      subscription: { tier: "premium", status: "active", price_eur: 10 } });
     expect(r.allowed).toBe(true);
   });
 
   it("ALLOWS €15 TOP Premium (price ≥ 10)", () => {
     const r = canPerformGatedAction({
       user,
-      subscription: { tier: "top_premium", status: "active", price_eur: 15 },
-    });
+      subscription: { tier: "top_premium", status: "active", price_eur: 15 } });
     expect(r.allowed).toBe(true);
   });
 });
@@ -240,19 +232,15 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
 
     fireEvent.click(findLikeButton(container));
     expect(dbInsert).not.toHaveBeenCalled();
-    expect(showToast).toHaveBeenCalledWith({
-      title: "Megatalent Premium required",
-    });
+    expect(showToast).toHaveBeenCalledWith({ title: "Megatalent Premium required" });
   });
 
-  it("END-TO-END: card click → gated handler → DB insert for confirmed €10 paid user", () => {
-    const dbInsert = vi.fn();
+  it("END-TO-END: card click → gated handler → DB insert for confirmed €10 paid user", () => { const dbInsert = vi.fn();
     const showToast = vi.fn();
     const subscription: SubRow = {
       tier: "premium",
       status: "active",
-      price_eur: 10,
-    };
+      price_eur: 10 };
     const gatedOnVote = (id: string) => {
       const check = canPerformGatedAction({ user: { id: "u" }, subscription });
       if (!check.allowed) {

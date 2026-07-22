@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const SIN_CATEGORIES = [
   "Pride", "Greed", "Lust", "Envy", "Gluttony", "Wrath", "Sloth",
@@ -19,8 +17,7 @@ serve(async (req) => {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   const supabaseClient = createClient(
@@ -36,8 +33,7 @@ serve(async (req) => {
 
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const body = await req.json();
@@ -46,20 +42,18 @@ serve(async (req) => {
 
     // Sanitize: strip control/zero-width chars, collapse newlines, cap length
     const stripped = rawText.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200B-\u200F\u202A-\u202E\uFEFF]/g, "");
-    const collapsed = stripped.replace(/\n{3,}/g, "\n\n").trim();
+    const collapsed = stripped.replace(/\n{ 3 }/g, "\n\n").trim();
     const confessionText = collapsed.slice(0, 4000);
     if (confessionText.length < 10) {
       return new Response(JSON.stringify({ error: "Confession too short (min 10 chars)" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const BANNED = ["nigger","faggot","kike","tranny","retard"];
     const lower = confessionText.toLowerCase();
     if (BANNED.some(w => lower.includes(w))) {
       return new Response(JSON.stringify({ error: "Content violates community guidelines" }), {
-        status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Rate-limit: max 5 confessions / 10 min per user
@@ -69,8 +63,7 @@ serve(async (req) => {
       .eq("user_id", user.id).gte("created_at", since);
     if ((count ?? 0) >= 5) {
       return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again later." }), {
-        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
@@ -80,8 +73,7 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
@@ -129,14 +121,12 @@ serve(async (req) => {
 
     const { data: confession, error } = await supabaseClient
       .from("confessions")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         confession_text: confessionText,
         sin_category: category,
         severity_score: severity,
         is_anonymous: isAnonymous,
-        status: "active",
-      })
+        status: "active" })
       .select()
       .single();
 

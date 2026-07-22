@@ -56,8 +56,7 @@ export function AdminPlatformEarnings() {
       
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   // Fetch detailed influencer data with earnings
   const { data: influencerDetails } = useQuery({
@@ -79,8 +78,7 @@ export function AdminPlatformEarnings() {
       if (withdrawalError) throw withdrawalError;
 
       // Map influencer details with withdrawal info
-      return (profiles || []).map((profile) => {
-        const pendingWithdrawals = (withdrawals || [])
+      return (profiles || []).map((profile) => { const pendingWithdrawals = (withdrawals || [])
           .filter((w) => w.influencer_id === profile.id)
           .reduce((sum, w) => sum + w.amount, 0);
 
@@ -89,11 +87,9 @@ export function AdminPlatformEarnings() {
         return {
           ...profile,
           pendingWithdrawals,
-          availableBalance,
-        } as InfluencerDetail;
+          availableBalance } as InfluencerDetail;
       });
-    },
-  });
+    } });
 
   // Fetch Musicians data with earnings
   const { data: musicianDetails } = useQuery({
@@ -113,8 +109,7 @@ export function AdminPlatformEarnings() {
       
       if (withdrawalError) throw withdrawalError;
 
-      return (profiles || []).map((profile) => {
-        const pendingWithdrawals = (withdrawals || [])
+      return (profiles || []).map((profile) => { const pendingWithdrawals = (withdrawals || [])
           .filter((w) => w.musician_id === profile.id)
           .reduce((sum, w) => sum + w.amount, 0);
 
@@ -129,11 +124,9 @@ export function AdminPlatformEarnings() {
           pending_balance: profile.pending_balance || 0,
           total_withdrawn: profile.total_withdrawn || 0,
           pendingWithdrawals,
-          availableBalance,
-        } as CreatorDetail;
+          availableBalance } as CreatorDetail;
       });
-    },
-  });
+    } });
 
   // Fetch Instructors data with earnings
   const { data: instructorDetails } = useQuery({
@@ -169,11 +162,9 @@ export function AdminPlatformEarnings() {
           pending_balance: profile.pending_balance || 0,
           total_withdrawn: profile.total_withdrawn || 0,
           pendingWithdrawals,
-          availableBalance,
-        } as CreatorDetail;
+          availableBalance } as CreatorDetail;
       });
-    },
-  });
+    } });
 
   // Fetch KitchenStars earnings
   const { data: masterchefEarnings } = useQuery({
@@ -186,8 +177,7 @@ export function AdminPlatformEarnings() {
       
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   // Fetch Sports earnings
   const { data: sportsEarnings } = useQuery({
@@ -200,8 +190,7 @@ export function AdminPlatformEarnings() {
       
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   // Calculate statistics
   const calculateStats = (earnings: any[], commissionField: string): EarningStats => {
@@ -231,8 +220,7 @@ export function AdminPlatformEarnings() {
   ].filter(item => item.value > 0);
 
   // Prepare timeline data (last 7 days)
-  const getLast7DaysData = () => {
-    const days = [];
+  const getLast7DaysData = () => { const days = [];
     for (let i = 6; i >= 0; i--) {
       const date = new Date();
       date.setDate(date.getDate() - i);
@@ -255,8 +243,7 @@ export function AdminPlatformEarnings() {
         InfluKing: influkingDaily,
         KitchenStars: masterchefDaily,
         Sports: sportsDaily,
-        Total: influkingDaily + masterchefDaily + sportsDaily,
-      });
+        Total: influkingDaily + masterchefDaily + sportsDaily });
     }
     return days;
   };

@@ -29,8 +29,7 @@ export function GroupWorkshopsView({ onBack }: Props) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("skill-swap-ai", {
-        body: { action: "workshop-planner", skillName, groupSize, workshopDuration, difficultyLevel, format, requirements },
-      });
+        body: { action: "workshop-planner", skillName, groupSize, workshopDuration, difficultyLevel, format, requirements } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Workshop planned! (${data.credits_used} credits used)`);

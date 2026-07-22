@@ -24,9 +24,7 @@ interface TalentCampaign {
   created_at: string;
 }
 
-const talentTypeLabels: Record<string, string> = {
-  music: "🎵 Music", sports: "⚽ Sports", art: "🎨 Art", dance: "💃 Dance", other: "⭐ Other",
-};
+const talentTypeLabels: Record<string, string> = { music: "🎵 Music", sports: "⚽ Sports", art: "🎨 Art", dance: "💃 Dance", other: "⭐ Other" };
 
 const quickAmounts = [5, 10, 25];
 

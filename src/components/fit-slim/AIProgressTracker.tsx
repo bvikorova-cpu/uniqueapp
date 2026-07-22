@@ -35,9 +35,7 @@ Provide:
 4. 5 specific adjustments to accelerate progress
 5. Weekly mini-goals for the next 4 weeks
 6. Risk factors to watch out for
-Format with clear headers and emojis.`,
-        },
-      });
+Format with clear headers and emojis.` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
     } catch (e: any) {

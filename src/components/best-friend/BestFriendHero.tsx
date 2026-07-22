@@ -14,12 +14,10 @@ const useLiveStats = () => {
         supabase.from("best_friend_conversations").select("id", { count: "exact", head: true }),
         supabase.from("best_friend_mood_journal").select("id", { count: "exact", head: true }),
       ]);
-      setStats({
-        conversations: convos.count || 0,
+      setStats({ conversations: convos.count || 0,
         messages: msgs.count || 0,
         moods: moods.count || 0,
-        users: Math.floor((convos.count || 0) / 3) || 0,
-      });
+        users: Math.floor((convos.count || 0) / 3) || 0 });
     };
     load();
   }, []);

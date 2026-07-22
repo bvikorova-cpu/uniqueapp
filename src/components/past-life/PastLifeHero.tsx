@@ -92,19 +92,16 @@ export const PastLifeHero = () => {
           className="absolute w-2 h-2 rounded-full bg-primary/60 blur-sm"
           style={{
             left: `${15 + i * 14}%`,
-            top: `${20 + (i % 3) * 20}%`,
-          }}
-          animate={{
+            top: `${20 + (i % 3) * 20}%` }}
+          animate={ {
             y: [0, -30, 0],
             opacity: [0.3, 0.9, 0.3],
-            scale: [1, 1.5, 1],
-          }}
-          transition={{
+            scale: [1, 1.5, 1] }}
+          transition={ {
             duration: 4 + i * 0.5,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: i * 0.4,
-          }}
+            delay: i * 0.4 }}
         />
       ))}
 

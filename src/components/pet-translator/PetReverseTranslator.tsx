@@ -26,8 +26,7 @@ export default function PetReverseTranslator({ onBack }: { onBack: () => void })
     if (!message.trim()) return toast.error("Type a message");
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("pet-translator-ai", {
-      body: { action: "reverse_translate", message, pet_type: active?.species || "dog" },
-    });
+      body: { action: "reverse_translate", message, pet_type: active?.species || "dog" } });
     setLoading(false);
     if (error || data?.error) return toast.error(error?.message || data.error);
     setResult(data.result);

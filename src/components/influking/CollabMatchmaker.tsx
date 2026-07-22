@@ -50,8 +50,7 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
       const { data, error } = await query;
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: myProfile } = useQuery({
     queryKey: ["my-influencer-collab"],
@@ -64,8 +63,7 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
         .eq("user_id", user.id)
         .maybeSingle();
       return data;
-    },
-  });
+    } });
 
   const sendProposal = useMutation({
     mutationFn: async () => {
@@ -79,8 +77,7 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
         sender_id: user.id,
         receiver_id: selectedInfluencer.user_id,
         item_id: selectedInfluencer.id,
-        message: `🤝 Collaboration Proposal from ${myProfile.display_name}:\n\n${collabMessage}`,
-      });
+        message: `🤝 Collaboration Proposal from ${myProfile.display_name}:\n\n${collabMessage}` });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -91,8 +88,7 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
     },
     onError: (error: any) => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
-    },
-  });
+    } });
 
   const getCompatibilityScore = (inf: any): number => {
     if (!myProfile) return 0;

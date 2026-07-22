@@ -10,30 +10,18 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 const STORIES = [
-  {
-    id: "1", artist: "Luna Wave", avatar: "🎤", title: "Epic Guitar Solo", views: 12400, likes: 890,
-    duration: 15, thumbnail: "🎸", gradient: "from-violet-600 to-pink-500", timeAgo: "2h ago",
-  },
-  {
-    id: "2", artist: "DJ Pulse", avatar: "🎧", title: "Crowd Goes Wild", views: 8200, likes: 654,
-    duration: 15, thumbnail: "🎉", gradient: "from-blue-600 to-cyan-500", timeAgo: "4h ago",
-  },
-  {
-    id: "3", artist: "The Vibes", avatar: "🎹", title: "Acoustic Surprise", views: 15600, likes: 1230,
-    duration: 15, thumbnail: "🎵", gradient: "from-emerald-600 to-teal-500", timeAgo: "6h ago",
-  },
-  {
-    id: "4", artist: "Neon Lights", avatar: "🎤", title: "Final Encore", views: 21000, likes: 1890,
-    duration: 15, thumbnail: "✨", gradient: "from-amber-600 to-orange-500", timeAgo: "8h ago",
-  },
-  {
-    id: "5", artist: "Echo Chamber", avatar: "🥁", title: "Drum Battle", views: 9800, likes: 780,
-    duration: 15, thumbnail: "🥁", gradient: "from-red-600 to-rose-500", timeAgo: "12h ago",
-  },
-  {
-    id: "6", artist: "Melody Queen", avatar: "👑", title: "High Note Hit", views: 18300, likes: 1560,
-    duration: 15, thumbnail: "🎶", gradient: "from-pink-600 to-purple-500", timeAgo: "1d ago",
-  },
+  { id: "1", artist: "Luna Wave", avatar: "🎤", title: "Epic Guitar Solo", views: 12400, likes: 890,
+    duration: 15, thumbnail: "🎸", gradient: "from-violet-600 to-pink-500", timeAgo: "2h ago" },
+  { id: "2", artist: "DJ Pulse", avatar: "🎧", title: "Crowd Goes Wild", views: 8200, likes: 654,
+    duration: 15, thumbnail: "🎉", gradient: "from-blue-600 to-cyan-500", timeAgo: "4h ago" },
+  { id: "3", artist: "The Vibes", avatar: "🎹", title: "Acoustic Surprise", views: 15600, likes: 1230,
+    duration: 15, thumbnail: "🎵", gradient: "from-emerald-600 to-teal-500", timeAgo: "6h ago" },
+  { id: "4", artist: "Neon Lights", avatar: "🎤", title: "Final Encore", views: 21000, likes: 1890,
+    duration: 15, thumbnail: "✨", gradient: "from-amber-600 to-orange-500", timeAgo: "8h ago" },
+  { id: "5", artist: "Echo Chamber", avatar: "🥁", title: "Drum Battle", views: 9800, likes: 780,
+    duration: 15, thumbnail: "🥁", gradient: "from-red-600 to-rose-500", timeAgo: "12h ago" },
+  { id: "6", artist: "Melody Queen", avatar: "👑", title: "High Note Hit", views: 18300, likes: 1560,
+    duration: 15, thumbnail: "🎶", gradient: "from-pink-600 to-purple-500", timeAgo: "1d ago" },
 ];
 
 export const ConcertStories = ({ onBack }: Props) => {

@@ -27,13 +27,11 @@ interface Options {
  * Reads `session_id` from the URL, calls the given verify-* edge function once,
  * shows a toast, and (optionally) cleans the URL.
  */
-export function useOneOffPaymentVerify({
-  fn,
+export function useOneOffPaymentVerify({ fn,
   successTitle = "Payment successful!",
   successDescription = "Your purchase has been confirmed.",
   onSuccess,
-  cleanUrl = true,
-}: Options) {
+  cleanUrl = true }: Options) {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const ranRef = useRef(false);
@@ -46,19 +44,16 @@ export function useOneOffPaymentVerify({
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke(fn, {
-          body: { sessionId },
-        });
+          body: { sessionId } });
         if (error) throw error;
 
         toast({ title: successTitle, description: successDescription });
         onSuccess?.(data);
       } catch (err: any) {
         console.error(`[${fn}] verification failed:`, err);
-        toast({
-          title: "Verification failed",
+        toast({ title: "Verification failed",
           description: err?.message || "Please contact support.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
       } finally {
         if (cleanUrl) {
           const url = new URL(window.location.href);

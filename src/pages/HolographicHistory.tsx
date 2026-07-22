@@ -6,8 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import {
-  ArrowLeft,
+import { ArrowLeft,
   Swords,
   Sparkles,
   Loader2,
@@ -15,8 +14,7 @@ import {
   Skull,
   Minus,
   Filter,
-  X,
-} from "lucide-react";
+  X } from "lucide-react";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -45,13 +43,11 @@ interface BreedingRow {
   created_at: string;
 }
 
-const rarityColor: Record<string, string> = {
-  common: "bg-slate-500/20 text-slate-300 border-slate-500/40",
+const rarityColor: Record<string, string> = { common: "bg-slate-500/20 text-slate-300 border-slate-500/40",
   rare: "bg-sky-500/20 text-sky-300 border-sky-500/40",
   epic: "bg-violet-500/20 text-violet-300 border-violet-500/40",
   legendary: "bg-amber-500/20 text-amber-300 border-amber-500/40",
-  mythic: "bg-pink-500/20 text-pink-300 border-pink-500/40",
-};
+  mythic: "bg-pink-500/20 text-pink-300 border-pink-500/40" };
 
 const OutcomeIcon = ({ outcome }: { outcome: string }) => {
   if (outcome === "win") return <Trophy className="h-4 w-4 text-emerald-400" />;

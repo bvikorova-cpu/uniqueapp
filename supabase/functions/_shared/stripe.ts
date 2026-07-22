@@ -34,9 +34,7 @@ export function createStripeClient(): Stripe {
     throw new Error("STRIPE_SECRET_KEY is not configured");
   }
   
-  return new Stripe(stripeKey, {
-    apiVersion: STRIPE_API_VERSION,
-  });
+  return new Stripe(stripeKey, { apiVersion: STRIPE_API_VERSION });
 }
 
 /**
@@ -56,8 +54,7 @@ export async function getOrCreateStripeCustomer(
   
   const customer = await stripe.customers.create({
     email,
-    metadata: userId ? { supabase_user_id: userId } : undefined,
-  });
+    metadata: userId ? { supabase_user_id: userId } : undefined });
   
   return customer.id;
 }
@@ -89,25 +86,20 @@ export async function hasActiveSubscription(
   priceId: string | null;
   productId: string | null;
   subscriptionEnd: string | null;
-}> {
-  const subscriptions = await stripe.subscriptions.list({
+}> { const subscriptions = await stripe.subscriptions.list({
     customer: customerId,
     status: "active",
-    limit: 10,
-  });
+    limit: 10 });
 
-  if (subscriptions.data.length === 0) {
-    return {
+  if (subscriptions.data.length === 0) { return {
       hasSubscription: false,
       subscription: null,
       priceId: null,
       productId: null,
-      subscriptionEnd: null,
-    };
+      subscriptionEnd: null };
   }
 
-  for (const subscription of subscriptions.data) {
-    const currentPriceId = subscription.items.data[0].price.id;
+  for (const subscription of subscriptions.data) { const currentPriceId = subscription.items.data[0].price.id;
     const currentProductId = subscription.items.data[0].price.product as string;
     
     // If no specific priceIds provided, return first active subscription
@@ -117,18 +109,15 @@ export async function hasActiveSubscription(
         subscription,
         priceId: currentPriceId,
         productId: currentProductId,
-        subscriptionEnd: safeParseStripeDate((subscription as any).current_period_end),
-      };
+        subscriptionEnd: safeParseStripeDate((subscription as any).current_period_end) };
     }
   }
 
-  return {
-    hasSubscription: false,
+  return { hasSubscription: false,
     subscription: null,
     priceId: null,
     productId: null,
-    subscriptionEnd: null,
-  };
+    subscriptionEnd: null };
 }
 
 /**
@@ -142,14 +131,11 @@ export async function hasCompletedPayment(
   hasPurchase: boolean;
   productId: string | null;
   purchaseDate: string | null;
-}> {
-  const sessions = await stripe.checkout.sessions.list({
+}> { const sessions = await stripe.checkout.sessions.list({
     customer: customerId,
-    limit: 50,
-  });
+    limit: 50 });
 
-  for (const session of sessions.data) {
-    if (session.payment_status === "paid" && session.mode === "payment") {
+  for (const session of sessions.data) { if (session.payment_status === "paid" && session.mode === "payment") {
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
       
       for (const item of lineItems.data) {
@@ -160,17 +146,14 @@ export async function hasCompletedPayment(
             return {
               hasPurchase: true,
               productId,
-              purchaseDate: safeParseStripeDate((session as any).created),
-            };
+              purchaseDate: safeParseStripeDate((session as any).created) };
           }
         }
       }
     }
   }
 
-  return {
-    hasPurchase: false,
+  return { hasPurchase: false,
     productId: null,
-    purchaseDate: null,
-  };
+    purchaseDate: null };
 }

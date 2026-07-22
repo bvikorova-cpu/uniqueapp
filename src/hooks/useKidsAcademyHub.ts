@@ -5,18 +5,15 @@ import { toast } from "sonner";
 
 export async function kidsHubCall<T = any>(action: string, payload: Record<string, any> = {}): Promise<T> {
   const { data, error } = await supabase.functions.invoke("kids-academy-router", {
-    body: { action, ...payload },
-  });
+    body: { action, ...payload } });
   if (error) throw error;
   if ((data as any)?.error) throw new Error((data as any).error);
   return data as T;
 }
 
-export const KIDS_HUB_COSTS = {
-  dailyPlan: 3,
+export const KIDS_HUB_COSTS = { dailyPlan: 3,
   recommendations: 2,
-  parentDigest: 3,
-} as const;
+  parentDigest: 3 } as const;
 
 export function useKidsAcademyCredits() {
   const { user } = useAuth();
@@ -28,12 +25,10 @@ export function useKidsAcademyCredits() {
       const res = await kidsHubCall<{ credits: number }>("hub.credits").catch(() => ({ credits: 0 }));
       return res.credits ?? 0;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
   const purchase = async (credits: number) => {
     const { data: res, error } = await supabase.functions.invoke("create-checkout", {
-      body: { credits, creditType: "kids_academy" },
-    });
+      body: { credits, creditType: "kids_academy" } });
     if (error || !res?.url) { toast.error("Failed to start checkout"); return null; }
     return res.url as string;
   };
@@ -41,8 +36,7 @@ export function useKidsAcademyCredits() {
     balance: data ?? 0,
     isLoading,
     refresh: () => { qc.invalidateQueries({ queryKey: ["kids-academy-credits"] }); refetch(); },
-    purchase,
-  };
+    purchase };
 }
 
 export function useKidsAcademyXP(childId?: string | null) {
@@ -53,8 +47,7 @@ export function useKidsAcademyXP(childId?: string | null) {
       const res = await kidsHubCall<{ xp: any }>("hub.xp", { child_id: childId });
       return res.xp;
     },
-    enabled: !!childId,
-  });
+    enabled: !!childId });
 }
 
 export function useKidsFamilyLeaderboard() {
@@ -65,8 +58,7 @@ export function useKidsFamilyLeaderboard() {
       const res = await kidsHubCall<{ leaderboard: any[] }>("hub.familyLeaderboard");
       return res.leaderboard ?? [];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 }
 
 export function useKidsDailyPlan(childId?: string | null) {

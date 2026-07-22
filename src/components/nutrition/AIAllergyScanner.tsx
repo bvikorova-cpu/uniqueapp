@@ -31,8 +31,7 @@ export default function AIAllergyScanner({ onBack }: Props) {
       return data;
     },
     onSuccess: (data) => { setResult(data.analysis); toast.success("Allergy scan complete!"); },
-    onError: (e: any) => toast.error(e.message || "Error scanning"),
-  });
+    onError: (e: any) => toast.error(e.message || "Error scanning") });
 
   return (
     <>

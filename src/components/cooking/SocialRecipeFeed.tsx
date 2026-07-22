@@ -41,8 +41,7 @@ export default function SocialRecipeFeed({ onBack }: Props) {
         .eq('activity_type', 'recipe_share')
         .order('created_at', { ascending: false })
         .limit(20);
-      if (data) {
-        setPosts(data.map(d => ({
+      if (data) { setPosts(data.map(d => ({
           id: d.id,
           user_id: d.user_id,
           title: (d.metadata as any)?.title || 'Shared Recipe',
@@ -50,8 +49,7 @@ export default function SocialRecipeFeed({ onBack }: Props) {
           image_url: (d.metadata as any)?.image_url || null,
           likes: (d.metadata as any)?.likes || 0,
           created_at: d.created_at,
-          username: (d.metadata as any)?.username || 'Chef',
-        })));
+          username: (d.metadata as any)?.username || 'Chef' })));
       }
     } catch { /* silent */ }
     finally { setLoading(false); }
@@ -66,8 +64,7 @@ export default function SocialRecipeFeed({ onBack }: Props) {
       const { error } = await supabase.from('activity_feed').insert({
         user_id: user.id,
         activity_type: 'recipe_share',
-        metadata: { title: newTitle, description: newDesc, likes: 0, username: user.email?.split('@')[0] || 'Chef' },
-      });
+        metadata: { title: newTitle, description: newDesc, likes: 0, username: user.email?.split('@')[0] || 'Chef' } });
       if (error) throw error;
       toast({ title: "Recipe shared! 🎉" });
       setNewTitle(""); setNewDesc(""); setShowForm(false);

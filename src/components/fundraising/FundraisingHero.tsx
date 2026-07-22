@@ -102,9 +102,8 @@ export function FundraisingHero({ onMyCampaigns, onExplore }: FundraisingHeroPro
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="text-4xl md:text-6xl lg:text-7xl font-black text-center mb-4 text-white"
-          style={{
-            textShadow: "0 2px 4px rgba(0,0,0,0.95), 0 4px 24px rgba(0,0,0,0.85), 0 0 60px rgba(251,191,36,0.35)",
-          }}
+          style={ {
+            textShadow: "0 2px 4px rgba(0,0,0,0.95), 0 4px 24px rgba(0,0,0,0.85), 0 0 60px rgba(251,191,36,0.35)" }}
         >
           Change a Life.
           <br />

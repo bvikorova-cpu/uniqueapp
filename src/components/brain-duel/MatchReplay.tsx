@@ -84,8 +84,7 @@ export const MatchReplay = () => {
         correct_answer: 'N/A',
         is_correct: isCorrect,
         time_taken: timeTaken,
-        points_earned: isCorrect ? 10 : 0,
-      });
+        points_earned: isCorrect ? 10 : 0 });
     }
     return results;
   };

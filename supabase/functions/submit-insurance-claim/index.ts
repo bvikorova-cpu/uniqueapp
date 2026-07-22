@@ -3,12 +3,10 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
 
-const Body = z.object({
-  appointment_id: z.string().uuid().optional(),
+const Body = z.object({ appointment_id: z.string().uuid().optional(),
   insurance_card_id: z.string().uuid(),
   amount_cents: z.number().int().min(0).max(2_000_000),
-  receipt_url: z.string().url().optional(),
-});
+  receipt_url: z.string().url().optional() });
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -34,13 +32,11 @@ Deno.serve(async (req) => {
 
     const { data: claim, error } = await admin
       .from("insurance_claims")
-      .insert({
-        patient_id: user.id,
+      .insert({ patient_id: user.id,
         appointment_id: parsed.data.appointment_id ?? null,
         insurance_card_id: parsed.data.insurance_card_id,
         amount_cents: parsed.data.amount_cents,
-        receipt_url: parsed.data.receipt_url ?? null,
-      })
+        receipt_url: parsed.data.receipt_url ?? null })
       .select("id, status")
       .single();
     if (error) return json({ error: error.message }, 500);
@@ -50,8 +46,7 @@ Deno.serve(async (req) => {
       user_id: user.id,
       type: "insurance_claim_submitted",
       title: "Insurance claim submitted",
-      body: `Claim #${claim.id.slice(0, 8)} is pending review.`,
-    }).then(() => {}, () => {});
+      body: `Claim #${claim.id.slice(0, 8)} is pending review.` }).then(() => {}, () => {});
 
     return json({ id: claim.id, status: claim.status });
   } catch (e) {
@@ -62,6 +57,5 @@ Deno.serve(async (req) => {
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
-    status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

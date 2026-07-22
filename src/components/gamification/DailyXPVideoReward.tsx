@@ -99,12 +99,10 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
         .gte("created_at", cutoff)
         .limit(1);
 
-      if (recent && recent.length > 0) {
-        toast({
+      if (recent && recent.length > 0) { toast({
           title: "Slow down ⏱️",
           description: "Wait 30 seconds between claims.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         setShowAdDialog(false);
         return;
       }
@@ -134,10 +132,8 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
       queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
       queryClient.invalidateQueries({ queryKey: ["weekly-xp-leaderboard"] });
 
-      toast({
-        title: "🎉 +1 XP!",
-        description: "Watch another ad to earn more — no daily limit!",
-      });
+      toast({ title: "🎉 +1 XP!",
+        description: "Watch another ad to earn more — no daily limit!" });
 
       setTimeout(() => {
         setShowAdDialog(false);

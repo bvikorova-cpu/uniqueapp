@@ -63,8 +63,7 @@ const MessagesBell = ({ className }: { className?: string }) => {
             event: "UPDATE",
             schema: "public",
             table: "conversation_participants",
-            filter: `user_id=eq.${user.id}`,
-          },
+            filter: `user_id=eq.${user.id}` },
           () => loadUnread(),
         )
         .subscribe();

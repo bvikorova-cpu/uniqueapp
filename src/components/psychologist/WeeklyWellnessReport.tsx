@@ -38,13 +38,11 @@ export const WeeklyWellnessReport = ({ onBack }: Props) => {
     const { data: sessions } = await (supabase as any).from("psychology_meditation_sessions")
       .select("*").eq("user_id", user.id).gte("created_at", weekAgo);
 
-    setWeeklyData({
-      moodEntries: moods?.length || 0,
+    setWeeklyData({ moodEntries: moods?.length || 0,
       avgMood: moods?.length ? (moods.reduce((s: number, e: any) => s + e.mood_score, 0) / moods.length).toFixed(1) : "—",
       meditations: sessions?.length || 0,
       totalMedMin: sessions?.length ? Math.floor(sessions.reduce((s: number, e: any) => s + (e.duration_seconds || 0), 0) / 60) : 0,
-      topTags: getTopTags(moods || []),
-    });
+      topTags: getTopTags(moods || []) });
     setLoading(false);
   };
 

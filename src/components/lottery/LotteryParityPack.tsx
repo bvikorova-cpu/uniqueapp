@@ -6,10 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import {
-  Sparkles, Loader2, Settings2, Users, Calculator, ShieldCheck,
-  PiggyBank, Clover, LineChart, Brain,
-} from "lucide-react";
+import { Sparkles, Loader2, Settings2, Users, Calculator, ShieldCheck,
+  PiggyBank, Clover, LineChart, Brain } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLotteryParity, LOTTERY_PARITY_COST, type LotteryParityAction } from "@/hooks/useLotteryParity";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -98,7 +96,7 @@ export function LotteryParityPack() {
               )}
               {t.id === "tax-planner" && (
                 <ToolForm onRun={() => submit(t.id, { jurisdiction: form.country, gross_eur: form.gross })}>
-                  <Field label="Country / region" value={form.country} onChange={(v) => set("country", v)} placeholder="Germany, France, USA-NY..." />
+                  <Field label="Country / region" value={form.country} onChange={(v) => set("country", v)} placeholder="Your country or region" />
                   <Field label="Estimated gross win (€)" value={form.gross} onChange={(v) => set("gross", v)} placeholder="1000000" />
                 </ToolForm>
               )}
@@ -106,14 +104,14 @@ export function LotteryParityPack() {
                 <ToolForm onRun={() => submit(t.id, { lottery: form.lottery, prize_eur: form.prize, country: form.country })}>
                   <Field label="Lottery" value={form.lottery} onChange={(v) => set("lottery", v)} placeholder="EuroJackpot" />
                   <Field label="Prize amount (€)" value={form.prize} onChange={(v) => set("prize", v)} placeholder="500000" />
-                  <Field label="Country" value={form.country} onChange={(v) => set("country", v)} placeholder="Germany" />
+                  <Field label="Country" value={form.country} onChange={(v) => set("country", v)} placeholder="Country" />
                 </ToolForm>
               )}
               {t.id === "budget-coach" && (
                 <ToolForm onRun={() => submit(t.id, { monthly_income_eur: form.income, current_spend_eur: form.spend, country: form.country })}>
                   <Field label="Monthly income (€)" value={form.income} onChange={(v) => set("income", v)} placeholder="2000" />
                   <Field label="Current lottery spend / month (€)" value={form.spend} onChange={(v) => set("spend", v)} placeholder="40" />
-                  <Field label="Country" value={form.country} onChange={(v) => set("country", v)} placeholder="Germany" />
+                  <Field label="Country" value={form.country} onChange={(v) => set("country", v)} placeholder="Country" />
                 </ToolForm>
               )}
               {t.id === "lucky-charm" && (
@@ -180,9 +178,7 @@ function ToolForm({ children, onRun }: { children: React.ReactNode; onRun: () =>
   );
 }
 
-function Field({
-  label, value, onChange, placeholder, type, multiline,
-}: { label: string; value?: string; onChange: (v: string) => void; placeholder?: string; type?: string; multiline?: boolean }) {
+function Field({ label, value, onChange, placeholder, type, multiline }: { label: string; value?: string; onChange: (v: string) => void; placeholder?: string; type?: string; multiline?: boolean }) {
   return (
     <div className="space-y-1.5">
       <Label className="text-xs">{label}</Label>

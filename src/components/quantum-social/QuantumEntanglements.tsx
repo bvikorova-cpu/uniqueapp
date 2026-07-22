@@ -47,9 +47,7 @@ const QuantumEntanglements = ({ onBack }: { onBack: () => void }) => {
         body: {
           product: "quantum_entanglement",
           productName: "Quantum Entanglement",
-          metadata: { target_user_id: targetUserId },
-        },
-      });
+          metadata: { target_user_id: targetUserId } } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
     } catch (e: any) {

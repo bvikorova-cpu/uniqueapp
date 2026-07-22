@@ -26,8 +26,7 @@ export const showMessageNotification = (
   title: string,
   body: string,
   icon?: string
-) => {
-  if (typeof window === "undefined" || !("Notification" in window)) return;
+) => { if (typeof window === "undefined" || !("Notification" in window)) return;
   if (Notification.permission !== "granted") return;
   // Only notify when the tab is not focused.
   if (typeof document !== "undefined" && document.visibilityState === "visible") return;
@@ -36,8 +35,7 @@ export const showMessageNotification = (
       body,
       icon: icon || "/favicon.ico",
       tag: "unique-message",
-      silent: false,
-    });
+      silent: false });
     n.onclick = () => {
       window.focus();
       n.close();

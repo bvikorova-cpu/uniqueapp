@@ -17,8 +17,7 @@ export function useCrystalSubscription() {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("check-subscription", {
-        body: { tier: "crystal" },
-      });
+        body: { tier: "crystal" } });
       if (error) throw error;
       setSubscribed(!!data?.subscribed);
       setSubscriptionEnd(data?.subscription_end ?? null);
@@ -38,8 +37,7 @@ export function useCrystalSubscription() {
 
   const startCheckout = useCallback(async () => {
     const { data, error } = await supabase.functions.invoke("create-checkout", {
-      body: { product: "crystal" },
-    });
+      body: { product: "crystal" } });
     if (error) throw error;
     if (data?.url) window.open(data.url, "_blank");
   }, []);

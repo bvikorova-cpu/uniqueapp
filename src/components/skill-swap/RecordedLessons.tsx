@@ -50,14 +50,11 @@ export const RecordedLessons = ({ onBack }: RecordedLessonsProps) => {
         ratingMap.set(r.reviewed_user_id, s);
       });
 
-      const categoryEmojis: Record<string, string> = {
-        'Technology': '💻', 'Creative': '🎨', 'Teaching': '📚',
+      const categoryEmojis: Record<string, string> = { 'Technology': '💻', 'Creative': '🎨', 'Teaching': '📚',
         'Music': '🎵', 'Sports': '⚽', 'Cooking': '🍳',
-        'Language': '🗣️', 'Other': '✨',
-      };
+        'Language': '🗣️', 'Other': '✨' };
 
-      return offerings.map(o => {
-        const profile = profileMap.get(o.user_id);
+      return offerings.map(o => { const profile = profileMap.get(o.user_id);
         const r = ratingMap.get(o.user_id);
         return {
           id: o.id,
@@ -67,11 +64,9 @@ export const RecordedLessons = ({ onBack }: RecordedLessonsProps) => {
           rating: r ? Math.round((r.total / r.count) * 10) / 10 : 0,
           emoji: categoryEmojis[o.category] || '✨',
           isPremium: (o.price_per_hour || 0) > 0,
-          price: o.price_per_hour,
-        };
+          price: o.price_per_hour };
       });
-    },
-  });
+    } });
 
   const categories = ["All", ...new Set(lessons.map(l => l.category))];
 

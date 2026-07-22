@@ -45,8 +45,7 @@ export const ComedyRoastArena = ({ onBack }: Props) => {
 
       // AI Judge the roast
       const { data, error } = await supabase.functions.invoke("comedy-ai-judge", {
-        body: { type: "roast", target, content: roast },
-      });
+        body: { type: "roast", target, content: roast } });
 
       if (error) throw error;
 

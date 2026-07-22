@@ -88,16 +88,13 @@ export default function HorseRacing() {
     if (!charge.ok) return;
     createHorse.mutate({ name: horseName, breed: horseBreed, color: horseColor, costCoins: 50 }, {
       onSuccess: () => { setShowBuyHorse(false); setHorseName(""); },
-      onError: (e: Error) => toast.error(e.message),
-    });
+      onError: (e: Error) => toast.error(e.message) });
   };
 
-  const heroStats = {
-    totalHorses: horses?.length || 0,
+  const heroStats = { totalHorses: horses?.length || 0,
     totalRaces: horses?.reduce((sum, h) => sum + (h.total_races || 0), 0) || 0,
     activeRaces: races?.length || 0,
-    onlineTrainers: 0,
-  };
+    onlineTrainers: 0 };
 
   const renderDashboard = () => (
     <>
@@ -227,8 +224,7 @@ export default function HorseRacing() {
     </div>
   );
 
-  const viewComponents: Record<ActiveView, JSX.Element> = {
-    dashboard: renderDashboard(),
+  const viewComponents: Record<ActiveView, JSX.Element> = { dashboard: renderDashboard(),
     stable: renderStable(),
     racing: <LiveRaceSimulator />,
     training: <TrainingCamp />,
@@ -241,8 +237,7 @@ export default function HorseRacing() {
     quests: <DailyTrainingQuests />,
     bloodline: <BloodlineGenealogy />,
     weather: <WeatherRacingBonuses />,
-    marketplace: <HorseMarketplace />,
-  };
+    marketplace: <HorseMarketplace /> };
 
   return (
     <div className="min-h-screen bg-slate-950">

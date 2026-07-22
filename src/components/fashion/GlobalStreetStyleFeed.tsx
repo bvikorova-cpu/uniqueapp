@@ -15,7 +15,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const AI_SCORE_COST = 3;
 
-const CITIES = ["New York", "Paris", "Tokyo", "London", "Milan", "Seoul", "Berlin", "Los Angeles", "Copenhagen", "Lagos"];
+const CITIES = ["City A", "City B", "City C", "City D", "City E", "City F", "City G", "City H", "City I", "City J"];
 
 export default function GlobalStreetStyleFeed() {
   const [selectedCity, setSelectedCity] = useState("all");
@@ -37,8 +37,7 @@ export default function GlobalStreetStyleFeed() {
         .order("created_at", { ascending: false })
         .limit(30);
 
-      return (ootdPosts || []).map((p: any) => ({
-        id: p.id,
+      return (ootdPosts || []).map((p: any) => ({ id: p.id,
         imageUrl: p.image_url,
         caption: p.outfit_description || "Street style look",
         city: "Global",
@@ -47,10 +46,8 @@ export default function GlobalStreetStyleFeed() {
         avatar: p.profiles?.avatar_url,
         createdAt: p.created_at,
         likes: Math.floor(Math.random() * 200),
-        comments: Math.floor(Math.random() * 30),
-      }));
-    },
-  });
+        comments: Math.floor(Math.random() * 30) }));
+    } });
 
   const handleUpload = async (file: File) => {
     setUploading(true);
@@ -81,8 +78,7 @@ export default function GlobalStreetStyleFeed() {
       }
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
-        body: { action: "ootd-score", imageUrl, outfitDescription: `${caption} - ${city}` },
-      });
+        body: { action: "ootd-score", imageUrl, outfitDescription: `${caption} - ${city}` } });
       if (error) throw error;
 
       await supabase.from("fashion_ootd").insert({
@@ -90,8 +86,7 @@ export default function GlobalStreetStyleFeed() {
         image_url: imageUrl,
         outfit_description: `${caption} | 📍 ${city}`,
         score: data.ootdResult?.overall_score || 75,
-        feedback: data.ootdResult,
-      } as any);
+        feedback: data.ootdResult } as any);
 
       return data;
     },
@@ -103,8 +98,7 @@ export default function GlobalStreetStyleFeed() {
       setImageUrl("");
       queryClient.invalidateQueries({ queryKey: ["street-style-feed"] });
     },
-    onError: (e: any) => toast.error(e.message),
-  });
+    onError: (e: any) => toast.error(e.message) });
 
   return (
     <>
@@ -145,7 +139,7 @@ export default function GlobalStreetStyleFeed() {
                   </div>
                 )}
                 <Textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="Describe your look..." rows={2} />
-                <Input value={city} onChange={e => setCity(e.target.value)} placeholder="📍 City (e.g., Paris, Tokyo)" />
+                <Input value={city} onChange={e => setCity(e.target.value)} placeholder="📍 City (e.g., City, City)" />
                 <Button onClick={() => postMutation.mutate()} disabled={postMutation.isPending || !imageUrl || !caption} className="w-full gap-2">
                   {postMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   Post & Get AI Score ({AI_SCORE_COST} Credits)

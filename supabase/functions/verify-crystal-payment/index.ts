@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const CHAKRA_SCHEDULE = [
   { day: 1, chakra: "Root Chakra (Muladhara)", color: "Red" },
@@ -48,9 +46,7 @@ serve(async (req) => {
     const { sessionId } = await req.json();
     if (!sessionId) throw new Error("Missing session ID");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     if (session.payment_status !== "paid") {
@@ -72,38 +68,33 @@ serve(async (req) => {
 
     if (existing) {
       return new Response(JSON.stringify({ success: true, already_verified: true, purchase_id: existing.id }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Create purchase record
     const isSubscription = featureKey === "premiumEncyclopedia";
     const { data: purchase, error: insertErr } = await supabase
       .from("crystal_purchases")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         feature_key: featureKey,
         feature_name: featureName,
         stripe_session_id: sessionId,
         status: "active",
-        expires_at: isSubscription ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : null,
-      })
+        expires_at: isSubscription ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : null })
       .select()
       .single();
 
     if (insertErr) throw insertErr;
 
     // For chakra balancing, create 7 days of content
-    if (featureKey === "chakraBalancing" && purchase) {
-      const today = new Date();
+    if (featureKey === "chakraBalancing" && purchase) { const today = new Date();
       const days = CHAKRA_SCHEDULE.map((ch) => ({
         purchase_id: purchase.id,
         user_id: user.id,
         day_number: ch.day,
         chakra_name: ch.chakra,
         is_unlocked: ch.day === 1,
-        unlock_date: new Date(today.getTime() + (ch.day - 1) * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-      }));
+        unlock_date: new Date(today.getTime() + (ch.day - 1) * 24 * 60 * 60 * 1000).toISOString().split("T")[0] }));
 
       await supabase.from("crystal_chakra_days").insert(days);
     }
@@ -112,8 +103,7 @@ serve(async (req) => {
     let generatedContent = null;
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
 
-    if (openaiKey && (featureKey === "aiEnergyReading" || featureKey === "energyHealing")) {
-      const prompts: Record<string, string> = {
+    if (openaiKey && (featureKey === "aiEnergyReading" || featureKey === "energyHealing")) { const prompts: Record<string, string> = {
         aiEnergyReading: `Generate a detailed AI energy reading report. Include:
 1. Overall Energy Level (score 1-100)
 2. Aura Analysis (colors, patterns, intensity)
@@ -128,25 +118,21 @@ Format as a comprehensive wellness report.`,
 4. Guided Meditation Script (15 min) - visualization for healing
 5. Post-Session Integration (10 min) - grounding, journaling prompts
 6. Follow-up Recommendations - daily practices for next 7 days
-Format as a step-by-step healing guide.`,
-      };
+Format as a step-by-step healing guide.` };
 
       try {
         const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${openaiKey}`,
-            "Content-Type": "application/json",
-          },
+            "Content-Type": "application/json" },
           body: JSON.stringify({
             model: "gpt-4o-mini",
             messages: [
               { role: "system", content: "You are an expert crystal healer and energy practitioner. Provide detailed, personalized wellness content." },
               { role: "user", content: prompts[featureKey] || "Generate a crystal energy report." },
             ],
-            max_completion_tokens: 2000,
-          }),
-        });
+            max_completion_tokens: 2000 }) });
 
         if (aiResponse.ok) {
           const aiData = await aiResponse.json();

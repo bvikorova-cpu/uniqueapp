@@ -46,10 +46,8 @@ async function seedPost(
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${session.accessToken}`,
       "Content-Type": "application/json",
-      Prefer: "return=representation",
-    },
-    data: { user_id: session.userId, content, privacy: "public", audience: "public" },
-  });
+      Prefer: "return=representation" },
+    data: { user_id: session.userId, content, privacy: "public", audience: "public" } });
   expect(res.ok(), `Seed failed: ${res.status()} ${await res.text()}`).toBeTruthy();
   return ((await res.json()) as { id: string }[])[0].id;
 }
@@ -60,9 +58,7 @@ async function deletePost(
   await request.delete(`${SUPABASE_URL}/rest/v1/posts?id=eq.${postId}`, {
     headers: {
       apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${session.accessToken}`,
-    },
-  }).catch(() => {});
+      Authorization: `Bearer ${session.accessToken}` } }).catch(() => {});
 }
 
 test.describe.serial("Wall – Like (seedovaný post) + Bookmark (dialog)", () => {
@@ -117,10 +113,8 @@ test.describe.serial("Wall – Like (seedovaný post) + Bookmark (dialog)", () =
       .first()
       .isVisible({ timeout: 3000 })
       .catch(() => false);
-    test.info().annotations.push({
-      type: "like-ui-update",
-      description: filled ? "Heart vyplnené" : "Heart sa nezmenil (možno už lajknutý)",
-    });
+    test.info().annotations.push({ type: "like-ui-update",
+      description: filled ? "Heart vyplnené" : "Heart sa nezmenil (možno už lajknutý)" });
   });
 
   test("Bookmark dialog / Saved page sa otvorí a načíta zoznam", async ({ page }) => {

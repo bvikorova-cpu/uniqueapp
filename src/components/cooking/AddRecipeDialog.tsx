@@ -28,8 +28,7 @@ export function AddRecipeDialog({ onRecipeAdded, categories }: AddRecipeDialogPr
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
-  const [formData, setFormData] = useState({
-    title: "",
+  const [formData, setFormData] = useState({ title: "",
     category: "",
     difficulty: "Medium",
     time: "",
@@ -40,8 +39,7 @@ export function AddRecipeDialog({ onRecipeAdded, categories }: AddRecipeDialogPr
     instructions: [""],
     tags: [] as string[],
     image_url: "",
-    video_url: "",
-  });
+    video_url: "" });
 
   const [tagInput, setTagInput] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -59,35 +57,27 @@ export function AddRecipeDialog({ onRecipeAdded, categories }: AddRecipeDialogPr
     });
   };
 
-  const addArrayItem = (field: "ingredients" | "instructions") => {
-    setFormData((prev) => ({
+  const addArrayItem = (field: "ingredients" | "instructions") => { setFormData((prev) => ({
       ...prev,
-      [field]: [...prev[field], ""],
-    }));
+      [field]: [...prev[field], ""] }));
   };
 
-  const removeArrayItem = (field: "ingredients" | "instructions", index: number) => {
-    setFormData((prev) => ({
+  const removeArrayItem = (field: "ingredients" | "instructions", index: number) => { setFormData((prev) => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index),
-    }));
+      [field]: prev[field].filter((_, i) => i !== index) }));
   };
 
-  const addTag = () => {
-    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
+  const addTag = () => { if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
       setFormData((prev) => ({
         ...prev,
-        tags: [...prev.tags, tagInput.trim()],
-      }));
+        tags: [...prev.tags, tagInput.trim()] }));
       setTagInput("");
     }
   };
 
-  const removeTag = (tag: string) => {
-    setFormData((prev) => ({
+  const removeTag = (tag: string) => { setFormData((prev) => ({
       ...prev,
-      tags: prev.tags.filter((t) => t !== tag),
-    }));
+      tags: prev.tags.filter((t) => t !== tag) }));
   };
 
   const uploadFile = async (file: File, type: "image" | "video"): Promise<string | null> => {
@@ -109,28 +99,24 @@ export function AddRecipeDialog({ onRecipeAdded, categories }: AddRecipeDialogPr
         .getPublicUrl(fileName);
 
       return publicUrl;
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Upload failed",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return null;
     } finally {
       setIsUploading(false);
     }
   };
 
-  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
       toast({
         title: "File too large",
         description: "Image must be less than 10MB",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -145,16 +131,14 @@ export function AddRecipeDialog({ onRecipeAdded, categories }: AddRecipeDialogPr
     }
   };
 
-  const handleVideoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleVideoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.size > 50 * 1024 * 1024) {
       toast({
         title: "File too large",
         description: "Video must be less than 50MB",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -181,8 +165,7 @@ export function AddRecipeDialog({ onRecipeAdded, categories }: AddRecipeDialogPr
     if (videoInputRef.current) videoInputRef.current.value = "";
   };
 
-  const resetForm = () => {
-    setFormData({
+  const resetForm = () => { setFormData({
       title: "",
       category: "",
       difficulty: "Medium",
@@ -194,36 +177,30 @@ export function AddRecipeDialog({ onRecipeAdded, categories }: AddRecipeDialogPr
       instructions: [""],
       tags: [],
       image_url: "",
-      video_url: "",
-    });
+      video_url: "" });
     setPreviewImage(null);
     setPreviewVideo(null);
     setTagInput("");
   };
 
-  const handleSubmit = async () => {
-    if (!user) {
+  const handleSubmit = async () => { if (!user) {
       toast({
         title: "Authentication required",
         description: "Please log in to add recipes",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
-    if (!formData.title.trim() || !formData.category || !formData.time.trim()) {
-      toast({
+    if (!formData.title.trim() || !formData.category || !formData.time.trim()) { toast({
         title: "Missing fields",
         description: "Please fill in title, category, and preparation time",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("user_recipes").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("user_recipes").insert({ user_id: user.id,
         title: formData.title.trim(),
         category: formData.category,
         difficulty: formData.difficulty,
@@ -236,25 +213,20 @@ export function AddRecipeDialog({ onRecipeAdded, categories }: AddRecipeDialogPr
         tags: formData.tags,
         image_url: formData.image_url || null,
         video_url: formData.video_url || null,
-        is_public: true,
-      });
+        is_public: true });
 
       if (error) throw error;
 
-      toast({
-        title: "Recipe added!",
-        description: "Your recipe has been successfully added",
-      });
+      toast({ title: "Recipe added!",
+        description: "Your recipe has been successfully added" });
 
       resetForm();
       setOpen(false);
       onRecipeAdded?.();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }

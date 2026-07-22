@@ -5,19 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Award, Crown, Gem, Medal } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
-const TIER_ICONS: Record<string, typeof Award> = {
-  bronze: Medal,
+const TIER_ICONS: Record<string, typeof Award> = { bronze: Medal,
   silver: Award,
   gold: Crown,
-  diamond: Gem,
-};
+  diamond: Gem };
 
-const TIER_COLORS: Record<string, string> = {
-  bronze: "text-amber-700",
+const TIER_COLORS: Record<string, string> = { bronze: "text-amber-700",
   silver: "text-slate-300",
   gold: "text-yellow-400",
-  diamond: "text-cyan-300",
-};
+  diamond: "text-cyan-300" };
 
 export default function AdminAffiliateTiers() {
   const [loading, setLoading] = useState(true);

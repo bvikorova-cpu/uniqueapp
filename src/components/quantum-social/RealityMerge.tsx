@@ -50,9 +50,7 @@ export function RealityMerge({ onBack }: { onBack: () => void }) {
       const response = await supabase.functions.invoke("ai-mood-therapist", {
         body: {
           messages: [{ role: "user", content: `Merge these two quantum realities into a creative hybrid:\n\nReality A: "${reality1}"\nReality B: "${reality2}"\n\nCreate a vivid, engaging merged reality that combines elements from both. Include quantum physics metaphors. 2-3 paragraphs.` }],
-          systemPrompt: "You are a Quantum Reality Merger. You combine two different versions of reality into creative hybrids using quantum physics concepts. Be vivid and imaginative.",
-        },
-      });
+          systemPrompt: "You are a Quantum Reality Merger. You combine two different versions of reality into creative hybrids using quantum physics concepts. Be vivid and imaginative." } });
 
       let mergedContent = `**Merged Reality** 🌀\n\nReality A and Reality B have been entangled through quantum superposition, creating a new hybrid timeline where both truths coexist simultaneously.\n\n**Reality A:** ${reality1}\n\n**Reality B:** ${reality2}\n\n*The observer effect has collapsed these realities into a unified quantum state.*`;
 
@@ -73,12 +71,10 @@ export function RealityMerge({ onBack }: { onBack: () => void }) {
         } catch {}
       }
 
-      await supabase.from("quantum_reality_merges").insert({
-        user_id: user.id,
+      await supabase.from("quantum_reality_merges").insert({ user_id: user.id,
         source_post_ids: [],
         merged_content: mergedContent,
-        merge_type: "hybrid",
-      });
+        merge_type: "hybrid" });
 
       toast({ title: "Realities Merged! 🌀" });
       setReality1("");

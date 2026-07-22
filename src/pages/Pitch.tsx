@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 
 const SLIDES: { title: string; render: () => JSX.Element }[] = [
-  {
-    title: "Unique — Title",
+  { title: "Unique — Title",
     render: () => (
       <div className="h-full flex flex-col items-center justify-center text-center px-16">
         <div className="text-[22px] tracking-[0.4em] uppercase text-white/60 mb-8">Investor Pitch · 2026</div>
@@ -13,10 +12,8 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
         <p className="text-[40px] text-white/90 font-light max-w-4xl">The pay-only social super-app that pays creators what FB, IG and TikTok won't.</p>
         <div className="mt-16 text-white/50 text-[20px]">Seeking €5M Seed · €40M post-money</div>
       </div>
-    ),
-  },
-  {
-    title: "Problem",
+    ) },
+  { title: "Problem",
     render: () => (
       <SlideShell kicker="01 · Problem">
         <h2 className="text-[88px] leading-[0.95] font-bold mb-12">Creators carry the platforms.<br/><span className="text-pink-300">Platforms keep the money.</span></h2>
@@ -26,8 +23,7 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
           <Stat big="30%" label="App Store cut on every purchase" />
         </div>
       </SlideShell>
-    ),
-  },
+    ) },
   {
     title: "Solution",
     render: () => (
@@ -39,10 +35,8 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
           ))}
         </div>
       </SlideShell>
-    ),
-  },
-  {
-    title: "Why now",
+    ) },
+  { title: "Why now",
     render: () => (
       <SlideShell kicker="03 · Why now">
         <h2 className="text-[88px] font-bold mb-10">Creator exodus is real.</h2>
@@ -53,10 +47,8 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
           <li>→ AI tools commoditize content — distribution is the moat</li>
         </ul>
       </SlideShell>
-    ),
-  },
-  {
-    title: "Market",
+    ) },
+  { title: "Market",
     render: () => (
       <SlideShell kicker="04 · Market">
         <h2 className="text-[88px] font-bold mb-12">€500B+ TAM</h2>
@@ -66,8 +58,7 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
           <MarketCard label="SOM (Y5)" value="€2.4B" sub="200M MAU × €12/yr" />
         </div>
       </SlideShell>
-    ),
-  },
+    ) },
   {
     title: "Product",
     render: () => (
@@ -79,8 +70,7 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
           ))}
         </div>
       </SlideShell>
-    ),
-  },
+    ) },
   {
     title: "Business model",
     render: () => (
@@ -95,10 +85,8 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
           <Bar label="Dating + Music + Other" pct={6} />
         </div>
       </SlideShell>
-    ),
-  },
-  {
-    title: "Traction",
+    ) },
+  { title: "Traction",
     render: () => (
       <SlideShell kicker="07 · Traction">
         <h2 className="text-[88px] font-bold mb-12">Platform live in EU</h2>
@@ -109,10 +97,8 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
           <Stat big="Soft-Go" label="Audit status (50 PDF)" />
         </div>
       </SlideShell>
-    ),
-  },
-  {
-    title: "Projections",
+    ) },
+  { title: "Projections",
     render: () => (
       <SlideShell kicker="08 · 5-year plan">
         <h2 className="text-[88px] font-bold mb-10">€324M net profit by Y5</h2>
@@ -129,8 +115,7 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
           </tbody>
         </table>
       </SlideShell>
-    ),
-  },
+    ) },
   {
     title: "Competition",
     render: () => (
@@ -151,20 +136,16 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
           ))}
         </div>
       </SlideShell>
-    ),
-  },
-  {
-    title: "Team",
+    ) },
+  { title: "Team",
     render: () => (
       <SlideShell kicker="10 · Team">
         <h2 className="text-[88px] font-bold mb-12">Founding team</h2>
         <p className="text-[32px] text-white/80 max-w-4xl">Beata Vikorova — Founder & CEO. Vision-driven, operator. Building Unique with AI-accelerated dev velocity equivalent to 30+ engineer team.</p>
         <p className="text-[24px] text-white/50 mt-12">Hiring with seed: CTO, Head of Growth, Trust & Safety lead, 6× full-stack.</p>
       </SlideShell>
-    ),
-  },
-  {
-    title: "Ask",
+    ) },
+  { title: "Ask",
     render: () => (
       <div className="h-full flex flex-col items-center justify-center text-center px-16 bg-gradient-to-br from-purple-900 via-fuchsia-900 to-pink-900">
         <div className="text-[22px] tracking-[0.4em] uppercase text-white/60 mb-8">The ask</div>
@@ -176,8 +157,7 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
         </div>
         <div className="mt-16 text-[28px] text-white/80">beata.vikorova@unique.fun · uniqueapp.fun</div>
       </div>
-    ),
-  },
+    ) },
 ];
 
 function SlideShell({ kicker, children }: { kicker: string; children: React.ReactNode }) {
@@ -258,8 +238,7 @@ export default function Pitch() {
           className="relative bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 text-white shadow-2xl"
           style={{
             width: 1920, height: 1080,
-            transform: `scale(${scale})`, transformOrigin: "center center",
-          }}
+            transform: `scale(${scale})`, transformOrigin: "center center" }}
         >
           {slide.render()}
         </div>

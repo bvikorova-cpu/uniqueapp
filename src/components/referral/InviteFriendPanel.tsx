@@ -4,30 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
+  SelectValue } from "@/components/ui/select";
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import {
-  HoverCard,
+  DialogDescription } from "@/components/ui/dialog";
+import { HoverCard,
   HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+  HoverCardTrigger } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
 import { useReferralProgram, type ReferralEarning } from "@/hooks/useReferralProgram";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Copy,
+import { Copy,
   Share2,
   Gift,
   Users,
@@ -45,8 +38,7 @@ import {
   ChevronRight,
   Search,
   X,
-  Filter,
-} from "lucide-react";
+  Filter } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -57,26 +49,19 @@ type ReferralStatus = "pending" | "paid" | "withdrawn";
 const STATUS_META: Record<
   ReferralStatus,
   { label: string; badgeClass: string; icon: typeof Clock; description: string }
-> = {
-  pending: {
+> = { pending: {
     label: "Pending",
     badgeClass: "bg-amber-500/20 text-amber-500 border border-amber-500/30",
     icon: Clock,
-    description: "The invited person has registered but has not yet paid for a subscription.",
-  },
-  paid: {
-    label: "Zaplatil",
+    description: "The invited person has registered but has not yet paid for a subscription." },
+  paid: { label: "Zaplatil",
     badgeClass: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
     icon: CreditCard,
-    description: "The invited person has paid — the reward is ready for payout.",
-  },
-  withdrawn: {
-    label: "Paid Out",
+    description: "The invited person has paid — the reward is ready for payout." },
+  withdrawn: { label: "Paid Out",
     badgeClass: "bg-emerald-500/90 text-white",
     icon: CheckCircle2,
-    description: "The reward has been paid out to your account.",
-  },
-};
+    description: "The reward has been paid out to your account." } };
 
 function getStatus(r: ReferralEarning): ReferralStatus {
   if (r.paid) return "withdrawn";

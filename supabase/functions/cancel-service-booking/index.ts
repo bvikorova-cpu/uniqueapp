@@ -4,11 +4,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -53,26 +51,20 @@ serve(async (req) => {
       (isProvider || hoursUntil >= 24);
 
     let refundAmount: number | null = null;
-    if (shouldRefund) {
-      const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
-        apiVersion: "2025-08-27.basil",
-      });
-      const refund = await stripe.refunds.create({
-        payment_intent: booking.stripe_payment_intent_id,
-      });
+    if (shouldRefund) { const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
+        apiVersion: "2025-08-27.basil" });
+      const refund = await stripe.refunds.create({ payment_intent: booking.stripe_payment_intent_id });
       refundAmount = refund.amount;
     }
 
     await admin
       .from("service_bookings")
-      .update({
-        status: isCustomer ? "cancelled_by_customer" : "cancelled_by_provider",
+      .update({ status: isCustomer ? "cancelled_by_customer" : "cancelled_by_provider",
         cancelled_at: new Date().toISOString(),
         cancelled_by: isCustomer ? "customer" : "provider",
         cancellation_reason: reason ?? null,
         refund_amount_cents: refundAmount,
-        refunded_at: refundAmount ? new Date().toISOString() : null,
-      })
+        refunded_at: refundAmount ? new Date().toISOString() : null })
       .eq("id", booking_id);
 
     return new Response(
@@ -82,7 +74,6 @@ serve(async (req) => {
   } catch (error: any) {
     console.error("cancel-service-booking error", error);
     return new Response(JSON.stringify({ error: error.message }), {
-      status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

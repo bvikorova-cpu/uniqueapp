@@ -15,8 +15,7 @@ let _initTime = 0;
  * Get lazily initialized Supabase admin client
  * Reuses the same client across requests in the same container
  */
-export function getSupabaseAdmin() {
-  if (!_supabaseAdmin) {
+export function getSupabaseAdmin() { if (!_supabaseAdmin) {
     _initTime = performance.now();
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -24,14 +23,9 @@ export function getSupabaseAdmin() {
     _supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
         autoRefreshToken: false,
-        persistSession: false,
-      },
-      global: {
-        headers: {
-          'x-my-custom-header': 'edge-function',
-        },
-      },
-    });
+        persistSession: false },
+      global: { headers: {
+          'x-my-custom-header': 'edge-function' } } });
     
     console.log(`[Optimization] Supabase client initialized in ${Math.round(performance.now() - _initTime)}ms`);
   }
@@ -61,11 +55,8 @@ export function createRequestTimer(): RequestTimer {
       labels[label] = elapsed;
       console.log(`[Timer] ${label}: ${elapsed}ms`);
     },
-    getMetrics: () => ({
-      total: Math.round(performance.now() - start),
-      labels,
-    }),
-  };
+    getMetrics: () => ({ total: Math.round(performance.now() - start),
+      labels }) };
 }
 
 // ============= Connection Pooling Helpers =============
@@ -227,17 +218,13 @@ export function createStreamingResponse(
       } finally {
         controller.close();
       }
-    },
-  });
+    } });
   
-  return new Response(stream, {
-    headers: {
+  return new Response(stream, { headers: {
       ...corsHeaders,
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-    },
-  });
+      'Connection': 'keep-alive' } });
 }
 
 // ============= Health Check =============
@@ -246,28 +233,24 @@ export function createStreamingResponse(
  * Handle health check requests
  * Returns null if not a health check, Response if it is
  */
-export function handleHealthCheck(req: Request): Response | null {
-  const url = new URL(req.url);
+export function handleHealthCheck(req: Request): Response | null { const url = new URL(req.url);
   
   if (url.pathname.endsWith('/health') || url.searchParams.get('health') === 'true') {
     return new Response(
       JSON.stringify({
         status: 'healthy',
         timestamp: Date.now(),
-        uptime: performance.now(),
-      }),
+        uptime: performance.now() }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }
+        headers: { 'Content-Type': 'application/json' } }
     );
   }
   
   return null;
 }
 
-export default {
-  getSupabaseAdmin,
+export default { getSupabaseAdmin,
   createRequestTimer,
   parallelQueries,
   deduplicateRequest,
@@ -275,5 +258,4 @@ export default {
   withTimeout,
   withFallback,
   createStreamingResponse,
-  handleHealthCheck,
-};
+  handleHealthCheck };

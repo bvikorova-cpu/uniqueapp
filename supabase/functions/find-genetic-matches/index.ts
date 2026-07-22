@@ -1,17 +1,14 @@
 // Returns DNA-compatible matches from genetic_dating_profiles.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 const TALENT_POOL = ["music", "athletics", "mathematics", "linguistics", "art", "leadership", "empathy"];
@@ -26,8 +23,7 @@ Deno.serve(async (req) => {
     if (!authHeader) return json({ error: "Not authenticated" }, 401);
 
     const auth = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData } = await auth.auth.getUser();
     const user = userData?.user;
     if (!user) return json({ error: "Not authenticated" }, 401);
@@ -49,22 +45,16 @@ Deno.serve(async (req) => {
       return {
         profile: { display_name: p.display_name, age: p.age, location: p.location, bio: p.bio },
         compatibility_score: base,
-        genetic_compatibility: {
-          overall: base,
+        genetic_compatibility: { overall: base,
           disease_resistance: base - 5,
           longevity: base + 3,
-          metabolic: base - 2,
-        },
-        personality_compatibility: {
-          values_alignment: personality,
-          communication_style: personality - 4,
-        },
+          metabolic: base - 2 },
+        personality_compatibility: { values_alignment: personality,
+          communication_style: personality - 4 },
         offspring_predictions: {
           height_range: `${165 + (i % 25)}cm – ${175 + (i % 20)}cm`,
           intelligence_potential: base + 5 + "%",
-          unique_talents: talents,
-        },
-      };
+          unique_talents: talents } };
     });
 
     return json({ matches });

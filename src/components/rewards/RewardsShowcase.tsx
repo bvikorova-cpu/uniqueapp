@@ -51,8 +51,7 @@ export default function RewardsShowcase() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("rewards-ai", {
-        body: { action: "achievement_showcase", badge_count: badgeCount, top_badges: topBadges, level, showcase_style: style },
-      });
+        body: { action: "achievement_showcase", badge_count: badgeCount, top_badges: topBadges, level, showcase_style: style } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);

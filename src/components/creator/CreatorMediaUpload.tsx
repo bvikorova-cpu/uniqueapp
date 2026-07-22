@@ -45,14 +45,12 @@ export function CreatorMediaUpload({ creatorId, onUploadComplete }: CreatorMedia
     return publicUrl;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
     if (!title.trim() || !content.trim()) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Please fill in all fields",
-      });
+        description: "Please fill in all fields" });
       return;
     }
 
@@ -78,22 +76,18 @@ export function CreatorMediaUpload({ creatorId, onUploadComplete }: CreatorMedia
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Post created successfully",
-      });
+      toast({ title: "Success",
+        description: "Post created successfully" });
 
       setTitle("");
       setContent("");
       setMediaFiles([]);
       onUploadComplete();
-    } catch (error: any) {
-      console.error('Error creating post:', error);
+    } catch (error: any) { console.error('Error creating post:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to create post",
-      });
+        description: "Failed to create post" });
     } finally {
       setUploading(false);
     }

@@ -54,8 +54,7 @@ const KidsShowDetail = () => {
   const [user, setUser] = useState<any>(null);
   const [selectedSeason, setSelectedSeason] = useState<number>(1);
 
-  const showImageMap: Record<string, string> = {
-    "Peppa Pig": showImages.peppa,
+  const showImageMap: Record<string, string> = { "Peppa Pig": showImages.peppa,
     "Paw Patrol": showImages.pawPatrol,
     "Frozen Stories": showImages.frozen,
     "Lion Kingdom": showImages.lionking,
@@ -129,14 +128,11 @@ const KidsShowDetail = () => {
     "Zootopia": showImages.zootopia,
     "Lilo & Stitch": showImages['lilo&stitch'],
     "Winnie the Pooh": showImages.winniethepooh,
-    "Hercules": showImages.hercules,
-  };
+    "Hercules": showImages.hercules };
 
-  const episodeImageMap: Record<string, string> = {
-    "Peppa Goes to Playgroup": episodeImages.peppaEp1,
+  const episodeImageMap: Record<string, string> = { "Peppa Goes to Playgroup": episodeImages.peppaEp1,
     "Birthday Party": episodeImages.peppaEp2,
-    "Kitten Rescue": episodeImages.pawEp1,
-  };
+    "Kitten Rescue": episodeImages.pawEp1 };
 
   useEffect(() => {
     if (showId) {

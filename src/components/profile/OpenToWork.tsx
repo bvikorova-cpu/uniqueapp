@@ -8,10 +8,8 @@ export interface OpenToWorkDetails {
   note?: string;
 }
 
-export const OpenToWorkBadge = ({
-  details,
-  compact,
-}: {
+export const OpenToWorkBadge = ({ details,
+  compact }: {
   details?: OpenToWorkDetails | null;
   compact?: boolean;
 }) => {

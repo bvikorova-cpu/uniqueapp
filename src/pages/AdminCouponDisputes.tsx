@@ -45,8 +45,7 @@ const AdminCouponDisputes = () => {
       const { data: { session } } = await supabase.auth.getSession();
       const { error } = await supabase.functions.invoke("coupon-buyer-action", {
         body: { action, orderId, note: notes[orderId] || "" },
-        headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined,
-      });
+        headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined });
       if (error) throw error;
       toast({ title: action === "admin-release" ? "Released to seller" : "Refunded buyer" });
       refresh();

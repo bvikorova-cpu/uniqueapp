@@ -6,11 +6,9 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export type CreditAction = "megatalent_vote" | "megatalent_comment" | "megatalent_upload";
 
-export const CREDIT_COSTS: Record<CreditAction, number> = {
-  megatalent_vote: 1,
+export const CREDIT_COSTS: Record<CreditAction, number> = { megatalent_vote: 1,
   megatalent_comment: 1,
-  megatalent_upload: 3,
-};
+  megatalent_upload: 3 };
 
 /**
  * Unified credit spender. Tries free-tier credits first, then AI credits.
@@ -43,19 +41,15 @@ export function useSpendCredits() {
         if (remaining >= amount) {
           const { error: updErr } = await supabase
             .from("ai_credits")
-            .update({
-              credits_remaining: remaining - amount,
-              last_used_at: new Date().toISOString(),
-            })
+            .update({ credits_remaining: remaining - amount,
+              last_used_at: new Date().toISOString() })
             .eq("user_id", user.id);
           if (updErr) throw updErr;
 
-          await supabase.from("ai_usage_history").insert({
-            user_id: user.id,
+          await supabase.from("ai_usage_history").insert({ user_id: user.id,
             usage_type: "custom_generation",
             credits_used: amount,
-            description: opts?.description || action,
-          });
+            description: opts?.description || action });
           return true;
         }
       } catch (e) {
@@ -65,12 +59,9 @@ export function useSpendCredits() {
       // 3) Insufficient — toast + redirect
       toast.error("Not enough credits", {
         description: `This action costs ${amount} credit${amount > 1 ? "s" : ""}. Top up to continue.`,
-        action: {
-          label: "Top up",
-          onClick: () => navigate("/ai-credits"),
-        },
-        duration: 6000,
-      });
+        action: { label: "Top up",
+          onClick: () => navigate("/ai-credits") },
+        duration: 6000 });
       setTimeout(() => navigate("/ai-credits"), 1200);
       return false;
     },

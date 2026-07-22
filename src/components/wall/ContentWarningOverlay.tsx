@@ -2,10 +2,8 @@ import { useState } from "react";
 import { AlertTriangle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export const ContentWarningOverlay = ({
-  reason,
-  children,
-}: {
+export const ContentWarningOverlay = ({ reason,
+  children }: {
   reason?: string;
   children: React.ReactNode;
 }) => {

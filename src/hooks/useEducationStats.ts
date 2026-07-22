@@ -42,15 +42,12 @@ export const useEducationStats = () => {
 
       const todayCompleted = (todayCompletions?.length ?? 0) > 0;
       const currentStreak = Math.max(points?.login_streak ?? 0, todayCompleted ? 1 : 0);
-      return {
-        currentXP: points?.total_points ?? 0,
+      return { currentXP: points?.total_points ?? 0,
         currentStreak,
         bestStreak: Math.max(points?.longest_streak ?? 0, currentStreak),
-        todayCompleted,
-      };
+        todayCompleted };
     },
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 };
 
 export interface EducationLeaderRow {
@@ -77,16 +74,13 @@ export const useEducationLeaderboard = () => {
         .select("id, full_name, avatar_url")
         .in("id", userIds);
 
-      return top.map((row) => {
-        const profile = profiles?.find((p) => p.id === row.user_id);
+      return top.map((row) => { const profile = profiles?.find((p) => p.id === row.user_id);
         return {
           user_id: row.user_id,
           total_points: row.total_points ?? 0,
           full_name: profile?.full_name ?? null,
-          avatar_url: profile?.avatar_url ?? null,
-        };
+          avatar_url: profile?.avatar_url ?? null };
       });
     },
-    staleTime: 60_000,
-  });
+    staleTime: 60_000 });
 };

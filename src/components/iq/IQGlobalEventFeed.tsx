@@ -18,21 +18,17 @@ interface FeedEvent {
   ts: number;
 }
 
-const ICONS: Record<EventType, JSX.Element> = {
-  duel_started: <Swords className="h-3.5 w-3.5 text-blue-500" />,
+const ICONS: Record<EventType, JSX.Element> = { duel_started: <Swords className="h-3.5 w-3.5 text-blue-500" />,
   duel_won: <Zap className="h-3.5 w-3.5 text-amber-500" />,
   tournament_won: <Trophy className="h-3.5 w-3.5 text-amber-500" />,
   tier_up: <Crown className="h-3.5 w-3.5 text-purple-500" />,
-  streak_milestone: <Flame className="h-3.5 w-3.5 text-orange-500" />,
-};
+  streak_milestone: <Flame className="h-3.5 w-3.5 text-orange-500" /> };
 
-const VERBS: Record<EventType, string> = {
-  duel_started: "started a duel",
+const VERBS: Record<EventType, string> = { duel_started: "started a duel",
   duel_won: "won a duel",
   tournament_won: "won a tournament match",
   tier_up: "reached a new tier",
-  streak_milestone: "hit a streak milestone",
-};
+  streak_milestone: "hit a streak milestone" };
 
 function timeAgo(ts: number) {
   const s = Math.floor((Date.now() - ts) / 1000);

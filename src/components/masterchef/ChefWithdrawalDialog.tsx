@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,22 +21,18 @@ interface ChefWithdrawalDialogProps {
   onSuccess?: () => void;
 }
 
-export const ChefWithdrawalDialog = ({
-  open,
+export const ChefWithdrawalDialog = ({ open,
   onOpenChange,
   chefId,
   availableBalance,
-  onSuccess,
-}: ChefWithdrawalDialogProps) => {
-  const [loading, setLoading] = useState(false);
+  onSuccess }: ChefWithdrawalDialogProps) => { const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     amount: "",
     paymentMethod: "bank_transfer",
     accountHolder: "",
     iban: "",
     bankName: "",
-    paypalEmail: "",
-  });
+    paypalEmail: "" });
 
   useEffect(() => {
     if (open) {
@@ -88,29 +82,23 @@ export const ChefWithdrawalDialog = ({
       }
     }
 
-    try {
-      setLoading(true);
+    try { setLoading(true);
 
       const paymentDetails =
         formData.paymentMethod === "bank_transfer"
           ? {
               accountHolder: formData.accountHolder,
               iban: formData.iban,
-              bankName: formData.bankName,
-            }
-          : {
-              email: formData.paypalEmail,
-            };
+              bankName: formData.bankName }
+          : { email: formData.paypalEmail };
 
       const { error } = await supabase
         .from("masterchef_withdrawal_requests")
-        .insert({
-          chef_id: chefId,
+        .insert({ chef_id: chefId,
           amount,
           payment_method: formData.paymentMethod,
           payment_details: paymentDetails,
-          status: "pending",
-        });
+          status: "pending" });
 
       if (error) throw error;
 
@@ -123,14 +111,12 @@ export const ChefWithdrawalDialog = ({
       }
 
       toast.success("Withdrawal request submitted successfully");
-      setFormData({
-        amount: "",
+      setFormData({ amount: "",
         paymentMethod: "bank_transfer",
         accountHolder: "",
         iban: "",
         bankName: "",
-        paypalEmail: "",
-      });
+        paypalEmail: "" });
       onOpenChange(false);
       onSuccess?.();
     } catch (error: any) {

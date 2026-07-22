@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -126,13 +124,11 @@ serve(async (req) => {
 
     // For now, we'll store the HTML directly. In production, you'd use a PDF generation service
     // or library like Puppeteer/Playwright
-    const certificateData = {
-      course_id: courseId,
+    const certificateData = { course_id: courseId,
       user_id: user.id,
       student_name: studentName,
       certificate_url: null, // In production, this would be a PDF URL
-      issued_at: new Date().toISOString(),
-    };
+      issued_at: new Date().toISOString() };
 
     const { data: certificate, error: certError } = await supabaseClient
       .from("course_certificates")

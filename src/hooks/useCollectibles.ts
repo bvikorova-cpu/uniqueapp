@@ -147,8 +147,7 @@ export const useRoomCollectibles = (roomId: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!roomId,
-  });
+    enabled: !!roomId });
 };
 
 export const useUserDisneyCollectibles = () => {
@@ -171,20 +170,17 @@ export const useUserDisneyCollectibles = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 };
 
 export const useCollectDisneyItem = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async ({
+  return useMutation({ mutationFn: async ({
       collectibleId,
       castleId,
-      roomId,
-    }: {
+      roomId }: {
       collectibleId: string;
       castleId: string;
       roomId: string;
@@ -213,13 +209,11 @@ export const useCollectDisneyItem = () => {
 
       const { data, error } = await supabase
         .from("user_collectibles")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           collectible_id: collectibleId,
           castle_id: castleId,
           room_id: roomId,
-          acquired_method: 'found',
-        } as any)
+          acquired_method: 'found' } as any)
         .select()
         .single();
 
@@ -230,17 +224,14 @@ export const useCollectDisneyItem = () => {
     onSuccess: ({ collectible }) => {
       queryClient.invalidateQueries({ queryKey: ["user-disney-collectibles"] });
       
-      const rarityEmoji = {
-        common: "⭐",
+      const rarityEmoji = { common: "⭐",
         rare: "💎",
         epic: "👑",
-        legendary: "🌟",
-      }[collectible?.rarity || "common"];
+        legendary: "🌟" }[collectible?.rarity || "common"];
 
       toast({
         title: `${rarityEmoji} Found ${collectible?.name}!`,
-        description: `${collectible?.description} (+${collectible?.points} points)`,
-      });
+        description: `${collectible?.description} (+${collectible?.points} points)` });
     },
     onError: (error: Error) => {
       if (error.message !== "already_collected") {
@@ -250,8 +241,7 @@ export const useCollectDisneyItem = () => {
           variant: "destructive"
         });
       }
-    },
-  });
+    } });
 };
 
 export const useDisneyCollectionStats = () => {
@@ -282,11 +272,8 @@ export const useDisneyCollectionStats = () => {
         0
       ) || 0;
 
-      return {
-        total: total || 0,
+      return { total: total || 0,
         collected: collected?.length || 0,
-        points,
-      };
-    },
-  });
+        points };
+    } });
 };

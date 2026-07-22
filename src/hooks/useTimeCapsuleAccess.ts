@@ -33,13 +33,11 @@ export function useTimeCapsuleAccess() {
       setPurchases(data.purchases || []);
       setHasPremium(data.hasPremium || false);
       setCanCreateCapsules(data.canCreateCapsules || false);
-    } catch (error) {
-      console.error('Error checking time capsule access:', error);
+    } catch (error) { console.error('Error checking time capsule access:', error);
       toast({
         title: "Error",
         description: "Failed to verify access. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setHasAccess(false);
     } finally {
       setLoading(false);

@@ -31,8 +31,7 @@ export const AvatarBreeding = ({ onBack }: Props) => {
     setIsBreeding(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-holographic-avatar-checkout", {
-        body: { priceId: "price_1SPjGzGaXSfGtYFtTGxQm0hM", featureName: "Avatar Breeding", metadata: { parent1, parent2 } },
-      });
+        body: { priceId: "price_1SPjGzGaXSfGtYFtTGxQm0hM", featureName: "Avatar Breeding", metadata: { parent1, parent2 } } });
       if (error) throw error;
       if (data?.url) {
         try { localStorage.setItem("pendingHoloAction", JSON.stringify({ kind: "breeding", parent1, parent2 })); } catch {}

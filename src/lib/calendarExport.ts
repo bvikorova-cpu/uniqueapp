@@ -49,12 +49,10 @@ export const downloadIcs = (e: IcsEvent) => {
 
 export const googleCalendarLink = (e: IcsEvent): string => {
   const dates = `${fmt(e.startsAt)}/${fmt(e.endsAt)}`;
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
+  const params = new URLSearchParams({ action: "TEMPLATE",
     text: e.title,
     dates,
     details: e.description || "",
-    location: e.location || "",
-  });
+    location: e.location || "" });
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 };

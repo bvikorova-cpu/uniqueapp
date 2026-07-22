@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Crown, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
@@ -33,12 +31,10 @@ export function CreatorSubscriptionDialog({ creatorId }: Props) {
     }
     setCreating(true);
     const benefits = form.benefits.split("\n").map((s) => s.trim()).filter(Boolean);
-    const err = await createTier({
-      name: form.name,
+    const err = await createTier({ name: form.name,
       description: form.description,
       price: form.price,
-      benefits,
-    });
+      benefits });
     setCreating(false);
     if (err) {
       toast({ title: "Error", description: err.message, variant: "destructive" });

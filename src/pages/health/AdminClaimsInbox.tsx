@@ -39,10 +39,8 @@ export default function AdminClaimsInbox() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data } = await supabase.rpc("has_role", {
-        _user_id: user.id,
-        _role: "admin" as never,
-      });
+      const { data } = await supabase.rpc("has_role", { _user_id: user.id,
+        _role: "admin" as never });
       setIsAdmin(!!data);
       if (data) refresh();
       else setLoading(false);
@@ -51,8 +49,7 @@ export default function AdminClaimsInbox() {
 
   async function decide(id: string, decision: "approved" | "rejected" | "paid") {
     const { error } = await supabase.functions.invoke("admin-decide-insurance-claim", {
-      body: { claim_id: id, decision, admin_note: notes[id] ?? null },
-    });
+      body: { claim_id: id, decision, admin_note: notes[id] ?? null } });
     if (error) return toast({ variant: "destructive", title: "Failed", description: error.message });
     toast({ title: `Claim ${decision}` });
     refresh();

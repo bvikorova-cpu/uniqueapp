@@ -18,8 +18,7 @@ export const useIsFollowing = (userId: string | undefined, targetUserId: string 
       if (error) throw error;
       return !!data;
     },
-    enabled: !!userId && !!targetUserId,
-  });
+    enabled: !!userId && !!targetUserId });
 };
 
 export const useFollowCounts = (userId: string | undefined) => {
@@ -33,13 +32,10 @@ export const useFollowCounts = (userId: string | undefined) => {
         supabase.from("user_follows").select("id", { count: "exact" }).eq("follower_id", userId),
       ]);
 
-      return {
-        followers: followersRes.count || 0,
-        following: followingRes.count || 0,
-      };
+      return { followers: followersRes.count || 0,
+        following: followingRes.count || 0 };
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 };
 
 export const useFollowMutation = () => {
@@ -58,19 +54,14 @@ export const useFollowMutation = () => {
       queryClient.invalidateQueries({ queryKey: ["is-following"] });
       queryClient.invalidateQueries({ queryKey: ["follow-counts", variables.followingId] });
       queryClient.invalidateQueries({ queryKey: ["follow-counts", variables.followerId] });
-      toast({
-        title: "Success",
-        description: "You are now following this user",
-      });
+      toast({ title: "Success",
+        description: "You are now following this user" });
     },
-    onError: (error: Error) => {
-      toast({
+    onError: (error: Error) => { toast({
         title: "Error",
         description: error.message || "Failed to follow user",
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 };
 
 export const useUnfollowMutation = () => {
@@ -91,19 +82,14 @@ export const useUnfollowMutation = () => {
       queryClient.invalidateQueries({ queryKey: ["is-following"] });
       queryClient.invalidateQueries({ queryKey: ["follow-counts", variables.followingId] });
       queryClient.invalidateQueries({ queryKey: ["follow-counts", variables.followerId] });
-      toast({
-        title: "Success",
-        description: "You have unfollowed this user",
-      });
+      toast({ title: "Success",
+        description: "You have unfollowed this user" });
     },
-    onError: (error: Error) => {
-      toast({
+    onError: (error: Error) => { toast({
         title: "Error",
         description: error.message || "Failed to unfollow user",
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 };
 
 export const useFollowingPosts = (userId: string | undefined) => {
@@ -160,6 +146,5 @@ export const useFollowingPosts = (userId: string | undefined) => {
 
       return postsWithProfiles;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 };

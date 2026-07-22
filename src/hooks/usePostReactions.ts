@@ -21,8 +21,7 @@ export const usePostReactions = (postId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
   const addReaction = useMutation({
     mutationFn: async ({ postId, reactionType }: {
@@ -32,11 +31,9 @@ export const usePostReactions = (postId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("post_reactions").upsert({
-        post_id: postId,
+      const { error } = await supabase.from("post_reactions").upsert({ post_id: postId,
         user_id: user.id,
-        reaction_type: reactionType,
-      }, {
+        reaction_type: reactionType }, {
         onConflict: "post_id,user_id"
       });
 
@@ -44,8 +41,7 @@ export const usePostReactions = (postId?: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
-    },
-  });
+    } });
 
   const removeReaction = useMutation({
     mutationFn: async (postId: string) => {
@@ -62,19 +58,16 @@ export const usePostReactions = (postId?: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
-    },
-  });
+    } });
 
-  const getReactionCounts = () => {
-    const counts: Record<ReactionType, number> = {
+  const getReactionCounts = () => { const counts: Record<ReactionType, number> = {
       like: 0,
       love: 0,
       laugh: 0,
       wow: 0,
       sad: 0,
       angry: 0,
-      care: 0,
-    };
+      care: 0 };
 
     reactions?.forEach(r => {
       counts[r.reaction_type as ReactionType]++;
@@ -83,11 +76,9 @@ export const usePostReactions = (postId?: string) => {
     return counts;
   };
 
-  return {
-    reactions: reactions || [],
+  return { reactions: reactions || [],
     isLoading,
     addReaction: addReaction.mutate,
     removeReaction: removeReaction.mutate,
-    getReactionCounts,
-  };
+    getReactionCounts };
 };

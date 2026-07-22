@@ -64,12 +64,10 @@ export function ThankYouWall({ campaignId }: Props) {
     setPosting(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const { error } = await supabase.from("hero_thank_you_messages" as any).insert({
-        campaign_id: campaignId,
+      const { error } = await supabase.from("hero_thank_you_messages" as any).insert({ campaign_id: campaignId,
         author_name: authorName.trim().slice(0, 80),
         message: message.trim().slice(0, 500),
-        author_user_id: session?.user?.id ?? null,
-      });
+        author_user_id: session?.user?.id ?? null });
       if (error) throw error;
       setMessage("");
       toast({ title: "Thank you posted ❤️", description: "Your message is on the wall." });

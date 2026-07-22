@@ -75,9 +75,7 @@ export const VoiceIntroRecorder = ({ userId, audioUrl, transcript, onSaved, onRe
       if (error) throw error;
       const pub = { publicUrl: await getReadableUrl("voice-intros", path) };
       const dur = Math.min(seconds || 30, MAX_SECONDS);
-      await supabase.from("profile_voice_intros").upsert({
-        user_id: userId, audio_url: pub.publicUrl, duration_seconds: dur, transcript: null,
-      }, { onConflict: "user_id" });
+      await supabase.from("profile_voice_intros").upsert({ user_id: userId, audio_url: pub.publicUrl, duration_seconds: dur, transcript: null }, { onConflict: "user_id" });
       onSaved(pub.publicUrl, "", dur);
       toast({ title: "Voice intro saved" });
     } catch (e: any) {
@@ -91,8 +89,7 @@ export const VoiceIntroRecorder = ({ userId, audioUrl, transcript, onSaved, onRe
     setGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-voice-intro", {
-        body: { text: aiText },
-      });
+        body: { text: aiText } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       onSaved(data.audio_url, data.transcript, data.duration_seconds);
@@ -177,7 +174,7 @@ export const VoiceIntroRecorder = ({ userId, audioUrl, transcript, onSaved, onRe
             <Sparkles className="h-3 w-3 text-amber-400" /> Generate with AI voice
           </Label>
           <Textarea
-            placeholder="e.g. Hi! I'm Anna — designer & coffee lover from Berlin. Let's connect!"
+            placeholder="e.g. Hi! I'm Anna — designer & coffee lover. Let's connect!"
             rows={3}
             value={aiText}
             onChange={(e) => setAiText(e.target.value)}

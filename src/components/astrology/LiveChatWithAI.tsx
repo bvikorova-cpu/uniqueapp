@@ -25,8 +25,7 @@ export const LiveChatWithAI = () => {
   const queryClient = useQueryClient();
   const { data: user } = useQuery({
     queryKey: ["current-user-chat"],
-    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; },
-  });
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; } });
   const { credits, isLoading: creditsLoading } = useAstrologyCredits();
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Welcome! I'm your AI mystic advisor. Ask me anything about astrology, tarot, numerology, or spiritual guidance. 🔮" }

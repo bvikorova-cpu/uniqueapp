@@ -32,13 +32,11 @@ export const GlobalAnnouncementPanel = () => {
     setActiveAnnouncement(data);
   };
 
-  const publishAnnouncement = async () => {
-    if (!message.trim()) {
+  const publishAnnouncement = async () => { if (!message.trim()) {
       toast({
         title: "Error",
         description: "Please enter an announcement message",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -55,28 +53,22 @@ export const GlobalAnnouncementPanel = () => {
       
       const { error } = await supabase
         .from('global_announcements')
-        .insert({
-          message: message.trim(),
+        .insert({ message: message.trim(),
           is_active: true,
-          created_by: user?.id,
-        });
+          created_by: user?.id });
 
       if (error) throw error;
 
-      toast({
-        title: "Announcement Published",
-        description: "Your message is now visible to all users",
-      });
+      toast({ title: "Announcement Published",
+        description: "Your message is now visible to all users" });
 
       setMessage('');
       await loadActiveAnnouncement();
-    } catch (error) {
-      console.error('Announcement error:', error);
+    } catch (error) { console.error('Announcement error:', error);
       toast({
         title: "Error",
         description: "Failed to publish announcement",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -94,19 +86,15 @@ export const GlobalAnnouncementPanel = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Announcement Removed",
-        description: "The banner is no longer visible to users",
-      });
+      toast({ title: "Announcement Removed",
+        description: "The banner is no longer visible to users" });
 
       setActiveAnnouncement(null);
-    } catch (error) {
-      console.error('Deactivation error:', error);
+    } catch (error) { console.error('Deactivation error:', error);
       toast({
         title: "Error",
         description: "Failed to remove announcement",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

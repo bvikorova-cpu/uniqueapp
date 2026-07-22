@@ -4,8 +4,7 @@ import { toast } from "sonner";
 
 const invoke = async (action: string, body: any = {}) => {
   const { data, error } = await supabase.functions.invoke("handwriting-ai", {
-    body: { action, ...body },
-  });
+    body: { action, ...body } });
   if (error) throw error;
   if ((data as any)?.error) throw new Error((data as any).error);
   return data;
@@ -26,8 +25,7 @@ export function useCouplesStatus() {
       const data: any = await invoke("couples-status");
       return data;
     },
-    refetchInterval: 60_000,
-  });
+    refetchInterval: 60_000 });
 }
 
 export function useCouplesCheckout() {
@@ -37,8 +35,7 @@ export function useCouplesCheckout() {
       if (data?.url) window.open(data.url, "_blank");
       return data;
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useCouplesPortal() {
@@ -48,8 +45,7 @@ export function useCouplesPortal() {
       if (data?.url) window.open(data.url, "_blank");
       return data;
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 // ---------------- HR Pro ----------------
@@ -60,8 +56,7 @@ export function useHrStatus() {
       const data: any = await invoke("hr-status");
       return data;
     },
-    refetchInterval: 60_000,
-  });
+    refetchInterval: 60_000 });
 }
 
 export function useHrCheckout() {
@@ -71,8 +66,7 @@ export function useHrCheckout() {
       if (data?.url) window.open(data.url, "_blank");
       return data;
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useHrPortal() {
@@ -82,8 +76,7 @@ export function useHrPortal() {
       if (data?.url) window.open(data.url, "_blank");
       return data;
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useHrBulkAnalyze() {
@@ -96,8 +89,7 @@ export function useHrBulkAnalyze() {
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
       toast.success("Bulk analysis complete");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useHrJobs() {
@@ -113,8 +105,7 @@ export function useHrJobs() {
         .order("created_at", { ascending: false })
         .limit(10);
       return data ?? [];
-    },
-  });
+    } });
 }
 
 // ---------------- Voice Diary ----------------
@@ -128,8 +119,7 @@ export function useVoiceDiary() {
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
       toast.success("Voice diary saved");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useVoiceDiaryHistory() {
@@ -145,6 +135,5 @@ export function useVoiceDiaryHistory() {
         .order("created_at", { ascending: false })
         .limit(20);
       return data ?? [];
-    },
-  });
+    } });
 }

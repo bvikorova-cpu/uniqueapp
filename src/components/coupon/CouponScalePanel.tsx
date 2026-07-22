@@ -19,8 +19,7 @@ const TIER_META: Record<string, { label: string; color: string; next: number | n
   bronze: { label: "Bronze", color: "from-amber-700 to-amber-900", next: 100 },
   silver: { label: "Silver", color: "from-slate-400 to-slate-600", next: 300 },
   gold: { label: "Gold", color: "from-yellow-400 to-amber-600", next: 1000 },
-  diamond: { label: "Diamond", color: "from-cyan-400 to-blue-600", next: null },
-};
+  diamond: { label: "Diamond", color: "from-cyan-400 to-blue-600", next: null } };
 
 export function CouponScalePanel({ userId, wishlistCount, onBulkBuy }: Props) {
   const { toast } = useToast();

@@ -48,13 +48,12 @@ export function PropertyConversationsDialog({ open, onOpenChange }: Props) {
                     <li key={`${c.property_id}|${c.buyer_id}|${c.seller_id}`}>
                       <button
                         className="w-full text-left py-3 px-2 hover:bg-muted/50 rounded-md flex items-start gap-3"
-                        onClick={() => {
+                        onClick={ () => {
                           setActive({
                             propertyId: c.property_id,
                             title: c.property_title ?? "Property",
                             sellerId: c.seller_id,
-                            buyerId: c.buyer_id,
-                          });
+                            buyerId: c.buyer_id });
                         }}
                       >
                         <div className="relative mt-1">

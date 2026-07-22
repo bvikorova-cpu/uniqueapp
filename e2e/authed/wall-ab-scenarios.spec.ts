@@ -38,22 +38,19 @@ async function signInB(request: import("@playwright/test").APIRequestContext) {
     `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
     {
       headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
-      data: { email: EMAIL_B, password: PASSWORD_B },
-    },
+      data: { email: EMAIL_B, password: PASSWORD_B } },
   );
   expect(res.ok(), `B sign-in failed: ${res.status()}`).toBeTruthy();
   return await res.json();
 }
 
-async function seedSession(context: BrowserContext, session: any, baseURL: string) {
-  const stored = {
+async function seedSession(context: BrowserContext, session: any, baseURL: string) { const stored = {
     access_token: session.access_token,
     refresh_token: session.refresh_token,
     expires_in: session.expires_in,
     expires_at: session.expires_at,
     token_type: session.token_type,
-    user: session.user,
-  };
+    user: session.user };
   const onboarding = JSON.stringify({ at: Date.now(), interests: [] });
   await context.addInitScript(
     ({ key, value, oid, ob }) => {

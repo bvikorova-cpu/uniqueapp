@@ -8,8 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const CAPSULE_PLANS = {
-  oneYear: {
+const CAPSULE_PLANS = { oneYear: {
     name: "1 Year Capsule",
     price: "€4.99",
     priceId: "price_1SQAOcGaXSfGtYFtunvQGLzb",
@@ -22,10 +21,8 @@ const CAPSULE_PLANS = {
       "Automatic delivery in 1 year",
       "Email notifications",
       "Secure encrypted storage",
-    ],
-  },
-  fiveYears: {
-    name: "5 Years Capsule",
+    ] },
+  fiveYears: { name: "5 Years Capsule",
     price: "€9.99",
     priceId: "price_1SQAOwGaXSfGtYFtn0rkkTSB",
     icon: Clock,
@@ -37,10 +34,8 @@ const CAPSULE_PLANS = {
       "Delivery in 5 years",
       "Priority storage",
       "HD video support (up to 500MB)",
-    ],
-  },
-  tenYears: {
-    name: "10 Years Capsule",
+    ] },
+  tenYears: { name: "10 Years Capsule",
     price: "€19.99",
     priceId: "price_1SQAPFGaXSfGtYFtSHQvDsqK",
     icon: Clock,
@@ -52,10 +47,8 @@ const CAPSULE_PLANS = {
       "Delivery in 10 years",
       "Premium storage",
       "HD video support (up to 1GB)",
-    ],
-  },
-  twentyYears: {
-    name: "20 Years Capsule",
+    ] },
+  twentyYears: { name: "20 Years Capsule",
     price: "€49.99",
     priceId: "price_1SQAPXGaXSfGtYFtLUC7c9DS",
     icon: Sparkles,
@@ -67,10 +60,8 @@ const CAPSULE_PLANS = {
       "Delivery in 20 years",
       "Lifetime storage guarantee",
       "4K video support (up to 5GB)",
-    ],
-  },
-  premium: {
-    name: "Premium Unlimited",
+    ] },
+  premium: { name: "Premium Unlimited",
     price: "€19.99/month",
     priceId: "price_1SQAPtGaXSfGtYFtuhuiyuUV",
     icon: Shield,
@@ -83,9 +74,7 @@ const CAPSULE_PLANS = {
       "Priority support 24/7",
       "Advanced scheduling & reminders",
       "Cancel anytime",
-    ],
-  },
-};
+    ] } };
 
 export default function TimeCapsuleSubscription() {
   const [loading, setLoading] = useState<string | null>(null);
@@ -97,12 +86,10 @@ export default function TimeCapsuleSubscription() {
       setLoading(planKey);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Login Required",
           description: "Please sign in to continue",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
@@ -118,12 +105,9 @@ export default function TimeCapsuleSubscription() {
         }
       } else {
         // Regular capsule payment
-        const { data, error } = await supabase.functions.invoke("create-time-capsule-payment", {
-          body: {
+        const { data, error } = await supabase.functions.invoke("create-time-capsule-payment", { body: {
             priceId: plan.priceId,
-            durationYears: plan.duration,
-          },
-        });
+            durationYears: plan.duration } });
 
         if (error) throw error;
 
@@ -131,13 +115,11 @@ export default function TimeCapsuleSubscription() {
           window.open(data.url, "_blank");
         }
       }
-    } catch (error) {
-      console.error("Purchase error:", error);
+    } catch (error) { console.error("Purchase error:", error);
       toast({
         title: "Error",
         description: "Failed to start payment. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(null);
     }

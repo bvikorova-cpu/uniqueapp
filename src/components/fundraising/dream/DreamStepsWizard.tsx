@@ -3,34 +3,26 @@ import { Lightbulb, ShieldCheck, Heart, Trophy } from "lucide-react";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const steps = [
-  {
-    icon: Lightbulb,
+  { icon: Lightbulb,
     title: "Share Your Dream",
     description: "Create a campaign with your story, goals, and milestones",
     color: "text-amber-500",
-    bg: "bg-amber-500/10",
-  },
-  {
-    icon: ShieldCheck,
+    bg: "bg-amber-500/10" },
+  { icon: ShieldCheck,
     title: "Admin Review",
     description: "Your campaign is reviewed within 24 hours for quality",
     color: "text-blue-500",
-    bg: "bg-blue-500/10",
-  },
-  {
-    icon: Heart,
+    bg: "bg-blue-500/10" },
+  { icon: Heart,
     title: "Get Funded",
     description: "Community supporters contribute to make it happen",
     color: "text-rose-500",
-    bg: "bg-rose-500/10",
-  },
-  {
-    icon: Trophy,
+    bg: "bg-rose-500/10" },
+  { icon: Trophy,
     title: "Achieve It",
     description: "Reach your goal and share your success story",
     color: "text-emerald-500",
-    bg: "bg-emerald-500/10",
-  },
+    bg: "bg-emerald-500/10" },
 ];
 
 export const DreamStepsWizard = () => {

@@ -27,8 +27,7 @@ const EngagementAnalytics = ({ onBack }: EngagementAnalyticsProps) => {
         .eq("user_id", user.id)
         .maybeSingle();
       return data;
-    },
-  });
+    } });
 
   const { data: posts = [] } = useQuery({
     queryKey: ["analytics-posts", myProfile?.id],
@@ -43,8 +42,7 @@ const EngagementAnalytics = ({ onBack }: EngagementAnalyticsProps) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!myProfile,
-  });
+    enabled: !!myProfile });
 
   const { data: followers = [] } = useQuery({
     queryKey: ["analytics-followers", myProfile?.id],
@@ -58,8 +56,7 @@ const EngagementAnalytics = ({ onBack }: EngagementAnalyticsProps) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!myProfile,
-  });
+    enabled: !!myProfile });
 
   // Generate chart data from real posts
   const generateChartData = () => {
@@ -80,8 +77,7 @@ const EngagementAnalytics = ({ onBack }: EngagementAnalyticsProps) => {
         likes: dayPosts.reduce((sum: number, p: any) => sum + (p.likes_count || 0), 0),
         views: dayPosts.reduce((sum: number, p: any) => sum + (p.views_count || 0), 0),
         followers: dayFollowers.length,
-        posts: dayPosts.length,
-      });
+        posts: dayPosts.length });
     }
     return data;
   };

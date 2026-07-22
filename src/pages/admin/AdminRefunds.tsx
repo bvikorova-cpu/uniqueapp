@@ -6,14 +6,12 @@ import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShel
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
+import { Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableRow } from "@/components/ui/table";
 import { RefundButton } from "@/components/admin/RefundButton";
 import { format } from "date-fns";
 

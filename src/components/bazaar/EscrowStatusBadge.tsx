@@ -16,38 +16,27 @@ const statusConfig: Record<EscrowStatus, {
   icon: typeof Shield;
   variant: "default" | "secondary" | "destructive" | "outline";
   className: string;
-}> = {
-  none: {
+}> = { none: {
     label: "No Protection",
     icon: Shield,
     variant: "outline",
-    className: "text-muted-foreground",
-  },
-  held: {
-    label: "Protected",
+    className: "text-muted-foreground" },
+  held: { label: "Protected",
     icon: ShieldCheck,
     variant: "default",
-    className: "bg-blue-500 hover:bg-blue-600",
-  },
-  released: {
-    label: "Released",
+    className: "bg-blue-500 hover:bg-blue-600" },
+  released: { label: "Released",
     icon: ShieldCheck,
     variant: "default",
-    className: "bg-green-500 hover:bg-green-600",
-  },
-  refunded: {
-    label: "Refunded",
+    className: "bg-green-500 hover:bg-green-600" },
+  refunded: { label: "Refunded",
     icon: ShieldX,
     variant: "secondary",
-    className: "bg-orange-500 hover:bg-orange-600 text-white",
-  },
-  disputed: {
-    label: "In Dispute",
+    className: "bg-orange-500 hover:bg-orange-600 text-white" },
+  disputed: { label: "In Dispute",
     icon: ShieldAlert,
     variant: "destructive",
-    className: "",
-  },
-};
+    className: "" } };
 
 export function EscrowStatusBadge({ status, autoReleaseAt, className }: EscrowStatusBadgeProps) {
   const config = statusConfig[status] || statusConfig.none;

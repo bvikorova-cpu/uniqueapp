@@ -24,8 +24,7 @@ export const useColoringCredits = () => {
         .maybeSingle();
       return data || { credits_remaining: 0, total_credits_purchased: 0 };
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const balance = data?.credits_remaining ?? 0;
   const canUse = balance >= COLORING_CREDIT_COST;
@@ -39,8 +38,7 @@ export const useColoringCredits = () => {
       return null;
     }
     const { data: res, error } = await supabase.functions.invoke("create-checkout", {
-      body: { credits, creditType: "coloring" },
-    });
+      body: { credits, creditType: "coloring" } });
     if (error || !res?.url) {
       toast.error("Failed to start checkout. Please try again.");
       return null;
@@ -53,8 +51,7 @@ export const useColoringCredits = () => {
     refetch();
   };
 
-  return {
-    balance,
+  return { balance,
     canUse,
     isLoading,
     purchase,
@@ -62,6 +59,5 @@ export const useColoringCredits = () => {
     costPerUse: COLORING_CREDIT_COST,
     // Legacy compatibility — old components used `credits.credits_remaining`
     credits: data,
-    checkSubscription: refresh,
-  };
+    checkSubscription: refresh };
 };

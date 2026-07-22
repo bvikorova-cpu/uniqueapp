@@ -55,8 +55,7 @@ test("A → B friend quest invite + B accept → A receives accepted notificatio
     `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
     {
       headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
-      data: { email: EMAIL_B, password: PASSWORD_B },
-    },
+      data: { email: EMAIL_B, password: PASSWORD_B } },
   );
   expect(signinB.ok(), `User B sign-in failed: ${signinB.status()}`).toBeTruthy();
   const sessB = await signinB.json();
@@ -69,14 +68,12 @@ test("A → B friend quest invite + B accept → A receives accepted notificatio
     apikey: SUPABASE_ANON_KEY,
     Authorization: `Bearer ${tokenA}`,
     "Content-Type": "application/json",
-    Prefer: "return=representation",
-  };
+    Prefer: "return=representation" };
   const hB = {
     apikey: SUPABASE_ANON_KEY,
     Authorization: `Bearer ${tokenB}`,
     "Content-Type": "application/json",
-    Prefer: "return=representation",
-  };
+    Prefer: "return=representation" };
 
   // 1) A posiela invite na B.
   const inviteRes = await request.post(

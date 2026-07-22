@@ -29,12 +29,10 @@ export function CrisisImpactTicker() {
         amount: Math.round(Number(r.amount) || 0),
         crisis: r.crisis_campaigns?.title
           ? `${r.crisis_campaigns.title}${r.crisis_campaigns.location ? " — " + r.crisis_campaigns.location : ""}`
-          : "Crisis relief",
-      }));
+          : "Crisis relief" }));
     },
     refetchInterval: 60_000,
-    staleTime: 30_000,
-  });
+    staleTime: 30_000 });
 
   useEffect(() => {
     if (donations.length === 0) return;

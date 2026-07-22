@@ -49,12 +49,10 @@ export const PastLifeRegressionSection = () => {
       setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication Required",
           description: "Please sign in",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -65,15 +63,12 @@ export const PastLifeRegressionSection = () => {
       setRegression(data.regression);
       toast({
         title: "Past Life Discovered!",
-        description: `Uncovered a life from ${data.regression.life_era}`,
-      });
-    } catch (error) {
-      console.error('Error:', error);
+        description: `Uncovered a life from ${data.regression.life_era}` });
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Regression Failed",
         description: "Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

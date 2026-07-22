@@ -182,21 +182,17 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
     // If we don't have a user but a payment is pending (either via ?success=true
     // or a previously stored marker), preserve the payment info and bounce to /auth
     // with a redirect param. After login, we'll resume the activation flow.
-    if (!user) {
-      if (success) {
+    if (!user) { if (success) {
         markPendingPayment(tier);
         toast({
           title: "Payment received ✅ — log in",
-          description: "Your session has expired. After logging in, we will automatically activate your access.",
-        });
+          description: "Your session has expired. After logging in, we will automatically activate your access." });
         navigate("/auth?redirect=/megatalent", { replace: true });
         return;
       }
-      if (hasPendingPayment()) {
-        toast({
+      if (hasPendingPayment()) { toast({
           title: "Activation completion",
-          description: "Log in to activate your MegaTalent subscription.",
-        });
+          description: "Log in to activate your MegaTalent subscription." });
         navigate("/auth?redirect=/megatalent", { replace: true });
         return;
       }
@@ -204,15 +200,13 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
       return;
     }
 
-    (async () => {
-      try {
+    (async () => { try {
         if (canceled && !successHandledRef.current) {
           successHandledRef.current = true;
           clearPendingPayment();
           toast({
             title: "Payment canceled",
-            description: "You can try again anytime.",
-          });
+            description: "You can try again anytime." });
           // URL params already stripped synchronously above.
         }
 
@@ -223,8 +217,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
         const pending = hasPendingPayment();
         const isPostPayment = success || reloadFlag === "1" || pending;
 
-        if (isPostPayment && !successHandledRef.current) {
-          successHandledRef.current = true;
+        if (isPostPayment && !successHandledRef.current) { successHandledRef.current = true;
 
           // Persist pending marker for the duration of activation (survives reload/logout)
           markPendingPayment(tier);
@@ -234,14 +227,11 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
               title: "Payment successful! 🎉",
               description: tier === "top_premium"
                 ? "Welcome to MegaTalent TOP Premium! Activating access..."
-                : "Welcome to MegaTalent Premium! Activating access...",
-            });
+                : "Welcome to MegaTalent Premium! Activating access..." });
             // URL params already stripped synchronously above.
-          } else if (pending && !reloadFlag) {
-            toast({
+          } else if (pending && !reloadFlag) { toast({
               title: "Continuing activation",
-              description: "Finishing your subscription activation after login...",
-            });
+              description: "Finishing your subscription activation after login..." });
           }
 
           setActivating(true);
@@ -250,14 +240,12 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
           // Poll up to 6x with 1s delay (~6s total). Verify session before each
           // call — if it died mid-flight, redirect to /auth keeping the pending marker.
           let ok = false;
-          for (let i = 0; i < 6; i++) {
-            const alive = await ensureSessionAlive();
+          for (let i = 0; i < 6; i++) { const alive = await ensureSessionAlive();
             if (!alive) {
               toast({
                 title: "Session expired",
                 description: "Log in again — payment is saved and activation will continue.",
-                variant: "destructive",
-              });
+                variant: "destructive" });
               navigate("/auth?redirect=/megatalent", { replace: true });
               return;
             }
@@ -305,11 +293,9 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
           sessionStorage.removeItem(RELOAD_KEY);
           setActivating(false);
           setSubscribed(false);
-          toast({
-            title: "Activation is taking longer than usual",
+          toast({ title: "Activation is taking longer than usual",
             description: "Payment received, Stripe is still processing it. Try to refresh access in a moment.",
-            variant: "destructive",
-          });
+            variant: "destructive" });
           return;
         }
 
@@ -352,8 +338,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
     setCheckoutLoading(tier);
     try {
       const { data, error } = await supabase.functions.invoke("create-megatalent-checkout", {
-        body: { tier },
-      });
+        body: { tier } });
       if (error) throw error;
       if (data?.url) {
         // Redirect in same tab so Stripe sends user back to /megatalent?success=true
@@ -361,12 +346,10 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
       } else {
         throw new Error("No checkout URL returned");
       }
-    } catch (err: any) {
-      toast({
+    } catch (err: any) { toast({
         title: "Checkout failed",
         description: err?.message ?? "Could not start checkout. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setCheckoutLoading(null);
     }

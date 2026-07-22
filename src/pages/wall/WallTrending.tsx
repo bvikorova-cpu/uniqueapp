@@ -34,8 +34,7 @@ export default function WallTrending() {
           isEducational
         };
       }).sort((a, b) => b.engagementScore - a.engagementScore);
-    },
-  });
+    } });
 
   const rankIcons = [
     <Trophy className="w-4 h-4" />,

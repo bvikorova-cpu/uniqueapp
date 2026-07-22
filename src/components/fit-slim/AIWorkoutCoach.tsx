@@ -25,9 +25,7 @@ export default function AIWorkoutCoach({ onBack }: { onBack: () => void }) {
         body: {
           message: `Create a detailed ${form.duration}-minute workout plan for someone with ${form.level} fitness level.
 Goal: ${form.goal}. Equipment: ${form.equipment || "None (bodyweight only)"}.
-Include warmup, main exercises (with sets, reps, rest), and cooldown. Format with clear sections.`,
-        },
-      });
+Include warmup, main exercises (with sets, reps, rest), and cooldown. Format with clear sections.` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
     } catch (e: any) {

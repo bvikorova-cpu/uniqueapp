@@ -10,29 +10,23 @@ import { RecoveryEmail } from '../_shared/email-templates/recovery.tsx'
 import { EmailChangeEmail } from '../_shared/email-templates/email-change.tsx'
 import { ReauthenticationEmail } from '../_shared/email-templates/reauthentication.tsx'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+const corsHeaders = { 'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type, webhook-id, webhook-timestamp, webhook-signature, x-lovable-signature, x-lovable-timestamp, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-}
+    'authorization, x-client-info, apikey, content-type, webhook-id, webhook-timestamp, webhook-signature, x-lovable-signature, x-lovable-timestamp, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' }
 
-const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Confirm your email',
+const EMAIL_SUBJECTS: Record<string, string> = { signup: 'Confirm your email',
   invite: "You've been invited",
   magiclink: 'Your login link',
   recovery: 'Reset your password',
   email_change: 'Confirm your new email',
-  reauthentication: 'Your verification code',
-}
+  reauthentication: 'Your verification code' }
 
-const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
-  signup: SignupEmail,
+const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = { signup: SignupEmail,
   invite: InviteEmail,
   magiclink: MagicLinkEmail,
   recovery: RecoveryEmail,
   email_change: EmailChangeEmail,
-  reauthentication: ReauthenticationEmail,
-}
+  reauthentication: ReauthenticationEmail }
 
 const SITE_NAME = 'Unique'
 const SENDER_DOMAIN = 'notify.www.uniqueapp.fun'
@@ -41,43 +35,28 @@ const FROM_ADDRESS = `${SITE_NAME} <noreply@${SENDER_DOMAIN}>`
 
 const SAMPLE_PROJECT_URL = 'https://uniqueapp.lovable.app'
 const SAMPLE_EMAIL = 'user@example.test'
-const SAMPLE_DATA: Record<string, object> = {
-  signup: {
+const SAMPLE_DATA: Record<string, object> = { signup: {
     siteName: SITE_NAME,
     siteUrl: SAMPLE_PROJECT_URL,
     recipient: SAMPLE_EMAIL,
-    confirmationUrl: SAMPLE_PROJECT_URL,
-  },
-  magiclink: {
-    siteName: SITE_NAME,
-    confirmationUrl: SAMPLE_PROJECT_URL,
-  },
-  recovery: {
-    siteName: SITE_NAME,
-    confirmationUrl: SAMPLE_PROJECT_URL,
-  },
-  invite: {
-    siteName: SITE_NAME,
+    confirmationUrl: SAMPLE_PROJECT_URL },
+  magiclink: { siteName: SITE_NAME,
+    confirmationUrl: SAMPLE_PROJECT_URL },
+  recovery: { siteName: SITE_NAME,
+    confirmationUrl: SAMPLE_PROJECT_URL },
+  invite: { siteName: SITE_NAME,
     siteUrl: SAMPLE_PROJECT_URL,
-    confirmationUrl: SAMPLE_PROJECT_URL,
-  },
-  email_change: {
-    siteName: SITE_NAME,
+    confirmationUrl: SAMPLE_PROJECT_URL },
+  email_change: { siteName: SITE_NAME,
     oldEmail: SAMPLE_EMAIL,
     email: SAMPLE_EMAIL,
     newEmail: SAMPLE_EMAIL,
-    confirmationUrl: SAMPLE_PROJECT_URL,
-  },
-  reauthentication: {
-    token: '123456',
-  },
-}
+    confirmationUrl: SAMPLE_PROJECT_URL },
+  reauthentication: { token: '123456' } }
 
-async function handlePreview(req: Request): Promise<Response> {
-  const previewCorsHeaders = {
+async function handlePreview(req: Request): Promise<Response> { const previewCorsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, content-type',
-  }
+    'Access-Control-Allow-Headers': 'authorization, content-type' }
 
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: previewCorsHeaders })
@@ -89,8 +68,7 @@ async function handlePreview(req: Request): Promise<Response> {
   if (!apiKey || authHeader !== `Bearer ${apiKey}`) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
-      headers: { ...previewCorsHeaders, 'Content-Type': 'application/json' },
-    })
+      headers: { ...previewCorsHeaders, 'Content-Type': 'application/json' } })
   }
 
   let type: string
@@ -100,8 +78,7 @@ async function handlePreview(req: Request): Promise<Response> {
   } catch (error) {
     return new Response(JSON.stringify({ error: 'Invalid JSON in request body' }), {
       status: 400,
-      headers: { ...previewCorsHeaders, 'Content-Type': 'application/json' },
-    })
+      headers: { ...previewCorsHeaders, 'Content-Type': 'application/json' } })
   }
 
   const EmailTemplate = EMAIL_TEMPLATES[type]
@@ -109,8 +86,7 @@ async function handlePreview(req: Request): Promise<Response> {
   if (!EmailTemplate) {
     return new Response(JSON.stringify({ error: `Unknown email type: ${type}` }), {
       status: 400,
-      headers: { ...previewCorsHeaders, 'Content-Type': 'application/json' },
-    })
+      headers: { ...previewCorsHeaders, 'Content-Type': 'application/json' } })
   }
 
   const sampleData = SAMPLE_DATA[type] || {}
@@ -118,8 +94,7 @@ async function handlePreview(req: Request): Promise<Response> {
 
   return new Response(html, {
     status: 200,
-    headers: { ...previewCorsHeaders, 'Content-Type': 'text/html; charset=utf-8' },
-  })
+    headers: { ...previewCorsHeaders, 'Content-Type': 'text/html; charset=utf-8' } })
 }
 
 interface SupabaseEmailPayload {
@@ -152,15 +127,13 @@ function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data'], rec
   const action = emailData.email_action_type
 
   // Landing route per action type — must exist in the SPA.
-  const routeByAction: Record<string, string> = {
-    recovery: '/reset-password',
+  const routeByAction: Record<string, string> = { recovery: '/reset-password',
     signup: '/auth/callback',
     invite: '/auth/callback',
     magiclink: '/auth/callback',
     email_change: '/auth/callback',
     email_change_new: '/auth/callback',
-    reauthentication: '/auth/callback',
-  }
+    reauthentication: '/auth/callback' }
   const route = routeByAction[action] ?? '/auth/callback'
 
   // Prefer redirect_to if the Supabase project passed one, else site_url.
@@ -170,11 +143,9 @@ function buildConfirmationUrl(emailData: SupabaseEmailPayload['email_data'], rec
   let origin = base
   try { origin = new URL(base).origin } catch { /* keep as-is */ }
 
-  const params = new URLSearchParams({
-    type: action,
+  const params = new URLSearchParams({ type: action,
     next: emailData.redirect_to || '/',
-    via: 'unique-hook-v2',
-  })
+    via: 'unique-hook-v2' })
 
   // token_hash is the scanner-safe Supabase format. Keep token + email as a
   // fallback because some Auth payload variants only include the raw OTP token.
@@ -272,19 +243,15 @@ async function handleWebhook(req: Request): Promise<Response> {
     token: payload.email_data.token,
     email: recipient,
     oldEmail: recipient,
-    newEmail: payload.email_data.token_new ? recipient : undefined,
-  }
+    newEmail: payload.email_data.token_new ? recipient : undefined }
 
   const html = await renderAsync(React.createElement(EmailTemplate, templateProps))
-  const text = await renderAsync(React.createElement(EmailTemplate, templateProps), {
-    plainText: true,
-  })
+  const text = await renderAsync(React.createElement(EmailTemplate, templateProps), { plainText: true })
 
   const messageId = crypto.randomUUID()
   const unsubscribeToken = await stableEmailToken(SENDER_DOMAIN, recipient, payload.user?.id, emailType)
 
-  try {
-    await sendLovableEmail(
+  try { await sendLovableEmail(
       {
         to: recipient,
         from: FROM_ADDRESS,
@@ -294,8 +261,7 @@ async function handleWebhook(req: Request): Promise<Response> {
         text,
         purpose: 'transactional',
         idempotency_key: messageId,
-        unsubscribe_token: unsubscribeToken,
-      },
+        unsubscribe_token: unsubscribeToken },
       { apiKey }
     )
   } catch (error) {
@@ -307,8 +273,7 @@ async function handleWebhook(req: Request): Promise<Response> {
   }
 
   // Keep a lightweight log so the admin can see auth emails were processed.
-  try {
-    const supabase = createClient(
+  try { const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     )
@@ -316,8 +281,7 @@ async function handleWebhook(req: Request): Promise<Response> {
       message_id: messageId,
       template_name: emailType,
       recipient_email: recipient,
-      status: 'sent',
-    })
+      status: 'sent' })
   } catch (logError) {
     // Non-fatal: if the log table doesn't exist, the email was still sent.
     console.warn('Could not write email_send_log', { error: (logError as Error).message })
@@ -331,15 +295,13 @@ async function handleWebhook(req: Request): Promise<Response> {
     linkPath = parsed.pathname
   } catch { /* ignore */ }
 
-  console.log('Auth email sent', {
-    emailType,
+  console.log('Auth email sent', { emailType,
     recipient,
     messageId,
     linkHost,
     linkPath,
     scannerSafe: confirmationUrl.includes('token_hash=') || confirmationUrl.includes('token='),
-    hookVersion: 'unique-hook-v2',
-  })
+    hookVersion: 'unique-hook-v2' })
 
   return new Response(
     JSON.stringify({ success: true, sent: true }),
@@ -365,7 +327,6 @@ Deno.serve(async (req) => {
     const message = error instanceof Error ? error.message : 'Unknown error'
     return new Response(JSON.stringify({ error: message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   }
 })

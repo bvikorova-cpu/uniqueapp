@@ -68,14 +68,12 @@ export default function FutureFaceLeaderboard() {
         : { data: [] as any[] };
       const pmap = new Map<string, any>((profs || []).map((p: any) => [p.id, p.full_name]));
 
-      const final: Row[] = top.map(([id, g], i) => ({
-        rank: i + 1,
+      const final: Row[] = top.map(([id, g], i) => ({ rank: i + 1,
         user_id: id,
         username: pmap.get(id) || "User",
         score: g.score,
         transformations: g.count,
-        badge: badgeFor(g.score),
-      }));
+        badge: badgeFor(g.score) }));
 
       if (!cancelled) {
         setRows(final);

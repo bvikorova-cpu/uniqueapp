@@ -24,8 +24,7 @@ export default function AIPostureAnalyzer({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Posture Analyzer");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are an expert physiotherapist and posture specialist. A user describes their posture issues or daily habits. Provide: 1) Posture Assessment (identify likely problems), 2) Risk Analysis (what could worsen), 3) Corrective Exercises (5-6 specific exercises with reps/sets), 4) Ergonomic Recommendations (desk/chair/screen setup), 5) Daily Posture Routine (morning + evening). User description: ${input}` },
-      });
+        body: { prompt: `You are an expert physiotherapist and posture specialist. A user describes their posture issues or daily habits. Provide: 1) Posture Assessment (identify likely problems), 2) Risk Analysis (what could worsen), 3) Corrective Exercises (5-6 specific exercises with reps/sets), 4) Ergonomic Recommendations (desk/chair/screen setup), 5) Daily Posture Routine (morning + evening). User description: ${input}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }

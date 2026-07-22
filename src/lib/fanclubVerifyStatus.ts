@@ -64,8 +64,7 @@ const PORTAL_STEPS_EXPIRED = [
 export function classifyVerifyResult(target: {
   active: boolean;
   status: string;
-} | undefined | null): VerifyNotice {
-  if (target?.active) {
+} | undefined | null): VerifyNotice { if (target?.active) {
     return {
       kind: "active",
       title: "Membership active",
@@ -73,12 +72,10 @@ export function classifyVerifyResult(target: {
       portalSteps: [],
       tone: "success",
       showPortal: false,
-      showRetry: false,
-    };
+      showRetry: false };
   }
 
-  if (!target) {
-    return {
+  if (!target) { return {
       kind: "missing",
       title: "No matching subscription found",
       reason:
@@ -86,12 +83,10 @@ export function classifyVerifyResult(target: {
       portalSteps: PORTAL_STEPS_MISSING,
       tone: "warn",
       showPortal: true,
-      showRetry: true,
-    };
+      showRetry: true };
   }
 
-  switch (target.status) {
-    case "past_due":
+  switch (target.status) { case "past_due":
       return {
         kind: "past_due",
         title: "Payment failed — access paused",
@@ -100,42 +95,35 @@ export function classifyVerifyResult(target: {
         portalSteps: PORTAL_STEPS_PAST_DUE,
         tone: "error",
         showPortal: true,
-        showRetry: true,
-      };
+        showRetry: true };
     case "canceled":
-      return {
-        kind: "canceled",
+      return { kind: "canceled",
         title: "Subscription canceled",
         reason:
           "This subscription is canceled on Stripe's side. To regain access you need to start a new subscription.",
         portalSteps: PORTAL_STEPS_CANCELED,
         tone: "error",
         showPortal: true,
-        showRetry: false,
-      };
+        showRetry: false };
     case "expired":
-      return {
-        kind: "expired",
+      return { kind: "expired",
         title: "Checkout expired",
         reason:
           "The Stripe checkout session expired before payment completed. No charge was made.",
         portalSteps: PORTAL_STEPS_EXPIRED,
         tone: "warn",
         showPortal: false,
-        showRetry: false,
-      };
+        showRetry: false };
     case "pending":
     case "incomplete":
-      return {
-        kind: "pending",
+      return { kind: "pending",
         title: "Payment still processing",
         reason:
           "Stripe is waiting on the bank (SCA / 3-D Secure). Access unlocks the moment the payment settles.",
         portalSteps: PORTAL_STEPS_PENDING,
         tone: "warn",
         showPortal: true,
-        showRetry: true,
-      };
+        showRetry: true };
     default:
       return {
         kind: "unknown",
@@ -144,14 +132,12 @@ export function classifyVerifyResult(target: {
         portalSteps: PORTAL_STEPS_MISSING,
         tone: "warn",
         showPortal: true,
-        showRetry: true,
-      };
+        showRetry: true };
   }
 }
 
 /** Called when the verify call itself failed (network / auth / server). */
-export function classifyVerifyError(err: unknown): VerifyNotice {
-  const msg = (err as Error)?.message?.toLowerCase() ?? "";
+export function classifyVerifyError(err: unknown): VerifyNotice { const msg = (err as Error)?.message?.toLowerCase() ?? "";
   if (msg.includes("auth") || msg.includes("jwt") || msg.includes("401")) {
     return {
       kind: "auth",
@@ -160,11 +146,9 @@ export function classifyVerifyError(err: unknown): VerifyNotice {
       portalSteps: [],
       tone: "error",
       showPortal: false,
-      showRetry: false,
-    };
+      showRetry: false };
   }
-  return {
-    kind: "network",
+  return { kind: "network",
     title: "Couldn't reach Stripe",
     reason: (err as Error)?.message || "Network error while contacting Stripe. Please try again.",
     portalSteps: [
@@ -173,6 +157,5 @@ export function classifyVerifyError(err: unknown): VerifyNotice {
     ],
     tone: "error",
     showPortal: true,
-    showRetry: true,
-  };
+    showRetry: true };
 }

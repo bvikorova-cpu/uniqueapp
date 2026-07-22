@@ -43,8 +43,7 @@ export function useTrackActivity() {
           activity_type: activityType,
           target_id: options.targetId ?? null,
           target_type: options.targetType ?? null,
-          metadata: (options.metadata ?? {}) as never,
-        });
+          metadata: (options.metadata ?? {}) as never });
       } catch {
         // Logging must never break the calling action.
       }

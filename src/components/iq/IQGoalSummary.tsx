@@ -5,13 +5,11 @@ import { Compass } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQGoalSummary() {
   const [data, setData] = useState({ goal: 0, milestones: 0, habits: 0, entries: 0 });
-  useEffect(() => {
-    setData({
+  useEffect(() => { setData({
       goal: parseInt(localStorage.getItem("iq_goal_daily") || "0"),
       milestones: (JSON.parse(localStorage.getItem("iq_milestones") || "[]") as string[]).length,
       habits: (JSON.parse(localStorage.getItem("iq_habits") || "[]") as string[]).length,
-      entries: (JSON.parse(localStorage.getItem("iq_journal") || "[]") as unknown[]).length,
-    });
+      entries: (JSON.parse(localStorage.getItem("iq_journal") || "[]") as unknown[]).length });
   }, []);
   const items = [["Daily Goal", `${data.goal} min`], ["Milestones", data.milestones], ["Habits", data.habits], ["Journal", data.entries]];
   return (

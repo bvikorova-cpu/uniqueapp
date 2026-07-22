@@ -39,19 +39,15 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { WallPostActions } from "@/components/wall/WallPostActions";
 
 const EMOJIS = ["😊", "😂", "❤️", "🔥", "👍", "🎉", "😍", "🤔", "😢", "😎", "🙏", "💪"];
@@ -82,12 +78,10 @@ export default function EventDetail() {
     const next = !notifyEnabled;
     setNotifyEnabled(next);
     localStorage.setItem(`event-notify-${eventId}`, next ? "on" : "off");
-    toast({
-      title: next ? "Notifications enabled" : "Notifications muted",
+    toast({ title: next ? "Notifications enabled" : "Notifications muted",
       description: next
         ? "You'll be notified about updates to this event."
-        : "You won't receive updates from this event.",
-    });
+        : "You won't receive updates from this event." });
   };
 
   const { data: user } = useQuery({
@@ -95,8 +89,7 @@ export default function EventDetail() {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: event, isLoading: isLoadingEvent } = useQuery({
     queryKey: ["event", eventId],
@@ -109,8 +102,7 @@ export default function EventDetail() {
       if (error) throw error;
       return data;
     },
-    enabled: !!eventId,
-  });
+    enabled: !!eventId });
 
   const { data: attendance } = useQuery({
     queryKey: ["event-attendance", eventId, user?.id],
@@ -124,8 +116,7 @@ export default function EventDetail() {
         .maybeSingle();
       return data;
     },
-    enabled: !!user && !!eventId,
-  });
+    enabled: !!user && !!eventId });
 
   const { data: attendees = [] } = useQuery({
     queryKey: ["event-attendees", eventId],
@@ -144,8 +135,7 @@ export default function EventDetail() {
         .order("joined_at", { ascending: false });
       return data || [];
     },
-    enabled: !!eventId,
-  });
+    enabled: !!eventId });
 
   const { data: discussions = [] } = useQuery({
     queryKey: ["event-discussions", eventId],
@@ -165,19 +155,16 @@ export default function EventDetail() {
       if (error) throw error;
       return data as any[];
     },
-    enabled: !!eventId,
-  });
+    enabled: !!eventId });
 
   const rsvpMutation = useMutation({
     mutationFn: async (status: string) => {
       if (!user || !eventId) throw new Error("Not authenticated");
       const { error } = await supabase
         .from("event_attendees")
-        .upsert({
-          event_id: eventId,
+        .upsert({ event_id: eventId,
           user_id: user.id,
-          status,
-        }, {
+          status }, {
           onConflict: "event_id,user_id"
         });
       if (error) throw error;
@@ -186,8 +173,7 @@ export default function EventDetail() {
       queryClient.invalidateQueries({ queryKey: ["event-attendance"] });
       queryClient.invalidateQueries({ queryKey: ["event-attendees"] });
       toast({ title: "RSVP updated!" });
-    },
-  });
+    } });
 
   const createDiscussionMutation = useMutation({
     mutationFn: async () => {
@@ -198,8 +184,7 @@ export default function EventDetail() {
           user_id: user.id,
           content: commentContent + (postFeeling ? ` ${postFeeling}` : "") + (postLocation ? ` 📍 ${postLocation}` : ""),
           event_id: eventId,
-          image_url: postImage || null,
-        } as any);
+          image_url: postImage || null } as any);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -209,8 +194,7 @@ export default function EventDetail() {
       setPostLocation(undefined);
       setPostFeeling(undefined);
       toast({ title: "Comment added!" });
-    },
-  });
+    } });
 
   const updateCoverMutation = useMutation({
     mutationFn: async (coverImage: string) => {
@@ -225,8 +209,7 @@ export default function EventDetail() {
       setIsEditingCover(false);
       setNewCoverImage(undefined);
       toast({ title: "Cover image updated!" });
-    },
-  });
+    } });
 
   const updateEventMutation = useMutation({
     mutationFn: async () => {
@@ -244,8 +227,7 @@ export default function EventDetail() {
       queryClient.invalidateQueries({ queryKey: ["event", eventId] });
       setShowSettingsDialog(false);
       toast({ title: "Event updated!" });
-    },
-  });
+    } });
 
   const deleteEventMutation = useMutation({
     mutationFn: async () => {
@@ -258,8 +240,7 @@ export default function EventDetail() {
     onSuccess: () => {
       navigate("/wall/events");
       toast({ title: "Event deleted!" });
-    },
-  });
+    } });
 
   const openSettings = () => {
     setEditTitle(event?.title || "");
@@ -453,7 +434,7 @@ export default function EventDetail() {
           </div>
 
           {/* Add to Calendar */}
-          {event && (
+          { event && (
             <div className="flex justify-center mt-3">
               <AddToCalendarButtons
                 event={{
@@ -463,8 +444,7 @@ export default function EventDetail() {
                   location: event.location || undefined,
                   startsAt: new Date(event.start_time),
                   endsAt: new Date(event.end_time || event.start_time),
-                  url: typeof window !== "undefined" ? window.location.href : undefined,
-                }}
+                  url: typeof window !== "undefined" ? window.location.href : undefined }}
               />
             </div>
           )}

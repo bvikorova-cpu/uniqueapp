@@ -27,27 +27,23 @@ export const useStoryReplies = (storyId?: string) => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data || []) as unknown as StoryReply[];
-    },
-  });
+    } });
 
   const sendReply = useMutation({
     mutationFn: async ({ recipientId, content }: { recipientId: string; content: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !storyId) throw new Error("Missing context");
-      const { error } = await supabase.from("story_replies" as any).insert({
-        story_id: storyId,
+      const { error } = await supabase.from("story_replies" as any).insert({ story_id: storyId,
         sender_id: user.id,
         recipient_id: recipientId,
-        content,
-      } as any);
+        content } as any);
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["story-replies", storyId] });
       toast({ title: "Reply sent" });
     },
-    onError: (e: any) => toast({ title: "Failed", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Failed", description: e.message, variant: "destructive" }) });
 
   const markRead = useMutation({
     mutationFn: async (replyId: string) => {
@@ -57,8 +53,7 @@ export const useStoryReplies = (storyId?: string) => {
         .eq("id", replyId);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["story-replies"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["story-replies"] }) });
 
   return { replies, isLoading, sendReply: sendReply.mutate, markRead: markRead.mutate };
 };

@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -33,8 +31,7 @@ serve(async (req) => {
     if (!match) throw new Error("Match not found");
     if (match.status === "finished") {
       return new Response(JSON.stringify({ match }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Determine winner
@@ -44,11 +41,9 @@ serve(async (req) => {
 
     const { data: updatedMatch } = await supabase
       .from("brain_duel_matches")
-      .update({
-        status: "finished",
+      .update({ status: "finished",
         winner_id: winnerId === "ai_bot" ? null : winnerId,
-        finished_at: new Date().toISOString(),
-      })
+        finished_at: new Date().toISOString() })
       .eq("id", match_id)
       .select()
       .single();
@@ -80,23 +75,18 @@ serve(async (req) => {
     const totalAnswered = answers?.length || 0;
     const correctAnswers = answers?.filter((a: any) => a.is_correct).length || 0;
 
-    return new Response(JSON.stringify({
-      match: updatedMatch,
+    return new Response(JSON.stringify({ match: updatedMatch,
       is_winner: isPlayerWinner,
       is_draw: winnerId === null && match.player1_score === match.player2_score,
       credits_earned: isPlayerWinner ? match.win_reward : 0,
       stats: {
         total_questions: totalAnswered,
         correct_answers: correctAnswers,
-        accuracy: totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0,
-      },
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+        accuracy: totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0 } }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("Finish match error:", e);
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

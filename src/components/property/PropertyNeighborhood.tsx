@@ -27,8 +27,7 @@ export function PropertyNeighborhood({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); setLoading(false); return; }
 
       const { data, error } = await supabase.functions.invoke("neighborhood-analysis", {
-        body: { address },
-      });
+        body: { address } });
       if (error) throw error;
 
       setResult(data);
@@ -47,21 +46,16 @@ export function PropertyNeighborhood({ onBack }: Props) {
           { icon: "Shield", label: "Safety & Security", score: 75 + (hash % 20), details: "Based on area safety data" },
           { icon: "Heart", label: "Healthcare", score: 65 + (hash % 30), details: "Based on medical facility access" },
         ],
-        highlights: [`Analysis for: ${address}`],
-      });
+        highlights: [`Analysis for: ${address}`] });
       setAnalyzed(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const iconMap: Record<string, any> = {
-    GraduationCap, ShoppingBag, Bus, TreePine, Shield, Heart,
-  };
-  const colorMap: Record<string, string> = {
-    GraduationCap: "text-blue-500", ShoppingBag: "text-pink-500", Bus: "text-amber-500",
-    TreePine: "text-emerald-500", Shield: "text-violet-500", Heart: "text-rose-500",
-  };
+  const iconMap: Record<string, any> = { GraduationCap, ShoppingBag, Bus, TreePine, Shield, Heart };
+  const colorMap: Record<string, string> = { GraduationCap: "text-blue-500", ShoppingBag: "text-pink-500", Bus: "text-amber-500",
+    TreePine: "text-emerald-500", Shield: "text-violet-500", Heart: "text-rose-500" };
 
   return (
     <>

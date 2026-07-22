@@ -43,8 +43,7 @@ export default function RewardsSeasonalMissions() {
       const { data, error } = await supabase.rpc("get_user_mission_progress" as any);
       if (error) throw error;
       return (data ?? []) as MissionRow[];
-    },
-  });
+    } });
 
   const claim = useMutation({
     mutationFn: async (missionId: string) => {
@@ -61,8 +60,7 @@ export default function RewardsSeasonalMissions() {
         toast({ title: "Could not claim", description: res?.error ?? "Try again", variant: "destructive" });
       }
     },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
   // Determine the active season based on the first mission's season, fallback to summer
   const activeSeasonId = missions[0]?.season ?? "summer";

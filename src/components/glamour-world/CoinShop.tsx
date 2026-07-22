@@ -26,8 +26,7 @@ export function CoinShop({ onBack }: { onBack: () => void }) {
       if (!user) return 0;
       const { data } = await supabase.from("glamour_coins").select("balance").eq("user_id", user.id).maybeSingle();
       return data?.balance || 0;
-    },
-  });
+    } });
 
   const purchase = async (pkg: typeof packages[0], idx: number) => {
     setLoading(idx);
@@ -41,9 +40,7 @@ export function CoinShop({ onBack }: { onBack: () => void }) {
           amount: Math.round(pkg.price * 100),
           successUrl: `${window.location.origin}/glamour-world?payment=success&session_id={CHECKOUT_SESSION_ID}`,
           cancelUrl: `${window.location.origin}/glamour-world?payment=canceled`,
-          metadata: { type: "glamour_coins", coins: pkg.coins },
-        },
-      });
+          metadata: { type: "glamour_coins", coins: pkg.coins } } });
       if (error) throw error;
       if (data?.url) {
         // Use direct navigation — mobile WebViews block window.open popups

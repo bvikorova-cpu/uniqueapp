@@ -98,16 +98,12 @@ test.describe("Sponsor Dashboard — Branding persistence", () => {
     const logoUrl = page.getByTestId("branding-logo-url");
     const originalLogoUrl = (await logoUrl.inputValue()) || "";
 
-    await page.getByTestId("branding-logo-file").setInputFiles({
-      name: "logo.png",
+    await page.getByTestId("branding-logo-file").setInputFiles({ name: "logo.png",
       mimeType: "image/png",
-      buffer: TINY_PNG,
-    });
+      buffer: TINY_PNG });
 
     // Wait for upload to populate URL field.
-    await expect(logoUrl).toHaveValue(/^https?:\/\/.+\.(png|jpg|jpeg|webp)(\?.*)?$/i, {
-      timeout: 15_000,
-    });
+    await expect(logoUrl).toHaveValue(/^https?:\/\/.+\.(png|jpg|jpeg|webp)(\?.*)?$/i, { timeout: 15_000 });
     const uploadedUrl = await logoUrl.inputValue();
 
     await page.getByTestId("branding-save-btn").click();

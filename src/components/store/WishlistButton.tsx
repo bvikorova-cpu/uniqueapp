@@ -14,9 +14,7 @@ interface WishlistButtonProps {
 }
 
 /** Add/remove item from personal wishlist. Notifies when level is reached (via useWishlistNotifications). */
-export const WishlistButton = ({
-  itemType, itemId, itemName, itemIcon, creditCost, levelRequired = 1, size = "icon",
-}: WishlistButtonProps) => {
+export const WishlistButton = ({ itemType, itemId, itemName, itemIcon, creditCost, levelRequired = 1, size = "icon" }: WishlistButtonProps) => {
   const { toast } = useToast();
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -54,16 +52,14 @@ export const WishlistButton = ({
           .eq("item_id", itemId);
         setSaved(false);
         toast({ title: "Removed from wishlist" });
-      } else {
-        await supabase.from("premium_store_wishlist").insert({
+      } else { await supabase.from("premium_store_wishlist").insert({
           user_id: user.id,
           item_type: itemType,
           item_id: itemId,
           item_name: itemName,
           item_icon: itemIcon,
           credit_cost: creditCost,
-          level_required: levelRequired,
-        });
+          level_required: levelRequired });
         setSaved(true);
         toast({ title: "Saved to wishlist", description: `We'll notify you when ${itemName} is unlocked.` });
       }

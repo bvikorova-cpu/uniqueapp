@@ -22,11 +22,9 @@ export default function StoriesBar() {
     queryKey: ["current-user"],
     queryFn: async () => {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   // Get users with active stories
   const { data: storyUsers = [] } = useQuery({
@@ -67,23 +65,19 @@ export default function StoriesBar() {
       stories?.forEach((story) => {
         if (userMap.has(story.user_id)) {
           userMap.get(story.user_id)!.story_count++;
-        } else {
-          const profile = profiles?.find((p) => p.id === story.user_id);
+        } else { const profile = profiles?.find((p) => p.id === story.user_id);
           userMap.set(story.user_id, {
             user_id: story.user_id,
             story_count: 1,
             profiles: profile ? {
               full_name: profile.full_name || "",
-              avatar_url: profile.avatar_url || "",
-            } : undefined,
-          });
+              avatar_url: profile.avatar_url || "" } : undefined });
         }
       });
 
       return Array.from(userMap.values());
     },
-    enabled: !!currentUser,
-  });
+    enabled: !!currentUser });
 
   // Check if current user has stories
   const { data: hasOwnStory } = useQuery({
@@ -101,8 +95,7 @@ export default function StoriesBar() {
 
       return (data?.length || 0) > 0;
     },
-    enabled: !!currentUser,
-  });
+    enabled: !!currentUser });
 
   return (
     <ScrollArea className="w-full whitespace-nowrap border-b">

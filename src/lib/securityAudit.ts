@@ -34,8 +34,7 @@ export async function logSecurityEvent(
       _event_type: eventType,
       _resource: opts.resource ?? null,
       _metadata: (opts.metadata ?? {}) as any,
-      _user_agent: ua,
-    });
+      _user_agent: ua });
     if (error) {
       // eslint-disable-next-line no-console
       console.warn("[securityAudit] log failed", eventType, error.message);

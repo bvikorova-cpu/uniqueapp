@@ -24,8 +24,7 @@ export const useCloseFriends = () => {
         .in("id", ids);
       const map = new Map((profs || []).map((p: any) => [p.id, p]));
       return (data || []).map((r: any) => ({ ...r, profiles: map.get(r.friend_id) || null }));
-    },
-  });
+    } });
 
   const add = useMutation({
     mutationFn: async (friendId: string) => {
@@ -39,8 +38,7 @@ export const useCloseFriends = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["close-friends"] });
       toast({ title: "Added to close friends" });
-    },
-  });
+    } });
 
   const remove = useMutation({
     mutationFn: async (friendId: string) => {
@@ -56,8 +54,7 @@ export const useCloseFriends = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["close-friends"] });
       toast({ title: "Removed from close friends" });
-    },
-  });
+    } });
 
   return { friends, isLoading, addFriend: add.mutate, removeFriend: remove.mutate };
 };

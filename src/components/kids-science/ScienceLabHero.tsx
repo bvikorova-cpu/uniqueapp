@@ -24,18 +24,15 @@ export const ScienceLabHero = () => {
           className="absolute text-2xl pointer-events-none select-none"
           style={{
             left: `${10 + (i * 12) % 80}%`,
-            top: `${15 + (i * 17) % 60}%`,
-          }}
-          animate={{
+            top: `${15 + (i * 17) % 60}%` }}
+          animate={ {
             y: [0, -15, 0],
             opacity: [0.3, 0.7, 0.3],
-            rotate: [0, 10, -10, 0],
-          }}
-          transition={{
+            rotate: [0, 10, -10, 0] }}
+          transition={ {
             duration: 3 + i * 0.5,
             repeat: Infinity,
-            delay: i * 0.4,
-          }}
+            delay: i * 0.4 }}
         >
           {emoji}
         </motion.span>

@@ -54,8 +54,7 @@ const SEASONAL_GIFTS = {
       { type: "ski_trip", emoji: "⛷️", label: "Ski Trip", value: 60, description: "Mountain fun" },
       { type: "winter_wonderland", emoji: "🏔️", label: "Winter Wonderland", value: 75, description: "Snowy paradise" },
       { type: "cozy_socks", emoji: "🧦", label: "Cozy Socks", value: 14, description: "Warm feet" },
-    ],
-  },
+    ] },
   // Spring Collection - 20 items
   spring: {
     name: "Spring Collection",
@@ -83,8 +82,7 @@ const SEASONAL_GIFTS = {
       { type: "sunflower_seed", emoji: "🌱", label: "Seedling", value: 12, description: "New growth" },
       { type: "spring_garden", emoji: "🏡", label: "Garden Paradise", value: 55, description: "Blooming beauty" },
       { type: "hyacinth", emoji: "💜", label: "Hyacinth", value: 20, description: "Fragrant flower" },
-    ],
-  },
+    ] },
   // Summer Collection - 20 items
   summer: {
     name: "Summer Collection",
@@ -112,8 +110,7 @@ const SEASONAL_GIFTS = {
       { type: "seashell", emoji: "🐚", label: "Seashell", value: 13, description: "Ocean gift" },
       { type: "tropical_island", emoji: "🏝️", label: "Tropical Island", value: 70, description: "Paradise" },
       { type: "lemonade", emoji: "🍋", label: "Fresh Lemonade", value: 15, description: "Cool refreshment" },
-    ],
-  },
+    ] },
   // Autumn/Fall Collection - 20 items
   fall: {
     name: "Autumn Collection",
@@ -141,8 +138,7 @@ const SEASONAL_GIFTS = {
       { type: "owl", emoji: "🦉", label: "Wise Owl", value: 26, description: "Night hunter" },
       { type: "autumn_sunset", emoji: "🌄", label: "Autumn Sunset", value: 40, description: "Golden sky" },
       { type: "cranberry", emoji: "🍇", label: "Cranberries", value: 15, description: "Fall berries" },
-    ],
-  },
+    ] },
   // Keep holiday collections for special periods
   christmas: {
     name: "Christmas Collection",
@@ -158,8 +154,7 @@ const SEASONAL_GIFTS = {
       { type: "gingerbread", emoji: "🍪", label: "Gingerbread", value: 15, description: "Sweet treat" },
       { type: "wreath", emoji: "🎀", label: "Holiday Wreath", value: 22, description: "Door decoration" },
       { type: "sleigh", emoji: "🛷", label: "Santa's Sleigh", value: 50, description: "Magical ride" },
-    ],
-  },
+    ] },
   valentines: {
     name: "Valentine's Collection",
     icon: <Heart className="h-5 w-5" />,
@@ -174,8 +169,7 @@ const SEASONAL_GIFTS = {
       { type: "chocolates", emoji: "🍫", label: "Chocolate Box", value: 28, description: "Sweet treats" },
       { type: "couple", emoji: "💑", label: "Perfect Match", value: 50, description: "Soul mates" },
       { type: "heart_eyes", emoji: "😍", label: "Heart Eyes", value: 15, description: "In love" },
-    ],
-  },
+    ] },
   easter: {
     name: "Easter Collection",
     icon: <Star className="h-5 w-5" />,
@@ -188,8 +182,7 @@ const SEASONAL_GIFTS = {
       { type: "basket", emoji: "🧺", label: "Easter Basket", value: 35, description: "Full of goodies" },
       { type: "spring_flower", emoji: "🌷", label: "Spring Tulip", value: 18, description: "Fresh bloom" },
       { type: "butterfly", emoji: "🦋", label: "Butterfly", value: 25, description: "Spring beauty" },
-    ],
-  },
+    ] },
   halloween: {
     name: "Halloween Collection",
     icon: <Ghost className="h-5 w-5" />,
@@ -204,9 +197,7 @@ const SEASONAL_GIFTS = {
       { type: "spider", emoji: "🕷️", label: "Spider", value: 15, description: "Creepy crawler" },
       { type: "skeleton", emoji: "💀", label: "Skeleton", value: 30, description: "Spooky bones" },
       { type: "cauldron", emoji: "🪄", label: "Magic Cauldron", value: 45, description: "Brew magic" },
-    ],
-  },
-};
+    ] } };
 
 interface LimitedEditionGiftsProps {
   onSelectGift?: (gift: any) => void;

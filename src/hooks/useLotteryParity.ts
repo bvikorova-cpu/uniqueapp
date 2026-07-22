@@ -14,14 +14,12 @@ export type LotteryParityAction =
 
 export const LOTTERY_PARITY_COST = 5;
 
-export const useLotteryParity = () => {
-  const qc = useQueryClient();
+export const useLotteryParity = () => { const qc = useQueryClient();
 
   const run = useMutation({
     mutationFn: async ({
       action,
-      payload,
-    }: {
+      payload }: {
       action: LotteryParityAction;
       payload: Record<string, unknown>;
     }) => {
@@ -38,13 +36,10 @@ export const useLotteryParity = () => {
       } else {
         toast.error(e.message || "Failed to generate result");
       }
-    },
-  });
+    } });
 
-  return {
-    run: run.mutateAsync,
+  return { run: run.mutateAsync,
     isRunning: run.isPending,
     lastResult: run.data?.result,
-    lastAction: run.variables?.action,
-  };
+    lastAction: run.variables?.action };
 };

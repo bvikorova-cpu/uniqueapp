@@ -57,9 +57,7 @@ export const VoiceDiaryCard = () => {
   const submit = () => {
     if (!imageUrl) return toast.error("Upload a handwriting sample");
     if (!transcript.trim()) return toast.error("Record or type your reflection");
-    diary.mutate({ imageUrl, transcript }, {
-      onSuccess: (d: any) => setResult(d.result),
-    });
+    diary.mutate({ imageUrl, transcript }, { onSuccess: (d: any) => setResult(d.result) });
   };
 
   return (

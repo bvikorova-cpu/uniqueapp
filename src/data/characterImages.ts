@@ -59,8 +59,7 @@ import streakRunner from "@/assets/characters/streak-runner.png";
 import valorShield from "@/assets/characters/valor-shield.png";
 import zaraWish from "@/assets/characters/zara-wish.png";
 
-export const characterImages: Record<string, string> = {
-  "alice-wonderland": aliceWonderland,
+export const characterImages: Record<string, string> = { "alice-wonderland": aliceWonderland,
   "anansi": anansi,
   "beep-robot": beepRobot,
   "bo-bear": boBear,
@@ -113,5 +112,4 @@ export const characterImages: Record<string, string> = {
   "night-guardian": nightGuardian,
   "streak-runner": streakRunner,
   "valor-shield": valorShield,
-  "zara-wish": zaraWish,
-};
+  "zara-wish": zaraWish };

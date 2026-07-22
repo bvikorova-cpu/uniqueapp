@@ -45,8 +45,7 @@ export default function BeforeAfterGallery({ onBack }: Props) {
       await supabase.from("activity_feed").insert({
         user_id: user.id,
         activity_type: "transformation",
-        metadata: { title, description, weight_before: weightBefore, weight_after: weightAfter, duration },
-      });
+        metadata: { title, description, weight_before: weightBefore, weight_after: weightAfter, duration } });
       toast({ title: "Transformation shared! 🎉" });
       setTitle(""); setDescription(""); setWeightBefore(""); setWeightAfter(""); setDuration("");
       loadStories();

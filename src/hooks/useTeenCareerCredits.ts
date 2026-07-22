@@ -20,16 +20,14 @@ export function useTeenCareerCredits() {
         .maybeSingle();
       return data || { credits_remaining: 0, total_credits_purchased: 0 };
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const balance = data?.credits_remaining ?? 0;
   const canUse = balance >= TEEN_CAREER_CREDIT_COST;
 
   const purchase = async (credits: number) => {
     const { data: res, error } = await supabase.functions.invoke("create-checkout", {
-      body: { credits, creditType: "teen_career" },
-    });
+      body: { credits, creditType: "teen_career" } });
     if (error || !res?.url) {
       toast.error("Failed to start checkout");
       return null;

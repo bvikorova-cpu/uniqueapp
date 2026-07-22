@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const PARITY_COST = 5;
 
@@ -16,8 +14,7 @@ const ACTIONS: Record<string, { table: string; system: string }> = {
   "affirmation-pack": { table: "crystal_parity_affirmation_packs", system: "You are an affirmation copywriter. Output JSON: { crystal, theme, morning_affirmations[], evening_affirmations[], shadow_release[], 7_day_plan[{day,focus,affirmation}] }." },
   "intention-setter": { table: "crystal_parity_intention_setters", system: "You are a manifestation coach. Output JSON: { core_intention, supporting_crystals[], ritual_steps[], integration_practices[], release_phrase, review_date_days }." },
   "aura-color-coach": { table: "crystal_parity_aura_color_coaches", system: "You are an aura color expert. Output JSON: { dominant_color, color_meaning, balance_assessment, cleansing_crystals[], strengthening_crystals[], daily_practice }." },
-  "space-clearing": { table: "crystal_parity_space_clearings", system: "You are a space-clearing practitioner. Output JSON: { room_assessments[{room,energy,fix}], crystal_placement[{location,crystal,purpose}], cleansing_sequence[], maintenance_cadence }." },
-};
+  "space-clearing": { table: "crystal_parity_space_clearings", system: "You are a space-clearing practitioner. Output JSON: { room_assessments[{room,energy,fix}], crystal_placement[{location,crystal,purpose}], cleansing_sequence[], maintenance_cadence }." } };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -54,9 +51,7 @@ serve(async (req) => {
           { role: "system", content: cfg.system + " Reply ONLY with valid JSON." },
           { role: "user", content: JSON.stringify(payload ?? {}) },
         ],
-        response_format: { type: "json_object" },
-      }),
-    });
+        response_format: { type: "json_object" } }) });
     if (aiRes.status === 429) {
       return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again shortly." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -73,12 +68,10 @@ serve(async (req) => {
     await supabaseAdmin.from("crystal_parity_credits").insert({ user_id: user.id, action, credits_spent: PARITY_COST });
 
     return new Response(JSON.stringify({ result, cost: PARITY_COST }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

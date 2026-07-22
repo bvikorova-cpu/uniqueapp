@@ -19,29 +19,23 @@ export default function IQDailyChallenge() {
       const { data, error } = await supabase.rpc("get_today_iq_challenge");
       if (error) throw error;
       return data?.[0] ?? null;
-    },
-  });
+    } });
 
   const submit = useMutation({
     mutationFn: async (idx: number) => {
-      const { data: res, error } = await supabase.rpc("submit_iq_daily", {
-        _challenge_id: data!.id,
-        _answer_index: idx,
-      } as any);
+      const { data: res, error } = await supabase.rpc("submit_iq_daily", { _challenge_id: data!.id,
+        _answer_index: idx } as any);
       if (error) throw error;
       return res?.[0];
     },
-    onSuccess: (res: any) => {
-      toast({
+    onSuccess: (res: any) => { toast({
         title: res?.is_correct ? "🎉 Correct!" : "Not this time",
-        description: res?.message,
-      });
+        description: res?.message });
       trackIQEvent("iq_daily_submit", { correct: res?.is_correct, reward: res?.reward });
       qc.invalidateQueries({ queryKey: ["iq-daily-challenge"] });
       qc.invalidateQueries({ queryKey: ["iq-credits"] });
     },
-    onError: (e: any) => toast({ title: "Failed", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Failed", description: e.message, variant: "destructive" }) });
 
   if (isLoading) {
     return (

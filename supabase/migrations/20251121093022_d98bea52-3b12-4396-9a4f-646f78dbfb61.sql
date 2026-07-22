@@ -31,7 +31,7 @@ INSERT INTO dating_profiles (
   'male',
   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
   ARRAY['https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400', 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400'],
-  'Bratislava',
+  'City',
   ARRAY['cestovanie', 'víno', 'čítanie', 'joga'],
   true
 ),

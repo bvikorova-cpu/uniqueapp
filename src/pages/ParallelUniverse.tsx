@@ -39,9 +39,7 @@ export default function ParallelUniverse() {
     try {
       const { data, error } = await supabase.functions.invoke("ai-text-generator", {
         body: {
-          prompt: `You are a speculative-fiction narrator. Write a vivid, hopeful 'parallel universe' scenario in 5-8 sentences, second person.\n\nScenario: "${title}". User context: ${seed}`,
-        },
-      });
+          prompt: `You are a speculative-fiction narrator. Write a vivid, hopeful 'parallel universe' scenario in 5-8 sentences, second person.\n\nScenario: "${title}". User context: ${seed}` } });
       if (error) throw error;
       setResult(data?.text ?? data?.result ?? "No scenario produced.");
     } catch (e: any) {
@@ -73,7 +71,7 @@ export default function ParallelUniverse() {
           <CardContent>
             <Label htmlFor="seed">Your context</Label>
             <Textarea id="seed" rows={4} value={seed} onChange={(e) => setSeed(e.target.value)}
-              placeholder="I'm 32, software engineer in Berlin. At 22 I almost moved to Tokyo to study film…" />
+              placeholder="I'm 32, software engineer. At 22 I almost moved abroad to study film…" />
           </CardContent>
         </Card>
 

@@ -1,22 +1,18 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -54,18 +50,15 @@ export function PurchaseAICreditsDialog() {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { creditType, credits },
-      });
+        body: { creditType, credits } });
       if (error) throw error;
       if (!data?.url) throw new Error("No checkout URL returned");
       window.open(data.url, "_blank");
       setOpen(false);
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Couldn't start checkout",
         description: e?.message || "Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

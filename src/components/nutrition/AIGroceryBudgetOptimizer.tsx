@@ -31,8 +31,7 @@ export default function AIGroceryBudgetOptimizer({ onBack }: Props) {
       return data;
     },
     onSuccess: (data) => { setResult(data.plan); toast.success("Grocery plan optimized!"); },
-    onError: (e: any) => toast.error(e.message || "Error optimizing"),
-  });
+    onError: (e: any) => toast.error(e.message || "Error optimizing") });
 
   return (
     <>

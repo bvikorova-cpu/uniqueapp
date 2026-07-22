@@ -34,8 +34,7 @@ export const GiftReactions = ({ giftId, compact = false }: GiftReactionsProps) =
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Get current user's reaction
   const { data: currentUser } = useQuery({
@@ -43,8 +42,7 @@ export const GiftReactions = ({ giftId, compact = false }: GiftReactionsProps) =
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const userReaction = reactions.find(r => r.user_id === currentUser?.id);
 
@@ -71,26 +69,21 @@ export const GiftReactions = ({ giftId, compact = false }: GiftReactionsProps) =
       // Add new reaction
       const { error } = await supabase
         .from("social_gifts_reactions")
-        .insert({
-          gift_id: giftId,
+        .insert({ gift_id: giftId,
           user_id: user.id,
-          reaction_type: reactionType,
-        });
+          reaction_type: reactionType });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gift-reactions", giftId] });
       setShowPicker(false);
-    },
-  });
+    } });
 
   // Count reactions by type
-  const reactionCounts = REACTION_TYPES.map(rt => ({
-    ...rt,
+  const reactionCounts = REACTION_TYPES.map(rt => ({ ...rt,
     count: reactions.filter(r => r.reaction_type === rt.type).length,
-    isUserReaction: userReaction?.reaction_type === rt.type,
-  })).filter(r => r.count > 0 || r.isUserReaction);
+    isUserReaction: userReaction?.reaction_type === rt.type })).filter(r => r.count > 0 || r.isUserReaction);
 
   if (compact) {
     return (

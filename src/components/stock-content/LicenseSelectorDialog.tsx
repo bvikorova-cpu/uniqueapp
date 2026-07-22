@@ -27,8 +27,7 @@ export function LicenseSelectorDialog({ open, onOpenChange, item, onSelect }: Li
   const editorialPrice = Number(pricing.editorial ?? base * 0.5);
 
   const licenses = [
-    {
-      type: "standard" as const,
+    { type: "standard" as const,
       name: "Standard License",
       icon: ImageIcon,
       price: standardPrice,
@@ -39,10 +38,8 @@ export function LicenseSelectorDialog({ open, onOpenChange, item, onSelect }: Li
         "Marketing materials",
         "Single end product",
       ],
-      hidden: item.is_editorial,
-    },
-    {
-      type: "extended" as const,
+      hidden: item.is_editorial },
+    { type: "extended" as const,
       name: "Extended License",
       icon: Crown,
       price: extendedPrice,
@@ -54,10 +51,8 @@ export function LicenseSelectorDialog({ open, onOpenChange, item, onSelect }: Li
         "Templates for sale",
         "Multiple end products",
       ],
-      hidden: item.is_editorial,
-    },
-    {
-      type: "editorial" as const,
+      hidden: item.is_editorial },
+    { type: "editorial" as const,
       name: "Editorial License",
       icon: Newspaper,
       price: editorialPrice,
@@ -68,8 +63,7 @@ export function LicenseSelectorDialog({ open, onOpenChange, item, onSelect }: Li
         "Educational publications",
         "Non-commercial only",
       ],
-      hidden: false,
-    },
+      hidden: false },
   ].filter((l) => !l.hidden);
 
   return (

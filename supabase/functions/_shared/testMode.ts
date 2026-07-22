@@ -23,16 +23,11 @@ export function checkTestMode(req: Request): null | { stub: (action: string, spe
         data: { stub: true, action },
         text: `[test-mode] ${action}`,
         reply: `[test-mode] ${action}`,
-        message: `[test-mode] ${action}`,
-      };
-      return new Response(JSON.stringify(body), {
-        status: 200,
+        message: `[test-mode] ${action}` };
+      return new Response(JSON.stringify(body), { status: 200,
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          "X-Test-Mode": "true",
-        },
-      });
-    },
-  };
+          "X-Test-Mode": "true" } });
+    } };
 }

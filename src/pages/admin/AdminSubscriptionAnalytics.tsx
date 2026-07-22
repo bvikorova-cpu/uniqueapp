@@ -5,13 +5,9 @@ import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShel
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  TrendingUp, RefreshCw, DollarSign, Users, AlertCircle,
-  Activity, Calendar, Pause,
-} from "lucide-react";
-import {
-  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid,
-} from "recharts";
+import { TrendingUp, RefreshCw, DollarSign, Users, AlertCircle,
+  Activity, Calendar, Pause } from "lucide-react";
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
 

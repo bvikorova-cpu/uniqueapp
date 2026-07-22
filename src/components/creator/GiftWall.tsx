@@ -83,8 +83,7 @@ export function GiftWall({ creatorId, creatorName = "creator", limit = 30 }: Pro
           event: "*",
           schema: "public",
           table: "creator_gift_transactions",
-          filter: `creator_id=eq.${creatorId}`,
-        },
+          filter: `creator_id=eq.${creatorId}` },
         () => {
           load();
           loadBoard();
@@ -107,15 +106,13 @@ export function GiftWall({ creatorId, creatorName = "creator", limit = 30 }: Pro
       string,
       { sender_id: string; name: string; avatar: string | null; total: number; count: number }
     >();
-    for (const r of boardRows) {
-      const key = r.sender_id;
+    for (const r of boardRows) { const key = r.sender_id;
       const prev = map.get(key) ?? {
         sender_id: key,
         name: r.sender?.display_name || "Anonymous",
         avatar: r.sender?.avatar_url ?? null,
         total: 0,
-        count: 0,
-      };
+        count: 0 };
       prev.total += Number(r.amount || 0);
       prev.count += 1;
       map.set(key, prev);

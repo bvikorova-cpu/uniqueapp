@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
+import { Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  PopoverTrigger } from "@/components/ui/popover";
 import { useTranslations, LANGUAGES } from "@/hooks/useTranslations";
 
 interface TranslateButtonProps {

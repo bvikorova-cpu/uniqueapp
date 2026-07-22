@@ -35,24 +35,20 @@ export const PostConfession = ({ onConfessionPosted }: PostConfessionProps) => {
       }
 
       const { data, error } = await supabase.functions.invoke("post-confession", {
-        body: { confessionText, isAnonymous },
-      });
+        body: { confessionText, isAnonymous } });
 
       if (error) throw error;
 
       toast({
         title: "Confession Posted!",
-        description: `Category: ${data.confession.category} | Severity: ${data.confession.severity}/10`,
-      });
+        description: `Category: ${data.confession.category} | Severity: ${data.confession.severity}/10` });
 
       setConfessionText("");
       onConfessionPosted?.();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Failed to post",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

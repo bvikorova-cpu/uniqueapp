@@ -46,16 +46,12 @@ export function useChatSafety(currentUserId: string, partnerId: string) {
   const block = async () => {
     setSubmitting(true);
     try {
-      const { error } = await supabase.from("blocked_users").insert({
-        user_id: currentUserId,
-        blocked_user_id: partnerId,
-      });
+      const { error } = await supabase.from("blocked_users").insert({ user_id: currentUserId,
+        blocked_user_id: partnerId });
       if (error && !`${error.message}`.toLowerCase().includes("duplicate")) throw error;
       setBlockedByMe(true);
-      toast({
-        title: "User blocked",
-        description: "This match is now hidden. They can no longer reach you.",
-      });
+      toast({ title: "User blocked",
+        description: "This match is now hidden. They can no longer reach you." });
       return true;
     } catch (e: any) {
       toast({ title: "Could not block", description: e.message ?? "Try again", variant: "destructive" });
@@ -105,13 +101,10 @@ export function useChatSafety(currentUserId: string, partnerId: string) {
         reported_user_id: partnerId,
         report_type: params.matchId ? `anonymous_chat:${params.matchId}` : "anonymous_chat",
         reason: fullReason,
-        status: "pending",
-      });
+        status: "pending" });
       if (error) throw error;
-      toast({
-        title: "Report submitted",
-        description: "Our safety team will review this within 24 hours.",
-      });
+      toast({ title: "Report submitted",
+        description: "Our safety team will review this within 24 hours." });
       return true;
     } catch (e: any) {
       toast({ title: "Could not submit report", description: e.message ?? "Try again", variant: "destructive" });
@@ -121,8 +114,7 @@ export function useChatSafety(currentUserId: string, partnerId: string) {
     }
   };
 
-  return {
-    loading,
+  return { loading,
     submitting,
     blockedByMe,
     blockedByThem,
@@ -130,6 +122,5 @@ export function useChatSafety(currentUserId: string, partnerId: string) {
     refresh,
     block,
     unblock,
-    report,
-  };
+    report };
 }

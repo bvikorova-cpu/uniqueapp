@@ -13,13 +13,11 @@ interface PremiumManagementCardProps {
   tierLabel?: string;
 }
 
-export const PremiumManagementCard = ({
-  subscribed,
+export const PremiumManagementCard = ({ subscribed,
   onManage,
   title = "Premium Subscription",
   description = "Manage your subscription, invoices and billing.",
-  tierLabel = "Active",
-}: PremiumManagementCardProps) => {
+  tierLabel = "Active" }: PremiumManagementCardProps) => {
   if (!subscribed) return null;
 
   return (

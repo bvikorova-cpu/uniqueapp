@@ -36,12 +36,10 @@ const achievements: Achievement[] = [
   { id: "11", name: "100 Victories", description: "Win 100 total races", icon: Award, color: "text-red-400", bgGradient: "from-red-950/40 to-orange-950/30", category: "legendary", progress: 7, maxProgress: 100, unlocked: false, reward: "5,000 Coins + Legend Badge", rarity: "legendary" },
 ];
 
-const rarityColors = {
-  common: "text-gray-400 border-gray-500/20 bg-gray-500/10",
+const rarityColors = { common: "text-gray-400 border-gray-500/20 bg-gray-500/10",
   rare: "text-blue-400 border-blue-500/20 bg-blue-500/10",
   epic: "text-violet-400 border-violet-500/20 bg-violet-500/10",
-  legendary: "text-amber-400 border-amber-500/20 bg-amber-500/10",
-};
+  legendary: "text-amber-400 border-amber-500/20 bg-amber-500/10" };
 
 export function AchievementSystem({ onBack }: { onBack: () => void }) {
   const [filter, setFilter] = useState<"all" | "racing" | "garage" | "social" | "legendary">("all");

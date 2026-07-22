@@ -64,19 +64,16 @@ async function seedFixtures(): Promise<void> {
     return;
   }
   admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
+    auth: { persistSession: false, autoRefreshToken: false } });
 
   // Upsert partner profile so our assertions match exact values.
   const { error: profileErr } = await admin
     .from("anonymous_dating_profiles")
     .upsert(
-      {
-        user_id: PARTNER_ID!,
+      { user_id: PARTNER_ID!,
         anonymous_name: PARTNER_NAME,
         age_range: PARTNER_AGE,
-        interests: PARTNER_INTERESTS,
-      },
+        interests: PARTNER_INTERESTS },
       { onConflict: "user_id" },
     );
   if (profileErr) throw new Error(`seed partner profile: ${profileErr.message}`);
@@ -86,24 +83,20 @@ async function seedFixtures(): Promise<void> {
   await admin
     .from("anonymous_dating_profiles")
     .upsert(
-      {
-        user_id: ME_ID!,
+      { user_id: ME_ID!,
         anonymous_name: "E2E Tester",
         age_range: "25-30",
-        interests: ["e2e-test"],
-      },
+        interests: ["e2e-test"] },
       { onConflict: "user_id" },
     );
 
   // Create a fresh active match for this run.
   const { data: match, error: matchErr } = await admin
     .from("anonymous_dating_matches")
-    .insert({
-      user1_id: ME_ID!,
+    .insert({ user1_id: ME_ID!,
       user2_id: PARTNER_ID!,
       status: "active",
-      expires_at: new Date(Date.now() + 7 * 86400000).toISOString(),
-    })
+      expires_at: new Date(Date.now() + 7 * 86400000).toISOString() })
     .select("id")
     .single();
   if (matchErr) throw new Error(`seed match: ${matchErr.message}`);
@@ -123,15 +116,12 @@ async function cleanupFixtures(): Promise<void> {
 async function loginInPage(page: Page): Promise<void> {
   await page.goto("/");
   const result = await page.evaluate(
-    async ({ url, key, email, password }) => {
-      const mod = await import("https://esm.sh/@supabase/supabase-js@2");
+    async ({ url, key, email, password }) => { const mod = await import("https://esm.sh/@supabase/supabase-js@2");
       const client = mod.createClient(url, key, {
         auth: {
           storage: window.localStorage,
           persistSession: true,
-          autoRefreshToken: true,
-        },
-      });
+          autoRefreshToken: true } });
       const { data, error } = await client.auth.signInWithPassword({ email, password });
       return { ok: !error, userId: data?.user?.id ?? null, error: error?.message ?? null };
     },

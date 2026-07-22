@@ -37,8 +37,7 @@ export function ClonePersonalityQuiz() {
       const qs = QUESTIONS.map(q => q.q);
       const ans = finalAnswers.map((idx, i) => QUESTIONS[i].options[idx]);
       const { data, error } = await supabase.functions.invoke("clone-quiz-analyze", {
-        body: { questions: qs, answers: ans },
-      });
+        body: { questions: qs, answers: ans } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       const traits = Array.isArray(data.traits) ? data.traits.join(", ") : "";

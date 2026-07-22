@@ -38,8 +38,7 @@ export default function AIDietaryAdvisor({ onBack }: Props) {
 
 DISCLAIMER: This is general guidance, not medical advice. Consult a dietitian for specific needs.
 
-Food/Recipe: ${input}` },
-      });
+Food/Recipe: ${input}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }

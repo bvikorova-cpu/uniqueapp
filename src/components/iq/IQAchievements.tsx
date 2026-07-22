@@ -41,8 +41,7 @@ const rarityStyles: Record<Rarity, { border: string; bg: string; text: string; g
   common:    { border: "border-slate-400/50",  bg: "from-slate-500/10 to-slate-600/5",   text: "text-slate-300",   glow: "",                                       label: "Common" },
   rare:      { border: "border-blue-400/60",   bg: "from-blue-500/15 to-cyan-500/10",    text: "text-blue-300",    glow: "shadow-md shadow-blue-500/20",           label: "Rare" },
   epic:      { border: "border-purple-400/70", bg: "from-purple-500/20 to-pink-500/10",  text: "text-purple-300",  glow: "shadow-lg shadow-purple-500/30",         label: "Epic" },
-  legendary: { border: "border-amber-400",     bg: "from-amber-500/25 to-orange-500/15", text: "text-amber-300",   glow: "shadow-xl shadow-amber-500/40 ring-1 ring-amber-400/40", label: "Legendary" },
-};
+  legendary: { border: "border-amber-400",     bg: "from-amber-500/25 to-orange-500/15", text: "text-amber-300",   glow: "shadow-xl shadow-amber-500/40 ring-1 ring-amber-400/40", label: "Legendary" } };
 
 export default function IQAchievements() {
   const [unlockedIds, setUnlockedIds] = useState<string[]>([]);

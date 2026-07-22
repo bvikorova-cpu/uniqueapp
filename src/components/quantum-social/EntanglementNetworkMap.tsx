@@ -18,12 +18,10 @@ interface EntanglementNode {
   y: number;
 }
 
-const NODE_COLORS: Record<string, string> = {
-  strong: "bg-cyan-500",
+const NODE_COLORS: Record<string, string> = { strong: "bg-cyan-500",
   moderate: "bg-violet-500",
   weak: "bg-pink-500",
-  dormant: "bg-gray-500",
-};
+  dormant: "bg-gray-500" };
 
 export function EntanglementNetworkMap({ onBack }: { onBack: () => void }) {
   const [nodes, setNodes] = useState<EntanglementNode[]>([]);
@@ -46,8 +44,7 @@ export function EntanglementNetworkMap({ onBack }: { onBack: () => void }) {
       strength: Math.floor(Math.random() * 100),
       type: types[Math.floor(Math.random() * types.length)],
       x: 10 + Math.random() * 80,
-      y: 10 + Math.random() * 80,
-    }));
+      y: 10 + Math.random() * 80 }));
     setNodes(generated);
     setTotalStrength(generated.reduce((s, n) => s + n.strength, 0));
     setLoading(false);
@@ -66,9 +63,7 @@ export function EntanglementNetworkMap({ onBack }: { onBack: () => void }) {
       const response = await supabase.functions.invoke("ai-mood-therapist", {
         body: {
           messages: [{ role: "user", content: `Analyze this quantum entanglement network: ${nodeList}. Total network strength: ${totalStrength}. Provide insights about: 1) Network health, 2) Strongest connections, 3) Recommendations for strengthening weak links, 4) Quantum coherence score. Use quantum physics metaphors.` }],
-          systemPrompt: "You are a Quantum Network Analyst. You analyze entanglement networks and provide insights using quantum physics metaphors. Be insightful and specific.",
-        },
-      });
+          systemPrompt: "You are a Quantum Network Analyst. You analyze entanglement networks and provide insights using quantum physics metaphors. Be insightful and specific." } });
 
       let content = `## Network Analysis\n\n**Network Health:** ${totalStrength > 400 ? "Strong" : totalStrength > 200 ? "Moderate" : "Needs attention"}\n\n**Nodes:** ${nodes.length} entangled connections\n**Total Strength:** ${totalStrength}\n\nYour strongest entanglements show quantum coherence at ${(totalStrength / nodes.length).toFixed(1)}% average. Consider strengthening dormant connections through observation.`;
 

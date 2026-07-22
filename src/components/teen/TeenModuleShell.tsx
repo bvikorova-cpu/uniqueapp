@@ -21,15 +21,13 @@ interface TeenModuleShellProps {
   storageKey?: string;
 }
 
-export function TeenModuleShell({
-  module,
+export function TeenModuleShell({ module,
   title,
   emoji,
   description,
   placeholder,
   examples = [],
-  storageKey = "teen_parental_gate_verified",
-}: TeenModuleShellProps) {
+  storageKey = "teen_parental_gate_verified" }: TeenModuleShellProps) {
   const { isVerified, checkVerification } = useParentalGate(storageKey);
   const { balance, canUse, costPerUse, purchase, refresh, isLoading } =
     useTeenCredits(module);
@@ -65,8 +63,7 @@ export function TeenModuleShell({
     setReply("");
     try {
       const { data, error } = await supabase.functions.invoke("teen-router", {
-        body: { module, prompt },
-      });
+        body: { module, prompt } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setReply(data?.reply || "");

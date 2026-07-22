@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -17,8 +15,7 @@ serve(async (req) => {
     const { brief = "", industry = "general", style = "modern" } = await req.json();
     if (typeof brief !== "string" || brief.length > 500) {
       return new Response(JSON.stringify({ error: "brief too long" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
@@ -36,9 +33,7 @@ Palette must contain 5 harmonious hex colors (with # prefix). Fonts must be real
         model: "gpt-4o-mini",
         messages: [{ role: "system", content: sys }, { role: "user", content: user }],
         response_format: { type: "json_object" },
-        max_completion_tokens: 900,
-      }),
-    });
+        max_completion_tokens: 900 }) });
 
     if (!res.ok) throw new Error(`AI upstream ${res.status}`);
     const data = await res.json();
@@ -48,11 +43,9 @@ Palette must contain 5 harmonious hex colors (with # prefix). Fonts must be real
 
     await deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ kit }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

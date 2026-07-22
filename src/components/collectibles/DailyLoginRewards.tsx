@@ -51,24 +51,20 @@ export default function DailyLoginRewards({ userId }: Props) {
       }
 
       return { streak: claimedToday ? streak : streak, claimedToday, currentDay: (streak % 7) + 1 };
-    },
-  });
+    } });
 
   const claimReward = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("activity_logs").insert({
-        user_id: userId,
+      const { error } = await supabase.from("activity_logs").insert({ user_id: userId,
         activity_type: "daily_login_reward",
-        points_earned: dayRewards[(streakData?.currentDay || 1) - 1]?.day || 2,
-      });
+        points_earned: dayRewards[(streakData?.currentDay || 1) - 1]?.day || 2 });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["daily-reward-streak"] });
       toast.success("Daily reward claimed! 🎉");
     },
-    onError: (e: any) => toast.error(e.message || "Failed to claim"),
-  });
+    onError: (e: any) => toast.error(e.message || "Failed to claim") });
 
   const currentDay = streakData?.currentDay || 1;
 

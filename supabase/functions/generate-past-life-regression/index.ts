@@ -8,11 +8,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const COSTS: Record<string, number> = { basic: 5, full: 15, soulmate: 20 };
 const LIVES_COUNT: Record<string, number> = { basic: 1, full: 3, soulmate: 3 };
@@ -123,16 +121,13 @@ Generate exactly ${livesCount} past ${livesCount === 1 ? "life" : "lives"}. Make
       method: "POST",
       headers: {
         "Authorization": `Bearer ${aiKey}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
@@ -165,8 +160,7 @@ Generate exactly ${livesCount} past ${livesCount === 1 ? "life" : "lives"}. Make
     // Persist to past_life_readings (matches PastLifeHistory.tsx).
     const { data: inserted, error: insertErr } = await supabaseAdmin
       .from("past_life_readings")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         birth_date: body.birthDate,
         dreams_dejavu: body.dreamsDejavu ?? null,
         talents_phobias: body.talentsPhobias ?? null,
@@ -176,8 +170,7 @@ Generate exactly ${livesCount} past ${livesCount === 1 ? "life" : "lives"}. Make
         karmic_lessons: reading.overallKarmicTheme ?? null,
         soulmate_analysis: reading.soulmateConnection ?? null,
         partner_birth_date: body.partnerBirthDate ?? null,
-        partner_info: body.partnerInfo ?? null,
-      })
+        partner_info: body.partnerInfo ?? null })
       .select()
       .single();
 
@@ -196,16 +189,13 @@ Generate exactly ${livesCount} past ${livesCount === 1 ? "life" : "lives"}. Make
       console.error("Deduct failed (reading still saved):", deductErr);
     }
 
-    return jsonResponse({
-      success: true,
+    return jsonResponse({ success: true,
       reading: {
         pastLives: reading.pastLives,
         overallKarmicTheme: reading.overallKarmicTheme,
-        soulmateConnection: reading.soulmateConnection ?? undefined,
-      },
+        soulmateConnection: reading.soulmateConnection ?? undefined },
       readingId: inserted.id,
-      creditsRemaining: currentCredits - cost,
-    }, 200);
+      creditsRemaining: currentCredits - cost }, 200);
   } catch (error: unknown) {
     console.error("Unhandled error:", error);
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -216,6 +206,5 @@ Generate exactly ${livesCount} past ${livesCount === 1 ? "life" : "lives"}. Make
 function jsonResponse(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status,
-  });
+    status });
 }

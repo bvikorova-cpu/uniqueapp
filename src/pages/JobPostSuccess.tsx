@@ -22,8 +22,7 @@ export default function JobPostSuccess() {
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke("verify-job-listing-payment", {
-          body: { sessionId },
-        });
+          body: { sessionId } });
         if (error) throw error;
         if (data?.verified) {
           setStatus("success");
@@ -33,13 +32,11 @@ export default function JobPostSuccess() {
           setMessage(`Payment status: ${data?.status ?? "unknown"}. You can retry payment from the dashboard.`);
           // Notify employer of failure so they see retry CTA later
           const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            await supabase.from("notifications").insert({
+          if (user) { await supabase.from("notifications").insert({
               user_id: user.id,
               type: "job_listing_payment_failed",
               title: "Job listing payment failed",
-              message: "Your last checkout did not complete. Open the employer dashboard and click Retry Payment.",
-            });
+              message: "Your last checkout did not complete. Open the employer dashboard and click Retry Payment." });
           }
         }
       } catch (e: any) {

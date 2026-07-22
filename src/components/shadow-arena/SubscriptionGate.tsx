@@ -79,8 +79,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
               top: `${10 + i * 18}%`,
               width: 320 + i * 60,
               height: 320 + i * 60,
-              animationDelay: `${i * 2.5}s`,
-            }}
+              animationDelay: `${i * 2.5}s` }}
           />
         ))}
 
@@ -92,8 +91,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
             style={{
               left: `${5 + i * 12}%`,
               animationDelay: `${i * 0.7}s`,
-              animationDuration: `${4 + (i % 3)}s`,
-            }}
+              animationDuration: `${4 + (i % 3)}s` }}
           />
         ))}
 

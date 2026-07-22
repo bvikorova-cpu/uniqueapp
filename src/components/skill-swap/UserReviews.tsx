@@ -33,8 +33,7 @@ export const UserReviews = ({ userId }: UserReviewsProps) => {
       const profilesMap = new Map<string, any>(profiles?.map((p: any) => [p.id, p]));
       setReviews((data || []).map(r => ({
         id: r.id, rating: r.rating, comment: r.comment, created_at: r.created_at,
-        reviewer: profilesMap.get(r.reviewer_id) || { full_name: 'Unknown User' },
-      })));
+        reviewer: profilesMap.get(r.reviewer_id) || { full_name: 'Unknown User' } })));
     } catch (error: any) { console.error('Error fetching reviews:', error); }
     finally { setLoading(false); }
   };

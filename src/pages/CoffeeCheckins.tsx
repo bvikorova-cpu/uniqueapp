@@ -7,8 +7,7 @@ import { ReviewsList } from '@/components/coffee/ReviewsList';
 import { CoffeeLeaderboard } from '@/components/coffee/CoffeeLeaderboard';
 import { Coffee, MapPin, Star, Trophy } from 'lucide-react';
 
-const CoffeeCheckins = () => {
-  const [selectedCafe, setSelectedCafe] = useState<string | null>(null);
+const CoffeeCheckins = () => { const [selectedCafe, setSelectedCafe] = useState<string | null>(null);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -20,8 +19,7 @@ const CoffeeCheckins = () => {
             style={{
               background: "linear-gradient(135deg, hsl(var(--foreground)), hsl(30 80% 50%), hsl(var(--accent)))",
               WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
+              WebkitTextFillColor: "transparent" }}
           >
             Coffee Check-ins & Reviews
           </h1>

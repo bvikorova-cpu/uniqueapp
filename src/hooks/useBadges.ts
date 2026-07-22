@@ -17,13 +17,10 @@ export const useBadges = (userId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
-  return {
-    badges: badges || [],
-    isLoading,
-  };
+  return { badges: badges || [],
+    isLoading };
 };
 
 // Helper function to award badges (would typically be called from backend)
@@ -31,10 +28,8 @@ export const awardBadge = async (
   userId: string,
   badgeId: string
 ) => {
-  const { error } = await supabase.from("user_badges").insert({
-    user_id: userId,
-    badge_id: badgeId,
-  });
+  const { error } = await supabase.from("user_badges").insert({ user_id: userId,
+    badge_id: badgeId });
 
   if (error) throw error;
 };

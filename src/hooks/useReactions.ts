@@ -14,8 +14,7 @@ export const useReactions = (postId: string) => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const userReaction = async () => {
     const { data } = await supabase.auth.getUser();
@@ -57,24 +56,19 @@ export const useReactions = (postId: string) => {
         }
       } else {
         // Add new reaction
-        const { error } = await supabase.from("post_reactions").insert({
-          post_id: postId,
+        const { error } = await supabase.from("post_reactions").insert({ post_id: postId,
           user_id: user.id,
-          reaction_type: reactionType,
-        });
+          reaction_type: reactionType });
         if (error) throw error;
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reactions", postId] });
-    },
-  });
+    } });
 
-  return {
-    reactions: reactions || [],
+  return { reactions: reactions || [],
     isLoading,
     userReaction,
     getReactionCounts,
-    toggleReaction: toggleReaction.mutate,
-  };
+    toggleReaction: toggleReaction.mutate };
 };

@@ -74,11 +74,9 @@ const IQFriendCompare = () => {
         .from("iq_public_profiles")
         .select("user_id,display_name,avatar_url")
         .in("user_id", ids);
-      setFriends((profs ?? []).map(p => ({
-        friend_id: p.user_id,
+      setFriends((profs ?? []).map(p => ({ friend_id: p.user_id,
         display_name: p.display_name,
-        avatar_url: p.avatar_url,
-      })));
+        avatar_url: p.avatar_url })));
     })();
   }, []);
 
@@ -129,19 +127,17 @@ const IQFriendCompare = () => {
 
         {me && them && (
           <div className="flex flex-col md:flex-row gap-4 items-stretch">
-            <PlayerCol row={me} wins={{
+            <PlayerCol row={me} wins={ {
               best: me.best_iq > them.best_iq,
               avg: Number(me.avg_iq) > Number(them.avg_iq),
-              tests: me.total_tests > them.total_tests,
-            }} />
+              tests: me.total_tests > them.total_tests }} />
             <div className="flex md:flex-col items-center justify-center text-2xl font-bold text-muted-foreground">
               VS
             </div>
-            <PlayerCol row={them} wins={{
+            <PlayerCol row={them} wins={ {
               best: them.best_iq > me.best_iq,
               avg: Number(them.avg_iq) > Number(me.avg_iq),
-              tests: them.total_tests > me.total_tests,
-            }} />
+              tests: them.total_tests > me.total_tests }} />
           </div>
         )}
       </CardContent>

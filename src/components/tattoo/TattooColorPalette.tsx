@@ -33,8 +33,7 @@ export const TattooColorPalette = ({ onBack }: Props) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("tattoo-ai-tools", {
-        body: { type: "color_palette", skinTone, description: tattooDesc },
-      });
+        body: { type: "color_palette", skinTone, description: tattooDesc } });
       if (error) throw error;
       setResult(data);
       await refresh();

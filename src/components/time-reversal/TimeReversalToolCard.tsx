@@ -13,8 +13,7 @@ interface TimeReversalToolCardProps {
   badge?: string;
 }
 
-const colorMap: Record<string, string> = {
-  purple: "from-purple-500/20 to-purple-600/10 border-purple-500/30 hover:border-purple-400/60",
+const colorMap: Record<string, string> = { purple: "from-purple-500/20 to-purple-600/10 border-purple-500/30 hover:border-purple-400/60",
   violet: "from-violet-500/20 to-violet-600/10 border-violet-500/30 hover:border-violet-400/60",
   blue: "from-blue-500/20 to-blue-600/10 border-blue-500/30 hover:border-blue-400/60",
   pink: "from-pink-500/20 to-pink-600/10 border-pink-500/30 hover:border-pink-400/60",
@@ -25,14 +24,11 @@ const colorMap: Record<string, string> = {
   orange: "from-orange-500/20 to-orange-600/10 border-orange-500/30 hover:border-orange-400/60",
   rose: "from-rose-500/20 to-rose-600/10 border-rose-500/30 hover:border-rose-400/60",
   red: "from-red-500/20 to-red-600/10 border-red-500/30 hover:border-red-400/60",
-  fuchsia: "from-fuchsia-500/20 to-fuchsia-600/10 border-fuchsia-500/30 hover:border-fuchsia-400/60",
-};
+  fuchsia: "from-fuchsia-500/20 to-fuchsia-600/10 border-fuchsia-500/30 hover:border-fuchsia-400/60" };
 
-const iconColorMap: Record<string, string> = {
-  purple: "text-purple-400", violet: "text-violet-400", blue: "text-blue-400", pink: "text-pink-400",
+const iconColorMap: Record<string, string> = { purple: "text-purple-400", violet: "text-violet-400", blue: "text-blue-400", pink: "text-pink-400",
   amber: "text-amber-400", emerald: "text-emerald-400", cyan: "text-cyan-400", indigo: "text-indigo-400",
-  orange: "text-orange-400", rose: "text-rose-400", red: "text-red-400", fuchsia: "text-fuchsia-400",
-};
+  orange: "text-orange-400", rose: "text-rose-400", red: "text-red-400", fuchsia: "text-fuchsia-400" };
 
 export function TimeReversalToolCard({ icon: Icon, title, description, color, onClick, index, badge }: TimeReversalToolCardProps) {
   return (

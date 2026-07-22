@@ -20,14 +20,12 @@ import {
   Pencil
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -115,12 +113,10 @@ export default function CampaignDashboard() {
 
       if (withdrawalsError) throw withdrawalsError;
       setWithdrawalRequests(withdrawalsData || []);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -149,27 +145,22 @@ export default function CampaignDashboard() {
       const refreshUrl = currentUrl;
 
       const { data, error } = await supabase.functions.invoke('stripe-connect-onboarding', {
-        body: { returnUrl, refreshUrl },
-      });
+        body: { returnUrl, refreshUrl } });
 
       if (error) throw error;
 
-      if (data.onboardingComplete) {
-        toast({
+      if (data.onboardingComplete) { toast({
           title: "Already Connected",
-          description: "Your Stripe account is already set up for payouts!",
-        });
+          description: "Your Stripe account is already set up for payouts!" });
         loadConnectStatus();
       } else if (data.onboardingUrl) {
         // Redirect to Stripe onboarding
         { const __w = window.open(data.onboardingUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.onboardingUrl; }
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setConnectingStripe(false);
     }
@@ -184,17 +175,14 @@ export default function CampaignDashboard() {
       if (data.dashboardUrl) {
         window.open(data.dashboardUrl, '_blank');
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
-  const handleWithdrawalRequest = async () => {
-    try {
+  const handleWithdrawalRequest = async () => { try {
       setProcessingWithdraw(true);
       const amount = parseFloat(withdrawAmount);
       
@@ -202,8 +190,7 @@ export default function CampaignDashboard() {
         toast({
           title: "Invalid amount",
           description: "Please enter a valid amount",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -212,45 +199,35 @@ export default function CampaignDashboard() {
         toast({
           title: "Insufficient balance",
           description: `Maximum available: €${availableBalance.toFixed(2)}`,
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
-      if (!connectStatus?.payoutsEnabled) {
-        toast({
+      if (!connectStatus?.payoutsEnabled) { toast({
           title: "Setup Required",
           description: "Please complete your Stripe account setup before requesting a withdrawal.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('request-campaign-payout', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('request-campaign-payout', { body: {
           campaign_id: campaignId,
           campaign_type: campaignType,
-          amount_cents: Math.round(amount * 100),
-        },
-      });
+          amount_cents: Math.round(amount * 100) } });
 
       if (error) throw error;
 
-      toast({
-        title: "Success!",
-        description: data.message || "Funds transferred to your Stripe account.",
-      });
+      toast({ title: "Success!",
+        description: data.message || "Funds transferred to your Stripe account." });
 
       setShowWithdrawDialog(false);
       setWithdrawAmount("");
       loadData();
       loadConnectStatus();
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setProcessingWithdraw(false);
     }

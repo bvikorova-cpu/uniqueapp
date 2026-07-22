@@ -46,8 +46,7 @@ serve(async (req) => {
     const reply = await callOpenAI({
       system: `You are a wise astrologer. ${sign ? `User's sign: ${sign}.` : ""} Be warm, insightful, mystical. 1-4 sentences per reply.`,
       user: recent ? `${recent}\nuser: ${userText}` : userText,
-      temperature: 0.85,
-    });
+      temperature: 0.85 });
 
     if (deductCredit && row) {
       await adminClient
@@ -56,12 +55,10 @@ serve(async (req) => {
         .eq("user_id", user.id);
     }
 
-    return jsonResponse({
-      reply,
+    return jsonResponse({ reply,
       message: reply,
       response: reply,
-      remaining: deductCredit ? remaining - COST : remaining,
-    });
+      remaining: deductCredit ? remaining - COST : remaining });
   } catch (e: any) {
     return errorResponse(e?.message || "Astrology chat failed");
   }

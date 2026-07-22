@@ -2,10 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  CheckCircle2, XCircle, AlertTriangle, ExternalLink, RefreshCw,
-  Loader2, Banknote, Globe, CalendarClock, Percent, ShieldAlert,
-} from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, ExternalLink, RefreshCw,
+  Loader2, Banknote, Globe, CalendarClock, Percent, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -85,8 +83,7 @@ export const StripeConnectBanner = () => {
         eventually_due: d.stripe_connect_eventually_due ?? [],
         capabilities: d.stripe_connect_capabilities ?? {},
         payout_schedule: d.stripe_connect_payout_schedule ?? null,
-        synced_at: d.stripe_connect_synced_at ?? undefined,
-      };
+        synced_at: d.stripe_connect_synced_at ?? undefined };
       setStatus(cached);
 
       if (live && cached.connected) {

@@ -13,9 +13,7 @@ const hrefSetter = vi.fn();
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     auth: { getSession: vi.fn() },
-    functions: { invoke: vi.fn() },
-  },
-}));
+    functions: { invoke: vi.fn() } } }));
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -26,19 +24,16 @@ const invoke = supabase.functions.invoke as unknown as ReturnType<typeof vi.fn> 
 async function handleSubscribe(tierToBuy: "premium" | "top_premium") {
   try {
     const { data: { session } } = await getSession();
-    if (!session) {
-      toast({
+    if (!session) { toast({
         title: "Login required",
         description: "To purchase a subscription, please log in first.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       hrefSetter("/auth?redirect=/megatalent");
       return;
     }
     const { data, error } = await invoke("create-megatalent-checkout", {
       body: { tier: tierToBuy },
-      headers: { Authorization: `Bearer ${session.access_token}` },
-    });
+      headers: { Authorization: `Bearer ${session.access_token}` } });
     if (error) throw error;
     if (data?.url) {
       open(data.url, "_blank");
@@ -46,12 +41,10 @@ async function handleSubscribe(tierToBuy: "premium" | "top_premium") {
     } else {
       throw new Error("Checkout URL was not returned");
     }
-  } catch (err: any) {
-    toast({
+  } catch (err: any) { toast({
       title: "Checkout error",
       description: err?.message || "Failed to initiate payment.",
-      variant: "destructive",
-    });
+      variant: "destructive" });
   }
 }
 
@@ -67,10 +60,8 @@ describe("Megatalent subscribe buttons", () => {
   it("logged out → displays toast and redirects to /auth", async () => {
     getSession.mockResolvedValue({ data: { session: null } });
     await handleSubscribe("premium");
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({
-      title: "Login required",
-      variant: "destructive",
-    }));
+    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: "Login required",
+      variant: "destructive" }));
     expect(hrefSetter).toHaveBeenCalledWith("/auth?redirect=/megatalent");
     expect(invoke).not.toHaveBeenCalled();
   });
@@ -81,8 +72,7 @@ describe("Megatalent subscribe buttons", () => {
     await handleSubscribe("premium");
     expect(invoke).toHaveBeenCalledWith("create-megatalent-checkout", {
       body: { tier: "premium" },
-      headers: { Authorization: "Bearer tok" },
-    });
+      headers: { Authorization: "Bearer tok" } });
     expect(open).toHaveBeenCalledWith("https://stripe.test/p", "_blank");
   });
 
@@ -91,8 +81,7 @@ describe("Megatalent subscribe buttons", () => {
     invoke.mockResolvedValue({ data: { url: "https://stripe.test/tp" }, error: null });
     await handleSubscribe("top_premium");
     expect(invoke).toHaveBeenCalledWith("create-megatalent-checkout", expect.objectContaining({
-      body: { tier: "top_premium" },
-    }));
+      body: { tier: "top_premium" } }));
     expect(open).toHaveBeenCalledWith("https://stripe.test/tp", "_blank");
   });
 
@@ -100,11 +89,9 @@ describe("Megatalent subscribe buttons", () => {
     getSession.mockResolvedValue({ data: { session: { access_token: "tok" } } });
     invoke.mockResolvedValue({ data: null, error: new Error("Stripe key missing") });
     await handleSubscribe("premium");
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({
-      title: "Checkout error",
+    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: "Checkout error",
       description: "Stripe key missing",
-      variant: "destructive",
-    }));
+      variant: "destructive" }));
     expect(open).not.toHaveBeenCalled();
   });
 
@@ -112,10 +99,8 @@ describe("Megatalent subscribe buttons", () => {
     getSession.mockResolvedValue({ data: { session: { access_token: "tok" } } });
     invoke.mockResolvedValue({ data: {}, error: null });
     await handleSubscribe("top_premium");
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({
-      title: "Checkout error",
+    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: "Checkout error",
       description: "Checkout URL was not returned",
-      variant: "destructive",
-    }));
+      variant: "destructive" }));
   });
 });

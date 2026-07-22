@@ -144,12 +144,10 @@ export const usePremiumStore = () => {
       if (isUuid) {
         const { error } = await supabase
           .from('user_premium_purchases')
-          .insert({
-            user_id: user.id,
+          .insert({ user_id: user.id,
             feature_id: featureId,
             feature_name: featureName,
-            credits_spent: cost,
-          });
+            credits_spent: cost });
         if (error) throw error;
       }
 
@@ -191,10 +189,8 @@ export const usePremiumStore = () => {
       // Add badge to user
       const { data, error } = await supabase
         .from('user_premium_badges')
-        .insert({
-          user_id: user.id,
-          badge_id: badgeId,
-        })
+        .insert({ user_id: user.id,
+          badge_id: badgeId })
         .select()
         .single();
 
@@ -239,10 +235,8 @@ export const usePremiumStore = () => {
       // Add theme to user
       const { data, error } = await supabase
         .from('user_premium_themes')
-        .insert({
-          user_id: user.id,
-          theme_id: themeId,
-        })
+        .insert({ user_id: user.id,
+          theme_id: themeId })
         .select()
         .single();
 
@@ -287,10 +281,8 @@ export const usePremiumStore = () => {
       // Add avatar to user
       const { data, error } = await supabase
         .from('user_premium_avatars')
-        .insert({
-          user_id: user.id,
-          avatar_id: avatarId,
-        })
+        .insert({ user_id: user.id,
+          avatar_id: avatarId })
         .select()
         .single();
 
@@ -311,10 +303,8 @@ export const usePremiumStore = () => {
       if (!user) return false;
 
       // Call the database function to activate theme
-      const { error } = await supabase.rpc('activate_user_theme', {
-        p_user_id: user.id,
-        p_theme_id: themeId,
-      });
+      const { error } = await supabase.rpc('activate_user_theme', { p_user_id: user.id,
+        p_theme_id: themeId });
 
       if (error) throw error;
 
@@ -338,8 +328,7 @@ export const usePremiumStore = () => {
     }
   };
 
-  return {
-    features,
+  return { features,
     badges,
     themes,
     avatars,
@@ -352,6 +341,5 @@ export const usePremiumStore = () => {
     purchaseTheme,
     purchaseAvatar,
     activateTheme,
-    refresh: loadData,
-  };
+    refresh: loadData };
 };

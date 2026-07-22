@@ -14,12 +14,10 @@ interface ChatCreditsState {
  * Paid-only Character Chat credits (1 credit per message).
  * Backed by `chat_credits` table + universal `create-checkout` router.
  */
-export const useChatCredits = () => {
-  const [state, setState] = useState<ChatCreditsState>({
+export const useChatCredits = () => { const [state, setState] = useState<ChatCreditsState>({
     credits_remaining: 0,
     total_credits_purchased: 0,
-    loading: true,
-  });
+    loading: true });
 
   const refresh = useCallback(async () => {
     try {
@@ -37,12 +35,10 @@ export const useChatCredits = () => {
 
       if (error && error.code !== "PGRST116") throw error;
 
-      if (data) {
-        setState({
+      if (data) { setState({
           credits_remaining: data.credits_remaining ?? 0,
           total_credits_purchased: data.total_credits_purchased ?? 0,
-          loading: false,
-        });
+          loading: false });
       } else {
         // Lazy-create row (only readable by the user; insert here will fail under RLS,
         // so leave it to the edge function on first chat attempt).
@@ -62,8 +58,7 @@ export const useChatCredits = () => {
         return null;
       }
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { credits, creditType: "chat" },
-      });
+        body: { credits, creditType: "chat" } });
       if (error) throw error;
       return data?.url || null;
     } catch (e: any) {
@@ -77,10 +72,8 @@ export const useChatCredits = () => {
     refresh();
   }, [refresh]);
 
-  return {
-    ...state,
+  return { ...state,
     canSendMessage: state.credits_remaining >= CHAT_CREDITS_PER_MESSAGE,
     refresh,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

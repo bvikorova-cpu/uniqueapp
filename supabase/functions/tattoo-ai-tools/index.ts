@@ -1,22 +1,18 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-};
+const corsHeaders = { 'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
 
 // Per-tool credit cost (must match the UI badges)
-const CREDIT_COSTS: Record<string, number> = {
-  design: 8,
+const CREDIT_COSTS: Record<string, number> = { design: 8,
   style_mix: 8,
   aging_simulation: 5,
   color_palette: 6,
   meaning_lookup: 5,
   cover_up: 10,
   pain_info: 4,
-  care_guide: 5,
-};
+  care_guide: 5 };
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -29,8 +25,7 @@ serve(async (req) => {
     const cost = CREDIT_COSTS[type];
     if (!cost) {
       return new Response(JSON.stringify({ error: `Unknown tool type: ${type}` }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     const __auth = await requireAiCredits(req, corsHeaders, { credits: cost, usageType: `tattoo_${type}` });
@@ -47,9 +42,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "gpt-4o-mini",
           messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
-          max_completion_tokens: maxTokens,
-        }),
-      });
+          max_completion_tokens: maxTokens }) });
       if (!response.ok) throw new Error(`OpenAI API error: ${response.status}`);
       const data = await response.json();
       return data.choices?.[0]?.message?.content;
@@ -59,8 +52,7 @@ serve(async (req) => {
       const response = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: "gpt-image-1", prompt, n: 1, size: "1024x1024" }),
-      });
+        body: JSON.stringify({ model: "gpt-image-1", prompt, n: 1, size: "1024x1024" }) });
       if (!response.ok) {
         if (response.status === 429) throw new Error('Rate limit exceeded. Please try again shortly.');
         throw new Error(`Image generation error: ${response.status}`);
@@ -139,13 +131,11 @@ serve(async (req) => {
 
     await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify(payload), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (error: any) {
     console.error('tattoo-ai-tools error:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: error.message?.includes('Rate limit') ? 429 : 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 });

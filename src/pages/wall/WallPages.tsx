@@ -28,8 +28,7 @@ export default function WallPages() {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: myPages = [], refetch: refetchPages } = useQuery({
     queryKey: ["my-pages", user?.id],
@@ -38,8 +37,7 @@ export default function WallPages() {
       const { data: pages } = await supabase.from("pages").select("*").eq("user_id", user.id);
       return pages || [];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: followedPages = [], refetch: refetchFollowed } = useQuery({
     queryKey: ["followed-pages", user?.id],
@@ -51,8 +49,7 @@ export default function WallPages() {
       const { data: pages } = await supabase.from("pages").select("*").in("id", pageIds);
       return pages || [];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: allPages = [], refetch: refetchAllPages } = useQuery({
     queryKey: ["all-pages", searchQuery],
@@ -61,8 +58,7 @@ export default function WallPages() {
       if (searchQuery.trim()) query = query.ilike("name", `%${searchQuery}%`);
       const { data } = await query.limit(20);
       return data || [];
-    },
-  });
+    } });
 
   const createPage = async () => {
     if (!user || !newPageName.trim()) return;
@@ -91,14 +87,12 @@ export default function WallPages() {
     toast({ title: "Unfollowed" }); refetchFollowed(); refetchAllPages();
   };
 
-  const categoryGradients: Record<string, string> = {
-    "Business": "from-blue-600 via-indigo-500 to-violet-500",
+  const categoryGradients: Record<string, string> = { "Business": "from-blue-600 via-indigo-500 to-violet-500",
     "Entertainment": "from-purple-600 via-pink-500 to-rose-400",
     "Community": "from-emerald-500 via-teal-500 to-cyan-400",
     "Sports": "from-orange-500 via-red-500 to-rose-500",
     "Technology": "from-cyan-500 via-blue-500 to-indigo-500",
-    "Art": "from-fuchsia-500 via-purple-500 to-violet-500",
-  };
+    "Art": "from-fuchsia-500 via-purple-500 to-violet-500" };
 
   const defaultGradients = [
     "from-primary via-purple-500 to-accent",

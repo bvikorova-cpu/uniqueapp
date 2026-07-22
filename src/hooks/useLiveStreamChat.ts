@@ -31,8 +31,7 @@ export function useLiveStreamChat(livePostId: string | null) {
       .channel(`live-chat-${livePostId}`)
       .on("postgres_changes", {
         event: "INSERT", schema: "public", table: "live_stream_messages",
-        filter: `live_post_id=eq.${livePostId}`,
-      }, (payload) => {
+        filter: `live_post_id=eq.${livePostId}` }, (payload) => {
         setMessages((prev) => [...prev, payload.new as LiveStreamMessage]);
       })
       .subscribe();
@@ -44,9 +43,7 @@ export function useLiveStreamChat(livePostId: string | null) {
     if (!livePostId || !content.trim()) return;
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
-    const { error } = await (supabase as any).from("live_stream_messages").insert({
-      live_post_id: livePostId, user_id: u.user.id, content: content.trim(),
-    });
+    const { error } = await (supabase as any).from("live_stream_messages").insert({ live_post_id: livePostId, user_id: u.user.id, content: content.trim() });
     if (error) toast({ title: "Failed", description: error.message, variant: "destructive" });
   };
 

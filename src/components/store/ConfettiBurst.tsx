@@ -41,16 +41,14 @@ export const ConfettiBurst = ({ trigger }: ConfettiBurstProps) => {
                 y: `calc(50vh + ${y}px)`,
                 opacity: 0,
                 scale: 1,
-                rotate: Math.random() * 720,
-              }}
+                rotate: Math.random() * 720 }}
               transition={{ duration: 1.4 + Math.random() * 0.4, ease: "easeOut" }}
-              style={{
+              style={ {
                 position: "absolute",
                 width: size,
                 height: size,
                 background: color,
-                borderRadius: i % 3 === 0 ? "50%" : "2px",
-              }}
+                borderRadius: i % 3 === 0 ? "50%" : "2px" }}
             />
           );
         })}

@@ -21,8 +21,7 @@ const petTypes = [
   { value: 'other', label: '🐾 Other' },
 ];
 
-export default function CreatePetCampaign() {
-  const navigate = useNavigate();
+export default function CreatePetCampaign() { const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
@@ -37,8 +36,7 @@ export default function CreatePetCampaign() {
     target_amount: '',
     urgent: false,
     images: [] as string[],
-    video_url: '',
-  });
+    video_url: '' });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -49,12 +47,10 @@ export default function CreatePetCampaign() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in to upload images',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         return;
       }
 
@@ -63,8 +59,7 @@ export default function CreatePetCampaign() {
           toast({
             title: 'Error',
             description: `${file.name} is too large (max 5MB)`,
-            variant: 'destructive',
-          });
+            variant: 'destructive' });
           continue;
         }
 
@@ -87,48 +82,39 @@ export default function CreatePetCampaign() {
       setFormData({ ...formData, images: [...formData.images, ...uploadedUrls] });
       toast({
         title: 'Success',
-        description: `${uploadedUrls.length} image(s) uploaded`,
-      });
-    } catch (error) {
-      console.error('Error uploading images:', error);
+        description: `${uploadedUrls.length} image(s) uploaded` });
+    } catch (error) { console.error('Error uploading images:', error);
       toast({
         title: 'Error',
         description: 'Failed to upload images',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setUploading(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
     
     if (!formData.title || !formData.description || !formData.story || !formData.pet_name || !formData.pet_type || !formData.target_amount) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
-    if (!consentChecked) {
-      toast({
+    if (!consentChecked) { toast({
         title: 'Error',
         description: 'You must confirm the consent checkbox',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
     const targetAmount = parseFloat(formData.target_amount);
-    if (isNaN(targetAmount) || targetAmount < 50) {
-      toast({
+    if (isNaN(targetAmount) || targetAmount < 50) { toast({
         title: 'Error',
         description: 'Minimum target amount is €50',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
       return;
     }
 
@@ -137,20 +123,17 @@ export default function CreatePetCampaign() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: 'Error',
           description: 'You must be logged in to create a campaign',
-          variant: 'destructive',
-        });
+          variant: 'destructive' });
         navigate('/auth');
         return;
       }
 
       const { data, error } = await supabase
         .from('pet_rescue_campaigns')
-        .insert({
-          user_id: session.user.id,
+        .insert({ user_id: session.user.id,
           title: formData.title,
           description: formData.description,
           story: formData.story,
@@ -162,26 +145,21 @@ export default function CreatePetCampaign() {
           urgent: formData.urgent,
           images: formData.images.length > 0 ? formData.images : null,
           video_url: formData.video_url || null,
-          status: 'pending',
-        })
+          status: 'pending' })
         .select()
         .single();
 
       if (error) throw error;
 
-      toast({
-        title: 'Success!',
-        description: 'Your pet rescue campaign has been submitted for admin approval',
-      });
+      toast({ title: 'Success!',
+        description: 'Your pet rescue campaign has been submitted for admin approval' });
 
       navigate(`/fundraising/pet/${data.id}/success?action=created`);
-    } catch (error) {
-      console.error('Error creating campaign:', error);
+    } catch (error) { console.error('Error creating campaign:', error);
       toast({
         title: 'Error',
         description: 'Failed to create campaign',
-        variant: 'destructive',
-      });
+        variant: 'destructive' });
     } finally {
       setCreating(false);
     }

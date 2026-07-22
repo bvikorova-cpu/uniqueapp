@@ -21,8 +21,7 @@ interface Result {
 // service-role credentials and returns a real "works / doesn't work" verdict.
 async function probeAllRemote(names: string[]): Promise<Record<string, Result>> {
   const { data, error } = await supabase.functions.invoke('health-check', {
-    body: { names },
-  });
+    body: { names } });
   if (error) throw error;
   const out: Record<string, Result> = {};
   const results = (data as {
@@ -152,7 +151,7 @@ const Inner = () => {
           </Button>
           <Button
             variant="outline"
-            onClick={() => {
+            onClick={ () => {
               const rows = EDGE_FUNCTIONS.map((fn) => {
                 const r = results[fn];
                 return {
@@ -160,8 +159,7 @@ const Inner = () => {
                   status: r?.status ?? "idle",
                   code: r?.code ?? "",
                   ms: r?.ms ?? "",
-                  message: r?.message ?? "",
-                };
+                  message: r?.message ?? "" };
               });
               const okList = rows.filter((r) => r.status === "ok").map((r) => r.name);
               const errList = rows.filter((r) => r.status === "error");

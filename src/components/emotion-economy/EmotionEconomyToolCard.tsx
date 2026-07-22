@@ -15,8 +15,7 @@ interface EmotionEconomyToolCardProps {
   delay?: number;
 }
 
-export function EmotionEconomyToolCard({
-  icon: Icon,
+export function EmotionEconomyToolCard({ icon: Icon,
   title,
   description,
   badge,
@@ -24,8 +23,7 @@ export function EmotionEconomyToolCard({
   gradient,
   iconColor,
   onClick,
-  delay = 0,
-}: EmotionEconomyToolCardProps) {
+  delay = 0 }: EmotionEconomyToolCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

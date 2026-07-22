@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Flame, Loader2, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { useDailyLoginReward } from "@/hooks/useDailyLoginReward";
 import { useToast } from "@/hooks/use-toast";
 
@@ -21,8 +19,7 @@ export function DailyLoginRewardDialog() {
     if (res?.claimed) {
       toast({
         title: `+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"}`,
-        description: `Streak: ${res.streak} days 🔥`,
-      });
+        description: `Streak: ${res.streak} days 🔥` });
     } else if (res) {
       toast({ title: "You've already claimed today", variant: "default" });
     }

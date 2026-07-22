@@ -19,14 +19,12 @@ interface CastleRoomMiniMapProps {
   onClose: () => void;
 }
 
-export const CastleRoomMiniMap = ({
-  rooms,
+export const CastleRoomMiniMap = ({ rooms,
   currentRoomIndex,
   visitedRoomIds,
   onRoomSelect,
   isVisible,
-  onClose,
-}: CastleRoomMiniMapProps) => {
+  onClose }: CastleRoomMiniMapProps) => {
   if (!isVisible) return null;
 
   return (

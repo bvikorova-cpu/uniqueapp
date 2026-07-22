@@ -57,14 +57,12 @@ export default function AdminSmokeTest() {
     }
   }, []);
 
-  const summary = useMemo(() => {
-    const list = Object.values(results);
+  const summary = useMemo(() => { const list = Object.values(results);
     return {
       pass: list.filter((r) => r.status === "pass").length,
       fail: list.filter((r) => r.status === "fail").length,
       blank: list.filter((r) => r.status === "blank").length,
-      timeout: list.filter((r) => r.status === "timeout").length,
-    };
+      timeout: list.filter((r) => r.status === "timeout").length };
   }, [results]);
 
   const update = (route: string, patch: Partial<RouteResult>) =>
@@ -138,14 +136,12 @@ export default function AdminSmokeTest() {
         }
         completed++;
         setDone(completed);
-        try {
-          await supabase.from("smoke_test_route_results").insert({
+        try { await supabase.from("smoke_test_route_results").insert({
             run_id: runRowId,
             route,
             status: res.status,
             console_errors: res.errors,
-            duration_ms: res.durationMs,
-          });
+            duration_ms: res.durationMs });
         } catch (e) {
           console.warn("[smoke] insert failed", e);
         }
@@ -207,13 +203,11 @@ export default function AdminSmokeTest() {
 
     const done = new Set((existing ?? []).map((r) => r.route));
     const map: Record<string, RouteResult> = {};
-    for (const r of existing ?? []) {
-      map[r.route] = {
+    for (const r of existing ?? []) { map[r.route] = {
         route: r.route,
         status: r.status as RouteStatus,
         errors: (r.console_errors as string[]) ?? [],
-        durationMs: r.duration_ms ?? undefined,
-      };
+        durationMs: r.duration_ms ?? undefined };
     }
     setResults(map);
     setResumeAvailable(null);

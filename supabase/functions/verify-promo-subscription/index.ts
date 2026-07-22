@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -28,19 +26,14 @@ serve(async (req) => {
     const { sessionId } = await req.json();
     if (!sessionId) throw new Error("sessionId required");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ["subscription"],
-    });
+    const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["subscription"] });
 
     if (session.payment_status !== "paid" && session.status !== "complete") {
       return new Response(JSON.stringify({ ok: false, status: session.status }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+        status: 200 });
     }
 
     const listingId = session.metadata?.listingId;
@@ -56,12 +49,10 @@ serve(async (req) => {
 
     const { data: updated, error: updErr } = await supabase
       .from("promo_listings")
-      .update({
-        status: "active",
+      .update({ status: "active",
         tier,
         stripe_subscription_id: subscriptionId ?? null,
-        active_until: activeUntil.toISOString(),
-      })
+        active_until: activeUntil.toISOString() })
       .eq("id", listingId)
       .eq("user_id", user.id)
       .select()
@@ -71,13 +62,11 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ ok: true, listing: updated }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

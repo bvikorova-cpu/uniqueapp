@@ -30,21 +30,18 @@ const CourseDetail = () => {
   const completedTopics = courseProgress?.completed_topics || [];
 
   // Initialize or reset progress only once
-  useEffect(() => {
-    // Don't initialize if we already have progress from either source
+  useEffect(() => { // Don't initialize if we already have progress from either source
     const hasExistingProgress = courseProgress?.completed_topics && courseProgress.completed_topics.length > 0;
     
     if (!hasExistingProgress && courseProgress === undefined) {
       console.log('Initializing fresh course progress...');
       updateProgress({
         current_topic: 0,
-        completed_topics: [],
-      });
+        completed_topics: [] });
     }
   }, []); // Empty dependency array - only run once on mount
 
-  const handleTopicComplete = async (index: number) => {
-    console.log('handleTopicComplete called with index:', index);
+  const handleTopicComplete = async (index: number) => { console.log('handleTopicComplete called with index:', index);
     console.log('Current courseProgress:', courseProgress);
     
     const currentCompleted = courseProgress?.completed_topics || [];
@@ -62,30 +59,25 @@ const CourseDetail = () => {
     // Call updateProgress and wait for it
     await updateProgress({
       current_topic: nextTopic,
-      completed_topics: newCompletedTopics,
-    });
+      completed_topics: newCompletedTopics });
 
     if (index === 9) {
       setShowTest(true);
     }
   };
 
-  const handleTopicSelect = (index: number) => {
-    const currentCompleted = courseProgress?.completed_topics || [];
+  const handleTopicSelect = (index: number) => { const currentCompleted = courseProgress?.completed_topics || [];
     updateProgress({
       current_topic: index,
-      completed_topics: currentCompleted,
-    });
+      completed_topics: currentCompleted });
   };
 
-  const handleTestPass = (name: string) => {
-    setUserName(name);
+  const handleTestPass = (name: string) => { setUserName(name);
     setTestPassed(true);
     // Save with default passing score
     saveCompletedCourse({
       test_score: 85,
-      user_name: name,
-    });
+      user_name: name });
   };
 
   const progressPercentage = topics.length > 0 ? (completedTopics.length / topics.length) * 100 : 0;

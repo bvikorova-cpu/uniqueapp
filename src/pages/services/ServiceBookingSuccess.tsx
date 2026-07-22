@@ -54,8 +54,7 @@ export default function ServiceBookingSuccess() {
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke("verify-service-booking", {
-          body: { booking_id: bookingId, session_id: sessionId },
-        });
+          body: { booking_id: bookingId, session_id: sessionId } });
         if (error) throw error;
         setResult(data as VerifyResult);
         setState(data?.status === "confirmed" ? "confirmed" : "pending");

@@ -29,11 +29,9 @@ const DimensionalAnalytics = ({ onBack }: DimensionalAnalyticsProps) => {
   }, []);
 
   const barData = universes.map(u => ({ name: u.universe_name?.substring(0, 15), score: u.success_score }));
-  const radarData = universes.slice(0, 5).map(u => ({
-    dimension: u.universe_name?.substring(0, 10),
+  const radarData = universes.slice(0, 5).map(u => ({ dimension: u.universe_name?.substring(0, 10),
     success: u.success_score,
-    potential: Math.min(100, u.success_score + Math.floor(Math.random() * 20)),
-  }));
+    potential: Math.min(100, u.success_score + Math.floor(Math.random() * 20)) }));
 
   return (
     <>

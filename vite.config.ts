@@ -26,40 +26,30 @@ function i18nCheckPlugin() {
   return {
     name: "i18n-check",
     buildStart() { run(true); },
-    configureServer() { run(false); },
-  };
+    configureServer() { run(false); } };
 }
 
-export default defineConfig(() => ({
-  server: {
+export default defineConfig(() => ({ server: {
     host: "::",
-    port: 8080,
-  },
+    port: 8080 },
   plugins: [
     react(),
     tsconfigPaths(),
     i18nCheckPlugin(),
     ANALYZE &&
-      visualizer({
-        filename: "dist/bundle-stats.html",
+      visualizer({ filename: "dist/bundle-stats.html",
         template: "treemap",
         gzipSize: true,
         brotliSize: true,
-        open: false,
-      }),
+        open: false }),
   ].filter(Boolean),
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-  esbuild: {
-    // Strip noisy console calls from production bundles (keep warn/error for
+  resolve: { alias: {
+      "@": path.resolve(__dirname, "./src") } },
+  esbuild: { // Strip noisy console calls from production bundles (keep warn/error for
     // real diagnostics; uncaught errors are already routed to logger.ts via
     // installGlobalErrorHandlers). Debugger statements are always dropped.
     pure: process.env.NODE_ENV === "production" ? ["console.log", "console.debug", "console.info", "console.trace"] : [],
-    drop: process.env.NODE_ENV === "production" ? ["debugger"] : [],
-  },
+    drop: process.env.NODE_ENV === "production" ? ["debugger"] : [] },
   build: {
     target: "es2020",
     cssCodeSplit: true,
@@ -125,12 +115,8 @@ export default defineConfig(() => ({
           ) {
             return "vendor";
           }
-        },
-      },
-    },
-  },
-  optimizeDeps: {
-    include: [
+        } } } },
+  optimizeDeps: { include: [
       "react",
       "react-dom",
       "react-router-dom",
@@ -139,6 +125,4 @@ export default defineConfig(() => ({
       "react-markdown",
       "style-to-js",
       "style-to-object",
-    ],
-  },
-}));
+    ] } }));

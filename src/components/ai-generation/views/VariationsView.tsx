@@ -21,8 +21,7 @@ export const VariationsView = ({ onCreditsUsed }: Props) => {
       const results: string[] = [];
       for (let i = 0; i < 4; i++) {
         const { data, error } = await supabase.functions.invoke("ai-image-tools", {
-          body: { action: "variations", prompt: prompt.trim(), variationIndex: i },
-        });
+          body: { action: "variations", prompt: prompt.trim(), variationIndex: i } });
         if (error) throw error;
         if (data?.imageUrl) results.push(data.imageUrl);
       }

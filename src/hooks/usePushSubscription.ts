@@ -52,15 +52,13 @@ export function usePushSubscription() {
       if (!user) throw new Error("Sign in required");
       const json = sub.toJSON();
       const { error } = await supabase.from("push_subscriptions").upsert(
-        {
-          user_id: user.id,
+        { user_id: user.id,
           endpoint: json.endpoint!,
           p256dh: json.keys?.p256dh ?? null,
           auth: json.keys?.auth ?? null,
           user_agent: navigator.userAgent,
           platform: navigator.platform,
-          last_used_at: new Date().toISOString(),
-        },
+          last_used_at: new Date().toISOString() },
         { onConflict: "user_id,endpoint" },
       );
       if (error) throw error;

@@ -28,8 +28,7 @@ export function CustomStoryGenerator({ onGenerate, isGenerating }: CustomStoryGe
     const theme = THEMES.find(t => t.label === selectedTheme);
     onGenerate({
       title: `${childName}'s ${theme?.label || "Magical"} Dream`,
-      text: `Create a calming bedtime story for a child named ${childName || "little one"} who loves ${favoriteThing || "adventures"}. The story theme is ${selectedTheme || "magical"}. Make it soothing, gentle, and about 200 words. End with the child drifting off to peaceful sleep.`,
-    });
+      text: `Create a calming bedtime story for a child named ${childName || "little one"} who loves ${favoriteThing || "adventures"}. The story theme is ${selectedTheme || "magical"}. Make it soothing, gentle, and about 200 words. End with the child drifting off to peaceful sleep.` });
   };
 
   return (

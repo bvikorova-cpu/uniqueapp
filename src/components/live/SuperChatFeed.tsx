@@ -24,8 +24,7 @@ export const SuperChatFeed = ({ streamId }: Props) => {
             className="rounded-lg p-3 border-l-4 backdrop-blur-md"
             style={{
               borderColor: sc.highlight_color,
-              background: `linear-gradient(90deg, ${sc.highlight_color}33, transparent)`,
-            }}
+              background: `linear-gradient(90deg, ${sc.highlight_color}33, transparent)` }}
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold flex items-center gap-1">

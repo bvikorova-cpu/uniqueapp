@@ -78,17 +78,14 @@ const BestSelfFinder = () => {
 
       toast({
         title: "Analysis Complete",
-        description: `Found your top ${data.bestVersions.length} best versions`,
-      });
+        description: `Found your top ${data.bestVersions.length} best versions` });
 
       setBestVersions(data.bestVersions);
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Analysis Failed",
         description: error instanceof Error ? error.message : "Please try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setAnalyzing(false);
     }
@@ -121,20 +118,16 @@ const BestSelfFinder = () => {
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, '_blank');
+      if (data?.url) { window.open(data.url, '_blank');
         toast({
           title: "Opening Checkout",
-          description: "Complete your purchase to unlock Best Self Selection",
-        });
+          description: "Complete your purchase to unlock Best Self Selection" });
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Error",
         description: "Failed to open checkout. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

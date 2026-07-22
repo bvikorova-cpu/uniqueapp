@@ -27,8 +27,7 @@ export const usePostAnalytics = (postId?: string) => {
       if (error && error.code !== "PGRST116") throw error;
       return data;
     },
-    enabled: !!postId,
-  });
+    enabled: !!postId });
 
   const { data: userPosts } = useQuery({
     queryKey: ["user-posts-analytics"],
@@ -53,16 +52,11 @@ export const usePostAnalytics = (postId?: string) => {
 
       if (analyticsError) throw analyticsError;
 
-      return posts.map(post => ({
-        ...post,
-        analytics: analyticsData?.find(a => a.post_id === post.id),
-      }));
-    },
-  });
+      return posts.map(post => ({ ...post,
+        analytics: analyticsData?.find(a => a.post_id === post.id) }));
+    } });
 
-  return {
-    analytics,
+  return { analytics,
     userPosts: userPosts || [],
-    isLoading,
-  };
+    isLoading };
 };

@@ -4,38 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import {
-  Crown,
+import { Crown,
   Lock,
   MessageCircle,
   Video,
   Sparkles,
   TrendingUp,
   ArrowRight,
-  Star,
-} from "lucide-react";
+  Star } from "lucide-react";
 
 const benefits = [
-  {
-    icon: Crown,
+  { icon: Crown,
     title: "Exclusive tiers",
-    desc: "Monthly subscriptions with access to creator-only content.",
-  },
-  {
-    icon: Lock,
+    desc: "Monthly subscriptions with access to creator-only content." },
+  { icon: Lock,
     title: "Pay-per-view content",
-    desc: "Unlock individual videos, photos and stories on demand.",
-  },
-  {
-    icon: MessageCircle,
+    desc: "Unlock individual videos, photos and stories on demand." },
+  { icon: MessageCircle,
     title: "Direct DMs + tips",
-    desc: "Message your favorite creator and support them with tips.",
-  },
-  {
-    icon: Video,
+    desc: "Message your favorite creator and support them with tips." },
+  { icon: Video,
     title: "Live stream access",
-    desc: "Join private live broadcasts reserved for subscribers.",
-  },
+    desc: "Join private live broadcasts reserved for subscribers." },
 ];
 
 

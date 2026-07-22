@@ -14,13 +14,11 @@ export default function TimeReversalDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (!loading && (!subscribed || activeFeatures.length === 0)) {
+  useEffect(() => { if (!loading && (!subscribed || activeFeatures.length === 0)) {
       toast({
         title: "Subscription Required",
         description: "You need an active Time Reversal subscription to access the dashboard",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       navigate("/time-reversal-subscription");
     }
   }, [loading, subscribed, activeFeatures, navigate, toast]);

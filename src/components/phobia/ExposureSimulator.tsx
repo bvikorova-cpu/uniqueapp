@@ -16,14 +16,12 @@ const SCENARIOS = [
   { id: "dark", name: "Nyctophobia", emoji: "🌙", levels: 5, description: "Face your fear of darkness" },
 ];
 
-const LEVEL_DESCRIPTIONS: Record<string, string[]> = {
-  spider: ["Look at a cartoon spider drawing", "View a distant photo of a small spider", "Watch a video of a spider in nature", "Examine a close-up photo of a spider", "Imagine holding a spider in your hand"],
+const LEVEL_DESCRIPTIONS: Record<string, string[]> = { spider: ["Look at a cartoon spider drawing", "View a distant photo of a small spider", "Watch a video of a spider in nature", "Examine a close-up photo of a spider", "Imagine holding a spider in your hand"],
   heights: ["Stand on a small step stool", "Look out a second-floor window", "Stand on a balcony of a 5th floor", "Walk across a glass bridge", "Look down from a skyscraper observation deck"],
   social: ["Wave to a neighbor", "Order food at a restaurant", "Start a conversation with a stranger", "Give a presentation to 5 people", "Speak in front of a large audience"],
   flying: ["Watch planes take off from ground", "Sit in a parked airplane", "Taxi on the runway", "Take a short 30-minute flight", "Complete a long international flight"],
   enclosed: ["Stand in a large closet with door open", "Ride a spacious elevator alone", "Sit in a small room for 5 minutes", "Ride a crowded elevator", "Enter a small crawl space"],
-  dark: ["Dim the lights slightly", "Sit in a room with only candlelight", "Walk outside at dusk", "Sit in complete darkness for 1 minute", "Spend 10 minutes in total darkness"],
-};
+  dark: ["Dim the lights slightly", "Sit in a room with only candlelight", "Walk outside at dusk", "Sit in complete darkness for 1 minute", "Spend 10 minutes in total darkness"] };
 
 export const ExposureSimulator = () => {
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);

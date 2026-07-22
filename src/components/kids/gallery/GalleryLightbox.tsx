@@ -22,16 +22,14 @@ interface GalleryLightboxProps {
   isFavorited: boolean;
 }
 
-export function GalleryLightbox({
-  items,
+export function GalleryLightbox({ items,
   currentIndex,
   isOpen,
   onClose,
   onNavigate,
   onDownload,
   onFavorite,
-  isFavorited,
-}: GalleryLightboxProps) {
+  isFavorited }: GalleryLightboxProps) {
   if (!isOpen || items.length === 0) return null;
   const item = items[currentIndex];
   if (!item) return null;

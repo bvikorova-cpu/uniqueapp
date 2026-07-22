@@ -3,17 +3,14 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -39,9 +36,7 @@ serve(async (req) => {
     if (!/^[0-9a-f-]{36}$/i.test(tournament_id)) return json({ error: "Invalid tournament_id" }, 400);
 
     // 1. Verify user is the confirmed champion
-    const { data: isWinner, error: winErr } = await supabase.rpc("is_battle_royale_winner", {
-      _user_id: user.id, _tournament_id: tournament_id,
-    });
+    const { data: isWinner, error: winErr } = await supabase.rpc("is_battle_royale_winner", { _user_id: user.id, _tournament_id: tournament_id });
     if (winErr) { console.error(winErr); return json({ error: "Winner check failed" }, 500); }
     if (!isWinner) return json({ error: "You are not the champion of this tournament" }, 403);
 
@@ -58,9 +53,7 @@ serve(async (req) => {
     }
 
     // 3. Check available prize
-    const { data: avail, error: balErr } = await supabase.rpc("get_battle_royale_available_payout", {
-      _tournament_id: tournament_id,
-    });
+    const { data: avail, error: balErr } = await supabase.rpc("get_battle_royale_available_payout", { _tournament_id: tournament_id });
     if (balErr) { console.error(balErr); return json({ error: "Balance lookup failed" }, 500); }
     const amount_cents = Number(avail ?? 0);
     if (amount_cents <= 0) return json({ error: "No prize available (already paid or not set).", code: "NO_PRIZE" }, 400);
@@ -68,8 +61,7 @@ serve(async (req) => {
     // 4. Insert payout row with pending_review (admin must approve)
     const { data: row, error: insErr } = await supabase
       .from("campaign_payouts")
-      .insert({
-        campaign_id: tournament_id,
+      .insert({ campaign_id: tournament_id,
         campaign_type: "battle_royale",
         owner_user_id: user.id,
         amount_cents,
@@ -77,8 +69,7 @@ serve(async (req) => {
         stripe_destination_account: profile.stripe_connect_account_id,
         status: "pending_review",
         requires_review: true,
-        review_reason: "battle_royale_payout",
-      })
+        review_reason: "battle_royale_payout" })
       .select("id").single();
     if (insErr || !row) { console.error(insErr); return json({ error: "Could not record payout" }, 500); }
 
@@ -87,8 +78,7 @@ serve(async (req) => {
       type: "battle_royale_payout_requested",
       title: "Battle Royale payout request received",
       message: `Your €${(amount_cents / 100).toFixed(2)} prize is awaiting admin approval.`,
-      related_id: row.id,
-    });
+      related_id: row.id });
 
     return json({ success: true, payout_id: row.id, amount_cents, status: "pending_review" });
   } catch (e) {

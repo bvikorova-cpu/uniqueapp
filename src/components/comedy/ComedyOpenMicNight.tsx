@@ -49,12 +49,10 @@ export const ComedyOpenMicNight = ({ onBack }: Props) => {
 
       await supabase.from("comedy_currency").update({ coins: currency.coins - 5 }).eq("user_id", user.id);
 
-      await (supabase as any).from("comedy_open_mic").insert({
-        user_id: user.id,
+      await (supabase as any).from("comedy_open_mic").insert({ user_id: user.id,
         title,
         content: joke,
-        votes: 0,
-      });
+        votes: 0 });
 
       refetch();
       setTitle("");

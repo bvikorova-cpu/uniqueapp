@@ -17,34 +17,22 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 // ── Mocks ─────────────────────────────────────────────────────────────────
 const mockAuth = vi.hoisted(() => ({
   user: null as null | { id: string },
-  loading: false,
-}));
+  loading: false }));
 
-vi.mock("@/contexts/AuthContext", () => ({
-  useAuth: () => mockAuth,
-}));
+vi.mock("@/contexts/AuthContext", () => ({ useAuth: () => mockAuth }));
 
 vi.mock("@/hooks/use-toast", () => ({
-  useToast: () => ({ toast: vi.fn() }),
-}));
+  useToast: () => ({ toast: vi.fn() }) }));
 
 const mockRoleQuery = vi.hoisted(() => ({
-  result: { data: null as { role: string } | null, error: null as any },
-}));
+  result: { data: null as { role: string } | null, error: null as any } }));
 
-vi.mock("@/integrations/supabase/client", () => ({
-  supabase: {
+vi.mock("@/integrations/supabase/client", () => ({ supabase: {
     from: () => ({
       select: () => ({
         eq: () => ({
           eq: () => ({
-            maybeSingle: async () => mockRoleQuery.result,
-          }),
-        }),
-      }),
-    }),
-  },
-}));
+            maybeSingle: async () => mockRoleQuery.result }) }) }) }) } }));
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function renderGuard(opts: { admin?: boolean } = {}) {

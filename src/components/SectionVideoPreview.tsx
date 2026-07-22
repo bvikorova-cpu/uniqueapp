@@ -14,13 +14,11 @@ interface Props {
  * - preload="auto" so browser fetches eagerly once mounted
  * - Plays muted/looped when visible, pauses when not (no src removal — keeps cache)
  */
-export function SectionVideoPreview({
-  src,
+export function SectionVideoPreview({ src,
   caption,
   label,
   aspectRatio = "16 / 9",
-  className = "",
-}: Props) {
+  className = "" }: Props) {
   const figureRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [shouldLoad, setShouldLoad] = useState(false);

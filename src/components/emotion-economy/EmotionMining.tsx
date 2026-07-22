@@ -32,8 +32,7 @@ export function EmotionMining({ onBack }: { onBack?: () => void }) {
   const completeMining = async () => {
     try {
       const { data, error } = await supabase.functions.invoke("emotion-mine", {
-        body: { emotion_type: "joy", mining_method: "content_creation" },
-      });
+        body: { emotion_type: "joy", mining_method: "content_creation" } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
 
@@ -42,15 +41,12 @@ export function EmotionMining({ onBack }: { onBack?: () => void }) {
 
       toast({
         title: "Mining Complete! ⚡",
-        description: `You mined ${amount} emotions and earned €${Number(commission).toFixed(2)} commission`,
-      });
-    } catch (error: any) {
-      console.error("Error completing mining:", error);
+        description: `You mined ${amount} emotions and earned €${Number(commission).toFixed(2)} commission` });
+    } catch (error: any) { console.error("Error completing mining:", error);
       toast({
         title: "Mining failed",
         description: error?.message || "Try again in a moment",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsMining(false);
       setMiningProgress(0);

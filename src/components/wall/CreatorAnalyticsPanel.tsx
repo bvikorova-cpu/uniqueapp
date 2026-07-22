@@ -12,15 +12,13 @@ interface CreatorAnalyticsPanelProps {
   };
 }
 
-export const CreatorAnalyticsPanel = ({ stats }: CreatorAnalyticsPanelProps) => {
-  const defaultStats = stats || {
+export const CreatorAnalyticsPanel = ({ stats }: CreatorAnalyticsPanelProps) => { const defaultStats = stats || {
     totalViews: 0,
     totalLikes: 0,
     totalComments: 0,
     totalShares: 0,
     followers: 0,
-    growth: 0,
-  };
+    growth: 0 };
 
   const metrics = [
     { icon: Eye, label: "Views", value: defaultStats.totalViews, color: "text-blue-500" },

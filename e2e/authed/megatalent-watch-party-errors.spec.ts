@@ -30,8 +30,7 @@ async function stubUnsubscribed(page: Page) {
     route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ subscribed: false }),
-    }),
+      body: JSON.stringify({ subscribed: false }) }),
   );
 }
 
@@ -55,8 +54,7 @@ test.describe("Watch Party — error states", () => {
     await expect(page.getByRole("button", { name: /€10 \/ month/i })).toBeVisible();
   });
 
-  test("Go Live insert failure shows error toast and stays on lobby", async ({ page }) => {
-    let insertAttempted = false;
+  test("Go Live insert failure shows error toast and stays on lobby", async ({ page }) => { let insertAttempted = false;
 
     // Reject only the INSERT (POST). Allow GETs so the lobby renders.
     await page.route(REST_STREAMS, async (route) => {
@@ -68,9 +66,7 @@ test.describe("Watch Party — error states", () => {
           contentType: "application/json",
           body: JSON.stringify({
             code: "PGRST000",
-            message: "stream insert failed (e2e stub)",
-          }),
-        });
+            message: "stream insert failed (e2e stub)" }) });
       }
       return route.continue();
     });
@@ -78,9 +74,7 @@ test.describe("Watch Party — error states", () => {
     await page.goto("/megatalent/music");
     await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
-    await expect(page.getByText(/Live & Watch Party/i).first()).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(page.getByText(/Live & Watch Party/i).first()).toBeVisible({ timeout: 15_000 });
 
     // Open the create form and submit.
     await page.getByRole("button", { name: /Go Live/i }).click();
@@ -100,10 +94,7 @@ test.describe("Watch Party — error states", () => {
     expect(await page.getByPlaceholder(/Write a message/i).count()).toBe(0);
   });
 
-  test("chat send failure surfaces a toast and does not silently swallow the error", async ({
-    page,
-  }) => {
-    // Make every chat insert fail.
+  test("chat send failure surfaces a toast and does not silently swallow the error", async ({ page }) => { // Make every chat insert fail.
     await page.route(REST_MESSAGES, async (route) => {
       if (route.request().method() === "POST") {
         return route.fulfill({
@@ -111,9 +102,7 @@ test.describe("Watch Party — error states", () => {
           contentType: "application/json",
           body: JSON.stringify({
             code: "PGRST000",
-            message: "chat insert failed (e2e stub)",
-          }),
-        });
+            message: "chat insert failed (e2e stub)" }) });
       }
       return route.continue();
     });
@@ -124,23 +113,19 @@ test.describe("Watch Party — error states", () => {
     // Need a live stream first. Reuse the real "Go Live" flow but stub the
     // stream insert to succeed with a fake row so we land on the chat view
     // without touching the database.
-    const fakeStream = {
-      id: "00000000-0000-0000-0000-0000000000ee",
+    const fakeStream = { id: "00000000-0000-0000-0000-0000000000ee",
       host_user_id: "00000000-0000-0000-0000-0000000000ff",
       category: "singing",
       title: "stub stream for chat error",
       status: "live",
       started_at: new Date().toISOString(),
-      ended_at: null,
-    };
-    await page.route(REST_STREAMS, async (route) => {
-      const req = route.request();
+      ended_at: null };
+    await page.route(REST_STREAMS, async (route) => { const req = route.request();
       if (req.method() === "POST") {
         return route.fulfill({
           status: 201,
           contentType: "application/json",
-          body: JSON.stringify(fakeStream),
-        });
+          body: JSON.stringify(fakeStream) });
       }
       return route.continue();
     });

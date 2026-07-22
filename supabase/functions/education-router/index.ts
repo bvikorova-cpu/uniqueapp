@@ -6,11 +6,9 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { PDFDocument, StandardFonts, rgb } from "npm:pdf-lib@1.17.1";
 import QRCode from "npm:qrcode@1.5.4";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
@@ -34,9 +32,7 @@ async function aiJsonLovable(system: string, user: string): Promise<any> {
     body: JSON.stringify({
       model: "google/gemini-2.5-flash",
       messages: [{ role: "system", content: system }, { role: "user", content: user }],
-      response_format: { type: "json_object" },
-    }),
-  });
+      response_format: { type: "json_object" } }) });
   if (res.status === 402) throw new Error("ai_credits_exhausted");
   if (!res.ok) throw new Error(`ai_error_${res.status}`);
   const data = await res.json();
@@ -47,8 +43,7 @@ async function aiJsonLovable(system: string, user: string): Promise<any> {
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 async function callAI(messages: any[], opts: { model?: string; json?: boolean } = {}) {
@@ -56,14 +51,11 @@ async function callAI(messages: any[], opts: { model?: string; json?: boolean } 
     method: "POST",
     headers: {
       Authorization: `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
-    },
+      "Content-Type": "application/json" },
     body: JSON.stringify({
       model: opts.model ?? "gpt-4o-mini",
       messages,
-      ...(opts.json ? { response_format: { type: "json_object" } } : {}),
-    }),
-  });
+      ...(opts.json ? { response_format: { type: "json_object" } } : {}) }) });
   if (!res.ok) throw new Error(`AI ${res.status}: ${await res.text()}`);
   const data = await res.json();
   return data.choices?.[0]?.message?.content ?? "";
@@ -99,8 +91,7 @@ Deno.serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization");
     const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader ?? "" } },
-    });
+      global: { headers: { Authorization: authHeader ?? "" } } });
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
     const { data: userData } = await userClient.auth.getUser();
@@ -140,15 +131,13 @@ Deno.serve(async (req) => {
         const { error } = await admin
           .from("education_srs_state")
           .upsert(
-            {
-              user_id: user.id,
+            { user_id: user.id,
               card_id: cardId,
               ease: next.ease,
               interval_days: next.interval,
               repetitions: next.reps,
               due_at: dueAt,
-              last_reviewed_at: new Date().toISOString(),
-            },
+              last_reviewed_at: new Date().toISOString() },
             { onConflict: "user_id,card_id" }
           );
         if (error) throw error;
@@ -189,7 +178,7 @@ Deno.serve(async (req) => {
           // Hardcoded last-resort fallback so Daily Challenge is never empty
           if (picked.length === 0) {
             picked = [
-              { question: "What is the capital of France?", options: ["London", "Berlin", "Paris", "Madrid"], correct_answer: "Paris", explanation: "Paris has been the capital of France since 987 AD." },
+              { question: "What is the result of 8 + 5?", options: ["11", "12", "13", "14"], correct_answer: "13", explanation: "8 + 5 equals 13." },
               { question: "What is 7 × 8?", options: ["54", "56", "62", "64"], correct_answer: "56", explanation: "7 × 8 = 56." },
               { question: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], correct_answer: "Mars", explanation: "Mars appears red due to iron oxide on its surface." },
               { question: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "Mark Twain", "William Shakespeare", "Jane Austen"], correct_answer: "William Shakespeare", explanation: "Shakespeare wrote it around 1595." },
@@ -287,13 +276,11 @@ Deno.serve(async (req) => {
         const { error: pointsError } = await admin
           .from("user_points")
           .upsert(
-            {
-              user_id: user.id,
+            { user_id: user.id,
               total_points: (pts?.total_points ?? 0) + xpAdd,
               login_streak: newStreak,
               longest_streak: longest,
-              last_login_date: today,
-            },
+              last_login_date: today },
             { onConflict: "user_id" }
           );
         if (pointsError) throw pointsError;
@@ -308,12 +295,10 @@ Deno.serve(async (req) => {
           .eq("user_id", user.id)
           .maybeSingle();
         await admin.from("education_weekly_leagues").upsert(
-          {
-            week_start: ws,
+          { week_start: ws,
             user_id: user.id,
             xp_this_week: (league?.xp_this_week ?? 0) + xpAdd,
-            league_tier: "bronze",
-          },
+            league_tier: "bronze" },
           { onConflict: "week_start,user_id" }
         );
 
@@ -393,13 +378,11 @@ Deno.serve(async (req) => {
         if (score < 70) return json({ error: "Score must be >= 70 to receive a certificate" }, 400);
         const { data, error } = await admin
           .from("education_certificates")
-          .insert({
-            user_id: user.id,
+          .insert({ user_id: user.id,
             course_id: body.course_id ?? null,
             course_title: courseTitle,
             score,
-            recipient_name: recipientName,
-          })
+            recipient_name: recipientName })
           .select()
           .single();
         if (error) throw error;
@@ -437,13 +420,11 @@ Deno.serve(async (req) => {
         let parsed: any = { steps: [{ title: "Solution", explanation: raw }], answer: "" };
         try { parsed = JSON.parse(raw); } catch {}
 
-        await admin.from("education_math_solves").insert({
-          user_id: user.id,
+        await admin.from("education_math_solves").insert({ user_id: user.id,
           image_url: imageUrl ?? null,
           problem_text: problem || null,
           solution_steps: parsed.steps ?? [],
-          credits_used: 3,
-        });
+          credits_used: 3 });
         return json({ solution: parsed });
       }
 
@@ -722,8 +703,7 @@ async function handleCourse(sub: string, meta: any, course_key: string, body: an
       videos: [
         { title: `Tutorial: ${lt}`, embed_url: `https://www.youtube.com/embed?listType=search&list=${q1}` },
         { title: `Masterclass: ${lt}`, embed_url: `https://www.youtube.com/embed?listType=search&list=${q2}` },
-      ],
-    });
+      ] });
   }
   if (sub === "progress_get") {
     const { data } = await admin.from("education_lesson_progress").select("lesson_key").eq("user_id", user.id).eq("course_key", course_key);
@@ -793,8 +773,7 @@ async function handleCourse(sub: string, meta: any, course_key: string, body: an
     const { data: certRow, error: insErr } = await admin.from("education_certificates").insert({
       user_id: user.id,
       course_title: `${meta.module_label ?? meta.module_key} · ${meta.course_title}`,
-      score, recipient_name: recipient, certificate_code: certNumber, pdf_url: pub.publicUrl,
-    }).select().single();
+      score, recipient_name: recipient, certificate_code: certNumber, pdf_url: pub.publicUrl }).select().single();
     if (insErr) throw insErr;
     return json({ passed: true, score, correct, total: key.length, certificate: certRow, verify_url: verifyUrl });
   }

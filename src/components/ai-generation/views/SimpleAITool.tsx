@@ -19,10 +19,8 @@ interface SimpleAIToolProps {
   resultKey?: "imageUrl" | "imageUrls";
 }
 
-export const SimpleAITool = ({
-  title, emoji, description, cost, action, buttonLabel, buildBody, children, onCreditsUsed,
-  resultKey = "imageUrl",
-}: SimpleAIToolProps) => {
+export const SimpleAITool = ({ title, emoji, description, cost, action, buttonLabel, buildBody, children, onCreditsUsed,
+  resultKey = "imageUrl" }: SimpleAIToolProps) => {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<string[]>([]);
 
@@ -32,8 +30,7 @@ export const SimpleAITool = ({
     setLoading(true); setResults([]);
     try {
       const { data, error } = await supabase.functions.invoke("ai-image-tools", {
-        body: { action, ...body },
-      });
+        body: { action, ...body } });
       if (error) throw error;
       if (data?.error) { toast.error(data.error); return; }
       const out = resultKey === "imageUrls" ? (data.imageUrls || []) : (data.imageUrl ? [data.imageUrl] : []);

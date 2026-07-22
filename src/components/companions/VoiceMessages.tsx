@@ -52,8 +52,7 @@ export const VoiceMessages = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("companion-ai", {
-        body: { action: "voice-message", characterId: selectedCompanion, message: message.trim() },
-      });
+        body: { action: "voice-message", characterId: selectedCompanion, message: message.trim() } });
       if (error) throw error;
 
       if (data?.response_text) {

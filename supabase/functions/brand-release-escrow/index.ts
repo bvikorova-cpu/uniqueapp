@@ -4,11 +4,9 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -42,10 +40,8 @@ Deno.serve(async (req) => {
     if (escrowErr || !escrow) return jsonError("Escrow not found", 404);
 
     // 2. Atomic release via SECURITY DEFINER RPC (locks row, checks status, inserts earnings, updates balance, flips status — all in one transaction).
-    const { data: rpcRes, error: rpcErr } = await supabase.rpc("release_brand_campaign_escrow", {
-      _escrow_id: escrowId,
-      _actor: user.id,
-    });
+    const { data: rpcRes, error: rpcErr } = await supabase.rpc("release_brand_campaign_escrow", { _escrow_id: escrowId,
+      _actor: user.id });
     if (rpcErr) {
       console.error("release_brand_campaign_escrow RPC failed:", rpcErr);
       return jsonError("Release failed", 500);
@@ -54,8 +50,7 @@ Deno.serve(async (req) => {
       const map: Record<string, [string, number]> = {
         not_found: ["Escrow not found", 404],
         forbidden: ["Not authorized", 403],
-        invalid_status: [`Escrow is in status '${rpcRes.status}', cannot release`, 409],
-      };
+        invalid_status: [`Escrow is in status '${rpcRes.status}', cannot release`, 409] };
       const [msg, status] = map[rpcRes.error] ?? [rpcRes.error, 400];
       return jsonError(msg, status);
     }
@@ -76,14 +71,12 @@ Deno.serve(async (req) => {
         user_id: escrow.influencer_user_id,
         type: "campaign_payout_released",
         title: "Campaign payout released",
-        message: `€${netEur.toFixed(2)} from your brand campaign is now available to withdraw.`,
-      },
+        message: `€${netEur.toFixed(2)} from your brand campaign is now available to withdraw.` },
       {
         user_id: escrow.brand_user_id,
         type: "campaign_payout_released",
         title: "Escrow released",
-        message: `You released €${grossEur.toFixed(2)} for the brand campaign. Thank you!`,
-      },
+        message: `You released €${grossEur.toFixed(2)} for the brand campaign. Thank you!` },
     ]);
 
     return new Response(
@@ -98,6 +91,5 @@ Deno.serve(async (req) => {
 function jsonError(message: string, status: number) {
   return new Response(JSON.stringify({ error: message }), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

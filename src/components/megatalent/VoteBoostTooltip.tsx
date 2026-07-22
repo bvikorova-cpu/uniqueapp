@@ -1,10 +1,8 @@
 import { Info } from "lucide-react";
-import {
-  Tooltip,
+import { Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface VoteBoostTooltipProps {
@@ -12,10 +10,8 @@ interface VoteBoostTooltipProps {
   className?: string;
 }
 
-export const VoteBoostTooltip = ({
-  isTopPremium,
-  className,
-}: VoteBoostTooltipProps) => {
+export const VoteBoostTooltip = ({ isTopPremium,
+  className }: VoteBoostTooltipProps) => {
   if (!isTopPremium) return null;
 
   return (

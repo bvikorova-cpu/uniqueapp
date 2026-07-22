@@ -97,8 +97,7 @@ const PdfQuizGenerator = () => {
       await spendCredit();
       credited = true;
       const { data, error } = await supabase.functions.invoke("education-ai", {
-        body: { action: "pdf_to_quiz", text, numQuestions: 8, difficulty: "medium" },
-      });
+        body: { action: "pdf_to_quiz", text, numQuestions: 8, difficulty: "medium" } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       setQuiz((data as any).quiz);

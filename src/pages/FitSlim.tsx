@@ -91,8 +91,7 @@ type ActiveView = "hub" | "workout-coach" | "meal-analyzer" | "body-scanner" | "
 
 const FITSLIM_PLANS = {
   weekly: { price: "€10", days: 7, label: "7-Day Plan", description: "Perfect for a quick start" },
-  monthly: { price: "€35", days: 30, label: "30-Day Plan", description: "Complete transformation program", popular: true },
-};
+  monthly: { price: "€35", days: 30, label: "30-Day Plan", description: "Complete transformation program", popular: true } };
 
 const AI_TOOLS = [
   { id: "workout-coach" as ActiveView, icon: Dumbbell, label: "AI Workout Coach", desc: "Custom workout plans for any goal", color: "from-emerald-500 to-green-600", cost: "3 Credits" },
@@ -123,10 +122,8 @@ const FitSlim = () => {
   const [myPlans, setMyPlans] = useState<any[]>([]);
   const [viewingPlan, setViewingPlan] = useState<any>(null);
   const [viewingPlanDetails, setViewingPlanDetails] = useState<any>(null);
-  const [profileData, setProfileData] = useState<ProfileData>({
-    age: "", gender: "", height_cm: "", weight_kg: "", target_weight_kg: "",
-    activity_level: "", fitness_goal: "", dietary_restrictions: [], health_conditions: [],
-  });
+  const [profileData, setProfileData] = useState<ProfileData>({ age: "", gender: "", height_cm: "", weight_kg: "", target_weight_kg: "",
+    activity_level: "", fitness_goal: "", dietary_restrictions: [], health_conditions: [] });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -171,8 +168,7 @@ const FitSlim = () => {
     setIsCheckingOut(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-fitslim-checkout", {
-        body: { planType: selectedPlanType, profileData: { ...profileData, age: parseInt(profileData.age), height_cm: parseInt(profileData.height_cm), weight_kg: parseFloat(profileData.weight_kg), target_weight_kg: profileData.target_weight_kg ? parseFloat(profileData.target_weight_kg) : null } },
-      });
+        body: { planType: selectedPlanType, profileData: { ...profileData, age: parseInt(profileData.age), height_cm: parseInt(profileData.height_cm), weight_kg: parseFloat(profileData.weight_kg), target_weight_kg: profileData.target_weight_kg ? parseFloat(profileData.target_weight_kg) : null } } });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
     } catch (error: any) {

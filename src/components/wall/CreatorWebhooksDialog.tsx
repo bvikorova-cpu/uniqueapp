@@ -13,11 +13,9 @@ export function CreatorWebhooksDialog() {
   const [open, setOpen] = useState(false);
   const { hooks, loading, create, toggle, remove } = useCreatorWebhooks();
   const { toast } = useToast();
-  const [form, setForm] = useState<{ url: string; events: string[]; description: string }>({
-    url: "",
+  const [form, setForm] = useState<{ url: string; events: string[]; description: string }>({ url: "",
     events: [],
-    description: "",
-  });
+    description: "" });
   const [submitting, setSubmitting] = useState(false);
 
   const onCreate = async () => {
@@ -26,11 +24,9 @@ export function CreatorWebhooksDialog() {
       return;
     }
     setSubmitting(true);
-    const err = await create({
-      url: form.url,
+    const err = await create({ url: form.url,
       events: form.events,
-      description: form.description || undefined,
-    });
+      description: form.description || undefined });
     setSubmitting(false);
     if (err) {
       toast({ title: "Error", description: (err as any).message, variant: "destructive" });
@@ -45,11 +41,9 @@ export function CreatorWebhooksDialog() {
     toast({ title: "Secret copied" });
   };
 
-  const toggleEvent = (e: string) => {
-    setForm((f) => ({
+  const toggleEvent = (e: string) => { setForm((f) => ({
       ...f,
-      events: f.events.includes(e) ? f.events.filter((x) => x !== e) : [...f.events, e],
-    }));
+      events: f.events.includes(e) ? f.events.filter((x) => x !== e) : [...f.events, e] }));
   };
 
   return (

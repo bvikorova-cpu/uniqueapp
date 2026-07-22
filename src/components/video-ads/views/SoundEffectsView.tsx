@@ -27,8 +27,7 @@ export const SoundEffectsView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true); setAudio(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-sfx', {
-        body: { prompt, durationSeconds: duration },
-      });
+        body: { prompt, durationSeconds: duration } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'SFX' }); return; }
       setAudio(`data:${data.mimeType};base64,${data.audioBase64}`);
       toast.success(`SFX generated (${data.credits_used} CR)`);

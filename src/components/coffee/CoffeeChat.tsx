@@ -70,8 +70,7 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
       setHasMore((data?.length ?? 0) === PAGE_SIZE);
       return list;
     },
-    enabled: !!matchId && open,
-  });
+    enabled: !!matchId && open });
 
   // Dedup helper: merge a server message into cache, replacing any matching temp/pending entry
   const upsertMessage = (msg: Message) => {
@@ -202,16 +201,14 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
 
     if (existingTempId) {
       updateMessageStatus(existingTempId, { status: 'pending' });
-    } else {
-      const optimistic: Message = {
+    } else { const optimistic: Message = {
         id: tempId,
         tempId,
         match_id: matchId,
         sender_id: userId,
         message: text,
         created_at: new Date().toISOString(),
-        status: 'pending',
-      };
+        status: 'pending' };
       queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) => {
         const next = [...prev, optimistic];
         next.sort((a, b) => a.created_at.localeCompare(b.created_at));

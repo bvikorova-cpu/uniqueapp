@@ -70,8 +70,7 @@ const QuantumSocial = () => {
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke("verify-payment", {
-          body: { session_id: sessionId },
-        });
+          body: { session_id: sessionId } });
         if (error) throw error;
         if (data?.verified) {
           toast({ title: "Payment confirmed", description: `${data.product_type?.replace(/_/g, " ")} unlocked.` });

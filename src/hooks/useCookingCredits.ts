@@ -33,8 +33,7 @@ export const useCookingCredits = () => {
 
       if (error) throw error;
       return data || { credits: 0, subscription_tier: 'basic' };
-    },
-  });
+    } });
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {
     const { data, error } = await safeInvoke('create-cooking-credits-payment', {
@@ -48,8 +47,6 @@ export const useCookingCredits = () => {
     return data?.url || null;
   };
 
-  return {
-    ...query,
-    purchaseCredits,
-  };
+  return { ...query,
+    purchaseCredits };
 };

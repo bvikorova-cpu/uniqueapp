@@ -44,8 +44,7 @@ export const TravelPlanner = () => {
         return;
       }
       const { data, error } = await supabase.functions.invoke("experience-ai", {
-        body: { action: "travel-planner", destination, days, budget, interests },
-      });
+        body: { action: "travel-planner", destination, days, budget, interests } });
       if (error) throw error;
       setPlan(data.plan);
       toast({ title: "✈️ Travel Plan Created!", description: `Your ${days}-day ${destination} itinerary is ready` });
@@ -70,7 +69,7 @@ export const TravelPlanner = () => {
         <CardContent className="space-y-4">
           <div>
             <label className="text-sm font-medium">Destination</label>
-            <Input placeholder="e.g. Tokyo, Paris, Bali..." value={destination} onChange={e => setDestination(e.target.value)} className="mt-1" />
+            <Input placeholder="e.g. City, City, City..." value={destination} onChange={e => setDestination(e.target.value)} className="mt-1" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>

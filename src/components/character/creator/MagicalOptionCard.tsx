@@ -17,26 +17,22 @@ interface MagicalOptionCardProps {
   accentColor?: string;
 }
 
-const colorMap: Record<string, string> = {
-  pink: "from-pink-500 to-rose-500 border-pink-300 shadow-pink-500/30",
+const colorMap: Record<string, string> = { pink: "from-pink-500 to-rose-500 border-pink-300 shadow-pink-500/30",
   blue: "from-blue-500 to-cyan-500 border-blue-300 shadow-blue-500/30",
   purple: "from-purple-500 to-violet-500 border-purple-300 shadow-purple-500/30",
   yellow: "from-yellow-500 to-amber-500 border-yellow-300 shadow-yellow-500/30",
   green: "from-green-500 to-emerald-500 border-green-300 shadow-green-500/30",
   orange: "from-orange-500 to-red-500 border-orange-300 shadow-orange-500/30",
   amber: "from-amber-500 to-yellow-600 border-amber-300 shadow-amber-500/30",
-  indigo: "from-indigo-500 to-purple-600 border-indigo-300 shadow-indigo-500/30",
-};
+  indigo: "from-indigo-500 to-purple-600 border-indigo-300 shadow-indigo-500/30" };
 
-export function MagicalOptionCard({
-  label,
+export function MagicalOptionCard({ label,
   labelEmoji,
   options,
   selected,
   onSelect,
   columns = 3,
-  accentColor = "purple",
-}: MagicalOptionCardProps) {
+  accentColor = "purple" }: MagicalOptionCardProps) {
   const accent = colorMap[accentColor] || colorMap.purple;
 
   return (

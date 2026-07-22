@@ -28,15 +28,13 @@ async function stubFn(
   matcher: (url: string) => boolean,
   status: number,
   body: unknown,
-) {
-  await page.route(FN_RE, async (route) => {
+) { await page.route(FN_RE, async (route) => {
     const url = route.request().url();
     if (matcher(url)) {
       return route.fulfill({
         status,
         contentType: "application/json",
-        body: JSON.stringify(body),
-      });
+        body: JSON.stringify(body) });
     }
     return route.continue();
   });
@@ -49,23 +47,20 @@ async function stubGetConfessions(page: Page, confessions: any[] = []) {
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ confessions }),
-      });
+        body: JSON.stringify({ confessions }) });
     }
     return route.continue();
   });
 }
 
-const sampleConfession = {
-  id: "conf_test_1",
+const sampleConfession = { id: "conf_test_1",
   confession_text: "I confess I forgot my mother's birthday.",
   sin_category: "neglect",
   severity_score: 4,
   absolution_votes: 2,
   condemnation_votes: 1,
   created_at: new Date().toISOString(),
-  is_anonymous: true,
-};
+  is_anonymous: true };
 
 test.describe("Blockchain Confessions — public wall", () => {
   test("loads confession list without auth", async ({ page }) => {
@@ -78,22 +73,18 @@ test.describe("Blockchain Confessions — public wall", () => {
     ).toBeVisible({ timeout: 10_000 });
   });
 
-  test("empty list renders gracefully (no spinner stuck)", async ({ page }) => {
-    await stubGetConfessions(page, []);
+  test("empty list renders gracefully (no spinner stuck)", async ({ page }) => { await stubGetConfessions(page, []);
     await page.goto(WALL_ROUTE);
     await page.waitForLoadState("networkidle");
 
     // Loading text should disappear
     await expect(page.getByText(/loading confessions/i)).toBeHidden({
-      timeout: 8_000,
-    });
+      timeout: 8_000 });
   });
 });
 
-test.describe("Blockchain Confessions — post flow", () => {
-  test("post without auth shows sign-in toast, button re-enabled", async ({
-    page,
-  }) => {
+test.describe("Blockchain Confessions — post flow", () => { test("post without auth shows sign-in toast, button re-enabled", async ({
+    page }) => {
     await stubGetConfessions(page, []);
     await page.goto(POST_ROUTE);
     await page.waitForLoadState("networkidle");
@@ -110,30 +101,24 @@ test.describe("Blockchain Confessions — post flow", () => {
     await expect(
       page.getByText(/sign in required/i).first(),
     ).toBeVisible({ timeout: 5_000 });
-    await expect(page.locator(".animate-spin").first()).toBeHidden({
-      timeout: 5_000,
-    });
+    await expect(page.locator(".animate-spin").first()).toBeHidden({ timeout: 5_000 });
     await expect(submit).toBeEnabled({ timeout: 5_000 });
   });
 
-  test("post 500 → error toast, spinner clears, button re-enabled", async ({
-    page,
-  }) => {
+  test("post 500 → error toast, spinner clears, button re-enabled", async ({ page }) => {
     await page.route(FN_RE, async (route) => {
       const url = route.request().url();
       if (url.includes("get-confessions")) {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ confessions: [] }),
-        });
+          body: JSON.stringify({ confessions: [] }) });
       }
       if (url.includes("post-confession")) {
         return route.fulfill({
           status: 500,
           contentType: "application/json",
-          body: JSON.stringify({ error: "AI moderation unavailable" }),
-        });
+          body: JSON.stringify({ error: "AI moderation unavailable" }) });
       }
       return route.continue();
     });
@@ -150,9 +135,7 @@ test.describe("Blockchain Confessions — post flow", () => {
       .first();
     await submit.click();
 
-    await expect(page.locator(".animate-spin").first()).toBeHidden({
-      timeout: 8_000,
-    });
+    await expect(page.locator(".animate-spin").first()).toBeHidden({ timeout: 8_000 });
     await expect(
       page.getByText(/failed to post|error|unavailable|chyba/i).first(),
     ).toBeVisible({ timeout: 5_000 });
@@ -170,15 +153,13 @@ test.describe("Blockchain Confessions — voting flow", () => {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ confessions: [sampleConfession] }),
-        });
+          body: JSON.stringify({ confessions: [sampleConfession] }) });
       }
       if (url.includes("vote-absolution")) {
         return route.fulfill({
           status: 401,
           contentType: "application/json",
-          body: JSON.stringify({ error: "Unauthorized" }),
-        });
+          body: JSON.stringify({ error: "Unauthorized" }) });
       }
       return route.continue();
     });
@@ -218,17 +199,13 @@ test.describe("Blockchain Confessions — Stripe payment flow", () => {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ confessions: [] }),
-        });
+          body: JSON.stringify({ confessions: [] }) });
       }
-      if (url.includes("create-confession-checkout") || url.includes("create-checkout")) {
-        return route.fulfill({
+      if (url.includes("create-confession-checkout") || url.includes("create-checkout")) { return route.fulfill({
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            url: "https://checkout.stripe.com/test_confession_session",
-          }),
-        });
+            url: "https://checkout.stripe.com/test_confession_session" }) });
       }
       return route.continue();
     });
@@ -243,30 +220,24 @@ test.describe("Blockchain Confessions — Stripe payment flow", () => {
 
     await buyBtn.click();
 
-    await expect(page.locator(".animate-spin").first()).toBeHidden({
-      timeout: 6_000,
-    });
+    await expect(page.locator(".animate-spin").first()).toBeHidden({ timeout: 6_000 });
     await expect(buyBtn).toBeEnabled({ timeout: 5_000 });
   });
 
-  test("checkout 500 → error toast, spinner clears, button re-enabled", async ({
-    page,
-  }) => {
+  test("checkout 500 → error toast, spinner clears, button re-enabled", async ({ page }) => {
     await page.route(FN_RE, async (route) => {
       const url = route.request().url();
       if (url.includes("get-confessions")) {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ confessions: [] }),
-        });
+          body: JSON.stringify({ confessions: [] }) });
       }
       if (url.includes("create-confession-checkout") || url.includes("create-checkout")) {
         return route.fulfill({
           status: 500,
           contentType: "application/json",
-          body: JSON.stringify({ error: "Stripe unavailable" }),
-        });
+          body: JSON.stringify({ error: "Stripe unavailable" }) });
       }
       return route.continue();
     });
@@ -281,9 +252,7 @@ test.describe("Blockchain Confessions — Stripe payment flow", () => {
 
     await buyBtn.click();
 
-    await expect(page.locator(".animate-spin").first()).toBeHidden({
-      timeout: 8_000,
-    });
+    await expect(page.locator(".animate-spin").first()).toBeHidden({ timeout: 8_000 });
     await expect(
       page
         .getByText(/error|failed|unavailable|chyba|try again/i)
@@ -292,24 +261,20 @@ test.describe("Blockchain Confessions — Stripe payment flow", () => {
     await expect(buyBtn).toBeEnabled({ timeout: 5_000 });
   });
 
-  test("return from Stripe with session_id triggers verify + cleans URL", async ({
-    page,
-  }) => {
+  test("return from Stripe with session_id triggers verify + cleans URL", async ({ page }) => {
     await page.route(FN_RE, async (route) => {
       const url = route.request().url();
       if (url.includes("get-confessions")) {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ confessions: [] }),
-        });
+          body: JSON.stringify({ confessions: [] }) });
       }
       if (url.includes("verify-confession-payment") || url.includes("verify-")) {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ success: true, tokens_added: 10 }),
-        });
+          body: JSON.stringify({ success: true, tokens_added: 10 }) });
       }
       return route.continue();
     });

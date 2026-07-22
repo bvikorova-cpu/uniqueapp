@@ -47,8 +47,7 @@ const AIDreamVisualizer = ({ onBack }: AIDreamVisualizerProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("dream-ai", {
         body: { action: "visualizer", dreamDescription, artStyle },
-        headers: { Authorization: `Bearer ${session?.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session?.access_token}` } });
       if (error) throw error;
       setGeneratedImageUrl(data.imageUrl);
       toast.success("Dream visualization created!");

@@ -15,8 +15,7 @@ export default function PromotionsSuccess() {
     if (!sessionId) { setState("error"); setMessage("Missing session id"); return; }
     (async () => {
       const { data, error } = await supabase.functions.invoke("verify-promo-subscription", {
-        body: { sessionId },
-      });
+        body: { sessionId } });
       if (error || data?.error) {
         setState("error");
         setMessage(error?.message || data?.error || "Verification failed");

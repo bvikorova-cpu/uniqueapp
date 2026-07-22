@@ -28,8 +28,7 @@ export function MarketAnalysisView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke("marketplace-ai", {
         body: { action: "market-analysis", category, skill, region },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Analysis complete! (${data.credits_used} credits used)`);
@@ -86,7 +85,7 @@ export function MarketAnalysisView({ onBack }: Props) {
             </div>
             <div>
               <label className="text-sm font-semibold mb-1.5 block">Region (Optional)</label>
-              <Input placeholder="e.g., Europe, USA, Global..." value={region} onChange={e => setRegion(e.target.value)} />
+              <Input placeholder="e.g., Region, Global..." value={region} onChange={e => setRegion(e.target.value)} />
             </div>
             <Button onClick={generate} disabled={loading} className="w-full h-11 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 shadow-lg">
               {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Analyzing...</> : <><BarChart3 className="w-4 h-4 mr-2" />Analyze Market (5 CR)</>}

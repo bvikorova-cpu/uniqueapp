@@ -14,18 +14,15 @@ const PetTranslatorPricing = () => {
   const navigate = useNavigate();
 
   const plans = [
-    {
-      name: 'Pet Parent',
+    { name: 'Pet Parent',
       price: '€4.99',
       period: '/month',
       priceId: 'price_1TgR40GaXSfGtYFt82FwbNXt',
       productId: 'prod_Ufmdb3lcGFyQ58',
       icon: PawPrint,
       gradient: 'from-purple-500/20 to-violet-500/10',
-      features: ['5 translations/month', 'Emotion tracker', '1 pet profile', 'Basic behavior insights', 'Email support'],
-    },
-    {
-      name: 'Multi-Pet',
+      features: ['5 translations/month', 'Emotion tracker', '1 pet profile', 'Basic behavior insights', 'Email support'] },
+    { name: 'Multi-Pet',
       price: '€8.99',
       period: '/month',
       priceId: 'price_1SQDNuGaXSfGtYFt9o91SK2J',
@@ -33,18 +30,15 @@ const PetTranslatorPricing = () => {
       popular: true,
       icon: Heart,
       gradient: 'from-fuchsia-500/20 to-pink-500/10',
-      features: ['Everything in Pet Parent', 'Up to 5 pet profiles', 'AI Health Scanner', 'AI Training Coach', 'Mood history tracking', 'Priority support'],
-    },
-    {
-      name: 'Pet Psychologist',
+      features: ['Everything in Pet Parent', 'Up to 5 pet profiles', 'AI Health Scanner', 'AI Training Coach', 'Mood history tracking', 'Priority support'] },
+    { name: 'Pet Psychologist',
       price: '€24.99',
       period: '/month',
       priceId: 'price_1SQDOFGaXSfGtYFtDQsh6HlL',
       productId: 'prod_TMxIMYFcwmvzvV',
       icon: Crown,
       gradient: 'from-amber-500/20 to-yellow-500/10',
-      features: ['Everything in Multi-Pet', 'Unlimited pet profiles', 'All 6 AI tools', 'Weekly AI health reports', 'Behavior pattern analysis', 'Leaderboards & Challenges', '24/7 priority support'],
-    },
+      features: ['Everything in Multi-Pet', 'Unlimited pet profiles', 'All 6 AI tools', 'Weekly AI health reports', 'Behavior pattern analysis', 'Leaderboards & Challenges', '24/7 priority support'] },
   ];
 
   const toolPreviews = [

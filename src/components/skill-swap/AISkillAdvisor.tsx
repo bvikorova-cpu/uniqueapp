@@ -37,37 +37,26 @@ const SKILL_RECOMMENDATIONS = [
   { category: "Languages", skills: ["Mandarin", "Spanish", "German", "Japanese"], color: "from-emerald-500 to-teal-500" },
 ];
 
-const AI_RESPONSES: Record<string, { content: string; suggestions: string[] }> = {
-  "What skills are most in-demand right now?": {
+const AI_RESPONSES: Record<string, { content: string; suggestions: string[] }> = { "What skills are most in-demand right now?": {
     content: "Based on current market data, the most in-demand skills on our platform are:\n\n🥇 **AI & Machine Learning** — 340% growth in exchanges\n🥈 **No-Code Development** — 220% growth\n🥉 **Data Analytics** — 190% growth\n\nTech skills dominate, but creative skills like **Video Editing** (+180%) and **UX Design** (+160%) are catching up fast. Language skills remain consistently popular, especially **Mandarin** and **Spanish**.",
-    suggestions: ["How do I start learning AI?", "What creative skills should I pick up?", "Best skills for career change?"],
-  },
-  "What should I learn based on my current skills?": {
-    content: "To give you personalized recommendations, I'd consider skill pairing strategies:\n\n🔗 **Complementary Skills** — Skills that enhance your existing ones\n🌉 **Bridge Skills** — Connect different domains\n🚀 **Future-Proof Skills** — High growth potential\n\nFor example, if you know **programming**, adding **data visualization** or **AI** creates powerful combinations. If you're in **design**, learning **prototyping tools** or **user research** makes you more versatile.",
-    suggestions: ["I know programming, what next?", "I'm a designer, what pairs well?", "Skills for freelancing?"],
-  },
-  "Which skills pair well with programming?": {
-    content: "Great question! Programming pairs exceptionally well with:\n\n💡 **Data Science** — Analyze data with Python/R\n🎨 **UI/UX Design** — Build beautiful, user-friendly apps\n📊 **Business Analytics** — Turn code into business value\n🤖 **AI/ML** — The hottest combo right now\n🔐 **Cybersecurity** — High demand, high pay\n📱 **Mobile Development** — Extend to mobile platforms\n\nThe **programming + AI** combination has seen the highest exchange requests on our platform this quarter.",
-    suggestions: ["How to learn data science?", "Best resources for UI/UX?", "AI learning path?"],
-  },
-  default: {
-    content: "That's a great question! Based on current trends and our platform data, I'd recommend focusing on skills that:\n\n✅ Have high demand in exchanges\n✅ Complement your existing skillset\n✅ Are future-proof and growing\n\nWould you like me to analyze a specific skill area, or should I suggest a personalized learning path based on your interests?",
-    suggestions: ["Show me trending skills", "Personalized recommendations", "Best skills for beginners"],
-  },
-};
+    suggestions: ["How do I start learning AI?", "What creative skills should I pick up?", "Best skills for career change?"] },
+  "What should I learn based on my current skills?": { content: "To give you personalized recommendations, I'd consider skill pairing strategies:\n\n🔗 **Complementary Skills** — Skills that enhance your existing ones\n🌉 **Bridge Skills** — Connect different domains\n🚀 **Future-Proof Skills** — High growth potential\n\nFor example, if you know **programming**, adding **data visualization** or **AI** creates powerful combinations. If you're in **design**, learning **prototyping tools** or **user research** makes you more versatile.",
+    suggestions: ["I know programming, what next?", "I'm a designer, what pairs well?", "Skills for freelancing?"] },
+  "Which skills pair well with programming?": { content: "Great question! Programming pairs exceptionally well with:\n\n💡 **Data Science** — Analyze data with Python/R\n🎨 **UI/UX Design** — Build beautiful, user-friendly apps\n📊 **Business Analytics** — Turn code into business value\n🤖 **AI/ML** — The hottest combo right now\n🔐 **Cybersecurity** — High demand, high pay\n📱 **Mobile Development** — Extend to mobile platforms\n\nThe **programming + AI** combination has seen the highest exchange requests on our platform this quarter.",
+    suggestions: ["How to learn data science?", "Best resources for UI/UX?", "AI learning path?"] },
+  default: { content: "That's a great question! Based on current trends and our platform data, I'd recommend focusing on skills that:\n\n✅ Have high demand in exchanges\n✅ Complement your existing skillset\n✅ Are future-proof and growing\n\nWould you like me to analyze a specific skill area, or should I suggest a personalized learning path based on your interests?",
+    suggestions: ["Show me trending skills", "Personalized recommendations", "Best skills for beginners"] } };
 
 interface AISkillAdvisorProps {
   onBack: () => void;
 }
 
-export const AISkillAdvisor = ({ onBack }: AISkillAdvisorProps) => {
-  const [messages, setMessages] = useState<Message[]>([
+export const AISkillAdvisor = ({ onBack }: AISkillAdvisorProps) => { const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
       role: "assistant",
       content: "👋 Hi! I'm your **AI Skill Advisor**. I analyze market trends, platform data, and skill combinations to recommend the best skills for you to learn or teach.\n\nWhat would you like to know?",
-      suggestions: INITIAL_SUGGESTIONS,
-    },
+      suggestions: INITIAL_SUGGESTIONS },
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -79,14 +68,12 @@ export const AISkillAdvisor = ({ onBack }: AISkillAdvisorProps) => {
     setInput("");
     setIsTyping(true);
 
-    setTimeout(() => {
-      const response = AI_RESPONSES[text] || AI_RESPONSES.default;
+    setTimeout(() => { const response = AI_RESPONSES[text] || AI_RESPONSES.default;
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
         content: response.content,
-        suggestions: response.suggestions,
-      };
+        suggestions: response.suggestions };
       setMessages(prev => [...prev, aiMsg]);
       setIsTyping(false);
     }, 1200);

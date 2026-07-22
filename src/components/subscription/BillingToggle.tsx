@@ -35,10 +35,9 @@ export const BillingToggle = ({ yearly, onChange }: BillingToggleProps) => {
           layout
           transition={{ type: "spring", stiffness: 350, damping: 30 }}
           className="absolute inset-y-1.5 rounded-full bg-gradient-to-r from-primary to-purple-500 shadow-md"
-          style={{
+          style={ {
             left: yearly ? "50%" : "0.375rem",
-            right: yearly ? "0.375rem" : "50%",
-          }}
+            right: yearly ? "0.375rem" : "50%" }}
         />
       </div>
     </div>

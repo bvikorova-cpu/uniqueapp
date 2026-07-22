@@ -45,11 +45,10 @@ export const LuxuryArenaHero = ({ totalVotes = 0, totalSponsors = 0, liveNow = 0
           </p>
           <h1
             className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
-            style={{
+            style={ {
               textShadow:
                 "0 0 80px rgba(251,191,36,0.5), 0 4px 30px rgba(0,0,0,0.9), 0 0 120px rgba(168,85,247,0.3)",
-              WebkitTextStroke: "2px rgba(251,191,36,0.4)",
-            }}
+              WebkitTextStroke: "2px rgba(251,191,36,0.4)" }}
           >
             <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
               Brand Battle

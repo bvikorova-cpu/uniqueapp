@@ -23,12 +23,10 @@ interface SubjectSelectorProps {
   onDifficultyChange: (difficulty: string) => void;
 }
 
-export const SubjectSelector = ({
-  selectedSubject,
+export const SubjectSelector = ({ selectedSubject,
   selectedDifficulty,
   onSubjectChange,
-  onDifficultyChange,
-}: SubjectSelectorProps) => {
+  onDifficultyChange }: SubjectSelectorProps) => {
   return (
     <>
       <FloatingHowItWorks title={"Subject Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Subject Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Subject Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />

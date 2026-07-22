@@ -12,73 +12,58 @@ import { ArrowLeft, Upload, Loader2, CheckCircle, Trophy, Star, Crown, Zap, Buil
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
-import {
-  Form,
+import { Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
-} from "@/components/ui/form";
-import {
-  Select,
+  FormDescription } from "@/components/ui/form";
+import { Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue } from "@/components/ui/select";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const formSchema = z.object({
-  name: z.string().min(2, "Brand name must be at least 2 characters"),
+const formSchema = z.object({ name: z.string().min(2, "Brand name must be at least 2 characters"),
   category: z.string().min(1, "Please select a category"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   website: z.string().url("Please enter a valid URL"),
-  logo: z.string().min(1, "Please upload a logo"),
-});
+  logo: z.string().min(1, "Please upload a logo") });
 
 type FormData = z.infer<typeof formSchema>;
 
 const TIERS = [
-  {
-    id: "bronze",
+  { id: "bronze",
     name: "Bronze",
     price: "€200",
     period: "/month",
     icon: Trophy,
     color: "from-amber-600 to-amber-800",
-    features: ["Basic brand visibility", "Monthly votes tracking", "Community exposure"],
-  },
-  {
-    id: "silver",
+    features: ["Basic brand visibility", "Monthly votes tracking", "Community exposure"] },
+  { id: "silver",
     name: "Silver",
     price: "€500",
     period: "/month",
     icon: Star,
     color: "from-gray-400 to-gray-600",
-    features: ["Enhanced visibility", "Priority listing", "Analytics dashboard", "Featured badge"],
-  },
-  {
-    id: "gold",
+    features: ["Enhanced visibility", "Priority listing", "Analytics dashboard", "Featured badge"] },
+  { id: "gold",
     name: "Gold",
     price: "€1,500",
     period: "/month",
     icon: Crown,
     color: "from-yellow-400 to-yellow-600",
-    features: ["Premium placement", "Custom branding", "Advanced analytics", "Marketing support"],
-  },
-  {
-    id: "platinum",
+    features: ["Premium placement", "Custom branding", "Advanced analytics", "Marketing support"] },
+  { id: "platinum",
     name: "Platinum",
     price: "€3,000",
     period: "/month",
     icon: Zap,
     color: "from-purple-500 to-pink-600",
-    features: ["Top priority placement", "Full customization", "Dedicated support", "Exclusive features"],
-  },
-  {
-    id: "enterprise",
+    features: ["Top priority placement", "Full customization", "Dedicated support", "Exclusive features"] },
+  { id: "enterprise",
     name: "Enterprise",
     price: "€10,000",
     period: "month",
@@ -91,8 +76,7 @@ const TIERS = [
       "Priority placement across all hubs",
       "Custom brand activations & events",
       "Designed for Pepsi, Gucci, LVMH-scale brands",
-    ],
-  },
+    ] },
 ];
 
 const CATEGORIES = [
@@ -109,8 +93,7 @@ const CATEGORIES = [
   "Other",
 ];
 
-export default function SponsorRegistration() {
-  const navigate = useNavigate();
+export default function SponsorRegistration() { const navigate = useNavigate();
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -122,9 +105,7 @@ export default function SponsorRegistration() {
       category: "",
       description: "",
       website: "",
-      logo: "",
-    },
-  });
+      logo: "" } });
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -190,18 +171,14 @@ export default function SponsorRegistration() {
         return;
       }
 
-      const response = await supabase.functions.invoke("create-brand-sponsorship", {
-        body: {
+      const response = await supabase.functions.invoke("create-brand-sponsorship", { body: {
           tier: selectedTier,
           brandData: {
             name: data.name,
             logo: data.logo,
             category: data.category,
             description: data.description,
-            website: data.website,
-          },
-        },
-      });
+            website: data.website } } });
 
       if (response.error) throw response.error;
 

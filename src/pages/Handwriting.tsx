@@ -37,42 +37,34 @@ import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const ANALYSIS_TOOLS = [
-  {
-    id: "personal",
+  { id: "personal",
     name: "Personal Analysis",
     icon: PenTool,
     description: "Discover personality traits, emotional states, and self-awareness insights from your handwriting",
     color: "from-purple-500 to-violet-500",
     features: ["Personality traits", "Emotional intelligence", "Stress indicators", "Creativity level"],
-    credits: 5,
-  },
-  {
-    id: "professional",
+    credits: 5 },
+  { id: "professional",
     name: "Professional Analysis",
     icon: Briefcase,
     description: "Career strengths, work style assessment, and leadership qualities analysis",
     color: "from-blue-500 to-cyan-500",
     features: ["Work style", "Leadership qualities", "Decision making", "Career strengths"],
-    credits: 10,
-  },
-  {
-    id: "relationship",
+    credits: 10 },
+  { id: "relationship",
     name: "Relationship Analysis",
     icon: Heart,
     description: "Communication patterns, compatibility insights, and relationship dynamics",
     color: "from-pink-500 to-rose-500",
     features: ["Communication style", "Compatibility traits", "Emotional patterns", "Trust indicators"],
-    credits: 15,
-  },
-  {
-    id: "business",
+    credits: 15 },
+  { id: "business",
     name: "Business Analysis",
     icon: Building2,
     description: "Strategic thinking, decision-making patterns, and negotiation style insights",
     color: "from-emerald-500 to-teal-500",
     features: ["Strategic thinking", "Risk assessment", "Negotiation style", "Innovation capacity"],
-    credits: 20,
-  },
+    credits: 20 },
 ];
 
 const HOW_IT_WORKS = [

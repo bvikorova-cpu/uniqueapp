@@ -36,13 +36,11 @@ export function useDailyLoginReward() {
     fetchStreak();
   }, [fetchStreak]);
 
-  // Use Europe/Bratislava date so the day flips at local midnight, matching the RPC.
-  const today = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Bratislava",
+  // Use Europe/City date so the day flips at local midnight, matching the RPC.
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/City",
     year: "numeric",
     month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
+    day: "2-digit" }).format(new Date());
   const canClaim = !streak || streak.last_claim_date !== today;
 
   const claim = async () => {

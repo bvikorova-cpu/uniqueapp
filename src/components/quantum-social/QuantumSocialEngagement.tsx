@@ -2,32 +2,26 @@ import { motion } from "framer-motion";
 import { Flame, Atom, Trophy } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-export function QuantumSocialEngagement() {
-  const items = [
+export function QuantumSocialEngagement() { const items = [
     {
       icon: Flame,
       label: "Daily Streak",
       value: "0 days",
       sub: "Visit daily to build your streak",
       gradient: "from-cyan-500/20 to-cyan-500/5",
-      iconColor: "text-cyan-400",
-    },
-    {
-      icon: Atom,
+      iconColor: "text-cyan-400" },
+    { icon: Atom,
       label: "Quantum Posts",
       value: "0",
       sub: "Posts existing in superposition",
       gradient: "from-violet-500/20 to-violet-500/5",
-      iconColor: "text-violet-400",
-    },
-    {
-      icon: Trophy,
+      iconColor: "text-violet-400" },
+    { icon: Trophy,
       label: "Achievements",
       value: "0 / 12",
       sub: "Unlock by exploring realities",
       gradient: "from-pink-500/20 to-pink-500/5",
-      iconColor: "text-pink-400",
-    },
+      iconColor: "text-pink-400" },
   ];
 
   return (

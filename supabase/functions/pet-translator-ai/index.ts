@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -13,8 +11,7 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supabase = createClient(
@@ -26,18 +23,15 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
       return new Response(JSON.stringify({ error: "Invalid session" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { action, ...params } = await req.json();
 
-    const costMap: Record<string, number> = {
-      translate: 4, emotion: 4, health: 5, training: 4, diet: 4, behavior: 5,
+    const costMap: Record<string, number> = { translate: 4, emotion: 4, health: 5, training: 4, diet: 4, behavior: 5,
       photo_emotion: 5, audio_translate: 5, health_certificate: 6, smart_reminders: 4,
       reverse_translate: 3, symptom_check: 5, breed_identify: 4, video_analyze: 6,
-      daily_tip: 1, onboarding_personalize: 2,
-    };
+      daily_tip: 1, onboarding_personalize: 2 };
     const cost = costMap[action] || 4;
 
     const { data: credits } = await supabase
@@ -49,8 +43,7 @@ serve(async (req) => {
     const remaining = credits?.credits_remaining || 0;
     if (remaining < cost) {
       return new Response(JSON.stringify({ error: `Not enough credits. Need ${cost}, have ${remaining}.` }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const prompts: Record<string, string> = {
@@ -199,8 +192,7 @@ Provide:
 
       daily_tip: `Generate ONE concise (max 280 chars), actionable, fun daily care tip for a ${params.species || "pet"} owner. Include 1 emoji. No intro, no markdown.`,
 
-      onboarding_personalize: `Based on quiz answers ${JSON.stringify(params.answers || {})}, write a 2-sentence personalized welcome for this pet owner and recommend the FIRST tool they should try (translate / emotion / health / training). Markdown OK.`,
-    };
+      onboarding_personalize: `Based on quiz answers ${JSON.stringify(params.answers || {})}, write a 2-sentence personalized welcome for this pet owner and recommend the FIRST tool they should try (translate / emotion / health / training). Markdown OK.` };
 
     const prompt = prompts[action];
     if (!prompt) throw new Error("Invalid action: " + action);
@@ -212,16 +204,13 @@ Provide:
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a professional pet care AI assistant. Provide detailed, accurate, and helpful responses in Markdown format. Be warm and caring in tone." },
           { role: "user", content: prompt },
-        ],
-      }),
-    });
+        ] }) });
 
     if (!aiResponse.ok) {
       const status = aiResponse.status;
@@ -233,25 +222,20 @@ Provide:
     const aiData = await aiResponse.json();
     const result = aiData.choices?.[0]?.message?.content || "No result generated.";
 
-    await supabase.from("ai_credits").update({
-      credits_remaining: remaining - cost,
-    }).eq("user_id", user.id);
+    await supabase.from("ai_credits").update({ credits_remaining: remaining - cost }).eq("user_id", user.id);
 
     // Log usage for stats / leaderboards
     await supabase.from("ai_usage_history").insert({
       user_id: user.id,
       usage_type: `pet_${action}`,
       credits_used: cost,
-      description: `Pet Translator: ${action}`,
-    });
+      description: `Pet Translator: ${action}` });
 
     return new Response(JSON.stringify({ result, credits_used: cost, credits_remaining: remaining - cost }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("pet-translator-ai error:", e);
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

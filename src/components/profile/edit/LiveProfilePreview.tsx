@@ -24,19 +24,15 @@ interface Props {
   voiceIntroUrl: string | null;
 }
 
-const themeBg: Record<ProfileTheme, string> = {
-  default: "bg-gradient-to-br from-card/80 to-card/40",
+const themeBg: Record<ProfileTheme, string> = { default: "bg-gradient-to-br from-card/80 to-card/40",
   cinematic: "bg-gradient-to-br from-zinc-950 to-black",
   minimal: "bg-card",
   neon: "bg-gradient-to-br from-fuchsia-950/60 via-violet-950/40 to-cyan-950/60",
-  editorial: "bg-stone-50/5 border-stone-200/10",
-};
+  editorial: "bg-stone-50/5 border-stone-200/10" };
 
-export const LiveProfilePreview = (props: Props) => {
-  const {
+export const LiveProfilePreview = (props: Props) => { const {
     fullName, headline, bio, avatarUrl, coverUrl, occupation, company, location,
-    interests, skills, languages, socialLinks, accentColor, theme, verifiedCount, voiceIntroUrl,
-  } = props;
+    interests, skills, languages, socialLinks, accentColor, theme, verifiedCount, voiceIntroUrl } = props;
 
   const accent = accentColor || "#f59e0b";
 
@@ -59,8 +55,7 @@ export const LiveProfilePreview = (props: Props) => {
           backgroundImage: coverUrl
             ? `url(${coverUrl})`
             : `linear-gradient(135deg, ${accent}55, ${accent}11)`,
-          backgroundSize: "cover", backgroundPosition: "center",
-        }}
+          backgroundSize: "cover", backgroundPosition: "center" }}
       >
         <div className="absolute -bottom-10 left-4">
           <div className="relative">

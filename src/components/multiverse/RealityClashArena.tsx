@@ -80,8 +80,7 @@ const RealityClashArena = ({ onBack }: RealityClashArenaProps) => {
             { name: "Health", score1: Math.min(100, scoreA - Math.floor(Math.random() * 10)), score2: Math.min(100, scoreB - Math.floor(Math.random() * 10)) },
             { name: "Happiness", score1: Math.min(100, scoreA + Math.floor(Math.random() * 8)), score2: Math.min(100, scoreB + Math.floor(Math.random() * 8)) },
             { name: "Impact", score1: Math.min(100, scoreA + Math.floor(Math.random() * 12)), score2: Math.min(100, scoreB + Math.floor(Math.random() * 12)) },
-          ],
-        });
+          ] });
       }
     } catch (e) {
       console.error(e);

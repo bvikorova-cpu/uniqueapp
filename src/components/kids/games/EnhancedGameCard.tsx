@@ -18,11 +18,9 @@ interface GameCardProps {
   onPlay: () => void;
 }
 
-const DIFFICULTY_COLORS: Record<string, string> = {
-  Easy: "from-green-400 to-emerald-400",
+const DIFFICULTY_COLORS: Record<string, string> = { Easy: "from-green-400 to-emerald-400",
   Medium: "from-yellow-400 to-orange-400",
-  Hard: "from-red-400 to-pink-400",
-};
+  Hard: "from-red-400 to-pink-400" };
 
 const CARD_GRADIENTS = [
   "from-red-50 to-pink-50 border-red-200 hover:border-red-400",

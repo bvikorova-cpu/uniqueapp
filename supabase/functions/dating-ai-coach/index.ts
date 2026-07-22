@@ -1,10 +1,8 @@
 // Dating AI Coach: conversation_starter (A/B), bio_coach, rerank_discovery
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const AI_URL = "https://api.openai.com/v1/chat/completions";
@@ -16,8 +14,7 @@ async function callAI(messages: any[], json = false, model = "gpt-4o-mini") {
   const r = await fetch(AI_URL, {
     method: "POST",
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+    body: JSON.stringify(body) });
   if (r.status === 429) throw new Error("Rate limit, try again shortly");
   if (r.status === 402) throw new Error("AI credits exhausted");
   if (!r.ok) throw new Error(`AI error ${r.status}: ${await r.text()}`);
@@ -40,8 +37,7 @@ Deno.serve(async (req) => {
 
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const userClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: au } = await userClient.auth.getUser();
     const user = au?.user;
     if (!user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -80,12 +76,10 @@ Deno.serve(async (req) => {
         feature: "conversation_starter",
         variant_key: chosen.variant_key,
         match_id: matchId || null,
-        metadata: { starters },
-      }).select("id").maybeSingle();
+        metadata: { starters } }).select("id").maybeSingle();
 
       return new Response(JSON.stringify({ starters, variant_key: chosen.variant_key, experiment_id: exp?.id }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // ============ MARK EXPERIMENT USED / REPLIED ============
@@ -127,19 +121,15 @@ Tips MUST be concrete and tailored to the profile type. Rewrites MUST be under 2
       if (!Array.isArray(candidates) || candidates.length === 0) {
         return new Response(JSON.stringify({ scores: [] }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-      const slim = candidates.slice(0, 40).map((c: any) => ({
-        id: c.user_id,
+      const slim = candidates.slice(0, 40).map((c: any) => ({ id: c.user_id,
         age: c.age, gender: c.gender, looking_for: c.looking_for,
         interests: c.interests || [],
         bio: (c.bio || "").slice(0, 200),
         verified: !!c.photo_verified,
         has_voice: !!c.voice_intro_url,
-        prompts: Array.isArray(c.prompts) ? c.prompts.length : 0,
-      }));
-      const myCtx = me ? {
-        age: me.age, gender: me.gender, looking_for: me.looking_for,
-        interests: me.interests || [], bio: (me.bio || "").slice(0, 200),
-      } : {};
+        prompts: Array.isArray(c.prompts) ? c.prompts.length : 0 }));
+      const myCtx = me ? { age: me.age, gender: me.gender, looking_for: me.looking_for,
+        interests: me.interests || [], bio: (me.bio || "").slice(0, 200) } : {};
       const raw = await callAI([
         { role: "system", content: `You predict like→match probability for a dating app. Given the viewer profile and candidate profiles, score each candidate 0-100 reflecting the probability the viewer will like AND the candidate will like back (mutual match). Reward shared interests, compatible age/orientation, profile completeness, and conversation potential. Return STRICT JSON: {"scores":[{"id":"...","p":0-100}]}.` },
         { role: "user", content: `Viewer:\n${JSON.stringify(myCtx)}\n\nCandidates:\n${JSON.stringify(slim)}` },

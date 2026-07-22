@@ -28,8 +28,7 @@ export default function GenericInfluView({ onBack, title, description, icon: Ico
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("influ-king-ai", {
-        body: { action, input },
-      });
+        body: { action, input } });
       if (error) throw error;
       setResult(data.result || data.text || JSON.stringify(data, null, 2));
       toast.success("Generated successfully!");

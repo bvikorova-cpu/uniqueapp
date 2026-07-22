@@ -65,13 +65,11 @@ const TimelineMerger = () => {
     }
   };
 
-  const handleMerge = async () => {
-    if (selectedIds.length < 2) {
+  const handleMerge = async () => { if (selectedIds.length < 2) {
       toast({
         title: "Select More Universes",
         description: "You need at least 2 universes to merge",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -89,18 +87,15 @@ const TimelineMerger = () => {
 
       toast({
         title: "Timeline Merged",
-        description: `Created optimized universe: ${data.mergedUniverse.universe_name}`,
-      });
+        description: `Created optimized universe: ${data.mergedUniverse.universe_name}` });
 
       setSelectedIds([]);
       loadUniverses();
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Merge Failed",
         description: "Please try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setMerging(false);
     }
@@ -139,20 +134,16 @@ const TimelineMerger = () => {
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, '_blank');
+      if (data?.url) { window.open(data.url, '_blank');
         toast({
           title: "Opening Checkout",
-          description: "Complete your purchase to unlock Timeline Merging",
-        });
+          description: "Complete your purchase to unlock Timeline Merging" });
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Error",
         description: "Failed to open checkout. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 

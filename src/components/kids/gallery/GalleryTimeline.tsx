@@ -19,8 +19,7 @@ const typeConfig = {
   story: { icon: BookOpen, color: "text-purple-500", bg: "bg-purple-500", label: "Story" },
   drawing: { icon: Palette, color: "text-pink-500", bg: "bg-pink-500", label: "Drawing" },
   character: { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500", label: "Character" },
-  coloring: { icon: PaintBucket, color: "text-orange-500", bg: "bg-orange-500", label: "Coloring" },
-};
+  coloring: { icon: PaintBucket, color: "text-orange-500", bg: "bg-orange-500", label: "Coloring" } };
 
 function formatDate(date: string) {
   const d = new Date(date);

@@ -62,13 +62,12 @@ export const ComedyClubHero = () => {
         >
           <h1
             className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3"
-            style={{
+            style={ {
               background: "linear-gradient(135deg, #f472b6, #a78bfa, #60a5fa)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               WebkitTextStroke: "1.5px rgba(255,255,255,0.15)",
-              textShadow: "0 0 40px rgba(168,85,247,0.5), 0 0 80px rgba(244,114,182,0.3)",
-            }}
+              textShadow: "0 0 40px rgba(168,85,247,0.5), 0 0 80px rgba(244,114,182,0.3)" }}
           >
             Comedy Club
           </h1>

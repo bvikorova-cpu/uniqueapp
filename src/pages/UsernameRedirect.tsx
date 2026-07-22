@@ -18,13 +18,11 @@ const UsernameRedirect = () => {
         const { data: { user } } = await supabase.auth.getUser();
         const referrer = document.referrer || "direct";
         const source = referrer.includes("uniqueapp") ? "internal" : (referrer.split("/")[2] || "direct");
-        supabase.from("profile_views").insert({
-          profile_id: data.id,
+        supabase.from("profile_views").insert({ profile_id: data.id,
           viewer_id: user?.id || null,
           referrer,
           source,
-          viewer_user_agent: navigator.userAgent.slice(0, 200),
-        });
+          viewer_user_agent: navigator.userAgent.slice(0, 200) });
         navigate(`/profile/${data.id}`, { replace: true });
       } else {
         navigate("/", { replace: true });

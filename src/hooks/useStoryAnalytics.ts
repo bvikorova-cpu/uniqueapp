@@ -24,6 +24,5 @@ export const useStoryAnalytics = (storyId?: string) => {
         .eq("story_id", storyId)
         .maybeSingle();
       return (data || null) as unknown as StoryAnalytics | null;
-    },
-  });
+    } });
 };

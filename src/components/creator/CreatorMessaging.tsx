@@ -101,13 +101,11 @@ export function CreatorMessaging({ creatorId, creatorName, canMessage }: Creator
 
       setNewMessage("");
       loadMessages();
-    } catch (error: any) {
-      console.error('Error sending message:', error);
+    } catch (error: any) { console.error('Error sending message:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to send message",
-      });
+        description: "Failed to send message" });
     }
   };
 

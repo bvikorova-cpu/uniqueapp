@@ -44,9 +44,7 @@ export const KidsAcademyQuizArena = () => {
     const challenge = addFriendChallenge({ friendName: name, category: cat.id });
     const shareLink = `${window.location.origin}/quiz?category=${cat.id}&mode=quick&challenge=${challenge.id}`;
     navigator.clipboard?.writeText(shareLink).catch(() => {});
-    toast.success(`Challenge sent to ${name}! ${cat.emoji}`, {
-      description: "Share link copied to clipboard — send it to your friend!",
-    });
+    toast.success(`Challenge sent to ${name}! ${cat.emoji}`, { description: "Share link copied to clipboard — send it to your friend!" });
     setPendingCount(c => c + 1);
     setFriendName("");
     setFriendDialogOpen(false);
@@ -101,9 +99,7 @@ export const KidsAcademyQuizArena = () => {
               onClick={() => {
                 const cat = QUIZ_CATEGORIES.find(c => c.id === selectedCategory);
                 if (!cat) return;
-                toast.success(`Starting ${cat.name} Quiz! ${cat.emoji}`, {
-                  description: "5 questions • +20 XP per correct answer",
-                });
+                toast.success(`Starting ${cat.name} Quiz! ${cat.emoji}`, { description: "5 questions • +20 XP per correct answer" });
                 navigate(`/quiz?category=${cat.id}&mode=quick`);
               }}
             >

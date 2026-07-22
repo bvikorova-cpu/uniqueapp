@@ -48,12 +48,10 @@ export function LeadBoostDialog({ open, onOpenChange }: LeadBoostDialogProps) {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           variant: "destructive",
           title: "Authentication required",
-          description: "Please sign in to purchase lead boost.",
-        });
+          description: "Please sign in to purchase lead boost." });
         return;
       }
 
@@ -67,24 +65,20 @@ export function LeadBoostDialog({ open, onOpenChange }: LeadBoostDialogProps) {
 
       if (checkoutError) throw checkoutError;
 
-      if (checkoutData?.url) {
-        toast({
+      if (checkoutData?.url) { toast({
           title: "Redirecting to Payment",
-          description: "Complete your payment to activate Lead Boost.",
-        });
+          description: "Complete your payment to activate Lead Boost." });
         onOpenChange(false);
         window.location.href = checkoutData.url;
       } else {
         throw new Error("No checkout URL received");
       }
 
-    } catch (error) {
-      console.error('Error purchasing lead boost:', error);
+    } catch (error) { console.error('Error purchasing lead boost:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to process purchase. Please try again.",
-      });
+        description: "Failed to process purchase. Please try again." });
     } finally {
       setLoading(false);
     }

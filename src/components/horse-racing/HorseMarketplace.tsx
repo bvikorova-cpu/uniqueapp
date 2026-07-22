@@ -48,8 +48,7 @@ export const HorseMarketplace = () => {
 
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   const { data: listings = [], isLoading } = useQuery({
     queryKey: ["horse-marketplace"],
@@ -74,8 +73,7 @@ export const HorseMarketplace = () => {
       if (error) throw error;
       return data as MarketListing[] || [];
     },
-    refetchInterval: 30000,
-  });
+    refetchInterval: 30000 });
 
   const listHorse = useMutation({
     mutationFn: async ({ horseId, price }: { horseId: string; price: number }) => {
@@ -84,11 +82,9 @@ export const HorseMarketplace = () => {
 
       const { error } = await supabase
         .from("horse_market_listings")
-        .insert({
-          horse_id: horseId,
+        .insert({ horse_id: horseId,
           seller_id: user.id,
-          price_coins: price,
-        });
+          price_coins: price });
 
       if (error) throw error;
     },
@@ -101,18 +97,15 @@ export const HorseMarketplace = () => {
     },
     onError: (error: Error) => {
       toast.error(`Failed to list horse: ${error.message}`);
-    },
-  });
+    } });
 
   const buyHorse = useMutation({
     mutationFn: async (listingId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.rpc("purchase_horse_from_market", {
-        listing_id: listingId,
-        buyer_id: user.id,
-      });
+      const { error } = await supabase.rpc("purchase_horse_from_market", { listing_id: listingId,
+        buyer_id: user.id });
 
       if (error) throw error;
     },
@@ -124,8 +117,7 @@ export const HorseMarketplace = () => {
     },
     onError: (error: Error) => {
       toast.error(`Purchase failed: ${error.message}`);
-    },
-  });
+    } });
 
   const handleListHorse = () => {
     const price = parseInt(sellPrice);

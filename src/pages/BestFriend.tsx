@@ -5,20 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import {
-  Send, Heart, Sparkles, CreditCard, Crown, ArrowLeft,
+import { Send, Heart, Sparkles, CreditCard, Crown, ArrowLeft,
   BookHeart, MessageSquarePlus, HeartHandshake, Target, MessageCircle,
   TrendingUp, Music, Sunrise, Gamepad2, Moon, Camera,
   Flower2, Stars, Scale, Map, Leaf,
-  User, Brain, Drama, Mic, FileText, Clock, AlertTriangle,
-} from "lucide-react";
+  User, Brain, Drama, Mic, FileText, Clock, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useBestFriendSubscription } from "@/hooks/useBestFriendSubscription";
 import { motion } from "framer-motion";
-import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BestFriendHero } from "@/components/best-friend/BestFriendHero";
 import { MoodJournalView } from "@/components/best-friend/MoodJournalView";
 import { ConversationStartersView } from "@/components/best-friend/ConversationStartersView";
@@ -124,8 +120,7 @@ const BestFriend = () => {
       const response = await fetch(CHAT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ messages: [...messages, { role: "user", content: userMessage }] }),
-      });
+        body: JSON.stringify({ messages: [...messages, { role: "user", content: userMessage }] }) });
       if (!response.ok) {
         if (response.status === 402) {
           const data = await response.json();

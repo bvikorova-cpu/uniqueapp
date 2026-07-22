@@ -16,10 +16,8 @@ interface Donation {
   message?: string | null;
 }
 
-const categoryEmoji: Record<string, string> = {
-  medical: "💊", crisis: "🆘", pet: "🐾", student: "🎓",
-  dream: "✨", hero: "🦸", talent: "🎭",
-};
+const categoryEmoji: Record<string, string> = { medical: "💊", crisis: "🆘", pet: "🐾", student: "🎓",
+  dream: "✨", hero: "🦸", talent: "🎭" };
 
 export function LiveDonationFeed() {
   const [donations, setDonations] = useState<Donation[]>([]);

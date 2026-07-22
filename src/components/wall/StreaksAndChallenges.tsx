@@ -68,8 +68,7 @@ export function StreaksAndChallenges() {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   // Real streak data
   const { data: streakRow } = useQuery({
@@ -82,8 +81,7 @@ export function StreaksAndChallenges() {
         .eq("user_id", user!.id)
         .maybeSingle();
       return data;
-    },
-  });
+    } });
 
   const { data: week } = useQuery({
     queryKey: ["streak-week", user?.id],
@@ -93,8 +91,7 @@ export function StreaksAndChallenges() {
       const { data, error } = await supabase.rpc("get_streak_week");
       if (error) return [];
       return (data ?? []) as Array<{ day_date: string; is_active: boolean; xp_earned: number }>;
-    },
-  });
+    } });
 
   const streakDays = streakRow?.current_streak ?? 0;
   const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
@@ -110,11 +107,9 @@ export function StreaksAndChallenges() {
     queryFn: async () => {
       const { data } = await supabase.rpc("get_user_challenges");
       return (data ?? []) as DBChallenge[];
-    },
-  });
+    } });
 
-  const mapped: Challenge[] = (dbChallenges ?? []).map((c) => ({
-    id: c.id,
+  const mapped: Challenge[] = (dbChallenges ?? []).map((c) => ({ id: c.id,
     title: c.title,
     description: c.description,
     icon: c.icon,
@@ -122,8 +117,7 @@ export function StreaksAndChallenges() {
     progress: c.completed ? c.target_count : Math.min(c.progress, c.target_count),
     target: c.target_count,
     type: c.challenge_type,
-    endsIn: formatEndsIn(c.ends_at),
-  }));
+    endsIn: formatEndsIn(c.ends_at) }));
 
   const dailyChallenges = mapped.filter((c) => c.type === "daily");
   const weeklyChallenges = mapped.filter((c) => c.type === "weekly");
@@ -305,11 +299,9 @@ export function StreaksAndChallenges() {
   );
 }
 
-function ChallengeCard({
-  challenge,
+function ChallengeCard({ challenge,
   expanded,
-  onToggle,
-}: {
+  onToggle }: {
   challenge: Challenge;
   expanded: boolean;
   onToggle: () => void;

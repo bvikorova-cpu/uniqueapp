@@ -24,8 +24,7 @@ export const SkillGapAnalyzer = ({ onCredits }: Props) => {
     setLoading(true);
     try {
       const { data: res, error } = await supabase.functions.invoke("teen-career-counselor", {
-        body: { action: "skillGap", targetCareer, currentSkills },
-      });
+        body: { action: "skillGap", targetCareer, currentSkills } });
       if (error || res?.error) {
         const msg = res?.error || error?.message || "Failed";
         if (String(msg).toLowerCase().includes("insufficient")) toast.error(`Need ${COST} credits`);

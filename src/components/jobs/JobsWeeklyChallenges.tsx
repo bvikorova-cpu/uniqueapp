@@ -59,8 +59,7 @@ export default function JobsWeeklyChallenges() {
         .like("action_type", "job_%");
       if (error) throw error;
       return (data ?? []) as ChallengeRow[];
-    },
-  });
+    } });
 
   const periodKey = currentWeekKey();
 
@@ -79,8 +78,7 @@ export default function JobsWeeklyChallenges() {
         );
       if (error) throw error;
       return (data ?? []) as ProgressRow[];
-    },
-  });
+    } });
 
   const { data: hall = [], isLoading: loadingHall } = useQuery({
     queryKey: ["job_challenges_hall_of_fame"],
@@ -88,8 +86,7 @@ export default function JobsWeeklyChallenges() {
       const { data, error } = await (supabase as any).rpc("get_job_challenges_hall_of_fame");
       if (error) throw error;
       return (data ?? []) as HallEntry[];
-    },
-  });
+    } });
 
   const progressMap = new Map(progress.map((p) => [p.challenge_id, p]));
 

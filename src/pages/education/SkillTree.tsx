@@ -31,8 +31,7 @@ export default function SkillTree() {
         .eq("subject", subject)
         .order("order_index");
       return data ?? [];
-    },
-  });
+    } });
 
   const { data: progress = [] } = useQuery({
     queryKey: ["skill-progress"],
@@ -41,8 +40,7 @@ export default function SkillTree() {
       if (!user) return [];
       const { data } = await supabase.from("education_user_skill_progress").select("*").eq("user_id", user.id);
       return data ?? [];
-    },
-  });
+    } });
 
   const unlock = useMutation({
     mutationFn: async (nodeId: string) => {
@@ -55,8 +53,7 @@ export default function SkillTree() {
       toast.success("Skill unlocked!");
       qc.invalidateQueries({ queryKey: ["skill-progress"] });
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 
   const statusOf = (nodeId: string) => progress.find((p: any) => p.node_id === nodeId)?.status ?? "locked";
   const isCompleted = (nodeId: string | null) =>

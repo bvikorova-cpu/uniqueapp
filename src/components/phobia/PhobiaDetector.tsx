@@ -17,13 +17,11 @@ const PhobiaDetector = ({ onPhobiaDetected }: PhobiaDetectorProps) => {
   const [result, setResult] = useState<any>(null);
   const { toast } = useToast();
 
-  const handleDetect = async () => {
-    if (!description.trim()) {
+  const handleDetect = async () => { if (!description.trim()) {
       toast({
         title: "Description Required",
         description: "Please describe your fear or anxiety",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -32,12 +30,10 @@ const PhobiaDetector = ({ onPhobiaDetected }: PhobiaDetectorProps) => {
       setResult(null);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication Required",
           description: "Please sign in to detect phobias",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -52,15 +48,12 @@ const PhobiaDetector = ({ onPhobiaDetected }: PhobiaDetectorProps) => {
       
       toast({
         title: "Phobia Detected",
-        description: `Identified: ${data.phobia.phobia_name}`,
-      });
-    } catch (error) {
-      console.error('Error:', error);
+        description: `Identified: ${data.phobia.phobia_name}` });
+    } catch (error) { console.error('Error:', error);
       toast({
         title: "Detection Failed",
         description: "Please try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

@@ -29,19 +29,15 @@ const Premium = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const status = params.get("status");
+  useEffect(() => { const status = params.get("status");
     if (status === "success") {
       toast({
         title: "Welcome to Premium! 🎉",
-        description: "Your UniqueApp Premium subscription is now active.",
-      });
-    } else if (status === "canceled") {
-      toast({
+        description: "Your UniqueApp Premium subscription is now active." });
+    } else if (status === "canceled") { toast({
         title: "Checkout canceled",
         description: "No worries — you can subscribe anytime.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   }, [params, toast]);
 
@@ -56,12 +52,10 @@ const Premium = () => {
       const { data, error } = await supabase.functions.invoke("create-premium-subscription");
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
-    } catch (err) {
-      toast({
+    } catch (err) { toast({
         title: "Couldn't start checkout",
         description: err instanceof Error ? err.message : "Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

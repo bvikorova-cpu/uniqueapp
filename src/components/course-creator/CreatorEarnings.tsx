@@ -23,12 +23,10 @@ interface EnrollmentDetail {
 export function CreatorEarnings() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [summary, setSummary] = useState<EarningsSummary>({
-    totalEarnings: 0,
+  const [summary, setSummary] = useState<EarningsSummary>({ totalEarnings: 0,
     totalEnrollments: 0,
     totalCourses: 0,
-    monthlyEarnings: 0,
-  });
+    monthlyEarnings: 0 });
   const [recentEnrollments, setRecentEnrollments] = useState<EnrollmentDetail[]>([]);
 
   useEffect(() => {
@@ -83,8 +81,7 @@ export function CreatorEarnings() {
       let monthlyEarnings = 0;
       const enrollmentDetails: EnrollmentDetail[] = [];
 
-      enrollments?.forEach((enrollment: any) => {
-        const price = enrollment.courses?.price || 0;
+      enrollments?.forEach((enrollment: any) => { const price = enrollment.courses?.price || 0;
         const creatorEarning = price * 0.8;
         monthlyEarnings += creatorEarning;
 
@@ -93,24 +90,19 @@ export function CreatorEarnings() {
           course_title: enrollment.courses?.title || "Unknown Course",
           enrolled_at: enrollment.enrolled_at,
           price,
-          creator_earning: creatorEarning,
-        });
+          creator_earning: creatorEarning });
       });
 
-      setSummary({
-        totalEarnings,
+      setSummary({ totalEarnings,
         totalEnrollments,
         totalCourses: courses.length,
-        monthlyEarnings,
-      });
+        monthlyEarnings });
 
       setRecentEnrollments(enrollmentDetails);
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

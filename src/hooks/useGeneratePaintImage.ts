@@ -18,6 +18,5 @@ export const useGeneratePaintImage = () => {
       }
       
       return data.imageUrl as string;
-    },
-  });
+    } });
 };

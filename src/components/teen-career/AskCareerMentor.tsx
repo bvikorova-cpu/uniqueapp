@@ -26,8 +26,7 @@ export const AskCareerMentor = ({ onCredits, context }: Props) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("teen-career-counselor", {
-        body: { action: "mentor", question, context },
-      });
+        body: { action: "mentor", question, context } });
       if (error || data?.error) {
         const msg = data?.error || error?.message || "Failed";
         if (String(msg).toLowerCase().includes("insufficient")) toast.error(`Need ${COST} credits`);

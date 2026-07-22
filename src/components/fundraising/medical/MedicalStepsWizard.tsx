@@ -3,34 +3,26 @@ import { FileText, ShieldCheck, CreditCard, CheckCircle } from "lucide-react";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const STEPS = [
-  {
-    icon: FileText,
+  { icon: FileText,
     title: "Create Campaign",
     desc: "Submit medical info with diagnosis, hospital, and funding goal",
     color: "from-blue-500/10 to-indigo-500/10",
-    border: "border-blue-500/20",
-  },
-  {
-    icon: ShieldCheck,
+    border: "border-blue-500/20" },
+  { icon: ShieldCheck,
     title: "Admin Verification",
     desc: "Reviewed within 24 hours — only verified campaigns go live",
     color: "from-amber-500/10 to-orange-500/10",
-    border: "border-amber-500/20",
-  },
-  {
-    icon: CreditCard,
+    border: "border-amber-500/20" },
+  { icon: CreditCard,
     title: "Receive Donations",
     desc: "Secure Stripe payments — one-time or monthly. 94% goes to you",
     color: "from-green-500/10 to-emerald-500/10",
-    border: "border-green-500/20",
-  },
-  {
-    icon: CheckCircle,
+    border: "border-green-500/20" },
+  { icon: CheckCircle,
     title: "Get Treatment",
     desc: "Funds transferred directly to support medical treatment",
     color: "from-primary/10 to-accent/10",
-    border: "border-primary/20",
-  },
+    border: "border-primary/20" },
 ];
 
 export function MedicalStepsWizard() {

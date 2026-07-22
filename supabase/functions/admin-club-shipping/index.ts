@@ -4,11 +4,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -63,13 +61,10 @@ serve(async (req) => {
           (profs ?? []).map((p: any) => [p.id, p.email ?? p.display_name ?? ""]),
         );
       }
-      const enriched = (data ?? []).map((m: any) => ({
-        ...m,
-        user_email: emailByUser[m.user_id] ?? null,
-      }));
+      const enriched = (data ?? []).map((m: any) => ({ ...m,
+        user_email: emailByUser[m.user_id] ?? null }));
       return new Response(JSON.stringify({ items: enriched }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (action === "mark_shipped") {
@@ -77,11 +72,9 @@ serve(async (req) => {
       if (!membershipId) throw new Error("membershipId required");
       const { data: m, error } = await admin
         .from("club_memberships")
-        .update({
-          shipping_status: "shipped",
+        .update({ shipping_status: "shipped",
           tracking_number: trackingNumber ?? null,
-          shipped_at: new Date().toISOString(),
-        })
+          shipped_at: new Date().toISOString() })
         .eq("id", membershipId)
         .select("user_id")
         .maybeSingle();
@@ -94,12 +87,10 @@ serve(async (req) => {
           title: "📮 Your Unique VIP card is on the way!",
           message: trackingNumber
             ? `Tracking: ${trackingNumber}`
-            : "Your card should arrive within 5–21 business days.",
-        });
+            : "Your card should arrive within 5–21 business days." });
       }
       return new Response(JSON.stringify({ ok: true }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     if (action === "mark_delivered") {
@@ -107,25 +98,20 @@ serve(async (req) => {
       if (!membershipId) throw new Error("membershipId required");
       const { data: m, error } = await admin
         .from("club_memberships")
-        .update({
-          shipping_status: "delivered",
-          delivered_at: new Date().toISOString(),
-        })
+        .update({ shipping_status: "delivered",
+          delivered_at: new Date().toISOString() })
         .eq("id", membershipId)
         .select("user_id")
         .maybeSingle();
       if (error) throw error;
-      if (m) {
-        await admin.from("notifications").insert({
+      if (m) { await admin.from("notifications").insert({
           user_id: (m as any).user_id,
           type: "club_card_delivered",
           title: "🎉 Your VIP card was delivered",
-          message: "Tap it to any NFC phone to open your Unique profile.",
-        });
+          message: "Tap it to any NFC phone to open your Unique profile." });
       }
       return new Response(JSON.stringify({ ok: true }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     throw new Error("Unknown action");

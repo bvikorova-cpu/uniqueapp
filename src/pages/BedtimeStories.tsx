@@ -377,8 +377,7 @@ export default function BedtimeStories() {
                       const { data: { session } } = await supabase.auth.getSession();
                       if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
                       const { data, error } = await supabase.functions.invoke("kids-story-generate", {
-                        body: { prompt: story.text, title: story.title },
-                      });
+                        body: { prompt: story.text, title: story.title } });
                       if (error) throw error;
                       toast({ title: "✨ Story Created!", description: data?.title || story.title });
                     } catch {

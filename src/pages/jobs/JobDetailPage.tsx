@@ -115,30 +115,22 @@ export default function JobDetailPage() {
     employmentType: job.job_type?.toUpperCase(),
     hiringOrganization: { "@type": "Organization", name: job.company_name },
     jobLocationType: job.is_remote ? "TELECOMMUTE" : undefined,
-    jobLocation: {
-      "@type": "Place",
+    jobLocation: { "@type": "Place",
       address: {
         "@type": "PostalAddress",
         addressLocality: job.location,
-        addressCountry: job.country,
-      },
-    },
+        addressCountry: job.country } },
     ...(job.salary_min && job.salary_max
-      ? {
-          baseSalary: {
+      ? { baseSalary: {
             "@type": "MonetaryAmount",
             currency: job.salary_currency || "EUR",
             value: {
               "@type": "QuantitativeValue",
               minValue: Number(job.salary_min),
               maxValue: Number(job.salary_max),
-              unitText: "YEAR",
-            },
-          },
-        }
+              unitText: "YEAR" } } }
       : {}),
-    url: canonical,
-  };
+    url: canonical };
 
   return (
     <>

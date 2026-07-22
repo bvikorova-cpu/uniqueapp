@@ -71,8 +71,7 @@ const KidsDrawingBuddy = () => {
       (async () => {
         try {
           const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
-            body: { session_id: sessionId },
-          });
+            body: { session_id: sessionId } });
           if (error) throw error;
           if (data?.success) {
             toast.success(`${data.credits_added} credits added! 🎨`);

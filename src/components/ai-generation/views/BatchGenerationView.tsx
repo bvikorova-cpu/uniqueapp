@@ -32,8 +32,7 @@ export const BatchGenerationView = ({ onCreditsUsed }: Props) => {
     for (let i = 0; i < validPrompts.length; i++) {
       try {
         const { data, error } = await supabase.functions.invoke("ai-image-tools", {
-          body: { action: "generate", prompt: validPrompts[i] },
-        });
+          body: { action: "generate", prompt: validPrompts[i] } });
         if (error) throw error;
         if (data?.imageUrl) newResults.push({ prompt: validPrompts[i], imageUrl: data.imageUrl });
       } catch (e: any) {

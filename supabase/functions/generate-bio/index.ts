@@ -1,9 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
@@ -14,8 +12,7 @@ async function openai(messages: any[], opts: { json?: boolean } = {}) {
   const r = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+    body: JSON.stringify(body) });
   if (!r.ok) {
     const t = await r.text();
     console.error("OpenAI error", r.status, t);
@@ -27,13 +24,11 @@ async function openai(messages: any[], opts: { json?: boolean } = {}) {
   return (data.choices?.[0]?.message?.content || "").trim();
 }
 
-const toneMap: Record<string, string> = {
-  warm: "warm, friendly and approachable",
+const toneMap: Record<string, string> = { warm: "warm, friendly and approachable",
   professional: "polished, professional and confident",
   playful: "playful, witty and creative",
   bold: "bold, energetic and ambitious",
-  minimal: "minimal, calm and understated",
-};
+  minimal: "minimal, calm and understated" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -53,8 +48,7 @@ serve(async (req) => {
       let parsed: any = {};
       try { parsed = JSON.parse(raw); } catch { parsed = { score: 50, feedback: raw.slice(0, 200) }; }
       return new Response(JSON.stringify({ score: parsed.score ?? 50, feedback: parsed.feedback ?? "" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // ---------- VARIANTS (A/B) ----------
@@ -68,8 +62,7 @@ serve(async (req) => {
       let parsed: any = { variants: [] };
       try { parsed = JSON.parse(raw); } catch {}
       return new Response(JSON.stringify({ variants: parsed.variants || [] }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // ---------- TRANSLATE ----------
@@ -81,8 +74,7 @@ serve(async (req) => {
         { role: "user", content: `Translate this bio to ${target_lang}:\n\n"${bio}"` },
       ]);
       return new Response(JSON.stringify({ translation: raw.replace(/^["']|["']$/g, "") }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // ---------- GENERATE (default, original behaviour) ----------
@@ -106,8 +98,7 @@ Output ONLY the bio text. No quotes, no labels, no markdown.`;
     ])).replace(/^["']|["']$/g, "");
 
     return new Response(JSON.stringify({ bio }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error in generate-bio function:", error);
     return new Response(

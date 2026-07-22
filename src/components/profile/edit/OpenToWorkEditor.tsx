@@ -10,11 +10,9 @@ import { Button } from "@/components/ui/button";
 import type { OpenToWorkDetails } from "@/components/profile/OpenToWork";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
-export const OpenToWorkEditor = ({
-  enabled,
+export const OpenToWorkEditor = ({ enabled,
   details,
-  onChange,
-}: {
+  onChange }: {
   enabled: boolean;
   details: OpenToWorkDetails;
   onChange: (enabled: boolean, details: OpenToWorkDetails) => void;

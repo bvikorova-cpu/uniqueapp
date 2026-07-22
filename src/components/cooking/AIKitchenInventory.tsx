@@ -55,8 +55,7 @@ export default function AIKitchenInventory({ onBack }: Props) {
 6) STORAGE TIPS: How to extend the shelf life of each item
 7) COST ESTIMATE: Approximate weekly grocery budget optimization
 
-Current inventory: ${itemList}` },
-      });
+Current inventory: ${itemList}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }

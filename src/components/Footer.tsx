@@ -161,7 +161,7 @@ const Footer = () => {
           </div>
           
           <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap justify-center">
-            <span>Berlin, Germany</span>
+            <span>Global Platform</span>
             <span className="hidden md:inline">•</span>
             <span className="text-xs">GDPR & PCI-DSS Compliant</span>
           </div>

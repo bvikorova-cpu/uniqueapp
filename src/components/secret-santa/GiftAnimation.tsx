@@ -44,13 +44,12 @@ export const GiftAnimation = ({ emoji, label, onComplete, type = "open" }: GiftA
           </motion.div>
         )}
 
-        {stage === "opening" && (
+        { stage === "opening" && (
           <motion.div
             key="opening"
             animate={{
               scale: [1, 1.2, 0.9, 1.1, 1],
-              rotate: [0, -10, 10, -5, 0],
-            }}
+              rotate: [0, -10, 10, -5, 0] }}
             transition={{ duration: 1, ease: "easeInOut" }}
             className="relative"
           >
@@ -61,12 +60,11 @@ export const GiftAnimation = ({ emoji, label, onComplete, type = "open" }: GiftA
                 key={i}
                 className="absolute text-2xl"
                 initial={{ opacity: 0, scale: 0 }}
-                animate={{
+                animate={ {
                   opacity: [0, 1, 0],
                   scale: [0, 1.5, 0],
                   x: Math.cos((i * Math.PI) / 4) * 80,
-                  y: Math.sin((i * Math.PI) / 4) * 80,
-                }}
+                  y: Math.sin((i * Math.PI) / 4) * 80 }}
                 transition={{ delay: i * 0.1, duration: 0.8 }}
               >
                 ✨
@@ -83,10 +81,9 @@ export const GiftAnimation = ({ emoji, label, onComplete, type = "open" }: GiftA
             className="text-center"
           >
             <motion.div
-              animate={{
+              animate={ {
                 y: [0, -20, 0],
-                rotate: [0, 5, -5, 0],
-              }}
+                rotate: [0, 5, -5, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="text-[150px] drop-shadow-2xl"
             >
@@ -154,12 +151,10 @@ export const Rotating3DGift = ({
   size?: string;
   speed?: number;
   hover3D?: boolean;
-}) => {
-  return (
+}) => { return (
     <motion.div
       animate={{ 
-        rotateY: [0, 360],
-      }}
+        rotateY: [0, 360] }}
       transition={{ 
         duration: speed, 
         repeat: Infinity, 
@@ -170,10 +165,9 @@ export const Rotating3DGift = ({
         scale: 1.2,
         transition: { duration: 0.5 }
       } : undefined}
-      style={{ 
+      style={ { 
         perspective: 1000, 
-        transformStyle: "preserve-3d",
-      }}
+        transformStyle: "preserve-3d" }}
       className="cursor-pointer"
     >
       <span className={`${size} block drop-shadow-2xl`}>{emoji}</span>
@@ -235,11 +229,10 @@ export const Floating3DGift = ({
   return (
     <motion.div
       initial={{ y: 0, rotateY: 0, rotateX: 0 }}
-      animate={{ 
+      animate={ { 
         y: [0, -15, 0],
         rotateY: [0, 10, -10, 0],
-        rotateX: [0, 5, -5, 0],
-      }}
+        rotateX: [0, 5, -5, 0] }}
       transition={{ 
         duration: 3,
         delay,
@@ -255,8 +248,7 @@ export const Floating3DGift = ({
 };
 
 // Bounce animation for sending
-export const SendingAnimation = () => {
-  return (
+export const SendingAnimation = () => { return (
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
     >
@@ -265,8 +257,7 @@ export const SendingAnimation = () => {
           y: [0, -100, -150],
           x: [0, 50, 150],
           scale: [1, 1.2, 0],
-          rotate: [0, 15, 45],
-        }}
+          rotate: [0, 15, 45] }}
         transition={{ duration: 1.5, ease: "easeOut" }}
         className="text-8xl"
       >

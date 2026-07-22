@@ -21,11 +21,9 @@ export const PsychologyHero = () => {
     (async () => {
       const { data } = await (supabase as any).rpc("get_psychology_stats");
       const row = Array.isArray(data) ? data[0] : data;
-      if (row) {
-        setPsychStats({
+      if (row) { setPsychStats({
           sessions: Number(row.sessions_count) || 0,
-          messages: Number(row.messages_count) || 0,
-        });
+          messages: Number(row.messages_count) || 0 });
       }
     })();
   }, []);

@@ -10,20 +10,15 @@ const safeInvokeMock = vi.fn();
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     auth: { getUser: () => getUserMock() },
-    from: (t: string) => fromMock(t),
-  },
-}));
-vi.mock("@/utils/safeInvoke", () => ({
-  safeInvoke: (...a: any[]) => safeInvokeMock(...a),
-}));
+    from: (t: string) => fromMock(t) } }));
+vi.mock("@/utils/safeInvoke", () => ({ safeInvoke: (...a: any[]) => safeInvokeMock(...a) }));
 vi.mock("sonner", () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
 
 import { useUnifiedCredits, GLOBAL_CREDIT_PACKAGES } from "./useUnifiedCredits";
 
 const wrapper = ({ children }: { children: React.ReactNode }) => {
   const qc = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
+    defaultOptions: { queries: { retry: false } } });
   return React.createElement(QueryClientProvider, { client: qc }, children);
 };
 
@@ -34,11 +29,7 @@ function mockTable(value: number | null) {
         maybeSingle: () =>
           Promise.resolve({
             data: value === null ? null : { credits_remaining: value },
-            error: null,
-          }),
-      }),
-    }),
-  };
+            error: null }) }) }) };
 }
 
 describe("useUnifiedCredits", () => {
@@ -50,13 +41,11 @@ describe("useUnifiedCredits", () => {
 
   it("aggregates credits from all credit tables", async () => {
     getUserMock.mockResolvedValue({ data: { user: { id: "u1" } } });
-    const values: Record<string, number> = {
-      handwriting_credits: 10,
+    const values: Record<string, number> = { handwriting_credits: 10,
       past_life_credits: 5,
       anonymous_dating_credits: 0,
       lie_detector_credits: 7,
-      creative_forge_credits: 3,
-    };
+      creative_forge_credits: 3 };
     fromMock.mockImplementation((t: string) => mockTable(values[t] ?? 0));
 
     const { result } = renderHook(() => useUnifiedCredits(), { wrapper });
@@ -78,8 +67,7 @@ describe("useUnifiedCredits", () => {
     fromMock.mockImplementation(() => mockTable(0));
     safeInvokeMock.mockResolvedValue({
       data: { url: "https://stripe/co" },
-      error: null,
-    });
+      error: null });
     const { result } = renderHook(() => useUnifiedCredits(), { wrapper });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     const url = await result.current.purchaseCredits("handwriting", 30);

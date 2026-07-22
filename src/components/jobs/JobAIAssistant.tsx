@@ -36,13 +36,11 @@ export function JobAIAssistant() {
   const [matches, setMatches] = useState<JobMatch[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const handleAnalyze = async () => {
-    if (!cvText.trim()) {
+  const handleAnalyze = async () => { if (!cvText.trim()) {
       toast({
         title: "❌ Error",
         description: "Please enter your CV",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -51,8 +49,7 @@ export function JobAIAssistant() {
 
     try {
       const { data, error } = await supabase.functions.invoke("job-ai-matcher", {
-        body: { cvText },
-      });
+        body: { cvText } });
 
       if (error) throw error;
 
@@ -62,24 +59,19 @@ export function JobAIAssistant() {
 
       setMatches(data.matches || []);
 
-      if (!data.matches || data.matches.length === 0) {
-        toast({
+      if (!data.matches || data.matches.length === 0) { toast({
           title: "No Matches",
-          description: "We currently found no suitable positions for your profile.",
-        });
+          description: "We currently found no suitable positions for your profile." });
       } else {
         toast({
           title: "Analysis Complete",
-          description: `Found ${data.matches.length} suitable positions`,
-        });
+          description: `Found ${data.matches.length} suitable positions` });
       }
-    } catch (error: any) {
-      console.error("Error analyzing CV:", error);
+    } catch (error: any) { console.error("Error analyzing CV:", error);
       toast({
         title: "❌ Error",
         description: error.message || "Failed to analyze CV",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsAnalyzing(false);
     }

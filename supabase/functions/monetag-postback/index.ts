@@ -10,11 +10,9 @@
 // We accept GET (query string) or POST (JSON / form).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -51,23 +49,20 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const { error } = await supabase.from("monetag_ad_events").insert({
-      event_type: eventType,
+    const { error } = await supabase.from("monetag_ad_events").insert({ event_type: eventType,
       zone_id: zoneId,
       revenue,
       currency,
       ymid,
       sub_id: subId,
       country,
-      raw: data,
-    });
+      raw: data });
 
     if (error) {
       console.error("monetag-postback insert error", error);
       return new Response(JSON.stringify({ ok: false, error: error.message }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     return new Response("OK", { status: 200, headers: corsHeaders });

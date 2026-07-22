@@ -9,11 +9,9 @@ interface ScienceLimitBannerProps {
   onBuyCredits: () => void;
 }
 
-export const ScienceLimitBanner = ({
-  creditsRemaining,
+export const ScienceLimitBanner = ({ creditsRemaining,
   creditsPerRun,
-  onBuyCredits,
-}: ScienceLimitBannerProps) => {
+  onBuyCredits }: ScienceLimitBannerProps) => {
   const canRun = creditsRemaining >= creditsPerRun;
   const runsLeft = Math.floor(creditsRemaining / creditsPerRun);
 

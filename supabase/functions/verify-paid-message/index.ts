@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -46,13 +44,10 @@ serve(async (req) => {
 
     if (row.status === "paid") {
       return new Response(JSON.stringify({ status: "paid" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", { apiVersion: "2025-08-27.basil" });
     const sid = sessionId || row.stripe_session_id;
     if (!sid) throw new Error("No Stripe session on record");
     const session = await stripe.checkout.sessions.retrieve(sid);
@@ -76,7 +71,6 @@ serve(async (req) => {
     console.error("verify-paid-message error:", e);
     return new Response(JSON.stringify({ error: e?.message ?? "Unknown error" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 400,
-    });
+      status: 400 });
   }
 });

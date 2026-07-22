@@ -56,16 +56,14 @@ export const DNACommunityForum = () => {
 
         const forumPosts: ForumPost[] = data.map(d => {
           const meta = (d.metadata || {}) as Record<string, any>;
-          return {
-            id: d.id,
+          return { id: d.id,
             title: meta.title || "Untitled Post",
             content: meta.content || "",
             author: profileMap.get(d.user_id) || "User",
             category: meta.category || "General",
             likes: meta.likes || 0,
             replies: meta.replies || 0,
-            created_at: d.created_at,
-          };
+            created_at: d.created_at };
         });
         setPosts(forumPosts);
       }
@@ -90,8 +88,7 @@ export const DNACommunityForum = () => {
         return;
       }
 
-      const { error } = await supabase.from("activity_feed").insert({
-        user_id: session.user.id,
+      const { error } = await supabase.from("activity_feed").insert({ user_id: session.user.id,
         activity_type: "dna_community_post",
         target_type: "dna_community",
         metadata: {
@@ -99,9 +96,7 @@ export const DNACommunityForum = () => {
           content: newPost.content,
           category: newPost.category,
           likes: 0,
-          replies: 0,
-        },
-      });
+          replies: 0 } });
 
       if (error) throw error;
 

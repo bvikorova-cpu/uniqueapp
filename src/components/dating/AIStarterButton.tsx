@@ -24,8 +24,7 @@ export const AIStarterButton = ({ matchId, matchProfile, recentMessages, onPick 
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("dating-ai-coach", {
-        body: { action: "conversation_starter", matchId, matchProfile, recentMessages },
-      });
+        body: { action: "conversation_starter", matchId, matchProfile, recentMessages } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setStarters(data.starters || []);

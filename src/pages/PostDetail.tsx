@@ -54,12 +54,10 @@ const PostDetail = () => {
 
         if (postError) throw postError;
 
-        if (!postData) {
-          toast({
+        if (!postData) { toast({
             title: "Post not found",
             description: "The post you're looking for doesn't exist",
-            variant: "destructive",
-          });
+            variant: "destructive" });
           navigate("/wall");
           return;
         }
@@ -71,20 +69,15 @@ const PostDetail = () => {
           .eq("id", postData.user_id)
           .single();
 
-        setPost({
-          ...postData,
+        setPost({ ...postData,
           profiles: profileData || {
             id: postData.user_id,
             full_name: null,
-            avatar_url: null,
-          },
-        });
-      } catch (error: any) {
-        toast({
+            avatar_url: null } });
+      } catch (error: any) { toast({
           title: "Error loading post",
           description: error.message,
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/wall");
       } finally {
         setLoading(false);

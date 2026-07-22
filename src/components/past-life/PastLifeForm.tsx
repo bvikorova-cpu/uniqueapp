@@ -16,30 +16,24 @@ interface PastLifeFormProps {
 }
 
 const readingTypes = [
-  {
-    value: "basic",
+  { value: "basic",
     label: "Basic Reading",
     cost: 5,
     description: "1 past life story with karmic lessons",
     icon: Clock,
-    gradient: "from-blue-500 to-cyan-500",
-  },
-  {
-    value: "full",
+    gradient: "from-blue-500 to-cyan-500" },
+  { value: "full",
     label: "Full Reading",
     cost: 15,
     description: "3 past lives with AI illustrations",
     icon: Sparkles,
-    gradient: "from-primary to-accent",
-  },
-  {
-    value: "soulmate",
+    gradient: "from-primary to-accent" },
+  { value: "soulmate",
     label: "Soul Mate Connection",
     cost: 20,
     description: "Partner analysis + past life connections",
     icon: Heart,
-    gradient: "from-pink-500 to-rose-500",
-  },
+    gradient: "from-pink-500 to-rose-500" },
 ];
 
 const examplePrompts = [
@@ -48,8 +42,7 @@ const examplePrompts = [
   "I feel an inexplicable connection to ancient Japanese culture...",
 ];
 
-export const PastLifeForm = ({ onSubmit, isAnalyzing, defaultReadingType }: PastLifeFormProps) => {
-  const [birthDate, setBirthDate] = useState("");
+export const PastLifeForm = ({ onSubmit, isAnalyzing, defaultReadingType }: PastLifeFormProps) => { const [birthDate, setBirthDate] = useState("");
   const [dreamsDejavu, setDreamsDejavu] = useState("");
   const [talentsPhobias, setTalentsPhobias] = useState("");
   const [readingType, setReadingType] = useState(defaultReadingType || "full");
@@ -64,8 +57,7 @@ export const PastLifeForm = ({ onSubmit, isAnalyzing, defaultReadingType }: Past
       talentsPhobias: talentsPhobias || undefined,
       readingType,
       partnerBirthDate: readingType === "soulmate" ? partnerBirthDate : undefined,
-      partnerInfo: readingType === "soulmate" ? partnerInfo : undefined,
-    });
+      partnerInfo: readingType === "soulmate" ? partnerInfo : undefined });
   };
 
   const selectedType = readingTypes.find(t => t.value === readingType);

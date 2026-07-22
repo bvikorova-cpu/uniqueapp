@@ -20,11 +20,9 @@ export const SingleMessageAnalysis = () => {
   const [result, setResult] = useState<any>(null);
   const { analyzeMessage, isAnalyzingMessage } = useLieDetectorCredits();
 
-  const handleAnalyze = () => {
-    if (!message.trim()) return;
+  const handleAnalyze = () => { if (!message.trim()) return;
     analyzeMessage(message, {
-      onSuccess: (data) => setResult(data.analysis),
-    });
+      onSuccess: (data) => setResult(data.analysis) });
   };
 
   return (

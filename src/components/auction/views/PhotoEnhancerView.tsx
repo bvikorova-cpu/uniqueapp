@@ -20,8 +20,7 @@ export const PhotoEnhancerView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("auction-ai", {
-        body: { action: "photo_enhancer", item_description: input },
-      });
+        body: { action: "photo_enhancer", item_description: input } });
       if (error) throw error;
       setResult(data.result);
     } catch (err: any) { toast.error(err.message || "Enhancement failed"); }

@@ -19,8 +19,7 @@ export const Avatar3D = ({ userId }: Avatar3DProps) => {
         .maybeSingle();
       return data as { avatar_3d_url: string | null } | null;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   if (!profile?.avatar_3d_url) return null;
 

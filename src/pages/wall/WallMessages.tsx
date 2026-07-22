@@ -13,8 +13,7 @@ export default function WallMessages() {
   const navigate = useNavigate();
   const { data: user } = useQuery({
     queryKey: ["current-user"],
-    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; },
-  });
+    queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; } });
 
   const { data: friends = [] } = useQuery({
     queryKey: ["friends-for-messages", user?.id],
@@ -26,8 +25,7 @@ export default function WallMessages() {
       const profiles = await fetchProfilesCachedBatch(friendIds);
       return Array.from(profiles.values());
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   return (
     <div className="max-w-3xl mx-auto px-4 pt-6 pb-8 space-y-6">

@@ -20,15 +20,13 @@ const DEFAULT_DESCRIPTION =
  * Per-page SEO component. Drop into any route to override <title>, meta tags,
  * Open Graph, Twitter Card, canonical URL, and inject JSON-LD structured data.
  */
-export function SEO({
-  title,
+export function SEO({ title,
   description = DEFAULT_DESCRIPTION,
   canonical,
   image = DEFAULT_IMAGE,
   type = "website",
   noindex = false,
-  jsonLd,
-}: SEOProps) {
+  jsonLd }: SEOProps) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} - All-in-one social platform`;
   const url = canonical
     ? canonical.startsWith("http")

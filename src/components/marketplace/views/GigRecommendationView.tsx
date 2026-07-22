@@ -29,8 +29,7 @@ export function GigRecommendationView({ onBack }: Props) {
       if (!session) { toast.error("Please sign in"); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke("marketplace-ai", {
         body: { action: "gig-recommendation", skills, interests, experience, earnings },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setResult(data.result);
       toast.success(`Recommendations ready! (${data.credits_used} credits used)`);

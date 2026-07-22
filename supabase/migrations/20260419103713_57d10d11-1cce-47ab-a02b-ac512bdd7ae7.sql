@@ -108,7 +108,7 @@ INSERT INTO public.handwriting_gallery_items
   (source_type, figure_name, title, era, region, story, image_url, ai_traits, tags, status)
 VALUES
   ('seeded', 'Albert Einstein', 'Theoretical Physicist',
-   '1879-1955', 'Germany / USA',
+   '1879-1955', 'International',
    'Einstein''s flowing handwriting reveals his playful intuition and abstract thinking. The slight rightward slant and rounded loops suggest emotional warmth balanced with rigorous logic.',
    'https://upload.wikimedia.org/wikipedia/commons/a/a6/Albert_Einstein_signature_1934.svg',
    '{"creativity":92,"analytical":95,"introspection":88,"speed":74}'::jsonb,

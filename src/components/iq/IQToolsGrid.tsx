@@ -119,8 +119,7 @@ export default function IQToolsGrid() {
       }
 
       const { data, error } = await supabase.functions.invoke("iq-platform-ai", {
-        body: { action: activeTool.id, ...formData },
-      });
+        body: { action: activeTool.id, ...formData } });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

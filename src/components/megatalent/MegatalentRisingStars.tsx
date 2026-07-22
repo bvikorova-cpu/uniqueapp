@@ -58,16 +58,14 @@ export default function MegatalentRisingStars({ category, categories }: Props) {
           (profs || []).forEach((p: any) => (pmap[p.id] = p));
         }
 
-        const enriched: RisingStar[] = rows.map((r) => {
-          const ageHours = Math.max(
+        const enriched: RisingStar[] = rows.map((r) => { const ageHours = Math.max(
             1,
             (Date.now() - new Date(r.created_at).getTime()) / (1000 * 60 * 60)
           );
           return {
             ...r,
             growth: Math.round(((r.votes_count || 0) / ageHours) * 24),
-            profile: pmap[r.user_id],
-          };
+            profile: pmap[r.user_id] };
         });
 
         enriched.sort((a, b) => b.growth - a.growth);

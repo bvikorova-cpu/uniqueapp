@@ -16,13 +16,11 @@ interface CertificateGeneratorProps {
   instructorName: string;
 }
 
-export const CertificateGenerator = ({
-  courseId,
+export const CertificateGenerator = ({ courseId,
   courseTitle,
   studentName,
   completionDate,
-  instructorName,
-}: CertificateGeneratorProps) => {
+  instructorName }: CertificateGeneratorProps) => {
   const certificateRef = useRef<HTMLDivElement>(null);
   const [certificateUrl, setCertificateUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -47,22 +45,18 @@ export const CertificateGenerator = ({
     }
   };
 
-  const generateCertificate = async () => {
-    if (!certificateRef.current) return;
+  const generateCertificate = async () => { if (!certificateRef.current) return;
 
     setLoading(true);
     try {
       const canvas = await html2canvas(certificateRef.current, {
         scale: 2,
-        backgroundColor: "#ffffff",
-      });
+        backgroundColor: "#ffffff" });
 
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "landscape",
+      const pdf = new jsPDF({ orientation: "landscape",
         unit: "px",
-        format: [canvas.width, canvas.height],
-      });
+        format: [canvas.width, canvas.height] });
 
       pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
       
@@ -84,12 +78,10 @@ export const CertificateGenerator = ({
 
       await supabase
         .from('course_certificates' as any)
-        .insert({
-          course_id: courseId,
+        .insert({ course_id: courseId,
           user_id: user.id,
           certificate_url: urlData.publicUrl,
-          issued_at: new Date().toISOString(),
-        });
+          issued_at: new Date().toISOString() });
 
       setCertificateUrl(urlData.publicUrl);
       toast.success("Certificate generated successfully!");
@@ -179,11 +171,10 @@ export const CertificateGenerator = ({
             <div className="text-right space-y-2">
               <div className="border-t-2 border-primary/30 pt-2 w-48">
                 <p className="font-medium">
-                  {new Date(completionDate).toLocaleDateString("en-US", {
+                  { new Date(completionDate).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
-                    day: "numeric",
-                  })}
+                    day: "numeric" })}
                 </p>
                 <p className="text-sm text-muted-foreground">Date of Completion</p>
               </div>

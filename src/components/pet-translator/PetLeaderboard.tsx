@@ -69,8 +69,7 @@ export default function PetLeaderboard() {
           name: pmap.get(uid) || "User",
           pet: pet ? `${pet.name}${pet.breed ? ` (${pet.breed})` : ""}` : "—",
           score: v.score,
-          badge: badgeFor(i + 1),
-        };
+          badge: badgeFor(i + 1) };
       });
 
       if (!cancelled) {

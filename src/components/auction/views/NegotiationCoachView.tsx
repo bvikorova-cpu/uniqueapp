@@ -20,8 +20,7 @@ export const NegotiationCoachView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("auction-ai", {
-        body: { action: "negotiation_coach", scenario: input },
-      });
+        body: { action: "negotiation_coach", scenario: input } });
       if (error) throw error;
       setResult(data.result);
     } catch (err: any) { toast.error(err.message || "Coaching failed"); }

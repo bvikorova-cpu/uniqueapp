@@ -4,8 +4,7 @@ import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-
  * Creates a Supabase client with automatic Authorization header forwarding
  * This ensures the client uses the same auth context as the incoming request
  */
-export function createSupabaseClient(req: Request): SupabaseClient {
-  const authHeader = req.headers.get("Authorization") || "";
+export function createSupabaseClient(req: Request): SupabaseClient { const authHeader = req.headers.get("Authorization") || "";
   
   return createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
@@ -13,10 +12,7 @@ export function createSupabaseClient(req: Request): SupabaseClient {
     {
       global: {
         headers: {
-          Authorization: authHeader,
-        },
-      },
-    }
+          Authorization: authHeader } } }
   );
 }
 
@@ -24,15 +20,12 @@ export function createSupabaseClient(req: Request): SupabaseClient {
  * Creates a Supabase admin client with SERVICE_ROLE_KEY
  * Use this for operations that need to bypass RLS
  */
-export function createSupabaseAdminClient(): SupabaseClient {
-  return createClient(
+export function createSupabaseAdminClient(): SupabaseClient { return createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     {
       auth: {
-        persistSession: false,
-      },
-    }
+        persistSession: false } }
   );
 }
 
@@ -64,12 +57,10 @@ export async function authenticateUser(req: Request) {
     throw new Error(error?.message || "Unauthorized");
   }
 
-  return {
-    user,
+  return { user,
     supabase,
     userId: user.id,
-    email: user.email,
-  };
+    email: user.email };
 }
 
 /**

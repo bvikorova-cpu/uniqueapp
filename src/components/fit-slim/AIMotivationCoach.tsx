@@ -33,9 +33,7 @@ Include:
 3. A practical action plan for today
 4. A mindset shift technique
 5. A celebration milestone plan
-Use energetic, empowering language with emojis. Make it personal and actionable.`,
-        },
-      });
+Use energetic, empowering language with emojis. Make it personal and actionable.` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
     } catch (e: any) {

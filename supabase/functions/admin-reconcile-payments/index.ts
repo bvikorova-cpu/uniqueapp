@@ -6,11 +6,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[RECONCILE] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
@@ -23,8 +21,7 @@ serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -54,8 +51,7 @@ serve(async (req) => {
       if (!roles?.some((r: any) => r.role === "admin")) {
         return new Response(JSON.stringify({ error: "Admin only" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 403,
-        });
+          status: 403 });
       }
       adminUserId = u.user.id;
     }
@@ -73,15 +69,12 @@ serve(async (req) => {
     // 1. List all Stripe charges for the day (paginated)
     const charges: Stripe.Charge[] = [];
     let starting_after: string | undefined;
-    for (let i = 0; i < 20; i++) {
-      const page = await stripe.charges.list({
+    for (let i = 0; i < 20; i++) { const page = await stripe.charges.list({
         created: {
           gte: Math.floor(start.getTime() / 1000),
-          lt: Math.floor(end.getTime() / 1000),
-        },
+          lt: Math.floor(end.getTime() / 1000) },
         limit: 100,
-        starting_after,
-      });
+        starting_after });
       charges.push(...page.data);
       if (!page.has_more) break;
       starting_after = page.data[page.data.length - 1]?.id;
@@ -106,8 +99,7 @@ serve(async (req) => {
     const amountMismatch: any[] = [];
     const statusMismatch: any[] = [];
 
-    for (const ch of charges) {
-      const piId = typeof ch.payment_intent === "string"
+    for (const ch of charges) { const piId = typeof ch.payment_intent === "string"
         ? ch.payment_intent
         : ch.payment_intent?.id;
       if (!piId) continue;
@@ -119,18 +111,15 @@ serve(async (req) => {
           amount: ch.amount,
           currency: ch.currency,
           status: ch.status,
-          created: new Date(ch.created * 1000).toISOString(),
-        });
+          created: new Date(ch.created * 1000).toISOString() });
         continue;
       }
       // amount stored as integer cents in payment_records
-      if (Math.round(Number(rec.amount)) !== ch.amount) {
-        amountMismatch.push({
+      if (Math.round(Number(rec.amount)) !== ch.amount) { amountMismatch.push({
           payment_record_id: rec.id,
           payment_intent: piId,
           db_amount: rec.amount,
-          stripe_amount: ch.amount,
-        });
+          stripe_amount: ch.amount });
       }
       const expectedStatus = ch.refunded
         ? "refunded"
@@ -139,13 +128,11 @@ serve(async (req) => {
         : ch.status === "succeeded"
         ? "paid"
         : ch.status;
-      if (rec.status !== expectedStatus) {
-        statusMismatch.push({
+      if (rec.status !== expectedStatus) { statusMismatch.push({
           payment_record_id: rec.id,
           payment_intent: piId,
           db_status: rec.status,
-          stripe_status: expectedStatus,
-        });
+          stripe_status: expectedStatus });
       }
     }
 
@@ -161,21 +148,17 @@ serve(async (req) => {
           !stripePiSet.has(r.stripe_payment_intent_id) &&
           r.status === "paid",
       )
-      .map((r) => ({
-        payment_record_id: r.id,
+      .map((r) => ({ payment_record_id: r.id,
         payment_intent: r.stripe_payment_intent_id,
         amount: r.amount,
-        status: r.status,
-      }));
+        status: r.status }));
 
-    const summary = {
-      stripe_charges: charges.length,
+    const summary = { stripe_charges: charges.length,
       db_records: records?.length ?? 0,
       missing_in_db: missingInDb.length,
       missing_in_stripe: missingInStripe.length,
       amount_mismatch: amountMismatch.length,
-      status_mismatch: statusMismatch.length,
-    };
+      status_mismatch: statusMismatch.length };
 
     // Persist run history
     await admin.from("reconciliation_runs").insert({
@@ -183,8 +166,7 @@ serve(async (req) => {
       trigger_source: isCron ? "cron" : "manual",
       ...summary,
       details: { missingInDb, missingInStripe, amountMismatch, statusMismatch },
-      duration_ms: Date.now() - t0,
-    });
+      duration_ms: Date.now() - t0 });
 
     // Audit log (only for manual admin runs)
     if (adminUserId) {
@@ -192,37 +174,31 @@ serve(async (req) => {
         admin_id: adminUserId,
         action: "reconcile_run",
         target_type: "payment_records",
-        details: { date: dateStr, ...summary },
-      });
+        details: { date: dateStr, ...summary } });
     }
 
     return new Response(
-      JSON.stringify({
-        date: dateStr,
+      JSON.stringify({ date: dateStr,
         summary: {
           stripe_charges: charges.length,
           db_records: records?.length ?? 0,
           missing_in_db: missingInDb.length,
           missing_in_stripe: missingInStripe.length,
           amount_mismatch: amountMismatch.length,
-          status_mismatch: statusMismatch.length,
-        },
+          status_mismatch: statusMismatch.length },
         missing_in_db: missingInDb,
         missing_in_stripe: missingInStripe,
         amount_mismatch: amountMismatch,
-        status_mismatch: statusMismatch,
-      }),
+        status_mismatch: statusMismatch }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      },
+        status: 200 },
     );
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

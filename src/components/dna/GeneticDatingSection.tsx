@@ -56,12 +56,10 @@ export const GeneticDatingSection = () => {
   const createProfile = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Authentication Required",
           description: "Please sign in to create a profile",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -104,17 +102,13 @@ export const GeneticDatingSection = () => {
       if (error) throw error;
 
       setHasProfile(true);
-      toast({
-        title: "Profile Created!",
-        description: "Your genetic dating profile is now active",
-      });
-    } catch (error) {
-      console.error("Error:", error);
+      toast({ title: "Profile Created!",
+        description: "Your genetic dating profile is now active" });
+    } catch (error) { console.error("Error:", error);
       toast({
         title: "Error",
         description: "Failed to create profile. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -128,15 +122,12 @@ export const GeneticDatingSection = () => {
       setMatches(data.matches || []);
       toast({
         title: "Matches Found!",
-        description: `Found ${data.matches?.length || 0} compatible matches`,
-      });
-    } catch (error) {
-      console.error("Error:", error);
+        description: `Found ${data.matches?.length || 0} compatible matches` });
+    } catch (error) { console.error("Error:", error);
       toast({
         title: "Error",
         description: "Failed to find matches. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setFinding(false);
     }

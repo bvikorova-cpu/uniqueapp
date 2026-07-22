@@ -33,73 +33,54 @@ const WELLNESS_PLANS = {
   basicMonthly: { name: "Basic Monthly", price: "€4.99", period: "/month", priceId: "price_1SQQ0zGaXSfGtYFtXRewT2s9", tier: "basic", isLifetime: false, icon: Wind, gradient: "from-sky-500/15 to-cyan-500/5", accentColor: "text-sky-400", features: ["Breathing Exercises", "5-4-3-2-1 Grounding", "Nature Sounds", "Body Scan Meditation", "Sleep Stories", "Daily Challenges"] },
   premiumMonthly: { name: "Premium Monthly", price: "€9.99", period: "/month", priceId: "price_1SQQ1zGaXSfGtYFt773EG7rN", tier: "premium", isLifetime: false, icon: Crown, gradient: "from-violet-500/15 to-purple-500/5", accentColor: "text-violet-400", popular: true, features: ["All Basic features", "AI Mindfulness Coach", "Gratitude Journal with AI", "Digital Mandala Drawing", "Progress Dashboard"] },
   basicLifetime: { name: "Basic Lifetime", price: "€29.99", period: " once", priceId: "price_1SQQ2OGaXSfGtYFtSFCDoDRg", tier: "basic", isLifetime: true, icon: Shield, gradient: "from-emerald-500/15 to-green-500/5", accentColor: "text-emerald-400", savings: "Save 50%+", features: ["Lifetime Access", "Breathing Exercises", "5-4-3-2-1 Grounding", "Nature Sounds", "Body Scan Meditation", "Sleep Stories"] },
-  premiumLifetime: { name: "Premium Lifetime", price: "€49.99", period: " once", priceId: "price_1SQQ2gGaXSfGtYFtpMEdnEfw", tier: "premium", isLifetime: true, icon: Zap, gradient: "from-amber-500/15 to-orange-500/5", accentColor: "text-amber-400", savings: "Best Value", features: ["Lifetime Access", "All Premium features", "AI Mindfulness Coach", "Gratitude Journal with AI", "Digital Mandala Drawing"] },
-};
+  premiumLifetime: { name: "Premium Lifetime", price: "€49.99", period: " once", priceId: "price_1SQQ2gGaXSfGtYFtpMEdnEfw", tier: "premium", isLifetime: true, icon: Zap, gradient: "from-amber-500/15 to-orange-500/5", accentColor: "text-amber-400", savings: "Best Value", features: ["Lifetime Access", "All Premium features", "AI Mindfulness Coach", "Gratitude Journal with AI", "Digital Mandala Drawing"] } };
 
 const WELLNESS_TOOLS = [
-  {
-    id: "breathing", name: "Breathing Exercises", icon: Wind,
+  { id: "breathing", name: "Breathing Exercises", icon: Wind,
     description: "Guided breathing techniques for stress relief and relaxation",
     color: "from-sky-500 to-cyan-600",
     features: ["4-7-8 Breathing", "Box Breathing", "Visual guidance", "Session tracking", "Multiple techniques"],
-    premium: false,
-  },
-  {
-    id: "grounding", name: "5-4-3-2-1 Grounding", icon: Brain,
+    premium: false },
+  { id: "grounding", name: "5-4-3-2-1 Grounding", icon: Brain,
     description: "Sensory grounding exercise to reduce anxiety and panic",
     color: "from-violet-500 to-purple-600",
     features: ["Step-by-step guidance", "Anxiety relief", "Panic attack support", "Progress tracking", "Audio cues"],
-    premium: false,
-  },
-  {
-    id: "sounds", name: "Nature Sounds", icon: Volume2,
+    premium: false },
+  { id: "sounds", name: "Nature Sounds", icon: Volume2,
     description: "Ambient soundscapes for relaxation, focus, and sleep",
     color: "from-emerald-500 to-green-600",
     features: ["Rain & thunder", "Ocean waves", "Forest ambience", "Volume control", "Sleep timer"],
-    premium: false,
-  },
-  {
-    id: "bodyscan", name: "Body Scan Meditation", icon: Heart,
+    premium: false },
+  { id: "bodyscan", name: "Body Scan Meditation", icon: Heart,
     description: "Progressive relaxation from head to toe with audio guidance",
     color: "from-rose-500 to-pink-600",
     features: ["Interactive body map", "Audio guidance", "Progressive relaxation", "Session completion", "Tension release"],
-    premium: false,
-  },
-  {
-    id: "sleep", name: "Sleep Stories", icon: Moon,
+    premium: false },
+  { id: "sleep", name: "Sleep Stories", icon: Moon,
     description: "Calming narratives and ambient sounds to help you drift off",
     color: "from-indigo-500 to-blue-600",
     features: ["Multiple stories", "Ambient themes", "Sleep timer", "Volume control", "New stories weekly"],
-    premium: false,
-  },
-  {
-    id: "challenges", name: "Daily Challenges", icon: Target,
+    premium: false },
+  { id: "challenges", name: "Daily Challenges", icon: Target,
     description: "Gamified daily wellness tasks with XP and streak tracking",
     color: "from-amber-500 to-orange-600",
     features: ["Daily tasks", "XP rewards", "Streak tracking", "Multiple categories", "Progress gamification"],
-    premium: false,
-  },
-  {
-    id: "chat", name: "AI Mindfulness Coach", icon: Brain,
+    premium: false },
+  { id: "chat", name: "AI Mindfulness Coach", icon: Brain,
     description: "24/7 AI coach trained in CBT, mindfulness, and therapeutic techniques",
     color: "from-purple-500 to-violet-600",
     features: ["24/7 availability", "CBT techniques", "Empathetic responses", "Quick prompts", "Session history"],
-    premium: true,
-  },
-  {
-    id: "journal", name: "Gratitude Journal", icon: BookOpen,
+    premium: true },
+  { id: "journal", name: "Gratitude Journal", icon: BookOpen,
     description: "Write gratitude entries and receive AI-powered insights",
     color: "from-amber-500 to-yellow-600",
     features: ["AI insights", "Mood tracking", "Writing prompts", "Entry history", "Emotional analysis"],
-    premium: true,
-  },
-  {
-    id: "mandala", name: "Digital Mandala", icon: Palette,
+    premium: true },
+  { id: "mandala", name: "Digital Mandala", icon: Palette,
     description: "Creative mindfulness through symmetrical drawing",
     color: "from-pink-500 to-rose-600",
     features: ["Symmetry modes", "Color palettes", "Export to image", "Creative expression", "Meditative drawing"],
-    premium: true,
-  },
+    premium: true },
 ];
 
 export default function Wellness() {
@@ -114,8 +95,7 @@ export default function Wellness() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { setSubscriptionStatus({ subscribed: false }); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke('check-wellness-subscription', {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       setSubscriptionStatus(data);
     } catch (error) {
@@ -140,8 +120,7 @@ export default function Wellness() {
       const plan = WELLNESS_PLANS[planKey];
       const { data, error } = await supabase.functions.invoke('create-wellness-checkout', {
         body: { priceId: plan.priceId, tier: plan.tier, isLifetime: plan.isLifetime },
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
       if (data?.url && checkoutWindow) {
         checkoutWindow.location.href = data.url;
@@ -185,8 +164,7 @@ export default function Wellness() {
   }
 
   // If a tool is active, show it full-screen
-  if (activeTool) {
-    const toolComponents: Record<string, JSX.Element> = {
+  if (activeTool) { const toolComponents: Record<string, JSX.Element> = {
       breathing: <BreathingExercises />,
       grounding: <GroundingExercise />,
       sounds: <NatureSounds />,
@@ -196,8 +174,7 @@ export default function Wellness() {
       chat: <MindfulnessChat />,
       journal: <GratitudeJournal />,
       mandala: <DigitalMandala />,
-      progress: <WellnessProgressDashboard />,
-    };
+      progress: <WellnessProgressDashboard /> };
 
     return (
       <div className="relative min-h-screen">

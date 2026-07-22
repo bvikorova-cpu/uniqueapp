@@ -1,10 +1,8 @@
 // Generate AI Best Friend avatar (Pixar-style portrait) and save URL on persona row.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -33,9 +31,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         model: "gpt-image-1",
         messages: [{ role: "user", content:
-          `Pixar 3D portrait of: ${description}. Friendly, glowing, cinematic studio lighting, square crop, no text, no real person.` }],
-      }),
-    });
+          `Pixar 3D portrait of: ${description}. Friendly, glowing, cinematic studio lighting, square crop, no text, no real person.` }] }) });
     if (!imgRes.ok) {
       const t = await imgRes.text();
       if (imgRes.status === 429) return j({ error: "Rate limit" }, 429);

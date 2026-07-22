@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -38,8 +36,7 @@ serve(async (req) => {
       }
       if (!user) {
         return new Response(JSON.stringify({ error: "Not authenticated" }), {
-          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       const theme = String(reqBody.theme || reqBody.prompt || "").trim().slice(0, 500);
@@ -48,8 +45,7 @@ serve(async (req) => {
       const wantAudio = reqBody.audio !== false;
       if (!theme) {
         return new Response(JSON.stringify({ error: "theme required" }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       const admin = createClient(
@@ -62,16 +58,13 @@ serve(async (req) => {
         .select("credits_remaining")
         .eq("user_id", user.id)
         .maybeSingle();
-      if (!credRow) {
-        await admin.from("kids_story_credits").insert({
-          user_id: user.id, credits_remaining: 0, total_credits_purchased: 0,
-        });
+      if (!credRow) { await admin.from("kids_story_credits").insert({
+          user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
       }
       const balance = credRow?.credits_remaining ?? 0;
       if (balance < cost) {
         return new Response(JSON.stringify({ error: "Insufficient credits", credits_remaining: balance, cost }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       // 1) Scenes
@@ -84,14 +77,11 @@ serve(async (req) => {
             { role: "system", content: `You are a children's story writer. Output ONLY a JSON object {"scenes":[...]} with exactly ${sceneCount} short scene descriptions in ${language}, each 2-3 sentences, warm, magical, safe for kids 4-10.` },
             { role: "user", content: `Theme: ${theme}` },
           ],
-          response_format: { type: "json_object" },
-        }),
-      });
+          response_format: { type: "json_object" } }) });
       if (!scRes.ok) {
         console.error("story_video scene fail", scRes.status, await scRes.text());
         return new Response(JSON.stringify({ error: "Story generation failed" }), {
-          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       const scJson = await scRes.json();
       let scenes: string[] = [];
@@ -104,8 +94,7 @@ serve(async (req) => {
       } catch { /* ignore */ }
       if (scenes.length === 0) {
         return new Response(JSON.stringify({ error: "No scenes produced" }), {
-          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       // 2) Illustrations (parallel)
@@ -118,9 +107,7 @@ serve(async (req) => {
             prompt: `Children's storybook illustration. Scene: ${scene}. Soft warm watercolor style, age-appropriate, friendly, no text, no letters, vibrant, full-bleed.`.slice(0, 4000),
             n: 1,
             size: "1024x1024",
-            response_format: "b64_json",
-          }),
-        });
+            response_format: "b64_json" }) });
         if (!r.ok) { console.error("img fail", r.status); return ""; }
         const j = await r.json();
         const b64 = j?.data?.[0]?.b64_json;
@@ -132,8 +119,7 @@ serve(async (req) => {
         const r = await fetch("https://api.openai.com/v1/audio/speech", {
           method: "POST",
           headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "tts-1", voice: "nova", input: scene.slice(0, 4000), response_format: "mp3" }),
-        });
+          body: JSON.stringify({ model: "tts-1", voice: "nova", input: scene.slice(0, 4000), response_format: "mp3" }) });
         if (!r.ok) { console.error("tts fail", r.status); return ""; }
         const buf = new Uint8Array(await r.arrayBuffer());
         let bin = ""; for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
@@ -145,10 +131,8 @@ serve(async (req) => {
         .update({ credits_remaining: balance - cost, last_used_at: new Date().toISOString() })
         .eq("user_id", user.id);
 
-      return new Response(JSON.stringify({
-        scenes, images, audioFiles,
-        credits_remaining: balance - cost, cost,
-      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ scenes, images, audioFiles,
+        credits_remaining: balance - cost, cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     // ─── END STORY VIDEO PIPELINE ───
 
@@ -222,8 +206,7 @@ serve(async (req) => {
       kids_drawing: { table: "kids_drawing_credits", cost: 2 },
       kids_reading: { table: "kids_reading_credits", cost: 2 },
       kids_story:   { table: "kids_story_credits",   cost: 3 },
-      teen_career:  { table: "teen_career_credits",  cost: 5 },
-    };
+      teen_career:  { table: "teen_career_credits",  cost: 5 } };
     const kidsCfg = type ? KIDS_CREDIT_MAP[type] : undefined;
     if (kidsCfg) {
       const adminClient = createClient(
@@ -241,8 +224,7 @@ serve(async (req) => {
           JSON.stringify({
             error: `Insufficient credits. Need ${kidsCfg.cost}, have ${kidsBalance}.`,
             creditsRequired: kidsCfg.cost,
-            creditsRemaining: kidsBalance,
-          }),
+            creditsRemaining: kidsBalance }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
@@ -274,8 +256,7 @@ serve(async (req) => {
     // ─── UNIVERSAL TEXT-AI ROUTER ───
     // Map of `type` → system prompt for all aliased text/AI helpers.
     // Falls back to free-form prompt when not matched (uses customPrompt).
-    const UNIVERSAL_PROMPTS: Record<string, string> = {
-      // AI assistants & chats
+    const UNIVERSAL_PROMPTS: Record<string, string> = { // AI assistants & chats
       mentor_chat:        "PLACEHOLDER_MENTOR_CHAT", // dynamically replaced based on mentorArea below
       stock_content:      "You are a stock-photo content strategist. Generate compelling content ideas with SEO keywords.",
       chef_chat:          "You are a Michelin-starred chef. Answer cooking questions with expert techniques and tips.",
@@ -410,14 +391,12 @@ serve(async (req) => {
       voice_script:        "You are a voice-over scriptwriter. Write a natural, conversational script.",
       voice_transform:     "PLACEHOLDER_VOICE_TRANSFORM", // dynamically replaced based on style below
       // ─── Generic fallback for unknown types ───
-      generic_ai:          "You are a helpful AI assistant. Provide a clear, useful response to the user's request.",
-    };
+      generic_ai:          "You are a helpful AI assistant. Provide a clear, useful response to the user's request." };
 
     // ─── IMAGE GENERATION BRANCH ───
     // Routes media-generating proxies (paint-image, video-thumbnail, virtual-tryon, etc.)
     // through OpenAI (gpt-image-1) and returns base64 data URL.
-    const IMAGE_TYPES: Record<string, string> = {
-      // proxyMap keys (snake_case from kebab-case function names)
+    const IMAGE_TYPES: Record<string, string> = { // proxyMap keys (snake_case from kebab-case function names)
       generate_paint_image:        "Detailed acrylic painting, gallery quality, vivid colors, expressive brushwork.",
       generate_paint_by_numbers:   "Paint-by-numbers template: clean black outlines on white, numbered regions, simple shapes.",
       generate_video_thumbnail:    "High-CTR YouTube thumbnail, bold composition, dramatic lighting, expressive subject, vibrant colors.",
@@ -468,8 +447,7 @@ serve(async (req) => {
       fashion_design:     "Editorial fashion photograph of the outfit.",
       avatar:             "Stylized avatar portrait, clean background.",
       photo_concept:      "Cinematic photo composition.",
-      generate_image:     "High-quality photorealistic image as described.",
-    };
+      generate_image:     "High-quality photorealistic image as described." };
 
     if (IMAGE_TYPES[type]) {
       // OpenAI image generation (gpt-image-1) — same OPENAI_API_KEY as text branch.
@@ -481,27 +459,21 @@ serve(async (req) => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "gpt-image-1",
+          "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "gpt-image-1",
           prompt: imgPrompt,
           size: "1024x1024",
-          n: 1,
-        }),
-      });
+          n: 1 }) });
 
       if (!imgResp.ok) {
         if (imgResp.status === 429) {
           return new Response(JSON.stringify({ error: "Rate limit exceeded, try again later." }), {
-            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
+            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         }
         const errText = await imgResp.text();
         console.error("OpenAI image gen error:", errText);
         return new Response(JSON.stringify({ error: "Image generation failed" }), {
-          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       const imgData = await imgResp.json();
@@ -510,21 +482,17 @@ serve(async (req) => {
       const imageUrl = b64 ? `data:image/png;base64,${b64}` : directUrl;
       if (!imageUrl) {
         return new Response(JSON.stringify({ error: "No image returned from OpenAI" }), {
-          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       await __deduct().catch((e) => console.error("deduct failed:", e));
-      return new Response(JSON.stringify({
-        imageUrl,
+      return new Response(JSON.stringify({ imageUrl,
         templateImageUrl: imageUrl,
         url: imageUrl,
-        image: imageUrl,
-      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        image: imageUrl }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    if (UNIVERSAL_PROMPTS[type]) {
-      systemPrompt = UNIVERSAL_PROMPTS[type];
+    if (UNIVERSAL_PROMPTS[type]) { systemPrompt = UNIVERSAL_PROMPTS[type];
       // Dynamic specialization for mentor_chat based on mentorArea
       if (type === "mentor_chat") {
         const area = (reqBody.mentorArea || reqBody.area || "career").toString().toLowerCase();
@@ -532,17 +500,14 @@ serve(async (req) => {
           career: "You are an elite career coach with 20+ years experience. Help with career planning, interview prep, resume optimization, workplace challenges, and professional development. Be specific, actionable, and encouraging. Use markdown formatting.",
           fitness: "You are a certified fitness & nutrition coach. Help with workout planning, nutrition guidance, healthy habits, progress tracking, and injury prevention. Always recommend consulting a doctor before starting new programs. Be specific and motivating. Use markdown formatting.",
           mindset: "You are a mindset & resilience coach trained in CBT and positive psychology. Help with mental resilience, goal achievement, confidence building, stress management, and positive thinking. Be empathetic and practical. Use markdown formatting.",
-          relationships: "You are a relationships & communication coach. Help with communication skills, conflict resolution, emotional intelligence, healthy boundaries, and connection building. Be warm, non-judgmental, and concrete. Use markdown formatting.",
-        };
+          relationships: "You are a relationships & communication coach. Help with communication skills, conflict resolution, emotional intelligence, healthy boundaries, and connection building. Be warm, non-judgmental, and concrete. Use markdown formatting." };
         systemPrompt = MENTOR_PROMPTS[area] || MENTOR_PROMPTS.career;
-      } else if (type === "voice_transform") {
-        const styleDesc: Record<string, string> = {
+      } else if (type === "voice_transform") { const styleDesc: Record<string, string> = {
           warm: "warm, friendly, slightly casual, with a small touch of emotion or emoji",
           professional: "polished, precise, courteous, business-appropriate",
           energetic: "high-energy, enthusiastic, exclamation-heavy, motivational",
           calm: "calm, measured, soothing, contemplative",
-          authoritative: "direct, confident, decisive, leadership-tone",
-        };
+          authoritative: "direct, confident, decisive, leadership-tone" };
         const desc = styleDesc[style] || styleDesc.warm;
         systemPrompt = `Rewrite the user's text in a ${desc} voice. Keep meaning. Output only the rewritten text, no preamble.`;
       }
@@ -553,30 +518,26 @@ serve(async (req) => {
     } else if (type === "gift_designer") {
       systemPrompt = `You are a creative gift designer AI. Create a unique personalized digital gift concept. Return ONLY valid JSON: {"name": "...", "description": "...", "emoji": "...", "value": number, "theme": "..."}. The value should be between 10-500. Be creative and unique.`;
       userPrompt = customPrompt || "Create a unique surprise gift";
-    } else if (type === "thank_you") {
-      systemPrompt = "You are a heartfelt thank-you message writer. Write ONLY the thank you message, no quotes, no explanation. Make it genuine and touching.";
+    } else if (type === "thank_you") { systemPrompt = "You are a heartfelt thank-you message writer. Write ONLY the thank you message, no quotes, no explanation. Make it genuine and touching.";
       const styleMap: Record<string, string> = {
         heartfelt: "Write a sincere, emotionally touching thank you.",
         funny: "Write a humorous, playful thank you that makes them smile.",
         formal: "Write a polite, professional thank you.",
         poetic: "Write a beautiful, artistic thank you with poetic language.",
         excited: "Write an enthusiastic, energetic thank you full of excitement.",
-        grateful: "Write a deeply grateful, appreciative thank you.",
-      };
+        grateful: "Write a deeply grateful, appreciative thank you." };
       userPrompt = `${styleMap[style] || styleMap.heartfelt} Keep it 2-3 sentences. ${customPrompt || ""}`;
     } else if (type) {
       // Unknown type → generic fallback (so we never 404 the frontend)
       systemPrompt = "You are a helpful AI assistant. Provide a clear, useful, well-structured response.";
       userPrompt = customPrompt || `Help with: ${type}`;
-    } else {
-      const stylePrompts: Record<string, string> = {
+    } else { const stylePrompts: Record<string, string> = {
         romantic: "Write a sweet, loving, and romantic message.",
         funny: "Write a humorous and playful message that will make them smile.",
         heartfelt: "Write a sincere and emotionally touching message.",
         friendly: "Write a warm, casual, and friendly message.",
         poetic: "Write a beautiful, artistic message with poetic language.",
-        motivational: "Write an inspiring and uplifting message.",
-      };
+        motivational: "Write an inspiring and uplifting message." };
 
       systemPrompt = "You are a gift message writer. Write ONLY the message, no quotes, no explanation.";
       userPrompt = `${stylePrompts[style] || stylePrompts.heartfelt} Keep it 2-3 sentences.
@@ -591,8 +552,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
@@ -605,15 +565,12 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
           if (longTypes.has(type)) return 1500;
           if (isSport) return 1200;
           return 600;
-        })(),
-      }),
-    });
+        })() }) });
 
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded, try again later." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       const errorText = await response.text();
       console.error("OpenAI API error:", errorText);
@@ -632,20 +589,17 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     } catch { /* ignore */ }
 
     // Log usage (best-effort)
-    try {
-      await supabase.from("social_gifts_ai_messages").insert({
+    try { await supabase.from("social_gifts_ai_messages").insert({
         user_id: user.id,
         message_type: type || style || "message",
         prompt: customPrompt || null,
-        generated_message: message,
-      });
+        generated_message: message });
     } catch { /* ignore */ }
 
     // Return ALL common response keys so any frontend component can read it
     await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ message, text: message, result: message, content: message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error:", error);
     return new Response(

@@ -26,8 +26,7 @@ export const CharacterEvolutionTree = () => {
       const { data, error } = await supabase.from("characters").select("*").eq("user_id", user.id).order("level", { ascending: false });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const getEvolutionStage = (level: number) => {
     return [...EVOLUTION_STAGES].reverse().find((s) => level >= s.level) || EVOLUTION_STAGES[0];

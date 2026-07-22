@@ -13,13 +13,11 @@ interface LessonPlayerProps {
   description?: string;
 }
 
-export function LessonPlayer({
-  isOpen,
+export function LessonPlayer({ isOpen,
   onClose,
   lessonTitle,
   videoUrl,
-  description,
-}: LessonPlayerProps) {
+  description }: LessonPlayerProps) {
   const [embedUrl, setEmbedUrl] = useState<string>("");
   const [videoType, setVideoType] = useState<"youtube" | "vimeo" | "direct">("direct");
 

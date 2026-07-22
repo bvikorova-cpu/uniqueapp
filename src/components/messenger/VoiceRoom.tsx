@@ -40,8 +40,7 @@ export const VoiceRoom = ({ onBack, userId }: VoiceRoomProps) => {
         .order("created_at", { ascending: false })
         .limit(20);
       if (error || !mounted) return;
-      setRooms((data ?? []).map((r: any) => ({
-        id: r.id,
+      setRooms((data ?? []).map((r: any) => ({ id: r.id,
         name: r.title,
         topic: r.description || "Live audio space",
         isLive: r.status === "live",
@@ -49,9 +48,7 @@ export const VoiceRoom = ({ onBack, userId }: VoiceRoomProps) => {
           id: r.host_id,
           name: r.profiles?.username || r.profiles?.full_name || "Host",
           isSpeaking: r.status === "live",
-          isHost: true,
-        }],
-      })));
+          isHost: true }] })));
     })();
     return () => { mounted = false; };
   }, []);
@@ -77,8 +74,7 @@ export const VoiceRoom = ({ onBack, userId }: VoiceRoomProps) => {
       name: newRoomName,
       topic: "New conversation",
       isLive: true,
-      participants: [{ id: userId, name: "You", isSpeaking: false, isHost: true }],
-    };
+      participants: [{ id: userId, name: "You", isSpeaking: false, isHost: true }] };
     setRooms([newRoom, ...rooms]);
     setActiveRoom(newRoom);
     setNewRoomName("");

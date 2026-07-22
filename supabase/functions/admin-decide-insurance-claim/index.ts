@@ -3,11 +3,9 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
 
-const Body = z.object({
-  claim_id: z.string().uuid(),
+const Body = z.object({ claim_id: z.string().uuid(),
   decision: z.enum(["approved", "rejected", "paid"]),
-  admin_note: z.string().max(2000).optional(),
-});
+  admin_note: z.string().max(2000).optional() });
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -21,9 +19,7 @@ Deno.serve(async (req) => {
     const user = u.user;
     if (!user) return json({ error: "unauthorized" }, 401);
 
-    const { data: isAdmin } = await admin.rpc("has_role", {
-      _user_id: user.id, _role: "admin",
-    });
+    const { data: isAdmin } = await admin.rpc("has_role", { _user_id: user.id, _role: "admin" });
     if (!isAdmin) return json({ error: "forbidden" }, 403);
 
     const parsed = Body.safeParse(await req.json());
@@ -31,12 +27,10 @@ Deno.serve(async (req) => {
 
     const { data: claim, error } = await admin
       .from("insurance_claims")
-      .update({
-        status: parsed.data.decision,
+      .update({ status: parsed.data.decision,
         admin_note: parsed.data.admin_note ?? null,
         decided_by: user.id,
-        decided_at: new Date().toISOString(),
-      })
+        decided_at: new Date().toISOString() })
       .eq("id", parsed.data.claim_id)
       .select("id, patient_id, status")
       .single();
@@ -46,8 +40,7 @@ Deno.serve(async (req) => {
       user_id: claim.patient_id,
       type: "insurance_claim_decision",
       title: `Claim ${claim.status}`,
-      body: `Your insurance claim was marked ${claim.status}.`,
-    }).then(() => {}, () => {});
+      body: `Your insurance claim was marked ${claim.status}.` }).then(() => {}, () => {});
 
     return json({ ok: true, status: claim.status });
   } catch (e) {
@@ -58,6 +51,5 @@ Deno.serve(async (req) => {
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
-    status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

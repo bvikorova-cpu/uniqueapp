@@ -12,14 +12,12 @@ interface SocialShareButtonsProps {
   hashtags?: string[];
 }
 
-export const SocialShareButtons = ({
-  title,
+export const SocialShareButtons = ({ title,
   description,
   url = window.location.href,
   imageUrl,
   variant = "default",
-  hashtags = [],
-}: SocialShareButtonsProps) => {
+  hashtags = [] }: SocialShareButtonsProps) => {
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
   const encodedDescription = encodeURIComponent(description);
@@ -51,14 +49,12 @@ export const SocialShareButtons = ({
     }
   };
 
-  const handleNativeShare = async () => {
-    if (navigator.share) {
+  const handleNativeShare = async () => { if (navigator.share) {
       try {
         await navigator.share({
           title,
           text: description,
-          url,
-        });
+          url });
         toast.success("Shared successfully!");
       } catch (error) {
         if ((error as Error).name !== "AbortError") {

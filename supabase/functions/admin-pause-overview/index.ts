@@ -1,11 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -15,8 +13,7 @@ serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
   try {
     const supabase = createClient(
@@ -30,15 +27,12 @@ serve(async (req) => {
     const { data: userData } = await supabase.auth.getUser(token);
     const user = userData.user;
     if (!user?.id) throw new Error("Not authenticated");
-    const { data: isAdmin } = await supabase.rpc("has_role", {
-      _user_id: user.id,
-      _role: "admin",
-    });
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: user.id,
+      _role: "admin" });
     if (!isAdmin) {
       return new Response(JSON.stringify({ error: "Access denied" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 403,
-      });
+        status: 403 });
     }
 
     const since = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString();
@@ -72,23 +66,20 @@ serve(async (req) => {
     await supabase.from("admin_audit_log").insert({
       admin_id: user.id,
       action: "pause_overview_viewed",
-      details: { totalPauses, uniqueUsers },
-    });
+      details: { totalPauses, uniqueUsers } });
 
     return new Response(
       JSON.stringify({
         config: cfg,
         kpis: { totalPauses, uniqueUsers, atLimit },
         topUsers,
-        recent: pauses?.slice(0, 100) ?? [],
-      }),
+        recent: pauses?.slice(0, 100) ?? [] }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     return new Response(JSON.stringify({ error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

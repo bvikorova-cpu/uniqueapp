@@ -1,13 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const CREDIT_COSTS: Record<string, number> = {
-  brain_training: 5,
+const CREDIT_COSTS: Record<string, number> = { brain_training: 5,
   iq_predictor: 4,
   cognitive_report: 6,
   study_coach: 5,
@@ -15,8 +12,7 @@ const CREDIT_COSTS: Record<string, number> = {
   learning_style: 4,
   strengths_report: 5,
   improvement_plan: 6,
-  generate_certificate: 5,
-};
+  generate_certificate: 5 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -50,8 +46,7 @@ serve(async (req) => {
     const remaining = credits?.balance || 0;
     if (remaining < creditCost) {
       return new Response(JSON.stringify({ error: `Not enough credits. Need ${creditCost}, have ${remaining}.` }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     let systemPrompt = "";
@@ -108,8 +103,7 @@ serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
@@ -117,9 +111,7 @@ serve(async (req) => {
           { role: "user", content: userPrompt },
         ],
         max_completion_tokens: 3000,
-        response_format: { type: "json_object" },
-      }),
-    });
+        response_format: { type: "json_object" } }) });
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
@@ -137,12 +129,10 @@ serve(async (req) => {
       .eq("user_id", user.id);
 
     return new Response(JSON.stringify({ ...parsed, credits_used: creditCost, credits_remaining: remaining - creditCost }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("iq-platform-ai error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

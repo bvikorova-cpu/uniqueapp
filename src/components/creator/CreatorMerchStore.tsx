@@ -54,30 +54,25 @@ export function CreatorMerchStore({ creatorId }: CreatorMerchStoreProps) {
     setPurchasingId(item.id);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Sign In Required",
           description: "Please sign in to purchase merch",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
       const { data, error } = await supabase.functions.invoke("create-merch-checkout", {
-        body: { merchId: item.id },
-      });
+        body: { merchId: item.id } });
 
       if (error) throw error;
 
       if (data?.url) {
         window.open(data.url, "_blank");
       }
-    } catch (error: any) {
-      toast({
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setPurchasingId(null);
     }

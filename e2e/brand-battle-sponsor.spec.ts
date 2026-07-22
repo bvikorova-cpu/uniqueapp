@@ -66,17 +66,14 @@ test.describe("Sponsor Dashboard — auth guard", () => {
   });
 });
 
-test.describe("Sponsor Registration — checkout invoke (stubbed)", () => {
-  test("happy path: tier + form -> create-brand-sponsorship called with tier", async ({
-    page,
-  }) => {
+test.describe("Sponsor Registration — checkout invoke (stubbed)", () => { test("happy path: tier + form -> create-brand-sponsorship called with tier", async ({
+    page }) => {
     // Stub Supabase auth + the edge function so we don't hit Stripe.
     await page.route("**/auth/v1/user", (route) =>
       route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ id: "u-brand-1", email: "brand@example.com" }),
-      }),
+        body: JSON.stringify({ id: "u-brand-1", email: "brand@example.com" }) }),
     );
 
     let invokedWith: any = null;
@@ -85,8 +82,7 @@ test.describe("Sponsor Registration — checkout invoke (stubbed)", () => {
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ url: "https://checkout.stripe.com/test_stub" }),
-      });
+        body: JSON.stringify({ url: "https://checkout.stripe.com/test_stub" }) });
     });
 
     // Block actual window.open / navigation away

@@ -27,9 +27,7 @@ export function GiftCreditsDialog() {
       const code = `GIFT-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Sign in required");
-      const { error: insErr } = await supabase.from("ai_credit_gifts").insert({
-        code, sender_id: user.id, recipient_email: email, credits, amount_cents: Math.round(price * 100), message,
-      });
+      const { error: insErr } = await supabase.from("ai_credit_gifts").insert({ code, sender_id: user.id, recipient_email: email, credits, amount_cents: Math.round(price * 100), message });
       if (insErr) throw insErr;
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: {
@@ -39,9 +37,7 @@ export function GiftCreditsDialog() {
           mode: "payment",
           metadata: { gift_code: code, credits: String(credits), recipient: email },
           successUrl: `${window.location.origin}/ai-credits-store?payment=success&gift=${code}&session_id={CHECKOUT_SESSION_ID}`,
-          cancelUrl: `${window.location.origin}/ai-credits-store?payment=canceled`,
-        },
-      });
+          cancelUrl: `${window.location.origin}/ai-credits-store?payment=canceled` } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank", "noopener,noreferrer");
       setOpen(false);

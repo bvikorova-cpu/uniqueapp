@@ -16,11 +16,9 @@ interface KitState {
   font_heading: string; font_body: string; voice: string; do_list: string; dont_list: string;
 }
 
-const empty: KitState = {
-  business_name: "My Brand", business_type: "general", logo_url: "", tagline: "",
+const empty: KitState = { business_name: "My Brand", business_type: "general", logo_url: "", tagline: "",
   brand_values: "", primary: "#7c3aed", secondary: "#ec4899", accent: "#fbbf24",
-  font_heading: "Inter", font_body: "Inter", voice: "", do_list: "", dont_list: "",
-};
+  font_heading: "Inter", font_body: "Inter", voice: "", do_list: "", dont_list: "" };
 
 export const BrandKitView = ({ onBack }: { onBack: () => void }) => {
   const [loading, setLoading] = useState(true);
@@ -37,8 +35,7 @@ export const BrandKitView = ({ onBack }: { onBack: () => void }) => {
         setExistingId(data.id);
         const cp = (data.color_palette || {}) as Record<string, string>;
         const vi = (data.visual_identity || {}) as Record<string, unknown>;
-        setKit({
-          business_name: data.business_name || "My Brand",
+        setKit({ business_name: data.business_name || "My Brand",
           business_type: data.business_type || "general",
           logo_url: data.logo_url || "",
           tagline: (vi.tagline as string) || "",
@@ -50,8 +47,7 @@ export const BrandKitView = ({ onBack }: { onBack: () => void }) => {
           font_body: (vi.font_body as string) || "Inter",
           voice: (vi.voice as string) || "",
           do_list: ((vi.do_list as string[]) || []).join('\n'),
-          dont_list: ((vi.dont_list as string[]) || []).join('\n'),
-        });
+          dont_list: ((vi.dont_list as string[]) || []).join('\n') });
       }
       setLoading(false);
     })();
@@ -68,13 +64,10 @@ export const BrandKitView = ({ onBack }: { onBack: () => void }) => {
       logo_url: kit.logo_url,
       brand_values: kit.brand_values,
       color_palette: { primary: kit.primary, secondary: kit.secondary, accent: kit.accent },
-      visual_identity: {
-        tagline: kit.tagline, font_heading: kit.font_heading, font_body: kit.font_body,
+      visual_identity: { tagline: kit.tagline, font_heading: kit.font_heading, font_body: kit.font_body,
         voice: kit.voice,
         do_list: kit.do_list.split('\n').filter(Boolean),
-        dont_list: kit.dont_list.split('\n').filter(Boolean),
-      },
-    };
+        dont_list: kit.dont_list.split('\n').filter(Boolean) } };
     const { error } = existingId
       ? await supabase.from('brand_kits').update(payload).eq('id', existingId)
       : await supabase.from('brand_kits').insert(payload);

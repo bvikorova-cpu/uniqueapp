@@ -1,18 +1,14 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const COSTS = {
-  dream: 10, meditation: 15, mood: 8, sleep: 20,
+const COSTS = { dream: 10, meditation: 15, mood: 8, sleep: 20,
   decoder: 10, evidence: 15, coach: 8, riskscan: 12,
   weekly_insight: 5, roleplay_score: 6, wall_filter: 2,
   cbt: 6, mh_assess: 6, walking: 6,
-  toxicity: 6, platreport: 6, restorative: 6, pulse: 6, affirmation: 6, bystander: 6,
-} as const;
+  toxicity: 6, platreport: 6, restorative: 6, pulse: 6, affirmation: 6, bystander: 6 } as const;
 const SAFETY_ACTIONS = new Set(["decoder","evidence","coach","riskscan","weekly_insight","roleplay_score","wall_filter","toxicity","platreport","restorative","pulse","affirmation","bystander"]);
 
 function parseJSON(s: string): any {
@@ -39,8 +35,7 @@ async function callAI(OPENAI_API_KEY: string, body: any) {
   const r = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+    body: JSON.stringify(payload) });
   if (!r.ok) {
     const t = await r.text();
     console.error("OpenAI error:", r.status, t);
@@ -57,8 +52,7 @@ async function callImage(OPENAI_API_KEY: string, prompt: string): Promise<string
     const r = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "dall-e-3", prompt: prompt.slice(0, 3900), size: "1024x1024", quality: "standard", n: 1 }),
-    });
+      body: JSON.stringify({ model: "dall-e-3", prompt: prompt.slice(0, 3900), size: "1024x1024", quality: "standard", n: 1 }) });
     if (!r.ok) { console.error("DALL-E error:", await r.text()); return null; }
     const d = await r.json();
     return d?.data?.[0]?.url || null;
@@ -78,8 +72,7 @@ async function ttsUpload(
     const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}?output_format=mp3_44100_128`, {
       method: "POST",
       headers: { "xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({ text: text.slice(0, 5000), model_id: "eleven_turbo_v2_5", voice_settings: voiceSettings }),
-    });
+      body: JSON.stringify({ text: text.slice(0, 5000), model_id: "eleven_turbo_v2_5", voice_settings: voiceSettings }) });
     if (!r.ok) { console.error("ElevenLabs error:", await r.text()); return null; }
     const buf = await r.arrayBuffer();
     const { error: upErr } = await supabase.storage.from("wellness-ai").upload(filePath, buf, { contentType: "audio/mpeg", upsert: true });
@@ -135,14 +128,11 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `You analyze bullying messages. Output ONLY JSON: {"severity":"low|medium|high|critical","bully_type":"verbal|cyber|social|physical-threat|sexual|discriminatory","emotional_impact":"<2 sentences>","suggested_response":"<safe assertive reply>","action_steps":[{"step":"...","priority":"high|medium|low"}],"red_flags":["..."]}` },
           { role: "user", content: `Analyze: """${input_text}"""` },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
-      const { data: saved } = await supabase.from("safety_bully_decoder").insert({
-        user_id: user.id, input_text, severity: parsed.severity, bully_type: parsed.bully_type,
+      const { data: saved } = await supabase.from("safety_bully_decoder").insert({ user_id: user.id, input_text, severity: parsed.severity, bully_type: parsed.bully_type,
         emotional_impact: parsed.emotional_impact, suggested_response: parsed.suggested_response,
-        action_steps: parsed.action_steps || [], red_flags: parsed.red_flags || [], credits_used: COST,
-      }).select().single();
+        action_steps: parsed.action_steps || [], red_flags: parsed.red_flags || [], credits_used: COST }).select().single();
       result = saved;
     } else if (action === "evidence") {
       const { title, incidents } = body;
@@ -152,14 +142,11 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Build a formal bullying evidence pack. Output ONLY JSON: {"incident_summary":"...","timeline":[{"date":"YYYY-MM-DD","event":"...","severity":"low|medium|high"}],"recommended_recipients":[{"name":"...","reason":"..."}],"formal_report":"<~400 word neutral report>"}` },
           { role: "user", content: `Title: ${title}\nIncidents:\n${incidents.map((i: any, n: number) => `${n + 1}. ${i.date || "unknown"} — ${i.description}`).join("\n")}` },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
-      const { data: saved } = await supabase.from("safety_evidence_packs").insert({
-        user_id: user.id, title, incident_summary: parsed.incident_summary,
+      const { data: saved } = await supabase.from("safety_evidence_packs").insert({ user_id: user.id, title, incident_summary: parsed.incident_summary,
         timeline: parsed.timeline || [], recommended_recipients: parsed.recommended_recipients || [],
-        formal_report: parsed.formal_report, credits_used: COST,
-      }).select().single();
+        formal_report: parsed.formal_report, credits_used: COST }).select().single();
       result = saved;
     } else if (action === "coach") {
       const { scenario, user_response } = body;
@@ -169,15 +156,12 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Score a roleplay bullying response. Output ONLY JSON: {"assertiveness_score":0-100,"empathy_score":0-100,"safety_score":0-100,"feedback":"...","improved_response":"...","next_steps":["..."]}` },
           { role: "user", content: `Scenario: ${scenario}\nResponse: ${user_response}` },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
-      const { data: saved } = await supabase.from("safety_response_coach_sessions").insert({
-        user_id: user.id, scenario, user_response,
+      const { data: saved } = await supabase.from("safety_response_coach_sessions").insert({ user_id: user.id, scenario, user_response,
         assertiveness_score: parsed.assertiveness_score, empathy_score: parsed.empathy_score,
         safety_score: parsed.safety_score, feedback: parsed.feedback,
-        improved_response: parsed.improved_response, next_steps: parsed.next_steps || [], credits_used: COST,
-      }).select().single();
+        improved_response: parsed.improved_response, next_steps: parsed.next_steps || [], credits_used: COST }).select().single();
       result = saved;
     } else if (action === "riskscan") {
       const { scan_input } = body;
@@ -187,15 +171,12 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Cyberbullying risk analyst. Output ONLY JSON: {"risk_level":"safe|caution|elevated|severe","overall_score":0-100,"threat_patterns":[{"pattern":"...","frequency":"low|medium|high","example":"..."}],"flagged_phrases":["..."],"safety_recommendations":[{"action":"...","why":"..."}]}` },
           { role: "user", content: `Scan: """${scan_input.slice(0, 5000)}"""` },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
-      const { data: saved } = await supabase.from("safety_cyberbullying_scans").insert({
-        user_id: user.id, scan_input: scan_input.slice(0, 5000), risk_level: parsed.risk_level,
+      const { data: saved } = await supabase.from("safety_cyberbullying_scans").insert({ user_id: user.id, scan_input: scan_input.slice(0, 5000), risk_level: parsed.risk_level,
         overall_score: parsed.overall_score, threat_patterns: parsed.threat_patterns || [],
         flagged_phrases: parsed.flagged_phrases || [], safety_recommendations: parsed.safety_recommendations || [],
-        credits_used: COST,
-      }).select().single();
+        credits_used: COST }).select().single();
       result = saved;
     } else if (action === "weekly_insight") {
       const { entries, mood_logs } = body;
@@ -205,16 +186,13 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `You are a compassionate safety coach. Analyze 7 days of journal + mood logs. Output ONLY JSON: {"trend":"improving|stable|declining|critical","insight_text":"<3-4 supportive sentences>","recommendations":[{"title":"...","action":"...","priority":"high|medium|low"}]}` },
           { role: "user", content: `Journal entries:\n${JSON.stringify(entries).slice(0, 4000)}\n\nMood logs:\n${JSON.stringify(mood_logs || []).slice(0, 2000)}` },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
       const weekStart = new Date();
       weekStart.setDate(weekStart.getDate() - weekStart.getDay());
       const wsStr = weekStart.toISOString().slice(0, 10);
-      const { data: saved } = await supabase.from("safety_journal_insights").upsert({
-        user_id: user.id, week_start: wsStr, insight_text: parsed.insight_text || "Stay strong.",
-        trend: parsed.trend, recommendations: parsed.recommendations || [], credits_used: COST,
-      }, { onConflict: "user_id,week_start" }).select().single();
+      const { data: saved } = await supabase.from("safety_journal_insights").upsert({ user_id: user.id, week_start: wsStr, insight_text: parsed.insight_text || "Stay strong.",
+        trend: parsed.trend, recommendations: parsed.recommendations || [], credits_used: COST }, { onConflict: "user_id,week_start" }).select().single();
       result = saved;
     } else if (action === "roleplay_score") {
       const { scenario_id, scenario, user_response, difficulty = "easy", mode = "text" } = body;
@@ -224,16 +202,14 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Score a bullying-response roleplay. Difficulty: ${difficulty}. Output ONLY JSON: {"total_score":0-100,"assertiveness":0-100,"empathy":0-100,"safety":0-100,"feedback":"...","next_line_from_bully":"<what bully says next, in character>"}` },
           { role: "user", content: `Scenario: ${scenario}\nUser response: ${user_response}` },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
       const { data: saved } = await supabase.from("safety_roleplay_sessions").insert({
         user_id: user.id, scenario_id: scenario_id || "custom", difficulty, mode,
         total_score: parsed.total_score || 0, steps_completed: 1,
         ai_feedback: parsed.feedback,
         transcript: [{ role: "user", text: user_response }, { role: "bully", text: parsed.next_line_from_bully }],
-        credits_used: COST,
-      }).select().single();
+        credits_used: COST }).select().single();
       result = { ...saved, ...parsed };
     } else if (action === "wall_filter") {
       const { message } = body;
@@ -243,8 +219,7 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Safety filter for a peer support wall. Output ONLY JSON: {"safe":true|false,"reason":"...","suggested_rewrite":"<if unsafe, supportive rewrite>"}` },
           { role: "user", content: message.slice(0, 1000) },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || { safe: true };
       result = parsed;
     } else
@@ -272,14 +247,9 @@ serve(async (req) => {
                 interpretation: { type: "string" },
                 symbols: { type: "array", items: { type: "object", properties: { symbol: { type: "string" }, meaning: { type: "string" } }, required: ["symbol", "meaning"] } },
                 emotional_themes: { type: "array", items: { type: "string" } },
-                illustration_prompt: { type: "string" },
-              },
-              required: ["interpretation", "symbols", "emotional_themes", "illustration_prompt"],
-            },
-          },
-        }],
-        tool_choice: { type: "function", function: { name: "interpret_dream" } },
-      });
+                illustration_prompt: { type: "string" } },
+              required: ["interpretation", "symbols", "emotional_themes", "illustration_prompt"] } } }],
+        tool_choice: { type: "function", function: { name: "interpret_dream" } } });
       const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
       const parsed = toolCall ? JSON.parse(toolCall.function.arguments) : {};
 
@@ -288,10 +258,8 @@ serve(async (req) => {
         `Surreal dreamlike illustration: ${parsed.illustration_prompt}. Soft pastel colors, ethereal mist, no text.`
       );
 
-      await supabase.from("wellness_dream_interpretations").update({
-        interpretation: parsed.interpretation, symbols: parsed.symbols || [],
-        emotional_themes: parsed.emotional_themes || [], illustration_url: illustrationUrl, status: "completed",
-      }).eq("id", row.id);
+      await supabase.from("wellness_dream_interpretations").update({ interpretation: parsed.interpretation, symbols: parsed.symbols || [],
+        emotional_themes: parsed.emotional_themes || [], illustration_url: illustrationUrl, status: "completed" }).eq("id", row.id);
 
       result = { id: row.id, ...parsed, illustration_url: illustrationUrl };
 
@@ -308,17 +276,14 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `You are a master meditation teacher. Write a ${duration_minutes}-minute guided meditation script. Use calm language. Include "..." for natural pauses. No SSML, no labels. Speak in second person.` },
           { role: "user", content: `Topic: ${topic}` },
-        ],
-      });
+        ] });
       const script = aiData.choices?.[0]?.message?.content || "";
       if (!script) throw new Error("No script generated");
 
       const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/meditation-${row.id}.mp3`,
         { stability: 0.7, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true, speed: 0.9 });
 
-      await supabase.from("wellness_personalized_meditations").update({
-        meditation_script: script, audio_url: audioUrl, status: "completed",
-      }).eq("id", row.id);
+      await supabase.from("wellness_personalized_meditations").update({ meditation_script: script, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
 
       result = { id: row.id, meditation_script: script, audio_url: audioUrl };
 
@@ -347,8 +312,7 @@ serve(async (req) => {
           content: [
             { type: "text", text: "Analyze this person's facial expression and visible signs of stress, fatigue, mood. Be supportive, never diagnostic." },
             { type: "image_url", image_url: { url: selfie_data_url } },
-          ],
-        }],
+          ] }],
         tools: [{
           type: "function",
           function: {
@@ -363,32 +327,22 @@ serve(async (req) => {
                   type: "object",
                   properties: {
                     happiness: { type: "integer" }, calm: { type: "integer" },
-                    energy: { type: "integer" }, tension: { type: "integer" },
-                  },
-                  required: ["happiness", "calm", "energy", "tension"],
-                },
+                    energy: { type: "integer" }, tension: { type: "integer" } },
+                  required: ["happiness", "calm", "energy", "tension"] },
                 ai_insight: { type: "string" },
                 recommendations: {
                   type: "array",
-                  items: { type: "object", properties: { tool: { type: "string" }, reason: { type: "string" } }, required: ["tool", "reason"] },
-                },
-              },
-              required: ["detected_mood", "stress_level", "fatigue_level", "emotion_breakdown", "ai_insight", "recommendations"],
-            },
-          },
-        }],
-        tool_choice: { type: "function", function: { name: "analyze_mood" } },
-      });
+                  items: { type: "object", properties: { tool: { type: "string" }, reason: { type: "string" } }, required: ["tool", "reason"] } } },
+              required: ["detected_mood", "stress_level", "fatigue_level", "emotion_breakdown", "ai_insight", "recommendations"] } } }],
+        tool_choice: { type: "function", function: { name: "analyze_mood" } } });
       const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
       if (!toolCall) throw new Error("No analysis returned");
       const parsed = JSON.parse(toolCall.function.arguments);
 
-      const { data: row, error: insErr } = await supabase.from("wellness_mood_mirror").insert({
-        user_id: user.id, selfie_url: selfieUrl,
+      const { data: row, error: insErr } = await supabase.from("wellness_mood_mirror").insert({ user_id: user.id, selfie_url: selfieUrl,
         detected_mood: parsed.detected_mood, stress_level: parsed.stress_level, fatigue_level: parsed.fatigue_level,
         emotion_breakdown: parsed.emotion_breakdown, recommendations: parsed.recommendations,
-        ai_insight: parsed.ai_insight, credits_used: COST,
-      }).select().single();
+        ai_insight: parsed.ai_insight, credits_used: COST }).select().single();
       if (insErr) throw insErr;
 
       result = { id: row.id, ...parsed, selfie_url: selfieUrl };
@@ -400,8 +354,7 @@ serve(async (req) => {
       const { data: row, error: insErr } = await supabase.from("wellness_ai_sleep_stories").insert({
         user_id: user.id, title: `${theme} — A Sleep Story`,
         theme, protagonist, setting, duration_minutes, voice_id,
-        status: "processing", credits_used: COST,
-      }).select().single();
+        status: "processing", credits_used: COST }).select().single();
       if (insErr) throw insErr;
 
       const aiData = await callAI(OPENAI_API_KEY, {
@@ -409,8 +362,7 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `You are a soothing sleep story writer. Write a ~${duration_minutes}-minute calm bedtime story (~${duration_minutes * 130} words). Slow, dreamy, descriptive. No conflict. Use "..." for pauses. End with sleep.` },
           { role: "user", content: `Theme: ${theme}\nProtagonist: ${protagonist}\nSetting: ${setting || "AI's choice"}` },
-        ],
-      });
+        ] });
       const story = aiData.choices?.[0]?.message?.content || "";
       if (!story) throw new Error("No story generated");
       const title = story.split("\n")[0].replace(/^#\s*/, "").slice(0, 80) || `${theme} — A Sleep Story`;
@@ -418,9 +370,7 @@ serve(async (req) => {
       const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, story, `${user.id}/sleep-${row.id}.mp3`,
         { stability: 0.85, similarity_boost: 0.7, style: 0.2, use_speaker_boost: true, speed: 0.85 });
 
-      await supabase.from("wellness_ai_sleep_stories").update({
-        title, story_text: story, audio_url: audioUrl, status: "completed",
-      }).eq("id", row.id);
+      await supabase.from("wellness_ai_sleep_stories").update({ title, story_text: story, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
 
       result = { id: row.id, title, story_text: story, audio_url: audioUrl };
     } else if (action === "cbt") {
@@ -431,14 +381,11 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `You are a CBT therapist. Output ONLY JSON: {"distortions":["catastrophizing","mind-reading",...],"reframe":"<gentle reframe>","balanced_thought":"<balanced thought>","action_step":"<one small action>"}` },
           { role: "user", content: `Situation: ${situation}\nThought: ${negative_thought}\nEmotion: ${emotion || "n/a"}` },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
-      const { data: saved } = await supabase.from("wellness_cbt_reframes").insert({
-        user_id: user.id, situation, negative_thought, emotion, intensity_before,
+      const { data: saved } = await supabase.from("wellness_cbt_reframes").insert({ user_id: user.id, situation, negative_thought, emotion, intensity_before,
         distortions: parsed.distortions || [], reframe: parsed.reframe,
-        balanced_thought: parsed.balanced_thought, action_step: parsed.action_step, credits_used: COST,
-      }).select().single();
+        balanced_thought: parsed.balanced_thought, action_step: parsed.action_step, credits_used: COST }).select().single();
       result = saved;
     } else if (action === "mh_assess") {
       const { assessment_type, answers, total_score } = body;
@@ -448,35 +395,27 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Mental health screening interpreter (${assessment_type}). Be supportive, never diagnostic. Output ONLY JSON: {"severity":"minimal|mild|moderate|moderately-severe|severe","insight":"<2-3 supportive sentences>","actions":[{"title":"...","why":"..."}]}` },
           { role: "user", content: `Score: ${total_score}\nAnswers: ${JSON.stringify(answers)}` },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
-      const { data: saved } = await supabase.from("wellness_mh_assessments").insert({
-        user_id: user.id, assessment_type, answers, total_score,
+      const { data: saved } = await supabase.from("wellness_mh_assessments").insert({ user_id: user.id, assessment_type, answers, total_score,
         severity: parsed.severity, ai_insight: parsed.insight,
-        recommended_actions: parsed.actions || [], credits_used: COST,
-      }).select().single();
+        recommended_actions: parsed.actions || [], credits_used: COST }).select().single();
       result = saved;
     } else if (action === "walking") {
       const { intention, environment, duration_minutes = 10, voice_id = "EXAVITQu4vr4xnSDxMaL" } = body;
       if (!intention) throw new Error("Intention required");
-      const { data: row } = await supabase.from("wellness_walking_meditations").insert({
-        user_id: user.id, intention, environment, duration_minutes, voice_id,
-        status: "processing", credits_used: COST,
-      }).select().single();
+      const { data: row } = await supabase.from("wellness_walking_meditations").insert({ user_id: user.id, intention, environment, duration_minutes, voice_id,
+        status: "processing", credits_used: COST }).select().single();
       const aiData = await callAI(OPENAI_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: `You write guided walking meditation scripts. ~${duration_minutes} minutes. Second person. Calm cues for steps, breath, senses. Use "..." for pauses.` },
           { role: "user", content: `Intention: ${intention}\nEnvironment: ${environment || "anywhere"}` },
-        ],
-      });
+        ] });
       const script = aiData.choices?.[0]?.message?.content || "";
       const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/walk-${row.id}.mp3`,
         { stability: 0.75, similarity_boost: 0.7, style: 0.25, use_speaker_boost: true, speed: 0.9 });
-      await supabase.from("wellness_walking_meditations").update({
-        script, audio_url: audioUrl, status: "completed",
-      }).eq("id", row.id);
+      await supabase.from("wellness_walking_meditations").update({ script, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
       result = { id: row.id, script, audio_url: audioUrl };
     }
 
@@ -489,15 +428,13 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Rate text toxicity. Output ONLY JSON: {"toxicity_score":0-100,"categories":{"harassment":0-100,"hate":0-100,"threat":0-100,"sexual":0-100,"self_harm":0-100,"insult":0-100},"ai_analysis":"<2 sentences>","recommended_actions":["..."]}` },
           { role: "user", content: input_text.slice(0, 3000) },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
       const { data: saved } = await supabase.from("safety_toxicity_scans").insert({
         user_id: user.id, input_text: input_text.slice(0, 3000),
         toxicity_score: parsed.toxicity_score, categories: parsed.categories || {},
         ai_analysis: parsed.ai_analysis, recommended_actions: parsed.recommended_actions || [],
-        credits_used: COST,
-      }).select().single();
+        credits_used: COST }).select().single();
       result = saved;
     } else if (action === "platreport") {
       const { platform, incident_summary, evidence_urls } = body;
@@ -507,14 +444,11 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Draft a formal report letter to a social platform's trust & safety team. Be neutral, factual, cite their community guidelines. Output ONLY plain text letter (200-350 words).` },
           { role: "user", content: `Platform: ${platform}\nIncident: ${incident_summary}\nEvidence URLs: ${(evidence_urls||[]).join(", ")}` },
-        ],
-      });
+        ] });
       const letter = aiData.choices?.[0]?.message?.content || "";
-      const { data: saved } = await supabase.from("safety_platform_reports").insert({
-        user_id: user.id, platform, incident_summary,
+      const { data: saved } = await supabase.from("safety_platform_reports").insert({ user_id: user.id, platform, incident_summary,
         evidence_urls: evidence_urls || [], generated_letter: letter,
-        status: "draft", credits_used: COST,
-      }).select().single();
+        status: "draft", credits_used: COST }).select().single();
       result = saved;
     } else if (action === "restorative") {
       const { recipient_type, context, tone = "firm" } = body;
@@ -524,13 +458,10 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Draft a restorative-justice letter from a bullying victim to a ${recipient_type}. Tone: ${tone}. Express impact, ask for specific action, keep dignified. 200-300 words, plain text only.` },
           { role: "user", content: context.slice(0, 2000) },
-        ],
-      });
+        ] });
       const letter = aiData.choices?.[0]?.message?.content || "";
-      const { data: saved } = await supabase.from("safety_restorative_letters").insert({
-        user_id: user.id, recipient_type, context, tone,
-        generated_letter: letter, credits_used: COST,
-      }).select().single();
+      const { data: saved } = await supabase.from("safety_restorative_letters").insert({ user_id: user.id, recipient_type, context, tone,
+        generated_letter: letter, credits_used: COST }).select().single();
       result = saved;
     } else if (action === "pulse") {
       const { mood_score, anxiety_score, safety_score } = body;
@@ -540,13 +471,10 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Wellbeing pulse analyst. Output ONLY JSON: {"risk_level":"safe|caution|elevated|severe","advice":"<3-4 supportive sentences with one concrete next step>"}` },
           { role: "user", content: `Mood: ${mood_score}/10, Anxiety: ${anxiety_score}/10, Safety: ${safety_score}/10` },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
-      const { data: saved } = await supabase.from("safety_wellbeing_pulse").insert({
-        user_id: user.id, mood_score, anxiety_score, safety_score,
-        ai_risk_level: parsed.risk_level, ai_advice: parsed.advice, credits_used: COST,
-      }).select().single();
+      const { data: saved } = await supabase.from("safety_wellbeing_pulse").insert({ user_id: user.id, mood_score, anxiety_score, safety_score,
+        ai_risk_level: parsed.risk_level, ai_advice: parsed.advice, credits_used: COST }).select().single();
       result = saved;
     } else if (action === "affirmation") {
       const { theme = "resilience" } = body;
@@ -555,13 +483,10 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Write ONE short (under 25 words), warm, empowering affirmation for a young person facing bullying. Theme: ${theme}. Plain text only, no quotes.` },
           { role: "user", content: "Generate." },
-        ],
-      });
+        ] });
       const affirmation = (aiData.choices?.[0]?.message?.content || "").trim();
       const today = new Date().toISOString().slice(0, 10);
-      const { data: saved } = await supabase.from("safety_daily_affirmations").upsert({
-        user_id: user.id, affirmation, theme, for_date: today, credits_used: COST,
-      }, { onConflict: "user_id,for_date" }).select().single();
+      const { data: saved } = await supabase.from("safety_daily_affirmations").upsert({ user_id: user.id, affirmation, theme, for_date: today, credits_used: COST }, { onConflict: "user_id,for_date" }).select().single();
       result = saved;
     } else if (action === "bystander") {
       const { scenario_key, choice } = body;
@@ -571,35 +496,27 @@ serve(async (req) => {
         messages: [
           { role: "system", content: `Score a bystander-intervention choice. Output ONLY JSON: {"score":0-100,"feedback":"<1-2 sentences why, plus one improvement>"}` },
           { role: "user", content: `Scenario: ${scenario_key}\nBystander chose: ${choice}` },
-        ],
-      });
+        ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
-      const { data: saved } = await supabase.from("safety_bystander_scores").insert({
-        user_id: user.id, scenario_key, choice,
-        score: parsed.score || 0, feedback: parsed.feedback,
-      }).select().single();
+      const { data: saved } = await supabase.from("safety_bystander_scores").insert({ user_id: user.id, scenario_key, choice,
+        score: parsed.score || 0, feedback: parsed.feedback }).select().single();
       result = saved;
     }
 
     // Deduct credits from correct table
-    await supabase.from(creditTable).update({
-      credits_remaining: remaining - COST, last_used_at: new Date().toISOString(),
-    }).eq("user_id", user.id);
+    await supabase.from(creditTable).update({ credits_remaining: remaining - COST, last_used_at: new Date().toISOString() }).eq("user_id", user.id);
 
     if (!isSafety) {
       await supabase.from("ai_usage_history").insert({
         user_id: user.id, usage_type: `wellness_${action}`, credits_used: COST,
-        description: `Wellness AI: ${action}`,
-      });
+        description: `Wellness AI: ${action}` });
     }
 
     return new Response(JSON.stringify({ ...result, creditsRemaining: remaining - COST }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("wellness-ai error:", e);
     return new Response(JSON.stringify({ error: e.message }), {
-      status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

@@ -112,13 +112,11 @@ export default function MasterChefCompetitionsGallery() {
       );
 
       setCompetitions(competitionsWithEntries);
-    } catch (error) {
-      console.error("Error loading competitions:", error);
+    } catch (error) { console.error("Error loading competitions:", error);
       toast({
         title: "Error",
         description: "Failed to load competitions",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -129,12 +127,10 @@ export default function MasterChefCompetitionsGallery() {
       setVotingLoading(entryId);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Login Required",
           description: "You must be logged in to vote",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
@@ -154,10 +150,8 @@ export default function MasterChefCompetitionsGallery() {
 
         if (error) throw error;
 
-        toast({
-          title: "Vote Removed",
-          description: "Your vote has been successfully removed",
-        });
+        toast({ title: "Vote Removed",
+          description: "Your vote has been successfully removed" });
       } else {
         const { error } = await supabase
           .from('masterchef_votes')
@@ -168,32 +162,26 @@ export default function MasterChefCompetitionsGallery() {
 
         if (error) throw error;
 
-        toast({
-          title: "Vote Cast!",
-          description: "Thank you for voting!",
-        });
+        toast({ title: "Vote Cast!",
+          description: "Thank you for voting!" });
       }
 
       await loadCompetitions();
 
-    } catch (error) {
-      console.error("Voting error:", error);
+    } catch (error) { console.error("Voting error:", error);
       toast({
         title: "Error",
         description: "Failed to cast vote. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setVotingLoading(null);
     }
   };
 
-  const handleEntryClick = (entry: CompetitionEntry) => {
-    if (entry.recipe) {
+  const handleEntryClick = (entry: CompetitionEntry) => { if (entry.recipe) {
       toast({
         title: entry.dish_name,
-        description: entry.recipe.substring(0, 100) + "...",
-      });
+        description: entry.recipe.substring(0, 100) + "..." });
     }
   };
 

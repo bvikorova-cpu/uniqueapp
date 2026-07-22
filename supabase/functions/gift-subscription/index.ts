@@ -2,16 +2,12 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const TIER_PRICES: Record<string, number> = {
-  basic: 999,
+const TIER_PRICES: Record<string, number> = { basic: 999,
   premium: 1999,
-  business: 4999,
-};
+  business: 4999 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -37,16 +33,14 @@ serve(async (req) => {
       const amount = monthly * months;
       const code = "GIFT-" + crypto.randomUUID().slice(0, 8).toUpperCase();
 
-      const { data: gift, error } = await supabase.from("subscription_gifts").insert({
-        sender_id: u.user.id,
+      const { data: gift, error } = await supabase.from("subscription_gifts").insert({ sender_id: u.user.id,
         recipient_email,
         tier,
         months,
         amount_cents: amount,
         currency: "EUR",
         redeem_code: code,
-        message: message || null,
-      }).select().single();
+        message: message || null }).select().single();
       if (error) throw error;
 
       const session = await stripe.checkout.sessions.create({
@@ -56,14 +50,11 @@ serve(async (req) => {
           price_data: {
             currency: "eur",
             product_data: { name: `Gift: ${tier} (${months} mo) for ${recipient_email}` },
-            unit_amount: amount,
-          },
-          quantity: 1,
-        }],
+            unit_amount: amount },
+          quantity: 1 }],
         success_url: `${req.headers.get("origin")}/billing?gift=success`,
         cancel_url: `${req.headers.get("origin")}/billing?gift=cancel`,
-        metadata: { gift_id: gift.id, redeem_code: code },
-      });
+        metadata: { gift_id: gift.id, redeem_code: code } });
       await supabase.from("subscription_gifts").update({ stripe_session_id: session.id }).eq("id", gift.id);
       return Response.json({ url: session.url, code }, { headers: corsHeaders });
     }
@@ -78,19 +69,15 @@ serve(async (req) => {
 
       const subEnd = new Date();
       subEnd.setMonth(subEnd.getMonth() + gift.months);
-      await supabase.from("subscriptions").insert({
-        user_id: u.user.id,
+      await supabase.from("subscriptions").insert({ user_id: u.user.id,
         tier: gift.tier,
         status: "active",
         price: gift.amount_cents / 100,
         started_at: new Date().toISOString(),
-        expires_at: subEnd.toISOString(),
-      });
-      await supabase.from("subscription_gifts").update({
-        status: "redeemed",
+        expires_at: subEnd.toISOString() });
+      await supabase.from("subscription_gifts").update({ status: "redeemed",
         redeemed_at: new Date().toISOString(),
-        recipient_user_id: u.user.id,
-      }).eq("id", gift.id);
+        recipient_user_id: u.user.id }).eq("id", gift.id);
       return Response.json({ success: true, tier: gift.tier, months: gift.months }, { headers: corsHeaders });
     }
 

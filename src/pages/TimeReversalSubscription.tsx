@@ -8,8 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const FEATURES = {
-  timeSpeed: {
+const FEATURES = { timeSpeed: {
     name: "Time Travel Speed",
     price: "€6.99",
     priceId: "price_1SPitHGaXSfGtYFtD5qWM26P",
@@ -22,10 +21,8 @@ const FEATURES = {
       "Custom speed settings",
       "Fast-forward through decades",
       "Priority timeline updates",
-    ],
-  },
-  ageLocks: {
-    name: "Age Locks",
+    ] },
+  ageLocks: { name: "Age Locks",
     price: "€4.99",
     priceId: "price_1SPitb0QTWhd4oRpSUpKFiYN",
     productId: "prod_TMRnhkeFy9ex4r",
@@ -37,10 +34,8 @@ const FEATURES = {
       "Pause at any age you want",
       "Create custom milestones",
       "Resume aging anytime",
-    ],
-  },
-  futureGlimpse: {
-    name: "Future Glimpse",
+    ] },
+  futureGlimpse: { name: "Future Glimpse",
     price: "€2.99",
     priceId: "price_1SPitv0QTWhd4oRpT3MCvpTR",
     productId: "prod_TMRnPTkfIFqUKR",
@@ -52,10 +47,8 @@ const FEATURES = {
       "AI-generated future photos",
       "Timeline exploration",
       "What-if scenarios",
-    ],
-  },
-  paradoxPosts: {
-    name: "Time Paradox Posts",
+    ] },
+  paradoxPosts: { name: "Time Paradox Posts",
     price: "€1.99",
     priceId: "price_1SPiuHGaXSfGtYFtJQmIpTBa",
     productId: "prod_TMRn6Te8Cy5BTW",
@@ -67,10 +60,8 @@ const FEATURES = {
       "Create time paradoxes",
       "Cross-timeline content",
       "Special paradox badges",
-    ],
-  },
-  masterBundle: {
-    name: "Time Master Bundle",
+    ] },
+  masterBundle: { name: "Time Master Bundle",
     price: "€12.99",
     priceId: "price_1SPiudGaXSfGtYFttW8NCjDx",
     productId: "prod_TMRotpGwIfjHLT",
@@ -83,9 +74,7 @@ const FEATURES = {
       "Priority support",
       "Early access to new features",
       "Save €2 per month",
-    ],
-  },
-};
+    ] } };
 
 export default function TimeReversalSubscription() {
   const [loading, setLoading] = useState<string | null>(null);
@@ -97,36 +86,29 @@ export default function TimeReversalSubscription() {
       setLoading(featureKey);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
+      if (!session) { toast({
           title: "Login Required",
           description: "Please sign in to continue",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         navigate("/auth");
         return;
       }
 
       const feature = FEATURES[featureKey];
-      const { data, error } = await supabase.functions.invoke("create-time-reversal-checkout", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("create-time-reversal-checkout", { body: {
           priceId: feature.priceId,
-          featureName: feature.name,
-        },
-      });
+          featureName: feature.name } });
 
       if (error) throw error;
 
       if (data?.url) {
         window.open(data.url, "_blank");
       }
-    } catch (error) {
-      console.error("Subscription error:", error);
+    } catch (error) { console.error("Subscription error:", error);
       toast({
         title: "Error",
         description: "Failed to start payment. Please try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(null);
     }

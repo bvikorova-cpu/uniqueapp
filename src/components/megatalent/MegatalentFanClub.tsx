@@ -38,12 +38,10 @@ const MegatalentFanClub = ({ userId }: { userId: string | null }) => {
     const profMap: Record<string, any> = {};
     (profs || []).forEach((p: any) => { profMap[p.id] = p; });
 
-    const rows: Row[] = idList.map(id => ({
-      talent_user_id: id,
+    const rows: Row[] = idList.map(id => ({ talent_user_id: id,
       member_count: counts[id] || 0,
       name: profMap[id]?.full_name || "Talent",
-      avatar: profMap[id]?.avatar_url || null,
-    })).sort((a, b) => b.member_count - a.member_count);
+      avatar: profMap[id]?.avatar_url || null })).sort((a, b) => b.member_count - a.member_count);
 
     setItems(rows);
 

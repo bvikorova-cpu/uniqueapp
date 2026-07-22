@@ -9,10 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ShieldAlert, Send, FileText, Heart, Users, KeyRound, Activity, Sparkles, Eye, Loader2, Trash2, Copy } from "lucide-react";
-import {
-  useToxicityScans, usePlatformReports, useRestorativeLetters,
-  useTrustedAllies, useSafeWord, useWellbeingPulse, useDailyAffirmation, useBystanderTrainer,
-} from "@/hooks/useSafetyParity";
+import { useToxicityScans, usePlatformReports, useRestorativeLetters,
+  useTrustedAllies, useSafeWord, useWellbeingPulse, useDailyAffirmation, useBystanderTrainer } from "@/hooks/useSafetyParity";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 

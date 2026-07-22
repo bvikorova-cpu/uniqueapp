@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -26,8 +24,7 @@ serve(async (req) => {
     const { data: userData } = await serviceClient.auth.getUser(token);
     if (!userData.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { plan_id } = await req.json();
@@ -45,8 +42,7 @@ serve(async (req) => {
     if (plan.payment_status !== "paid") throw new Error("Plan not paid");
     if (plan.status === "completed") {
       return new Response(JSON.stringify({ plan }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Mark generating
@@ -121,17 +117,14 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a professional fitness coach and nutritionist. Always respond with valid JSON only." },
           { role: "user", content: prompt },
         ],
-        max_completion_tokens: 16000,
-      }),
-    });
+        max_completion_tokens: 16000 }) });
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
@@ -169,8 +162,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
         meal_plan: planData.meal_plan || {},
         summary: planData.summary || "",
         status: "completed",
-        updated_at: new Date().toISOString(),
-      })
+        updated_at: new Date().toISOString() })
       .eq("id", plan_id)
       .select()
       .single();
@@ -178,23 +170,18 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
     if (updateError) throw updateError;
 
     await __deduct().catch((e) => console.error("deduct failed:", e));
-    return new Response(JSON.stringify({
-      plan: updatedPlan,
+    return new Response(JSON.stringify({ plan: updatedPlan,
       details: {
         daily_calories: planData.daily_calories,
         daily_protein_g: planData.daily_protein_g,
         daily_carbs_g: planData.daily_carbs_g,
         daily_fats_g: planData.daily_fats_g,
-        tips: planData.tips,
-      },
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+        tips: planData.tips } }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

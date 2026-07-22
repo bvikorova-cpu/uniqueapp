@@ -36,15 +36,12 @@ export const useUnifiedCredits = () => {
         supabase.from("creative_forge_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
       ]);
 
-      return {
-        handwriting: handwritingRes.data?.credits_remaining || 0,
+      return { handwriting: handwritingRes.data?.credits_remaining || 0,
         pastLife: pastLifeRes.data?.credits_remaining || 0,
         anonymousDate: anonymousDateRes.data?.credits_remaining || 0,
         lieDetector: lieDetectorRes.data?.credits_remaining || 0,
-        creativeForge: creativeForgeRes.data?.credits_remaining || 0,
-      } as CreditBalance;
-    },
-  });
+        creativeForge: creativeForgeRes.data?.credits_remaining || 0 } as CreditBalance;
+    } });
 
   // Calculate total credits
   const totalCredits = creditBalances
@@ -55,14 +52,12 @@ export const useUnifiedCredits = () => {
   const purchaseCredits = async (
     service: keyof CreditBalance,
     amount: number
-  ): Promise<string | null> => {
-    const functionMap = {
+  ): Promise<string | null> => { const functionMap = {
       handwriting: "create-handwriting-credits-payment",
       pastLife: "create-past-life-credits-payment",
       anonymousDate: "create-anonymous-date-payment",
       lieDetector: "create-lie-detector-payment",
-      creativeForge: "create-creative-forge-payment",
-    };
+      creativeForge: "create-creative-forge-payment" };
 
     const { data, error } = await safeInvoke(
       functionMap[service],
@@ -85,13 +80,11 @@ export const useUnifiedCredits = () => {
     queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
   };
 
-  return {
-    creditBalances,
+  return { creditBalances,
     totalCredits,
     isLoading,
     purchaseCredits,
-    refreshCredits,
-  };
+    refreshCredits };
 };
 
 // Global credit packages - shared pricing across services

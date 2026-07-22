@@ -39,8 +39,7 @@ export const MoodMatcher = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("companion-ai", {
-        body: { action: "mood-matcher", mood: moodText },
-      });
+        body: { action: "mood-matcher", mood: moodText } });
       if (error) throw error;
       setResult(data);
     } catch (error: any) {

@@ -25,8 +25,7 @@ export interface BazaarFilterState {
   shippingMethod: string; // "all" | personal | post | packeta | courier
 }
 
-export const defaultFilters: BazaarFilterState = {
-  searchTerm: "",
+export const defaultFilters: BazaarFilterState = { searchTerm: "",
   category: "all",
   condition: "all",
   minPrice: "",
@@ -35,8 +34,7 @@ export const defaultFilters: BazaarFilterState = {
   sort: "newest",
   brand: "",
   size: "all",
-  shippingMethod: "all",
-};
+  shippingMethod: "all" };
 
 export const SHIPPING_METHODS = [
   { id: "personal", name: "Personal pickup" },
@@ -97,8 +95,7 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
       toast.error("Name is required");
       return;
     }
-    const { error } = await supabase.from("bazaar_saved_searches").insert({
-      user_id: currentUserId,
+    const { error } = await supabase.from("bazaar_saved_searches").insert({ user_id: currentUserId,
       name: searchName.trim(),
       search_term: filters.searchTerm || null,
       category: filters.category === "all" ? null : filters.category,
@@ -106,8 +103,7 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
       min_price: filters.minPrice ? Number(filters.minPrice) : null,
       max_price: filters.maxPrice ? Number(filters.maxPrice) : null,
       location: filters.location || null,
-      notify,
-    });
+      notify });
     if (error) {
       toast.error("Failed to save search");
       return;
@@ -118,16 +114,14 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
     loadSaved();
   };
 
-  const applySaved = (s: SavedSearch) => {
-    onChange({
+  const applySaved = (s: SavedSearch) => { onChange({
       ...filters,
       searchTerm: s.search_term ?? "",
       category: s.category ?? "all",
       condition: s.condition ?? "all",
       minPrice: s.min_price?.toString() ?? "",
       maxPrice: s.max_price?.toString() ?? "",
-      location: s.location ?? "",
-    });
+      location: s.location ?? "" });
     toast.success(`Loaded: ${s.name}`);
   };
 
@@ -226,7 +220,7 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
           <div>
             <label className="text-xs font-semibold mb-1 block">Location contains</label>
             <Input
-              placeholder="e.g. Berlin"
+              placeholder="e.g. City"
               value={filters.location}
               onChange={(e) => set("location", e.target.value)}
             />
@@ -324,7 +318,7 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
             <DialogTitle>Save current search</DialogTitle>
           </DialogHeader>
           <div className="space-y-3 py-2">
-            <Input placeholder="Name (e.g. iPhone Berlin ≤ 500€)" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+            <Input placeholder="Name (e.g. iPhone ≤ 500€)" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} />
               Notify me when new matching items appear

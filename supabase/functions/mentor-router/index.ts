@@ -2,25 +2,19 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const MENTOR_PRICES: Record<string, string> = {
-  monthly: "price_1TXnOuGaXSfGtYFtNzPlq3GN",
-  yearly: "price_1TXnOvGaXSfGtYFtxGWrODSu",
-};
+const MENTOR_PRICES: Record<string, string> = { monthly: "price_1TXnOuGaXSfGtYFtNzPlq3GN",
+  yearly: "price_1TXnOvGaXSfGtYFtxGWrODSu" };
 
-const MENTOR_PRICE_TO_PLAN: Record<string, string> = {
-  price_1TXnOuGaXSfGtYFtNzPlq3GN: "monthly",
-  price_1TXnOvGaXSfGtYFtxGWrODSu: "yearly",
-};
+const MENTOR_PRICE_TO_PLAN: Record<string, string> = { price_1TXnOuGaXSfGtYFtNzPlq3GN: "monthly",
+  price_1TXnOvGaXSfGtYFtxGWrODSu: "yearly" };
 
 function json(b: unknown, s = 200) {
   return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -34,9 +28,7 @@ async function ai(messages: any[], opts: { model?: string; jsonMode?: boolean } 
     body: JSON.stringify({
       model: opts.model ?? "gpt-4o-mini",
       messages,
-      ...(opts.jsonMode ? { response_format: { type: "json_object" } } : {}),
-    }),
-  });
+      ...(opts.jsonMode ? { response_format: { type: "json_object" } } : {}) }) });
   if (!r.ok) throw new Error(`AI ${r.status}: ${await r.text()}`);
   const d = await r.json();
   return d.choices?.[0]?.message?.content ?? "";
@@ -72,8 +64,7 @@ Deno.serve(async (req) => {
 
     // Authed actions below
     const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader ?? "" } },
-    });
+      global: { headers: { Authorization: authHeader ?? "" } } });
     const { data: u } = await userClient.auth.getUser();
     const user = u?.user;
     if (!user && action === "premium.check") return json({ subscribed: false });
@@ -108,8 +99,7 @@ Deno.serve(async (req) => {
           success_url: `${origin}/ai-mentor/premium?status=success&area=${area}`,
           cancel_url: `${origin}/ai-mentor/premium?status=cancel`,
           metadata: { user_id: userId, plan, mentor_area: area },
-          subscription_data: { metadata: { user_id: userId, plan, mentor_area: area } },
-        });
+          subscription_data: { metadata: { user_id: userId, plan, mentor_area: area } } });
         return json({ url: session.url });
       }
       case "premium.check": {
@@ -142,11 +132,9 @@ Deno.serve(async (req) => {
           const plan = MENTOR_PRICE_TO_PLAN[item.price.id];
           const periodEnd = new Date((s as any).current_period_end * 1000).toISOString();
           areas[a] = { subscribed: true, plan, current_period_end: periodEnd, subscription_id: s.id };
-          await admin.from("mentor_premium_subs").upsert({
-            user_id: userId, email: user.email, area: a,
+          await admin.from("mentor_premium_subs").upsert({ user_id: userId, email: user.email, area: a,
             stripe_customer_id: customerId, stripe_subscription_id: s.id,
-            status: "active", plan, current_period_end: periodEnd,
-          }, { onConflict: "user_id,area" });
+            status: "active", plan, current_period_end: periodEnd }, { onConflict: "user_id,area" });
         }
         if (requestedArea) {
           const a = areas[requestedArea];
@@ -211,13 +199,11 @@ Deno.serve(async (req) => {
           .eq("user_id", userId).eq("skill_id", skill_id).maybeSingle();
         const newScore = Math.min(100, Math.max(0, (existing?.score ?? 0) + (score_delta ?? 5)));
         const history = [...((existing?.history as any[]) ?? []), { at: new Date().toISOString(), score: newScore }].slice(-30);
-        await admin.from("mentor_user_skill_progress").upsert({
-          user_id: userId, skill_id,
+        await admin.from("mentor_user_skill_progress").upsert({ user_id: userId, skill_id,
           score: newScore,
           practice_count: (existing?.practice_count ?? 0) + 1,
           last_practiced_at: new Date().toISOString(),
-          history,
-        }, { onConflict: "user_id,skill_id" });
+          history }, { onConflict: "user_id,skill_id" });
         return json({ score: newScore });
       }
 
@@ -238,9 +224,7 @@ Deno.serve(async (req) => {
           { role: "system", content: sys },
           { role: "user", content: JSON.stringify(result) },
         ]);
-        const { data } = await admin.from("mentor_personality_assessments").insert({
-          user_id: userId, type, result, insights,
-        }).select().single();
+        const { data } = await admin.from("mentor_personality_assessments").insert({ user_id: userId, type, result, insights }).select().single();
         return json({ assessment: data });
       }
       case "personality.latest": {
@@ -257,9 +241,7 @@ Deno.serve(async (req) => {
         const { scenario_id } = body;
         const { data: scenario } = await admin.from("mentor_roleplay_scenarios").select("*").eq("id", scenario_id).maybeSingle();
         if (!scenario) return json({ error: "scenario not found" }, 404);
-        const { data: session } = await admin.from("mentor_roleplay_sessions").insert({
-          user_id: userId, scenario_id, transcript: [],
-        }).select().single();
+        const { data: session } = await admin.from("mentor_roleplay_sessions").insert({ user_id: userId, scenario_id, transcript: [] }).select().single();
         const opener = await ai([
           { role: "system", content: scenario.system_prompt },
           { role: "user", content: "Open the role-play with your first line as the character. One paragraph max." },
@@ -301,16 +283,14 @@ Deno.serve(async (req) => {
       // ───── 5. 360 FEEDBACK ─────
       case "feedback360.create": {
         const { questions } = body;
-        const { data, error } = await admin.from("mentor_360_requests").insert({
-          user_id: userId,
+        const { data, error } = await admin.from("mentor_360_requests").insert({ user_id: userId,
           questions: questions ?? [
             "What are my top 3 strengths?",
             "What is one blind spot I should work on?",
             "How do I show up in stressful moments?",
             "What would you trust me to deliver every time?",
             "One thing I could do differently to help you?",
-          ],
-        }).select().single();
+          ] }).select().single();
         if (error) return json({ error: error.message }, 500);
         return json({ request: data });
       }
@@ -332,9 +312,7 @@ Deno.serve(async (req) => {
         const { area } = body;
         const sys = `You are an AI personal mentor. Write 1 short (under 25 words) daily nudge for the user in the ${area} area. Encouraging, specific, ends with an action.`;
         const msg = await ai([{ role: "system", content: sys }, { role: "user", content: `Generate today's nudge for ${area}.` }]);
-        const { data, error } = await admin.from("mentor_daily_nudges").upsert({
-          user_id: userId, area, message: msg.trim(), sent_for_date: new Date().toISOString().slice(0, 10),
-        }, { onConflict: "user_id,sent_for_date,area" }).select().single();
+        const { data, error } = await admin.from("mentor_daily_nudges").upsert({ user_id: userId, area, message: msg.trim(), sent_for_date: new Date().toISOString().slice(0, 10) }, { onConflict: "user_id,sent_for_date,area" }).select().single();
         if (error) return json({ error: error.message }, 500);
         return json({ nudge: data });
       }
@@ -364,19 +342,15 @@ Deno.serve(async (req) => {
         ], { jsonMode: true });
         let parsed: any = {};
         try { parsed = JSON.parse(out); } catch {}
-        const { data: goal, error } = await admin.from("mentor_smart_goals").insert({
-          user_id: userId, area, title, description,
+        const { data: goal, error } = await admin.from("mentor_smart_goals").insert({ user_id: userId, area, title, description,
           smart_specific: parsed.smart_specific ?? null,
           smart_measurable: parsed.smart_measurable ?? null,
           smart_achievable: parsed.smart_achievable ?? null,
           smart_relevant: parsed.smart_relevant ?? null,
-          deadline: deadline ?? null,
-        }).select().single();
+          deadline: deadline ?? null }).select().single();
         if (error) return json({ error: error.message }, 500);
-        if (Array.isArray(parsed.milestones)) {
-          await admin.from("mentor_smart_milestones").insert(parsed.milestones.slice(0, 8).map((m: any, i: number) => ({
-            goal_id: goal.id, title: String(m.title ?? "").slice(0, 200), due_date: m.due_date ?? null, display_order: i,
-          })));
+        if (Array.isArray(parsed.milestones)) { await admin.from("mentor_smart_milestones").insert(parsed.milestones.slice(0, 8).map((m: any, i: number) => ({
+            goal_id: goal.id, title: String(m.title ?? "").slice(0, 200), due_date: m.due_date ?? null, display_order: i })));
         }
         return json({ goal });
       }
@@ -436,10 +410,8 @@ Deno.serve(async (req) => {
           if (lg && (lg.completed || lg.used_freeze)) streak++;
           else break;
         }
-        await admin.from("mentor_habits").update({
-          current_streak: streak,
-          best_streak: Math.max(streak, h.best_streak ?? 0),
-        }).eq("id", habit_id);
+        await admin.from("mentor_habits").update({ current_streak: streak,
+          best_streak: Math.max(streak, h.best_streak ?? 0) }).eq("id", habit_id);
         return json({ streak });
       }
       case "habits.use_freeze": {
@@ -482,10 +454,8 @@ Deno.serve(async (req) => {
         const out = await ai([{ role: "system", content: sys }, { role: "user", content: `Area: ${area}\n${transcript}` }], { jsonMode: true });
         let parsed: any = { summary: out, commitments: [], key_insights: [], next_steps: [] };
         try { parsed = JSON.parse(out); } catch {}
-        const { data } = await admin.from("mentor_session_summaries").insert({
-          user_id: userId, area,
-          summary: parsed.summary ?? "", commitments: parsed.commitments ?? [], key_insights: parsed.key_insights ?? [], next_steps: parsed.next_steps ?? [],
-        }).select().single();
+        const { data } = await admin.from("mentor_session_summaries").insert({ user_id: userId, area,
+          summary: parsed.summary ?? "", commitments: parsed.commitments ?? [], key_insights: parsed.key_insights ?? [], next_steps: parsed.next_steps ?? [] }).select().single();
         return json({ summary: data });
       }
       case "summary.list": {
@@ -501,9 +471,7 @@ Deno.serve(async (req) => {
         const out = await ai([{ role: "system", content: sys }, { role: "user", content: transcript }], { jsonMode: true });
         let parsed: any = { emotion: "neutral", insights: "" };
         try { parsed = JSON.parse(out); } catch {}
-        const { data } = await admin.from("mentor_voice_journals").insert({
-          user_id: userId, transcript, detected_emotion: parsed.emotion, ai_insights: typeof parsed.insights === "string" ? parsed.insights : JSON.stringify(parsed.insights), duration_sec: duration_sec ?? null,
-        }).select().single();
+        const { data } = await admin.from("mentor_voice_journals").insert({ user_id: userId, transcript, detected_emotion: parsed.emotion, ai_insights: typeof parsed.insights === "string" ? parsed.insights : JSON.stringify(parsed.insights), duration_sec: duration_sec ?? null }).select().single();
         return json({ entry: data });
       }
       case "voice.list": {
@@ -531,10 +499,8 @@ Deno.serve(async (req) => {
         const done = Array.from(new Set([...(p.completed_days as number[] ?? []), day]));
         const { data: prog } = await admin.from("mentor_cbt_programs").select("duration_days").eq("id", program_id).maybeSingle();
         const isDone = done.length >= (prog?.duration_days ?? 21);
-        await admin.from("mentor_cbt_progress").update({
-          completed_days: done, current_day: Math.min(day + 1, prog?.duration_days ?? 21),
-          completed_at: isDone ? new Date().toISOString() : null,
-        }).eq("id", p.id);
+        await admin.from("mentor_cbt_progress").update({ completed_days: done, current_day: Math.min(day + 1, prog?.duration_days ?? 21),
+          completed_at: isDone ? new Date().toISOString() : null }).eq("id", p.id);
         return json({ completed: done, done: isDone });
       }
 

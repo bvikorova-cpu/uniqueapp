@@ -11,8 +11,7 @@ export async function coloringCall<T = any>(
   payload: Record<string, any> = {},
 ): Promise<T> {
   const { data, error } = await supabase.functions.invoke("coloring-router", {
-    body: { action, ...payload },
-  });
+    body: { action, ...payload } });
 
   if (error) {
     let msg = "request_failed";

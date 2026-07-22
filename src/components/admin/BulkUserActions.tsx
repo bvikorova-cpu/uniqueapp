@@ -33,8 +33,7 @@ export const BulkUserActions = () => {
     if (action === "send_email") { params.subject = subject; }
 
     const { data, error } = await supabase.functions.invoke("admin-bulk-user-action", {
-      body: { action, userIds: ids, params },
-    });
+      body: { action, userIds: ids, params } });
     setRunning(false);
     if (error) return toast.error(error.message);
     if ((data as any)?.error) return toast.error((data as any).error);

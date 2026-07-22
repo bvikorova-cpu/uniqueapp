@@ -102,26 +102,22 @@ export default function MyLearning() {
       setEnrolledCourses(enrolled || []);
       setCompletedCourses(completed || []);
       setCertificates(certs || []);
-    } catch (error) {
-      console.error("Error loading data:", error);
+    } catch (error) { console.error("Error loading data:", error);
       toast({
         title: "Error",
         description: "Failed to load your learning data",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
-  const stats = {
-    inProgress: enrolledCourses.length,
+  const stats = { inProgress: enrolledCourses.length,
     completed: completedCourses.length,
     certificates: certificates.length,
     avgProgress: enrolledCourses.length > 0
       ? Math.round(enrolledCourses.reduce((acc, c) => acc + (c.progress_percentage || 0), 0) / enrolledCourses.length)
-      : 0,
-  };
+      : 0 };
 
   if (loading) {
     return (

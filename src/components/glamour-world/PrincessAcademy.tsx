@@ -23,14 +23,11 @@ export function PrincessAcademy({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "academy", prompt: `Teach a fun ${course} lesson at the Princess Academy. ${question}. Include: key rules, fun facts, practice exercises, and a mini quiz at the end.`, coins: 4 },
-      });
+        body: { type: "academy", prompt: `Teach a fun ${course} lesson at the Princess Academy. ${question}. Include: key rules, fun facts, practice exercises, and a mini quiz at the end.`, coins: 4 } });
       if (error) throw error;
       setResult(data.result);
-      await supabase.from("glamour_creations").insert({
-        user_id: user.id, creation_type: "academy", title: course,
-        prompt: question, result_text: data.result, credits_used: 4,
-      });
+      await supabase.from("glamour_creations").insert({ user_id: user.id, creation_type: "academy", title: course,
+        prompt: question, result_text: data.result, credits_used: 4 });
     } catch (e: any) {
       const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
         if (isCoinsErr) {

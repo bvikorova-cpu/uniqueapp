@@ -6,8 +6,7 @@ import Stripe from 'npm:stripe@17';
 function j(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-  });
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 }
 
 Deno.serve(async (req) => {
@@ -16,12 +15,8 @@ Deno.serve(async (req) => {
     const { sessionId } = await req.json();
     if (!sessionId || typeof sessionId !== 'string') return j({ error: 'sessionId required' }, 400);
 
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
-      apiVersion: '2024-11-20.acacia',
-    });
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['payment_intent'],
-    });
+    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, { apiVersion: '2024-11-20.acacia' });
+    const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ['payment_intent'] });
     if (session.metadata?.type !== 'profile_tip') return j({ error: 'Wrong session type' }, 400);
 
     const admin = createClient(
@@ -34,12 +29,10 @@ Deno.serve(async (req) => {
       const transferId = pi && (pi as any).transfer_data?.destination ? ((pi as any).latest_charge ?? null) : null;
       const { data: updated, error } = await admin
         .from('profile_tips')
-        .update({
-          status: 'completed',
+        .update({ status: 'completed',
           completed_at: new Date().toISOString(),
           stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : pi?.id ?? null,
-          stripe_transfer_id: transferId,
-        })
+          stripe_transfer_id: transferId })
         .eq('stripe_session_id', sessionId)
         .eq('status', 'pending')
         .select('id, amount_cents, recipient_amount_cents, recipient_id')

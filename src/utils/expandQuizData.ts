@@ -19,8 +19,7 @@ export const expandQuizQuestions = (questions: QuizQuestion[]): QuizQuestion[] =
     
     expanded.push({
       ...baseQuestion,
-      question: `${variation.prefix}${baseQuestion.question}${variation.suffix}`,
-    });
+      question: `${variation.prefix}${baseQuestion.question}${variation.suffix}` });
     
     variationIndex++;
   }

@@ -84,18 +84,15 @@ export const MegatalentBracket = ({ category }: Props) => {
     setVoting(matchId);
     try {
       const { error } = await supabase.functions.invoke("vote-megatalent-bracket", {
-        body: { match_id: matchId, voted_for: side },
-      });
+        body: { match_id: matchId, voted_for: side } });
       if (error) throw error;
       setMyVotes((prev) => ({ ...prev, [matchId]: side }));
       toast({ title: "Vote counted!" });
       load();
-    } catch (e: any) {
-      toast({
+    } catch (e: any) { toast({
         title: "Could not vote",
         description: e?.message ?? "Try again",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setVoting(null);
     }
@@ -163,13 +160,11 @@ export const MegatalentBracket = ({ category }: Props) => {
   );
 };
 
-const MatchRow = ({
-  match,
+const MatchRow = ({ match,
   myVote,
   voting,
   canVote,
-  onVote,
-}: {
+  onVote }: {
   match: Match;
   myVote?: "a" | "b";
   voting: boolean;
@@ -209,16 +204,14 @@ const MatchRow = ({
   );
 };
 
-const Side = ({
-  sub,
+const Side = ({ sub,
   votes,
   pct,
   winner,
   mine,
   canVote,
   voting,
-  onVote,
-}: {
+  onVote }: {
   sub: Submission | null;
   votes: number;
   pct: number;

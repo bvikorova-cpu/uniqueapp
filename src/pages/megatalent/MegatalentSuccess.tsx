@@ -56,14 +56,12 @@ export default function MegatalentSuccess() {
       for (let i = 0; i < MAX_ATTEMPTS; i++) {
         setAttempt(i + 1);
         const { data, error } = await safeInvoke("check-megatalent-subscription");
-        if (!error && data?.subscribed === true) {
-          setStatus("success");
+        if (!error && data?.subscribed === true) { setStatus("success");
           toast({
             title: "MegaTalent activated 🎉",
             description: isTop
               ? "TOP Premium access ready — unlocking upload and voting."
-              : "Premium access ready — unlocking upload and voting.",
-          });
+              : "Premium access ready — unlocking upload and voting." });
           // Brief pause so the user sees the success state before navigation.
           setTimeout(() => navigate("/megatalent", { replace: true }), 1800);
           return;

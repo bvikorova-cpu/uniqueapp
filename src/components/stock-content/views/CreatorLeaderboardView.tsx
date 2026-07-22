@@ -84,16 +84,14 @@ export function CreatorLeaderboardView({ onBack }: CreatorLeaderboardViewProps) 
       const dlCount = new Map<string, number>();
       (downloads || []).forEach((d: any) => dlCount.set(d.creator_id, (dlCount.get(d.creator_id) || 0) + 1));
 
-      const final: Creator[] = (data || []).map((r: any, i: number) => ({
-        rank: i + 1,
+      const final: Creator[] = (data || []).map((r: any, i: number) => ({ rank: i + 1,
         creator_id: r.creator_id,
         name: pmap.get(r.creator_id) || "Creator",
         avatar: AVATARS[i % AVATARS.length],
         revenue: Number(r.total_earnings) || 0,
         downloads: dlCount.get(r.creator_id) || 0,
         assets: assetCount.get(r.creator_id) || 0,
-        badge: badgeFor(Number(r.total_earnings) || 0),
-      }));
+        badge: badgeFor(Number(r.total_earnings) || 0) }));
 
       if (!cancelled) {
         setCreators(final);

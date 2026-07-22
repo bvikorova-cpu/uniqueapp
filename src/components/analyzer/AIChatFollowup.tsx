@@ -25,8 +25,7 @@ export const AIChatFollowup = ({ context }: { context: string }) => {
     try {
       const fullContext = `${context}\n\nPrior chat:\n${messages.map(m => `${m.role}: ${m.text}`).join("\n")}`;
       const { data, error } = await supabase.functions.invoke("analyzer-ai", {
-        body: { action: "chat-followup", context: fullContext, question },
-      });
+        body: { action: "chat-followup", context: fullContext, question } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setMessages((m) => [...m, { role: "ai", text: data.result }]);

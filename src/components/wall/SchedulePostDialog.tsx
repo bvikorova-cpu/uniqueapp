@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { usePostScheduling } from "@/hooks/usePostScheduling";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+  DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar, Clock } from "lucide-react";
@@ -17,10 +15,8 @@ interface SchedulePostDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const SchedulePostDialog = ({
-  open,
-  onOpenChange,
-}: SchedulePostDialogProps) => {
+export const SchedulePostDialog = ({ open,
+  onOpenChange }: SchedulePostDialogProps) => {
   const { schedulePost } = usePostScheduling();
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");

@@ -12,8 +12,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
-import {
-  Send,
+import { Send,
   ArrowLeft,
   Target,
   TrendingUp,
@@ -21,8 +20,7 @@ import {
   Plus,
   Bot,
   User,
-  Sparkles,
-} from "lucide-react";
+  Sparkles } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const __HIW_AIMENTORCHAT_STEPS = [
@@ -70,13 +68,10 @@ const AIMentorChat = () => {
 
       if (!isAdmin) {
         const { data: subData } = await supabase.functions.invoke('mentor-router', {
-          body: { action: 'premium.check', area: area as string },
-        });
-        if (!subData?.subscribed) {
-          toast({
+          body: { action: 'premium.check', area: area as string } });
+        if (!subData?.subscribed) { toast({
             title: "Subscription required",
-            description: "You need an active subscription for this mentor area",
-          });
+            description: "You need an active subscription for this mentor area" });
           navigate('/ai-mentor/premium');
           return;
         }
@@ -138,22 +133,19 @@ const AIMentorChat = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('mentor-ai-tools', {
-        body: { action: 'voice-coaching', message: userMessage, mentorArea: area },
-      });
+        body: { action: 'voice-coaching', message: userMessage, mentorArea: area } });
 
       if (error) throw error;
       const replyText = data?.reply || data?.message || data?.text || "I'm here to help.";
       setMessages(prev => [...prev, { role: "assistant", content: replyText }]);
-    } catch (error: any) {
-      console.error('Error:', error);
+    } catch (error: any) { console.error('Error:', error);
       // Restore the user's message so they can retry
       setMessage(userMessage);
       setMessages(prev => prev.slice(0, -1));
       toast({
         title: "Failed to send",
         description: error?.message || "Could not reach the AI mentor. Try again.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -164,13 +156,11 @@ const AIMentorChat = () => {
     const goalTitle = window.prompt("What goal do you want to set?");
     if (!goalTitle?.trim()) return;
     try {
-      const { error } = await supabase.from('mentor_goals').insert({
-        user_id: user.id,
+      const { error } = await supabase.from('mentor_goals').insert({ user_id: user.id,
         mentor_area: area as any,
         title: goalTitle.trim(),
         progress: 0,
-        status: 'active',
-      });
+        status: 'active' });
       if (error) throw error;
       toast({ description: `Goal "${goalTitle.trim()}" added!` });
       await loadGoals(user.id);

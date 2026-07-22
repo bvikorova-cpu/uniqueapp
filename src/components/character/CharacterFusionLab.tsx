@@ -23,14 +23,12 @@ export const CharacterFusionLab = () => {
       const { data, error } = await supabase.from("characters").select("*").eq("user_id", user.id);
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const fuseMutation = useMutation({
     mutationFn: async ({ char1Id, char2Id }: { char1Id: string; char2Id: string }) => {
       const { data, error } = await supabase.functions.invoke("fuse-characters", {
-        body: { character1Id: char1Id, character2Id: char2Id },
-      });
+        body: { character1Id: char1Id, character2Id: char2Id } });
       if (error) throw error;
       return data;
     },
@@ -40,8 +38,7 @@ export const CharacterFusionLab = () => {
       queryClient.invalidateQueries({ queryKey: ["characters"] });
       queryClient.invalidateQueries({ queryKey: ["character-credits"] });
     },
-    onError: (error: Error) => toast.error(error.message || "Fusion failed"),
-  });
+    onError: (error: Error) => toast.error(error.message || "Fusion failed") });
 
   const selectedChar1 = characters?.find((c) => c.id === char1);
   const selectedChar2 = characters?.find((c) => c.id === char2);

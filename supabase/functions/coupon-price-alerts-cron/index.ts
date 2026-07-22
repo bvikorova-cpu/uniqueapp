@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.95.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -48,8 +46,7 @@ Deno.serve(async (req) => {
         title: `Price drop: ${a.store_name}`,
         message: `${hits.length} new listing(s) under €${a.max_price}. Lowest: €${Math.min(...hits.map((h: any) => h.selling_price)).toFixed(2)}.`,
         action_url: `/coupons/${a.store_name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
-        is_read: false,
-      });
+        is_read: false });
 
       await supabase.from("coupon_price_alerts").update({ last_notified_at: new Date().toISOString() }).eq("id", a.id);
       sent++;

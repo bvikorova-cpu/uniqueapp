@@ -21,23 +21,19 @@ export default function VideoUploadDialog({ onUploadSuccess }: { onUploadSuccess
       const file = e.target.files[0];
       if (file.type.startsWith("video/")) {
         setVideoFile(file);
-      } else {
-        toast({
+      } else { toast({
           title: "Invalid file type",
           description: "Please select a video file",
-          variant: "destructive",
-        });
+          variant: "destructive" });
       }
     }
   };
 
-  const handleUpload = async () => {
-    if (!videoFile || !title) {
+  const handleUpload = async () => { if (!videoFile || !title) {
       toast({
         title: "Missing information",
         description: "Please provide a title and video file",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -68,20 +64,16 @@ export default function VideoUploadDialog({ onUploadSuccess }: { onUploadSuccess
       // Insert video record
       const { error: insertError } = await supabase
         .from('videos')
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           title,
           description: description || null,
           video_url: publicUrl,
-          category: category || 'general',
-        } as any);
+          category: category || 'general' } as any);
 
       if (insertError) throw insertError;
 
-      toast({
-        title: "Success",
-        description: "Video uploaded successfully",
-      });
+      toast({ title: "Success",
+        description: "Video uploaded successfully" });
 
       setOpen(false);
       setTitle("");
@@ -89,13 +81,11 @@ export default function VideoUploadDialog({ onUploadSuccess }: { onUploadSuccess
       setCategory("");
       setVideoFile(null);
       onUploadSuccess();
-    } catch (error: any) {
-      console.error('Upload error:', error);
+    } catch (error: any) { console.error('Upload error:', error);
       toast({
         title: "Upload failed",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setUploading(false);
     }

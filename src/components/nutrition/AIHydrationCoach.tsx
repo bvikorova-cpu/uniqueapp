@@ -30,8 +30,7 @@ export default function AIHydrationCoach({ onBack }: Props) {
       return data;
     },
     onSuccess: (data) => { setResult(data.plan); toast.success("Hydration plan generated!"); },
-    onError: (e: any) => toast.error(e.message || "Error generating plan"),
-  });
+    onError: (e: any) => toast.error(e.message || "Error generating plan") });
 
   return (
     <>

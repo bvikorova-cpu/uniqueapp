@@ -33,8 +33,7 @@ export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
     try {
       const finalVoiceId = customVoiceId.trim() || voiceId;
       const { data, error } = await supabase.functions.invoke('video-ad-tts', {
-        body: { text, voiceId: finalVoiceId },
-      });
+        body: { text, voiceId: finalVoiceId } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'TTS Voiceover' }); return; }
       const url = `data:${data.mimeType};base64,${data.audioBase64}`;
       setAudioUrl(url);

@@ -20,14 +20,12 @@ interface Props {
  * Facebook, X/Twitter, Email + a "Copy story" block donors can paste anywhere.
  * Modeled after GoFundMe's mobile share kit.
  */
-export function MedicalShareKit({
-  campaignTitle,
+export function MedicalShareKit({ campaignTitle,
   patientName,
   diagnosis,
   targetAmount,
   currentAmount,
-  campaignUrl,
-}: Props) {
+  campaignUrl }: Props) {
   const [copied, setCopied] = useState(false);
   const remaining = Math.max(targetAmount - currentAmount, 0);
   const pct = Math.round((currentAmount / targetAmount) * 100);
@@ -45,29 +43,25 @@ export function MedicalShareKit({
       label: "WhatsApp",
       icon: MessageCircle,
       color: "bg-emerald-500 hover:bg-emerald-600",
-      url: `https://wa.me/?text=${encoded}`,
-    },
+      url: `https://wa.me/?text=${encoded}` },
     {
       key: "facebook",
       label: "Facebook",
       icon: Facebook,
       color: "bg-blue-600 hover:bg-blue-700",
-      url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encoded}`,
-    },
+      url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encoded}` },
     {
       key: "twitter",
       label: "X / Twitter",
       icon: Twitter,
       color: "bg-foreground hover:bg-foreground/80 text-background",
-      url: `https://twitter.com/intent/tweet?text=${encoded}`,
-    },
+      url: `https://twitter.com/intent/tweet?text=${encoded}` },
     {
       key: "email",
       label: "Email",
       icon: Mail,
       color: "bg-rose-500 hover:bg-rose-600",
-      url: `mailto:?subject=${encodeURIComponent("Please help " + patientName)}&body=${encoded}`,
-    },
+      url: `mailto:?subject=${encodeURIComponent("Please help " + patientName)}&body=${encoded}` },
   ];
 
   const handleCopy = async () => {
@@ -81,14 +75,12 @@ export function MedicalShareKit({
     }
   };
 
-  const handleNativeShare = async () => {
-    if (typeof navigator !== "undefined" && (navigator as any).share) {
+  const handleNativeShare = async () => { if (typeof navigator !== "undefined" && (navigator as any).share) {
       try {
         await (navigator as any).share({
           title: campaignTitle,
           text: shortText,
-          url: campaignUrl,
-        });
+          url: campaignUrl });
       } catch {
         /* user cancelled */
       }

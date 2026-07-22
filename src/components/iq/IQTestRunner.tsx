@@ -104,9 +104,7 @@ export default function IQTestRunner({ open, onClose, category, title, timeLimit
     }
     setSubmitting(true);
     const elapsed = Math.round((Date.now() - startedAtRef.current) / 1000);
-    const { data, error } = await supabase.rpc("submit_iq_test", {
-      _session_id: sessionId, _answers: answers, _time_taken: elapsed,
-    });
+    const { data, error } = await supabase.rpc("submit_iq_test", { _session_id: sessionId, _answers: answers, _time_taken: elapsed });
     setSubmitting(false);
     if (error) { toast({ title: "Submit failed", description: error.message, variant: "destructive" }); return; }
     const row = (data as any[])?.[0];

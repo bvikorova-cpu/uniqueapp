@@ -40,8 +40,7 @@ export const BloodlineGenealogy = () => {
         .order("generation", { ascending: true });
       return data || [];
     },
-    enabled: !!selectedHorse,
-  });
+    enabled: !!selectedHorse });
 
   const getBloodlineScore = () => {
     if (!horse) return 0;

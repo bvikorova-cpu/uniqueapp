@@ -117,8 +117,7 @@ export function TutorialEngagement() {
       const todayStr = new Date().toDateString();
       const dailyChallengeCompleted = quizzes.some(q => new Date(q.attempted_at!).toDateString() === todayStr);
 
-      setData({
-        streak,
+      setData({ streak,
         weeklyActivity,
         weeklyChange,
         totalXP: allXP,
@@ -126,8 +125,7 @@ export function TutorialEngagement() {
         levelProgress,
         badgesEarned: badges,
         totalBadges: 25,
-        dailyChallengeCompleted,
-      });
+        dailyChallengeCompleted });
     } catch (err) {
       console.error("Failed to load engagement:", err);
       setData({ streak: 0, weeklyActivity: [0,0,0,0,0,0,0], weeklyChange: 0, totalXP: 0, level: 1, levelProgress: 0, badgesEarned: 0, totalBadges: 25, dailyChallengeCompleted: false });

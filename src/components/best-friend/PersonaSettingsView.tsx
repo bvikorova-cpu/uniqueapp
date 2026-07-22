@@ -11,16 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-export const PersonaSettingsView = () => {
-  const [loading, setLoading] = useState(true);
+export const PersonaSettingsView = () => { const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [persona, setPersona] = useState({
     friend_name: "Bestie",
     friend_gender: "neutral",
     personality: "empathetic",
     language: "en",
-    user_nickname: "",
-  });
+    user_nickname: "" });
   const [checkin, setCheckin] = useState({ enabled: true, preferred_hour: 19 });
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [avatarDesc, setAvatarDesc] = useState("");
@@ -33,11 +31,9 @@ export const PersonaSettingsView = () => {
       supabase.from("best_friend_persona").select("*").eq("user_id", user.id).maybeSingle(),
       supabase.from("best_friend_check_ins").select("*").eq("user_id", user.id).maybeSingle(),
     ]);
-    if (p) {
-      setPersona({
+    if (p) { setPersona({
         friend_name: p.friend_name, friend_gender: p.friend_gender,
-        personality: p.personality, language: p.language, user_nickname: p.user_nickname || "",
-      });
+        personality: p.personality, language: p.language, user_nickname: p.user_nickname || "" });
       setAvatarUrl(p.avatar_url || null);
     }
     if (c) setCheckin({ enabled: c.enabled, preferred_hour: c.preferred_hour });

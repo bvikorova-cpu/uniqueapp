@@ -51,8 +51,7 @@ export function BuyerOrderCard({ order, onChanged }: { order: Order; onChanged: 
     setBusy(true);
     try {
       const { data, error } = await supabase.functions.invoke("coupon-buyer-action", {
-        body: { action, orderId: order.id, ...extra },
-      });
+        body: { action, orderId: order.id, ...extra } });
       if (error || !data?.ok) throw new Error(data?.error || error?.message || "Failed");
       toast({ title: "Done", description: `Action: ${action}` });
       onChanged();

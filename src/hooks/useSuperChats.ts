@@ -36,29 +36,25 @@ export const useSuperChats = (streamId?: string) => {
         .order("created_at", { ascending: false })
         .limit(50);
       return (data || []) as unknown as SuperChat[];
-    },
-  });
+    } });
 
   const sendSuperChat = useMutation({
     mutationFn: async ({ amountCents, message }: { amountCents: number; message?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !streamId) throw new Error("Missing context");
-      const { error } = await supabase.from("live_super_chats" as any).insert({
-        stream_id: streamId,
+      const { error } = await supabase.from("live_super_chats" as any).insert({ stream_id: streamId,
         sender_id: user.id,
         amount_cents: amountCents,
         message,
         highlight_color: tierColor(amountCents),
-        duration_seconds: Math.min(300, 30 + Math.floor(amountCents / 100)),
-      } as any);
+        duration_seconds: Math.min(300, 30 + Math.floor(amountCents / 100)) } as any);
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["super-chats", streamId] });
       toast({ title: "Super chat sent! 🎉" });
     },
-    onError: (e: any) => toast({ title: "Failed", description: e.message, variant: "destructive" }),
-  });
+    onError: (e: any) => toast({ title: "Failed", description: e.message, variant: "destructive" }) });
 
   return { superChats, sendSuperChat: sendSuperChat.mutate };
 };

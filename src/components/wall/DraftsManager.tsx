@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useDrafts } from "@/hooks/useDrafts";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { FileText, Trash2, Edit } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -55,9 +53,8 @@ export const DraftsManager = ({ onSelectDraft }: DraftsManagerProps) => {
                       <p className="line-clamp-2 mb-2">{draft.content}</p>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>
-                          {formatDistanceToNow(new Date(draft.created_at), {
-                            addSuffix: true,
-                          })}
+                          { formatDistanceToNow(new Date(draft.created_at), {
+                            addSuffix: true })}
                         </span>
                         {draft.media_urls && draft.media_urls.length > 0 && (
                           <span>{draft.media_urls.length} media</span>

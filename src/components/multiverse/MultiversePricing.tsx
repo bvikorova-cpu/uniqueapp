@@ -12,18 +12,15 @@ interface MultiversePricingProps {
 }
 
 const services = [
-  {
-    id: "universe_creation",
+  { id: "universe_creation",
     title: "Universe Creation",
     description: "Create custom parallel universes with AI",
     price: "€49",
     priceType: "one-time",
     icon: Globe,
     features: ["AI-generated alternate realities", "Custom universe parameters", "Infinite parallel versions", "Reality snapshot system", "Universe analytics"],
-    color: "violet",
-  },
-  {
-    id: "reality_jumping",
+    color: "violet" },
+  { id: "reality_jumping",
     title: "Reality Jumping",
     description: "Jump between alternate realities",
     price: "€59",
@@ -31,20 +28,16 @@ const services = [
     icon: Sparkles,
     features: ["Unlimited reality jumps", "Cross-dimensional navigation", "Life path exploration", "Decision tree mapping", "Probability analysis"],
     color: "red",
-    popular: true,
-  },
-  {
-    id: "timeline_merging",
+    popular: true },
+  { id: "timeline_merging",
     title: "Timeline Merging",
     description: "Merge timelines into optimal reality",
     price: "€79",
     priceType: "one-time",
     icon: Layers,
     features: ["Multi-timeline integration", "Optimized path selection", "Quantum entanglement sync", "Reality harmonization", "Convergence analytics"],
-    color: "blue",
-  },
-  {
-    id: "best_self_selection",
+    color: "blue" },
+  { id: "best_self_selection",
     title: "Best Self Selection",
     description: "AI finds your most successful versions",
     price: "€99",
@@ -52,8 +45,7 @@ const services = [
     icon: Crown,
     features: ["AI success metrics analysis", "Cross-universe comparison", "Peak performance tracking", "Optimal trait identification", "Version recommendation"],
     color: "amber",
-    popular: true,
-  },
+    popular: true },
 ];
 
 const MultiversePricing = ({ onBack }: MultiversePricingProps) => {

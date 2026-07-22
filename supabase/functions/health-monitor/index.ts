@@ -5,10 +5,8 @@
 //
 // Manual trigger:  POST /functions/v1/health-monitor  body: {"source":"manual"}
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const ALERT_COOLDOWN_MIN = 30;
 
@@ -32,8 +30,7 @@ Deno.serve(async (req) => {
   let payload: any = {};
   try {
     const r = await fetch(`${base}/functions/v1/health-check`, {
-      headers: { apikey: anonKey, Authorization: `Bearer ${anonKey}` },
-    });
+      headers: { apikey: anonKey, Authorization: `Bearer ${anonKey}` } });
     statusCode = r.status;
     payload = await r.json().catch(() => ({}));
     ok = r.ok && payload?.ok === true;
@@ -78,9 +75,7 @@ Deno.serve(async (req) => {
           // Slack-compatible. Discord also accepts `{content}` so we send both.
           body: JSON.stringify({
             text: `🚨 Unique health-check FAILED: ${broken}`,
-            content: `🚨 Unique health-check FAILED: ${broken}`,
-          }),
-        });
+            content: `🚨 Unique health-check FAILED: ${broken}` }) });
         if (logId) await admin.from("health_check_log").update({ alerted: true }).eq("id", logId);
         alerted = true;
       } catch (e) {
@@ -91,6 +86,5 @@ Deno.serve(async (req) => {
 
   return new Response(JSON.stringify({ ok, statusCode, alerted, source, logId }), {
     status: ok ? 200 : 503,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 });

@@ -19,39 +19,32 @@ export const useActivityFeed = (userId?: string) => {
       if (error) throw error;
       return data;
     },
-    enabled: !!userId || true,
-  });
+    enabled: !!userId || true });
 
-  const getActivityIcon = (type: string) => {
-    const icons: Record<string, string> = {
+  const getActivityIcon = (type: string) => { const icons: Record<string, string> = {
       post_created: "✍️",
       post_liked: "❤️",
       post_commented: "💬",
       post_shared: "🔄",
       friend_added: "👥",
       profile_updated: "👤",
-      photo_uploaded: "📷",
-    };
+      photo_uploaded: "📷" };
     return icons[type] || "📌";
   };
 
-  const getActivityMessage = (activity: Activity) => {
-    const messages: Record<string, string> = {
+  const getActivityMessage = (activity: Activity) => { const messages: Record<string, string> = {
       post_created: "created a new post",
       post_liked: "liked a post",
       post_commented: "commented on a post",
       post_shared: "shared a post",
       friend_added: "added a new friend",
       profile_updated: "updated their profile",
-      photo_uploaded: "uploaded a photo",
-    };
+      photo_uploaded: "uploaded a photo" };
     return messages[activity.activity_type] || "had an activity";
   };
 
-  return {
-    activities: activities || [],
+  return { activities: activities || [],
     isLoading,
     getActivityIcon,
-    getActivityMessage,
-  };
+    getActivityMessage };
 };

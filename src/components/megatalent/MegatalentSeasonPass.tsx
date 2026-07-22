@@ -54,10 +54,8 @@ const MegatalentSeasonPass = ({ userId }: { userId: string | null }) => {
     }
     if (claimed.has(tier.lvl)) return;
     setBusy(tier.lvl);
-    const { data, error } = await (supabase as any).rpc("mt_claim_season_tier", {
-      _season_id: SEASON_ID,
-      _tier_level: tier.lvl,
-    });
+    const { data, error } = await (supabase as any).rpc("mt_claim_season_tier", { _season_id: SEASON_ID,
+      _tier_level: tier.lvl });
     setBusy(null);
     if (error) {
       toast.error("Claim failed", { description: error.message });

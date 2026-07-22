@@ -38,8 +38,7 @@ export const useStoryHighlights = (userId?: string) => {
         post_count: h.story_highlight_posts?.[0]?.count || 0
       }));
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const createHighlight = useMutation({
     mutationFn: async ({ title, coverImage }: { title: string; coverImage?: string }) => {
@@ -48,11 +47,9 @@ export const useStoryHighlights = (userId?: string) => {
 
       const { data, error } = await supabase
         .from("story_highlights")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           title,
-          cover_image: coverImage,
-        })
+          cover_image: coverImage })
         .select()
         .single();
 
@@ -65,8 +62,7 @@ export const useStoryHighlights = (userId?: string) => {
     },
     onError: () => {
       toast({ title: "Failed to create highlight", variant: "destructive" });
-    },
-  });
+    } });
 
   const addPostToHighlight = useMutation({
     mutationFn: async ({ highlightId, postId }: { highlightId: string; postId: string }) => {
@@ -82,8 +78,7 @@ export const useStoryHighlights = (userId?: string) => {
     },
     onError: () => {
       toast({ title: "Failed to add post", variant: "destructive" });
-    },
-  });
+    } });
 
   const deleteHighlight = useMutation({
     mutationFn: async (highlightId: string) => {
@@ -97,14 +92,11 @@ export const useStoryHighlights = (userId?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["story-highlights"] });
       toast({ title: "Highlight deleted" });
-    },
-  });
+    } });
 
-  return {
-    highlights,
+  return { highlights,
     isLoading,
     createHighlight: createHighlight.mutate,
     addPostToHighlight: addPostToHighlight.mutate,
-    deleteHighlight: deleteHighlight.mutate,
-  };
+    deleteHighlight: deleteHighlight.mutate };
 };

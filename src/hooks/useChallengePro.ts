@@ -48,8 +48,7 @@ export function useChallengePro() {
     setCheckingOut(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: target === "top" ? "challenge_top" : "challenge_pro" },
-      });
+        body: { product: target === "top" ? "challenge_top" : "challenge_pro" } });
       if (error) throw error;
       const url = (data as any)?.url;
       if (url) window.location.href = url;
@@ -68,8 +67,7 @@ export function useChallengePro() {
     }
   }, [user?.id, syncFromStripe]);
 
-  return {
-    tier,
+  return { tier,
     isPro: tier === "pro" || tier === "top",
     isTop: tier === "top",
     activeUntil,
@@ -77,8 +75,7 @@ export function useChallengePro() {
     subscribe,
     checkingOut,
     refresh,
-    syncFromStripe,
-  };
+    syncFromStripe };
 }
 
 /**
@@ -111,13 +108,11 @@ export function useChallengeProSet(userIds: string[]) {
   }, [userIds.join(",")]);
 
   // Back-compat: existing callers use `.has(id)` — return a Set-like proxy
-  const proSet = {
-    has: (id: string) => tierMap.has(id),
+  const proSet = { has: (id: string) => tierMap.has(id),
     get: (id: string) => tierMap.get(id),
     tierOf: (id: string): "pro" | "top" | null => tierMap.get(id) ?? null,
     size: tierMap.size,
-    map: tierMap,
-  };
+    map: tierMap };
   return proSet as unknown as Set<string> & {
     tierOf: (id: string) => "pro" | "top" | null;
     map: Map<string, "pro" | "top">;

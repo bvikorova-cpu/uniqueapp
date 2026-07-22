@@ -116,8 +116,7 @@ const GlamourWorld = () => {
     "poki-fashion": <GlamourPokiGame onBack={back} slug="fashion-battle-dress-up" />,
     "poki-makeup": <GlamourPokiGame onBack={back} slug="makeup-salon" />,
     "poki-cooking": <GlamourPokiGame onBack={back} slug="cooking-fever" />,
-    "poki-princess": <GlamourPokiGame onBack={back} slug="princess-maker" />,
-  };
+    "poki-princess": <GlamourPokiGame onBack={back} slug="princess-maker" /> };
 
   if (activeView !== "hub" && viewMap[activeView]) {
     return (

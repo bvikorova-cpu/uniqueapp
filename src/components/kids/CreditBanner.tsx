@@ -15,13 +15,11 @@ interface CreditBannerProps {
  * Generic credit balance / out-of-credits banner used across Kids modules.
  * Replaces legacy subscription banners in the paid-only credit model.
  */
-export const CreditBanner = ({
-  label,
+export const CreditBanner = ({ label,
   creditsRemaining,
   costPerUse,
   onBuyCredits,
-  unitName = "use",
-}: CreditBannerProps) => {
+  unitName = "use" }: CreditBannerProps) => {
   const canUse = creditsRemaining >= costPerUse;
   const usesLeft = Math.floor(creditsRemaining / costPerUse);
 

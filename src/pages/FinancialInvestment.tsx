@@ -15,8 +15,7 @@ const FinancialInvestment = () => {
   const [enrolling, setEnrolling] = useState<string | null>(null);
   const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+  useEffect(() => { const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
@@ -24,8 +23,7 @@ const FinancialInvestment = () => {
         if (success) {
           toast({
             title: "Enrollment Successful! 🎉",
-            description: "You now have access to your investment education.",
-          });
+            description: "You now have access to your investment education." });
           window.history.replaceState({}, '', '/financial-investment');
         }
       });
@@ -101,12 +99,10 @@ const FinancialInvestment = () => {
       if (sessionUrl) {
         { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; } }
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Enrollment Failed",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setEnrolling(null);
     }
   };
@@ -215,7 +211,7 @@ const FinancialInvestment = () => {
                   </Button>
                 </div>
                 <CourseAcademicActions
-                  meta={{
+                  meta={ {
                     module_key: "financial-investment",
                     module_label: "Financial Investment",
                     course_slug: education.id,
@@ -224,8 +220,7 @@ const FinancialInvestment = () => {
                     level: education.level,
                     duration: education.duration,
                     price: education.price,
-                    skills: education.skills,
-                  }}
+                    skills: education.skills }}
                   unlocked={isPurchased(education.id, "investment-education")}
                 />
               </div>

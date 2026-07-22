@@ -37,8 +37,7 @@ export const useBrainDuelStats = (userId?: string) => {
 
       if (error) throw error;
 
-      if (!matches || matches.length === 0) {
-        return {
+      if (!matches || matches.length === 0) { return {
           totalGames: 0,
           wins: 0,
           losses: 0,
@@ -46,8 +45,7 @@ export const useBrainDuelStats = (userId?: string) => {
           totalPoints: 0,
           averageScore: 0,
           favoriteCategory: null,
-          recentMatches: [],
-        };
+          recentMatches: [] };
       }
 
       // Calculate statistics
@@ -73,8 +71,7 @@ export const useBrainDuelStats = (userId?: string) => {
         : null;
 
       // Get recent matches with opponent names
-      const recentMatches = matches.slice(0, 10).map((match) => {
-        const isPlayer1 = match.player1_id === userId;
+      const recentMatches = matches.slice(0, 10).map((match) => { const isPlayer1 = match.player1_id === userId;
         return {
           id: match.id,
           category: match.category,
@@ -82,21 +79,17 @@ export const useBrainDuelStats = (userId?: string) => {
           player2_score: match.player2_score,
           winner_id: match.winner_id,
           created_at: match.created_at,
-          isPlayer1,
-        };
+          isPlayer1 };
       });
 
-      return {
-        totalGames: matches.length,
+      return { totalGames: matches.length,
         wins,
         losses,
         winRate,
         totalPoints,
         averageScore,
         favoriteCategory,
-        recentMatches,
-      };
+        recentMatches };
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 };

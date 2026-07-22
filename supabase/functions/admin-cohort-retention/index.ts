@@ -2,11 +2,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const log = (s: string, d?: unknown) =>
   console.log(`[COHORT-RETENTION] ${s}${d ? " " + JSON.stringify(d) : ""}`);
@@ -19,8 +17,7 @@ serve(async (req) => {
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -40,15 +37,12 @@ serve(async (req) => {
     if (userErr || !userData.user) throw new Error("Auth failed");
     const user = userData.user;
 
-    const { data: isAdmin } = await supabase.rpc("has_role", {
-      _user_id: user.id,
-      _role: "admin",
-    });
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: user.id,
+      _role: "admin" });
     if (!isAdmin) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
@@ -69,8 +63,7 @@ serve(async (req) => {
         status: "all",
         limit: 100,
         starting_after,
-        created: { gte: Math.floor(windowStart.getTime() / 1000) },
-      });
+        created: { gte: Math.floor(windowStart.getTime() / 1000) } });
       subs.push(...page.data);
       if (!page.has_more) break;
       starting_after = page.data[page.data.length - 1].id;
@@ -119,15 +112,13 @@ serve(async (req) => {
       }
     }
 
-    const result = Array.from(cohorts.values()).map((c) => {
-      // Compute the cohort's age — only first (age+1) cells are valid
+    const result = Array.from(cohorts.values()).map((c) => { // Compute the cohort's age — only first (age+1) cells are valid
       const [y, m] = c.month.split("-").map(Number);
       const cohortDate = new Date(Date.UTC(y, m - 1, 1));
       const age = monthDiff(cohortDate, new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)));
       const cells = c.retained.slice(0, age + 1).map((r) => ({
         count: r,
-        pct: c.size > 0 ? Math.round((r / c.size) * 1000) / 10 : 0,
-      }));
+        pct: c.size > 0 ? Math.round((r / c.size) * 1000) / 10 : 0 }));
       return { month: c.month, size: c.size, cells };
     });
 
@@ -136,16 +127,13 @@ serve(async (req) => {
       await supabase.from("admin_audit_log").insert({
         admin_id: user.id,
         action: "cohort_retention_viewed",
-        details: { subs_scanned: subs.length, cohorts: COHORT_MONTHS },
-      });
+        details: { subs_scanned: subs.length, cohorts: COHORT_MONTHS } });
     } catch (_e) { /* ignore */ }
 
     return new Response(
-      JSON.stringify({
-        cohorts: result,
+      JSON.stringify({ cohorts: result,
         cohort_months: COHORT_MONTHS,
-        generated_at: new Date().toISOString(),
-      }),
+        generated_at: new Date().toISOString() }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
   } catch (e) {
@@ -153,7 +141,6 @@ serve(async (req) => {
     log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

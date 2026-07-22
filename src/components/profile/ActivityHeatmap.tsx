@@ -31,8 +31,7 @@ export const ActivityHeatmap = ({ userId }: ActivityHeatmapProps) => {
       });
       return counts;
     },
-    enabled: !!userId,
-  });
+    enabled: !!userId });
 
   const today = new Date();
   const cells: { date: string; count: number }[] = [];

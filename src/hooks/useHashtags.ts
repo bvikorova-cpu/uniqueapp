@@ -19,8 +19,7 @@ export const useHashtags = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const searchHashtags = async (query: string) => {
     const { data, error } = await supabase
@@ -61,22 +60,18 @@ export const useHashtags = () => {
         hashtag = newHashtag;
       }
 
-      if (hashtag) {
-        // Link hashtag to post
+      if (hashtag) { // Link hashtag to post
         await supabase
           .from("post_hashtags")
           .insert({
             post_id: postId,
-            hashtag_id: hashtag.id,
-          });
+            hashtag_id: hashtag.id });
       }
     }
   };
 
-  return {
-    trending: trending || [],
+  return { trending: trending || [],
     searchHashtags,
     extractHashtags,
-    createHashtagsForPost,
-  };
+    createHashtagsForPost };
 };

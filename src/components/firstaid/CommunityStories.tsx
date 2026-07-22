@@ -44,16 +44,14 @@ export const CommunityStories = ({ onBack }: Props) => {
         .order("created_at", { ascending: false })
         .limit(50);
 
-      if (data) {
-        setStories(data.map(d => ({
+      if (data) { setStories(data.map(d => ({
           id: d.id,
           title: (d.metadata as any)?.title || "Untitled",
           content: (d.metadata as any)?.content || "",
           category: (d.metadata as any)?.category || "Other",
           likes: (d.metadata as any)?.likes || 0,
           created_at: d.created_at,
-          user_id: d.user_id,
-        })));
+          user_id: d.user_id })));
       }
     } catch (e) {
       console.error(e);
@@ -72,8 +70,7 @@ export const CommunityStories = ({ onBack }: Props) => {
       await supabase.from("activity_feed").insert({
         user_id: user.id,
         activity_type: "firstaid_story",
-        metadata: { title, content, category, likes: 0 },
-      });
+        metadata: { title, content, category, likes: 0 } });
 
       toast({ title: "Story Shared!", description: "Thank you for sharing your experience." });
       setShowForm(false);

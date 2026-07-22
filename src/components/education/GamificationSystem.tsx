@@ -57,12 +57,10 @@ const getRankBg = (rank: number) => {
   return "hover:bg-muted/50";
 };
 
-export const GamificationSystem = ({
-  currentXp = 0,
+export const GamificationSystem = ({ currentXp = 0,
   currentLevel = 1,
   streak = 0,
-  leaderboard = [],
-}: GamificationSystemProps) => {
+  leaderboard = [] }: GamificationSystemProps) => {
   const [activeTab, setActiveTab] = useState("leaderboard");
   const currentLevelXp = currentXp % 500;
   const progressPercent = (currentLevelXp / 500) * 100;

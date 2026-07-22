@@ -23,8 +23,7 @@ export const SocialCalendarView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("video-ad-tools", {
-        body: { action: "social_calendar", product, industry, budget, platforms },
-      });
+        body: { action: "social_calendar", product, industry, budget, platforms } });
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setResult(data.result);

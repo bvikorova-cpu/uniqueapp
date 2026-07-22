@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { 
-  Home, 
+import { Home, 
   MessageCircle,
   Users2,
   Users,
@@ -16,15 +15,12 @@ import {
   ShoppingBag,
   Heart,
   Sparkles,
-  EyeOff,
-} from "lucide-react";
+  EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 
 interface WallTopNavProps {

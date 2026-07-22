@@ -29,8 +29,7 @@ const STATUS_META: Record<
   past_due: { label: "Needs re-check", icon: AlertTriangle, className: "bg-amber-500/15 text-amber-500 border-amber-500/30", tone: "warn" },
   pending: { label: "Needs re-check", icon: Clock, className: "bg-amber-500/15 text-amber-500 border-amber-500/30", tone: "warn" },
   canceled: { label: "Canceled", icon: XCircle, className: "bg-rose-500/15 text-rose-500 border-rose-500/30", tone: "bad" },
-  expired: { label: "Expired", icon: XCircle, className: "bg-rose-500/15 text-rose-500 border-rose-500/30", tone: "bad" },
-};
+  expired: { label: "Expired", icon: XCircle, className: "bg-rose-500/15 text-rose-500 border-rose-500/30", tone: "bad" } };
 
 export const FanClubMembershipsCard = () => {
   const [rows, setRows] = useState<MembershipRow[]>([]);
@@ -72,8 +71,7 @@ export const FanClubMembershipsCard = () => {
     setVerifying(fanClubId ?? "all");
     try {
       const { data, error } = await supabase.functions.invoke("fanclub-verify", {
-        body: fanClubId ? { fan_club_id: fanClubId } : {},
-      });
+        body: fanClubId ? { fan_club_id: fanClubId } : {} });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       setLastVerifiedAt(new Date());
@@ -98,8 +96,7 @@ export const FanClubMembershipsCard = () => {
             duration: 10000,
             action: notice.showPortal
               ? { label: "Open Portal", onClick: openBillingPortal }
-              : undefined,
-          });
+              : undefined });
         }
       } else {
         const bad = memberships.filter((m) => !m.active);
@@ -109,8 +106,7 @@ export const FanClubMembershipsCard = () => {
           toast.warning(`${bad.length} membership${bad.length > 1 ? "s" : ""} need attention`, {
             description: bad.map((m) => `• ${m.status}`).join("\n"),
             duration: 10000,
-            action: { label: "Open Portal", onClick: openBillingPortal },
-          });
+            action: { label: "Open Portal", onClick: openBillingPortal } });
         }
       }
       await load();
@@ -121,8 +117,7 @@ export const FanClubMembershipsCard = () => {
         description: notice.reason,
         action: notice.showPortal
           ? { label: "Open Portal", onClick: openBillingPortal }
-          : undefined,
-      });
+          : undefined });
     } finally {
       setVerifying(null);
     }
@@ -132,8 +127,7 @@ export const FanClubMembershipsCard = () => {
     setOpeningPortal(true);
     try {
       const { data, error } = await supabase.functions.invoke("billing-portal", {
-        body: { return_url: window.location.href },
-      });
+        body: { return_url: window.location.href } });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       if ((data as any)?.url) window.open((data as any).url, "_blank");

@@ -26,8 +26,7 @@ export async function trackChallengeAction(
     for (const c of completed) {
       toast({
         title: `${c.icon} Challenge complete!`,
-        description: `${c.title} — +${c.xp_reward} XP awarded`,
-      });
+        description: `${c.title} — +${c.xp_reward} XP awarded` });
     }
 
     window.dispatchEvent(new Event("streak-updated"));

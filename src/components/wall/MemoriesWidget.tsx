@@ -20,15 +20,12 @@ export function MemoriesWidget() {
     queryKey: ["post-memories", userId],
     enabled: !!userId,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_post_memories", {
-        _user_id: userId!,
-        _limit: 5,
-      });
+      const { data, error } = await supabase.rpc("get_post_memories", { _user_id: userId!,
+        _limit: 5 });
       if (error) throw error;
       return data ?? [];
     },
-    staleTime: 1000 * 60 * 60,
-  });
+    staleTime: 1000 * 60 * 60 });
 
   if (!userId || memories.length === 0) return null;
 

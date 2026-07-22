@@ -29,9 +29,7 @@ export function CreditSubscriptionCard() {
           interval: "month",
           metadata: { credits_per_cycle: String(p.credits) },
           successUrl: `${window.location.origin}/ai-credits-store?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-          cancelUrl: `${window.location.origin}/ai-credits-store?payment=canceled`,
-        },
-      });
+          cancelUrl: `${window.location.origin}/ai-credits-store?payment=canceled` } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank", "noopener,noreferrer");
     } catch (e: any) {

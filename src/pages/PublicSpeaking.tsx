@@ -14,8 +14,7 @@ const PublicSpeaking = () => {
   const [enrolling, setEnrolling] = useState<string | null>(null);
   const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+  useEffect(() => { const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
@@ -23,8 +22,7 @@ const PublicSpeaking = () => {
         if (success) {
           toast({
             title: "Enrollment Successful! 🎉",
-            description: "You now have access to your speaking academy.",
-          });
+            description: "You now have access to your speaking academy." });
           window.history.replaceState({}, '', '/public-speaking');
         }
       });
@@ -100,12 +98,10 @@ const PublicSpeaking = () => {
       if (sessionUrl) {
         { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; } }
       }
-    } catch (error) {
-      toast({
+    } catch (error) { toast({
         title: "Enrollment Failed",
         description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       setEnrolling(null);
     }
   };
@@ -203,7 +199,7 @@ const PublicSpeaking = () => {
                   </Button>
                 </div>
                 <CourseAcademicActions
-                  meta={{
+                  meta={ {
                     module_key: "public-speaking",
                     module_label: "Public Speaking",
                     course_slug: academy.id,
@@ -212,8 +208,7 @@ const PublicSpeaking = () => {
                     level: academy.level,
                     duration: academy.duration,
                     price: academy.price,
-                    skills: academy.skills,
-                  }}
+                    skills: academy.skills }}
                   unlocked={isPurchased(academy.id, "speaking-academy")}
                 />
               </div>

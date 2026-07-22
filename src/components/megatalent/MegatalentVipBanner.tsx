@@ -13,13 +13,11 @@ export const MegatalentVipBanner = () => {
   const [params, setParams] = useSearchParams();
   const { toast } = useToast();
 
-  useEffect(() => {
-    const vip = params.get("vip");
+  useEffect(() => { const vip = params.get("vip");
     if (vip === "success") {
       toast({
         title: "👑 VIP Pass activated!",
-        description: "Enjoy your exclusive perks.",
-      });
+        description: "Enjoy your exclusive perks." });
       refresh();
       params.delete("vip");
       params.delete("session_id");

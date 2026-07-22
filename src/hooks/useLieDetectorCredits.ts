@@ -22,11 +22,9 @@ export const useLieDetectorCredits = () => {
       if (!data) {
         const { data: newData, error: insertError } = await supabase
           .from("lie_detector_credits")
-          .insert({
-            user_id: user.id,
+          .insert({ user_id: user.id,
             credits_remaining: 0,
-            total_credits_purchased: 0,
-          })
+            total_credits_purchased: 0 })
           .select()
           .single();
 
@@ -35,8 +33,7 @@ export const useLieDetectorCredits = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   const analyzeMessage = useMutation({
     mutationFn: async (message: string) => {
@@ -60,8 +57,7 @@ export const useLieDetectorCredits = () => {
       } else {
         toast.error("Error analyzing message: " + error.message);
       }
-    },
-  });
+    } });
 
   const analyzeThread = useMutation({
     mutationFn: async (messages: Array<{ text: string }>) => {
@@ -83,8 +79,7 @@ export const useLieDetectorCredits = () => {
       } else {
         toast.error("Error analyzing thread: " + error.message);
       }
-    },
-  });
+    } });
 
   const analyzeProfile = useMutation({
     mutationFn: async ({ messages, context }: { messages: Array<{ text: string }>; context?: string }) => {
@@ -106,8 +101,7 @@ export const useLieDetectorCredits = () => {
       } else {
         toast.error("Error creating profile: " + error.message);
       }
-    },
-  });
+    } });
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {
     try {
@@ -128,8 +122,7 @@ export const useLieDetectorCredits = () => {
     }
   };
 
-  return {
-    credits,
+  return { credits,
     isLoading,
     analyzeMessage: analyzeMessage.mutate,
     isAnalyzingMessage: analyzeMessage.isPending,
@@ -137,6 +130,5 @@ export const useLieDetectorCredits = () => {
     isAnalyzingThread: analyzeThread.isPending,
     analyzeProfile: analyzeProfile.mutate,
     isAnalyzingProfile: analyzeProfile.isPending,
-    purchaseCredits,
-  };
+    purchaseCredits };
 };

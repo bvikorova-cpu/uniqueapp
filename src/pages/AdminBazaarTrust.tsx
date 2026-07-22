@@ -57,11 +57,9 @@ const AdminBazaarTrust = () => {
     setBusyId(id);
     const { error } = await supabase
       .from("bazaar_seller_verifications" as any)
-      .update({
-        status,
+      .update({ status,
         admin_note: noteDraft[id] || null,
-        verified_at: status === "verified" ? new Date().toISOString() : null,
-      })
+        verified_at: status === "verified" ? new Date().toISOString() : null })
       .eq("id", id);
     setBusyId(null);
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }

@@ -1,9 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -58,9 +56,7 @@ Deno.serve(async (req) => {
       await supabase.from("kitchen_battle_votes").delete().eq("id", existing.id);
     }
 
-    const { error: ve } = await supabase.from("kitchen_battle_votes").insert({
-      battle_id: battleId, participant_id: participantId, voter_id: user.id, vote_type: vt,
-    });
+    const { error: ve } = await supabase.from("kitchen_battle_votes").insert({ battle_id: battleId, participant_id: participantId, voter_id: user.id, vote_type: vt });
     if (ve) throw ve;
 
     const field = vt === "like" ? "vote_count" : "dislike_count";
@@ -70,11 +66,9 @@ Deno.serve(async (req) => {
       .eq("id", participantId);
 
     return new Response(JSON.stringify({ success: true, voteType: vt }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200,
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400,
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 });
   }
 });

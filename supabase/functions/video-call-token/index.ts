@@ -47,20 +47,15 @@ Deno.serve(async (req) => {
         { urls: "stun:stun.l.google.com:19302" },
         // TURN via env if provided:
         ...(Deno.env.get("TURN_URL")
-          ? [{
-              urls: Deno.env.get("TURN_URL")!,
+          ? [{ urls: Deno.env.get("TURN_URL")!,
               username: Deno.env.get("TURN_USERNAME") ?? "",
-              credential: Deno.env.get("TURN_CREDENTIAL") ?? "",
-            }]
+              credential: Deno.env.get("TURN_CREDENTIAL") ?? "" }]
           : []),
-      ],
-    };
+      ] };
 
-    const patch: Record<string, unknown> = {
-      appointment_id,
+    const patch: Record<string, unknown> = { appointment_id,
       room_id: roomId,
-      ice_config: iceConfig,
-    };
+      ice_config: iceConfig };
     if (isDoctor) patch.doctor_joined_at = new Date().toISOString();
     else patch.patient_joined_at = new Date().toISOString();
 
@@ -76,6 +71,5 @@ Deno.serve(async (req) => {
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

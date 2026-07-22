@@ -39,11 +39,9 @@ export function CertificateGalleryView({ onBack }: Props) {
       return;
     }
     setPreviewLoading(true);
-    const timeout = window.setTimeout(() => {
-      setPreviewLoading(false);
+    const timeout = window.setTimeout(() => { setPreviewLoading(false);
       toast.message("Preview is loading longer than usual", {
-        description: "If it doesn't appear, try downloading the certificate.",
-      });
+        description: "If it doesn't appear, try downloading the certificate." });
     }, 10000);
     return () => window.clearTimeout(timeout);
   }, [previewCert?.id]);

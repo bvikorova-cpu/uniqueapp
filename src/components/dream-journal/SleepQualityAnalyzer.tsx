@@ -38,8 +38,7 @@ const SleepQualityAnalyzer = ({ onBack }: SleepQualityAnalyzerProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("dream-ai", {
         body: { action: "sleep-analyzer", sleepHours: sleepHours[0], quality, wakeUps: wakeUps[0], notes },
-        headers: { Authorization: `Bearer ${session?.access_token}` },
-      });
+        headers: { Authorization: `Bearer ${session?.access_token}` } });
       if (error) throw error;
       setResult(data.analysis);
       toast.success("Sleep analysis complete!");

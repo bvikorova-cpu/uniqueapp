@@ -41,21 +41,17 @@ import { exportAs } from "@/lib/forgeExport";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const STYLE_REFERENCES: Record<string, string[]> = {
-  song_lyrics: ["Ed Sheeran", "Taylor Swift", "The Beatles", "Bob Dylan", "Adele", "Billie Eilish"],
+const STYLE_REFERENCES: Record<string, string[]> = { song_lyrics: ["Ed Sheeran", "Taylor Swift", "The Beatles", "Bob Dylan", "Adele", "Billie Eilish"],
   screenplay: ["Aaron Sorkin", "Quentin Tarantino", "Nora Ephron", "Christopher Nolan", "Greta Gerwig"],
   theater_play: ["Shakespeare", "Arthur Miller", "Tennessee Williams", "Lin-Manuel Miranda", "August Wilson"],
   novel_chapter: ["Stephen King", "J.K. Rowling", "George R.R. Martin", "Agatha Christie", "Ernest Hemingway"],
   poetry: ["Maya Angelou", "Robert Frost", "Emily Dickinson", "Pablo Neruda", "Rupi Kaur"],
   standup: ["Dave Chappelle", "John Mulaney", "Ali Wong", "Bo Burnham", "Hannah Gadsby"],
   podcast_script: ["Joe Rogan", "Brené Brown", "Tim Ferriss", "Ira Glass", "Conan O'Brien"],
-  ad_copy: ["David Ogilvy", "Apple Style", "Nike Style", "Old Spice Style", "Wendy's Style"],
-};
+  ad_copy: ["David Ogilvy", "Apple Style", "Nike Style", "Old Spice Style", "Wendy's Style"] };
 
-const ICON_MAP: Record<string, any> = {
-  song_lyrics: Music, screenplay: Film, theater_play: Theater, novel_chapter: BookOpen,
-  poetry: Feather, standup: Mic2, podcast_script: Podcast, ad_copy: Megaphone,
-};
+const ICON_MAP: Record<string, any> = { song_lyrics: Music, screenplay: Film, theater_play: Theater, novel_chapter: BookOpen,
+  poetry: Feather, standup: Mic2, podcast_script: Podcast, ad_copy: Megaphone };
 
 // NOTE: `credits` here MUST match the backend CREDIT_COSTS in
 // supabase/functions/generate-creative-content/index.ts. Do not change one without the other.
@@ -111,8 +107,7 @@ export default function CreativeForge() {
       const { data, error } = await supabase.from("creative_forge_projects").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
-    },
-  });
+    } });
 
   useEffect(() => {
     const payment = searchParams.get("payment");
@@ -143,8 +138,7 @@ export default function CreativeForge() {
     setGeneratedContent(null);
     try {
       const { data, error } = await supabase.functions.invoke("generate-creative-content", {
-        body: { category: selectedCategory, title, inputData: { genre, mood, description, characters, setting, targetAudience, length: contentLength }, styleReference: styleReference === "none" ? "" : styleReference },
-      });
+        body: { category: selectedCategory, title, inputData: { genre, mood, description, characters, setting, targetAudience, length: contentLength }, styleReference: styleReference === "none" ? "" : styleReference } });
       if (error) throw error;
       setGeneratedContent(data.content);
       refreshCredits(); refetchProjects();

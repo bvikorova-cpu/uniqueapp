@@ -31,9 +31,7 @@ export const DatePlanCard = ({ matchId, userId }: Props) => {
   const { toast } = useToast();
   const [plans, setPlans] = useState<DatePlan[]>([]);
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState<{ title: string; location: string; scheduled_at: string; mode: "in_person" | "virtual"; notes: string }>({
-    title: "Coffee", location: "", scheduled_at: "", mode: "in_person", notes: "",
-  });
+  const [form, setForm] = useState<{ title: string; location: string; scheduled_at: string; mode: "in_person" | "virtual"; notes: string }>({ title: "Coffee", location: "", scheduled_at: "", mode: "in_person", notes: "" });
   const [saving, setSaving] = useState(false);
 
   const load = async () => {
@@ -56,13 +54,11 @@ export const DatePlanCard = ({ matchId, userId }: Props) => {
       toast({ title: "Title and date required", variant: "destructive" }); return;
     }
     setSaving(true);
-    const { error } = await supabase.from("dating_date_plans").insert({
-      match_id: matchId, proposed_by: userId,
+    const { error } = await supabase.from("dating_date_plans").insert({ match_id: matchId, proposed_by: userId,
       title: form.title.trim(),
       location: form.location.trim() || null,
       scheduled_at: new Date(form.scheduled_at).toISOString(),
-      mode: form.mode, notes: form.notes.trim() || null,
-    });
+      mode: form.mode, notes: form.notes.trim() || null });
     setSaving(false);
     if (error) { toast({ title: "Could not propose", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Date proposed 💜" });

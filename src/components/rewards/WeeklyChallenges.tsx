@@ -58,12 +58,10 @@ export default function WeeklyChallenges() {
       const { data } = await supabase.rpc("get_weekly_challenge_progress" as any);
       const res = data as any;
       if (cancelled || !res?.ok) return;
-      setProgress({
-        posts: res.posts ?? 0,
+      setProgress({ posts: res.posts ?? 0,
         comments: res.comments ?? 0,
         likes: res.likes ?? 0,
-        streak: res.streak ?? 0,
-      });
+        streak: res.streak ?? 0 });
     })();
     return () => { cancelled = true; };
   }, [user?.id]);

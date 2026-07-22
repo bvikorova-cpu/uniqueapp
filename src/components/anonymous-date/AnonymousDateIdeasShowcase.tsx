@@ -4,62 +4,46 @@ import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const IDEAS = [
-  {
-    icon: Mic,
+  { icon: Mic,
     title: "Voice-Only Speed Dates",
     desc: "5-minute timed voice rooms — match purely by voice & vibe before chatting",
     status: "+5 credits",
-    color: "text-rose-500",
-  },
-  {
-    icon: Video,
+    color: "text-rose-500" },
+  { icon: Video,
     title: "Blurred Video Reveal",
     desc: "Gradually unblur each other's video over the 7 days — slow burn intimacy",
     status: "Premium",
-    color: "text-violet-500",
-  },
-  {
-    icon: Brain,
+    color: "text-violet-500" },
+  { icon: Brain,
     title: "AI Personality Twin",
     desc: "AI analyzes your messages and finds users with the most compatible mind",
     status: "+10 credits",
-    color: "text-cyan-500",
-  },
-  {
-    icon: Calendar,
+    color: "text-cyan-500" },
+  { icon: Calendar,
     title: "Virtual Date Nights",
     desc: "Scheduled themed events — movie nights, trivia, cooking together remotely",
     status: "Weekly",
-    color: "text-amber-500",
-  },
-  {
-    icon: Gift,
+    color: "text-amber-500" },
+  { icon: Gift,
     title: "Anonymous Gift Box",
     desc: "Send digital gifts — songs, poems, AI-art — without breaking anonymity",
     status: "+10 credits",
-    color: "text-pink-500",
-  },
-  {
-    icon: Music,
+    color: "text-pink-500" },
+  { icon: Music,
     title: "Shared Playlist Match",
     desc: "Spotify integration — match by music taste, build a playlist together",
     status: "Premium",
-    color: "text-emerald-500",
-  },
-  {
-    icon: MapPin,
+    color: "text-emerald-500" },
+  { icon: MapPin,
     title: "Same-City Mode",
     desc: "Optional toggle to match with people nearby for real-life reveal dates",
     status: "Free toggle",
-    color: "text-blue-500",
-  },
-  {
-    icon: Lock,
+    color: "text-blue-500" },
+  { icon: Lock,
     title: "Compatibility Vault",
     desc: "Both unlock each other's secret answers only after 50+ messages exchanged",
     status: "Subscription",
-    color: "text-purple-500",
-  },
+    color: "text-purple-500" },
 ];
 
 export const AnonymousDateIdeasShowcase = () => {

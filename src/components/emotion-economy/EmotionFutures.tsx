@@ -45,26 +45,22 @@ export function EmotionFutures({ onBack }: Props) {
     setPlacingBet(emotion);
     try {
       const { data, error } = await supabase.functions.invoke("emotion-futures-bet", {
-        body: { emotion_type: emotion.toLowerCase(), direction },
-      });
-      if (error || (data as any)?.error) {
-        const msg = (data as any)?.error || error?.message || "Try again";
+        body: { emotion_type: emotion.toLowerCase(), direction } });
+      if (error || (data as any)?.error) { const msg = (data as any)?.error || error?.message || "Try again";
         const insufficient = /insufficient/i.test(msg);
         toast({
           title: insufficient ? "Insufficient Credits" : "Prediction failed",
           description: insufficient
             ? "Predictions cost 2 credits each. Purchase more credits first."
             : msg,
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
       const resolutionDate = (data as any)?.resolution_date;
       toast({
         title: "Prediction Placed! 📈",
-        description: `You predicted ${emotion} will go ${direction} by ${resolutionDate}. 2 credits deducted.`,
-      });
+        description: `You predicted ${emotion} will go ${direction} by ${resolutionDate}. 2 credits deducted.` });
       fetchBets();
     } finally {
       setPlacingBet(null);

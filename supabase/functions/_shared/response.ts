@@ -1,10 +1,8 @@
 /**
  * Standard CORS headers for edge functions
  */
-export const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+export const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 /**
  * Returns a CORS preflight response
@@ -19,8 +17,7 @@ export function handleCors(): Response {
 export function successResponse(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status,
-  });
+    status });
 }
 
 /**
@@ -52,8 +49,7 @@ export function errorResponse(error: unknown, status = 500): Response {
   }
   return new Response(JSON.stringify({ error: message }), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status: finalStatus,
-  });
+    status: finalStatus });
 }
 
 /**
@@ -87,21 +83,16 @@ export function forbiddenResponse(message = "Forbidden"): Response {
 /**
  * Returns a 429 Rate Limit Exceeded response
  */
-export function rateLimitResponse(retryAfterSeconds = 60): Response {
-  return new Response(
+export function rateLimitResponse(retryAfterSeconds = 60): Response { return new Response(
     JSON.stringify({
       error: "Rate limit exceeded",
       code: "RATE_LIMIT_EXCEEDED",
-      retryAfter: retryAfterSeconds,
-    }),
-    {
-      headers: {
+      retryAfter: retryAfterSeconds }),
+    { headers: {
         ...corsHeaders,
         "Content-Type": "application/json",
-        "Retry-After": String(retryAfterSeconds),
-      },
-      status: 429,
-    }
+        "Retry-After": String(retryAfterSeconds) },
+      status: 429 }
   );
 }
 
@@ -110,17 +101,14 @@ export function rateLimitResponse(retryAfterSeconds = 60): Response {
  */
 export function validationErrorResponse(
   errors: Array<{ field: string; message: string }>
-): Response {
-  return new Response(
+): Response { return new Response(
     JSON.stringify({
       error: "Validation failed",
       code: "VALIDATION_ERROR",
-      details: errors,
-    }),
+      details: errors }),
     {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 400,
-    }
+      status: 400 }
   );
 }
 
@@ -130,16 +118,13 @@ export function validationErrorResponse(
 export function streamResponse(
   body: ReadableStream,
   extraHeaders: Record<string, string> = {}
-): Response {
-  return new Response(body, {
+): Response { return new Response(body, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
       "Connection": "keep-alive",
       ...corsHeaders,
-      ...extraHeaders,
-    },
-  });
+      ...extraHeaders } });
 }
 
 /**

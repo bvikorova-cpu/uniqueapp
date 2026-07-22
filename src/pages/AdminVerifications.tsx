@@ -37,13 +37,11 @@ interface Verification {
   }>;
 }
 
-const DOCUMENT_TYPES = {
-  business_license: "Business License",
+const DOCUMENT_TYPES = { business_license: "Business License",
   tax_certificate: "Tax Certificate",
   company_registration: "Company Registration",
   proof_of_address: "Proof of Address",
-  other: "Other Document",
-};
+  other: "Other Document" };
 
 export default function AdminVerifications() {
   const { toast } = useToast();
@@ -65,19 +63,16 @@ export default function AdminVerifications() {
       
       if (error) throw error;
       return data as Verification[];
-    },
-  });
+    } });
 
   // Review verification mutation
-  const reviewVerification = useMutation({
-    mutationFn: async () => {
+  const reviewVerification = useMutation({ mutationFn: async () => {
       if (!selectedVerification) return;
 
       const updateData: any = {
         reviewed_by: (await supabase.auth.getUser()).data.user?.id,
         reviewed_at: new Date().toISOString(),
-        admin_notes: adminNotes || null,
-      };
+        admin_notes: adminNotes || null };
 
       if (reviewAction === 'approve') {
         updateData.verification_status = 'approved';
@@ -103,21 +98,17 @@ export default function AdminVerifications() {
       queryClient.invalidateQueries({ queryKey: ['admin-verifications'] });
       toast({
         title: "Review Completed",
-        description: `Verification ${reviewAction === 'approve' ? 'approved' : reviewAction === 'reject' ? 'rejected' : 'marked for resubmission'}`,
-      });
+        description: `Verification ${reviewAction === 'approve' ? 'approved' : reviewAction === 'reject' ? 'rejected' : 'marked for resubmission'}` });
       setReviewDialogOpen(false);
       setSelectedVerification(null);
       setRejectionReason("");
       setAdminNotes("");
     },
-    onError: (error: Error) => {
-      toast({
+    onError: (error: Error) => { toast({
         title: "Review Failed",
         description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+        variant: "destructive" });
+    } });
 
   const openReviewDialog = (verification: Verification, action: 'approve' | 'reject' | 'resubmit') => {
     setSelectedVerification(verification);

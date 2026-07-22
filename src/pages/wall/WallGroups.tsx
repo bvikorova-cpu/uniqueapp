@@ -35,8 +35,7 @@ export default function WallGroups() {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: myGroups = [], refetch: refetchGroups } = useQuery({
     queryKey: ["my-groups", user?.id],
@@ -54,8 +53,7 @@ export default function WallGroups() {
         .in("id", groupIds);
       return groups || [];
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
   const { data: allGroups = [], refetch: refetchAllGroups } = useQuery({
     queryKey: ["all-groups", debouncedSearch],
@@ -69,8 +67,7 @@ export default function WallGroups() {
       }
       const { data } = await query.limit(20);
       return data || [];
-    },
-  });
+    } });
 
   const createGroup = async () => {
     if (!user || !newGroupName.trim() || isSubmitting) return;

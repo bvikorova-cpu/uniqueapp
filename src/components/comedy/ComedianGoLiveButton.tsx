@@ -14,16 +14,14 @@ interface ComedianGoLiveButtonProps {
   comedianId: string;
 }
 
-export function ComedianGoLiveButton({ comedianId }: ComedianGoLiveButtonProps) {
-  const navigate = useNavigate();
+export function ComedianGoLiveButton({ comedianId }: ComedianGoLiveButtonProps) { const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showData, setShowData] = useState({
     title: "",
     description: "",
     ticketPrice: "20",
-    duration: "60",
-  });
+    duration: "60" });
 
   const startShow = async () => {
     if (!showData.title.trim()) {
@@ -38,16 +36,14 @@ export function ComedianGoLiveButton({ comedianId }: ComedianGoLiveButtonProps) 
 
       const { data, error } = await supabase
         .from("comedy_shows")
-        .insert({
-          comedian_id: comedianId,
+        .insert({ comedian_id: comedianId,
           title: showData.title,
           description: showData.description,
           ticket_price_coins: parseInt(showData.ticketPrice),
           duration_minutes: parseInt(showData.duration),
           scheduled_at: scheduledAt.toISOString(),
           ends_at: endsAt.toISOString(),
-          status: "live",
-        } as any)
+          status: "live" } as any)
         .select()
         .single();
 

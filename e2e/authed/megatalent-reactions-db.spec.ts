@@ -25,8 +25,7 @@ function authHeaders(token: string) {
   return {
     apikey: SUPABASE_ANON,
     Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
+    "Content-Type": "application/json" };
 }
 
 async function deleteMyVotes(req: APIRequestContext, token: string, userId: string, subId: string) {
@@ -36,11 +35,9 @@ async function deleteMyVotes(req: APIRequestContext, token: string, userId: stri
   );
 }
 
-test.describe("Megatalent — like/dislike persistence", () => {
-  test("clicking Like on a submission writes to talent_votes and UI count increments", async ({
+test.describe("Megatalent — like/dislike persistence", () => { test("clicking Like on a submission writes to talent_votes and UI count increments", async ({
     page,
-    request,
-  }) => {
+    request }) => {
     await page.goto("/megatalent/singing", { waitUntil: "domcontentloaded" });
     // Wait for at least one submission card with a Like button.
     const likeButtons = page.getByRole("button", { name: "Like" });

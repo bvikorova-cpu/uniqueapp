@@ -68,11 +68,9 @@ export function HealthyComments({ submissionId }: { submissionId: string }) {
     const trimmed = body.trim();
     if (trimmed.length < 1) return;
     setPosting(true);
-    const { error } = await (supabase as any).from("healthy_comments").insert({
-      submission_id: submissionId,
+    const { error } = await (supabase as any).from("healthy_comments").insert({ submission_id: submissionId,
       user_id: user.id,
-      body: trimmed.slice(0, MAX),
-    });
+      body: trimmed.slice(0, MAX) });
     setPosting(false);
     if (error) { toast({ title: "Comment failed", description: error.message, variant: "destructive" }); return; }
     setBody("");

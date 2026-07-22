@@ -16,8 +16,7 @@ export function useDmMutes() {
         .select("muted_user_id")
         .eq("user_id", user!.id);
       return ((data ?? []) as { muted_user_id: string }[]).map((r) => r.muted_user_id);
-    },
-  });
+    } });
 
   const isMuted = (otherUserId: string) => mutedIds.includes(otherUserId);
 
@@ -28,8 +27,7 @@ export function useDmMutes() {
         .from("dm_mutes")
         .insert({ user_id: user.id, muted_user_id: otherUserId });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["dm-mutes"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["dm-mutes"] }) });
 
   const unmute = useMutation({
     mutationFn: async (otherUserId: string) => {
@@ -40,14 +38,11 @@ export function useDmMutes() {
         .eq("user_id", user.id)
         .eq("muted_user_id", otherUserId);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["dm-mutes"] }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["dm-mutes"] }) });
 
-  return {
-    mutedIds: new Set(mutedIds),
+  return { mutedIds: new Set(mutedIds),
     isMuted,
     mute: mute.mutate,
     unmute: unmute.mutate,
-    toggle: (id: string) => (isMuted(id) ? unmute.mutate(id) : mute.mutate(id)),
-  };
+    toggle: (id: string) => (isMuted(id) ? unmute.mutate(id) : mute.mutate(id)) };
 }

@@ -38,14 +38,12 @@ export default function MasterChefChefChat() {
     
     const channel = supabase
       .channel("masterchef-chat")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "masterchef_chat_messages" }, (payload) => {
-        const raw = payload.new as Record<string, unknown>;
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "masterchef_chat_messages" }, (payload) => { const raw = payload.new as Record<string, unknown>;
         const msg: ChatMessage = {
           id: raw.id as string,
           user_id: raw.user_id as string,
           message: raw.message as string,
-          created_at: raw.created_at as string,
-        };
+          created_at: raw.created_at as string };
         setMessages(prev => [...prev, msg]);
         setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
       })

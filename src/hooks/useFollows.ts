@@ -26,8 +26,7 @@ export const useFollows = () => {
         .in("id", ids);
       const map = new Map((profs || []).map((p: any) => [p.id, p]));
       return (data || []).map((f: any) => ({ ...f, profiles: map.get(f.following_id) || null }));
-    },
-  });
+    } });
 
   const { data: followers, isLoading: isLoadingFollowers } = useQuery({
     queryKey: ["followers"],
@@ -49,8 +48,7 @@ export const useFollows = () => {
         .in("id", ids);
       const map = new Map((profs || []).map((p: any) => [p.id, p]));
       return (data || []).map((f: any) => ({ ...f, profiles: map.get(f.follower_id) || null }));
-    },
-  });
+    } });
 
   const isFollowing = (userId: string) => {
     return following?.some((f) => f.following_id === userId) || false;
@@ -76,10 +74,8 @@ export const useFollows = () => {
         const ok = await rateLimit("follow.create", 60, 60);
         if (!ok) throw new Error("Too many follow actions. Slow down.");
 
-        const { error } = await supabase.from("follows").insert({
-          follower_id: user.id,
-          following_id: userId,
-        });
+        const { error } = await supabase.from("follows").insert({ follower_id: user.id,
+          following_id: userId });
         if (error) throw error;
         return { action: "followed" };
       }
@@ -88,18 +84,13 @@ export const useFollows = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["following"] });
       queryClient.invalidateQueries({ queryKey: ["followers"] });
-      toast({
-        title: data.action === "followed" ? "Following!" : "Unfollowed",
-      });
-    },
-  });
+      toast({ title: data.action === "followed" ? "Following!" : "Unfollowed" });
+    } });
 
-  return {
-    following: following || [],
+  return { following: following || [],
     followers: followers || [],
     isLoadingFollowing,
     isLoadingFollowers,
     isFollowing,
-    toggleFollow: toggleFollow.mutate,
-  };
+    toggleFollow: toggleFollow.mutate };
 };

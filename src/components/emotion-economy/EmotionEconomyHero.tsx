@@ -18,13 +18,11 @@ export function EmotionEconomyHero() {
 
   useEffect(() => {
     const colors = ["#ec4899", "#8b5cf6", "#06b6d4", "#10b981"];
-    const p = Array.from({ length: 20 }, (_, i) => ({
-      id: i,
+    const p = Array.from({ length: 20 }, (_, i) => ({ id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
       delay: Math.random() * 5,
-      color: colors[i % colors.length],
-    }));
+      color: colors[i % colors.length] }));
     setParticles(p);
   }, []);
 
@@ -74,19 +72,16 @@ export function EmotionEconomyHero() {
             left: `${p.x}%`,
             top: `${p.y}%`,
             backgroundColor: p.color,
-            boxShadow: `0 0 12px ${p.color}`,
-          }}
-          animate={{
+            boxShadow: `0 0 12px ${p.color}` }}
+          animate={ {
             y: [0, -30, 0],
             opacity: [0.3, 0.8, 0.3],
-            scale: [1, 1.5, 1],
-          }}
-          transition={{
+            scale: [1, 1.5, 1] }}
+          transition={ {
             duration: 4,
             delay: p.delay,
             repeat: Infinity,
-            ease: "easeInOut",
-          }}
+            ease: "easeInOut" }}
         />
       ))}
 

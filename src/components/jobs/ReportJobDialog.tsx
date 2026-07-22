@@ -39,12 +39,10 @@ export function ReportJobDialog({ jobId, jobTitle, open, onOpenChange }: Props) 
         toast({ title: "Login required", description: "You must be logged in to report.", variant: "destructive" });
         return;
       }
-      const { error } = await supabase.from("job_reports").insert({
-        job_id: jobId,
+      const { error } = await supabase.from("job_reports").insert({ job_id: jobId,
         reporter_id: user.id,
         reason,
-        details: details.trim().slice(0, 2000) || null,
-      });
+        details: details.trim().slice(0, 2000) || null });
       if (error) {
         if (/duplicate|unique/i.test(error.message)) {
           toast({ title: "Already reported", description: "You already reported this listing." });

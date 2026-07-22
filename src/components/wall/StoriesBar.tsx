@@ -6,10 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useStories } from "@/hooks/useStories";
 import { motion, AnimatePresence } from "framer-motion";
 import { StoryAnalyticsPanel } from "@/components/story/StoryAnalyticsPanel";
@@ -40,8 +38,7 @@ const StoryAdTile = ({ slotIndex }: { slotIndex: number }) => {
       const today = new Date().toISOString().slice(0, 10);
       await supabase.rpc("award_xp", {
         _user_id: uid, _amount: STORY_AD_XP,
-        _source: "story_ad_view", _ref_id: `${today}:story:${slotIndex}`,
-      });
+        _source: "story_ad_view", _ref_id: `${today}:story:${slotIndex}` });
       setClaimed(true);
       toast.success(`+${STORY_AD_XP} XP earned!`);
     } finally { setLoading(false); }
@@ -84,15 +81,13 @@ export const StoriesBar = () => {
 
   const isVideoFile = !!selectedFile?.type?.startsWith("video/");
 
-  const handleCreateStory = async () => {
-    if (!selectedFile) return;
+  const handleCreateStory = async () => { if (!selectedFile) return;
     setUploadPct(0);
     try {
       await createStoryAsync({
         mediaFile: selectedFile,
         caption,
-        onProgress: setUploadPct,
-      });
+        onProgress: setUploadPct });
       setOpen(false);
       setSelectedFile(null);
       setCaption("");
@@ -357,8 +352,7 @@ export const StoriesBar = () => {
               onClick={() => {
                 if (!viewingStory) return;
                 deleteStory(viewingStory, {
-                  onSuccess: () => { setConfirmDelete(false); setViewingStory(null); },
-                });
+                  onSuccess: () => { setConfirmDelete(false); setViewingStory(null); } });
               }}
             >
               {isDeleting ? "Deleting…" : "Delete"}

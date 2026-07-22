@@ -1,9 +1,7 @@
 // Voice-to-text via OpenAI Whisper
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 function b64ToBytes(b64: string): Uint8Array {
   const bin = atob(b64);
@@ -19,8 +17,7 @@ Deno.serve(async (req) => {
     if (!audio) {
       return new Response(JSON.stringify({ error: "audio (base64) required" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
@@ -34,8 +31,7 @@ Deno.serve(async (req) => {
     const r = await fetch("https://api.openai.com/v1/audio/transcriptions", {
       method: "POST",
       headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
-      body: form,
-    });
+      body: form });
 
     if (!r.ok) {
       const txt = await r.text();
@@ -44,12 +40,10 @@ Deno.serve(async (req) => {
     }
     const d = await r.json();
     return new Response(JSON.stringify({ text: d.text ?? "" }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

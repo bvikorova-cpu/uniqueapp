@@ -42,8 +42,7 @@ export const useGPCurrency = () => {
       }
 
       return data;
-    },
-  });
+    } });
 
   return { currency, isLoading };
 };
@@ -65,8 +64,7 @@ export const useUserCars = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const createCar = useMutation({
     mutationFn: async ({ name, team, color, costCoins }: { 
@@ -90,22 +88,18 @@ export const useUserCars = () => {
       }
 
       // Random stats
-      const stats = {
-        engine_stat: Math.floor(Math.random() * 30) + 40,
+      const stats = { engine_stat: Math.floor(Math.random() * 30) + 40,
         aero_stat: Math.floor(Math.random() * 30) + 40,
         tires_stat: Math.floor(Math.random() * 30) + 40,
-        handling_stat: Math.floor(Math.random() * 30) + 40,
-      };
+        handling_stat: Math.floor(Math.random() * 30) + 40 };
 
       const { data, error } = await supabase
         .from("f1_cars")
-        .insert({
-          user_id: user.id,
+        .insert({ user_id: user.id,
           name,
           team,
           color,
-          ...stats,
-        })
+          ...stats })
         .select()
         .single();
 
@@ -126,8 +120,7 @@ export const useUserCars = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 
   return { cars, isLoading, createCar };
 };
@@ -155,8 +148,7 @@ export const useGPRaces = () => {
       if (error) throw error;
       return data;
     },
-    refetchInterval: 5000,
-  });
+    refetchInterval: 5000 });
 
   return { races, isLoading };
 };
@@ -196,12 +188,10 @@ export const useJoinGPRace = () => {
       // Join race
       const { data, error } = await supabase
         .from("f1_race_participants")
-        .insert({
-          race_id: raceId,
+        .insert({ race_id: raceId,
           car_id: carId,
           user_id: user.id,
-          strategy,
-        })
+          strategy })
         .select()
         .single();
 
@@ -222,8 +212,7 @@ export const useJoinGPRace = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };
 
 export const useUpgradeCar = () => {
@@ -266,11 +255,9 @@ export const useUpgradeCar = () => {
 
       await supabase
         .from("f1_cars")
-        .update({
-          [statField]: newStatValue,
+        .update({ [statField]: newStatValue,
           experience: newXP,
-          level: newLevel,
-        } as any)
+          level: newLevel } as any)
         .eq("id", carId);
 
       // Deduct coins
@@ -288,8 +275,7 @@ export const useUpgradeCar = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };
 
 export const usePurchaseCarColor = () => {
@@ -334,6 +320,5 @@ export const usePurchaseCarColor = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message);
-    },
-  });
+    } });
 };

@@ -38,18 +38,14 @@ export const VideoThumbnailGenerator = ({ videoTitle, videoId, category }: Video
         link.click();
         document.body.removeChild(link);
 
-        toast({
-          title: "Image generated",
-          description: "Thumbnail was successfully generated and downloaded.",
-        });
+        toast({ title: "Image generated",
+          description: "Thumbnail was successfully generated and downloaded." });
       }
-    } catch (error) {
-      console.error('Error generating thumbnail:', error);
+    } catch (error) { console.error('Error generating thumbnail:', error);
       toast({
         title: "Error",
         description: "Failed to generate thumbnail.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsGenerating(false);
     }

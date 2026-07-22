@@ -43,12 +43,10 @@ export function AIMoodTherapist({ onBack }: Props) {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (!credits || credits.credits_remaining < 3) {
-      toast({
+    if (!credits || credits.credits_remaining < 3) { toast({
         title: "Insufficient Credits",
         description: "AI Mood Therapist requires 3 credits per session. Purchase more credits first.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -70,8 +68,7 @@ export function AIMoodTherapist({ onBack }: Props) {
     setMessages([
       {
         role: "assistant",
-        content: `Welcome to your AI Mood Therapist session! 🧠✨\n\nI've analyzed your emotional portfolio and I'm ready to help you optimize your emotional investments.\n\n**Your Portfolio Summary:**\n${wallet ? `- Joy: ${wallet.joy_balance} | Love: ${wallet.love_balance} | Motivation: ${wallet.motivation_balance}\n- Peace: ${wallet.peace_balance} | Excitement: ${wallet.excitement_balance}\n- Total Mined: ${wallet.total_mined} | Total Traded: ${wallet.total_traded}` : "No portfolio data yet — start trading to build your emotional assets!"}\n\nHow can I help you today? I can:\n- Analyze your emotional balance\n- Suggest optimal trades\n- Recommend mining strategies\n- Provide emotional investment advice`,
-      },
+        content: `Welcome to your AI Mood Therapist session! 🧠✨\n\nI've analyzed your emotional portfolio and I'm ready to help you optimize your emotional investments.\n\n**Your Portfolio Summary:**\n${wallet ? `- Joy: ${wallet.joy_balance} | Love: ${wallet.love_balance} | Motivation: ${wallet.motivation_balance}\n- Peace: ${wallet.peace_balance} | Excitement: ${wallet.excitement_balance}\n- Total Mined: ${wallet.total_mined} | Total Traded: ${wallet.total_traded}` : "No portfolio data yet — start trading to build your emotional assets!"}\n\nHow can I help you today? I can:\n- Analyze your emotional balance\n- Suggest optimal trades\n- Recommend mining strategies\n- Provide emotional investment advice` },
     ]);
   };
 
@@ -86,9 +83,7 @@ export function AIMoodTherapist({ onBack }: Props) {
     try {
       const { data, error } = await supabase.functions.invoke("ai-mood-therapist", {
         body: {
-          messages: [...messages, { role: "user", content: userMessage }],
-        },
-      });
+          messages: [...messages, { role: "user", content: userMessage }] } });
 
       if (error) throw error;
 

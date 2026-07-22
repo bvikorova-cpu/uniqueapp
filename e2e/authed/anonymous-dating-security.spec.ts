@@ -63,10 +63,8 @@ async function authedRest(
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
-      ...(init.headers ?? {}),
-    },
-    data: init.body !== undefined ? JSON.stringify(init.body) : undefined,
-  });
+      ...(init.headers ?? {}) },
+    data: init.body !== undefined ? JSON.stringify(init.body) : undefined });
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -75,8 +73,7 @@ async function authedRest(
 test.describe("stripe-webhook signature enforcement", () => {
   const WEBHOOK_URL = `${SUPABASE_URL}/functions/v1/stripe-webhook`;
 
-  const fakeEvent = JSON.stringify({
-    id: "evt_e2e_fake",
+  const fakeEvent = JSON.stringify({ id: "evt_e2e_fake",
     object: "event",
     type: "checkout.session.completed",
     data: {
@@ -85,30 +82,22 @@ test.describe("stripe-webhook signature enforcement", () => {
         metadata: {
           type: "anonymous_date_credits",
           user_id: "00000000-0000-0000-0000-000000000000",
-          credits: "999999",
-        },
-      },
-    },
-  });
+          credits: "999999" } } } });
 
   test("rejects request with no stripe-signature header", async ({ request }) => {
     const res = await request.post(WEBHOOK_URL, {
       headers: { "Content-Type": "application/json" },
-      data: fakeEvent,
-    });
+      data: fakeEvent });
     expect(res.status(), await res.text()).toBeGreaterThanOrEqual(400);
     expect(res.status()).toBeLessThan(500);
   });
 
-  test("rejects request with invalid signature", async ({ request }) => {
-    const res = await request.post(WEBHOOK_URL, {
+  test("rejects request with invalid signature", async ({ request }) => { const res = await request.post(WEBHOOK_URL, {
       headers: {
         "Content-Type": "application/json",
         "stripe-signature":
-          "t=1700000000,v1=deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
-      },
-      data: fakeEvent,
-    });
+          "t=1700000000,v1=deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef" },
+      data: fakeEvent });
     expect(res.status(), await res.text()).toBeGreaterThanOrEqual(400);
     expect(res.status()).toBeLessThan(500);
   });
@@ -167,12 +156,9 @@ test.describe("anonymous_dating_matches — reveal-attack guard", () => {
       {
         method: "PATCH",
         headers: { Prefer: "return=representation" },
-        body: {
-          status: "revealed",
+        body: { status: "revealed",
           user1_revealed: true,
-          user2_revealed: true,
-        },
-      },
+          user2_revealed: true } },
     );
 
     // Two acceptable defenses: (a) HTTP 4xx from RLS, or (b) 200 with zero rows
@@ -237,13 +223,10 @@ test.describe("anonymous-date-ai — double-spend atomicity", () => {
         headers: {
           apikey: SUPABASE_ANON_KEY,
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json" },
         data: JSON.stringify({
           feature: "icebreaker",
-          payload: { interests: ["coffee", "hiking"] },
-        }),
-      });
+          payload: { interests: ["coffee", "hiking"] } }) });
 
     const results = await Promise.allSettled(
       Array.from({ length: N }, () => callOne()),
@@ -295,8 +278,6 @@ test.describe("anonymous-date-ai — double-spend atomicity", () => {
       expect(debited).toBe(0);
     }
 
-    console.log("[double-spend]", {
-      startBalance, endBalance, debited, successes, insufficient, other,
-    });
+    console.log("[double-spend]", { startBalance, endBalance, debited, successes, insufficient, other });
   });
 });

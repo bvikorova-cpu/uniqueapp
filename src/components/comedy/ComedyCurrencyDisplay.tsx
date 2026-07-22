@@ -21,12 +21,10 @@ export const ComedyCurrencyDisplay = () => {
       handlePaymentSuccess(sessionId);
       // Clean up URL
       window.history.replaceState({}, "", window.location.pathname);
-    } else if (paymentStatus === "canceled") {
-      toast({
+    } else if (paymentStatus === "canceled") { toast({
         title: "Payment Canceled",
         description: "Your coin purchase was canceled",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, []);
@@ -34,25 +32,21 @@ export const ComedyCurrencyDisplay = () => {
   const handlePaymentSuccess = async (sessionId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke("verify-comedy-payment", {
-        body: { sessionId },
-      });
+        body: { sessionId } });
 
       if (error) throw error;
 
       if (data.success) {
         toast({
           title: "Coins Purchased!",
-          description: `${data.coins} comedy coins added to your account`,
-        });
+          description: `${data.coins} comedy coins added to your account` });
         refetch();
       }
-    } catch (error) {
-      console.error("Error verifying payment:", error);
+    } catch (error) { console.error("Error verifying payment:", error);
       toast({
         title: "Payment Verification Failed",
         description: "Please contact support if coins weren't added",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     }
   };
 
@@ -60,25 +54,20 @@ export const ComedyCurrencyDisplay = () => {
     setIsBuying(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-comedy-payment", {
-        body: { coins },
-      });
+        body: { coins } });
 
       if (error) throw error;
 
       // Open Stripe checkout in new tab
       window.open(data.url, "_blank");
       
-      toast({
-        title: "Opening Checkout",
-        description: "Complete your purchase in the new tab",
-      });
-    } catch (error) {
-      console.error("Error creating payment:", error);
+      toast({ title: "Opening Checkout",
+        description: "Complete your purchase in the new tab" });
+    } catch (error) { console.error("Error creating payment:", error);
       toast({
         title: "Error",
         description: "Failed to start checkout process",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setIsBuying(false);
     }

@@ -28,8 +28,7 @@ export default function FoodScanner() {
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast.success("Food scanned successfully!");
     },
-    onError: (error: any) => toast.error(error.message || "Error scanning food"),
-  });
+    onError: (error: any) => toast.error(error.message || "Error scanning food") });
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

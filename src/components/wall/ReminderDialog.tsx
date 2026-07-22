@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useReminders } from "@/hooks/useReminders";
@@ -46,8 +44,7 @@ export const ReminderDialog = ({ postId }: ReminderDialogProps) => {
       {
         onSuccess: () => {
           setOpen(false);
-        },
-      }
+        } }
     );
   };
 

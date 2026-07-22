@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
@@ -56,11 +54,9 @@ serve(async (req) => {
     logStep("Found Stripe customer", { customerId });
 
     // Find active subscription
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
+    const subscriptions = await stripe.subscriptions.list({ customer: customerId,
       status: "active",
-      limit: 100,
-    });
+      limit: 100 });
 
     if (subscriptions.data.length === 0) {
       throw new Error("No active subscription found");
@@ -71,9 +67,7 @@ serve(async (req) => {
     let subscriptionToCancel = subscriptions.data[0];
     
     // Cancel the subscription at period end (no refund)
-    const canceledSubscription = await stripe.subscriptions.update(subscriptionToCancel.id, {
-      cancel_at_period_end: true,
-    });
+    const canceledSubscription = await stripe.subscriptions.update(subscriptionToCancel.id, { cancel_at_period_end: true });
     logStep("Subscription canceled at period end", { 
       subscriptionId: canceledSubscription.id,
       cancelAt: new Date(canceledSubscription.current_period_end * 1000).toISOString()
@@ -108,14 +102,12 @@ serve(async (req) => {
       cancelAt: new Date(canceledSubscription.current_period_end * 1000).toISOString()
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+      status: 200 });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR in cancel-subscription", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

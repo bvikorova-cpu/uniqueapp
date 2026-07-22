@@ -57,13 +57,11 @@ const IQGoals = () => {
     }
     const { data: stats } = await supabase.from("iq_user_stats").select("best_iq").eq("user_id", session.user.id).maybeSingle();
     const startingIq = stats?.best_iq ?? 0;
-    const { error } = await supabase.from("iq_user_goals").upsert({
-      user_id: session.user.id,
+    const { error } = await supabase.from("iq_user_goals").upsert({ user_id: session.user.id,
       target_iq: t,
       target_date: date || null,
       starting_iq: progress?.starting_iq ?? startingIq,
-      note: note || null,
-    }, { onConflict: "user_id" });
+      note: note || null }, { onConflict: "user_id" });
     if (error) { toast({ title: "Save failed", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Goal saved" });
     setEditing(false);

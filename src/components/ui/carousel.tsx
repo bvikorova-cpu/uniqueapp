@@ -39,12 +39,10 @@ function useCarousel() {
 }
 
 const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & CarouselProps>(
-  ({ orientation = "horizontal", opts, setApi, plugins, className, children, ...props }, ref) => {
-    const [carouselRef, api] = useEmblaCarousel(
+  ({ orientation = "horizontal", opts, setApi, plugins, className, children, ...props }, ref) => { const [carouselRef, api] = useEmblaCarousel(
       {
         ...opts,
-        axis: orientation === "horizontal" ? "x" : "y",
-      },
+        axis: orientation === "horizontal" ? "x" : "y" },
       plugins,
     );
     const [canScrollPrev, setCanScrollPrev] = React.useState(false);
@@ -104,7 +102,7 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
 
     return (
       <CarouselContext.Provider
-        value={{
+        value={ {
           carouselRef,
           api: api,
           opts,
@@ -112,8 +110,7 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
           scrollPrev,
           scrollNext,
           canScrollPrev,
-          canScrollNext,
-        }}
+          canScrollNext }}
       >
         <div
           ref={ref}

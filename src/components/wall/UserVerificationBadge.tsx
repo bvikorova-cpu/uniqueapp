@@ -19,56 +19,43 @@ const tierConfig: Record<VerificationTier, {
   gradient: string;
   glow: string;
   textColor: string;
-}> = {
-  verified: {
+}> = { verified: {
     label: "Verified",
     description: "This account has been verified as authentic",
     icon: CheckCircle2,
     gradient: "from-blue-500 to-cyan-500",
     glow: "shadow-[0_0_10px_rgba(59,130,246,0.4)]",
-    textColor: "text-blue-500",
-  },
-  creator: {
-    label: "Creator",
+    textColor: "text-blue-500" },
+  creator: { label: "Creator",
     description: "Recognized content creator with quality contributions",
     icon: Star,
     gradient: "from-purple-500 to-pink-500",
     glow: "shadow-[0_0_10px_rgba(168,85,247,0.4)]",
-    textColor: "text-purple-500",
-  },
-  vip: {
-    label: "VIP",
+    textColor: "text-purple-500" },
+  vip: { label: "VIP",
     description: "Premium VIP member with exclusive access",
     icon: Zap,
     gradient: "from-amber-400 to-orange-500",
     glow: "shadow-[0_0_10px_rgba(245,158,11,0.4)]",
-    textColor: "text-amber-500",
-  },
-  founder: {
-    label: "Founder",
+    textColor: "text-amber-500" },
+  founder: { label: "Founder",
     description: "Platform Founder & CEO",
     icon: Crown,
     gradient: "from-amber-500 via-yellow-500 to-amber-600",
     glow: "shadow-[0_0_15px_rgba(245,158,11,0.5)]",
-    textColor: "text-amber-500",
-  },
-};
+    textColor: "text-amber-500" } };
 
-export const UserVerificationBadge = ({ tier, className, size = "sm", showLabel = false }: UserVerificationBadgeProps) => {
-  const config = tierConfig[tier];
+export const UserVerificationBadge = ({ tier, className, size = "sm", showLabel = false }: UserVerificationBadgeProps) => { const config = tierConfig[tier];
   const Icon = config.icon;
 
   const sizeClasses = {
     xs: "w-3.5 h-3.5",
     sm: "w-4 h-4",
-    md: "w-5 h-5",
-  };
+    md: "w-5 h-5" };
 
-  const badgeSizes = {
-    xs: "text-[9px] px-1 py-0 h-3.5 gap-0.5",
+  const badgeSizes = { xs: "text-[9px] px-1 py-0 h-3.5 gap-0.5",
     sm: "text-[10px] px-1.5 py-0 h-4 gap-0.5",
-    md: "text-xs px-2 py-0.5 h-5 gap-1",
-  };
+    md: "text-xs px-2 py-0.5 h-5 gap-1" };
 
   return (
     <TooltipProvider>

@@ -3,7 +3,7 @@
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
 -- Bulk monthly top-up: proactively grant +10 credits to ALL users on 1st of each month.
--- Idempotent: only grants if user's month_key differs from current Europe/Bratislava month.
+-- Idempotent: only grants if user's month_key differs from current Europe/City month.
 CREATE OR REPLACE FUNCTION public.grant_monthly_free_credits_all()
 RETURNS TABLE(users_granted integer, users_seeded integer)
 LANGUAGE plpgsql
@@ -23,7 +23,7 @@ BEGIN
   END IF;
 
   v_current_month := to_char(
-    (now() AT TIME ZONE COALESCE(v_settings.timezone, 'Europe/Bratislava')),
+    (now() AT TIME ZONE COALESCE(v_settings.timezone, 'Europe/City')),
     'YYYY-MM'
   );
 
@@ -80,9 +80,9 @@ BEGIN
 END;
 $$;
 
--- Schedule: 02:05 Europe/Bratislava on 1st of each month.
+-- Schedule: 02:05 Europe/City on 1st of each month.
 -- pg_cron runs in UTC, so 00:05 UTC on 1st ≈ 02:05 CEST / 01:05 CET.
--- We run at 00:05 UTC to be safely into the new month in Bratislava TZ.
+-- We run at 00:05 UTC to be safely into the new month in City TZ.
 DO $$
 BEGIN
   PERFORM cron.unschedule('grant-monthly-free-credits');

@@ -49,8 +49,7 @@ export const useNotifications = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // P1 — realtime subscription so unread badge updates without polling.
   useEffect(() => {
@@ -99,8 +98,7 @@ export const useNotifications = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
-    },
-  });
+    } });
 
   const markAllAsRead = useMutation({
     mutationFn: async () => {
@@ -118,8 +116,7 @@ export const useNotifications = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
       toast({ title: "All notifications marked as read" });
-    },
-  });
+    } });
 
   const deleteNotification = useMutation({
     mutationFn: async (notificationId: string) => {
@@ -132,16 +129,13 @@ export const useNotifications = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
-    },
-  });
+    } });
 
-  return {
-    notifications: notifications || [],
+  return { notifications: notifications || [],
     unreadCount,
     isLoading,
     isRinging,
     markAsRead: markAsRead.mutate,
     markAllAsRead: markAllAsRead.mutate,
-    deleteNotification: deleteNotification.mutate,
-  };
+    deleteNotification: deleteNotification.mutate };
 };

@@ -22,8 +22,7 @@ export default function GiftSuccess() {
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke("verify-creator-gift", {
-          body: { id, sessionId },
-        });
+          body: { id, sessionId } });
         if (error) throw error;
         setState(data?.status === "paid" ? "paid" : "pending");
       } catch (e: any) {

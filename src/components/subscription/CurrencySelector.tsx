@@ -1,17 +1,13 @@
 import { Globe, Check } from "lucide-react";
-import {
-  DropdownMenu,
+import { DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import {
-  CURRENCIES,
+import { CURRENCIES,
   formatPrice,
   useCurrency,
-  type Currency,
-} from "@/contexts/CurrencyContext";
+  type Currency } from "@/contexts/CurrencyContext";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export type { Currency };

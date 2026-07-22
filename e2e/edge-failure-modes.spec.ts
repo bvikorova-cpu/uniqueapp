@@ -43,17 +43,14 @@ async function expectErrorSurface(page: any, label: string) {
   ).toBeVisible({ timeout: 15_000 });
 }
 
-test.describe.skip("Crystal hub — edge function failures don't deadlock the UI", () => {
-  test("HTTP 500 from any crystal edge function clears spinner + shows error", async ({
-    page,
-  }) => {
+test.describe.skip("Crystal hub — edge function failures don't deadlock the UI", () => { test("HTTP 500 from any crystal edge function clears spinner + shows error", async ({
+    page }) => {
     // Force every supabase edge call to fail with 500
     await page.route(SUPABASE_FN, (route: Route) =>
       route.fulfill({
         status: 500,
         contentType: "application/json",
-        body: JSON.stringify({ error: "Simulated upstream failure" }),
-      }),
+        body: JSON.stringify({ error: "Simulated upstream failure" }) }),
     );
 
     await page.goto("/crystal-energy-network", { waitUntil: "domcontentloaded" });
@@ -77,9 +74,7 @@ test.describe.skip("Crystal hub — edge function failures don't deadlock the UI
     ).toBeVisible({ timeout: 8_000 });
   });
 
-  test("Stalled (timeout) edge call still allows back-navigation", async ({
-    page,
-  }) => {
+  test("Stalled (timeout) edge call still allows back-navigation", async ({ page }) => {
     // Hang every edge call — never fulfill. The test ensures the UI doesn't
     // block the user: Back-to-Hub button stays clickable and the spinner
     // either disappears (client-side timeout) or at least never blocks UX.
@@ -104,16 +99,13 @@ test.describe.skip("Crystal hub — edge function failures don't deadlock the UI
   });
 });
 
-test.describe("DNA hub — edge function failures don't deadlock the UI", () => {
-  test("HTTP 500 from create-checkout shows error toast + clears spinner", async ({
-    page,
-  }) => {
+test.describe("DNA hub — edge function failures don't deadlock the UI", () => { test("HTTP 500 from create-checkout shows error toast + clears spinner", async ({
+    page }) => {
     await page.route(SUPABASE_FN, (route: Route) =>
       route.fulfill({
         status: 500,
         contentType: "application/json",
-        body: JSON.stringify({ error: "Simulated checkout failure" }),
-      }),
+        body: JSON.stringify({ error: "Simulated checkout failure" }) }),
     );
 
     await page.goto("/dna-memory-network", { waitUntil: "domcontentloaded" });
@@ -144,15 +136,12 @@ test.describe("DNA hub — edge function failures don't deadlock the UI", () => 
     await expect(getStarted).toBeEnabled({ timeout: 10_000 });
   });
 
-  test("HTTP 500 inside a DNA tool view clears spinner + stays navigable", async ({
-    page,
-  }) => {
+  test("HTTP 500 inside a DNA tool view clears spinner + stays navigable", async ({ page }) => {
     await page.route(SUPABASE_FN, (route: Route) =>
       route.fulfill({
         status: 500,
         contentType: "application/json",
-        body: JSON.stringify({ error: "Simulated tool failure" }),
-      }),
+        body: JSON.stringify({ error: "Simulated tool failure" }) }),
     );
 
     await page.goto("/dna-memory-network", { waitUntil: "domcontentloaded" });

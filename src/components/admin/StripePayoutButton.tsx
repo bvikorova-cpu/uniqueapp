@@ -1,21 +1,17 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Zap, Loader2 } from "lucide-react";
-import {
-  useAdminPayoutWithdrawal,
-  type PayoutKind,
-} from "@/hooks/useAdminPayoutWithdrawal";
+import { useAdminPayoutWithdrawal,
+  type PayoutKind } from "@/hooks/useAdminPayoutWithdrawal";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
@@ -34,15 +30,13 @@ interface Props {
  * Connect transfer to the creator's connected account. Confirmation dialog
  * prevents accidental payouts.
  */
-export function StripePayoutButton({
-  kind,
+export function StripePayoutButton({ kind,
   withdrawalId,
   amount,
   onPaid,
   size = "sm",
   variant = "default",
-  label = "Pay via Stripe",
-}: Props) {
+  label = "Pay via Stripe" }: Props) {
   const { run, loading } = useAdminPayoutWithdrawal();
   const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState("");

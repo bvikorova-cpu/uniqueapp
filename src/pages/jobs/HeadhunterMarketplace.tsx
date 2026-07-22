@@ -47,13 +47,11 @@ export default function HeadhunterMarketplace() {
   const saveProfile = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user || !displayName.trim()) return toast.error("Display name required");
-    const payload = {
-      user_id: user.id,
+    const payload = { user_id: user.id,
       display_name: displayName,
       bio,
       specialties: specialties.split(",").map(s => s.trim()).filter(Boolean),
-      fee_percent: feePercent,
-    };
+      fee_percent: feePercent };
     const { error } = await (supabase as any).from("headhunter_profiles").upsert(payload, { onConflict: "user_id" });
     if (error) return toast.error(error.message);
     toast.success("Profile saved");
@@ -65,9 +63,7 @@ export default function HeadhunterMarketplace() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return toast.error("Login required");
     if (user.id === h.user_id) return toast.error("Can't engage yourself");
-    const { error } = await (supabase as any).from("headhunter_engagements").insert({
-      employer_id: user.id, headhunter_id: h.user_id, fee_percent: h.fee_percent,
-    });
+    const { error } = await (supabase as any).from("headhunter_engagements").insert({ employer_id: user.id, headhunter_id: h.user_id, fee_percent: h.fee_percent });
     if (error) return toast.error(error.message);
     toast.success("Request sent to headhunter");
   };

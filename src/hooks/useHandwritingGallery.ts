@@ -5,8 +5,7 @@ import { toast } from "sonner";
 
 const invokeRouter = async (action: string, payload: Record<string, unknown>) => {
   const { data, error } = await supabase.functions.invoke("handwriting-ai", {
-    body: { action, ...payload },
-  });
+    body: { action, ...payload } });
   if (error) throw error;
   if ((data as any)?.error) throw new Error((data as any).error);
   return data;
@@ -35,8 +34,7 @@ export function useGalleryItems(filter: "all" | "famous" | "community" = "all") 
       const { data, error } = await q;
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 }
 
 export function useMyGallerySubmissions() {
@@ -51,8 +49,7 @@ export function useMyGallerySubmissions() {
         .eq("submitter_user_id", user.id)
         .order("created_at", { ascending: false });
       return data ?? [];
-    },
-  });
+    } });
 }
 
 export function useMyGalleryLikes() {
@@ -66,8 +63,7 @@ export function useMyGalleryLikes() {
         .select("item_id")
         .eq("user_id", user.id);
       return new Set((data ?? []).map((r: any) => r.item_id));
-    },
-  });
+    } });
 }
 
 export function useToggleGalleryLike() {
@@ -94,8 +90,7 @@ export function useToggleGalleryLike() {
       qc.invalidateQueries({ queryKey: ["gallery-items"] });
       qc.invalidateQueries({ queryKey: ["my-gallery-likes"] });
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useSubmitGalleryItem() {
@@ -120,8 +115,7 @@ export function useSubmitGalleryItem() {
       const pub = { publicUrl: await getReadableUrl("handwriting-gallery", path) };
       const { data: item, error } = await supabase
         .from("handwriting_gallery_items")
-        .insert({
-          source_type: "user",
+        .insert({ source_type: "user",
           submitter_user_id: user.id,
           figure_name: vars.figureName,
           title: vars.title ?? null,
@@ -129,8 +123,7 @@ export function useSubmitGalleryItem() {
           region: vars.region ?? null,
           story: vars.story ?? null,
           image_url: pub.publicUrl,
-          status: "pending",
-        })
+          status: "pending" })
         .select()
         .single();
       if (error) throw error;
@@ -143,8 +136,7 @@ export function useSubmitGalleryItem() {
       qc.invalidateQueries({ queryKey: ["my-gallery-submissions"] });
       toast.success("Submission reviewed by AI — check 'My submissions'");
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
 }
 
 export function useGalleryTour(itemId: string | null) {
@@ -163,8 +155,7 @@ export function useGalleryTour(itemId: string | null) {
         .eq("item_id", itemId)
         .order("created_at", { ascending: true });
       return data ?? [];
-    },
-  });
+    } });
   const ask = useMutation({
     mutationFn: (vars: { message: string }) =>
       invokeRouter("gallery-tour", { itemId, message: vars.message }),
@@ -172,7 +163,6 @@ export function useGalleryTour(itemId: string | null) {
       qc.invalidateQueries({ queryKey: ["gallery-tour-history", itemId] });
       qc.invalidateQueries({ queryKey: ["handwriting-credits"] });
     },
-    onError: handleErr,
-  });
+    onError: handleErr });
   return { history, ask };
 }

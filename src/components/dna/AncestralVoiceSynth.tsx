@@ -62,8 +62,7 @@ export const AncestralVoiceSynth = () => {
       const textToSpeak = customText.trim() || ancestor.memory_story || "Greetings from your ancestors.";
 
       const { data, error } = await supabase.functions.invoke("text-to-speech", {
-        body: { text: textToSpeak, voice: "alloy" },
-      });
+        body: { text: textToSpeak, voice: "alloy" } });
 
       if (error) throw error;
 

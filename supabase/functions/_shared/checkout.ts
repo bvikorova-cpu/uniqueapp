@@ -76,12 +76,10 @@ export interface FlexibleCheckoutConfig {
 /**
  * Creates a simple checkout handler for a single price
  */
-export function createCheckoutHandler(config: CheckoutConfig) {
-  const log = createLogger(config.functionName);
+export function createCheckoutHandler(config: CheckoutConfig) { const log = createLogger(config.functionName);
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-  };
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
@@ -120,18 +118,14 @@ export function createCheckoutHandler(config: CheckoutConfig) {
       }
       
       // Create price dynamically if not found
-      if (!priceId && config.productName && config.priceAmount) {
-        const product = await stripe.products.create({
+      if (!priceId && config.productName && config.priceAmount) { const product = await stripe.products.create({
           name: config.productName,
-          description: config.productDescription,
-        });
+          description: config.productDescription });
         
-        const priceData: Stripe.PriceCreateParams = {
-          product: product.id,
+        const priceData: Stripe.PriceCreateParams = { product: product.id,
           unit_amount: config.priceAmount,
           currency: config.currency || "eur",
-          lookup_key: config.lookupKey,
-        };
+          lookup_key: config.lookupKey };
         
         if (config.mode === "subscription" && config.recurringInterval) {
           priceData.recurring = { interval: config.recurringInterval };
@@ -151,8 +145,7 @@ export function createCheckoutHandler(config: CheckoutConfig) {
         success_url: `${origin}${config.successPath}`,
         cancel_url: `${origin}${config.cancelPath}`,
         metadata: { user_id: userId, ...config.metadata },
-        allow_promotion_codes: config.allowPromotionCodes,
-      });
+        allow_promotion_codes: config.allowPromotionCodes });
 
       log("Checkout session created", { sessionId: session.id });
       return successResponse({ url: session.url, session_id: session.id });
@@ -166,13 +159,11 @@ export function createCheckoutHandler(config: CheckoutConfig) {
 /**
  * Creates a dynamic checkout handler that accepts tier/type from request body
  */
-export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig) {
-  const log = createLogger(config.functionName);
+export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig) { const log = createLogger(config.functionName);
   const tierKey = config.tierKey || "tier";
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-  };
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
@@ -223,8 +214,7 @@ export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig) {
         mode: config.mode,
         success_url: `${origin}${config.successPath}`,
         cancel_url: `${origin}${config.cancelPath}`,
-        metadata,
-      });
+        metadata });
 
       log("Checkout session created", { sessionId: session.id, tier });
       return successResponse({ url: session.url, session_id: session.id });
@@ -244,12 +234,10 @@ export function createCreditsCheckoutHandler(
   cancelPath: string,
   metadataType: string,
   functionName: string
-) {
-  const log = createLogger(functionName);
+) { const log = createLogger(functionName);
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-  };
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
@@ -291,12 +279,9 @@ export function createCreditsCheckoutHandler(
         mode: "payment",
         success_url: `${origin}${successPath}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}${cancelPath}?payment=canceled`,
-        metadata: {
-          user_id: userId,
+        metadata: { user_id: userId,
           credits: credits.toString(),
-          type: metadataType,
-        },
-      });
+          type: metadataType } });
 
       log("Checkout session created", { sessionId: session.id, credits });
       return successResponse({ url: session.url, session_id: session.id });
@@ -310,13 +295,11 @@ export function createCreditsCheckoutHandler(
 /**
  * Creates a flexible checkout handler that accepts priceId and optional mode from body
  */
-export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig) {
-  const log = createLogger(config.functionName);
+export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig) { const log = createLogger(config.functionName);
   const priceIdKey = config.priceIdFromBody || "priceId";
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-  };
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
@@ -372,8 +355,7 @@ export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig) {
         mode,
         success_url: `${origin}${config.successPath}`,
         cancel_url: `${origin}${config.cancelPath}`,
-        metadata,
-      });
+        metadata });
 
       log("Checkout session created", { sessionId: session.id, mode });
       return successResponse({ url: session.url, session_id: session.id });
@@ -404,13 +386,11 @@ export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig) {
 /**
  * Creates a service checkout handler with dynamic mode based on service type
  */
-export function createServiceCheckoutHandler(config: ServiceCheckoutConfig) {
-  const log = createLogger(config.functionName);
+export function createServiceCheckoutHandler(config: ServiceCheckoutConfig) { const log = createLogger(config.functionName);
   const serviceKey = config.serviceKey || "serviceType";
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-  };
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
@@ -458,8 +438,7 @@ export function createServiceCheckoutHandler(config: ServiceCheckoutConfig) {
         mode,
         success_url: `${origin}${config.successPath}`,
         cancel_url: `${origin}${config.cancelPath}`,
-        metadata: { user_id: userId, service_type: serviceType, ...config.metadata },
-      });
+        metadata: { user_id: userId, service_type: serviceType, ...config.metadata } });
 
       log("Checkout session created", { sessionId: session.id, serviceType, mode });
       return successResponse({ url: session.url, session_id: session.id });
@@ -488,13 +467,11 @@ export interface PackageCheckoutConfig {
 /**
  * Creates a package checkout handler for credits packages
  */
-export function createPackageCheckoutHandler(config: PackageCheckoutConfig) {
-  const log = createLogger(config.functionName);
+export function createPackageCheckoutHandler(config: PackageCheckoutConfig) { const log = createLogger(config.functionName);
   const packageKey = config.packageKey || "packageType";
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-  };
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
@@ -538,13 +515,10 @@ export function createPackageCheckoutHandler(config: PackageCheckoutConfig) {
         mode: "payment",
         success_url: `${origin}${config.successPath}`,
         cancel_url: `${origin}${config.cancelPath}`,
-        metadata: {
-          user_id: userId,
+        metadata: { user_id: userId,
           package_type: packageType,
           credits: selectedPackage.credits.toString(),
-          type: config.metadataType,
-        },
-      });
+          type: config.metadataType } });
 
       log("Checkout session created", { sessionId: session.id, packageType });
       return successResponse({ url: session.url, session_id: session.id });

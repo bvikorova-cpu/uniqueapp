@@ -23,8 +23,7 @@ export function useVoiceLieDetection() {
       qc.invalidateQueries({ queryKey: ["lie-detector-voice-history"] });
       toast.success("Voice analysis complete");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 export function useVoiceHistory(limit = 5) {
@@ -40,8 +39,7 @@ export function useVoiceHistory(limit = 5) {
         .order("created_at", { ascending: false })
         .limit(limit);
       return data || [];
-    },
-  });
+    } });
 }
 
 // ============== SCREENSHOT ==============
@@ -54,8 +52,7 @@ export function useScreenshotForensics() {
       qc.invalidateQueries({ queryKey: ["lie-detector-screenshot-history"] });
       toast.success("Screenshot analyzed");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 // ============== TIMELINE ==============
@@ -68,8 +65,7 @@ export function useConversationTimeline() {
       qc.invalidateQueries({ queryKey: ["lie-detector-timelines"] });
       toast.success("Timeline analyzed");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }
 
 export function useTimelines(limit = 5) {
@@ -85,8 +81,7 @@ export function useTimelines(limit = 5) {
         .order("created_at", { ascending: false })
         .limit(limit);
       return data || [];
-    },
-  });
+    } });
 }
 
 // ============== TRUTH REPORT ==============
@@ -99,6 +94,5 @@ export function useTruthReport() {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       toast.success("Report generated");
     },
-    onError: (e: Error) => toast.error(e.message),
-  });
+    onError: (e: Error) => toast.error(e.message) });
 }

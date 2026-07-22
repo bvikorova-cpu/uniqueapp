@@ -48,21 +48,16 @@ export function useIdleLogout(timeoutMs: number = DEFAULT_TIMEOUT_MS) {
         try {
           // P5: log BEFORE signOut while session still valid
           await logSecurityEvent("idle_logout", {
-            metadata: { idle_ms: idle, timeout_ms: timeoutMs },
-          });
+            metadata: { idle_ms: idle, timeout_ms: timeoutMs } });
           await supabase.auth.signOut();
-          toast({
-            title: "Signed out",
+          toast({ title: "Signed out",
             description: "You were signed out due to inactivity.",
-            variant: "destructive",
-          });
+            variant: "destructive" });
         } catch {}
-      } else if (idle >= timeoutMs - WARN_MS && !warnedRef.current) {
-        warnedRef.current = true;
+      } else if (idle >= timeoutMs - WARN_MS && !warnedRef.current) { warnedRef.current = true;
         toast({
           title: "About to sign out",
-          description: "You will be signed out in 1 minute due to inactivity.",
-        });
+          description: "You will be signed out in 1 minute due to inactivity." });
       }
     }, 15_000);
 

@@ -20,8 +20,7 @@ export const MarketTrendsView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("auction-ai", {
-        body: { action: "market_trends", market_query: input },
-      });
+        body: { action: "market_trends", market_query: input } });
       if (error) throw error;
       setResult(data.result);
     } catch (err: any) { toast.error(err.message || "Analysis failed"); }

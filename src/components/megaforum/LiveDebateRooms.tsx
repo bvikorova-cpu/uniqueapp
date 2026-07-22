@@ -39,8 +39,7 @@ export const LiveDebateRooms = ({ onBack }: LiveDebateRoomsProps) => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const { data: messages = [] } = useQuery({
     queryKey: ["debate-messages", activeRoom],
@@ -55,8 +54,7 @@ export const LiveDebateRooms = ({ onBack }: LiveDebateRoomsProps) => {
       return data;
     },
     enabled: !!activeRoom,
-    refetchInterval: activeRoom ? 3000 : false,
-  });
+    refetchInterval: activeRoom ? 3000 : false });
 
   const { data: myVote } = useQuery({
     queryKey: ["debate-my-vote", activeRoom],
@@ -72,8 +70,7 @@ export const LiveDebateRooms = ({ onBack }: LiveDebateRoomsProps) => {
         .maybeSingle();
       return data;
     },
-    enabled: !!activeRoom,
-  });
+    enabled: !!activeRoom });
 
   const { data: voteCounts } = useQuery({
     queryKey: ["debate-vote-counts", activeRoom],
@@ -86,22 +83,19 @@ export const LiveDebateRooms = ({ onBack }: LiveDebateRoomsProps) => {
       return { a, b };
     },
     enabled: !!activeRoom,
-    refetchInterval: activeRoom ? 5000 : false,
-  });
+    refetchInterval: activeRoom ? 5000 : false });
 
   const createRoom = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
-      const { error } = await supabase.from("forum_debate_rooms").insert({
-        creator_id: user.id,
+      const { error } = await supabase.from("forum_debate_rooms").insert({ creator_id: user.id,
         topic,
         description,
         side_a: sideA,
         side_b: sideB,
         duration_minutes: 30,
-        ends_at: new Date(Date.now() + 30 * 60000).toISOString(),
-      });
+        ends_at: new Date(Date.now() + 30 * 60000).toISOString() });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -110,45 +104,38 @@ export const LiveDebateRooms = ({ onBack }: LiveDebateRoomsProps) => {
       setTopic("");
       setDescription("");
       toast({ title: "Debate room created!" });
-    },
-  });
+    } });
 
   const sendMessage = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
       if (!mySide) throw new Error("Pick a side first");
-      const { error } = await supabase.from("forum_debate_messages").insert({
-        room_id: activeRoom!,
+      const { error } = await supabase.from("forum_debate_messages").insert({ room_id: activeRoom!,
         user_id: user.id,
         content: message,
-        side: mySide,
-      });
+        side: mySide });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["debate-messages"] });
       setMessage("");
-    },
-  });
+    } });
 
   const castVote = useMutation({
     mutationFn: async (side: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
-      const { error } = await supabase.from("forum_debate_votes").insert({
-        room_id: activeRoom!,
+      const { error } = await supabase.from("forum_debate_votes").insert({ room_id: activeRoom!,
         user_id: user.id,
-        side,
-      });
+        side });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["debate-my-vote"] });
       queryClient.invalidateQueries({ queryKey: ["debate-vote-counts"] });
       toast({ title: "Vote cast!" });
-    },
-  });
+    } });
 
   const currentRoom = rooms.find((r: any) => r.id === activeRoom);
   const totalVotes = (voteCounts?.a || 0) + (voteCounts?.b || 0);

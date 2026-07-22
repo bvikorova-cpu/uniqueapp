@@ -56,19 +56,16 @@ export const ImpersonationPanel = () => {
       targetUserId = prof.id;
     }
 
-    const { error } = await supabase.from("admin_impersonation_sessions").insert({
-      admin_id: u.user.id,
+    const { error } = await supabase.from("admin_impersonation_sessions").insert({ admin_id: u.user.id,
       target_user_id: targetUserId,
-      reason: reason.trim(),
-    });
+      reason: reason.trim() });
     // Also write to admin_audit_log
     await supabase.from("admin_audit_log").insert({
       admin_id: u.user.id,
       action: "impersonation_started",
       target_type: "user",
       target_id: targetUserId,
-      details: { reason: reason.trim() },
-    });
+      details: { reason: reason.trim() } });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     setTarget("");

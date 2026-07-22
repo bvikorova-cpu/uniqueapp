@@ -30,9 +30,7 @@ export const BoosterPacks = () => {
       await spendBrandCredits(pack.cost);
       const expires = pack.id.includes("24h") ? new Date(Date.now() + 86400_000).toISOString() :
                        pack.id === "vip_frame" ? new Date(Date.now() + 30 * 86400_000).toISOString() : null;
-      const { error } = await supabase.from("user_brand_boosters").insert({
-        user_id: user.id, booster_type: pack.id, quantity: 1, expires_at: expires, is_equipped: true,
-      });
+      const { error } = await supabase.from("user_brand_boosters").insert({ user_id: user.id, booster_type: pack.id, quantity: 1, expires_at: expires, is_equipped: true });
       if (error) throw error;
       refetch();
       toast.success(`${pack.name} activated!`);

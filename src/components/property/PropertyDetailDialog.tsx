@@ -39,13 +39,11 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
     setContactDialogOpen(true);
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
+  const handleShare = () => { if (navigator.share) {
       navigator.share({
         title: property.title,
         text: property.description,
-        url: window.location.href,
-      });
+        url: window.location.href });
     } else {
       navigator.clipboard.writeText(window.location.href);
       toast.success("Link copied to clipboard");

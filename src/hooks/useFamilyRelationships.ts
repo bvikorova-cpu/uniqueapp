@@ -51,14 +51,11 @@ export function useFamilyRelationships(profileUserId: string | undefined) {
         .in("id", otherIds);
       const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
 
-      return (data ?? []).map((r: any) => ({
-        ...r,
+      return (data ?? []).map((r: any) => ({ ...r,
         profile: map.get(
           r.user_id === profileUserId ? r.related_user_id : r.user_id
-        ),
-      })) as FamilyRelationship[];
-    },
-  });
+        ) })) as FamilyRelationship[];
+    } });
 
   const propose = useMutation({
     mutationFn: async (args: {
@@ -66,21 +63,18 @@ export function useFamilyRelationships(profileUserId: string | undefined) {
       otherUserId: string;
       kind: FamilyRelationKind;
     }) => {
-      const { error } = await supabase.from("family_relationships").insert({
-        user_id: args.currentUserId,
+      const { error } = await supabase.from("family_relationships").insert({ user_id: args.currentUserId,
         related_user_id: args.otherUserId,
         kind: args.kind,
         requested_by: args.currentUserId,
-        status: "pending",
-      });
+        status: "pending" });
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Family request sent");
       qc.invalidateQueries({ queryKey: KEY });
     },
-    onError: (e: any) => toast.error(e.message ?? "Failed"),
-  });
+    onError: (e: any) => toast.error(e.message ?? "Failed") });
 
   const setStatus = useMutation({
     mutationFn: async (args: {
@@ -95,8 +89,7 @@ export function useFamilyRelationships(profileUserId: string | undefined) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: KEY });
-    },
-  });
+    } });
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
@@ -108,8 +101,7 @@ export function useFamilyRelationships(profileUserId: string | undefined) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: KEY });
-    },
-  });
+    } });
 
   return { list, propose, setStatus, remove };
 }

@@ -20,14 +20,12 @@ export const BattleRoyaleMode = () => {
       const { data, error } = await supabase.from("characters").select("*").order("level", { ascending: false });
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const startRoyale = useMutation({
     mutationFn: async (characterIds: string[]) => {
       const { data, error } = await supabase.functions.invoke("battle-royale", {
-        body: { characterIds },
-      });
+        body: { characterIds } });
       if (error) throw error;
       return data;
     },
@@ -37,8 +35,7 @@ export const BattleRoyaleMode = () => {
       queryClient.invalidateQueries({ queryKey: ["characters"] });
       queryClient.invalidateQueries({ queryKey: ["character-credits"] });
     },
-    onError: (error: Error) => toast.error(error.message || "Battle Royale failed"),
-  });
+    onError: (error: Error) => toast.error(error.message || "Battle Royale failed") });
 
   const toggleChar = (id: string) => {
     setSelectedChars((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : prev.length < 8 ? [...prev, id] : prev);

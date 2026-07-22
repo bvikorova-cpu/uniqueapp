@@ -13,17 +13,13 @@ import { test, expect } from "@playwright/test";
  *   3. Clicking a vote button does NOT show the "Megatalent Premium required"
  *      gate toast — proving the gated client logic recognises the active sub.
  */
-test.describe("MegaTalent — paid user unlock", () => {
-  test("feed is reachable, no paywall, voting does not show premium-required toast", async ({
-    page,
-  }) => {
+test.describe("MegaTalent — paid user unlock", () => { test("feed is reachable, no paywall, voting does not show premium-required toast", async ({
+    page }) => {
     await page.goto("/megatalent");
     await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     // Paywall must be GONE.
-    await expect(page.getByText(/Odomkni MegaTalent súťaž/i)).toHaveCount(0, {
-      timeout: 15_000,
-    });
+    await expect(page.getByText(/Odomkni MegaTalent súťaž/i)).toHaveCount(0, { timeout: 15_000 });
 
     // Gated UI must be MOUNTED. Wait up to 15s for the hero / shell to appear —
     // /megatalent has heavy client-side hydration after the subscription check.

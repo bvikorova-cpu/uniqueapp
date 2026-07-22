@@ -24,16 +24,14 @@ const FN_RE = /\/functions\/v1\//;
 async function routeFn(
   page: Page,
   handlers: Array<{ match: (url: string) => boolean; status?: number; body: unknown }>
-) {
-  await page.route(FN_RE, async (route) => {
+) { await page.route(FN_RE, async (route) => {
     const url = route.request().url();
     for (const h of handlers) {
       if (h.match(url)) {
         return route.fulfill({
           status: h.status ?? 200,
           contentType: "application/json",
-          body: JSON.stringify(h.body),
-        });
+          body: JSON.stringify(h.body) });
       }
     }
     return route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
@@ -59,15 +57,13 @@ test("matchmaking — insufficient credits returns 400 cleanly", async ({ page }
     {
       match: (u) => u.includes("brain-duel-matchmaking"),
       status: 400,
-      body: { error: "Insufficient credits", required: 10, current: 0 },
-    },
+      body: { error: "Insufficient credits", required: 10, current: 0 } },
   ]);
   const res = await page.goto("/brain-duel");
   expect(res?.status() ?? 200).toBeLessThan(500);
 });
 
-test("matchmaking success returns match and questions stub fires", async ({ page }) => {
-  let questionsCalled = false;
+test("matchmaking success returns match and questions stub fires", async ({ page }) => { let questionsCalled = false;
   await page.route(FN_RE, async (route) => {
     const url = route.request().url();
     if (url.includes("brain-duel-matchmaking")) {
@@ -83,10 +79,7 @@ test("matchmaking success returns match and questions stub fires", async ({ page
             entry_cost: 10,
             win_reward: 20,
             game_mode: "classic",
-            status: "ready",
-          },
-        }),
-      });
+            status: "ready" } }) });
     }
     if (url.includes("brain-duel-get-questions")) {
       questionsCalled = true;
@@ -101,10 +94,7 @@ test("matchmaking success returns match and questions stub fires", async ({ page
             option_b: "B",
             option_c: "C",
             option_d: "D",
-            difficulty: "easy",
-          })),
-        }),
-      });
+            difficulty: "easy" })) }) });
     }
     return route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
   });
@@ -114,8 +104,7 @@ test("matchmaking success returns match and questions stub fires", async ({ page
   expect(questionsCalled || true).toBeTruthy();
 });
 
-test("submit-answer stub returns correct=true payload shape", async ({ page }) => {
-  await routeFn(page, [
+test("submit-answer stub returns correct=true payload shape", async ({ page }) => { await routeFn(page, [
     {
       match: (u) => u.includes("brain-duel-submit-answer"),
       body: {
@@ -123,9 +112,7 @@ test("submit-answer stub returns correct=true payload shape", async ({ page }) =
         correct_answer: "a",
         points_earned: 10,
         new_score: 10,
-        opponent_score: 0,
-      },
-    },
+        opponent_score: 0 } },
   ]);
   const res = await page.goto("/brain-duel");
   expect(res?.status() ?? 200).toBeLessThan(500);
@@ -140,9 +127,7 @@ test("finish-match stub returns winner reward", async ({ page }) => {
         is_winner: true,
         is_draw: false,
         credits_earned: 20,
-        stats: { total_questions: 5, correct_answers: 5, accuracy: 100 },
-      },
-    },
+        stats: { total_questions: 5, correct_answers: 5, accuracy: 100 } } },
   ]);
   const res = await page.goto("/brain-duel");
   expect(res?.status() ?? 200).toBeLessThan(500);
@@ -176,8 +161,7 @@ test("payment success return URL triggers verify and is cleaned", async ({ page 
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ success: true, added: 50, credits: 150 }),
-      });
+        body: JSON.stringify({ success: true, added: 50, credits: 150 }) });
     }
     return route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
   });

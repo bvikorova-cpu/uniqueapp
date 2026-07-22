@@ -17,25 +17,21 @@ export const useWishlist = () => {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       return (data || []) as any[];
-    },
-  });
+    } });
 
   const add = useMutation({
     mutationFn: async ({ productId, note }: { productId: string; note?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-      const { error } = await supabase.from("product_wishlists").insert({
-        user_id: user.id,
+      const { error } = await supabase.from("product_wishlists").insert({ user_id: user.id,
         product_id: productId,
-        note,
-      } as any);
+        note } as any);
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["wishlist"] });
       toast({ title: "Added to wishlist" });
-    },
-  });
+    } });
 
   const remove = useMutation({
     mutationFn: async (productId: string) => {
@@ -51,8 +47,7 @@ export const useWishlist = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["wishlist"] });
       toast({ title: "Removed from wishlist" });
-    },
-  });
+    } });
 
   const has = (productId: string) => items.some((i: any) => i.product_id === productId);
 

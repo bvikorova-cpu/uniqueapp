@@ -32,11 +32,9 @@ const InteractiveWorkshops = () => {
   const qc = useQueryClient();
   const [joining, setJoining] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [suggestion, setSuggestion] = useState<{ kind: "custom_request" | "topic"; open: boolean; content: string }>({
-    kind: "topic",
+  const [suggestion, setSuggestion] = useState<{ kind: "custom_request" | "topic"; open: boolean; content: string }>({ kind: "topic",
     open: false,
-    content: "",
-  });
+    content: "" });
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -52,8 +50,7 @@ const InteractiveWorkshops = () => {
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return (data ?? []) as unknown as Workshop[];
-    },
-  });
+    } });
 
   const { data: enrollments } = useQuery({
     queryKey: ["interactive-workshop-enrollments"],
@@ -63,8 +60,7 @@ const InteractiveWorkshops = () => {
         .select("workshop_id,user_id");
       if (error) throw error;
       return (data ?? []) as unknown as { workshop_id: string; user_id: string }[];
-    },
-  });
+    } });
 
   const counts = useMemo(() => {
     const c: Record<string, number> = {};

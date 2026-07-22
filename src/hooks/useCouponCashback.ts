@@ -18,8 +18,7 @@ export function useCouponCashback() {
       const url = signed?.signedUrl;
 
       const { data, error } = await supabase.functions.invoke("coupon-receipt-cashback", {
-        body: { receipt_url: url, coupon_id },
-      });
+        body: { receipt_url: url, coupon_id } });
       if (error) throw error;
       if (data?.error === "insufficient_credits") {
         toast.error("Need 5 AI credits for receipt scan.");

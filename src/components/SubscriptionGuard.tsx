@@ -67,8 +67,7 @@ export const SubscriptionGuard = ({
           toast({
             title: "Subscription Required",
             description: `You need an active ${serviceName} subscription to access this feature.`,
-            variant: "destructive",
-          });
+            variant: "destructive" });
         }
       }
     } catch (error) {

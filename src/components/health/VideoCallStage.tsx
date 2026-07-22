@@ -43,8 +43,7 @@ export default function VideoCallStage({ appointmentId }: Props) {
     setError(null);
     try {
       const { data, error: fnErr } = await supabase.functions.invoke("video-call-token", {
-        body: { appointment_id: appointmentId },
-      });
+        body: { appointment_id: appointmentId } });
       if (fnErr || !data?.room_id) throw new Error(fnErr?.message ?? "token_failed");
       setRole(data.role);
 

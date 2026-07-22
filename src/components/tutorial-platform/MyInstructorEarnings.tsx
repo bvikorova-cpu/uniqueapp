@@ -5,14 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
+import { Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from "@/components/ui/dialog";
 import { Euro, Wallet, TrendingUp, ArrowUpRight, Loader2, History, CheckCircle, Clock, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -134,10 +132,8 @@ export const MyInstructorEarnings = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Withdrawal Requested",
-        description: "Your withdrawal request has been submitted for processing",
-      });
+      toast({ title: "Withdrawal Requested",
+        description: "Your withdrawal request has been submitted for processing" });
 
       setDialogOpen(false);
       setWithdrawAmount("");

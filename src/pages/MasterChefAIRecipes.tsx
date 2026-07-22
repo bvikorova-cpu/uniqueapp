@@ -40,8 +40,7 @@ export default function MasterChefAIRecipes() {
       if (!session) { navigate("/auth"); return; }
 
       const { data, error } = await supabase.functions.invoke("masterchef-ai", {
-        body: { action: "ai-recipe", ingredients, cuisine },
-      });
+        body: { action: "ai-recipe", ingredients, cuisine } });
       if (error) throw error;
       setRecipe(data?.recipe || "No recipe generated.");
     } catch (error) {

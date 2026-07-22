@@ -49,10 +49,8 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-        body: JSON.stringify({ messages: next, category, currentText }),
-      });
+          Authorization: `Bearer ${session?.access_token}` },
+        body: JSON.stringify({ messages: next, category, currentText }) });
 
       if (resp.status === 402) {
         const err = await resp.json();

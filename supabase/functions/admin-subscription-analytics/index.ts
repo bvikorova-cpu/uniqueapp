@@ -7,11 +7,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+    "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -28,23 +26,17 @@ serve(async (req) => {
     if (!auth) return json({ error: "Missing auth" }, 401);
     const { data: u } = await supabase.auth.getUser(auth.replace("Bearer ", ""));
     if (!u.user) return json({ error: "Not authenticated" }, 401);
-    const { data: isAdmin } = await supabase.rpc("has_role", {
-      _user_id: u.user.id,
-      _role: "admin",
-    });
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: u.user.id,
+      _role: "admin" });
     if (!isAdmin) return json({ error: "Admin only" }, 403);
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", { apiVersion: "2025-08-27.basil" });
 
     // ─── ACTIVE SUBSCRIPTIONS ────────────────────────────────────────
     const subs: Stripe.Subscription[] = [];
     let cursor: string | undefined;
-    do {
-      const page = await stripe.subscriptions.list({
-        status: "all", limit: 100, starting_after: cursor,
-      });
+    do { const page = await stripe.subscriptions.list({
+        status: "all", limit: 100, starting_after: cursor });
       subs.push(...page.data);
       cursor = page.has_more ? page.data[page.data.length - 1].id : undefined;
     } while (cursor && subs.length < 1000); // safety cap
@@ -98,8 +90,7 @@ serve(async (req) => {
     let invoicesScanned = 0;
     do {
       const page = await stripe.invoices.list({
-        status: "paid", created: { gte: since }, limit: 100, starting_after: invCursor,
-      });
+        status: "paid", created: { gte: since }, limit: 100, starting_after: invCursor });
       for (const inv of page.data) {
         const d = new Date((inv.status_transitions?.paid_at ?? inv.created) * 1000);
         const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
@@ -125,11 +116,9 @@ serve(async (req) => {
       action: "subscription_analytics_viewed",
       target_type: "stripe_subscriptions",
       target_id: u.user.id,
-      details: { active: activeCount, mrr },
-    });
+      details: { active: activeCount, mrr } });
 
-    return json({
-      mrr: Math.round(mrr * 100) / 100,
+    return json({ mrr: Math.round(mrr * 100) / 100,
       arr: Math.round(mrr * 12 * 100) / 100,
       arpu: Math.round(arpu * 100) / 100,
       ltv: Math.round(ltv * 100) / 100,
@@ -142,8 +131,7 @@ serve(async (req) => {
       churned_30d: recentlyCanceled,
       trend,
       invoices_scanned: invoicesScanned,
-      generated_at: new Date().toISOString(),
-    });
+      generated_at: new Date().toISOString() });
   } catch (e) {
     console.error("[admin-subscription-analytics]", e);
     return json({ error: (e as Error).message }, 500);
@@ -153,6 +141,5 @@ serve(async (req) => {
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

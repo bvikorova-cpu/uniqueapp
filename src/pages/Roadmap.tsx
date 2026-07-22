@@ -31,8 +31,7 @@ const ITEMS: RoadmapItem[] = [
 const STATUS_META = {
   shipped: { label: "Shipped", icon: CheckCircle2, color: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
   in_progress: { label: "In progress", icon: Wrench, color: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
-  planned: { label: "Planned", icon: Rocket, color: "bg-primary/15 text-primary border-primary/30" },
-};
+  planned: { label: "Planned", icon: Rocket, color: "bg-primary/15 text-primary border-primary/30" } };
 
 export default function Roadmap() {
   const [votes, setVotes] = useState<Record<string, number>>({});

@@ -69,8 +69,7 @@ const categories = [
 ];
 
 const COOKING_RECIPES: Recipe[] = [
-  {
-    id: "cook-001",
+  { id: "cook-001",
     title: "Grilled Chicken Salad with Citrus Vinaigrette",
     category: "Fitness",
     difficulty: "Easy",
@@ -102,10 +101,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Toss the greens with half the vinaigrette first; coating leaves before adding heavier items keeps the salad light and evenly dressed.",
       "Slice the rested chicken across the grain, arrange it on top, then drizzle the remaining vinaigrette and finish with the last 1g salt to taste.",
     ],
-    tags: ["high-protein", "fresh", "quick"],
-  },
-  {
-    id: "cook-002",
+    tags: ["high-protein", "fresh", "quick"] },
+  { id: "cook-002",
     title: "Hearty Red Lentil Vegetable Soup",
     category: "Soups",
     difficulty: "Easy",
@@ -138,10 +135,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Pour in 1200ml stock and add lentils; bring to a gentle boil, then simmer 18–22 minutes until the lentils break down.",
       "Season with salt and pepper, then partially blend for a velvety body while leaving some texture for a professional finish.",
     ],
-    tags: ["comfort", "high-fiber", "meal-prep"],
-  },
-  {
-    id: "cook-003",
+    tags: ["comfort", "high-fiber", "meal-prep"] },
+  { id: "cook-003",
     title: "Lemon Herb Baked Cod with Asparagus",
     category: "Main Dishes",
     difficulty: "Medium",
@@ -171,10 +166,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Bake 12–15 minutes until the cod flakes easily and asparagus is bright green and tender-crisp.",
       "Finish with lemon juice and parsley, then rest 2 minutes so the juices settle before serving.",
     ],
-    tags: ["lean", "weeknight", "gluten-free"],
-  },
-  {
-    id: "cook-004",
+    tags: ["lean", "weeknight", "gluten-free"] },
+  { id: "cook-004",
     title: "French Spinach and Gruyère Quiche",
     category: "Pastries",
     difficulty: "Hard",
@@ -205,10 +198,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Scatter spinach and 120g Gruyère into the crust, then pour custard slowly to avoid displacing fillings.",
       "Bake 30–35 minutes until the center is just set with a slight wobble; rest 10 minutes to finish setting before slicing.",
     ],
-    tags: ["brunch", "classic", "vegetarian"],
-  },
-  {
-    id: "cook-005",
+    tags: ["brunch", "classic", "vegetarian"] },
+  { id: "cook-005",
     title: "Mango Chia Pudding with Toasted Coconut",
     category: "Desserts",
     difficulty: "Easy",
@@ -236,10 +227,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Layer pudding and mango in glasses, pressing gently to remove large air pockets for a clean presentation.",
       "Finish with 20g toasted coconut flakes right before serving so the topping stays crisp.",
     ],
-    tags: ["no-bake", "make-ahead", "gluten-free"],
-  },
-  {
-    id: "cook-006",
+    tags: ["no-bake", "make-ahead", "gluten-free"] },
+  { id: "cook-006",
     title: "Thai Green Curry with Jasmine Rice",
     category: "Main Dishes",
     difficulty: "Medium",
@@ -272,10 +261,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Add remaining 200ml coconut milk, eggplant, bamboo shoots, fish sauce, and sugar; simmer 10 minutes until vegetables are tender.",
       "Add green beans and kaffir lime leaves, cook 3 more minutes, then finish with Thai basil just before serving over jasmine rice.",
     ],
-    tags: ["spicy", "asian", "comfort"],
-  },
-  {
-    id: "cook-007",
+    tags: ["spicy", "asian", "comfort"] },
+  { id: "cook-007",
     title: "Classic Beef Wellington",
     category: "Main Dishes",
     difficulty: "Hard",
@@ -308,10 +295,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Roll 500g puff pastry to 5mm thickness, unwrap beef roll, place on pastry, fold and seal edges with egg wash, then score decoratively.",
       "Brush with egg wash, chill 15 minutes, then bake at 220°C for 25-30 minutes until pastry is deep golden and internal temp reaches 52°C for medium-rare.",
     ],
-    tags: ["gourmet", "special-occasion", "british"],
-  },
-  {
-    id: "cook-008",
+    tags: ["gourmet", "special-occasion", "british"] },
+  { id: "cook-008",
     title: "Quinoa Buddha Bowl with Tahini Dressing",
     category: "Vegetarian",
     difficulty: "Easy",
@@ -345,10 +330,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Slice 150g avocado just before assembling to prevent browning; fan slices for an elegant presentation.",
       "Arrange quinoa as base, add roasted vegetables, chickpeas, cabbage, and avocado in sections, then drizzle generously with tahini dressing.",
     ],
-    tags: ["plant-based", "meal-prep", "healthy"],
-  },
-  {
-    id: "cook-009",
+    tags: ["plant-based", "meal-prep", "healthy"] },
+  { id: "cook-009",
     title: "Authentic Italian Lasagna Bolognese",
     category: "Pasta",
     difficulty: "Hard",
@@ -385,10 +368,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Spread thin layer of ragù in 23x33cm baking dish, add pasta sheet, then ragù, béchamel, and 25g Parmigiano; repeat 4 layers.",
       "Finish with béchamel and remaining cheese; bake at 180°C for 40 minutes until golden and bubbling, rest 15 minutes before cutting.",
     ],
-    tags: ["comfort", "italian", "make-ahead"],
-  },
-  {
-    id: "cook-010",
+    tags: ["comfort", "italian", "make-ahead"] },
+  { id: "cook-010",
     title: "Eggs Benedict with Hollandaise",
     category: "Appetizers",
     difficulty: "Medium",
@@ -419,10 +400,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Toast English muffins until golden, warm 100g Canadian bacon in dry pan for 60 seconds per side until lightly caramelized.",
       "Assemble: muffin base, bacon slice, poached egg, generous spoon of hollandaise; garnish with 10g minced chives and remaining salt.",
     ],
-    tags: ["brunch", "classic", "indulgent"],
-  },
-  {
-    id: "cook-011",
+    tags: ["brunch", "classic", "indulgent"] },
+  { id: "cook-011",
     title: "Creamy Wild Mushroom Risotto",
     category: "Main Dishes",
     difficulty: "Medium",
@@ -455,10 +434,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Continue adding stock for 18-20 minutes until rice is creamy but still has slight bite (al dente) in center of each grain.",
       "Remove from heat, fold in reserved mushrooms, 30g butter, 80g grated Parmesan, thyme, salt, and pepper; rest 2 minutes before serving.",
     ],
-    tags: ["italian", "comfort", "vegetarian"],
-  },
-  {
-    id: "cook-012",
+    tags: ["italian", "comfort", "vegetarian"] },
+  { id: "cook-012",
     title: "Korean Beef Bulgogi with Pickled Vegetables",
     category: "Main Dishes",
     difficulty: "Medium",
@@ -492,10 +469,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Don't overcrowd pan—overcrowding drops temperature and causes meat to steam rather than caramelize properly.",
       "Plate beef over rice, top with drained pickled vegetables, 30g sliced green onions, and 10g toasted sesame seeds for crunch.",
     ],
-    tags: ["korean", "bbq", "marinated"],
-  },
-  {
-    id: "cook-013",
+    tags: ["korean", "bbq", "marinated"] },
+  { id: "cook-013",
     title: "Mediterranean Grilled Lamb Chops",
     category: "Main Dishes",
     difficulty: "Medium",
@@ -526,10 +501,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Make sauce: whisk 150g yogurt with 10g chopped mint, 4g minced garlic, 15ml lemon juice, and remaining salt.",
       "Plate chops with generous dollop of mint yogurt, extra lemon wedges, and fresh mint leaves for aromatic garnish.",
     ],
-    tags: ["grilled", "mediterranean", "high-protein"],
-  },
-  {
-    id: "cook-014",
+    tags: ["grilled", "mediterranean", "high-protein"] },
+  { id: "cook-014",
     title: "Spicy Shrimp Tacos with Mango Salsa",
     category: "Main Dishes",
     difficulty: "Easy",
@@ -563,10 +536,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Build tacos: tortilla base, 3-4 shrimp per taco, spoonful of mango salsa, smashed avocado, and drizzle of lime crema.",
       "Garnish with remaining cilantro leaves and lime wedges; serve immediately while shrimp are still hot and tortillas warm.",
     ],
-    tags: ["mexican", "seafood", "quick"],
-  },
-  {
-    id: "cook-015",
+    tags: ["mexican", "seafood", "quick"] },
+  { id: "cook-015",
     title: "Classic French Onion Soup",
     category: "Soups",
     difficulty: "Medium",
@@ -599,10 +570,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Toast 120g baguette slices, ladle soup into oven-safe crocks, top each with bread slice and 50g grated Gruyère.",
       "Broil 3-4 minutes until cheese is bubbling and golden brown; serve immediately with warning that bowls are extremely hot.",
     ],
-    tags: ["french", "comfort", "winter"],
-  },
-  {
-    id: "cook-016",
+    tags: ["french", "comfort", "winter"] },
+  { id: "cook-016",
     title: "Japanese Tonkotsu Ramen",
     category: "Soups",
     difficulty: "Hard",
@@ -638,10 +607,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Cook 400g fresh ramen noodles according to package (usually 90 seconds); drain well and portion into warm bowls.",
       "Ladle hot broth over noodles, top with sliced chashu, halved marinated egg, bamboo shoots, nori, and 60g sliced green onions.",
     ],
-    tags: ["japanese", "comfort", "umami"],
-  },
-  {
-    id: "cook-017",
+    tags: ["japanese", "comfort", "umami"] },
+  { id: "cook-017",
     title: "Brazilian Feijoada",
     category: "Main Dishes",
     difficulty: "Hard",
@@ -678,10 +645,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Mash some beans against pot side to thicken the broth; the stew should be creamy but not soupy.",
       "Serve over 300g cooked white rice with 100g farofa, orange slices (tradition aids digestion), and sautéed collard greens on the side.",
     ],
-    tags: ["brazilian", "comfort", "hearty"],
-  },
-  {
-    id: "cook-018",
+    tags: ["brazilian", "comfort", "hearty"] },
+  { id: "cook-018",
     title: "Greek Moussaka",
     category: "Main Dishes",
     difficulty: "Hard",
@@ -720,10 +685,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Remove from heat, stir in 2 egg yolks, 50g grated cheese, 1g nutmeg, 1g salt, and 1g pepper; yolks make the topping extra rich and custardy.",
       "Layer in 23x33cm dish: half the eggplant, all the meat sauce, remaining eggplant, then pour béchamel over top and sprinkle 50g cheese; bake at 180°C for 45 minutes until golden.",
     ],
-    tags: ["greek", "casserole", "comfort"],
-  },
-  {
-    id: "cook-019",
+    tags: ["greek", "casserole", "comfort"] },
+  { id: "cook-019",
     title: "Indian Butter Chicken (Murgh Makhani)",
     category: "Main Dishes",
     difficulty: "Medium",
@@ -762,10 +725,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Cut grilled chicken into bite-sized pieces, add to sauce; simmer gently 10 minutes so chicken absorbs flavors without becoming tough.",
       "Adjust seasoning with remaining salt, finish with 15g chopped cilantro; serve with basmati rice or warm naan bread.",
     ],
-    tags: ["indian", "creamy", "spiced"],
-  },
-  {
-    id: "cook-020",
+    tags: ["indian", "creamy", "spiced"] },
+  { id: "cook-020",
     title: "Spanish Paella Valenciana",
     category: "Main Dishes",
     difficulty: "Hard",
@@ -802,10 +763,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Reduce heat to medium-low, cook without stirring for 18-20 minutes; resisting the urge to stir is essential for proper socarrat formation.",
       "Increase heat for final 2 minutes to develop socarrat (crispy bottom layer), then rest off heat 5 minutes; serve with lemon wedges.",
     ],
-    tags: ["spanish", "saffron", "one-pan"],
-  },
-  {
-    id: "cook-021",
+    tags: ["spanish", "saffron", "one-pan"] },
+  { id: "cook-021",
     title: "Moroccan Lamb Tagine",
     category: "Main Dishes",
     difficulty: "Medium",
@@ -845,10 +804,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Toast 100g almonds in dry pan until golden (about 4 minutes), stirring constantly to prevent burning.",
       "Season tagine with remaining salt and pepper, scatter toasted almonds, 15g cilantro, and 15g mint; serve with couscous or crusty bread.",
     ],
-    tags: ["moroccan", "braised", "sweet-savory"],
-  },
-  {
-    id: "cook-022",
+    tags: ["moroccan", "braised", "sweet-savory"] },
+  { id: "cook-022",
     title: "Vietnamese Pho Bo",
     category: "Soups",
     difficulty: "Hard",
@@ -888,10 +845,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Soak 400g rice noodles in hot water 20 minutes, then blanch in boiling water 10 seconds; divide among bowls while piping hot.",
       "Top noodles with sliced brisket and paper-thin raw sirloin; ladle boiling broth over (it cooks the raw beef). Serve with herbs, sprouts, lime, and sauces.",
     ],
-    tags: ["vietnamese", "broth", "aromatic"],
-  },
-  {
-    id: "cook-023",
+    tags: ["vietnamese", "broth", "aromatic"] },
+  { id: "cook-023",
     title: "Authentic Italian Tiramisu",
     category: "Desserts",
     difficulty: "Medium",
@@ -923,10 +878,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Layer dipped ladyfingers in 20x30cm dish, spread half the cream, repeat with remaining ladyfingers and cream; smooth top evenly.",
       "Cover and refrigerate minimum 6 hours (overnight is ideal); dust generously with 30g cocoa through fine sieve just before serving.",
     ],
-    tags: ["italian", "no-bake", "coffee"],
-  },
-  {
-    id: "cook-024",
+    tags: ["italian", "no-bake", "coffee"] },
+  { id: "cook-024",
     title: "Mexican Tacos Al Pastor",
     category: "Main Dishes",
     difficulty: "Medium",
@@ -963,10 +916,8 @@ const COOKING_RECIPES: Recipe[] = [
       "Chop cooked pork into small pieces (traditional trompo style); combine with diced pineapple for filling.",
       "Warm tortillas on dry griddle, fill with pork and pineapple, top with diced onion, cilantro, and generous squeeze of lime juice.",
     ],
-    tags: ["mexican", "street-food", "spiced"],
-  },
-  {
-    id: "cook-025",
+    tags: ["mexican", "street-food", "spiced"] },
+  { id: "cook-025",
     title: "French Crêpes Suzette",
     category: "Desserts",
     difficulty: "Medium",
@@ -999,8 +950,7 @@ const COOKING_RECIPES: Recipe[] = [
       "Fold each crêpe into quarters, add to sauce, spoon sauce over to coat; arrange overlapping in pan.",
       "Remove pan from heat, add 60ml Grand Marnier and 30ml cognac; carefully ignite with long match, spoon flaming sauce over crêpes until flames subside.",
     ],
-    tags: ["french", "flambé", "elegant"],
-  },
+    tags: ["french", "flambé", "elegant"] },
 ];
 
 type ActiveView = "hub" | "substitution" | "nutrition-calc" | "cuisine-converter" | "plating" | "leftover" | "timer" | "video-gen" | "social-feed" | "dietary" | "challenge" | "inventory";
@@ -1032,8 +982,7 @@ const Cooking = () => {
   const { userRecipes, refetch: refetchUserRecipes } = useUserRecipes();
 
   // Combine hardcoded recipes with user recipes
-  const allRecipes: Recipe[] = useMemo(() => {
-    const userRecipesMapped: Recipe[] = userRecipes.map((ur) => ({
+  const allRecipes: Recipe[] = useMemo(() => { const userRecipesMapped: Recipe[] = userRecipes.map((ur) => ({
       id: ur.id,
       title: ur.title,
       category: ur.category,
@@ -1047,8 +996,7 @@ const Cooking = () => {
       instructions: ur.instructions,
       tags: ur.tags,
       video_url: ur.video_url,
-      isUserRecipe: true,
-    }));
+      isUserRecipe: true }));
     return [...userRecipesMapped, ...COOKING_RECIPES];
   }, [userRecipes]);
 
@@ -1056,48 +1004,36 @@ const Cooking = () => {
   const totalRecipes = recipes.length;
 
   const aiFeatures = [
-    {
-      icon: Sparkles,
+    { icon: Sparkles,
       title: "Recipe Generator",
       description: "AI generates recipes from your ingredients",
       path: "/recipe-generator",
-      color: "from-orange-500 to-red-500",
-    },
-    {
-      icon: Calendar,
+      color: "from-orange-500 to-red-500" },
+    { icon: Calendar,
       title: "Meal Planner",
       description: "Personalized weekly meal plan",
       path: "/meal-planner",
-      color: "from-green-500 to-emerald-500",
-    },
-    {
-      icon: Camera,
+      color: "from-green-500 to-emerald-500" },
+    { icon: Camera,
       title: "Food Scanner",
       description: "Scan food and get nutritional info",
       path: "/food-scanner",
-      color: "from-blue-500 to-cyan-500",
-    },
-    {
-      icon: Store,
+      color: "from-blue-500 to-cyan-500" },
+    { icon: Store,
       title: "Menu Analyzer",
       description: "Analyze restaurant menus",
       path: "/restaurant-analyzer",
-      color: "from-purple-500 to-pink-500",
-    },
-    {
-      icon: MessageCircle,
+      color: "from-purple-500 to-pink-500" },
+    { icon: MessageCircle,
       title: "AI Chef Chat",
       description: "Chat with AI chef",
       path: "/chef-chat",
-      color: "from-yellow-500 to-orange-500",
-    },
-    {
-      icon: Wine,
+      color: "from-yellow-500 to-orange-500" },
+    { icon: Wine,
       title: "Wine Pairing",
       description: "Find perfect wine for your food",
       path: "/wine-pairing",
-      color: "from-red-500 to-rose-500",
-    },
+      color: "from-red-500 to-rose-500" },
   ];
 
   const filteredRecipes = useMemo(() => {

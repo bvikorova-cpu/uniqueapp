@@ -112,8 +112,7 @@ export const HiddenObjects = ({ onComplete, onBack }: HiddenObjectsProps) => {
                   style={{
                     left: `${obj.x}%`,
                     top: `${obj.y}%`,
-                    transform: "translate(-50%, -50%)",
-                  }}
+                    transform: "translate(-50%, -50%)" }}
                 >
                   {obj.emoji}
                 </button>
@@ -127,8 +126,7 @@ export const HiddenObjects = ({ onComplete, onBack }: HiddenObjectsProps) => {
                     style={{
                       left: `${Math.random() * 100}%`,
                       top: `${Math.random() * 100}%`,
-                      fontSize: `${Math.random() * 20 + 10}px`,
-                    }}
+                      fontSize: `${Math.random() * 20 + 10}px` }}
                   />
                 ))}
               </div>

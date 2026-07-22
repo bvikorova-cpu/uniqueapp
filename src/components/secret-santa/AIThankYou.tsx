@@ -56,9 +56,7 @@ export const AIThankYou = () => {
           type: "thank_you",
           style: selectedStyle,
           customPrompt: `Write a thank you message for a gift I received. ${giftInfo} ${customContext ? `Additional context: ${customContext}` : ""}`,
-          giftType: gift ? (gift as any).gift_type : undefined,
-        },
-      });
+          giftType: gift ? (gift as any).gift_type : undefined } });
 
       if (error) throw error;
       setGeneratedMessage(data.message);

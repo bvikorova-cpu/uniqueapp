@@ -17,12 +17,10 @@ type Event = {
   deliverables: any;
 };
 
-const statusColor: Record<string, string> = {
-  planned: "bg-blue-500/20 text-blue-300",
+const statusColor: Record<string, string> = { planned: "bg-blue-500/20 text-blue-300",
   in_progress: "bg-yellow-500/20 text-yellow-300",
   completed: "bg-green-500/20 text-green-300",
-  cancelled: "bg-red-500/20 text-red-300",
-};
+  cancelled: "bg-red-500/20 text-red-300" };
 
 export function EventsPanel({ sponsorId }: Props) {
   const [loading, setLoading] = useState(true);

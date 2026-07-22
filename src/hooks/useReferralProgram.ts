@@ -87,21 +87,17 @@ export const useReferralProgram = () => {
       const paidEarnings = earningsWithProfiles?.filter(e => e.paid).reduce((sum, e) => sum + Number(e.amount), 0) || 0;
       const pendingEarnings = totalEarnings - paidEarnings;
 
-      setStats({
-        code: codeData?.code || "",
+      setStats({ code: codeData?.code || "",
         totalEarnings,
         totalReferrals: earningsWithProfiles?.length || 0,
         pendingEarnings,
         paidEarnings,
-        recentReferrals: earningsWithProfiles?.slice(0, 10) || [],
-      });
-    } catch (error: any) {
-      console.error("Error fetching referral stats:", error);
+        recentReferrals: earningsWithProfiles?.slice(0, 10) || [] });
+    } catch (error: any) { console.error("Error fetching referral stats:", error);
       toast({
         title: "Error",
         description: "Failed to load referral data",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

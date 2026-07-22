@@ -61,8 +61,7 @@ const DreamInterpretationBattles = ({ onBack }: DreamInterpretationBattlesProps)
       );
 
       return dreamsWithInterpretations as BattleDream[];
-    },
-  });
+    } });
 
   const submitDream = async () => {
     if (!newDream.trim()) {
@@ -115,8 +114,7 @@ const DreamInterpretationBattles = ({ onBack }: DreamInterpretationBattlesProps)
   const voteInterpretation = async (interpId: string, _currentVotes: number) => {
     try {
       const { data, error } = await supabase.functions.invoke("dream-battle-vote", {
-        body: { interpretationId: interpId },
-      });
+        body: { interpretationId: interpId } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       queryClient.invalidateQueries({ queryKey: ["dream-battles"] });

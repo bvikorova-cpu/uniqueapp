@@ -2,11 +2,9 @@
 // Costs 3 homework credits per question. Uses Lovable AI Gateway (Gemini vision).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+  "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const COST = 3;
 const MODEL = "gpt-4o-mini";
@@ -15,19 +13,16 @@ const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 
 const ALLOWED_SUBJECTS = ["math", "science", "english", "history", "geography"];
-const SUBJECT_HINTS: Record<string, string> = {
-  math: "Show every calculation step. Use plain arithmetic; avoid LaTeX.",
+const SUBJECT_HINTS: Record<string, string> = { math: "Show every calculation step. Use plain arithmetic; avoid LaTeX.",
   science: "Explain the underlying concept and give a real-world example.",
   english: "Use simple grammar terms and short examples.",
   history: "Place events on a timeline and explain cause/effect.",
-  geography: "Reference real places, climates and maps when possible.",
-};
+  geography: "Reference real places, climates and maps when possible." };
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 function stripJsonFence(s: string) {
@@ -43,8 +38,7 @@ Deno.serve(async (req) => {
     if (!authHeader) return json({ error: "Missing authorization header" }, 401);
 
     const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData.user) return json({ error: "Invalid bearer token" }, 401);
     const user = userData.user;
@@ -74,10 +68,8 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     let balance = credRow?.credits_remaining ?? 0;
-    if (!credRow) {
-      await admin.from("homework_credits").insert({
-        user_id: user.id, credits_remaining: 0, total_credits_purchased: 0,
-      });
+    if (!credRow) { await admin.from("homework_credits").insert({
+        user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
     }
     if (balance < COST) {
       return json({ error: "Insufficient credits", credits_remaining: balance, cost: COST }, 402);
@@ -105,12 +97,10 @@ Schema:
     if (imageBase64) {
       userContent.push({
         type: "image_url",
-        image_url: { url: imageBase64.startsWith("data:") ? imageBase64 : `data:image/jpeg;base64,${imageBase64}` },
-      });
+        image_url: { url: imageBase64.startsWith("data:") ? imageBase64 : `data:image/jpeg;base64,${imageBase64}` } });
       userContent.push({
         type: "text",
-        text: `Photo of homework problem. ${question ? `Student also wrote: "${question}"` : "Read it carefully (OCR) and solve."}`,
-      });
+        text: `Photo of homework problem. ${question ? `Student also wrote: "${question}"` : "Read it carefully (OCR) and solve."}` });
     } else {
       userContent.push({ type: "text", text: question });
     }
@@ -119,17 +109,14 @@ Schema:
       method: "POST",
       headers: {
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: MODEL,
         messages: [
           { role: "system", content: system },
           { role: "user", content: userContent },
         ],
-        response_format: { type: "json_object" },
-      }),
-    });
+        response_format: { type: "json_object" } }) });
 
     if (aiResp.status === 429) return json({ error: "Rate limited, try again shortly" }, 429);
     if (aiResp.status === 402) return json({ error: "AI credits exhausted (workspace)" }, 402);
@@ -157,16 +144,14 @@ Schema:
     // Award points (best-effort)
     await admin.rpc("increment_homework_points", { p_user_id: user.id, p_points: 10 }).catch(() => {});
 
-    return json({
-      explanation: parsed.explanation || "",
+    return json({ explanation: parsed.explanation || "",
       steps: Array.isArray(parsed.steps) ? parsed.steps : [],
       finalAnswer: parsed.finalAnswer || "",
       commonMistakes: Array.isArray(parsed.commonMistakes) ? parsed.commonMistakes : [],
       funFacts: Array.isArray(parsed.funFacts) ? parsed.funFacts : [],
       wasFiltered: !!parsed.wasFiltered,
       credits_remaining: newBalance,
-      cost: COST,
-    });
+      cost: COST });
   } catch (e: any) {
     console.error("homework-helper error", e);
     return json({ error: e?.message || "Internal error" }, 500);

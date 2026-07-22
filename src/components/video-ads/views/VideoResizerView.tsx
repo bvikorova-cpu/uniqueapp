@@ -27,8 +27,7 @@ export const VideoResizerView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true); setR(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {
-        body: { action: 'resize_advice', sourceRatio, subject, hasText, targets },
-      });
+        body: { action: 'resize_advice', sourceRatio, subject, hasText, targets } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Video Resizer' }); return; }
       setR(data.result);
       toast.success(`${data.result.targets.length} formats prepared (${data.credits_used} CR)`);

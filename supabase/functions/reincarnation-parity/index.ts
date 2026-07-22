@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const PARITY_COST = 5;
 
@@ -16,8 +14,7 @@ const ACTIONS: Record<string, { table: string; system: string }> = {
   "past-life-letter": { table: "reincarnation_parity_past_life_letters", system: "You are writing a letter from a past-life self to the present self. Output JSON: { from_persona, era, salutation, body, blessing, signature }." },
   "dharma-path": { table: "reincarnation_parity_dharma_paths", system: "You are a dharma path advisor. Output JSON: { current_dharma, daily_practices[], shadow_to_integrate, gifts_to_share[], milestone_signs[] }." },
   "twin-flame-report": { table: "reincarnation_parity_twin_flame_reports", system: "You are a twin-flame analyst. Output JSON: { resonance_score, mirror_lessons[], stages_completed[], next_stage, integration_practices[], disclaimer }." },
-  "rebirth-blueprint": { table: "reincarnation_parity_rebirth_blueprints", system: "You are designing a next-incarnation blueprint. Output JSON: { intended_era, soul_family, chosen_challenges[], talents_to_carry[], geographic_pull, life_theme }." },
-};
+  "rebirth-blueprint": { table: "reincarnation_parity_rebirth_blueprints", system: "You are designing a next-incarnation blueprint. Output JSON: { intended_era, soul_family, chosen_challenges[], talents_to_carry[], geographic_pull, life_theme }." } };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -54,9 +51,7 @@ serve(async (req) => {
           { role: "system", content: cfg.system + " Reply ONLY with valid JSON." },
           { role: "user", content: JSON.stringify(payload ?? {}) },
         ],
-        response_format: { type: "json_object" },
-      }),
-    });
+        response_format: { type: "json_object" } }) });
     if (aiRes.status === 429) {
       return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again shortly." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -73,12 +68,10 @@ serve(async (req) => {
     await supabaseAdmin.from("reincarnation_parity_credits").insert({ user_id: user.id, action, credits_spent: PARITY_COST });
 
     return new Response(JSON.stringify({ result, cost: PARITY_COST }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

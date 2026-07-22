@@ -53,12 +53,10 @@ export function EarningsDashboard() {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) {
-        toast({
+      if (!user) { toast({
           title: "Authentication Required",
           description: "Please log in to view your earnings",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -77,12 +75,10 @@ export function EarningsDashboard() {
 
       if (error) throw error;
 
-      if (!profile) {
-        toast({
+      if (!profile) { toast({
           title: "No Instructor Profile",
           description: "Please create an instructor profile first",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
 
@@ -95,17 +91,13 @@ export function EarningsDashboard() {
         .eq("creator_id", user.id)
         .eq("is_published", true);
 
-      setStats({
-        ...profile,
-        active_courses: coursesCount || 0,
-      });
-    } catch (error: any) {
-      console.error("Error loading earnings:", error);
+      setStats({ ...profile,
+        active_courses: coursesCount || 0 });
+    } catch (error: any) { console.error("Error loading earnings:", error);
       toast({
         title: "Error",
         description: "Failed to load earnings data",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

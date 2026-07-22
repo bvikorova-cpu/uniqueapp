@@ -33,31 +33,26 @@ const PACKAGES = [
 // Hide the card entirely until the backend ships to avoid CORS / 404 errors.
 const AUTO_RECHARGE_ENABLED = false;
 
-const AutoRechargeCardImpl = ({ currentBalance }: { currentBalance: number }) => {
-  const [loading, setLoading] = useState(true);
+const AutoRechargeCardImpl = ({ currentBalance }: { currentBalance: number }) => { const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [settings, setSettings] = useState<Settings>({
-    enabled: false, threshold: 10, package_credits: 25, package_price_eur: 10,
-  });
+    enabled: false, threshold: 10, package_credits: 25, package_price_eur: 10 });
   const [pm, setPm] = useState<{ brand?: string; last4?: string } | null>(null);
 
   const load = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-auto-recharge", {
-        body: { action: "get_settings" },
-      });
+        body: { action: "get_settings" } });
       if (error) throw error;
-      if (data?.settings) setSettings({
-        enabled: data.settings.enabled,
+      if (data?.settings) setSettings({ enabled: data.settings.enabled,
         threshold: data.settings.threshold,
         package_credits: data.settings.package_credits,
         package_price_eur: Number(data.settings.package_price_eur),
         stripe_payment_method_id: data.settings.stripe_payment_method_id,
         last_recharge_at: data.settings.last_recharge_at,
         last_recharge_status: data.settings.last_recharge_status,
-        last_error: data.settings.last_error,
-      });
+        last_error: data.settings.last_error });
       setPm(data?.paymentMethod ?? null);
     } catch (e: any) {
       console.warn("auto-recharge load", e);
@@ -73,8 +68,7 @@ const AutoRechargeCardImpl = ({ currentBalance }: { currentBalance: number }) =>
       if (sid) {
         (async () => {
           await supabase.functions.invoke("ai-auto-recharge", {
-            body: { action: "confirm_setup", session_id: sid },
-          });
+            body: { action: "confirm_setup", session_id: sid } });
           toast.success("Card saved. Auto-recharge is active.");
           window.history.replaceState({}, "", "/ai-credits-store");
           load();
@@ -90,8 +84,7 @@ const AutoRechargeCardImpl = ({ currentBalance }: { currentBalance: number }) =>
     setBusy(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-auto-recharge", {
-        body: { action: "save_setup_link" },
-      });
+        body: { action: "save_setup_link" } });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
     } catch (e: any) {
@@ -104,15 +97,12 @@ const AutoRechargeCardImpl = ({ currentBalance }: { currentBalance: number }) =>
     setSettings(merged);
     setBusy(true);
     try {
-      const { error } = await supabase.functions.invoke("ai-auto-recharge", {
-        body: {
+      const { error } = await supabase.functions.invoke("ai-auto-recharge", { body: {
           action: "save_settings",
           enabled: merged.enabled,
           threshold: merged.threshold,
           package_credits: merged.package_credits,
-          package_price_eur: merged.package_price_eur,
-        },
-      });
+          package_price_eur: merged.package_price_eur } });
       if (error) throw error;
       toast.success("Saved");
     } catch (e: any) {
@@ -130,8 +120,7 @@ const AutoRechargeCardImpl = ({ currentBalance }: { currentBalance: number }) =>
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke("ai-auto-recharge", {
-          body: { action: "charge" },
-        });
+          body: { action: "charge" } });
         if (error) throw error;
         if (data?.skipped) return;
         if (data?.ok) {

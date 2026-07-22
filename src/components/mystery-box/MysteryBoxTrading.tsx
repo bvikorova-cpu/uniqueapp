@@ -46,11 +46,9 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
 
     setLoading(true);
     try {
-      const { error } = await supabase.rpc('gift_ai_credits', {
-        p_recipient_email: recipientEmail,
+      const { error } = await supabase.rpc('gift_ai_credits', { p_recipient_email: recipientEmail,
         p_amount: giftCredits,
-        p_message: giftMessage || null,
-      });
+        p_message: giftMessage || null });
       if (error) throw error;
 
       await Promise.all([refresh(), loadData()]);

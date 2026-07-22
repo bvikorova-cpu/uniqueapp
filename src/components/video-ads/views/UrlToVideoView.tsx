@@ -32,8 +32,7 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
     setLoading(true); setResult(null); setFrames([]);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {
-        body: { action: 'url_to_video', url, platform },
-      });
+        body: { action: 'url_to_video', url, platform } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'URL to Video' }); return; }
       setResult(data.result);
       toast.success("Video ad prepared! (" + data.credits_used + " CR)");
@@ -47,8 +46,7 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
     try {
       const scenes = result.scenes.slice(0, 5).map(s => s.visuals || s.description);
       const { data, error } = await supabase.functions.invoke('video-ad-scenes', {
-        body: { scenes, aspectRatio: result.suggestedPlatform === 'tiktok' || result.suggestedPlatform === 'instagram' ? '9:16' : '16:9' },
-      });
+        body: { scenes, aspectRatio: result.suggestedPlatform === 'tiktok' || result.suggestedPlatform === 'instagram' ? '9:16' : '16:9' } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Video Frames' }); return; }
       const dataUrls = data.frames.map((f: { b64: string }) => `data:image/png;base64,${f.b64}`);
       setFrames(dataUrls);

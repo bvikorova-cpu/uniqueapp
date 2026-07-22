@@ -169,14 +169,10 @@ test.describe("Wall – bezpečnosť / RLS", () => {
           apikey: SUPABASE_ANON_KEY,
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-          Prefer: "return=representation",
-        },
-        data: {
-          post_id: "00000000-0000-0000-0000-000000000000",
+          Prefer: "return=representation" },
+        data: { post_id: "00000000-0000-0000-0000-000000000000",
           user_id: "11111111-2222-3333-4444-555555555555", // cudzí
-          reaction_type: "like",
-        },
-      },
+          reaction_type: "like" } },
     );
     expect([401, 403, 409, 400, 404, 42501]).toContain(res.status());
   });
@@ -205,10 +201,8 @@ test.describe("Wall – Theme Colors", () => {
       const btn = themeButtons.nth(i);
       await btn.scrollIntoViewIfNeeded().catch(() => {});
 
-      const before = await page.evaluate(() => ({
-        p: getComputedStyle(document.documentElement).getPropertyValue("--primary").trim(),
-        a: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim(),
-      }));
+      const before = await page.evaluate(() => ({ p: getComputedStyle(document.documentElement).getPropertyValue("--primary").trim(),
+        a: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() }));
 
       await btn.click({ force: true });
 

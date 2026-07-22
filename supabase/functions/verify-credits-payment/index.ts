@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -21,9 +19,7 @@ serve(async (req) => {
     const { session_id } = await req.json();
     if (!session_id) throw new Error("Session ID required");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     const session = await stripe.checkout.sessions.retrieve(session_id);
     
@@ -63,33 +59,27 @@ serve(async (req) => {
       .eq("user_id", user_id)
       .maybeSingle();
 
-    if (currentCredits) {
-      await supabaseClient
+    if (currentCredits) { await supabaseClient
         .from(tableName)
         .update({
           credits_remaining: (currentCredits.credits_remaining || 0) + creditAmount,
-          total_credits_purchased: (currentCredits.total_credits_purchased || 0) + creditAmount,
-        })
+          total_credits_purchased: (currentCredits.total_credits_purchased || 0) + creditAmount })
         .eq("user_id", user_id);
-    } else {
-      await supabaseClient
+    } else { await supabaseClient
         .from(tableName)
         .insert({
           user_id,
           credits_remaining: creditAmount,
-          total_credits_purchased: creditAmount,
-        });
+          total_credits_purchased: creditAmount });
     }
 
     // Log payment
-    await supabaseClient.from("credit_payments").insert({
-      session_id,
+    await supabaseClient.from("credit_payments").insert({ session_id,
       user_id,
       credits: creditAmount,
       credit_type,
       amount: session.amount_total,
-      currency: session.currency,
-    });
+      currency: session.currency });
 
     return new Response(
       JSON.stringify({ success: true, credits_added: creditAmount }),
@@ -100,7 +90,6 @@ serve(async (req) => {
     console.error("Verification error:", errorMessage);
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+      status: 500 });
   }
 });

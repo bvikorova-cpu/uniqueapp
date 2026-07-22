@@ -1,12 +1,10 @@
 // Anonymous Date AI - paid AI features via OpenAI
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import {
-  corsHeaders,
+import { corsHeaders,
   json,
   errorResponse,
   aiRequestSchema,
-  sanitizePayloadForLog,
-} from "../_shared/anonymous-dating.ts";
+  sanitizePayloadForLog } from "../_shared/anonymous-dating.ts";
 
 type Feature =
   | "icebreakers"      // 3 cr
@@ -28,8 +26,7 @@ type Feature =
   | "breakup_recovery";
 
 const PARITY_COST = 6;
-const COSTS: Record<Feature, number> = {
-  icebreakers: 3,
+const COSTS: Record<Feature, number> = { icebreakers: 3,
   compatibility: 5,
   reply_coach: 2,
   personality_mirror: 8,
@@ -45,19 +42,16 @@ const COSTS: Record<Feature, number> = {
   first_meet_plan: PARITY_COST,
   attachment_profile: PARITY_COST,
   chat_translator: PARITY_COST,
-  breakup_recovery: PARITY_COST,
-};
+  breakup_recovery: PARITY_COST };
 
-const PARITY_TABLES: Record<string, string> = {
-  vibe_decoder: "anon_date_vibe_decoder",
+const PARITY_TABLES: Record<string, string> = { vibe_decoder: "anon_date_vibe_decoder",
   chemistry_report: "anon_date_chemistry_reports",
   red_flag_scan: "anon_date_red_flag_scans",
   reveal_readiness: "anon_date_reveal_readiness",
   first_meet_plan: "anon_date_first_meet_plans",
   attachment_profile: "anon_date_attachment_profiles",
   chat_translator: "anon_date_chat_translator",
-  breakup_recovery: "anon_date_breakup_recovery",
-};
+  breakup_recovery: "anon_date_breakup_recovery" };
 
 const SYSTEM_PROMPTS: Record<Feature, string> = {
   icebreakers:
@@ -93,8 +87,7 @@ const SYSTEM_PROMPTS: Record<Feature, string> = {
   chat_translator:
     "You translate emotionally loaded chat messages. Output JSON: { literal_meaning: 1 sentence, hidden_meaning: 1 sentence, emotional_subtext: 1 sentence, suggested_response: 1-2 sentences under 35 words }.",
   breakup_recovery:
-    "You are a compassionate coach for anonymous-match breakups. Output JSON: { stage: 'shock'|'grief'|'reflection'|'rebuild'|'growth', recovery_score: 0-100, daily_plan: [array of 7 short daily actions], affirmation: 1 sentence }.",
-};
+    "You are a compassionate coach for anonymous-match breakups. Output JSON: { stage: 'shock'|'grief'|'reflection'|'rebuild'|'growth', recovery_score: 0-100, daily_plan: [array of 7 short daily actions], affirmation: 1 sentence }." };
 
 async function callAI(system: string, userMsg: string, jsonMode = false): Promise<string> {
   const apiKey = Deno.env.get("OPENAI_API_KEY");
@@ -105,15 +98,13 @@ async function callAI(system: string, userMsg: string, jsonMode = false): Promis
     messages: [
       { role: "system", content: system },
       { role: "user", content: userMsg },
-    ],
-  };
+    ] };
   if (jsonMode) body.response_format = { type: "json_object" };
 
   const r = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+    body: JSON.stringify(body) });
 
   if (r.status === 429) throw new Error("RATE_LIMITED");
   if (r.status === 402) throw new Error("AI_CREDITS_EXHAUSTED");
@@ -139,8 +130,7 @@ Deno.serve(async (req) => {
     if (!authHeader) return errorResponse("UNAUTHORIZED", "Missing authorization header", 401);
 
     const userClient = createClient(supabaseUrl, supabaseAnon, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: { user } } = await userClient.auth.getUser();
     if (!user) return errorResponse("UNAUTHORIZED", "Invalid session", 401);
 
@@ -154,10 +144,8 @@ Deno.serve(async (req) => {
       return errorResponse("INVALID_JSON", "Body must be valid JSON", 400);
     }
     const parsed = aiRequestSchema.safeParse(rawBody);
-    if (!parsed.success) {
-      return errorResponse("VALIDATION_ERROR", "Invalid request payload", 400, {
-        issues: parsed.error.flatten().fieldErrors,
-      });
+    if (!parsed.success) { return errorResponse("VALIDATION_ERROR", "Invalid request payload", 400, {
+        issues: parsed.error.flatten().fieldErrors });
     }
     const { feature, payload, matchId } = parsed.data as {
       feature: Feature; payload: any; matchId?: string;
@@ -168,11 +156,9 @@ Deno.serve(async (req) => {
     }
 
     // ── Rate limit: 20 AI calls per user per minute ──
-    const { data: rateOk } = await admin.rpc("check_anon_dating_rate_limit", {
-      p_user_id: user.id,
+    const { data: rateOk } = await admin.rpc("check_anon_dating_rate_limit", { p_user_id: user.id,
       p_action: "anonymous_date_ai",
-      p_max_per_minute: 20,
-    });
+      p_max_per_minute: 20 });
     if (rateOk === false) {
       return errorResponse("RATE_LIMITED", "Too many AI requests. Please wait a minute.", 429);
     }
@@ -233,8 +219,7 @@ Deno.serve(async (req) => {
       feature_type: feature,
       credits_used: cost,
       input_data: sanitizePayloadForLog(payload ?? {}),
-      output_data: typeof output === "string" ? { text: output } : output,
-    });
+      output_data: typeof output === "string" ? { text: output } : output });
 
     // Optionally persist parity outputs in their dedicated tables
     const parityTable = PARITY_TABLES[feature];
@@ -278,12 +263,10 @@ Deno.serve(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    return json({
-      success: true,
+    return json({ success: true,
       feature,
       output,
-      credits_remaining: bal?.credits_remaining ?? 0,
-    });
+      credits_remaining: bal?.credits_remaining ?? 0 });
   } catch (e: any) {
     console.error("anonymous-date-ai error", e);
     return errorResponse("SERVER_ERROR", e?.message ?? "Server error", 500);

@@ -9,16 +9,14 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import {
-  ArrowLeft,
+import { ArrowLeft,
   User,
   Bell,
   Lock,
   Globe,
   Palette,
   Save,
-  Settings as SettingsIcon,
-} from "lucide-react";
+  Settings as SettingsIcon } from "lucide-react";
 import { ProfilePageHero } from "@/components/profile/ProfilePageHero";
 import { GDPRPanel } from "@/components/gdpr/GDPRPanel";
 import { toast as sonnerToast } from "sonner";
@@ -71,22 +69,18 @@ export default function Settings() {
     const remaining = getResetCooldownSeconds(user.email);
     if (remaining > 0) {
       sonnerToast.error("Reset email already requested", {
-        description: `Please wait ${Math.ceil(remaining / 60)} minute${remaining > 60 ? "s" : ""} before requesting another link.`,
-      });
+        description: `Please wait ${Math.ceil(remaining / 60)} minute${remaining > 60 ? "s" : ""} before requesting another link.` });
       return;
     }
     setChangingPassword(true);
     const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
+      redirectTo: `${window.location.origin}/reset-password` });
     setChangingPassword(false);
-    if (error) {
-      if (isEmailRateLimitError(error.message)) setResetCooldown(user.email);
+    if (error) { if (isEmailRateLimitError(error.message)) setResetCooldown(user.email);
       sonnerToast.error(isEmailRateLimitError(error.message) ? "Too many email requests" : error.message, {
         description: isEmailRateLimitError(error.message)
           ? "Please wait a while before requesting another password reset email."
-          : undefined,
-      });
+          : undefined });
     } else {
       setResetCooldown(user.email);
       sonnerToast.success(`Password reset link sent to ${user.email}`);
@@ -98,8 +92,7 @@ export default function Settings() {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       return user;
-    },
-  });
+    } });
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -112,36 +105,27 @@ export default function Settings() {
         .single();
       return data;
     },
-    enabled: !!user,
-  });
+    enabled: !!user });
 
-  const [notificationSettings, setNotificationSettings] = useState({
-    emailNotifications: true,
+  const [notificationSettings, setNotificationSettings] = useState({ emailNotifications: true,
     pushNotifications: true,
     messageNotifications: true,
-    likeNotifications: true,
-  });
+    likeNotifications: true });
 
-  const [privacySettings, setPrivacySettings] = useState({
-    profileVisibility: true,
+  const [privacySettings, setPrivacySettings] = useState({ profileVisibility: true,
     showEmail: false,
-    showPhone: false,
-  });
+    showPhone: false });
 
-  const handleSaveSettings = async () => {
-    setSaving(true);
+  const handleSaveSettings = async () => { setSaving(true);
     try {
       // Save settings to database or local storage
       toast({
         title: "Settings saved",
-        description: "Your settings have been updated successfully.",
-      });
-    } catch (error: any) {
-      toast({
+        description: "Your settings have been updated successfully." });
+    } catch (error: any) { toast({
         title: "Error",
         description: error.message,
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setSaving(false);
     }

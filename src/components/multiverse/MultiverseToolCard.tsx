@@ -23,8 +23,7 @@ export const MultiverseToolCard = ({ icon: Icon, title, description, color, onCl
     indigo: { bg: "from-indigo-950/50 to-black/70", border: "border-indigo-500/30 hover:border-indigo-400/60", glow: "rgba(99,102,241,0.2)", icon: "text-indigo-400 bg-indigo-500/20 border-indigo-500/30", text: "group-hover:text-indigo-300" },
     cyan: { bg: "from-cyan-950/50 to-black/70", border: "border-cyan-500/30 hover:border-cyan-400/60", glow: "rgba(34,211,238,0.2)", icon: "text-cyan-400 bg-cyan-500/20 border-cyan-500/30", text: "group-hover:text-cyan-300" },
     fuchsia: { bg: "from-fuchsia-950/50 to-black/70", border: "border-fuchsia-500/30 hover:border-fuchsia-400/60", glow: "rgba(217,70,239,0.2)", icon: "text-fuchsia-400 bg-fuchsia-500/20 border-fuchsia-500/30", text: "group-hover:text-fuchsia-300" },
-    rose: { bg: "from-rose-950/50 to-black/70", border: "border-rose-500/30 hover:border-rose-400/60", glow: "rgba(244,63,94,0.2)", icon: "text-rose-400 bg-rose-500/20 border-rose-500/30", text: "group-hover:text-rose-300" },
-  };
+    rose: { bg: "from-rose-950/50 to-black/70", border: "border-rose-500/30 hover:border-rose-400/60", glow: "rgba(244,63,94,0.2)", icon: "text-rose-400 bg-rose-500/20 border-rose-500/30", text: "group-hover:text-rose-300" } };
 
   const c = colorMap[color] || colorMap.violet;
 

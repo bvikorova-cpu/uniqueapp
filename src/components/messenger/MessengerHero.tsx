@@ -51,10 +51,9 @@ export const MessengerHero = ({ onOpenChat, stats }: MessengerHeroProps) => {
               <div>
                 <h1
                   className="text-3xl sm:text-4xl font-black text-white"
-                  style={{
+                  style={ {
                     WebkitTextStroke: "1.5px rgba(0,0,0,0.3)",
-                    textShadow: "0 2px 20px rgba(0,200,255,0.3), 0 4px 40px rgba(0,0,0,0.5)",
-                  }}
+                    textShadow: "0 2px 20px rgba(0,200,255,0.3), 0 4px 40px rgba(0,0,0,0.5)" }}
                 >
                   Messenger Hub
                 </h1>

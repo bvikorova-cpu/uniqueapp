@@ -19,13 +19,11 @@ export const DailyChallenges = () => {
     queryKey: ["brain-duel-daily-challenge"],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("brain-duel-daily-challenge", {
-        body: { action: "get-today" },
-      });
+        body: { action: "get-today" } });
       if (error) throw error;
       return data;
     },
-    refetchInterval: 30000,
-  });
+    refetchInterval: 30000 });
 
   const submitEntry = useMutation({
     mutationFn: async () => {
@@ -34,14 +32,11 @@ export const DailyChallenges = () => {
       const score = Math.floor(Math.random() * (data.challenge.question_count + 1));
       const timeTaken = Math.floor(Math.random() * data.challenge.time_limit);
 
-      const { data: result, error } = await supabase.functions.invoke("brain-duel-daily-challenge", {
-        body: {
+      const { data: result, error } = await supabase.functions.invoke("brain-duel-daily-challenge", { body: {
           action: "submit",
           challengeId: data.challenge.id,
           score,
-          timeTaken,
-        },
-      });
+          timeTaken } });
       if (error) throw error;
       if (result?.error) throw new Error(result.error);
       return { score, timeTaken, reward: result.reward };
@@ -50,13 +45,11 @@ export const DailyChallenges = () => {
       queryClient.invalidateQueries({ queryKey: ["brain-duel-daily-challenge"] });
       queryClient.invalidateQueries({ queryKey: ["brain-duel-credits"] });
       toast.success(`Challenge completed! Score: ${result.score}`, {
-        description: result.score >= 3 ? `You earned ${result.reward} credits! 🎉` : "Try harder tomorrow!",
-      });
+        description: result.score >= 3 ? `You earned ${result.reward} credits! 🎉` : "Try harder tomorrow!" });
     },
     onError: (e: Error) => {
       toast.error(e.message || "Failed to submit");
-    },
-  });
+    } });
 
   const challenge = data?.challenge;
   const leaderboard = data?.leaderboard || [];

@@ -22,8 +22,7 @@ export const FriendshipGamesView = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("best-friend-ai", {
-        body: { action: "friendship_games", gameType },
-      });
+        body: { action: "friendship_games", gameType } });
       if (error) throw error;
       setResult(data);
       setCurrentQ(0); setScore(0); setAnswered(null); setFinished(false);

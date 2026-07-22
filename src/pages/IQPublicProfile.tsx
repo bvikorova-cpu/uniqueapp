@@ -18,8 +18,7 @@ export default function IQPublicProfile() {
       if (error) throw error;
       return data?.[0] ?? null;
     },
-    enabled: !!slug,
-  });
+    enabled: !!slug });
 
   if (isLoading) {
     return (

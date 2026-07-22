@@ -14,12 +14,10 @@ interface Row {
   hydration_glasses: number; sleep_hours: number;
 }
 
-export default function FutureFaceRoutineTracker() {
-  const today = new Date().toISOString().slice(0, 10);
+export default function FutureFaceRoutineTracker() { const today = new Date().toISOString().slice(0, 10);
   const [today_, setToday] = useState<Row>({
     routine_date: today, morning_done: false, evening_done: false,
-    hydration_glasses: 0, sleep_hours: 0,
-  });
+    hydration_glasses: 0, sleep_hours: 0 });
   const [history, setHistory] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);

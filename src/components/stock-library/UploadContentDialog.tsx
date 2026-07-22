@@ -18,15 +18,13 @@ interface UploadContentDialogProps {
 export const UploadContentDialog = ({ open, onOpenChange, onSuccess }: UploadContentDialogProps) => {
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
+  const [formData, setFormData] = useState({ title: "",
     description: "",
     content_type: "image",
     category: "",
     tags: "",
     price_eur: "5.00",
-    license_type: "standard",
-  });
+    license_type: "standard" });
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,8 +62,7 @@ export const UploadContentDialog = ({ open, onOpenChange, onSuccess }: UploadCon
       // Insert content record
       const { error: insertError } = await supabase
         .from('stock_content_items')
-        .insert([{
-          creator_id: user.id,
+        .insert([{ creator_id: user.id,
           title: formData.title,
           description: formData.description,
           content_type: formData.content_type,
@@ -75,23 +72,20 @@ export const UploadContentDialog = ({ open, onOpenChange, onSuccess }: UploadCon
           license_type: formData.license_type,
           file_url: publicUrl,
           thumbnail_url: publicUrl,
-          file_size_mb: file.size / (1024 * 1024),
-        }]);
+          file_size_mb: file.size / (1024 * 1024) }]);
 
       if (insertError) throw insertError;
 
       toast({ title: "Success", description: "Content uploaded successfully!" });
       onSuccess();
       onOpenChange(false);
-      setFormData({
-        title: "",
+      setFormData({ title: "",
         description: "",
         content_type: "image",
         category: "",
         tags: "",
         price_eur: "5.00",
-        license_type: "standard",
-      });
+        license_type: "standard" });
       setFile(null);
     } catch (error: any) {
       console.error("Upload error:", error);

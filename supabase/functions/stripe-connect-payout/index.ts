@@ -7,17 +7,14 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 const INSTANT_FEE_BPS = 100; // 1.00 %
 const MIN_STANDARD_CENTS = 100;   // €1
@@ -61,8 +58,7 @@ serve(async (req) => {
     if (amount_cents < minCents) {
       return json({
         error: `Minimum ${method} payout is €${(minCents / 100).toFixed(2)}`,
-        code: "BELOW_MINIMUM",
-      }, 400);
+        code: "BELOW_MINIMUM" }, 400);
     }
 
     // 1. Connect onboarding check
@@ -73,17 +69,13 @@ serve(async (req) => {
       .maybeSingle();
 
     const connectAccount = profile?.stripe_connect_account_id;
-    if (!connectAccount) {
-      return json({
+    if (!connectAccount) { return json({
         error: "No Stripe Connect account. Complete onboarding first.",
-        code: "NO_CONNECT_ACCOUNT",
-      }, 400);
+        code: "NO_CONNECT_ACCOUNT" }, 400);
     }
-    if (!profile?.stripe_connect_payouts_enabled) {
-      return json({
+    if (!profile?.stripe_connect_payouts_enabled) { return json({
         error: "Payouts not yet enabled on your Stripe account.",
-        code: "PAYOUTS_DISABLED",
-      }, 400);
+        code: "PAYOUTS_DISABLED" }, 400);
     }
 
     // 2. Race guard
@@ -97,11 +89,9 @@ serve(async (req) => {
       console.error("[stripe-connect-payout] in-flight check failed", ifErr);
       return json({ error: "Payout state check failed" }, 500);
     }
-    if (inFlight && inFlight.length > 0) {
-      return json({
+    if (inFlight && inFlight.length > 0) { return json({
         error: "A payout is already in progress. Wait until it completes.",
-        code: "PAYOUT_IN_FLIGHT",
-      }, 409);
+        code: "PAYOUT_IN_FLIGHT" }, 409);
     }
 
     // 3. Compute fee + gross required
@@ -124,22 +114,19 @@ serve(async (req) => {
       return json({
         error: `Requested amount + fee (€${(totalRequired / 100).toFixed(2)}) exceeds available balance (€${(available / 100).toFixed(2)})`,
         code: "INSUFFICIENT_BALANCE",
-        available_cents: available,
-      }, 400);
+        available_cents: available }, 400);
     }
 
     // 5. Insert pending audit row
     const { data: payoutRow, error: insErr } = await supabase
       .from("creator_payouts")
-      .insert({
-        user_id: user.id,
+      .insert({ user_id: user.id,
         amount_cents,
         fee_cents,
         currency,
         method,
         status: "pending",
-        stripe_connect_account_id: connectAccount,
-      })
+        stripe_connect_account_id: connectAccount })
       .select("id")
       .single();
     if (insErr || !payoutRow) {
@@ -149,38 +136,31 @@ serve(async (req) => {
 
     // 6. Call Stripe
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    try {
-      const payout = await stripe.payouts.create(
+    try { const payout = await stripe.payouts.create(
         {
           amount: amount_cents,
           currency,
           method: method === "instant" ? "instant" : "standard",
           metadata: {
             creator_payout_id: payoutRow.id,
-            user_id: user.id,
-          },
-        },
+            user_id: user.id } },
         { stripeAccount: connectAccount },
       );
 
       await supabase
         .from("creator_payouts")
-        .update({
-          status: "processing",
-          stripe_payout_id: payout.id,
-        })
+        .update({ status: "processing",
+          stripe_payout_id: payout.id })
         .eq("id", payoutRow.id);
 
-      return json({
-        payout_id: payout.id,
+      return json({ payout_id: payout.id,
         amount: payout.amount,
         fee_cents,
         currency: payout.currency,
         method,
         arrival_date: payout.arrival_date,
         status: payout.status,
-        creator_payout_id: payoutRow.id,
-      });
+        creator_payout_id: payoutRow.id });
     } catch (stripeErr) {
       const msg = stripeErr instanceof Error ? stripeErr.message : String(stripeErr);
       await supabase

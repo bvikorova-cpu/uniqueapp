@@ -51,8 +51,7 @@ const PhotoRestoration = () => {
       (async () => {
         try {
           const { data, error } = await supabase.functions.invoke("verify-payment", {
-            body: { session_id: sessionId, product_type: "photo_credits" },
-          });
+            body: { session_id: sessionId, product_type: "photo_credits" } });
           if (error) throw error;
           if ((data as any)?.success || (data as any)?.status === "paid") {
             toast.success("Photo credits added to your account!");
@@ -76,12 +75,10 @@ const PhotoRestoration = () => {
         supabase.from("old_photos").select("id", { count: "exact", head: true }).eq("user_id", user.id),
         (supabase as any).from("photo_gallery").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
-      setStats({
-        restorations: r.count || 0,
+      setStats({ restorations: r.count || 0,
         colorizations: 0,
         enhancements: 0,
-        removals: c.count || 0,
-      });
+        removals: c.count || 0 });
     };
     loadStats();
   }, []);

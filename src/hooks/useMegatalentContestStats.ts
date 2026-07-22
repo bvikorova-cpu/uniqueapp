@@ -18,11 +18,9 @@ const totalCategories = categoryGroups.reduce(
   0,
 );
 
-const fmt = new Intl.NumberFormat("en-US", {
-  style: "currency",
+const fmt = new Intl.NumberFormat("en-US", { style: "currency",
   currency: "EUR",
-  maximumFractionDigits: 0,
-});
+  maximumFractionDigits: 0 });
 
 export const useMegatalentContestStats = () => {
   return useQuery<ContestStats>({
@@ -70,18 +68,15 @@ export const useMegatalentContestStats = () => {
         .limit(1)
         .maybeSingle();
 
-      return {
-        prizePool,
+      return { prizePool,
         prizePoolFormatted: fmt.format(prizePool),
         categoryCount: totalCategories,
         activeTalents,
         lastWinnerPrize: lastWinner?.prize_amount ?? null,
         periodStart: period?.period_start ?? null,
         periodEnd: period?.period_end ?? null,
-        periodTitle: period?.title ?? null,
-      };
-    },
-  });
+        periodTitle: period?.title ?? null };
+    } });
 };
 
 export const MEGATALENT_CATEGORY_COUNT = totalCategories;

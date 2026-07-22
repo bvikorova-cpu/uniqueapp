@@ -150,8 +150,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
 
   const [moderating, setModerating] = useState(false);
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSend = async (e: React.FormEvent) => { e.preventDefault();
     const text = input.trim();
     if (!text) return;
 
@@ -159,19 +158,16 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
       toast({
         title: "Match expired",
         description: "This anonymous match has ended.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
-    if (safety.isBlocked) {
-      toast({
+    if (safety.isBlocked) { toast({
         title: "Chat blocked",
         description: safety.blockedByMe
           ? "You blocked this user. Unblock them to continue."
           : "This conversation is no longer available.",
-        variant: "destructive",
-      });
+        variant: "destructive" });
       return;
     }
 
@@ -190,15 +186,12 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     moderationAbortRef.current = abort;
     try {
       const { data: mod } = await supabase.functions.invoke("dating-moderate-message", {
-        body: { content: text },
-      });
+        body: { content: text } });
       if (!isMountedRef.current || abort.signal.aborted) return;
-      if (mod && mod.allow === false) {
-        toast({
+      if (mod && mod.allow === false) { toast({
           title: "Message blocked",
           description: mod.reason || "This message violates our safety policy.",
-          variant: "destructive",
-        });
+          variant: "destructive" });
         return;
       }
     } catch (err) {

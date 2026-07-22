@@ -35,8 +35,7 @@ export const SecretSantaInbox = () => {
         .in("id", recipientIds);
       return data || [];
     },
-    enabled: recipientIds.length > 0,
-  });
+    enabled: recipientIds.length > 0 });
 
   const getRecipientProfile = (id: string) => {
     return recipientProfiles.find((p: any) => p.id === id);

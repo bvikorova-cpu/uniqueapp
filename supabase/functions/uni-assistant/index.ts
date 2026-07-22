@@ -47,8 +47,7 @@ Deno.serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization") ?? "";
     const userClient = createClient(SUPABASE_URL, SUPABASE_ANON, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      global: { headers: { Authorization: authHeader } } });
     const { data: { user } } = await userClient.auth.getUser();
     if (!user) {
       return json({ error: "auth_required" }, 401);
@@ -61,12 +60,10 @@ Deno.serve(async (req) => {
 
     // Deduct 5 credits (service role bypasses RLS on RPC)
     const svc = createClient(SUPABASE_URL, SUPABASE_SERVICE);
-    const { data: ok, error: creditErr } = await svc.rpc("deduct_ai_credits", {
-      p_user_id: user.id,
+    const { data: ok, error: creditErr } = await svc.rpc("deduct_ai_credits", { p_user_id: user.id,
       p_amount: COST,
       p_reason: "Uni voice assistant",
-      p_source: "uni-assistant",
-    });
+      p_source: "uni-assistant" });
     if (creditErr) return json({ error: creditErr.message }, 500);
     if (ok === false) return json({ error: "INSUFFICIENT_CREDITS" }, 402);
 
@@ -75,8 +72,7 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "google/gemini-2.5-pro",
         messages: [
@@ -92,16 +88,10 @@ Deno.serve(async (req) => {
             parameters: {
               type: "object",
               properties: {
-                path: { type: "string", description: "Route path starting with /" },
-              },
+                path: { type: "string", description: "Route path starting with /" } },
               required: ["path"],
-              additionalProperties: false,
-            },
-          },
-        }],
-        tool_choice: "auto",
-      }),
-    });
+              additionalProperties: false } } }],
+        tool_choice: "auto" }) });
 
     if (aiRes.status === 429) return json({ error: "rate_limited" }, 429);
     if (aiRes.status === 402) return json({ error: "ai_credits_exhausted" }, 402);
@@ -135,6 +125,5 @@ Deno.serve(async (req) => {
 function json(payload: unknown, status = 200) {
   return new Response(JSON.stringify(payload), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

@@ -17,19 +17,15 @@ interface MusicShareCardProps {
   track: MusicTrack;
 }
 
-const platformColors: Record<string, string> = {
-  spotify: "from-emerald-500 to-emerald-700",
+const platformColors: Record<string, string> = { spotify: "from-emerald-500 to-emerald-700",
   apple: "from-rose-500 to-pink-600",
   youtube: "from-red-500 to-red-700",
-  soundcloud: "from-orange-500 to-amber-600",
-};
+  soundcloud: "from-orange-500 to-amber-600" };
 
-const platformIcons: Record<string, string> = {
-  spotify: "🎵",
+const platformIcons: Record<string, string> = { spotify: "🎵",
   apple: "🍎",
   youtube: "▶️",
-  soundcloud: "☁️",
-};
+  soundcloud: "☁️" };
 
 export const MusicShareCard = ({ track }: MusicShareCardProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -115,8 +111,7 @@ export const MusicShareCard = ({ track }: MusicShareCardProps) => {
                 const shareData = {
                   title: `${track.title} — ${track.artist}`,
                   text: `Check out "${track.title}" by ${track.artist}`,
-                  url: track.externalUrl ?? window.location.href,
-                };
+                  url: track.externalUrl ?? window.location.href };
                 try {
                   if (navigator.share && navigator.canShare?.(shareData)) {
                     await navigator.share(shareData);
@@ -157,14 +152,12 @@ export const MusicShareInput = ({ onShare }: MusicShareInputProps) => {
     return "youtube";
   };
 
-  const handleSubmit = () => {
-    if (!url.trim()) return;
+  const handleSubmit = () => { if (!url.trim()) return;
     onShare({
       title: "Shared Track",
       artist: "Artist",
       platform: detectPlatform(url),
-      externalUrl: url,
-    });
+      externalUrl: url });
     setUrl("");
   };
 

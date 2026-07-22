@@ -62,14 +62,12 @@ export const BroadcastCenter = () => {
       return;
     }
     setSending(true);
-    try {
-      // Insert into platform_announcements (graceful fallback to notifications)
+    try { // Insert into platform_announcements (graceful fallback to notifications)
       const payload: any = {
         title,
         body,
         segment,
-        sent_at: new Date().toISOString(),
-      };
+        sent_at: new Date().toISOString() };
 
       const { error } = await (supabase as any).from("platform_announcements").insert(payload);
       if (error) {
@@ -81,8 +79,7 @@ export const BroadcastCenter = () => {
             type: "broadcast",
             title,
             message: body,
-            metadata: { segment },
-          });
+            metadata: { segment } });
         }
       }
 

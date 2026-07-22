@@ -19,16 +19,13 @@ export const useKidsDrawingGallery = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
-  const saveDrawing = useMutation({
-    mutationFn: async ({ 
+  const saveDrawing = useMutation({ mutationFn: async ({ 
       imageDataURL, 
       title, 
       stepNumber,
-      category,
-    }: { 
+      category }: { 
       imageDataURL: string; 
       title: string; 
       stepNumber?: number;
@@ -47,10 +44,8 @@ export const useKidsDrawingGallery = () => {
       // Upload to storage
       const { error: uploadError } = await supabase.storage
         .from("kids-drawings")
-        .upload(fileName, blob, {
-          contentType: "image/png",
-          upsert: false,
-        });
+        .upload(fileName, blob, { contentType: "image/png",
+          upsert: false });
 
       if (uploadError) throw uploadError;
 
@@ -62,15 +57,13 @@ export const useKidsDrawingGallery = () => {
       // Save metadata to database
       const { error: dbError } = await supabase
         .from("kids_drawings")
-        .insert([{
-          user_id: user.id,
+        .insert([{ user_id: user.id,
           title,
           drawing_url: urlData.publicUrl,
           tutorial_topic: category || "Custom Drawing",
           steps_completed: stepNumber || 0,
           total_steps: stepNumber || 0,
-          difficulty: "custom",
-        }]);
+          difficulty: "custom" }]);
 
       if (dbError) throw dbError;
 
@@ -83,8 +76,7 @@ export const useKidsDrawingGallery = () => {
     onError: (error) => {
       console.error("Error saving drawing:", error);
       toast.error("Failed to save drawing");
-    },
-  });
+    } });
 
   const deleteDrawing = useMutation({
     mutationFn: async (drawingId: string) => {
@@ -117,15 +109,12 @@ export const useKidsDrawingGallery = () => {
     onError: (error) => {
       console.error("Error deleting drawing:", error);
       toast.error("Failed to delete drawing");
-    },
-  });
+    } });
 
-  return {
-    drawings,
+  return { drawings,
     isLoading,
     saveDrawing: saveDrawing.mutate,
     isSaving: saveDrawing.isPending,
     deleteDrawing: deleteDrawing.mutate,
-    isDeleting: deleteDrawing.isPending,
-  };
+    isDeleting: deleteDrawing.isPending };
 };

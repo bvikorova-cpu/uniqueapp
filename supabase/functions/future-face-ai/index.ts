@@ -1,16 +1,13 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+    headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -36,20 +33,16 @@ serve(async (req) => {
     if (typeof prompt !== "string" || prompt.trim().length === 0) return json({ error: "Missing prompt" }, 400);
     const ageNum = Number.isFinite(Number(age)) ? Number(age) : 30;
 
-    const creditCosts: Record<string, number> = {
-      age_progression: 5, skin_health: 5, lifestyle_impact: 4, celebrity_match: 4,
+    const creditCosts: Record<string, number> = { age_progression: 5, skin_health: 5, lifestyle_impact: 4, celebrity_match: 4,
       anti_aging: 5, healthy_comparison: 6, skin_routine: 4, age_reversal: 4,
       ar_preview: 5, before_after_timeline: 5, dermatologist_review: 6,
-      dna_aging: 6, social_share: 4, seasonal_report: 5,
-    };
+      dna_aging: 6, social_share: 4, seasonal_report: 5 };
     if (!(action in creditCosts)) return json({ error: "Unknown action" }, 400);
     const cost = creditCosts[action];
 
     // Atomic credit deduction
-    const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits" as any, {
-      p_user_id: user.id,
-      p_amount: cost,
-    });
+    const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits" as any, { p_user_id: user.id,
+      p_amount: cost });
     if (deductError) {
       console.error("deduct_ai_credits error:", deductError);
       return json({ error: "Credit deduction failed" }, 500);
@@ -72,8 +65,7 @@ serve(async (req) => {
       dermatologist_review: `You are an AI dermatologist providing a professional-grade clinical skin assessment. The user is ${ageNum} years old. Based on their description: "${prompt}", provide a comprehensive dermatological review including: Clinical Assessment (skin type classification using Fitzpatrick scale, condition severity rating), Diagnosis Considerations (potential skin conditions, differential diagnosis), Treatment Plan (prescription-grade recommendations, OTC alternatives, procedural recommendations like chemical peels, microneedling, laser), Risk Assessment (skin cancer risk factors, sun damage assessment, aging acceleration factors), Follow-up Plan (recommended check-up schedule, warning signs to watch), and a Professional Summary with key action items. Include medical terminology with layman explanations. Format with markdown. Add disclaimer about consulting a real dermatologist.`,
       dna_aging: `You are an AI genetic aging prediction specialist. The user is ${ageNum} years old. Based on their genetic background: "${prompt}", provide a comprehensive DNA-based aging prediction including: Genetic Aging Profile (ethnic background impact on aging, familial aging patterns analysis), Telomere Length Estimation (predicted biological age vs chronological age, cellular aging rate), Genetic Risk Factors (collagen degradation genes, melanin production patterns, oxidative stress susceptibility), Epigenetic Clock Analysis (lifestyle impact on gene expression, environmental factors affecting genetic aging), Personalized Genetic Aging Timeline (decade-by-decade prediction based on genetic background), and DNA-Optimized Anti-Aging Plan (genetically-tailored skincare ingredients, diet for your genetic profile, exercise optimized for your DNA type). Format with markdown headers, tables, and scores.`,
       social_share: `You are an AI social media transformation card creator. The user is ${ageNum} years old. Based on their transformation story: "${prompt}", generate a complete social media transformation card package including: Viral Caption (3 options: Instagram, TikTok, Twitter/X), Hashtag Strategy (30 trending hashtags organized by category), Transformation Story Arc (hook, journey, result, call-to-action), Visual Layout Description (before/after card design with exact text placement), Engagement Optimization Tips (best posting times, story sequence ideas), Motivational Quote (personalized to their journey), and Community Challenge Idea (to inspire others). Format with markdown and emoji.`,
-      seasonal_report: `You are an AI seasonal skincare adaptation specialist. The user is ${ageNum} years old. Based on their request: "${prompt}", create a comprehensive seasonal skin report including: Current Season Impact Analysis (how this season affects skin aging, UV index considerations, humidity impact, temperature effects), Seasonal Skincare Routine Adjustment (modified morning routine, modified evening routine, new products to add, products to remove), Seasonal Nutrition Plan (season-specific foods for skin health, hydration adjustments, supplement changes), Lifestyle Adaptations (exercise modifications, sleep schedule adjustments, indoor/outdoor balance), Season-Specific Threats (environmental pollutants, allergens, weather damage), Transition Plan (how to prepare skin for the next season), and a Seasonal Skin Health Score with improvement targets. Format with markdown.`,
-    };
+      seasonal_report: `You are an AI seasonal skincare adaptation specialist. The user is ${ageNum} years old. Based on their request: "${prompt}", create a comprehensive seasonal skin report including: Current Season Impact Analysis (how this season affects skin aging, UV index considerations, humidity impact, temperature effects), Seasonal Skincare Routine Adjustment (modified morning routine, modified evening routine, new products to add, products to remove), Seasonal Nutrition Plan (season-specific foods for skin health, hydration adjustments, supplement changes), Lifestyle Adaptations (exercise modifications, sleep schedule adjustments, indoor/outdoor balance), Season-Specific Threats (environmental pollutants, allergens, weather damage), Transition Plan (how to prepare skin for the next season), and a Seasonal Skin Health Score with improvement targets. Format with markdown.` };
 
     const systemPrompt = prompts[action];
 
@@ -86,9 +78,7 @@ serve(async (req) => {
           { role: "system", content: systemPrompt },
           { role: "user", content: prompt }
         ],
-        max_completion_tokens: 2500,
-      }),
-    });
+        max_completion_tokens: 2500 }) });
 
     if (!response.ok) {
       const errText = await response.text();
@@ -109,7 +99,6 @@ serve(async (req) => {
     console.error("future-face-ai error:", error);
     return new Response(JSON.stringify({ error: error?.message || "Internal error" }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

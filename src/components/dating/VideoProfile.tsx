@@ -154,10 +154,9 @@ export const AIMatchVisualization = ({ matchScore }: { matchScore: number }) => 
           initial={{ pathLength: 0 }}
           animate={{ pathLength: matchScore / 100 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
-          style={{
+          style={ {
             strokeDasharray: "352",
-            strokeDashoffset: "0",
-          }}
+            strokeDashoffset: "0" }}
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">

@@ -18,8 +18,7 @@ export function ReferralsPanel() {
         .order("created_at", { ascending: false })
         .limit(50);
       return (data as any[]) ?? [];
-    },
-  });
+    } });
 
   if (isLoading) return <div className="p-6 text-sm text-muted-foreground">Loading referrals…</div>;
 

@@ -54,20 +54,16 @@ export default function IQAICoach() {
           currentLevel: stats?.tier ?? "Bronze",
           dailyTime: "20 minutes",
           weakAreas: weakAreas || "general",
-          strongAreas: strongAreas || "general",
-        },
-      });
+          strongAreas: strongAreas || "general" } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setPlan(data as CoachPlan);
       qc.invalidateQueries({ queryKey: ["iq-credits"] });
       toast({ title: "🧠 Plan ready!", description: `Used ${COST} credits` });
-    } catch (e) {
-      toast({
+    } catch (e) { toast({
         title: "Coach unavailable",
         description: e instanceof Error ? e.message : "Try again later",
-        variant: "destructive",
-      });
+        variant: "destructive" });
     } finally {
       setLoading(false);
     }

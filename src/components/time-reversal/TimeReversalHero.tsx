@@ -63,14 +63,13 @@ export function TimeReversalHero() {
         <motion.h1
           initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15 }}
           className="text-[clamp(2.2rem,11vw,3.5rem)] md:text-6xl lg:text-7xl font-black mb-4 leading-[1.02] max-w-[12ch]"
-          style={{
+          style={ {
             WebkitTextStroke: "1.5px rgba(0,0,0,0.5)",
             textShadow: "0 0 40px rgba(168,85,247,0.4), 0 4px 15px rgba(0,0,0,0.7)",
             background: "linear-gradient(135deg, #fff 0%, #d8b4fe 40%, #c084fc 70%, #a855f7 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
+            backgroundClip: "text" }}
         >
           Live Your Life<br />Backwards
         </motion.h1>

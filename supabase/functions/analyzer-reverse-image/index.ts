@@ -2,10 +2,8 @@
 // ready-made search URLs for Google Images, Bing, Yandex, TinEye.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -26,9 +24,7 @@ serve(async (req) => {
           messages: [
             { role: "system", content: "Describe this image for reverse-image search. End with a JSON array of 5-7 short search keyword phrases on a line starting with 'KEYWORDS:'." },
             { role: "user", content: [{ type: "image_url", image_url: { url: imageUrl } }] },
-          ],
-        }),
-      });
+          ] }) });
       const j = await aiRes.json();
       const content = j?.choices?.[0]?.message?.content || "";
       description = content;

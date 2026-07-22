@@ -1,9 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 function getSystemPrompt(action: string): string {
   const prompts: Record<string, string> = {
@@ -22,8 +20,7 @@ function getSystemPrompt(action: string): string {
     "brand-voice": "You are a brand strategist. Define a comprehensive brand voice guide. Return as plain text with tone, vocabulary, do's and don'ts.",
     "media-kit": "You are a media kit designer. Generate a professional media kit text layout. Return as plain text with sections: About, Stats, Services, Rates, Past Collaborations.",
     "crisis-manager": "You are a PR crisis manager. Analyze the situation and provide a response strategy. Return as plain text with Assessment, Response Draft, and Next Steps.",
-    "collab-finder": "You are a collaboration matchmaker. Suggest 5 ideal collaboration partners. Return as plain text with Name, Why They Match, Collaboration Idea.",
-  };
+    "collab-finder": "You are a collaboration matchmaker. Suggest 5 ideal collaboration partners. Return as plain text with Name, Why They Match, Collaboration Idea." };
   return prompts[action] || "You are a helpful social media AI assistant. Provide detailed, actionable advice.";
 }
 
@@ -49,8 +46,7 @@ Deno.serve(async (req) => {
     const { data: credits } = await supabase.from("ai_credits").select("*").eq("user_id", user.id).maybeSingle();
     if (!credits || credits.credits_remaining < 3) {
       return new Response(JSON.stringify({ error: "Insufficient credits. Please purchase more credits." }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const body = await req.json();
@@ -86,9 +82,7 @@ Deno.serve(async (req) => {
           { role: "system", content: systemPrompt },
           { role: "user", content: userMessage },
         ],
-        max_completion_tokens: 2000,
-      }),
-    });
+        max_completion_tokens: 2000 }) });
 
     if (!response.ok) {
       const errText = await response.text();
@@ -117,13 +111,11 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error: any) {
     console.error("Error:", error);
     const status = error.message?.includes("Insufficient") ? 402 : error.message?.includes("authenticated") ? 401 : 500;
     return new Response(JSON.stringify({ error: error.message }), {
-      status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+      status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

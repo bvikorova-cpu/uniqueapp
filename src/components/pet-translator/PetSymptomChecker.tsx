@@ -28,8 +28,7 @@ export default function PetSymptomChecker({ onBack }: { onBack: () => void }) {
     if (selected.length === 0) return toast.error("Select at least one symptom");
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("pet-translator-ai", {
-      body: { action: "symptom_check", symptoms: selected, duration, species: active?.species, breed: active?.breed, age: active?.age_years },
-    });
+      body: { action: "symptom_check", symptoms: selected, duration, species: active?.species, breed: active?.breed, age: active?.age_years } });
     setLoading(false);
     if (error || data?.error) return toast.error(error?.message || data.error);
     const text: string = data.result || "";

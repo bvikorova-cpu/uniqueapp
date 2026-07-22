@@ -42,8 +42,7 @@ export default function CommunityDetail() {
         .maybeSingle();
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   const communityId = community?.id;
 
@@ -58,8 +57,7 @@ export default function CommunityDetail() {
         .order("position", { ascending: true });
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   const { data: moderators = [] } = useQuery({
     queryKey: ["community-mods", communityId],
@@ -75,8 +73,7 @@ export default function CommunityDetail() {
       const { data: profs } = await supabase.rpc("get_profiles_basic", { _ids: ids });
       const byId = new Map((profs ?? []).map((p: any) => [p.id, p]));
       return (data ?? []).map((m) => ({ ...m, profile: byId.get(m.user_id) ?? null }));
-    },
-  });
+    } });
 
   const { data: members = [] } = useQuery({
     queryKey: ["community-members", communityId],
@@ -94,8 +91,7 @@ export default function CommunityDetail() {
       const { data: profs } = await supabase.rpc("get_profiles_basic", { _ids: ids });
       const byId = new Map((profs ?? []).map((p: any) => [p.id, p]));
       return (data ?? []).map((m) => ({ ...m, profile: byId.get(m.user_id) ?? null }));
-    },
-  });
+    } });
 
   const { data: membership } = useQuery({
     queryKey: ["community-membership", communityId, userId],
@@ -109,8 +105,7 @@ export default function CommunityDetail() {
         .maybeSingle();
       if (error) throw error;
       return data;
-    },
-  });
+    } });
 
   // Community-scoped bazaar listings
   const { data: bazaarItems = [] } = useQuery({
@@ -126,8 +121,7 @@ export default function CommunityDetail() {
         .limit(12);
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   // Community-scoped AI gallery
   const { data: galleryItems = [] } = useQuery({
@@ -143,8 +137,7 @@ export default function CommunityDetail() {
         .limit(12);
       if (error) throw error;
       return data ?? [];
-    },
-  });
+    } });
 
   // Realtime: any change to community / members / rules / mods → refetch the
   // affected query so member_count, join/leave state, and rules update live.

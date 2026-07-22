@@ -54,12 +54,10 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
         return;
       }
 
-      const { error } = await supabase.rpc("award_xp", {
-        _user_id: uid,
+      const { error } = await supabase.rpc("award_xp", { _user_id: uid,
         _amount: XP_REWARD,
         _source: "feed_ad_view",
-        _ref_id: refId,
-      });
+        _ref_id: refId });
 
       if (error) {
         toast.error("Couldn't credit XP. Please retry.");
@@ -67,9 +65,7 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
       }
 
       setClaimed(true);
-      toast.success(`+${XP_REWARD} XP earned!`, {
-        description: "Thanks for supporting creators on Unique.",
-      });
+      toast.success(`+${XP_REWARD} XP earned!`, { description: "Thanks for supporting creators on Unique." });
     } finally {
       setLoading(false);
     }

@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -45,9 +43,7 @@ serve(async (req) => {
       );
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
@@ -67,16 +63,14 @@ serve(async (req) => {
         .eq("stripe_session_id", sessionId)
         .single();
 
-      if (!existing) {
-        await supabaseClient.from("reincarnation_purchases").insert({
+      if (!existing) { await supabaseClient.from("reincarnation_purchases").insert({
           user_id: user.id,
           service_type: serviceType,
           stripe_session_id: sessionId,
           stripe_subscription_id: session.subscription as string || null,
           status: "active",
           purchase_type: purchaseType,
-          expires_at: expiresAt,
-        });
+          expires_at: expiresAt });
       }
 
       return new Response(
@@ -87,8 +81,7 @@ serve(async (req) => {
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 200,
-        }
+          status: 200 }
       );
     }
 
@@ -96,8 +89,7 @@ serve(async (req) => {
       JSON.stringify({ success: false, message: "Payment not completed" }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      }
+        status: 400 }
     );
   } catch (error: unknown) {
     console.error("Error:", error);
@@ -106,8 +98,7 @@ serve(async (req) => {
       JSON.stringify({ error: errorMessage }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
+        status: 500 }
     );
   }
 });
