@@ -808,8 +808,9 @@ export default function SkillSwap() {
                         <Lock className="h-8 w-8 text-primary" />
                       </div>
                       <div>
-                        <h2 className="text-2xl font-black">Unlock Premium</h2>
-                        <div className="text-4xl font-black text-primary mt-2">€9.99<span className="text-base font-medium text-muted-foreground">/month</span></div>
+                        <h2 className="text-2xl font-black">Join Skill Swap</h2>
+                        <div className="text-4xl font-black text-primary mt-2">€1<span className="text-base font-medium text-muted-foreground"> one-time entry</span></div>
+                        <p className="text-xs text-muted-foreground mt-1">Lifetime access • No monthly fees • 0% commission</p>
                       </div>
                       <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
                         {[
@@ -824,7 +825,7 @@ export default function SkillSwap() {
                         ))}
                       </div>
                       <Button onClick={handleSubscribe} size="lg" className="w-full max-w-md">
-                        <Sparkles className="mr-2 h-4 w-4" /> Subscribe Now
+                        <Sparkles className="mr-2 h-4 w-4" /> Pay €1 & Unlock Forever
                       </Button>
                     </div>
                   </Card>
