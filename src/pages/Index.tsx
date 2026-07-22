@@ -485,11 +485,6 @@ const Index = () => {
           </div>
           <RewardedAdCard sectionKey="ecosystem" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
           <SectionVideoPreview
-            src={sectionVideos.music}
-            label="Music section preview"
-            caption="🎵 Music — upload, stream, earn royalties"
-          />
-          <SectionVideoPreview
             src={sectionVideos.dating}
             label="Dating section preview"
             caption="💜 Dating — meet your match"
