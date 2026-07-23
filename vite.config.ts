@@ -36,7 +36,43 @@ function i18nCheckPlugin() {
 // instances. Other React-bound libraries are split into their own chunks
 // but all share the same react chunk via Rollup's shared module graph.
 function manualChunks(id: string) {
+  // Rollup/Vite CommonJS helpers must stay in a stable base chunk. If they land
+  // in a feature chunk (for example maps), React core can import that feature
+  // chunk back during startup and create a circular dependency where React is
+  // still undefined (`Cannot read properties of undefined (reading 'createContext')`).
+  if (id.includes("commonjsHelpers") || id.includes("\u0000commonjsHelpers")) {
+    return "vendor";
+  }
+
   if (!id.includes("node_modules")) return;
+
+  // React-bound libraries are kept with React in the base chunk. Splitting
+  // these into feature chunks can make them execute while React's CommonJS
+  // export object is still initializing, producing `useLayoutEffect` /
+  // `createContext` undefined crashes in production only.
+  if (
+    id.includes("react") ||
+    id.includes("@remix-run") ||
+    id.includes("framer-motion") ||
+    id.includes("lucide-react") ||
+    id.includes("@radix-ui") ||
+    id.includes("cmdk") ||
+    id.includes("embla-carousel") ||
+    id.includes("input-otp") ||
+    id.includes("react-day-picker") ||
+    id.includes("react-resizable-panels") ||
+    id.includes("react-virtuoso") ||
+    id.includes("sonner") ||
+    id.includes("vaul") ||
+    id.includes("next-themes") ||
+    id.includes("@hookform") ||
+    id.includes("class-variance-authority") ||
+    id.includes("clsx") ||
+    id.includes("tailwind-merge") ||
+    id.includes("tailwindcss-animate")
+  ) {
+    return "vendor";
+  }
 
   // 3D / heavy graphics (only loaded by 3D pages)
   if (id.includes("/three") || id.includes("three-stdlib") || id.includes("@react-three")) {
@@ -54,9 +90,11 @@ function manualChunks(id: string) {
   if (id.includes("react-markdown") || id.includes("remark-") || id.includes("rehype-") || id.includes("katex")) {
     return "markdown";
   }
-  // React core — must stay together to avoid hook/context crashes
+  // React core must live in the base vendor chunk. Keeping it as a separate
+  // manual chunk caused a production circular import (vendor -> react -> vendor)
+  // after aggressive bundle splitting, which prevented the app from booting.
   if (id.includes("/react/") || id.includes("/react-dom/") || id.includes("/scheduler/")) {
-    return "react";
+    return "vendor";
   }
   // Router
   if (id.includes("react-router") || id.includes("@remix-run")) {
