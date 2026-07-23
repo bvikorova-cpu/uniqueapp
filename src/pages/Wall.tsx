@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useWallRealtime } from "@/hooks/useWallRealtime";
+import { useWallCursorFeed } from "@/hooks/useWallCursorFeed";
 import { Sparkles } from "lucide-react";
 
 // preview-sync: 2026-01-05a (touch file to ensure consistent preview refresh)
