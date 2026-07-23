@@ -312,7 +312,7 @@ const Feed = () => {
     };
 
     const handleTouchEnd = () => {
-      const shouldRefresh = state.canRefresh && !fetchInFlight.current;
+      const shouldRefresh = state.canRefresh && !isInflight();
       state.isPulling = false;
       state.canRefresh = false;
       setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
