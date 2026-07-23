@@ -29,7 +29,7 @@ export const NotificationBell = () => {
   }, []);
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
