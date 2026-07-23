@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bell, Heart, MessageCircle, Smile, Repeat2, Check, User } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { getNotificationRoute } from "@/utils/notificationRoutes";
 
 interface Notification {
   id: string;
