@@ -32,6 +32,7 @@ export function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
