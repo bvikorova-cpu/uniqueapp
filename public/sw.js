@@ -1,18 +1,13 @@
-// Unique – Web Push service worker (no caching; push + notification only)
-// Monetag verification + ad service worker (merged)
-self.options = {
-  "domain": "5gvci.com",
-  "zoneId": 11037516
-};
-self.lary = "";
-try {
-  importScripts('https://5gvci.com/act/files/service-worker.min.js?r=sw');
-} catch (e) {
-  // Monetag SW unreachable — keep our push working anyway
-}
+// Unique – Web Push service worker (no caching; push + notification only).
+// IMPORTANT: never import third-party ad/cache workers here. Older SW code could
+// keep serving stale app shells and trap users on a loader after deploys.
 
 self.addEventListener("install", (e) => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
+
+self.addEventListener("fetch", () => {
+  // No fetch handler: the browser must always use the network/http cache rules.
+});
 
 self.addEventListener("push", (event) => {
   let data = {};
