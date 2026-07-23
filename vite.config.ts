@@ -31,94 +31,19 @@ function i18nCheckPlugin() {
     configureServer() { run(false); } };
 }
 
-// Critical chunks that must be preloaded for the home page to boot. These are
-// the React core graph plus the libraries that the shell (Navbar, Index, Auth)
-// loads immediately. Heavy page-specific libraries (3D, PDF, HLS, charts, etc.)
-// are intentionally NOT preloaded — they are loaded on demand when the user
-// navigates to a route that needs them.
-const CRITICAL_CHUNK_RE = /(index|App|vendor|router|query|i18n|ui|supabase|date|forms|icons|utils)\-[A-Za-z0-9]+\.js$/;
+// Critical chunks that must be preloaded for the home page to boot. Keep the
+// shell dependency graph intentionally compact: React + router + UI primitives
+// live together in `vendor` to avoid production circular imports where a UI
+// chunk tries to read React before the vendor chunk has finished evaluating.
+const CRITICAL_CHUNK_RE = /(index|App|vendor|utils)\-[A-Za-z0-9]+\.js$/;
 const HEAVY_PAGE_CHUNK_RE = /(three|pdf|hls|maps|charts|fabric|markdown|sentry|motion|qrcode|confetti)\-[A-Za-z0-9]+\.js$/;
 
-// Split the bundle so that the initial home page only pays for the libraries it
-// actually needs. React core + CommonJS helpers stay in a single "vendor" chunk
-// to avoid the production circular-dependency crash that happened when React was
-// loaded from a feature chunk.
+// Split only truly heavy route-only libraries. Everything used by the shell
+// stays in one stable `vendor` chunk. This is less aggressive than the previous
+// micro-chunking, but it prevents circular production imports like
+// vendor -> ui -> vendor that can make React undefined at boot.
 function manualChunks(id: string) {
-  // Rollup/Vite CommonJS helpers and React core MUST stay together. If they land
-  // in a feature chunk, React can be undefined when that feature chunk executes.
-  if (id.includes("commonjsHelpers") || id.includes("\u0000commonjsHelpers")) {
-    return "vendor";
-  }
-  if (id.includes("/react/") || id.includes("/react-dom/") || id.includes("/scheduler/")) {
-    return "vendor";
-  }
-
   if (!id.includes("node_modules")) return;
-
-  // Routing
-  if (id.includes("react-router-dom") || id.includes("react-router") || id.includes("@remix-run/router")) {
-    return "router";
-  }
-
-  // Data fetching
-  if (id.includes("@tanstack/react-query") || id.includes("@tanstack/query-core")) {
-    return "query";
-  }
-
-  // State management (used by some feature modules, not in initial home render)
-  if (id.includes("@reduxjs/toolkit") || id.includes("react-redux") || id.includes("@zustand")) {
-    return "state";
-  }
-
-  // Supabase + realtime (used by AuthContext and most shell components)
-  if (id.includes("@supabase")) {
-    return "supabase";
-  }
-
-  // i18n
-  if (id.includes("i18next") || id.includes("react-i18next")) {
-    return "i18n";
-  }
-
-  // UI primitives + icons + floating-ui (Navbar / Index shell uses these)
-  if (
-    id.includes("@radix-ui") ||
-    id.includes("@floating-ui") ||
-    id.includes("lucide-react") ||
-    id.includes("cmdk") ||
-    id.includes("embla-carousel") ||
-    id.includes("input-otp") ||
-    id.includes("react-day-picker") ||
-    id.includes("react-resizable-panels") ||
-    id.includes("react-virtuoso") ||
-    id.includes("sonner") ||
-    id.includes("vaul") ||
-    id.includes("next-themes") ||
-    id.includes("@hookform") ||
-    id.includes("react-hook-form") ||
-    id.includes("class-variance-authority") ||
-    id.includes("clsx") ||
-    id.includes("tailwind-merge") ||
-    id.includes("tailwindcss-animate") ||
-    id.includes("react-remove-scroll")
-  ) {
-    return "ui";
-  }
-
-  // Forms / validation
-  if (id.includes("zod") || id.includes("@hookform/resolvers")) {
-    return "forms";
-  }
-
-  // Date utils
-  if (id.includes("date-fns")) {
-    return "date";
-  }
-
-  // Animation (not in initial render — removed from Index critical path)
-  if (id.includes("framer-motion") || id.includes("motion-dom") || id.includes("motion-utils")) {
-    return "motion";
-  }
 
   // 3D / heavy graphics (only loaded by 3D pages)
   if (
@@ -190,11 +115,6 @@ function manualChunks(id: string) {
     return "charts";
   }
 
-  // Sentry (large, only needed for error reporting — deferred)
-  if (id.includes("@sentry")) {
-    return "sentry";
-  }
-
   // Leaflet maps
   if (id.includes("leaflet") || id.includes("react-leaflet")) {
     return "maps";
@@ -220,30 +140,10 @@ function manualChunks(id: string) {
     return "ffmpeg";
   }
 
-  // Helmet (only used for SEO metadata in some pages)
-  if (id.includes("react-helmet-async")) {
-    return "helmet";
-  }
-
-  // UUID / small utilities
-  if (id.includes("/uuid")) {
-    return "utils";
-  }
-
-  // Polyfills / runtime helpers (keep in a small common chunk, NOT in vendor)
-  if (id.includes("core-js") || id.includes("regenerator-runtime")) {
-    return "core";
-  }
-
-  // Utility libraries that are used by many feature modules but not on the home
-  // page. Splitting them out of vendor keeps the critical chunk small.
-  if (id.includes("es-toolkit")) {
-    return "utils";
-  }
-
-  // Fallback common chunk for anything else. This prevents the vendor chunk from
-  // absorbing random heavy dependencies and keeps React/core in a tight chunk.
-  return "common";
+  // Fallback: all shell/shared dependencies stay together. Do not split React,
+  // Radix, router, query, Sentry, forms, or Supabase into separate manual chunks;
+  // Rollup can otherwise create evaluation cycles that blank the published app.
+  return "vendor";
 }
 
 export default defineConfig(() => ({ server: {
