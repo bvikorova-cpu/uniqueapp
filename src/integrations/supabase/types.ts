@@ -67001,20 +67001,40 @@ export type Database = {
       public_profiles: {
         Row: {
           accent_color: string | null
+          animated_avatar_url: string | null
+          avatar_3d_url: string | null
           avatar_url: string | null
           banner_url: string | null
           bio: string | null
+          company: string | null
+          company_name: string | null
+          completed_exchanges: number | null
           cover_url: string | null
           created_at: string | null
           full_name: string | null
           headline: string | null
           id: string | null
+          interests: string[] | null
           is_verified: boolean | null
+          languages: string[] | null
           location: string | null
           occupation: string | null
+          open_to_work: boolean | null
+          open_to_work_details: Json | null
+          personality_traits: Json | null
+          preferred_language: string | null
+          profile_music_title: string | null
+          profile_music_url: string | null
           profile_theme: string | null
           rating_average: number | null
+          seo_description: string | null
+          seo_title: string | null
+          skills: Json | null
+          skills_offered: string[] | null
+          skills_wanted: string[] | null
+          social_links: Json | null
           theme_color: string | null
+          tone_of_voice: string | null
           total_reviews: number | null
           user_type: string | null
           username: string | null
@@ -67022,23 +67042,44 @@ export type Database = {
           verification_tier:
             | Database["public"]["Enums"]["verification_tier"]
             | null
+          website: string | null
         }
         Insert: {
           accent_color?: string | null
+          animated_avatar_url?: string | null
+          avatar_3d_url?: string | null
           avatar_url?: string | null
           banner_url?: string | null
           bio?: string | null
+          company?: string | null
+          company_name?: string | null
+          completed_exchanges?: number | null
           cover_url?: string | null
           created_at?: string | null
           full_name?: string | null
           headline?: string | null
           id?: string | null
+          interests?: string[] | null
           is_verified?: boolean | null
+          languages?: string[] | null
           location?: string | null
           occupation?: string | null
+          open_to_work?: boolean | null
+          open_to_work_details?: Json | null
+          personality_traits?: Json | null
+          preferred_language?: string | null
+          profile_music_title?: string | null
+          profile_music_url?: string | null
           profile_theme?: string | null
           rating_average?: number | null
+          seo_description?: string | null
+          seo_title?: string | null
+          skills?: Json | null
+          skills_offered?: string[] | null
+          skills_wanted?: string[] | null
+          social_links?: Json | null
           theme_color?: string | null
+          tone_of_voice?: string | null
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
@@ -67046,23 +67087,44 @@ export type Database = {
           verification_tier?:
             | Database["public"]["Enums"]["verification_tier"]
             | null
+          website?: string | null
         }
         Update: {
           accent_color?: string | null
+          animated_avatar_url?: string | null
+          avatar_3d_url?: string | null
           avatar_url?: string | null
           banner_url?: string | null
           bio?: string | null
+          company?: string | null
+          company_name?: string | null
+          completed_exchanges?: number | null
           cover_url?: string | null
           created_at?: string | null
           full_name?: string | null
           headline?: string | null
           id?: string | null
+          interests?: string[] | null
           is_verified?: boolean | null
+          languages?: string[] | null
           location?: string | null
           occupation?: string | null
+          open_to_work?: boolean | null
+          open_to_work_details?: Json | null
+          personality_traits?: Json | null
+          preferred_language?: string | null
+          profile_music_title?: string | null
+          profile_music_url?: string | null
           profile_theme?: string | null
           rating_average?: number | null
+          seo_description?: string | null
+          seo_title?: string | null
+          skills?: Json | null
+          skills_offered?: string[] | null
+          skills_wanted?: string[] | null
+          social_links?: Json | null
           theme_color?: string | null
+          tone_of_voice?: string | null
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
@@ -67070,6 +67132,7 @@ export type Database = {
           verification_tier?:
             | Database["public"]["Enums"]["verification_tier"]
             | null
+          website?: string | null
         }
         Relationships: []
       }
