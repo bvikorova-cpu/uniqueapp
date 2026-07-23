@@ -62,9 +62,11 @@ function manualChunks(id: string) {
   if (id.includes("react-markdown") || id.includes("remark-") || id.includes("rehype-") || id.includes("katex")) {
     return "markdown";
   }
-  // React core — must stay together to avoid hook/context crashes
+  // React core must live in the base vendor chunk. Keeping it as a separate
+  // manual chunk caused a production circular import (vendor -> react -> vendor)
+  // after aggressive bundle splitting, which prevented the app from booting.
   if (id.includes("/react/") || id.includes("/react-dom/") || id.includes("/scheduler/")) {
-    return "react";
+    return "vendor";
   }
   // Router
   if (id.includes("react-router") || id.includes("@remix-run")) {
