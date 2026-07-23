@@ -31,96 +31,60 @@ function i18nCheckPlugin() {
     configureServer() { run(false); } };
 }
 
-// Smaller vendor chunks reduce parse/compile time on mobile and improve TTI.
-// React core is kept in a single "react" chunk to avoid duplicate React
-// instances. Other React-bound libraries are split into their own chunks
-// but all share the same react chunk via Rollup's shared module graph.
+// Critical chunks that must be preloaded for the home page to boot. These are
+// the React core graph plus the libraries that the shell (Navbar, Index, Auth)
+// loads immediately. Heavy page-specific libraries (3D, PDF, HLS, charts, etc.)
+// are intentionally NOT preloaded — they are loaded on demand when the user
+// navigates to a route that needs them.
+const CRITICAL_CHUNK_RE = /(index|App|vendor|router|query|i18n|ui|supabase|date|forms|icons|utils)\-[A-Za-z0-9]+\.js$/;
+const HEAVY_PAGE_CHUNK_RE = /(three|pdf|hls|maps|charts|fabric|markdown|sentry|motion|qrcode|confetti)\-[A-Za-z0-9]+\.js$/;
+
+// Split the bundle so that the initial home page only pays for the libraries it
+// actually needs. React core + CommonJS helpers stay in a single "vendor" chunk
+// to avoid the production circular-dependency crash that happened when React was
+// loaded from a feature chunk.
 function manualChunks(id: string) {
-  // Rollup/Vite CommonJS helpers must stay in a stable base chunk. If they land
-  // in a feature chunk (for example maps), React core can import that feature
-  // chunk back during startup and create a circular dependency where React is
-  // still undefined (`Cannot read properties of undefined (reading 'createContext')`).
+  // Rollup/Vite CommonJS helpers and React core MUST stay together. If they land
+  // in a feature chunk, React can be undefined when that feature chunk executes.
   if (id.includes("commonjsHelpers") || id.includes("\u0000commonjsHelpers")) {
+    return "vendor";
+  }
+  if (id.includes("/react/") || id.includes("/react-dom/") || id.includes("/scheduler/")) {
     return "vendor";
   }
 
   if (!id.includes("node_modules")) return;
 
-  // React-bound libraries are kept with React in the base chunk. Splitting
-  // these into feature chunks can make them execute while React's CommonJS
-  // export object is still initializing, producing `useLayoutEffect` /
-  // `createContext` undefined crashes in production only.
-  if (
-    id.includes("react") ||
-    id.includes("@remix-run") ||
-    id.includes("lucide-react") ||
-    id.includes("@radix-ui") ||
-    id.includes("cmdk") ||
-    id.includes("embla-carousel") ||
-    id.includes("input-otp") ||
-    id.includes("react-day-picker") ||
-    id.includes("react-resizable-panels") ||
-    id.includes("react-virtuoso") ||
-    id.includes("sonner") ||
-    id.includes("vaul") ||
-    id.includes("next-themes") ||
-    id.includes("@hookform") ||
-    id.includes("class-variance-authority") ||
-    id.includes("clsx") ||
-    id.includes("tailwind-merge") ||
-    id.includes("tailwindcss-animate")
-  ) {
-    return "vendor";
-  }
-
-  // framer-motion is intentionally NOT in vendor. It's consumed only by lazy
-  // below-fold chunks (Index critical path uses CSS animations instead), so
-  // isolating it here keeps ~90 kB out of the initial JS payload.
-  if (id.includes("framer-motion")) {
-    return "motion";
-  }
-
-  // 3D / heavy graphics (only loaded by 3D pages)
-  if (id.includes("/three") || id.includes("three-stdlib") || id.includes("@react-three")) {
-    return "three";
-  }
-  // PDF / canvas export (only loaded on certificate/club-card pages)
-  if (id.includes("jspdf") || id.includes("html2canvas") || id.includes("pdfjs-dist")) {
-    return "pdf";
-  }
-  // Drawing (only loaded by kids drawing buddy)
-  if (id.includes("/fabric")) {
-    return "fabric";
-  }
-  // Markdown + math (only loaded by content pages)
-  if (id.includes("react-markdown") || id.includes("remark-") || id.includes("rehype-") || id.includes("katex")) {
-    return "markdown";
-  }
-  // React core must live in the base vendor chunk. Keeping it as a separate
-  // manual chunk caused a production circular import (vendor -> react -> vendor)
-  // after aggressive bundle splitting, which prevented the app from booting.
-  if (id.includes("/react/") || id.includes("/react-dom/") || id.includes("/scheduler/")) {
-    return "vendor";
-  }
-  // Router
-  if (id.includes("react-router") || id.includes("@remix-run")) {
+  // Routing
+  if (id.includes("react-router-dom") || id.includes("react-router") || id.includes("@remix-run/router")) {
     return "router";
   }
-  // Animation (large, used heavily in Index but still separable)
-  if (id.includes("framer-motion")) {
-    return "motion";
-  }
-  // Icons (tree-shaken but large package)
-  if (id.includes("lucide-react")) {
-    return "icons";
-  }
+
   // Data fetching
   if (id.includes("@tanstack/react-query") || id.includes("@tanstack/query-core")) {
     return "query";
   }
-  // UI primitives (Radix, shadcn deps, form libs, notifications)
+
+  // State management (used by some feature modules, not in initial home render)
+  if (id.includes("@reduxjs/toolkit") || id.includes("react-redux") || id.includes("@zustand")) {
+    return "state";
+  }
+
+  // Supabase + realtime (used by AuthContext and most shell components)
+  if (id.includes("@supabase")) {
+    return "supabase";
+  }
+
+  // i18n
+  if (id.includes("i18next") || id.includes("react-i18next")) {
+    return "i18n";
+  }
+
+  // UI primitives + icons + floating-ui (Navbar / Index shell uses these)
   if (
     id.includes("@radix-ui") ||
+    id.includes("@floating-ui") ||
+    id.includes("lucide-react") ||
     id.includes("cmdk") ||
     id.includes("embla-carousel") ||
     id.includes("input-otp") ||
@@ -135,56 +99,151 @@ function manualChunks(id: string) {
     id.includes("class-variance-authority") ||
     id.includes("clsx") ||
     id.includes("tailwind-merge") ||
-    id.includes("tailwindcss-animate")
+    id.includes("tailwindcss-animate") ||
+    id.includes("react-remove-scroll")
   ) {
     return "ui";
   }
-  // i18n
-  if (id.includes("i18next") || id.includes("react-i18next")) {
-    return "i18n";
-  }
+
   // Forms / validation
-  if (id.includes("zod")) {
+  if (id.includes("zod") || id.includes("@hookform/resolvers")) {
     return "forms";
   }
+
   // Date utils
   if (id.includes("date-fns")) {
     return "date";
   }
-  // Supabase + realtime
-  if (id.includes("@supabase")) {
-    return "supabase";
+
+  // Animation (not in initial render — removed from Index critical path)
+  if (id.includes("framer-motion") || id.includes("motion-dom") || id.includes("motion-utils")) {
+    return "motion";
   }
+
+  // 3D / heavy graphics (only loaded by 3D pages)
+  if (
+    id.includes("/three") ||
+    id.includes("three-stdlib") ||
+    id.includes("@react-three") ||
+    id.includes("@dimforge") ||
+    id.includes("troika-three") ||
+    id.includes("react-reconciler") ||
+    id.includes("@monogrid/gainmap-js") ||
+    id.includes("webgl-sdf-generator") ||
+    id.includes("bidi-js") ||
+    id.includes("fflate") ||
+    id.includes("fast-png") ||
+    id.includes("stackblur-canvas") ||
+    id.includes("rgbcolor") ||
+    id.includes("svg-pathdata") ||
+    id.includes("iobuffer") ||
+    id.includes("iceberg-js")
+  ) {
+    return "three";
+  }
+
+  // PDF / canvas export (only loaded on certificate/club-card pages)
+  if (
+    id.includes("jspdf") ||
+    id.includes("html2canvas") ||
+    id.includes("pdfjs-dist") ||
+    id.includes("pako") ||
+    id.includes("canvg") ||
+    id.includes("@react-pdf")
+  ) {
+    return "pdf";
+  }
+
+  // Drawing (only loaded by kids drawing buddy)
+  if (id.includes("/fabric")) {
+    return "fabric";
+  }
+
+  // Markdown + math (only loaded by content pages)
+  if (
+    id.includes("react-markdown") ||
+    id.includes("remark-") ||
+    id.includes("rehype-") ||
+    id.includes("katex") ||
+    id.includes("dompurify") ||
+    id.includes("micromark") ||
+    id.includes("mdast-util") ||
+    id.includes("hast-util") ||
+    id.includes("hastscript") ||
+    id.includes("unified") ||
+    id.includes("vfile") ||
+    id.includes("property-information") ||
+    id.includes("markdown-table") ||
+    id.includes("decode-named-character-reference") ||
+    id.includes("character-entities") ||
+    id.includes("trim-lines") ||
+    id.includes("devlop") ||
+    id.includes("longest-streak") ||
+    id.includes("zwitch") ||
+    id.includes("ccount")
+  ) {
+    return "markdown";
+  }
+
   // Charts (d3 + recharts)
-  if (id.includes("d3-") || id.includes("recharts")) {
+  if (id.includes("d3-") || id.includes("recharts") || id.includes("decimal.js-light")) {
     return "charts";
   }
-  // Sentry (large, only needed for error reporting)
+
+  // Sentry (large, only needed for error reporting — deferred)
   if (id.includes("@sentry")) {
     return "sentry";
   }
+
   // Leaflet maps
   if (id.includes("leaflet") || id.includes("react-leaflet")) {
     return "maps";
   }
+
   // HLS video player
   if (id.includes("hls.js")) {
     return "hls";
   }
+
   // QR codes
   if (id.includes("qrcode")) {
     return "qrcode";
   }
+
   // Confetti
   if (id.includes("canvas-confetti")) {
     return "confetti";
   }
-  // UUID
+
+  // Video encoding (FFmpeg is heavy and only used on video generation pages)
+  if (id.includes("@ffmpeg")) {
+    return "ffmpeg";
+  }
+
+  // Helmet (only used for SEO metadata in some pages)
+  if (id.includes("react-helmet-async")) {
+    return "helmet";
+  }
+
+  // UUID / small utilities
   if (id.includes("/uuid")) {
     return "utils";
   }
-  // Fallback vendor bucket for anything else
-  return "vendor";
+
+  // Polyfills / runtime helpers (keep in a small common chunk, NOT in vendor)
+  if (id.includes("core-js") || id.includes("regenerator-runtime")) {
+    return "core";
+  }
+
+  // Utility libraries that are used by many feature modules but not on the home
+  // page. Splitting them out of vendor keeps the critical chunk small.
+  if (id.includes("es-toolkit")) {
+    return "utils";
+  }
+
+  // Fallback common chunk for anything else. This prevents the vendor chunk from
+  // absorbing random heavy dependencies and keeps React/core in a tight chunk.
+  return "common";
 }
 
 export default defineConfig(() => ({ server: {
@@ -214,6 +273,26 @@ export default defineConfig(() => ({ server: {
     target: "es2020",
     cssCodeSplit: true,
     chunkSizeWarningLimit: 1000,
+    modulePreload: {
+      polyfill: true,
+      // Prevent Vite from preloading heavy page-specific chunks on the initial
+      // home page. This eliminates the "Reduce unused JavaScript" penalty in
+      // PageSpeed because the browser no longer downloads or parses 3D/PDF/HLS
+      // /maps/charts/markdown/sentry libraries for a route that never uses them.
+      resolveDependencies: (url, deps, { hostType }) => {
+        // For JS dynamic imports, keep Vite's computed list — the route chunk
+        // itself is only loaded when the user navigates there.
+        if (hostType === "js") {
+          return deps;
+        }
+        // For the HTML entry, only preload the critical shell chunks. Filter out
+        // heavy feature chunks; they will be fetched on demand by the route.
+        return deps.filter((dep) => {
+          const fileName = path.basename(dep);
+          return CRITICAL_CHUNK_RE.test(fileName) && !HEAVY_PAGE_CHUNK_RE.test(fileName);
+        });
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks,
