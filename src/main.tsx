@@ -295,6 +295,36 @@ function boot() {
       import("./utils/patchSupabaseFunctions").catch((err) => console.error("[Boot] edge patch failed", err));
       import("./utils/webVitals").then(({ installWebVitals }) => installWebVitals()).catch((err) => console.error("[Boot] web vitals failed", err));
       import("./utils/registerSW").then(({ registerServiceWorker }) => registerServiceWorker()).catch((err) => console.error("[Boot] service worker failed", err));
+      // Sentry + Supabase-backed error reporter are heavy; load them after first paint.
+      const bootErrorInfra = async () => {
+        try {
+          const [{ initSentry }, { installGlobalErrorReporter, reportError }] = await Promise.all([
+            import("./lib/sentry"),
+            import("./lib/errorReporter"),
+          ]);
+          initSentry();
+          installGlobalErrorReporter();
+          // Drain buffered early errors and detach temporary listeners.
+          try {
+            const w = window as any;
+            const listeners = w.__UNIQUE_EARLY_LISTENERS__;
+            if (listeners) {
+              window.removeEventListener("error", listeners.bufErr);
+              window.removeEventListener("unhandledrejection", listeners.bufRej);
+            }
+            const buf: Array<{ type: string; payload: any }> = w.__UNIQUE_EARLY_ERRORS__ || [];
+            for (const entry of buf) {
+              try { reportError(entry.payload?.error || entry.payload, { source: entry.type === "rejection" ? "boot.rejection" : "boot.error" }); } catch { /* noop */ }
+            }
+            w.__UNIQUE_EARLY_ERRORS__ = [];
+          } catch { /* noop */ }
+        } catch (err) {
+          console.error("[Boot] error infra failed", err);
+        }
+      };
+      const w = window as any;
+      if (w.requestIdleCallback) w.requestIdleCallback(bootErrorInfra, { timeout: 3000 });
+      else setTimeout(bootErrorInfra, 1500);
     }, 0);
   } catch (err) {
     console.error("[Boot] crash", err);
