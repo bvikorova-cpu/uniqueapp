@@ -67021,6 +67021,8 @@ export type Database = {
           occupation: string | null
           open_to_work: boolean | null
           open_to_work_details: Json | null
+          personality_traits: Json | null
+          preferred_language: string | null
           profile_music_title: string | null
           profile_music_url: string | null
           profile_theme: string | null
@@ -67032,6 +67034,7 @@ export type Database = {
           skills_wanted: string[] | null
           social_links: Json | null
           theme_color: string | null
+          tone_of_voice: string | null
           total_reviews: number | null
           user_type: string | null
           username: string | null
@@ -67063,6 +67066,8 @@ export type Database = {
           occupation?: string | null
           open_to_work?: boolean | null
           open_to_work_details?: Json | null
+          personality_traits?: Json | null
+          preferred_language?: string | null
           profile_music_title?: string | null
           profile_music_url?: string | null
           profile_theme?: string | null
@@ -67074,6 +67079,7 @@ export type Database = {
           skills_wanted?: string[] | null
           social_links?: Json | null
           theme_color?: string | null
+          tone_of_voice?: string | null
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
@@ -67105,6 +67111,8 @@ export type Database = {
           occupation?: string | null
           open_to_work?: boolean | null
           open_to_work_details?: Json | null
+          personality_traits?: Json | null
+          preferred_language?: string | null
           profile_music_title?: string | null
           profile_music_url?: string | null
           profile_theme?: string | null
@@ -67116,6 +67124,7 @@ export type Database = {
           skills_wanted?: string[] | null
           social_links?: Json | null
           theme_color?: string | null
+          tone_of_voice?: string | null
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
