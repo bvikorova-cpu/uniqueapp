@@ -687,8 +687,10 @@ const App = () => {
                 <Suspense fallback={null}>
                   <ProgressiveOnboarding />
                 </Suspense>
-                <Toaster />
-                <Sonner />
+                <Suspense fallback={null}>
+                  <Toaster />
+                  <Sonner />
+                </Suspense>
                 <Suspense fallback={null}>
                   <FloatingAssistantDock>
                     {/* GoogleTranslateWidget removed — Google translate service was unreliable */}
