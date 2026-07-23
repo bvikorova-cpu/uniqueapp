@@ -295,6 +295,7 @@ const NotificationBell = ({ className }: { className?: string }) => {
   };
 
   const handleNotificationClick = async (notification: Notification) => {
+    setOpen(false);
     await markAsRead(notification.id);
     navigate(getNotificationRoute(notification));
   };
@@ -302,7 +303,7 @@ const NotificationBell = ({ className }: { className?: string }) => {
   if (!user) return null;
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className={cn("relative", className)}>
           <Bell className="h-5 w-5" />
