@@ -341,7 +341,7 @@ const Feed = () => {
         const scrollTop = document.documentElement.scrollTop;
         setShowBackToTop(scrollTop > 400);
 
-        if (!fetchInFlight.current && hasMore) {
+        if (!isInflight() && hasMore) {
           const scrollHeight = document.documentElement.scrollHeight;
           const clientHeight = document.documentElement.clientHeight;
           if (scrollHeight - scrollTop - clientHeight < 300) {
