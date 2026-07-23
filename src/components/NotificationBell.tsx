@@ -213,7 +213,7 @@ export function NotificationBell() {
                         <div className="flex gap-2 mt-3">
                           <Button
                             size="sm"
-                            onClick={() => handleApprove(notification)}
+                            onClick={(e) => { e.stopPropagation(); handleApprove(notification); }}
                             disabled={actionLoading === notification.id}
                             className="flex-1"
                           >
