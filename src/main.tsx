@@ -2,14 +2,20 @@ import { createRoot } from "react-dom/client";
 import { Component, lazy as reactLazy, ReactNode, Suspense } from "react";
 import { lazyWithRetry } from "./utils/lazyWithRetry";
 import { installNavigationScrollReset } from "./utils/installNavigationScrollReset";
-import { initSentry } from "./lib/sentry";
-import { installGlobalErrorReporter } from "./lib/errorReporter";
 import "./index.css";
 
-// Init Sentry as early as possible so it captures boot-time errors.
-initSentry();
-// Wire global error/rejection listeners to persist every error to Supabase.
-installGlobalErrorReporter();
+// Sentry (@sentry/react ~70kB gzip) and the Supabase-backed error reporter are
+// deferred to after first paint — they must not block LCP. Buffer any early
+// window errors so they still reach the reporter once it loads.
+const __EARLY_ERRORS: Array<{ type: "error" | "rejection"; payload: any }> = [];
+if (typeof window !== "undefined") {
+  const bufErr = (e: ErrorEvent) => __EARLY_ERRORS.push({ type: "error", payload: { message: e.message, stack: e.error?.stack, error: e.error } });
+  const bufRej = (e: PromiseRejectionEvent) => __EARLY_ERRORS.push({ type: "rejection", payload: e.reason });
+  window.addEventListener("error", bufErr);
+  window.addEventListener("unhandledrejection", bufRej);
+  (window as any).__UNIQUE_EARLY_ERRORS__ = __EARLY_ERRORS;
+  (window as any).__UNIQUE_EARLY_LISTENERS__ = { bufErr, bufRej };
+}
 
 // Keep dynamic imports inside React.lazy. Starting them at module top-level
 // delays execution of this whole file on slow mobile networks, leaving #root
