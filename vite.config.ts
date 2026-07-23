@@ -53,7 +53,6 @@ function manualChunks(id: string) {
   if (
     id.includes("react") ||
     id.includes("@remix-run") ||
-    id.includes("framer-motion") ||
     id.includes("lucide-react") ||
     id.includes("@radix-ui") ||
     id.includes("cmdk") ||
@@ -72,6 +71,13 @@ function manualChunks(id: string) {
     id.includes("tailwindcss-animate")
   ) {
     return "vendor";
+  }
+
+  // framer-motion is intentionally NOT in vendor. It's consumed only by lazy
+  // below-fold chunks (Index critical path uses CSS animations instead), so
+  // isolating it here keeps ~90 kB out of the initial JS payload.
+  if (id.includes("framer-motion")) {
+    return "motion";
   }
 
   // 3D / heavy graphics (only loaded by 3D pages)
@@ -219,7 +225,6 @@ export default defineConfig(() => ({ server: {
       "react",
       "react-dom",
       "react-router-dom",
-      "framer-motion",
       "lucide-react",
       "react-markdown",
       "style-to-js",

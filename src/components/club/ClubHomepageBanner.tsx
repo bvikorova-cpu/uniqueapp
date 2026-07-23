@@ -1,13 +1,10 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { Crown, ArrowRight, HandHeart } from "lucide-react";
 
 export function ClubHomepageBanner() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="mx-auto max-w-6xl px-4 my-6"
+    <div
+      className="mx-auto max-w-6xl px-4 my-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
     >
       <Link
         to="/club"
@@ -40,6 +37,6 @@ export function ClubHomepageBanner() {
           </div>
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }

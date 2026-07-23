@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+// framer-motion removed — CSS enter animation is sufficient for this banner.
 import { Crown, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFoundingMember } from "@/hooks/useFoundingMember";
@@ -48,12 +48,8 @@ export function FoundingMembersBanner() {
   return (
     <>
       <FloatingHowItWorks title={"Founding Members Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Founding Members Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Founding Members Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
-        className="relative overflow-hidden rounded-2xl border border-amber-400/30 bg-gradient-to-r from-amber-500/15 via-yellow-400/10 to-amber-600/15 backdrop-blur-xl p-4 sm:p-5 my-4 shadow-xl shadow-amber-500/10"
+      <div
+        className="relative overflow-hidden rounded-2xl border border-amber-400/30 bg-gradient-to-r from-amber-500/15 via-yellow-400/10 to-amber-600/15 backdrop-blur-xl p-4 sm:p-5 my-4 shadow-xl shadow-amber-500/10 animate-in fade-in slide-in-from-top-2 duration-300"
       >
         <button
           onClick={onDismiss}
@@ -85,8 +81,7 @@ export function FoundingMembersBanner() {
             {claiming ? "Claiming…" : "Claim my badge"}
           </Button>
         </div>
-      </motion.div>
-    </AnimatePresence>
+      </div>
     </>
   );
 }

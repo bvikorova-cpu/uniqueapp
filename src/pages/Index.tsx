@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { motion, AnimatePresence } from "framer-motion";
+// framer-motion removed from Index critical path — search dropdown uses CSS animation instead.
 import { useRecentServices } from "@/hooks/useRecentServices";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
@@ -278,37 +278,32 @@ const Index = () => {
               )}
             </div>
 
-            <AnimatePresence>
-              {searchResults.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full mt-2 w-full bg-card border border-border/50 rounded-xl shadow-2xl z-50 overflow-hidden"
-                >
-                  {searchResults.map((mod) => {
-                    const Icon = mod.icon;
-                    return (
-                      <button
-                        key={mod.path}
-                        onClick={() => { setSearch(""); handleNavigate(mod.path); }}
-                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary/5 transition-colors text-left"
-                      >
-                        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${mod.gradient} flex items-center justify-center shrink-0`}>
-                          <Icon className="w-4 h-4 text-white" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium truncate">{mod.title}</p>
-                          {mod.description && <p className="text-xs text-muted-foreground truncate">{mod.description}</p>}
-                        </div>
-                        <Badge variant="secondary" className="text-[9px] shrink-0">{mod.badge}</Badge>
-                        <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                      </button>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {searchResults.length > 0 && (
+              <div
+                className="absolute top-full mt-2 w-full bg-card border border-border/50 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
+              >
+                {searchResults.map((mod) => {
+                  const Icon = mod.icon;
+                  return (
+                    <button
+                      key={mod.path}
+                      onClick={() => { setSearch(""); handleNavigate(mod.path); }}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary/5 transition-colors text-left"
+                    >
+                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${mod.gradient} flex items-center justify-center shrink-0`}>
+                        <Icon className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium truncate">{mod.title}</p>
+                        {mod.description && <p className="text-xs text-muted-foreground truncate">{mod.description}</p>}
+                      </div>
+                      <Badge variant="secondary" className="text-[9px] shrink-0">{mod.badge}</Badge>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-3 w-full px-4">
