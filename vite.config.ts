@@ -36,6 +36,14 @@ function i18nCheckPlugin() {
 // instances. Other React-bound libraries are split into their own chunks
 // but all share the same react chunk via Rollup's shared module graph.
 function manualChunks(id: string) {
+  // Rollup/Vite CommonJS helpers must stay in a stable base chunk. If they land
+  // in a feature chunk (for example maps), React core can import that feature
+  // chunk back during startup and create a circular dependency where React is
+  // still undefined (`Cannot read properties of undefined (reading 'createContext')`).
+  if (id.includes("commonjsHelpers") || id.includes("\u0000commonjsHelpers")) {
+    return "vendor";
+  }
+
   if (!id.includes("node_modules")) return;
 
   // 3D / heavy graphics (only loaded by 3D pages)
