@@ -47,6 +47,7 @@ const NotificationBell = ({ className }: { className?: string }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   useEffect(() => {
@@ -294,6 +295,7 @@ const NotificationBell = ({ className }: { className?: string }) => {
   };
 
   const handleNotificationClick = async (notification: Notification) => {
+    setOpen(false);
     await markAsRead(notification.id);
     navigate(getNotificationRoute(notification));
   };
@@ -301,7 +303,7 @@ const NotificationBell = ({ className }: { className?: string }) => {
   if (!user) return null;
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className={cn("relative", className)}>
           <Bell className="h-5 w-5" />
@@ -416,7 +418,7 @@ const NotificationBell = ({ className }: { className?: string }) => {
             variant="ghost"
             size="sm"
             className="w-full"
-            onClick={() => navigate("/notifications")}
+            onClick={() => { setOpen(false); navigate("/notifications"); }}
           >
             View all notifications
           </Button>

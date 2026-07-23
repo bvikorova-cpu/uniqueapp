@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bell, Heart, MessageCircle, Smile, Repeat2, Check, User } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { getNotificationRoute } from "@/utils/notificationRoutes";
 
 interface Notification {
   id: string;
@@ -34,6 +35,7 @@ export const NotificationsDropdown = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(() => {
     return localStorage.getItem('notificationSoundEnabled') !== 'false';
   });
@@ -173,12 +175,9 @@ export const NotificationsDropdown = () => {
   };
 
   const handleNotificationClick = async (notification: Notification) => {
+    setOpen(false);
     await markAsRead(notification.id);
-    if (notification.post_id) {
-      navigate(`/wall`);
-    } else if (notification.type === 'follow') {
-      navigate(`/profile/${notification.actor_id}`);
-    }
+    navigate(getNotificationRoute(notification as any));
   };
 
   const toggleSound = () => { const newValue = !soundEnabled;
@@ -226,7 +225,7 @@ export const NotificationsDropdown = () => {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />

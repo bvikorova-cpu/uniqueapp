@@ -10,11 +10,15 @@ import { useNotifications,
   isNotificationSoundEnabled,
   setNotificationSoundEnabled } from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { getNotificationRoute } from "@/utils/notificationRoutes";
 
 export const NotificationBell = () => {
   const { notifications, unreadCount, isRinging, markAsRead, markAllAsRead } =
     useNotifications();
   const [soundOn, setSoundOn] = useState<boolean>(true);
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSoundOn(isNotificationSoundEnabled());
@@ -25,7 +29,7 @@ export const NotificationBell = () => {
   }, []);
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
@@ -85,6 +89,8 @@ export const NotificationBell = () => {
                     if (!notification.is_read) {
                       markAsRead(notification.id);
                     }
+                    setOpen(false);
+                    navigate(getNotificationRoute(notification as any));
                   }}
                 >
                   <div className="flex justify-between items-start">

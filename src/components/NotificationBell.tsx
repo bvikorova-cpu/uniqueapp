@@ -9,6 +9,7 @@ import { Popover,
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { getNotificationRoute } from "@/utils/notificationRoutes";
 
 interface Notification {
   id: string;
@@ -31,6 +32,7 @@ export function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -150,7 +152,7 @@ export function NotificationBell() {
   };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
@@ -183,7 +185,12 @@ export function NotificationBell() {
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`p-4 rounded-lg border ${
+                    onClick={async () => {
+                      setOpen(false);
+                      await markAsRead(notification.id);
+                      navigate(getNotificationRoute(notification));
+                    }}
+                    className={`p-4 rounded-lg border cursor-pointer hover:bg-accent/70 transition-colors ${
                       !notification.is_read ? "bg-accent" : "bg-background"
                     }`}
                   >
@@ -206,7 +213,7 @@ export function NotificationBell() {
                         <div className="flex gap-2 mt-3">
                           <Button
                             size="sm"
-                            onClick={() => handleApprove(notification)}
+                            onClick={(e) => { e.stopPropagation(); handleApprove(notification); }}
                             disabled={actionLoading === notification.id}
                             className="flex-1"
                           >
@@ -216,7 +223,7 @@ export function NotificationBell() {
                           <Button
                             size="sm"
                             variant="destructive"
-                            onClick={() => handleReject(notification)}
+                            onClick={(e) => { e.stopPropagation(); handleReject(notification); }}
                             disabled={actionLoading === notification.id}
                             className="flex-1"
                           >
@@ -229,7 +236,9 @@ export function NotificationBell() {
                       {notification.type === "secret_santa_gift" && !notification.is_read && (
                         <Button
                           size="sm"
-                          onClick={async () => {
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            setOpen(false);
                             await markAsRead(notification.id);
                             navigate("/secret-santa");
                           }}
