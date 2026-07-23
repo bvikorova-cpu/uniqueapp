@@ -223,7 +223,7 @@ export function NotificationBell() {
                           <Button
                             size="sm"
                             variant="destructive"
-                            onClick={() => handleReject(notification)}
+                            onClick={(e) => { e.stopPropagation(); handleReject(notification); }}
                             disabled={actionLoading === notification.id}
                             className="flex-1"
                           >
