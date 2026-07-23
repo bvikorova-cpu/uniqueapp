@@ -175,12 +175,9 @@ export const NotificationsDropdown = () => {
   };
 
   const handleNotificationClick = async (notification: Notification) => {
+    setOpen(false);
     await markAsRead(notification.id);
-    if (notification.post_id) {
-      navigate(`/wall`);
-    } else if (notification.type === 'follow') {
-      navigate(`/profile/${notification.actor_id}`);
-    }
+    navigate(getNotificationRoute(notification as any));
   };
 
   const toggleSound = () => { const newValue = !soundEnabled;
