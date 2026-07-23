@@ -418,7 +418,7 @@ const NotificationBell = ({ className }: { className?: string }) => {
             variant="ghost"
             size="sm"
             className="w-full"
-            onClick={() => navigate("/notifications")}
+            onClick={() => { setOpen(false); navigate("/notifications"); }}
           >
             View all notifications
           </Button>
