@@ -32,14 +32,8 @@ export const usePostReactions = (postId?: string) => {
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase.from("post_reactions").upsert({ post_id: postId,
-        user_id: user.id,
-        reaction_type: reactionType }, {
-        onConflict: "post_id,user_id"
-      });
-
-      if (error) throw error;
+      // Debounced batch write — dramatically reduces write QPS at scale.
+      queueReaction(postId, reactionType);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
@@ -49,18 +43,12 @@ export const usePostReactions = (postId?: string) => {
     mutationFn: async (postId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase
-        .from("post_reactions")
-        .delete()
-        .eq("post_id", postId)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
+      queueReaction(postId, null);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
     } });
+
 
   const getReactionCounts = () => { const counts: Record<ReactionType, number> = {
       like: 0,
