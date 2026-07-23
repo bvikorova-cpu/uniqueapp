@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, lazy, Suspense } from "react";
 
-import { useNavigate, Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { Card, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,19 +14,16 @@ import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
 const HeroSlideshow = lazy(() => import("@/components/home/HeroSlideshow"));
 import { SEO } from "@/components/SEO";
 import { Age16Badge } from "@/components/Age16Badge";
-import { HowItWorksTrust } from "@/components/trust/HowItWorksTrust";
 import { FoundingMembersBanner } from "@/components/founding/FoundingMembersBanner";
-import { InviteFriendsCallout } from "@/components/referral/InviteFriendsCallout";
 import { ClubHomepageBanner } from "@/components/club/ClubHomepageBanner";
-import { SectionVideoPreview } from "@/components/SectionVideoPreview";
-import { sectionVideos } from "@/components/sectionVideos";
+import { LazyOnVisible } from "@/components/LazyOnVisible";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
   Clock, Timer, ChefHat, MessageCircle, Star, MessageSquare, Palette,
   Camera, Gem, Shirt, ArrowRight, Zap, Search, X,
-  PenTool, Globe, ChevronRight, Layers, Coins,
-  Pin, PinOff, BookOpen
+  PenTool, Globe, ChevronRight,
+  PinOff, BookOpen
 } from "lucide-react";
 
 // ── Data ──────────────────────────────────────────────
@@ -151,17 +148,7 @@ const stats = [
   { label: "Experiences", value: 33, suffix: "+" },
 ];
 
-import spotlightAvatars from "@/assets/spotlight-avatars.jpg";
-import spotlightRacing from "@/assets/spotlight-racing.jpg";
-import spotlightChef from "@/assets/spotlight-chef.jpg";
-import spotlightBeauty from "@/assets/spotlight-beauty.webp";
-
-const spotlightServices = [
-  { ...coreModules[4], spotlight: "🔥 Hot Now", image: spotlightBeauty },
-  { ...ecosystemModules[0], spotlight: "Most Popular", image: spotlightAvatars },
-  { ...ecosystemModules[4], spotlight: "Trending", image: spotlightRacing },
-  { ...ecosystemModules[3], spotlight: "New", image: spotlightChef },
-];
+// Spotlight images/data moved into the lazy below-fold chunk.
 
 // ── Animated Counter ──────────────────────────────────
 
@@ -189,12 +176,6 @@ const Index = () => {
   const navigate = useNavigate();
   const { recent, favorites, trackVisit, toggleFavorite, isFavorite } = useRecentServices();
   const [search, setSearch] = useState("");
-  const [spotlightIdx, setSpotlightIdx] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => setSpotlightIdx(i => (i + 1) % spotlightServices.length), 5000);
-    return () => clearInterval(timer);
-  }, []);
 
   const searchResults = useMemo(() => {
     if (!search.trim()) return [];
