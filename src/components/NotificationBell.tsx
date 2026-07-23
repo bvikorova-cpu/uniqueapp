@@ -185,7 +185,12 @@ export function NotificationBell() {
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`p-4 rounded-lg border ${
+                    onClick={async () => {
+                      setOpen(false);
+                      await markAsRead(notification.id);
+                      navigate(getNotificationRoute(notification));
+                    }}
+                    className={`p-4 rounded-lg border cursor-pointer hover:bg-accent/70 transition-colors ${
                       !notification.is_read ? "bg-accent" : "bg-background"
                     }`}
                   >
