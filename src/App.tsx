@@ -1,10 +1,11 @@
 import { Suspense, type ReactNode } from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
+// Toasters are not LCP-critical — lazy-loaded to keep radix-toast + sonner out of initial JS.
+const Toaster = lazy(() => import("@/components/ui/toaster").then(m => ({ default: m.Toaster })));
+const Sonner = lazy(() => import("@/components/ui/sonner").then(m => ({ default: m.Toaster })));
 import RouteSEO from "@/components/RouteSEO";
 import ScrollToTop from "@/components/ScrollToTop";
 const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
@@ -686,8 +687,10 @@ const App = () => {
                 <Suspense fallback={null}>
                   <ProgressiveOnboarding />
                 </Suspense>
-                <Toaster />
-                <Sonner />
+                <Suspense fallback={null}>
+                  <Toaster />
+                  <Sonner />
+                </Suspense>
                 <Suspense fallback={null}>
                   <FloatingAssistantDock>
                     {/* GoogleTranslateWidget removed — Google translate service was unreliable */}
