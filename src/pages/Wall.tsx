@@ -91,128 +91,68 @@ const Feed = () => {
   const wallStats = useWallStats(user?.id, true);
 
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
+  const [verifiedOnly, setVerifiedOnly] = useState<boolean>(() => {
+    try { return localStorage.getItem("wall.verifiedOnly") === "1"; } catch { return false; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem("wall.verifiedOnly", verifiedOnly ? "1" : "0"); } catch {}
+  }, [verifiedOnly]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const VALID_VIEWS = ["feed", "ai-tools", "streaks", "ranks", "badges", "challenges"] as const;
+  const urlTab = searchParams.get("tab") ?? "feed";
+  const activeView = (VALID_VIEWS as readonly string[]).includes(urlTab) ? urlTab : "feed";
+  const setActiveView = useCallback((view: string) => {
+    const next = new URLSearchParams(searchParams);
+    if (view === "feed") next.delete("tab");
+    else next.set("tab", view);
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
+  const [pullToRefresh, setPullToRefresh] = useState({ pulling: false,
+    pullDistance: 0,
+    canRefresh: false });
+  const PULL_THRESHOLD = 80;
+  const { toast } = useToast();
 
-  const fetchPosts = useCallback(async (loadMore = false) => {
-    if (fetchInFlight.current) return;
-    fetchInFlight.current = true;
-    try {
-      if (loadMore) {
-        setLoadingMore(true);
-      } else {
-        if (feedItemsCountRef.current === 0) setLoading(true);
-        setFeedError(null);
-        lastCursor.current = null;
-        pageIndexRef.current = 0;
-        setHasMore(true);
-      }
+  const [searchQuery, setSearchQuery] = useState("");
+  const [savedPosts, setSavedPosts] = useState<Post[]>([]);
+  const [loadingSaved, setLoadingSaved] = useState(false);
 
-      const currentPage = loadMore ? pageIndexRef.current + 1 : 0;
-      const cursor = loadMore ? lastCursor.current : null;
+  const { data: userProfile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+      return data;
+    },
+    enabled: !!user && feedEnhancementsReady });
 
-      // Single-RPC fetch: posts + reposts + profiles + media + original_posts in 1 round-trip.
-      // P2 — 1 auto-retry on transient network/RPC error so a single fail doesn't kill the feed.
-      const fetchFeed = async () =>
-        tracedRpc("get_wall_feed", () =>
-          supabase.rpc("get_wall_feed", { _cursor: cursor, _limit: POSTS_PER_PAGE }),
-        );
-      let { data: feedData, error: feedErr } = await fetchFeed();
-      if (feedErr) {
-        await new Promise(r => setTimeout(r, 400));
-        ({ data: feedData, error: feedErr } = await fetchFeed());
-      }
-      if (feedErr) throw feedErr;
-
-      const payload = (feedData as any) || { posts: [], reposts: [] };
-      const postsData: any[] = payload.posts || [];
-      const repostsData: any[] = payload.reposts || [];
-
-      // Audit fix: pagination must compare TOTAL items vs page size (sum, not OR).
-      setHasMore(postsData.length + repostsData.length >= POSTS_PER_PAGE);
-
-
-      const fallback = (id: string) => ({ id, full_name: null, avatar_url: null });
-
-      const postsWithProfiles = postsData.map((post: any) => ({ ...post,
-        media: post.media || [],
-        profiles: post.profiles || fallback(post.user_id) })) as Post[];
-
-      const repostsWithData = repostsData
-        .map((repost: any) => { const op = repost.original_post;
-          if (!op) return null;
-          return {
-            ...repost,
-            profiles: repost.profiles || fallback(repost.user_id),
-            original_post: {
-              ...op,
-              media: op.media || [],
-              profiles: op.profiles || fallback(op.user_id) } };
-        })
-        .filter(Boolean) as Repost[];
-
-
-      const newItems: FeedItem[] = [
-        ...postsWithProfiles.map((p) => ({ type: "post" as const, data: p })),
-        ...repostsWithData.map((r) => ({ type: "repost" as const, data: r })),
-      ].sort(
-        (a, b) =>
-          new Date(b.data.created_at).getTime() - new Date(a.data.created_at).getTime()
-      );
-
-      // Tag each item with its page index — used by the sort to preserve
-      // page order across infinite scroll so Verified priority doesn't shuffle
-      // items above the fold when a new page arrives.
-      newItems.forEach((it) => {
-        (it as any)._page = currentPage;
-      });
-
-      if (loadMore) {
-        setPosts((prev) => {
-          const seen = new Set(prev.map((p) => p.id));
-          return [...prev, ...postsWithProfiles.filter((p) => !seen.has(p.id))];
-        });
-        setReposts((prev) => {
-          const seen = new Set(prev.map((r) => r.id));
-          return [...prev, ...repostsWithData.filter((r) => !seen.has(r.id))];
-        });
-      } else {
-        setPosts(postsWithProfiles);
-        setReposts(repostsWithData);
-      }
-
-      setFeedItems((prev) => {
-        const merged = loadMore ? [...prev, ...newItems] : newItems;
-        const seen = new Set<string>();
-        const deduped = merged.filter((it) => {
-          const k = `${it.type}-${it.data.id}`;
-          if (seen.has(k)) return false;
-          seen.add(k);
-          return true;
-        });
-        return deduped;
-      });
-
-      if (newItems.length > 0) {
-        lastCursor.current = newItems[newItems.length - 1].data.created_at;
-        pageIndexRef.current = currentPage;
-      }
-
-      // (removed: localStorage cache — was causing stale/slow first paint)
-
-
-    } catch (error: any) { setFeedError(error?.message || "Failed to load posts");
+  // Surface load errors via toast — kept out of the hook so it stays UI-agnostic.
+  useEffect(() => {
+    if (feedError) {
       toast({
         title: "Error loading posts",
-        description: error.message,
-        variant: "destructive" });
-    } finally {
-      fetchInFlight.current = false;
-      setLoading(false);
-      setLoadingMore(false);
-      if (!loadMore) markWallInteractive();
+        description: feedError,
+        variant: "destructive",
+      });
     }
-  }, [toast]);
+  }, [feedError, toast]);
 
-  // (removed: deferred enhancement gating — enhancements always ready now)
+  // Mark Wall as interactive as soon as the first page finishes loading.
+  useEffect(() => {
+    if (!loading) markWallInteractive();
+  }, [loading]);
+
+  // Thin adapter so existing `onPostCreated={fetchPosts}` / `onDelete={fetchPosts}`
+  // call sites keep working — `true` = load next page, `false`/absent = refresh.
+  const fetchPosts = useCallback((loadMore: boolean | unknown = false) => {
+    if (loadMore === true) loadMoreFeed();
+    else resetFeed();
+  }, [loadMoreFeed, resetFeed]);
 
 
   const fetchSavedPosts = async () => {
