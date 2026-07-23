@@ -236,7 +236,9 @@ export function NotificationBell() {
                       {notification.type === "secret_santa_gift" && !notification.is_read && (
                         <Button
                           size="sm"
-                          onClick={async () => {
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            setOpen(false);
                             await markAsRead(notification.id);
                             navigate("/secret-santa");
                           }}
