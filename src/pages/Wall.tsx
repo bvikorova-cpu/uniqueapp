@@ -7,8 +7,7 @@ import { Sparkles } from "lucide-react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { startWallTrace,
-  markWallInteractive,
-  tracedRpc } from "@/utils/wallPerf";
+  markWallInteractive } from "@/utils/wallPerf";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import UserSearch from "@/components/feed/UserSearch";
