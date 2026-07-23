@@ -46,6 +46,34 @@ function manualChunks(id: string) {
 
   if (!id.includes("node_modules")) return;
 
+  // React-bound libraries are kept with React in the base chunk. Splitting
+  // these into feature chunks can make them execute while React's CommonJS
+  // export object is still initializing, producing `useLayoutEffect` /
+  // `createContext` undefined crashes in production only.
+  if (
+    id.includes("react") ||
+    id.includes("@remix-run") ||
+    id.includes("framer-motion") ||
+    id.includes("lucide-react") ||
+    id.includes("@radix-ui") ||
+    id.includes("cmdk") ||
+    id.includes("embla-carousel") ||
+    id.includes("input-otp") ||
+    id.includes("react-day-picker") ||
+    id.includes("react-resizable-panels") ||
+    id.includes("react-virtuoso") ||
+    id.includes("sonner") ||
+    id.includes("vaul") ||
+    id.includes("next-themes") ||
+    id.includes("@hookform") ||
+    id.includes("class-variance-authority") ||
+    id.includes("clsx") ||
+    id.includes("tailwind-merge") ||
+    id.includes("tailwindcss-animate")
+  ) {
+    return "vendor";
+  }
+
   // 3D / heavy graphics (only loaded by 3D pages)
   if (id.includes("/three") || id.includes("three-stdlib") || id.includes("@react-three")) {
     return "three";
