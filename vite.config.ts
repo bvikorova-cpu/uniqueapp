@@ -56,13 +56,18 @@ function manualChunks(id: string) {
   if (!id.includes("node_modules")) return;
 
   // Routing
-  if (id.includes("react-router-dom") || id.includes("@remix-run/router")) {
+  if (id.includes("react-router-dom") || id.includes("react-router") || id.includes("@remix-run/router")) {
     return "router";
   }
 
   // Data fetching
   if (id.includes("@tanstack/react-query") || id.includes("@tanstack/query-core")) {
     return "query";
+  }
+
+  // State management (used by some feature modules, not in initial home render)
+  if (id.includes("@reduxjs/toolkit") || id.includes("react-redux") || id.includes("@zustand")) {
+    return "state";
   }
 
   // Supabase + realtime (used by AuthContext and most shell components)
@@ -75,9 +80,10 @@ function manualChunks(id: string) {
     return "i18n";
   }
 
-  // UI primitives + icons (Navbar / Index shell uses these)
+  // UI primitives + icons + floating-ui (Navbar / Index shell uses these)
   if (
     id.includes("@radix-ui") ||
+    id.includes("@floating-ui") ||
     id.includes("lucide-react") ||
     id.includes("cmdk") ||
     id.includes("embla-carousel") ||
@@ -93,7 +99,8 @@ function manualChunks(id: string) {
     id.includes("class-variance-authority") ||
     id.includes("clsx") ||
     id.includes("tailwind-merge") ||
-    id.includes("tailwindcss-animate")
+    id.includes("tailwindcss-animate") ||
+    id.includes("react-remove-scroll")
   ) {
     return "ui";
   }
@@ -109,17 +116,41 @@ function manualChunks(id: string) {
   }
 
   // Animation (not in initial render — removed from Index critical path)
-  if (id.includes("framer-motion")) {
+  if (id.includes("framer-motion") || id.includes("motion-dom") || id.includes("motion-utils")) {
     return "motion";
   }
 
   // 3D / heavy graphics (only loaded by 3D pages)
-  if (id.includes("/three") || id.includes("three-stdlib") || id.includes("@react-three")) {
+  if (
+    id.includes("/three") ||
+    id.includes("three-stdlib") ||
+    id.includes("@react-three") ||
+    id.includes("@dimforge") ||
+    id.includes("troika-three") ||
+    id.includes("react-reconciler") ||
+    id.includes("@monogrid/gainmap-js") ||
+    id.includes("webgl-sdf-generator") ||
+    id.includes("bidi-js") ||
+    id.includes("fflate") ||
+    id.includes("fast-png") ||
+    id.includes("stackblur-canvas") ||
+    id.includes("rgbcolor") ||
+    id.includes("svg-pathdata") ||
+    id.includes("iobuffer") ||
+    id.includes("iceberg-js")
+  ) {
     return "three";
   }
 
   // PDF / canvas export (only loaded on certificate/club-card pages)
-  if (id.includes("jspdf") || id.includes("html2canvas") || id.includes("pdfjs-dist")) {
+  if (
+    id.includes("jspdf") ||
+    id.includes("html2canvas") ||
+    id.includes("pdfjs-dist") ||
+    id.includes("pako") ||
+    id.includes("canvg") ||
+    id.includes("@react-pdf")
+  ) {
     return "pdf";
   }
 
@@ -129,12 +160,33 @@ function manualChunks(id: string) {
   }
 
   // Markdown + math (only loaded by content pages)
-  if (id.includes("react-markdown") || id.includes("remark-") || id.includes("rehype-") || id.includes("katex")) {
+  if (
+    id.includes("react-markdown") ||
+    id.includes("remark-") ||
+    id.includes("rehype-") ||
+    id.includes("katex") ||
+    id.includes("dompurify") ||
+    id.includes("micromark") ||
+    id.includes("mdast-util") ||
+    id.includes("hast-util") ||
+    id.includes("hastscript") ||
+    id.includes("unified") ||
+    id.includes("vfile") ||
+    id.includes("property-information") ||
+    id.includes("markdown-table") ||
+    id.includes("decode-named-character-reference") ||
+    id.includes("character-entities") ||
+    id.includes("trim-lines") ||
+    id.includes("devlop") ||
+    id.includes("longest-streak") ||
+    id.includes("zwitch") ||
+    id.includes("ccount")
+  ) {
     return "markdown";
   }
 
   // Charts (d3 + recharts)
-  if (id.includes("d3-") || id.includes("recharts")) {
+  if (id.includes("d3-") || id.includes("recharts") || id.includes("decimal.js-light")) {
     return "charts";
   }
 
@@ -163,13 +215,35 @@ function manualChunks(id: string) {
     return "confetti";
   }
 
+  // Video encoding (FFmpeg is heavy and only used on video generation pages)
+  if (id.includes("@ffmpeg")) {
+    return "ffmpeg";
+  }
+
+  // Helmet (only used for SEO metadata in some pages)
+  if (id.includes("react-helmet-async")) {
+    return "helmet";
+  }
+
   // UUID / small utilities
   if (id.includes("/uuid")) {
     return "utils";
   }
 
-  // Fallback vendor bucket for anything else
-  return "vendor";
+  // Polyfills / runtime helpers (keep in a small common chunk, NOT in vendor)
+  if (id.includes("core-js") || id.includes("regenerator-runtime")) {
+    return "core";
+  }
+
+  // Utility libraries that are used by many feature modules but not on the home
+  // page. Splitting them out of vendor keeps the critical chunk small.
+  if (id.includes("es-toolkit")) {
+    return "utils";
+  }
+
+  // Fallback common chunk for anything else. This prevents the vendor chunk from
+  // absorbing random heavy dependencies and keeps React/core in a tight chunk.
+  return "common";
 }
 
 export default defineConfig(() => ({ server: {
