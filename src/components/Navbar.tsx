@@ -507,7 +507,7 @@ const Navbar = () => {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" aria-label="Account menu">
                       <MemberBadge userId={user.id} size="sm">
                         <UserCircle className="h-5 w-5" />
                       </MemberBadge>
