@@ -10,11 +10,15 @@ import { useNotifications,
   isNotificationSoundEnabled,
   setNotificationSoundEnabled } from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { getNotificationRoute } from "@/utils/notificationRoutes";
 
 export const NotificationBell = () => {
   const { notifications, unreadCount, isRinging, markAsRead, markAllAsRead } =
     useNotifications();
   const [soundOn, setSoundOn] = useState<boolean>(true);
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSoundOn(isNotificationSoundEnabled());
