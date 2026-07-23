@@ -1,7 +1,8 @@
 import { createRoot } from "react-dom/client";
-import { Component, lazy as reactLazy, ReactNode, Suspense } from "react";
+import { Component, ReactNode, Suspense } from "react";
 import { lazyWithRetry } from "./utils/lazyWithRetry";
 import { installNavigationScrollReset } from "./utils/installNavigationScrollReset";
+import App from "./App";
 import "./index.css";
 
 // Sentry (@sentry/react ~70kB gzip) and the Supabase-backed error reporter are
@@ -17,14 +18,15 @@ if (typeof window !== "undefined") {
   (window as any).__UNIQUE_EARLY_LISTENERS__ = { bufErr, bufRej };
 }
 
-// Keep dynamic imports inside React.lazy. Starting them at module top-level
-// delays execution of this whole file on slow mobile networks, leaving #root
-// empty/white before React can render the fallback.
-const App = lazyWithRetry(() => import("./App"));
-const CookieConsentBanner = reactLazy(() =>
+// The application shell is imported statically on purpose. During the recent
+// performance pass it was converted to a dynamic import, which made the first
+// screen depend on an extra chunk request. On stale previews / mobile Chrome
+// that can fail and leave users on a blank loader. Keep App in the entry graph;
+// only non-critical banners stay lazy.
+const CookieConsentBanner = lazyWithRetry(() =>
   import("./components/gdpr/CookieConsentBanner").then((module) => ({ default: module.CookieConsentBanner }))
 );
-const InstallPromptBanner = reactLazy(() =>
+const InstallPromptBanner = lazyWithRetry(() =>
   import("./components/pwa/InstallPromptBanner").then((module) => ({ default: module.InstallPromptBanner }))
 );
 
@@ -63,13 +65,15 @@ declare global {
 function showCrashOverlay(title: string, detail: string) {
   try {
     const root = document.getElementById("root");
+    const escapeHtml = (value: string) =>
+      value.replace(/[<&>]/g, (char) => ({ "<": "&lt;", "&": "&amp;", ">": "&gt;" }[char] ?? char));
     const html = `
       <div data-unique-crash-overlay="true" style="position:fixed;inset:0;z-index:2147483647;background:#0f0a1f;color:#fff;font-family:ui-sans-serif,system-ui,sans-serif;padding:24px;overflow:auto;">
         <div style="max-width:880px;margin:0 auto;">
           <div style="display:inline-block;padding:4px 10px;border-radius:9999px;background:#7c3aed;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;">Preview crash</div>
           <h1 style="margin:14px 0 6px;font-size:22px;font-weight:700;">${title}</h1>
           <p style="margin:0 0 16px;color:#c4b5fd;">The application crashed during initialization. Details below.</p>
-          <pre style="white-space:pre-wrap;background:#1e1b3a;border:1px solid #4c1d95;padding:14px;border-radius:10px;font-size:12.5px;line-height:1.5;color:#fde68a;">${detail.replace(/[<&>]/g, c => ({"<":"&lt;","&":"&amp;",">":"&gt;"}[c]!))}</pre>
+          <pre style="white-space:pre-wrap;background:#1e1b3a;border:1px solid #4c1d95;padding:14px;border-radius:10px;font-size:12.5px;line-height:1.5;color:#fde68a;">${escapeHtml(detail)}</pre>
           <button onclick="window.location.reload()" style="margin-top:16px;border:0;border-radius:10px;background:#9333ea;color:#fff;padding:10px 14px;font-weight:700;cursor:pointer;">Reload preview</button>
           <p style="margin-top:14px;color:#a78bfa;font-size:13px;">If you see this message after refreshing the preview, send it to the chat — I can fix it.</p>
         </div>
