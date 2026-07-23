@@ -50,7 +50,6 @@ export function HeroSlideshow() {
         alt=""
         aria-hidden="true"
         decoding="async"
-        fetchPriority="high"
         className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
         style={{ filter: "brightness(1.02) saturate(1.1)" }}
       />
