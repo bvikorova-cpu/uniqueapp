@@ -74,71 +74,23 @@ const Feed = () => {
   const feedEnhancementsReady = true;
   const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(user?.id);
   const cacheIsFresh = false;
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [reposts, setReposts] = useState<Repost[]>([]);
-  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
 
-  const [loading, setLoading] = useState(true);
+  // Main Wall feed — keyset pagination via `useWallCursorFeed`
+  // (get_wall_feed RPC, O(log n) via idx_posts_feed_keyset).
+  const {
+    items: feedItems,
+    loading,
+    loadingMore,
+    hasMore,
+    error: feedError,
+    loadMore: loadMoreFeed,
+    reset: resetFeed,
+    isInflight,
+  } = useWallCursorFeed(10);
+
   const wallStats = useWallStats(user?.id, true);
 
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [feedError, setFeedError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true);
-  // pagination uses lastCursor ref (keyset), no page state needed
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
-  const [verifiedOnly, setVerifiedOnly] = useState<boolean>(() => {
-    try { return localStorage.getItem("wall.verifiedOnly") === "1"; } catch { return false; }
-  });
-  useEffect(() => {
-    try { localStorage.setItem("wall.verifiedOnly", verifiedOnly ? "1" : "0"); } catch {}
-  }, [verifiedOnly]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const VALID_VIEWS = ["feed", "ai-tools", "streaks", "ranks", "badges", "challenges"] as const;
-  const urlTab = searchParams.get("tab") ?? "feed";
-  const activeView = (VALID_VIEWS as readonly string[]).includes(urlTab) ? urlTab : "feed";
-  const setActiveView = useCallback((view: string) => {
-    const next = new URLSearchParams(searchParams);
-    if (view === "feed") next.delete("tab");
-    else next.set("tab", view);
-    setSearchParams(next, { replace: true });
-  }, [searchParams, setSearchParams]);
-  const [pullToRefresh, setPullToRefresh] = useState({ pulling: false,
-    pullDistance: 0,
-    canRefresh: false });
-  const POSTS_PER_PAGE = 10;
-  const PULL_THRESHOLD = 80;
-  const { toast } = useToast();
-  
-  const [searchQuery, setSearchQuery] = useState("");
-  const [savedPosts, setSavedPosts] = useState<Post[]>([]);
-  const [loadingSaved, setLoadingSaved] = useState(false);
-  
-
-  const { data: userProfile } = useQuery({
-    queryKey: ["profile", user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-      return data;
-    },
-    enabled: !!user && feedEnhancementsReady });
-
-  // Race-condition lock + cursor for keyset pagination (avoids range duplicates)
-  const fetchInFlight = useRef(false);
-  const lastCursor = useRef<string | null>(null);
-  const feedItemsCountRef = useRef(feedItems.length);
-  // Stable page counter — items get tagged with their page so Verified priority
-  // reorders WITHIN a page but never moves items across pages during infinite scroll.
-  const pageIndexRef = useRef(0);
-
-  useEffect(() => {
-    feedItemsCountRef.current = feedItems.length;
-  }, [feedItems.length]);
 
   const fetchPosts = useCallback(async (loadMore = false) => {
     if (fetchInFlight.current) return;
