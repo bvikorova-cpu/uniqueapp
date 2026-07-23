@@ -89,6 +89,8 @@ export const NotificationBell = () => {
                     if (!notification.is_read) {
                       markAsRead(notification.id);
                     }
+                    setOpen(false);
+                    navigate(getNotificationRoute(notification as any));
                   }}
                 >
                   <div className="flex justify-between items-start">
