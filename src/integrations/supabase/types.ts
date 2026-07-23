@@ -67963,6 +67963,7 @@ export type Database = {
         }
         Returns: number
       }
+      batch_apply_reactions: { Args: { items: Json }; Returns: Json }
       bazaar_promote_listing: {
         Args: { p_item_id: string; p_plan: string }
         Returns: Json
@@ -68356,6 +68357,18 @@ export type Database = {
       fail_job: {
         Args: { p_error?: string; p_job_id: string }
         Returns: undefined
+      }
+      feed_page_after: {
+        Args: { cursor_id?: string; cursor_ts?: string; page_size?: number }
+        Returns: {
+          comments_count: number
+          content: string
+          created_at: string
+          id: string
+          likes_count: number
+          shares_count: number
+          user_id: string
+        }[]
       }
       finalize_iq_tournament: {
         Args: { _competition_id: string }
