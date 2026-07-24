@@ -48,12 +48,14 @@ function zonedTimeToUtc(
 
 function getTimeLeft() { const now = new Date();
   const z = getZonedParts(now, DRAW_TIMEZONE);
-  // Last day of current month in target timezone = day 0 of next month
-  const lastDay = new Date(Date.UTC(z.year, z.month, 0)).getUTCDate();
-  const endUtcMs = zonedTimeToUtc(z.year, z.month, lastDay, 23, 59, 59, DRAW_TIMEZONE);
+  // Current calendar quarter (1-4)
+  const quarter = Math.floor((z.month - 1) / 3) + 1;
+  const quarterStartMonth = (quarter - 1) * 3 + 1; // 1,4,7,10
+  const quarterEndMonth = quarterStartMonth + 2; // 3,6,9,12
+  const lastDay = new Date(Date.UTC(z.year, quarterEndMonth, 0)).getUTCDate();
+  const endUtcMs = zonedTimeToUtc(z.year, quarterEndMonth, lastDay, 23, 59, 59, DRAW_TIMEZONE);
   const end = new Date(endUtcMs);
-  // Voting for the current round opened on the 1st day of this month at 00:00 in DRAW_TIMEZONE
-  const startUtcMs = zonedTimeToUtc(z.year, z.month, 1, 0, 0, 0, DRAW_TIMEZONE);
+  const startUtcMs = zonedTimeToUtc(z.year, quarterStartMonth, 1, 0, 0, 0, DRAW_TIMEZONE);
   const start = new Date(startUtcMs);
   const diff = Math.max(0, endUtcMs - now.getTime());
   return {
@@ -82,7 +84,7 @@ export default function NextVotingCountdown() {
     </div>
   );
 
-  const drawDateTime = t.end.toLocaleString(undefined, { day: "2-digit",
+  const drawDateTime = t.end.toLocaleString("en-GB", { day: "2-digit",
     month: "long",
     year: "numeric",
     hour: "2-digit",
@@ -90,7 +92,7 @@ export default function NextVotingCountdown() {
     timeZone: DRAW_TIMEZONE,
     timeZoneName: "short" });
 
-  const startDateTime = t.start.toLocaleString(undefined, { day: "2-digit",
+  const startDateTime = t.start.toLocaleString("en-GB", { day: "2-digit",
     month: "long",
     year: "numeric",
     hour: "2-digit",
