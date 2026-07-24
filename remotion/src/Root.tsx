@@ -17,6 +17,7 @@ import { HealthFilm, HEALTH_DURATION } from "./HealthFilm";
 import { SportsFilm, SPORTS_DURATION } from "./SportsFilm";
 import { EntertainmentFilm, ENTERTAINMENT_DURATION } from "./EntertainmentFilm";
 import { InfluKingFilm, INFLUKING_DURATION } from "./InfluKingFilm";
+import { InfluKingCinematic, INFLUKING_CINEMATIC_DURATION } from "./InfluKingCinematic";
 import { MarketplacesFilm, MARKETPLACES_DURATION } from "./MarketplacesFilm";
 import { LearningGrowthFilm, LEARNINGGROWTH_DURATION } from "./LearningGrowthFilm";
 import { AccountFilm, ACCOUNT_DURATION } from "./AccountFilm";
@@ -164,6 +165,14 @@ export const RemotionRoot = () => (
       id="influking-film"
       component={InfluKingFilm}
       durationInFrames={INFLUKING_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+    <Composition
+      id="influking-cinematic"
+      component={InfluKingCinematic}
+      durationInFrames={INFLUKING_CINEMATIC_DURATION}
       fps={30}
       width={1080}
       height={1920}
