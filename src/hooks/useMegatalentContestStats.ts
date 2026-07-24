@@ -32,7 +32,7 @@ export const useMegatalentContestStats = () => {
       // Active quarterly contest period (or next upcoming one).
       const { data: activePeriod } = await (supabase as any)
         .from("mt_contest_settings")
-        .select("period_start, period_end, prize_pool_eur, title")
+        .select("period_start, period_end, prize_pool_eur, title, revenue_share_pct, min_prize_pool_eur, accumulated_platform_eur")
         .lte("period_start", today)
         .gte("period_end", today)
         .order("period_start", { ascending: false })
@@ -43,14 +43,23 @@ export const useMegatalentContestStats = () => {
         ? { data: null }
         : await (supabase as any)
             .from("mt_contest_settings")
-            .select("period_start, period_end, prize_pool_eur, title")
+            .select("period_start, period_end, prize_pool_eur, title, revenue_share_pct, min_prize_pool_eur, accumulated_platform_eur")
             .gte("period_end", today)
             .order("period_start", { ascending: true })
             .limit(1)
             .maybeSingle();
 
-      const period = activePeriod || nextPeriod;
-      const prizePool = Number(period?.prize_pool_eur ?? 10000);
+      const period: any = activePeriod || nextPeriod;
+      // Live prize pool = max(minimum, accumulated platform share × revenue_share_pct).
+      // Falls back to legacy fixed prize_pool_eur when new fields are missing.
+      const sharePct = Number(period?.revenue_share_pct ?? 50);
+      const minPool = Number(period?.min_prize_pool_eur ?? 5000);
+      const accumulated = Number(period?.accumulated_platform_eur ?? 0);
+      const computed = Math.max(minPool, (accumulated * sharePct) / 100);
+      const prizePool = period
+        ? computed
+        : Number(period?.prize_pool_eur ?? 10000);
+
 
       // Distinct talents with at least one active submission.
       const { data: talents } = await supabase
