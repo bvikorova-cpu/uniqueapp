@@ -110,7 +110,7 @@ export default function NextVotingCountdown() {
         <div>
           <div className="text-sm sm:text-base font-black flex items-center gap-1.5 justify-center sm:justify-start">
             <Flame className="h-4 w-4 text-orange-400" />
-            Next voting round & €10,000 prize draw
+            Next voting round & quarterly prize draw
           </div>
           <div className="text-xs text-muted-foreground flex items-center gap-1 justify-center sm:justify-start mt-0.5">
             <PlayCircle className="h-3 w-3 text-green-400" />

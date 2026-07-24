@@ -452,7 +452,7 @@ const Index = () => {
           <SectionVideoPreview
             src={sectionVideos.megatalent}
             label="Megatalent contest preview"
-            caption="🎤 Megatalent — quarterly €10,000 prize"
+            caption="🎤 Megatalent — growing quarterly cash prize"
           />
         </section>
         {favoriteModules.length > 0 && (

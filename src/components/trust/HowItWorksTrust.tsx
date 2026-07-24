@@ -8,7 +8,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 const STEPS = [
   { icon: Sparkles, title: "Sign up free", desc: "Get 10 free credits instantly. No credit card required." },
   { icon: Coins, title: "Vote, create & engage", desc: "Use credits to vote, comment, upload talents or play games." },
-  { icon: Trophy, title: "Win real prizes", desc: "Top talents earn €5–€10,000 in quarterly cash prizes." },
+  { icon: Trophy, title: "Win real prizes", desc: "Top talents earn real cash in quarterly prizes — the pool grows with every subscription." },
 ];
 
 const TRUST_BADGES = [

@@ -30,7 +30,7 @@ const SLIDES: { title: string; render: () => JSX.Element }[] = [
       <SlideShell kicker="02 · Solution">
         <h2 className="text-[88px] leading-[0.95] font-bold mb-10">One paid platform.<br/><span className="text-purple-300">15 monetization streams.</span></h2>
         <div className="grid grid-cols-2 gap-6 text-[26px]">
-          {["Creator subs 85/15", "Bazaar 80/20", "AI credits", "Megatalent €10k/Q", "Brand Arena enterprise", "Dating premium", "Music streaming", "Jobs marketplace"].map((s) => (
+          {["Creator subs 85/15", "Bazaar 80/20", "AI credits", "Megatalent 50%/Q pool", "Brand Arena enterprise", "Dating premium", "Music streaming", "Jobs marketplace"].map((s) => (
             <div key={s} className="bg-white/5 backdrop-blur rounded-2xl px-6 py-4 border border-white/10">{s}</div>
           ))}
         </div>
