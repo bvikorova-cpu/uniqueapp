@@ -2928,6 +2928,13 @@ export type Database = {
             foreignKeyName: "archived_posts_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "archived_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -5822,6 +5829,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "bookmarks_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "bookmarks_post_id_fkey"
             columns: ["post_id"]
@@ -11301,6 +11315,13 @@ export type Database = {
             foreignKeyName: "collaborative_posts_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "collaborative_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -11816,6 +11837,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "saved_collections"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_items_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
           },
           {
             foreignKeyName: "collection_items_post_id_fkey"
@@ -37726,6 +37754,13 @@ export type Database = {
             foreignKeyName: "live_posts_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: true
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "live_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -39207,6 +39242,13 @@ export type Database = {
           post_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "media_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "media_post_id_fkey"
             columns: ["post_id"]
@@ -43372,6 +43414,13 @@ export type Database = {
             foreignKeyName: "notifications_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "notifications_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -45871,6 +45920,13 @@ export type Database = {
             foreignKeyName: "photo_tags_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "photo_tags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -45896,6 +45952,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "pinned_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "pinned_posts_post_id_fkey"
             columns: ["post_id"]
@@ -46305,6 +46368,13 @@ export type Database = {
             foreignKeyName: "polls_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "polls_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -46352,6 +46422,13 @@ export type Database = {
             foreignKeyName: "post_analytics_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: true
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_analytics_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -46383,6 +46460,13 @@ export type Database = {
           status?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "post_collaborators_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "post_collaborators_post_id_fkey"
             columns: ["post_id"]
@@ -46483,6 +46567,13 @@ export type Database = {
             foreignKeyName: "post_comments_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -46545,6 +46636,13 @@ export type Database = {
             foreignKeyName: "post_edit_history_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_edit_history_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -46570,6 +46668,13 @@ export type Database = {
           previous_content?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "post_edits_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "post_edits_post_id_fkey"
             columns: ["post_id"]
@@ -46618,6 +46723,13 @@ export type Database = {
             foreignKeyName: "post_embeds_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_embeds_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -46652,6 +46764,13 @@ export type Database = {
           sender_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "post_gifts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "post_gifts_post_id_fkey"
             columns: ["post_id"]
@@ -46692,6 +46811,13 @@ export type Database = {
             foreignKeyName: "post_hashtags_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_hashtags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -46724,6 +46850,13 @@ export type Database = {
             foreignKeyName: "post_highlights_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_highlights_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -46749,6 +46882,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "post_likes_post_id_fkey"
             columns: ["post_id"]
@@ -46785,6 +46925,13 @@ export type Database = {
             foreignKeyName: "post_mentions_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_mentions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -46813,6 +46960,13 @@ export type Database = {
           post_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "post_moods_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "post_moods_post_id_fkey"
             columns: ["post_id"]
@@ -46923,6 +47077,13 @@ export type Database = {
             foreignKeyName: "post_polls_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_polls_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -46997,6 +47158,13 @@ export type Database = {
             foreignKeyName: "post_reactions_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -47031,6 +47199,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "post_reminders_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "post_reminders_post_id_fkey"
             columns: ["post_id"]
@@ -47079,6 +47254,13 @@ export type Database = {
             foreignKeyName: "post_reports_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_reports_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -47114,8 +47296,22 @@ export type Database = {
             foreignKeyName: "post_shares_original_post_id_fkey"
             columns: ["original_post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_shares_original_post_id_fkey"
+            columns: ["original_post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_shares_shared_post_id_fkey"
+            columns: ["shared_post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
           },
           {
             foreignKeyName: "post_shares_shared_post_id_fkey"
@@ -47146,6 +47342,13 @@ export type Database = {
           tagged_user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "post_tags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "post_tags_post_id_fkey"
             columns: ["post_id"]
@@ -47224,8 +47427,22 @@ export type Database = {
             foreignKeyName: "post_threads_child_post_id_fkey"
             columns: ["child_post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_threads_child_post_id_fkey"
+            columns: ["child_post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_threads_parent_post_id_fkey"
+            columns: ["parent_post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
           },
           {
             foreignKeyName: "post_threads_parent_post_id_fkey"
@@ -47259,6 +47476,13 @@ export type Database = {
           translated_content?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "post_translations_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "post_translations_post_id_fkey"
             columns: ["post_id"]
@@ -47297,6 +47521,13 @@ export type Database = {
           viewed_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "post_views_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "post_views_post_id_fkey"
             columns: ["post_id"]
@@ -51715,6 +51946,13 @@ export type Database = {
             foreignKeyName: "reposts_original_post_id_fkey"
             columns: ["original_post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "reposts_original_post_id_fkey"
+            columns: ["original_post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -53207,6 +53445,13 @@ export type Database = {
             foreignKeyName: "saved_posts_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "saved_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -53351,6 +53596,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "scheduled_posts_published_post_id_fkey"
+            columns: ["published_post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "scheduled_posts_published_post_id_fkey"
             columns: ["published_post_id"]
@@ -58241,6 +58493,13 @@ export type Database = {
             foreignKeyName: "story_highlight_posts_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "story_highlight_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -61372,6 +61631,13 @@ export type Database = {
             foreignKeyName: "trending_posts_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: true
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "trending_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
@@ -62406,6 +62672,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "user_media_gallery_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "user_media_gallery_post_id_fkey"
             columns: ["post_id"]
@@ -64462,6 +64735,13 @@ export type Database = {
           waveform_data?: Json | null
         }
         Relationships: [
+          {
+            foreignKeyName: "voice_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "voice_posts_post_id_fkey"
             columns: ["post_id"]
@@ -66713,6 +66993,23 @@ export type Database = {
           },
         ]
       }
+      mv_wall_feed_hot: {
+        Row: {
+          author_id: string | null
+          content: string | null
+          created_at: string | null
+          post_id: string | null
+        }
+        Relationships: []
+      }
+      mv_weekly_xp_top: {
+        Row: {
+          user_id: string | null
+          view_count: number | null
+          weekly_xp: number | null
+        }
+        Relationships: []
+      }
       profiles_public: {
         Row: {
           accent_color: string | null
@@ -67021,6 +67318,8 @@ export type Database = {
           occupation: string | null
           open_to_work: boolean | null
           open_to_work_details: Json | null
+          personality_traits: Json | null
+          preferred_language: string | null
           profile_music_title: string | null
           profile_music_url: string | null
           profile_theme: string | null
@@ -67032,6 +67331,7 @@ export type Database = {
           skills_wanted: string[] | null
           social_links: Json | null
           theme_color: string | null
+          tone_of_voice: string | null
           total_reviews: number | null
           user_type: string | null
           username: string | null
@@ -67063,6 +67363,8 @@ export type Database = {
           occupation?: string | null
           open_to_work?: boolean | null
           open_to_work_details?: Json | null
+          personality_traits?: Json | null
+          preferred_language?: string | null
           profile_music_title?: string | null
           profile_music_url?: string | null
           profile_theme?: string | null
@@ -67074,6 +67376,7 @@ export type Database = {
           skills_wanted?: string[] | null
           social_links?: Json | null
           theme_color?: string | null
+          tone_of_voice?: string | null
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
@@ -67105,6 +67408,8 @@ export type Database = {
           occupation?: string | null
           open_to_work?: boolean | null
           open_to_work_details?: Json | null
+          personality_traits?: Json | null
+          preferred_language?: string | null
           profile_music_title?: string | null
           profile_music_url?: string | null
           profile_theme?: string | null
@@ -67116,6 +67421,7 @@ export type Database = {
           skills_wanted?: string[] | null
           social_links?: Json | null
           theme_color?: string | null
+          tone_of_voice?: string | null
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
@@ -67657,6 +67963,7 @@ export type Database = {
         }
         Returns: number
       }
+      batch_apply_reactions: { Args: { items: Json }; Returns: Json }
       bazaar_promote_listing: {
         Args: { p_item_id: string; p_plan: string }
         Returns: Json
@@ -68051,6 +68358,18 @@ export type Database = {
         Args: { p_error?: string; p_job_id: string }
         Returns: undefined
       }
+      feed_page_after: {
+        Args: { cursor_id?: string; cursor_ts?: string; page_size?: number }
+        Returns: {
+          comments_count: number
+          content: string
+          created_at: string
+          id: string
+          likes_count: number
+          shares_count: number
+          user_id: string
+        }[]
+      }
       finalize_iq_tournament: {
         Args: { _competition_id: string }
         Returns: Json
@@ -68115,6 +68434,29 @@ export type Database = {
       get_battle_royale_available_payout: {
         Args: { _tournament_id: string }
         Returns: number
+      }
+      get_cached_wall_feed: {
+        Args: { _limit?: number; _offset?: number }
+        Returns: {
+          author_avatar_url: string
+          author_full_name: string
+          author_id: string
+          author_username: string
+          content: string
+          created_at: string
+          post_id: string
+        }[]
+      }
+      get_cached_weekly_xp_top: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          user_id: string
+          username: string
+          view_count: number
+          weekly_xp: number
+        }[]
       }
       get_campaign_available_balance: {
         Args: { _campaign_id: string; _campaign_type: string }
@@ -69308,6 +69650,7 @@ export type Database = {
         }
       }
       redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
+      refresh_public_cache_mvs: { Args: never; Returns: undefined }
       refund_ai_credits_atomic: {
         Args: { _amount: number; _user_id: string }
         Returns: undefined
@@ -69462,7 +69805,6 @@ export type Database = {
       }
       track_challenge_action: { Args: { _action: string }; Returns: Json }
       trim_user_feed_cache: { Args: never; Returns: undefined }
-      unaccent: { Args: { "": string }; Returns: string }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
         Returns: undefined
