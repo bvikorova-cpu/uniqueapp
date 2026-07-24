@@ -50,15 +50,10 @@ export const useMegatalentContestStats = () => {
             .maybeSingle();
 
       const period: any = activePeriod || nextPeriod;
-      // Live prize pool = max(minimum, accumulated platform share × revenue_share_pct).
-      // Falls back to legacy fixed prize_pool_eur when new fields are missing.
+      // Live prize pool = accumulated platform share × revenue_share_pct (no minimum floor).
       const sharePct = Number(period?.revenue_share_pct ?? 50);
-      const minPool = Number(period?.min_prize_pool_eur ?? 5000);
       const accumulated = Number(period?.accumulated_platform_eur ?? 0);
-      const computed = Math.max(minPool, (accumulated * sharePct) / 100);
-      const prizePool = period
-        ? computed
-        : Number(period?.prize_pool_eur ?? 10000);
+      const prizePool = period ? (accumulated * sharePct) / 100 : 0;
 
 
       // Distinct talents with at least one active submission.

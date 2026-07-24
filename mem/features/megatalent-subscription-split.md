@@ -18,7 +18,7 @@ type: feature
 
 - After paying the referral, **50 %** of the platform's share is added to the current quarterly contest prize pool via `public.mt_add_platform_share(_amount_eur)`.
 - The other 50 % stays with the platform.
-- Configurable per period via `mt_contest_settings.revenue_share_pct` (default 50) and `min_prize_pool_eur` (default €5,000 floor).
+- No minimum guarantee — the pool starts at €0 and grows purely from subscriptions. Configurable per period via `mt_contest_settings.revenue_share_pct` (default 50).
 - See `mem://features/megatalent-contest-periods` for schedule and formula.
 
 ## Notes
