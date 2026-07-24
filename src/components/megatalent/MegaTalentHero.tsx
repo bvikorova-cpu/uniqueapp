@@ -8,8 +8,11 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 function getContestTimeLeft() {
   const now = new Date();
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  const diff = lastDay.getTime() - now.getTime();
+  // Quarterly cycle — ends on the last day of the current calendar quarter (UTC).
+  const quarter = Math.floor(now.getUTCMonth() / 3);
+  const quarterEndMonth = quarter * 3 + 3; // 3, 6, 9, 12
+  const end = new Date(Date.UTC(now.getUTCFullYear(), quarterEndMonth, 0, 23, 59, 59));
+  const diff = Math.max(0, end.getTime() - now.getTime());
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);
   return { days, hours };
