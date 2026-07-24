@@ -60,7 +60,7 @@ export const MegaTalentGuide = () => {
                     <li>Access to all 30+ talent categories</li>
                     <li>Vote on other participants' entries</li>
                     <li>Comment and interact with the community</li>
-                    <li>Compete for monthly prizes</li>
+                    <li>Compete for quarterly prizes</li>
                   </ul>
                 </div>
                 <div className="bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">
