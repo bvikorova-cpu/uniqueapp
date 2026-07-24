@@ -96,7 +96,7 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
               ⚡ MEGA<span className="text-yellow-400">TALENT</span> ⚡
             </h1>
             <p className="text-xs sm:text-sm text-white/80 font-semibold mt-0.5 drop-shadow">
-              Showcase your talent, compete across {categoryLabel} categories, win the monthly prize pool!
+              Showcase your talent, compete across {categoryLabel} categories, win the quarterly prize pool!
             </p>
           </motion.div>
         </div>
