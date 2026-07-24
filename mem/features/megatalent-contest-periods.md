@@ -1,6 +1,6 @@
 ---
 name: Megatalent Contest Periods
-description: Quarterly contest schedule. Prize pool = 50% of platform's net profit from Megatalent subscriptions (min €5,000 guarantee). Live counter.
+description: Quarterly contest schedule. Prize pool = 50% of platform's net profit from Megatalent subscriptions (no minimum guarantee). Live counter.
 type: feature
 ---
 
