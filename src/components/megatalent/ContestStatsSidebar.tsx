@@ -22,7 +22,7 @@ export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: Co
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-base">
             <Trophy className="h-5 w-5 text-yellow-500" />
-            Monthly Contest
+            Quarterly Contest
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -35,49 +35,46 @@ export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: Co
             >
               €{stats?.prizePool ? stats.prizePool.toLocaleString("en-US") : "—"}
             </motion.div>
-            <p className="text-xs text-muted-foreground mt-1">Prize Pool (from active subscriptions)</p>
+            <p className="text-xs text-muted-foreground mt-1">Prize Pool — 50% of subscription profit (grows live)</p>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Current Month:</span>
-              <span className="font-semibold text-xs">
-                {(() => {
-                  const now = new Date();
-                  if (now < new Date("2026-01-01")) return "Starts 01.01.2026";
-                  return now.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-                })()}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Remaining:</span>
-              <span className="font-semibold text-xs">
-                {(() => {
-                  const now = new Date();
-                  if (now < new Date("2026-01-01")) {
-                    const d = Math.ceil((new Date("2026-01-01").getTime() - now.getTime()) / 86400000);
-                    return `Starts in ${d} days`;
-                  }
-                  const last = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-                  const d = Math.ceil((last.getTime() - now.getTime()) / 86400000);
-                  return `${d} ${d === 1 ? "day" : "days"}`;
-                })()}
-              </span>
-            </div>
-            <div className="w-full bg-secondary rounded-full h-2">
-              <div
-                className="bg-gradient-to-r from-yellow-500 to-amber-500 h-2 rounded-full transition-all"
-                style={{
-                  width: (() => {
-                    const now = new Date();
-                    if (now < new Date("2026-01-01")) return "0%";
-                    const d = now.getDate();
-                    const total = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-                    return `${(d / total) * 100}%`;
-                  })() }}
-              />
-            </div>
-          </div>
+          {(() => {
+            const now = new Date();
+            const q = Math.floor(now.getUTCMonth() / 3);
+            const startMonth = q * 3;
+            const endMonth = q * 3 + 3;
+            const start = new Date(Date.UTC(now.getUTCFullYear(), startMonth, 1));
+            const end = new Date(Date.UTC(now.getUTCFullYear(), endMonth, 0, 23, 59, 59));
+            const totalMs = end.getTime() - start.getTime();
+            const elapsedMs = Math.min(totalMs, Math.max(0, now.getTime() - start.getTime()));
+            const remainingMs = Math.max(0, end.getTime() - now.getTime());
+            const days = Math.floor(remainingMs / 86_400_000);
+            const hours = Math.floor((remainingMs % 86_400_000) / 3_600_000);
+            const label = `Q${q + 1} ${now.getUTCFullYear()}`;
+            const endLabel = end.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" });
+            return (
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Current Quarter:</span>
+                  <span className="font-semibold text-xs">{label}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Ends:</span>
+                  <span className="font-semibold text-xs">{endLabel}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Remaining:</span>
+                  <span className="font-semibold text-xs">{days}d {hours}h</span>
+                </div>
+                <div className="w-full bg-secondary rounded-full h-2">
+                  <div
+                    className="bg-gradient-to-r from-yellow-500 to-amber-500 h-2 rounded-full transition-all"
+                    style={{ width: `${(elapsedMs / totalMs) * 100}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })()}
         </CardContent>
       </Card>
 
