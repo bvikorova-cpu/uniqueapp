@@ -28,13 +28,13 @@ const steps = [
       "The face must be yours — no stolen footage",
     ] },
   { icon: Heart,
-    title: "Hlasovanie a boost ❤️",
+    title: "Voting & boost ❤️",
     description:
       "Your fans vote with their hearts. Premium subscribers get 2× vote weight, TOP Premium gets up to 3× and a daily vote-boost.",
     bullets: [
       "Share your post via Share — this invites more votes",
       "Use AI Talent Coach to improve performance",
-      "Sleduj Live Leaderboard pre real-time poradie",
+      "Follow the Live Leaderboard for real-time ranking",
     ] },
   { icon: Award,
     title: "Contest rules ⚖️",
