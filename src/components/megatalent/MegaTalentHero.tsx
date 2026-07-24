@@ -8,8 +8,11 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 function getContestTimeLeft() {
   const now = new Date();
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  const diff = lastDay.getTime() - now.getTime();
+  // Quarterly cycle — ends on the last day of the current calendar quarter (UTC).
+  const quarter = Math.floor(now.getUTCMonth() / 3);
+  const quarterEndMonth = quarter * 3 + 3; // 3, 6, 9, 12
+  const end = new Date(Date.UTC(now.getUTCFullYear(), quarterEndMonth, 0, 23, 59, 59));
+  const diff = Math.max(0, end.getTime() - now.getTime());
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);
   return { days, hours };
@@ -69,7 +72,7 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
           <div className="flex flex-wrap items-center gap-2 mb-auto">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
               <Badge className="bg-yellow-500/90 text-black font-bold border-yellow-400/50 shadow-lg shadow-yellow-500/20 text-[10px] px-2 py-0.5">
-                <Trophy className="h-3 w-3 mr-1" /> Monthly Prize Pool: {prizePoolLabel}
+                <Trophy className="h-3 w-3 mr-1" /> Quarterly Prize Pool: {prizePoolLabel}
               </Badge>
             </motion.div>
             {isSubscribed && (
@@ -93,7 +96,7 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
               ⚡ MEGA<span className="text-yellow-400">TALENT</span> ⚡
             </h1>
             <p className="text-xs sm:text-sm text-white/80 font-semibold mt-0.5 drop-shadow">
-              Showcase your talent, compete across {categoryLabel} categories, win the monthly prize pool!
+              Showcase your talent, compete across {categoryLabel} categories, win the quarterly prize pool!
             </p>
           </motion.div>
         </div>

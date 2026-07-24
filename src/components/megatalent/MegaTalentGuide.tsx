@@ -60,7 +60,7 @@ export const MegaTalentGuide = () => {
                     <li>Access to all 30+ talent categories</li>
                     <li>Vote on other participants' entries</li>
                     <li>Comment and interact with the community</li>
-                    <li>Compete for monthly prizes</li>
+                    <li>Compete for quarterly prizes</li>
                   </ul>
                 </div>
                 <div className="bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">
@@ -167,7 +167,7 @@ export const MegaTalentGuide = () => {
                 <p><strong>How to win:</strong></p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>Winners are determined by the leaderboard ranking score</li>
-                  <li>Competitions run on a monthly cycle</li>
+                  <li>Competitions run on a quarterly cycle</li>
                   <li>Each category has its own competition</li>
                 </ul>
                 <div className="bg-amber-500/10 p-3 rounded-xl mt-2 space-y-2">
