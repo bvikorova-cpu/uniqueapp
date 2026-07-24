@@ -13,18 +13,18 @@ type: feature
 ## Prize pool formula
 
 ```
-prize_pool = max(min_prize_pool_eur, accumulated_platform_eur × revenue_share_pct / 100)
+prize_pool = accumulated_platform_eur × revenue_share_pct / 100
 ```
 
 - `revenue_share_pct` default: **50 %**
-- `min_prize_pool_eur` default: **€5,000** (guaranteed floor)
+- `min_prize_pool_eur` default: **0** (no guaranteed floor — pool starts at €0 and grows with subscriptions)
 - `accumulated_platform_eur` grows LIVE — stripe-webhook calls `public.mt_add_platform_share(_amount_eur)` on each paid Megatalent invoice with the platform's share (€5 for Premium, €10 for TOP Premium; referral €5 is NOT counted).
 
 ## Table: `public.mt_contest_settings`
 
 - `period_start` / `period_end` (date) — UNIQUE pair
 - `revenue_share_pct` (numeric, default 50)
-- `min_prize_pool_eur` (numeric, default 5000)
+- `min_prize_pool_eur` (numeric, default 0, legacy — no floor applied)
 - `accumulated_platform_eur` (numeric, default 0) — updated by webhook
 - `prize_pool_eur` (numeric, legacy fixed value — used only as fallback if no active period)
 - `title` (text)
