@@ -1897,6 +1897,15 @@ serve(async (req) => {
             log("notification insert failed", { err: (notifErr as Error).message });
           }
 
+          // ─── Feed platform share into current Megatalent contest prize pool ──
+          // 50 % (configurable per period) of the platform's share funds the pool.
+          try {
+            await supabase.rpc("mt_add_platform_share", { _amount_eur: platformShareEur });
+          } catch (poolErr) {
+            log("mt_add_platform_share failed", { err: (poolErr as Error).message });
+          }
+
+
           log("recurring referral reward credited", { referrer: attr.referrer_id,
             referred: buyerProfile.id,
             invoice: inv.id,
