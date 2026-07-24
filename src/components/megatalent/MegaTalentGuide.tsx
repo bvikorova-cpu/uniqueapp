@@ -167,7 +167,7 @@ export const MegaTalentGuide = () => {
                 <p><strong>How to win:</strong></p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>Winners are determined by the leaderboard ranking score</li>
-                  <li>Competitions run on a monthly cycle</li>
+                  <li>Competitions run on a quarterly cycle</li>
                   <li>Each category has its own competition</li>
                 </ul>
                 <div className="bg-amber-500/10 p-3 rounded-xl mt-2 space-y-2">
