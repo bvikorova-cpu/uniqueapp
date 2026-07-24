@@ -12,9 +12,9 @@ const steps = [
   { icon: Trophy,
     title: "Welcome to the MegaTalent Contest 🏆",
     description:
-      "Participate in monthly contests across 35+ categories — from singing to dancing to art. The best talents win cash prizes, visibility, and a TOP Premium badge.",
+      "Participate in quarterly contests across 35+ categories — from singing to dancing to art. The best talents win cash prizes, visibility, and a TOP Premium badge.",
     bullets: [
-      "Monthly rounds with winners announcement",
+      "Quarterly rounds with winners announcement",
       "Real users vote + AI Performance Score",
       "Fair-play: one account = one vote per day",
     ] },
