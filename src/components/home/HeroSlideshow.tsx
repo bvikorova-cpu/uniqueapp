@@ -41,18 +41,6 @@ export function HeroSlideshow() {
 
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden bg-background">
-      {/* Poster image acts as the LCP element on first paint. It's already
-          preloaded in index.html (fetchpriority=high, ~35 KB webp), so it
-          typically paints well within the 2.5 s LCP budget on mobile.
-          The video fades in on top once idle. */}
-      <img
-        src="/unique-hero-poster-hd.webp"
-        alt=""
-        aria-hidden="true"
-        decoding="async"
-        className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
-        style={{ filter: "brightness(1.02) saturate(1.1)" }}
-      />
       {mount && (
         <video
           src={heroVideo.url}
@@ -61,7 +49,7 @@ export function HeroSlideshow() {
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none animate-fade-in"
+          className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
           style={{ filter: "brightness(1.02) saturate(1.1)" }}
         />
       )}

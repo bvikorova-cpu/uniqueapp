@@ -1,8 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { queueReaction } from "@/lib/voteBatch";
-
 
 export type ReactionType = 'like' | 'love' | 'laugh' | 'wow' | 'sad' | 'angry' | 'care';
 
@@ -32,8 +30,14 @@ export const usePostReactions = (postId?: string) => {
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-      // Debounced batch write — dramatically reduces write QPS at scale.
-      queueReaction(postId, reactionType);
+
+      const { error } = await supabase.from("post_reactions").upsert({ post_id: postId,
+        user_id: user.id,
+        reaction_type: reactionType }, {
+        onConflict: "post_id,user_id"
+      });
+
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
@@ -43,12 +47,18 @@ export const usePostReactions = (postId?: string) => {
     mutationFn: async (postId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-      queueReaction(postId, null);
+
+      const { error } = await supabase
+        .from("post_reactions")
+        .delete()
+        .eq("post_id", postId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
     } });
-
 
   const getReactionCounts = () => { const counts: Record<ReactionType, number> = {
       like: 0,

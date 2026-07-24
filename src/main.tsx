@@ -1,32 +1,24 @@
 import { createRoot } from "react-dom/client";
-import { Component, ReactNode, Suspense } from "react";
+import { Component, lazy as reactLazy, ReactNode, Suspense } from "react";
 import { lazyWithRetry } from "./utils/lazyWithRetry";
 import { installNavigationScrollReset } from "./utils/installNavigationScrollReset";
-import App from "./App";
+import { initSentry } from "./lib/sentry";
+import { installGlobalErrorReporter } from "./lib/errorReporter";
 import "./index.css";
 
-// Sentry (@sentry/react ~70kB gzip) and the Supabase-backed error reporter are
-// deferred to after first paint — they must not block LCP. Buffer any early
-// window errors so they still reach the reporter once it loads.
-const __EARLY_ERRORS: Array<{ type: "error" | "rejection"; payload: any }> = [];
-if (typeof window !== "undefined") {
-  const bufErr = (e: ErrorEvent) => __EARLY_ERRORS.push({ type: "error", payload: { message: e.message, stack: e.error?.stack, error: e.error } });
-  const bufRej = (e: PromiseRejectionEvent) => __EARLY_ERRORS.push({ type: "rejection", payload: e.reason });
-  window.addEventListener("error", bufErr);
-  window.addEventListener("unhandledrejection", bufRej);
-  (window as any).__UNIQUE_EARLY_ERRORS__ = __EARLY_ERRORS;
-  (window as any).__UNIQUE_EARLY_LISTENERS__ = { bufErr, bufRej };
-}
+// Init Sentry as early as possible so it captures boot-time errors.
+initSentry();
+// Wire global error/rejection listeners to persist every error to Supabase.
+installGlobalErrorReporter();
 
-// The application shell is imported statically on purpose. During the recent
-// performance pass it was converted to a dynamic import, which made the first
-// screen depend on an extra chunk request. On stale previews / mobile Chrome
-// that can fail and leave users on a blank loader. Keep App in the entry graph;
-// only non-critical banners stay lazy.
-const CookieConsentBanner = lazyWithRetry(() =>
+// Keep dynamic imports inside React.lazy. Starting them at module top-level
+// delays execution of this whole file on slow mobile networks, leaving #root
+// empty/white before React can render the fallback.
+const App = lazyWithRetry(() => import("./App"));
+const CookieConsentBanner = reactLazy(() =>
   import("./components/gdpr/CookieConsentBanner").then((module) => ({ default: module.CookieConsentBanner }))
 );
-const InstallPromptBanner = lazyWithRetry(() =>
+const InstallPromptBanner = reactLazy(() =>
   import("./components/pwa/InstallPromptBanner").then((module) => ({ default: module.InstallPromptBanner }))
 );
 
@@ -65,15 +57,13 @@ declare global {
 function showCrashOverlay(title: string, detail: string) {
   try {
     const root = document.getElementById("root");
-    const escapeHtml = (value: string) =>
-      value.replace(/[<&>]/g, (char) => ({ "<": "&lt;", "&": "&amp;", ">": "&gt;" }[char] ?? char));
     const html = `
       <div data-unique-crash-overlay="true" style="position:fixed;inset:0;z-index:2147483647;background:#0f0a1f;color:#fff;font-family:ui-sans-serif,system-ui,sans-serif;padding:24px;overflow:auto;">
         <div style="max-width:880px;margin:0 auto;">
           <div style="display:inline-block;padding:4px 10px;border-radius:9999px;background:#7c3aed;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;">Preview crash</div>
           <h1 style="margin:14px 0 6px;font-size:22px;font-weight:700;">${title}</h1>
           <p style="margin:0 0 16px;color:#c4b5fd;">The application crashed during initialization. Details below.</p>
-          <pre style="white-space:pre-wrap;background:#1e1b3a;border:1px solid #4c1d95;padding:14px;border-radius:10px;font-size:12.5px;line-height:1.5;color:#fde68a;">${escapeHtml(detail)}</pre>
+          <pre style="white-space:pre-wrap;background:#1e1b3a;border:1px solid #4c1d95;padding:14px;border-radius:10px;font-size:12.5px;line-height:1.5;color:#fde68a;">${detail.replace(/[<&>]/g, c => ({"<":"&lt;","&":"&amp;",">":"&gt;"}[c]!))}</pre>
           <button onclick="window.location.reload()" style="margin-top:16px;border:0;border-radius:10px;background:#9333ea;color:#fff;padding:10px 14px;font-weight:700;cursor:pointer;">Reload preview</button>
           <p style="margin-top:14px;color:#a78bfa;font-size:13px;">If you see this message after refreshing the preview, send it to the chat — I can fix it.</p>
         </div>
@@ -130,10 +120,10 @@ function installBlankScreenWatchdog(rootEl: HTMLElement) {
 let reactRendered = false;
 
 const BootFallback = () => (
-  <main id="main-content" className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background text-foreground">
-    <div className="h-10 w-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" aria-hidden="true" />
-    <p className="text-sm font-semibold text-muted-foreground" role="status" aria-live="polite">Loading Unique…</p>
-  </main>
+  <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background text-foreground">
+    <div className="h-10 w-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+    <p className="text-sm font-semibold text-muted-foreground">Loading Unique…</p>
+  </div>
 );
 
 class BootErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
@@ -299,36 +289,6 @@ function boot() {
       import("./utils/patchSupabaseFunctions").catch((err) => console.error("[Boot] edge patch failed", err));
       import("./utils/webVitals").then(({ installWebVitals }) => installWebVitals()).catch((err) => console.error("[Boot] web vitals failed", err));
       import("./utils/registerSW").then(({ registerServiceWorker }) => registerServiceWorker()).catch((err) => console.error("[Boot] service worker failed", err));
-      // Sentry + Supabase-backed error reporter are heavy; load them after first paint.
-      const bootErrorInfra = async () => {
-        try {
-          const [{ initSentry }, { installGlobalErrorReporter, reportError }] = await Promise.all([
-            import("./lib/sentry"),
-            import("./lib/errorReporter"),
-          ]);
-          initSentry();
-          installGlobalErrorReporter();
-          // Drain buffered early errors and detach temporary listeners.
-          try {
-            const w = window as any;
-            const listeners = w.__UNIQUE_EARLY_LISTENERS__;
-            if (listeners) {
-              window.removeEventListener("error", listeners.bufErr);
-              window.removeEventListener("unhandledrejection", listeners.bufRej);
-            }
-            const buf: Array<{ type: string; payload: any }> = w.__UNIQUE_EARLY_ERRORS__ || [];
-            for (const entry of buf) {
-              try { reportError(entry.payload?.error || entry.payload, { source: entry.type === "rejection" ? "boot.rejection" : "boot.error" }); } catch { /* noop */ }
-            }
-            w.__UNIQUE_EARLY_ERRORS__ = [];
-          } catch { /* noop */ }
-        } catch (err) {
-          console.error("[Boot] error infra failed", err);
-        }
-      };
-      const w = window as any;
-      if (w.requestIdleCallback) w.requestIdleCallback(bootErrorInfra, { timeout: 3000 });
-      else setTimeout(bootErrorInfra, 1500);
     }, 0);
   } catch (err) {
     console.error("[Boot] crash", err);

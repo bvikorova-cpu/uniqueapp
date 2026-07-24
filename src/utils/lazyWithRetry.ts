@@ -16,26 +16,6 @@ import { lazy, type ComponentType } from "react";
  */
 
 const RELOAD_KEY = "unique_chunk_reload_v1";
-const RELOAD_AT_KEY = "unique_chunk_reload_at_v1";
-
-async function clearBrowserCaches() {
-  try {
-    if (typeof caches !== "undefined" && caches.keys) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map((key) => caches.delete(key).catch(() => false)));
-    }
-  } catch {
-    /* noop */
-  }
-  try {
-    if ("serviceWorker" in navigator) {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map((reg) => reg.unregister().catch(() => false)));
-    }
-  } catch {
-    /* noop */
-  }
-}
 
 function isChunkLoadError(err: unknown): boolean {
   const msg = String((err as Error)?.message || err || "");
@@ -58,16 +38,12 @@ export function retryImport<T>(
       // Last-ditch: if it's a chunk error and we haven't reloaded yet, do so.
       if (isChunkLoadError(err) && typeof window !== "undefined") {
         try {
-          const lastReloadAt = Number(sessionStorage.getItem(RELOAD_AT_KEY) || "0");
-          const canReload = !lastReloadAt || Date.now() - lastReloadAt > 15000;
-          if (!sessionStorage.getItem(RELOAD_KEY) || canReload) {
+          if (!sessionStorage.getItem(RELOAD_KEY)) {
             sessionStorage.setItem(RELOAD_KEY, String(Date.now()));
-            sessionStorage.setItem(RELOAD_AT_KEY, String(Date.now()));
-            void clearBrowserCaches();
             // Cache-bust query string forces fresh index.html + chunk manifest.
             const url = new URL(window.location.href);
             url.searchParams.set("__r", String(Date.now()));
-            window.setTimeout(() => window.location.replace(url.toString()), 80);
+            window.location.replace(url.toString());
             // Return a never-resolving promise so React doesn't render an error
             // before the navigation happens.
             return new Promise<T>(() => {});

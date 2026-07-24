@@ -507,7 +507,7 @@ const Navbar = () => {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" aria-label="Account menu">
+                    <Button variant="ghost" size="icon">
                       <MemberBadge userId={user.id} size="sm">
                         <UserCircle className="h-5 w-5" />
                       </MemberBadge>
@@ -616,8 +616,6 @@ const Navbar = () => {
               variant="ghost"
               size="icon"
               className="h-8 w-8"
-              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isMenuOpen}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

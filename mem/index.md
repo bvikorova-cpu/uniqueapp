@@ -34,4 +34,3 @@
 - [Challenge TOP tier](mem://features/challenge-top-tier) — €5/mo Challenge tier: PRO benefits + 500k XP + 1M ai_credits monthly + TOP badge + pinned feed submission.
 - [Doctor Booking (Phase 4)](mem://features/doctor-booking) — Healthcare 85/15 split, 24h refund window, availability slot generation rules.
 - [Healthcare Advanced (Phase 5)](mem://features/health-advanced) — Video calls, e-prescriptions, medical records with time-boxed doctor access, insurance claims.
-- [Edge cache + MVs](mem://architecture/edge-cache-mvs) — MV feed+leaderboard, pg_cron 60s refresh, edge fn public-feed with s-maxage=30.

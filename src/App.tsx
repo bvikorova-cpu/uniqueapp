@@ -1,11 +1,10 @@
 import { Suspense, type ReactNode } from "react";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
-// Toasters are not LCP-critical — lazy-loaded to keep radix-toast + sonner out of initial JS.
-const Toaster = lazy(() => import("@/components/ui/toaster").then(m => ({ default: m.Toaster })));
-const Sonner = lazy(() => import("@/components/ui/sonner").then(m => ({ default: m.Toaster })));
 import RouteSEO from "@/components/RouteSEO";
 import ScrollToTop from "@/components/ScrollToTop";
 const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
@@ -75,7 +74,7 @@ import { GlobalMessageChimeMount } from "@/components/notifications/GlobalMessag
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "@/i18n/config";
 import SkipLink from "./components/SkipLink";
 import { KidsParentalGateGuard } from "@/components/kids/KidsParentalGateGuard";
@@ -133,6 +132,7 @@ const ComebackBonusModal = lazy(() => import("@/components/retention/ComebackBon
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
 installImagePerformancePatch();
+prewarmHotRoutes();
 
 // Critical fallback only - keep heavy pages out of the initial JS boot path
 import NotFound from "./pages/NotFound";
@@ -639,45 +639,9 @@ const queryClient = new QueryClient({ defaultOptions: {
       refetchOnWindowFocus: false,
       refetchOnMount: false } } });
 
-function DeferredAfterBoot({ children, delayMs = 1600 }: { children: ReactNode; delayMs?: number }) {
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    let timeoutId: number | undefined;
-    const w = window as typeof window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number;
-      cancelIdleCallback?: (id: number) => void;
-    };
-
-    const activate = () => {
-      timeoutId = window.setTimeout(() => {
-        if (!cancelled) setReady(true);
-      }, delayMs);
-    };
-
-    const idleId = w.requestIdleCallback ? w.requestIdleCallback(activate, { timeout: 2500 }) : undefined;
-    if (!w.requestIdleCallback) activate();
-
-    return () => {
-      cancelled = true;
-      if (idleId !== undefined && w.cancelIdleCallback) w.cancelIdleCallback(idleId);
-      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
-    };
-  }, [delayMs]);
-
-  if (!ready) return null;
-  return <>{children}</>;
-}
-
 const App = () => {
   useEffect(() => {
     document.documentElement.lang = "en";
-  }, []);
-
-  useEffect(() => {
-    const id = window.setTimeout(() => prewarmHotRoutes(), 5000);
-    return () => window.clearTimeout(id);
   }, []);
 
   // A11Y: Auto-detect prefers-reduced-motion and apply system-wide
@@ -702,36 +666,35 @@ const App = () => {
             
             
             
-            <DeferredAfterBoot>
-              <Suspense fallback={null}>
-                <ReferralCaptureMount />
-                <IQReferralCaptureMount />
-                <DunningBanner />
-                <SCABanner />
-                <RealTimeNotificationsMount />
-                <GlobalMessageChimeMount />
-                <PushNotificationsMount />
-                <FanClubAutoResyncMount />
-                <WelcomeOnboarding />
-                <ComebackBonusModal />
-              </Suspense>
-            </DeferredAfterBoot>
+            <Suspense fallback={null}>
+              <ReferralCaptureMount />
+              <IQReferralCaptureMount />
+              <DunningBanner />
+              <SCABanner />
+              <RealTimeNotificationsMount />
+              <GlobalMessageChimeMount />
+              <PushNotificationsMount />
+              <FanClubAutoResyncMount />
+              <WelcomeOnboarding />
+              <ComebackBonusModal />
+
+            </Suspense>
             <AnimationProvider>
               <CurrencyProvider>
               <TooltipProvider delayDuration={0}>
                 <SkipLink />
-                <DeferredAfterBoot>
-                  <Suspense fallback={null}>
-                    <ProgressiveOnboarding />
-                    <Toaster />
-                    <Sonner />
-                    <FloatingAssistantDock>
-                      {/* GoogleTranslateWidget removed — Google translate service was unreliable */}
-                      <UniAssistant docked />
-                      {/* LiveChatWidget removed — Uni voice+text AI assistant replaces it */}
-                    </FloatingAssistantDock>
-                  </Suspense>
-                </DeferredAfterBoot>
+                <Suspense fallback={null}>
+                  <ProgressiveOnboarding />
+                </Suspense>
+                <Toaster />
+                <Sonner />
+                <Suspense fallback={null}>
+                  <FloatingAssistantDock>
+                    {/* GoogleTranslateWidget removed — Google translate service was unreliable */}
+                    <UniAssistant docked />
+                    {/* LiveChatWidget removed — Uni voice+text AI assistant replaces it */}
+                  </FloatingAssistantDock>
+                </Suspense>
 
                 <div className="flex flex-col min-h-screen">
                   <ErrorBoundary>

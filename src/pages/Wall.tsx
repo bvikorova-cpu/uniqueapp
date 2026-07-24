@@ -1,13 +1,13 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useWallRealtime } from "@/hooks/useWallRealtime";
-import { useWallCursorFeed } from "@/hooks/useWallCursorFeed";
 import { Sparkles } from "lucide-react";
 
 // preview-sync: 2026-01-05a (touch file to ensure consistent preview refresh)
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { startWallTrace,
-  markWallInteractive } from "@/utils/wallPerf";
+  markWallInteractive,
+  tracedRpc } from "@/utils/wallPerf";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import UserSearch from "@/components/feed/UserSearch";
@@ -74,22 +74,17 @@ const Feed = () => {
   const feedEnhancementsReady = true;
   const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(user?.id);
   const cacheIsFresh = false;
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [reposts, setReposts] = useState<Repost[]>([]);
+  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
 
-  // Main Wall feed — keyset pagination via `useWallCursorFeed`
-  // (get_wall_feed RPC, O(log n) via idx_posts_feed_keyset).
-  const {
-    items: feedItems,
-    loading,
-    loadingMore,
-    hasMore,
-    error: feedError,
-    loadMore: loadMoreFeed,
-    reset: resetFeed,
-    isInflight,
-  } = useWallCursorFeed(10);
-
+  const [loading, setLoading] = useState(true);
   const wallStats = useWallStats(user?.id, true);
 
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [feedError, setFeedError] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  // pagination uses lastCursor ref (keyset), no page state needed
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
   const [verifiedOnly, setVerifiedOnly] = useState<boolean>(() => {
@@ -111,12 +106,14 @@ const Feed = () => {
   const [pullToRefresh, setPullToRefresh] = useState({ pulling: false,
     pullDistance: 0,
     canRefresh: false });
+  const POSTS_PER_PAGE = 10;
   const PULL_THRESHOLD = 80;
   const { toast } = useToast();
-
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [savedPosts, setSavedPosts] = useState<Post[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
+  
 
   const { data: userProfile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -131,28 +128,139 @@ const Feed = () => {
     },
     enabled: !!user && feedEnhancementsReady });
 
-  // Surface load errors via toast — kept out of the hook so it stays UI-agnostic.
+  // Race-condition lock + cursor for keyset pagination (avoids range duplicates)
+  const fetchInFlight = useRef(false);
+  const lastCursor = useRef<string | null>(null);
+  const feedItemsCountRef = useRef(feedItems.length);
+  // Stable page counter — items get tagged with their page so Verified priority
+  // reorders WITHIN a page but never moves items across pages during infinite scroll.
+  const pageIndexRef = useRef(0);
+
   useEffect(() => {
-    if (feedError) {
+    feedItemsCountRef.current = feedItems.length;
+  }, [feedItems.length]);
+
+  const fetchPosts = useCallback(async (loadMore = false) => {
+    if (fetchInFlight.current) return;
+    fetchInFlight.current = true;
+    try {
+      if (loadMore) {
+        setLoadingMore(true);
+      } else {
+        if (feedItemsCountRef.current === 0) setLoading(true);
+        setFeedError(null);
+        lastCursor.current = null;
+        pageIndexRef.current = 0;
+        setHasMore(true);
+      }
+
+      const currentPage = loadMore ? pageIndexRef.current + 1 : 0;
+      const cursor = loadMore ? lastCursor.current : null;
+
+      // Single-RPC fetch: posts + reposts + profiles + media + original_posts in 1 round-trip.
+      // P2 — 1 auto-retry on transient network/RPC error so a single fail doesn't kill the feed.
+      const fetchFeed = async () =>
+        tracedRpc("get_wall_feed", () =>
+          supabase.rpc("get_wall_feed", { _cursor: cursor, _limit: POSTS_PER_PAGE }),
+        );
+      let { data: feedData, error: feedErr } = await fetchFeed();
+      if (feedErr) {
+        await new Promise(r => setTimeout(r, 400));
+        ({ data: feedData, error: feedErr } = await fetchFeed());
+      }
+      if (feedErr) throw feedErr;
+
+      const payload = (feedData as any) || { posts: [], reposts: [] };
+      const postsData: any[] = payload.posts || [];
+      const repostsData: any[] = payload.reposts || [];
+
+      // Audit fix: pagination must compare TOTAL items vs page size (sum, not OR).
+      setHasMore(postsData.length + repostsData.length >= POSTS_PER_PAGE);
+
+
+      const fallback = (id: string) => ({ id, full_name: null, avatar_url: null });
+
+      const postsWithProfiles = postsData.map((post: any) => ({ ...post,
+        media: post.media || [],
+        profiles: post.profiles || fallback(post.user_id) })) as Post[];
+
+      const repostsWithData = repostsData
+        .map((repost: any) => { const op = repost.original_post;
+          if (!op) return null;
+          return {
+            ...repost,
+            profiles: repost.profiles || fallback(repost.user_id),
+            original_post: {
+              ...op,
+              media: op.media || [],
+              profiles: op.profiles || fallback(op.user_id) } };
+        })
+        .filter(Boolean) as Repost[];
+
+
+      const newItems: FeedItem[] = [
+        ...postsWithProfiles.map((p) => ({ type: "post" as const, data: p })),
+        ...repostsWithData.map((r) => ({ type: "repost" as const, data: r })),
+      ].sort(
+        (a, b) =>
+          new Date(b.data.created_at).getTime() - new Date(a.data.created_at).getTime()
+      );
+
+      // Tag each item with its page index — used by the sort to preserve
+      // page order across infinite scroll so Verified priority doesn't shuffle
+      // items above the fold when a new page arrives.
+      newItems.forEach((it) => {
+        (it as any)._page = currentPage;
+      });
+
+      if (loadMore) {
+        setPosts((prev) => {
+          const seen = new Set(prev.map((p) => p.id));
+          return [...prev, ...postsWithProfiles.filter((p) => !seen.has(p.id))];
+        });
+        setReposts((prev) => {
+          const seen = new Set(prev.map((r) => r.id));
+          return [...prev, ...repostsWithData.filter((r) => !seen.has(r.id))];
+        });
+      } else {
+        setPosts(postsWithProfiles);
+        setReposts(repostsWithData);
+      }
+
+      setFeedItems((prev) => {
+        const merged = loadMore ? [...prev, ...newItems] : newItems;
+        const seen = new Set<string>();
+        const deduped = merged.filter((it) => {
+          const k = `${it.type}-${it.data.id}`;
+          if (seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        });
+        return deduped;
+      });
+
+      if (newItems.length > 0) {
+        lastCursor.current = newItems[newItems.length - 1].data.created_at;
+        pageIndexRef.current = currentPage;
+      }
+
+      // (removed: localStorage cache — was causing stale/slow first paint)
+
+
+    } catch (error: any) { setFeedError(error?.message || "Failed to load posts");
       toast({
         title: "Error loading posts",
-        description: feedError,
-        variant: "destructive",
-      });
+        description: error.message,
+        variant: "destructive" });
+    } finally {
+      fetchInFlight.current = false;
+      setLoading(false);
+      setLoadingMore(false);
+      if (!loadMore) markWallInteractive();
     }
-  }, [feedError, toast]);
+  }, [toast]);
 
-  // Mark Wall as interactive as soon as the first page finishes loading.
-  useEffect(() => {
-    if (!loading) markWallInteractive();
-  }, [loading]);
-
-  // Thin adapter so existing `onPostCreated={fetchPosts}` / `onDelete={fetchPosts}`
-  // call sites keep working — `true` = load next page, `false`/absent = refresh.
-  const fetchPosts = useCallback((loadMore: boolean | unknown = false) => {
-    if (loadMore === true) loadMoreFeed();
-    else resetFeed();
-  }, [loadMoreFeed, resetFeed]);
+  // (removed: deferred enhancement gating — enhancements always ready now)
 
 
   const fetchSavedPosts = async () => {
@@ -312,7 +420,7 @@ const Feed = () => {
     };
 
     const handleTouchEnd = () => {
-      const shouldRefresh = state.canRefresh && !isInflight();
+      const shouldRefresh = state.canRefresh && !fetchInFlight.current;
       state.isPulling = false;
       state.canRefresh = false;
       setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
@@ -341,7 +449,7 @@ const Feed = () => {
         const scrollTop = document.documentElement.scrollTop;
         setShowBackToTop(scrollTop > 400);
 
-        if (!isInflight() && hasMore) {
+        if (!fetchInFlight.current && hasMore) {
           const scrollHeight = document.documentElement.scrollHeight;
           const clientHeight = document.documentElement.clientHeight;
           if (scrollHeight - scrollTop - clientHeight < 300) {
