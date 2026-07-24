@@ -72,7 +72,7 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
           <div className="flex flex-wrap items-center gap-2 mb-auto">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
               <Badge className="bg-yellow-500/90 text-black font-bold border-yellow-400/50 shadow-lg shadow-yellow-500/20 text-[10px] px-2 py-0.5">
-                <Trophy className="h-3 w-3 mr-1" /> Monthly Prize Pool: {prizePoolLabel}
+                <Trophy className="h-3 w-3 mr-1" /> Quarterly Prize Pool: {prizePoolLabel}
               </Badge>
             </motion.div>
             {isSubscribed && (
