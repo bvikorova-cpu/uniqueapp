@@ -42108,29 +42108,38 @@ export type Database = {
       }
       mt_contest_settings: {
         Row: {
+          accumulated_platform_eur: number
           created_at: string
           id: string
+          min_prize_pool_eur: number
           period_end: string
           period_start: string
           prize_pool_eur: number
+          revenue_share_pct: number
           title: string | null
           updated_at: string
         }
         Insert: {
+          accumulated_platform_eur?: number
           created_at?: string
           id?: string
+          min_prize_pool_eur?: number
           period_end: string
           period_start: string
           prize_pool_eur?: number
+          revenue_share_pct?: number
           title?: string | null
           updated_at?: string
         }
         Update: {
+          accumulated_platform_eur?: number
           created_at?: string
           id?: string
+          min_prize_pool_eur?: number
           period_end?: string
           period_start?: string
           prize_pool_eur?: number
+          revenue_share_pct?: number
           title?: string | null
           updated_at?: string
         }
@@ -69403,6 +69412,10 @@ export type Database = {
       mark_iq_notifications_read: { Args: { _ids?: string[] }; Returns: number }
       moderate_comment: {
         Args: { _comment_id: string; _hide: boolean; _reason?: string }
+        Returns: undefined
+      }
+      mt_add_platform_share: {
+        Args: { _amount_eur: number }
         Returns: undefined
       }
       mt_bump_voting_streak: {
