@@ -123,7 +123,7 @@ export const InviteFriendPanel = () => {
 
   const shareWhatsApp = () => {
     if (!inviteUrl) return;
-    const text = `🎉 Join Unique and win €10,000! My code: ${stats?.code} – ${inviteUrl}`;
+    const text = `🎉 Join Unique and compete for a growing quarterly cash prize! My code: ${stats?.code} – ${inviteUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 

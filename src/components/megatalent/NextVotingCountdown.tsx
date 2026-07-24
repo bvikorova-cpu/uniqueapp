@@ -4,7 +4,7 @@ import { Trophy, Clock, Flame, PlayCircle } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /**
- * Countdown to the next MegaTalent voting round / €10,000 prize draw.
+ * Countdown to the next MegaTalent voting round / quarterly prize draw.
  * Round ends at the last day of the current calendar month at 23:59:59
  * in the configured timezone (default: UTC), independent of
  * the visitor's local time.
