@@ -229,11 +229,11 @@ const PILLARS: Pillar[] = [
   {
     chapter: "Chapter 2 · Fan Club",
     headline: "Turn followers into monthly income.",
-    body: "Bronze, Silver, Gold — your fans pay to belong. 85% of every euro is yours.",
+    body: "Following is free. Fans upgrade to your Fan Club — three tiers, monthly billing, 85% to you.",
     perks: [
-      "Three tiers you control",
-      "Stripe subscriptions, monthly billing",
-      "85 / 15 split — always",
+      "Bronze  €4.99 / month",
+      "Silver  €9.99 / month",
+      "Gold  €19.99 / month",
     ],
     image: "influking/06-fanclub.jpg",
     accent: "#ec4899",
@@ -552,8 +552,142 @@ const SceneProof: React.FC<{ duration: number }> = ({ duration }) => {
 };
 
 /* -------------------------------------------------------------
+ * Breakdown — For fans / For creators (mirrors chat rundown).
+ * ------------------------------------------------------------*/
+const SceneBreakdown: React.FC<{ duration: number }> = ({ duration }) => {
+  const frame = useCurrentFrame();
+  const shell = interpolate(frame, [0, 24, duration - 24, duration], [0, 1, 1, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const fans = [
+    { k: "View profiles", v: "Free" },
+    { k: "Follow / Unfollow", v: "Free" },
+    { k: "Likes & comments", v: "Free" },
+    { k: "Fan Club subscription", v: "€4.99 / €9.99 / €19.99" },
+    { k: "PPV posts", v: "Creator-set" },
+    { k: "Paid DMs", v: "Creator-set" },
+    { k: "Gift wall / tips", v: "Any amount" },
+  ];
+  const creators = [
+    { k: "Sign up + post", v: "Free" },
+    { k: "Fan Club revenue", v: "85% to you" },
+    { k: "PPV, DMs, gifts, lives", v: "85% to you" },
+    { k: "Brand deals (weekly briefs)", v: "AI Deal Finder" },
+    { k: "Payouts", v: "Stripe Connect · KYC" },
+  ];
+  const Section = ({
+    title,
+    rows,
+    accent,
+    baseDelay,
+  }: {
+    title: string;
+    rows: { k: string; v: string }[];
+    accent: string;
+    baseDelay: number;
+  }) => (
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 14 }}>
+      <div
+        style={{
+          fontFamily: body.fontFamily,
+          fontWeight: 900,
+          fontSize: 44,
+          color: accent,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+          marginBottom: 6,
+        }}
+      >
+        {title}
+      </div>
+      {rows.map((r, i) => {
+        const s = spring({
+          frame: frame - (baseDelay + i * 10),
+          fps: FPS,
+          config: { damping: 18, stiffness: 110 },
+        });
+        return (
+          <div
+            key={r.k}
+            style={{
+              opacity: s,
+              transform: `translateX(${(1 - s) * -60}px)`,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 20,
+              padding: "18px 26px",
+              borderRadius: 20,
+              background: "rgba(7,4,15,0.6)",
+              border: `1px solid ${accent}55`,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: body.fontFamily,
+                fontWeight: 600,
+                fontSize: 32,
+                color: "rgba(255,255,255,0.94)",
+              }}
+            >
+              {r.k}
+            </div>
+            <div
+              style={{
+                fontFamily: body.fontFamily,
+                fontWeight: 900,
+                fontSize: 30,
+                color: accent,
+                textAlign: "right",
+              }}
+            >
+              {r.v}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+  return (
+    <AbsoluteFill style={{ backgroundColor: BRAND.bgDeep, opacity: shell }}>
+      <AbsoluteFill
+        style={{
+          background:
+            "radial-gradient(circle at 20% 20%, rgba(168,85,247,0.35), transparent 55%), radial-gradient(circle at 85% 90%, rgba(251,191,36,0.28), transparent 55%)",
+        }}
+      />
+      <AbsoluteFill
+        style={{
+          padding: 80,
+          paddingTop: 130,
+          flexDirection: "column",
+          gap: 44,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: body.fontFamily,
+            fontWeight: 900,
+            fontSize: 66,
+            color: BRAND.white,
+            letterSpacing: "-0.02em",
+            textAlign: "center",
+          }}
+        >
+          How Influ-King works
+        </div>
+        <Section title="For fans" rows={fans} accent={BRAND.pink} baseDelay={20} />
+        <Section title="For creators" rows={creators} accent={BRAND.gold} baseDelay={110} />
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+};
+
+/* -------------------------------------------------------------
  * Outro — logo + Unique + URL + CTA.
  * ------------------------------------------------------------*/
+
 const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
   const logoS = spring({ frame, fps: FPS, config: { damping: 14, stiffness: 90 } });
@@ -636,11 +770,12 @@ const SceneOutro: React.FC<{ duration: number }> = ({ duration }) => {
 const INTRO = 165;
 const HOOK = 165;
 const PILLAR_DUR = 195;
+const BREAKDOWN = 300;
 const PROOF = 180;
 const OUTRO = 180;
 
 export const INFLUKING_CINEMATIC_DURATION =
-  INTRO + HOOK + PILLARS.length * PILLAR_DUR + PROOF + OUTRO;
+  INTRO + HOOK + PILLARS.length * PILLAR_DUR + BREAKDOWN + PROOF + OUTRO;
 
 export const InfluKingCinematic: React.FC = () => {
   const total = INFLUKING_CINEMATIC_DURATION;
@@ -672,6 +807,12 @@ export const InfluKingCinematic: React.FC = () => {
     );
     cursor += PILLAR_DUR;
   });
+  seq.push(
+    <Sequence key="breakdown" from={cursor} durationInFrames={BREAKDOWN}>
+      <SceneBreakdown duration={BREAKDOWN} />
+    </Sequence>
+  );
+  cursor += BREAKDOWN;
   seq.push(
     <Sequence key="proof" from={cursor} durationInFrames={PROOF}>
       <SceneProof duration={PROOF} />
