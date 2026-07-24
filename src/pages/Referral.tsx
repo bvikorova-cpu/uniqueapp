@@ -46,24 +46,24 @@ const Referral = () => {
   const shareReferral = async () => {
     if (!stats?.code) return;
     const shareUrl = `${window.location.origin}/auth?ref=${stats.code}`;
-    const shareText = `Join MegaTalent and compete for €10,000! Use my code: ${stats.code}`;
+    const shareText = `Join MegaTalent and compete for a growing quarterly cash prize! Use my code: ${stats.code}`;
     if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      try { await navigator.share({ title: 'MegaTalent - Win €10,000', text: shareText, url: shareUrl }); return; } catch {}
+      try { await navigator.share({ title: 'MegaTalent — Win real cash', text: shareText, url: shareUrl }); return; } catch {}
     }
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, '_blank', 'width=600,height=400');
   };
 
   const inviteByEmail = () => {
     if (!stats?.code) return;
-    const subject = encodeURIComponent('Join MegaTalent - Win €10,000!');
-    const body = encodeURIComponent(`Hi!\n\nI'd like to invite you to MegaTalent, where you can compete for €10,000!\n\nUse my referral code: ${stats.code}\n\nSign up: ${window.location.origin}/auth?ref=${stats.code}`);
+    const subject = encodeURIComponent('Join MegaTalent — Win real cash!');
+    const body = encodeURIComponent(`Hi!\n\nI'd like to invite you to MegaTalent, where you can compete for a growing quarterly cash prize (funded by 50% of subscription profits).\n\nUse my referral code: ${stats.code}\n\nSign up: ${window.location.origin}/auth?ref=${stats.code}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
   const shareWhatsApp = () => {
     if (!stats?.code) return;
     const url = `${window.location.origin}/auth?ref=${stats.code}`;
-    const text = `🎉 Join me on MegaTalent and compete for €10,000! Use my code ${stats.code}: ${url}`;
+    const text = `🎉 Join me on MegaTalent and compete for a growing quarterly cash prize! Use my code ${stats.code}: ${url}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 

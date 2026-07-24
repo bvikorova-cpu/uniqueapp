@@ -54,7 +54,7 @@ const MEGATALENT_HOW_IT_WORKS = [
   { title: "Pick a category & upload", desc: "Choose a category (Music, Dance, Comedy…), upload a short video/photo, add a title and publish your submission." },
   { title: "Get votes from the community", desc: "Other Premium users vote in daily voting windows. Longer voting streaks give you a 2× vote multiplier." },
   { title: "Climb the leaderboard", desc: "Sort feed by Top / New / Hot. Weekly leaderboards decide finalists in each category." },
-  { title: "Win real prizes", desc: "Weekly cash rewards + a quarterly €10,000 grand prize (Megatalent Champion). Payouts via Stripe Connect." },
+  { title: "Win real prizes", desc: "Weekly cash rewards + a quarterly grand prize funded by 50% of Megatalent subscription profits — grows with every new subscriber. Payouts via Stripe Connect." },
   { title: "Boost with AI tools", desc: "Use the AI toolbox (clip editor, thumbnail maker, caption writer) to make your submission stand out." },
   { title: "Engage: comment, share, follow", desc: "Comment on clips, share to your Wall, follow other talents. Notification bell keeps you updated on votes & replies." },
 ];

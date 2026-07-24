@@ -102,7 +102,7 @@ export function WelcomeOnboarding() {
                   Discover talents, win prizes, and join a creative community. Let's personalize your experience in 30 seconds.
                 </p>
                 <div className="flex justify-center gap-3 pt-2">
-                  <Badge variant="secondary" className="gap-1"><Trophy className="h-3 w-3" /> €10,000 prizes</Badge>
+                  <Badge variant="secondary" className="gap-1"><Trophy className="h-3 w-3" /> Cash prizes</Badge>
                   <Badge variant="secondary" className="gap-1"><Gift className="h-3 w-3" /> Free credits</Badge>
                 </div>
                 <Button onClick={() => setStep(1)} size="lg" className="w-full gap-2 mt-4">

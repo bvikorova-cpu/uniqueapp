@@ -85,7 +85,7 @@ export function AuthReferralBanner() {
         </div>
         <div className="text-right shrink-0">
           <Gift className="h-6 w-6 text-yellow-500 mx-auto" />
-          <p className="text-xs font-bold text-yellow-500 mt-1">€10,000<br />prize</p>
+          <p className="text-xs font-bold text-yellow-500 mt-1">Cash<br />prize</p>
         </div>
       </div>
     </motion.div>

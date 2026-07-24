@@ -183,7 +183,7 @@ export const MegaTalentGuide = () => {
                 <div className="bg-amber-500/10 p-3 rounded-xl mt-2">
                   <p className="text-sm">
                     <strong>🏆 Prize Structure:</strong> Winners in each category receive cash prizes
-                    and recognition. The grand prize is €10,000.
+                    and recognition. The grand prize equals 50% of Megatalent subscription profits — it grows live as more users join.
                   </p>
                 </div>
               </AccordionContent>
