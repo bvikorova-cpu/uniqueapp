@@ -20,6 +20,15 @@ export type SecretSantaGift = {
   animation_type?: string | null;
 };
 
+const byNewestGift = (a: SecretSantaGift, b: SecretSantaGift) =>
+  new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+
+const getActiveUserId = async (contextUserId?: string | null) => {
+  if (contextUserId) return contextUserId;
+  const { data } = await supabase.auth.getUser();
+  return data.user?.id ?? null;
+};
+
 export const GIFT_CATEGORIES = [
   { id: "all", label: "All", emoji: "✨" },
   { id: "messages", label: "Messages", emoji: "💌" },
@@ -585,36 +594,59 @@ export const useSecretSanta = () => {
   const { data: receivedGifts = [], isLoading: giftsLoading } = useQuery<SecretSantaGift[]>({
     queryKey: ["secret-santa-received", user?.id],
     queryFn: async () => {
-      if (!user) return [];
+      const activeUserId = await getActiveUserId(user?.id);
+      if (!activeUserId) return [];
 
       const { data, error } = await (supabase as any).rpc("get_my_secret_santa_received_gifts");
 
-      if (error) throw error;
-      return (data || []) as SecretSantaGift[];
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return (data as SecretSantaGift[]).sort(byNewestGift);
+      }
+
+      // Fallback keeps the inbox visible if the RPC returns stale/empty data in a browser session.
+      const { data: fallback, error: fallbackError } = await supabase
+        .from("secret_santa_gifts")
+        .select("*")
+        .eq("recipient_id", activeUserId)
+        .order("created_at", { ascending: false });
+
+      if (fallbackError) throw fallbackError;
+      return ((fallback || []) as SecretSantaGift[]).sort(byNewestGift);
     },
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     staleTime: 0,
-    enabled: Boolean(user?.id),
+    retry: 1,
   });
 
   // Get sent gifts
   const { data: sentGifts = [], isLoading: sentLoading } = useQuery<SecretSantaGift[]>({
     queryKey: ["secret-santa-sent", user?.id],
     queryFn: async () => {
-      if (!user) return [];
+      const activeUserId = await getActiveUserId(user?.id);
+      if (!activeUserId) return [];
 
       const { data, error } = await (supabase as any).rpc("get_my_secret_santa_sent_gifts");
 
-      if (error) throw error;
-      return (data || []) as SecretSantaGift[];
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return (data as SecretSantaGift[]).sort(byNewestGift);
+      }
+
+      const { data: fallback, error: fallbackError } = await supabase
+        .from("secret_santa_gifts")
+        .select("*")
+        .eq("sender_id", activeUserId)
+        .order("created_at", { ascending: false });
+
+      if (fallbackError) throw fallbackError;
+      return ((fallback || []) as SecretSantaGift[]).sort(byNewestGift);
     },
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     staleTime: 0,
-    enabled: Boolean(user?.id),
+    retry: 1,
   });
 
   // Realtime: any new gift where I'm sender or recipient -> refresh inbox
