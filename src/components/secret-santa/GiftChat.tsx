@@ -57,22 +57,37 @@ export const GiftChat = () => {
     queryKey: ["gift-chat-users", currentUserId],
     queryFn: async () => {
       if (!currentUserId) return [];
-      
-      // Get users from received gifts
+
+      // Gift partners (past sent/received gifts)
       const { data: receivedGifts } = await supabase
         .from("secret_santa_gifts")
         .select("sender_id")
         .eq("recipient_id", currentUserId);
 
-      // Get users from sent gifts
       const { data: sentGifts } = await supabase
         .from("secret_santa_gifts")
         .select("recipient_id")
         .eq("sender_id", currentUserId);
 
+      // Chat partners (anyone we've exchanged chat messages with, even
+      // without a gift) — ordered by most recent message.
+      const { data: chatRows } = await supabase
+        .from("gift_chat_messages")
+        .select("sender_id, receiver_id, created_at")
+        .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
+        .order("created_at", { ascending: false })
+        .limit(500);
+
+      const lastSeen = new Map<string, string>();
+      (chatRows || []).forEach((r: any) => {
+        const other = r.sender_id === currentUserId ? r.receiver_id : r.sender_id;
+        if (other && !lastSeen.has(other)) lastSeen.set(other, r.created_at);
+      });
+
       const partnerIds = Array.from(new Set([
         ...(receivedGifts || []).map((g: any) => g.sender_id),
         ...(sentGifts || []).map((g: any) => g.recipient_id),
+        ...Array.from(lastSeen.keys()),
       ].filter((id) => id && id !== currentUserId)));
 
       if (partnerIds.length === 0) return [];
@@ -87,9 +102,16 @@ export const GiftChat = () => {
         userMap.set(p.id, { id: p.id, username: p.username, avatar_url: p.avatar_url });
       });
 
-      return Array.from(userMap.values());
+      // Order: chat partners first by most recent message, then remaining gift-only partners.
+      const ordered: ChatUser[] = [];
+      Array.from(lastSeen.keys()).forEach((id) => {
+        const u = userMap.get(id);
+        if (u) { ordered.push(u); userMap.delete(id); }
+      });
+      return [...ordered, ...Array.from(userMap.values())];
     },
-    enabled: !!currentUserId });
+    enabled: !!currentUserId,
+    refetchInterval: 5000 });
 
   // Fetch messages for selected user
   const { data: messages = [] } = useQuery({
