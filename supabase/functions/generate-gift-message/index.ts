@@ -169,9 +169,10 @@ serve(async (req) => {
     const type = __type;
     const customPrompt = reqBody.customPrompt || reqBody.prompt || reqBody.input || reqBody.message || reqBody.query;
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY is not configured");
+    if (!OPENAI_API_KEY && !LOVABLE_API_KEY) {
+      throw new Error("AI provider is not configured");
     }
 
     // Auth (credit check already performed above via requireAiCredits)
@@ -434,6 +435,10 @@ serve(async (req) => {
       generate_image:     "High-quality photorealistic image as described." };
 
     if (IMAGE_TYPES[type]) {
+      if (!OPENAI_API_KEY) {
+        return new Response(JSON.stringify({ error: "Image generation is temporarily unavailable." }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
       // OpenAI image generation (gpt-image-1) — same OPENAI_API_KEY as text branch.
       const stylePrefix = IMAGE_TYPES[type];
       const subject = customPrompt || reqBody.title || reqBody.description || `a ${type.replace(/_/g, " ")}`;
@@ -537,13 +542,18 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
 
     console.log("Generating with OpenAI, type:", type || "message", "style:", style);
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const textEndpoint = OPENAI_API_KEY
+      ? "https://api.openai.com/v1/chat/completions"
+      : "https://ai.gateway.lovable.dev/v1/chat/completions";
+    const textHeaders = OPENAI_API_KEY
+      ? { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" }
+      : { "Lovable-API-Key": LOVABLE_API_KEY ?? "", "Content-Type": "application/json" };
+
+    const response = await fetch(textEndpoint, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json" },
+      headers: textHeaders,
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: OPENAI_API_KEY ? "gpt-4o-mini" : "google/gemini-3.6-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
