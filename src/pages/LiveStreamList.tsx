@@ -8,6 +8,7 @@ import { Video, Users, Play, Radio } from "lucide-react";
 import { toast } from "sonner";
 import { GoLiveButton } from "@/components/influencer/GoLiveButton";
 import { RecordingArchive } from "@/components/live/RecordingArchive";
+import { UpcomingStreams } from "@/components/live/UpcomingStreams";
 
 interface LiveStream {
   id: string;
