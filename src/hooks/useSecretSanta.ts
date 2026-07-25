@@ -645,8 +645,9 @@ export const useSecretSanta = () => {
             } else if (gift.is_anonymous) {
               senderName = "A secret admirer";
             }
-            sonnerToast(`${emoji} New gift received!`, {
-              description: `${senderName} sent you: ${label}`,
+            sonnerToast(`${emoji} ${senderName}`, {
+              id: `secret-santa-gift-${gift.id || crypto.randomUUID()}`,
+              description: `sent you ${label}${gift.message ? ` — ${gift.message}` : ""}`,
               duration: 6000,
             });
           }
