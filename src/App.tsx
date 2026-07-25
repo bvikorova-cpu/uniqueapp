@@ -1109,11 +1109,11 @@ const App = () => {
                         <Route path="/kids-channel/share/:token" element={<KidsShareView />} />
                         <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
                         <Route path="/choose-adventure" element={<ChooseAdventure />} />
-                        <Route path="/kids-voice-chat" element={<KidsVoiceChat />} />
+                        <Route path="/kids-voice-chat" element={<KidsGoldPassGate moduleName="Character Chat" pricingPath="/kids-voice-chat-pricing" redirectPath="/kids-voice-chat"><KidsVoiceChat /></KidsGoldPassGate>} />
                         <Route path="/kids-voice-chat-pricing" element={<KidsVoiceChatPricing />} />
                         <Route path="/create-character" element={<CreateCharacter />} />
                         <Route path="/educational-stories" element={<EducationalStories />} />
-                        <Route path="/bedtime-stories" element={<KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard>} />
+                        <Route path="/bedtime-stories" element={<KidsGoldPassGate moduleName="Bedtime Stories" redirectPath="/bedtime-stories"><KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard></KidsGoldPassGate>} />
                         <Route path="/story-games" element={<StoryGames />} />
                         <Route path="/kids-pricing" element={<KidsPricing />} />
                         <Route path="/story-video-demo" element={<StoryVideoDemo />} />
