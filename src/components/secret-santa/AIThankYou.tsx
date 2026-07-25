@@ -71,6 +71,29 @@ export const AIThankYou = () => {
     enabled: searchQuery.trim().length >= 1,
   });
 
+  // History of sent thank yous (messages sent by current user)
+  const { data: sentHistory = [] } = useQuery({
+    queryKey: ["thankyou-history", currentUserId],
+    queryFn: async () => {
+      if (!currentUserId) return [] as any[];
+      const { data } = await supabase
+        .from("gift_chat_messages")
+        .select("id, receiver_id, content, created_at")
+        .eq("sender_id", currentUserId)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      const rows = (data || []) as any[];
+      const ids = [...new Set(rows.map(r => r.receiver_id))];
+      if (ids.length === 0) return rows;
+      const { data: profs } = await (supabase as any).rpc("get_public_profiles", { ids });
+      const map = new Map((profs || []).map((p: any) => [p.id, p]));
+      return rows.map(r => ({ ...r, recipient: map.get(r.receiver_id) }));
+    },
+    enabled: !!currentUserId,
+    refetchOnMount: "always",
+    staleTime: 0,
+  });
+
   const generateThankYou = async () => {
     if (credits < COST) {
       toast.error(`Not enough credits. You need ${COST} credits.`);
@@ -114,6 +137,7 @@ export const AIThankYou = () => {
       toast.success(`Thank you sent to ${recipient.name}! 💌`);
       queryClient.invalidateQueries({ queryKey: ["gift-chat-users"] });
       queryClient.invalidateQueries({ queryKey: ["gift-chat-messages"] });
+      queryClient.invalidateQueries({ queryKey: ["thankyou-history"] });
     } catch (e: any) {
       toast.error(e.message || "Failed to send");
     } finally {
@@ -336,6 +360,43 @@ export const AIThankYou = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Sent History */}
+      {sentHistory.length > 0 && (
+        <Card className="p-4 bg-white/80 border-rose-200 shadow-lg">
+          <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+            <MessageCircle className="h-5 w-5 text-rose-500" /> Sent Thank Yous ({sentHistory.length})
+          </h3>
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {sentHistory.map((r: any) => {
+              const name = r.recipient?.full_name || r.recipient?.username || "User";
+              const avatar = r.recipient?.avatar_url;
+              return (
+                <div key={r.id} className="flex gap-3 p-3 rounded-xl bg-rose-50/60 border border-rose-100">
+                  {avatar ? (
+                    <img src={avatar} alt={name} className="w-9 h-9 rounded-full object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+                      {name[0]?.toUpperCase()}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-semibold text-sm text-gray-800 truncate">To {name}</p>
+                      <span className="text-[10px] text-gray-500 flex-shrink-0">
+                        {new Date(r.created_at).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 italic line-clamp-3 mt-0.5">"{r.content}"</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+
+
 
       {/* Info */}
       <Card className="p-4 bg-rose-50 border-rose-200 shadow-sm">
