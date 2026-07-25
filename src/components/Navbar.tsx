@@ -839,6 +839,16 @@ const Navbar = () => {
               ))}
             </div>
             <div className="pt-3 space-y-1.5">
+              <Link to="/club" onClick={() => setIsMenuOpen(false)}>
+                <Button
+                  variant="hero"
+                  className="w-full justify-start text-sm gap-2 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 text-amber-950 hover:from-amber-200 hover:to-amber-400 shadow-md shadow-amber-500/20"
+                  size="sm"
+                >
+                  <Ticket className="h-4 w-4" />
+                  {"Unique VIP Club"}
+                </Button>
+              </Link>
               <Button
                 variant="outline"
                 className="w-full justify-start text-sm gap-2 border-primary/30 text-primary hover:bg-primary/10"
