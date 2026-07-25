@@ -32,9 +32,9 @@ export const AIRarityPredictor = ({ onBack }: Props) => {
     setPrediction(null);
     try {
       const { data, error } = await supabase.functions.invoke('mystery-box-ai', {
-        body: { type: analysisType } });
+        body: { analysisType } });
       if (error) throw error;
-      setPrediction(data.prediction);
+      setPrediction(data?.prediction ?? data?.result ?? "Analysis completed, but no prediction text was returned.");
       await refresh();
       toast.success("AI analysis complete!");
     } catch (e: any) {
@@ -71,7 +71,7 @@ export const AIRarityPredictor = ({ onBack }: Props) => {
           </div>
           <div>
             <h2 className="text-2xl font-black bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent">AI Rarity Predictor</h2>
-            <p className="text-muted-foreground text-xs">Powered by GPT-4o-mini • Analyzes your luck patterns</p>
+            <p className="text-muted-foreground text-xs">Powered by Lovable AI • Analyzes your luck patterns</p>
           </div>
         </motion.div>
 

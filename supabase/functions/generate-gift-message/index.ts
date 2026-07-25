@@ -1,6 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { createOpenAICompatible } from "npm:@ai-sdk/openai-compatible";
+import { generateText } from "npm:ai";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -153,8 +155,11 @@ serve(async (req) => {
     let __deduct: () => Promise<void> = async () => {};
     if (!__hasKidsLedger) {
       const __isLegacyGift = !!__style || !!__giftType;
-      const __cost = __isLegacyGift ? 3 : 1;
-      const __usage = __isLegacyGift ? "gift_message" : "ai_generic";
+      const __mysteryBoxCost = __type === "mystery_box_ai"
+        ? ((__style === "box_strategy" || reqBody.analysisType === "box_strategy") ? 8 : 10)
+        : null;
+      const __cost = __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
+      const __usage = __type === "mystery_box_ai" ? "mystery_box_ai" : (__isLegacyGift ? "gift_message" : "ai_generic");
       const __auth = await requireAiCredits(req, corsHeaders, { credits: __cost, usageType: __usage });
       if (__auth.errorResponse) return __auth.errorResponse;
       __deduct = __auth.deduct!;
@@ -166,9 +171,10 @@ serve(async (req) => {
     const type = __type;
     const customPrompt = reqBody.customPrompt || reqBody.prompt || reqBody.input || reqBody.message || reqBody.query;
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY is not configured");
+    if (!OPENAI_API_KEY && !LOVABLE_API_KEY) {
+      throw new Error("AI provider is not configured");
     }
 
     // Auth (credit check already performed above via requireAiCredits)
@@ -243,6 +249,7 @@ serve(async (req) => {
       offspring_chat:     "You are a digital offspring AI. Respond as the user's child would, based on their personality traits.",
       legal:              "You are a legal information assistant. Provide general legal information (NOT legal advice). Always recommend consulting a licensed attorney.",
       mystery_box:        "You are a mystery-box curator. Generate exciting, surprising contents for a mystery box.",
+      mystery_box_ai:     "You are the AI Rarity Predictor for Unique Mystery Boxes. Give honest, useful probability guidance based on rarity tiers, box cost, streak psychology and budget discipline. Never promise guaranteed wins. Use clear headings, practical recommendations and concise bullet points.",
       teen_career:        "You are a teen career counselor. Suggest career paths matched to the teen's interests, skills and personality.",
       kids_homework:      "You are a friendly tutor for kids. Explain concepts simply with examples a child would understand. Encourage curiosity.",
       kids_drawing:       "You are an art teacher for kids. Provide a fun step-by-step drawing tutorial.",
@@ -430,6 +437,10 @@ serve(async (req) => {
       generate_image:     "High-quality photorealistic image as described." };
 
     if (IMAGE_TYPES[type]) {
+      if (!OPENAI_API_KEY) {
+        return new Response(JSON.stringify({ error: "Image generation is temporarily unavailable." }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
       // OpenAI image generation (gpt-image-1) — same OPENAI_API_KEY as text branch.
       const stylePrefix = IMAGE_TYPES[type];
       const subject = customPrompt || reqBody.title || reqBody.description || `a ${type.replace(/_/g, " ")}`;
@@ -491,7 +502,12 @@ serve(async (req) => {
         const desc = styleDesc[style] || styleDesc.warm;
         systemPrompt = `Rewrite the user's text in a ${desc} voice. Keep meaning. Output only the rewritten text, no preamble.`;
       }
-      userPrompt = customPrompt || `Generate the ${type} as requested.`;
+      if (type === "mystery_box_ai") {
+        const analysisMode = style === "box_strategy" || reqBody.analysisType === "box_strategy" ? "Quick Strategy Guide" : "Full Prediction Report";
+        userPrompt = customPrompt || `${analysisMode}: analyze Mystery Box opening strategy for this user. Include: best-value tier guidance, rarity expectation, risk warning, budget stop-loss rule, and 3 concrete next actions. Keep it practical and do not claim any guaranteed drop.`;
+      } else {
+        userPrompt = customPrompt || `Generate the ${type} as requested.`;
+      }
     } else if (type === "travel_planner") {
       systemPrompt = "You are an expert travel advisor and trip planner. Provide detailed, practical, and well-organized travel advice. Use clear headings, bullet points, and specific recommendations. Be thorough but concise.";
       userPrompt = customPrompt || "Suggest a great travel destination";
@@ -528,37 +544,55 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
 
     console.log("Generating with OpenAI, type:", type || "message", "style:", style);
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        max_completion_tokens: (() => {
-          const longTypes = new Set(["travel_planner", "cultural_guide", "weekly_meal_plan", "fitness_plan", "nutrition_plan", "course_content", "educational", "monetization_ideas"]);
-          const isSport = type && /(_analysis|_tactics|_match|_training|_scout|_chemistry|_prediction)$/.test(type);
-          if (longTypes.has(type)) return 1500;
-          if (isSport) return 1200;
-          return 600;
-        })() }) });
+    const maxTokens = (() => {
+      const longTypes = new Set(["travel_planner", "cultural_guide", "weekly_meal_plan", "fitness_plan", "nutrition_plan", "course_content", "educational", "monetization_ideas", "mystery_box_ai"]);
+      const isSport = type && /(_analysis|_tactics|_match|_training|_scout|_chemistry|_prediction)$/.test(type);
+      if (longTypes.has(type)) return 1500;
+      if (isSport) return 1200;
+      return 600;
+    })();
 
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limit exceeded, try again later." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    let message = "Sending you warm wishes!";
+    if (OPENAI_API_KEY) {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          max_completion_tokens: maxTokens }) });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          return new Response(JSON.stringify({ error: "Rate limit exceeded, try again later." }), {
+            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        const errorText = await response.text();
+        console.error("OpenAI API error:", errorText);
+        throw new Error("AI generation failed");
       }
-      const errorText = await response.text();
-      console.error("OpenAI API error:", errorText);
-      throw new Error("AI generation failed");
-    }
 
-    const data = await response.json();
-    const message = data.choices?.[0]?.message?.content?.trim() || "Sending you warm wishes!";
+      const data = await response.json();
+      message = data.choices?.[0]?.message?.content?.trim() || message;
+    } else {
+      const gateway = createOpenAICompatible({
+        name: "lovable-ai-gateway",
+        baseURL: "https://ai.gateway.lovable.dev/v1",
+        headers: { "Lovable-API-Key": LOVABLE_API_KEY ?? "" },
+      });
+      const result = await generateText({
+        model: gateway("google/gemini-3.6-flash"),
+        system: systemPrompt,
+        prompt: userPrompt,
+        maxOutputTokens: maxTokens,
+      });
+      message = result.text.trim() || message;
+    }
 
     // Credits are deducted from unified ai_credits via __deduct() below.
 

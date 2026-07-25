@@ -79,7 +79,6 @@ export const AI_PROXY_MAP: Record<string, string> = { "activate-job-listing": "a
   "kids-science-lab": "kids_science_lab",
   // "kids-story-creator": removed — frontend now calls kids-story-generate directly
   "legal-ai": "legal_ai",
-  "mystery-box-ai": "mystery_box_ai",
   "notify-admin-auction-withdrawal": "notify_admin_auction_withdrawal",
   "open-mystery-box": "open_mystery_box",
   "outfit-recommender": "outfit_recommender",
@@ -597,6 +596,17 @@ export function resolveProxy(
   const nutrition = NUTRITION_ROUTER_MAP[functionName];
   if (nutrition) {
     return { target: "nutrition-router", body: { ...b, action: nutrition } };
+  }
+
+  if (functionName === "mystery-box-ai") {
+    return {
+      target: "generate-gift-message",
+      body: {
+        ...b,
+        type: "mystery_box_ai",
+        style: (b as any).analysisType ?? (b as any).style ?? (b as any).type,
+      },
+    };
   }
 
   // Horse router consolidation (6 functions -> 1).
