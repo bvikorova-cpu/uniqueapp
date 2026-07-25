@@ -474,6 +474,12 @@ export default function LiveStream() {
           Back
         </Button>
 
+        <StreamTierGate
+          streamId={stream.id}
+          minTier={(stream as any).min_tier ?? null}
+          creatorUserId={stream.influencer_profiles?.user_id ?? null}
+          currentUserId={user?.id ?? null}
+        >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Video Section */}
           <div className="lg:col-span-2">
