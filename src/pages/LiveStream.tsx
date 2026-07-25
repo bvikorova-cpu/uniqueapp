@@ -667,6 +667,12 @@ export default function LiveStream() {
             </Card>
           </div>
         </div>
+        {streamId && (
+          <div className="mt-6 max-w-md">
+            <SupportersLeaderboard streamId={streamId} />
+          </div>
+        )}
+        </StreamTierGate>
       </div>
     </div>
   );
