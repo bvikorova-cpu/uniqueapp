@@ -93,15 +93,15 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
           </div>
         </motion.div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        {/* Tabs — scroll horizontally on mobile so History is always reachable */}
+        <div className="flex gap-2 mb-6 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none snap-x">
           {tabs.map(t => (
             <Button
               key={t.id}
               variant={activeTab === t.id ? "default" : "outline"}
               onClick={() => setActiveTab(t.id)}
               size="sm"
-              className={activeTab === t.id ? "bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold" : "border-yellow-500/20"}
+              className={`shrink-0 snap-start ${activeTab === t.id ? "bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold" : "border-yellow-500/20"}`}
             >
               <t.icon className="h-3.5 w-3.5 mr-1.5" /> {t.label}
             </Button>
