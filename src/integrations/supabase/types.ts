@@ -68221,6 +68221,10 @@ export type Database = {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
       }
+      award_social_gifts_badges: {
+        Args: { p_user_id: string }
+        Returns: undefined
+      }
       award_xp: {
         Args: {
           _amount: number
