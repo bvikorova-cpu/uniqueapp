@@ -37841,6 +37841,7 @@ export type Database = {
           influencer_id: string
           is_live: boolean | null
           min_tier: string | null
+          reminders_sent: boolean
           scheduled_at: string | null
           started_at: string | null
           stream_key: string
@@ -37859,6 +37860,7 @@ export type Database = {
           influencer_id: string
           is_live?: boolean | null
           min_tier?: string | null
+          reminders_sent?: boolean
           scheduled_at?: string | null
           started_at?: string | null
           stream_key: string
@@ -37877,6 +37879,7 @@ export type Database = {
           influencer_id?: string
           is_live?: boolean | null
           min_tier?: string | null
+          reminders_sent?: boolean
           scheduled_at?: string | null
           started_at?: string | null
           stream_key?: string
@@ -58824,24 +58827,150 @@ export type Database = {
           },
         ]
       }
+      stream_highlights: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          payload: Json
+          rank: number
+          stream_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          payload?: Json
+          rank?: number
+          stream_id: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          payload?: Json
+          rank?: number
+          stream_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_highlights_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_highlights_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_highlights_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "public_live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stream_message_reports: {
+        Row: {
+          created_at: string
+          id: string
+          message_id: string
+          reason: string
+          reporter_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          stream_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_id: string
+          reason: string
+          reporter_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          stream_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_id?: string
+          reason?: string
+          reporter_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          stream_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_message_reports_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "stream_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_message_reports_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_message_reports_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_message_reports_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "public_live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stream_messages: {
         Row: {
           created_at: string | null
+          hidden_at: string | null
+          hidden_by: string | null
           id: string
+          is_hidden: boolean
           message: string
           stream_id: string
           user_id: string
         }
         Insert: {
           created_at?: string | null
+          hidden_at?: string | null
+          hidden_by?: string | null
           id?: string
+          is_hidden?: boolean
           message: string
           stream_id: string
           user_id: string
         }
         Update: {
           created_at?: string | null
+          hidden_at?: string | null
+          hidden_by?: string | null
           id?: string
+          is_hidden?: boolean
           message?: string
           stream_id?: string
           user_id?: string
@@ -58863,6 +58992,55 @@ export type Database = {
           },
           {
             foreignKeyName: "stream_messages_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "public_live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stream_viewer_sessions: {
+        Row: {
+          id: string
+          joined_at: string
+          left_at: string | null
+          stream_id: string
+          user_id: string | null
+          watch_seconds: number
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          left_at?: string | null
+          stream_id: string
+          user_id?: string | null
+          watch_seconds?: number
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          left_at?: string | null
+          stream_id?: string
+          user_id?: string | null
+          watch_seconds?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_viewer_sessions_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_viewer_sessions_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_viewer_sessions_stream_id_fkey"
             columns: ["stream_id"]
             isOneToOne: false
             referencedRelation: "public_live_streams"
@@ -69502,6 +69680,7 @@ export type Database = {
         Args: { _other_user: string }
         Returns: undefined
       }
+      notify_upcoming_scheduled_streams: { Args: never; Returns: undefined }
       open_mystery_box: { Args: { p_user_box_id: string }; Returns: Json }
       payout_requires_review: {
         Args: {
