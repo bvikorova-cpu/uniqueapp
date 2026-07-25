@@ -72,7 +72,7 @@ export const MysteryBox = () => {
   const [showConfetti, setShowConfetti] = useState(false);
 
   // Search users
-  const { data: users = [] } = useQuery({
+  const { data: users = [], isFetching: isSearching } = useQuery({
     queryKey: ["search-users-mystery", searchQuery],
     queryFn: async () => {
       if (!searchQuery || searchQuery.length < 1) return [];
@@ -226,12 +226,17 @@ export const MysteryBox = () => {
           Choose Recipient
         </h3>
         
-        <Input
-          placeholder="Search users by name..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="bg-white border-purple-200 text-gray-800 placeholder:text-gray-400"
-        />
+        <div className="relative">
+          <Input
+            placeholder="Search users by name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-white border-purple-200 text-gray-800 placeholder:text-gray-400 pr-10"
+          />
+          {isSearching && searchQuery.length >= 1 && (
+            <Sparkles className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-purple-500 animate-spin" />
+          )}
+        </div>
 
         {users.length > 0 && (
           <div className="mt-3 space-y-2">
@@ -240,7 +245,7 @@ export const MysteryBox = () => {
                 key={user.id}
                 onClick={() => {
                   setSelectedRecipient(user.id);
-                  setSearchQuery("");
+                  setSearchQuery(user.username);
                 }}
                 className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
                   selectedRecipient === user.id
