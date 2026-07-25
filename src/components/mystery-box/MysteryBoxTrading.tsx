@@ -17,7 +17,7 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
   const { credits, refresh } = useAICredits();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"gift" | "items" | "history">("gift");
-  const [recipientEmail, setRecipientEmail] = useState("");
+  const [recipient, setRecipient] = useState("");
   const [giftCredits, setGiftCredits] = useState(50);
   const [giftMessage, setGiftMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,14 +31,15 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
     if (!user) return;
     const [itemsRes, historyRes] = await Promise.all([
       supabase.from('user_collectibles').select('*, collectibles(*)').eq('user_id', user.id).limit(20),
-      supabase.from('ai_usage_history').select('*').eq('user_id', user.id).eq('usage_type', 'gift_credits').order('created_at', { ascending: false }).limit(10),
+      supabase.from('ai_usage_history').select('*').eq('user_id', user.id).in('usage_type', ['gift_credits', 'gift_received']).order('created_at', { ascending: false }).limit(20),
     ]);
     setMyItems(itemsRes.data || []);
     setGiftHistory(historyRes.data || []);
   };
 
   const sendGift = async () => {
-    if (!recipientEmail) { toast.error("Enter recipient's email"); return; }
+    const target = recipient.trim();
+    if (!target) { toast.error("Enter a Unique name or email"); return; }
     if (giftCredits < 10) { toast.error("Minimum gift is 10 credits"); return; }
     if (credits.credits_remaining < giftCredits) {
       toast.error("Insufficient credits"); return;
@@ -46,16 +47,20 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
 
     setLoading(true);
     try {
-      const { error } = await supabase.rpc('gift_ai_credits', { p_recipient_email: recipientEmail,
+      const { data, error } = await supabase.rpc('gift_ai_credits_by_identifier', {
+        p_recipient: target,
         p_amount: giftCredits,
-        p_message: giftMessage || null });
+        p_message: giftMessage || null,
+      });
       if (error) throw error;
 
       await Promise.all([refresh(), loadData()]);
-      toast.success(`🎁 ${giftCredits} credits sent to ${recipientEmail}!`);
-      setRecipientEmail("");
+      const label = (data as any)?.recipient || target;
+      toast.success(`🎁 ${giftCredits} credits sent to ${label}!`);
+      setRecipient("");
       setGiftCredits(50);
       setGiftMessage("");
+      setActiveTab("history");
     } catch (e: any) {
       toast.error(e.message || "Failed to send gift");
     } finally {
@@ -88,15 +93,15 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
           </div>
         </motion.div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        {/* Tabs — scroll horizontally on mobile so History is always reachable */}
+        <div className="flex gap-2 mb-6 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none snap-x">
           {tabs.map(t => (
             <Button
               key={t.id}
               variant={activeTab === t.id ? "default" : "outline"}
               onClick={() => setActiveTab(t.id)}
               size="sm"
-              className={activeTab === t.id ? "bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold" : "border-yellow-500/20"}
+              className={`shrink-0 snap-start ${activeTab === t.id ? "bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold" : "border-yellow-500/20"}`}
             >
               <t.icon className="h-3.5 w-3.5 mr-1.5" /> {t.label}
             </Button>
@@ -115,13 +120,14 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
               </Card>
 
               <div>
-                <Label className="text-yellow-400/80 font-semibold text-sm">Recipient Email</Label>
+                <Label className="text-yellow-400/80 font-semibold text-sm">Recipient — Unique name or email</Label>
                 <Input
-                  placeholder="friend@example.com"
-                  value={recipientEmail}
-                  onChange={(e) => setRecipientEmail(e.target.value)}
+                  placeholder="@username or friend@example.com"
+                  value={recipient}
+                  onChange={(e) => setRecipient(e.target.value)}
                   className="mt-1 border-yellow-500/20 focus:border-yellow-500/50 bg-background/50"
                 />
+                <p className="text-[11px] text-muted-foreground mt-1">Enter their Unique @username (recommended), full name, or email.</p>
               </div>
               <div>
                 <Label className="text-yellow-400/80 font-semibold text-sm">Credits to Gift</Label>

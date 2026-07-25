@@ -69523,6 +69523,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      gift_ai_credits_by_identifier: {
+        Args: { p_amount: number; p_message?: string; p_recipient: string }
+        Returns: Json
+      }
       gift_xp: {
         Args: { _amount: number; _message?: string; _recipient: string }
         Returns: Json
