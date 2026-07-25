@@ -679,6 +679,7 @@ export default function LiveStream() {
               </ScrollArea>
 
               <div className="p-4 border-t">
+                {streamId && user && <ChatMuteBanner streamId={streamId} userId={user.id} />}
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
