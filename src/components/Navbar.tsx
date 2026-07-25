@@ -888,7 +888,7 @@ const Navbar = () => {
                       {"Edit profile"}
                     </Button>
                   </Link>
-                  <Link to="/subscription" onClick={() => setIsMenuOpen(false)}>
+                  <Link to="/subscriptions" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Crown className="h-4 w-4 mr-2" />
                       {"Subscription"}
