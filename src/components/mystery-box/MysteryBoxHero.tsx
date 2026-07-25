@@ -30,7 +30,7 @@ const useLiveStats = () => {
     refetchInterval: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
     queryFn: async () => {
-      const { data: stats, error } = await supabase.rpc("get_mystery_box_public_stats");
+      const { data: stats, error } = await (supabase as any).rpc("get_mystery_box_public_stats");
       if (error) throw error;
 
       const row = Array.isArray(stats) ? stats[0] : stats;
