@@ -599,9 +599,11 @@ export const useSecretSanta = () => {
 
       const { data, error } = await (supabase as any).rpc("get_my_secret_santa_received_gifts");
 
-      if (!error) return ((data || []) as SecretSantaGift[]).sort(byNewestGift);
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return (data as SecretSantaGift[]).sort(byNewestGift);
+      }
 
-      // Fallback keeps the inbox visible if the RPC cache/types are stale in a browser session.
+      // Fallback keeps the inbox visible if the RPC returns stale/empty data in a browser session.
       const { data: fallback, error: fallbackError } = await supabase
         .from("secret_santa_gifts")
         .select("*")
@@ -627,7 +629,9 @@ export const useSecretSanta = () => {
 
       const { data, error } = await (supabase as any).rpc("get_my_secret_santa_sent_gifts");
 
-      if (!error) return ((data || []) as SecretSantaGift[]).sort(byNewestGift);
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return (data as SecretSantaGift[]).sort(byNewestGift);
+      }
 
       const { data: fallback, error: fallbackError } = await supabase
         .from("secret_santa_gifts")
