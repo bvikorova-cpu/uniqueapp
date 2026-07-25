@@ -203,7 +203,7 @@ export const SecretSantaInbox = () => {
                             <Gamepad2 className="absolute -bottom-1 -right-1 h-4 w-4 text-purple-500" />
                           </div>
                         ) : (
-                          gift.gift_emoji
+                          giftData?.emoji || gift.gift_emoji
                         )}
                       </div>
 
@@ -238,7 +238,10 @@ export const SecretSantaInbox = () => {
 
                         {gift.message && (
                           <div className="mt-2 p-3 rounded-lg bg-white border border-amber-100">
-                            <p className="text-gray-700 text-sm italic">"{gift.message}"</p>
+                            <p className="text-[10px] uppercase tracking-wide text-amber-500 font-semibold mb-1">
+                              {activeView === "sent" ? "Your message" : "Message"}
+                            </p>
+                            <p className="text-gray-700 text-sm italic whitespace-pre-wrap break-words">"{gift.message}"</p>
                           </div>
                         )}
 
