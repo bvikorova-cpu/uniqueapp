@@ -75,9 +75,13 @@ export function TagFriendsDialog({ open,
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search friends..."
-            className="pl-10"
+            className="pl-10 pr-10"
           />
+          {isSearching && (
+            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-primary" />
+          )}
         </div>
+
 
         <ScrollArea className="h-[300px] pr-4">
           <div className="space-y-2">
