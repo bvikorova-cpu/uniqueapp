@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Gift, Loader2, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ArrowLeft, Calendar, Gift, Loader2, PackageOpen, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
@@ -50,6 +52,7 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
   const [userBoxes, setUserBoxes] = useState<any[]>([]);
   const [opening, setOpening] = useState<string | null>(null);
   const [revealedReward, setRevealedReward] = useState<any>(null);
+  const [selectedOpenedBox, setSelectedOpenedBox] = useState<any>(null);
   const [openingPhase, setOpeningPhase] = useState<"idle" | "shaking" | "burst" | "reveal">("idle");
 
   useEffect(() => { loadData(); }, []);
@@ -124,6 +127,10 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
     const item = Array.isArray(joined) ? joined[0] : joined;
     return { reward, item };
   };
+  const selectedReward = selectedOpenedBox ? boxReward(selectedOpenedBox) : null;
+  const selectedItem = selectedReward?.item;
+  const selectedRarity = (selectedItem?.rarity || 'common').toString();
+  const selectedType = selectedItem?.item_type ? selectedItem.item_type.replace(/_/g, ' ') : 'item';
 
   return (
     <>
@@ -243,13 +250,26 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
                 const rarity = (item?.rarity || 'common').toString();
                 const type = item?.item_type ? item.item_type.replace(/_/g, ' ') : 'item';
                 return (
-                  <Card key={ub.id} className="p-4 border-yellow-500/20 bg-yellow-500/5">
+                  <Card
+                    key={ub.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setSelectedOpenedBox(ub)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setSelectedOpenedBox(ub);
+                      }
+                    }}
+                    className="p-4 border-yellow-500/20 bg-yellow-500/5 cursor-pointer hover:border-yellow-500/50 hover:bg-yellow-500/10 transition-all"
+                  >
                     <div className="flex items-start gap-3">
                       <span className="text-3xl flex-shrink-0">{ub.mystery_boxes?.icon || '📦'}</span>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs text-muted-foreground truncate">{ub.mystery_boxes?.name || 'Mystery Box'}</p>
                         <p className="font-black text-sm truncate">{item?.item_name || 'Reward syncing...'}</p>
                         <p className="text-[11px] text-yellow-400 capitalize">{rarity} {type}</p>
+                        <p className="text-[10px] text-muted-foreground mt-1">Tap to see what was inside</p>
                         <p className="text-[10px] text-muted-foreground mt-1">
                           {ub.opened_at ? new Date(ub.opened_at).toLocaleDateString() : 'Opened'}
                         </p>
@@ -319,6 +339,52 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <Dialog open={Boolean(selectedOpenedBox)} onOpenChange={(open) => !open && setSelectedOpenedBox(null)}>
+          <DialogContent className="max-w-sm border-yellow-500/30 bg-card">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-yellow-400">
+                <PackageOpen className="h-5 w-5" /> What was in the box
+              </DialogTitle>
+              <DialogDescription>
+                {selectedOpenedBox?.mystery_boxes?.name || "Mystery Box"}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-5 text-center">
+                <div className="text-5xl mb-3">{selectedOpenedBox?.mystery_boxes?.icon || "📦"}</div>
+                <p className="text-xl font-black">{selectedItem?.item_name || "Reward syncing..."}</p>
+                <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">
+                  <Badge className="bg-gradient-to-r from-yellow-500 to-amber-600 text-black border-0 capitalize">
+                    {selectedRarity}
+                  </Badge>
+                  <Badge variant="outline" className="capitalize border-yellow-500/30">
+                    {selectedType}
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <Card className="p-3 border-yellow-500/10">
+                  <p className="text-muted-foreground">Box</p>
+                  <p className="font-bold truncate">{selectedOpenedBox?.mystery_boxes?.name || "Mystery Box"}</p>
+                </Card>
+                <Card className="p-3 border-yellow-500/10">
+                  <p className="text-muted-foreground">Opened</p>
+                  <p className="font-bold flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {selectedOpenedBox?.opened_at ? new Date(selectedOpenedBox.opened_at).toLocaleDateString() : "Now"}
+                  </p>
+                </Card>
+              </div>
+
+              <Button onClick={() => setSelectedOpenedBox(null)} className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold">
+                Close
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </Card>
     </div>
     </>
