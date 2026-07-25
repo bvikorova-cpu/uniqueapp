@@ -598,6 +598,17 @@ export function resolveProxy(
     return { target: "nutrition-router", body: { ...b, action: nutrition } };
   }
 
+  if (functionName === "mystery-box-ai") {
+    return {
+      target: "generate-gift-message",
+      body: {
+        ...b,
+        type: "mystery_box_ai",
+        style: (b as any).analysisType ?? (b as any).style ?? (b as any).type,
+      },
+    };
+  }
+
   // Horse router consolidation (6 functions -> 1).
   const horse = HORSE_ROUTER_MAP[functionName];
   if (horse) {
