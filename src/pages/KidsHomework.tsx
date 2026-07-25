@@ -91,6 +91,16 @@ const KidsHomework = () => {
     }
   }, [user, usageLoading, credits_remaining, navigate]);
 
+  // Refresh credits after returning from Stripe success
+  useEffect(() => {
+    if (searchParams.get("payment") === "success") {
+      toast.success("Payment successful! Credits added to your account.");
+      refreshCredits();
+    } else if (searchParams.get("payment") === "canceled") {
+      toast.info("Payment canceled.");
+    }
+  }, [searchParams, refreshCredits]);
+
   const handleBuyCredits = async () => {
     if (!user) {
       navigate("/auth");
