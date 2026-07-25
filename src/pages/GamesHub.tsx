@@ -77,6 +77,7 @@ const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
               title={game.title}
               className="w-full h-full"
               allow="autoplay; fullscreen; gamepad; microphone; camera"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-pointer-lock allow-orientation-lock"
               allowFullScreen
               frameBorder={0}
               scrolling="no"
