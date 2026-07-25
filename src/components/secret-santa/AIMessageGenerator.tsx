@@ -177,32 +177,32 @@ export const AIMessageGenerator = ({ onSelectMessage, giftType, recipientName }:
                   className="bg-white rounded-lg p-4 border border-purple-200"
                 >
                   <p className="text-gray-700 italic">"{generatedMessage}"</p>
-                  <div className="flex gap-2 mt-3">
+                  <div className="grid grid-cols-3 gap-2 mt-3">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={copyToClipboard}
-                      className="flex-1"
+                      className="w-full min-w-0 px-2"
                     >
-                      <Copy className="h-4 w-4 mr-1" />
-                      Copy
+                      <Copy className="h-4 w-4 mr-1 shrink-0" />
+                      <span className="truncate">Copy</span>
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={generateMessage}
                       disabled={isGenerating}
-                      className="flex-1"
+                      className="w-full min-w-0 px-2"
                     >
-                      <RefreshCw className="h-4 w-4 mr-1" />
-                      Regenerate
+                      <RefreshCw className="h-4 w-4 mr-1 shrink-0" />
+                      <span className="truncate">Regenerate</span>
                     </Button>
                     <Button
                       size="sm"
                       onClick={useMessage}
-                      className="flex-1 bg-purple-500 hover:bg-purple-600 text-white"
+                      className="w-full min-w-0 px-2 bg-purple-500 hover:bg-purple-600 text-white"
                     >
-                      Use This
+                      <span className="truncate">Use This</span>
                     </Button>
                   </div>
                 </motion.div>
