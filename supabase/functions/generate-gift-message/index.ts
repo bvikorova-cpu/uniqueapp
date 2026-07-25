@@ -565,13 +565,8 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     const data = await response.json();
     const message = data.choices?.[0]?.message?.content?.trim() || "Sending you warm wishes!";
 
-    // Deduct credits after successful generation (best-effort, never fail the request)
-    try {
-      await supabase
-        .from("secret_santa_credits")
-        .update({ credits_remaining: currentCredits - CREDIT_COST })
-        .eq("user_id", user.id);
-    } catch { /* ignore */ }
+    // Credits are deducted from unified ai_credits via __deduct() below.
+
 
     // Log usage (best-effort)
     try { await supabase.from("social_gifts_ai_messages").insert({
