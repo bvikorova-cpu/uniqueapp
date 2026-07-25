@@ -250,7 +250,7 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
 
           <div className="space-y-4">
             <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-5 text-center">
-              <div className="text-5xl mb-3">{selectedBox?.icon || "🎁"}</div>
+              <div className="text-5xl mb-3">{selectedItem?.item_data?.icon || selectedBox?.icon || "🎁"}</div>
               <p className="text-xl font-black">{selectedItem?.item_name || "Mystery reward"}</p>
               <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">
                 <Badge className="bg-gradient-to-r from-yellow-500 to-amber-600 text-black border-0 capitalize">
