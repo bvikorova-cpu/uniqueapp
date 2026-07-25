@@ -403,6 +403,94 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
         <span>Exclusive seasonal collections available all year round!</span>
       </div>
     </div>
+
+    {/* Send dialog */}
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <span className="text-3xl">{selectedGift?.emoji}</span>
+            <div>
+              <div>Send {selectedGift?.label}</div>
+              <div className="text-xs font-normal text-muted-foreground">💎 {selectedGift?.value} credits</div>
+            </div>
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div>
+            <Label className="mb-2 flex items-center gap-2"><Search className="h-4 w-4" /> Choose recipient</Label>
+            <div className="relative">
+              <Input
+                placeholder="Search users by name..."
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); if (!e.target.value) setSelectedRecipient(null); }}
+                className="pr-10"
+              />
+              {isSearching && searchQuery.length >= 1 && (
+                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-purple-500 animate-spin" />
+              )}
+            </div>
+
+            {users.length > 0 && !selectedRecipient && (
+              <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">
+                {users.map((user) => (
+                  <div
+                    key={user.id}
+                    onClick={() => { setSelectedRecipient(user.id); setSearchQuery(user.username); }}
+                    className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-muted"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.avatar_url || undefined} />
+                      <AvatarFallback>{user.username?.[0]?.toUpperCase() || "?"}</AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium">{user.username}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {selectedUserData && (
+              <div className="mt-2 flex items-center gap-3 p-2 rounded-lg bg-purple-100 border border-purple-300">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={selectedUserData.avatar_url || undefined} />
+                  <AvatarFallback>{selectedUserData.username?.[0]?.toUpperCase() || "?"}</AvatarFallback>
+                </Avatar>
+                <span className="text-sm font-medium">Sending to: {selectedUserData.username}</span>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <Label className="mb-2 block">Message (optional)</Label>
+            <Textarea
+              placeholder="Add a note..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              maxLength={200}
+              className="min-h-[70px]"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Switch id="anon-seasonal" checked={isAnonymous} onCheckedChange={setIsAnonymous} />
+            <Label htmlFor="anon-seasonal">Send anonymously</Label>
+          </div>
+
+          <Button
+            onClick={() => sendSeasonalGift.mutate()}
+            disabled={!selectedRecipient || sendSeasonalGift.isPending || credits < (selectedGift?.value || 0)}
+            className="w-full"
+          >
+            {sendSeasonalGift.isPending ? (
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...</>
+            ) : (
+              <><Send className="h-4 w-4 mr-2" /> Send Gift (💎 {selectedGift?.value})</>
+            )}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
     </>
   );
 };
