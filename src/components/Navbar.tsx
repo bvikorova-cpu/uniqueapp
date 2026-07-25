@@ -9,7 +9,7 @@ import { DropdownMenu,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors, Diamond } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors, Diamond, RefreshCw } from "lucide-react";
 import { useTheme } from "next-themes";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import MessagesBell from "@/components/messenger/MessagesBell";
@@ -62,6 +62,30 @@ const Navbar = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/auth");
+  };
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefreshPage = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+
+    try {
+      if ("serviceWorker" in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map((r) => r.unregister()));
+      }
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((k) => caches.delete(k)));
+      }
+    } catch {
+      /* ignore cache errors */
+    }
+
+    const url = new URL(window.location.href);
+    url.searchParams.set("_refresh", Date.now().toString());
+    window.location.href = url.toString();
   };
 
   const mainNavItems = [
@@ -477,6 +501,17 @@ const Navbar = () => {
 
             {/* Theme Toggle — visible for all users */}
             <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Refresh page"
+              title="Refresh page"
+              onClick={handleRefreshPage}
+              disabled={isRefreshing}
+              className="hidden sm:inline-flex"
+            >
+              <RefreshCw className={`h-5 w-5 ${isRefreshing ? "animate-spin" : ""}`} />
+            </Button>
             <Link
               to="/club"
               aria-label="Unique VIP Club"
@@ -558,6 +593,10 @@ const Navbar = () => {
                         {"AI Credits"}
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleRefreshPage} className="cursor-pointer">
+                      <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
+                      {"Refresh page"}
+                    </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/earnings" className="w-full cursor-pointer">
                         <Euro className="h-4 w-4 mr-2" />
@@ -605,6 +644,17 @@ const Navbar = () => {
               </>
             )}
             <ThemeToggle className="h-8 w-8" />
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Refresh page"
+              title="Refresh page"
+              onClick={handleRefreshPage}
+              disabled={isRefreshing}
+              className="h-8 w-8"
+            >
+              <RefreshCw className={`h-5 w-5 ${isRefreshing ? "animate-spin" : ""}`} />
+            </Button>
             <Link
               to="/club"
               aria-label="Unique VIP Club"
@@ -818,6 +868,19 @@ const Navbar = () => {
               >
                 <Sparkles className="h-4 w-4" />
                 {"Beta testing"}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full justify-start text-sm gap-2"
+                size="sm"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleRefreshPage();
+                }}
+                disabled={isRefreshing}
+              >
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                {"Refresh page"}
               </Button>
               {user ? (
                 <>
