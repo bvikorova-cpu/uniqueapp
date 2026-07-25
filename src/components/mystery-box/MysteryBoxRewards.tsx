@@ -108,8 +108,9 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {filteredItems.map((item, i) => {
-              const rarity = item.collectibles?.collectible_rarities?.name || item.collectibles?.rarity || 'common';
+              const rarity = itemRarity(item);
               const style = getRarityStyle(rarity);
+              const name = item.mystery_box_items?.item_name || 'Unknown';
               return (
                 <motion.div
                   key={item.id}
@@ -126,12 +127,12 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
                        rarity === 'rare' ? <Sparkles className={`h-8 w-8 mx-auto ${style.text}`} /> :
                        <Package className={`h-8 w-8 mx-auto ${style.text}`} />}
                     </div>
-                    <p className="font-bold text-sm text-center truncate">{item.collectibles?.name || 'Unknown'}</p>
+                    <p className="font-bold text-sm text-center truncate">{name}</p>
                     <div className="flex justify-center mt-2">
                       <Badge className={`${style.badge} text-white text-[10px] border-0`}>{rarity}</Badge>
                     </div>
                     <p className="text-[10px] text-muted-foreground text-center mt-1">
-                      {new Date(item.created_at).toLocaleDateString()}
+                      {new Date(item.received_at).toLocaleDateString()}
                     </p>
                   </Card>
                 </motion.div>
