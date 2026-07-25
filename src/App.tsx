@@ -616,6 +616,7 @@ const MasterChefCookingTimer = lazy(() => import("@/pages/MasterChefCookingTimer
 const MasterChefIngredientScanner = lazy(() => import("@/pages/MasterChefIngredientScanner"));
 const MasterChefChefChat = lazy(() => import("@/pages/MasterChefChefChat"));
 const MasterChefLiveStream = lazy(() => import("@/pages/MasterChefLiveStream"));
+const CreatorLiveAnalytics = lazy(() => import("@/pages/CreatorLiveAnalytics"));
 const KitchenStarsBattles = lazy(() => import("@/pages/KitchenStarsBattles"));
 const MasterChefWeeklyAwards = lazy(() => import("@/pages/MasterChefWeeklyAwards"));
 const MasterChefNutritionAnalyzer = lazy(() => import("@/pages/MasterChefNutritionAnalyzer"));
