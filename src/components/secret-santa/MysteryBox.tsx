@@ -72,7 +72,7 @@ export const MysteryBox = () => {
   const [showConfetti, setShowConfetti] = useState(false);
 
   // Search users
-  const { data: users = [] } = useQuery({
+  const { data: users = [], isFetching: isSearching } = useQuery({
     queryKey: ["search-users-mystery", searchQuery],
     queryFn: async () => {
       if (!searchQuery || searchQuery.length < 1) return [];
