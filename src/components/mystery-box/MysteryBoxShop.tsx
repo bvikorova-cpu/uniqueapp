@@ -327,8 +327,9 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
                     transition={{ repeat: 3, duration: 0.6 }}
                     className="text-7xl mb-4 relative z-10"
                   >
-                    🎉
+                    {revealedReward?.item_data?.icon || '🎁'}
                   </motion.div>
+
                   <h3 className="text-2xl font-black mb-2 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 bg-clip-text text-transparent relative z-10">
                     Congratulations!
                   </h3>
@@ -366,7 +367,7 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
 
             <div className="space-y-4">
               <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-5 text-center">
-                <div className="text-5xl mb-3">{selectedOpenedBox?.mystery_boxes?.icon || "📦"}</div>
+                <div className="text-5xl mb-3">{selectedItem?.item_data?.icon || selectedOpenedBox?.mystery_boxes?.icon || "📦"}</div>
                 <p className="text-xl font-black">{selectedItem?.item_name || "Reward syncing..."}</p>
                 <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">
                   <Badge className="bg-gradient-to-r from-yellow-500 to-amber-600 text-black border-0 capitalize">
