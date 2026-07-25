@@ -57,7 +57,9 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
   const loadData = async () => {
     const [boxesRes, userBoxesRes] = await Promise.all([
       supabase.from('mystery_boxes').select('*').order('price'),
-      supabase.from('user_mystery_boxes').select('*, mystery_boxes(*)'),
+      supabase.from('user_mystery_boxes')
+        .select('*, mystery_boxes(*), mystery_box_rewards(*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days))')
+        .order('purchased_at', { ascending: false }),
     ]);
     if (boxesRes.data?.length) setBoxes(boxesRes.data);
     if (userBoxesRes.data) setUserBoxes(userBoxesRes.data);
@@ -114,6 +116,14 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
   };
 
   const unopenedBoxes = userBoxes.filter(ub => !ub.is_opened);
+  const openedBoxes = userBoxes.filter(ub => ub.is_opened);
+  const boxReward = (ub: any) => {
+    const rewards = Array.isArray(ub?.mystery_box_rewards) ? ub.mystery_box_rewards : [];
+    const reward = rewards[0];
+    const joined = reward?.mystery_box_items;
+    const item = Array.isArray(joined) ? joined[0] : joined;
+    return { reward, item };
+  };
 
   return (
     <>
@@ -220,6 +230,36 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
               ))}
             </div>
           </>
+        )}
+
+        {openedBoxes.length > 0 && (
+          <div className="mt-8">
+            <h3 className="text-xl font-black mb-4 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+              Opened Box Rewards ({openedBoxes.length})
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {openedBoxes.slice(0, 12).map((ub) => {
+                const { item } = boxReward(ub);
+                const rarity = (item?.rarity || 'common').toString();
+                const type = item?.item_type ? item.item_type.replace(/_/g, ' ') : 'item';
+                return (
+                  <Card key={ub.id} className="p-4 border-yellow-500/20 bg-yellow-500/5">
+                    <div className="flex items-start gap-3">
+                      <span className="text-3xl flex-shrink-0">{ub.mystery_boxes?.icon || '📦'}</span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs text-muted-foreground truncate">{ub.mystery_boxes?.name || 'Mystery Box'}</p>
+                        <p className="font-black text-sm truncate">{item?.item_name || 'Reward syncing...'}</p>
+                        <p className="text-[11px] text-yellow-400 capitalize">{rarity} {type}</p>
+                        <p className="text-[10px] text-muted-foreground mt-1">
+                          {ub.opened_at ? new Date(ub.opened_at).toLocaleDateString() : 'Opened'}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
         )}
 
         {/* Reward Reveal Modal */}

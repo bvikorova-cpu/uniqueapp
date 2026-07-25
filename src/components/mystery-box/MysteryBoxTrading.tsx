@@ -30,7 +30,11 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
     const [itemsRes, historyRes] = await Promise.all([
-      supabase.from('user_collectibles').select('*, collectibles(*)').eq('user_id', user.id).limit(20),
+      supabase.from('mystery_box_rewards')
+        .select('*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days)')
+        .eq('user_id', user.id)
+        .order('received_at', { ascending: false })
+        .limit(50),
       supabase.from('ai_usage_history').select('*').eq('user_id', user.id).in('usage_type', ['gift_credits', 'gift_received']).order('created_at', { ascending: false }).limit(20),
     ]);
     setMyItems(itemsRes.data || []);
@@ -73,6 +77,11 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
     { id: "items" as const, icon: ArrowRightLeft, label: "My Items" },
     { id: "history" as const, icon: History, label: "History" },
   ];
+
+  const rewardItem = (item: any) => {
+    const joined = item?.mystery_box_items;
+    return Array.isArray(joined) ? joined[0] : joined;
+  };
 
   return (
     <>
@@ -176,26 +185,31 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
               {myItems.length === 0 ? (
                 <Card className="p-12 text-center border-yellow-500/10">
                   <Users className="h-12 w-12 mx-auto text-yellow-500/30 mb-3" />
-                  <p className="text-muted-foreground font-medium">No collectible items yet.</p>
+                  <p className="text-muted-foreground font-medium">No mystery box items yet.</p>
                   <p className="text-xs text-muted-foreground mt-1">Open mystery boxes to collect items!</p>
                 </Card>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {myItems.map((item, i) => (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.04 }}
-                      whileHover={{ scale: 1.04, y: -4 }}
-                    >
-                      <Card className="p-3 border-yellow-500/10 hover:border-yellow-500/30 transition-all bg-card/50">
-                        <p className="font-bold text-sm truncate">{item.collectibles?.name || 'Unknown Item'}</p>
-                        <p className="text-xs text-yellow-400">{item.collectibles?.rarity || 'Common'}</p>
-                        <p className="text-[10px] text-muted-foreground mt-1">{new Date(item.created_at).toLocaleDateString()}</p>
-                      </Card>
-                    </motion.div>
-                  ))}
+                  {myItems.map((item, i) => {
+                    const details = rewardItem(item);
+                    const rarity = (details?.rarity || 'common').toString();
+                    const type = details?.item_type ? details.item_type.replace(/_/g, ' ') : 'item';
+                    return (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.04 }}
+                        whileHover={{ scale: 1.04, y: -4 }}
+                      >
+                        <Card className="p-3 border-yellow-500/10 hover:border-yellow-500/30 transition-all bg-card/50">
+                          <p className="font-bold text-sm truncate">{details?.item_name || 'Mystery reward'}</p>
+                          <p className="text-xs text-yellow-400 capitalize">{rarity} {type}</p>
+                          <p className="text-[10px] text-muted-foreground mt-1">{new Date(item.received_at).toLocaleDateString()}</p>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               )}
             </motion.div>

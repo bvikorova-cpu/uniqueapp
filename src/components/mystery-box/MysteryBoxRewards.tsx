@@ -26,18 +26,31 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
   useEffect(() => { loadItems(); }, []);
 
   const loadItems = async () => {
+    setLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setLoading(false); return; }
-    const { data } = await supabase.from('mystery_box_rewards')
+    const { data, error } = await supabase.from('mystery_box_rewards')
       .select('*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days)')
       .eq('user_id', user.id)
       .order('received_at', { ascending: false })
       .limit(200);
+
+    if (error) {
+      console.error('Failed to load mystery box rewards', error);
+      setItems([]);
+      setLoading(false);
+      return;
+    }
+
     setItems(data || []);
     setLoading(false);
   };
 
-  const itemRarity = (i: any) => (i.mystery_box_items?.rarity || 'common').toString().toLowerCase();
+  const rewardItem = (i: any) => {
+    const joined = i?.mystery_box_items;
+    return Array.isArray(joined) ? joined[0] : joined;
+  };
+  const itemRarity = (i: any) => (rewardItem(i)?.rarity || 'common').toString().toLowerCase();
   const filteredItems = filter === "all" ? items : items.filter(i => itemRarity(i) === filter);
   const rarityCount = (r: string) => items.filter(i => itemRarity(i) === r).length;
 
@@ -98,7 +111,12 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
           ))}
         </div>
 
-        {filteredItems.length === 0 ? (
+        {loading ? (
+          <Card className="p-16 text-center border-yellow-500/10">
+            <Package className="h-14 w-14 mx-auto text-yellow-500/30 mb-4 animate-pulse" />
+            <p className="text-muted-foreground font-medium">Loading your collection...</p>
+          </Card>
+        ) : filteredItems.length === 0 ? (
           <Card className="p-16 text-center border-yellow-500/10">
             <Package className="h-14 w-14 mx-auto text-yellow-500/30 mb-4" />
             <p className="text-muted-foreground font-medium">
@@ -110,7 +128,9 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
             {filteredItems.map((item, i) => {
               const rarity = itemRarity(item);
               const style = getRarityStyle(rarity);
-              const name = item.mystery_box_items?.item_name || 'Unknown';
+              const details = rewardItem(item);
+              const name = details?.item_name || 'Mystery reward';
+              const type = details?.item_type ? details.item_type.replace(/_/g, ' ') : 'item';
               return (
                 <motion.div
                   key={item.id}
@@ -128,6 +148,7 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
                        <Package className={`h-8 w-8 mx-auto ${style.text}`} />}
                     </div>
                     <p className="font-bold text-sm text-center truncate">{name}</p>
+                    <p className="text-[10px] text-muted-foreground text-center capitalize">{type}</p>
                     <div className="flex justify-center mt-2">
                       <Badge className={`${style.badge} text-white text-[10px] border-0`}>{rarity}</Badge>
                     </div>
