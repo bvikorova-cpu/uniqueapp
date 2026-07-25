@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { toast as sonnerToast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { characterImages } from "@/data/characterImages";
 
 export const GIFT_CATEGORIES = [
@@ -546,12 +547,12 @@ export const CREDIT_PACKAGES = [
 export const useSecretSanta = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Get current user credits (unified with paid AI credits pool)
   const { data: credits, isLoading: creditsLoading } = useQuery({
-    queryKey: ["secret-santa-credits"],
+    queryKey: ["secret-santa-credits", user?.id],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
       const { data, error } = await supabase
@@ -562,13 +563,14 @@ export const useSecretSanta = () => {
 
       if (error) throw error;
       return data;
-    } });
+    },
+    enabled: Boolean(user?.id),
+  });
 
   // Get received gifts
   const { data: receivedGifts = [], isLoading: giftsLoading } = useQuery({
-    queryKey: ["secret-santa-received"],
+    queryKey: ["secret-santa-received", user?.id],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
 
       const { data, error } = await supabase
@@ -584,13 +586,13 @@ export const useSecretSanta = () => {
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     staleTime: 0,
+    enabled: Boolean(user?.id),
   });
 
   // Get sent gifts
   const { data: sentGifts = [], isLoading: sentLoading } = useQuery({
-    queryKey: ["secret-santa-sent"],
+    queryKey: ["secret-santa-sent", user?.id],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
 
       const { data, error } = await supabase
@@ -606,6 +608,7 @@ export const useSecretSanta = () => {
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     staleTime: 0,
+    enabled: Boolean(user?.id),
   });
 
   // Realtime: any new gift where I'm sender or recipient -> refresh inbox
@@ -613,7 +616,6 @@ export const useSecretSanta = () => {
     let channel: ReturnType<typeof supabase.channel> | null = null;
     let cancelled = false;
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user || cancelled) return;
       const channelTopic = `santa-gifts-${user.id}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
       channel = supabase
@@ -656,7 +658,7 @@ export const useSecretSanta = () => {
       cancelled = true;
       if (channel) supabase.removeChannel(channel);
     };
-  }, [queryClient]);
+  }, [queryClient, user]);
 
   // Get active stories (non-expired)
   const { data: stories = [], isLoading: storiesLoading } = useQuery({
@@ -729,7 +731,6 @@ export const useSecretSanta = () => {
       message?: string;
       isAnonymous?: boolean;
     }) => {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
       const gift = GIFT_CATALOG.find(g => g.type === giftType);
@@ -746,8 +747,8 @@ export const useSecretSanta = () => {
     },
     onSuccess: () => {
       toast({ title: "Gift sent successfully! 🎁" });
-      queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
-      queryClient.invalidateQueries({ queryKey: ["secret-santa-sent"] });
+      queryClient.invalidateQueries({ queryKey: ["secret-santa-credits", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["secret-santa-sent", user?.id] });
     },
     onError: (error: Error) => {
       toast({ title: error.message, variant: "destructive" });
@@ -756,7 +757,6 @@ export const useSecretSanta = () => {
   // Share to stories mutation
   const shareToStory = useMutation({
     mutationFn: async (giftId: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
       const { error } = await (supabase as any).rpc("share_secret_santa_gift_to_story", {

@@ -69120,6 +69120,50 @@ export type Database = {
           xp: number
         }[]
       }
+      get_my_secret_santa_received_gifts: {
+        Args: never
+        Returns: {
+          ai_generated_image_url: string | null
+          animation_type: string | null
+          created_at: string
+          gift_emoji: string
+          gift_type: string
+          gift_value: number
+          id: string
+          is_anonymous: boolean
+          message: string | null
+          recipient_id: string
+          sender_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "secret_santa_gifts"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      get_my_secret_santa_sent_gifts: {
+        Args: never
+        Returns: {
+          ai_generated_image_url: string | null
+          animation_type: string | null
+          created_at: string
+          gift_emoji: string
+          gift_type: string
+          gift_value: number
+          id: string
+          is_anonymous: boolean
+          message: string | null
+          recipient_id: string
+          sender_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "secret_santa_gifts"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_my_weekly_xp_rank: {
         Args: never
         Returns: {
