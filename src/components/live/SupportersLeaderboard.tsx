@@ -42,8 +42,8 @@ export const SupportersLeaderboard = ({ streamId }: Props) => {
         cur.count += 1;
         agg.set(r.sender_id, cur);
       });
-      const list = Array.from(agg.entries())
-        .map(([sender_id, v]) => ({ sender_id, total_cents: v.total, count: v.count }))
+      const list: Row[] = Array.from(agg.entries())
+        .map(([sender_id, v]) => ({ sender_id, total_cents: v.total, count: v.count } as Row))
         .sort((a, b) => b.total_cents - a.total_cents)
         .slice(0, 10);
 
