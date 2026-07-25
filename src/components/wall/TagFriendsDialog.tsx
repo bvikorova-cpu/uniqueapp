@@ -33,7 +33,7 @@ export function TagFriendsDialog({ open,
       return user;
     } });
 
-  const { data: friends = [] } = useQuery({
+  const { data: friends = [], isFetching: isSearching } = useQuery({
     queryKey: ["friends-for-tagging", user?.id, searchQuery],
     queryFn: async () => {
       if (!user) return [];
