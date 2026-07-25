@@ -9,6 +9,7 @@ import { SEO } from "@/components/SEO";
 
 const SPIN_COST = 5;
 const PRIZES = [0, 2, 5, 10, 25, 100];
+const SEGMENT_ANGLE = 360 / PRIZES.length;
 
 interface SpinResult {
   cost: number;
@@ -23,6 +24,14 @@ export default function LuckyWheel() {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<SpinResult | null>(null);
   const [angle, setAngle] = useState(0);
+
+  const getTargetAngleForPrize = (prize: number, currentAngle: number) => {
+    const prizeIndex = Math.max(0, PRIZES.findIndex((value) => value === prize));
+    const pointerAlignedAngle = (360 - (prizeIndex * SEGMENT_ANGLE + SEGMENT_ANGLE / 2)) % 360;
+    const base = Math.ceil(currentAngle / 360) * 360;
+
+    return base + 1440 + pointerAlignedAngle;
+  };
 
   const loadBalance = async () => {
     const { data: u } = await supabase.auth.getUser();
@@ -52,19 +61,18 @@ export default function LuckyWheel() {
     setSpinning(true);
     setResult(null);
 
-    const targetSpin = 1440 + Math.floor(Math.random() * 360);
-    setAngle((a) => a + targetSpin);
-
     try {
       const { data, error } = await supabase.rpc("spin_lucky_wheel");
       if (error) throw error;
       const r = data as unknown as (SpinResult & { error?: string });
-      await new Promise((res) => setTimeout(res, 1800));
 
       if (r?.error === "already_spun_today") { toast.error("Come back tomorrow", {
           description: "You've already spun the wheel today." });
         return;
       }
+
+      setAngle((currentAngle) => getTargetAngleForPrize(r.prize, currentAngle));
+      await new Promise((res) => setTimeout(res, 1800));
 
       setResult(r);
       setBalance(r.balance_after);
@@ -74,8 +82,8 @@ export default function LuckyWheel() {
       } else {
         toast(`No win this time — lost ${SPIN_COST} CR`);
       }
-    } catch (e: any) {
-      toast.error(e.message || "Spin failed");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Spin failed");
     } finally {
       setSpinning(false);
     }
@@ -119,14 +127,28 @@ export default function LuckyWheel() {
               style={{
                 transform: `rotate(${angle}deg)`,
                 background: `conic-gradient(
-                  hsl(var(--primary)) 0deg 60deg,
-                  hsl(var(--accent)) 60deg 120deg,
-                  hsl(var(--primary)) 120deg 180deg,
-                  hsl(var(--accent)) 180deg 240deg,
-                  hsl(var(--primary)) 240deg 300deg,
-                  hsl(var(--accent)) 300deg 360deg
+                  hsl(var(--muted)) 0deg 60deg,
+                  hsl(var(--primary)) 60deg 120deg,
+                  hsl(var(--accent)) 120deg 180deg,
+                  hsl(var(--primary)) 180deg 240deg,
+                  hsl(var(--accent)) 240deg 300deg,
+                  hsl(var(--destructive)) 300deg 360deg
                 )` }}
             >
+              {PRIZES.map((prize, index) => {
+                const labelAngle = index * SEGMENT_ANGLE + SEGMENT_ANGLE / 2;
+                return (
+                  <div
+                    key={prize}
+                    className="absolute left-1/2 top-1/2 text-xs font-black text-primary-foreground"
+                    style={{
+                      transform: `rotate(${labelAngle}deg) translateY(-94px) translateX(-50%) rotate(${-labelAngle}deg)`,
+                      transformOrigin: "center center" }}
+                  >
+                    {prize} CR
+                  </div>
+                );
+              })}
               <div className="absolute inset-8 rounded-full bg-background flex items-center justify-center">
                 <Sparkles className="h-12 w-12 text-primary" />
               </div>
