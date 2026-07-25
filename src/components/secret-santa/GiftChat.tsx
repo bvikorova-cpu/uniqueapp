@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, MessageCircle, Search, ChevronLeft, Smile } from "lucide-react";
+import { Send, MessageCircle, Search, ChevronLeft, Smile, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { searchProfiles } from "@/lib/searchProfiles";
+
 
 interface ChatMessage {
   id: string;
@@ -146,6 +148,26 @@ export const GiftChat = () => {
     user.username?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Global user search — kicks in from the first character so users can start
+  // a new chat with anyone on the platform, not just past gift partners.
+  const { data: globalResults = [] } = useQuery({
+    queryKey: ["gift-chat-global-search", searchQuery, currentUserId],
+    queryFn: async () => {
+      const rows = await searchProfiles(searchQuery, { limit: 20 });
+      const existing = new Set(chatUsers.map((u) => u.id));
+      return rows
+        .filter((r) => r.id !== currentUserId && !existing.has(r.id))
+        .map((r) => ({
+          id: r.id,
+          username: r.full_name || r.username,
+          avatar_url: r.avatar_url,
+        })) as ChatUser[];
+    },
+    enabled: !!currentUserId && searchQuery.trim().length >= 1,
+    staleTime: 15_000,
+  });
+
+
   if (!currentUserId) {
     return (
     <>
@@ -189,41 +211,86 @@ export const GiftChat = () => {
               </CardHeader>
               <ScrollArea className="h-[400px]">
                 <div className="p-2 space-y-1">
-                  {filteredUsers.length === 0 ? (
+                  {filteredUsers.length === 0 && globalResults.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                       <MessageCircle className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No chats yet</p>
-                      <p className="text-xs mt-1">Send or receive gifts to start chatting!</p>
+                      <p className="text-sm">
+                        {searchQuery.trim() ? "No users found" : "No chats yet"}
+                      </p>
+                      <p className="text-xs mt-1">
+                        {searchQuery.trim()
+                          ? "Try a different name"
+                          : "Type a name to start a new chat, or send/receive a gift"}
+                      </p>
                     </div>
                   ) : (
-                    filteredUsers.map((user) => (
-                      <motion.button
-                        key={user.id}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setSelectedUser(user)}
-                        className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-amber-50 transition-colors text-left"
-                      >
-                        <Avatar className="h-10 w-10 border-2 border-amber-200">
-                          <AvatarImage src={user.avatar_url || ""} />
-                          <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-400 text-white">
-                            {user.username?.[0]?.toUpperCase() || "?"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-gray-800 truncate">
-                            {user.username || "Anonymous"}
+                    <>
+                      {filteredUsers.map((user) => (
+                        <motion.button
+                          key={user.id}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setSelectedUser(user)}
+                          className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-amber-50 transition-colors text-left"
+                        >
+                          <Avatar className="h-10 w-10 border-2 border-amber-200">
+                            <AvatarImage src={user.avatar_url || ""} />
+                            <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-400 text-white">
+                              {user.username?.[0]?.toUpperCase() || "?"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-gray-800 truncate">
+                              {user.username || "Anonymous"}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate">
+                              Tap to chat
+                            </p>
+                          </div>
+                          <div className="text-amber-400">🎁</div>
+                        </motion.button>
+                      ))}
+
+                      {globalResults.length > 0 && (
+                        <div className="pt-2 mt-2 border-t border-amber-100">
+                          <p className="px-3 pb-1 text-[10px] uppercase tracking-wider font-bold text-gray-500">
+                            Start a new chat
                           </p>
-                          <p className="text-xs text-gray-500 truncate">
-                            Tap to chat
-                          </p>
+                          {globalResults.map((user) => (
+                            <motion.button
+                              key={`new-${user.id}`}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setSearchQuery("");
+                              }}
+                              className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-amber-50 transition-colors text-left"
+                            >
+                              <Avatar className="h-10 w-10 border-2 border-amber-200">
+                                <AvatarImage src={user.avatar_url || ""} />
+                                <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-400 text-white">
+                                  {user.username?.[0]?.toUpperCase() || "?"}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-gray-800 truncate">
+                                  {user.username || "Anonymous"}
+                                </p>
+                                <p className="text-xs text-gray-500 truncate">
+                                  Tap to start chatting
+                                </p>
+                              </div>
+                              <UserPlus className="h-4 w-4 text-amber-500" />
+                            </motion.button>
+                          ))}
                         </div>
-                        <div className="text-amber-400">🎁</div>
-                      </motion.button>
-                    ))
+                      )}
+                    </>
                   )}
                 </div>
               </ScrollArea>
+
             </motion.div>
           )}
 
