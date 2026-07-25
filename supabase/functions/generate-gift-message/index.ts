@@ -144,13 +144,18 @@ serve(async (req) => {
     const __style = reqBody.style;
     const __giftType = reqBody.giftType;
     const __type = reqBody.type;
-    const __isLegacyGift = !!__style || !!__giftType;
     const __KIDS_TYPES = new Set(["kids_drawing", "kids_reading", "kids_story", "teen_career"]);
-    const __hasModuleLedger = __isLegacyGift || (__type && __KIDS_TYPES.has(__type));
+    const __hasKidsLedger = __type && __KIDS_TYPES.has(__type);
 
+    // Unified AI credits gate. Legacy Secret-Santa gifts (style/giftType) and universal
+    // helpers both now deduct from `ai_credits` (3 credits) so users don't hit a 402
+    // while having plenty of AI credits. Kids modules keep their own per-hub ledger below.
     let __deduct: () => Promise<void> = async () => {};
-    if (!__hasModuleLedger) {
-      const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "gift_message" });
+    if (!__hasKidsLedger) {
+      const __isLegacyGift = !!__style || !!__giftType;
+      const __cost = __isLegacyGift ? 3 : 1;
+      const __usage = __isLegacyGift ? "gift_message" : "ai_generic";
+      const __auth = await requireAiCredits(req, corsHeaders, { credits: __cost, usageType: __usage });
       if (__auth.errorResponse) return __auth.errorResponse;
       __deduct = __auth.deduct!;
     }
@@ -166,7 +171,7 @@ serve(async (req) => {
       throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    // Auth & credit check
+    // Auth (credit check already performed above via requireAiCredits)
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
@@ -178,26 +183,6 @@ serve(async (req) => {
     const user = userData.user;
     if (!user) throw new Error("Not authenticated");
 
-    // Credit check ONLY for the legacy gift-message types (style/giftType set).
-    // Universal aliased types (e.g. pet_name, legal, mentor_chat) skip this gate
-    // because each hub has its own credit ledger handled by the calling component.
-    const CREDIT_COST = 3;
-    const isLegacyGift = !!style || !!giftType;
-    if (isLegacyGift) {
-      const { data: creditData } = await supabase
-        .from("secret_santa_credits")
-        .select("credits_remaining")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      const currentCredits = creditData?.credits_remaining || 0;
-      if (currentCredits < CREDIT_COST) {
-        return new Response(
-          JSON.stringify({ error: `Not enough credits. You need ${CREDIT_COST} credits for AI generation.` }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-    }
 
     // ─── KIDS HUB-SPECIFIC CREDIT GATING (paid-only model) ───
     // Each kids module has its own credit ledger. Deduct from the right table here
@@ -242,13 +227,8 @@ serve(async (req) => {
       }
     }
 
-    // Best-effort fetch of current balance for the deduction step at the end
-    const { data: creditData } = await supabase
-      .from("secret_santa_credits")
-      .select("credits_remaining")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    const currentCredits = creditData?.credits_remaining || 0;
+    // (Legacy per-module balance fetch removed — unified ai_credits gate handles this.)
+
 
     let systemPrompt = "";
     let userPrompt = "";
@@ -580,13 +560,8 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     const data = await response.json();
     const message = data.choices?.[0]?.message?.content?.trim() || "Sending you warm wishes!";
 
-    // Deduct credits after successful generation (best-effort, never fail the request)
-    try {
-      await supabase
-        .from("secret_santa_credits")
-        .update({ credits_remaining: currentCredits - CREDIT_COST })
-        .eq("user_id", user.id);
-    } catch { /* ignore */ }
+    // Credits are deducted from unified ai_credits via __deduct() below.
+
 
     // Log usage (best-effort)
     try { await supabase.from("social_gifts_ai_messages").insert({
