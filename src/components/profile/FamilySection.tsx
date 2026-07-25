@@ -52,13 +52,9 @@ export function FamilySection({ userId, currentUserId, isOwnProfile }: Props) {
     queryKey: ["family-search", q],
     enabled: q.length >= 2,
     queryFn: async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .ilike("full_name", `%${q}%`)
-        .neq("id", currentUserId || "")
-        .limit(10);
-      return data ?? [];
+      const { searchProfiles } = await import("@/lib/searchProfiles");
+      const rows = await searchProfiles(q, { limit: 10 });
+      return rows.filter((r) => r.id !== currentUserId);
     } });
 
   const items = list.data ?? [];

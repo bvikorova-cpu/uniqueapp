@@ -85,11 +85,9 @@ export default function SearchResults() {
       // Search users — use public_profiles view (safe columns only) and restrict to full_name
       // ILIKE on bio is too expensive at scale and exposes private data.
       if (activeFilter === "all" || activeFilter === "people") {
-        usersResult = await supabase
-          .from("public_profiles")
-          .select("id, full_name, avatar_url, username")
-          .ilike("full_name", `%${searchTerm}%`)
-          .limit(50);
+        const { searchProfiles } = await import("@/lib/searchProfiles");
+        const rows = await searchProfiles(searchTerm, { limit: 50 });
+        usersResult = { data: rows };
       }
 
       // Search hashtags
