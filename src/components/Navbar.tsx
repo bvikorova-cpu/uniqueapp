@@ -640,6 +640,17 @@ const Navbar = () => {
               </>
             )}
             <ThemeToggle className="h-8 w-8" />
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Refresh page"
+              title="Refresh page"
+              onClick={handleRefreshPage}
+              disabled={isRefreshing}
+              className="h-8 w-8"
+            >
+              <RefreshCw className={`h-5 w-5 ${isRefreshing ? "animate-spin" : ""}`} />
+            </Button>
             <Link
               to="/club"
               aria-label="Unique VIP Club"
