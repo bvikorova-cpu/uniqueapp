@@ -22,6 +22,7 @@ import { SuperChatFeed } from "@/components/live/SuperChatFeed";
 import { SupportersLeaderboard } from "@/components/live/SupportersLeaderboard";
 import { StreamTierGate } from "@/components/live/StreamTierGate";
 import { StreamHighlights } from "@/components/live/StreamHighlights";
+import { ChatMuteBanner } from "@/components/live/ChatMuteBanner";
 import { ReportMessageButton } from "@/components/live/ReportMessageButton";
 import { HideMessageButton } from "@/components/live/HideMessageButton";
 import { useStreamViewerSession } from "@/hooks/useStreamViewerSession";
