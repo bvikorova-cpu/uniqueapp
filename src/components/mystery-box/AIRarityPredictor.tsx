@@ -8,6 +8,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { handleEdgeError } from "@/lib/handleEdgeError";
 
 interface Props { onBack: () => void; }
 
@@ -31,13 +32,21 @@ export const AIRarityPredictor = ({ onBack }: Props) => {
     setLoading(true);
     setPrediction(null);
     try {
-      const { data, error } = await supabase.functions.invoke('mystery-box-ai', {
-        body: { analysisType } });
+      const analysisMode = analysisType === "box_strategy" ? "Quick Strategy Guide" : "Full Prediction Report";
+      const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+        body: {
+          type: "mystery_box_ai",
+          style: analysisType,
+          analysisType,
+          customPrompt: `${analysisMode}: analyze Mystery Box opening strategy for this user. Include best-value tier guidance, realistic rarity expectations, budget stop-loss rule, risk warning, and 3 concrete next actions. Never promise guaranteed drops.`,
+        } });
       if (error) throw error;
-      setPrediction(data?.prediction ?? data?.result ?? "Analysis completed, but no prediction text was returned.");
+      if (data?.error) throw new Error(String(data.error));
+      setPrediction(data?.prediction ?? data?.message ?? data?.text ?? data?.result ?? data?.content ?? "Analysis completed, but no prediction text was returned.");
       await refresh();
       toast.success("AI analysis complete!");
     } catch (e: any) {
+      if (handleEdgeError(e, { navigate, context: "AI Rarity Predictor" })) return;
       toast.error(e.message || "Error generating prediction");
     } finally {
       setLoading(false);

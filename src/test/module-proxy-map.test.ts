@@ -73,4 +73,12 @@ describe("Group 4 module proxies", () => {
     expect(r!.target).toBe("generate-gift-message");
     expect(r!.body.type).toBe("antique_provenance");
   });
+
+  it("mystery-box-ai never calls the removed standalone function", () => {
+    const r = resolveProxy("mystery-box-ai", { analysisType: "box_strategy" });
+    expect(r).not.toBeNull();
+    expect(r!.target).toBe("generate-gift-message");
+    expect(r!.body.type).toBe("mystery_box_ai");
+    expect(r!.body.style).toBe("box_strategy");
+  });
 });
