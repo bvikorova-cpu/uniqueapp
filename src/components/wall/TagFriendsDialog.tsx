@@ -8,7 +8,7 @@ import { Dialog,
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Search, X } from "lucide-react";
+import { Search, X, Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const publicProfiles = () => (supabase as any).from("public_profiles");
@@ -33,7 +33,7 @@ export function TagFriendsDialog({ open,
       return user;
     } });
 
-  const { data: friends = [] } = useQuery({
+  const { data: friends = [], isFetching: isSearching } = useQuery({
     queryKey: ["friends-for-tagging", user?.id, searchQuery],
     queryFn: async () => {
       if (!user) return [];
@@ -75,9 +75,13 @@ export function TagFriendsDialog({ open,
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search friends..."
-            className="pl-10"
+            className="pl-10 pr-10"
           />
+          {isSearching && (
+            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-primary" />
+          )}
         </div>
+
 
         <ScrollArea className="h-[300px] pr-4">
           <div className="space-y-2">

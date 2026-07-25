@@ -63,45 +63,24 @@ export const GiftChallenges = () => {
     enabled: !!currentUserId });
 
   const claimReward = useMutation({
-    mutationFn: async ({ challengeId, rewardCredits }: { challengeId: string; rewardCredits: number }) => {
+    mutationFn: async ({ challengeId }: { challengeId: string; rewardCredits: number }) => {
       if (!currentUserId) throw new Error("Not authenticated");
-
-      // Mark reward as claimed
-      const { error: progressError } = await supabase
-        .from("secret_santa_challenge_progress")
-        .update({ reward_claimed: true })
-        .eq("user_id", currentUserId)
-        .eq("challenge_id", challengeId);
-      if (progressError) throw progressError;
-
-      // Add credits
-      const { data: creditData } = await supabase
-        .from("secret_santa_credits")
-        .select("credits_remaining")
-        .eq("user_id", currentUserId)
-        .maybeSingle();
-
-      const currentCredits = creditData?.credits_remaining || 0;
-      
-      if (creditData) {
-        await supabase
-          .from("secret_santa_credits")
-          .update({ credits_remaining: currentCredits + rewardCredits })
-          .eq("user_id", currentUserId);
-      } else {
-        await supabase
-          .from("secret_santa_credits")
-          .insert({ user_id: currentUserId, credits_remaining: rewardCredits, total_credits_purchased: 0 });
-      }
+      const { data, error } = await supabase.rpc("claim_santa_challenge_reward", {
+        p_challenge_id: challengeId,
+      });
+      if (error) throw error;
+      return data as { ok: boolean; credits_awarded: number };
     },
     onSuccess: (_, { rewardCredits }) => {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 100);
-      toast.success(`Claimed ${rewardCredits} credits! 🎉`);
+      toast.success(`Claimed ${rewardCredits} AI credits! 🎉`);
       queryClient.invalidateQueries({ queryKey: ["santa-challenge-progress"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
       queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
     },
-    onError: () => toast.error("Failed to claim reward") });
+    onError: (e: any) => toast.error(e?.message || "Failed to claim reward") });
+
 
   const getProgress = (challengeId: string) => progress.find(p => p.challenge_id === challengeId);
 

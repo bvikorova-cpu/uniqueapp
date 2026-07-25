@@ -30,7 +30,7 @@ export const SecretSantaSendGift = () => {
   const [showSendingAnimation, setShowSendingAnimation] = useState(false);
 
   // Search users
-  const { data: users = [] } = useQuery({
+  const { data: users = [], isFetching: isSearching } = useQuery({
     queryKey: ["search-users", searchQuery],
     queryFn: async () => {
       if (!searchQuery || searchQuery.length < 1) return [];
@@ -47,6 +47,7 @@ export const SecretSantaSendGift = () => {
       }));
     },
     enabled: searchQuery.length >= 1 });
+
 
   const filteredGifts = activeCategory === "all" 
     ? GIFT_CATALOG 
@@ -109,12 +110,16 @@ export const SecretSantaSendGift = () => {
             placeholder="Search users by name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-white border-amber-200 text-gray-800 placeholder:text-gray-400"
+            className="bg-white border-amber-200 text-gray-800 placeholder:text-gray-400 pr-10"
           />
+          {isSearching && searchQuery.length >= 1 && (
+            <Sparkles className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-500 animate-spin" />
+          )}
           <p className="text-xs text-gray-500 mt-2">
             Search any user on the platform by their name
           </p>
         </div>
+
 
         {users.length > 0 && !selectedUserData && (
           <div className="mt-3 space-y-2">

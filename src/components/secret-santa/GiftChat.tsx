@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, MessageCircle, Search, ChevronLeft, Smile, UserPlus } from "lucide-react";
+import { Send, MessageCircle, Search, ChevronLeft, Smile, UserPlus, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -150,7 +150,7 @@ export const GiftChat = () => {
 
   // Global user search — kicks in from the first character so users can start
   // a new chat with anyone on the platform, not just past gift partners.
-  const { data: globalResults = [] } = useQuery({
+  const { data: globalResults = [], isFetching: isSearching } = useQuery({
     queryKey: ["gift-chat-global-search", searchQuery, currentUserId],
     queryFn: async () => {
       const rows = await searchProfiles(searchQuery, { limit: 20 });
@@ -166,6 +166,7 @@ export const GiftChat = () => {
     enabled: !!currentUserId && searchQuery.trim().length >= 1,
     staleTime: 15_000,
   });
+
 
 
   if (!currentUserId) {
@@ -205,9 +206,13 @@ export const GiftChat = () => {
                     placeholder="Search users..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 bg-amber-50/50 border-amber-200"
+                    className="pl-9 pr-9 bg-amber-50/50 border-amber-200"
                   />
+                  {isSearching && searchQuery.trim().length >= 1 && (
+                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-500 animate-spin" />
+                  )}
                 </div>
+
               </CardHeader>
               <ScrollArea className="h-[400px]">
                 <div className="p-2 space-y-1">
