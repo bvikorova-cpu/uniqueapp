@@ -151,6 +151,7 @@ export const GiftChat = () => {
     onSuccess: () => {
       setNewMessage("");
       queryClient.invalidateQueries({ queryKey: ["gift-chat-messages"] });
+      queryClient.invalidateQueries({ queryKey: ["gift-chat-users"] });
     },
     onError: () => {
       toast.error("Failed to send message");
