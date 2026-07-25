@@ -258,6 +258,8 @@ const GamesHub = () => {
             )}
           </div>
 
+          {!filteredGames && <TopGamesWidget onPlay={handleOpen} />}
+
           {!filteredGames && (favoriteGames.length > 0 || recentGames.length > 0) && (
             <div className="space-y-6 mb-8">
               {favoriteGames.length > 0 && (
