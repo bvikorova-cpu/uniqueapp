@@ -452,7 +452,7 @@ export const GIFT_CATALOG = [
   { type: "bucket_list_card", emoji: "📋", label: "Bucket List Card", value: 38, category: "messages", description: "Dream together" },
   
   // Emotions wave 4 (5-130)
-  { type: "silent_support", emoji: "🤝", label: "Silent Support", value: 18, category: "emotions", description: "I'm here" },
+  { type: "silent_support", emoji: "🫶", label: "Silent Support", value: 18, category: "emotions", description: "I'm here" },
   { type: "nostalgic_moment", emoji: "📷", label: "Nostalgic Moment", value: 32, category: "emotions", description: "Remember when" },
   { type: "victory_dance", emoji: "🕺", label: "Victory Dance", value: 25, category: "emotions", description: "Celebrate win" },
   { type: "zen_peace", emoji: "🧘", label: "Zen Peace", value: 42, category: "emotions", description: "Inner calm" },
