@@ -32,7 +32,7 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setLoading(false); return; }
     const { data, error } = await supabase.from('mystery_box_rewards')
-      .select('*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days), user_mystery_boxes(mystery_boxes(name, icon, price))')
+      .select('*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days)')
       .eq('user_id', user.id)
       .order('received_at', { ascending: false })
       .limit(200);
@@ -44,7 +44,26 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
       return;
     }
 
-    setItems(data || []);
+    const rewards = data || [];
+    const userBoxIds = Array.from(new Set(rewards.map((reward: any) => reward.user_box_id).filter(Boolean)));
+    let boxesByRewardBoxId = new Map<string, any>();
+
+    if (userBoxIds.length > 0) {
+      const { data: boxRows, error: boxError } = await supabase.from('user_mystery_boxes')
+        .select('id, mystery_boxes(name, icon, price)')
+        .in('id', userBoxIds);
+
+      if (boxError) {
+        console.error('Failed to load mystery box names for rewards', boxError);
+      } else {
+        boxesByRewardBoxId = new Map((boxRows || []).map((row: any) => [row.id, row.mystery_boxes]));
+      }
+    }
+
+    setItems(rewards.map((reward: any) => ({
+      ...reward,
+      _box: boxesByRewardBoxId.get(reward.user_box_id),
+    })));
     setLoading(false);
   };
 
@@ -53,6 +72,7 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
     return Array.isArray(joined) ? joined[0] : joined;
   };
   const rewardBox = (i: any) => {
+    if (i?._box) return i._box;
     const joinedBox = i?.user_mystery_boxes;
     const userBox = Array.isArray(joinedBox) ? joinedBox[0] : joinedBox;
     const joinedMysteryBox = userBox?.mystery_boxes;

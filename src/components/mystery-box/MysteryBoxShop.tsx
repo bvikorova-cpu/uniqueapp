@@ -58,14 +58,27 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
   useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
-    const [boxesRes, userBoxesRes] = await Promise.all([
+    const [boxesRes, userBoxesRes, rewardsRes] = await Promise.all([
       supabase.from('mystery_boxes').select('*').order('price'),
       supabase.from('user_mystery_boxes')
-        .select('*, mystery_boxes(*), mystery_box_rewards(*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days))')
+        .select('*, mystery_boxes(*)')
         .order('purchased_at', { ascending: false }),
+      supabase.from('mystery_box_rewards')
+        .select('*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days)')
+        .order('received_at', { ascending: false }),
     ]);
     if (boxesRes.data?.length) setBoxes(boxesRes.data);
-    if (userBoxesRes.data) setUserBoxes(userBoxesRes.data);
+    if (userBoxesRes.data) {
+      const rewardsByBoxId = new Map<string, any[]>();
+      (rewardsRes.data || []).forEach((reward: any) => {
+        const current = rewardsByBoxId.get(reward.user_box_id) || [];
+        rewardsByBoxId.set(reward.user_box_id, [...current, reward]);
+      });
+      setUserBoxes(userBoxesRes.data.map((box: any) => ({
+        ...box,
+        mystery_box_rewards: rewardsByBoxId.get(box.id) || [],
+      })));
+    }
   };
 
   const handlePurchase = async (box: MysteryBox) => {
