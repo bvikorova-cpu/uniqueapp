@@ -307,7 +307,7 @@ const Navbar = () => {
               variant="ghost"
               size="sm"
               onClick={() => setShowBetaNotice(true)}
-              className="hidden lg:inline-flex gap-1 text-primary hover:bg-primary/10 px-0 h-8 w-8 sm:px-2 sm:w-auto shrink-0"
+              className="gap-1 text-primary hover:bg-primary/10 px-0 h-8 w-8 sm:px-2 sm:w-auto inline-flex shrink-0"
             >
               <Sparkles className="h-4 w-4" />
               <span className="font-semibold hidden sm:inline">Beta</span>
@@ -635,7 +635,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile action icons — only the essentials, everything else lives in the menu */}
+          {/* Mobile action icons — grouped and compact so they never overlap */}
           <div className="flex items-center gap-0.5 lg:hidden shrink-0">
             {user && (
               <>
@@ -644,6 +644,24 @@ const Navbar = () => {
               </>
             )}
             <ThemeToggle className="h-8 w-8" />
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Refresh page"
+              title="Refresh page"
+              onClick={handleRefreshPage}
+              disabled={isRefreshing}
+              className="h-8 w-8"
+            >
+              <RefreshCw className={`h-5 w-5 ${isRefreshing ? "animate-spin" : ""}`} />
+            </Button>
+            <Link
+              to="/club"
+              aria-label="Unique VIP Club"
+              className="inline-flex items-center justify-center h-8 w-8 rounded-full text-amber-950 bg-gradient-to-br from-amber-300 to-amber-500 shadow shadow-amber-500/30"
+            >
+              <Ticket className="h-4 w-4" />
+            </Link>
             <Button
               variant="ghost"
               size="icon"
@@ -839,16 +857,6 @@ const Navbar = () => {
               ))}
             </div>
             <div className="pt-3 space-y-1.5">
-              <Link to="/club" onClick={() => setIsMenuOpen(false)}>
-                <Button
-                  variant="hero"
-                  className="w-full justify-start text-sm gap-2 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 text-amber-950 hover:from-amber-200 hover:to-amber-400 shadow-md shadow-amber-500/20"
-                  size="sm"
-                >
-                  <Ticket className="h-4 w-4" />
-                  {"Unique VIP Club"}
-                </Button>
-              </Link>
               <Button
                 variant="outline"
                 className="w-full justify-start text-sm gap-2 border-primary/30 text-primary hover:bg-primary/10"
@@ -888,7 +896,7 @@ const Navbar = () => {
                       {"Edit profile"}
                     </Button>
                   </Link>
-                  <Link to="/subscriptions" onClick={() => setIsMenuOpen(false)}>
+                  <Link to="/subscription" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Crown className="h-4 w-4 mr-2" />
                       {"Subscription"}
