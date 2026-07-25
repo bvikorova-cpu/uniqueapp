@@ -79,14 +79,19 @@ const KidsHomework = () => {
     reader.readAsDataURL(f);
   };
 
-  const { isVerified, checkVerification } = useParentalGate();
+  // Homework Helper: force parental gate on every entry (no 30-min memory)
+  const HOMEWORK_GATE_KEY = 'parental_gate_verified_homework';
+  const { resetVerification } = useParentalGate(HOMEWORK_GATE_KEY);
   const [showParentalGate, setShowParentalGate] = useState(false);
   const [, setIsGateChecked] = useState(false);
 
   useEffect(() => {
-    const verified = checkVerification();
-    if (!verified) setShowParentalGate(true);
+    // Always clear any prior verification so the gate is required every time
+    resetVerification();
+    sessionStorage.removeItem(HOMEWORK_GATE_KEY);
+    setShowParentalGate(true);
     setIsGateChecked(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Refresh credits after returning from Stripe success
