@@ -93,13 +93,13 @@ export const GiftChat = () => {
       if (partnerIds.length === 0) return [];
 
       const { data: profs } = await (supabase as any)
-        .from("profiles_public")
-        .select("id, username, avatar_url")
+        .from("public_profiles")
+        .select("id, username, full_name, avatar_url")
         .in("id", partnerIds);
 
       const userMap = new Map<string, ChatUser>();
       (profs || []).forEach((p: any) => {
-        userMap.set(p.id, { id: p.id, username: p.username, avatar_url: p.avatar_url });
+        userMap.set(p.id, { id: p.id, username: p.full_name || p.username, avatar_url: p.avatar_url });
       });
 
       // Order: chat partners first by most recent message, then remaining gift-only partners.
