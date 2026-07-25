@@ -47,7 +47,7 @@ function topRarity(items: Array<{ rarity?: string | null }>): string {
   }, "common");
 }
 
-async function loadUserSummary(supabase: ReturnType<typeof createClient>, userId: string): Promise<UserSummary> {
+async function loadUserSummary(supabase: any, userId: string): Promise<UserSummary> {
   const [boxesRes, rewardsRes, boxesCatalogRes, itemsCatalogRes] = await Promise.all([
     supabase
       .from("user_mystery_boxes")
@@ -166,7 +166,7 @@ Deno.serve(async (req) => {
 
     const rateLimit = await enforceRateLimit(
       user.id,
-      admin,
+      admin as any,
       { bucket: "ai.mystery_box", max: 10, windowSec: 60 },
       corsHeaders,
     );
