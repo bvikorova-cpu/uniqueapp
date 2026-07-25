@@ -357,7 +357,7 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
           {seasonData.gifts.map((gift, index) => {
             const canAfford = credits >= gift.value;
-            const isSelected = selectedGift === gift.type;
+            const isSelected = selectedGift?.type === gift.type;
 
             return (
               <motion.div
