@@ -50,15 +50,14 @@ export function TagFriendsDialog({ open,
 
       if (friendIds.length === 0) return [];
 
-      let query = publicProfiles()
-        .select("id, full_name, avatar_url, username")
-        .in("id", friendIds);
-
       if (searchQuery.trim()) {
-        query = query.or(`full_name.ilike.%${searchQuery}%,username.ilike.%${searchQuery}%`);
+        const { searchProfiles } = await import("@/lib/searchProfiles");
+        return await searchProfiles(searchQuery, { restrictToIds: friendIds, limit: 50 });
       }
 
-      const { data: profiles } = await query;
+      const { data: profiles } = await publicProfiles()
+        .select("id, full_name, avatar_url, username")
+        .in("id", friendIds);
       return profiles || [];
     },
     enabled: !!user });

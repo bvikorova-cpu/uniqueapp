@@ -76,15 +76,9 @@ export const MysteryBox = () => {
     queryKey: ["search-users-mystery", searchQuery],
     queryFn: async () => {
       if (!searchQuery || searchQuery.length < 2) return [];
-      
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .ilike("full_name", `%${searchQuery}%`)
-        .limit(10);
-
-      if (error) throw error;
-      return (data || []).map((u: any) => ({ id: u.id, username: u.full_name || "User", avatar_url: u.avatar_url }));
+      const { searchProfiles } = await import("@/lib/searchProfiles");
+      const rows = await searchProfiles(searchQuery, { limit: 10 });
+      return rows.map((u) => ({ id: u.id, username: u.full_name || u.username || "User", avatar_url: u.avatar_url }));
     },
     enabled: searchQuery.length >= 2 });
 
