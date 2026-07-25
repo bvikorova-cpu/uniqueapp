@@ -769,8 +769,8 @@ export const useSecretSanta = () => {
       toast({ title: "Shared to Gift Stories! ✨" });
       queryClient.invalidateQueries({ queryKey: ["secret-santa-stories"] });
     },
-    onError: () => {
-      toast({ title: "Failed to share", variant: "destructive" });
+    onError: (error: Error) => {
+      toast({ title: error.message || "Failed to share", variant: "destructive" });
     } });
 
   return { credits: credits?.credits_remaining || 0,
