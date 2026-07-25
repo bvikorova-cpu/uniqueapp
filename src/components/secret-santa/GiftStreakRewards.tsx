@@ -83,33 +83,44 @@ export const GiftStreakRewards = () => {
         .insert({ user_id: currentUserId, streak_milestone: milestone, reward_credits: reward });
       if (claimError) throw claimError;
 
-      // Add credits
-      const { data: creditData } = await supabase
-        .from("secret_santa_credits")
-        .select("credits_remaining")
+      // Add to unified ai_credits (paid pool) + write ledger row
+      const { data: creditRow } = await supabase
+        .from("ai_credits")
+        .select("paid_credits")
         .eq("user_id", currentUserId)
         .maybeSingle();
 
-      const currentCredits = creditData?.credits_remaining || 0;
-      if (creditData) {
-        await supabase
-          .from("secret_santa_credits")
-          .update({ credits_remaining: currentCredits + reward })
+      const newBalance = (creditRow?.paid_credits || 0) + reward;
+      if (creditRow) {
+        const { error: upErr } = await supabase
+          .from("ai_credits")
+          .update({ paid_credits: newBalance })
           .eq("user_id", currentUserId);
+        if (upErr) throw upErr;
       } else {
-        await supabase
-          .from("secret_santa_credits")
-          .insert({ user_id: currentUserId, credits_remaining: reward, total_credits_purchased: 0 });
+        const { error: insErr } = await supabase
+          .from("ai_credits")
+          .insert({ user_id: currentUserId, paid_credits: reward, free_credits: 0 });
+        if (insErr) throw insErr;
       }
+
+      await supabase.from("ai_credits_ledger").insert({
+        user_id: currentUserId,
+        delta: reward,
+        balance_after: newBalance,
+        reason: "santa_streak_milestone",
+        metadata: { milestone_days: milestone },
+      });
     },
     onSuccess: (_, { reward }) => {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 100);
       toast.success(`Claimed ${reward} credits! 🔥`);
       queryClient.invalidateQueries({ queryKey: ["santa-streak-rewards"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
       queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
     },
-    onError: () => toast.error("Failed to claim reward") });
+    onError: (e: any) => toast.error(e?.message || "Failed to claim reward") });
 
   const tierColor = (tier: string) => {
     switch (tier) {
