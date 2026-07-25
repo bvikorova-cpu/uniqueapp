@@ -31,6 +31,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const SecretSanta = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("send");
+  const [chatRecipient, setChatRecipient] = useState<{ id: string; username: string | null; avatar_url: string | null } | null>(null);
   const { credits } = useSecretSanta();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -172,8 +173,8 @@ const SecretSanta = () => {
           </TabsList>
 
           <TabsContent value="send" className="mt-0"><SecretSantaSendGift /></TabsContent>
-          <TabsContent value="inbox" className="mt-0"><SecretSantaInbox /></TabsContent>
-          <TabsContent value="chat" className="mt-0"><GiftChat /></TabsContent>
+          <TabsContent value="inbox" className="mt-0"><SecretSantaInbox onOpenChat={(user) => { setChatRecipient(user); setActiveTab("chat"); }} /></TabsContent>
+          <TabsContent value="chat" className="mt-0"><GiftChat initialUser={chatRecipient} /></TabsContent>
           <TabsContent value="challenges" className="mt-0"><GiftChallenges /></TabsContent>
           <TabsContent value="roulette" className="mt-0"><GiftRoulette /></TabsContent>
           <TabsContent value="mystery" className="mt-0"><MysteryBox /></TabsContent>
