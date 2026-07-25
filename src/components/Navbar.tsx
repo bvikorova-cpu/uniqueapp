@@ -593,6 +593,10 @@ const Navbar = () => {
                         {"AI Credits"}
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleRefreshPage} className="cursor-pointer">
+                      <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
+                      {"Refresh page"}
+                    </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/earnings" className="w-full cursor-pointer">
                         <Euro className="h-4 w-4 mr-2" />
