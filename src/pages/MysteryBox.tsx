@@ -35,7 +35,7 @@ const MysteryBoxPage = () => {
 
   const wrapView = (children: React.ReactNode) => (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-8 mt-20">{children}</main>
+      <main className="container mx-auto px-4 pt-8 pb-32 md:pb-8 mt-20">{children}</main>
     </div>
   );
 
@@ -47,7 +47,7 @@ const MysteryBoxPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-8 mt-20">
+      <main className="container mx-auto px-4 pt-8 pb-32 md:pb-8 mt-20">
         <MysteryBoxHero />
 
         <HeroRewardedAd sectionKey="page_mysterybox" />
