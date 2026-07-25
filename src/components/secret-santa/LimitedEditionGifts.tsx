@@ -215,8 +215,15 @@ interface LimitedEditionGiftsProps {
 export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) => {
   const currentSeason = getCurrentSeason();
   const { credits } = useSecretSanta();
-  const [selectedGift, setSelectedGift] = useState<string | null>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [selectedGift, setSelectedGift] = useState<any | null>(null);
   const [activeSeason, setActiveSeason] = useState<string>(currentSeason);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRecipient, setSelectedRecipient] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(true);
 
   // All 4 seasons
   const seasons = ["winter", "spring", "summer", "fall"] as const;
@@ -230,10 +237,65 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
     return daysInMonth - day;
   };
 
+  const { data: users = [], isFetching: isSearching } = useQuery({
+    queryKey: ["search-users-seasonal", searchQuery],
+    queryFn: async () => {
+      if (!searchQuery || searchQuery.length < 1) return [];
+      const { searchProfiles } = await import("@/lib/searchProfiles");
+      const rows = await searchProfiles(searchQuery, { limit: 10 });
+      return rows.map((u) => ({ id: u.id, username: u.full_name || u.username || "User", avatar_url: u.avatar_url }));
+    },
+    enabled: searchQuery.length >= 1 });
+
+  const selectedUserData = users.find(u => u.id === selectedRecipient);
+
   const handleSelect = (gift: any) => {
-    setSelectedGift(gift.type);
+    setSelectedGift(gift);
+    setSelectedRecipient(null);
+    setSearchQuery("");
+    setMessage("");
+    setDialogOpen(true);
     onSelectGift?.({ ...gift, category: "seasonal" });
   };
+
+  const sendSeasonalGift = useMutation({
+    mutationFn: async () => {
+      if (!selectedGift || !selectedRecipient) throw new Error("Select a recipient");
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+      if (credits < selectedGift.value) throw new Error("Not enough credits");
+
+      const { error: creditError } = await supabase
+        .from("secret_santa_credits")
+        .update({ credits_remaining: credits - selectedGift.value })
+        .eq("user_id", user.id);
+      if (creditError) throw creditError;
+
+      const { error: giftError } = await supabase
+        .from("secret_santa_gifts")
+        .insert({
+          sender_id: user.id,
+          recipient_id: selectedRecipient,
+          gift_type: selectedGift.type,
+          gift_emoji: selectedGift.emoji,
+          gift_value: selectedGift.value,
+          message: message || null,
+          is_anonymous: isAnonymous,
+          animation_type: "seasonal" });
+      if (giftError) throw giftError;
+    },
+    onSuccess: () => {
+      toast({ title: `${selectedGift?.emoji} ${selectedGift?.label} sent!` });
+      queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["secret-santa-sent"] });
+      setDialogOpen(false);
+      setSelectedGift(null);
+      setSelectedRecipient(null);
+      setSearchQuery("");
+      setMessage("");
+    },
+    onError: (e: Error) => toast({ title: e.message, variant: "destructive" }) });
+
 
   return (
     <>
