@@ -1056,7 +1056,7 @@ async function handler(req: Request): Promise<Response> {
           metadata: { ...metadata, pack_key: key, credits: pkg.credits, amount_cents: pkg.amount },
           updated_at: new Date().toISOString(),
         }, { onConflict: "stripe_session_id" });
-        if (recordErr) log.warn("dynamic pack payment record insert failed", { error: recordErr.message, session_id: session.id });
+        if (recordErr) log("dynamic pack payment record insert failed", { error: recordErr.message, session_id: session.id });
       }
       return successResponse({ url: session.url, session_id: session.id });
     }
