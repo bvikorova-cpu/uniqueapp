@@ -661,14 +661,24 @@ export const useSecretSanta = () => {
   const { data: stories = [], isLoading: storiesLoading } = useQuery({
     queryKey: ["secret-santa-stories"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("secret_santa_stories")
-        .select("*, secret_santa_gifts(*)")
-        .gt("expires_at", new Date().toISOString())
-        .order("created_at", { ascending: false });
+      const { data, error } = await (supabase as any).rpc("get_secret_santa_active_stories");
 
       if (error) throw error;
-      return data;
+      return (data || []).map((story: any) => ({
+        id: story.id,
+        gift_id: story.gift_id,
+        user_id: story.user_id,
+        created_at: story.created_at,
+        expires_at: story.expires_at,
+        secret_santa_gifts: {
+          id: story.gift_id,
+          gift_type: story.gift_type,
+          gift_emoji: story.gift_emoji,
+          gift_value: story.gift_value,
+          message: story.gift_message,
+          created_at: story.gift_created_at,
+        },
+      }));
     } });
 
   // Get leaderboard
@@ -749,8 +759,9 @@ export const useSecretSanta = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("secret_santa_stories").insert({ gift_id: giftId,
-        user_id: user.id });
+      const { error } = await (supabase as any).rpc("share_secret_santa_gift_to_story", {
+        p_gift_id: giftId,
+      });
 
       if (error) throw error;
     },
@@ -758,8 +769,8 @@ export const useSecretSanta = () => {
       toast({ title: "Shared to Gift Stories! ✨" });
       queryClient.invalidateQueries({ queryKey: ["secret-santa-stories"] });
     },
-    onError: () => {
-      toast({ title: "Failed to share", variant: "destructive" });
+    onError: (error: Error) => {
+      toast({ title: error.message || "Failed to share", variant: "destructive" });
     } });
 
   return { credits: credits?.credits_remaining || 0,
@@ -774,5 +785,6 @@ export const useSecretSanta = () => {
     leaderboardLoading,
     sendGift: sendGift.mutate,
     shareToStory: shareToStory.mutate,
+    isSharingStory: shareToStory.isPending,
     isSending: sendGift.isPending };
 };

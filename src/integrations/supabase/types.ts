@@ -69321,6 +69321,21 @@ export type Database = {
         }[]
       }
       get_rls_ref: { Args: never; Returns: string }
+      get_secret_santa_active_stories: {
+        Args: never
+        Returns: {
+          created_at: string
+          expires_at: string
+          gift_created_at: string
+          gift_emoji: string
+          gift_id: string
+          gift_message: string
+          gift_type: string
+          gift_value: number
+          id: string
+          user_id: string
+        }[]
+      }
       get_streak_week: {
         Args: never
         Returns: {
@@ -70052,6 +70067,22 @@ export type Database = {
           p_recipient_id: string
         }
         Returns: string
+      }
+      share_secret_santa_gift_to_story: {
+        Args: { p_gift_id: string }
+        Returns: {
+          created_at: string
+          expires_at: string
+          gift_id: string
+          id: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "secret_santa_stories"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       snapshot_weekly_xp_winners: { Args: never; Returns: number }
       spend_brain_duel_credits: {
