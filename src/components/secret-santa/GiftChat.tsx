@@ -92,10 +92,7 @@ export const GiftChat = () => {
 
       if (partnerIds.length === 0) return [];
 
-      const { data: profs } = await (supabase as any)
-        .from("public_profiles")
-        .select("id, username, full_name, avatar_url")
-        .in("id", partnerIds);
+      const { data: profs } = await (supabase as any).rpc("get_public_profiles", { ids: partnerIds });
 
       const userMap = new Map<string, ChatUser>();
       (profs || []).forEach((p: any) => {
