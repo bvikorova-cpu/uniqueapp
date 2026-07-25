@@ -175,8 +175,13 @@ export default function LiveStream() {
       setMessage("");
       queryClient.invalidateQueries({ queryKey: ["stream-messages", streamId] });
     },
-    onError: (error) => {
-      toast.error("Error sending message");
+    onError: (error: any) => {
+      const msg = String(error?.message ?? "");
+      if (msg.includes("temporarily muted")) {
+        toast.error("You are temporarily muted in this chat");
+      } else {
+        toast.error("Error sending message");
+      }
       console.error(error);
     } });
 
