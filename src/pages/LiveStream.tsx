@@ -628,22 +628,39 @@ export default function LiveStream() {
 
               <ScrollArea className="flex-1 p-4">
                 <div className="space-y-4">
-                  {messages.map((msg) => (
-                    <div key={msg.id} className="flex gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={msg.profiles?.avatar_url} />
-                        <AvatarFallback>
-                          {msg.profiles?.full_name?.[0] || "U"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">
-                          {msg.profiles?.full_name || "User"}
-                        </p>
-                        <p className="text-sm text-muted-foreground">{msg.message}</p>
-                      </div>
-                    </div>
-                  ))}
+                  {messages
+                    .filter((m) => {
+                      const isOwner = user?.id === stream?.influencer_profiles?.user_id;
+                      return !m.is_hidden || isOwner || m.user_id === user?.id;
+                    })
+                    .map((msg) => {
+                      const isOwner = user?.id === stream?.influencer_profiles?.user_id;
+                      return (
+                        <div key={msg.id} className={`flex gap-2 group ${msg.is_hidden ? "opacity-50" : ""}`}>
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={msg.profiles?.avatar_url} />
+                            <AvatarFallback>
+                              {msg.profiles?.full_name?.[0] || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium flex items-center gap-2">
+                              {msg.profiles?.full_name || "User"}
+                              {msg.is_hidden && <Badge variant="outline" className="text-[10px] px-1 py-0">hidden</Badge>}
+                            </p>
+                            <p className="text-sm text-muted-foreground break-words">{msg.message}</p>
+                          </div>
+                          <div className="opacity-0 group-hover:opacity-100 flex items-start gap-1">
+                            {user && user.id !== msg.user_id && (
+                              <ReportMessageButton messageId={msg.id} streamId={streamId!} reporterId={user.id} />
+                            )}
+                            {isOwner && (
+                              <HideMessageButton messageId={msg.id} isHidden={!!msg.is_hidden} moderatorId={user.id} />
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   <div ref={messagesEndRef} />
                 </div>
               </ScrollArea>
