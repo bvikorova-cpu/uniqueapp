@@ -45,6 +45,32 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
     }
 
     const rewards = data || [];
+    if (rewards.length === 0) {
+      const { data: openedBoxes, error: openedBoxesError } = await supabase.from('user_mystery_boxes')
+        .select('id, opened_at, mystery_boxes(name, icon, price), mystery_box_rewards(*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days))')
+        .eq('user_id', user.id)
+        .eq('is_opened', true)
+        .order('opened_at', { ascending: false })
+        .limit(200);
+
+      if (openedBoxesError) {
+        console.error('Failed to load opened mystery boxes for collection fallback', openedBoxesError);
+      } else {
+        const fallbackRewards = (openedBoxes || []).flatMap((box: any) => {
+          const boxRewards = Array.isArray(box.mystery_box_rewards) ? box.mystery_box_rewards : [];
+          return boxRewards.map((reward: any) => ({
+            ...reward,
+            _box: box.mystery_boxes,
+            received_at: reward.received_at || box.opened_at,
+          }));
+        });
+
+        setItems(fallbackRewards);
+        setLoading(false);
+        return;
+      }
+    }
+
     const userBoxIds = Array.from(new Set(rewards.map((reward: any) => reward.user_box_id).filter(Boolean)));
     let boxesByRewardBoxId = new Map<string, any>();
 
