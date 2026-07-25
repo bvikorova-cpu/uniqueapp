@@ -78,6 +78,7 @@ import { useEffect } from "react";
 import "@/i18n/config";
 import SkipLink from "./components/SkipLink";
 import { KidsParentalGateGuard } from "@/components/kids/KidsParentalGateGuard";
+import { KidsGoldPassGate } from "@/components/kids/KidsGoldPassGate";
 import { PageLoader } from "@/components/ui/PageLoader";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
