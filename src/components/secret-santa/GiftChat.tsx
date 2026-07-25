@@ -66,7 +66,7 @@ export const GiftChat = ({ initialUser = null }: GiftChatProps) => {
       // Gift partners (past sent/received gifts)
       const { data: receivedGifts } = await supabase
         .from("secret_santa_gifts")
-        .select("sender_id")
+        .select("sender_id, is_anonymous")
         .eq("recipient_id", currentUserId);
 
       const { data: sentGifts } = await supabase
@@ -101,7 +101,7 @@ export const GiftChat = ({ initialUser = null }: GiftChatProps) => {
       });
 
       const partnerIds = Array.from(new Set([
-        ...(receivedGifts || []).map((g: any) => g.sender_id),
+        ...(receivedGifts || []).filter((g: any) => !g.is_anonymous).map((g: any) => g.sender_id),
         ...(sentGifts || []).map((g: any) => g.recipient_id),
         ...Array.from(lastSeen.keys()),
       ].filter((id) => id && id !== currentUserId)));
