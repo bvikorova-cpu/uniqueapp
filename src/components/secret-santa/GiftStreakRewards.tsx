@@ -83,34 +83,36 @@ export const GiftStreakRewards = () => {
         .insert({ user_id: currentUserId, streak_milestone: milestone, reward_credits: reward });
       if (claimError) throw claimError;
 
-      // Add to unified ai_credits (paid pool) + write ledger row
+      // Add to unified ai_credits + write ledger row
       const { data: creditRow } = await supabase
         .from("ai_credits")
-        .select("paid_credits")
+        .select("credits_remaining")
         .eq("user_id", currentUserId)
         .maybeSingle();
 
-      const newBalance = (creditRow?.paid_credits || 0) + reward;
+      const balanceBefore = creditRow?.credits_remaining || 0;
+      const newBalance = balanceBefore + reward;
       if (creditRow) {
         const { error: upErr } = await supabase
           .from("ai_credits")
-          .update({ paid_credits: newBalance })
+          .update({ credits_remaining: newBalance })
           .eq("user_id", currentUserId);
         if (upErr) throw upErr;
       } else {
         const { error: insErr } = await supabase
           .from("ai_credits")
-          .insert({ user_id: currentUserId, paid_credits: reward, free_credits: 0 });
+          .insert({ user_id: currentUserId, credits_remaining: reward, total_credits_purchased: 0 } as any);
         if (insErr) throw insErr;
       }
 
       await supabase.from("ai_credits_ledger").insert({
         user_id: currentUserId,
         delta: reward,
+        balance_before: balanceBefore,
         balance_after: newBalance,
         reason: "santa_streak_milestone",
         metadata: { milestone_days: milestone },
-      });
+      } as any);
     },
     onSuccess: (_, { reward }) => {
       setShowConfetti(true);
