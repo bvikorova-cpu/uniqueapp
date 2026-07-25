@@ -615,8 +615,9 @@ export const useSecretSanta = () => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || cancelled) return;
+      const channelTopic = `santa-gifts-${user.id}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
       channel = supabase
-        .channel(`santa-gifts-${user.id}`)
+        .channel(channelTopic)
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "secret_santa_gifts", filter: `recipient_id=eq.${user.id}` },

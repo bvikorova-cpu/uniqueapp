@@ -14,8 +14,8 @@ export const SecretSantaCredits = () => {
     setLoadingPackage(credits);
     
     try {
-      const { data, error } = await supabase.functions.invoke("create-secret-santa-payment", {
-        body: { credits, price } });
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "secret_santa", packKey: String(credits), credits, price } });
 
       if (error) throw error;
       
