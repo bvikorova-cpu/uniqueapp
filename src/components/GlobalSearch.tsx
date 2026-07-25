@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X, Loader2 } from "lucide-react";
+import { Search, X, Loader2, User as UserIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { searchProfiles, type PublicProfileResult } from "@/lib/searchProfiles";
 import { cn } from "@/lib/utils";
 
 interface SearchResult {
@@ -232,37 +234,55 @@ export function GlobalSearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [people, setPeople] = useState<PublicProfileResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isSearchingPeople, setIsSearchingPeople] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const navigate = useNavigate();
+  const peopleReqId = useRef(0);
 
-  // Debounced search
+  // Fast local page search (synchronous)
   const performSearch = useCallback((searchQuery: string, category: string | null) => {
-    setIsSearching(true);
-    
-    setTimeout(() => {
-      let filtered = SEARCHABLE_PAGES;
-      
-      if (searchQuery.trim()) {
-        filtered = filtered.filter(page => 
-          fuzzyMatch(page.title, searchQuery) || 
-          fuzzyMatch(page.category, searchQuery) ||
-          (page.description && fuzzyMatch(page.description, searchQuery))
-        );
-      }
-      
-      if (category) {
-        filtered = filtered.filter(page => page.category === category);
-      }
-      
-      setResults(filtered);
-      setIsSearching(false);
-    }, 150);
+    let filtered = SEARCHABLE_PAGES;
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(page =>
+        fuzzyMatch(page.title, searchQuery) ||
+        fuzzyMatch(page.category, searchQuery) ||
+        (page.description && fuzzyMatch(page.description, searchQuery))
+      );
+    }
+    if (category) {
+      filtered = filtered.filter(page => page.category === category);
+    }
+    setResults(filtered);
+    setIsSearching(false);
   }, []);
 
   useEffect(() => {
-    performSearch(query, selectedCategory);
+    setIsSearching(true);
+    const t = setTimeout(() => performSearch(query, selectedCategory), 80);
+    return () => clearTimeout(t);
   }, [query, selectedCategory, performSearch]);
+
+  // Debounced people autocomplete — triggers from the first character
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < 1) {
+      setPeople([]);
+      setIsSearchingPeople(false);
+      return;
+    }
+    setIsSearchingPeople(true);
+    const reqId = ++peopleReqId.current;
+    const t = setTimeout(async () => {
+      const rows = await searchProfiles(q, { limit: 8 });
+      if (reqId === peopleReqId.current) {
+        setPeople(rows);
+        setIsSearchingPeople(false);
+      }
+    }, 120);
+    return () => clearTimeout(t);
+  }, [query]);
 
   // Keyboard shortcut (Ctrl/Cmd + K)
   useEffect(() => {
@@ -285,6 +305,13 @@ export function GlobalSearch() {
     setOpen(false);
     setQuery("");
     setSelectedCategory(null);
+  };
+
+  const handlePersonClick = (person: PublicProfileResult) => {
+    const path = person.username ? `/user/${person.username}` : `/profile/${person.id}`;
+    navigate(path);
+    setOpen(false);
+    setQuery("");
   };
 
   const categories = Array.from(new Set(SEARCHABLE_PAGES.map(p => p.category)));
