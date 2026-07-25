@@ -144,13 +144,18 @@ serve(async (req) => {
     const __style = reqBody.style;
     const __giftType = reqBody.giftType;
     const __type = reqBody.type;
-    const __isLegacyGift = !!__style || !!__giftType;
     const __KIDS_TYPES = new Set(["kids_drawing", "kids_reading", "kids_story", "teen_career"]);
-    const __hasModuleLedger = __isLegacyGift || (__type && __KIDS_TYPES.has(__type));
+    const __hasKidsLedger = __type && __KIDS_TYPES.has(__type);
 
+    // Unified AI credits gate. Legacy Secret-Santa gifts (style/giftType) and universal
+    // helpers both now deduct from `ai_credits` (3 credits) so users don't hit a 402
+    // while having plenty of AI credits. Kids modules keep their own per-hub ledger below.
     let __deduct: () => Promise<void> = async () => {};
-    if (!__hasModuleLedger) {
-      const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "gift_message" });
+    if (!__hasKidsLedger) {
+      const __isLegacyGift = !!__style || !!__giftType;
+      const __cost = __isLegacyGift ? 3 : 1;
+      const __usage = __isLegacyGift ? "gift_message" : "ai_generic";
+      const __auth = await requireAiCredits(req, corsHeaders, { credits: __cost, usageType: __usage });
       if (__auth.errorResponse) return __auth.errorResponse;
       __deduct = __auth.deduct!;
     }
@@ -166,7 +171,7 @@ serve(async (req) => {
       throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    // Auth & credit check
+    // Auth (credit check already performed above via requireAiCredits)
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
@@ -178,26 +183,6 @@ serve(async (req) => {
     const user = userData.user;
     if (!user) throw new Error("Not authenticated");
 
-    // Credit check ONLY for the legacy gift-message types (style/giftType set).
-    // Universal aliased types (e.g. pet_name, legal, mentor_chat) skip this gate
-    // because each hub has its own credit ledger handled by the calling component.
-    const CREDIT_COST = 3;
-    const isLegacyGift = !!style || !!giftType;
-    if (isLegacyGift) {
-      const { data: creditData } = await supabase
-        .from("secret_santa_credits")
-        .select("credits_remaining")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      const currentCredits = creditData?.credits_remaining || 0;
-      if (currentCredits < CREDIT_COST) {
-        return new Response(
-          JSON.stringify({ error: `Not enough credits. You need ${CREDIT_COST} credits for AI generation.` }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-    }
 
     // ─── KIDS HUB-SPECIFIC CREDIT GATING (paid-only model) ───
     // Each kids module has its own credit ledger. Deduct from the right table here
