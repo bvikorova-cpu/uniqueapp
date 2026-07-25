@@ -37840,11 +37840,14 @@ export type Database = {
           id: string
           influencer_id: string
           is_live: boolean | null
+          min_tier: string | null
+          scheduled_at: string | null
           started_at: string | null
           stream_key: string
           stream_url: string | null
           thumbnail_url: string | null
           title: string
+          total_tips_cents: number
           updated_at: string | null
           viewer_count: number | null
         }
@@ -37855,11 +37858,14 @@ export type Database = {
           id?: string
           influencer_id: string
           is_live?: boolean | null
+          min_tier?: string | null
+          scheduled_at?: string | null
           started_at?: string | null
           stream_key: string
           stream_url?: string | null
           thumbnail_url?: string | null
           title: string
+          total_tips_cents?: number
           updated_at?: string | null
           viewer_count?: number | null
         }
@@ -37870,11 +37876,14 @@ export type Database = {
           id?: string
           influencer_id?: string
           is_live?: boolean | null
+          min_tier?: string | null
+          scheduled_at?: string | null
           started_at?: string | null
           stream_key?: string
           stream_url?: string | null
           thumbnail_url?: string | null
           title?: string
+          total_tips_cents?: number
           updated_at?: string | null
           viewer_count?: number | null
         }
@@ -67813,6 +67822,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      _tier_rank: { Args: { _tier: string }; Returns: number }
       accept_friend_quest_invite: {
         Args: { _invite_id: string }
         Returns: Json
@@ -69228,6 +69238,10 @@ export type Database = {
       }
       has_holographic_access: {
         Args: { p_service_type: string; p_user_id: string }
+        Returns: boolean
+      }
+      has_live_stream_access: {
+        Args: { _stream_id: string; _user_id: string }
         Returns: boolean
       }
       has_multiverse_access: {
