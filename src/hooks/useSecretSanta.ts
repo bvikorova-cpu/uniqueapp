@@ -545,7 +545,7 @@ export const useSecretSanta = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Get current user credits
+  // Get current user credits (unified with paid AI credits pool)
   const { data: credits, isLoading: creditsLoading } = useQuery({
     queryKey: ["secret-santa-credits"],
     queryFn: async () => {
@@ -553,8 +553,8 @@ export const useSecretSanta = () => {
       if (!user) return null;
 
       const { data, error } = await supabase
-        .from("secret_santa_credits")
-        .select("*")
+        .from("ai_credits")
+        .select("credits_remaining, total_credits_purchased")
         .eq("user_id", user.id)
         .maybeSingle();
 
