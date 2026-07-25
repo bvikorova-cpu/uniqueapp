@@ -15,7 +15,7 @@ import { useSocialGiftsProgress } from "@/hooks/useSocialGiftsProgress";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SecretSantaInbox = () => {
-  const { receivedGifts, giftsLoading, sentGifts, sentLoading, shareToStory } = useSecretSanta();
+  const { receivedGifts, giftsLoading, sentGifts, sentLoading, shareToStory, isSharingStory } = useSecretSanta();
   const { addXP } = useSocialGiftsProgress();
   const [activeView, setActiveView] = useState<"received" | "sent">("received");
   const [showConfetti, setShowConfetti] = useState(false);
@@ -274,6 +274,7 @@ export const SecretSantaInbox = () => {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => shareToStory(gift.id)}
+                                 disabled={isSharingStory}
                                 className="text-gray-500 hover:text-amber-600 hover:bg-amber-100"
                               >
                                 <Share2 className="h-4 w-4 mr-1" />
