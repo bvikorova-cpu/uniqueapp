@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { searchProfiles } from "@/lib/searchProfiles";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 interface ChatMessage {
@@ -34,23 +35,27 @@ interface ChatUser {
   unread_count?: number;
 }
 
+interface GiftChatProps {
+  initialUser?: ChatUser | null;
+}
+
 const QUICK_EMOJIS = ["❤️", "😊", "🎁", "✨", "🙏", "💕", "🥰", "👏"];
 
-export const GiftChat = () => {
+export const GiftChat = ({ initialUser = null }: GiftChatProps) => {
+  const { user } = useAuth();
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const currentUserId = user?.id || null;
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setCurrentUserId(user?.id || null);
-    };
-    getUser();
-  }, []);
+    if (initialUser?.id) {
+      setSelectedUser(initialUser);
+      setSearchQuery("");
+    }
+  }, [initialUser?.id]);
 
   // Fetch chat users (people you've exchanged gifts with)
   const { data: chatUsers = [] } = useQuery({
@@ -73,15 +78,26 @@ export const GiftChat = () => {
       // without a gift) — ordered by most recent message.
       const { data: chatRows } = await supabase
         .from("gift_chat_messages")
-        .select("sender_id, receiver_id, created_at")
+        .select("sender_id, receiver_id, content, is_read, created_at")
         .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
         .order("created_at", { ascending: false })
         .limit(500);
 
-      const lastSeen = new Map<string, string>();
+      const lastSeen = new Map<string, { created_at: string; last_message: string; unread_count: number }>();
       (chatRows || []).forEach((r: any) => {
         const other = r.sender_id === currentUserId ? r.receiver_id : r.sender_id;
-        if (other && !lastSeen.has(other)) lastSeen.set(other, r.created_at);
+        if (!other) return;
+        const current = lastSeen.get(other);
+        const unreadIncrement = r.receiver_id === currentUserId && !r.is_read ? 1 : 0;
+        if (!current) {
+          lastSeen.set(other, {
+            created_at: r.created_at,
+            last_message: r.content || "Message",
+            unread_count: unreadIncrement,
+          });
+          return;
+        }
+        current.unread_count += unreadIncrement;
       });
 
       const partnerIds = Array.from(new Set([
@@ -96,7 +112,14 @@ export const GiftChat = () => {
 
       const userMap = new Map<string, ChatUser>();
       (profs || []).forEach((p: any) => {
-        userMap.set(p.id, { id: p.id, username: p.full_name || p.username, avatar_url: p.avatar_url });
+        const meta = lastSeen.get(p.id);
+        userMap.set(p.id, {
+          id: p.id,
+          username: p.full_name || p.username,
+          avatar_url: p.avatar_url,
+          last_message: meta?.last_message || "Gift history",
+          unread_count: meta?.unread_count || 0,
+        });
       });
 
       // Order: chat partners first by most recent message, then remaining gift-only partners.
@@ -158,6 +181,43 @@ export const GiftChat = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (!currentUserId || !selectedUser || messages.length === 0) return;
+    const hasUnread = messages.some((msg) => msg.receiver_id === currentUserId && msg.sender_id === selectedUser.id && !msg.is_read);
+    if (!hasUnread) return;
+    supabase
+      .from("gift_chat_messages")
+      .update({ is_read: true })
+      .eq("receiver_id", currentUserId)
+      .eq("sender_id", selectedUser.id)
+      .eq("is_read", false)
+      .then(() => queryClient.invalidateQueries({ queryKey: ["gift-chat-users", currentUserId] }));
+  }, [currentUserId, messages, queryClient, selectedUser]);
+
+  useEffect(() => {
+    if (!currentUserId) return;
+    const channel = supabase
+      .channel(`gift-chat-live-${currentUserId}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "gift_chat_messages", filter: `receiver_id=eq.${currentUserId}` },
+        (payload) => {
+          const incoming = payload.new as ChatMessage;
+          queryClient.invalidateQueries({ queryKey: ["gift-chat-users", currentUserId] });
+          if (incoming.sender_id === selectedUser?.id) {
+            queryClient.invalidateQueries({ queryKey: ["gift-chat-messages", currentUserId, selectedUser.id] });
+          } else {
+            toast.info("New gift chat message", { description: "Open Gift Chats to reply." });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [currentUserId, queryClient, selectedUser?.id]);
 
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
@@ -269,9 +329,14 @@ export const GiftChat = () => {
                               {user.username || "Anonymous"}
                             </p>
                             <p className="text-xs text-gray-500 truncate">
-                              Tap to chat
+                              {user.last_message || "Tap to chat"}
                             </p>
                           </div>
+                          {Boolean(user.unread_count) && (
+                            <span className="min-w-5 h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
+                              {user.unread_count}
+                            </span>
+                          )}
                           <div className="text-amber-400">🎁</div>
                         </motion.button>
                       ))}
@@ -343,9 +408,9 @@ export const GiftChat = () => {
                     {selectedUser.username?.[0]?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
-                <div>
+                <div className="min-w-0">
                   <p className="font-medium text-gray-800">{selectedUser.username || "Anonymous"}</p>
-                  <p className="text-xs text-gray-500">Gift friend</p>
+                  <p className="text-xs text-gray-500 truncate">Gift chat with {selectedUser.username || "this person"}</p>
                 </div>
               </div>
 
@@ -408,7 +473,7 @@ export const GiftChat = () => {
                     placeholder="Type a message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                     className="flex-1 bg-amber-50/50 border-amber-200"
                   />
                   <Button
