@@ -3,14 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Dialog,
+import {
+  Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger } from "@/components/ui/dialog";
-import { Video, Radio } from "lucide-react";
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Video, Radio, CalendarClock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -20,40 +24,65 @@ interface GoLiveButtonProps {
   influencerId: string;
 }
 
-export function GoLiveButton({ influencerId }: GoLiveButtonProps) { const navigate = useNavigate();
+export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [streamData, setStreamData] = useState({
+  const [scheduleLater, setScheduleLater] = useState(false);
+  const [form, setForm] = useState({
     title: "",
-    description: "" });
+    description: "",
+    scheduled_at: "",
+    min_tier: "public" as "public" | "bronze" | "silver" | "gold",
+  });
 
-  const startStream = async () => {
-    if (!streamData.title.trim()) {
+  const submit = async () => {
+    if (!form.title.trim()) {
       toast.error("Enter stream title");
+      return;
+    }
+    if (scheduleLater && !form.scheduled_at) {
+      toast.error("Pick a start time");
       return;
     }
 
     setLoading(true);
     try {
-      // Generate unique stream key
       const streamKey = `${influencerId}_${Date.now()}`;
+      const min_tier = form.min_tier === "public" ? null : form.min_tier;
+
+      const payload: Record<string, unknown> = {
+        influencer_id: influencerId,
+        title: form.title,
+        description: form.description,
+        stream_key: streamKey,
+        min_tier,
+      };
+
+      if (scheduleLater) {
+        payload.is_live = false;
+        payload.scheduled_at = new Date(form.scheduled_at).toISOString();
+      } else {
+        payload.is_live = true;
+        payload.started_at = new Date().toISOString();
+      }
 
       const { data, error } = await supabase
         .from("live_streams")
-        .insert({ influencer_id: influencerId,
-          title: streamData.title,
-          description: streamData.description,
-          stream_key: streamKey,
-          is_live: true,
-          started_at: new Date().toISOString() })
+        .insert(payload as any)
         .select()
         .single();
 
       if (error) throw error;
 
-      toast.success("Stream started!");
-      setOpen(false);
-      navigate(`/live/${data.id}`);
+      if (scheduleLater) {
+        toast.success("Stream scheduled!");
+        setOpen(false);
+      } else {
+        toast.success("Stream started!");
+        setOpen(false);
+        navigate(`/live/${data.id}`);
+      }
     } catch (error) {
       console.error("Error starting stream:", error);
       toast.error("Error starting stream");
@@ -64,75 +93,113 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) { const naviga
 
   return (
     <>
-      <FloatingHowItWorks title={"Go Live Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Go Live Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Go Live Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <FloatingHowItWorks
+        title={"Go Live - How it works"}
+        steps={[
+          { title: "Start or Schedule", desc: "Go live now or pick a future date/time to notify your fans in advance." },
+          { title: "Choose audience", desc: "Open to everyone or restrict to Bronze / Silver / Gold Fan Club members." },
+          { title: "Broadcast & interact", desc: "Chat, receive tips, and see the top supporter leaderboard in real time." },
+          { title: "Save the replay", desc: "Archive your recording so fans can rewatch after the stream ends." },
+        ]}
+      />
       <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-2 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700">
-          <Radio className="h-4 w-4 animate-pulse" />
-          Go Live
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Video className="h-5 w-5 text-primary" />
-            Start Live Stream
-          </DialogTitle>
-          <DialogDescription>
-            Start a live stream for your fans
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <Label htmlFor="title">Stream Title *</Label>
-            <Input
-              id="title"
-              placeholder="e.g. Q&A with fans"
-              value={streamData.title}
-              onChange={(e) =>
-                setStreamData({ ...streamData, title: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              placeholder="What will the stream be about..."
-              value={streamData.description}
-              onChange={(e) =>
-                setStreamData({ ...streamData, description: e.target.value })
-              }
-              rows={3}
-            />
-          </div>
-
-          <div className="bg-muted p-4 rounded-lg space-y-2">
-            <p className="text-sm font-medium">Tips for a successful stream:</p>
-            <ul className="text-xs text-muted-foreground space-y-1">
-              <li>• Prepare topics to discuss</li>
-              <li>• Interact with viewers in chat</li>
-              <li>• Greet new followers by name</li>
-            </ul>
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
-            Cancel
+        <DialogTrigger asChild>
+          <Button className="gap-2 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700">
+            <Radio className="h-4 w-4 animate-pulse" />
+            Go Live
           </Button>
-          <Button
-            onClick={startStream}
-            disabled={loading || !streamData.title.trim()}
-            className="bg-gradient-to-r from-red-600 to-pink-600"
-          >
-            {loading ? "Starting..." : "Start Stream"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Video className="h-5 w-5 text-primary" />
+              {scheduleLater ? "Schedule Live Stream" : "Start Live Stream"}
+            </DialogTitle>
+            <DialogDescription>
+              {scheduleLater
+                ? "Announce upcoming broadcasts to your fans"
+                : "Go live right now and interact with your audience"}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <div className="flex items-center gap-2">
+                <CalendarClock className="h-4 w-4 text-primary" />
+                <Label htmlFor="sch" className="cursor-pointer">Schedule for later</Label>
+              </div>
+              <Switch id="sch" checked={scheduleLater} onCheckedChange={setScheduleLater} />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="title">Stream Title *</Label>
+              <Input
+                id="title"
+                placeholder="e.g. Q&A with fans"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                placeholder="What will the stream be about..."
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                rows={2}
+              />
+            </div>
+
+            {scheduleLater && (
+              <div className="grid gap-2">
+                <Label htmlFor="when">Start date & time *</Label>
+                <Input
+                  id="when"
+                  type="datetime-local"
+                  value={form.scheduled_at}
+                  onChange={(e) => setForm({ ...form, scheduled_at: e.target.value })}
+                />
+              </div>
+            )}
+
+            <div className="grid gap-2">
+              <Label>Who can watch</Label>
+              <Select
+                value={form.min_tier}
+                onValueChange={(v) => setForm({ ...form, min_tier: v as typeof form.min_tier })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="public">🌍 Public — everyone</SelectItem>
+                  <SelectItem value="bronze">🥉 Bronze Fan Club and above</SelectItem>
+                  <SelectItem value="silver">🥈 Silver Fan Club and above</SelectItem>
+                  <SelectItem value="gold">🥇 Gold Fan Club only</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Tier-gated streams can only be watched by active Fan Club members of the selected tier or higher.
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={submit}
+              disabled={loading || !form.title.trim()}
+              className="bg-gradient-to-r from-red-600 to-pink-600"
+            >
+              {loading ? "Working..." : scheduleLater ? "Schedule" : "Start Stream"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
