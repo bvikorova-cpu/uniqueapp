@@ -200,6 +200,11 @@ export default function LiveStreamList() {
           </div>
         )}
 
+        {/* Upcoming Streams */}
+        <div className="mt-16">
+          <UpcomingStreams />
+        </div>
+
         {/* Past Recordings */}
         <div className="mt-16 space-y-4">
           <div className="flex items-center gap-3">
