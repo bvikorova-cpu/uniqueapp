@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Crown, Star, Sparkles, Package, Trophy, Filter } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ArrowLeft, Calendar, Crown, Package, PackageOpen, Sparkles, Star, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -22,6 +23,7 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
+  const [selectedReward, setSelectedReward] = useState<any>(null);
 
   useEffect(() => { loadItems(); }, []);
 
@@ -30,7 +32,7 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setLoading(false); return; }
     const { data, error } = await supabase.from('mystery_box_rewards')
-      .select('*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days)')
+      .select('*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days), user_mystery_boxes(mystery_boxes(name, icon, price))')
       .eq('user_id', user.id)
       .order('received_at', { ascending: false })
       .limit(200);
@@ -50,9 +52,19 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
     const joined = i?.mystery_box_items;
     return Array.isArray(joined) ? joined[0] : joined;
   };
+  const rewardBox = (i: any) => {
+    const joinedBox = i?.user_mystery_boxes;
+    const userBox = Array.isArray(joinedBox) ? joinedBox[0] : joinedBox;
+    const joinedMysteryBox = userBox?.mystery_boxes;
+    return Array.isArray(joinedMysteryBox) ? joinedMysteryBox[0] : joinedMysteryBox;
+  };
   const itemRarity = (i: any) => (rewardItem(i)?.rarity || 'common').toString().toLowerCase();
   const filteredItems = filter === "all" ? items : items.filter(i => itemRarity(i) === filter);
   const rarityCount = (r: string) => items.filter(i => itemRarity(i) === r).length;
+  const selectedItem = selectedReward ? rewardItem(selectedReward) : null;
+  const selectedBox = selectedReward ? rewardBox(selectedReward) : null;
+  const selectedRarity = (selectedItem?.rarity || 'common').toString();
+  const selectedType = selectedItem?.item_type ? selectedItem.item_type.replace(/_/g, ' ') : 'item';
 
   const filters = [
     { id: "all", label: "All", count: items.length },
@@ -140,7 +152,18 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
                   whileHover={{ scale: 1.06, y: -5 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  <Card className={`p-4 ${style.border} ${style.bg} hover:shadow-lg ${style.glow} transition-all`}>
+                  <Card
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setSelectedReward(item)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setSelectedReward(item);
+                      }
+                    }}
+                    className={`p-4 ${style.border} ${style.bg} hover:shadow-lg ${style.glow} transition-all cursor-pointer`}
+                  >
                     <div className="text-center mb-2">
                       {rarity === 'legendary' ? <Crown className={`h-8 w-8 mx-auto ${style.text}`} /> :
                        rarity === 'epic' ? <Star className={`h-8 w-8 mx-auto ${style.text}`} /> :
@@ -149,6 +172,9 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
                     </div>
                     <p className="font-bold text-sm text-center truncate">{name}</p>
                     <p className="text-[10px] text-muted-foreground text-center capitalize">{type}</p>
+                    <p className="text-[10px] text-muted-foreground text-center truncate mt-1">
+                      from {rewardBox(item)?.name || 'Mystery Box'}
+                    </p>
                     <div className="flex justify-center mt-2">
                       <Badge className={`${style.badge} text-white text-[10px] border-0`}>{rarity}</Badge>
                     </div>
@@ -162,6 +188,51 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
           </div>
         )}
       </Card>
+      <Dialog open={Boolean(selectedReward)} onOpenChange={(open) => !open && setSelectedReward(null)}>
+        <DialogContent className="max-w-sm border-yellow-500/30 bg-card">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-yellow-400">
+              <PackageOpen className="h-5 w-5" /> Box reward
+            </DialogTitle>
+            <DialogDescription>
+              {selectedBox?.name ? `Opened from ${selectedBox.name}` : "Mystery Box collection item"}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-5 text-center">
+              <div className="text-5xl mb-3">{selectedBox?.icon || "🎁"}</div>
+              <p className="text-xl font-black">{selectedItem?.item_name || "Mystery reward"}</p>
+              <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">
+                <Badge className="bg-gradient-to-r from-yellow-500 to-amber-600 text-black border-0 capitalize">
+                  {selectedRarity}
+                </Badge>
+                <Badge variant="outline" className="capitalize border-yellow-500/30">
+                  {selectedType}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <Card className="p-3 border-yellow-500/10">
+                <p className="text-muted-foreground">Box</p>
+                <p className="font-bold truncate">{selectedBox?.name || "Mystery Box"}</p>
+              </Card>
+              <Card className="p-3 border-yellow-500/10">
+                <p className="text-muted-foreground">Collected</p>
+                <p className="font-bold flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  {selectedReward?.received_at ? new Date(selectedReward.received_at).toLocaleDateString() : "Now"}
+                </p>
+              </Card>
+            </div>
+
+            <Button onClick={() => setSelectedReward(null)} className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold">
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
     </>
   );
