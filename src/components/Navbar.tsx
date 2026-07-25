@@ -662,6 +662,19 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
             <MobileCreditsPill />
+
+            {/* VIP Membership Club */}
+            <Link to="/club" onClick={() => setIsMenuOpen(false)}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-sm py-2 gap-2 text-amber-600 font-semibold"
+                size="sm"
+              >
+                <Ticket className="h-4 w-4 text-amber-500" />
+                VIP Membership Club
+              </Button>
+            </Link>
+
             {/* Challenges Section */}
             <div className="pt-2 pb-1">
               <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
