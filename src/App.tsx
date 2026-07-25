@@ -616,6 +616,7 @@ const MasterChefCookingTimer = lazy(() => import("@/pages/MasterChefCookingTimer
 const MasterChefIngredientScanner = lazy(() => import("@/pages/MasterChefIngredientScanner"));
 const MasterChefChefChat = lazy(() => import("@/pages/MasterChefChefChat"));
 const MasterChefLiveStream = lazy(() => import("@/pages/MasterChefLiveStream"));
+const CreatorLiveAnalytics = lazy(() => import("@/pages/CreatorLiveAnalytics"));
 const KitchenStarsBattles = lazy(() => import("@/pages/KitchenStarsBattles"));
 const MasterChefWeeklyAwards = lazy(() => import("@/pages/MasterChefWeeklyAwards"));
 const MasterChefNutritionAnalyzer = lazy(() => import("@/pages/MasterChefNutritionAnalyzer"));
@@ -909,6 +910,7 @@ const App = () => {
                         <Route path="/earnings" element={<ProtectedRoute><Earnings /></ProtectedRoute>} />
                         <Route path="/livestream" element={<LiveStreamList />} />
                         <Route path="/live/:streamId" element={<LiveStream />} />
+                        <Route path="/creator/live-analytics" element={<CreatorLiveAnalytics />} />
                         <Route path="/stories" element={<Navigate to="/messenger" replace />} />
                         <Route path="/stories/:userId" element={<Stories />} />
                         <Route path="/rewards" element={<Rewards />} />

@@ -451,6 +451,7 @@ const InfluKing = () => {
                 </DialogContent>
               </Dialog>
               <GoLiveButton influencerId={myProfile.id} />
+              <Button variant="outline" onClick={() => navigate("/creator/live-analytics")}>Live Analytics</Button>
               <Button variant="outline" onClick={() => navigate("/influencer/earnings")}>{t("influking.my_earnings")}</Button>
               <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>{t("influking.my_profile")}</Button>
               <Button variant="destructive" size="sm" onClick={async () => {
