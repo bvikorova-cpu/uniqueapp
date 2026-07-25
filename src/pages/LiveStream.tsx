@@ -698,8 +698,11 @@ export default function LiveStream() {
           </div>
         </div>
         {streamId && (
-          <div className="mt-6 max-w-md">
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <SupportersLeaderboard streamId={streamId} />
+            {!stream.is_live && (
+              <StreamHighlights streamId={streamId} streamTitle={stream.title} />
+            )}
           </div>
         )}
         </StreamTierGate>
