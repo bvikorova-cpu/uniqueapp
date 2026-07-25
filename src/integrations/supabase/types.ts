@@ -53825,6 +53825,7 @@ export type Database = {
           is_completed: boolean | null
           reward_claimed: boolean | null
           user_id: string
+          window_start: string | null
         }
         Insert: {
           challenge_id: string
@@ -53835,6 +53836,7 @@ export type Database = {
           is_completed?: boolean | null
           reward_claimed?: boolean | null
           user_id: string
+          window_start?: string | null
         }
         Update: {
           challenge_id?: string
@@ -53845,6 +53847,7 @@ export type Database = {
           is_completed?: boolean | null
           reward_claimed?: boolean | null
           user_id?: string
+          window_start?: string | null
         }
         Relationships: [
           {
@@ -68332,6 +68335,10 @@ export type Database = {
         Args: { _node_index: number; _path_id: string }
         Returns: Json
       }
+      claim_santa_challenge_reward: {
+        Args: { p_challenge_id: string }
+        Returns: Json
+      }
       cleanup_expired_cache: { Args: never; Returns: number }
       cleanup_idempotency_keys: { Args: never; Returns: undefined }
       cleanup_log_tables: { Args: never; Returns: undefined }
@@ -69895,6 +69902,10 @@ export type Database = {
       recompute_affiliate_tier: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["affiliate_tier"]
+      }
+      recompute_santa_challenge_progress: {
+        Args: { _user: string }
+        Returns: undefined
       }
       record_daily_activity: {
         Args: { _xp?: number }
