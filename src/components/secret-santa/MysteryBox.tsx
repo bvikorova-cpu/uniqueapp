@@ -75,12 +75,12 @@ export const MysteryBox = () => {
   const { data: users = [] } = useQuery({
     queryKey: ["search-users-mystery", searchQuery],
     queryFn: async () => {
-      if (!searchQuery || searchQuery.length < 2) return [];
+      if (!searchQuery || searchQuery.length < 1) return [];
       const { searchProfiles } = await import("@/lib/searchProfiles");
       const rows = await searchProfiles(searchQuery, { limit: 10 });
       return rows.map((u) => ({ id: u.id, username: u.full_name || u.username || "User", avatar_url: u.avatar_url }));
     },
-    enabled: searchQuery.length >= 2 });
+    enabled: searchQuery.length >= 1 });
 
   const selectedUserData = users.find(u => u.id === selectedRecipient);
   const selectedTierData = MYSTERY_BOX_TIERS.find(t => t.id === selectedTier);

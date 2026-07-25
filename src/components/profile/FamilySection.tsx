@@ -50,7 +50,7 @@ export function FamilySection({ userId, currentUserId, isOwnProfile }: Props) {
 
   const { data: searchResults = [] } = useQuery({
     queryKey: ["family-search", q],
-    enabled: q.length >= 2,
+    enabled: q.length >= 1,
     queryFn: async () => {
       const { searchProfiles } = await import("@/lib/searchProfiles");
       const rows = await searchProfiles(q, { limit: 10 });

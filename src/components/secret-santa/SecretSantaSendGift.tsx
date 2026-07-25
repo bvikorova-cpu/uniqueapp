@@ -33,16 +33,20 @@ export const SecretSantaSendGift = () => {
   const { data: users = [] } = useQuery({
     queryKey: ["search-users", searchQuery],
     queryFn: async () => {
-      if (!searchQuery || searchQuery.length < 2) return [];
-      
+      if (!searchQuery || searchQuery.length < 1) return [];
+
       const { data, error } = await supabase.rpc("search_public_profiles", {
         _query: searchQuery,
       });
 
       if (error) throw error;
-      return (data || []).map((u: any) => ({ id: u.id, username: u.username || "User", avatar_url: u.avatar_url }));
+      return (data || []).map((u: any) => ({
+        id: u.id,
+        username: u.full_name || u.username || "User",
+        avatar_url: u.avatar_url,
+      }));
     },
-    enabled: searchQuery.length >= 2 });
+    enabled: searchQuery.length >= 1 });
 
   const filteredGifts = activeCategory === "all" 
     ? GIFT_CATALOG 
