@@ -361,6 +361,43 @@ export const AIThankYou = () => {
         )}
       </AnimatePresence>
 
+      {/* Sent History */}
+      {sentHistory.length > 0 && (
+        <Card className="p-4 bg-white/80 border-rose-200 shadow-lg">
+          <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+            <MessageCircle className="h-5 w-5 text-rose-500" /> Sent Thank Yous ({sentHistory.length})
+          </h3>
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {sentHistory.map((r: any) => {
+              const name = r.recipient?.full_name || r.recipient?.username || "User";
+              const avatar = r.recipient?.avatar_url;
+              return (
+                <div key={r.id} className="flex gap-3 p-3 rounded-xl bg-rose-50/60 border border-rose-100">
+                  {avatar ? (
+                    <img src={avatar} alt={name} className="w-9 h-9 rounded-full object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+                      {name[0]?.toUpperCase()}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-semibold text-sm text-gray-800 truncate">To {name}</p>
+                      <span className="text-[10px] text-gray-500 flex-shrink-0">
+                        {new Date(r.created_at).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 italic line-clamp-3 mt-0.5">"{r.content}"</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+
+
+
       {/* Info */}
       <Card className="p-4 bg-rose-50 border-rose-200 shadow-sm">
         <h3 className="font-bold text-rose-800 mb-2 flex items-center gap-2">
