@@ -910,6 +910,7 @@ const App = () => {
                         <Route path="/earnings" element={<ProtectedRoute><Earnings /></ProtectedRoute>} />
                         <Route path="/livestream" element={<LiveStreamList />} />
                         <Route path="/live/:streamId" element={<LiveStream />} />
+                        <Route path="/creator/live-analytics" element={<CreatorLiveAnalytics />} />
                         <Route path="/stories" element={<Navigate to="/messenger" replace />} />
                         <Route path="/stories/:userId" element={<Stories />} />
                         <Route path="/rewards" element={<Rewards />} />
