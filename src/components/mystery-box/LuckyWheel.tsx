@@ -74,11 +74,13 @@ export const LuckyWheel = ({ onBack }: Props) => {
     const prizeLabel = res.prize_label ?? prize.label;
     const prizeValue = res.prize_value ?? prize.value;
 
-    const targetAngle = 360 - (prizeIndex * segmentAngle + segmentAngle / 2);
+    const targetAngle = (360 - (prizeIndex * segmentAngle + segmentAngle / 2)) % 360;
     // Animation-only randomness (does not affect outcome).
     const fullSpins = 6 + Math.floor(Math.random() * 4);
-    const newRotation = rotation + fullSpins * 360 + targetAngle;
-    setRotation(newRotation);
+    setRotation((currentRotation) => {
+      const base = Math.ceil(currentRotation / 360) * 360;
+      return base + fullSpins * 360 + targetAngle;
+    });
 
     setTimeout(async () => {
       setResult(prizeLabel);

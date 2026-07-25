@@ -103,8 +103,8 @@ export default function RewardsLuckyWheel() {
       const prizeToLabel = prizeNum > 0 ? `${prizeNum} CR` : "0 CR";
       const segmentIndex = Math.max(0, prizes.findIndex((p) => p.label === prizeToLabel));
       const segAngle = 360 / prizes.length;
-      // Wheel rotates clockwise; to bring segment i to the top pointer, offset by -i*segAngle
-      const targetOffset = ((360 - segmentIndex * segAngle) % 360);
+      // Wheel rotates clockwise; align the pointer to the centre of the server-selected segment.
+      const targetOffset = (360 - (segmentIndex * segAngle + segAngle / 2)) % 360;
       setRotation((r) => {
         const base = Math.ceil(r / 360) * 360; // normalize to next full turn
         return base + 1440 + targetOffset;
