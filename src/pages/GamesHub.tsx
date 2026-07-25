@@ -11,6 +11,7 @@ import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGa
 import { useGamesHub } from "@/hooks/useGamesHub";
 import { gateGameLaunch, playPostRoll } from "@/lib/gameAdGate";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import { TopGamesWidget } from "@/components/games/TopGamesWidget";
 
 const GAMES_HUB_HOW_IT_WORKS = [
   { title: "Search or browse by category", desc: "Use the search bar for a specific title, or open a category tab (Action, Puzzle, Racing…) to explore." },
