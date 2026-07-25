@@ -240,7 +240,7 @@ export const MysteryBox = () => {
                 key={user.id}
                 onClick={() => {
                   setSelectedRecipient(user.id);
-                  setSearchQuery("");
+                  setSearchQuery(user.username);
                 }}
                 className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
                   selectedRecipient === user.id
