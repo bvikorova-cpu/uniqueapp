@@ -3,7 +3,7 @@ import { useSecretSanta, GIFT_CATALOG } from "@/hooks/useSecretSanta";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
-import { Share2, Inbox, Send, ArrowDownLeft, ArrowUpRight, Gamepad2 } from "lucide-react";
+import { Share2, Inbox, Send, ArrowDownLeft, ArrowUpRight, Gamepad2, MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +14,11 @@ import { InteractiveGift } from "./InteractiveGift";
 import { useSocialGiftsProgress } from "@/hooks/useSocialGiftsProgress";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-export const SecretSantaInbox = () => {
+interface SecretSantaInboxProps {
+  onOpenChat?: (user: { id: string; username: string | null; avatar_url: string | null }) => void;
+}
+
+export const SecretSantaInbox = ({ onOpenChat }: SecretSantaInboxProps) => {
   const { receivedGifts, giftsLoading, sentGifts, sentLoading, shareToStory, isSharingStory } = useSecretSanta();
   const { addXP } = useSocialGiftsProgress();
   const [activeView, setActiveView] = useState<"received" | "sent">("received");
@@ -23,19 +27,23 @@ export const SecretSantaInbox = () => {
   const [interactiveGift, setInteractiveGift] = useState<any>(null);
   const [revealedGifts, setRevealedGifts] = useState<Set<string>>(new Set());
 
-  // Get profiles for sent gifts recipients
-  const recipientIds = sentGifts.map(g => g.recipient_id);
-  const { data: recipientProfiles = [] } = useQuery({
-    queryKey: ["recipient-profiles", recipientIds],
+  // Get visible profiles for sent recipients and non-anonymous received senders.
+  const visibleProfileIds = Array.from(new Set([
+    ...sentGifts.map(g => g.recipient_id),
+    ...receivedGifts.filter(g => !g.is_anonymous).map(g => g.sender_id),
+  ].filter(Boolean)));
+
+  const { data: visibleProfiles = [] } = useQuery({
+    queryKey: ["secret-santa-visible-profiles", visibleProfileIds],
     queryFn: async () => {
-      if (recipientIds.length === 0) return [];
-      const { data } = await (supabase as any).rpc("get_public_profiles", { ids: recipientIds });
+      if (visibleProfileIds.length === 0) return [];
+      const { data } = await (supabase as any).rpc("get_public_profiles", { ids: visibleProfileIds });
       return data || [];
     },
-    enabled: recipientIds.length > 0 });
+    enabled: visibleProfileIds.length > 0 });
 
-  const getRecipientProfile = (id: string) => {
-    return recipientProfiles.find((p: any) => p.id === id);
+  const getProfile = (id: string) => {
+    return visibleProfiles.find((p: any) => p.id === id);
   };
 
   const getGiftData = (giftType: string) => {
@@ -177,7 +185,8 @@ export const SecretSantaInbox = () => {
           <ScrollArea className="h-[500px]">
             <div className="space-y-3">
               {gifts.map((gift) => {
-                const recipientProfile = activeView === "sent" ? getRecipientProfile(gift.recipient_id) : null;
+                const recipientProfile = activeView === "sent" ? getProfile(gift.recipient_id) : null;
+                const senderProfile = activeView === "received" && !gift.is_anonymous ? getProfile(gift.sender_id) : null;
                 const isRevealed = revealedGifts.has(gift.id);
                 const giftData = getGiftData(gift.gift_type);
                 const isPremium = giftData && giftData.value >= 20;
@@ -210,9 +219,23 @@ export const SecretSantaInbox = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1 flex-wrap gap-1">
                           {activeView === "received" ? (
-                            <span className="text-amber-600 font-medium">
-                              {gift.is_anonymous ? "Anonymous Sender" : "Someone special"}
-                            </span>
+                            <div className="flex items-center gap-2 min-w-0">
+                              {!gift.is_anonymous && senderProfile ? (
+                                <>
+                                  <Avatar className="h-6 w-6 shrink-0">
+                                    <AvatarImage src={senderProfile.avatar_url || undefined} />
+                                    <AvatarFallback className="bg-amber-200 text-amber-700 text-xs">
+                                      {(senderProfile.full_name || senderProfile.username || "?")[0]}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span className="text-amber-600 font-medium text-sm truncate">
+                                    From: {senderProfile.full_name || senderProfile.username || "User"}
+                                  </span>
+                                </>
+                              ) : (
+                                <span className="text-amber-600 font-medium">Anonymous Sender</span>
+                              )}
+                            </div>
                           ) : (
                             <div className="flex items-center gap-2">
                               <Avatar className="h-6 w-6">
@@ -281,6 +304,21 @@ export const SecretSantaInbox = () => {
                                 <span className="hidden sm:inline">Share to Story</span>
                                 <span className="sm:hidden">Share</span>
                               </Button>
+                              {!gift.is_anonymous && senderProfile && onOpenChat && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => onOpenChat({
+                                    id: senderProfile.id,
+                                    username: senderProfile.full_name || senderProfile.username || "User",
+                                    avatar_url: senderProfile.avatar_url,
+                                  })}
+                                  className="text-blue-500 hover:text-blue-600 hover:bg-blue-100"
+                                >
+                                  <MessageCircle className="h-4 w-4 mr-1" />
+                                  Reply
+                                </Button>
+                              )}
                             </div>
                           )}
                         </div>
