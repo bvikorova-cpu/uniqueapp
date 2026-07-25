@@ -459,6 +459,14 @@ export default function LiveStream() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Analytics: track viewer session (join/leave + watch time)
+  useStreamViewerSession({
+    streamId: streamId ?? null,
+    currentUserId: user?.id ?? null,
+    isOwner: !!user && !!stream && user.id === stream.influencer_profiles?.user_id,
+    isLive: !!stream?.is_live,
+  });
+
   if (!stream) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
