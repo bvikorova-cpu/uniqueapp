@@ -342,6 +342,9 @@ export function GlobalSearch() {
             autoFocus
             aria-label="Search query"
           />
+          {(isSearching || isSearchingPeople) && query && (
+            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary mr-1" />
+          )}
           {query && (
             <Button
               variant="ghost"
@@ -354,6 +357,7 @@ export function GlobalSearch() {
             </Button>
           )}
         </div>
+
         
         {/* Category filters */}
         <div className="flex flex-wrap gap-1 p-2 border-b">
