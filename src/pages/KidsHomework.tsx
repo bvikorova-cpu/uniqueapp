@@ -22,7 +22,7 @@ import { ComprehensionQuiz } from "@/components/kids-homework/ComprehensionQuiz"
 import { SubjectMasteryMap } from "@/components/kids-homework/SubjectMasteryMap";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryClient } from "@tanstack/react-query";
-import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
+import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
