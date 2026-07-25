@@ -30,20 +30,29 @@ export const GiftStreakRewards = () => {
     supabase.auth.getUser().then(({ data: { user } }) => setCurrentUserId(user?.id || null));
   }, []);
 
-  // Calculate current streak
+  // Calculate current streak (allows today OR yesterday as active anchor)
   const calculateStreak = () => {
     if (!sentGifts.length) return 0;
     const dates = [...new Set(sentGifts.map((g: any) => new Date(g.created_at).toDateString()))].sort(
       (a, b) => new Date(b).getTime() - new Date(a).getTime()
     );
-    let streak = 0;
     const today = new Date();
+    const todayStr = today.toDateString();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toDateString();
+
+    let anchor: Date;
+    if (dates[0] === todayStr) anchor = today;
+    else if (dates[0] === yesterdayStr) anchor = yesterday;
+    else return 0;
+
+    let streak = 0;
     for (let i = 0; i < dates.length; i++) {
-      const expected = new Date(today);
+      const expected = new Date(anchor);
       expected.setDate(expected.getDate() - i);
-      if (dates[i] === expected.toDateString()) {
-        streak++;
-      } else break;
+      if (dates[i] === expected.toDateString()) streak++;
+      else break;
     }
     return streak;
   };
