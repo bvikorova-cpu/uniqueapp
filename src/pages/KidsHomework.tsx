@@ -22,7 +22,6 @@ import { ComprehensionQuiz } from "@/components/kids-homework/ComprehensionQuiz"
 import { SubjectMasteryMap } from "@/components/kids-homework/SubjectMasteryMap";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryClient } from "@tanstack/react-query";
-import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -79,20 +78,18 @@ const KidsHomework = () => {
     reader.readAsDataURL(f);
   };
 
-  // Homework Helper: force parental gate on every entry (no 30-min memory)
-  const HOMEWORK_GATE_KEY = 'parental_gate_verified_homework';
-  const { resetVerification } = useParentalGate(HOMEWORK_GATE_KEY);
-  const [showParentalGate, setShowParentalGate] = useState(false);
-  const [, setIsGateChecked] = useState(false);
-
+  // Homework Helper: PASS-GATED. Must have active credits to access.
   useEffect(() => {
-    // Always clear any prior verification so the gate is required every time
-    resetVerification();
-    sessionStorage.removeItem(HOMEWORK_GATE_KEY);
-    setShowParentalGate(true);
-    setIsGateChecked(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (usageLoading) return;
+    if (!user) {
+      navigate(`/auth?redirect=${encodeURIComponent("/kids-homework")}`);
+      return;
+    }
+    if (credits_remaining < HOMEWORK_CREDITS_PER_QUESTION) {
+      toast.info("You need an active Homework Pass to use this section.");
+      navigate("/kids-homework-pricing");
+    }
+  }, [user, usageLoading, credits_remaining, navigate]);
 
   // Refresh credits after returning from Stripe success
   useEffect(() => {
@@ -103,12 +100,6 @@ const KidsHomework = () => {
       toast.info("Payment canceled.");
     }
   }, [searchParams, refreshCredits]);
-
-  const handleParentalGateSuccess = () => setShowParentalGate(false);
-  const handleParentalGateCancel = () => {
-    setShowParentalGate(false);
-    window.location.assign("/");
-  };
 
   const handleBuyCredits = async () => {
     if (!user) {
@@ -363,13 +354,6 @@ const KidsHomework = () => {
         </div>
       </main>
 
-      <ParentalGate
-        isOpen={showParentalGate}
-        onSuccess={handleParentalGateSuccess}
-        onCancel={handleParentalGateCancel}
-        featureName="AI Homework Helper"
-        storageKey={HOMEWORK_GATE_KEY}
-      />
     </div>
   );
 };
