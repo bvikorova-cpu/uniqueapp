@@ -319,7 +319,7 @@ export const GIFT_CATALOG = [
   { type: "baloo", emoji: "🐻", label: "Baloo", value: 40, category: "disney", description: "Bare necessities" },
   { type: "mowgli", emoji: "🌴", label: "Mowgli", value: 35, category: "disney", description: "Jungle boy" },
   { type: "tarzan", emoji: "🦍", label: "Tarzan", value: 45, category: "disney", description: "King of jungle" },
-  { type: "hercules", emoji: "💪", label: "Hercules", value: 65, category: "disney", description: "Zero to hero" },
+  { type: "hercules", emoji: "🏛️", label: "Hercules", value: 65, category: "disney", description: "Zero to hero" },
   { type: "maui", emoji: "🪝", label: "Maui", value: 70, category: "disney", description: "You're welcome" },
   { type: "hades", emoji: "🔥", label: "Hades", value: 75, category: "disney", description: "Lord of dead" },
   { type: "maleficent", emoji: "🐉", label: "Maleficent", value: 80, category: "disney", description: "Mistress of evil" },
