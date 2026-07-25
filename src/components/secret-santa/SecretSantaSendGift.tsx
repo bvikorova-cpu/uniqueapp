@@ -30,7 +30,7 @@ export const SecretSantaSendGift = () => {
   const [showSendingAnimation, setShowSendingAnimation] = useState(false);
 
   // Search users
-  const { data: users = [] } = useQuery({
+  const { data: users = [], isFetching: isSearching } = useQuery({
     queryKey: ["search-users", searchQuery],
     queryFn: async () => {
       if (!searchQuery || searchQuery.length < 1) return [];
@@ -47,6 +47,7 @@ export const SecretSantaSendGift = () => {
       }));
     },
     enabled: searchQuery.length >= 1 });
+
 
   const filteredGifts = activeCategory === "all" 
     ? GIFT_CATALOG 
