@@ -501,6 +501,17 @@ const Navbar = () => {
 
             {/* Theme Toggle — visible for all users */}
             <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Refresh page"
+              title="Refresh page"
+              onClick={handleRefreshPage}
+              disabled={isRefreshing}
+              className="hidden sm:inline-flex"
+            >
+              <RefreshCw className={`h-5 w-5 ${isRefreshing ? "animate-spin" : ""}`} />
+            </Button>
             <Link
               to="/club"
               aria-label="Unique VIP Club"
