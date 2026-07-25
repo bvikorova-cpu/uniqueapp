@@ -117,12 +117,12 @@ export async function requireAiCredits(
       ) };
   }
 
-  const deduct = async () => { await supabase
-      .from("ai_credits")
-      .update({
-        credits_remaining: remaining - credits,
-        last_used_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+  const deduct = async () => { const { error: deductErr } = await supabase.rpc("deduct_ai_credits", {
+        p_user_id: user.id,
+        p_amount: credits,
+        p_reason: opts.description ?? usageType,
+        p_source: usageType });
+    if (deductErr) throw deductErr;
 
     await supabase.from("ai_usage_history").insert({ user_id: user.id,
       usage_type: usageType,
