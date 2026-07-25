@@ -150,7 +150,7 @@ export const GiftChat = () => {
 
   // Global user search — kicks in from the first character so users can start
   // a new chat with anyone on the platform, not just past gift partners.
-  const { data: globalResults = [] } = useQuery({
+  const { data: globalResults = [], isFetching: isSearching } = useQuery({
     queryKey: ["gift-chat-global-search", searchQuery, currentUserId],
     queryFn: async () => {
       const rows = await searchProfiles(searchQuery, { limit: 20 });
@@ -166,6 +166,7 @@ export const GiftChat = () => {
     enabled: !!currentUserId && searchQuery.trim().length >= 1,
     staleTime: 15_000,
   });
+
 
 
   if (!currentUserId) {
