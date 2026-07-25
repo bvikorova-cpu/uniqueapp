@@ -29,8 +29,8 @@ export const SecretSantaInbox = () => {
     queryKey: ["recipient-profiles", recipientIds],
     queryFn: async () => {
       if (recipientIds.length === 0) return [];
-      const { data } = await supabase
-        .from("profiles")
+      const { data } = await (supabase as any)
+        .from("public_profiles")
         .select("id, full_name, username, avatar_url")
         .in("id", recipientIds);
       return data || [];
