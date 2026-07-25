@@ -116,14 +116,14 @@ export const SecretSantaSendGift = () => {
           </p>
         </div>
 
-        {users.length > 0 && (
+        {users.length > 0 && !selectedUserData && (
           <div className="mt-3 space-y-2">
             {users.map((user) => (
               <div
                 key={user.id}
                 onClick={() => {
                   setSelectedRecipient(user.id);
-                  setSearchQuery("");
+                  setSearchQuery(user.username);
                 }}
                 className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
                   selectedRecipient === user.id
@@ -144,14 +144,27 @@ export const SecretSantaSendGift = () => {
         )}
 
         {selectedUserData && (
-          <div className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-amber-100 border border-amber-400">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={selectedUserData.avatar_url || undefined} />
-              <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white">
-                {selectedUserData.username?.[0]?.toUpperCase() || "?"}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-gray-800 font-medium">Sending to: {selectedUserData.username}</span>
+          <div className="mt-3 flex items-center justify-between gap-3 p-3 rounded-xl bg-amber-100 border border-amber-400">
+            <div className="flex items-center gap-3 min-w-0">
+              <Avatar className="h-10 w-10 shrink-0">
+                <AvatarImage src={selectedUserData.avatar_url || undefined} />
+                <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+                  {selectedUserData.username?.[0]?.toUpperCase() || "?"}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-gray-800 font-medium truncate">Sending to: {selectedUserData.username}</span>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setSelectedRecipient(null);
+                setSearchQuery("");
+              }}
+              className="text-amber-700 hover:text-amber-900 shrink-0"
+            >
+              Change
+            </Button>
           </div>
         )}
       </div>
