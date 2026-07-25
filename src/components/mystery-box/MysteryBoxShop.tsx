@@ -327,8 +327,9 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
                     transition={{ repeat: 3, duration: 0.6 }}
                     className="text-7xl mb-4 relative z-10"
                   >
-                    🎉
+                    {revealedReward?.item_data?.icon || '🎁'}
                   </motion.div>
+
                   <h3 className="text-2xl font-black mb-2 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 bg-clip-text text-transparent relative z-10">
                     Congratulations!
                   </h3>
