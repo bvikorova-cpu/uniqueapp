@@ -211,11 +211,14 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
                     className={`p-4 ${style.border} ${style.bg} hover:shadow-lg ${style.glow} transition-all cursor-pointer`}
                   >
                     <div className="text-center mb-2">
-                      {rarity === 'legendary' ? <Crown className={`h-8 w-8 mx-auto ${style.text}`} /> :
+                      {details?.item_data?.icon ? (
+                        <div className="text-3xl leading-none">{details.item_data.icon}</div>
+                      ) : rarity === 'legendary' ? <Crown className={`h-8 w-8 mx-auto ${style.text}`} /> :
                        rarity === 'epic' ? <Star className={`h-8 w-8 mx-auto ${style.text}`} /> :
                        rarity === 'rare' ? <Sparkles className={`h-8 w-8 mx-auto ${style.text}`} /> :
                        <Package className={`h-8 w-8 mx-auto ${style.text}`} />}
                     </div>
+
                     <p className="font-bold text-sm text-center truncate">{name}</p>
                     <p className="text-[10px] text-muted-foreground text-center capitalize">{type}</p>
                     <p className="text-[10px] text-muted-foreground text-center truncate mt-1">
