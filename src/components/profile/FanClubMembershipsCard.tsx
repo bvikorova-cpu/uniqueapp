@@ -18,6 +18,7 @@ type MembershipRow = {
   fan_club?: {
     name: string | null;
     creator_id: string | null;
+    tier?: string | null;
   } | null;
 };
 
@@ -50,12 +51,13 @@ export const FanClubMembershipsCard = () => {
       const { data, error } = await supabase
         .from("influencer_fan_club_members")
         .select(
-          "id, fan_club_id, status, tier, current_period_end, cancel_at_period_end, stripe_subscription_id, fan_club:influencer_fan_clubs(name, creator_id)"
+          "id, fan_club_id, status, current_period_end, cancel_at_period_end, stripe_subscription_id, fan_club:influencer_fan_clubs(name, creator_id, tier)"
         )
         .eq("user_id", uid)
         .order("current_period_end", { ascending: false, nullsFirst: false });
       if (error) throw error;
-      setRows((data as unknown as MembershipRow[]) ?? []);
+      const mapped = ((data as any[]) ?? []).map((r) => ({ ...r, tier: r?.fan_club?.tier ?? null })) as MembershipRow[];
+      setRows(mapped);
     } catch (e: any) {
       toast.error(e?.message || "Could not load memberships.");
     } finally {
