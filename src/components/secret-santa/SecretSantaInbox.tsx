@@ -31,7 +31,7 @@ export const SecretSantaInbox = () => {
       if (recipientIds.length === 0) return [];
       const { data } = await supabase
         .from("profiles")
-        .select("id, full_name, avatar_url")
+        .select("id, full_name, username, display_name, avatar_url")
         .in("id", recipientIds);
       return data || [];
     },
