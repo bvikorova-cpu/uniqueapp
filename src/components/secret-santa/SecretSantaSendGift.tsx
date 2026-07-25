@@ -35,14 +35,12 @@ export const SecretSantaSendGift = () => {
     queryFn: async () => {
       if (!searchQuery || searchQuery.length < 2) return [];
       
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .ilike("full_name", `%${searchQuery}%`)
-        .limit(10);
+      const { data, error } = await supabase.rpc("search_public_profiles", {
+        _query: searchQuery,
+      });
 
       if (error) throw error;
-      return (data || []).map((u: any) => ({ id: u.id, username: u.full_name || "User", avatar_url: u.avatar_url }));
+      return (data || []).map((u: any) => ({ id: u.id, username: u.username || "User", avatar_url: u.avatar_url }));
     },
     enabled: searchQuery.length >= 2 });
 
