@@ -703,16 +703,15 @@ export const useSecretSanta = () => {
         .sort(([, a], [, b]) => b - a)
         .slice(0, 10);
 
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", topSenders.map(([id]) => id));
+      const { data: profiles } = await (supabase as any).rpc("get_public_profiles", {
+        ids: topSenders.map(([id]) => id),
+      });
 
       return topSenders.map(([id, total], index) => { const profile = (profiles || []).find((p: any) => p.id === id) as any;
         return {
           rank: index + 1,
           userId: id,
-          username: profile?.full_name || "Anonymous",
+          username: profile?.username || profile?.full_name || "Anonymous",
           avatarUrl: profile?.avatar_url,
           totalGiftsValue: total };
       });

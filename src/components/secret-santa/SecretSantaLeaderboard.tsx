@@ -156,9 +156,9 @@ export const SecretSantaLeaderboard = () => {
                 <p className="text-gray-400 text-xs">Rank #{entry.rank}</p>
               </div>
 
-              <div className="text-right">
-                <p className="text-amber-600 font-bold">💎 {entry.totalGiftsValue}</p>
-                <p className="text-gray-400 text-xs">total given</p>
+              <div className="text-right shrink-0">
+                <p className="text-amber-600 font-bold whitespace-nowrap">💎 {entry.totalGiftsValue}</p>
+                <p className="text-gray-400 text-xs whitespace-nowrap">total given</p>
               </div>
             </div>
           ))}
