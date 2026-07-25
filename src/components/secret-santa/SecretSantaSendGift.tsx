@@ -110,12 +110,16 @@ export const SecretSantaSendGift = () => {
             placeholder="Search users by name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-white border-amber-200 text-gray-800 placeholder:text-gray-400"
+            className="bg-white border-amber-200 text-gray-800 placeholder:text-gray-400 pr-10"
           />
+          {isSearching && searchQuery.length >= 1 && (
+            <Sparkles className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-500 animate-spin" />
+          )}
           <p className="text-xs text-gray-500 mt-2">
             Search any user on the platform by their name
           </p>
         </div>
+
 
         {users.length > 0 && !selectedUserData && (
           <div className="mt-3 space-y-2">
