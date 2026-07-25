@@ -1,0 +1,1 @@
+ALTER TABLE public.ai_usage_history DROP CONSTRAINT IF EXISTS ai_usage_history_usage_type_check;
