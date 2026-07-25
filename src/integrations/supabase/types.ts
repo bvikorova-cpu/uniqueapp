@@ -70002,6 +70002,7 @@ export type Database = {
         Args: { _query: string }
         Returns: {
           avatar_url: string
+          full_name: string
           id: string
           username: string
         }[]

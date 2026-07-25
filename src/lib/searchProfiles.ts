@@ -30,7 +30,13 @@ export async function searchProfiles(
     return [];
   }
 
-  let rows = (data || []) as PublicProfileResult[];
+  let rows = ((data || []) as any[]).map((r) => ({
+    id: r.id,
+    full_name: r.full_name ?? null,
+    username: r.username ?? null,
+    avatar_url: r.avatar_url ?? null,
+  })) as PublicProfileResult[];
+
   if (opts.restrictToIds && opts.restrictToIds.length > 0) {
     const allow = new Set(opts.restrictToIds);
     rows = rows.filter((r) => allow.has(r.id));

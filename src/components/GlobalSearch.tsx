@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X, Loader2 } from "lucide-react";
+import { Search, X, Loader2, User as UserIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { searchProfiles, type PublicProfileResult } from "@/lib/searchProfiles";
 import { cn } from "@/lib/utils";
 
 interface SearchResult {
@@ -232,37 +234,55 @@ export function GlobalSearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [people, setPeople] = useState<PublicProfileResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isSearchingPeople, setIsSearchingPeople] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const navigate = useNavigate();
+  const peopleReqId = useRef(0);
 
-  // Debounced search
+  // Fast local page search (synchronous)
   const performSearch = useCallback((searchQuery: string, category: string | null) => {
-    setIsSearching(true);
-    
-    setTimeout(() => {
-      let filtered = SEARCHABLE_PAGES;
-      
-      if (searchQuery.trim()) {
-        filtered = filtered.filter(page => 
-          fuzzyMatch(page.title, searchQuery) || 
-          fuzzyMatch(page.category, searchQuery) ||
-          (page.description && fuzzyMatch(page.description, searchQuery))
-        );
-      }
-      
-      if (category) {
-        filtered = filtered.filter(page => page.category === category);
-      }
-      
-      setResults(filtered);
-      setIsSearching(false);
-    }, 150);
+    let filtered = SEARCHABLE_PAGES;
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(page =>
+        fuzzyMatch(page.title, searchQuery) ||
+        fuzzyMatch(page.category, searchQuery) ||
+        (page.description && fuzzyMatch(page.description, searchQuery))
+      );
+    }
+    if (category) {
+      filtered = filtered.filter(page => page.category === category);
+    }
+    setResults(filtered);
+    setIsSearching(false);
   }, []);
 
   useEffect(() => {
-    performSearch(query, selectedCategory);
+    setIsSearching(true);
+    const t = setTimeout(() => performSearch(query, selectedCategory), 80);
+    return () => clearTimeout(t);
   }, [query, selectedCategory, performSearch]);
+
+  // Debounced people autocomplete — triggers from the first character
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < 1) {
+      setPeople([]);
+      setIsSearchingPeople(false);
+      return;
+    }
+    setIsSearchingPeople(true);
+    const reqId = ++peopleReqId.current;
+    const t = setTimeout(async () => {
+      const rows = await searchProfiles(q, { limit: 8 });
+      if (reqId === peopleReqId.current) {
+        setPeople(rows);
+        setIsSearchingPeople(false);
+      }
+    }, 120);
+    return () => clearTimeout(t);
+  }, [query]);
 
   // Keyboard shortcut (Ctrl/Cmd + K)
   useEffect(() => {
@@ -285,6 +305,13 @@ export function GlobalSearch() {
     setOpen(false);
     setQuery("");
     setSelectedCategory(null);
+  };
+
+  const handlePersonClick = (person: PublicProfileResult) => {
+    const path = person.username ? `/user/${person.username}` : `/profile/${person.id}`;
+    navigate(path);
+    setOpen(false);
+    setQuery("");
   };
 
   const categories = Array.from(new Set(SEARCHABLE_PAGES.map(p => p.category)));
@@ -353,36 +380,87 @@ export function GlobalSearch() {
         </div>
 
         <ScrollArea className="max-h-[400px]">
-          {isSearching ? (
-            <div className="flex items-center justify-center py-6">
-              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-            </div>
-          ) : results.length === 0 ? (
-            <div className="py-6 text-center text-sm text-muted-foreground">
-              No results for "{query}"
-            </div>
-          ) : (
-            <div className="p-2">
-              {results.map((result) => (
-                <button
-                  key={result.id}
-                  className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
-                  onClick={() => handleResultClick(result.path)}
-                >
-                  <div className="flex-1">
-                    <p className="font-medium">{result.title}</p>
-                    {result.description && (
-                      <p className="text-xs text-muted-foreground">{result.description}</p>
-                    )}
+          <div className="p-2 space-y-3">
+            {/* People autocomplete — starts at 1 character */}
+            {query.trim().length >= 1 && (
+              <div>
+                <div className="flex items-center justify-between px-2 pb-1">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">People</p>
+                  {isSearchingPeople && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
+                </div>
+                {people.length === 0 && !isSearchingPeople ? (
+                  <p className="px-3 py-2 text-xs text-muted-foreground">No people found</p>
+                ) : (
+                  <div className="space-y-0.5">
+                    {people.map((p) => {
+                      const name = p.full_name || p.username || "User";
+                      return (
+                        <button
+                          key={p.id}
+                          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
+                          onClick={() => handlePersonClick(p)}
+                        >
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={p.avatar_url || undefined} alt={name} />
+                            <AvatarFallback>
+                              {name[0]?.toUpperCase() || <UserIcon className="h-4 w-4" />}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate">{name}</p>
+                            {p.username && p.full_name && (
+                              <p className="text-xs text-muted-foreground truncate">@{p.username}</p>
+                            )}
+                          </div>
+                          <Badge variant="outline" className="text-xs bg-pink-500/10 text-pink-500">
+                            Person
+                          </Badge>
+                        </button>
+                      );
+                    })}
                   </div>
-                  <Badge variant="outline" className={cn("text-xs", CATEGORY_COLORS[result.category])}>
-                    {result.category}
-                  </Badge>
-                </button>
-              ))}
+                )}
+              </div>
+            )}
+
+            {/* Pages */}
+            <div>
+              {query.trim().length >= 1 && (
+                <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Pages</p>
+              )}
+              {isSearching ? (
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : results.length === 0 ? (
+                <div className="py-6 text-center text-sm text-muted-foreground">
+                  No pages for "{query}"
+                </div>
+              ) : (
+                <div className="space-y-0.5">
+                  {results.map((result) => (
+                    <button
+                      key={result.id}
+                      className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
+                      onClick={() => handleResultClick(result.path)}
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium">{result.title}</p>
+                        {result.description && (
+                          <p className="text-xs text-muted-foreground">{result.description}</p>
+                        )}
+                      </div>
+                      <Badge variant="outline" className={cn("text-xs", CATEGORY_COLORS[result.category])}>
+                        {result.category}
+                      </Badge>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </ScrollArea>
+
         
         <div className="flex items-center justify-between border-t p-2 text-xs text-muted-foreground">
           <span>{results.length} results</span>
