@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSecretSanta } from "@/hooks/useSecretSanta";
-import { Calendar, Snowflake, Heart, Ghost, Sparkles, Sun, Leaf, Star } from "lucide-react";
+import { Calendar, Snowflake, Heart, Ghost, Sparkles, Sun, Leaf, Star, Search, Loader2, Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 // Get current season/holiday
 const getCurrentSeason = () => {
@@ -206,8 +215,15 @@ interface LimitedEditionGiftsProps {
 export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) => {
   const currentSeason = getCurrentSeason();
   const { credits } = useSecretSanta();
-  const [selectedGift, setSelectedGift] = useState<string | null>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [selectedGift, setSelectedGift] = useState<any | null>(null);
   const [activeSeason, setActiveSeason] = useState<string>(currentSeason);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRecipient, setSelectedRecipient] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(true);
 
   // All 4 seasons
   const seasons = ["winter", "spring", "summer", "fall"] as const;
@@ -221,10 +237,65 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
     return daysInMonth - day;
   };
 
+  const { data: users = [], isFetching: isSearching } = useQuery({
+    queryKey: ["search-users-seasonal", searchQuery],
+    queryFn: async () => {
+      if (!searchQuery || searchQuery.length < 1) return [];
+      const { searchProfiles } = await import("@/lib/searchProfiles");
+      const rows = await searchProfiles(searchQuery, { limit: 10 });
+      return rows.map((u) => ({ id: u.id, username: u.full_name || u.username || "User", avatar_url: u.avatar_url }));
+    },
+    enabled: searchQuery.length >= 1 });
+
+  const selectedUserData = users.find(u => u.id === selectedRecipient);
+
   const handleSelect = (gift: any) => {
-    setSelectedGift(gift.type);
+    setSelectedGift(gift);
+    setSelectedRecipient(null);
+    setSearchQuery("");
+    setMessage("");
+    setDialogOpen(true);
     onSelectGift?.({ ...gift, category: "seasonal" });
   };
+
+  const sendSeasonalGift = useMutation({
+    mutationFn: async () => {
+      if (!selectedGift || !selectedRecipient) throw new Error("Select a recipient");
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+      if (credits < selectedGift.value) throw new Error("Not enough credits");
+
+      const { error: creditError } = await supabase
+        .from("secret_santa_credits")
+        .update({ credits_remaining: credits - selectedGift.value })
+        .eq("user_id", user.id);
+      if (creditError) throw creditError;
+
+      const { error: giftError } = await supabase
+        .from("secret_santa_gifts")
+        .insert({
+          sender_id: user.id,
+          recipient_id: selectedRecipient,
+          gift_type: selectedGift.type,
+          gift_emoji: selectedGift.emoji,
+          gift_value: selectedGift.value,
+          message: message || null,
+          is_anonymous: isAnonymous,
+          animation_type: "seasonal" });
+      if (giftError) throw giftError;
+    },
+    onSuccess: () => {
+      toast({ title: `${selectedGift?.emoji} ${selectedGift?.label} sent!` });
+      queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["secret-santa-sent"] });
+      setDialogOpen(false);
+      setSelectedGift(null);
+      setSelectedRecipient(null);
+      setSearchQuery("");
+      setMessage("");
+    },
+    onError: (e: Error) => toast({ title: e.message, variant: "destructive" }) });
+
 
   return (
     <>
@@ -286,7 +357,7 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
           {seasonData.gifts.map((gift, index) => {
             const canAfford = credits >= gift.value;
-            const isSelected = selectedGift === gift.type;
+            const isSelected = selectedGift?.type === gift.type;
 
             return (
               <motion.div
@@ -332,6 +403,94 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
         <span>Exclusive seasonal collections available all year round!</span>
       </div>
     </div>
+
+    {/* Send dialog */}
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <span className="text-3xl">{selectedGift?.emoji}</span>
+            <div>
+              <div>Send {selectedGift?.label}</div>
+              <div className="text-xs font-normal text-muted-foreground">💎 {selectedGift?.value} credits</div>
+            </div>
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div>
+            <Label className="mb-2 flex items-center gap-2"><Search className="h-4 w-4" /> Choose recipient</Label>
+            <div className="relative">
+              <Input
+                placeholder="Search users by name..."
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); if (!e.target.value) setSelectedRecipient(null); }}
+                className="pr-10"
+              />
+              {isSearching && searchQuery.length >= 1 && (
+                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-purple-500 animate-spin" />
+              )}
+            </div>
+
+            {users.length > 0 && !selectedRecipient && (
+              <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">
+                {users.map((user) => (
+                  <div
+                    key={user.id}
+                    onClick={() => { setSelectedRecipient(user.id); setSearchQuery(user.username); }}
+                    className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-muted"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.avatar_url || undefined} />
+                      <AvatarFallback>{user.username?.[0]?.toUpperCase() || "?"}</AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium">{user.username}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {selectedUserData && (
+              <div className="mt-2 flex items-center gap-3 p-2 rounded-lg bg-purple-100 border border-purple-300">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={selectedUserData.avatar_url || undefined} />
+                  <AvatarFallback>{selectedUserData.username?.[0]?.toUpperCase() || "?"}</AvatarFallback>
+                </Avatar>
+                <span className="text-sm font-medium">Sending to: {selectedUserData.username}</span>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <Label className="mb-2 block">Message (optional)</Label>
+            <Textarea
+              placeholder="Add a note..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              maxLength={200}
+              className="min-h-[70px]"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Switch id="anon-seasonal" checked={isAnonymous} onCheckedChange={setIsAnonymous} />
+            <Label htmlFor="anon-seasonal">Send anonymously</Label>
+          </div>
+
+          <Button
+            onClick={() => sendSeasonalGift.mutate()}
+            disabled={!selectedRecipient || sendSeasonalGift.isPending || credits < (selectedGift?.value || 0)}
+            className="w-full"
+          >
+            {sendSeasonalGift.isPending ? (
+              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...</>
+            ) : (
+              <><Send className="h-4 w-4 mr-2" /> Send Gift (💎 {selectedGift?.value})</>
+            )}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
     </>
   );
 };
