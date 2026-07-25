@@ -30,20 +30,29 @@ export const GiftStreakRewards = () => {
     supabase.auth.getUser().then(({ data: { user } }) => setCurrentUserId(user?.id || null));
   }, []);
 
-  // Calculate current streak
+  // Calculate current streak (allows today OR yesterday as active anchor)
   const calculateStreak = () => {
     if (!sentGifts.length) return 0;
     const dates = [...new Set(sentGifts.map((g: any) => new Date(g.created_at).toDateString()))].sort(
       (a, b) => new Date(b).getTime() - new Date(a).getTime()
     );
-    let streak = 0;
     const today = new Date();
+    const todayStr = today.toDateString();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toDateString();
+
+    let anchor: Date;
+    if (dates[0] === todayStr) anchor = today;
+    else if (dates[0] === yesterdayStr) anchor = yesterday;
+    else return 0;
+
+    let streak = 0;
     for (let i = 0; i < dates.length; i++) {
-      const expected = new Date(today);
+      const expected = new Date(anchor);
       expected.setDate(expected.getDate() - i);
-      if (dates[i] === expected.toDateString()) {
-        streak++;
-      } else break;
+      if (dates[i] === expected.toDateString()) streak++;
+      else break;
     }
     return streak;
   };
@@ -74,33 +83,46 @@ export const GiftStreakRewards = () => {
         .insert({ user_id: currentUserId, streak_milestone: milestone, reward_credits: reward });
       if (claimError) throw claimError;
 
-      // Add credits
-      const { data: creditData } = await supabase
-        .from("secret_santa_credits")
+      // Add to unified ai_credits + write ledger row
+      const { data: creditRow } = await supabase
+        .from("ai_credits")
         .select("credits_remaining")
         .eq("user_id", currentUserId)
         .maybeSingle();
 
-      const currentCredits = creditData?.credits_remaining || 0;
-      if (creditData) {
-        await supabase
-          .from("secret_santa_credits")
-          .update({ credits_remaining: currentCredits + reward })
+      const balanceBefore = creditRow?.credits_remaining || 0;
+      const newBalance = balanceBefore + reward;
+      if (creditRow) {
+        const { error: upErr } = await supabase
+          .from("ai_credits")
+          .update({ credits_remaining: newBalance })
           .eq("user_id", currentUserId);
+        if (upErr) throw upErr;
       } else {
-        await supabase
-          .from("secret_santa_credits")
-          .insert({ user_id: currentUserId, credits_remaining: reward, total_credits_purchased: 0 });
+        const { error: insErr } = await supabase
+          .from("ai_credits")
+          .insert({ user_id: currentUserId, credits_remaining: reward, total_credits_purchased: 0 } as any);
+        if (insErr) throw insErr;
       }
+
+      await supabase.from("ai_credits_ledger").insert({
+        user_id: currentUserId,
+        delta: reward,
+        balance_before: balanceBefore,
+        balance_after: newBalance,
+        reason: "santa_streak_milestone",
+        metadata: { milestone_days: milestone },
+      } as any);
     },
     onSuccess: (_, { reward }) => {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 100);
       toast.success(`Claimed ${reward} credits! 🔥`);
       queryClient.invalidateQueries({ queryKey: ["santa-streak-rewards"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
       queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
     },
-    onError: () => toast.error("Failed to claim reward") });
+    onError: (e: any) => toast.error(e?.message || "Failed to claim reward") });
 
   const tierColor = (tier: string) => {
     switch (tier) {
