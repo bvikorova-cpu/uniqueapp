@@ -227,13 +227,8 @@ serve(async (req) => {
       }
     }
 
-    // Best-effort fetch of current balance for the deduction step at the end
-    const { data: creditData } = await supabase
-      .from("secret_santa_credits")
-      .select("credits_remaining")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    const currentCredits = creditData?.credits_remaining || 0;
+    // (Legacy per-module balance fetch removed — unified ai_credits gate handles this.)
+
 
     let systemPrompt = "";
     let userPrompt = "";
