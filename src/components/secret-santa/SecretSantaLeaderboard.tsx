@@ -130,34 +130,36 @@ export const SecretSantaLeaderboard = () => {
           {leaderboard.map((entry) => (
             <div
               key={entry.userId}
-              className={`flex items-center gap-3 p-3 rounded-xl border transition-all hover:scale-[1.02] shadow-sm ${getRankBg(entry.rank)}`}
+              className={`flex flex-col gap-3 p-3 rounded-xl border transition-all hover:scale-[1.01] shadow-sm sm:flex-row sm:items-center ${getRankBg(entry.rank)}`}
             >
-              <div className="w-8 flex justify-center">
-                {entry.rank === 1 ? (
-                  <Crown className="h-6 w-6 text-yellow-500" />
-                ) : entry.rank === 2 ? (
-                  <Medal className="h-6 w-6 text-gray-400" />
-                ) : entry.rank === 3 ? (
-                  <Medal className="h-6 w-6 text-amber-500" />
-                ) : (
-                  <Award className="h-5 w-5 text-gray-400" />
-                )}
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="w-8 shrink-0 flex justify-center">
+                  {entry.rank === 1 ? (
+                    <Crown className="h-6 w-6 text-yellow-500" />
+                  ) : entry.rank === 2 ? (
+                    <Medal className="h-6 w-6 text-gray-400" />
+                  ) : entry.rank === 3 ? (
+                    <Medal className="h-6 w-6 text-amber-500" />
+                  ) : (
+                    <Award className="h-5 w-5 text-gray-400" />
+                  )}
+                </div>
+
+                <Avatar className="h-10 w-10 shrink-0">
+                  <AvatarImage src={entry.avatarUrl || undefined} />
+                  <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+                    {entry.username?.[0]?.toUpperCase() || "?"}
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="min-w-0 flex-1">
+                  <p className="max-w-full truncate text-gray-800 font-medium leading-tight">{entry.username}</p>
+                  <p className="text-gray-400 text-xs">Rank #{entry.rank}</p>
+                </div>
               </div>
 
-              <Avatar className="h-10 w-10">
-                <AvatarImage src={entry.avatarUrl || undefined} />
-                <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white">
-                  {entry.username?.[0]?.toUpperCase() || "?"}
-                </AvatarFallback>
-              </Avatar>
-
-              <div className="flex-1 min-w-0">
-                <p className="text-gray-800 font-medium truncate">{entry.username}</p>
-                <p className="text-gray-400 text-xs">Rank #{entry.rank}</p>
-              </div>
-
-              <div className="text-right shrink-0">
-                <p className="text-amber-600 font-bold whitespace-nowrap">💎 {entry.totalGiftsValue}</p>
+              <div className="ml-11 flex items-center justify-between rounded-lg border border-amber-200 bg-white/75 px-3 py-2 shadow-sm sm:ml-0 sm:shrink-0 sm:flex-col sm:items-end sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none sm:text-right">
+                <p className="text-amber-600 font-bold whitespace-nowrap">💎 {Number(entry.totalGiftsValue || 0).toLocaleString()}</p>
                 <p className="text-gray-400 text-xs whitespace-nowrap">total given</p>
               </div>
             </div>
