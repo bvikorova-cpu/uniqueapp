@@ -31,7 +31,7 @@ export const SecretSantaInbox = () => {
       if (recipientIds.length === 0) return [];
       const { data } = await supabase
         .from("profiles")
-        .select("id, full_name, avatar_url")
+        .select("id, full_name, username, avatar_url")
         .in("id", recipientIds);
       return data || [];
     },
@@ -221,11 +221,11 @@ export const SecretSantaInbox = () => {
                               <Avatar className="h-6 w-6">
                                 <AvatarImage src={recipientProfile?.avatar_url || undefined} />
                                 <AvatarFallback className="bg-amber-200 text-amber-700 text-xs">
-                                  {recipientProfile?.full_name?.[0] || "?"}
+                                  {(recipientProfile?.full_name || recipientProfile?.username || "?")[0]}
                                 </AvatarFallback>
                               </Avatar>
                               <span className="text-amber-600 font-medium text-sm">
-                                To: {recipientProfile?.full_name || "User"}
+                                To: {recipientProfile?.full_name || recipientProfile?.username || "User"}
                               </span>
                             </div>
                           )}
