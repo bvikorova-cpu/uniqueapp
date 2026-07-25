@@ -620,8 +620,26 @@ export const useSecretSanta = () => {
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "secret_santa_gifts", filter: `recipient_id=eq.${user.id}` },
-          () => {
+          async (payload) => {
             queryClient.invalidateQueries({ queryKey: ["secret-santa-received"] });
+            const gift: any = payload.new || {};
+            const catalogItem = GIFT_CATALOG.find((g) => g.type === gift.gift_type);
+            const emoji = catalogItem?.emoji || gift.gift_emoji || "🎁";
+            const label = catalogItem?.label || gift.gift_name || "Gift";
+            let senderName = "Someone";
+            if (!gift.is_anonymous && gift.sender_id) {
+              try {
+                const { data: profs } = await supabase.rpc("get_public_profiles", { ids: [gift.sender_id] });
+                const p: any = Array.isArray(profs) ? profs[0] : null;
+                senderName = p?.full_name || p?.username || "Someone";
+              } catch { /* noop */ }
+            } else if (gift.is_anonymous) {
+              senderName = "A secret admirer";
+            }
+            sonnerToast(`${emoji} New gift received!`, {
+              description: `${senderName} sent you: ${label}`,
+              duration: 6000,
+            });
           }
         )
         .on(
