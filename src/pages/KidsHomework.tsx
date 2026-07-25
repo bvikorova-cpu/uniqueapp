@@ -368,6 +368,7 @@ const KidsHomework = () => {
         onSuccess={handleParentalGateSuccess}
         onCancel={handleParentalGateCancel}
         featureName="AI Homework Helper"
+        storageKey={HOMEWORK_GATE_KEY}
       />
     </div>
   );
