@@ -18,6 +18,7 @@ type MembershipRow = {
   fan_club?: {
     name: string | null;
     creator_id: string | null;
+    tier?: string | null;
   } | null;
 };
 
