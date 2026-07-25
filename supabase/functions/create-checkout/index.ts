@@ -983,7 +983,7 @@ async function handler(req: Request): Promise<Response> {
           "1000": { amount: 13000, credits: 1000, name: "Secret Santa 365 - 1000 Credits" },
           "1500": { amount: 18000, credits: 1500, name: "Secret Santa 365 - 1500 Credits" } },
         mode: "payment",
-        successPath: "/secret-santa?success=true&credits={CREDITS}",
+        successPath: "/secret-santa?success=true&credits={CREDITS}&session_id={CHECKOUT_SESSION_ID}",
         cancelPath: "/secret-santa?canceled=true",
         type: "secret_santa_credits" },
       emotion_insurance: {
@@ -1043,6 +1043,21 @@ async function handler(req: Request): Promise<Response> {
             user_id: userId ?? "" } };
       }
       const session = await stripe.checkout.sessions.create(sessionParams as any);
+      if (userId) {
+        const admin = createSupabaseAdminClient();
+        const { error: recordErr } = await admin.from("payment_records").upsert({
+          user_id: userId,
+          stripe_session_id: session.id,
+          stripe_customer_id: typeof session.customer === "string" ? session.customer : customerId,
+          amount_cents: pkg.amount,
+          currency: "eur",
+          status: "pending",
+          product_type: def.type,
+          metadata: { ...metadata, pack_key: key, credits: pkg.credits, amount_cents: pkg.amount },
+          updated_at: new Date().toISOString(),
+        }, { onConflict: "stripe_session_id" });
+        if (recordErr) log.warn("dynamic pack payment record insert failed", { error: recordErr.message, session_id: session.id });
+      }
       return successResponse({ url: session.url, session_id: session.id });
     }
 

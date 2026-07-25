@@ -1055,15 +1055,36 @@ serve(async (req) => {
               const userId = session.metadata.user_id;
               const credits = parseInt(session.metadata.credits || "0", 10);
               if (userId && credits > 0) {
-                const { data: pr } = await supabase
+                let { data: pr } = await supabase
                   .from("payment_records")
                   .select("id, metadata")
                   .eq("stripe_session_id", session.id)
                   .maybeSingle();
+                if (!pr) {
+                  const { data: inserted, error: insertErr } = await supabase
+                    .from("payment_records")
+                    .insert({
+                      user_id: userId,
+                      stripe_session_id: session.id,
+                      stripe_payment_intent_id: typeof session.payment_intent === "string" ? session.payment_intent : null,
+                      stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
+                      amount_cents: session.amount_total ?? 0,
+                      currency: session.currency ?? "eur",
+                      status: "paid",
+                      product_type: "secret_santa_credits",
+                      metadata: { ...(session.metadata as any || {}), credits },
+                      verified_at: new Date().toISOString(),
+                    })
+                    .select("id, metadata")
+                    .maybeSingle();
+                  if (insertErr) log("secret santa payment record create failed", { err: insertErr.message, sessionId: session.id });
+                  pr = inserted;
+                }
                 const alreadyCredited = (pr?.metadata as any)?.santa_credited === true;
-                if (!alreadyCredited) { await supabase.rpc("add_secret_santa_credits", {
+                if (!alreadyCredited) { const { error: creditErr } = await supabase.rpc("add_secret_santa_credits", {
                     p_user_id: userId,
                     p_amount: credits });
+                  if (creditErr) throw creditErr;
                   if (pr?.id) {
                     await supabase.from("payment_records").update({
                       metadata: { ...(pr.metadata as any || {}), santa_credited: true } }).eq("id", pr.id);

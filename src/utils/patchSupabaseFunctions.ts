@@ -113,6 +113,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "create-psychology-checkout":              { target: "create-checkout", bodyExtras: { product: "psychology" } },
   "create-reincarnation-checkout":           { target: "create-checkout", bodyExtras: { product: "reincarnation" } },
   "create-science-checkout":                 { target: "create-checkout", bodyExtras: { product: "science" } },
+  "create-secret-santa-payment":             { target: "create-checkout", bodyExtras: { product: "secret_santa" } },
   "create-shadow-subscription":              { target: "create-checkout", bodyExtras: { product: "shadow_subscription" } },
   "create-skill-swap-checkout":              { target: "create-checkout", bodyExtras: { product: "skill_swap" } },
   "create-sports-checkout":                  { target: "create-checkout", bodyExtras: { product: "sports" } },

@@ -58,7 +58,7 @@ export const SecretSantaLeaderboard = () => {
 
       {/* Top 3 podium */}
       {leaderboard.length >= 3 && (
-        <div className="flex justify-center items-end gap-2 sm:gap-4 mb-8">
+        <div className="hidden sm:flex justify-center items-end gap-4 mb-8">
           {/* 2nd place */}
           <div className="text-center">
             <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-2 rounded-full bg-gradient-to-br from-gray-200 to-gray-100 border-2 border-gray-300 flex items-center justify-center overflow-hidden shadow-md">
