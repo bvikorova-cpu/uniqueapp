@@ -203,7 +203,7 @@ export const SecretSantaInbox = () => {
                             <Gamepad2 className="absolute -bottom-1 -right-1 h-4 w-4 text-purple-500" />
                           </div>
                         ) : (
-                          gift.gift_emoji
+                          giftData?.emoji || gift.gift_emoji
                         )}
                       </div>
 
