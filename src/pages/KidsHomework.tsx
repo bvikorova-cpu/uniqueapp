@@ -23,7 +23,6 @@ import { SubjectMasteryMap } from "@/components/kids-homework/SubjectMasteryMap"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryClient } from "@tanstack/react-query";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
-import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
