@@ -31,6 +31,7 @@ interface Message {
   user_id: string;
   message: string;
   created_at: string;
+  is_hidden?: boolean;
   profiles?: {
     full_name: string;
     avatar_url: string;
