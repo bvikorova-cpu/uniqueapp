@@ -206,9 +206,13 @@ export const GiftChat = () => {
                     placeholder="Search users..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 bg-amber-50/50 border-amber-200"
+                    className="pl-9 pr-9 bg-amber-50/50 border-amber-200"
                   />
+                  {isSearching && searchQuery.trim().length >= 1 && (
+                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-500 animate-spin" />
+                  )}
                 </div>
+
               </CardHeader>
               <ScrollArea className="h-[400px]">
                 <div className="p-2 space-y-1">
