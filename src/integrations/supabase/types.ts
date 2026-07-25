@@ -70192,6 +70192,16 @@ export type Database = {
           suggested_id: string
         }[]
       }
+      top_games: {
+        Args: { _category?: string; _limit?: number; _period?: string }
+        Returns: {
+          game_category: string
+          game_id: string
+          game_title: string
+          players: number
+          plays: number
+        }[]
+      }
       track_challenge_action: { Args: { _action: string }; Returns: Json }
       trim_user_feed_cache: { Args: never; Returns: undefined }
       update_battle_stats: {
