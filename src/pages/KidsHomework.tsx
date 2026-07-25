@@ -79,36 +79,18 @@ const KidsHomework = () => {
     reader.readAsDataURL(f);
   };
 
-  // Homework Helper: force parental gate on every entry (no 30-min memory)
-  const HOMEWORK_GATE_KEY = 'parental_gate_verified_homework';
-  const { resetVerification } = useParentalGate(HOMEWORK_GATE_KEY);
-  const [showParentalGate, setShowParentalGate] = useState(false);
-  const [, setIsGateChecked] = useState(false);
-
+  // Homework Helper: PASS-GATED. Must have active credits to access.
   useEffect(() => {
-    // Always clear any prior verification so the gate is required every time
-    resetVerification();
-    sessionStorage.removeItem(HOMEWORK_GATE_KEY);
-    setShowParentalGate(true);
-    setIsGateChecked(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Refresh credits after returning from Stripe success
-  useEffect(() => {
-    if (searchParams.get("payment") === "success") {
-      toast.success("Payment successful! Credits added to your account.");
-      refreshCredits();
-    } else if (searchParams.get("payment") === "canceled") {
-      toast.info("Payment canceled.");
+    if (usageLoading) return;
+    if (!user) {
+      navigate(`/auth?redirect=${encodeURIComponent("/kids-homework")}`);
+      return;
     }
-  }, [searchParams, refreshCredits]);
-
-  const handleParentalGateSuccess = () => setShowParentalGate(false);
-  const handleParentalGateCancel = () => {
-    setShowParentalGate(false);
-    window.location.assign("/");
-  };
+    if (credits_remaining < HOMEWORK_CREDITS_PER_QUESTION) {
+      toast.info("You need an active Homework Pass to use this section.");
+      navigate("/kids-homework-pricing");
+    }
+  }, [user, usageLoading, credits_remaining, navigate]);
 
   const handleBuyCredits = async () => {
     if (!user) {
