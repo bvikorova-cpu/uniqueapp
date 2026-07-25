@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { Gift, Users, Crown, Star, Gem, Flame } from "lucide-react";
+import { Gift, Users, Crown, Flame } from "lucide-react";
 import heroVideo from "@/assets/mystery-box-hero.mp4.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -9,14 +9,12 @@ type MysteryBoxStats = {
   boxesOpened: number;
   activePlayers: number;
   legendaryDrops: number;
-  jackpotPool: number;
 };
 
 const EMPTY_STATS: MysteryBoxStats = {
   boxesOpened: 0,
   activePlayers: 0,
   legendaryDrops: 0,
-  jackpotPool: 0,
 };
 
 /**
@@ -38,7 +36,6 @@ const useLiveStats = () => {
         boxesOpened: Number(row?.boxes_opened ?? 0),
         activePlayers: Number(row?.active_players ?? 0),
         legendaryDrops: Number(row?.legendary_drops ?? 0),
-        jackpotPool: Number(row?.jackpot_pool ?? 0),
       } satisfies MysteryBoxStats;
     } });
   return { stats: data ?? EMPTY_STATS, isLoading };
@@ -48,13 +45,11 @@ export const MysteryBoxHero = () => {
   const { stats, isLoading } = useLiveStats();
 
   const formatNumber = (value: number) => isLoading ? "…" : value.toLocaleString();
-  const formatEuro = (value: number) => isLoading ? "…" : `€${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 
   const statItems = [
     { icon: Gift, label: "Boxes Opened", value: formatNumber(stats.boxesOpened), glow: "shadow-yellow-500/30" },
     { icon: Users, label: "Active Players", value: formatNumber(stats.activePlayers), glow: "shadow-emerald-500/30" },
     { icon: Crown, label: "Legendary Drops", value: formatNumber(stats.legendaryDrops), glow: "shadow-purple-500/30" },
-    { icon: Gem, label: "Jackpot Pool", value: formatEuro(stats.jackpotPool), glow: "shadow-red-500/30" },
   ];
 
   return (
@@ -128,7 +123,7 @@ export const MysteryBoxHero = () => {
       </div>
 
       {/* Stats Grid BELOW video */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
         {statItems.map((stat, i) => (
           <motion.div
             key={stat.label}
