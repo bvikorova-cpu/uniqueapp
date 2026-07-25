@@ -1054,9 +1054,10 @@ const App = () => {
                         <Route path="/creative-writing" element={<CreativeWriting />} />
                         <Route path="/writing/:contentId" element={<GenericLearning />} />
                         <Route path="/creative-forge" element={<ProtectedRoute><CreativeForge /></ProtectedRoute>} />
-                        <Route path="/coloring-pages" element={<KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringPages /></KidsParentalGateGuard>} />
-                        <Route path="/coloring-pages/hub" element={<KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringHub /></KidsParentalGateGuard>} />
-                        <Route path="/coloring-pages/hub/:slug" element={<KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringHub /></KidsParentalGateGuard>} />
+                        <Route path="/coloring-pages" element={<KidsGoldPassGate moduleName="Coloring Pages" redirectPath="/coloring-pages"><KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringPages /></KidsParentalGateGuard></KidsGoldPassGate>} />
+                        <Route path="/coloring-pages/hub" element={<KidsGoldPassGate moduleName="Coloring Pages" redirectPath="/coloring-pages/hub"><KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringHub /></KidsParentalGateGuard></KidsGoldPassGate>} />
+                        <Route path="/coloring-pages/hub/:slug" element={<KidsGoldPassGate moduleName="Coloring Pages" redirectPath="/coloring-pages/hub"><KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringHub /></KidsParentalGateGuard></KidsGoldPassGate>} />
+
                         <Route path="/for-schools" element={<Navigate to="/coloring-pages?tab=schools" replace />} />
                         <Route path="/for-healthcare" element={<Navigate to="/coloring-pages?tab=healthcare" replace />} />
                         <Route path="/for-business" element={<Navigate to="/coloring-pages?tab=corporate" replace />} />
