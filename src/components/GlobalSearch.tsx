@@ -380,36 +380,87 @@ export function GlobalSearch() {
         </div>
 
         <ScrollArea className="max-h-[400px]">
-          {isSearching ? (
-            <div className="flex items-center justify-center py-6">
-              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-            </div>
-          ) : results.length === 0 ? (
-            <div className="py-6 text-center text-sm text-muted-foreground">
-              No results for "{query}"
-            </div>
-          ) : (
-            <div className="p-2">
-              {results.map((result) => (
-                <button
-                  key={result.id}
-                  className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
-                  onClick={() => handleResultClick(result.path)}
-                >
-                  <div className="flex-1">
-                    <p className="font-medium">{result.title}</p>
-                    {result.description && (
-                      <p className="text-xs text-muted-foreground">{result.description}</p>
-                    )}
+          <div className="p-2 space-y-3">
+            {/* People autocomplete — starts at 1 character */}
+            {query.trim().length >= 1 && (
+              <div>
+                <div className="flex items-center justify-between px-2 pb-1">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">People</p>
+                  {isSearchingPeople && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
+                </div>
+                {people.length === 0 && !isSearchingPeople ? (
+                  <p className="px-3 py-2 text-xs text-muted-foreground">No people found</p>
+                ) : (
+                  <div className="space-y-0.5">
+                    {people.map((p) => {
+                      const name = p.full_name || p.username || "User";
+                      return (
+                        <button
+                          key={p.id}
+                          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
+                          onClick={() => handlePersonClick(p)}
+                        >
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={p.avatar_url || undefined} alt={name} />
+                            <AvatarFallback>
+                              {name[0]?.toUpperCase() || <UserIcon className="h-4 w-4" />}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate">{name}</p>
+                            {p.username && p.full_name && (
+                              <p className="text-xs text-muted-foreground truncate">@{p.username}</p>
+                            )}
+                          </div>
+                          <Badge variant="outline" className="text-xs bg-pink-500/10 text-pink-500">
+                            Person
+                          </Badge>
+                        </button>
+                      );
+                    })}
                   </div>
-                  <Badge variant="outline" className={cn("text-xs", CATEGORY_COLORS[result.category])}>
-                    {result.category}
-                  </Badge>
-                </button>
-              ))}
+                )}
+              </div>
+            )}
+
+            {/* Pages */}
+            <div>
+              {query.trim().length >= 1 && (
+                <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Pages</p>
+              )}
+              {isSearching ? (
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : results.length === 0 ? (
+                <div className="py-6 text-center text-sm text-muted-foreground">
+                  No pages for "{query}"
+                </div>
+              ) : (
+                <div className="space-y-0.5">
+                  {results.map((result) => (
+                    <button
+                      key={result.id}
+                      className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
+                      onClick={() => handleResultClick(result.path)}
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium">{result.title}</p>
+                        {result.description && (
+                          <p className="text-xs text-muted-foreground">{result.description}</p>
+                        )}
+                      </div>
+                      <Badge variant="outline" className={cn("text-xs", CATEGORY_COLORS[result.category])}>
+                        {result.category}
+                      </Badge>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </ScrollArea>
+
         
         <div className="flex items-center justify-between border-t p-2 text-xs text-muted-foreground">
           <span>{results.length} results</span>
