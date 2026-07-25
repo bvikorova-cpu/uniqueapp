@@ -6,6 +6,20 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { characterImages } from "@/data/characterImages";
 
+export type SecretSantaGift = {
+  id: string;
+  sender_id: string;
+  recipient_id: string;
+  gift_type: string;
+  gift_emoji: string;
+  gift_value: number;
+  message: string | null;
+  is_anonymous: boolean;
+  created_at: string;
+  ai_generated_image_url?: string | null;
+  animation_type?: string | null;
+};
+
 export const GIFT_CATEGORIES = [
   { id: "all", label: "All", emoji: "✨" },
   { id: "messages", label: "Messages", emoji: "💌" },
@@ -568,7 +582,7 @@ export const useSecretSanta = () => {
   });
 
   // Get received gifts
-  const { data: receivedGifts = [], isLoading: giftsLoading } = useQuery({
+  const { data: receivedGifts = [], isLoading: giftsLoading } = useQuery<SecretSantaGift[]>({
     queryKey: ["secret-santa-received", user?.id],
     queryFn: async () => {
       if (!user) return [];
@@ -576,7 +590,7 @@ export const useSecretSanta = () => {
       const { data, error } = await (supabase as any).rpc("get_my_secret_santa_received_gifts");
 
       if (error) throw error;
-      return data;
+      return (data || []) as SecretSantaGift[];
     },
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
@@ -586,7 +600,7 @@ export const useSecretSanta = () => {
   });
 
   // Get sent gifts
-  const { data: sentGifts = [], isLoading: sentLoading } = useQuery({
+  const { data: sentGifts = [], isLoading: sentLoading } = useQuery<SecretSantaGift[]>({
     queryKey: ["secret-santa-sent", user?.id],
     queryFn: async () => {
       if (!user) return [];
@@ -594,7 +608,7 @@ export const useSecretSanta = () => {
       const { data, error } = await (supabase as any).rpc("get_my_secret_santa_sent_gifts");
 
       if (error) throw error;
-      return data;
+      return (data || []) as SecretSantaGift[];
     },
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
