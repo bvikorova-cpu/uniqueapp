@@ -56,6 +56,8 @@ export const AIMessageGenerator = ({ onSelectMessage, giftType, recipientName }:
       if (!data?.message) throw new Error("Empty response");
 
       setGeneratedMessage(data.message);
+      // Auto-apply to parent textarea so the user immediately sees the generated text
+      onSelectMessage(data.message);
 
       // Save to history
       const { data: { user } } = await supabase.auth.getUser();
