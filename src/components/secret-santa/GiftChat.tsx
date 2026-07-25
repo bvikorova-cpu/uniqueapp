@@ -191,7 +191,7 @@ export const GiftChat = ({ initialUser = null }: GiftChatProps) => {
       .update({ is_read: true })
       .eq("receiver_id", currentUserId)
       .eq("sender_id", selectedUser.id)
-      .eq("is_read", false)
+      .or("is_read.is.null,is_read.eq.false")
       .then(() => queryClient.invalidateQueries({ queryKey: ["gift-chat-users", currentUserId] }));
   }, [currentUserId, messages, queryClient, selectedUser]);
 
