@@ -153,8 +153,11 @@ serve(async (req) => {
     let __deduct: () => Promise<void> = async () => {};
     if (!__hasKidsLedger) {
       const __isLegacyGift = !!__style || !!__giftType;
-      const __cost = __isLegacyGift ? 3 : 1;
-      const __usage = __isLegacyGift ? "gift_message" : "ai_generic";
+      const __mysteryBoxCost = __type === "mystery_box_ai"
+        ? ((__style === "box_strategy" || reqBody.analysisType === "box_strategy") ? 8 : 10)
+        : null;
+      const __cost = __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
+      const __usage = __type === "mystery_box_ai" ? "mystery_box_ai" : (__isLegacyGift ? "gift_message" : "ai_generic");
       const __auth = await requireAiCredits(req, corsHeaders, { credits: __cost, usageType: __usage });
       if (__auth.errorResponse) return __auth.errorResponse;
       __deduct = __auth.deduct!;
@@ -243,6 +246,7 @@ serve(async (req) => {
       offspring_chat:     "You are a digital offspring AI. Respond as the user's child would, based on their personality traits.",
       legal:              "You are a legal information assistant. Provide general legal information (NOT legal advice). Always recommend consulting a licensed attorney.",
       mystery_box:        "You are a mystery-box curator. Generate exciting, surprising contents for a mystery box.",
+      mystery_box_ai:     "You are the AI Rarity Predictor for Unique Mystery Boxes. Give honest, useful probability guidance based on rarity tiers, box cost, streak psychology and budget discipline. Never promise guaranteed wins. Use clear headings, practical recommendations and concise bullet points.",
       teen_career:        "You are a teen career counselor. Suggest career paths matched to the teen's interests, skills and personality.",
       kids_homework:      "You are a friendly tutor for kids. Explain concepts simply with examples a child would understand. Encourage curiosity.",
       kids_drawing:       "You are an art teacher for kids. Provide a fun step-by-step drawing tutorial.",
@@ -491,7 +495,12 @@ serve(async (req) => {
         const desc = styleDesc[style] || styleDesc.warm;
         systemPrompt = `Rewrite the user's text in a ${desc} voice. Keep meaning. Output only the rewritten text, no preamble.`;
       }
-      userPrompt = customPrompt || `Generate the ${type} as requested.`;
+      if (type === "mystery_box_ai") {
+        const analysisMode = style === "box_strategy" || reqBody.analysisType === "box_strategy" ? "Quick Strategy Guide" : "Full Prediction Report";
+        userPrompt = customPrompt || `${analysisMode}: analyze Mystery Box opening strategy for this user. Include: best-value tier guidance, rarity expectation, risk warning, budget stop-loss rule, and 3 concrete next actions. Keep it practical and do not claim any guaranteed drop.`;
+      } else {
+        userPrompt = customPrompt || `Generate the ${type} as requested.`;
+      }
     } else if (type === "travel_planner") {
       systemPrompt = "You are an expert travel advisor and trip planner. Provide detailed, practical, and well-organized travel advice. Use clear headings, bullet points, and specific recommendations. Be thorough but concise.";
       userPrompt = customPrompt || "Suggest a great travel destination";
