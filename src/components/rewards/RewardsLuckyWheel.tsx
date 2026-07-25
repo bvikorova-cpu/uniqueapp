@@ -75,7 +75,6 @@ export default function RewardsLuckyWheel() {
     spinLock.current = true;
     setSpinning(true);
     setResult(null);
-    setRotation((r) => r + 1440 + Math.random() * 360);
 
     try {
       const { data, error } = await supabase.rpc("spin_lucky_wheel");
@@ -100,9 +99,19 @@ export default function RewardsLuckyWheel() {
       const prizeNum = res.prize ?? 0;
       const netNum = res.net ?? prizeNum - 5;
       const balanceAfter = res.balance_after ?? 0;
+      // Map server prize → visual segment so the pointer lands on the actual win
+      const prizeToLabel = prizeNum > 0 ? `${prizeNum} CR` : "0 CR";
+      const segmentIndex = Math.max(0, prizes.findIndex((p) => p.label === prizeToLabel));
+      const segAngle = 360 / prizes.length;
+      // Wheel rotates clockwise; to bring segment i to the top pointer, offset by -i*segAngle
+      const targetOffset = ((360 - segmentIndex * segAngle) % 360);
+      setRotation((r) => {
+        const base = Math.ceil(r / 360) * 360; // normalize to next full turn
+        return base + 1440 + targetOffset;
+      });
       const prizeLabel = prizeNum > 0 ? `+${prizeNum} CR` : "0 CR";
       const matched =
-        prizes.find((p) => p.label === prizeLabel) ??
+        prizes.find((p) => p.label === (prizeNum > 0 ? `${prizeNum} CR` : "0 CR")) ??
         (prizeNum > 0
           ? { label: prizeLabel, emoji: "🪙", color: "text-emerald-400" }
           : { label: prizeLabel, emoji: "💨", color: "text-muted-foreground" });
