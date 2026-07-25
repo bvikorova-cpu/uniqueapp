@@ -120,13 +120,14 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
               </Card>
 
               <div>
-                <Label className="text-yellow-400/80 font-semibold text-sm">Recipient Email</Label>
+                <Label className="text-yellow-400/80 font-semibold text-sm">Recipient — Unique name or email</Label>
                 <Input
-                  placeholder="friend@example.com"
-                  value={recipientEmail}
-                  onChange={(e) => setRecipientEmail(e.target.value)}
+                  placeholder="@username or friend@example.com"
+                  value={recipient}
+                  onChange={(e) => setRecipient(e.target.value)}
                   className="mt-1 border-yellow-500/20 focus:border-yellow-500/50 bg-background/50"
                 />
+                <p className="text-[11px] text-muted-foreground mt-1">Enter their Unique @username (recommended), full name, or email.</p>
               </div>
               <div>
                 <Label className="text-yellow-400/80 font-semibold text-sm">Credits to Gift</Label>
