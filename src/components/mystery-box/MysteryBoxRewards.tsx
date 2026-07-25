@@ -27,22 +27,19 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
 
   const loadItems = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    const { data } = await supabase.from('user_collectibles')
-      .select('*, collectibles(*, collectible_rarities(*))')
+    if (!user) { setLoading(false); return; }
+    const { data } = await supabase.from('mystery_box_rewards')
+      .select('*, mystery_box_items(item_name, item_type, item_data, rarity, duration_days)')
       .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(100);
+      .order('received_at', { ascending: false })
+      .limit(200);
     setItems(data || []);
     setLoading(false);
   };
 
-  const filteredItems = filter === "all" ? items : items.filter(i => {
-    const rarity = i.collectibles?.collectible_rarities?.name || i.collectibles?.rarity || 'common';
-    return rarity.toLowerCase() === filter;
-  });
-
-  const rarityCount = (r: string) => items.filter(i => (i.collectibles?.collectible_rarities?.name || i.collectibles?.rarity || 'common').toLowerCase() === r).length;
+  const itemRarity = (i: any) => (i.mystery_box_items?.rarity || 'common').toString().toLowerCase();
+  const filteredItems = filter === "all" ? items : items.filter(i => itemRarity(i) === filter);
+  const rarityCount = (r: string) => items.filter(i => itemRarity(i) === r).length;
 
   const filters = [
     { id: "all", label: "All", count: items.length },
@@ -111,8 +108,9 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {filteredItems.map((item, i) => {
-              const rarity = item.collectibles?.collectible_rarities?.name || item.collectibles?.rarity || 'common';
+              const rarity = itemRarity(item);
               const style = getRarityStyle(rarity);
+              const name = item.mystery_box_items?.item_name || 'Unknown';
               return (
                 <motion.div
                   key={item.id}
@@ -129,12 +127,12 @@ export const MysteryBoxRewards = ({ onBack }: Props) => {
                        rarity === 'rare' ? <Sparkles className={`h-8 w-8 mx-auto ${style.text}`} /> :
                        <Package className={`h-8 w-8 mx-auto ${style.text}`} />}
                     </div>
-                    <p className="font-bold text-sm text-center truncate">{item.collectibles?.name || 'Unknown'}</p>
+                    <p className="font-bold text-sm text-center truncate">{name}</p>
                     <div className="flex justify-center mt-2">
                       <Badge className={`${style.badge} text-white text-[10px] border-0`}>{rarity}</Badge>
                     </div>
                     <p className="text-[10px] text-muted-foreground text-center mt-1">
-                      {new Date(item.created_at).toLocaleDateString()}
+                      {new Date(item.received_at).toLocaleDateString()}
                     </p>
                   </Card>
                 </motion.div>
