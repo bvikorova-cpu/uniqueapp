@@ -69998,6 +69998,14 @@ export type Database = {
           username: string
         }[]
       }
+      search_public_profiles: {
+        Args: { _query: string }
+        Returns: {
+          avatar_url: string
+          id: string
+          username: string
+        }[]
+      }
       search_users: {
         Args: { lim?: number; q: string }
         Returns: {
