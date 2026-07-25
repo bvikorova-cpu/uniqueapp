@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { Home, Crown, Trophy, MessageSquare, User, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { markMeClick, storeMeProfileSnapshot } from "@/utils/perfMe";
 import { prefetchProfileRoute } from "@/utils/prewarmRoutes";
 
@@ -39,9 +38,7 @@ export const MobileBottomNav = () => {
   if (pathname.startsWith("/auth") || pathname.startsWith("/checkout") || pathname.startsWith("/messenger")) return null;
 
   return (
-    <>
-      <FloatingHowItWorks title={"Mobile Bottom Nav - How it works"} steps={[{ title: 'Open', desc: 'Access the Mobile Bottom Nav section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mobile Bottom Nav.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <nav
+    <nav
       className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-background/85 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
       aria-label="Primary mobile navigation"
     >
@@ -84,7 +81,6 @@ export const MobileBottomNav = () => {
         })}
       </ul>
     </nav>
-    </>
   );
 };
 

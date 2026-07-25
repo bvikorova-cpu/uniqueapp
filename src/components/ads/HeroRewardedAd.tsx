@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import RewardedAdCard from "./RewardedAdCard";
 import { AD_PLACEMENTS } from "./AdPlacements";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   /** Unique key per section so the daily 3x limit is independent per page */

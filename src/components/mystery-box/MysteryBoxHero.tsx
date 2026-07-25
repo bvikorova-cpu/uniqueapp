@@ -5,46 +5,62 @@ import heroVideo from "@/assets/mystery-box-hero.mp4.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
+type MysteryBoxStats = {
+  boxesOpened: number;
+  activePlayers: number;
+  legendaryDrops: number;
+  jackpotPool: number;
+};
+
+const EMPTY_STATS: MysteryBoxStats = {
+  boxesOpened: 0,
+  activePlayers: 0,
+  legendaryDrops: 0,
+  jackpotPool: 0,
+};
+
 /**
  * Real, cached stats from DB (no random/fake live ticking — EU consumer compliance).
- * Shared react-query cache: 5 min stale, dedupes across all tabs/instances.
+ * Uses a SECURITY DEFINER aggregate RPC so public hero stats are not blocked by user-scoped RLS.
  */
 const useLiveStats = () => {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["mystery-box-hero-stats"],
     staleTime: 5 * 60 * 1000,
     refetchInterval: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
     queryFn: async () => {
-      const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
-      const [opened, rewards, recent] = await Promise.all([
-        supabase.from("user_mystery_boxes").select("id", { count: "exact", head: true }).eq("is_opened", true),
-        supabase.from("mystery_box_rewards").select("id", { count: "exact", head: true }),
-        supabase.from("user_mystery_boxes").select("user_id", { count: "exact", head: true }).gte("purchased_at", since),
-      ]);
-      const boxesOpened = opened.count || 0;
-      return { boxesOpened,
-        activePlayers: recent.count || 0,
-        legendaryDrops: rewards.count || 0,
-        jackpotPool: Math.round(boxesOpened * 0.25) };
+      const { data: stats, error } = await (supabase as any).rpc("get_mystery_box_public_stats");
+      if (error) throw error;
+
+      const row = Array.isArray(stats) ? stats[0] : stats;
+      return {
+        boxesOpened: Number(row?.boxes_opened ?? 0),
+        activePlayers: Number(row?.active_players ?? 0),
+        legendaryDrops: Number(row?.legendary_drops ?? 0),
+        jackpotPool: Number(row?.jackpot_pool ?? 0),
+      } satisfies MysteryBoxStats;
     } });
-  return data ?? { boxesOpened: 0, activePlayers: 0, legendaryDrops: 0, jackpotPool: 0 };
+  return { stats: data ?? EMPTY_STATS, isLoading };
 };
 
 export const MysteryBoxHero = () => {
-  const stats = useLiveStats();
+  const { stats, isLoading } = useLiveStats();
+
+  const formatNumber = (value: number) => isLoading ? "…" : value.toLocaleString();
+  const formatEuro = (value: number) => isLoading ? "…" : `€${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 
   const statItems = [
-    { icon: Gift, label: "Boxes Opened", value: stats.boxesOpened.toLocaleString(), glow: "shadow-yellow-500/30" },
-    { icon: Users, label: "Active Players", value: stats.activePlayers.toLocaleString(), glow: "shadow-emerald-500/30" },
-    { icon: Crown, label: "Legendary Drops", value: stats.legendaryDrops.toLocaleString(), glow: "shadow-purple-500/30" },
-    { icon: Gem, label: "Jackpot Pool", value: `${stats.jackpotPool.toLocaleString()}`, glow: "shadow-red-500/30" },
+    { icon: Gift, label: "Boxes Opened", value: formatNumber(stats.boxesOpened), glow: "shadow-yellow-500/30" },
+    { icon: Users, label: "Active Players", value: formatNumber(stats.activePlayers), glow: "shadow-emerald-500/30" },
+    { icon: Crown, label: "Legendary Drops", value: formatNumber(stats.legendaryDrops), glow: "shadow-purple-500/30" },
+    { icon: Gem, label: "Jackpot Pool", value: formatEuro(stats.jackpotPool), glow: "shadow-red-500/30" },
   ];
 
   return (
     <>
       <FloatingHowItWorks title={"Mystery Box Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Mystery Box Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mystery Box Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="mb-8">
+      <div className="mb-28 sm:mb-8">
       {/* Video Hero */}
       <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden rounded-2xl border border-yellow-500/30 shadow-[0_0_60px_rgba(255,215,0,0.12)]">
         <video
@@ -90,7 +106,7 @@ export const MysteryBoxHero = () => {
             </motion.div>
 
             <h1
-              className="text-4xl md:text-7xl font-black mb-3 leading-tight"
+              className="text-[clamp(2.5rem,13vw,4rem)] md:text-7xl font-black mb-3 leading-tight break-words"
               style={ {
                 background: "linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFF8DC 100%)",
                 WebkitBackgroundClip: "text",
@@ -121,11 +137,11 @@ export const MysteryBoxHero = () => {
             transition={{ delay: 0.4 + i * 0.1, type: "spring", stiffness: 250 }}
             whileHover={{ scale: 1.07, y: -6 }}
             whileTap={{ scale: 0.95 }}
-            className={`bg-card/90 backdrop-blur-xl border border-yellow-500/20 rounded-xl p-4 text-center shadow-lg ${stat.glow} hover:border-yellow-500/40 transition-all cursor-default`}
+            className={`bg-card/90 backdrop-blur-xl border border-yellow-500/20 rounded-xl p-4 text-center shadow-lg ${stat.glow} hover:border-yellow-500/40 transition-all cursor-default min-w-0`}
           >
             <stat.icon className="h-5 w-5 mx-auto mb-1.5 text-yellow-400" />
-            <p className="text-xl md:text-2xl font-black bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">{stat.value}</p>
-            <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider mt-0.5">{stat.label}</p>
+            <p className="text-xl md:text-2xl font-black bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent truncate">{stat.value}</p>
+            <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wide mt-0.5 leading-tight break-words">{stat.label}</p>
           </motion.div>
         ))}
       </div>
