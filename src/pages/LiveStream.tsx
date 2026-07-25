@@ -19,6 +19,8 @@ import { Dialog,
 import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { SuperChatDialog } from "@/components/live/SuperChatDialog";
 import { SuperChatFeed } from "@/components/live/SuperChatFeed";
+import { SupportersLeaderboard } from "@/components/live/SupportersLeaderboard";
+import { StreamTierGate } from "@/components/live/StreamTierGate";
 
 interface Message {
   id: string;
