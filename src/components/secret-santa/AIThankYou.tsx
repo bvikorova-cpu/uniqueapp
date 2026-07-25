@@ -71,6 +71,29 @@ export const AIThankYou = () => {
     enabled: searchQuery.trim().length >= 1,
   });
 
+  // History of sent thank yous (messages sent by current user)
+  const { data: sentHistory = [] } = useQuery({
+    queryKey: ["thankyou-history", currentUserId],
+    queryFn: async () => {
+      if (!currentUserId) return [] as any[];
+      const { data } = await supabase
+        .from("gift_chat_messages")
+        .select("id, receiver_id, content, created_at")
+        .eq("sender_id", currentUserId)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      const rows = (data || []) as any[];
+      const ids = [...new Set(rows.map(r => r.receiver_id))];
+      if (ids.length === 0) return rows;
+      const { data: profs } = await (supabase as any).rpc("get_public_profiles", { ids });
+      const map = new Map((profs || []).map((p: any) => [p.id, p]));
+      return rows.map(r => ({ ...r, recipient: map.get(r.receiver_id) }));
+    },
+    enabled: !!currentUserId,
+    refetchOnMount: "always",
+    staleTime: 0,
+  });
+
   const generateThankYou = async () => {
     if (credits < COST) {
       toast.error(`Not enough credits. You need ${COST} credits.`);
