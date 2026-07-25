@@ -869,6 +869,19 @@ const Navbar = () => {
                 <Sparkles className="h-4 w-4" />
                 {"Beta testing"}
               </Button>
+              <Button
+                variant="outline"
+                className="w-full justify-start text-sm gap-2"
+                size="sm"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleRefreshPage();
+                }}
+                disabled={isRefreshing}
+              >
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                {"Refresh page"}
+              </Button>
               {user ? (
                 <>
                   <Link to={`/profile/${user.id}`} onClick={() => setIsMenuOpen(false)}>
