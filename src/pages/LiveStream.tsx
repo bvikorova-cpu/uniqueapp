@@ -19,6 +19,8 @@ import { Dialog,
 import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { SuperChatDialog } from "@/components/live/SuperChatDialog";
 import { SuperChatFeed } from "@/components/live/SuperChatFeed";
+import { SupportersLeaderboard } from "@/components/live/SupportersLeaderboard";
+import { StreamTierGate } from "@/components/live/StreamTierGate";
 
 interface Message {
   id: string;
@@ -472,6 +474,12 @@ export default function LiveStream() {
           Back
         </Button>
 
+        <StreamTierGate
+          streamId={stream.id}
+          minTier={(stream as any).min_tier ?? null}
+          creatorUserId={stream.influencer_profiles?.user_id ?? null}
+          currentUserId={user?.id ?? null}
+        >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Video Section */}
           <div className="lg:col-span-2">
@@ -659,6 +667,12 @@ export default function LiveStream() {
             </Card>
           </div>
         </div>
+        {streamId && (
+          <div className="mt-6 max-w-md">
+            <SupportersLeaderboard streamId={streamId} />
+          </div>
+        )}
+        </StreamTierGate>
       </div>
     </div>
   );
