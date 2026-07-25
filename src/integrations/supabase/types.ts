@@ -69129,6 +69129,15 @@ export type Database = {
           weekly_xp: number
         }[]
       }
+      get_mystery_box_public_stats: {
+        Args: never
+        Returns: {
+          active_players: number
+          boxes_opened: number
+          jackpot_pool: number
+          legendary_drops: number
+        }[]
+      }
       get_next_20_cet: { Args: { is_weekly?: boolean }; Returns: string }
       get_next_job: {
         Args: { p_job_types?: string[] }
