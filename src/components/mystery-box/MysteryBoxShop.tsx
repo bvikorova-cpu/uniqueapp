@@ -259,11 +259,17 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
                   <h3 className="text-2xl font-black mb-2 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 bg-clip-text text-transparent relative z-10">
                     Congratulations!
                   </h3>
+                  <p className="text-xl font-bold mb-1 relative z-10">{revealedReward.item_name || 'Mystery Item'}</p>
                   <p className="text-muted-foreground mb-4 relative z-10">
-                    {revealedReward.rarity?.name && (
-                      <span className="font-black text-yellow-400 uppercase tracking-wider">{revealedReward.rarity.name} </span>
-                    )}
-                    item unlocked!
+                    {(() => {
+                      const r = revealedReward.rarity?.name || revealedReward.rarity;
+                      return r ? (
+                        <>
+                          <span className="font-black text-yellow-400 uppercase tracking-wider">{r} </span>
+                          {revealedReward.item_type ? revealedReward.item_type.replace(/_/g, ' ') : 'item'} unlocked!
+                        </>
+                      ) : 'Item unlocked!';
+                    })()}
                   </p>
                   <Button onClick={() => setRevealedReward(null)} className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold shadow-lg shadow-yellow-500/30 relative z-10">
                     Collect Reward
