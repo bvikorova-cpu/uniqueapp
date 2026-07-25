@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useSecretSanta } from "@/hooks/useSecretSanta";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Loader2, Copy, RefreshCw, Zap, MessageCircle, Send, Sparkles } from "lucide-react";
+import { Heart, Loader2, Copy, RefreshCw, Zap, MessageCircle, Send, Sparkles, Search, X, Check } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { searchProfiles, PublicProfileResult } from "@/lib/searchProfiles";
 
 const THANK_YOU_STYLES = [
   { id: "heartfelt", label: "Heartfelt", emoji: "💕", desc: "Sincere and emotional" },
@@ -20,6 +22,12 @@ const THANK_YOU_STYLES = [
   { id: "grateful", label: "Grateful", emoji: "🙏", desc: "Deep appreciation" },
 ];
 
+interface Recipient {
+  id: string;
+  name: string;
+  avatar_url?: string | null;
+}
+
 export const AIThankYou = () => {
   const { credits, receivedGifts } = useSecretSanta();
   const queryClient = useQueryClient();
@@ -27,8 +35,11 @@ export const AIThankYou = () => {
   const [selectedGift, setSelectedGift] = useState<string>("");
   const [customContext, setCustomContext] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [generatedMessage, setGeneratedMessage] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [recipient, setRecipient] = useState<Recipient | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const COST = 3;
 
@@ -38,29 +49,50 @@ export const AIThankYou = () => {
 
   const recentGifts = receivedGifts.slice(0, 10);
 
+  // Auto-fill recipient when a received gift is chosen
+  useEffect(() => {
+    if (!selectedGift) return;
+    const gift: any = recentGifts.find((g: any) => g.id === selectedGift);
+    if (!gift || gift.is_anonymous || !gift.sender_id) return;
+    (async () => {
+      const { data } = await (supabase as any).rpc("get_public_profiles", { ids: [gift.sender_id] });
+      const p = (data || [])[0];
+      if (p) setRecipient({ id: p.id, name: p.full_name || p.username || "User", avatar_url: p.avatar_url });
+    })();
+  }, [selectedGift]);
+
+  // Recipient search
+  const { data: searchResults = [], isFetching: isSearching } = useQuery({
+    queryKey: ["thankyou-search", searchQuery],
+    queryFn: async () => {
+      if (searchQuery.trim().length < 1) return [] as PublicProfileResult[];
+      return await searchProfiles(searchQuery, { limit: 8 });
+    },
+    enabled: searchQuery.trim().length >= 1,
+  });
+
   const generateThankYou = async () => {
     if (credits < COST) {
       toast.error(`Not enough credits. You need ${COST} credits.`);
       return;
     }
-
     setIsGenerating(true);
     setGeneratedMessage(null);
-
     try {
-      const gift = recentGifts.find((g: any) => g.id === selectedGift);
-      const giftInfo = gift ? `Gift received: ${(gift as any).gift_emoji} ${(gift as any).gift_type}` : "";
-
+      const gift: any = recentGifts.find((g: any) => g.id === selectedGift);
+      const giftInfo = gift ? `Gift received: ${gift.gift_emoji} ${gift.gift_type}` : "";
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
           type: "thank_you",
           style: selectedStyle,
           customPrompt: `Write a thank you message for a gift I received. ${giftInfo} ${customContext ? `Additional context: ${customContext}` : ""}`,
-          giftType: gift ? (gift as any).gift_type : undefined } });
-
+          giftType: gift ? gift.gift_type : undefined,
+        },
+      });
       if (error) throw error;
       setGeneratedMessage(data.message);
       queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
       toast.success("Thank you message generated!");
     } catch (error: any) {
       toast.error(error.message || "Failed to generate message");
@@ -69,16 +101,36 @@ export const AIThankYou = () => {
     }
   };
 
+  const sendThankYou = async () => {
+    if (!currentUserId || !recipient || !generatedMessage) return;
+    setIsSending(true);
+    try {
+      const { error } = await supabase.from("gift_chat_messages").insert({
+        sender_id: currentUserId,
+        receiver_id: recipient.id,
+        content: generatedMessage,
+      });
+      if (error) throw error;
+      toast.success(`Thank you sent to ${recipient.name}! 💌`);
+      queryClient.invalidateQueries({ queryKey: ["gift-chat-users"] });
+      queryClient.invalidateQueries({ queryKey: ["gift-chat-messages"] });
+    } catch (e: any) {
+      toast.error(e.message || "Failed to send");
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   if (!currentUserId) {
     return (
-    <>
-      <FloatingHowItWorks title={"A I Thank You - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Thank You section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Thank You.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <Card className="p-8 bg-white/90 border-amber-200 text-center">
-        <Heart className="h-12 w-12 mx-auto text-pink-400 mb-4" />
-        <p className="text-gray-600">Please log in to use AI Thank You</p>
-      </Card>
-    </>
-  );
+      <>
+        <FloatingHowItWorks title={"A I Thank You - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Thank You section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Thank You.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+        <Card className="p-8 bg-white/90 border-amber-200 text-center">
+          <Heart className="h-12 w-12 mx-auto text-pink-400 mb-4" />
+          <p className="text-gray-600">Please log in to use AI Thank You</p>
+        </Card>
+      </>
+    );
   }
 
   return (
@@ -89,10 +141,79 @@ export const AIThankYou = () => {
           <Heart className="h-10 w-10 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-2">AI Thank You Generator</h2>
-        <p className="text-gray-500 text-sm">Let AI craft the perfect thank you message for gifts you've received</p>
+        <p className="text-gray-500 text-sm">Let AI craft the perfect thank you message — then send it directly.</p>
         <div className="mt-3 inline-flex items-center gap-1.5 bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-xs font-bold">
           <Zap className="h-3 w-3" /> Costs {COST} credits per message
         </div>
+      </Card>
+
+      {/* Recipient */}
+      <Card className="p-4 bg-white/80 border-rose-200 shadow-lg">
+        <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+          <Send className="h-5 w-5 text-rose-500" /> Send To
+        </h3>
+        {recipient ? (
+          <div className="flex items-center justify-between bg-rose-50 border border-rose-200 rounded-xl p-3">
+            <div className="flex items-center gap-3">
+              {recipient.avatar_url ? (
+                <img src={recipient.avatar_url} alt={recipient.name} className="w-10 h-10 rounded-full object-cover" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white font-bold">
+                  {recipient.name[0]?.toUpperCase()}
+                </div>
+              )}
+              <div>
+                <p className="font-bold text-gray-800">{recipient.name}</p>
+                <p className="text-xs text-gray-500">Recipient selected</p>
+              </div>
+            </div>
+            <Button size="sm" variant="ghost" onClick={() => { setRecipient(null); setSearchQuery(""); }}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search a person by name…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 pr-9 border-rose-200"
+              />
+              {isSearching && (
+                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-rose-500 animate-spin" />
+              )}
+            </div>
+            {searchResults.length > 0 && (
+              <div className="max-h-56 overflow-y-auto rounded-xl border border-rose-100 divide-y divide-rose-50">
+                {searchResults.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      const name = p.full_name || p.username || "User";
+                      setRecipient({ id: p.id, name, avatar_url: p.avatar_url });
+                      setSearchQuery(name);
+                    }}
+                    className="w-full flex items-center gap-3 p-2 hover:bg-rose-50 text-left"
+                  >
+                    {p.avatar_url ? (
+                      <img src={p.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                        {(p.full_name || p.username || "U")[0]?.toUpperCase()}
+                      </div>
+                    )}
+                    <span className="text-sm text-gray-800">{p.full_name || p.username}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            {searchQuery.length >= 1 && !isSearching && searchResults.length === 0 && (
+              <p className="text-xs text-gray-500 px-1">No matching users.</p>
+            )}
+          </div>
+        )}
       </Card>
 
       {/* Select Gift */}
@@ -113,6 +234,7 @@ export const AIThankYou = () => {
               ))}
             </SelectContent>
           </Select>
+          <p className="text-xs text-gray-500 mt-2">Choosing a gift auto-fills the sender as the recipient.</p>
         </Card>
       )}
 
@@ -179,29 +301,37 @@ export const AIThankYou = () => {
                   💌
                 </motion.span>
               </div>
-              <p className="text-gray-700 text-sm leading-relaxed italic text-center mb-4">
-                "{generatedMessage}"
-              </p>
-              <div className="flex gap-2">
+              <Textarea
+                value={generatedMessage}
+                onChange={(e) => setGeneratedMessage(e.target.value)}
+                className="bg-white/70 border-rose-200 min-h-[100px] italic text-gray-700 mb-4"
+              />
+              <div className="grid grid-cols-3 gap-2">
                 <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(generatedMessage);
-                    toast.success("Copied to clipboard!");
-                  }}
+                  onClick={() => { navigator.clipboard.writeText(generatedMessage); toast.success("Copied!"); }}
                   variant="outline"
-                  className="flex-1"
                 >
                   <Copy className="h-4 w-4 mr-1" /> Copy
                 </Button>
                 <Button
                   onClick={generateThankYou}
                   variant="outline"
-                  className="flex-1"
                   disabled={isGenerating}
                 >
-                  <RefreshCw className="h-4 w-4 mr-1" /> Regenerate
+                  <RefreshCw className="h-4 w-4 mr-1" /> Regen
+                </Button>
+                <Button
+                  onClick={sendThankYou}
+                  disabled={!recipient || isSending}
+                  className="bg-gradient-to-r from-rose-500 to-pink-500 text-white"
+                >
+                  {isSending ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Send className="h-4 w-4 mr-1" />}
+                  Send
                 </Button>
               </div>
+              {!recipient && (
+                <p className="text-xs text-rose-600 mt-2 text-center">Select a recipient above to send.</p>
+              )}
             </Card>
           </motion.div>
         )}
@@ -213,8 +343,8 @@ export const AIThankYou = () => {
           <Sparkles className="h-4 w-4" /> About AI Thank You
         </h3>
         <p className="text-sm text-rose-700">
-          AI crafts personalized thank you messages based on the gift you received, the selected tone, and any personal context. 
-          Each generation costs {COST} credits and produces a unique, heartfelt response.
+          AI crafts personalized thank you messages based on the gift you received, the selected tone, and any personal context.
+          Each generation costs {COST} credits. You can then send the message directly to the recipient via Gift Chat.
         </p>
       </Card>
     </div>
