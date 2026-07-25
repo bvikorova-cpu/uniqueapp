@@ -39,7 +39,21 @@ export const AIMessageGenerator = ({ onSelectMessage, giftType, recipientName }:
           giftType,
           recipientName } });
 
+      // Detect insufficient-credits (402) from edge function
+      const ctx: any = (error as any)?.context;
+      const status = ctx?.status ?? (error as any)?.status;
+      const serverMsg = ctx?.body?.error || data?.error;
+      if (status === 402 || /not enough credits/i.test(String(serverMsg || ""))) {
+        toast({
+          title: "Not enough credits",
+          description: "You need 3 credits to generate a message. Top up in Settings → Plans & credits.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       if (error) throw error;
+      if (!data?.message) throw new Error("Empty response");
 
       setGeneratedMessage(data.message);
 
@@ -51,10 +65,13 @@ export const AIMessageGenerator = ({ onSelectMessage, giftType, recipientName }:
           prompt: customPrompt || null,
           generated_message: data.message });
       }
-    } catch (error) { toast({
+    } catch (err) {
+      console.error("[AIMessageGenerator] generate failed:", err);
+      toast({
         title: "Failed to generate message",
         description: "Please try again later",
-        variant: "destructive" });
+        variant: "destructive",
+      });
     } finally {
       setIsGenerating(false);
     }
