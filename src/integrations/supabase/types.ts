@@ -58759,6 +58759,64 @@ export type Database = {
         }
         Relationships: []
       }
+      stream_chat_timeouts: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          muted_until: string
+          offense_count: number
+          reason: string
+          stream_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          muted_until: string
+          offense_count?: number
+          reason: string
+          stream_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          muted_until?: string
+          offense_count?: number
+          reason?: string
+          stream_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_chat_timeouts_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_chat_timeouts_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_chat_timeouts_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "public_live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stream_gifts: {
         Row: {
           amount: number
@@ -68114,6 +68172,15 @@ export type Database = {
         Returns: Json
       }
       aggregate_group_insights: { Args: { _day?: string }; Returns: number }
+      apply_chat_timeout: {
+        Args: {
+          _base_minutes: number
+          _reason: string
+          _stream_id: string
+          _user_id: string
+        }
+        Returns: undefined
+      }
       approve_judge_application: {
         Args: { _app_id: string; _notes?: string }
         Returns: undefined
@@ -69498,6 +69565,10 @@ export type Database = {
         Returns: boolean
       }
       is_challenge_pro: { Args: { _user_id: string }; Returns: boolean }
+      is_chat_muted: {
+        Args: { _stream_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_club_member: { Args: { _user_id: string }; Returns: boolean }
       is_community_moderator: {
         Args: { _community_id: string; _user_id: string }

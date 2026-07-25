@@ -22,6 +22,7 @@ import { SuperChatFeed } from "@/components/live/SuperChatFeed";
 import { SupportersLeaderboard } from "@/components/live/SupportersLeaderboard";
 import { StreamTierGate } from "@/components/live/StreamTierGate";
 import { StreamHighlights } from "@/components/live/StreamHighlights";
+import { ChatMuteBanner } from "@/components/live/ChatMuteBanner";
 import { ReportMessageButton } from "@/components/live/ReportMessageButton";
 import { HideMessageButton } from "@/components/live/HideMessageButton";
 import { useStreamViewerSession } from "@/hooks/useStreamViewerSession";
@@ -175,8 +176,13 @@ export default function LiveStream() {
       setMessage("");
       queryClient.invalidateQueries({ queryKey: ["stream-messages", streamId] });
     },
-    onError: (error) => {
-      toast.error("Error sending message");
+    onError: (error: any) => {
+      const msg = String(error?.message ?? "");
+      if (msg.includes("temporarily muted")) {
+        toast.error("You are temporarily muted in this chat");
+      } else {
+        toast.error("Error sending message");
+      }
       console.error(error);
     } });
 
@@ -674,6 +680,7 @@ export default function LiveStream() {
               </ScrollArea>
 
               <div className="p-4 border-t">
+                {streamId && user && <ChatMuteBanner streamId={streamId} userId={user.id} />}
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
