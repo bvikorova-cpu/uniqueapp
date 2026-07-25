@@ -137,6 +137,7 @@ export const AIThankYou = () => {
       toast.success(`Thank you sent to ${recipient.name}! 💌`);
       queryClient.invalidateQueries({ queryKey: ["gift-chat-users"] });
       queryClient.invalidateQueries({ queryKey: ["gift-chat-messages"] });
+      queryClient.invalidateQueries({ queryKey: ["thankyou-history"] });
     } catch (e: any) {
       toast.error(e.message || "Failed to send");
     } finally {
