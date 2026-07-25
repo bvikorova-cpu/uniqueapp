@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSecretSanta } from "@/hooks/useSecretSanta";
-import { Calendar, Snowflake, Heart, Ghost, Sparkles, Sun, Leaf, Star } from "lucide-react";
+import { Calendar, Snowflake, Heart, Ghost, Sparkles, Sun, Leaf, Star, Search, Loader2, Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 // Get current season/holiday
 const getCurrentSeason = () => {
