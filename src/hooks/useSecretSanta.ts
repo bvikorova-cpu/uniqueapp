@@ -578,7 +578,12 @@ export const useSecretSanta = () => {
 
       if (error) throw error;
       return data;
-    } });
+    },
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    staleTime: 0,
+  });
 
   // Get sent gifts
   const { data: sentGifts = [], isLoading: sentLoading } = useQuery({
@@ -595,7 +600,43 @@ export const useSecretSanta = () => {
 
       if (error) throw error;
       return data;
-    } });
+    },
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    staleTime: 0,
+  });
+
+  // Realtime: any new gift where I'm sender or recipient -> refresh inbox
+  useEffect(() => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      channel = supabase
+        .channel(`santa-gifts-${user.id}`)
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "secret_santa_gifts", filter: `recipient_id=eq.${user.id}` },
+          () => {
+            queryClient.invalidateQueries({ queryKey: ["secret-santa-received"] });
+          }
+        )
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "secret_santa_gifts", filter: `sender_id=eq.${user.id}` },
+          () => {
+            queryClient.invalidateQueries({ queryKey: ["secret-santa-sent"] });
+          }
+        )
+        .subscribe();
+    })();
+    return () => {
+      cancelled = true;
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   // Get active stories (non-expired)
   const { data: stories = [], isLoading: storiesLoading } = useQuery({
