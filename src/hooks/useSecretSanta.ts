@@ -573,11 +573,7 @@ export const useSecretSanta = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      const { data, error } = await supabase
-        .from("secret_santa_gifts")
-        .select("*")
-        .eq("recipient_id", user.id)
-        .order("created_at", { ascending: false });
+      const { data, error } = await (supabase as any).rpc("get_my_secret_santa_received_gifts");
 
       if (error) throw error;
       return data;
@@ -595,11 +591,7 @@ export const useSecretSanta = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      const { data, error } = await supabase
-        .from("secret_santa_gifts")
-        .select("*")
-        .eq("sender_id", user.id)
-        .order("created_at", { ascending: false });
+      const { data, error } = await (supabase as any).rpc("get_my_secret_santa_sent_gifts");
 
       if (error) throw error;
       return data;
