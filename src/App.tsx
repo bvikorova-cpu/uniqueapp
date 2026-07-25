@@ -1220,8 +1220,8 @@ const App = () => {
                         <Route path="/comedian-dashboard" element={<ProtectedRoute><ComedianDashboard /></ProtectedRoute>} />
                         <Route path="/comedy-live/:showId" element={<ComedyLiveShow />} />
                         <Route path="/comedy-watch/:showId" element={<ComedyLiveViewer />} />
-                        <Route path="/kids-channel/fairy-castles" element={<KidsParentalGateGuard featureName="Fairy Castles" storageKey="pg_fairy_castles"><FairyCastles /></KidsParentalGateGuard>} />
-                        <Route path="/kids-channel/fairy-castles/:castleId" element={<KidsParentalGateGuard featureName="Fairy Castles" storageKey="pg_fairy_castles"><FairyCastleTour /></KidsParentalGateGuard>} />
+                        <Route path="/kids-channel/fairy-castles" element={<KidsGoldPassGate moduleName="Fairy Castles" redirectPath="/kids-channel/fairy-castles"><KidsParentalGateGuard featureName="Fairy Castles" storageKey="pg_fairy_castles"><FairyCastles /></KidsParentalGateGuard></KidsGoldPassGate>} />
+                        <Route path="/kids-channel/fairy-castles/:castleId" element={<KidsGoldPassGate moduleName="Fairy Castles" redirectPath="/kids-channel/fairy-castles"><KidsParentalGateGuard featureName="Fairy Castles" storageKey="pg_fairy_castles"><FairyCastleTour /></KidsParentalGateGuard></KidsGoldPassGate>} />
                         <Route path="/kids-channel/fairy-admin" element={<ProtectedRoute requireAdmin={true}><FairyAdmin /></ProtectedRoute>} />
                         {/* Legacy Disney routes — redirect to new fairy-castles paths */}
                         <Route path="/kids-channel/disney-castles" element={<Navigate to="/kids-channel/fairy-castles" replace />} />
