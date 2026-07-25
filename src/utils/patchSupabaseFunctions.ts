@@ -193,7 +193,6 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "chat-with-chef":                     { target: "generate-gift-message", bodyExtras: { type: "chef_chat" } },
   // "chat-with-offspring": real edge function (Mystical audit fix)
   "legal-ai":                           { target: "generate-gift-message", bodyExtras: { type: "legal" } },
-  "mystery-box-ai":                     { target: "generate-gift-message", bodyExtras: { type: "mystery_box" } },
   "teen-career-counselor":              { target: "generate-gift-message", bodyExtras: { type: "teen_career" } },
   "kids-homework-helper":               { target: "generate-gift-message", bodyExtras: { type: "kids_homework" } },
   "kids-drawing-tutorial":              { target: "generate-gift-message", bodyExtras: { type: "kids_drawing" } },

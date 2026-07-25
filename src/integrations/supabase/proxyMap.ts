@@ -79,7 +79,6 @@ export const AI_PROXY_MAP: Record<string, string> = { "activate-job-listing": "a
   "kids-science-lab": "kids_science_lab",
   // "kids-story-creator": removed — frontend now calls kids-story-generate directly
   "legal-ai": "legal_ai",
-  "mystery-box-ai": "mystery_box_ai",
   "notify-admin-auction-withdrawal": "notify_admin_auction_withdrawal",
   "open-mystery-box": "open_mystery_box",
   "outfit-recommender": "outfit_recommender",
