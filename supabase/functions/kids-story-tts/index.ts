@@ -154,15 +154,17 @@ Deno.serve(async (req) => {
     }
     const audioBase64 = btoa(binary);
 
-    // Deduct credit only after successful audio synthesis
-    const newBalance = balance - TTS_COST;
-    await admin
-      .from("kids_story_credits")
-      .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
-      .eq("user_id", userId);
+    // Deduct credit only after successful audio synthesis (skipped for Gold Pass)
+    const newBalance = goldPass ? balance : balance - TTS_COST;
+    if (!goldPass) {
+      await admin
+        .from("kids_story_credits")
+        .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
+        .eq("user_id", userId);
+    }
 
     return new Response(
-      JSON.stringify({ audioContent: audioBase64, mimeType: "audio/mpeg", credits_remaining: newBalance, cost: TTS_COST }),
+      JSON.stringify({ audioContent: audioBase64, mimeType: "audio/mpeg", credits_remaining: newBalance, unlimited: goldPass, cost: goldPass ? 0 : TTS_COST }),
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" } },
