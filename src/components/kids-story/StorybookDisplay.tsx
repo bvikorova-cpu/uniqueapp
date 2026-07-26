@@ -344,7 +344,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
             {illustratingAll ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Illustrating all…</>
             ) : (
-              <><Wand2 className="w-4 h-4" /> Illustrate all ({pages.length * ILLUSTRATE_COST}c)</>
+              <><Wand2 className="w-4 h-4" /> Illustrate all {hasGoldPass ? "" : `(${pages.length * ILLUSTRATE_COST}c)`}</>
             )}
           </Button>
 
