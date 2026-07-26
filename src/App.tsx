@@ -1002,16 +1002,16 @@ const App = () => {
                         
                         <Route path="/plant-care" element={<PlantCare />} />
                         <Route path="/ai-tattoo" element={<AITattoo />} />
-                        <Route path="/kids-homework" element={<KidsGoldPassGate moduleName="Homework Helper" pricingPath="/kids-homework-pricing" creditTable="homework_credits" redirectPath="/kids-homework"><KidsHomework /></KidsGoldPassGate>} />
+                        <Route path="/kids-homework" element={<KidsGoldPassGate moduleName="Homework Helper" pricingPath="/kids-pricing" creditTable="homework_credits" redirectPath="/kids-homework"><KidsHomework /></KidsGoldPassGate>} />
                         <Route path="/kids-homework-pricing" element={<KidsHomeworkPricing />} />
-                        <Route path="/kids-story-creator" element={<KidsGoldPassGate moduleName="Story Creator" pricingPath="/kids-story-pricing" creditTable="kids_story_credits" redirectPath="/kids-story-creator"><KidsStoryCreator /></KidsGoldPassGate>} />
+                        <Route path="/kids-story-creator" element={<KidsGoldPassGate moduleName="Story Creator" pricingPath="/kids-pricing" creditTable="kids_story_credits" redirectPath="/kids-story-creator"><KidsStoryCreator /></KidsGoldPassGate>} />
                         <Route path="/kids-story-pricing" element={<KidsStoryPricing />} />
-                        <Route path="/kids-science-lab" element={<KidsGoldPassGate moduleName="Science Lab" pricingPath="/kids-science-pricing" creditTable="science_credits" redirectPath="/kids-science-lab"><KidsScienceLab /></KidsGoldPassGate>} />
+                        <Route path="/kids-science-lab" element={<KidsGoldPassGate moduleName="Science Lab" pricingPath="/kids-pricing" creditTable="science_credits" redirectPath="/kids-science-lab"><KidsScienceLab /></KidsGoldPassGate>} />
                         <Route path="/kids-science-pricing" element={<KidsSciencePricing />} />
                         <Route path="/kids-science-admin" element={<ProtectedRoute requireAdmin={true}><KidsScienceAdmin /></ProtectedRoute>} />
-                        <Route path="/kids-drawing-buddy" element={<KidsGoldPassGate moduleName="Drawing Buddy" pricingPath="/kids-drawing-pricing" creditTable="kids_drawing_credits" redirectPath="/kids-drawing-buddy"><KidsDrawingBuddy /></KidsGoldPassGate>} />
+                        <Route path="/kids-drawing-buddy" element={<KidsGoldPassGate moduleName="Drawing Buddy" pricingPath="/kids-pricing" creditTable="kids_drawing_credits" redirectPath="/kids-drawing-buddy"><KidsDrawingBuddy /></KidsGoldPassGate>} />
                         <Route path="/kids-drawing-pricing" element={<KidsDrawingPricing />} />
-                        <Route path="/kids-reading-companion" element={<KidsGoldPassGate moduleName="Reading Companion" pricingPath="/kids-reading-pricing" creditTable="kids_reading_credits" redirectPath="/kids-reading-companion"><KidsReadingCompanion /></KidsGoldPassGate>} />
+                        <Route path="/kids-reading-companion" element={<KidsGoldPassGate moduleName="Reading Companion" pricingPath="/kids-pricing" creditTable="kids_reading_credits" redirectPath="/kids-reading-companion"><KidsReadingCompanion /></KidsGoldPassGate>} />
                         <Route path="/kids-reading-pricing" element={<KidsReadingPricing />} />
                         <Route path="/kids" element={<Navigate to="/kids-academy" replace />} />
                         <Route path="/kids-academy" element={<KidsAcademy />} />
@@ -1109,7 +1109,7 @@ const App = () => {
                         <Route path="/kids-channel/share/:token" element={<KidsShareView />} />
                         <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
                         <Route path="/choose-adventure" element={<ChooseAdventure />} />
-                        <Route path="/kids-voice-chat" element={<KidsGoldPassGate moduleName="Character Chat" pricingPath="/kids-voice-chat-pricing" redirectPath="/kids-voice-chat"><KidsVoiceChat /></KidsGoldPassGate>} />
+                        <Route path="/kids-voice-chat" element={<KidsGoldPassGate moduleName="Character Chat" pricingPath="/kids-pricing" redirectPath="/kids-voice-chat"><KidsVoiceChat /></KidsGoldPassGate>} />
                         <Route path="/kids-voice-chat-pricing" element={<KidsVoiceChatPricing />} />
                         <Route path="/create-character" element={<CreateCharacter />} />
                         <Route path="/educational-stories" element={<EducationalStories />} />
