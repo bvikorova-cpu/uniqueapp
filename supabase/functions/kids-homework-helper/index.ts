@@ -61,6 +61,9 @@ Deno.serve(async (req) => {
     // Admin client (service role) for credit gating
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
+    // Gold Pass = unlimited: skip credit gate entirely
+    const goldPass = await hasKidsGoldPass(authHeader);
+
     // Ensure & check credits
     const { data: credRow } = await admin
       .from("homework_credits")
@@ -72,9 +75,10 @@ Deno.serve(async (req) => {
     if (!credRow) { await admin.from("homework_credits").insert({
         user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
     }
-    if (balance < COST) {
+    if (!goldPass && balance < COST) {
       return json({ error: "Insufficient credits", credits_remaining: balance, cost: COST }, 402);
     }
+
 
     // Build prompt
     const system = `You are a friendly, encouraging tutor for kids aged 8-14.
