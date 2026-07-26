@@ -66,6 +66,18 @@ const TIER_PRODUCTS: Record<string, string[]> = { // generic — any active sub
   plus:     ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ"],
   pro:      ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ", "prod_Uv3yBGmooRzvPf"] };
 
+// Stripe Price IDs that grant access to a tier (used when product IDs are not
+// known in code or when a product has multiple active prices). Kept separate
+// from TIER_PRODUCTS so product matching stays primary while price fallback is
+// explicit and auditable.
+const TIER_PRICE_IDS: Record<string, string[]> = {
+  kids: [
+    "price_1SShj2GaXSfGtYFtcKlTJYGa", // Unique Kids Monthly
+    "price_1SShj3GaXSfGtYFtGEneXVhs", // Unique Kids Annual
+    "price_1Tc1kyGaXSfGtYFtcfVW1fcY", // Unique Kids Gold Pass
+  ],
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -144,6 +156,7 @@ serve(async (req) => {
     }
 
     const allowedProducts = TIER_PRODUCTS[tier] ?? [];
+    const allowedPriceIds = TIER_PRICE_IDS[tier] ?? [];
     let matchedProduct: string | null = null;
     let subscriptionEnd: string | null = null;
     let hasAccess = false;
@@ -151,9 +164,11 @@ serve(async (req) => {
     for (const sub of subs.data) {
       for (const item of sub.items.data) {
         const productId = typeof item.price.product === "string" ? item.price.product : item.price.product.id;
+        const priceId = item.price.id;
         // If tier has no specific list, ANY active subscription grants access
-        // (useful while products are being mapped). Otherwise must match.
-        if (allowedProducts.length === 0 || allowedProducts.includes(productId)) {
+        // (useful while products are being mapped). Otherwise must match product
+        // or exact price ID.
+        if (allowedProducts.length === 0 || allowedProducts.includes(productId) || allowedPriceIds.includes(priceId)) {
           matchedProduct = productId;
           subscriptionEnd = new Date(sub.current_period_end * 1000).toISOString();
           hasAccess = true;
