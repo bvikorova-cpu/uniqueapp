@@ -139,12 +139,14 @@ Schema:
       parsed = { explanation: raw, steps: [], funFacts: [], wasFiltered: false };
     }
 
-    // Deduct credits (only on success)
-    const newBalance = balance - COST;
-    await admin
-      .from("homework_credits")
-      .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    // Deduct credits (only on success, and only if not Gold Pass unlimited)
+    const newBalance = goldPass ? balance : balance - COST;
+    if (!goldPass) {
+      await admin
+        .from("homework_credits")
+        .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+    }
 
     // Award points (best-effort)
     try { await admin.rpc("increment_homework_points", { p_user_id: user.id, p_points: 10 }); } catch (_) {}
@@ -156,7 +158,8 @@ Schema:
       funFacts: Array.isArray(parsed.funFacts) ? parsed.funFacts : [],
       wasFiltered: !!parsed.wasFiltered,
       credits_remaining: newBalance,
-      cost: COST });
+      unlimited: goldPass,
+      cost: goldPass ? 0 : COST });
   } catch (e: any) {
     console.error("homework-helper error", e);
     return json({ error: e?.message || "Internal error" }, 500);
