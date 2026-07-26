@@ -25,6 +25,18 @@ export function useKidsGoldPass(): GoldPassStatus {
     setStatus((current) => ({ ...current, loading: true }));
 
     try {
+      const { data: adminRole } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+
+      if (adminRole) {
+        setStatus({ hasGoldPass: true, loading: false, expiresAt: null });
+        return;
+      }
+
       const { data: cache, error: cacheError } = await (supabase as any)
         .from("kids_gold_pass_status")
         .select("active, current_period_end")
