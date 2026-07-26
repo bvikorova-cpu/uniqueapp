@@ -23,6 +23,35 @@ export const CreditBanner = ({ label,
   costPerUse,
   onBuyCredits,
   unitName = "use" }: CreditBannerProps) => {
+  const { user } = useAuth();
+  const [goldPass, setGoldPass] = useState(false);
+
+  // Hide the entire credit banner when the user has an active Kids Gold Pass —
+  // access is unlimited and no credits are deducted, so showing "0 credits" is
+  // misleading. Reacts realtime to webhook-driven changes.
+  useEffect(() => {
+    if (!user?.id) return;
+    let cancelled = false;
+    const load = async () => {
+      const { data } = await (supabase as any)
+        .from("kids_gold_pass_status")
+        .select("active")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!cancelled) setGoldPass(!!data?.active);
+    };
+    load();
+    const ch = supabase
+      .channel(`credit-banner-gold-${user.id}`)
+      .on("postgres_changes",
+        { event: "*", schema: "public", table: "kids_gold_pass_status", filter: `user_id=eq.${user.id}` },
+        load)
+      .subscribe();
+    return () => { cancelled = true; supabase.removeChannel(ch); };
+  }, [user?.id]);
+
+  if (goldPass) return null;
+
   const canUse = creditsRemaining >= costPerUse;
   const usesLeft = Math.floor(creditsRemaining / costPerUse);
 
