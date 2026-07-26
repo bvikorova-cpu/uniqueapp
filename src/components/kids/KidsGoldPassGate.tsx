@@ -63,15 +63,15 @@ export const KidsGoldPassGate = ({
           if ((data as any)?.subscribed) { setAllowed(true); setChecking(false); return; }
         } catch { /* fall through to credit check */ }
 
-        // 3. Module credits
+        // 3. Module credits (all kids credit tables use `credits_remaining`)
         if (creditTable) {
           const { data: credits } = await (supabase as any)
             .from(creditTable)
-            .select("credits")
+            .select("credits_remaining")
             .eq("user_id", user.id)
             .maybeSingle();
           if (cancelled) return;
-          if ((credits?.credits ?? 0) >= 1) { setAllowed(true); setChecking(false); return; }
+          if ((credits?.credits_remaining ?? 0) >= 1) { setAllowed(true); setChecking(false); return; }
         }
 
         // Denied
