@@ -51,6 +51,8 @@ Deno.serve(async (req) => {
 
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
+    const goldPass = await hasKidsGoldPass(authHeader);
+
     const { data: credRow } = await admin
       .from("kids_story_credits")
       .select("credits_remaining")
@@ -61,9 +63,10 @@ Deno.serve(async (req) => {
     if (!credRow) { await admin.from("kids_story_credits").insert({
         user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
     }
-    if (balance < COST) {
+    if (!goldPass && balance < COST) {
       return json({ error: "Insufficient credits", credits_remaining: balance, cost: COST }, 402);
     }
+
 
     const styleHint = STYLE_HINTS[style] || STYLE_HINTS.storybook;
     const prompt = `Children's book illustration for the story "${storyTitle || "A Magical Tale"}".
