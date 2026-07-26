@@ -151,6 +151,28 @@ Schema:
     // Award points (best-effort)
     try { await admin.rpc("increment_homework_points", { p_user_id: user.id, p_points: 10 }); } catch (_) {}
 
+    // Track daily challenge progress (Super Student, Daily Learner, etc.)
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      const { data: existing } = await admin
+        .from("kids_homework_daily_progress")
+        .select("id, questions_today, subjects_today")
+        .eq("user_id", user.id)
+        .eq("challenge_date", today)
+        .maybeSingle();
+      const subj = (subject || "general").toString();
+      if (existing) {
+        const subjects = Array.from(new Set([...(existing.subjects_today || []), subj]));
+        await admin.from("kids_homework_daily_progress")
+          .update({ questions_today: (existing.questions_today || 0) + 1, subjects_today: subjects, updated_at: new Date().toISOString() })
+          .eq("id", existing.id);
+      } else {
+        await admin.from("kids_homework_daily_progress").insert({
+          user_id: user.id, challenge_date: today, questions_today: 1, subjects_today: [subj], perfect_answers: 0,
+        });
+      }
+    } catch (e) { console.error("daily progress track failed", e); }
+
     return json({ explanation: parsed.explanation || "",
       steps: Array.isArray(parsed.steps) ? parsed.steps : [],
       finalAnswer: parsed.finalAnswer || "",

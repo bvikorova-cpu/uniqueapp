@@ -181,8 +181,18 @@ const NotificationBell = ({ className }: { className?: string }) => {
       case "weekly_xp_winner":
       case "weekly_xp_leaderboard":
         return notification.message || notification.title || "You won the Weekly XP Leaderboard!";
+      case "gift_credits":
+      case "credit_gift":
+      case "xp_gift_received":
+      case "secret_santa_gift":
+        return hasActor
+          ? `${actorName}: ${notification.message || notification.title || "sent you a gift"}`
+          : (notification.message || notification.title || "You received a gift 🎁");
       default:
-        return notification.message || notification.title || (hasActor ? `${actorName} interacted with your content` : "New notification");
+        if (hasActor) {
+          return `${actorName}: ${notification.message || notification.title || "interacted with your content"}`;
+        }
+        return notification.message || notification.title || "New notification";
     }
   };
 
@@ -216,6 +226,12 @@ const NotificationBell = ({ className }: { className?: string }) => {
       case "weekly_xp_winner":
       case "weekly_xp_leaderboard":
         return "👑";
+      case "gift_credits":
+      case "credit_gift":
+      case "xp_gift_received":
+        return "🎁";
+      case "secret_santa_gift":
+        return "🎅";
       default:
         return "🔔";
     }
