@@ -334,7 +334,7 @@ const KidsHomework = () => {
                       ) : (
                         <>
                           <Send className="w-4 h-4 mr-2" />
-                          Get Help! ✨ ({HOMEWORK_CREDITS_PER_QUESTION} credits)
+                          {hasGoldPass ? "Get Help! ✨ (unlimited)" : `Get Help! ✨ (${HOMEWORK_CREDITS_PER_QUESTION} credits)`}
                         </>
                       )}
                     </Button>
