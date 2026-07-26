@@ -19,6 +19,7 @@ import { StoryWizardFlow } from "@/components/kids-story/StoryWizardFlow";
 import { StorybookDisplay } from "@/components/kids-story/StorybookDisplay";
 import { useNavigate } from "react-router-dom";
 import { useKidsStoryCreator } from "@/hooks/useKidsStoryCreator";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -36,6 +37,7 @@ const KidsStoryCreator = () => {
   const navigate = useNavigate();
   const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsStoryCredits();
   const { storiesCreatedThisMonth, isPremium, refreshUsage } = useKidsStoryCreator();
+  const { hasGoldPass, loading: goldPassLoading } = useKidsGoldPass();
   const handleBuyCredits = async () => {
     const url = await purchase(50);
     if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
@@ -151,7 +153,8 @@ const KidsStoryCreator = () => {
     );
   }
 
-  const isLimitReached = !canUse;
+  const hasUnlimitedAccess = hasGoldPass || isPremium;
+  const isLimitReached = !hasUnlimitedAccess && !canUse;
 
   return (
     <div className="min-h-screen bg-background">
@@ -162,17 +165,21 @@ const KidsStoryCreator = () => {
 
           <HeroRewardedAd sectionKey="page_kidsstorycreator" />
 
-          {user && !creditsLoading && (
+          {user && !creditsLoading && !goldPassLoading && (
             <div className="mb-6 space-y-4">
-              <StoryLimitBanner storiesCreatedThisMonth={storiesCreatedThisMonth} isPremium={isPremium || balance > 0} />
-              <CreditBanner
-                label="Story"
-                creditsRemaining={balance}
-                costPerUse={costPerUse}
-                onBuyCredits={handleBuyCredits}
-                unitName="story"
-              />
-              <StorySubscriptionManagement subscribed={balance > 0} onManageSubscription={() => navigate('/kids-story-pricing')} />
+              {!hasGoldPass && (
+                <>
+                  <StoryLimitBanner storiesCreatedThisMonth={storiesCreatedThisMonth} isPremium={isPremium || balance > 0} />
+                  <CreditBanner
+                    label="Story"
+                    creditsRemaining={balance}
+                    costPerUse={costPerUse}
+                    onBuyCredits={handleBuyCredits}
+                    unitName="story"
+                  />
+                  <StorySubscriptionManagement subscribed={balance > 0} onManageSubscription={() => navigate('/kids-story-pricing')} />
+                </>
+              )}
             </div>
           )}
 
@@ -189,7 +196,7 @@ const KidsStoryCreator = () => {
                     story={story}
                     onSave={handleSaveStory}
                     onContinue={handleContinueStory}
-                    showContinue={canUse}
+                    showContinue={hasUnlimitedAccess || canUse}
                     continuingStory={continuingStory}
                   />
                   <div className="text-center">
