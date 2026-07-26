@@ -148,7 +148,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
 
   const illustratePage = async (pageIndex: number): Promise<boolean> => {
     if (illustratingPage !== null) return false;
-    if (storyCredits < ILLUSTRATE_COST) {
+    if (!hasGoldPass && storyCredits < ILLUSTRATE_COST) {
       toast.error(`You need ${ILLUSTRATE_COST} story credits to illustrate a page.`);
       return false;
     }
