@@ -142,7 +142,7 @@ Schema:
       .eq("user_id", user.id);
 
     // Award points (best-effort)
-    await admin.rpc("increment_homework_points", { p_user_id: user.id, p_points: 10 }).catch(() => {});
+    try { await admin.rpc("increment_homework_points", { p_user_id: user.id, p_points: 10 }); } catch (_) {}
 
     return json({ explanation: parsed.explanation || "",
       steps: Array.isArray(parsed.steps) ? parsed.steps : [],
