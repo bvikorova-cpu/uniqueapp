@@ -12,6 +12,7 @@
 // If you don't need post-call gating, you can just call deduct() at the end.
 
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { hasKidsGoldPass } from "./kidsGoldPass.ts";
 
 export interface CreditOptions {
   credits?: number;        // credits to deduct, default 1
