@@ -259,9 +259,9 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
               {illustratingPage === currentPage ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Illustrating…</>
               ) : currentIllustration ? (
-                <><Wand2 className="w-4 h-4" /> Re-illustrate ({ILLUSTRATE_COST}c)</>
+                <><Wand2 className="w-4 h-4" /> Re-illustrate {hasGoldPass ? "" : `(${ILLUSTRATE_COST}c)`}</>
               ) : (
-                <><Sparkles className="w-4 h-4" /> Illustrate this page ({ILLUSTRATE_COST}c)</>
+                <><Sparkles className="w-4 h-4" /> Illustrate this page {hasGoldPass ? "" : `(${ILLUSTRATE_COST}c)`}</>
               )}
             </Button>
           </div>
