@@ -27,6 +27,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 
 const __HIW_KIDSHOMEWORK_STEPS = [
   { title: 'Type or snap homework', desc: 'Kid photographs or types the question.' },
@@ -45,10 +47,12 @@ const KidsHomework = () => {
   const { points, achievements, unlockedAchievements, isLoading: progressLoading } = useKidsHomeworkProgress();
   const { challenge, progress, isCompleted, isLoading: challengeLoading } = useKidsDailyChallenge();
   const { credits_remaining,
-    canAsk,
+    canAsk: rawCanAsk,
     loading: usageLoading,
     refresh: refreshCredits,
     purchaseCredits } = useHomeworkCredits();
+  const { hasGoldPass } = useKidsGoldPass();
+  const canAsk = hasGoldPass || rawCanAsk;
 
   const [subject, setSubject] = useState<string>(() => {
     try { return localStorage.getItem("kids_homework_subject") || ""; } catch { return ""; }
@@ -88,11 +92,11 @@ const KidsHomework = () => {
       navigate(`/auth?redirect=${encodeURIComponent("/kids-homework")}`);
       return;
     }
-    if (credits_remaining < HOMEWORK_CREDITS_PER_QUESTION) {
+    if (!hasGoldPass && credits_remaining < HOMEWORK_CREDITS_PER_QUESTION) {
       toast.info("You need an active Homework Pass to use this section.");
       navigate("/kids-homework-pricing");
     }
-  }, [user, usageLoading, credits_remaining, navigate, verifyingPayment]);
+  }, [user, usageLoading, credits_remaining, navigate, verifyingPayment, hasGoldPass]);
 
   // Verify Stripe payment on return, then refresh credits.
   useEffect(() => {
@@ -205,8 +209,15 @@ const KidsHomework = () => {
             <SafeContentBadge variant="compact" />
           </div>
 
-          {/* Credit balance */}
-          {!usageLoading && (
+          {/* Gold Pass banner (unlimited) */}
+          {hasGoldPass && (
+            <div className="mb-6">
+              <KidsGoldPassBanner moduleName="Homework Helper" />
+            </div>
+          )}
+
+          {/* Credit balance — hidden for Gold Pass unlimited users */}
+          {!usageLoading && !hasGoldPass && (
             <div className="mb-6">
               <HomeworkLimitBanner
                 creditsRemaining={credits_remaining}
@@ -260,7 +271,7 @@ const KidsHomework = () => {
                     Ask Your Question
                   </CardTitle>
                   <CardDescription>
-                    Choose a subject, pick difficulty, then type or select a question. Each question costs {HOMEWORK_CREDITS_PER_QUESTION} credits.
+                    Choose a subject, pick difficulty, then type or select a question.{hasGoldPass ? " ✨ Gold Pass: unlimited questions." : ` Each question costs ${HOMEWORK_CREDITS_PER_QUESTION} credits.`}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5">
@@ -323,7 +334,7 @@ const KidsHomework = () => {
                       ) : (
                         <>
                           <Send className="w-4 h-4 mr-2" />
-                          Get Help! ✨ ({HOMEWORK_CREDITS_PER_QUESTION} credits)
+                          {hasGoldPass ? "Get Help! ✨ (unlimited)" : `Get Help! ✨ (${HOMEWORK_CREDITS_PER_QUESTION} credits)`}
                         </>
                       )}
                     </Button>
