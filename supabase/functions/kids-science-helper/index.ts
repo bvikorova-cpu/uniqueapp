@@ -50,20 +50,22 @@ Deno.serve(async (req) => {
     const action = body?.action as Action;
     if (!COSTS[action]) throw new Error(`Unknown action: ${action}`);
 
-    // Credit check + deduct
+    // Credit check + deduct (skipped for Gold Pass)
     const cost = COSTS[action];
+    const goldPass = await hasKidsGoldPass(authHeader);
     const { data: row } = await supa
       .from("science_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
     const balance = row?.credits_remaining ?? 0;
-    if (balance < cost) {
+    if (!goldPass && balance < cost) {
       return new Response(
         JSON.stringify({ error: `Not enough Science credits (need ${cost}, have ${balance})` }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
 
     let result: any;
     if (action === "safetyCheck") {
