@@ -186,7 +186,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
       .filter((i) => !pageIllustrations[i] && !(i === 0 && story.illustration));
     if (missing.length === 0) { toast.info("All pages already illustrated."); return; }
     const need = missing.length * ILLUSTRATE_COST;
-    if (storyCredits < need) {
+    if (!hasGoldPass && storyCredits < need) {
       toast.error(`Need ${need} credits to illustrate all ${missing.length} pages.`);
       return;
     }
