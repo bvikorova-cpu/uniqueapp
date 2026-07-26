@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Download, Volume2, VolumeX, BookOpen, Loader
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useKidsStoryCredits } from "@/hooks/useKidsStoryCredits";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StorybookDisplayProps {
@@ -32,6 +33,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
   const [illustratingAll, setIllustratingAll] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { refresh: refreshCredits, balance: storyCredits } = useKidsStoryCredits();
+  const { hasGoldPass } = useKidsGoldPass();
 
   // Split story into pages (~150 words each)
   const words = (story.story || "").trim().split(/\s+/).filter(Boolean);
@@ -146,7 +148,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
 
   const illustratePage = async (pageIndex: number): Promise<boolean> => {
     if (illustratingPage !== null) return false;
-    if (storyCredits < ILLUSTRATE_COST) {
+    if (!hasGoldPass && storyCredits < ILLUSTRATE_COST) {
       toast.error(`You need ${ILLUSTRATE_COST} story credits to illustrate a page.`);
       return false;
     }
@@ -184,7 +186,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
       .filter((i) => !pageIllustrations[i] && !(i === 0 && story.illustration));
     if (missing.length === 0) { toast.info("All pages already illustrated."); return; }
     const need = missing.length * ILLUSTRATE_COST;
-    if (storyCredits < need) {
+    if (!hasGoldPass && storyCredits < need) {
       toast.error(`Need ${need} credits to illustrate all ${missing.length} pages.`);
       return;
     }
@@ -257,9 +259,9 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
               {illustratingPage === currentPage ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Illustrating…</>
               ) : currentIllustration ? (
-                <><Wand2 className="w-4 h-4" /> Re-illustrate ({ILLUSTRATE_COST}c)</>
+                <><Wand2 className="w-4 h-4" /> Re-illustrate {hasGoldPass ? "" : `(${ILLUSTRATE_COST}c)`}</>
               ) : (
-                <><Sparkles className="w-4 h-4" /> Illustrate this page ({ILLUSTRATE_COST}c)</>
+                <><Sparkles className="w-4 h-4" /> Illustrate this page {hasGoldPass ? "" : `(${ILLUSTRATE_COST}c)`}</>
               )}
             </Button>
           </div>
@@ -342,7 +344,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
             {illustratingAll ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Illustrating all…</>
             ) : (
-              <><Wand2 className="w-4 h-4" /> Illustrate all ({pages.length * ILLUSTRATE_COST}c)</>
+              <><Wand2 className="w-4 h-4" /> Illustrate all {hasGoldPass ? "" : `(${pages.length * ILLUSTRATE_COST}c)`}</>
             )}
           </Button>
 
