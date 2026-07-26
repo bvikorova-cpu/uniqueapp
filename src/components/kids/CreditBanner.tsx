@@ -1,7 +1,10 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Sparkles, Coins } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface CreditBannerProps {
   label: string;            // e.g. "Reading"
