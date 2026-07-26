@@ -92,11 +92,11 @@ const KidsHomework = () => {
       navigate(`/auth?redirect=${encodeURIComponent("/kids-homework")}`);
       return;
     }
-    if (credits_remaining < HOMEWORK_CREDITS_PER_QUESTION) {
+    if (!hasGoldPass && credits_remaining < HOMEWORK_CREDITS_PER_QUESTION) {
       toast.info("You need an active Homework Pass to use this section.");
       navigate("/kids-homework-pricing");
     }
-  }, [user, usageLoading, credits_remaining, navigate, verifyingPayment]);
+  }, [user, usageLoading, credits_remaining, navigate, verifyingPayment, hasGoldPass]);
 
   // Verify Stripe payment on return, then refresh credits.
   useEffect(() => {
