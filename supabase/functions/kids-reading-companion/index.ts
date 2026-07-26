@@ -49,18 +49,20 @@ Deno.serve(async (req) => {
     if (!COSTS[action]) throw new Error(`Unknown action: ${action}`);
     const cost = COSTS[action];
 
+    const goldPass = await hasKidsGoldPass(authHeader);
     const { data: row } = await supa
       .from("kids_reading_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
     const balance = row?.credits_remaining ?? 0;
-    if (balance < cost) {
+    if (!goldPass && balance < cost) {
       return new Response(
         JSON.stringify({ error: `Not enough Reading credits (need ${cost}, have ${balance})` }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
 
     const level = body?.level ?? "intermediate";
     const text = (body?.text ?? "").toString().slice(0, 8000);
