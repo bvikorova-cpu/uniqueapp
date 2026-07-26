@@ -75,9 +75,10 @@ export function useKidsGoldPass(): GoldPassStatus {
     if (!user?.id) return;
 
     const channel = supabase
-      .channel(`kids-gold-pass-hook-${user.id}`)
+      .channel(`kids-gold-pass-hook-${user.id}-${Math.random().toString(36).slice(2)}`);
+    channel
       .on(
-        "postgres_changes",
+        "postgres_changes" as any,
         { event: "*", schema: "public", table: "kids_gold_pass_status", filter: `user_id=eq.${user.id}` },
         loadStatus,
       )
