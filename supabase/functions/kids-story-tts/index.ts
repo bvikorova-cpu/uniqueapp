@@ -1,6 +1,7 @@
 // Kids Story TTS — converts story text to speech using OpenAI TTS
 // Returns base64 MP3 audio for client playback
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
