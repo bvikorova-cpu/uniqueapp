@@ -36,49 +36,8 @@ export const StoryLimitBanner = ({ storiesCreatedThisMonth, isPremium }: StoryLi
   );
   }
 
-  if (storiesRemaining === 0) {
-    return (
-      <Card className="border-orange-500/30 bg-gradient-to-r from-orange-500/10 to-red-500/10">
-        <CardContent className="py-4 px-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-start gap-3">
-              <BookOpen className="h-6 w-6 text-orange-500 mt-1" />
-              <div>
-                <p className="font-semibold text-orange-500">Monthly Limit Reached</p>
-                <p className="text-sm text-muted-foreground">
-                  You've created {storiesCreatedThisMonth}/{monthlyLimit} story this month
-                </p>
-              </div>
-            </div>
-            <Button onClick={() => navigate("/kids-story-pricing")} className="whitespace-nowrap">
-              <Crown className="mr-2 h-4 w-4" />
-              Upgrade to Premium
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
-      <CardContent className="py-4 px-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <BookOpen className="h-6 w-6 text-primary mt-1" />
-            <div>
-              <p className="font-semibold">Free Plan</p>
-              <p className="text-sm text-muted-foreground">
-                {storiesRemaining} story remaining this month ({storiesCreatedThisMonth}/{monthlyLimit} created)
-              </p>
-            </div>
-          </div>
-          <Button onClick={() => navigate("/kids-story-pricing")} variant="outline" className="whitespace-nowrap">
-            <Sparkles className="mr-2 h-4 w-4" />
-            Unlock Unlimited
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
+  // Non-premium users are gated purely by the credit system (see CreditBanner).
+  // The legacy "1 free story / month" banner is intentionally hidden to avoid
+  // conflicting messaging with the credit balance.
+  return null;
 };
