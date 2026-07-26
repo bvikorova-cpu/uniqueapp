@@ -105,12 +105,15 @@ Deno.serve(async (req) => {
         ? parsed.steps.map((s: any) => ({ instruction: String(s?.instruction || "").slice(0, 200) })).filter((s: any) => s.instruction)
         : [{ instruction: `Start by drawing the outline of a ${topic}.` }];
 
-      await adminT.from("kids_drawing_credits")
-        .update({ credits_remaining: balanceT - COST })
-        .eq("user_id", user.id);
+      if (!goldPass) {
+        await adminT.from("kids_drawing_credits")
+          .update({ credits_remaining: balanceT - COST })
+          .eq("user_id", user.id);
+      }
 
-      return json({ title, steps, topic, difficulty });
+      return json({ title, steps, topic, difficulty, unlimited: goldPass });
     }
+
 
     // ============ ENHANCE MODE (default) ============
     const sketchBase64 = String(body.sketchBase64 || "").trim();
