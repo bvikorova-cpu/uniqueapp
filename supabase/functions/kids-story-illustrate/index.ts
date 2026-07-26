@@ -102,15 +102,18 @@ Visual style: ${styleHint}. Age-appropriate for kids 4-10, friendly and safe, no
       return json({ error: "No image generated" }, 500);
     }
 
-    const newBalance = balance - COST;
-    await admin
-      .from("kids_story_credits")
-      .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    const newBalance = goldPass ? balance : balance - COST;
+    if (!goldPass) {
+      await admin
+        .from("kids_story_credits")
+        .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+    }
 
     return json({ illustration: imageUrl,
       credits_remaining: newBalance,
-      cost: COST });
+      unlimited: goldPass,
+      cost: goldPass ? 0 : COST });
   } catch (e: any) {
     console.error("kids-story-illustrate error", e);
     return json({ error: e?.message || "Internal error" }, 500);
