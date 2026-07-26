@@ -209,8 +209,15 @@ const KidsHomework = () => {
             <SafeContentBadge variant="compact" />
           </div>
 
-          {/* Credit balance */}
-          {!usageLoading && (
+          {/* Gold Pass banner (unlimited) */}
+          {hasGoldPass && (
+            <div className="mb-6">
+              <KidsGoldPassBanner moduleName="Homework Helper" />
+            </div>
+          )}
+
+          {/* Credit balance — hidden for Gold Pass unlimited users */}
+          {!usageLoading && !hasGoldPass && (
             <div className="mb-6">
               <HomeworkLimitBanner
                 creditsRemaining={credits_remaining}
