@@ -137,12 +137,13 @@ Deno.serve(async (req) => {
 
     if (!credRow) { await admin.from("kids_drawing_credits").insert({
         user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
-      return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
+      if (!goldPass) return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
     }
-    const balance = credRow.credits_remaining ?? 0;
-    if (balance < COST) {
+    const balance = credRow?.credits_remaining ?? 0;
+    if (!goldPass && balance < COST) {
       return json({ error: "Insufficient credits", credits_remaining: balance, cost: COST }, 402);
     }
+
 
     const styleHint = STYLE_HINTS[style] || STYLE_HINTS.cartoon;
     const prompt = `Polish this child's hand-drawn sketch into a beautiful artwork. PRESERVE composition, subject, poses, and creative intent.
