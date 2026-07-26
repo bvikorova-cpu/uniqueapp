@@ -181,16 +181,19 @@ Kid-friendly (ages 4-12), no text or letters, no scary or violent content, frien
       return json({ error: "No image generated" }, 500);
     }
 
-    const newBalance = balance - COST;
-    await admin
-      .from("kids_drawing_credits")
-      .update({ credits_remaining: newBalance, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    const newBalance = goldPass ? balance : balance - COST;
+    if (!goldPass) {
+      await admin
+        .from("kids_drawing_credits")
+        .update({ credits_remaining: newBalance, updated_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+    }
 
     return json({ enhanced: imageUrl,
       style,
       credits_remaining: newBalance,
-      cost: COST });
+      unlimited: goldPass,
+      cost: goldPass ? 0 : COST });
   } catch (e: any) {
     console.error("kids-drawing-enhance error", e);
     return json({ error: e?.message || "Internal error" }, 500);
