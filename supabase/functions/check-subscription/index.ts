@@ -156,6 +156,7 @@ serve(async (req) => {
     }
 
     const allowedProducts = TIER_PRODUCTS[tier] ?? [];
+    const allowedPriceIds = TIER_PRICE_IDS[tier] ?? [];
     let matchedProduct: string | null = null;
     let subscriptionEnd: string | null = null;
     let hasAccess = false;
@@ -163,9 +164,11 @@ serve(async (req) => {
     for (const sub of subs.data) {
       for (const item of sub.items.data) {
         const productId = typeof item.price.product === "string" ? item.price.product : item.price.product.id;
+        const priceId = item.price.id;
         // If tier has no specific list, ANY active subscription grants access
-        // (useful while products are being mapped). Otherwise must match.
-        if (allowedProducts.length === 0 || allowedProducts.includes(productId)) {
+        // (useful while products are being mapped). Otherwise must match product
+        // or exact price ID.
+        if (allowedProducts.length === 0 || allowedProducts.includes(productId) || allowedPriceIds.includes(priceId)) {
           matchedProduct = productId;
           subscriptionEnd = new Date(sub.current_period_end * 1000).toISOString();
           hasAccess = true;
