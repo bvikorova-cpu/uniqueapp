@@ -37,7 +37,7 @@ const GOLD_PASS_FEATURES = [
 
 /**
  * Gate for Kids Gold Pass modules. Grants access if EITHER:
- *   1. Active Kids Gold Pass subscription (`check-kids-subscription`), OR
+ *   1. Active Kids Gold Pass subscription (`check-subscription` / cache), OR
  *   2. Module has credits (`creditTable` row with credits >= 1), OR
  *   3. User has admin role.
  * Otherwise renders an inline paywall (Gold Pass upsell) — no redirect.

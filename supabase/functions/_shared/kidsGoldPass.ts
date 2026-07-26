@@ -27,6 +27,14 @@ export async function hasKidsGoldPass(authHeader: string | null): Promise<boolea
 
     // Fast path — cache lookup.
     const svc = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
+    const { data: role } = await svc
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (role) return true;
+
     const { data: row } = await svc
       .from("kids_gold_pass_status")
       .select("active, current_period_end")

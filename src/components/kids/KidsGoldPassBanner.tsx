@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
 import { Sparkles, Infinity as InfinityIcon } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 
 interface Props {
   /** Module name shown in the banner (e.g. "Homework Helper"). */
@@ -17,42 +15,12 @@ interface Props {
  * instantly on webhook updates via Realtime.
  */
 export const KidsGoldPassBanner = ({ moduleName, compact = false }: Props) => {
-  const { user } = useAuth();
-  const [active, setActive] = useState(false);
-  const [renewsAt, setRenewsAt] = useState<string | null>(null);
+  const { hasGoldPass, loading, expiresAt } = useKidsGoldPass();
 
-  useEffect(() => {
-    if (!user?.id) return;
-    let cancelled = false;
+  if (loading || !hasGoldPass) return null;
 
-    const load = async () => {
-      const { data } = await (supabase as any)
-        .from("kids_gold_pass_status")
-        .select("active, current_period_end")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (cancelled) return;
-      setActive(!!data?.active);
-      setRenewsAt(data?.current_period_end ?? null);
-    };
-    load();
-
-    const channel = supabase
-      .channel(`kids-gold-banner-${user.id}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "kids_gold_pass_status", filter: `user_id=eq.${user.id}` },
-        load,
-      )
-      .subscribe();
-
-    return () => { cancelled = true; supabase.removeChannel(channel); };
-  }, [user?.id]);
-
-  if (!active) return null;
-
-  const renewLabel = renewsAt
-    ? `Renews ${new Date(renewsAt).toLocaleDateString(undefined, { day: "numeric", month: "short" })}`
+  const renewLabel = expiresAt
+    ? `Renews ${new Date(expiresAt).toLocaleDateString(undefined, { day: "numeric", month: "short" })}`
     : null;
 
   if (compact) {

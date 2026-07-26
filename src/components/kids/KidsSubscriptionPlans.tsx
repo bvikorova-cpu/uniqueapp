@@ -56,7 +56,9 @@ export default function KidsSubscriptionPlans() {
         setCheckingSubscription(false);
         return;
       }
-      const { data, error } = await supabase.functions.invoke('check-kids-subscription');
+      const { data, error } = await supabase.functions.invoke('check-subscription', {
+        body: { tier: 'kids' },
+      });
       if (error) throw error;
       setCurrentSubscription(data);
     } catch (error) {
@@ -74,8 +76,20 @@ export default function KidsSubscriptionPlans() {
     }
     setLoading(prev => ({ ...prev, [planId]: true }));
     try {
-      const { data, error } = await supabase.functions.invoke('create-kids-subscription-checkout', {
-        body: { tier: planId }
+      const tier = PRODUCT_TIERS[planId as keyof typeof PRODUCT_TIERS] ?? PRODUCT_TIERS.gold_pass;
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          priceId: tier.price_id,
+          mode: 'subscription',
+          successUrl: `${window.location.origin}/kids-pricing?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}/kids-pricing?payment=canceled`,
+          metadata: {
+            type: 'kids',
+            tier: planId,
+            module: 'kids_gold_pass',
+            product_id: tier.product_id,
+          },
+        }
       });
       if (error) throw error;
       if (data?.url) {
@@ -99,7 +113,9 @@ export default function KidsSubscriptionPlans() {
   const handleManageSubscription = async () => {
     setLoading(prev => ({ ...prev, portal: true }));
     try {
-      const { data, error } = await supabase.functions.invoke('kids-customer-portal');
+      const { data, error } = await supabase.functions.invoke('customer-portal', {
+        body: { returnUrl: `${window.location.origin}/kids-pricing` },
+      });
       if (error) throw error;
       if (data?.url) {
         window.open(data.url, '_blank');
