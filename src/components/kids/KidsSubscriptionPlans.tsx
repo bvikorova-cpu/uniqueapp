@@ -146,11 +146,6 @@ export default function KidsSubscriptionPlans() {
           <Card className="relative overflow-hidden border-4 border-amber-400 shadow-2xl shadow-amber-300/30 ring-2 ring-amber-400/50 max-w-lg w-full bg-gradient-to-br from-amber-50/80 via-yellow-50/60 to-orange-50/40 dark:from-amber-950/40 dark:via-yellow-950/30 dark:to-orange-950/20">
             <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 via-amber-500/5 to-orange-500/10 pointer-events-none" />
             
-            <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10">
-              <Badge className="gap-1 text-base px-4 py-2 shadow-lg bg-gradient-to-r from-amber-500 via-amber-500 to-orange-500 text-white border-2 border-amber-300">
-                <Crown className="h-4 w-4" /> BEST FOR FAMILIES
-              </Badge>
-            </div>
             
             <div className="h-3 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500" />
             
