@@ -75,30 +75,17 @@ export function PricingHero() {
         </p>
       </motion.div>
 
-      {/* Limited time countdown */}
+      {/* Fixed price note */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/30 rounded-2xl px-6 py-3"
+        className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-2xl px-6 py-3"
       >
-        <span className="text-red-500 font-bold text-sm animate-pulse">🔥 LIMITED OFFER</span>
-        <div className="flex gap-1">
-          {[
-            { val: timeLeft.hours, label: "h" },
-            { val: timeLeft.minutes, label: "m" },
-            { val: timeLeft.seconds, label: "s" },
-          ].map((t, i) => (
-            <div key={i} className="flex items-center gap-0.5">
-              <span className="bg-red-500 text-white font-mono font-bold text-lg rounded-lg px-2 py-1 min-w-[2.5rem] text-center">
-                {String(t.val).padStart(2, "0")}
-              </span>
-              <span className="text-red-400 text-xs font-bold">{t.label}</span>
-            </div>
-          ))}
-        </div>
-        <span className="text-sm font-semibold text-foreground">Get 20% OFF!</span>
+        <Crown className="h-4 w-4 text-amber-500" />
+        <span className="text-sm font-semibold text-foreground">Fixed price · €75/month · Cancel anytime</span>
       </motion.div>
+
 
       {/* Stats */}
       <motion.div
