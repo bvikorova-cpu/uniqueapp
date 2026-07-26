@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Loader2, Lock, Sparkles, Check, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 
 interface Props {
   children: ReactNode;
@@ -133,7 +134,16 @@ export const KidsGoldPassGate = ({
       </div>
     );
   }
-  if (allowed) return <>{children}</>;
+  if (allowed) {
+    return (
+      <>
+        <div className="px-4 pt-4">
+          <KidsGoldPassBanner moduleName={moduleName} />
+        </div>
+        {children}
+      </>
+    );
+  }
 
   // Inline paywall (no redirect) — new users see Gold Pass upsell for the module they tried to open
   return (
