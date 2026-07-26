@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Loader2, Lock, Sparkles, Check, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 
 interface Props {
   children: ReactNode;
