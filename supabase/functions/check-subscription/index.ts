@@ -66,6 +66,18 @@ const TIER_PRODUCTS: Record<string, string[]> = { // generic — any active sub
   plus:     ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ"],
   pro:      ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ", "prod_Uv3yBGmooRzvPf"] };
 
+// Stripe Price IDs that grant access to a tier (used when product IDs are not
+// known in code or when a product has multiple active prices). Kept separate
+// from TIER_PRODUCTS so product matching stays primary while price fallback is
+// explicit and auditable.
+const TIER_PRICE_IDS: Record<string, string[]> = {
+  kids: [
+    "price_1SShj2GaXSfGtYFtcKlTJYGa", // Unique Kids Monthly
+    "price_1SShj3GaXSfGtYFtGEneXVhs", // Unique Kids Annual
+    "price_1Tc1kyGaXSfGtYFtcfVW1fcY", // Unique Kids Gold Pass
+  ],
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
