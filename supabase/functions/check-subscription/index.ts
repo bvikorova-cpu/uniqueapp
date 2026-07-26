@@ -24,10 +24,13 @@ const TIER_PRODUCTS: Record<string, string[]> = { // generic — any active sub
   companions:     ["prod_UNhZr9gtoc34Tc"],
   decor:          ["prod_UNhZNhxto4L3rY"],
   f1:             ["prod_UNhZ4YdjqCy4xv"],
-  kids_story:     ["prod_UNhZq78Jlm6UT4", "prod_TPX3oaWoixWYxy", "prod_TPX3I7KEMWnDQb"],
-  kids:           ["prod_UNhZeoa304UJXT", "prod_TOhBTCURKFnRuI", "prod_TOhjk0jsMVNpN3"],
-  science:        ["prod_UNhZeuOF4WDESB"],
-  kids_reading:   ["prod_UNhZJhIsTqwJbq", "prod_TPoGmcPx8m3Zjr"],
+  // Kids Gold Pass (prod_UbEDgqmGITgxMA) + monthly/annual Kids subscriptions
+  // (prod_TPWmSQy8vJrtpe, prod_TPWmNY3AZcnjUH) unlock ALL Kids modules
+  // (homework, story, reading, drawing, science, ...) via a single purchase.
+  kids_story:     ["prod_UNhZq78Jlm6UT4", "prod_TPX3oaWoixWYxy", "prod_TPX3I7KEMWnDQb", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  kids:           ["prod_UNhZeoa304UJXT", "prod_TOhBTCURKFnRuI", "prod_TOhjk0jsMVNpN3", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  science:        ["prod_UNhZeuOF4WDESB", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  kids_reading:   ["prod_UNhZJhIsTqwJbq", "prod_TPoGmcPx8m3Zjr", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
   anonymous_date: ["prod_UNhZFpv835vyrL"],
 
   // Already-mapped legacy tiers
