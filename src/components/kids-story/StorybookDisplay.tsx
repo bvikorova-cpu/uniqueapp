@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Download, Volume2, VolumeX, BookOpen, Loader
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useKidsStoryCredits } from "@/hooks/useKidsStoryCredits";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StorybookDisplayProps {
