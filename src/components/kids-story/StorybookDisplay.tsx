@@ -33,6 +33,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
   const [illustratingAll, setIllustratingAll] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { refresh: refreshCredits, balance: storyCredits } = useKidsStoryCredits();
+  const { hasGoldPass } = useKidsGoldPass();
 
   // Split story into pages (~150 words each)
   const words = (story.story || "").trim().split(/\s+/).filter(Boolean);
