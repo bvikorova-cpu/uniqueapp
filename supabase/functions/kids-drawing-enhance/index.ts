@@ -54,6 +54,8 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const mode = String(body.mode || body.action || "enhance").toLowerCase();
+    const goldPass = await hasKidsGoldPass(authHeader);
+
 
     // ============ TUTORIAL MODE ============
     if (mode === "tutorial") {
