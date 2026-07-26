@@ -34667,6 +34667,48 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_gold_pass_status: {
+        Row: {
+          active: boolean
+          cancel_at_period_end: boolean
+          created_at: string
+          current_period_end: string | null
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_price_id: string | null
+          stripe_product_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_price_id?: string | null
+          stripe_product_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_price_id?: string | null
+          stripe_product_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kids_homework: {
         Row: {
           ai_explanation: string | null

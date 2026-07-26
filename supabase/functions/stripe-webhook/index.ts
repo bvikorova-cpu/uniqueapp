@@ -267,6 +267,153 @@ async function syncFanClubMembership(
   }
 }
 
+// ─── Kids Gold Pass: product/price IDs that grant unlimited Kids access ──
+// Must stay in sync with TIER_PRODUCTS.kids / TIER_PRICE_IDS.kids in check-subscription.
+const KIDS_GOLD_PRODUCT_IDS = new Set<string>([
+  "prod_UbEDgqmGITgxMA", // Kids Gold Pass
+  "prod_TPWmSQy8vJrtpe", // Kids Monthly
+  "prod_TPWmNY3AZcnjUH", // Kids Annual
+  "prod_UNhZeoa304UJXT", // legacy kids
+  "prod_TOhBTCURKFnRuI",
+  "prod_TOhjk0jsMVNpN3",
+]);
+const KIDS_GOLD_PRICE_IDS = new Set<string>([
+  "price_1SShj2GaXSfGtYFtcKlTJYGa",
+  "price_1SShj3GaXSfGtYFtGEneXVhs",
+  "price_1Tc1kyGaXSfGtYFtcfVW1fcY",
+]);
+
+/**
+ * Cache Kids Gold Pass state in `kids_gold_pass_status` on every subscription
+ * event. Makes access checks instant + realtime (no Stripe round-trip needed).
+ * Idempotent — upserts on user_id.
+ */
+async function syncKidsGoldPass(
+  supabase: ReturnType<typeof createClient>,
+  stripe: Stripe,
+  sub: Stripe.Subscription,
+): Promise<void> {
+  // Detect if this subscription contains a Kids Gold Pass product/price.
+  const kidsItem = sub.items.data.find((it) => {
+    const productId = typeof it.price.product === "string" ? it.price.product : it.price.product?.id;
+    return (productId && KIDS_GOLD_PRODUCT_IDS.has(productId)) || KIDS_GOLD_PRICE_IDS.has(it.price.id);
+  });
+  if (!kidsItem) return;
+
+  // Resolve user_id: prefer metadata, fallback to customer email lookup.
+  let userId: string | null = (sub.metadata?.user_id as string) || null;
+  const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id ?? null;
+  if (!userId && customerId) {
+    try {
+      const cust = await stripe.customers.retrieve(customerId);
+      if (!cust.deleted) {
+        const email = (cust as Stripe.Customer).email;
+        if (email) {
+          const { data: prof } = await supabase
+            .from("profiles").select("id").eq("email", email).maybeSingle();
+          userId = (prof as any)?.id ?? null;
+        }
+      }
+    } catch (e) {
+      log("kids gold: customer lookup failed", { err: (e as Error).message });
+    }
+  }
+  if (!userId) {
+    log("kids gold: no user_id resolvable, skipping", { sub: sub.id });
+    return;
+  }
+
+  const isActive = sub.status === "active" || sub.status === "trialing";
+  const productId = typeof kidsItem.price.product === "string" ? kidsItem.price.product : kidsItem.price.product?.id ?? null;
+  const periodEnd = (sub as any).current_period_end
+    ? new Date((sub as any).current_period_end * 1000).toISOString()
+    : null;
+
+  // If the user has ANOTHER active kids sub, don't let a deleted/canceled event
+  // wipe access. Only set active=false when no active kids sub remains.
+  let finalActive = isActive;
+  let finalSubId: string | null = sub.id;
+  let finalPeriodEnd = periodEnd;
+  let finalPriceId: string | null = kidsItem.price.id;
+  let finalProductId: string | null = productId;
+  let finalCancelAtPeriodEnd = !!sub.cancel_at_period_end;
+  let finalStatus: string = sub.status;
+
+  if (!isActive && customerId) {
+    try {
+      const others = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 10 });
+      for (const s of others.data) {
+        if (s.id === sub.id) continue;
+        for (const item of s.items.data) {
+          const pid = typeof item.price.product === "string" ? item.price.product : item.price.product?.id;
+          if ((pid && KIDS_GOLD_PRODUCT_IDS.has(pid)) || KIDS_GOLD_PRICE_IDS.has(item.price.id)) {
+            finalActive = true;
+            finalSubId = s.id;
+            finalPeriodEnd = (s as any).current_period_end
+              ? new Date((s as any).current_period_end * 1000).toISOString()
+              : null;
+            finalPriceId = item.price.id;
+            finalProductId = pid ?? null;
+            finalCancelAtPeriodEnd = !!s.cancel_at_period_end;
+            finalStatus = s.status;
+            break;
+          }
+        }
+        if (finalActive) break;
+      }
+    } catch (e) {
+      log("kids gold: alt sub lookup failed", { err: (e as Error).message });
+    }
+  }
+
+  const { data: prior } = await supabase
+    .from("kids_gold_pass_status")
+    .select("active")
+    .eq("user_id", userId)
+    .maybeSingle();
+  const priorActive = (prior as any)?.active ?? false;
+
+  const { error } = await supabase.from("kids_gold_pass_status").upsert({
+    user_id: userId,
+    active: finalActive,
+    stripe_customer_id: customerId,
+    stripe_subscription_id: finalSubId,
+    stripe_price_id: finalPriceId,
+    stripe_product_id: finalProductId,
+    current_period_end: finalPeriodEnd,
+    cancel_at_period_end: finalCancelAtPeriodEnd,
+    status: finalStatus,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: "user_id" });
+
+  if (error) {
+    log("kids gold upsert failed", { err: error.message });
+    return;
+  }
+  log("kids gold synced", { user: userId, active: finalActive, status: finalStatus, prior: priorActive });
+
+  // Notify on transitions.
+  try {
+    if (finalActive && !priorActive) {
+      await supabase.from("notifications").insert({
+        user_id: userId,
+        type: "kids_gold_activated",
+        title: "Kids Gold Pass unlocked ✨",
+        message: "All Kids modules are now unlimited — Homework, Story, Reading, Drawing, Science and more.",
+        is_read: false,
+      });
+    } else if (!finalActive && priorActive) {
+      await supabase.from("notifications").insert({
+        user_id: userId,
+        type: "kids_gold_ended",
+        title: "Kids Gold Pass ended",
+        message: "Your Kids Gold Pass is no longer active. Resubscribe anytime to restore unlimited access.",
+        is_read: false,
+      });
+    }
+  } catch (_) { /* best-effort */ }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -709,6 +856,7 @@ serve(async (req) => {
                 const sub = await stripe.subscriptions.retrieve(subId);
                 await syncMegatalentSubscription(supabase, stripe, sub);
                 await syncFanClubMembership(supabase, stripe, sub);
+        await syncKidsGoldPass(supabase, stripe, sub);
                 log("megatalent unlocked via checkout.completed", { user: session.metadata?.user_id, sub: subId });
               } catch (e) {
                 log("megatalent checkout sync failed", { err: (e as Error).message });
@@ -1356,6 +1504,7 @@ serve(async (req) => {
 
         // ── Fan Club: sync membership status (active / past_due / canceled) ──
         await syncFanClubMembership(supabase, stripe, sub);
+        await syncKidsGoldPass(supabase, stripe, sub);
 
         // ── Brand sponsorship status sync (active / past_due / paused) ──
         try {
@@ -1448,6 +1597,7 @@ serve(async (req) => {
 
         // ── Fan Club: mark membership as canceled/expired ──
         await syncFanClubMembership(supabase, stripe, sub);
+        await syncKidsGoldPass(supabase, stripe, sub);
 
         // ── Unique VIP Club: mark canceled ──────────────────────────────────
         try {
@@ -1536,6 +1686,7 @@ serve(async (req) => {
         try {
           const subObj = await stripe.subscriptions.retrieve(subId);
           await syncFanClubMembership(supabase, stripe, subObj);
+          await syncKidsGoldPass(supabase, stripe, subObj);
         } catch (e) {
           log("fanclub payment_failed sync failed", { err: (e as Error).message });
         }
@@ -1631,6 +1782,7 @@ serve(async (req) => {
         try {
           const subObj = await stripe.subscriptions.retrieve(subId);
           await syncFanClubMembership(supabase, stripe, subObj);
+          await syncKidsGoldPass(supabase, stripe, subObj);
         } catch (e) {
           log("fanclub invoice.paid sync failed", { err: (e as Error).message });
         }
@@ -2014,7 +2166,8 @@ serve(async (req) => {
         const sub = event.data.object as Stripe.Subscription;
         // Sync megatalent (other modules use check-* funcs which read Stripe live)
         try { await syncMegatalentSubscription(supabase, stripe, sub); } catch (_) {}
-        try { await syncFanClubMembership(supabase, stripe, sub); } catch (_) {}
+        try { await syncFanClubMembership(supabase, stripe, sub);
+        await syncKidsGoldPass(supabase, stripe, sub); } catch (_) {}
         try {
           const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
           if (!customerId) break;

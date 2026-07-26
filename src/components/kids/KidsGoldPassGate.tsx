@@ -53,6 +53,45 @@ export const KidsGoldPassGate = ({
   const [checking, setChecking] = useState(true);
   const [allowed, setAllowed] = useState(false);
 
+  // Access check — runs on mount and whenever the cached Gold Pass row changes.
+  const runCheck = async (uid: string): Promise<boolean> => {
+    // 1. Admin bypass
+    const { data: role } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", uid)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (role) return true;
+
+    // 2. Cached Kids Gold Pass status (written instantly by stripe-webhook).
+    const { data: cache } = await (supabase as any)
+      .from("kids_gold_pass_status")
+      .select("active")
+      .eq("user_id", uid)
+      .maybeSingle();
+    if ((cache as any)?.active) return true;
+
+    // 3. Fallback: universal check-subscription (covers legacy users w/o cache row).
+    if (!cache) {
+      try {
+        const { data } = await supabase.functions.invoke("check-subscription", { body: { tier: "kids" } });
+        if ((data as any)?.subscribed) return true;
+      } catch { /* fall through */ }
+    }
+
+    // 4. Module credits
+    if (creditTable) {
+      const { data: credits } = await (supabase as any)
+        .from(creditTable)
+        .select("credits_remaining")
+        .eq("user_id", uid)
+        .maybeSingle();
+      if ((credits?.credits_remaining ?? 0) >= 1) return true;
+    }
+    return false;
+  };
+
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
@@ -63,42 +102,28 @@ export const KidsGoldPassGate = ({
     let cancelled = false;
     (async () => {
       try {
-        // 1. Admin bypass
-        const { data: role } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", user.id)
-          .eq("role", "admin")
-          .maybeSingle();
-        if (cancelled) return;
-        if (role) { setAllowed(true); setChecking(false); return; }
-
-        // 2. Gold Pass subscription
-        try {
-          const { data } = await supabase.functions.invoke("check-subscription", { body: { tier: "kids" } });
-          if (cancelled) return;
-          if ((data as any)?.subscribed) { setAllowed(true); setChecking(false); return; }
-        } catch { /* fall through to credit check */ }
-
-        // 3. Module credits (all kids credit tables use `credits_remaining`)
-        if (creditTable) {
-          const { data: credits } = await (supabase as any)
-            .from(creditTable)
-            .select("credits_remaining")
-            .eq("user_id", user.id)
-            .maybeSingle();
-          if (cancelled) return;
-          if ((credits?.credits_remaining ?? 0) >= 1) { setAllowed(true); setChecking(false); return; }
-        }
-
-        // Denied → show inline paywall
-        if (!cancelled) setChecking(false);
+        const ok = await runCheck(user.id);
+        if (!cancelled) { setAllowed(ok); setChecking(false); }
       } catch (e) {
         console.error("KidsGoldPassGate error", e);
         if (!cancelled) setChecking(false);
       }
     })();
-    return () => { cancelled = true; };
+
+    // Realtime: re-evaluate on webhook-driven Gold Pass changes.
+    const channel = supabase
+      .channel(`kids-gold-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "kids_gold_pass_status", filter: `user_id=eq.${user.id}` },
+        async () => {
+          const ok = await runCheck(user.id);
+          if (!cancelled) setAllowed(ok);
+        },
+      )
+      .subscribe();
+
+    return () => { cancelled = true; supabase.removeChannel(channel); };
   }, [user?.id, authLoading, creditTable, pricingPath, moduleName, redirectPath, navigate]);
 
   if (checking || authLoading) {
