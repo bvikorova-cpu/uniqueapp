@@ -83,14 +83,16 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Deduct credits
-    await supa
-      .from("science_credits")
-      .update({ credits_remaining: balance - cost, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    // Deduct credits (skipped for Gold Pass)
+    if (!goldPass) {
+      await supa
+        .from("science_credits")
+        .update({ credits_remaining: balance - cost, updated_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+    }
 
     return new Response(
-      JSON.stringify({ ...result, creditsSpent: cost, creditsRemaining: balance - cost }),
+      JSON.stringify({ ...result, creditsSpent: goldPass ? 0 : cost, creditsRemaining: goldPass ? balance : balance - cost, unlimited: goldPass }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e: any) {
