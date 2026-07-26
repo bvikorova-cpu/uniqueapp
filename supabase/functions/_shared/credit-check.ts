@@ -12,6 +12,7 @@
 // If you don't need post-call gating, you can just call deduct() at the end.
 
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { hasKidsGoldPass } from "./kidsGoldPass.ts";
 
 export interface CreditOptions {
   credits?: number;        // credits to deduct, default 1
@@ -98,6 +99,10 @@ export async function requireAiCredits(
   }
 
 
+  // Gold Pass bypass: any usage_type starting with "kids" is unlimited for active Gold Pass subscribers.
+  const isKids = usageType.toLowerCase().startsWith("kids");
+  const goldPass = isKids ? await hasKidsGoldPass(authHeader).catch(() => false) : false;
+
   // Check current credit balance
   const { data: row } = await supabase
     .from("ai_credits")
@@ -106,7 +111,7 @@ export async function requireAiCredits(
     .maybeSingle();
 
   const remaining = row?.credits_remaining ?? 0;
-  if (remaining < credits) {
+  if (!goldPass && remaining < credits) {
     return {
       errorResponse: new Response(
         JSON.stringify({
@@ -117,7 +122,9 @@ export async function requireAiCredits(
       ) };
   }
 
-  const deduct = async () => { const { error: deductErr } = await supabase.rpc("deduct_ai_credits", {
+  const deduct = async () => {
+    if (goldPass) return; // Unlimited for Gold Pass — skip deduction
+    const { error: deductErr } = await supabase.rpc("deduct_ai_credits", {
         p_user_id: user.id,
         p_amount: credits,
         p_reason: opts.description ?? usageType,
@@ -129,6 +136,7 @@ export async function requireAiCredits(
       credits_used: credits,
       description: opts.description ?? null });
   };
+
 
   return {
     user: { id: user.id, email: user.email ?? undefined },

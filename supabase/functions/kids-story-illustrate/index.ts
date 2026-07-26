@@ -1,6 +1,7 @@
 // Kids Story Illustrate — generates a single AI illustration for one story page.
 // Costs 2 kids_story credits per page. Uses OpenAI DALL-E 3.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -50,6 +51,8 @@ Deno.serve(async (req) => {
 
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
+    const goldPass = await hasKidsGoldPass(authHeader);
+
     const { data: credRow } = await admin
       .from("kids_story_credits")
       .select("credits_remaining")
@@ -60,9 +63,10 @@ Deno.serve(async (req) => {
     if (!credRow) { await admin.from("kids_story_credits").insert({
         user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
     }
-    if (balance < COST) {
+    if (!goldPass && balance < COST) {
       return json({ error: "Insufficient credits", credits_remaining: balance, cost: COST }, 402);
     }
+
 
     const styleHint = STYLE_HINTS[style] || STYLE_HINTS.storybook;
     const prompt = `Children's book illustration for the story "${storyTitle || "A Magical Tale"}".
@@ -98,15 +102,18 @@ Visual style: ${styleHint}. Age-appropriate for kids 4-10, friendly and safe, no
       return json({ error: "No image generated" }, 500);
     }
 
-    const newBalance = balance - COST;
-    await admin
-      .from("kids_story_credits")
-      .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    const newBalance = goldPass ? balance : balance - COST;
+    if (!goldPass) {
+      await admin
+        .from("kids_story_credits")
+        .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+    }
 
     return json({ illustration: imageUrl,
       credits_remaining: newBalance,
-      cost: COST });
+      unlimited: goldPass,
+      cost: goldPass ? 0 : COST });
   } catch (e: any) {
     console.error("kids-story-illustrate error", e);
     return json({ error: e?.message || "Internal error" }, 500);

@@ -1,6 +1,7 @@
 // Kids Story TTS — converts story text to speech using OpenAI TTS
 // Returns base64 MP3 audio for client playback
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -102,6 +103,7 @@ Deno.serve(async (req) => {
 
     // Credit pre-check (deduction happens AFTER successful TTS, so failures don't burn credits).
     const userId = userData.user.id;
+    const goldPass = await hasKidsGoldPass(authHeader);
     const { data: credRow } = await admin
       .from("kids_story_credits")
       .select("credits_remaining")
@@ -111,12 +113,13 @@ Deno.serve(async (req) => {
     if (!credRow) { await admin.from("kids_story_credits").insert({
         user_id: userId, credits_remaining: 0, total_credits_purchased: 0 });
     }
-    if (balance < TTS_COST) {
+    if (!goldPass && balance < TTS_COST) {
       return new Response(
         JSON.stringify({ error: "Insufficient credits", credits_remaining: balance, cost: TTS_COST }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
 
     const truncated = text.slice(0, MAX_TEXT_LENGTH);
 
@@ -151,15 +154,17 @@ Deno.serve(async (req) => {
     }
     const audioBase64 = btoa(binary);
 
-    // Deduct credit only after successful audio synthesis
-    const newBalance = balance - TTS_COST;
-    await admin
-      .from("kids_story_credits")
-      .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
-      .eq("user_id", userId);
+    // Deduct credit only after successful audio synthesis (skipped for Gold Pass)
+    const newBalance = goldPass ? balance : balance - TTS_COST;
+    if (!goldPass) {
+      await admin
+        .from("kids_story_credits")
+        .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
+        .eq("user_id", userId);
+    }
 
     return new Response(
-      JSON.stringify({ audioContent: audioBase64, mimeType: "audio/mpeg", credits_remaining: newBalance, cost: TTS_COST }),
+      JSON.stringify({ audioContent: audioBase64, mimeType: "audio/mpeg", credits_remaining: newBalance, unlimited: goldPass, cost: goldPass ? 0 : TTS_COST }),
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" } },

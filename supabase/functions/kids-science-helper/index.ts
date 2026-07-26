@@ -2,6 +2,7 @@
 // All actions are credit-gated against the `science_credits` table (2 credits each).
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const COSTS = { safetyCheck: 2, askScientist: 2 } as const;
 type Action = keyof typeof COSTS;
@@ -49,20 +50,22 @@ Deno.serve(async (req) => {
     const action = body?.action as Action;
     if (!COSTS[action]) throw new Error(`Unknown action: ${action}`);
 
-    // Credit check + deduct
+    // Credit check + deduct (skipped for Gold Pass)
     const cost = COSTS[action];
+    const goldPass = await hasKidsGoldPass(authHeader);
     const { data: row } = await supa
       .from("science_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
     const balance = row?.credits_remaining ?? 0;
-    if (balance < cost) {
+    if (!goldPass && balance < cost) {
       return new Response(
         JSON.stringify({ error: `Not enough Science credits (need ${cost}, have ${balance})` }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
 
     let result: any;
     if (action === "safetyCheck") {
@@ -80,14 +83,16 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Deduct credits
-    await supa
-      .from("science_credits")
-      .update({ credits_remaining: balance - cost, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    // Deduct credits (skipped for Gold Pass)
+    if (!goldPass) {
+      await supa
+        .from("science_credits")
+        .update({ credits_remaining: balance - cost, updated_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+    }
 
     return new Response(
-      JSON.stringify({ ...result, creditsSpent: cost, creditsRemaining: balance - cost }),
+      JSON.stringify({ ...result, creditsSpent: goldPass ? 0 : cost, creditsRemaining: goldPass ? balance : balance - cost, unlimited: goldPass }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e: any) {

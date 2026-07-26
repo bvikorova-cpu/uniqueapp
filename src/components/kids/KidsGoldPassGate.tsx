@@ -75,7 +75,7 @@ export const KidsGoldPassGate = ({
 
         // 2. Gold Pass subscription
         try {
-          const { data } = await supabase.functions.invoke("check-kids-subscription");
+          const { data } = await supabase.functions.invoke("check-subscription", { body: { tier: "kids" } });
           if (cancelled) return;
           if ((data as any)?.subscribed) { setAllowed(true); setChecking(false); return; }
         } catch { /* fall through to credit check */ }

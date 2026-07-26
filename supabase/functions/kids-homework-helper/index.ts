@@ -1,6 +1,7 @@
 // Kids Homework Helper — text + photo (OCR) AI tutor with step-by-step solutions.
 // Costs 3 homework credits per question. Uses Lovable AI Gateway (Gemini vision).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -60,6 +61,9 @@ Deno.serve(async (req) => {
     // Admin client (service role) for credit gating
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
+    // Gold Pass = unlimited: skip credit gate entirely
+    const goldPass = await hasKidsGoldPass(authHeader);
+
     // Ensure & check credits
     const { data: credRow } = await admin
       .from("homework_credits")
@@ -71,9 +75,10 @@ Deno.serve(async (req) => {
     if (!credRow) { await admin.from("homework_credits").insert({
         user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
     }
-    if (balance < COST) {
+    if (!goldPass && balance < COST) {
       return json({ error: "Insufficient credits", credits_remaining: balance, cost: COST }, 402);
     }
+
 
     // Build prompt
     const system = `You are a friendly, encouraging tutor for kids aged 8-14.
@@ -134,12 +139,14 @@ Schema:
       parsed = { explanation: raw, steps: [], funFacts: [], wasFiltered: false };
     }
 
-    // Deduct credits (only on success)
-    const newBalance = balance - COST;
-    await admin
-      .from("homework_credits")
-      .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    // Deduct credits (only on success, and only if not Gold Pass unlimited)
+    const newBalance = goldPass ? balance : balance - COST;
+    if (!goldPass) {
+      await admin
+        .from("homework_credits")
+        .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+    }
 
     // Award points (best-effort)
     try { await admin.rpc("increment_homework_points", { p_user_id: user.id, p_points: 10 }); } catch (_) {}
@@ -151,7 +158,8 @@ Schema:
       funFacts: Array.isArray(parsed.funFacts) ? parsed.funFacts : [],
       wasFiltered: !!parsed.wasFiltered,
       credits_remaining: newBalance,
-      cost: COST });
+      unlimited: goldPass,
+      cost: goldPass ? 0 : COST });
   } catch (e: any) {
     console.error("homework-helper error", e);
     return json({ error: e?.message || "Internal error" }, 500);

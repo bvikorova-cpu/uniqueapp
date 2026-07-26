@@ -2,6 +2,7 @@
 // Credit-gated against the `kids_reading_credits` table.
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const COSTS = { analyze: 2, "multi-quiz": 2, define: 1 } as const;
 type Action = keyof typeof COSTS;
@@ -48,18 +49,20 @@ Deno.serve(async (req) => {
     if (!COSTS[action]) throw new Error(`Unknown action: ${action}`);
     const cost = COSTS[action];
 
+    const goldPass = await hasKidsGoldPass(authHeader);
     const { data: row } = await supa
       .from("kids_reading_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
     const balance = row?.credits_remaining ?? 0;
-    if (balance < cost) {
+    if (!goldPass && balance < cost) {
       return new Response(
         JSON.stringify({ error: `Not enough Reading credits (need ${cost}, have ${balance})` }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
 
     const level = body?.level ?? "intermediate";
     const text = (body?.text ?? "").toString().slice(0, 8000);
@@ -87,13 +90,15 @@ Deno.serve(async (req) => {
       );
     }
 
-    await supa
-      .from("kids_reading_credits")
-      .update({ credits_remaining: balance - cost, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    if (!goldPass) {
+      await supa
+        .from("kids_reading_credits")
+        .update({ credits_remaining: balance - cost, updated_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+    }
 
     return new Response(
-      JSON.stringify({ ...result, creditsSpent: cost, creditsRemaining: balance - cost }),
+      JSON.stringify({ ...result, creditsSpent: goldPass ? 0 : cost, creditsRemaining: goldPass ? balance : balance - cost, unlimited: goldPass }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e: any) {

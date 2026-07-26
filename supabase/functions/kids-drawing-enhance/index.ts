@@ -1,6 +1,7 @@
 // Kids Drawing Enhance — turns a child's sketch into polished AI art.
 // Costs 4 kids_drawing credits per enhancement. Uses OpenAI gpt-image-1 (supports image input).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -53,6 +54,8 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const mode = String(body.mode || body.action || "enhance").toLowerCase();
+    const goldPass = await hasKidsGoldPass(authHeader);
+
 
     // ============ TUTORIAL MODE ============
     if (mode === "tutorial") {
@@ -69,12 +72,13 @@ Deno.serve(async (req) => {
 
       if (!credRowT) { await adminT.from("kids_drawing_credits").insert({
           user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
-        return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
+        if (!goldPass) return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
       }
-      const balanceT = credRowT.credits_remaining ?? 0;
-      if (balanceT < COST) {
+      const balanceT = credRowT?.credits_remaining ?? 0;
+      if (!goldPass && balanceT < COST) {
         return json({ error: "Insufficient credits", credits_remaining: balanceT, cost: COST }, 402);
       }
+
 
       const stepCount = difficulty === "hard" ? 6 : difficulty === "medium" ? 5 : 4;
       const tRes = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -101,12 +105,15 @@ Deno.serve(async (req) => {
         ? parsed.steps.map((s: any) => ({ instruction: String(s?.instruction || "").slice(0, 200) })).filter((s: any) => s.instruction)
         : [{ instruction: `Start by drawing the outline of a ${topic}.` }];
 
-      await adminT.from("kids_drawing_credits")
-        .update({ credits_remaining: balanceT - COST })
-        .eq("user_id", user.id);
+      if (!goldPass) {
+        await adminT.from("kids_drawing_credits")
+          .update({ credits_remaining: balanceT - COST })
+          .eq("user_id", user.id);
+      }
 
-      return json({ title, steps, topic, difficulty });
+      return json({ title, steps, topic, difficulty, unlimited: goldPass });
     }
+
 
     // ============ ENHANCE MODE (default) ============
     const sketchBase64 = String(body.sketchBase64 || "").trim();
@@ -130,12 +137,13 @@ Deno.serve(async (req) => {
 
     if (!credRow) { await admin.from("kids_drawing_credits").insert({
         user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
-      return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
+      if (!goldPass) return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
     }
-    const balance = credRow.credits_remaining ?? 0;
-    if (balance < COST) {
+    const balance = credRow?.credits_remaining ?? 0;
+    if (!goldPass && balance < COST) {
       return json({ error: "Insufficient credits", credits_remaining: balance, cost: COST }, 402);
     }
+
 
     const styleHint = STYLE_HINTS[style] || STYLE_HINTS.cartoon;
     const prompt = `Polish this child's hand-drawn sketch into a beautiful artwork. PRESERVE composition, subject, poses, and creative intent.
@@ -173,16 +181,19 @@ Kid-friendly (ages 4-12), no text or letters, no scary or violent content, frien
       return json({ error: "No image generated" }, 500);
     }
 
-    const newBalance = balance - COST;
-    await admin
-      .from("kids_drawing_credits")
-      .update({ credits_remaining: newBalance, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    const newBalance = goldPass ? balance : balance - COST;
+    if (!goldPass) {
+      await admin
+        .from("kids_drawing_credits")
+        .update({ credits_remaining: newBalance, updated_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+    }
 
     return json({ enhanced: imageUrl,
       style,
       credits_remaining: newBalance,
-      cost: COST });
+      unlimited: goldPass,
+      cost: goldPass ? 0 : COST });
   } catch (e: any) {
     console.error("kids-drawing-enhance error", e);
     return json({ error: e?.message || "Internal error" }, 500);
