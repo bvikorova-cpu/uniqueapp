@@ -72,12 +72,13 @@ Deno.serve(async (req) => {
 
       if (!credRowT) { await adminT.from("kids_drawing_credits").insert({
           user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
-        return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
+        if (!goldPass) return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
       }
-      const balanceT = credRowT.credits_remaining ?? 0;
-      if (balanceT < COST) {
+      const balanceT = credRowT?.credits_remaining ?? 0;
+      if (!goldPass && balanceT < COST) {
         return json({ error: "Insufficient credits", credits_remaining: balanceT, cost: COST }, 402);
       }
+
 
       const stepCount = difficulty === "hard" ? 6 : difficulty === "medium" ? 5 : 4;
       const tRes = await fetch("https://api.openai.com/v1/chat/completions", {
