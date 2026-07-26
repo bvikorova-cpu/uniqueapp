@@ -2722,6 +2722,7 @@ async function handler(req: Request): Promise<Response> {
         mode: body.mode === "subscription" ? "subscription" : "payment",
         success_url: successUrl,
         cancel_url: cancelUrl,
+        ...(body.mode === "subscription" ? { subscription_data: { metadata: { user_id: userId, ...requestMetadata } } } : {}),
         metadata: { user_id: userId, ...requestMetadata } });
 
       return successResponse({ url: session.url, session_id: session.id });

@@ -292,6 +292,7 @@ async function syncKidsGoldPass(
   supabase: ReturnType<typeof createClient>,
   stripe: Stripe,
   sub: Stripe.Subscription,
+  userIdOverride?: string | null,
 ): Promise<void> {
   // Detect if this subscription contains a Kids Gold Pass product/price.
   const kidsItem = sub.items.data.find((it) => {
@@ -301,7 +302,7 @@ async function syncKidsGoldPass(
   if (!kidsItem) return;
 
   // Resolve user_id: prefer metadata, fallback to customer email lookup.
-  let userId: string | null = (sub.metadata?.user_id as string) || null;
+  let userId: string | null = userIdOverride || (sub.metadata?.user_id as string) || null;
   const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id ?? null;
   if (!userId && customerId) {
     try {
@@ -844,22 +845,24 @@ serve(async (req) => {
             }
           }
 
-          // ── Megatalent: instantly fetch & sync subscription on checkout ──
+          // ── Subscription access cache: instantly fetch & sync on checkout ──
           // This is the fastest possible unlock — fires within seconds of payment,
           // before customer.subscription.created may even arrive.
-          if (session.mode === "subscription" && session.metadata?.module === "megatalent") {
+          if (session.mode === "subscription") {
             const subId = typeof session.subscription === "string"
               ? session.subscription
               : session.subscription?.id;
             if (subId) {
               try {
                 const sub = await stripe.subscriptions.retrieve(subId);
-                await syncMegatalentSubscription(supabase, stripe, sub);
-                await syncFanClubMembership(supabase, stripe, sub);
-        await syncKidsGoldPass(supabase, stripe, sub);
-                log("megatalent unlocked via checkout.completed", { user: session.metadata?.user_id, sub: subId });
+                if (session.metadata?.module === "megatalent") {
+                  await syncMegatalentSubscription(supabase, stripe, sub);
+                  await syncFanClubMembership(supabase, stripe, sub);
+                }
+                await syncKidsGoldPass(supabase, stripe, sub, session.metadata?.user_id ?? null);
+                log("subscription cache synced via checkout.completed", { user: session.metadata?.user_id, sub: subId, module: session.metadata?.module });
               } catch (e) {
-                log("megatalent checkout sync failed", { err: (e as Error).message });
+                log("subscription checkout sync failed", { err: (e as Error).message });
               }
             }
           }
