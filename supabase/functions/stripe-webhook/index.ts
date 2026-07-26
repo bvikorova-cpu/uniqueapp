@@ -856,6 +856,7 @@ serve(async (req) => {
                 const sub = await stripe.subscriptions.retrieve(subId);
                 await syncMegatalentSubscription(supabase, stripe, sub);
                 await syncFanClubMembership(supabase, stripe, sub);
+        await syncKidsGoldPass(supabase, stripe, sub);
                 log("megatalent unlocked via checkout.completed", { user: session.metadata?.user_id, sub: subId });
               } catch (e) {
                 log("megatalent checkout sync failed", { err: (e as Error).message });
@@ -1503,6 +1504,7 @@ serve(async (req) => {
 
         // ── Fan Club: sync membership status (active / past_due / canceled) ──
         await syncFanClubMembership(supabase, stripe, sub);
+        await syncKidsGoldPass(supabase, stripe, sub);
 
         // ── Brand sponsorship status sync (active / past_due / paused) ──
         try {
@@ -1595,6 +1597,7 @@ serve(async (req) => {
 
         // ── Fan Club: mark membership as canceled/expired ──
         await syncFanClubMembership(supabase, stripe, sub);
+        await syncKidsGoldPass(supabase, stripe, sub);
 
         // ── Unique VIP Club: mark canceled ──────────────────────────────────
         try {
@@ -1683,6 +1686,7 @@ serve(async (req) => {
         try {
           const subObj = await stripe.subscriptions.retrieve(subId);
           await syncFanClubMembership(supabase, stripe, subObj);
+          await syncKidsGoldPass(supabase, stripe, subObj);
         } catch (e) {
           log("fanclub payment_failed sync failed", { err: (e as Error).message });
         }
@@ -1778,6 +1782,7 @@ serve(async (req) => {
         try {
           const subObj = await stripe.subscriptions.retrieve(subId);
           await syncFanClubMembership(supabase, stripe, subObj);
+          await syncKidsGoldPass(supabase, stripe, subObj);
         } catch (e) {
           log("fanclub invoice.paid sync failed", { err: (e as Error).message });
         }
@@ -2161,7 +2166,8 @@ serve(async (req) => {
         const sub = event.data.object as Stripe.Subscription;
         // Sync megatalent (other modules use check-* funcs which read Stripe live)
         try { await syncMegatalentSubscription(supabase, stripe, sub); } catch (_) {}
-        try { await syncFanClubMembership(supabase, stripe, sub); } catch (_) {}
+        try { await syncFanClubMembership(supabase, stripe, sub);
+        await syncKidsGoldPass(supabase, stripe, sub); } catch (_) {}
         try {
           const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
           if (!customerId) break;
