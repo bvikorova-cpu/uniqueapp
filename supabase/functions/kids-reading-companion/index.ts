@@ -2,6 +2,7 @@
 // Credit-gated against the `kids_reading_credits` table.
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const COSTS = { analyze: 2, "multi-quiz": 2, define: 1 } as const;
 type Action = keyof typeof COSTS;
