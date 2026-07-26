@@ -1,6 +1,7 @@
 // Kids Story Illustrate — generates a single AI illustration for one story page.
 // Costs 2 kids_story credits per page. Uses OpenAI DALL-E 3.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
