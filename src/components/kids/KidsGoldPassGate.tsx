@@ -134,7 +134,16 @@ export const KidsGoldPassGate = ({
       </div>
     );
   }
-  if (allowed) return <>{children}</>;
+  if (allowed) {
+    return (
+      <>
+        <div className="px-4 pt-4">
+          <KidsGoldPassBanner moduleName={moduleName} />
+        </div>
+        {children}
+      </>
+    );
+  }
 
   // Inline paywall (no redirect) — new users see Gold Pass upsell for the module they tried to open
   return (
