@@ -1,6 +1,7 @@
 // Kids Drawing Enhance — turns a child's sketch into polished AI art.
 // Costs 4 kids_drawing credits per enhancement. Uses OpenAI gpt-image-1 (supports image input).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
