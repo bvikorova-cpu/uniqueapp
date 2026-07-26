@@ -47,10 +47,12 @@ const KidsHomework = () => {
   const { points, achievements, unlockedAchievements, isLoading: progressLoading } = useKidsHomeworkProgress();
   const { challenge, progress, isCompleted, isLoading: challengeLoading } = useKidsDailyChallenge();
   const { credits_remaining,
-    canAsk,
+    canAsk: rawCanAsk,
     loading: usageLoading,
     refresh: refreshCredits,
     purchaseCredits } = useHomeworkCredits();
+  const { hasGoldPass } = useKidsGoldPass();
+  const canAsk = hasGoldPass || rawCanAsk;
 
   const [subject, setSubject] = useState<string>(() => {
     try { return localStorage.getItem("kids_homework_subject") || ""; } catch { return ""; }
