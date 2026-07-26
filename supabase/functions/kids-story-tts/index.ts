@@ -103,6 +103,7 @@ Deno.serve(async (req) => {
 
     // Credit pre-check (deduction happens AFTER successful TTS, so failures don't burn credits).
     const userId = userData.user.id;
+    const goldPass = await hasKidsGoldPass(authHeader);
     const { data: credRow } = await admin
       .from("kids_story_credits")
       .select("credits_remaining")
@@ -112,12 +113,13 @@ Deno.serve(async (req) => {
     if (!credRow) { await admin.from("kids_story_credits").insert({
         user_id: userId, credits_remaining: 0, total_credits_purchased: 0 });
     }
-    if (balance < TTS_COST) {
+    if (!goldPass && balance < TTS_COST) {
       return new Response(
         JSON.stringify({ error: "Insufficient credits", credits_remaining: balance, cost: TTS_COST }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
 
     const truncated = text.slice(0, MAX_TEXT_LENGTH);
 
