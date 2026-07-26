@@ -47,26 +47,63 @@ export const ReadAloudPlayer = ({ text, onWordClick }: Props) => {
     setPlaying(false); setPaused(false); setActiveIdx(null);
   };
 
+  const keepAliveRef = useRef<number | null>(null);
+
   const play = () => {
     if (!text.trim() || !("speechSynthesis" in window)) return;
-    stop();
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = rate;
-    const v = voices.find(x => x.voiceURI === voiceURI);
-    if (v) u.voice = v;
-    u.onstart = () => { setPlaying(true); setPaused(false); };
-    u.onend = () => { setPlaying(false); setActiveIdx(null); };
-    u.onboundary = (e) => {
-      if (e.name !== "word") return;
-      const charIdx = e.charIndex;
-      let cum = 0;
-      for (let i = 0; i < words.length; i++) {
-        cum += words[i].length;
-        if (charIdx < cum) { setActiveIdx(i); break; }
-      }
+    const synth = window.speechSynthesis;
+    // Cancel any queued utterances, then defer speak to next tick.
+    // Some browsers (Chrome/Safari) ignore speak() when called immediately after cancel().
+    synth.cancel();
+    setPlaying(true); setPaused(false); setActiveIdx(null);
+
+    const startSpeak = () => {
+      // Ensure voices are loaded (Chrome returns [] on first call).
+      const available = synth.getVoices();
+      if (available.length && voices.length === 0) setVoices(available);
+
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = rate;
+      u.lang = "en-US";
+      const list = available.length ? available : voices;
+      const v = list.find(x => x.voiceURI === voiceURI)
+        ?? list.find(x => /^en/i.test(x.lang))
+        ?? list[0];
+      if (v) { u.voice = v; u.lang = v.lang; }
+      u.onstart = () => { setPlaying(true); setPaused(false); };
+      u.onend = () => {
+        setPlaying(false); setActiveIdx(null);
+        if (keepAliveRef.current) { window.clearInterval(keepAliveRef.current); keepAliveRef.current = null; }
+      };
+      u.onerror = () => {
+        setPlaying(false); setActiveIdx(null);
+        if (keepAliveRef.current) { window.clearInterval(keepAliveRef.current); keepAliveRef.current = null; }
+      };
+      u.onboundary = (e) => {
+        if (e.name !== "word") return;
+        const charIdx = e.charIndex;
+        let cum = 0;
+        for (let i = 0; i < words.length; i++) {
+          cum += words[i].length;
+          if (charIdx < cum) { setActiveIdx(i); break; }
+        }
+      };
+      utterRef.current = u;
+      synth.speak(u);
+
+      // Chrome bug workaround: speech stalls after ~15s of continuous playback.
+      if (keepAliveRef.current) window.clearInterval(keepAliveRef.current);
+      keepAliveRef.current = window.setInterval(() => {
+        if (!synth.speaking) {
+          if (keepAliveRef.current) { window.clearInterval(keepAliveRef.current); keepAliveRef.current = null; }
+          return;
+        }
+        if (!synth.paused) { synth.pause(); synth.resume(); }
+      }, 10000);
     };
-    utterRef.current = u;
-    window.speechSynthesis.speak(u);
+
+    // Defer to next macrotask so cancel() fully drains first.
+    window.setTimeout(startSpeak, 60);
   };
 
   const togglePause = () => {
