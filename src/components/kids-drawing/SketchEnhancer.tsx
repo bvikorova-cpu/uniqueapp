@@ -94,7 +94,7 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
             <Wand2 className="h-5 w-5 text-primary" />
             Magic Polish — Sketch → Art
           </span>
-          <Badge variant="outline" className="text-xs">{COST} credits</Badge>
+          <Badge variant="outline" className="text-xs">{hasGoldPass ? "Unlimited" : `${COST} credits`}</Badge>
         </CardTitle>
         <CardDescription>
           Upload or snap your drawing, pick a style, and watch AI transform it into polished art.
