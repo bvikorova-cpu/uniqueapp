@@ -739,10 +739,10 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                 className="font-semibold text-base truncate cursor-pointer hover:underline" 
                 onClick={(e) => handleUserClick(e, post.user_id)}
               >
-                {post.profiles?.full_name || "User"}
+                {post.profiles?.full_name || (post.profiles as any)?.username || "User"}
               </p>
               <VerifiedFounderBadge 
-                userName={post.profiles?.full_name || ""} 
+                userName={post.profiles?.full_name || (post.profiles as any)?.username || ""} 
                 size="sm"
               />
               {post.profiles?.verification_tier && (
