@@ -107,6 +107,14 @@ Deno.serve(async (req) => {
         const requestedArea = body.area as string | undefined;
         const validAreas = ["career", "fitness", "mindset", "relationships"];
         const nowIso = new Date().toISOString();
+        const legacyQuery = admin
+          .from("mentor_subscriptions")
+          .select("mentor_area, status")
+          .eq("user_id", userId)
+          .eq("status", "active");
+        const { data: legacyRows } = requestedArea && validAreas.includes(requestedArea)
+          ? await legacyQuery.eq("mentor_area", requestedArea)
+          : await legacyQuery.in("mentor_area", validAreas);
         const localQuery = admin
           .from("mentor_premium_subs")
           .select("area, status, plan, current_period_end, stripe_subscription_id")
@@ -116,8 +124,15 @@ Deno.serve(async (req) => {
         const { data: localRows } = requestedArea && validAreas.includes(requestedArea)
           ? await localQuery.eq("area", requestedArea)
           : await localQuery.in("area", validAreas);
-        if (localRows?.length) {
+        if (localRows?.length || legacyRows?.length) {
           const localAreas: Record<string, any> = {};
+          for (const row of legacyRows ?? []) {
+            localAreas[row.mentor_area] = {
+              subscribed: true,
+              plan: "legacy",
+              subscription_id: "legacy_active",
+            };
+          }
           for (const row of localRows) {
             localAreas[row.area] = {
               subscribed: true,
