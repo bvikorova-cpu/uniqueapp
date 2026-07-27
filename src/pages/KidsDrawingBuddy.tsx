@@ -396,8 +396,10 @@ const KidsDrawingBuddy = () => {
             <TabsContent value="templates" className="space-y-4">
               <QuickDrawTemplates
                 onSelectTemplate={(t, d) => {
-                  setActiveTab("tutorial");
-                  handleTemplateSelect(t, d);
+                  setTopic(t);
+                  setDifficulty(d);
+                  setActiveTab("freestyle");
+                  toast.success(`Template ready: draw a ${t}! ✏️`);
                 }}
                 loading={loading}
               />
