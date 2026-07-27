@@ -1024,25 +1024,25 @@ const App = () => {
                         <Route path="/interactive-workshops" element={<InteractiveWorkshops />} />
                         <Route path="/certification-programs" element={<CertificationPrograms />} />
                         <Route path="/certification-learn/:certificationId" element={<CourseLearning />} />
-                        <Route path="/language-learning" element={<LanguageLearning />} />
+                        <Route path="/language-learning" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/language/:contentId" element={<GenericLearning />} />
                         <Route path="/fitness-wellness" element={<FitnessWellness />} />
                         <Route path="/fitness/:contentId" element={<GenericLearning />} />
-                        <Route path="/digital-marketing" element={<DigitalMarketing />} />
+                        <Route path="/digital-marketing" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/marketing/:contentId" element={<GenericLearning />} />
-                        <Route path="/photography" element={<Photography />} />
+                        <Route path="/photography" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/photography/:contentId" element={<GenericLearning />} />
-                        <Route path="/culinary-arts" element={<CulinaryArts />} />
+                        <Route path="/culinary-arts" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/culinary/:contentId" element={<GenericLearning />} />
-                        <Route path="/music-production" element={<MusicProduction />} />
+                        <Route path="/music-production" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/music/:contentId" element={<GenericLearning />} />
-                        <Route path="/graphic-design" element={<GraphicDesign />} />
+                        <Route path="/graphic-design" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/design/:contentId" element={<GenericLearning />} />
-                        <Route path="/public-speaking" element={<PublicSpeaking />} />
+                        <Route path="/public-speaking" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/speaking/:contentId" element={<GenericLearning />} />
-                        <Route path="/financial-investment" element={<FinancialInvestment />} />
+                        <Route path="/financial-investment" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/investment/:contentId" element={<GenericLearning />} />
-                        <Route path="/creative-writing" element={<CreativeWriting />} />
+                        <Route path="/creative-writing" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/writing/:contentId" element={<GenericLearning />} />
                         <Route path="/creative-forge" element={<ProtectedRoute><CreativeForge /></ProtectedRoute>} />
                         <Route path="/coloring-pages" element={<KidsGoldPassGate moduleName="Coloring Pages" redirectPath="/coloring-pages"><KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringPages /></KidsParentalGateGuard></KidsGoldPassGate>} />
