@@ -22,6 +22,7 @@ const aiGateway = (body: unknown) =>
     method: "POST",
     headers: {
       "Lovable-API-Key": LOVABLE_API_KEY,
+      "X-Lovable-AIG-SDK": "direct-fetch",
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -32,6 +33,7 @@ serve(async (req) => {
 
   try {
     if (!LOVABLE_API_KEY) return jsonRes({ error: "LOVABLE_API_KEY not configured" }, 500);
+    if (!SERVICE_KEY) return jsonRes({ error: "SUPABASE_SERVICE_ROLE_KEY not configured" }, 500);
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return jsonRes({ error: "Missing Authorization" }, 401);
@@ -65,16 +67,23 @@ serve(async (req) => {
       const fromFree = Math.min(freeBalance, remaining);
       remaining -= fromFree;
       if (fromFree > 0) {
-        await admin.rpc("consume_free_tier_credits", { _amount: fromFree, _reason: `education_${action}` });
+        const { error: freeDeductError } = await admin.rpc("consume_free_tier_credits_for_user", {
+          p_user_id: userId,
+          p_amount: fromFree,
+          p_reason: `education_${action}`,
+        });
+        if (freeDeductError) throw freeDeductError;
       }
       if (remaining > 0) {
-        await admin.rpc("deduct_ai_credits", {
+        const { error: paidDeductError } = await admin.rpc("deduct_ai_credits", {
           p_user_id: userId, p_amount: remaining, p_reason: `education_${action}`, p_source: "education-ai",
         });
+        if (paidDeductError) throw paidDeductError;
       }
-      await admin.from("ai_usage_history").insert({
+      const { error: historyError } = await admin.from("ai_usage_history").insert({
         user_id: userId, usage_type: action, credits_used: cost, description: `education-ai:${action}`,
       });
+      if (historyError) console.error("[education-ai] usage history error", historyError.message);
     };
 
     // ─── PHOTO MATH ───

@@ -13,7 +13,7 @@ import remarkGfm from "remark-gfm";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const PhotoMathSolver = () => {
-  const { credits, loading: creditsLoading, refresh } = useAICredits();
+  const { totalBalance, loading: creditsLoading, refresh } = useAICredits();
   const fileRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [question, setQuestion] = useState("");
@@ -40,7 +40,7 @@ const PhotoMathSolver = () => {
       toast.error("Upload a photo first");
       return;
     }
-    if (credits.credits_remaining < 3) {
+    if (totalBalance < 3) {
       toast.error("Not enough AI credits (3 needed)");
       return;
     }

@@ -68428,6 +68428,23 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      consume_free_tier_credits_for_user: {
+        Args: { p_amount: number; p_reason?: string; p_user_id: string }
+        Returns: {
+          balance: number
+          granted_at: string
+          month_key: string
+          updated_at: string
+          user_id: string
+          welcome_shown: boolean
+        }
+        SetofOptions: {
+          from: "*"
+          to: "free_tier_credits"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       convert_xp_to_credits: {
         Args: { p_target: string; p_xp_amount: number }
         Returns: Json

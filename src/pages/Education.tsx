@@ -95,7 +95,7 @@ const Education = () => {
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<Array<{ role: string; content: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { credits, loading: creditsLoading, refresh: refreshAICredits } = useAICredits();
+  const { totalBalance, loading: creditsLoading, refresh: refreshAICredits } = useAICredits();
   const { data: eduStats } = useEducationStats();
 
   useEffect(() => {
@@ -227,7 +227,7 @@ const Education = () => {
                     setChatMessage={setChatMessage}
                     handleSendMessage={handleSendMessage}
                     isLoading={isLoading}
-                    credits={credits.credits_remaining}
+                    credits={totalBalance}
                     creditsLoading={creditsLoading}
                     isUsingCredit={false}
                   />
