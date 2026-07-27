@@ -10,7 +10,6 @@ const routes = [
   { path: "/education/math-solver", heading: /Math/i },
   { path: "/education/tutor", heading: /Tutor/i },
   { path: "/education/notes", heading: /Notes/i },
-  { path: "/education/study-groups", heading: /Study Groups/i },
   { path: "/education/certificates", heading: /Certificate/i },
   { path: "/education/skill-tree", heading: /Skill Tree/i },
 ];

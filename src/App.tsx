@@ -532,7 +532,7 @@ const EduLeague = lazy(() => import("@/pages/education/League"));
 const EduMathSolver = lazy(() => import("@/pages/education/MathSolver"));
 const EduAITutor = lazy(() => import("@/pages/education/AITutor"));
 const EduNotes = lazy(() => import("@/pages/education/Notes"));
-const EduStudyGroups = lazy(() => import("@/pages/education/StudyGroups"));
+
 const EduCertificates = lazy(() => import("@/pages/education/Certificates"));
 const EduCertVerify = lazy(() => import("@/pages/education/CertificateVerify"));
 const EduSkillTree = lazy(() => import("@/pages/education/SkillTree"));
@@ -726,8 +726,6 @@ const App = () => {
                         <Route path="/education/math-solver" element={<ProtectedRoute><EduMathSolver /></ProtectedRoute>} />
                         <Route path="/education/tutor" element={<ProtectedRoute><EduAITutor /></ProtectedRoute>} />
                         <Route path="/education/notes" element={<ProtectedRoute><EduNotes /></ProtectedRoute>} />
-                        <Route path="/education/study-groups" element={<ProtectedRoute><EduStudyGroups /></ProtectedRoute>} />
-                        <Route path="/education/study-groups/:groupId" element={<ProtectedRoute><EduStudyGroups /></ProtectedRoute>} />
                         <Route path="/education/certificates" element={<ProtectedRoute><EduCertificates /></ProtectedRoute>} />
                         <Route path="/education/skill-tree" element={<EduSkillTree />} />
                         <Route path="/education/skill-tree/:subject" element={<EduSkillTree />} />
