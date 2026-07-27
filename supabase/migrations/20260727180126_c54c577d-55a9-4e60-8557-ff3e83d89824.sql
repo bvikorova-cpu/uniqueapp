@@ -1,0 +1,15 @@
+GRANT SELECT ON public.education_achievements TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_user_achievements TO authenticated;
+GRANT SELECT ON public.education_skill_tree_nodes TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_user_skill_progress TO authenticated;
+GRANT SELECT ON public.education_daily_challenges TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_daily_completions TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_certificates TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_exercise_submissions TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_lesson_progress TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_math_solves TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_notes TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_study_groups TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_study_group_members TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.education_weekly_leagues TO authenticated;
+GRANT ALL ON public.education_achievements, public.education_user_achievements, public.education_skill_tree_nodes, public.education_user_skill_progress, public.education_daily_challenges, public.education_daily_completions, public.education_certificates, public.education_exercise_submissions, public.education_lesson_progress, public.education_math_solves, public.education_notes, public.education_study_groups, public.education_study_group_members, public.education_weekly_leagues TO service_role;
