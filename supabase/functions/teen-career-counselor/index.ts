@@ -1,5 +1,5 @@
 // Teen Career Counselor — AI guidance, day-in-the-life simulator, skill gap analyzer, mentor chat.
-// Credit-gated against teen_career_credits.
+// Credit-gated against the unified ai_credits pool.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
@@ -53,14 +53,11 @@ Deno.serve(async (req) => {
 
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
     const { data: credRow } = await admin
-      .from("teen_career_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
     let balance = credRow?.credits_remaining ?? 0;
-    if (!credRow) {
-      await admin.from("teen_career_credits").insert({ user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
-    }
     if (balance < cost) return json({ error: "Insufficient credits", credits_remaining: balance, cost }, 402);
 
     let payload: any = {};
@@ -147,10 +144,20 @@ Provide 6 months of learningPath. Suggest free/affordable resources (Khan Academ
       payload = { reply };
     }
 
+    const { error: deductError } = await admin.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: cost,
+      p_reason: `teen_career_${action}`,
+      p_source: "teen-career-counselor" });
+
+    if (deductError) {
+      if (String(deductError.message || "").toLowerCase().includes("insufficient")) {
+        return json({ error: "Insufficient credits", credits_remaining: balance, cost }, 402);
+      }
+      throw deductError;
+    }
+
     const newBalance = balance - cost;
-    await admin.from("teen_career_credits")
-      .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
-      .eq("user_id", user.id);
 
     return json({ ...payload, credits_remaining: newBalance, cost });
   } catch (e: any) {

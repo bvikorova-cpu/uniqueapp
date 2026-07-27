@@ -14,7 +14,7 @@ export function useTeenCareerCredits() {
     queryFn: async () => {
       if (!user) return { credits_remaining: 0, total_credits_purchased: 0 };
       const { data } = await supabase
-        .from("teen_career_credits")
+        .from("ai_credits")
         .select("credits_remaining, total_credits_purchased")
         .eq("user_id", user.id)
         .maybeSingle();

@@ -36,7 +36,12 @@ serve(async (req) => {
     }
 
     const creditAmount = parseInt(credits);
-    const tableName = credit_type;
+    if (!Number.isFinite(creditAmount) || creditAmount <= 0) {
+      throw new Error("Invalid credit amount");
+    }
+
+    const legacyUnifiedTypes = new Set(["teen_career_credits", "teen_hub_credits"]);
+    const tableName = legacyUnifiedTypes.has(credit_type) ? "ai_credits" : credit_type;
 
     // Check if payment already processed
     const { data: existing } = await supabaseClient
@@ -47,39 +52,52 @@ serve(async (req) => {
 
     if (existing) {
       return new Response(
-        JSON.stringify({ success: true, message: "Payment already processed" }),
+        JSON.stringify({ success: true, message: "Payment already processed", credits_added: 0 }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
       );
     }
 
-    // Add credits to user account
-    const { data: currentCredits } = await supabaseClient
-      .from(tableName)
-      .select("credits_remaining, total_credits_purchased")
-      .eq("user_id", user_id)
-      .maybeSingle();
+    // Add credits to user account. Teen Career is now part of the unified AI credit pool.
+    if (tableName === "ai_credits") {
+      const { error: rpcError } = await supabaseClient.rpc("add_ai_credits", {
+        p_user_id: user_id,
+        p_amount: creditAmount,
+        p_reason: `${credit_type}:stripe_purchase`,
+        p_source: "verify-credits-payment" });
+      if (rpcError) throw rpcError;
+    } else {
+      const { data: currentCredits, error: selectError } = await supabaseClient
+        .from(tableName)
+        .select("credits_remaining, total_credits_purchased")
+        .eq("user_id", user_id)
+        .maybeSingle();
+      if (selectError) throw selectError;
 
-    if (currentCredits) { await supabaseClient
-        .from(tableName)
-        .update({
-          credits_remaining: (currentCredits.credits_remaining || 0) + creditAmount,
-          total_credits_purchased: (currentCredits.total_credits_purchased || 0) + creditAmount })
-        .eq("user_id", user_id);
-    } else { await supabaseClient
-        .from(tableName)
-        .insert({
-          user_id,
-          credits_remaining: creditAmount,
-          total_credits_purchased: creditAmount });
+      if (currentCredits) { const { error: updateError } = await supabaseClient
+          .from(tableName)
+          .update({
+            credits_remaining: (currentCredits.credits_remaining || 0) + creditAmount,
+            total_credits_purchased: (currentCredits.total_credits_purchased || 0) + creditAmount })
+          .eq("user_id", user_id);
+        if (updateError) throw updateError;
+      } else { const { error: insertError } = await supabaseClient
+          .from(tableName)
+          .insert({
+            user_id,
+            credits_remaining: creditAmount,
+            total_credits_purchased: creditAmount });
+        if (insertError) throw insertError;
+      }
     }
 
     // Log payment
-    await supabaseClient.from("credit_payments").insert({ session_id,
+    const { error: paymentLogError } = await supabaseClient.from("credit_payments").insert({ session_id,
       user_id,
       credits: creditAmount,
       credit_type,
       amount: session.amount_total,
       currency: session.currency });
+    if (paymentLogError) throw paymentLogError;
 
     return new Response(
       JSON.stringify({ success: true, credits_added: creditAmount }),
