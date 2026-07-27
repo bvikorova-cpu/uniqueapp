@@ -5,6 +5,34 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
+const OPENAI_TEXT_MODEL = "openai/gpt-5.4-mini";
+const LOVABLE_AI_GATEWAY_CHAT_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+
+async function callOpenAIText(body: Record<string, unknown>) {
+  const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+  const gatewayBody = { ...body, model: OPENAI_TEXT_MODEL };
+
+  if (lovableApiKey) {
+    return await fetch(LOVABLE_AI_GATEWAY_CHAT_URL, {
+      method: "POST",
+      headers: {
+        "Lovable-API-Key": lovableApiKey,
+        "X-Lovable-AIG-SDK": "supabase-edge",
+        "Content-Type": "application/json" },
+      body: JSON.stringify(gatewayBody) });
+  }
+
+  const openAiKey = Deno.env.get("OPENAI_API_KEY");
+  if (!openAiKey) throw new Error("AI service is not configured");
+
+  return await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${openAiKey}`,
+      "Content-Type": "application/json" },
+    body: JSON.stringify({ ...body, model: "gpt-4o-mini" }) });
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -171,10 +199,6 @@ serve(async (req) => {
     const customPrompt = reqBody.customPrompt || reqBody.prompt || reqBody.input || reqBody.message || reqBody.query;
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY is not configured");
-    }
-
     // Auth (credit check already performed above via requireAiCredits)
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -271,30 +295,24 @@ You can ALSO navigate the user inside the app to these routes:
 
 Only call the navigate tool when the user clearly asks to open/go to/show one of these. Never invent routes not listed above.`;
 
-      const uniResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
-            { role: "system", content: uniSystemPrompt },
-            { role: "system", content: `The user is currently on route: ${currentRoute}` },
-            { role: "user", content: transcript },
-          ],
-          tools: [{
-            type: "function",
-            function: {
-              name: "navigate",
-              description: "Navigate the app to a route from the allowed list.",
-              parameters: {
-                type: "object",
-                properties: { path: { type: "string", description: "Route path starting with /" } },
-                required: ["path"],
-                additionalProperties: false } } }],
-          tool_choice: "auto",
-          max_completion_tokens: 300 }) });
+      const uniResponse = await callOpenAIText({
+        messages: [
+          { role: "system", content: uniSystemPrompt },
+          { role: "system", content: `The user is currently on route: ${currentRoute}` },
+          { role: "user", content: transcript },
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "navigate",
+            description: "Navigate the app to a route from the allowed list.",
+            parameters: {
+              type: "object",
+              properties: { path: { type: "string", description: "Route path starting with /" } },
+              required: ["path"],
+              additionalProperties: false } } }],
+        tool_choice: "auto",
+        max_completion_tokens: 300 });
 
       if (!uniResponse.ok) {
         if (uniResponse.status === 429) {
@@ -646,18 +664,12 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     })();
 
     let message = "Sending you warm wishes!";
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        max_completion_tokens: maxTokens }) });
+    const response = await callOpenAIText({
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      max_completion_tokens: maxTokens });
 
     if (!response.ok) {
       if (response.status === 429) {
