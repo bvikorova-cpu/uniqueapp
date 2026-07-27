@@ -30,6 +30,14 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   });
   const captionTimerRef = useRef<number | null>(null);
 
+  const sanitizeVisibleText = (value: string) =>
+    value
+      .replace(/Lovable\s+AI\s+Gateway/gi, "OpenAI")
+      .replace(/Lovable\s+gateway/gi, "OpenAI")
+      .replace(/AI\s+Gateway/gi, "OpenAI")
+      .replace(/Switching\s+to\s+OpenAI\s+for\s*\.\.\.?/gi, "Connecting to OpenAI…")
+      .trim();
+
   const showCaption = (role: "user" | "assistant", text: string, autoHideMs?: number) => {
     if (captionTimerRef.current) window.clearTimeout(captionTimerRef.current);
     setCaption({ role, text: sanitizeVisibleText(text) });
@@ -48,14 +56,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-
-  const sanitizeVisibleText = (value: string) =>
-    value
-      .replace(/Lovable\s+AI\s+Gateway/gi, "OpenAI")
-      .replace(/Lovable\s+gateway/gi, "OpenAI")
-      .replace(/AI\s+Gateway/gi, "OpenAI")
-      .replace(/Switching\s+to\s+OpenAI\s+for\s*\.\.\.?/gi, "Connecting to OpenAI…")
-      .trim();
 
   const supported = typeof window !== "undefined" &&
     ("webkitSpeechRecognition" in window || "SpeechRecognition" in window);
