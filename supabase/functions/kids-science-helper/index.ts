@@ -4,7 +4,7 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
-const COSTS = { safetyCheck: 2, askScientist: 2 } as const;
+const COSTS = { safetyCheck: 2, askScientist: 2, analyze: 4 } as const;
 type Action = keyof typeof COSTS;
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
@@ -47,7 +47,8 @@ Deno.serve(async (req) => {
 
     const supa = createClient(SUPABASE_URL, SERVICE_KEY);
     const body = await req.json();
-    const action = body?.action as Action;
+    // Default to "analyze" when no action is provided (KidsScienceLab full-analysis flow)
+    const action = (body?.action ?? "analyze") as Action;
     if (!COSTS[action]) throw new Error(`Unknown action: ${action}`);
 
     // Credit check + deduct (skipped for Gold Pass)
@@ -80,6 +81,12 @@ Deno.serve(async (req) => {
       result = await callAI(
         "You are a friendly scientist explaining concepts to kids ages 6-12. Return STRICT JSON: { answer: string, analogy: string, didYouKnow: string, followUpQuestions: string[] }. Keep language simple and curious.",
         `Experiment context: ${context}\nKid's question: ${question}`,
+      );
+    } else if (action === "analyze") {
+      const { category = "", hypothesis = "", observations = "", difficulty = "easy" } = body;
+      result = await callAI(
+        "You are a friendly scientist for kids ages 6-12. Analyze the experiment and return STRICT JSON: { conclusion: string, explanation: string, funFacts: string[], quiz: Array<{ question: string, options: string[3], correctIndex: 0|1|2 }> }. Provide exactly 3 fun facts and 3 quiz questions. Keep language simple and fun.",
+        `Category: ${category}\nDifficulty: ${difficulty}\nHypothesis: ${hypothesis}\nObservations: ${observations}`,
       );
     }
 
