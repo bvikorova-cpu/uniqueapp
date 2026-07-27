@@ -12,7 +12,7 @@ import { Users, Plus, KeyRound, Copy, ArrowRight, BookOpen, Brain, Layers, Troph
 import { Helmet } from "react-helmet-async";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const __HIW_STUDYGROUPS_STEPS = [
   { title: 'Join or create a group', desc: 'Pick a subject and invite friends or open it to everyone.' },
@@ -25,7 +25,9 @@ const __HIW_STUDYGROUPS = { title: 'Study Groups', intro: 'Learn together in sma
 
 export default function StudyGroups() {
   const qc = useQueryClient();
-  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { groupId } = useParams<{ groupId?: string }>();
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(groupId ?? null);
 
   const { data: groups = [] } = useQuery({
     queryKey: ["study-groups"],
@@ -41,11 +43,12 @@ export default function StudyGroups() {
     } });
 
   useEffect(() => {
+    if (groupId && groupId !== selectedGroupId) setSelectedGroupId(groupId);
     if (!selectedGroupId && groups.length > 0) setSelectedGroupId(groups[0].id);
     if (selectedGroupId && groups.length > 0 && !groups.some((group: any) => group.id === selectedGroupId)) {
       setSelectedGroupId(groups[0].id);
     }
-  }, [groups, selectedGroupId]);
+  }, [groups, groupId, selectedGroupId]);
 
   const selectedGroup = groups.find((group: any) => group.id === selectedGroupId) ?? null;
 
@@ -77,7 +80,7 @@ export default function StudyGroups() {
       if (memberError) throw memberError;
       return g;
     },
-    onSuccess: (group) => { setSelectedGroupId(group.id); qc.invalidateQueries({ queryKey: ["study-groups"] }); toast.success("Group created"); },
+    onSuccess: (group) => { setSelectedGroupId(group.id); navigate(`/education/study-groups/${group.id}`); qc.invalidateQueries({ queryKey: ["study-groups"] }); toast.success("Group created"); },
     onError: (e: any) => toast.error(e?.message ?? "Failed to create group") });
 
   const join = useMutation({
@@ -97,7 +100,7 @@ export default function StudyGroups() {
       }
       return g;
     },
-    onSuccess: (group) => { setSelectedGroupId(group.id); qc.invalidateQueries({ queryKey: ["study-groups"] }); toast.success("Group opened"); },
+    onSuccess: (group) => { setSelectedGroupId(group.id); navigate(`/education/study-groups/${group.id}`); qc.invalidateQueries({ queryKey: ["study-groups"] }); toast.success("Group opened"); },
     onError: (e: any) => toast.error(e?.message ?? "Failed") });
 
   const [openCreate, setOpenCreate] = useState(false);
@@ -220,7 +223,7 @@ export default function StudyGroups() {
                       <Copy className="w-3 h-3" /> {g.invite_code}
                     </Button>
                   </div>
-                  <Button className="w-full" variant={g.id === selectedGroupId ? "secondary" : "default"} onClick={() => setSelectedGroupId(g.id)}>
+                  <Button className="w-full" variant={g.id === selectedGroupId ? "secondary" : "default"} onClick={() => { setSelectedGroupId(g.id); navigate(`/education/study-groups/${g.id}`); }}>
                     Open group <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </CardContent>
