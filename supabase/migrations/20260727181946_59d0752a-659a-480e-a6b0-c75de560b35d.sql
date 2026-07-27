@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.edu_is_study_group_member(uuid, uuid) TO authenticated, anon, service_role;
