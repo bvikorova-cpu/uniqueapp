@@ -5,6 +5,15 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
+const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+
+const COSTS: Record<string, number> = { photo_math: 3, pdf_to_quiz: 3 };
+
+const jsonRes = (b: unknown, s = 200) =>
+  new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
 const ai = (body: unknown, key: string) =>
   fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -19,107 +28,94 @@ serve(async (req) => {
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("Missing Authorization");
-    const supa = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-    );
+    if (!authHeader) return jsonRes({ error: "Missing Authorization" }, 401);
+    const supa = createClient(SUPABASE_URL, ANON_KEY);
     const { data: userData } = await supa.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (!userData.user) throw new Error("Not authenticated");
+    if (!userData.user) return jsonRes({ error: "Not authenticated" }, 401);
+    const userId = userData.user.id;
 
     const body = await req.json();
     const action = body?.action as string;
+    const cost = COSTS[action];
+    if (!cost) return jsonRes({ error: "Unknown action" }, 400);
+
+    const admin = createClient(SUPABASE_URL, SERVICE_KEY);
+
+    // Pre-check unified ai_credits balance
+    const { data: credRow } = await admin
+      .from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+    const balance = credRow?.credits_remaining ?? 0;
+    if (balance < cost) return jsonRes({ error: "Insufficient credits", credits_remaining: balance, cost }, 402);
 
     // ─── PHOTO MATH ───
     if (action === "photo_math") {
       const { imageDataUrl, question } = body;
       if (!imageDataUrl || !String(imageDataUrl).startsWith("data:image/")) {
-        return new Response(JSON.stringify({ error: "imageDataUrl required" }), {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        return jsonRes({ error: "imageDataUrl required" }, 400);
       }
       const res = await ai({ model: "gpt-4o-mini",
         messages: [
-          {
-            role: "system",
-            content:
-              "You are a brilliant math tutor. Look at the photo of the math problem and explain the solution step by step. Use LaTeX ($...$ inline, $$...$$ block). Always answer in English. If not a math problem, say so politely." },
-          {
-            role: "user",
-            content: [
+          { role: "system", content: "You are a brilliant math tutor. Look at the photo of the math problem and explain the solution step by step. Use LaTeX ($...$ inline, $$...$$ block). Always answer in English. If not a math problem, say so politely." },
+          { role: "user", content: [
               { type: "text", text: question || "Solve this problem step by step." },
               { type: "image_url", image_url: { url: imageDataUrl } },
             ] },
         ] }, OPENAI_API_KEY);
 
-      if (res.status === 429) return new Response(JSON.stringify({ error: "Rate limit" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (res.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (res.status === 429) return jsonRes({ error: "Rate limit" }, 429);
       if (!res.ok) throw new Error(`AI error: ${res.status}`);
       const data = await res.json();
-      return new Response(JSON.stringify({ solution: data?.choices?.[0]?.message?.content ?? "" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const solution = data?.choices?.[0]?.message?.content ?? "";
+
+      const { error: deductError } = await admin.rpc("deduct_ai_credits", {
+        p_user_id: userId, p_amount: cost, p_reason: `education_${action}`, p_source: "education-ai" });
+      if (deductError) throw deductError;
+
+      return jsonRes({ solution, credits_remaining: balance - cost, cost });
     }
 
     // ─── PDF → QUIZ ───
     if (action === "pdf_to_quiz") {
       const { text, numQuestions = 8, difficulty = "medium" } = body;
       const safeText = typeof text === "string" ? text.slice(0, 20000) : "";
-      if (safeText.trim().length < 50) {
-        return new Response(JSON.stringify({ error: "Text too short" }), {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
+      if (safeText.trim().length < 50) return jsonRes({ error: "Text too short" }, 400);
       const safeN = Math.max(3, Math.min(20, Number(numQuestions) || 8));
       const res = await ai({ model: "gpt-4o-mini",
         messages: [
-          {
-            role: "system",
-            content:
-              "You are a quiz designer. From the study text, generate a multiple-choice quiz. Always English. Each question has 4 options and one correct index (0-3). Respond ONLY by calling the create_quiz tool." },
+          { role: "system", content: "You are a quiz designer. From the study text, generate a multiple-choice quiz. Always English. Each question has 4 options and one correct index (0-3). Respond ONLY by calling the create_quiz tool." },
           { role: "user", content: `Difficulty: ${difficulty}. Create ${safeN} questions from:\n\n${safeText}` },
         ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "create_quiz",
-            description: "Return the generated quiz",
-            parameters: {
-              type: "object",
-              properties: {
-                title: { type: "string" },
-                questions: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      question: { type: "string" },
-                      options: { type: "array", items: { type: "string" }, minItems: 4, maxItems: 4 },
-                      correct_index: { type: "integer", minimum: 0, maximum: 3 },
-                      explanation: { type: "string" } },
-                    required: ["question", "options", "correct_index", "explanation"],
-                    additionalProperties: false } } },
-              required: ["title", "questions"],
-              additionalProperties: false } } }],
+        tools: [{ type: "function", function: {
+          name: "create_quiz", description: "Return the generated quiz",
+          parameters: { type: "object", properties: {
+            title: { type: "string" },
+            questions: { type: "array", items: { type: "object", properties: {
+              question: { type: "string" },
+              options: { type: "array", items: { type: "string" }, minItems: 4, maxItems: 4 },
+              correct_index: { type: "integer", minimum: 0, maximum: 3 },
+              explanation: { type: "string" } },
+              required: ["question", "options", "correct_index", "explanation"],
+              additionalProperties: false } } },
+            required: ["title", "questions"], additionalProperties: false } } }],
         tool_choice: { type: "function", function: { name: "create_quiz" } } }, OPENAI_API_KEY);
 
-      if (res.status === 429) return new Response(JSON.stringify({ error: "Rate limit" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (res.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (res.status === 429) return jsonRes({ error: "Rate limit" }, 429);
       if (!res.ok) throw new Error(`AI error: ${res.status}`);
       const data = await res.json();
       const args = data?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
       if (!args) throw new Error("AI did not return quiz");
-      return new Response(JSON.stringify({ quiz: JSON.parse(args) }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+      const { error: deductError } = await admin.rpc("deduct_ai_credits", {
+        p_user_id: userId, p_amount: cost, p_reason: `education_${action}`, p_source: "education-ai" });
+      if (deductError) throw deductError;
+
+      return jsonRes({ quiz: JSON.parse(args), credits_remaining: balance - cost, cost });
     }
 
-    return new Response(JSON.stringify({ error: "Unknown action" }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return jsonRes({ error: "Unknown action" }, 400);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[education-ai] ERROR", msg);
-    return new Response(JSON.stringify({ error: msg }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return jsonRes({ error: msg }, 500);
   }
 });
