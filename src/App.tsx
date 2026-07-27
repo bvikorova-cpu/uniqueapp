@@ -1002,7 +1002,8 @@ const App = () => {
                         
                         <Route path="/plant-care" element={<PlantCare />} />
                         <Route path="/ai-tattoo" element={<AITattoo />} />
-                        <Route path="/kids-homework" element={<KidsGoldPassGate moduleName="Homework Helper" pricingPath="/kids-pricing" creditTable="homework_credits" redirectPath="/kids-homework"><KidsHomework /></KidsGoldPassGate>} />
+                        <Route path="/kids-homework" element={<KidsGoldPassGate moduleName="Homework Helper" pricingPath="/kids-pricing" redirectPath="/kids-homework"><KidsHomework /></KidsGoldPassGate>} />
+                        <Route path="/kids-homework-pricing" element={<Navigate to="/kids-pricing" replace />} />
                         
                         <Route path="/kids-story-creator" element={<KidsGoldPassGate moduleName="Story Creator" pricingPath="/kids-pricing" creditTable="kids_story_credits" redirectPath="/kids-story-creator"><KidsStoryCreator /></KidsGoldPassGate>} />
                         <Route path="/kids-story-pricing" element={<KidsStoryPricing />} />
