@@ -379,13 +379,26 @@ const KidsDrawingBuddy = () => {
             </TabsContent>
 
             <TabsContent value="freestyle" className="space-y-4">
+              {templateRef && (
+                <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-2 border-purple-300">
+                  <CardContent className="p-4 flex items-center gap-4">
+                    <div className="text-6xl">{templateRef.emoji}</div>
+                    <div className="flex-1">
+                      <div className="text-xs uppercase text-muted-foreground">Template</div>
+                      <div className="text-lg font-bold">{templateRef.title}</div>
+                      <div className="text-xs text-muted-foreground capitalize">Difficulty: {templateRef.difficulty}</div>
+                    </div>
+                    <Button variant="ghost" size="sm" onClick={() => setTemplateRef(null)}>Clear</Button>
+                  </CardContent>
+                </Card>
+              )}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Palette className="w-5 h-5" /> Freestyle Canvas
                   </CardTitle>
                   <CardDescription>
-                    Draw anything you want! Free to use — no credits needed.
+                    {templateRef ? `Draw the ${templateRef.title.toLowerCase()} using the reference above!` : "Draw anything you want! Free to use — no credits needed."}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -396,11 +409,12 @@ const KidsDrawingBuddy = () => {
 
             <TabsContent value="templates" className="space-y-4">
               <QuickDrawTemplates
-                onSelectTemplate={(t, d) => {
+                onSelectTemplate={(t, d, emoji, title) => {
                   setTopic(t);
                   setDifficulty(d);
+                  setTemplateRef({ emoji: emoji || "✏️", title: title || t, difficulty: d });
                   setActiveTab("freestyle");
-                  toast.success(`Template ready: draw a ${t}! ✏️`);
+                  toast.success(`Template ready: draw a ${title || t}! ✏️`);
                 }}
                 loading={loading}
               />
