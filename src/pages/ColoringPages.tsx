@@ -169,7 +169,7 @@ export default function ColoringPages() {
   const hardCount = myPages?.filter((p) => p.difficulty === "hard").length || 0;
   const creditsDisplay = unifiedBalance;
 
-  if (creditsLoading) {
+  if (creditsLoading || unifiedLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
       <FloatingHowItWorks title={__HIW_COLORINGPAGES.title} intro={__HIW_COLORINGPAGES.intro} steps={__HIW_COLORINGPAGES.steps} />
