@@ -24,7 +24,7 @@ const FEATURES = [
   { to: "/education/math-solver", icon: Calculator, title: "Math Solver", desc: "Photo → step-by-step" },
   { to: "/education/tutor", icon: Brain, title: "AI Tutor", desc: "Chat with a personal tutor" },
   { to: "/education/notes", icon: FileText, title: "Notes", desc: "Markdown + AI summaries" },
-  { to: "/education/study-groups", icon: Users, title: "Study Groups", desc: "Learn together" },
+  
   { to: "/education/certificates", icon: Sparkles, title: "Certificates", desc: "Earn after passing" },
 ];
 

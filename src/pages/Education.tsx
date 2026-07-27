@@ -184,7 +184,7 @@ const Education = () => {
               { to: "/education/math-solver", icon: Calculator, title: "Math Solver", desc: "Photo → steps" },
               { to: "/education/tutor", icon: Brain, title: "AI Tutor", desc: "Personal chat tutor" },
               { to: "/education/notes", icon: FileText, title: "Notes", desc: "Markdown + AI" },
-              { to: "/education/study-groups", icon: Users, title: "Study Groups", desc: "Learn together" },
+              
               { to: "/education/certificates", icon: Sparkles, title: "Certificates", desc: "Earn after passing" },
             ].map((f) => (
               <Link key={f.to} to={f.to}>
