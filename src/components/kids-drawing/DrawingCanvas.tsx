@@ -204,10 +204,12 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringIma
 
   const handleClear = () => {
     if (!fabricCanvas) return;
+    const bgImage = fabricCanvas.backgroundImage;
     fabricCanvas.clear();
     fabricCanvas.backgroundColor = "#ffffff";
+    if (bgImage) fabricCanvas.backgroundImage = bgImage;
     fabricCanvas.renderAll();
-    
+
     // Save cleared state to history
     const json = JSON.stringify(fabricCanvas.toJSON());
     setCanvasHistory((prev) => {
@@ -216,7 +218,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringIma
       return newHistory;
     });
     setHistoryStep((prev) => prev + 1);
-    
+
     toast.success("Canvas cleared! 🎨");
   };
 
