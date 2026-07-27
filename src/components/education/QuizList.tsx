@@ -108,14 +108,14 @@ export default function QuizList() {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Card className="bg-muted/30 border-primary/20">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
+          <div className="rounded-xl border border-primary/20 bg-muted/30 p-4 sm:p-6 space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" /> Generate AI Quiz
-              </CardTitle>
-              <CardDescription>Creates and saves a quiz to your list. Cost: 5 AI credits.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h3>
+              <p className="text-sm text-muted-foreground">Creates and saves a quiz to your list. Cost: 5 AI credits.</p>
+            </div>
+            <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="quiz-topic">Topic</Label>
                 <Input
@@ -163,8 +163,8 @@ export default function QuizList() {
                 {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                 {generating ? "Generating..." : "Generate Quiz"}
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {!quizzes || quizzes.length === 0 ? (
             <div className="text-center py-12">
