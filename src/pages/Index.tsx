@@ -93,7 +93,7 @@ const services = [
   { title: "Best Friend AI", icon: Heart, path: "/best-friend", badge: "Companion", gradient: "from-rose-500 to-pink-500", category: "social" },
   { title: "Brain Duel", icon: Brain, path: "/brain-duel", badge: "Challenge", gradient: "from-orange-500 to-red-500", category: "entertainment" },
   { title: "Cooking AI", icon: ChefHat, path: "/cooking-ai", badge: "Recipes", gradient: "from-orange-500 to-amber-500", category: "creative" },
-  { title: "Creative Writing", icon: PenTool, path: "/creative-writing", badge: "Writing", gradient: "from-indigo-500 to-blue-500", category: "creative" },
+  
   { title: "Fitness & Wellness", icon: Heart, path: "/fitness-wellness", badge: "Health", gradient: "from-green-500 to-teal-500", category: "wellness" },
   { title: "Food Scanner", icon: Camera, path: "/food-scanner", badge: "Nutrition", gradient: "from-lime-500 to-green-500", category: "wellness" },
   { title: "Fundraising", icon: Heart, path: "/fundraising", badge: "Charity", gradient: "from-blue-500 to-indigo-500", category: "social" },
@@ -106,8 +106,8 @@ const services = [
   { title: "Wine Pairing", icon: ChefHat, path: "/wine-pairing", badge: "Sommelier", gradient: "from-red-500 to-rose-500", category: "creative" },
   { title: "Pet Translator", icon: MessageCircle, path: "/pet-translator", badge: "Pets", gradient: "from-amber-400 to-orange-500", category: "creative" },
   { title: "Plant Care", icon: Sparkles, path: "/plant-care", badge: "Garden", gradient: "from-green-500 to-lime-500", category: "wellness" },
-  { title: "Photography", icon: Camera, path: "/photography", badge: "Photo", gradient: "from-sky-500 to-indigo-500", category: "creative" },
-  { title: "Language Learning", icon: Globe, path: "/language-learning", badge: "Languages", gradient: "from-blue-500 to-purple-500", category: "learning" },
+
+
   { title: "Lie Detector", icon: Brain, path: "/lie-detector", badge: "Truth AI", gradient: "from-red-500 to-orange-500", category: "entertainment" },
   { title: "Kids Academy", icon: Baby, path: "/kids-academy", badge: "Education", gradient: "from-blue-400 to-cyan-400", category: "learning" },
   { title: "Coupon Marketplace", icon: ShoppingBag, path: "/coupon-marketplace", badge: "Deals", gradient: "from-green-500 to-emerald-500", category: "shopping" },
@@ -117,11 +117,8 @@ const services = [
   { title: "Horse Racing", icon: Trophy, path: "/horse-racing", badge: "Racing", gradient: "from-green-600 to-emerald-600", category: "entertainment" },
   { title: "Vacationer", icon: Globe, path: "/vacationer", badge: "Travel", gradient: "from-sky-500 to-blue-500", category: "entertainment" },
   { title: "Video Ad Generator", icon: Video, path: "/video-ad-generator", badge: "Marketing", gradient: "from-red-500 to-pink-500", category: "creative" },
-  { title: "Digital Marketing", icon: TrendingUp, path: "/digital-marketing", badge: "Marketing", gradient: "from-blue-500 to-indigo-500", category: "learning" },
   { title: "Handwriting AI", icon: PenTool, path: "/handwriting", badge: "AI", gradient: "from-amber-500 to-yellow-500", category: "creative" },
-  { title: "Public Speaking", icon: Mic, path: "/public-speaking", badge: "Skills", gradient: "from-indigo-500 to-blue-500", category: "learning" },
-  { title: "Music Production", icon: Sparkles, path: "/music-production", badge: "Audio", gradient: "from-purple-500 to-fuchsia-500", category: "creative" },
-  { title: "Graphic Design", icon: Palette, path: "/graphic-design", badge: "Design", gradient: "from-pink-500 to-rose-500", category: "creative" },
+
   
   { title: "Past Life Explorer", icon: Sparkles, path: "/past-life", badge: "Spiritual", gradient: "from-purple-500 to-indigo-500", category: "wellness" },
   { title: "First Aid Guide", icon: Heart, path: "/first-aid", badge: "Health", gradient: "from-red-500 to-rose-500", category: "wellness" },
