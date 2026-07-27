@@ -143,7 +143,7 @@ const KidsHomework = () => {
     <div className="min-h-screen bg-background">
       <FloatingHowItWorks title={__HIW_KIDSHOMEWORK.title} intro={__HIW_KIDSHOMEWORK.intro} steps={__HIW_KIDSHOMEWORK.steps} />
       <Navbar />
-      <main className="container mx-auto px-4 py-8 mt-16">
+      <main className="container mx-auto px-4 pt-8 pb-[calc(12rem+env(safe-area-inset-bottom))] md:pb-12 mt-16">
         <div className="max-w-6xl mx-auto">
           <HomeworkHero />
 
@@ -186,10 +186,10 @@ const KidsHomework = () => {
 
 
           <Tabs defaultValue="homework" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
-              <TabsTrigger value="homework" className="text-xs sm:text-sm">📚 Ask AI</TabsTrigger>
-              <TabsTrigger value="mastery" className="text-xs sm:text-sm">🗺️ Mastery</TabsTrigger>
-              <TabsTrigger value="achievements" className="text-xs sm:text-sm">🏆 Achievements</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 mb-6 h-auto pr-20 sm:pr-0 relative z-10">
+              <TabsTrigger value="homework" className="min-w-0 text-xs sm:text-sm">📚 Ask AI</TabsTrigger>
+              <TabsTrigger value="mastery" className="min-w-0 text-xs sm:text-sm">🗺️ Mastery</TabsTrigger>
+              <TabsTrigger value="achievements" className="min-w-0 text-xs sm:text-sm truncate">🏆 Achievements</TabsTrigger>
             </TabsList>
 
             <TabsContent value="homework" className="space-y-6">
