@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import type { PointerEvent, TouchEvent } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -160,7 +161,7 @@ const KidsDrawingBuddy = () => {
   };
 
   const handleTutorialStepPointer = (
-    event: React.PointerEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
+    event: PointerEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>,
     direction: "previous" | "next"
   ) => {
     event.preventDefault();
