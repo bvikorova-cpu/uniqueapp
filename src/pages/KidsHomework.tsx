@@ -29,6 +29,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
+import { KidsGoldPassGate } from "@/components/kids/KidsGoldPassGate";
 
 const __HIW_KIDSHOMEWORK_STEPS = [
   { title: 'Type or snap homework', desc: 'Kid photographs or types the question.' },
