@@ -498,7 +498,7 @@ const Navbar = () => {
             </DropdownMenu>
           </div>
 
-          <div className="hidden lg:flex items-center space-x-2">
+          <div className="hidden lg:flex items-center space-x-2 shrink-0">
 
             {/* Theme Toggle — visible for all users */}
             <ThemeToggle />
