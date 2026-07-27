@@ -10,6 +10,8 @@ import Navbar from "@/components/Navbar";
 import { useKidsReadingCredits, KIDS_READING_CREDIT_COST } from "@/hooks/useKidsReadingCredits";
 import { CreditBanner } from "@/components/kids/CreditBanner";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ReadingHero } from "@/components/kids-reading/ReadingHero";
