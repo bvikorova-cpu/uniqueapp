@@ -166,8 +166,9 @@ const KidsDrawingBuddy = () => {
 
           <HeroRewardedAd sectionKey="page_kidsdrawingbuddy" />
 
-          {/* Credit Balance Banner */}
-          {isAuthenticated && (
+          {/* Credit Balance Banner (hidden for Gold Pass) */}
+          {isAuthenticated && hasGoldPass && <KidsGoldPassBanner />}
+          {isAuthenticated && !hasGoldPass && (
             <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/10 to-accent/10">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center justify-between flex-wrap gap-2">
