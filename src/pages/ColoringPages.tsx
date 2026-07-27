@@ -233,18 +233,6 @@ export default function ColoringPages() {
               <TabsTrigger value="stats" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
                 <Trophy className="w-3.5 h-3.5" /> Stats
               </TabsTrigger>
-              <TabsTrigger value="pricing" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
-                <Gem className="w-3.5 h-3.5" /> Pricing
-              </TabsTrigger>
-              <TabsTrigger value="schools" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
-                <GraduationCap className="w-3.5 h-3.5" /> Schools
-              </TabsTrigger>
-              <TabsTrigger value="healthcare" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
-                <Heart className="w-3.5 h-3.5" /> Healthcare
-              </TabsTrigger>
-              <TabsTrigger value="corporate" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
-                <Crown className="w-3.5 h-3.5" /> Corporate
-              </TabsTrigger>
             </TabsList>
           </div>
 
