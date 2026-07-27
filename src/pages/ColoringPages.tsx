@@ -26,7 +26,10 @@ import { DailyChallenge } from "@/components/coloring/DailyChallenge";
 import { AIColorSuggestions } from "@/components/coloring/AIColorSuggestions";
 import { PrintExport } from "@/components/coloring/PrintExport";
 import { CreditBanner } from "@/components/kids/CreditBanner";
-const __HIW_COLORINGPAGES_STEPS = [
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+
   { title: 'Generate with AI', desc: 'Describe an idea; AI creates a printable coloring page.' },
   { title: 'Or pick a template', desc: 'Browse the gallery by theme, age and difficulty.' },
   { title: 'Color in-app or print', desc: 'Use the digital canvas or download a print-ready PDF.' },
