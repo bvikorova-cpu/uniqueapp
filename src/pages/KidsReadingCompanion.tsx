@@ -48,7 +48,9 @@ const KidsReadingCompanion = () => {
   const [activeView, setActiveView] = useState<"input" | "results" | "flashcards" | "quiz">("input");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [defineWord, setDefineWord] = useState<string | null>(null);
-  const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsReadingCredits();
+  const { balance, canUse: canUseCredits, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsReadingCredits();
+  const { hasGoldPass } = useKidsGoldPass();
+  const canUse = hasGoldPass || canUseCredits;
 
   const handleBuyCredits = async () => {
     const url = await purchase(50);
