@@ -149,6 +149,7 @@ const KidsHomework = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">
+          <KidsGoldPassGate moduleName="Homework Helper" redirectPath="/kids-homework">
           <HomeworkHero />
 
           <HeroRewardedAd sectionKey="page_kidshomework" />
@@ -158,23 +159,7 @@ const KidsHomework = () => {
             <SafeContentBadge variant="compact" />
           </div>
 
-          {/* Gold Pass banner (unlimited) */}
-          {hasGoldPass && (
-            <div className="mb-6">
-              <KidsGoldPassBanner moduleName="Homework Helper" />
-            </div>
-          )}
 
-          {/* Credit balance — hidden for Gold Pass unlimited users */}
-          {!usageLoading && !hasGoldPass && (
-            <div className="mb-6">
-              <HomeworkLimitBanner
-                creditsRemaining={credits_remaining}
-                creditsPerQuestion={HOMEWORK_CREDITS_PER_QUESTION}
-                onBuyCredits={handleBuyCredits}
-              />
-            </div>
-          )}
 
           {/* Progress & Challenge cards */}
           {user && !progressLoading && (
