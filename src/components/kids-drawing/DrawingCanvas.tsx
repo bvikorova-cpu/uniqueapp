@@ -34,7 +34,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [activeColor, setActiveColor] = useState("#000000");
   const [brushSize, setBrushSize] = useState(3);
-  const [activeTool, setActiveTool] = useState<"draw" | "erase" | "circle" | "square" | "star">("draw");
+  const [activeTool, setActiveTool] = useState<"draw" | "erase" | "circle" | "square" | "star" | "pan">("draw");
   const [showReference, setShowReference] = useState(true);
   const [overlayMode, setOverlayMode] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(30);
@@ -42,6 +42,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
   const [historyStep, setHistoryStep] = useState(-1);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [drawingTitle, setDrawingTitle] = useState("");
+  const [zoom, setZoom] = useState(1);
   const { saveDrawing, isSaving } = useKidsDrawingGallery();
 
   useEffect(() => { if (!canvasRef.current) return;
