@@ -7,6 +7,7 @@ import { Sparkles, Upload, Camera, Wand2, Loader2, Download, RefreshCw, Coins, X
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 
 const STYLES: Array<{ id: string; label: string; emoji: string }> = [
   { id: "cartoon", label: "Cartoon", emoji: "🎨" },
@@ -38,8 +39,9 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
   const [loading, setLoading] = useState(false);
   const [enhanced, setEnhanced] = useState<string | null>(null);
 
+  const { hasGoldPass } = useKidsGoldPass();
   const COST = 4;
-  const canRun = balance >= COST;
+  const canRun = hasGoldPass || balance >= COST;
 
   const onFile = (f?: File | null) => {
     if (!f) return;
@@ -57,7 +59,7 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
 
   const enhance = async () => {
     if (!sketch) { toast.error("Add your sketch first"); return; }
-    if (!canRun) { toast.error(`Need ${COST} credits — you have ${balance}`); return; }
+    if (!hasGoldPass && !canRun) { toast.error(`Need ${COST} credits — you have ${balance}`); return; }
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("kids-drawing-enhance", {
@@ -92,7 +94,7 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
             <Wand2 className="h-5 w-5 text-primary" />
             Magic Polish — Sketch → Art
           </span>
-          <Badge variant="outline" className="text-xs">{COST} credits</Badge>
+          <Badge variant="outline" className="text-xs">{hasGoldPass ? "Unlimited" : `${COST} credits`}</Badge>
         </CardTitle>
         <CardDescription>
           Upload or snap your drawing, pick a style, and watch AI transform it into polished art.
@@ -168,7 +170,7 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
             {loading ? (
               <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Painting your masterpiece…</>
             ) : (
-              <><Sparkles className="mr-2 h-4 w-4" /> Polish my drawing ({COST} credits)</>
+              <><Sparkles className="mr-2 h-4 w-4" /> {hasGoldPass ? "Polish my drawing (unlimited)" : `Polish my drawing (${COST} credits)`}</>
             )}
           </Button>
         ) : (
