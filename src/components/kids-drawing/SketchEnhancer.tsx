@@ -59,7 +59,7 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
 
   const enhance = async () => {
     if (!sketch) { toast.error("Add your sketch first"); return; }
-    if (!canRun) { toast.error(`Need ${COST} credits — you have ${balance}`); return; }
+    if (!hasGoldPass && !canRun) { toast.error(`Need ${COST} credits — you have ${balance}`); return; }
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("kids-drawing-enhance", {
