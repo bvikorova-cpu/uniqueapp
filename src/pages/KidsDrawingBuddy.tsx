@@ -445,7 +445,7 @@ const KidsDrawingBuddy = () => {
                 onSelectTemplate={(t, d, emoji, title) => {
                   setTopic(t);
                   setDifficulty(d);
-                  setTemplateRef({ emoji: emoji || "✏️", title: title || t, difficulty: d });
+                  setTemplateRef({ emoji: emoji || "✏️", title: title || t, difficulty: d, topic: t });
                   setActiveTab("freestyle");
                   toast.success(`Template ready: draw a ${title || t}! ✏️`);
                 }}
