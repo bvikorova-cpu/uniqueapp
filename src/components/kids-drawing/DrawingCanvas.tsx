@@ -152,6 +152,39 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringIma
     };
   }, [fabricCanvas, activeTool]);
 
+  // Load coloring template as canvas background so kids draw directly on the outline
+  useEffect(() => {
+    if (!fabricCanvas) return;
+    if (!coloringImage) {
+      fabricCanvas.backgroundImage = undefined;
+      fabricCanvas.backgroundColor = "#ffffff";
+      fabricCanvas.renderAll();
+      return;
+    }
+    let cancelled = false;
+    FabricImage.fromURL(coloringImage, { crossOrigin: "anonymous" }).then((img) => {
+      if (cancelled || !fabricCanvas) return;
+      const cw = fabricCanvas.getWidth();
+      const ch = fabricCanvas.getHeight();
+      const scale = Math.min(cw / (img.width || cw), ch / (img.height || ch)) * 0.9;
+      img.set({
+        left: cw / 2,
+        top: ch / 2,
+        originX: "center",
+        originY: "center",
+        scaleX: scale,
+        scaleY: scale,
+        selectable: false,
+        evented: false,
+        opacity: 1,
+      });
+      fabricCanvas.backgroundImage = img;
+      fabricCanvas.backgroundColor = "#ffffff";
+      fabricCanvas.renderAll();
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [fabricCanvas, coloringImage]);
+
   const applyZoom = (nextZoom: number) => {
     if (!fabricCanvas) return;
     const clamped = Math.min(4, Math.max(0.5, nextZoom));
