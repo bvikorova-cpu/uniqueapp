@@ -188,16 +188,6 @@ export default function ColoringPages() {
 
         <HeroRewardedAd sectionKey="page_coloringpages" />
 
-        {/* Credit balance banner — paid-only model */}
-        <div className="mb-6">
-          <CreditBanner
-            label="Coloring"
-            creditsRemaining={balance}
-            costPerUse={costPerUse}
-            onBuyCredits={() => buyCreditsPack(100)}
-            unitName="page"
-          />
-        </div>
 
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
