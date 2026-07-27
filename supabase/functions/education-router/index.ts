@@ -61,6 +61,26 @@ async function callAI(messages: any[], opts: { model?: string; json?: boolean } 
   return data.choices?.[0]?.message?.content ?? "";
 }
 
+// Charge unified ai_credits pool. Returns null on success, or {status,body} on failure.
+async function chargeAiCredits(admin: any, userId: string, amount: number, reason: string):
+  Promise<null | { status: number; body: any }> {
+  const { data: credRow } = await admin
+    .from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+  const balance = credRow?.credits_remaining ?? 0;
+  if (balance < amount) {
+    return { status: 402, body: { error: "insufficient_credits", credits_remaining: balance, cost: amount } };
+  }
+  const { error } = await admin.rpc("deduct_ai_credits", {
+    p_user_id: userId, p_amount: amount, p_reason: reason, p_source: "education-router" });
+  if (error) {
+    if (String(error.message || "").toLowerCase().includes("insufficient")) {
+      return { status: 402, body: { error: "insufficient_credits", credits_remaining: balance, cost: amount } };
+    }
+    return { status: 500, body: { error: error.message || "deduct_failed" } };
+  }
+  return null;
+}
+
 // SM-2 algorithm
 function sm2(quality: number, ease: number, interval: number, reps: number) {
   if (quality < 3) {
