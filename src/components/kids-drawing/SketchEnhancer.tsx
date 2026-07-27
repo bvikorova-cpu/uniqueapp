@@ -170,7 +170,7 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
             {loading ? (
               <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Painting your masterpiece…</>
             ) : (
-              <><Sparkles className="mr-2 h-4 w-4" /> Polish my drawing ({COST} credits)</>
+              <><Sparkles className="mr-2 h-4 w-4" /> {hasGoldPass ? "Polish my drawing (unlimited)" : `Polish my drawing (${COST} credits)`}</>
             )}
           </Button>
         ) : (
