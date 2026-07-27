@@ -79,7 +79,7 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
           >
             <AvatarImage src={repost.profiles?.avatar_url || undefined} />
             <AvatarFallback className="text-xs">
-              {repost.profiles?.full_name?.charAt(0) || "U"}
+              {(repost.profiles?.full_name || (repost.profiles as any)?.username)?.charAt(0)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
@@ -89,7 +89,7 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
                 className="font-semibold text-base truncate cursor-pointer hover:underline" 
                 onClick={(e) => handleUserClick(e, repost.user_id)}
               >
-                {repost.profiles?.full_name || "User"}
+                {repost.profiles?.full_name || (repost.profiles as any)?.username || "User"}
               </p>
               <span className="text-muted-foreground text-sm">shared</span>
             </div>

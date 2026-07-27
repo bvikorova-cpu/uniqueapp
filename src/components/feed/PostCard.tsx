@@ -730,7 +730,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
           >
             <AvatarImage src={post.profiles?.avatar_url || undefined} />
             <AvatarFallback className="text-xs">
-              {post.profiles?.full_name?.charAt(0) || "U"}
+              {(post.profiles?.full_name || (post.profiles as any)?.username)?.charAt(0)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
@@ -739,10 +739,10 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                 className="font-semibold text-base truncate cursor-pointer hover:underline" 
                 onClick={(e) => handleUserClick(e, post.user_id)}
               >
-                {post.profiles?.full_name || "User"}
+                {post.profiles?.full_name || (post.profiles as any)?.username || "User"}
               </p>
               <VerifiedFounderBadge 
-                userName={post.profiles?.full_name || ""} 
+                userName={post.profiles?.full_name || (post.profiles as any)?.username || ""} 
                 size="sm"
               />
               {post.profiles?.verification_tier && (
@@ -973,12 +973,12 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                 <Avatar className={`h-8 w-8 ${verifiedRing}`}>
                   <AvatarImage src={post.profiles?.avatar_url || undefined} />
                   <AvatarFallback className="text-xs">
-                    {post.profiles?.full_name?.charAt(0) || "U"}
+                    {(post.profiles?.full_name || (post.profiles as any)?.username)?.charAt(0)?.toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="text-sm font-semibold flex items-center gap-1 flex-wrap">
-                    <span>{post.profiles?.full_name || "User"}</span>
+                    <span>{post.profiles?.full_name || (post.profiles as any)?.username || "User"}</span>
                     {post.profiles?.verification_tier && (
                       <VerifiedBadge tier={post.profiles.verification_tier} size="sm" showLabel={false} />
                     )}
