@@ -77,7 +77,7 @@ const TIER_PRICE_IDS: Record<string, string[]> = {
   kids: [
     "price_1SShj2GaXSfGtYFtcKlTJYGa", // Unique Kids Monthly
     "price_1SShj3GaXSfGtYFtGEneXVhs", // Unique Kids Annual
-    "price_1Tc1kyGaXSfGtYFtcfVW1fcY", // Unique Kids Gold Pass
+    "price_1TxjDqGaXSfGtYFtd03IWhdy", // Unique Kids Gold Pass
   ],
 };
 

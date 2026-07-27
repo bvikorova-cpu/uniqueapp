@@ -865,7 +865,7 @@ async function handler(req: Request): Promise<Response> {
       const KIDS_TIERS: Record<string, { priceId: string; name: string }> = {
         monthly:   { priceId: "price_1SShj2GaXSfGtYFtcKlTJYGa", name: "Unique Kids Monthly" },
         annual:    { priceId: "price_1SShj3GaXSfGtYFtGEneXVhs", name: "Unique Kids Annual" },
-        gold_pass: { priceId: "price_1Tc1kyGaXSfGtYFtcfVW1fcY", name: "Unique Kids Gold Pass" } };
+        gold_pass: { priceId: "price_1TxjDqGaXSfGtYFtd03IWhdy", name: "Unique Kids Gold Pass" } };
       const kt = KIDS_TIERS[String(body.tier)];
       if (kt) {
         body.priceId = kt.priceId;
