@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -53,7 +53,6 @@ export const KidsGoldPassGate = ({
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
   const [allowed, setAllowed] = useState(false);
-  const channelNonce = useMemo(() => Math.random().toString(36).slice(2), []);
 
   // Access check — runs on mount and whenever the cached Gold Pass row changes.
   const runCheck = async (uid: string): Promise<boolean> => {
@@ -112,32 +111,10 @@ export const KidsGoldPassGate = ({
       }
     })();
 
-    // Realtime: re-evaluate on webhook-driven Gold Pass changes.
-    // The topic must be unique per mount. Reusing `kids-gold-${user.id}` can
-    // return an already-subscribed Supabase channel, which throws:
-    // "cannot add postgres_changes callbacks ... after subscribe()".
-    let channel: ReturnType<typeof supabase.channel> | null = null;
-    try {
-      channel = supabase.channel(`kids-gold-${user.id}-${channelNonce}-${Date.now()}`);
-      channel
-        .on(
-          "postgres_changes",
-          { event: "*", schema: "public", table: "kids_gold_pass_status", filter: `user_id=eq.${user.id}` },
-          async () => {
-            const ok = await runCheck(user.id);
-            if (!cancelled) setAllowed(ok);
-          },
-        )
-        .subscribe();
-    } catch (e) {
-      console.warn("KidsGoldPassGate realtime setup skipped", e);
-    }
-
     return () => {
       cancelled = true;
-      if (channel) void supabase.removeChannel(channel);
     };
-  }, [user?.id, authLoading, creditTable, pricingPath, moduleName, redirectPath, navigate, channelNonce]);
+  }, [user?.id, authLoading, creditTable, pricingPath, moduleName, redirectPath, navigate]);
 
   if (checking || authLoading) {
     return (
