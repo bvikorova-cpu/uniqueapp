@@ -15,6 +15,10 @@ serve(async (req) => {
     // Resolve userId from JWT so rate limit is per-user (not shared across IPs).
     let userId: string | undefined;
     const authHeader = req.headers.get("Authorization");
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
     if (authHeader) {
       try {
         const supa = createClient(
@@ -24,6 +28,13 @@ serve(async (req) => {
         const { data } = await supa.auth.getUser(authHeader.replace("Bearer ", ""));
         userId = data.user?.id;
       } catch (_e) { /* fall back to IP-based limit */ }
+    }
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: "unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
     }
 
     // Per-user (or per-IP) rate limit: 50 messages / 5 min.
@@ -51,6 +62,29 @@ serve(async (req) => {
       );
     }
     const safeHistory = Array.isArray(history) ? history.slice(-20) : [];
+
+    // Charge 2 AI credits (unified ai_credits pool) before calling the model.
+    const COST = 2;
+    const { data: credRow } = await admin
+      .from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+    const balance = credRow?.credits_remaining ?? 0;
+    if (balance < COST) {
+      return new Response(
+        JSON.stringify({ error: "insufficient_credits", credits_remaining: balance, cost: COST }),
+        { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+    const { error: deductErr } = await admin.rpc("deduct_ai_credits", {
+      p_user_id: userId, p_amount: COST, p_reason: "education_tutor_chat", p_source: "tutoring-chat",
+    });
+    if (deductErr) {
+      const msg = String(deductErr.message || "").toLowerCase();
+      const status = msg.includes("insufficient") ? 402 : 500;
+      return new Response(
+        JSON.stringify({ error: msg.includes("insufficient") ? "insufficient_credits" : (deductErr.message || "deduct_failed") }),
+        { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
 
     const messages = [
       {
