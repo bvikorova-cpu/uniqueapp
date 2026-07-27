@@ -10,6 +10,8 @@ import Navbar from "@/components/Navbar";
 import { useKidsReadingCredits, KIDS_READING_CREDIT_COST } from "@/hooks/useKidsReadingCredits";
 import { CreditBanner } from "@/components/kids/CreditBanner";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ReadingHero } from "@/components/kids-reading/ReadingHero";
@@ -46,7 +48,9 @@ const KidsReadingCompanion = () => {
   const [activeView, setActiveView] = useState<"input" | "results" | "flashcards" | "quiz">("input");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [defineWord, setDefineWord] = useState<string | null>(null);
-  const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsReadingCredits();
+  const { balance, canUse: canUseCredits, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsReadingCredits();
+  const { hasGoldPass } = useKidsGoldPass();
+  const canUse = hasGoldPass || canUseCredits;
 
   const handleBuyCredits = async () => {
     const url = await purchase(50);
@@ -159,8 +163,11 @@ const KidsReadingCompanion = () => {
 
           <ReadingStreakDashboard {...stats} />
 
-          {/* Credit balance */}
-          {!creditsLoading && isAuthenticated && (
+          {/* Credit balance or Gold Pass banner */}
+          {isAuthenticated && hasGoldPass && (
+            <div className="mb-6"><KidsGoldPassBanner /></div>
+          )}
+          {!creditsLoading && isAuthenticated && !hasGoldPass && (
             <div className="mb-6">
               <CreditBanner
                 label="Reading"
@@ -226,7 +233,7 @@ const KidsReadingCompanion = () => {
                         >
                           {loading ? "Analyzing..." : !canUse ? (
                             <><Lock className="w-3 h-3 mr-1" />Buy credits</>
-                          ) : `📝 Analyze (${KIDS_READING_CREDIT_COST})`}
+                          ) : hasGoldPass ? "📝 Analyze (unlimited)" : `📝 Analyze (${KIDS_READING_CREDIT_COST})`}
                         </Button>
                         <Button
                           onClick={generateQuiz}
@@ -236,7 +243,7 @@ const KidsReadingCompanion = () => {
                         >
                           {!canUse ? (
                             <><Lock className="w-3 h-3 mr-1" />Buy credits</>
-                          ) : `🎯 Quiz (${KIDS_READING_CREDIT_COST})`}
+                          ) : hasGoldPass ? "🎯 Quiz (unlimited)" : `🎯 Quiz (${KIDS_READING_CREDIT_COST})`}
                         </Button>
                       </div>
                     </CardContent>
