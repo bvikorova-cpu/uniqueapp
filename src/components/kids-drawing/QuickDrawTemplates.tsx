@@ -42,7 +42,7 @@ export const QuickDrawTemplates = ({ onSelectTemplate, loading }: Props) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pb-4">
           {TEMPLATES.map((t, i) => (
             <motion.div
               key={t.id}
