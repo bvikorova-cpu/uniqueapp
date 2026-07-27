@@ -17,6 +17,7 @@ export interface Quiz {
   title: string;
   passing_score?: number;
   lesson_id: string;
+  difficulty?: string;
   created_at?: string;
 }
 
@@ -66,10 +67,74 @@ export const useCreateQuiz = () => {
 
   return useMutation({
     mutationFn: async ({ quiz, questions }: { quiz: Quiz; questions: QuizQuestion[] }) => {
+      const resolveLessonId = async () => {
+        if (quiz.lesson_id && quiz.lesson_id !== "default") return quiz.lesson_id;
+
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("Please sign in to create a quiz");
+
+        const courseTitle = "My Custom Quizzes";
+        const { data: existingCourse, error: courseLookupError } = await supabase
+          .from("courses")
+          .select("id")
+          .eq("creator_id", user.id)
+          .eq("title", courseTitle)
+          .order("created_at", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        if (courseLookupError) throw courseLookupError;
+
+        let courseId = existingCourse?.id;
+        if (!courseId) {
+          const { data: newCourse, error: courseCreateError } = await supabase
+            .from("courses")
+            .insert({
+              creator_id: user.id,
+              title: courseTitle,
+              description: "Private workspace for manually created Education quizzes.",
+              category: "education",
+              difficulty_level: "beginner",
+              price: 0,
+              is_published: false,
+            })
+            .select("id")
+            .single();
+          if (courseCreateError) throw courseCreateError;
+          courseId = newCourse.id;
+        }
+
+        const { data: existingLesson, error: lessonLookupError } = await supabase
+          .from("course_lessons")
+          .select("id")
+          .eq("course_id", courseId)
+          .eq("title", "Manual Quiz Bank")
+          .order("created_at", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        if (lessonLookupError) throw lessonLookupError;
+        if (existingLesson?.id) return existingLesson.id;
+
+        const { data: newLesson, error: lessonCreateError } = await supabase
+          .from("course_lessons")
+          .insert({
+            course_id: courseId,
+            title: "Manual Quiz Bank",
+            description: "Private manual quiz storage.",
+            duration_minutes: 0,
+            order_index: 0,
+            is_preview: false,
+          })
+          .select("id")
+          .single();
+        if (lessonCreateError) throw lessonCreateError;
+        return newLesson.id;
+      };
+
+      const lessonId = await resolveLessonId();
       // Create quiz
       const { data: quizData, error: quizError } = await supabase
         .from("course_quizzes")
-        .insert([quiz])
+        .insert([{ ...quiz, lesson_id: lessonId }])
         .select()
         .single();
 
