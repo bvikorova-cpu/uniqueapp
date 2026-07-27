@@ -483,7 +483,11 @@ const KidsDrawingBuddy = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <DrawingCanvas stepNumber={0} />
+                  <DrawingCanvas
+                    stepNumber={0}
+                    category={templateRef?.title || "Freestyle"}
+                    coloringImage={templateRef ? COLORING_IMAGES[templateRef.topic] : undefined}
+                  />
                 </CardContent>
               </Card>
             </TabsContent>
