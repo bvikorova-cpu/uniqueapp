@@ -133,7 +133,7 @@ Deno.serve(async (req) => {
               subscription_id: "legacy_active",
             };
           }
-          for (const row of localRows) {
+          for (const row of localRows ?? []) {
             localAreas[row.area] = {
               subscribed: true,
               plan: row.plan ?? "monthly",
