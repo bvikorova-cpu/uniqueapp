@@ -30,9 +30,17 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   });
   const captionTimerRef = useRef<number | null>(null);
 
+  const sanitizeVisibleText = (value: string) =>
+    value
+      .replace(/Lovable\s+AI\s+Gateway/gi, "OpenAI")
+      .replace(/Lovable\s+gateway/gi, "OpenAI")
+      .replace(/AI\s+Gateway/gi, "OpenAI")
+      .replace(/Switching\s+to\s+OpenAI\s+for\s*\.\.\.?/gi, "Connecting to OpenAI…")
+      .trim();
+
   const showCaption = (role: "user" | "assistant", text: string, autoHideMs?: number) => {
     if (captionTimerRef.current) window.clearTimeout(captionTimerRef.current);
-    setCaption({ role, text });
+    setCaption({ role, text: sanitizeVisibleText(text) });
     if (autoHideMs) {
       captionTimerRef.current = window.setTimeout(() => setCaption(null), autoHideMs);
     }
@@ -110,7 +118,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
         return;
       }
       if (data?.error) throw new Error(data.error);
-      const reply = data?.reply ?? data?.message ?? data?.text ?? data?.result ?? "Okay.";
+      const reply = sanitizeVisibleText(data?.reply ?? data?.message ?? data?.text ?? data?.result ?? "Okay.");
       setTurns((t) => [...t, { role: "assistant", content: reply }]);
       showCaption("assistant", reply);
       speak(reply);
