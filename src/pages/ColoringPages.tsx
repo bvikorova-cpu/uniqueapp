@@ -26,16 +26,11 @@ import { DailyChallenge } from "@/components/coloring/DailyChallenge";
 import { AIColorSuggestions } from "@/components/coloring/AIColorSuggestions";
 import { PrintExport } from "@/components/coloring/PrintExport";
 import { CreditBanner } from "@/components/kids/CreditBanner";
-
-import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-
 const __HIW_COLORINGPAGES_STEPS = [
-  { title: 'Generate with AI', desc: 'Describe an idea; AI creates a printable coloring page (3–5 credits).' },
+  { title: 'Generate with AI', desc: 'Describe an idea; AI creates a printable coloring page.' },
   { title: 'Or pick a template', desc: 'Browse the gallery by theme, age and difficulty.' },
   { title: 'Color in-app or print', desc: 'Use the digital canvas or download a print-ready PDF.' },
   { title: 'Share & compete', desc: 'Post to the community gallery, join challenges, earn badges.' },
-  { title: 'School / Corporate', desc: 'Special tabs for schools, healthcare and corporate packs.' }
 ];
 const __HIW_COLORINGPAGES = { title: 'Coloring Pages', intro: 'Generate, print and color AI-crafted coloring pages.', steps: __HIW_COLORINGPAGES_STEPS };
 
