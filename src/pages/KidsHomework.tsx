@@ -81,71 +81,25 @@ const KidsHomework = () => {
     reader.readAsDataURL(f);
   };
 
-  // Homework Helper: PASS-GATED. Must have active credits to access.
+  // Auth gate only — Gold Pass access is enforced by <KidsGoldPassGate> below.
   useEffect(() => {
-    if (usageLoading || verifyingPayment) return;
     if (!user) {
       navigate(`/auth?redirect=${encodeURIComponent("/kids-homework")}`);
-      return;
     }
-    if (!hasGoldPass && credits_remaining < HOMEWORK_CREDITS_PER_QUESTION) {
-      toast.info("You need an active Homework Pass to use this section.");
-      navigate("/kids-homework-pricing");
-    }
-  }, [user, usageLoading, credits_remaining, navigate, verifyingPayment, hasGoldPass]);
+  }, [user, navigate]);
 
-  // Verify Stripe payment on return, then refresh credits.
+  // Clear stale ?payment= params on return from Stripe (Gold Pass flow handles verification itself).
   useEffect(() => {
     const paymentStatus = searchParams.get("payment");
-    const sessionId = searchParams.get("session_id");
+    if (!paymentStatus) return;
+    if (paymentStatus === "canceled") toast.info("Payment canceled.");
+    const url = new URL(window.location.href);
+    url.searchParams.delete("payment");
+    url.searchParams.delete("session_id");
+    window.history.replaceState({}, "", url.pathname + url.search);
+    setVerifyingPayment(false);
+  }, [searchParams]);
 
-    if (paymentStatus === "canceled") {
-      toast.info("Payment canceled.");
-      const url = new URL(window.location.href);
-      url.searchParams.delete("payment");
-      window.history.replaceState({}, "", url.pathname + url.search);
-      return;
-    }
-
-    if (paymentStatus !== "success" || !sessionId) return;
-
-    let cancelled = false;
-    (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
-          body: { session_id: sessionId },
-        });
-        if (cancelled) return;
-        if (error) throw error;
-        if (data?.success) {
-          toast.success(`Payment successful! ${data.credits_added ?? ""} credits added.`);
-        } else {
-          toast.info("Payment received. Credits will appear shortly.");
-        }
-      } catch (e: any) {
-        console.error("verify-credits-payment error", e);
-        toast.error("Could not verify payment automatically. Please refresh.");
-      } finally {
-        if (!cancelled) {
-          await refreshCredits();
-          const url = new URL(window.location.href);
-          url.searchParams.delete("payment");
-          url.searchParams.delete("session_id");
-          window.history.replaceState({}, "", url.pathname + url.search);
-          setVerifyingPayment(false);
-        }
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [searchParams, refreshCredits]);
-
-  const handleBuyCredits = async () => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-    navigate("/kids-homework-pricing");
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
