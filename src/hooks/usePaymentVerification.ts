@@ -23,8 +23,14 @@ export const usePaymentVerification = () => {
           if (error) throw error;
 
           if (data?.success) {
-            toast.success(`Successfully added ${data.credits_added} credits to your account!`);
+            const creditsAdded = Number(data.credits_added ?? 0);
+            toast.success(
+              creditsAdded > 0
+                ? `Successfully added ${creditsAdded} credits to your account!`
+                : data.message || "Payment already verified."
+            );
             setIsVerified(true);
+            window.dispatchEvent(new Event("ai-credits-updated"));
             
             // Clean up URL params after successful verification
             const newSearchParams = new URLSearchParams(searchParams);
