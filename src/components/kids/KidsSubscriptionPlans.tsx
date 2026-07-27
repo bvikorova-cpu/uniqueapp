@@ -76,19 +76,13 @@ export default function KidsSubscriptionPlans() {
     }
     setLoading(prev => ({ ...prev, [planId]: true }));
     try {
-      const tier = PRODUCT_TIERS[planId as keyof typeof PRODUCT_TIERS] ?? PRODUCT_TIERS.gold_pass;
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
-          priceId: tier.price_id,
-          mode: 'subscription',
+          product: 'kids_subscription',
+          tier: planId,
           successUrl: `${window.location.origin}/kids-pricing?payment=success&session_id={CHECKOUT_SESSION_ID}`,
           cancelUrl: `${window.location.origin}/kids-pricing?payment=canceled`,
-          metadata: {
-            type: 'kids',
-            tier: planId,
-            module: 'kids_gold_pass',
-            product_id: tier.product_id,
-          },
+          metadata: { type: 'kids', tier: planId, module: 'kids_gold_pass' },
         }
       });
       if (error) throw error;
