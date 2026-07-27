@@ -233,7 +233,7 @@ const KidsReadingCompanion = () => {
                         >
                           {loading ? "Analyzing..." : !canUse ? (
                             <><Lock className="w-3 h-3 mr-1" />Buy credits</>
-                          ) : `📝 Analyze (${KIDS_READING_CREDIT_COST})`}
+                          ) : hasGoldPass ? "📝 Analyze (unlimited)" : `📝 Analyze (${KIDS_READING_CREDIT_COST})`}
                         </Button>
                         <Button
                           onClick={generateQuiz}
@@ -243,7 +243,7 @@ const KidsReadingCompanion = () => {
                         >
                           {!canUse ? (
                             <><Lock className="w-3 h-3 mr-1" />Buy credits</>
-                          ) : `🎯 Quiz (${KIDS_READING_CREDIT_COST})`}
+                          ) : hasGoldPass ? "🎯 Quiz (unlimited)" : `🎯 Quiz (${KIDS_READING_CREDIT_COST})`}
                         </Button>
                       </div>
                     </CardContent>
