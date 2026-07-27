@@ -7,6 +7,7 @@ import { Sparkles, Upload, Camera, Wand2, Loader2, Download, RefreshCw, Coins, X
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 
 const STYLES: Array<{ id: string; label: string; emoji: string }> = [
   { id: "cartoon", label: "Cartoon", emoji: "🎨" },
