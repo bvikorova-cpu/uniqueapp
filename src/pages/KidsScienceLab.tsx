@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import { useScienceCredits, SCIENCE_CREDITS_PER_RUN } from "@/hooks/useScienceCredits";
 import { ScienceLimitBanner } from "@/components/kids-science/ScienceLimitBanner";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
