@@ -973,12 +973,12 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                 <Avatar className={`h-8 w-8 ${verifiedRing}`}>
                   <AvatarImage src={post.profiles?.avatar_url || undefined} />
                   <AvatarFallback className="text-xs">
-                    {post.profiles?.full_name?.charAt(0) || "U"}
+                    {(post.profiles?.full_name || (post.profiles as any)?.username)?.charAt(0)?.toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="text-sm font-semibold flex items-center gap-1 flex-wrap">
-                    <span>{post.profiles?.full_name || "User"}</span>
+                    <span>{post.profiles?.full_name || (post.profiles as any)?.username || "User"}</span>
                     {post.profiles?.verification_tier && (
                       <VerifiedBadge tier={post.profiles.verification_tier} size="sm" showLabel={false} />
                     )}
