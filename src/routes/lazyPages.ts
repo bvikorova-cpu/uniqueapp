@@ -169,19 +169,10 @@ export const CourseLearnPage = lazy(() => import("@/pages/CourseLearnPage"));
 export const CoursesHub = lazy(() => import("@/pages/CoursesHub"));
 export const GenerateCourses = lazy(() => import("@/pages/GenerateCourses"));
 export const MyLearning = lazy(() => import("@/pages/MyLearning"));
-export const LanguageLearning = lazy(() => import("@/pages/LanguageLearning"));
 export const GenericLearning = lazy(() => import("@/pages/GenericLearning"));
 
 // Subject-specific learning
 export const FitnessWellness = lazy(() => import("@/pages/FitnessWellness"));
-export const DigitalMarketing = lazy(() => import("@/pages/DigitalMarketing"));
-export const Photography = lazy(() => import("@/pages/Photography"));
-export const CulinaryArts = lazy(() => import("@/pages/CulinaryArts"));
-export const MusicProduction = lazy(() => import("@/pages/MusicProduction"));
-export const GraphicDesign = lazy(() => import("@/pages/GraphicDesign"));
-export const PublicSpeaking = lazy(() => import("@/pages/PublicSpeaking"));
-export const FinancialInvestment = lazy(() => import("@/pages/FinancialInvestment"));
-export const CreativeWriting = lazy(() => import("@/pages/CreativeWriting"));
 
 // Health & Wellness
 export const FirstAid = lazy(() => import("@/pages/FirstAid"));
