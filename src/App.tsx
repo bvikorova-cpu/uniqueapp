@@ -195,7 +195,7 @@ import { ResetPassword,
   KidsReadingPricing,
   KidsAcademy,
   ColoringPages,
-  ColoringHub,
+  
   TeenCareerCounselor,
   TeenCareerPricing,
   TeenHub,
