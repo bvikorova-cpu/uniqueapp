@@ -13,9 +13,10 @@ interface Props {
  */
 export const AICreditsBalanceWidget = ({ compact = false }: Props) => {
   const navigate = useNavigate();
-  const { credits, loading } = useAICredits();
-  const balance = credits?.credits_remaining ?? 0;
+  const { freeBalance, paidBalance, loading } = useAICredits();
+  const balance = freeBalance + paidBalance;
   const low = balance <= 5;
+  const tooltip = `Total: ${balance} credits (Free monthly: ${freeBalance} · Paid: ${paidBalance})`;
 
   if (compact) {
     return (
