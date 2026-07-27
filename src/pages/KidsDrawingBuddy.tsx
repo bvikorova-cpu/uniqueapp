@@ -25,6 +25,25 @@ import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import coloringCat from "@/assets/coloring/cat.png";
+import coloringStar from "@/assets/coloring/star.png";
+import coloringRobot from "@/assets/coloring/robot.png";
+import coloringRocket from "@/assets/coloring/rocket.png";
+import coloringDragon from "@/assets/coloring/dragon.png";
+import coloringFlower from "@/assets/coloring/flower.png";
+import coloringUnicorn from "@/assets/coloring/unicorn.png";
+import coloringDog from "@/assets/coloring/dog.png";
+
+const COLORING_IMAGES: Record<string, string> = {
+  cat: coloringCat,
+  star: coloringStar,
+  robot: coloringRobot,
+  rocket: coloringRocket,
+  dragon: coloringDragon,
+  flower: coloringFlower,
+  unicorn: coloringUnicorn,
+  dog: coloringDog,
+};
 
 const __HIW_KIDSDRAWINGBUDDY_STEPS = [
   { title: 'Draw anything', desc: 'Free-draw on the safe kids canvas.' },
@@ -49,7 +68,7 @@ const KidsDrawingBuddy = () => {
   const [wizardStep, setWizardStep] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState("tutorial");
-  const [templateRef, setTemplateRef] = useState<{ emoji: string; title: string; difficulty: string } | null>(null);
+  const [templateRef, setTemplateRef] = useState<{ emoji: string; title: string; difficulty: string; topic: string } | null>(null);
   const lastTutorialNavRef = useRef<{ direction: "previous" | "next"; at: number } | null>(null);
 
   const { balance, canUse: canUseCredits, refresh, costPerUse } = useKidsDrawingCredits();
@@ -381,14 +400,28 @@ const KidsDrawingBuddy = () => {
             <TabsContent value="freestyle" className="space-y-4">
               {templateRef && (
                 <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-2 border-purple-300">
-                  <CardContent className="p-4 flex items-center gap-4">
-                    <div className="text-6xl">{templateRef.emoji}</div>
-                    <div className="flex-1">
-                      <div className="text-xs uppercase text-muted-foreground">Template</div>
-                      <div className="text-lg font-bold">{templateRef.title}</div>
-                      <div className="text-xs text-muted-foreground capitalize">Difficulty: {templateRef.difficulty}</div>
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center gap-4">
+                      <div className="text-5xl">{templateRef.emoji}</div>
+                      <div className="flex-1">
+                        <div className="text-xs uppercase text-muted-foreground">Color this in!</div>
+                        <div className="text-lg font-bold">{templateRef.title}</div>
+                        <div className="text-xs text-muted-foreground capitalize">Difficulty: {templateRef.difficulty}</div>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={() => setTemplateRef(null)}>Clear</Button>
                     </div>
-                    <Button variant="ghost" size="sm" onClick={() => setTemplateRef(null)}>Clear</Button>
+                    {COLORING_IMAGES[templateRef.topic] && (
+                      <div className="bg-white rounded-xl border-2 border-purple-200 p-3 flex items-center justify-center">
+                        <img
+                          src={COLORING_IMAGES[templateRef.topic]}
+                          alt={`${templateRef.title} coloring page`}
+                          loading="lazy"
+                          width={768}
+                          height={768}
+                          className="max-h-80 w-auto object-contain"
+                        />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               )}
@@ -412,7 +445,7 @@ const KidsDrawingBuddy = () => {
                 onSelectTemplate={(t, d, emoji, title) => {
                   setTopic(t);
                   setDifficulty(d);
-                  setTemplateRef({ emoji: emoji || "✏️", title: title || t, difficulty: d });
+                  setTemplateRef({ emoji: emoji || "✏️", title: title || t, difficulty: d, topic: t });
                   setActiveTab("freestyle");
                   toast.success(`Template ready: draw a ${title || t}! ✏️`);
                 }}
