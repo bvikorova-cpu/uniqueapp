@@ -48,7 +48,8 @@ export default function StudyGroups() {
       await supabase.from("education_study_group_members").insert({ group_id: g.id, user_id: user.id, role: "owner" });
       return g;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["study-groups"] }); toast.success("Group created"); } });
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["study-groups"] }); toast.success("Group created"); },
+    onError: (e: any) => toast.error(e?.message ?? "Failed to create group") });
 
   const join = useMutation({
     mutationFn: async (code: string) => {
