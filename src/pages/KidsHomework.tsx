@@ -129,13 +129,12 @@ const KidsHomework = () => {
 
       setResult(data);
       setPhoto(null);
-      refreshCredits();
 
       const today = new Date().toISOString().split("T")[0];
       queryClient.invalidateQueries({ queryKey: ["kids-homework-points", user.id] });
       queryClient.invalidateQueries({ queryKey: ["daily-progress", user.id, today] });
       queryClient.invalidateQueries({ queryKey: ["challenge-completion", user.id] });
-      toast.success(`Homework help ready! ${HOMEWORK_CREDITS_PER_QUESTION} credits used.`);
+      toast.success("Homework help ready! ✨");
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(error.message || "Failed to get homework help");
