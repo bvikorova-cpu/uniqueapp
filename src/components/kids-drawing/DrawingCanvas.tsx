@@ -98,17 +98,75 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
       brush.width = brushSize;
       fabricCanvas.freeDrawingBrush = brush;
       fabricCanvas.isDrawingMode = true;
+      fabricCanvas.defaultCursor = "crosshair";
     } else if (activeTool === "erase") {
       const eraser = new PencilBrush(fabricCanvas);
       eraser.color = "#ffffff";
       eraser.width = brushSize * 2;
       fabricCanvas.freeDrawingBrush = eraser;
       fabricCanvas.isDrawingMode = true;
+      fabricCanvas.defaultCursor = "crosshair";
+    } else if (activeTool === "pan") {
+      fabricCanvas.isDrawingMode = false;
+      fabricCanvas.selection = false;
+      fabricCanvas.defaultCursor = "grab";
     } else {
       // For shape tools, disable drawing mode
       fabricCanvas.isDrawingMode = false;
+      fabricCanvas.defaultCursor = "default";
     }
   }, [activeTool, activeColor, brushSize, fabricCanvas]);
+
+  // Pan interactions (dragging when pan tool active)
+  useEffect(() => {
+    if (!fabricCanvas || activeTool !== "pan") return;
+    let isDragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    const onDown = (opt: any) => {
+      isDragging = true;
+      fabricCanvas.defaultCursor = "grabbing";
+      lastX = opt.e.clientX ?? opt.e.touches?.[0]?.clientX ?? 0;
+      lastY = opt.e.clientY ?? opt.e.touches?.[0]?.clientY ?? 0;
+    };
+    const onMove = (opt: any) => {
+      if (!isDragging) return;
+      const x = opt.e.clientX ?? opt.e.touches?.[0]?.clientX ?? 0;
+      const y = opt.e.clientY ?? opt.e.touches?.[0]?.clientY ?? 0;
+      fabricCanvas.relativePan(new Point(x - lastX, y - lastY));
+      lastX = x;
+      lastY = y;
+    };
+    const onUp = () => {
+      isDragging = false;
+      fabricCanvas.defaultCursor = "grab";
+    };
+    fabricCanvas.on("mouse:down", onDown);
+    fabricCanvas.on("mouse:move", onMove);
+    fabricCanvas.on("mouse:up", onUp);
+    return () => {
+      fabricCanvas.off("mouse:down", onDown);
+      fabricCanvas.off("mouse:move", onMove);
+      fabricCanvas.off("mouse:up", onUp);
+    };
+  }, [fabricCanvas, activeTool]);
+
+  const applyZoom = (nextZoom: number) => {
+    if (!fabricCanvas) return;
+    const clamped = Math.min(4, Math.max(0.5, nextZoom));
+    const center = new Point(fabricCanvas.getWidth() / 2, fabricCanvas.getHeight() / 2);
+    fabricCanvas.zoomToPoint(center, clamped);
+    setZoom(clamped);
+  };
+
+  const handleZoomIn = () => applyZoom(zoom + 0.25);
+  const handleZoomOut = () => applyZoom(zoom - 0.25);
+  const handleZoomReset = () => {
+    if (!fabricCanvas) return;
+    fabricCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    setZoom(1);
+  };
+
 
   const handleClear = () => {
     if (!fabricCanvas) return;
