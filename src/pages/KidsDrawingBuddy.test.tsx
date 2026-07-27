@@ -34,8 +34,22 @@ vi.mock("@/hooks/useKidsDrawingCredits", () => ({
 vi.mock("@/hooks/useKidsDrawingCount", () => ({ useKidsDrawingCount: () => ({ count: 0 }) }));
 vi.mock("@/components/kids-drawing/DrawingBuddyHero", () => ({ DrawingBuddyHero: () => <h1>Drawing Buddy</h1> }));
 vi.mock("@/components/kids-drawing/DrawingWizardStepper", () => ({ DrawingWizardStepper: () => <div data-testid="stepper" /> }));
-vi.mock("@/components/kids-drawing/DrawingCategorySelector", () => ({ DrawingCategorySelector: () => <div data-testid="category" /> }));
-vi.mock("@/components/kids-drawing/DrawingDifficultySelector", () => ({ DrawingDifficultySelector: () => <div data-testid="difficulty" /> }));
+vi.mock("@/components/kids-drawing/DrawingCategorySelector", () => ({
+  DrawingCategorySelector: ({ selectedCategory, onSelectCategory, onSelectTopic }: { selectedCategory: string; onSelectCategory: (value: string) => void; onSelectTopic: (value: string) => void }) => (
+    <div data-testid="category">
+      {!selectedCategory ? (
+        <button type="button" onClick={() => onSelectCategory("animals")}>Animals</button>
+      ) : (
+        <button type="button" onClick={() => onSelectTopic("cat")}>Cat</button>
+      )}
+    </div>
+  ),
+}));
+vi.mock("@/components/kids-drawing/DrawingDifficultySelector", () => ({
+  DrawingDifficultySelector: ({ onSelect }: { onSelect: (value: string) => void }) => (
+    <button type="button" onClick={() => onSelect("easy")}>Easy</button>
+  ),
+}));
 vi.mock("@/components/kids-drawing/DrawingCanvas", () => ({ DrawingCanvas: ({ stepNumber }: { stepNumber: number }) => <div data-testid="canvas">Canvas step {stepNumber}</div> }));
 vi.mock("@/components/kids-drawing/DrawingGallery", () => ({ DrawingGallery: () => <div data-testid="gallery" /> }));
 vi.mock("@/components/kids-drawing/SketchEnhancer", () => ({ SketchEnhancer: () => <div data-testid="sketch" /> }));
@@ -70,8 +84,11 @@ function renderPage() {
 async function startTutorial() {
   renderPage();
   await screen.findByText("Drawing Buddy");
-  fireEvent.click(screen.getByRole("tab", { name: /quick/i }));
-  fireEvent.click(screen.getByRole("button", { name: /use cat template/i }));
+  await waitFor(() => expect(getSessionMock).toHaveBeenCalled());
+  fireEvent.click(screen.getByRole("button", { name: /animals/i }));
+  fireEvent.click(screen.getByRole("button", { name: /cat/i }));
+  fireEvent.click(screen.getByRole("button", { name: /easy/i }));
+  fireEvent.click(screen.getByRole("button", { name: /start drawing/i }));
   await screen.findByText("Step 1 of 3");
 }
 
