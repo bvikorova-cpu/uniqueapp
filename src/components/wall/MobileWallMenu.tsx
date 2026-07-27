@@ -207,7 +207,7 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 text-left">
-                <p className="font-semibold">{profile?.full_name || "User"}</p>
+                <p className="font-semibold">{profile?.full_name || profile?.username || "User"}</p>
                 <p className="text-xs text-muted-foreground">View profile</p>
               </div>
             </Button>
