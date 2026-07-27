@@ -52,58 +52,53 @@ export const ReadAloudPlayer = ({ text, onWordClick }: Props) => {
   const play = () => {
     if (!text.trim() || !("speechSynthesis" in window)) return;
     const synth = window.speechSynthesis;
-    // Cancel any queued utterances, then defer speak to next tick.
-    // Some browsers (Chrome/Safari) ignore speak() when called immediately after cancel().
+    // Cancel any queued utterances (safe — spec allows immediate speak() after).
     synth.cancel();
     setPlaying(true); setPaused(false); setActiveIdx(null);
 
-    const startSpeak = () => {
-      // Ensure voices are loaded (Chrome returns [] on first call).
-      const available = synth.getVoices();
-      if (available.length && voices.length === 0) setVoices(available);
+    // Ensure voices are loaded (Chrome returns [] on first call).
+    const available = synth.getVoices();
+    if (available.length && voices.length === 0) setVoices(available);
 
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = rate;
-      u.lang = "en-US";
-      const list = available.length ? available : voices;
-      const v = list.find(x => x.voiceURI === voiceURI)
-        ?? list.find(x => /^en/i.test(x.lang))
-        ?? list[0];
-      if (v) { u.voice = v; u.lang = v.lang; }
-      u.onstart = () => { setPlaying(true); setPaused(false); };
-      u.onend = () => {
-        setPlaying(false); setActiveIdx(null);
-        if (keepAliveRef.current) { window.clearInterval(keepAliveRef.current); keepAliveRef.current = null; }
-      };
-      u.onerror = () => {
-        setPlaying(false); setActiveIdx(null);
-        if (keepAliveRef.current) { window.clearInterval(keepAliveRef.current); keepAliveRef.current = null; }
-      };
-      u.onboundary = (e) => {
-        if (e.name !== "word") return;
-        const charIdx = e.charIndex;
-        let cum = 0;
-        for (let i = 0; i < words.length; i++) {
-          cum += words[i].length;
-          if (charIdx < cum) { setActiveIdx(i); break; }
-        }
-      };
-      utterRef.current = u;
-      synth.speak(u);
-
-      // Chrome bug workaround: speech stalls after ~15s of continuous playback.
-      if (keepAliveRef.current) window.clearInterval(keepAliveRef.current);
-      keepAliveRef.current = window.setInterval(() => {
-        if (!synth.speaking) {
-          if (keepAliveRef.current) { window.clearInterval(keepAliveRef.current); keepAliveRef.current = null; }
-          return;
-        }
-        if (!synth.paused) { synth.pause(); synth.resume(); }
-      }, 10000);
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = rate;
+    const list = available.length ? available : voices;
+    const v = list.find((x) => x.voiceURI === voiceURI)
+      ?? list.find((x) => /^en/i.test(x.lang))
+      ?? list[0];
+    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = "en-US"; }
+    u.onstart = () => { setPlaying(true); setPaused(false); };
+    u.onend = () => {
+      setPlaying(false); setActiveIdx(null);
+      if (keepAliveRef.current) { window.clearInterval(keepAliveRef.current); keepAliveRef.current = null; }
     };
+    u.onerror = () => {
+      setPlaying(false); setActiveIdx(null);
+      if (keepAliveRef.current) { window.clearInterval(keepAliveRef.current); keepAliveRef.current = null; }
+    };
+    u.onboundary = (e) => {
+      if (e.name && e.name !== "word") return;
+      const charIdx = e.charIndex ?? 0;
+      let cum = 0;
+      for (let i = 0; i < words.length; i++) {
+        cum += words[i].length;
+        if (charIdx < cum) { setActiveIdx(i); break; }
+      }
+    };
+    utterRef.current = u;
+    // Speak synchronously inside the user gesture — Android Chrome ignores
+    // speak() when it happens in a deferred callback (setTimeout, promise).
+    synth.speak(u);
 
-    // Defer to next macrotask so cancel() fully drains first.
-    window.setTimeout(startSpeak, 60);
+    // Chrome bug workaround: speech stalls after ~15s of continuous playback.
+    if (keepAliveRef.current) window.clearInterval(keepAliveRef.current);
+    keepAliveRef.current = window.setInterval(() => {
+      if (!synth.speaking) {
+        if (keepAliveRef.current) { window.clearInterval(keepAliveRef.current); keepAliveRef.current = null; }
+        return;
+      }
+      if (!synth.paused) { synth.pause(); synth.resume(); }
+    }, 10000);
   };
 
   const togglePause = () => {

@@ -7,16 +7,16 @@ import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 const COSTS = { analyze: 2, "multi-quiz": 2, define: 1 } as const;
 type Action = keyof typeof COSTS;
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 async function callAI(system: string, user: string, json = true) {
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_API_KEY}` },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
     body: JSON.stringify({
-      model: "gpt-4o-mini",
+      model: "google/gemini-2.5-flash",
       messages: [
         { role: "system", content: system },
         { role: "user", content: user },
