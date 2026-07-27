@@ -13,7 +13,7 @@ const SR: any =
   (typeof window !== "undefined" && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition));
 
 const VoiceTutor = () => {
-  const { credits, loading: creditsLoading, refresh } = useAICredits();
+  const { loading: creditsLoading, refresh } = useAICredits();
   const [listening, setListening] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [transcript, setTranscript] = useState("");
