@@ -88,26 +88,9 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
   const speak = async (text: string) => {
     stopSpeaking();
-    setSpeaking(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("uni-tts", {
-        body: { text, voice: "alloy" } });
-      if (error) throw error;
-      // invoke returns a Blob for non-JSON responses
-      const blob = data instanceof Blob
-        ? data
-        : new Blob([data as ArrayBuffer], { type: "audio/mpeg" });
-      if (!blob || blob.size === 0) throw new Error("empty_audio");
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      audioRef.current = audio;
-      audio.onended = () => { setSpeaking(false); URL.revokeObjectURL(url); };
-      audio.onerror = () => { setSpeaking(false); URL.revokeObjectURL(url); speakBrowser(text); };
-      await audio.play();
-    } catch {
-      // Fallback to native Web Speech synthesis
-      speakBrowser(text);
-    }
+    // Use native speech synthesis directly: the old uni-tts edge function is not
+    // deployed on this Supabase project and caused the visible failure toast.
+    speakBrowser(text);
   };
 
   const send = async (text: string) => {
@@ -116,8 +99,8 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     showCaption("user", text);
     setThinking(true);
     try {
-      const { data, error } = await supabase.functions.invoke("uni-assistant", {
-        body: { transcript: text, currentRoute: location.pathname } });
+      const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+        body: { type: "uni_assistant", transcript: text, currentRoute: location.pathname } });
       if (error) throw error;
       if (data?.error === "INSUFFICIENT_CREDITS") {
         toast({ title: "Not enough credits", description: "Uni costs 5 credits per command.", variant: "destructive" });
@@ -127,7 +110,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
         return;
       }
       if (data?.error) throw new Error(data.error);
-      const reply = data?.reply ?? "Okay.";
+      const reply = data?.reply ?? data?.message ?? data?.text ?? data?.result ?? "Okay.";
       setTurns((t) => [...t, { role: "assistant", content: reply }]);
       showCaption("assistant", reply);
       speak(reply);

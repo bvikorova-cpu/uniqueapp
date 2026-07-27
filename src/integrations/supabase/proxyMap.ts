@@ -248,6 +248,10 @@ export function resolveProxy(
     return { target: "create-checkout", body: { ...b, product: "ai_auto_recharge" } };
   }
 
+  if (functionName === "uni-assistant") {
+    return { target: "generate-gift-message", body: { ...b, type: "uni_assistant" } };
+  }
+
   // Kids subscription helpers — keep immediate (avoid timing race with
   // patchSupabaseFunctions, which loads after React render).
   if (functionName === "check-kids-subscription") {
