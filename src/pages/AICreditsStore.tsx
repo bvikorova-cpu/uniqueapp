@@ -33,7 +33,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const AICreditsStore = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { credits, refresh } = useAICredits();
+  const { credits, refresh, freeBalance, paidBalance, totalBalance } = useAICredits();
   const [loading, setLoading] = useState(false);
   const packagesRef = useRef<HTMLDivElement>(null);
 
@@ -154,18 +154,27 @@ const AICreditsStore = () => {
           <ArrowLeft className="w-4 h-4" /> Back to Studio
         </Button>
 
-        {/* Cinematic hero */}
+        {/* Cinematic hero — shows unified TOTAL (free monthly + paid) */}
         <AICreditsHero
-          credits={credits?.credits_remaining ?? 0}
+          credits={totalBalance}
           totalPurchased={credits?.total_credits_purchased ?? 0}
           onScrollToPackages={scrollToPackages}
         />
 
+        {/* Unified breakdown so users see why the number matches every other screen */}
+        <div className="mt-3 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+          <span className="tabular-nums"><b className="text-emerald-500">{freeBalance}</b> free / month</span>
+          <span className="opacity-40">•</span>
+          <span className="tabular-nums"><b className="text-violet-500">{paidBalance}</b> paid</span>
+          <span className="opacity-40">•</span>
+          <span className="tabular-nums"><b className="text-foreground">{totalBalance}</b> total</span>
+        </div>
+
         {/* Live ticker */}
         <AICreditsLiveTicker />
 
-        {/* Low balance alert (renders only if low) */}
-        <AICreditsLowBalanceAlert credits={credits?.credits_remaining ?? 0} />
+        {/* Low balance alert (renders only if TOTAL is low) */}
+        <AICreditsLowBalanceAlert credits={totalBalance} />
 
         {/* Earn free XP by watching an ad */}
         <div className="flex items-center justify-center gap-3 rounded-xl border border-border/40 bg-card/40 p-4 backdrop-blur">

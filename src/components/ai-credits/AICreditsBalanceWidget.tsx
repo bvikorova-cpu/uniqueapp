@@ -13,9 +13,10 @@ interface Props {
  */
 export const AICreditsBalanceWidget = ({ compact = false }: Props) => {
   const navigate = useNavigate();
-  const { credits, loading } = useAICredits();
-  const balance = credits?.credits_remaining ?? 0;
+  const { freeBalance, paidBalance, loading } = useAICredits();
+  const balance = freeBalance + paidBalance;
   const low = balance <= 5;
+  const tooltip = `Total: ${balance} credits (Free monthly: ${freeBalance} · Paid: ${paidBalance})`;
 
   if (compact) {
     return (
@@ -23,6 +24,7 @@ export const AICreditsBalanceWidget = ({ compact = false }: Props) => {
       <FloatingHowItWorks title={"A I Credits Balance Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Credits Balance Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Credits Balance Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <button
         onClick={() => navigate("/ai-credits")}
+        title={tooltip}
         className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border backdrop-blur-xl transition-colors ${
           low
             ? "bg-amber-500/15 border-amber-400/50 hover:bg-amber-500/25"
@@ -46,6 +48,7 @@ export const AICreditsBalanceWidget = ({ compact = false }: Props) => {
         <div>
           <p className="text-2xl font-black tabular-nums">{loading ? "—" : balance}</p>
           <p className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">AI Credits</p>
+          <p className="text-[10px] tabular-nums text-muted-foreground mt-0.5">Free {freeBalance} · Paid {paidBalance}</p>
         </div>
       </div>
       <Button size="sm" variant="outline" className="gap-1.5" onClick={() => navigate("/ai-credits")}>
