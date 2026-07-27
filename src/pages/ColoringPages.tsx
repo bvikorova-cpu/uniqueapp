@@ -425,9 +425,6 @@ export default function ColoringPages() {
             <PrintExport />
           </TabsContent>
 
-          <TabsContent value="schools"><SchoolsTab /></TabsContent>
-          <TabsContent value="healthcare"><HealthcareTab /></TabsContent>
-          <TabsContent value="corporate"><CorporateTab /></TabsContent>
         </Tabs>
       </main>
     </div>
