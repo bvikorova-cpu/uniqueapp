@@ -61,6 +61,26 @@ async function callAI(messages: any[], opts: { model?: string; json?: boolean } 
   return data.choices?.[0]?.message?.content ?? "";
 }
 
+// Charge unified ai_credits pool. Returns null on success, or {status,body} on failure.
+async function chargeAiCredits(admin: any, userId: string, amount: number, reason: string):
+  Promise<null | { status: number; body: any }> {
+  const { data: credRow } = await admin
+    .from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+  const balance = credRow?.credits_remaining ?? 0;
+  if (balance < amount) {
+    return { status: 402, body: { error: "insufficient_credits", credits_remaining: balance, cost: amount } };
+  }
+  const { error } = await admin.rpc("deduct_ai_credits", {
+    p_user_id: userId, p_amount: amount, p_reason: reason, p_source: "education-router" });
+  if (error) {
+    if (String(error.message || "").toLowerCase().includes("insufficient")) {
+      return { status: 402, body: { error: "insufficient_credits", credits_remaining: balance, cost: amount } };
+    }
+    return { status: 500, body: { error: error.message || "deduct_failed" } };
+  }
+  return null;
+}
+
 // SM-2 algorithm
 function sm2(quality: number, ease: number, interval: number, reps: number) {
   if (quality < 3) {
@@ -397,17 +417,8 @@ Deno.serve(async (req) => {
         const imageUrl = body.image_url as string | undefined;
         if (!problem && !imageUrl) return json({ error: "problem_text or image_url required" }, 400);
 
-        // Charge 3 homework credits
-        const { data: hc } = await admin
-          .from("homework_credits")
-          .select("credits_remaining")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        if (!hc || hc.credits_remaining < 3) return json({ error: "insufficient_credits" }, 402);
-        await admin
-          .from("homework_credits")
-          .update({ credits_remaining: hc.credits_remaining - 3 })
-          .eq("user_id", user.id);
+        const chargeErr = await chargeAiCredits(admin, user.id, 3, "education_math_solve");
+        if (chargeErr) return json(chargeErr.body, chargeErr.status);
 
         const sys = "You are a step-by-step math tutor. Return JSON: {\"steps\":[{\"title\":\"...\",\"explanation\":\"...\",\"latex\":\"...\"}], \"answer\":\"...\"}. Be concise and pedagogical.";
         const userMsg: any[] = [{ type: "text", text: problem || "Solve the problem in the image." }];
@@ -428,7 +439,7 @@ Deno.serve(async (req) => {
           problem_text: problem || null,
           solution_steps: parsed.steps ?? [],
           credits_used: 3 });
-        return json({ solution: parsed });
+        return json({ solution: parsed, credits_used: 3 });
       }
 
       case "tutor.chat": {
@@ -436,38 +447,37 @@ Deno.serve(async (req) => {
         const context = (body.context ?? "").toString().slice(0, 8000);
         if (!message) return json({ error: "message required" }, 400);
 
-        const { data: hc } = await admin
-          .from("homework_credits")
-          .select("credits_remaining")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        if (!hc || hc.credits_remaining < 3) return json({ error: "insufficient_credits" }, 402);
-        await admin
-          .from("homework_credits")
-          .update({ credits_remaining: hc.credits_remaining - 3 })
-          .eq("user_id", user.id);
+        const chargeErr = await chargeAiCredits(admin, user.id, 2, "education_tutor_chat");
+        if (chargeErr) return json(chargeErr.body, chargeErr.status);
 
         const reply = await callAI([
           { role: "system", content: `You are a patient, encouraging AI tutor. Context:\n${context}` },
           { role: "user", content: message },
         ]);
-        return json({ reply });
+        return json({ reply, credits_used: 2 });
       }
 
       case "notes.generate": {
         const topic = (body.topic ?? "").toString().slice(0, 500);
         if (!topic) return json({ error: "topic required" }, 400);
+
+        const chargeErr = await chargeAiCredits(admin, user.id, 2, "education_notes_generate");
+        if (chargeErr) return json(chargeErr.body, chargeErr.status);
+
         const reply = await callAI([
           { role: "system", content: "Generate concise study notes in markdown. Use headings, bullets, and bold for key terms." },
           { role: "user", content: `Topic: ${topic}` },
         ]);
-        return json({ markdown: reply });
+        return json({ markdown: reply, credits_used: 2 });
       }
 
       case "deck.ai_generate": {
         const topic = (body.topic ?? "").toString().slice(0, 300);
         const count = Math.min(Math.max(body.count ?? 10, 3), 20);
         if (!topic) return json({ error: "topic required" }, 400);
+
+        const chargeErr = await chargeAiCredits(admin, user.id, 3, "education_deck_ai_generate");
+        if (chargeErr) return json(chargeErr.body, chargeErr.status);
 
         const raw = await callAI(
           [
@@ -478,7 +488,7 @@ Deno.serve(async (req) => {
         );
         let cards: any[] = [];
         try { cards = JSON.parse(raw).cards ?? []; } catch {}
-        return json({ cards });
+        return json({ cards, credits_used: 3 });
       }
 
       // ============================================================
