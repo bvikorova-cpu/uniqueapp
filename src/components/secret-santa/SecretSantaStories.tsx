@@ -72,8 +72,24 @@ export const SecretSantaStories = () => {
                 </div>
 
                 <div className="text-center">
-                  <p className="text-gray-700 font-medium">
-                    Someone received a
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    {story.sender_avatar && !story.is_anonymous ? (
+                      <img
+                        src={story.sender_avatar}
+                        alt={story.sender_name}
+                        className="w-6 h-6 rounded-full object-cover border border-rose-200"
+                      />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-rose-200 to-pink-200 flex items-center justify-center text-xs">
+                        {story.is_anonymous ? "🎅" : "✨"}
+                      </div>
+                    )}
+                    <p className="text-gray-700 font-semibold text-sm truncate max-w-[140px]">
+                      {story.sender_name || "Santa"}
+                    </p>
+                  </div>
+                  <p className="text-gray-500 text-xs">
+                    sent {story.recipient_name ? <span className="font-medium text-gray-700">{story.recipient_name}</span> : "someone"} a
                   </p>
                   <p className="text-amber-600 font-bold text-lg capitalize">
                     {gift?.gift_type?.replace(/_/g, " ")}
