@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useFreeTierCredits } from '@/hooks/useFreeTierCredits';
 import { useAuth } from '@/contexts/AuthContext';
@@ -34,6 +34,8 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
     last_used_at: null });
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const currentUserIdRef = useRef<string | null>(null);
+  currentUserIdRef.current = user?.id ?? null;
 
   const { data: freeData, refresh: refreshFree, consume: consumeFree } = useFreeTierCredits();
   const freeBalance = freeData?.balance ?? 0;
@@ -60,6 +62,7 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
+      if (currentUserIdRef.current !== userId) return;
 
       if (data) {
         setCredits(data);
@@ -72,6 +75,7 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
           .select()
           .single();
         if (insertError) throw insertError;
+        if (currentUserIdRef.current !== userId) return;
         if (newCredits) setCredits(newCredits);
       }
     } catch (error) {
