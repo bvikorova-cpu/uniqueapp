@@ -316,7 +316,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-baseline space-x-1 -mt-2">
+          <div className="hidden lg:flex flex-1 min-w-0 items-baseline space-x-1 -mt-2 overflow-x-auto no-scrollbar">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant={isChallengeServiceActive ? "premium" : "ghost"}>
