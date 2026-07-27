@@ -500,6 +500,17 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-2 shrink-0">
 
+            {/* Full menu (all sections) */}
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Open full menu"
+              title="All sections"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+
             {/* Theme Toggle — visible for all users */}
             <ThemeToggle />
             <Button
