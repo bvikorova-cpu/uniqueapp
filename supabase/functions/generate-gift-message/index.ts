@@ -158,7 +158,7 @@ serve(async (req) => {
         : null;
       const __uniCost = __type === "uni_assistant" ? 5 : null;
       const __cost = __uniCost ?? __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
-      const __usage = __type === "uni_assistant" ? "uni_assistant" : (__type === "mystery_box_ai" ? "mystery_box_ai" : (__isLegacyGift ? "gift_message" : "ai_generic"));
+      const __usage = __type === "mystery_box_ai" ? "mystery_box_ai" : (__isLegacyGift ? "gift_message" : "ai_generic");
       const __auth = await requireAiCredits(req, corsHeaders, { credits: __cost, usageType: __usage });
       if (__auth.errorResponse) return __auth.errorResponse;
       __deduct = __auth.deduct!;
