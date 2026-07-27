@@ -203,7 +203,7 @@ const KidsHomework = () => {
                     Ask Your Question
                   </CardTitle>
                   <CardDescription>
-                    Choose a subject, pick difficulty, then type or select a question.{hasGoldPass ? " ✨ Gold Pass: unlimited questions." : ` Each question costs ${HOMEWORK_CREDITS_PER_QUESTION} credits.`}
+                    Choose a subject, pick difficulty, then type or select a question. ✨ Gold Pass: unlimited questions.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5">
