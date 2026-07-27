@@ -35,7 +35,7 @@ export default function MentorFeature() {
         <Helmet><title>Premium required</title></Helmet>
         <Crown className="w-12 h-12 mx-auto text-primary mb-3" />
         <h1 className="text-2xl font-black mb-2">Premium feature</h1>
-        <p className="text-muted-foreground mb-4">Unlock all 18 Personal Mentor tools.</p>
+        <p className="text-muted-foreground mb-4">Unlock all 14 Personal Mentor tools.</p>
         <Button onClick={() => navigate("/ai-mentor/premium")}>See plans</Button>
       </div>
     );
