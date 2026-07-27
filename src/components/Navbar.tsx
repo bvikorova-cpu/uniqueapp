@@ -163,7 +163,6 @@ const Navbar = () => {
         { path: "/beauty-studio", label: "Beauty Studio", icon: Sparkles },
         { path: "/fashion-studio", label: "Fashion Studio", icon: Palette },
       ] },
-      ] },
     {
       category: "Mystical & Spiritual",
       items: [
