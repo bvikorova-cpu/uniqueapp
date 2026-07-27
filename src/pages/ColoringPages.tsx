@@ -44,6 +44,7 @@ const __HIW_COLORINGPAGES = { title: 'Coloring Pages', intro: 'Generate, print a
 export default function ColoringPages() {
   const navigate = useNavigate();
   const { credits, isLoading: creditsLoading, balance, canUse, costPerUse, purchase, refresh } = useColoringCredits();
+  const { totalBalance: unifiedBalance, loading: unifiedLoading, refreshAll: refreshUnified } = useAICredits();
   const [imageUrl, setImageUrl] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadMode, setUploadMode] = useState<"url" | "file">("file");
