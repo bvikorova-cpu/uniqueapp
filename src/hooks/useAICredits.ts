@@ -105,16 +105,17 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
     description?: string
   ): Promise<SpendResult> => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return { success: false };
-      if (user.id !== user?.id) return { success: false };
+      const authUserId = user?.id;
+      if (!authUserId) return { success: false };
+      const { data: { user: sessionUser } } = await supabase.auth.getUser();
+      if (!sessionUser || sessionUser.id !== authUserId) return { success: false };
 
       // 1) Try FREE tier first
       if (freeBalance > 0) {
         const ok = await consumeFree(1, `ai:${type}`);
         if (ok) {
           await supabase.from('ai_usage_history').insert({
-            user_id: user.id,
+            user_id: authUserId,
             usage_type: type,
             credits_used: 1,
             description: description ? `[free] ${description}` : '[free]' });
@@ -129,11 +130,11 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
         .from('ai_credits')
         .update({ credits_remaining: paidBalance - 1,
           last_used_at: new Date().toISOString() })
-        .eq('user_id', user.id);
+        .eq('user_id', authUserId);
       if (updateError) throw updateError;
 
       await supabase.from('ai_usage_history').insert({
-        user_id: user.id,
+        user_id: authUserId,
         usage_type: type,
         credits_used: 1,
         description: description ? `[paid] ${description}` : '[paid]' });
