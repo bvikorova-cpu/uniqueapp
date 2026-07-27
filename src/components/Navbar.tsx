@@ -500,6 +500,17 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-2 shrink-0">
 
+            {/* Full menu (all sections) */}
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Open full menu"
+              title="All sections"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+
             {/* Theme Toggle — visible for all users */}
             <ThemeToggle />
             <Button
@@ -661,7 +672,8 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
+          <div className="py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
+
             <MobileCreditsPill />
 
             {/* VIP Membership Club */}
