@@ -18,7 +18,8 @@ export const useSubmitDaily = () => {
       qc.invalidateQueries({ queryKey: ["daily-challenge"] });
       qc.invalidateQueries({ queryKey: ["education-stats"] });
       qc.invalidateQueries({ queryKey: ["league"] });
-      toast.success(`+${data.xp_awarded} XP`);
+      if (data.xp_awarded > 0) toast.success(`+${data.xp_awarded} XP · streak ${data.streak}🔥`);
+      else toast.info("No new XP — beat your previous score to earn more!");
     } });
 };
 

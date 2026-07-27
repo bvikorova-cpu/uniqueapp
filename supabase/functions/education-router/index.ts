@@ -220,17 +220,19 @@ Deno.serve(async (req) => {
         const score = Math.max(0, Math.min(100, body.score ?? 0));
         if (!challengeId) return json({ error: "challenge_id required" }, 400);
 
-        // Was today's daily already completed before this submission?
+        // Previous score for today's daily (if any)
         const { data: alreadyDone } = await admin
           .from("education_daily_completions")
-          .select("id")
+          .select("id, score")
           .eq("user_id", user.id)
           .eq("challenge_id", challengeId)
           .maybeSingle();
+        const prevScore = alreadyDone?.score ?? 0;
+        const bestScore = Math.max(prevScore, score);
 
         const { error } = await admin
           .from("education_daily_completions")
-          .upsert({ user_id: user.id, challenge_id: challengeId, score }, { onConflict: "user_id,challenge_id" });
+          .upsert({ user_id: user.id, challenge_id: challengeId, score: bestScore }, { onConflict: "user_id,challenge_id" });
         if (error) throw error;
 
         // Award XP + update daily streak based on daily-challenge completions
@@ -239,7 +241,8 @@ Deno.serve(async (req) => {
           .select("total_points, login_streak, longest_streak, last_login_date")
           .eq("user_id", user.id)
           .maybeSingle();
-        const xpAdd = alreadyDone ? 0 : Math.round((score / 100) * 50);
+        // Award XP proportionally to score; on repeat attempts award only the delta over the previous best.
+        const xpAdd = Math.max(0, Math.round((bestScore / 100) * 50) - Math.round((prevScore / 100) * 50));
 
         const today = new Date().toISOString().slice(0, 10);
         const prevStreak = pts?.login_streak ?? 0;
