@@ -156,8 +156,9 @@ serve(async (req) => {
       const __mysteryBoxCost = __type === "mystery_box_ai"
         ? ((__style === "box_strategy" || reqBody.analysisType === "box_strategy") ? 8 : 10)
         : null;
-      const __cost = __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
-      const __usage = __type === "mystery_box_ai" ? "mystery_box_ai" : (__isLegacyGift ? "gift_message" : "ai_generic");
+      const __uniCost = __type === "uni_assistant" ? 5 : null;
+      const __cost = __uniCost ?? __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
+      const __usage = __type === "uni_assistant" ? "uni_assistant" : (__type === "mystery_box_ai" ? "mystery_box_ai" : (__isLegacyGift ? "gift_message" : "ai_generic"));
       const __auth = await requireAiCredits(req, corsHeaders, { credits: __cost, usageType: __usage });
       if (__auth.errorResponse) return __auth.errorResponse;
       __deduct = __auth.deduct!;
@@ -235,6 +236,101 @@ serve(async (req) => {
 
     let systemPrompt = "";
     let userPrompt = "";
+
+    if (type === "uni_assistant") {
+      const transcript = String(reqBody.transcript ?? customPrompt ?? "").trim().slice(0, 1000);
+      const currentRoute = String(reqBody.currentRoute ?? "/").slice(0, 200);
+      if (!transcript) {
+        return new Response(JSON.stringify({ error: "empty_transcript" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      const uniSystemPrompt = `You are "Uni", the voice assistant of the Unique platform (uniqueapp.fun).
+You are warm, knowledgeable and helpful — a general-purpose assistant like Siri or ChatGPT.
+Reply in the same language the user spoke. Keep answers spoken-friendly:
+- For simple questions or commands: 1–2 short sentences.
+- For explanations, how-tos, facts, math, coding, cooking, travel, science, history, definitions, translations, recommendations, comparisons, etc.: up to ~5 concise sentences with the real answer.
+Never refuse just because a topic is outside the app. Answer general-knowledge questions directly using what you know. If you truly don't know or the info may be outdated, say so briefly.
+
+You can ALSO navigate the user inside the app to these routes:
+- "/" home
+- "/ai-mentor/hub" Personal AI Mentor coaches
+- "/megatalent" Megatalent contest
+- "/dating" Dating
+- "/bazaar" Bazaar marketplace
+- "/skills" Skills marketplace
+- "/education" Education / courses
+- "/kids" Kids channel
+- "/health" Health & Wellness
+- "/jobs" Jobs
+- "/wallet" Credits & wallet
+- "/notifications" Notifications
+- "/report-bug" Report a bug
+- "/settings" Settings
+
+Only call the navigate tool when the user clearly asks to open/go to/show one of these. Never invent routes not listed above.`;
+
+      const uniResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: uniSystemPrompt },
+            { role: "system", content: `The user is currently on route: ${currentRoute}` },
+            { role: "user", content: transcript },
+          ],
+          tools: [{
+            type: "function",
+            function: {
+              name: "navigate",
+              description: "Navigate the app to a route from the allowed list.",
+              parameters: {
+                type: "object",
+                properties: { path: { type: "string", description: "Route path starting with /" } },
+                required: ["path"],
+                additionalProperties: false } } }],
+          tool_choice: "auto",
+          max_completion_tokens: 300 }) });
+
+      if (!uniResponse.ok) {
+        if (uniResponse.status === 429) {
+          return new Response(JSON.stringify({ error: "Rate limit exceeded, try again later." }), {
+            status: 429,
+            headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        const errorText = await uniResponse.text();
+        console.error("OpenAI Uni error:", errorText);
+        throw new Error("Uni assistant failed");
+      }
+
+      const uniData = await uniResponse.json();
+      const msg = uniData?.choices?.[0]?.message ?? {};
+      const toolCall = msg.tool_calls?.[0];
+      let action: { type: "navigate"; path: string } | null = null;
+      if (toolCall?.function?.name === "navigate") {
+        try {
+          const args = JSON.parse(toolCall.function.arguments || "{}");
+          if (typeof args.path === "string" && args.path.startsWith("/")) {
+            action = { type: "navigate", path: args.path };
+          }
+        } catch { /* ignore malformed tool args */ }
+      }
+      const reply = String(msg.content ?? "").trim() || (action ? `Opening ${action.path} for you.` : "Okay.");
+
+      await __deduct();
+      return new Response(JSON.stringify({ reply,
+        message: reply,
+        text: reply,
+        result: reply,
+        content: reply,
+        action,
+        creditsSpent: 5 }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     // ─── UNIVERSAL TEXT-AI ROUTER ───
     // Map of `type` → system prompt for all aliased text/AI helpers.
