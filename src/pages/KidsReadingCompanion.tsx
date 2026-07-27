@@ -46,6 +46,7 @@ const KidsReadingCompanion = () => {
   const [quiz, setQuiz] = useState<any>(null);
   const [readingLevel, setReadingLevel] = useState("intermediate");
   const [activeView, setActiveView] = useState<"input" | "results" | "flashcards" | "quiz">("input");
+  const [tabValue, setTabValue] = useState<"read" | "flashcards" | "quiz" | "howto">("read");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [defineWord, setDefineWord] = useState<string | null>(null);
   const { balance, canUse: canUseCredits, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsReadingCredits();
@@ -202,10 +203,20 @@ const KidsReadingCompanion = () => {
             </Card>
           )}
 
-          <Tabs defaultValue="read" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-6">
+          <Tabs
+            value={tabValue}
+            onValueChange={(v) => {
+              setTabValue(v as typeof tabValue);
+              if (v === "quiz" && bookText.trim() && !quiz && !loading) {
+                generateQuiz();
+              }
+            }}
+            className="w-full"
+          >
+            <TabsList className="grid w-full grid-cols-4 mb-6">
               <TabsTrigger value="read">📖 Read</TabsTrigger>
               <TabsTrigger value="flashcards" disabled={!analysis?.vocabulary?.length}>🃏 Flashcards</TabsTrigger>
+              <TabsTrigger value="quiz" disabled={!bookText.trim()}>🎯 Quiz</TabsTrigger>
               <TabsTrigger value="howto">❓ How To</TabsTrigger>
             </TabsList>
 
@@ -252,7 +263,10 @@ const KidsReadingCompanion = () => {
                           ) : hasGoldPass ? "📝 Analyze (unlimited)" : `📝 Analyze (${KIDS_READING_CREDIT_COST})`}
                         </Button>
                         <Button
-                          onClick={generateQuiz}
+                          onClick={() => {
+                            setTabValue("quiz");
+                            generateQuiz();
+                          }}
                           disabled={loading || !bookText.trim() || !canUse}
                           variant="outline"
                           className="text-sm"
@@ -281,7 +295,10 @@ const KidsReadingCompanion = () => {
                     summary={analysis.summary}
                     vocabulary={analysis.vocabulary || []}
                     onStartFlashcards={() => setActiveView("flashcards")}
-                    onStartQuiz={generateQuiz}
+                    onStartQuiz={() => {
+                      setTabValue("quiz");
+                      generateQuiz();
+                    }}
                   />
                 </div>
               )}
@@ -308,6 +325,14 @@ const KidsReadingCompanion = () => {
 
               {activeView === "quiz" && quiz && (
                 <div className="space-y-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActiveView("input")}
+                    className="text-xs"
+                  >
+                    ← Back to Text
+                  </Button>
                   <MultiQuestionQuiz
                     questions={Array.isArray(quiz) ? quiz : quiz.questions || [quiz]}
                     onComplete={(score, total) => {
@@ -336,6 +361,61 @@ const KidsReadingCompanion = () => {
                     <p className="text-sm text-muted-foreground">
                       Analyze a text first to generate vocabulary flashcards!
                     </p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="quiz">
+              {!bookText.trim() ? (
+                <Card className="border-dashed border-2">
+                  <CardContent className="py-12 text-center space-y-3">
+                    <div className="text-4xl">🎯</div>
+                    <h3 className="font-bold">No Text to Quiz</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Paste a text in the <strong>Read</strong> tab first, then come back here for a quiz!
+                    </p>
+                    <Button onClick={() => setTabValue("read")} variant="outline">
+                      Go to Read tab
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : loading ? (
+                <Card className="border-2 border-primary/20">
+                  <CardContent className="py-12 text-center space-y-3">
+                    <div className="text-4xl animate-bounce">🎯</div>
+                    <h3 className="font-bold">Creating Your Quiz...</h3>
+                    <p className="text-sm text-muted-foreground">
+                      The AI is reading your text and preparing questions.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : quiz ? (
+                <MultiQuestionQuiz
+                  questions={Array.isArray(quiz) ? quiz : quiz.questions || [quiz]}
+                  onComplete={(score, total) => {
+                    setStats(prev => ({ ...prev, quizzesTaken: prev.quizzesTaken + 1 }));
+                    toast.success(`Quiz complete! ${score}/${total}`);
+                  }}
+                  onBack={() => setTabValue("read")}
+                />
+              ) : (
+                <Card className="border-dashed border-2">
+                  <CardContent className="py-12 text-center space-y-3">
+                    <div className="text-4xl">🎯</div>
+                    <h3 className="font-bold">Ready for a Quiz?</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Generate questions based on your text to test your understanding.
+                    </p>
+                    <Button
+                      onClick={generateQuiz}
+                      disabled={!canUse}
+                      className="gap-1"
+                    >
+                      {!canUse ? (
+                        <><Lock className="w-3 h-3 mr-1" />Buy credits</>
+                      ) : hasGoldPass ? "🎯 Generate Quiz (unlimited)" : `🎯 Generate Quiz (${KIDS_READING_CREDIT_COST})`}
+                    </Button>
                   </CardContent>
                 </Card>
               )}
