@@ -47,6 +47,10 @@ const AIMentorChat = () => {
   const [goals, setGoals] = useState<any[]>([]);
   const [checkins, setCheckins] = useState<any[]>([]);
 
+  const validArea = ["career", "fitness", "mindset", "relationships"].includes(area ?? "")
+    ? (area as string)
+    : "career";
+
   useEffect(() => {
     if (!adminLoading) {
       checkUser();
@@ -61,15 +65,36 @@ const AIMentorChat = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        navigate('/auth');
+        navigate(`/auth?redirect=/ai-mentor/${validArea}`);
         return;
       }
       setUser(user);
 
       if (!isAdmin) {
-        const { data: subData } = await supabase.functions.invoke('mentor-router', {
-          body: { action: 'premium.check', area: area as string } });
-        if (!subData?.subscribed) { toast({
+        const nowIso = new Date().toISOString();
+        const [legacySub, premiumSub, routerCheck] = await Promise.all([
+          supabase
+            .from('mentor_subscriptions')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('mentor_area', validArea as any)
+            .eq('status', 'active')
+            .limit(1),
+          supabase
+            .from('mentor_premium_subs')
+            .select('id,current_period_end')
+            .eq('user_id', user.id)
+            .eq('area', validArea as any)
+            .eq('status', 'active')
+            .or(`current_period_end.is.null,current_period_end.gte.${nowIso}`)
+            .limit(1),
+          supabase.functions.invoke('mentor-router', {
+            body: { action: 'premium.check', area: validArea } }),
+        ]);
+
+        const hasLocalSub = !!legacySub.data?.length || !!premiumSub.data?.length;
+        const hasRouterSub = !!routerCheck.data?.subscribed;
+        if (!hasLocalSub && !hasRouterSub) { toast({
             title: "Subscription required",
             description: "You need an active subscription for this mentor area" });
           navigate('/ai-mentor/premium');
@@ -90,7 +115,7 @@ const AIMentorChat = () => {
       .from('mentor_sessions')
       .select('*')
       .eq('user_id', userId)
-      .eq('mentor_area', area as any)
+        .eq('mentor_area', validArea as any)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -107,7 +132,7 @@ const AIMentorChat = () => {
       .from('mentor_goals')
       .select('*')
       .eq('user_id', userId)
-      .eq('mentor_area', area as any)
+        .eq('mentor_area', validArea as any)
       .order('created_at', { ascending: false });
     setGoals(data || []);
   };
@@ -117,7 +142,7 @@ const AIMentorChat = () => {
       .from('mentor_checkins')
       .select('*')
       .eq('user_id', userId)
-      .eq('mentor_area', area as any)
+        .eq('mentor_area', validArea as any)
       .order('created_at', { ascending: false })
       .limit(10);
     setCheckins(data || []);
@@ -133,7 +158,7 @@ const AIMentorChat = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('mentor-ai-tools', {
-        body: { action: 'voice-coaching', message: userMessage, mentorArea: area } });
+        body: { action: 'voice-coaching', message: userMessage, mentorArea: validArea } });
 
       if (error) throw error;
       const replyText = data?.reply || data?.message || data?.text || "I'm here to help.";
@@ -157,7 +182,7 @@ const AIMentorChat = () => {
     if (!goalTitle?.trim()) return;
     try {
       const { error } = await supabase.from('mentor_goals').insert({ user_id: user.id,
-        mentor_area: area as any,
+        mentor_area: validArea as any,
         title: goalTitle.trim(),
         progress: 0,
         status: 'active' });
@@ -194,7 +219,7 @@ const AIMentorChat = () => {
           </Button>
           <Badge variant="outline" className="capitalize bg-primary/10 border-primary/20 text-primary">
             <Sparkles className="w-3 h-3 mr-1" />
-            {area} Coach
+            {validArea} Coach
           </Badge>
         </motion.div>
 

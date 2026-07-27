@@ -105,6 +105,30 @@ Deno.serve(async (req) => {
       case "premium.check": {
         // Returns map of per-area subscriptions, plus aggregate `subscribed` if any area is active
         const requestedArea = body.area as string | undefined;
+        const validAreas = ["career", "fitness", "mindset", "relationships"];
+        const nowIso = new Date().toISOString();
+        const localQuery = admin
+          .from("mentor_premium_subs")
+          .select("area, status, plan, current_period_end, stripe_subscription_id")
+          .eq("user_id", userId)
+          .eq("status", "active")
+          .or(`current_period_end.is.null,current_period_end.gte.${nowIso}`);
+        const { data: localRows } = requestedArea && validAreas.includes(requestedArea)
+          ? await localQuery.eq("area", requestedArea)
+          : await localQuery.in("area", validAreas);
+        if (localRows?.length) {
+          const localAreas: Record<string, any> = {};
+          for (const row of localRows) {
+            localAreas[row.area] = {
+              subscribed: true,
+              plan: row.plan ?? "monthly",
+              current_period_end: row.current_period_end,
+              subscription_id: row.stripe_subscription_id ?? "local_active",
+            };
+          }
+          if (requestedArea) return json({ subscribed: !!localAreas[requestedArea], ...(localAreas[requestedArea] ?? {}), areas: localAreas });
+          return json({ subscribed: true, areas: localAreas });
+        }
         // Beta tester bypass — grants all 4 areas for QA accounts
         const TEST_USERS = ["beata.vikorova@yandex.com"];
         if (user.email && TEST_USERS.includes(user.email.toLowerCase())) {
