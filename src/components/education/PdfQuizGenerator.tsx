@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { useTutoringCredits } from "@/hooks/useTutoringCredits";
+import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -20,7 +20,7 @@ interface Quiz {
 }
 
 const PdfQuizGenerator = () => {
-  const { credits, spendCredit, refundCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, loading: creditsLoading, refresh } = useAICredits();
   const fileRef = useRef<HTMLInputElement>(null);
   const [extracting, setExtracting] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -84,25 +84,30 @@ const PdfQuizGenerator = () => {
       toast.error("Paste or upload more text");
       return;
     }
-    if (credits < 1) {
-      toast.error("Out of credits");
+    if (credits.credits_remaining < 3) {
+      toast.error("Not enough AI credits (3 needed)");
       return;
     }
     setGenerating(true);
     setQuiz(null);
     setSubmitted(false);
     setAnswers({});
-    let credited = false;
     try {
-      await spendCredit();
-      credited = true;
       const { data, error } = await supabase.functions.invoke("education-ai", {
         body: { action: "pdf_to_quiz", text, numQuestions: 8, difficulty: "medium" } });
-      if (error) throw error;
+      if (error) {
+        const ctx: any = (error as any)?.context;
+        if (ctx?.status === 402 || (data as any)?.error === "Insufficient credits") {
+          toast.error("Not enough AI credits (3 needed)");
+          return;
+        }
+        throw error;
+      }
       if ((data as any)?.error) throw new Error((data as any).error);
       setQuiz((data as any).quiz);
+      await refresh();
+      window.dispatchEvent(new Event("ai-credits-updated"));
     } catch (e: any) {
-      if (credited) await refundCredit("pdf-to-quiz failed");
       toast.error(e?.message || "Failed");
     } finally {
       setGenerating(false);
@@ -125,7 +130,7 @@ const PdfQuizGenerator = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <FileText className="h-5 w-5 text-primary" /> PDF → Quiz
-          <span className="ml-auto text-xs text-muted-foreground font-normal">1 credit</span>
+          <span className="ml-auto text-xs text-muted-foreground font-normal">3 AI credits</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -153,7 +158,7 @@ const PdfQuizGenerator = () => {
           </div>
         )}
 
-        <Button onClick={generate} disabled={generating || isUsingCredit || text.length < 50} className="w-full gap-2">
+        <Button onClick={generate} disabled={generating || creditsLoading || text.length < 50} className="w-full gap-2">
           {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
           {generating ? "Generating quiz…" : "Generate Quiz"}
         </Button>
