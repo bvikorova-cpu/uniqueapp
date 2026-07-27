@@ -15,6 +15,7 @@ import jsPDF from "jspdf";
 import { useNavigate } from "react-router-dom";
 import { useHasShadowArenaAchievementsForCareer } from "@/hooks/useShadowArenaAchievements";
 import { useTeenCareerCredits, TEEN_CAREER_CREDIT_COST } from "@/hooks/useTeenCareerCredits";
+import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 import { CreditBanner } from "@/components/kids/CreditBanner";
 import { CareerHero } from "@/components/teen-career/CareerHero";
 import { CareerWizardStepper } from "@/components/teen-career/CareerWizardStepper";
