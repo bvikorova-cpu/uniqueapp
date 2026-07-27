@@ -672,7 +672,8 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
+          <div className="py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
+
             <MobileCreditsPill />
 
             {/* VIP Membership Club */}
