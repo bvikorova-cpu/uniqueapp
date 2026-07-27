@@ -50,7 +50,13 @@ serve(async (req) => {
     const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders, user.id);
     if (rateLimitResponse) return rateLimitResponse;
 
-    const { imageUrl, difficulty = 'medium' } = await req.json();
+    const { imageUrl, prompt: userPrompt, difficulty = 'medium' } = await req.json();
+    if (!imageUrl && !userPrompt) {
+      return new Response(
+        JSON.stringify({ error: "Provide either imageUrl or prompt" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
     console.log("Generating coloring page for user:", user.id);
 
     const { data: adminCheck, error: adminError } = await supabaseClient
