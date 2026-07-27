@@ -25,6 +25,25 @@ import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import coloringCat from "@/assets/coloring/cat.png";
+import coloringStar from "@/assets/coloring/star.png";
+import coloringRobot from "@/assets/coloring/robot.png";
+import coloringRocket from "@/assets/coloring/rocket.png";
+import coloringDragon from "@/assets/coloring/dragon.png";
+import coloringFlower from "@/assets/coloring/flower.png";
+import coloringUnicorn from "@/assets/coloring/unicorn.png";
+import coloringDog from "@/assets/coloring/dog.png";
+
+const COLORING_IMAGES: Record<string, string> = {
+  cat: coloringCat,
+  star: coloringStar,
+  robot: coloringRobot,
+  rocket: coloringRocket,
+  dragon: coloringDragon,
+  flower: coloringFlower,
+  unicorn: coloringUnicorn,
+  dog: coloringDog,
+};
 
 const __HIW_KIDSDRAWINGBUDDY_STEPS = [
   { title: 'Draw anything', desc: 'Free-draw on the safe kids canvas.' },
