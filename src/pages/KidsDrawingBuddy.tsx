@@ -292,11 +292,11 @@ const KidsDrawingBuddy = () => {
                         stepNumber={currentStep + 1}
                         category={topic}
                       />
-                      <div className="flex gap-2">
-                        <Button variant="outline" onClick={() => setCurrentStep(Math.max(0, currentStep - 1))} disabled={currentStep === 0} className="flex-1">
+                      <div className="flex gap-2 flex-wrap">
+                        <Button variant="outline" onClick={() => setCurrentStep(Math.max(0, currentStep - 1))} disabled={currentStep === 0} className="flex-1 min-w-[120px]">
                           <ChevronLeft className="w-4 h-4 mr-1" /> Previous
                         </Button>
-                        <Button onClick={() => setCurrentStep(Math.min(tutorial.steps.length - 1, currentStep + 1))} disabled={currentStep === tutorial.steps.length - 1} className="flex-1">
+                        <Button onClick={() => setCurrentStep(Math.min(tutorial.steps.length - 1, currentStep + 1))} disabled={currentStep === tutorial.steps.length - 1} className="flex-1 min-w-[120px] mr-20 sm:mr-0">
                           Next <ChevronRight className="w-4 h-4 ml-1" />
                         </Button>
                       </div>
