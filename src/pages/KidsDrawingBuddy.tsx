@@ -69,6 +69,7 @@ const KidsDrawingBuddy = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState("tutorial");
   const [templateRef, setTemplateRef] = useState<{ emoji: string; title: string; difficulty: string; topic: string } | null>(null);
+  const [referenceStyle, setReferenceStyle] = useState<"outline" | "tinted">("outline");
   const lastTutorialNavRef = useRef<{ direction: "previous" | "next"; at: number } | null>(null);
 
   const { balance, canUse: canUseCredits, refresh, costPerUse } = useKidsDrawingCredits();
