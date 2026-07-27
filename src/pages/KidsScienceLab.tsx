@@ -118,7 +118,7 @@ const KidsScienceLab = () => {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke("kids-science-lab", {
+      const { data, error } = await supabase.functions.invoke("kids-science-helper", {
         body: { category, hypothesis, observations, difficulty } });
 
       if (error) throw error;
