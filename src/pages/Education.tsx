@@ -10,7 +10,6 @@ import { supabase } from "@/integrations/supabase/client";
 import 'katex/dist/katex.min.css';
 import QuizList from "@/components/education/QuizList";
 import { TutoringCreditsPanel } from "@/components/education/TutoringCreditsPanel";
-import { useTutoringCredits } from "@/hooks/useTutoringCredits";
 import { toast as sonnerToast } from "sonner";
 import { EducationHero } from "@/components/education/EducationHero";
 import { DailyStreak } from "@/components/education/DailyStreak";
@@ -20,6 +19,7 @@ import { LearningPathProgress } from "@/components/education/LearningPathProgres
 import { EnhancedChat } from "@/components/education/EnhancedChat";
 import { GlassmorphismCategories } from "@/components/education/GlassmorphismCategories";
 import { useEducationStats } from "@/hooks/useEducationStats";
+import { useAICredits } from "@/hooks/useAICredits";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -95,22 +95,18 @@ const Education = () => {
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<Array<{ role: string; content: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { credits, isLoading: creditsLoading, spendCredit, activatePurchase, refundCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, loading: creditsLoading, refresh: refreshAICredits } = useAICredits();
   const { data: eduStats } = useEducationStats();
 
   useEffect(() => {
     const purchase = searchParams.get("purchase");
-    const sessionId = searchParams.get("session_id");
-    if (purchase === "success" && sessionId) {
-      // Server verifies the Stripe session and credits the authoritative amount.
-      activatePurchase(sessionId).finally(() => {
-        navigate("/education", { replace: true });
-      });
+    if (purchase === "success") {
+      refreshAICredits().finally(() => navigate("/education", { replace: true }));
     } else if (purchase === "canceled") {
       sonnerToast.error("Purchase was canceled");
       navigate("/education", { replace: true });
     }
-  }, [searchParams, activatePurchase, navigate]);
+  }, [searchParams, refreshAICredits, navigate]);
 
   const handleSendMessage = async () => {
     if (!chatMessage.trim()) return;
@@ -132,6 +128,8 @@ const Education = () => {
         throw error;
       }
       setChatHistory(prev => [...prev, { role: "assistant", content: (data as any).response }]);
+      await refreshAICredits();
+      window.dispatchEvent(new Event("ai-credits-updated"));
     } catch (error: any) {
       console.error("Error:", error);
       setChatHistory(prev => prev.slice(0, -1));
@@ -233,9 +231,9 @@ const Education = () => {
                     setChatMessage={setChatMessage}
                     handleSendMessage={handleSendMessage}
                     isLoading={isLoading}
-                    credits={credits}
+                    credits={credits.credits_remaining}
                     creditsLoading={creditsLoading}
-                    isUsingCredit={isUsingCredit}
+                    isUsingCredit={false}
                   />
                 </div>
               </TabsContent>

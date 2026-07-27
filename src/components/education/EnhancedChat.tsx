@@ -52,7 +52,7 @@ export const EnhancedChat = ({ chatHistory,
             </div>
             <div>
               <CardTitle className="text-lg">AI Tutoring</CardTitle>
-              <CardDescription className="text-xs">1 credit = 1 message</CardDescription>
+              <CardDescription className="text-xs">2 AI credits per message</CardDescription>
             </div>
           </div>
           <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
@@ -77,12 +77,12 @@ export const EnhancedChat = ({ chatHistory,
           ))}
         </div>
 
-        {!creditsLoading && credits < 1 && (
+        {!creditsLoading && credits < 2 && (
           <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-3 flex items-center gap-3">
             <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
             <div>
-              <p className="font-medium text-destructive text-sm">No credits available</p>
-              <p className="text-xs text-muted-foreground">Purchase credits above to continue learning.</p>
+              <p className="font-medium text-destructive text-sm">Not enough AI credits</p>
+              <p className="text-xs text-muted-foreground">You need 2 AI credits to continue learning.</p>
             </div>
           </div>
         )}
@@ -172,7 +172,7 @@ export const EnhancedChat = ({ chatHistory,
           />
           <Button
             onClick={handleSendMessage}
-            disabled={isLoading || !chatMessage.trim() || credits < 1 || isUsingCredit}
+            disabled={isLoading || !chatMessage.trim() || credits < 2 || isUsingCredit}
             size="icon"
             className="h-[60px] w-[60px] rounded-xl"
           >

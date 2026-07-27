@@ -1,4 +1,3 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
@@ -47,10 +46,10 @@ serve(async (req) => {
     if (rateLimitResponse) return rateLimitResponse;
 
     const { message, history = [] } = await req.json();
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is not configured');
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     // Defensive payload caps to keep prompt size predictable.
@@ -74,6 +73,32 @@ serve(async (req) => {
         { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
+    const messages = [
+      {
+        role: "system",
+        content: "You are an experienced online teacher and tutor. ALWAYS respond in English, never in any other language. You explain concepts clearly with examples and patience. You help students understand material, solve problems step by step, and motivate them in learning. You are friendly and supportive. IMPORTANT: All your responses must be in English only."
+      },
+      ...safeHistory,
+      { role: "user", content: safeMessage }
+    ];
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: 'POST',
+      headers: {
+        'Lovable-API-Key': LOVABLE_API_KEY,
+        'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'google/gemini-3.6-flash',
+        messages: messages }) });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Lovable AI Gateway error:', response.status, errorText);
+      throw new Error(response.status === 402 ? 'ai_gateway_credits_exhausted' : 'AI gateway error');
+    }
+
+    const data = await response.json();
+    const aiResponse = data.choices[0].message.content;
+
     const { error: deductErr } = await admin.rpc("deduct_ai_credits", {
       p_user_id: userId, p_amount: COST, p_reason: "education_tutor_chat", p_source: "tutoring-chat",
     });
@@ -85,32 +110,6 @@ serve(async (req) => {
         { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
-
-    const messages = [
-      {
-        role: "system",
-        content: "You are an experienced online teacher and tutor. ALWAYS respond in English, never in any other language. You explain concepts clearly with examples and patience. You help students understand material, solve problems step by step, and motivate them in learning. You are friendly and supportive. IMPORTANT: All your responses must be in English only."
-      },
-      ...safeHistory,
-      { role: "user", content: safeMessage }
-    ];
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'gpt-4o-mini',
-        messages: messages }) });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
-      throw new Error('OpenAI API error');
-    }
-
-    const data = await response.json();
-    const aiResponse = data.choices[0].message.content;
 
     return new Response(
       JSON.stringify({ response: aiResponse }),

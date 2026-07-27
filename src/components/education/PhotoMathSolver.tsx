@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { useTutoringCredits } from "@/hooks/useTutoringCredits";
+import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -13,7 +13,7 @@ import remarkGfm from "remark-gfm";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const PhotoMathSolver = () => {
-  const { credits, spendCredit, refundCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, loading: creditsLoading, refresh } = useAICredits();
   const fileRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [question, setQuestion] = useState("");
@@ -40,23 +40,28 @@ const PhotoMathSolver = () => {
       toast.error("Upload a photo first");
       return;
     }
-    if (credits < 1) {
-      toast.error("Out of tutoring credits");
+    if (credits.credits_remaining < 3) {
+      toast.error("Not enough AI credits (3 needed)");
       return;
     }
     setLoading(true);
     setSolution(null);
-    let credited = false;
     try {
-      await spendCredit();
-      credited = true;
       const { data, error } = await supabase.functions.invoke("education-ai", {
         body: { action: "photo_math", imageDataUrl: imageUrl, question } });
-      if (error) throw error;
+      if (error) {
+        const ctx: any = (error as any)?.context;
+        if (ctx?.status === 402 || (data as any)?.error === "Insufficient credits") {
+          toast.error("Not enough AI credits (3 needed)");
+          return;
+        }
+        throw error;
+      }
       if ((data as any)?.error) throw new Error((data as any).error);
       setSolution((data as any).solution || "");
+      await refresh();
+      window.dispatchEvent(new Event("ai-credits-updated"));
     } catch (e: any) {
-      if (credited) await refundCredit("photo-math-solve failed");
       toast.error(e?.message || "Failed to solve");
     } finally {
       setLoading(false);
@@ -75,7 +80,7 @@ const PhotoMathSolver = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Camera className="h-5 w-5 text-primary" /> Photo Math Solver
-          <span className="ml-auto text-xs text-muted-foreground font-normal">1 credit</span>
+          <span className="ml-auto text-xs text-muted-foreground font-normal">3 AI credits</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -113,7 +118,7 @@ const PhotoMathSolver = () => {
           rows={2}
         />
 
-        <Button onClick={solve} disabled={loading || isUsingCredit || !imageUrl} className="w-full gap-2">
+        <Button onClick={solve} disabled={loading || creditsLoading || !imageUrl} className="w-full gap-2">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
           {loading ? "Solving..." : "Solve step by step"}
         </Button>
