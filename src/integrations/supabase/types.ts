@@ -69428,6 +69428,12 @@ export type Database = {
           gift_type: string
           gift_value: number
           id: string
+          is_anonymous: boolean
+          recipient_avatar: string
+          recipient_name: string
+          sender_avatar: string
+          sender_id: string
+          sender_name: string
           user_id: string
         }[]
       }
