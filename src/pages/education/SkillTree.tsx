@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import * as LucideIcons from "lucide-react";
@@ -19,8 +19,9 @@ const __HIW_SKILLTREE = { title: 'Skill Tree', intro: 'A visual roadmap of skill
 
 
 export default function SkillTree() {
-  const { subject = "general" } = useParams<{ subject: string }>();
+  const { subject = "math" } = useParams<{ subject: string }>();
   const qc = useQueryClient();
+  if (subject === "general") return <Navigate to="/education/skill-tree/math" replace />;
 
   const { data: nodes = [], isLoading } = useQuery({
     queryKey: ["skill-tree", subject],
