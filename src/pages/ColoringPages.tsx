@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useColoringCredits } from "@/hooks/useColoringCredits";
+import { useAICredits } from "@/hooks/useAICredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload, Palette, Wand2, LayoutGrid, Trophy, Gem, GraduationCap, Heart, Brush, CheckCircle2, Paintbrush, Users, Printer, Zap } from "lucide-react";
@@ -44,6 +45,7 @@ const __HIW_COLORINGPAGES = { title: 'Coloring Pages', intro: 'Generate, print a
 export default function ColoringPages() {
   const navigate = useNavigate();
   const { credits, isLoading: creditsLoading, balance, canUse, costPerUse, purchase, refresh } = useColoringCredits();
+  const { totalBalance: unifiedBalance, loading: unifiedLoading, refresh: refreshUnified } = useAICredits();
   const [imageUrl, setImageUrl] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadMode, setUploadMode] = useState<"url" | "file">("file");
@@ -103,6 +105,7 @@ export default function ColoringPages() {
       toast.success("Coloring page generated!");
       refetchPages();
       refresh();
+      refreshUnified();
       setImageUrl("");
       setUploadedFile(null);
     },
@@ -126,6 +129,7 @@ export default function ColoringPages() {
       toast.success("AI coloring page created!");
       refetchPages();
       refresh();
+      refreshUnified();
     },
     onError: (error: Error) => {
       toast.error("Failed to generate: " + error.message);
@@ -163,9 +167,9 @@ export default function ColoringPages() {
   const easyCount = myPages?.filter((p) => p.difficulty === "easy").length || 0;
   const mediumCount = myPages?.filter((p) => p.difficulty === "medium").length || 0;
   const hardCount = myPages?.filter((p) => p.difficulty === "hard").length || 0;
-  const creditsDisplay = credits?.credits_remaining ?? 0;
+  const creditsDisplay = unifiedBalance;
 
-  if (creditsLoading) {
+  if (creditsLoading || unifiedLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
       <FloatingHowItWorks title={__HIW_COLORINGPAGES.title} intro={__HIW_COLORINGPAGES.intro} steps={__HIW_COLORINGPAGES.steps} />
