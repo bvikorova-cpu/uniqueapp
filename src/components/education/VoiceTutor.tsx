@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { useTutoringCredits } from "@/hooks/useTutoringCredits";
+import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -13,7 +13,7 @@ const SR: any =
   (typeof window !== "undefined" && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition));
 
 const VoiceTutor = () => {
-  const { credits, spendCredit, refundCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, loading: creditsLoading, refresh } = useAICredits();
   const [listening, setListening] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [transcript, setTranscript] = useState("");
@@ -53,6 +53,8 @@ const VoiceTutor = () => {
       if (!answer) throw new Error("Empty AI reply");
       setReply(answer);
       speak(answer);
+      await refresh();
+      window.dispatchEvent(new Event("ai-credits-updated"));
     } catch (e: any) {
       toast.error(e?.message || "AI failed");
     } finally {
@@ -103,7 +105,7 @@ const VoiceTutor = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Mic className="h-5 w-5 text-primary" /> Voice Tutor
-          <span className="ml-auto text-xs text-muted-foreground font-normal">1 credit per question</span>
+          <span className="ml-auto text-xs text-muted-foreground font-normal">2 AI credits per question</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -117,7 +119,7 @@ const VoiceTutor = () => {
           <Button
             size="lg"
             onClick={listening ? stopListening : startListening}
-            disabled={!supported || thinking || isUsingCredit}
+            disabled={!supported || thinking || creditsLoading}
             className={`h-24 w-24 rounded-full ${listening ? "bg-destructive hover:bg-destructive/90 animate-pulse" : "bg-primary"}`}
           >
             {listening ? <MicOff className="h-10 w-10" /> : <Mic className="h-10 w-10" />}
