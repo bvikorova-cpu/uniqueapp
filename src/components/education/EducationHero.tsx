@@ -29,15 +29,15 @@ const statColors = [
 
 export const EducationHero = () => {
   const { stats, loading } = useLiveStats([
-    { key: "courses", table: "courses" },
-    { key: "quizzes", table: "quiz_attempts" },
-    { key: "students", table: "course_enrollments" },
+    { key: "challenges", table: "education_daily_challenges" },
+    { key: "completions", table: "education_daily_completions" },
+    { key: "learners", table: "user_points" },
   ]);
 
   const heroStats = [
-    { icon: BookOpen, label: "Courses", value: stats.courses || 0, suffix: "+" },
-    { icon: Zap, label: "Quiz Attempts", value: stats.quizzes || 0, suffix: "+" },
-    { icon: Trophy, label: "Enrollments", value: stats.students || 0, suffix: "+" },
+    { icon: BookOpen, label: "Daily Challenges", value: stats.challenges || 0, suffix: "+" },
+    { icon: Zap, label: "Completions", value: stats.completions || 0, suffix: "+" },
+    { icon: Trophy, label: "Active Learners", value: stats.learners || 0, suffix: "+" },
     { icon: Flame, label: "AI Tutor", value: 0, suffix: "", staticLabel: "24/7" },
   ];
 
