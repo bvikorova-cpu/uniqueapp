@@ -47,7 +47,8 @@ Deno.serve(async (req) => {
 
     const supa = createClient(SUPABASE_URL, SERVICE_KEY);
     const body = await req.json();
-    const action = body?.action as Action;
+    // Default to "analyze" when no action is provided (KidsScienceLab full-analysis flow)
+    const action = (body?.action ?? "analyze") as Action;
     if (!COSTS[action]) throw new Error(`Unknown action: ${action}`);
 
     // Credit check + deduct (skipped for Gold Pass)
