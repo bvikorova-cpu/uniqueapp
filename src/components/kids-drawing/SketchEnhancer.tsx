@@ -3,11 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Upload, Camera, Wand2, Loader2, Download, RefreshCw, Coins, X } from "lucide-react";
+import { Sparkles, Upload, Camera, Wand2, Loader2, Download, RefreshCw, Coins, X, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { useKidsDrawingGallery } from "@/hooks/useKidsDrawingGallery";
 
 const STYLES: Array<{ id: string; label: string; emoji: string }> = [
   { id: "cartoon", label: "Cartoon", emoji: "🎨" },
@@ -40,6 +41,7 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
   const [enhanced, setEnhanced] = useState<string | null>(null);
 
   const { hasGoldPass } = useKidsGoldPass();
+  const { saveDrawing, isSaving } = useKidsDrawingGallery();
   const COST = 4;
   const canRun = hasGoldPass || balance >= COST;
 
@@ -82,6 +84,18 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
     a.href = enhanced;
     a.download = `my-art-${style}.png`;
     a.click();
+  };
+
+  const saveToGallery = () => {
+    if (!enhanced) return;
+    const selectedStyle = STYLES.find((s) => s.id === style)?.label ?? "Polished";
+    const titleBase = description.trim() || "Magic Polish Artwork";
+    saveDrawing({
+      imageDataURL: enhanced,
+      title: `${titleBase} — ${selectedStyle}`,
+      stepNumber: 0,
+      category: "Magic Polish",
+    });
   };
 
   return (
@@ -191,7 +205,15 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
               <Sparkles className="h-4 w-4 text-primary" /> Your polished art
             </p>
             <img src={enhanced} alt="Enhanced art" className="w-full rounded-lg border" />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <Button variant="default" onClick={saveToGallery} disabled={isSaving}>
+                {isSaving ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-2 h-4 w-4" />
+                )}
+                Save to Gallery
+              </Button>
               <Button variant="outline" onClick={download}>
                 <Download className="mr-2 h-4 w-4" /> Download
               </Button>
