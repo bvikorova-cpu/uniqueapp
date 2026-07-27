@@ -148,8 +148,9 @@ Schema:
         .eq("user_id", user.id);
     }
 
-    // Award points (best-effort)
-    try { await admin.rpc("increment_homework_points", { p_user_id: user.id, p_points: 10 }); } catch (_) {}
+    // Award points + auto-unlock achievements (best-effort)
+    try { await admin.rpc("increment_homework_points", { p_user_id: user.id, p_points: 10, p_subject: subject || null }); } catch (e) { console.error("increment_homework_points failed", e); }
+    try { await admin.rpc("unlock_homework_achievements", { p_user_id: user.id, p_subject: subject || null }); } catch (e) { console.error("unlock_homework_achievements failed", e); }
 
     // Track daily challenge progress (Super Student, Daily Learner, etc.)
     try {
