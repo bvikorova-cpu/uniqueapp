@@ -30,6 +30,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 
+const __HIW_COLORINGPAGES_STEPS = [
   { title: 'Generate with AI', desc: 'Describe an idea; AI creates a printable coloring page.' },
   { title: 'Or pick a template', desc: 'Browse the gallery by theme, age and difficulty.' },
   { title: 'Color in-app or print', desc: 'Use the digital canvas or download a print-ready PDF.' },
