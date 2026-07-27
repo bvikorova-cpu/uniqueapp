@@ -100,7 +100,7 @@ const AIMentor = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         savePendingAction({ key: "ai-mentor:open", returnTo: "/ai-mentor" });
-        navigate('/auth');
+        navigate('/auth?redirect=/ai-mentor');
         return;
       }
       setUser(user);
@@ -117,7 +117,7 @@ const AIMentor = () => {
     // mentor_subscriptions (column `mentor_area`) which is never written -> paid users saw no unlock.
     const [legacy, premium] = await Promise.all([
       supabase.from('mentor_subscriptions').select('mentor_area, status').eq('user_id', userId).eq('status', 'active'),
-      supabase.from('mentor_premium_subs').select('area, status').eq('user_id', userId).eq('status', 'active'),
+      supabase.from('mentor_premium_subs').select('area, status, current_period_end').eq('user_id', userId).eq('status', 'active'),
     ]);
     const now = Date.now();
     const isStillActive = (s: any) =>
