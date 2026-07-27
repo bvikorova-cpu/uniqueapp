@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,6 +34,7 @@ const __HIW_AIMENTORCHAT = { title: 'Mentor Chat', intro: 'Your live conversatio
 
 const AIMentorChat = () => {
   const { area } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
@@ -71,29 +72,38 @@ const AIMentorChat = () => {
       setUser(user);
 
       if (!isAdmin) {
-        const nowIso = new Date().toISOString();
-        const [legacySub, premiumSub, routerCheck] = await Promise.all([
-          supabase
-            .from('mentor_subscriptions')
-            .select('id')
-            .eq('user_id', user.id)
-            .eq('mentor_area', validArea as any)
-            .eq('status', 'active')
-            .limit(1),
-          supabase
-            .from('mentor_premium_subs')
-            .select('id,current_period_end')
-            .eq('user_id', user.id)
-            .eq('area', validArea as any)
-            .eq('status', 'active')
-            .or(`current_period_end.is.null,current_period_end.gte.${nowIso}`)
-            .limit(1),
-          supabase.functions.invoke('mentor-router', {
-            body: { action: 'premium.check', area: validArea } }),
-        ]);
+        let hasLocalSub = false;
+        let hasRouterSub = false;
+        const attempts = searchParams.get("checkout") === "success" ? 4 : 1;
 
-        const hasLocalSub = !!legacySub.data?.length || !!premiumSub.data?.length;
-        const hasRouterSub = !!routerCheck.data?.subscribed;
+        for (let attempt = 0; attempt < attempts; attempt += 1) {
+          const nowIso = new Date().toISOString();
+          const [legacySub, premiumSub, routerCheck] = await Promise.all([
+            supabase
+              .from('mentor_subscriptions')
+              .select('id')
+              .eq('user_id', user.id)
+              .eq('mentor_area', validArea as any)
+              .eq('status', 'active')
+              .limit(1),
+            supabase
+              .from('mentor_premium_subs')
+              .select('id,current_period_end')
+              .eq('user_id', user.id)
+              .eq('area', validArea as any)
+              .eq('status', 'active')
+              .or(`current_period_end.is.null,current_period_end.gte.${nowIso}`)
+              .limit(1),
+            supabase.functions.invoke('mentor-router', {
+              body: { action: 'premium.check', area: validArea } }),
+          ]);
+
+          hasLocalSub = !!legacySub.data?.length || !!premiumSub.data?.length;
+          hasRouterSub = !!routerCheck.data?.subscribed;
+          if (hasLocalSub || hasRouterSub) break;
+          if (attempt < attempts - 1) await new Promise((resolve) => setTimeout(resolve, 1500));
+        }
+
         if (!hasLocalSub && !hasRouterSub) { toast({
             title: "Subscription required",
             description: "You need an active subscription for this mentor area" });

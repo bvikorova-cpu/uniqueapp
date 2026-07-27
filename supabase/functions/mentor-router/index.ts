@@ -113,7 +113,7 @@ Deno.serve(async (req) => {
           customer_email: customerId ? undefined : user.email,
           line_items: [{ price: priceId, quantity: 1 }],
           mode: "subscription",
-          success_url: `${origin}/ai-mentor/premium?status=success&area=${area}`,
+          success_url: `${origin}/ai-mentor/${area}?checkout=success`,
           cancel_url: `${origin}/ai-mentor/premium?status=cancel`,
           metadata: { user_id: userId, plan, mentor_area: area },
           subscription_data: { metadata: { user_id: userId, plan, mentor_area: area } } });
