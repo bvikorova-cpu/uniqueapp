@@ -183,7 +183,7 @@ import { ResetPassword,
   AIClone,
   AIExperiences,
   KidsHomework,
-  KidsHomeworkPricing,
+  
   KidsStoryCreator,
   KidsStoryPricing,
   KidsScienceLab,
