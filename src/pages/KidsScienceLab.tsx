@@ -219,7 +219,7 @@ const KidsScienceLab = () => {
                 setDifficulty={setDifficulty}
                 onAnalyze={handleAnalyze}
                 loading={loading}
-                canAnalyze={credits.canRun}
+                canAnalyze={hasGoldPass || credits.canRun}
               />
 
               {/* AI Safety Check (credit-gated) */}
