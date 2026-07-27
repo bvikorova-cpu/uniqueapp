@@ -586,7 +586,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
         headers: { "Lovable-API-Key": LOVABLE_API_KEY ?? "" },
       });
       const result = await generateText({
-        model: gateway("google/gemini-3.6-flash"),
+        model: gateway("openai/gpt-5.4-mini"),
         system: systemPrompt,
         prompt: userPrompt,
         maxOutputTokens: maxTokens,

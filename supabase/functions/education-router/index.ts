@@ -30,7 +30,7 @@ async function aiJsonLovable(system: string, user: string): Promise<any> {
     method: "POST",
     headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
+      model: "openai/gpt-5.4-mini",
       messages: [{ role: "system", content: system }, { role: "user", content: user }],
       response_format: { type: "json_object" } }) });
   if (res.status === 402) throw new Error("ai_credits_exhausted");

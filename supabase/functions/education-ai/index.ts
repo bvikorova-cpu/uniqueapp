@@ -188,7 +188,7 @@ serve(async (req) => {
         return jsonRes({ error: "imageDataUrl required" }, 400);
       }
       const res = await aiGateway({
-        model: "google/gemini-3.6-flash",
+        model: "openai/gpt-5.4-mini",
         messages: [
           { role: "system", content: "You are a brilliant math tutor. Look at the photo of the math problem and explain the solution step by step. Use LaTeX ($...$ inline, $$...$$ block). Always answer in English. If not a math problem, say so politely." },
           { role: "user", content: [
@@ -219,7 +219,7 @@ serve(async (req) => {
       if (safeText.trim().length < 50) return jsonRes({ error: "Text too short" }, 400);
       const safeN = Math.max(3, Math.min(20, Number(numQuestions) || 8));
       const res = await aiGateway({
-        model: "google/gemini-3.6-flash",
+        model: "openai/gpt-5.4-mini",
         messages: [
           { role: "system", content: "You are a quiz designer. From the study text, generate a multiple-choice quiz. Always English. Each question has 4 options and one correct index (0-3). Respond ONLY by calling the create_quiz tool." },
           { role: "user", content: `Difficulty: ${difficulty}. Create ${safeN} questions from:\n\n${safeText}` },
@@ -262,7 +262,7 @@ serve(async (req) => {
         : "medium";
 
       const res = await aiGateway({
-        model: "google/gemini-3.6-flash",
+        model: "openai/gpt-5.4-mini",
         messages: [
           { role: "system", content: "You are an expert education quiz designer. Generate high-quality multiple-choice questions in English. Each question has 4 concise options and one correct index (0-3). Respond ONLY by calling the create_quiz tool." },
           { role: "user", content: `Topic: ${topic}\nDifficulty: ${difficulty}\nCreate ${safeN} questions suitable for a learner to practice.` },

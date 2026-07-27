@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-pro",
+        model: "openai/gpt-5.5",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "system", content: `The user is currently on route: ${currentRoute}` },
