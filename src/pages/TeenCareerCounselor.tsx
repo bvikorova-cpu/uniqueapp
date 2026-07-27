@@ -33,13 +33,23 @@ interface ShadowArenaAchievement {
   awarded_at: string;
 }
 
+const WIZARD_STORAGE_KEY = "teen-career-wizard-v1";
+
 export default function TeenCareerCounselor() {
-  const [wizardStep, setWizardStep] = useState(0);
-  const [quizAnswers, setQuizAnswers] = useState<QuizAnswers | null>(null);
-  const [interests, setInterests] = useState("");
-  const [strengths, setStrengths] = useState("");
-  const [goals, setGoals] = useState("");
-  const [guidance, setGuidance] = useState("");
+  // Restore wizard state from localStorage (survives Stripe redirect)
+  const restored = (() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem(WIZARD_STORAGE_KEY) : null;
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  })();
+
+  const [wizardStep, setWizardStep] = useState<number>(restored?.wizardStep ?? 0);
+  const [quizAnswers, setQuizAnswers] = useState<QuizAnswers | null>(restored?.quizAnswers ?? null);
+  const [interests, setInterests] = useState(restored?.interests ?? "");
+  const [strengths, setStrengths] = useState(restored?.strengths ?? "");
+  const [goals, setGoals] = useState(restored?.goals ?? "");
+  const [guidance, setGuidance] = useState(restored?.guidance ?? "");
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("guidance");
   const [shadowArenaAchievements, setShadowArenaAchievements] = useState<ShadowArenaAchievement[]>([]);
@@ -53,13 +63,23 @@ export default function TeenCareerCounselor() {
     refresh: refreshCredits,
     costPerUse } = useTeenCareerCredits();
 
+  // Actually verify Stripe payment → credits get added server-side, toast confirms amount.
+  const { isVerified } = usePaymentVerification();
+
+  // Persist wizard state so Stripe redirect (esp. mobile same-tab) doesn't wipe progress
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("payment") === "success") {
-      toast({ title: "Payment successful!", description: "Your career credits have been added." });
-      refreshCredits();
-      window.history.replaceState({}, "", window.location.pathname);
-    }
+    try {
+      localStorage.setItem(WIZARD_STORAGE_KEY, JSON.stringify({
+        wizardStep, quizAnswers, interests, strengths, goals, guidance }));
+    } catch {}
+  }, [wizardStep, quizAnswers, interests, strengths, goals, guidance]);
+
+  // Refresh credit balance once verification succeeds
+  useEffect(() => {
+    if (isVerified) refreshCredits();
+  }, [isVerified]);
+
+  useEffect(() => {
     // Require sign-in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
@@ -73,6 +93,7 @@ export default function TeenCareerCounselor() {
     const url = await purchase(25);
     if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
   };
+
 
   const handleQuizComplete = (answers: QuizAnswers) => {
     setQuizAnswers(answers);
