@@ -134,6 +134,18 @@ const KidsDrawingBuddy = () => {
     startTutorial(templateTopic, templateDifficulty);
   };
 
+  const tutorialSteps = Array.isArray(tutorial?.steps) ? tutorial.steps : [];
+  const isFirstTutorialStep = currentStep <= 0;
+  const isLastTutorialStep = tutorialSteps.length === 0 || currentStep >= tutorialSteps.length - 1;
+
+  const goToPreviousTutorialStep = () => {
+    setCurrentStep((step) => Math.max(0, step - 1));
+  };
+
+  const goToNextTutorialStep = () => {
+    setCurrentStep((step) => Math.min(Math.max(tutorialSteps.length - 1, 0), step + 1));
+  };
+
   const resetWizard = () => {
     setTutorial(null);
     setWizardStep(0);
@@ -281,25 +293,36 @@ const KidsDrawingBuddy = () => {
                   <Card>
                     <CardHeader>
                       <CardTitle>{tutorial.title}</CardTitle>
-                      <CardDescription>Step {currentStep + 1} of {tutorial.steps.length}</CardDescription>
+                      <CardDescription>Step {currentStep + 1} of {tutorialSteps.length}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="bg-background/50 p-4 rounded-lg">
-                        <p className="font-medium text-lg">{tutorial.steps[currentStep].instruction}</p>
+                        <p className="font-medium text-lg">{tutorialSteps[currentStep]?.instruction}</p>
                       </div>
-                      <DrawingCanvas
-                        tutorialImage={tutorial.steps[currentStep].image}
-                        stepNumber={currentStep + 1}
-                        category={topic}
-                      />
-                      <div className="flex gap-2 flex-wrap">
-                        <Button variant="outline" onClick={() => setCurrentStep(Math.max(0, currentStep - 1))} disabled={currentStep === 0} className="flex-1 min-w-[120px]">
+                      <div className="grid grid-cols-2 gap-2 pb-2 sm:flex sm:pb-0">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={goToPreviousTutorialStep}
+                          disabled={isFirstTutorialStep}
+                          className="min-h-12 touch-manipulation sm:flex-1"
+                        >
                           <ChevronLeft className="w-4 h-4 mr-1" /> Previous
                         </Button>
-                        <Button onClick={() => setCurrentStep(Math.min(tutorial.steps.length - 1, currentStep + 1))} disabled={currentStep === tutorial.steps.length - 1} className="flex-1 min-w-[120px] mr-20 sm:mr-0">
+                        <Button
+                          type="button"
+                          onClick={goToNextTutorialStep}
+                          disabled={isLastTutorialStep}
+                          className="min-h-12 touch-manipulation sm:flex-1"
+                        >
                           Next <ChevronRight className="w-4 h-4 ml-1" />
                         </Button>
                       </div>
+                      <DrawingCanvas
+                        tutorialImage={tutorialSteps[currentStep]?.image}
+                        stepNumber={currentStep + 1}
+                        category={topic}
+                      />
                       <Button variant="outline" onClick={resetWizard} className="w-full">
                         Choose New Tutorial
                       </Button>
