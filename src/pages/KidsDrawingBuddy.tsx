@@ -261,7 +261,7 @@ const KidsDrawingBuddy = () => {
                               </div>
                             ) : (
                               <Button onClick={() => startTutorial()} className="w-full" disabled={loading}>
-                                {loading ? "Generating tutorial..." : `🎨 Start Drawing (${costPerUse} credits)`}
+                                {loading ? "Generating tutorial..." : hasGoldPass ? "🎨 Start Drawing (unlimited)" : `🎨 Start Drawing (${costPerUse} credits)`}
                               </Button>
                             )}
                           </div>
