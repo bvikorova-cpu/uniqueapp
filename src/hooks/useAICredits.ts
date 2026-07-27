@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useFreeTierCredits } from '@/hooks/useFreeTierCredits';
+import { useAuth } from '@/contexts/AuthContext';
 
 export interface AICredits {
   credits_remaining: number;
@@ -32,6 +33,9 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
     total_credits_purchased: 0,
     last_used_at: null });
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const currentUserIdRef = useRef<string | null>(null);
+  currentUserIdRef.current = user?.id ?? null;
 
   const { data: freeData, refresh: refreshFree, consume: consumeFree } = useFreeTierCredits();
   const freeBalance = freeData?.balance ?? 0;
@@ -39,31 +43,39 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
   const totalBalance = freeBalance + paidBalance;
 
   const loadCredits = useCallback(async () => {
+    const userId = user?.id;
+    if (!userId) {
+      setCredits({
+        credits_remaining: 0,
+        total_credits_purchased: 0,
+        last_used_at: null });
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
       const { data, error } = await supabase
         .from('ai_credits')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
+      if (currentUserIdRef.current !== userId) return;
 
       if (data) {
         setCredits(data);
       } else {
         const { data: newCredits, error: insertError } = await supabase
           .from('ai_credits')
-          .insert({ user_id: user.id,
+          .insert({ user_id: userId,
             credits_remaining: 0,
             total_credits_purchased: 0 })
           .select()
           .single();
         if (insertError) throw insertError;
+        if (currentUserIdRef.current !== userId) return;
         if (newCredits) setCredits(newCredits);
       }
     } catch (error) {
@@ -71,7 +83,7 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     loadCredits();
@@ -97,15 +109,17 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
     description?: string
   ): Promise<SpendResult> => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return { success: false };
+      const authUserId = user?.id;
+      if (!authUserId) return { success: false };
+      const { data: { user: sessionUser } } = await supabase.auth.getUser();
+      if (!sessionUser || sessionUser.id !== authUserId) return { success: false };
 
       // 1) Try FREE tier first
       if (freeBalance > 0) {
         const ok = await consumeFree(1, `ai:${type}`);
         if (ok) {
           await supabase.from('ai_usage_history').insert({
-            user_id: user.id,
+            user_id: authUserId,
             usage_type: type,
             credits_used: 1,
             description: description ? `[free] ${description}` : '[free]' });
@@ -120,11 +134,11 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
         .from('ai_credits')
         .update({ credits_remaining: paidBalance - 1,
           last_used_at: new Date().toISOString() })
-        .eq('user_id', user.id);
+        .eq('user_id', authUserId);
       if (updateError) throw updateError;
 
       await supabase.from('ai_usage_history').insert({
-        user_id: user.id,
+        user_id: authUserId,
         usage_type: type,
         credits_used: 1,
         description: description ? `[paid] ${description}` : '[paid]' });
