@@ -117,11 +117,8 @@ const services = [
   { title: "Horse Racing", icon: Trophy, path: "/horse-racing", badge: "Racing", gradient: "from-green-600 to-emerald-600", category: "entertainment" },
   { title: "Vacationer", icon: Globe, path: "/vacationer", badge: "Travel", gradient: "from-sky-500 to-blue-500", category: "entertainment" },
   { title: "Video Ad Generator", icon: Video, path: "/video-ad-generator", badge: "Marketing", gradient: "from-red-500 to-pink-500", category: "creative" },
-  { title: "Digital Marketing", icon: TrendingUp, path: "/digital-marketing", badge: "Marketing", gradient: "from-blue-500 to-indigo-500", category: "learning" },
   { title: "Handwriting AI", icon: PenTool, path: "/handwriting", badge: "AI", gradient: "from-amber-500 to-yellow-500", category: "creative" },
-  { title: "Public Speaking", icon: Mic, path: "/public-speaking", badge: "Skills", gradient: "from-indigo-500 to-blue-500", category: "learning" },
-  { title: "Music Production", icon: Sparkles, path: "/music-production", badge: "Audio", gradient: "from-purple-500 to-fuchsia-500", category: "creative" },
-  { title: "Graphic Design", icon: Palette, path: "/graphic-design", badge: "Design", gradient: "from-pink-500 to-rose-500", category: "creative" },
+
   
   { title: "Past Life Explorer", icon: Sparkles, path: "/past-life", badge: "Spiritual", gradient: "from-purple-500 to-indigo-500", category: "wellness" },
   { title: "First Aid Guide", icon: Heart, path: "/first-aid", badge: "Health", gradient: "from-red-500 to-rose-500", category: "wellness" },
