@@ -125,7 +125,23 @@ const KidsReadingCompanion = () => {
         body: { text: bookText, action: 'multi-quiz', level: readingLevel }
       });
       if (error) throw error;
-      setQuiz(data);
+      // Normalize AI shape: { questions: [{ question, options, correctIndex, explanation }] }
+      const rawQuestions: any[] = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.questions) ? data.questions : [];
+      const normalized = rawQuestions
+        .filter((q) => q && Array.isArray(q.options) && q.options.length > 0)
+        .map((q) => ({
+          question: String(q.question ?? ""),
+          options: q.options.map((o: any) => String(o)),
+          correctAnswer:
+            typeof q.correctAnswer === "string"
+              ? q.correctAnswer
+              : String(q.options[Math.max(0, Math.min(q.options.length - 1, Number(q.correctIndex ?? 0)))]),
+          explanation: q.explanation ?? "",
+        }));
+      if (!normalized.length) throw new Error("The quiz was empty. Please try again.");
+      setQuiz({ questions: normalized });
       setActiveView("quiz");
       refreshCredits();
       toast.success("Quiz ready! 🎯");
