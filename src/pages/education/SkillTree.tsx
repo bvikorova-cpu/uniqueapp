@@ -19,8 +19,9 @@ const __HIW_SKILLTREE = { title: 'Skill Tree', intro: 'A visual roadmap of skill
 
 
 export default function SkillTree() {
-  const { subject = "general" } = useParams<{ subject: string }>();
+  const { subject = "math" } = useParams<{ subject: string }>();
   const qc = useQueryClient();
+  if (subject === "general") return <Navigate to="/education/skill-tree/math" replace />;
 
   const { data: nodes = [], isLoading } = useQuery({
     queryKey: ["skill-tree", subject],
