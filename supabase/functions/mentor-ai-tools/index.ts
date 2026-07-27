@@ -12,14 +12,36 @@ const ACTION_USAGE_TYPES: Record<string, string> = { "generate-action-plan": "me
   "voice-coaching": "mentor_voice_coaching",
   "mood-insight": "mentor_mood_insight" };
 
+const OPENAI_TEXT_MODEL = "openai/gpt-5.4-mini";
+const LOVABLE_AI_GATEWAY_CHAT_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+
 async function callOpenAI(systemPrompt: string, userPrompt: string, maxTokens = 1000) {
-  const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
+  const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+  const body = {
+    model: OPENAI_TEXT_MODEL,
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt.slice(0, 6000) },
+    ],
+    max_completion_tokens: maxTokens };
+
+  if (lovableApiKey) {
+    return await fetch(LOVABLE_AI_GATEWAY_CHAT_URL, {
+      method: "POST",
+      headers: {
+        "Lovable-API-Key": lovableApiKey,
+        "X-Lovable-AIG-SDK": "supabase-edge",
+        "Content-Type": "application/json" },
+      body: JSON.stringify(body) });
+  }
+
+  const openAiKey = Deno.env.get("OPENAI_API_KEY");
+  if (!openAiKey) throw new Error("AI service is not configured");
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
+      Authorization: `Bearer ${openAiKey}`,
       "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "gpt-4o-mini",

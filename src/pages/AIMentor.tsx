@@ -99,8 +99,8 @@ const AIMentor = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        savePendingAction({ key: "ai-mentor:open", returnTo: "/mentor" });
-        navigate('/auth');
+        savePendingAction({ key: "ai-mentor:open", returnTo: "/ai-mentor" });
+        navigate('/auth?redirect=/ai-mentor');
         return;
       }
       setUser(user);
@@ -117,11 +117,14 @@ const AIMentor = () => {
     // mentor_subscriptions (column `mentor_area`) which is never written -> paid users saw no unlock.
     const [legacy, premium] = await Promise.all([
       supabase.from('mentor_subscriptions').select('mentor_area, status').eq('user_id', userId).eq('status', 'active'),
-      supabase.from('mentor_premium_subs').select('area, status').eq('user_id', userId).eq('status', 'active'),
+      supabase.from('mentor_premium_subs').select('area, status, current_period_end').eq('user_id', userId).eq('status', 'active'),
     ]);
+    const now = Date.now();
+    const isStillActive = (s: any) =>
+      !s.current_period_end || new Date(s.current_period_end).getTime() >= now;
     const merged = [
       ...((legacy.data || []).map((s: any) => ({ mentor_area: s.mentor_area }))),
-      ...((premium.data || []).map((s: any) => ({ mentor_area: s.area }))),
+      ...((premium.data || []).filter(isStillActive).map((s: any) => ({ mentor_area: s.area }))),
     ];
     setSubscriptions(merged);
   };
@@ -135,7 +138,7 @@ const AIMentor = () => {
     if (!hasSub) { toast({
         title: "Subscription required",
         description: "You need an active subscription to access this mentor area" });
-      navigate('/subscription');
+      navigate('/ai-mentor/premium');
       return;
     }
     navigate(`/ai-mentor/${areaId}`);
