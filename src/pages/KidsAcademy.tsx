@@ -55,9 +55,6 @@ const KidsAcademy = () => {
                   <Button size="sm" variant="outline" onClick={() => navigate("/kids-science-pricing")}>
                     🧪 Science
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => navigate("/kids-homework-pricing")}>
-                    📚 Homework
-                  </Button>
                   <Button size="sm" variant="outline" onClick={() => navigate("/kids-voice-chat-pricing")}>
                     💬 Chat
                   </Button>
