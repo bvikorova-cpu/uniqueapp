@@ -165,7 +165,7 @@ export default function ColoringPages() {
   const easyCount = myPages?.filter((p) => p.difficulty === "easy").length || 0;
   const mediumCount = myPages?.filter((p) => p.difficulty === "medium").length || 0;
   const hardCount = myPages?.filter((p) => p.difficulty === "hard").length || 0;
-  const creditsDisplay = credits?.credits_remaining ?? 0;
+  const creditsDisplay = unifiedBalance;
 
   if (creditsLoading) {
     return (
