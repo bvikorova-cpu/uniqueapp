@@ -39,6 +39,8 @@ const FEATURES = [
   "Unlimited AI chat with context",
 ];
 
+const FEATURE_COUNT = FEATURES.length;
+
 export default function MentorPremium() {
   const { data: sub } = useMentorPremium();
   const checkout = useMentorCheckout();
@@ -83,7 +85,7 @@ export default function MentorPremium() {
                     </p>
                   ) : (
                     <p className="text-sm text-muted-foreground mb-3">
-                      Unlock all 18 mentor tools for the <strong>{a.title.toLowerCase()}</strong>.
+                      Unlock all {FEATURE_COUNT} mentor tools for the <strong>{a.title.toLowerCase()}</strong>.
                     </p>
                   )}
 
@@ -115,7 +117,7 @@ export default function MentorPremium() {
         <Card className="backdrop-blur-xl bg-card/80">
           <CardContent className="p-6">
             <h2 className="font-black mb-1">Each coach unlocks the full toolkit</h2>
-            <p className="text-xs text-muted-foreground mb-4">Subscribing to a coach activates these 14+ features for that area only.</p>
+            <p className="text-xs text-muted-foreground mb-4">Subscribing to a coach activates these {FEATURE_COUNT} features for that area only.</p>
             <ul className="grid sm:grid-cols-2 gap-2">
               {FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm">
