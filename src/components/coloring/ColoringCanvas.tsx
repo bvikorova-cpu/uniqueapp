@@ -229,12 +229,16 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
           <div className="flex justify-center overflow-auto bg-[repeating-conic-gradient(#e5e5e5_0%_25%,#fff_0%_50%)] bg-[length:16px_16px] rounded-xl border border-border/30 p-2">
             <canvas
               ref={canvasRef}
-              className="max-w-full cursor-crosshair rounded-lg"
+              className="max-w-full cursor-crosshair rounded-lg touch-none"
               style={{ transform: `scale(${zoom})`, transformOrigin: "top left" }}
               onMouseDown={startDraw}
               onMouseMove={draw}
               onMouseUp={endDraw}
               onMouseLeave={endDraw}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchEnd}
             />
           </div>
         </CardContent>
