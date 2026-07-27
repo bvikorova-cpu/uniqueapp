@@ -41,10 +41,10 @@ export const MentorCard = ({ area, hasSubscription, isOnline, onSelect, index }:
         <div className={`h-1.5 bg-gradient-to-r ${area.color}`} />
 
         {/* Animated glow */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${area.color} opacity-0 group-hover:opacity-[0.07] transition-opacity duration-500`} />
+        <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${area.color} opacity-0 group-hover:opacity-[0.07] transition-opacity duration-500`} />
 
         {/* Status badges */}
-        <div className="absolute top-4 right-4 flex items-center gap-1.5">
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5">
           {isOnline && (
             <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/30 text-[10px] px-2 py-0.5">
               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1 animate-pulse" />
@@ -59,7 +59,7 @@ export const MentorCard = ({ area, hasSubscription, isOnline, onSelect, index }:
           )}
         </div>
 
-        <CardHeader className="pb-3">
+        <CardHeader className="relative z-10 pb-3">
           <div className="flex items-start gap-4">
             <motion.div
               whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
@@ -77,7 +77,7 @@ export const MentorCard = ({ area, hasSubscription, isOnline, onSelect, index }:
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        <CardContent className="relative z-10 space-y-4">
           <ul className="space-y-2">
             {area.features.map((feature, i) => (
               <motion.li
