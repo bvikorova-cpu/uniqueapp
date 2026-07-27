@@ -19,6 +19,8 @@ import { useKidsDrawingCredits, KIDS_DRAWING_CREDIT_COST } from "@/hooks/useKids
 import { useKidsDrawingCount } from "@/hooks/useKidsDrawingCount";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -47,7 +49,9 @@ const KidsDrawingBuddy = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState("tutorial");
 
-  const { balance, canUse, refresh, costPerUse } = useKidsDrawingCredits();
+  const { balance, canUse: canUseCredits, refresh, costPerUse } = useKidsDrawingCredits();
+  const { hasGoldPass } = useKidsGoldPass();
+  const canUse = hasGoldPass || canUseCredits;
   const { count: drawingsCount } = useKidsDrawingCount();
 
   // Parental gate (shared hook)
@@ -162,8 +166,9 @@ const KidsDrawingBuddy = () => {
 
           <HeroRewardedAd sectionKey="page_kidsdrawingbuddy" />
 
-          {/* Credit Balance Banner */}
-          {isAuthenticated && (
+          {/* Credit Balance Banner (hidden for Gold Pass) */}
+          {isAuthenticated && hasGoldPass && <KidsGoldPassBanner />}
+          {isAuthenticated && !hasGoldPass && (
             <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/10 to-accent/10">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center justify-between flex-wrap gap-2">
@@ -256,7 +261,7 @@ const KidsDrawingBuddy = () => {
                               </div>
                             ) : (
                               <Button onClick={() => startTutorial()} className="w-full" disabled={loading}>
-                                {loading ? "Generating tutorial..." : `🎨 Start Drawing (${costPerUse} credits)`}
+                                {loading ? "Generating tutorial..." : hasGoldPass ? "🎨 Start Drawing (unlimited)" : `🎨 Start Drawing (${costPerUse} credits)`}
                               </Button>
                             )}
                           </div>
