@@ -119,9 +119,6 @@ serve(async (req) => {
       );
     }
 
-    const prompt = `Transform this image into a clean, professional coloring page with clear black outlines. 
-    Create a ${difficulty} difficulty level with ${difficulty === 'easy' ? 'simple, bold lines' : difficulty === 'medium' ? 'moderate detail' : 'intricate, detailed lines'}. 
-    Make it perfect for printing and coloring. Black and white only, no shading, just clean outlines.`;
 
     const prompt = userPrompt
       ? `${userPrompt}\n\nRender as a clean coloring page: pure black outlines on white background, ${difficulty} difficulty (${difficulty === 'easy' ? 'simple bold lines' : difficulty === 'medium' ? 'moderate detail' : 'intricate detailed lines'}), no shading, no color fill, print-ready.`
