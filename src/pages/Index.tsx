@@ -106,8 +106,8 @@ const services = [
   { title: "Wine Pairing", icon: ChefHat, path: "/wine-pairing", badge: "Sommelier", gradient: "from-red-500 to-rose-500", category: "creative" },
   { title: "Pet Translator", icon: MessageCircle, path: "/pet-translator", badge: "Pets", gradient: "from-amber-400 to-orange-500", category: "creative" },
   { title: "Plant Care", icon: Sparkles, path: "/plant-care", badge: "Garden", gradient: "from-green-500 to-lime-500", category: "wellness" },
-  { title: "Photography", icon: Camera, path: "/photography", badge: "Photo", gradient: "from-sky-500 to-indigo-500", category: "creative" },
-  { title: "Language Learning", icon: Globe, path: "/language-learning", badge: "Languages", gradient: "from-blue-500 to-purple-500", category: "learning" },
+
+
   { title: "Lie Detector", icon: Brain, path: "/lie-detector", badge: "Truth AI", gradient: "from-red-500 to-orange-500", category: "entertainment" },
   { title: "Kids Academy", icon: Baby, path: "/kids-academy", badge: "Education", gradient: "from-blue-400 to-cyan-400", category: "learning" },
   { title: "Coupon Marketplace", icon: ShoppingBag, path: "/coupon-marketplace", badge: "Deals", gradient: "from-green-500 to-emerald-500", category: "shopping" },
