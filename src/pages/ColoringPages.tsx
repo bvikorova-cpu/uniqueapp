@@ -11,11 +11,8 @@ import { useColoringCredits } from "@/hooks/useColoringCredits";
 import { useAICredits } from "@/hooks/useAICredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload, Palette, Wand2, LayoutGrid, Trophy, Gem, GraduationCap, Heart, Brush, CheckCircle2, Paintbrush, Users, Printer, Zap } from "lucide-react";
+import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload, Palette, Wand2, LayoutGrid, Trophy, Brush, CheckCircle2, Paintbrush, Users, Printer, Zap } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { SchoolsTab } from "@/components/coloring/SchoolsTab";
-import { HealthcareTab } from "@/components/coloring/HealthcareTab";
-import { CorporateTab } from "@/components/coloring/CorporateTab";
 import { ColoringHero } from "@/components/coloring/ColoringHero";
 import { TemplateGallery } from "@/components/coloring/TemplateGallery";
 import { ColoringCanvas } from "@/components/coloring/ColoringCanvas";
@@ -29,16 +26,15 @@ import { DailyChallenge } from "@/components/coloring/DailyChallenge";
 import { AIColorSuggestions } from "@/components/coloring/AIColorSuggestions";
 import { PrintExport } from "@/components/coloring/PrintExport";
 import { CreditBanner } from "@/components/kids/CreditBanner";
-
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
+
 const __HIW_COLORINGPAGES_STEPS = [
-  { title: 'Generate with AI', desc: 'Describe an idea; AI creates a printable coloring page (3–5 credits).' },
+  { title: 'Generate with AI', desc: 'Describe an idea; AI creates a printable coloring page.' },
   { title: 'Or pick a template', desc: 'Browse the gallery by theme, age and difficulty.' },
   { title: 'Color in-app or print', desc: 'Use the digital canvas or download a print-ready PDF.' },
   { title: 'Share & compete', desc: 'Post to the community gallery, join challenges, earn badges.' },
-  { title: 'School / Corporate', desc: 'Special tabs for schools, healthcare and corporate packs.' }
 ];
 const __HIW_COLORINGPAGES = { title: 'Coloring Pages', intro: 'Generate, print and color AI-crafted coloring pages.', steps: __HIW_COLORINGPAGES_STEPS };
 
@@ -192,16 +188,6 @@ export default function ColoringPages() {
 
         <HeroRewardedAd sectionKey="page_coloringpages" />
 
-        {/* Credit balance banner — paid-only model */}
-        <div className="mb-6">
-          <CreditBanner
-            label="Coloring"
-            creditsRemaining={balance}
-            costPerUse={costPerUse}
-            onBuyCredits={() => buyCreditsPack(100)}
-            unitName="page"
-          />
-        </div>
 
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -236,18 +222,6 @@ export default function ColoringPages() {
               </TabsTrigger>
               <TabsTrigger value="stats" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
                 <Trophy className="w-3.5 h-3.5" /> Stats
-              </TabsTrigger>
-              <TabsTrigger value="pricing" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
-                <Gem className="w-3.5 h-3.5" /> Pricing
-              </TabsTrigger>
-              <TabsTrigger value="schools" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
-                <GraduationCap className="w-3.5 h-3.5" /> Schools
-              </TabsTrigger>
-              <TabsTrigger value="healthcare" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
-                <Heart className="w-3.5 h-3.5" /> Healthcare
-              </TabsTrigger>
-              <TabsTrigger value="corporate" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
-                <Crown className="w-3.5 h-3.5" /> Corporate
               </TabsTrigger>
             </TabsList>
           </div>
@@ -415,63 +389,6 @@ export default function ColoringPages() {
             />
           </TabsContent>
 
-          {/* Pricing Tab — credit packs (paid-only model) */}
-          <TabsContent value="pricing">
-            <div className="text-center mb-6">
-              <p className="text-sm text-muted-foreground">
-                Each coloring page costs <strong>{costPerUse}</strong> credits. Buy a pack — credits never expire.
-              </p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                { credits: 25, label: "Starter", desc: "5 coloring pages", popular: false },
-                { credits: 100, label: "Family", desc: "20 coloring pages · best value", popular: true },
-                { credits: 500, label: "Studio", desc: "100 coloring pages · bulk discount", popular: false },
-              ].map((pack) => {
-                const pages = Math.floor(pack.credits / costPerUse);
-                const price = (pack.credits * 0.5).toFixed(2);
-                return (
-                  <Card
-                    key={pack.credits}
-                    className={`backdrop-blur-xl bg-card/80 transition-all ${pack.popular ? "border-primary border-2 shadow-xl shadow-primary/10 relative" : "border-border/30 hover:border-primary/20"}`}
-                  >
-                    {pack.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full font-semibold">
-                        MOST POPULAR
-                      </div>
-                    )}
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-                          {pack.popular ? <Crown className="h-4 w-4 text-amber-500" /> : <Sparkles className="h-4 w-4 text-purple-500" />}
-                        </div>
-                        {pack.label}
-                      </CardTitle>
-                      <CardDescription>{pack.desc}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div>
-                        <p className="text-3xl font-black">€{price}</p>
-                        <p className="text-sm text-muted-foreground">{pack.credits} credits · ≈ {pages} pages</p>
-                      </div>
-                      <ul className="space-y-2 text-sm">
-                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> HD Quality (1024x1024)</li>
-                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> No watermark · PNG + PDF</li>
-                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Credits never expire</li>
-                      </ul>
-                      <Button
-                        onClick={() => buyCreditsPack(pack.credits)}
-                        className="w-full"
-                        variant={pack.popular ? "default" : "outline"}
-                      >
-                        Buy {pack.credits} credits
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </TabsContent>
 
           {/* Style Transfer Tab */}
           <TabsContent value="style-transfer">
@@ -498,9 +415,6 @@ export default function ColoringPages() {
             <PrintExport />
           </TabsContent>
 
-          <TabsContent value="schools"><SchoolsTab /></TabsContent>
-          <TabsContent value="healthcare"><HealthcareTab /></TabsContent>
-          <TabsContent value="corporate"><CorporateTab /></TabsContent>
         </Tabs>
       </main>
     </div>

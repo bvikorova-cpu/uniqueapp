@@ -6,20 +6,20 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const stats = [
   { label: "Pages Created", icon: Image, value: "—", color: "from-pink-500 to-rose-600" },
-  { label: "Credits", icon: Gem, value: "—", color: "from-violet-500 to-purple-600" },
+  { label: "Access", icon: Gem, value: "Gold Pass", color: "from-violet-500 to-purple-600" },
   { label: "Templates", icon: Palette, value: "16", color: "from-amber-500 to-orange-600" },
   { label: "Resolution", icon: Scan, value: "Ultra HD", color: "from-emerald-500 to-teal-600" },
 ];
 
 interface ColoringHeroProps {
   totalPages: number;
-  credits: number | string;
+  credits?: number | string;
 }
 
-export function ColoringHero({ totalPages, credits }: ColoringHeroProps) {
+export function ColoringHero({ totalPages }: ColoringHeroProps) {
   const displayStats = [
     { ...stats[0], value: totalPages > 0 ? `${totalPages}` : "—" },
-    { ...stats[1], value: typeof credits === "string" ? credits : credits > 0 ? `${credits}` : "—" },
+    stats[1],
     stats[2],
     stats[3],
   ];
