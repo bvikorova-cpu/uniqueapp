@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Canvas as FabricCanvas, PencilBrush, Circle, Rect, Polygon, Point } from "fabric";
+import { Canvas as FabricCanvas, PencilBrush, Circle, Rect, Polygon, Point, FabricImage } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo, Circle as CircleIcon, Square, Star, Save, Layers, ZoomIn, ZoomOut, Move, Maximize, Zap } from "lucide-react";
@@ -14,6 +14,7 @@ interface DrawingCanvasProps {
   tutorialImage?: string;
   stepNumber: number;
   category?: string;
+  coloringImage?: string;
 }
 
 const COLORS = [
@@ -29,7 +30,7 @@ const COLORS = [
   "#FFC0CB", // Pink
 ];
 
-export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCanvasProps) => {
+export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringImage }: DrawingCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [activeColor, setActiveColor] = useState("#000000");
@@ -151,6 +152,39 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
     };
   }, [fabricCanvas, activeTool]);
 
+  // Load coloring template as canvas background so kids draw directly on the outline
+  useEffect(() => {
+    if (!fabricCanvas) return;
+    if (!coloringImage) {
+      fabricCanvas.backgroundImage = undefined;
+      fabricCanvas.backgroundColor = "#ffffff";
+      fabricCanvas.renderAll();
+      return;
+    }
+    let cancelled = false;
+    FabricImage.fromURL(coloringImage, { crossOrigin: "anonymous" }).then((img) => {
+      if (cancelled || !fabricCanvas) return;
+      const cw = fabricCanvas.getWidth();
+      const ch = fabricCanvas.getHeight();
+      const scale = Math.min(cw / (img.width || cw), ch / (img.height || ch)) * 0.9;
+      img.set({
+        left: cw / 2,
+        top: ch / 2,
+        originX: "center",
+        originY: "center",
+        scaleX: scale,
+        scaleY: scale,
+        selectable: false,
+        evented: false,
+        opacity: 1,
+      });
+      fabricCanvas.backgroundImage = img;
+      fabricCanvas.backgroundColor = "#ffffff";
+      fabricCanvas.renderAll();
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [fabricCanvas, coloringImage]);
+
   const applyZoom = (nextZoom: number) => {
     if (!fabricCanvas) return;
     const clamped = Math.min(4, Math.max(0.5, nextZoom));
@@ -170,10 +204,12 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
 
   const handleClear = () => {
     if (!fabricCanvas) return;
+    const bgImage = fabricCanvas.backgroundImage;
     fabricCanvas.clear();
     fabricCanvas.backgroundColor = "#ffffff";
+    if (bgImage) fabricCanvas.backgroundImage = bgImage;
     fabricCanvas.renderAll();
-    
+
     // Save cleared state to history
     const json = JSON.stringify(fabricCanvas.toJSON());
     setCanvasHistory((prev) => {
@@ -182,7 +218,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
       return newHistory;
     });
     setHistoryStep((prev) => prev + 1);
-    
+
     toast.success("Canvas cleared! 🎨");
   };
 
