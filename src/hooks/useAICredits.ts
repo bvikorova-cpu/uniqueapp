@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useFreeTierCredits } from '@/hooks/useFreeTierCredits';
+import { useAuth } from '@/contexts/AuthContext';
 
 export interface AICredits {
   credits_remaining: number;
@@ -32,6 +33,7 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
     total_credits_purchased: 0,
     last_used_at: null });
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   const { data: freeData, refresh: refreshFree, consume: consumeFree } = useFreeTierCredits();
   const freeBalance = freeData?.balance ?? 0;
@@ -39,16 +41,22 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
   const totalBalance = freeBalance + paidBalance;
 
   const loadCredits = useCallback(async () => {
+    const userId = user?.id;
+    if (!userId) {
+      setCredits({
+        credits_remaining: 0,
+        total_credits_purchased: 0,
+        last_used_at: null });
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
       const { data, error } = await supabase
         .from('ai_credits')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
@@ -58,7 +66,7 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
       } else {
         const { data: newCredits, error: insertError } = await supabase
           .from('ai_credits')
-          .insert({ user_id: user.id,
+          .insert({ user_id: userId,
             credits_remaining: 0,
             total_credits_purchased: 0 })
           .select()
@@ -71,7 +79,7 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     loadCredits();
@@ -99,6 +107,7 @@ export const useAICredits = () => { const [credits, setCredits] = useState<AICre
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return { success: false };
+      if (user.id !== user?.id) return { success: false };
 
       // 1) Try FREE tier first
       if (freeBalance > 0) {
