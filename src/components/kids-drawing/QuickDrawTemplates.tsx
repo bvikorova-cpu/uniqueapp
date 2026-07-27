@@ -53,7 +53,7 @@ export const QuickDrawTemplates = ({ onSelectTemplate, loading }: Props) => {
               <Button
                 variant="outline"
                 className={`w-full h-auto flex flex-col p-4 gap-1 bg-gradient-to-br ${t.color} hover:shadow-lg transition-all`}
-                onClick={() => onSelectTemplate(t.topic, t.difficulty)}
+                onClick={() => onSelectTemplate(t.topic, t.difficulty, t.emoji, t.title)}
                 disabled={loading}
               >
                 <span className="text-3xl">{t.emoji}</span>
