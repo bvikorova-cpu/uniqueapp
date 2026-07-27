@@ -53,6 +53,7 @@ const KidsScienceLab = () => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [analysesCompleted, setAnalysesCompleted] = useState(0);
   const credits = useScienceCredits();
+  const { hasGoldPass } = useKidsGoldPass();
 
   // Parental gate (shared hook)
   const { isVerified, checkVerification } = useParentalGate(PARENTAL_GATE_KEY);
@@ -184,7 +185,9 @@ const KidsScienceLab = () => {
           </Alert>
 
           {/* Credit Banner */}
-          {credits.loading ? (
+          {hasGoldPass ? (
+            <KidsGoldPassBanner />
+          ) : credits.loading ? (
             <div className="animate-pulse text-center py-4 text-muted-foreground">
               Loading Science credits…
             </div>
