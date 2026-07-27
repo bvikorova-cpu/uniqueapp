@@ -73,18 +73,6 @@ serve(async (req) => {
         { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
-    const { error: deductErr } = await admin.rpc("deduct_ai_credits", {
-      p_user_id: userId, p_amount: COST, p_reason: "education_tutor_chat", p_source: "tutoring-chat",
-    });
-    if (deductErr) {
-      const msg = String(deductErr.message || "").toLowerCase();
-      const status = msg.includes("insufficient") ? 402 : 500;
-      return new Response(
-        JSON.stringify({ error: msg.includes("insufficient") ? "insufficient_credits" : (deductErr.message || "deduct_failed") }),
-        { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-      );
-    }
-
     const messages = [
       {
         role: "system",
@@ -110,6 +98,18 @@ serve(async (req) => {
 
     const data = await response.json();
     const aiResponse = data.choices[0].message.content;
+
+    const { error: deductErr } = await admin.rpc("deduct_ai_credits", {
+      p_user_id: userId, p_amount: COST, p_reason: "education_tutor_chat", p_source: "tutoring-chat",
+    });
+    if (deductErr) {
+      const msg = String(deductErr.message || "").toLowerCase();
+      const status = msg.includes("insufficient") ? 402 : 500;
+      return new Response(
+        JSON.stringify({ error: msg.includes("insufficient") ? "insufficient_credits" : (deductErr.message || "deduct_failed") }),
+        { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
 
     return new Response(
       JSON.stringify({ response: aiResponse }),
