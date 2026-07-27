@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import type { PointerEvent, TouchEvent } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -48,6 +49,7 @@ const KidsDrawingBuddy = () => {
   const [wizardStep, setWizardStep] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState("tutorial");
+  const lastTutorialNavRef = useRef<{ direction: "previous" | "next"; at: number } | null>(null);
 
   const { balance, canUse: canUseCredits, refresh, costPerUse } = useKidsDrawingCredits();
   const { hasGoldPass } = useKidsGoldPass();
@@ -138,12 +140,33 @@ const KidsDrawingBuddy = () => {
   const isFirstTutorialStep = currentStep <= 0;
   const isLastTutorialStep = tutorialSteps.length === 0 || currentStep >= tutorialSteps.length - 1;
 
+  const runTutorialStepNav = (direction: "previous" | "next") => {
+    const now = Date.now();
+    const last = lastTutorialNavRef.current;
+    if (last?.direction === direction && now - last.at < 350) return;
+    lastTutorialNavRef.current = { direction, at: now };
+
+    setCurrentStep((step) => {
+      const maxStep = Math.max(tutorialSteps.length - 1, 0);
+      return direction === "next" ? Math.min(maxStep, step + 1) : Math.max(0, step - 1);
+    });
+  };
+
   const goToPreviousTutorialStep = () => {
-    setCurrentStep((step) => Math.max(0, step - 1));
+    runTutorialStepNav("previous");
   };
 
   const goToNextTutorialStep = () => {
-    setCurrentStep((step) => Math.min(Math.max(tutorialSteps.length - 1, 0), step + 1));
+    runTutorialStepNav("next");
+  };
+
+  const handleTutorialStepPointer = (
+    event: PointerEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>,
+    direction: "previous" | "next"
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    runTutorialStepNav(direction);
   };
 
   const resetWizard = () => {
@@ -304,6 +327,8 @@ const KidsDrawingBuddy = () => {
                           type="button"
                           variant="outline"
                           onClick={goToPreviousTutorialStep}
+                          onPointerUp={(event) => handleTutorialStepPointer(event, "previous")}
+                          onTouchEnd={(event) => handleTutorialStepPointer(event, "previous")}
                           disabled={isFirstTutorialStep}
                           className="min-h-12 touch-manipulation sm:flex-1"
                         >
@@ -312,6 +337,8 @@ const KidsDrawingBuddy = () => {
                         <Button
                           type="button"
                           onClick={goToNextTutorialStep}
+                          onPointerUp={(event) => handleTutorialStepPointer(event, "next")}
+                          onTouchEnd={(event) => handleTutorialStepPointer(event, "next")}
                           disabled={isLastTutorialStep}
                           className="min-h-12 touch-manipulation sm:flex-1"
                         >
