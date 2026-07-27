@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Canvas as FabricCanvas, PencilBrush, Circle, Rect, Polygon, Point } from "fabric";
+import { Canvas as FabricCanvas, PencilBrush, Circle, Rect, Polygon, Point, FabricImage } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo, Circle as CircleIcon, Square, Star, Save, Layers, ZoomIn, ZoomOut, Move, Maximize, Zap } from "lucide-react";
@@ -14,6 +14,7 @@ interface DrawingCanvasProps {
   tutorialImage?: string;
   stepNumber: number;
   category?: string;
+  coloringImage?: string;
 }
 
 const COLORS = [
