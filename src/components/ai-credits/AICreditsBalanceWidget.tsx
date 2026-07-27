@@ -24,6 +24,7 @@ export const AICreditsBalanceWidget = ({ compact = false }: Props) => {
       <FloatingHowItWorks title={"A I Credits Balance Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Credits Balance Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Credits Balance Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <button
         onClick={() => navigate("/ai-credits")}
+        title={tooltip}
         className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border backdrop-blur-xl transition-colors ${
           low
             ? "bg-amber-500/15 border-amber-400/50 hover:bg-amber-500/25"
