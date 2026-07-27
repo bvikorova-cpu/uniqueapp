@@ -163,8 +163,11 @@ const KidsReadingCompanion = () => {
 
           <ReadingStreakDashboard {...stats} />
 
-          {/* Credit balance */}
-          {!creditsLoading && isAuthenticated && (
+          {/* Credit balance or Gold Pass banner */}
+          {isAuthenticated && hasGoldPass && (
+            <div className="mb-6"><KidsGoldPassBanner /></div>
+          )}
+          {!creditsLoading && isAuthenticated && !hasGoldPass && (
             <div className="mb-6">
               <CreditBanner
                 label="Reading"
