@@ -203,7 +203,7 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
               <Avatar className="h-12 w-12 ring-2 ring-primary/20">
                 <AvatarImage src={profile?.avatar_url || undefined} />
                 <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
-                  {profile?.full_name?.[0] || "U"}
+                  {(profile?.full_name || profile?.username)?.[0]?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 text-left">
