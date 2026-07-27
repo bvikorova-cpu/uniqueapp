@@ -48,6 +48,7 @@ export const AICreditsBalanceWidget = ({ compact = false }: Props) => {
         <div>
           <p className="text-2xl font-black tabular-nums">{loading ? "—" : balance}</p>
           <p className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">AI Credits</p>
+          <p className="text-[10px] tabular-nums text-muted-foreground mt-0.5">Free {freeBalance} · Paid {paidBalance}</p>
         </div>
       </div>
       <Button size="sm" variant="outline" className="gap-1.5" onClick={() => navigate("/ai-credits")}>
