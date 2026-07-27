@@ -402,9 +402,9 @@ const KidsDrawingBuddy = () => {
               {templateRef && (
                 <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-2 border-purple-300">
                   <CardContent className="p-4 space-y-3">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 flex-wrap">
                       <div className="text-5xl">{templateRef.emoji}</div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-[140px]">
                         <div className="text-xs uppercase text-muted-foreground">Color this in!</div>
                         <div className="text-lg font-bold">{templateRef.title}</div>
                         <div className="text-xs text-muted-foreground capitalize">Difficulty: {templateRef.difficulty}</div>
@@ -412,16 +412,63 @@ const KidsDrawingBuddy = () => {
                       <Button variant="ghost" size="sm" onClick={() => setTemplateRef(null)}>Clear</Button>
                     </div>
                     {COLORING_IMAGES[templateRef.topic] && (
-                      <div className="bg-white rounded-xl border-2 border-purple-200 p-3 flex items-center justify-center">
-                        <img
-                          src={COLORING_IMAGES[templateRef.topic]}
-                          alt={`${templateRef.title} coloring page`}
-                          loading="lazy"
-                          width={768}
-                          height={768}
-                          className="max-h-80 w-auto object-contain"
-                        />
-                      </div>
+                      <>
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            variant={referenceStyle === "outline" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setReferenceStyle("outline")}
+                          >
+                            <Palette className="w-4 h-4 mr-1" /> Outline
+                          </Button>
+                          <Button
+                            variant={referenceStyle === "tinted" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setReferenceStyle("tinted")}
+                          >
+                            <Droplet className="w-4 h-4 mr-1" /> Tinted preview
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                              try {
+                                const res = await fetch(COLORING_IMAGES[templateRef.topic]);
+                                const blob = await res.blob();
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = `${templateRef.topic}-coloring.png`;
+                                a.click();
+                                URL.revokeObjectURL(url);
+                                toast.success("Reference downloaded! 📥");
+                              } catch {
+                                toast.error("Download failed");
+                              }
+                            }}
+                          >
+                            <Download className="w-4 h-4 mr-1" /> Download PNG
+                          </Button>
+                        </div>
+                        <div
+                          className={`rounded-xl border-2 border-purple-200 p-3 flex items-center justify-center transition-colors ${
+                            referenceStyle === "tinted"
+                              ? "bg-gradient-to-br from-yellow-100 via-pink-100 to-purple-100"
+                              : "bg-white"
+                          }`}
+                        >
+                          <img
+                            src={COLORING_IMAGES[templateRef.topic]}
+                            alt={`${templateRef.title} coloring page`}
+                            loading="lazy"
+                            width={768}
+                            height={768}
+                            className={`max-h-80 w-auto object-contain ${
+                              referenceStyle === "tinted" ? "mix-blend-multiply opacity-90" : ""
+                            }`}
+                          />
+                        </div>
+                      </>
                     )}
                   </CardContent>
                 </Card>
