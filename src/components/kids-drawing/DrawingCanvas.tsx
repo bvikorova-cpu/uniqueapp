@@ -30,7 +30,7 @@ const COLORS = [
   "#FFC0CB", // Pink
 ];
 
-export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCanvasProps) => {
+export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringImage }: DrawingCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [activeColor, setActiveColor] = useState("#000000");
