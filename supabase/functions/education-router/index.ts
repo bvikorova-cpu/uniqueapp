@@ -11,7 +11,6 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -25,12 +24,13 @@ function rateLimit(key: string, max: number, windowMs: number) {
   b.count++; return { ok: true, resetIn: b.resetAt - now };
 }
 
-async function aiJsonLovable(system: string, user: string): Promise<any> {
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+async function aiJsonOpenAI(system: string, user: string): Promise<any> {
+  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "openai/gpt-5.4-mini",
+      model: "gpt-4o-mini",
       messages: [{ role: "system", content: system }, { role: "user", content: user }],
       response_format: { type: "json_object" } }) });
   if (res.status === 402) throw new Error("ai_credits_exhausted");
@@ -47,6 +47,7 @@ function json(body: unknown, status = 200) {
 }
 
 async function callAI(messages: any[], opts: { model?: string; json?: boolean } = {}) {
+  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -533,7 +534,7 @@ async function generateCurriculum(meta: any) {
     `Course: ${meta.course_title}\nDescription: ${meta.description}\n` +
     `Level: ${meta.level}\nDuration: ${meta.duration}\nSkills: ${(meta.skills || []).join(", ")}\nPrice paid: €${meta.price}\n\n` +
     "Design an in-depth curriculum that fully justifies the price paid.";
-  return await aiJsonLovable(sys, usr);
+  return await aiJsonOpenAI(sys, usr);
 }
 
 async function generateQuizPool(meta: any, curriculum: any) {
@@ -547,7 +548,7 @@ async function generateQuizPool(meta: any, curriculum: any) {
       `Module ${i + 1}: ${m.title}\n` +
       (m.lessons || []).map((l: any) => ` - ${l.title}: ${(l.key_points || []).slice(0, 3).join("; ")}`).join("\n")
     ).join("\n");
-  const out = await aiJsonLovable(sys, usr);
+  const out = await aiJsonOpenAI(sys, usr);
   const arr = Array.isArray(out?.questions) ? out.questions : [];
   return arr.filter((q: any) => q && typeof q.q === "string" && Array.isArray(q.options) && q.options.length === 4 && Number.isInteger(q.answer_index));
 }

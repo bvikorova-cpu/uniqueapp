@@ -54,7 +54,7 @@ serve(async (req) => {
 
     if (!COSTS[module]) return json({ error: "Invalid module" }, 400);
     if (!prompt.trim()) return json({ error: "Prompt required" }, 400);
-    if (!OPENAI_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+    if (!OPENAI_API_KEY) return json({ error: "OpenAI not configured" }, 500);
 
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const cost = COSTS[module];
@@ -70,7 +70,7 @@ serve(async (req) => {
       return json({ error: "Insufficient credits", balance, cost }, 402);
     }
 
-    // Call Lovable AI Gateway
+    // Call OpenAI
     const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {

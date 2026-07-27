@@ -81,7 +81,7 @@ export const LegalAssistant = ({ documentType, documentText }: LegalAssistantPro
               </div>
               <div>
                 <h4 className="font-bold text-sm">Legal AI</h4>
-                <p className="text-[10px] text-muted-foreground">Powered by Lovable AI · 3 cr/question</p>
+                <p className="text-[10px] text-muted-foreground">Powered by OpenAI · 3 cr/question</p>
               </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setOpen(false)}><X className="w-4 h-4" /></Button>

@@ -1,5 +1,5 @@
 // Kids Homework Helper — text + photo (OCR) AI tutor with step-by-step solutions.
-// Costs 3 homework credits per question. Uses Lovable AI Gateway (Gemini vision).
+// Costs 3 homework credits per question. Uses OpenAI vision.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 

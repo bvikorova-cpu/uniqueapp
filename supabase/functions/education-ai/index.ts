@@ -10,7 +10,7 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY") ?? "";
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 
 const COSTS: Record<string, number> = { photo_math: 3, pdf_to_quiz: 3, generate_quiz: 5 };
 
@@ -18,11 +18,10 @@ const jsonRes = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 const aiGateway = (body: unknown) =>
-  fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
-      "Lovable-API-Key": LOVABLE_API_KEY,
-      "X-Lovable-AIG-SDK": "direct-fetch",
+      Authorization: `Bearer ${OPENAI_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -32,7 +31,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    if (!LOVABLE_API_KEY) return jsonRes({ error: "LOVABLE_API_KEY not configured" }, 500);
+    if (!OPENAI_API_KEY) return jsonRes({ error: "OPENAI_API_KEY not configured" }, 500);
     if (!SERVICE_KEY) return jsonRes({ error: "SUPABASE_SERVICE_ROLE_KEY not configured" }, 500);
 
     const authHeader = req.headers.get("Authorization");
@@ -188,7 +187,7 @@ serve(async (req) => {
         return jsonRes({ error: "imageDataUrl required" }, 400);
       }
       const res = await aiGateway({
-        model: "openai/gpt-5.4-mini",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a brilliant math tutor. Look at the photo of the math problem and explain the solution step by step. Use LaTeX ($...$ inline, $$...$$ block). Always answer in English. If not a math problem, say so politely." },
           { role: "user", content: [
@@ -202,7 +201,7 @@ serve(async (req) => {
       if (res.status === 402) return jsonRes({ error: "AI credits exhausted on platform" }, 402);
       if (!res.ok) {
         const txt = await res.text().catch(() => "");
-        console.error("[education-ai] gateway error", res.status, txt);
+        console.error("[education-ai] OpenAI error", res.status, txt);
         return jsonRes({ error: `AI error: ${res.status}` }, 500);
       }
       const data = await res.json();
@@ -219,7 +218,7 @@ serve(async (req) => {
       if (safeText.trim().length < 50) return jsonRes({ error: "Text too short" }, 400);
       const safeN = Math.max(3, Math.min(20, Number(numQuestions) || 8));
       const res = await aiGateway({
-        model: "openai/gpt-5.4-mini",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a quiz designer. From the study text, generate a multiple-choice quiz. Always English. Each question has 4 options and one correct index (0-3). Respond ONLY by calling the create_quiz tool." },
           { role: "user", content: `Difficulty: ${difficulty}. Create ${safeN} questions from:\n\n${safeText}` },
@@ -242,7 +241,7 @@ serve(async (req) => {
       if (res.status === 402) return jsonRes({ error: "AI credits exhausted on platform" }, 402);
       if (!res.ok) {
         const txt = await res.text().catch(() => "");
-        console.error("[education-ai] gateway error", res.status, txt);
+        console.error("[education-ai] OpenAI error", res.status, txt);
         return jsonRes({ error: `AI error: ${res.status}` }, 500);
       }
       const data = await res.json();
@@ -262,7 +261,7 @@ serve(async (req) => {
         : "medium";
 
       const res = await aiGateway({
-        model: "openai/gpt-5.4-mini",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are an expert education quiz designer. Generate high-quality multiple-choice questions in English. Each question has 4 concise options and one correct index (0-3). Respond ONLY by calling the create_quiz tool." },
           { role: "user", content: `Topic: ${topic}\nDifficulty: ${difficulty}\nCreate ${safeN} questions suitable for a learner to practice.` },
@@ -285,7 +284,7 @@ serve(async (req) => {
       if (res.status === 402) return jsonRes({ error: "AI credits exhausted on platform" }, 402);
       if (!res.ok) {
         const txt = await res.text().catch(() => "");
-        console.error("[education-ai] gateway error", res.status, txt);
+        console.error("[education-ai] OpenAI error", res.status, txt);
         return jsonRes({ error: `AI error: ${res.status}` }, 500);
       }
 
