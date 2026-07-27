@@ -33,7 +33,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const AICreditsStore = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { credits, refresh } = useAICredits();
+  const { credits, refresh, freeBalance, paidBalance, totalBalance } = useAICredits();
   const [loading, setLoading] = useState(false);
   const packagesRef = useRef<HTMLDivElement>(null);
 
