@@ -71,19 +71,16 @@ export const VocabularyFlashcardGame = ({ vocabulary, onComplete }: Props) => {
       const first = matchPairs.find((p) => p.id === selectedMatch)!;
       const second = clicked;
 
-      const firstWord = first.type === "word" ? first.text : second.text;
-      const secondWord = second.type === "word" ? second.text : first.text;
-      const firstDef = first.type === "def" ? first.text : second.text;
-      const secondDef = second.type === "def" ? second.text : first.text;
+      const wordText = first.type === "word" ? first.text : (second.type === "word" ? second.text : null);
+      const defText = first.type === "def" ? first.text : (second.type === "def" ? second.text : null);
 
-      const matchingVocab = vocabulary.find((v) => v.word === firstWord || v.word === secondWord);
       const isMatch =
-        matchingVocab &&
-        ((first.type !== second.type) &&
-          (matchingVocab.word === firstWord && matchingVocab.definition === secondDef) ||
-          (matchingVocab.word === secondWord && matchingVocab.definition === firstDef));
+        first.type !== second.type &&
+        wordText !== null &&
+        defText !== null &&
+        vocabulary.some((v) => v.word === wordText && v.definition === defText);
 
-      if (isMatch && first.type !== second.type) {
+      if (isMatch) {
         setMatchPairs((prev) =>
           prev.map((p) =>
             p.id === selectedMatch || p.id === id
