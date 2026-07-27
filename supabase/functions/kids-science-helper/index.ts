@@ -4,7 +4,7 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
-const COSTS = { safetyCheck: 2, askScientist: 2 } as const;
+const COSTS = { safetyCheck: 2, askScientist: 2, analyze: 4 } as const;
 type Action = keyof typeof COSTS;
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
