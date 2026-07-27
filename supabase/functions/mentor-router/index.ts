@@ -1,4 +1,4 @@
-// Personal Mentor universal router — handles all 18 features
+// Personal Mentor universal router — handles all mentor features
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 
@@ -15,6 +15,23 @@ const MENTOR_PRICES: Record<string, string> = { monthly: "price_1TXnOuGaXSfGtYFt
 
 const MENTOR_PRICE_TO_PLAN: Record<string, string> = { price_1TXnOuGaXSfGtYFtNzPlq3GN: "monthly",
   price_1TXnOvGaXSfGtYFtxGWrODSu: "yearly" };
+
+function stripePeriodEndToIso(sub: Stripe.Subscription): string | null {
+  const topLevelEnd = (sub as any).current_period_end;
+  const itemEnd = (sub.items?.data ?? [])
+    .map((item: any) => item.current_period_end)
+    .find((value: unknown) => typeof value === "number" && Number.isFinite(value));
+  const unixSeconds = typeof topLevelEnd === "number" && Number.isFinite(topLevelEnd)
+    ? topLevelEnd
+    : itemEnd;
+
+  if (typeof unixSeconds !== "number" || !Number.isFinite(unixSeconds) || unixSeconds <= 0) {
+    return null;
+  }
+
+  const date = new Date(unixSeconds * 1000);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
 
 function json(b: unknown, s = 200) {
   return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -163,13 +180,13 @@ Deno.serve(async (req) => {
         if (!customers.data.length) return json({ subscribed: false, areas: {} });
         const customerId = customers.data[0].id;
         const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50 });
-        const areas: Record<string, { subscribed: boolean; plan: string; current_period_end: string; subscription_id: string }> = {};
+        const areas: Record<string, { subscribed: boolean; plan: string; current_period_end: string | null; subscription_id: string }> = {};
         for (const s of subs.data) {
           const item = s.items.data.find((i) => MENTOR_PRICE_TO_PLAN[i.price.id]);
           if (!item) continue;
           const a = (s.metadata?.mentor_area as string) || "career";
           const plan = MENTOR_PRICE_TO_PLAN[item.price.id];
-          const periodEnd = new Date((s as any).current_period_end * 1000).toISOString();
+          const periodEnd = stripePeriodEndToIso(s);
           areas[a] = { subscribed: true, plan, current_period_end: periodEnd, subscription_id: s.id };
           await admin.from("mentor_premium_subs").upsert({ user_id: userId, email: user.email, area: a,
             stripe_customer_id: customerId, stripe_subscription_id: s.id,
