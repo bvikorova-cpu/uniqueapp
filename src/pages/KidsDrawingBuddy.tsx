@@ -159,6 +159,15 @@ const KidsDrawingBuddy = () => {
     runTutorialStepNav("next");
   };
 
+  const handleTutorialStepPointer = (
+    event: React.PointerEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>,
+    direction: "previous" | "next"
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    runTutorialStepNav(direction);
+  };
+
   const resetWizard = () => {
     setTutorial(null);
     setWizardStep(0);
@@ -317,7 +326,8 @@ const KidsDrawingBuddy = () => {
                           type="button"
                           variant="outline"
                           onClick={goToPreviousTutorialStep}
-                          onPointerUp={goToPreviousTutorialStep}
+                          onPointerUp={(event) => handleTutorialStepPointer(event, "previous")}
+                          onTouchEnd={(event) => handleTutorialStepPointer(event, "previous")}
                           disabled={isFirstTutorialStep}
                           className="min-h-12 touch-manipulation sm:flex-1"
                         >
@@ -326,7 +336,8 @@ const KidsDrawingBuddy = () => {
                         <Button
                           type="button"
                           onClick={goToNextTutorialStep}
-                          onPointerUp={goToNextTutorialStep}
+                          onPointerUp={(event) => handleTutorialStepPointer(event, "next")}
+                          onTouchEnd={(event) => handleTutorialStepPointer(event, "next")}
                           disabled={isLastTutorialStep}
                           className="min-h-12 touch-manipulation sm:flex-1"
                         >
