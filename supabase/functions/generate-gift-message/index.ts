@@ -1,8 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { createOpenAICompatible } from "npm:@ai-sdk/openai-compatible";
-import { generateText } from "npm:ai";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -171,10 +169,9 @@ serve(async (req) => {
     const type = __type;
     const customPrompt = reqBody.customPrompt || reqBody.prompt || reqBody.input || reqBody.message || reqBody.query;
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!OPENAI_API_KEY && !LOVABLE_API_KEY) {
-      throw new Error("AI provider is not configured");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
     }
 
     // Auth (credit check already performed above via requireAiCredits)
@@ -553,46 +550,31 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     })();
 
     let message = "Sending you warm wishes!";
-    if (OPENAI_API_KEY) {
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-          max_completion_tokens: maxTokens }) });
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        max_completion_tokens: maxTokens }) });
 
-      if (!response.ok) {
-        if (response.status === 429) {
-          return new Response(JSON.stringify({ error: "Rate limit exceeded, try again later." }), {
-            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        }
-        const errorText = await response.text();
-        console.error("OpenAI API error:", errorText);
-        throw new Error("AI generation failed");
+    if (!response.ok) {
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: "Rate limit exceeded, try again later." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-
-      const data = await response.json();
-      message = data.choices?.[0]?.message?.content?.trim() || message;
-    } else {
-      const gateway = createOpenAICompatible({
-        name: "lovable-ai-gateway",
-        baseURL: "https://ai.gateway.lovable.dev/v1",
-        headers: { "Lovable-API-Key": LOVABLE_API_KEY ?? "" },
-      });
-      const result = await generateText({
-        model: gateway("openai/gpt-5.4-mini"),
-        system: systemPrompt,
-        prompt: userPrompt,
-        maxOutputTokens: maxTokens,
-      });
-      message = result.text.trim() || message;
+      const errorText = await response.text();
+      console.error("OpenAI API error:", errorText);
+      throw new Error("AI generation failed");
     }
+
+    const data = await response.json();
+    message = data.choices?.[0]?.message?.content?.trim() || message;
 
     // Credits are deducted from unified ai_credits via __deduct() below.
 

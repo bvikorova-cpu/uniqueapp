@@ -73,7 +73,7 @@ export default function Privacy() {
               <ul>
                 <li><strong>Stripe</strong> — payment processing.</li>
                 <li><strong>Supabase</strong> — hosting (global hosting regions).</li>
-                <li><strong>Lovable AI Gateway</strong> — AI features (prompts anonymized).</li>
+                <li><strong>OpenAI</strong> — AI features (prompts anonymized).</li>
                 <li><strong>Authorities</strong> — only when legally required.</li>
               </ul>
               <p><strong>We never sell your data.</strong></p>

@@ -1,4 +1,4 @@
-// AI moderation triage via Lovable AI Gateway
+// AI moderation triage via OpenAI
 // Categorizes a report and updates moderation_queue with severity + categories
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";

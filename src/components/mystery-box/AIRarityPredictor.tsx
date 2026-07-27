@@ -80,7 +80,7 @@ export const AIRarityPredictor = ({ onBack }: Props) => {
           </div>
           <div>
             <h2 className="text-2xl font-black bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent">AI Rarity Predictor</h2>
-            <p className="text-muted-foreground text-xs">Powered by Lovable AI • Analyzes your luck patterns</p>
+            <p className="text-muted-foreground text-xs">Powered by OpenAI • Analyzes your luck patterns</p>
           </div>
         </motion.div>
 

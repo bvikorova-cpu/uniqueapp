@@ -1,10 +1,9 @@
-// Uni premium TTS — proxies Lovable AI Gateway /v1/audio/speech with
-// openai/gpt-4o-mini-tts. Returns MP3 audio bytes. Auth required; no extra
+// Uni premium TTS — proxies OpenAI /v1/audio/speech. Returns MP3 audio bytes. Auth required; no extra
 // credit charge (voice is part of the 5-credit Uni command).
 import { corsHeaders } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
 
@@ -12,8 +11,8 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    if (!LOVABLE_API_KEY) {
-      return json({ error: "LOVABLE_API_KEY missing" }, 500);
+    if (!OPENAI_API_KEY) {
+      return json({ error: "OPENAI_API_KEY missing" }, 500);
     }
 
     const auth = req.headers.get("Authorization") ?? "";
@@ -27,12 +26,12 @@ Deno.serve(async (req) => {
     const voice = String(body?.voice ?? "alloy");
     if (!text) return json({ error: "empty_text" }, 400);
 
-    const ttsRes = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
+    const ttsRes = await fetch("https://api.openai.com/v1/audio/speech", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "openai/gpt-4o-mini-tts",
+      body: JSON.stringify({ model: "gpt-4o-mini-tts",
         input: text,
         voice,
         response_format: "mp3",

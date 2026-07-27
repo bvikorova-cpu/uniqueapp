@@ -219,7 +219,7 @@ export const AnonymousDateAIToolbox = ({ credits }: { credits: number }) => {
             </div>
             <div>
               <h3 className="text-lg font-black">AI Dating Toolbox</h3>
-              <p className="text-xs text-muted-foreground">7 premium AI features powered by Lovable AI</p>
+              <p className="text-xs text-muted-foreground">7 premium AI features powered by OpenAI</p>
             </div>
           </div>
           <Badge className="bg-gradient-to-r from-primary to-pink-500 text-white">

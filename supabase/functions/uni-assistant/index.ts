@@ -3,7 +3,7 @@
 import { corsHeaders } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SUPABASE_SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY missing");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY missing");
 
     const authHeader = req.headers.get("Authorization") ?? "";
     const userClient = createClient(SUPABASE_URL, SUPABASE_ANON, {
@@ -58,23 +58,23 @@ Deno.serve(async (req) => {
     const currentRoute = String(body?.currentRoute ?? "/").slice(0, 200);
     if (!transcript) return json({ error: "empty_transcript" }, 400);
 
-    // Deduct 5 credits (service role bypasses RLS on RPC)
+    // Pre-check 5 credits; deduct only after a successful OpenAI response.
     const svc = createClient(SUPABASE_URL, SUPABASE_SERVICE);
-    const { data: ok, error: creditErr } = await svc.rpc("deduct_ai_credits", { p_user_id: user.id,
-      p_amount: COST,
-      p_reason: "Uni voice assistant",
-      p_source: "uni-assistant" });
-    if (creditErr) return json({ error: creditErr.message }, 500);
-    if (ok === false) return json({ error: "INSUFFICIENT_CREDITS" }, 402);
+    const { data: creditRow } = await svc
+      .from("ai_credits")
+      .select("credits_remaining")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if ((creditRow?.credits_remaining ?? 0) < COST) return json({ error: "INSUFFICIENT_CREDITS" }, 402);
 
-    // Call Lovable AI Gateway with tool calling
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Call OpenAI with tool calling
+    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "openai/gpt-5.5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "system", content: `The user is currently on route: ${currentRoute}` },
@@ -114,6 +114,13 @@ Deno.serve(async (req) => {
     }
     const reply = String(msg.content ?? "").trim()
       || (action ? `Opening ${action.path} for you.` : "Okay.");
+
+    const { data: ok, error: creditErr } = await svc.rpc("deduct_ai_credits", { p_user_id: user.id,
+      p_amount: COST,
+      p_reason: "Uni voice assistant",
+      p_source: "uni-assistant" });
+    if (creditErr) return json({ error: creditErr.message }, 500);
+    if (ok === false) return json({ error: "INSUFFICIENT_CREDITS" }, 402);
 
     return json({ reply, action, creditsSpent: COST });
   } catch (e) {

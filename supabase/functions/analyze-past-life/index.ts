@@ -1,4 +1,4 @@
-// Past-life analysis: deducts 1 past_life_credit, calls Lovable AI, inserts past_life_readings.
+// Past-life analysis: deducts 1 past_life_credit, calls OpenAI, inserts past_life_readings.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
