@@ -26,8 +26,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
-import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
-import { KidsGoldPassGate } from "@/components/kids/KidsGoldPassGate";
 
 const __HIW_KIDSHOMEWORK_STEPS = [
   { title: 'Type or snap homework', desc: 'Kid photographs or types the question.' },
@@ -147,7 +145,6 @@ const KidsHomework = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">
-          <KidsGoldPassGate moduleName="Homework Helper" redirectPath="/kids-homework">
           <HomeworkHero />
 
           <HeroRewardedAd sectionKey="page_kidshomework" />
@@ -332,7 +329,6 @@ const KidsHomework = () => {
           <div className="max-w-2xl mx-auto mt-8">
             <SafeContentBadge />
           </div>
-          </KidsGoldPassGate>
         </div>
       </main>
 
