@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useColoringCredits } from "@/hooks/useColoringCredits";
+import { useAICredits } from "@/hooks/useAICredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload, Palette, Wand2, LayoutGrid, Trophy, Gem, GraduationCap, Heart, Brush, CheckCircle2, Paintbrush, Users, Printer, Zap } from "lucide-react";
