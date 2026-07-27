@@ -23,8 +23,6 @@ function mapModel(m: any): string {
   if (typeof m !== "string") return "gpt-4o-mini";
   if (m.startsWith("openai/")) return m.replace("openai/", "");
   if (!m.startsWith("gpt-")) return "gpt-4o-mini";
-  if (m.includes("gemini") && m.includes("pro")) return "gpt-4o";
-  if (m.includes("gemini")) return "gpt-4o-mini";
   return m;
 }
 
