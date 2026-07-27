@@ -86,16 +86,17 @@ export const DailyChallengeCard = ({ challenge, progress, isCompleted }: DailyCh
   let progressPercentage = 0;
 
   if (progress && !isCompleted) {
+    const subjectsToday = Array.isArray(progress.subjects_today) ? progress.subjects_today : [];
     switch (challenge.challenge_type) {
       case 'questions_count':
-        currentProgress = progress.questions_today;
+        currentProgress = progress.questions_today ?? 0;
         break;
       case 'diverse_subjects':
-        currentProgress = progress.subjects_today.length;
+        currentProgress = subjectsToday.length;
         break;
       case 'subject_focus': {
         const subjectCounts: { [key: string]: number } = {};
-        for (const subject of progress.subjects_today) {
+        for (const subject of subjectsToday) {
           subjectCounts[subject] = (subjectCounts[subject] || 0) + 1;
         }
         currentProgress = Math.max(...Object.values(subjectCounts), 0);
