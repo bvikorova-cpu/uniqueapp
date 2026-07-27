@@ -62,23 +62,27 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
     setHistoryIndex((prev) => Math.min(prev + 1, 29));
   }, [historyIndex]);
 
-  const getPos = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const getPosFromClient = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
-    return { x: ((e.clientX - rect.left) / rect.width) * canvas.width,
-      y: ((e.clientY - rect.top) / rect.height) * canvas.height };
+    return {
+      x: ((clientX - rect.left) / rect.width) * canvas.width,
+      y: ((clientY - rect.top) / rect.height) * canvas.height,
+    };
   };
+
+  const getPos = (e: React.MouseEvent<HTMLCanvasElement>) =>
+    getPosFromClient(e.clientX, e.clientY);
 
   const startDraw = (e: React.MouseEvent<HTMLCanvasElement>) => { setIsDrawing(true); lastPos.current = getPos(e); };
 
-  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !lastPos.current) return;
+  const drawAt = (pos: { x: number; y: number }) => {
+    if (!lastPos.current) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const pos = getPos(e);
     ctx.beginPath();
     ctx.moveTo(lastPos.current.x, lastPos.current.y);
     ctx.lineTo(pos.x, pos.y);
@@ -92,7 +96,33 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
     lastPos.current = pos;
   };
 
+  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    drawAt(getPos(e));
+  };
+
   const endDraw = () => { if (isDrawing) { setIsDrawing(false); lastPos.current = null; saveToHistory(); } };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    if (!t) return;
+    setIsDrawing(true);
+    lastPos.current = getPosFromClient(t.clientX, t.clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!isDrawing) return;
+    const t = e.touches[0];
+    if (!t) return;
+    drawAt(getPosFromClient(t.clientX, t.clientY));
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    endDraw();
+  };
 
   const undo = () => {
     if (historyIndex <= 0) return;
@@ -199,12 +229,16 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
           <div className="flex justify-center overflow-auto bg-[repeating-conic-gradient(#e5e5e5_0%_25%,#fff_0%_50%)] bg-[length:16px_16px] rounded-xl border border-border/30 p-2">
             <canvas
               ref={canvasRef}
-              className="max-w-full cursor-crosshair rounded-lg"
+              className="max-w-full cursor-crosshair rounded-lg touch-none"
               style={{ transform: `scale(${zoom})`, transformOrigin: "top left" }}
               onMouseDown={startDraw}
               onMouseMove={draw}
               onMouseUp={endDraw}
               onMouseLeave={endDraw}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchEnd}
             />
           </div>
         </CardContent>
