@@ -26,7 +26,7 @@ const TEMPLATES: Template[] = [
 ];
 
 interface Props {
-  onSelectTemplate: (topic: string, difficulty: string) => void;
+  onSelectTemplate: (topic: string, difficulty: string, emoji?: string, title?: string) => void;
   loading?: boolean;
 }
 
