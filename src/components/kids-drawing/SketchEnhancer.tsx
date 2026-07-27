@@ -39,8 +39,9 @@ export const SketchEnhancer = ({ balance, onCreditsChanged, onBuyCredits }: Prop
   const [loading, setLoading] = useState(false);
   const [enhanced, setEnhanced] = useState<string | null>(null);
 
+  const { hasGoldPass } = useKidsGoldPass();
   const COST = 4;
-  const canRun = balance >= COST;
+  const canRun = hasGoldPass || balance >= COST;
 
   const onFile = (f?: File | null) => {
     if (!f) return;
