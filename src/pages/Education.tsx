@@ -114,33 +114,29 @@ const Education = () => {
 
   const handleSendMessage = async () => {
     if (!chatMessage.trim()) return;
-    if (credits < 1) {
-      toast({ title: "Insufficient Credits", description: "Please purchase credits to continue.", variant: "destructive" });
-      return;
-    }
     const userMessage = chatMessage;
     setChatMessage("");
     setChatHistory(prev => [...prev, { role: "user", content: userMessage }]);
     setIsLoading(true);
-    let creditDeducted = false;
     try {
-      await spendCredit();
-      creditDeducted = true;
+      // Credits are charged server-side against the unified ai_credits pool (2 credits/message).
       const { data, error } = await supabase.functions.invoke("tutoring-chat", { body: { message: userMessage, history: chatHistory } });
-      if (error) throw error;
-      setChatHistory(prev => [...prev, { role: "assistant", content: data.response }]);
-    } catch (error) {
-      console.error("Error:", error);
-      // Refund the credit if the AI call failed after deduction
-      if (creditDeducted) {
-        try { await refundCredit("ai_call_failed"); } catch (e) { console.error("refund failed", e); }
+      if (error) {
+        const ctx: any = (error as any)?.context;
+        if (ctx?.status === 402 || (data as any)?.error === "insufficient_credits") {
+          setChatHistory(prev => prev.slice(0, -1));
+          setChatMessage(userMessage);
+          toast({ title: "Insufficient AI credits", description: "You need 2 AI credits to chat with the tutor.", variant: "destructive" });
+          return;
+        }
+        throw error;
       }
-      // Roll back the optimistic user message so they can retry without losing context
+      setChatHistory(prev => [...prev, { role: "assistant", content: (data as any).response }]);
+    } catch (error: any) {
+      console.error("Error:", error);
       setChatHistory(prev => prev.slice(0, -1));
       setChatMessage(userMessage);
-      toast({ title: "Message failed",
-        description: creditDeducted ? "Your credit was refunded. Try again." : "Failed to send message",
-        variant: "destructive" });
+      toast({ title: "Message failed", description: error?.message || "Failed to send message", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }

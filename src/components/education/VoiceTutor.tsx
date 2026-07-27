@@ -35,25 +35,25 @@ const VoiceTutor = () => {
   };
 
   const askAI = async (text: string) => {
-    if (credits < 1) {
-      toast.error("Out of tutoring credits");
-      return;
-    }
     setThinking(true);
     setReply("");
-    let credited = false;
     try {
-      await spendCredit();
-      credited = true;
+      // Server charges 2 unified ai_credits per message.
       const { data, error } = await supabase.functions.invoke("tutoring-chat", {
         body: { message: text, history: [] } });
-      if (error) throw error;
+      if (error) {
+        const ctx: any = (error as any)?.context;
+        if (ctx?.status === 402 || (data as any)?.error === "insufficient_credits") {
+          toast.error("Not enough AI credits (2 needed)");
+          return;
+        }
+        throw error;
+      }
       const answer = (data as any)?.message || (data as any)?.reply || (data as any)?.response || "";
       if (!answer) throw new Error("Empty AI reply");
       setReply(answer);
       speak(answer);
     } catch (e: any) {
-      if (credited) await refundCredit("voice-tutor failed");
       toast.error(e?.message || "AI failed");
     } finally {
       setThinking(false);
