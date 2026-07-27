@@ -400,14 +400,28 @@ const KidsDrawingBuddy = () => {
             <TabsContent value="freestyle" className="space-y-4">
               {templateRef && (
                 <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-2 border-purple-300">
-                  <CardContent className="p-4 flex items-center gap-4">
-                    <div className="text-6xl">{templateRef.emoji}</div>
-                    <div className="flex-1">
-                      <div className="text-xs uppercase text-muted-foreground">Template</div>
-                      <div className="text-lg font-bold">{templateRef.title}</div>
-                      <div className="text-xs text-muted-foreground capitalize">Difficulty: {templateRef.difficulty}</div>
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center gap-4">
+                      <div className="text-5xl">{templateRef.emoji}</div>
+                      <div className="flex-1">
+                        <div className="text-xs uppercase text-muted-foreground">Color this in!</div>
+                        <div className="text-lg font-bold">{templateRef.title}</div>
+                        <div className="text-xs text-muted-foreground capitalize">Difficulty: {templateRef.difficulty}</div>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={() => setTemplateRef(null)}>Clear</Button>
                     </div>
-                    <Button variant="ghost" size="sm" onClick={() => setTemplateRef(null)}>Clear</Button>
+                    {COLORING_IMAGES[templateRef.topic] && (
+                      <div className="bg-white rounded-xl border-2 border-purple-200 p-3 flex items-center justify-center">
+                        <img
+                          src={COLORING_IMAGES[templateRef.topic]}
+                          alt={`${templateRef.title} coloring page`}
+                          loading="lazy"
+                          width={768}
+                          height={768}
+                          className="max-h-80 w-auto object-contain"
+                        />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               )}
