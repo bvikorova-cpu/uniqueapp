@@ -20,7 +20,7 @@ interface Quiz {
 }
 
 const PdfQuizGenerator = () => {
-  const { credits, loading: creditsLoading, refresh } = useAICredits();
+  const { totalBalance, loading: creditsLoading, refresh } = useAICredits();
   const fileRef = useRef<HTMLInputElement>(null);
   const [extracting, setExtracting] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -84,7 +84,7 @@ const PdfQuizGenerator = () => {
       toast.error("Paste or upload more text");
       return;
     }
-    if (credits.credits_remaining < 3) {
+    if (totalBalance < 3) {
       toast.error("Not enough AI credits (3 needed)");
       return;
     }

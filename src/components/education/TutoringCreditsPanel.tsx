@@ -6,7 +6,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export const TutoringCreditsPanel = () => {
-  const { credits, loading, purchaseCredits } = useAICredits();
+  const { totalBalance, loading, purchaseCredits } = useAICredits();
 
   const openCreditStore = async () => {
     const url = await purchaseCredits(50, 9.99);
@@ -33,7 +33,7 @@ export const TutoringCreditsPanel = () => {
             <Badge variant="outline" className="text-lg px-3 py-1 bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-400">
               {loading
                 ? <span className="inline-block h-4 w-16 rounded bg-amber-500/30 animate-pulse" />
-                : <>{credits.credits_remaining} AI credits</>}
+                : <>{totalBalance} AI credits</>}
             </Badge>
           </div>
           <CardDescription>Education tutor uses the unified AI credit balance. Chat and voice tutor cost 2 AI credits per message.</CardDescription>
