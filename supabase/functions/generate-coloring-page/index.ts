@@ -204,7 +204,7 @@ serve(async (req) => {
       .from("coloring_pages")
       .insert({
         user_id: user.id,
-        original_image_url: imageUrl,
+        original_image_url: imageUrl ?? generatedImageUrl,
         processed_image_url: generatedImageUrl,
         difficulty: difficulty,
         status: 'completed',
