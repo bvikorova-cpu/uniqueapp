@@ -49,7 +49,9 @@ const KidsDrawingBuddy = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState("tutorial");
 
-  const { balance, canUse, refresh, costPerUse } = useKidsDrawingCredits();
+  const { balance, canUse: canUseCredits, refresh, costPerUse } = useKidsDrawingCredits();
+  const { hasGoldPass } = useKidsGoldPass();
+  const canUse = hasGoldPass || canUseCredits;
   const { count: drawingsCount } = useKidsDrawingCount();
 
   // Parental gate (shared hook)
