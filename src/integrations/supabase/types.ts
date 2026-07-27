@@ -69665,6 +69665,10 @@ export type Database = {
         Args: { p_collection_id: string }
         Returns: undefined
       }
+      increment_homework_points: {
+        Args: { p_points: number; p_subject?: string; p_user_id: string }
+        Returns: undefined
+      }
       increment_megatalent_bracket_vote: {
         Args: { p_match_id: string; p_side: string }
         Returns: undefined
@@ -70246,6 +70250,10 @@ export type Database = {
       }
       track_challenge_action: { Args: { _action: string }; Returns: Json }
       trim_user_feed_cache: { Args: never; Returns: undefined }
+      unlock_homework_achievements: {
+        Args: { p_subject?: string; p_user_id: string }
+        Returns: number
+      }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
         Returns: undefined
