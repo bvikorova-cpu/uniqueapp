@@ -712,6 +712,12 @@ export const useSecretSanta = () => {
         user_id: story.user_id,
         created_at: story.created_at,
         expires_at: story.expires_at,
+        sender_id: story.sender_id,
+        sender_name: story.sender_name,
+        sender_avatar: story.sender_avatar,
+        is_anonymous: story.is_anonymous,
+        recipient_name: story.recipient_name,
+        recipient_avatar: story.recipient_avatar,
         secret_santa_gifts: {
           id: story.gift_id,
           gift_type: story.gift_type,
