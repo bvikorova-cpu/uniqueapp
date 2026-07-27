@@ -19,6 +19,8 @@ import { useKidsDrawingCredits, KIDS_DRAWING_CREDIT_COST } from "@/hooks/useKids
 import { useKidsDrawingCount } from "@/hooks/useKidsDrawingCount";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
