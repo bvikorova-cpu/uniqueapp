@@ -385,8 +385,38 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
               <Trash2 className="w-4 h-4 mr-2" />
               Clear
             </Button>
+            <Button
+              variant={activeTool === "pan" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveTool(activeTool === "pan" ? "draw" : "pan")}
+              title="Pan (drag to move)"
+            >
+              <Move className="w-4 h-4 mr-2" />
+              Pan
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleZoomIn} title="Zoom in">
+              <ZoomIn className="w-4 h-4 mr-1" />
+              {Math.round(zoom * 100)}%
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleZoomOut} title="Zoom out">
+              <ZoomOut className="w-4 h-4" />
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleZoomReset} title="Fit / reset view">
+              <Maximize className="w-4 h-4" />
+            </Button>
             <Button variant="outline" size="sm" onClick={handleDownload}>
-              Download
+              <Save className="w-4 h-4 mr-2 rotate-180" />
+              Download PNG
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleQuickSave}
+              disabled={isSaving}
+              title="Save to Drawing Gallery"
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              {isSaving ? "Saving…" : "Quick Save"}
             </Button>
             <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
               <DialogTrigger asChild>
