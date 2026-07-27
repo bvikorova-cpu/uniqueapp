@@ -50,7 +50,13 @@ serve(async (req) => {
     const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders, user.id);
     if (rateLimitResponse) return rateLimitResponse;
 
-    const { imageUrl, difficulty = 'medium' } = await req.json();
+    const { imageUrl, prompt: userPrompt, difficulty = 'medium' } = await req.json();
+    if (!imageUrl && !userPrompt) {
+      return new Response(
+        JSON.stringify({ error: "Provide either imageUrl or prompt" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
     console.log("Generating coloring page for user:", user.id);
 
     const { data: adminCheck, error: adminError } = await supabaseClient
@@ -117,29 +123,47 @@ serve(async (req) => {
     Create a ${difficulty} difficulty level with ${difficulty === 'easy' ? 'simple, bold lines' : difficulty === 'medium' ? 'moderate detail' : 'intricate, detailed lines'}. 
     Make it perfect for printing and coloring. Black and white only, no shading, just clean outlines.`;
 
-    console.log("Fetching original image...");
-    const imageBase64 = await fetchImageAsBase64(imageUrl);
+    const prompt = userPrompt
+      ? `${userPrompt}\n\nRender as a clean coloring page: pure black outlines on white background, ${difficulty} difficulty (${difficulty === 'easy' ? 'simple bold lines' : difficulty === 'medium' ? 'moderate detail' : 'intricate detailed lines'}), no shading, no color fill, print-ready.`
+      : `Transform this image into a clean, professional coloring page with clear black outlines.
+    Create a ${difficulty} difficulty level with ${difficulty === 'easy' ? 'simple, bold lines' : difficulty === 'medium' ? 'moderate detail' : 'intricate, detailed lines'}.
+    Make it perfect for printing and coloring. Black and white only, no shading, just clean outlines.`;
 
-    const binaryString = atob(imageBase64);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
+    console.log("Calling OpenAI API...", imageUrl ? "(edit mode)" : "(generate mode)");
+
+    let aiResponse: Response;
+    if (imageUrl) {
+      console.log("Fetching original image...");
+      const imageBase64 = await fetchImageAsBase64(imageUrl);
+      const binaryString = atob(imageBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const imageBlob = new Blob([bytes], { type: 'image/png' });
+
+      const formData = new FormData();
+      formData.append('image', imageBlob, 'image.png');
+      formData.append('prompt', prompt);
+      formData.append('model', 'gpt-image-1');
+      formData.append('size', '1024x1024');
+
+      aiResponse = await fetch("https://api.openai.com/v1/images/edits", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${OPENAI_API_KEY}` },
+        body: formData });
+    } else {
+      aiResponse = await fetch("https://api.openai.com/v1/images/generations", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: 'gpt-image-1',
+          prompt,
+          size: '1024x1024',
+          n: 1 }) });
     }
-    const imageBlob = new Blob([bytes], { type: 'image/png' });
-    
-    const formData = new FormData();
-    formData.append('image', imageBlob, 'image.png');
-    formData.append('prompt', prompt);
-    formData.append('model', 'gpt-image-1');
-    formData.append('size', '1024x1024');
-
-    console.log("Calling OpenAI API...");
-
-    const aiResponse = await fetch("https://api.openai.com/v1/images/edits", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}` },
-      body: formData });
 
     console.log("OpenAI response status:", aiResponse.status);
 
@@ -180,7 +204,7 @@ serve(async (req) => {
       .from("coloring_pages")
       .insert({
         user_id: user.id,
-        original_image_url: imageUrl,
+        original_image_url: imageUrl ?? generatedImageUrl,
         processed_image_url: generatedImageUrl,
         difficulty: difficulty,
         status: 'completed',
