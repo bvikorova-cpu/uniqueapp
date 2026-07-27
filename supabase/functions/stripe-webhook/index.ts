@@ -280,7 +280,7 @@ const KIDS_GOLD_PRODUCT_IDS = new Set<string>([
 const KIDS_GOLD_PRICE_IDS = new Set<string>([
   "price_1SShj2GaXSfGtYFtcKlTJYGa",
   "price_1SShj3GaXSfGtYFtGEneXVhs",
-  "price_1Tc1kyGaXSfGtYFtcfVW1fcY",
+  "price_1TxjDqGaXSfGtYFtd03IWhdy",
 ]);
 
 /**

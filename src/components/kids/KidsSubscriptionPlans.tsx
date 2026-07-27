@@ -27,7 +27,7 @@ const PRODUCT_TIERS = {
   },
   gold_pass: {
     product_id: "prod_UbEDgqmGITgxMA",
-    price_id: "price_1Tc1kyGaXSfGtYFtcfVW1fcY"
+    price_id: "price_1TxjDqGaXSfGtYFtd03IWhdy"
   }
 };
 

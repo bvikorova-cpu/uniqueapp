@@ -9,11 +9,9 @@ import Navbar from "@/components/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsHomeworkProgress } from "@/hooks/useKidsHomeworkProgress";
 import { useKidsDailyChallenge } from "@/hooks/useKidsDailyChallenge";
-import { useHomeworkCredits, HOMEWORK_CREDITS_PER_QUESTION } from "@/hooks/useHomeworkCredits";
 import { ProgressCard } from "@/components/kids-homework/ProgressCard";
 import { AchievementsGrid } from "@/components/kids-homework/AchievementsGrid";
 import { DailyChallengeCard } from "@/components/kids-homework/DailyChallengeCard";
-import { HomeworkLimitBanner } from "@/components/kids-homework/HomeworkLimitBanner";
 import { HomeworkHero } from "@/components/kids-homework/HomeworkHero";
 import { SubjectSelector } from "@/components/kids-homework/SubjectSelector";
 import { QuestionTemplates } from "@/components/kids-homework/QuestionTemplates";
@@ -29,6 +27,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
+import { KidsGoldPassGate } from "@/components/kids/KidsGoldPassGate";
 
 const __HIW_KIDSHOMEWORK_STEPS = [
   { title: 'Type or snap homework', desc: 'Kid photographs or types the question.' },
@@ -46,13 +45,8 @@ const KidsHomework = () => {
   const queryClient = useQueryClient();
   const { points, achievements, unlockedAchievements, isLoading: progressLoading } = useKidsHomeworkProgress();
   const { challenge, progress, isCompleted, isLoading: challengeLoading } = useKidsDailyChallenge();
-  const { credits_remaining,
-    canAsk: rawCanAsk,
-    loading: usageLoading,
-    refresh: refreshCredits,
-    purchaseCredits } = useHomeworkCredits();
   const { hasGoldPass } = useKidsGoldPass();
-  const canAsk = hasGoldPass || rawCanAsk;
+  const canAsk = hasGoldPass;
 
   const [subject, setSubject] = useState<string>(() => {
     try { return localStorage.getItem("kids_homework_subject") || ""; } catch { return ""; }
@@ -85,71 +79,25 @@ const KidsHomework = () => {
     reader.readAsDataURL(f);
   };
 
-  // Homework Helper: PASS-GATED. Must have active credits to access.
+  // Auth gate only — Gold Pass access is enforced by <KidsGoldPassGate> below.
   useEffect(() => {
-    if (usageLoading || verifyingPayment) return;
     if (!user) {
       navigate(`/auth?redirect=${encodeURIComponent("/kids-homework")}`);
-      return;
     }
-    if (!hasGoldPass && credits_remaining < HOMEWORK_CREDITS_PER_QUESTION) {
-      toast.info("You need an active Homework Pass to use this section.");
-      navigate("/kids-homework-pricing");
-    }
-  }, [user, usageLoading, credits_remaining, navigate, verifyingPayment, hasGoldPass]);
+  }, [user, navigate]);
 
-  // Verify Stripe payment on return, then refresh credits.
+  // Clear stale ?payment= params on return from Stripe (Gold Pass flow handles verification itself).
   useEffect(() => {
     const paymentStatus = searchParams.get("payment");
-    const sessionId = searchParams.get("session_id");
+    if (!paymentStatus) return;
+    if (paymentStatus === "canceled") toast.info("Payment canceled.");
+    const url = new URL(window.location.href);
+    url.searchParams.delete("payment");
+    url.searchParams.delete("session_id");
+    window.history.replaceState({}, "", url.pathname + url.search);
+    setVerifyingPayment(false);
+  }, [searchParams]);
 
-    if (paymentStatus === "canceled") {
-      toast.info("Payment canceled.");
-      const url = new URL(window.location.href);
-      url.searchParams.delete("payment");
-      window.history.replaceState({}, "", url.pathname + url.search);
-      return;
-    }
-
-    if (paymentStatus !== "success" || !sessionId) return;
-
-    let cancelled = false;
-    (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
-          body: { session_id: sessionId },
-        });
-        if (cancelled) return;
-        if (error) throw error;
-        if (data?.success) {
-          toast.success(`Payment successful! ${data.credits_added ?? ""} credits added.`);
-        } else {
-          toast.info("Payment received. Credits will appear shortly.");
-        }
-      } catch (e: any) {
-        console.error("verify-credits-payment error", e);
-        toast.error("Could not verify payment automatically. Please refresh.");
-      } finally {
-        if (!cancelled) {
-          await refreshCredits();
-          const url = new URL(window.location.href);
-          url.searchParams.delete("payment");
-          url.searchParams.delete("session_id");
-          window.history.replaceState({}, "", url.pathname + url.search);
-          setVerifyingPayment(false);
-        }
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [searchParams, refreshCredits]);
-
-  const handleBuyCredits = async () => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-    navigate("/kids-homework-pricing");
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,7 +111,7 @@ const KidsHomework = () => {
       return;
     }
     if (!canAsk) {
-      toast.error(`You need ${HOMEWORK_CREDITS_PER_QUESTION} Homework credits.`);
+      toast.error("Gold Pass required.");
       return;
     }
 
@@ -179,13 +127,12 @@ const KidsHomework = () => {
 
       setResult(data);
       setPhoto(null);
-      refreshCredits();
 
       const today = new Date().toISOString().split("T")[0];
       queryClient.invalidateQueries({ queryKey: ["kids-homework-points", user.id] });
       queryClient.invalidateQueries({ queryKey: ["daily-progress", user.id, today] });
       queryClient.invalidateQueries({ queryKey: ["challenge-completion", user.id] });
-      toast.success(`Homework help ready! ${HOMEWORK_CREDITS_PER_QUESTION} credits used.`);
+      toast.success("Homework help ready! ✨");
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(error.message || "Failed to get homework help");
@@ -200,6 +147,7 @@ const KidsHomework = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">
+          <KidsGoldPassGate moduleName="Homework Helper" redirectPath="/kids-homework">
           <HomeworkHero />
 
           <HeroRewardedAd sectionKey="page_kidshomework" />
@@ -209,23 +157,7 @@ const KidsHomework = () => {
             <SafeContentBadge variant="compact" />
           </div>
 
-          {/* Gold Pass banner (unlimited) */}
-          {hasGoldPass && (
-            <div className="mb-6">
-              <KidsGoldPassBanner moduleName="Homework Helper" />
-            </div>
-          )}
 
-          {/* Credit balance — hidden for Gold Pass unlimited users */}
-          {!usageLoading && !hasGoldPass && (
-            <div className="mb-6">
-              <HomeworkLimitBanner
-                creditsRemaining={credits_remaining}
-                creditsPerQuestion={HOMEWORK_CREDITS_PER_QUESTION}
-                onBuyCredits={handleBuyCredits}
-              />
-            </div>
-          )}
 
           {/* Progress & Challenge cards */}
           {user && !progressLoading && (
@@ -271,7 +203,7 @@ const KidsHomework = () => {
                     Ask Your Question
                   </CardTitle>
                   <CardDescription>
-                    Choose a subject, pick difficulty, then type or select a question.{hasGoldPass ? " ✨ Gold Pass: unlimited questions." : ` Each question costs ${HOMEWORK_CREDITS_PER_QUESTION} credits.`}
+                    Choose a subject, pick difficulty, then type or select a question. ✨ Gold Pass: unlimited questions.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5">
@@ -330,11 +262,11 @@ const KidsHomework = () => {
                           AI is thinking...
                         </>
                       ) : !canAsk ? (
-                        `🔒 Need ${HOMEWORK_CREDITS_PER_QUESTION} credits — buy more`
+                        "🔒 Gold Pass required"
                       ) : (
                         <>
                           <Send className="w-4 h-4 mr-2" />
-                          {hasGoldPass ? "Get Help! ✨ (unlimited)" : `Get Help! ✨ (${HOMEWORK_CREDITS_PER_QUESTION} credits)`}
+                          Get Help! ✨ (unlimited)
                         </>
                       )}
                     </Button>
@@ -400,6 +332,7 @@ const KidsHomework = () => {
           <div className="max-w-2xl mx-auto mt-8">
             <SafeContentBadge />
           </div>
+          </KidsGoldPassGate>
         </div>
       </main>
 
