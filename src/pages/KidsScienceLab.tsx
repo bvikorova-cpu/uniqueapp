@@ -102,7 +102,7 @@ const KidsScienceLab = () => {
       toast.error("Please fill in all fields");
       return;
     }
-    if (!credits.canRun) {
+    if (!hasGoldPass && !credits.canRun) {
       toast.error(
         `Need ${SCIENCE_CREDITS_PER_RUN} Science credits to run an analysis. Tap "Buy credits" below.`,
       );
