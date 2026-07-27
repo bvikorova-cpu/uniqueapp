@@ -287,8 +287,9 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full bg-white dark:bg-background backdrop-blur-xl border-b border-border/50 z-50 shadow-[0_1px_20px_rgba(0,0,0,0.06)]">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 lg:items-baseline lg:pt-4">
-          <Link to="/" className="flex items-center gap-1 group lg:items-baseline lg:gap-2 lg:mr-8 xl:mr-12 min-w-0">
+        <div className="flex items-center justify-between gap-2 h-16 lg:items-baseline lg:pt-4">
+          <Link to="/" className="flex items-center gap-1 group lg:items-baseline lg:gap-2 lg:mr-4 xl:mr-8 min-w-0 shrink-0">
+
             {/* Brand wordmark — fully text-based so U matches nique */}
             <span
               className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent transition-all duration-500 group-hover:scale-110 notranslate shrink-0"
@@ -315,7 +316,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-baseline space-x-1 -mt-2">
+          <div className="hidden lg:flex flex-1 min-w-0 items-baseline space-x-1 -mt-2 overflow-x-auto scrollbar-hide [&>*]:shrink-0 [&_button]:whitespace-nowrap">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant={isChallengeServiceActive ? "premium" : "ghost"}>
@@ -497,7 +498,7 @@ const Navbar = () => {
             </DropdownMenu>
           </div>
 
-          <div className="hidden lg:flex items-center space-x-2">
+          <div className="hidden lg:flex items-center space-x-2 shrink-0">
 
             {/* Theme Toggle — visible for all users */}
             <ThemeToggle />
