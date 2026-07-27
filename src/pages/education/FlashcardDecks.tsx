@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFlashcardDecks, useCreateDeck } from "@/hooks/useFlashcards";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Layers, Globe } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { toast } from "sonner";
 
 const __HIW_FLASHCARDDECKS_STEPS = [
   { title: 'Create a deck', desc: 'Add cards manually or auto-generate from a PDF / notes.' },
@@ -20,6 +21,7 @@ const __HIW_FLASHCARDDECKS = { title: 'Flashcard Decks', intro: 'Your library of
 export default function FlashcardDecks() {
   const { data: decks = [], isLoading } = useFlashcardDecks();
   const create = useCreateDeck();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
@@ -44,14 +46,18 @@ export default function FlashcardDecks() {
                   className="w-full"
                   disabled={!title || create.isPending}
                   onClick={async () => {
-                    const d = await create.mutateAsync({ title, subject: subject || null as any });
-                    setOpen(false);
-                    setTitle("");
-                    setSubject("");
-                    window.location.href = `/education/flashcards/${d.id}`;
+                    try {
+                      const d = await create.mutateAsync({ title, subject: subject.trim() || null });
+                      setOpen(false);
+                      setTitle("");
+                      setSubject("");
+                      navigate(`/education/flashcards/${d.id}`);
+                    } catch (error: any) {
+                      toast.error(error?.message || "Failed to create deck");
+                    }
                   }}
                 >
-                  Create
+                  {create.isPending ? "Creating..." : "Create"}
                 </Button>
               </div>
             </DialogContent>

@@ -81,21 +81,33 @@ export const useAddCard = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (card: Partial<Flashcard> & { deck_id: string; front: string; back: string }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
       const { data, error } = await supabase
         .from("education_flashcards")
         .insert(card)
         .select()
         .single();
       if (error) throw error;
+      const inserted = data as Flashcard;
+      const { error: srsError } = await supabase
+        .from("education_srs_state")
+        .upsert({
+          user_id: user.id,
+          card_id: inserted.id,
+          due_at: new Date().toISOString(),
+        }, { onConflict: "user_id,card_id" });
+      if (srsError) throw srsError;
       const { count } = await supabase
         .from("education_flashcards")
         .select("id", { count: "exact", head: true })
         .eq("deck_id", card.deck_id);
       await supabase.from("education_flashcard_decks").update({ card_count: count ?? 0 }).eq("id", card.deck_id);
-      return data as Flashcard;
+      return inserted;
     },
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: ["flashcards", vars.deck_id] });
+      qc.invalidateQueries({ queryKey: ["srs-queue", vars.deck_id] });
       qc.invalidateQueries({ queryKey: ["flashcard-decks"] });
     } });
 };
@@ -104,6 +116,8 @@ export const useAIGenerateCards = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ deckId, topic, count }: { deckId: string; topic: string; count?: number }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
       const { cards } = await eduCall<{ cards: any[] }>("deck.ai_generate", { topic, count: count ?? 10 });
       if (!cards?.length) throw new Error("AI returned no cards");
       const rows = cards.map((c: any, i: number) => ({ deck_id: deckId,
@@ -111,13 +125,32 @@ export const useAIGenerateCards = () => {
         back: String(c.back ?? "").slice(0, 1000),
         hint: c.hint ? String(c.hint).slice(0, 200) : null,
         order_index: i }));
-      const { error } = await supabase.from("education_flashcards").insert(rows);
+      const { data: insertedCards, error } = await supabase.from("education_flashcards").insert(rows).select("id");
       if (error) throw error;
-      await supabase.from("education_flashcard_decks").update({ card_count: rows.length }).eq("id", deckId);
+      const srsRows = (insertedCards ?? [])
+        .map((insertedCard) => insertedCard.id)
+        .filter((cardId): cardId is string => Boolean(cardId))
+        .map((cardId) => ({
+          user_id: user.id,
+          card_id: cardId,
+          due_at: new Date().toISOString(),
+        }));
+      if (srsRows.length) {
+        const { error: srsError } = await supabase
+          .from("education_srs_state")
+          .upsert(srsRows, { onConflict: "user_id,card_id" });
+        if (srsError) throw srsError;
+      }
+      const { count: totalCards } = await supabase
+        .from("education_flashcards")
+        .select("id", { count: "exact", head: true })
+        .eq("deck_id", deckId);
+      await supabase.from("education_flashcard_decks").update({ card_count: totalCards ?? rows.length }).eq("id", deckId);
       return rows.length;
     },
     onSuccess: (n, vars) => {
       qc.invalidateQueries({ queryKey: ["flashcards", vars.deckId] });
+      qc.invalidateQueries({ queryKey: ["srs-queue", vars.deckId] });
       qc.invalidateQueries({ queryKey: ["flashcard-decks"] });
       toast.success(`Generated ${n} flashcards`);
     },
