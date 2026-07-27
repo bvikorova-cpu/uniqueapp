@@ -162,7 +162,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
               <Avatar className="h-12 w-12 ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all">
                 <AvatarImage src={profile?.avatar_url || undefined} />
                 <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
-                  {profile?.full_name?.[0] || "U"}
+                  {(profile?.full_name || profile?.username)?.[0]?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
