@@ -730,7 +730,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
           >
             <AvatarImage src={post.profiles?.avatar_url || undefined} />
             <AvatarFallback className="text-xs">
-              {post.profiles?.full_name?.charAt(0) || "U"}
+              {(post.profiles?.full_name || (post.profiles as any)?.username)?.charAt(0)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
