@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Canvas as FabricCanvas, PencilBrush, Circle, Rect, Polygon } from "fabric";
+import { Canvas as FabricCanvas, PencilBrush, Circle, Rect, Polygon, Point } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo, Circle as CircleIcon, Square, Star, Save, Layers } from "lucide-react";
+import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo, Circle as CircleIcon, Square, Star, Save, Layers, ZoomIn, ZoomOut, Move, Maximize, Zap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
@@ -34,7 +34,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [activeColor, setActiveColor] = useState("#000000");
   const [brushSize, setBrushSize] = useState(3);
-  const [activeTool, setActiveTool] = useState<"draw" | "erase" | "circle" | "square" | "star">("draw");
+  const [activeTool, setActiveTool] = useState<"draw" | "erase" | "circle" | "square" | "star" | "pan">("draw");
   const [showReference, setShowReference] = useState(true);
   const [overlayMode, setOverlayMode] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(30);
@@ -42,6 +42,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
   const [historyStep, setHistoryStep] = useState(-1);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [drawingTitle, setDrawingTitle] = useState("");
+  const [zoom, setZoom] = useState(1);
   const { saveDrawing, isSaving } = useKidsDrawingGallery();
 
   useEffect(() => { if (!canvasRef.current) return;
@@ -97,17 +98,75 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
       brush.width = brushSize;
       fabricCanvas.freeDrawingBrush = brush;
       fabricCanvas.isDrawingMode = true;
+      fabricCanvas.defaultCursor = "crosshair";
     } else if (activeTool === "erase") {
       const eraser = new PencilBrush(fabricCanvas);
       eraser.color = "#ffffff";
       eraser.width = brushSize * 2;
       fabricCanvas.freeDrawingBrush = eraser;
       fabricCanvas.isDrawingMode = true;
+      fabricCanvas.defaultCursor = "crosshair";
+    } else if (activeTool === "pan") {
+      fabricCanvas.isDrawingMode = false;
+      fabricCanvas.selection = false;
+      fabricCanvas.defaultCursor = "grab";
     } else {
       // For shape tools, disable drawing mode
       fabricCanvas.isDrawingMode = false;
+      fabricCanvas.defaultCursor = "default";
     }
   }, [activeTool, activeColor, brushSize, fabricCanvas]);
+
+  // Pan interactions (dragging when pan tool active)
+  useEffect(() => {
+    if (!fabricCanvas || activeTool !== "pan") return;
+    let isDragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    const onDown = (opt: any) => {
+      isDragging = true;
+      fabricCanvas.defaultCursor = "grabbing";
+      lastX = opt.e.clientX ?? opt.e.touches?.[0]?.clientX ?? 0;
+      lastY = opt.e.clientY ?? opt.e.touches?.[0]?.clientY ?? 0;
+    };
+    const onMove = (opt: any) => {
+      if (!isDragging) return;
+      const x = opt.e.clientX ?? opt.e.touches?.[0]?.clientX ?? 0;
+      const y = opt.e.clientY ?? opt.e.touches?.[0]?.clientY ?? 0;
+      fabricCanvas.relativePan(new Point(x - lastX, y - lastY));
+      lastX = x;
+      lastY = y;
+    };
+    const onUp = () => {
+      isDragging = false;
+      fabricCanvas.defaultCursor = "grab";
+    };
+    fabricCanvas.on("mouse:down", onDown);
+    fabricCanvas.on("mouse:move", onMove);
+    fabricCanvas.on("mouse:up", onUp);
+    return () => {
+      fabricCanvas.off("mouse:down", onDown);
+      fabricCanvas.off("mouse:move", onMove);
+      fabricCanvas.off("mouse:up", onUp);
+    };
+  }, [fabricCanvas, activeTool]);
+
+  const applyZoom = (nextZoom: number) => {
+    if (!fabricCanvas) return;
+    const clamped = Math.min(4, Math.max(0.5, nextZoom));
+    const center = new Point(fabricCanvas.getWidth() / 2, fabricCanvas.getHeight() / 2);
+    fabricCanvas.zoomToPoint(center, clamped);
+    setZoom(clamped);
+  };
+
+  const handleZoomIn = () => applyZoom(zoom + 0.25);
+  const handleZoomOut = () => applyZoom(zoom - 0.25);
+  const handleZoomReset = () => {
+    if (!fabricCanvas) return;
+    fabricCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    setZoom(1);
+  };
+
 
   const handleClear = () => {
     if (!fabricCanvas) return;
@@ -250,6 +309,13 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
     setDrawingTitle("");
   };
 
+  const handleQuickSave = () => {
+    if (!fabricCanvas) return;
+    const dataURL = fabricCanvas.toDataURL({ format: "png", quality: 1, multiplier: 2 });
+    const title = `${category || "Freestyle"} — ${new Date().toLocaleString()}`;
+    saveDrawing({ imageDataURL: dataURL, title, stepNumber, category: category || "Freestyle" });
+  };
+
   return (
     <div className="space-y-4">
       {/* Tools */}
@@ -319,8 +385,38 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
               <Trash2 className="w-4 h-4 mr-2" />
               Clear
             </Button>
+            <Button
+              variant={activeTool === "pan" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveTool(activeTool === "pan" ? "draw" : "pan")}
+              title="Pan (drag to move)"
+            >
+              <Move className="w-4 h-4 mr-2" />
+              Pan
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleZoomIn} title="Zoom in">
+              <ZoomIn className="w-4 h-4 mr-1" />
+              {Math.round(zoom * 100)}%
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleZoomOut} title="Zoom out">
+              <ZoomOut className="w-4 h-4" />
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleZoomReset} title="Fit / reset view">
+              <Maximize className="w-4 h-4" />
+            </Button>
             <Button variant="outline" size="sm" onClick={handleDownload}>
-              Download
+              <Save className="w-4 h-4 mr-2 rotate-180" />
+              Download PNG
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleQuickSave}
+              disabled={isSaving}
+              title="Save to Drawing Gallery"
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              {isSaving ? "Saving…" : "Quick Save"}
             </Button>
             <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
               <DialogTrigger asChild>
