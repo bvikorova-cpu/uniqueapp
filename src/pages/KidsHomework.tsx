@@ -9,11 +9,9 @@ import Navbar from "@/components/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsHomeworkProgress } from "@/hooks/useKidsHomeworkProgress";
 import { useKidsDailyChallenge } from "@/hooks/useKidsDailyChallenge";
-import { useHomeworkCredits, HOMEWORK_CREDITS_PER_QUESTION } from "@/hooks/useHomeworkCredits";
 import { ProgressCard } from "@/components/kids-homework/ProgressCard";
 import { AchievementsGrid } from "@/components/kids-homework/AchievementsGrid";
 import { DailyChallengeCard } from "@/components/kids-homework/DailyChallengeCard";
-import { HomeworkLimitBanner } from "@/components/kids-homework/HomeworkLimitBanner";
 import { HomeworkHero } from "@/components/kids-homework/HomeworkHero";
 import { SubjectSelector } from "@/components/kids-homework/SubjectSelector";
 import { QuestionTemplates } from "@/components/kids-homework/QuestionTemplates";
@@ -113,7 +111,7 @@ const KidsHomework = () => {
       return;
     }
     if (!canAsk) {
-      toast.error(`You need ${HOMEWORK_CREDITS_PER_QUESTION} Homework credits.`);
+      toast.error("Gold Pass required.");
       return;
     }
 
@@ -264,11 +262,11 @@ const KidsHomework = () => {
                           AI is thinking...
                         </>
                       ) : !canAsk ? (
-                        `🔒 Need ${HOMEWORK_CREDITS_PER_QUESTION} credits — buy more`
+                        "🔒 Gold Pass required"
                       ) : (
                         <>
                           <Send className="w-4 h-4 mr-2" />
-                          {hasGoldPass ? "Get Help! ✨ (unlimited)" : `Get Help! ✨ (${HOMEWORK_CREDITS_PER_QUESTION} credits)`}
+                          Get Help! ✨ (unlimited)
                         </>
                       )}
                     </Button>
