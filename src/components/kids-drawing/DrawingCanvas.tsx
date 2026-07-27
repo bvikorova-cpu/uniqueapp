@@ -309,6 +309,13 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
     setDrawingTitle("");
   };
 
+  const handleQuickSave = () => {
+    if (!fabricCanvas) return;
+    const dataURL = fabricCanvas.toDataURL({ format: "png", quality: 1, multiplier: 2 });
+    const title = `${category || "Freestyle"} — ${new Date().toLocaleString()}`;
+    saveDrawing({ imageDataURL: dataURL, title, stepNumber, category: category || "Freestyle" });
+  };
+
   return (
     <div className="space-y-4">
       {/* Tools */}
