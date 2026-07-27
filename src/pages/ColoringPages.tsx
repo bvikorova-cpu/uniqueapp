@@ -399,63 +399,6 @@ export default function ColoringPages() {
             />
           </TabsContent>
 
-          {/* Pricing Tab — credit packs (paid-only model) */}
-          <TabsContent value="pricing">
-            <div className="text-center mb-6">
-              <p className="text-sm text-muted-foreground">
-                Each coloring page costs <strong>{costPerUse}</strong> credits. Buy a pack — credits never expire.
-              </p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                { credits: 25, label: "Starter", desc: "5 coloring pages", popular: false },
-                { credits: 100, label: "Family", desc: "20 coloring pages · best value", popular: true },
-                { credits: 500, label: "Studio", desc: "100 coloring pages · bulk discount", popular: false },
-              ].map((pack) => {
-                const pages = Math.floor(pack.credits / costPerUse);
-                const price = (pack.credits * 0.5).toFixed(2);
-                return (
-                  <Card
-                    key={pack.credits}
-                    className={`backdrop-blur-xl bg-card/80 transition-all ${pack.popular ? "border-primary border-2 shadow-xl shadow-primary/10 relative" : "border-border/30 hover:border-primary/20"}`}
-                  >
-                    {pack.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full font-semibold">
-                        MOST POPULAR
-                      </div>
-                    )}
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-                          {pack.popular ? <Crown className="h-4 w-4 text-amber-500" /> : <Sparkles className="h-4 w-4 text-purple-500" />}
-                        </div>
-                        {pack.label}
-                      </CardTitle>
-                      <CardDescription>{pack.desc}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div>
-                        <p className="text-3xl font-black">€{price}</p>
-                        <p className="text-sm text-muted-foreground">{pack.credits} credits · ≈ {pages} pages</p>
-                      </div>
-                      <ul className="space-y-2 text-sm">
-                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> HD Quality (1024x1024)</li>
-                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> No watermark · PNG + PDF</li>
-                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Credits never expire</li>
-                      </ul>
-                      <Button
-                        onClick={() => buyCreditsPack(pack.credits)}
-                        className="w-full"
-                        variant={pack.popular ? "default" : "outline"}
-                      >
-                        Buy {pack.credits} credits
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </TabsContent>
 
           {/* Style Transfer Tab */}
           <TabsContent value="style-transfer">
