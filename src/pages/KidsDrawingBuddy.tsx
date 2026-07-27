@@ -3,7 +3,7 @@ import type { PointerEvent, TouchEvent } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronRight, ChevronLeft, Sparkles, Coins, Paintbrush, Palette, Zap, Trophy, Wand2 } from "lucide-react";
+import { ChevronRight, ChevronLeft, Sparkles, Coins, Paintbrush, Palette, Zap, Trophy, Wand2, Download, Droplet } from "lucide-react";
 import { SketchEnhancer } from "@/components/kids-drawing/SketchEnhancer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
