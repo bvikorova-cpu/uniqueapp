@@ -534,10 +534,11 @@ export const FriendChallenges = () => {
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-2">
-                        <p className="font-semibold text-sm sm:text-base leading-snug truncate">
+                      <div className="flex items-start justify-between gap-2 w-full min-w-0">
+                        <p className="font-semibold text-sm sm:text-base leading-snug truncate min-w-0 flex-1">
                           {isChallenger ? '⚔️ To' : '🎯 From'} {opponentName}
                         </p>
+
                         <Badge
                           variant={
                             challenge.status === 'pending'
