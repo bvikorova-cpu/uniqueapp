@@ -309,10 +309,6 @@ const Subscription = () => {
           <div className="mt-6 space-y-4 max-w-4xl mx-auto">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <LoyaltyTierBadge />
-              <div className="flex gap-2">
-                <RedeemGiftDialog />
-                <GiftSubscriptionDialog />
-              </div>
             </div>
             <PlanRecommenderCard />
             <div className="grid md:grid-cols-2 gap-4">
