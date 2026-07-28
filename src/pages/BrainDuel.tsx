@@ -421,7 +421,8 @@ const BrainDuel = () => {
                             variant="outline"
                             className={`h-auto min-h-[80px] sm:min-h-[90px] py-3 sm:py-4 flex-col gap-2 px-2 sm:px-3 whitespace-normal w-full bg-gradient-to-br ${category.bg} border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300`}
                             onClick={() => {
-                              toast.success(`${category.name} selected`, { description: "Choose this category in the duel panel above to start playing." });
+                              setStartRequest({ nonce: Date.now(), mode: selectedMode, category: category.name });
+                              toast.success(`${category.name} duel starting`, { description: "Matching you with an opponent..." });
                               document.getElementById("brain-duel-game-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
                             }}
                           >
