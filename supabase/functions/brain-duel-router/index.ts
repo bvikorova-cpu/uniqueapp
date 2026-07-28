@@ -392,6 +392,14 @@ Deno.serve(async (req) => {
       default:
         throw new Error(`Unknown action: ${action}`);
     }
+    } catch (actionErr: any) {
+      // Refund the credits we already deducted when the action itself fails.
+      if (cost > 0) {
+        try { await admin.rpc("add_ai_credits", { p_user_id: user.id, p_amount: cost, p_reason: "brain_duel_router_refund", p_source: "brain_duel" }); } catch { /* noop */ }
+      }
+      throw actionErr;
+    }
+
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
