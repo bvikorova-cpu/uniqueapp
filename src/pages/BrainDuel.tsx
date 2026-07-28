@@ -142,7 +142,31 @@ const BrainDuel = () => {
         .eq('match_id', resumeMatchId)
         .maybeSingle();
       if (cancelled) return;
-      setLobbyState(data ? 'lobby' : 'resolved');
+      if (!data) { setLobbyState('resolved'); return; }
+
+      // Already synced/fallen back once, or this player already answered —
+      // never trap them in the waiting room again.
+      const { data: lobby } = await supabase
+        .from('brain_duel_live_lobby' as any)
+        .select('status')
+        .eq('match_id', resumeMatchId)
+        .maybeSingle();
+      if (cancelled) return;
+      const lobbyStatus = (lobby as any)?.status;
+      if (lobbyStatus === 'async' || lobbyStatus === 'live') { setLobbyState('resolved'); return; }
+
+      const { data: auth } = await supabase.auth.getUser();
+      if (auth.user) {
+        const { count } = await supabase
+          .from('brain_duel_answers')
+          .select('id', { count: 'exact', head: true })
+          .eq('match_id', resumeMatchId)
+          .eq('player_id', auth.user.id);
+        if (cancelled) return;
+        if ((count ?? 0) > 0) { setLobbyState('resolved'); return; }
+      }
+
+      setLobbyState('lobby');
     })();
     return () => { cancelled = true; };
   }, [resumeMatchId, duelStartToken]);
