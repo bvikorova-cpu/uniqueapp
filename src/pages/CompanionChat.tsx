@@ -116,7 +116,7 @@ const CompanionChat = () => {
     );
   }
 
-  const remainingMessages = messagesLimit && !messagesLimit.is_premium ? 20 - messagesLimit.messages_used_today : null;
+  const remainingMessages = !hasGoldPass && messagesLimit && !messagesLimit.is_premium ? 20 - messagesLimit.messages_used_today : null;
 
   return (
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
