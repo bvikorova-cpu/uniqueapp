@@ -1167,6 +1167,34 @@ export function FairyPanoramaViewer({
           <span className="text-base leading-none">{guidePersona.emoji}</span>
           <span>{guidePersona.label} narrating</span>
         </div>
+        {/* Guide volume */}
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => setIsGuideMuted((m) => !m)}
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 flex-shrink-0"
+            aria-label={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
+            title={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
+          >
+            {isGuideMuted || guideVolume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </Button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={isGuideMuted ? 0 : guideVolume}
+            onChange={(e) => {
+              const v = parseFloat(e.target.value);
+              setGuideVolume(v);
+              if (v > 0 && isGuideMuted) setIsGuideMuted(false);
+            }}
+            className="w-24 accent-purple-600"
+            aria-label="Guide volume"
+          />
+          <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider w-14 text-right">Guide</span>
+        </div>
         {ambientSound && (
           <div className="flex items-center gap-2">
             <Button
