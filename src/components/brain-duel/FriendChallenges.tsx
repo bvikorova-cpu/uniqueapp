@@ -534,10 +534,11 @@ export const FriendChallenges = () => {
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-2">
-                        <p className="font-semibold text-sm sm:text-base leading-snug truncate">
+                      <div className="flex items-start justify-between gap-2 w-full min-w-0">
+                        <p className="font-semibold text-sm sm:text-base leading-snug truncate min-w-0 flex-1">
                           {isChallenger ? '⚔️ To' : '🎯 From'} {opponentName}
                         </p>
+
                         <Badge
                           variant={
                             challenge.status === 'pending'
@@ -614,17 +615,24 @@ export const FriendChallenges = () => {
                         </Button>
                       </div>
                     )}
-                    {challenge.status === 'accepted' && challenge.match_id && (
+                    {(challenge.status === 'accepted' || challenge.status === 'active') && (
                       <Button
                         size="sm"
                         variant="default"
                         className="ml-auto"
-                        onClick={() => navigate(`/brain-duel?match_id=${challenge.match_id}`)}
+                        onClick={() =>
+                          navigate(
+                            challenge.match_id
+                              ? `/brain-duel?match_id=${challenge.match_id}`
+                              : '/brain-duel'
+                          )
+                        }
                       >
                         <Swords className="h-4 w-4 mr-1" />
                         Play duel
                       </Button>
                     )}
+
                     {isChallenger && challenge.status === 'pending' && (
                       <Badge variant="secondary" className="text-[10px] ml-auto">
                         Waiting for response...
