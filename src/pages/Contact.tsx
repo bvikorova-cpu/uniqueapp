@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Mail, MessageSquare, User, Send, Sparkles, Paperclip, X, Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Mail, MessageSquare, User, Send, Sparkles, Paperclip, X, Loader2, CheckCircle2, AlertTriangle, Bug } from "lucide-react";
 import { ContactHero } from "@/components/contact/ContactHero";
 import { SystemStatusWidget } from "@/components/contact/SystemStatusWidget";
 import { ContactFAQ } from "@/components/contact/ContactFAQ";
