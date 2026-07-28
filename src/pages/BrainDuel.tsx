@@ -403,18 +403,8 @@ const BrainDuel = () => {
                 <span className="hidden sm:inline">Play Now</span>
                 <span className="sm:hidden">Play</span>
               </TabsTrigger>
-              <TabsTrigger value="leagues" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
-                <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Leagues
-              </TabsTrigger>
-              <TabsTrigger value="tournaments" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
-                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Tournaments
-              </TabsTrigger>
-              <TabsTrigger value="custom" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
-                <Swords className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Custom
-              </TabsTrigger>
+
+
               <TabsTrigger value="powerups" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
                 <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Power-ups
