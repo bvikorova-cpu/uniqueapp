@@ -20,7 +20,7 @@ import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 // New chat components
 import { AnimatedChatBubble } from "@/components/kids/chat/AnimatedChatBubble";
 import { TypingIndicator } from "@/components/kids/chat/TypingIndicator";
-import { VoiceInputWaveform } from "@/components/kids/chat/VoiceInputWaveform";
+
 import { CharacterMoodIndicator } from "@/components/kids/chat/CharacterMoodIndicator";
 import { ChatAchievements } from "@/components/kids/chat/ChatAchievements";
 import { StoryModePrompt } from "@/components/kids/chat/StoryModePrompt";
@@ -410,10 +410,6 @@ export default function KidsVoiceChat() {
                         placeholder="Type your message..."
                         disabled={isLoading}
                         className="flex-1 rounded-full border-2 border-purple-200 focus:border-purple-400 px-4"
-                      />
-                      <VoiceInputWaveform
-                        onTranscript={(text) => { setInputMessage(text); }}
-                        disabled={isLoading}
                       />
                       <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                         <Button
