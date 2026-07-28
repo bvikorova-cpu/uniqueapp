@@ -157,14 +157,24 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
     setMatchResult(null);
     setAiAnalysis(null);
 
+    // Extract a readable message from a non-2xx edge function response
+    const readEdgeError = async (err: any, fallback: string) => {
+      try {
+        const body = await err?.context?.json?.();
+        if (body?.error) return String(body.error);
+      } catch { /* ignore */ }
+      const msg = String(err?.message || '');
+      return msg && !msg.includes('non-2xx') ? msg : fallback;
+    };
+
     try {
       // 1. Create match
       const { data: matchData, error: matchError } = await supabase.functions.invoke('brain-duel-matchmaking', {
         body: { category: cat, gameMode: mode } });
-      if (matchError) throw matchError;
+      if (matchError) throw new Error(await readEdgeError(matchError, 'Could not start the match. Please try again.'));
       if (matchData?.error) throw new Error(matchData.error);
+      if (!matchData?.match?.id) throw new Error('Could not create the match. Please try again.');
 
-      
       setMatchId(matchData.match.id);
       const matchQuestionTime = typeof matchData.match.time_per_question === 'number'
         ? matchData.match.time_per_question
@@ -173,17 +183,30 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
 
-      // 2. Get AI-generated questions
-      const { data: qData, error: qError } = await supabase.functions.invoke('brain-duel-get-questions', {
-        body: { match_id: matchData.match.id, category: cat } });
-      if (qError) throw qError;
-      if (qData?.error) throw new Error(qData.error);
+      // 2. Get questions (AI generated, with server-side question-bank fallback).
+      //    Retry once — transient AI hiccups should never end the duel.
+      let qData: any = null;
+      let lastErr: any = null;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const { data, error } = await supabase.functions.invoke('brain-duel-get-questions', {
+          body: { match_id: matchData.match.id, category: cat } });
+        if (!error && !data?.error && Array.isArray(data?.questions) && data.questions.length > 0) {
+          qData = data;
+          break;
+        }
+        lastErr = error || new Error(data?.error || 'No questions returned');
+        if (attempt === 0) await new Promise((r) => setTimeout(r, 1200));
+      }
+      if (!qData) throw new Error(await readEdgeError(lastErr, 'Questions are temporarily unavailable. Please try again in a moment.'));
 
       setQuestions(qData.questions);
       setGamePhase('playing');
       setTimeLeft(matchQuestionTime);
       setAnswerStartTime(Date.now());
-      toast.success('Match started! AI generated unique questions for you.', { duration: 2000 });
+      toast.success(
+        qData.source === 'bank' ? 'Match started! Questions loaded.' : 'Match started! AI generated unique questions for you.',
+        { duration: 2000 }
+      );
     } catch (err: any) {
       console.error('Start match error:', err);
       toast.error(err.message || 'Failed to start match');
