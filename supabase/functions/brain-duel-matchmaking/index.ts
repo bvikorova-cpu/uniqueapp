@@ -98,7 +98,16 @@ serve(async (req) => {
           started_at: new Date().toISOString() })
         .select()
         .single();
-      if (fErr) throw fErr;
+      if (fErr || !fMatch) {
+        for (const rid of deducted) {
+          await supabase.rpc("add_ai_credits", {
+            p_user_id: rid, p_amount: stake,
+            p_reason: "brain_duel_friend_challenge_refund", p_source: "brain_duel"
+          });
+        }
+        console.error("friend match insert failed", fErr);
+        return fail("Could not create the match, credits were refunded", 500);
+      }
 
       await supabase.from("brain_duel_friend_challenges")
         .update({ status: "accepted", match_id: fMatch.id, accepted_at: new Date().toISOString() })
