@@ -97,6 +97,26 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
     supabase.auth.getUser().then(({ data: { user } }) => setCurrentUser(user));
   }, []);
 
+  // React to external start requests (game mode selector / mystery card)
+  const lastNonceRef = useRef<number>(0);
+  useEffect(() => {
+    if (!startRequest || startRequest.nonce === lastNonceRef.current) return;
+    if (!currentUser) return;
+    lastNonceRef.current = startRequest.nonce;
+    setGameMode(startRequest.mode);
+    if (startRequest.category) {
+      startMatch(startRequest.category, startRequest.mode);
+    } else if (startRequest.mode === 'mystery') {
+      const random = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)].id;
+      toast.info(`🔮 Mystery category: ${random}`);
+      startMatch(random, 'mystery');
+    } else {
+      setGamePhase('category');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startRequest?.nonce, currentUser]);
+
+
   // Timer
   useEffect(() => {
     if (gamePhase !== 'playing' || timeLeft <= 0) return;
