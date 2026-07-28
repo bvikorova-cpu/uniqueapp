@@ -173,94 +173,136 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
     };
   }, [isPlaying, currentScene, scenes.length, sceneDuration, audioFiles, voiceSpeed]);
 
+  // Load an image (remote URL, base64 or blob) into a same-origin PNG data URL
+  const loadImageData = async (
+    src: string,
+  ): Promise<{ dataUrl: string; width: number; height: number } | null> => {
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = src;
+      });
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth || 1024;
+      c.height = img.naturalHeight || 1024;
+      const cx = c.getContext('2d');
+      if (!cx) return null;
+      cx.drawImage(img, 0, 0, c.width, c.height);
+      return { dataUrl: c.toDataURL('image/png'), width: c.width, height: c.height };
+    } catch {
+      return null;
+    }
+  };
+
+  const wrapText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number) => {
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let line = '';
+    words.forEach((word) => {
+      const test = line ? `${line} ${word}` : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    });
+    if (line) lines.push(line);
+    return lines;
+  };
+
   const handleExport = async () => {
+    if (!scenes.length) return;
     setIsExporting(true);
-    toast.info('Preparing video export...');
+    toast.info('Preparing video export…');
 
     try {
       const canvas = canvasRef.current;
       if (!canvas) throw new Error('Canvas not found');
-
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Canvas context not found');
 
-      // Set canvas size
-      canvas.width = 1920;
-      canvas.height = 1080;
+      canvas.width = 1280;
+      canvas.height = 720;
 
-      const frames: Blob[] = [];
-      const fps = 30;
-      const secondsPerScene = sceneDuration;
-      const framesPerScene = fps * secondsPerScene;
-
-      for (let sceneIdx = 0; sceneIdx < Math.min(scenes.length, images.length); sceneIdx++) {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        
-        await new Promise((resolve, reject) => {
-          img.onload = resolve;
-          img.onerror = reject;
-          img.src = images[sceneIdx];
-        });
-
-        for (let frame = 0; frame < framesPerScene; frame++) {
-          // Clear canvas
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-          // Draw image with fade effect
-          const progress = frame / framesPerScene;
-          let opacity = 1;
-          if (frame < fps) opacity = frame / fps; // Fade in
-          if (frame > framesPerScene - fps) opacity = (framesPerScene - frame) / fps; // Fade out
-
-          ctx.globalAlpha = opacity;
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-          // Draw text
-          ctx.globalAlpha = 1;
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-          ctx.fillRect(0, canvas.height - 200, canvas.width, 200);
-          
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 48px Arial';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          
-          const words = scenes[sceneIdx].split(' ');
-          const lines: string[] = [];
-          let currentLine = '';
-          
-          words.forEach(word => {
-            const testLine = currentLine + word + ' ';
-            if (ctx.measureText(testLine).width > canvas.width - 100) {
-              lines.push(currentLine);
-              currentLine = word + ' ';
-            } else {
-              currentLine = testLine;
-            }
+      // Preload all scene images first
+      const loaded = await Promise.all(images.map((src) => loadImageData(src)));
+      const bitmaps = await Promise.all(
+        loaded.map(async (l) => {
+          if (!l) return null;
+          const im = new Image();
+          await new Promise((res) => {
+            im.onload = res;
+            im.onerror = res;
+            im.src = l.dataUrl;
           });
-          lines.push(currentLine);
+          return im;
+        }),
+      );
 
-          lines.forEach((line, idx) => {
-            ctx.fillText(line, canvas.width / 2, canvas.height - 150 + (idx * 60));
-          });
+      if (typeof MediaRecorder === 'undefined' || !canvas.captureStream) {
+        throw new Error('unsupported');
+      }
 
-          // Capture frame
-          const blob = await new Promise<Blob>((resolve) => {
-            canvas.toBlob((b) => resolve(b!), 'image/webp', 0.9);
-          });
-          frames.push(blob);
+      const mime = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'].find((m) =>
+        MediaRecorder.isTypeSupported(m),
+      );
+      if (!mime) throw new Error('unsupported');
+
+      const stream = canvas.captureStream(30);
+      const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 4_000_000 });
+      const chunks: BlobPart[] = [];
+      recorder.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+      const finished = new Promise<Blob>((resolve) => {
+        recorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
+      });
+
+      recorder.start();
+
+      const drawScene = (idx: number, alpha: number) => {
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#0b0616';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const bmp = bitmaps[idx];
+        ctx.globalAlpha = alpha;
+        if (bmp) {
+          const scale = Math.max(canvas.width / bmp.width, (canvas.height - 180) / bmp.height);
+          const w = bmp.width * scale;
+          const h = bmp.height * scale;
+          ctx.drawImage(bmp, (canvas.width - w) / 2, (canvas.height - 180 - h) / 2, w, h);
+        }
+        ctx.globalAlpha = 1;
+
+        // Caption band
+        ctx.fillStyle = 'rgba(10, 5, 25, 0.85)';
+        ctx.fillRect(0, canvas.height - 180, canvas.width, 180);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '28px Georgia, serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        const lines = wrapText(ctx, scenes[idx] || '', canvas.width - 120).slice(0, 4);
+        lines.forEach((l, i) => ctx.fillText(l, canvas.width / 2, canvas.height - 165 + i * 38));
+      };
+
+      const frameDelay = 1000 / 30;
+      for (let i = 0; i < scenes.length; i++) {
+        const totalFrames = Math.round(sceneDuration * 30);
+        for (let f = 0; f < totalFrames; f++) {
+          let alpha = 1;
+          if (f < 10) alpha = f / 10;
+          else if (f > totalFrames - 10) alpha = Math.max(0, (totalFrames - f) / 10);
+          drawScene(i, alpha);
+          await new Promise((r) => setTimeout(r, frameDelay));
         }
       }
 
-      toast.success('Video frames generated! Creating WebM...');
-
-      // Create a simple WebM container (note: this is a simplified version)
-      // For production, you'd want to use a library like webm-writer
-      const videoBlob = new Blob(frames, { type: 'video/webm' });
+      recorder.stop();
+      const videoBlob = await finished;
       const url = URL.createObjectURL(videoBlob);
-      
       const a = document.createElement('a');
       a.href = url;
       a.download = `story-video-${Date.now()}.webm`;
@@ -270,145 +312,172 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
       URL.revokeObjectURL(url);
 
       toast.success('Video exported successfully!');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Export error:', error);
-      toast.error('Failed to export video');
+      if (error?.message === 'unsupported') {
+        toast.error('Video export is not supported in this browser. Try the PDF export instead.');
+      } else {
+        toast.error('Failed to export video');
+      }
     } finally {
       setIsExporting(false);
     }
   };
 
   const handlePDFExport = async () => {
+    if (!scenes.length) return;
     setIsExportingPDF(true);
-    toast.info('Creating PDF...');
+    toast.info('Creating PDF…');
 
     try {
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-      const margin = 15;
-      const contentWidth = pageWidth - (2 * margin);
+      const margin = 18;
+      const contentWidth = pageWidth - margin * 2;
+
+      const PURPLE: [number, number, number] = [124, 58, 237];
+      const PINK: [number, number, number] = [236, 72, 153];
+      const INK: [number, number, number] = [40, 32, 60];
+
+      const loadedImages = await Promise.all(images.map((src) => loadImageData(src)));
+
+      const decoratePage = (label: string) => {
+        // soft border frame
+        pdf.setDrawColor(...PURPLE);
+        pdf.setLineWidth(0.8);
+        pdf.roundedRect(8, 8, pageWidth - 16, pageHeight - 16, 4, 4, 'S');
+        pdf.setDrawColor(...PINK);
+        pdf.setLineWidth(0.3);
+        pdf.roundedRect(11, 11, pageWidth - 22, pageHeight - 22, 3, 3, 'S');
+        // footer
+        pdf.setFontSize(9);
+        pdf.setTextColor(150, 140, 165);
+        pdf.text(label, pageWidth / 2, pageHeight - 12, { align: 'center' });
+      };
+
+      // ---- Cover page ----
+      pdf.setFillColor(...PURPLE);
+      pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+      pdf.setFillColor(...PINK);
+      pdf.circle(pageWidth, 0, 70, 'F');
+      pdf.circle(0, pageHeight, 60, 'F');
+
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(34);
+      pdf.text('My Story Book', pageWidth / 2, pageHeight / 2 - 30, { align: 'center' });
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(13);
+      pdf.text(
+        `${scenes.length} magical scene${scenes.length === 1 ? '' : 's'}`,
+        pageWidth / 2,
+        pageHeight / 2 - 18,
+        { align: 'center' },
+      );
+
+      const cover = loadedImages.find(Boolean);
+      if (cover) {
+        const w = contentWidth * 0.7;
+        const h = (cover.height / cover.width) * w;
+        pdf.addImage(cover.dataUrl, 'PNG', (pageWidth - w) / 2, pageHeight / 2 - 8, w, Math.min(h, 90));
+      }
+      pdf.setFontSize(10);
+      pdf.text(
+        new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }),
+        pageWidth / 2,
+        pageHeight - 24,
+        { align: 'center' },
+      );
 
       if (pdfLayout === 'single') {
-        // Single scene per page
-        for (let i = 0; i < Math.min(scenes.length, images.length); i++) {
-          if (i > 0) {
-            pdf.addPage();
+        for (let i = 0; i < scenes.length; i++) {
+          pdf.addPage();
+          decoratePage(`Unique Story Book  ·  ${i + 1} / ${scenes.length}`);
+
+          // Scene chip
+          pdf.setFillColor(...PINK);
+          pdf.roundedRect(margin, margin, 34, 9, 4.5, 4.5, 'F');
+          pdf.setTextColor(255, 255, 255);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(9);
+          pdf.text(`SCENE ${i + 1}`, margin + 17, margin + 6, { align: 'center' });
+
+          let y = margin + 16;
+          const img = loadedImages[i];
+          if (img) {
+            const maxH = pageHeight * 0.42;
+            let w = contentWidth;
+            let h = (img.height / img.width) * w;
+            if (h > maxH) {
+              h = maxH;
+              w = (img.width / img.height) * h;
+            }
+            const x = (pageWidth - w) / 2;
+            pdf.setFillColor(245, 240, 255);
+            pdf.roundedRect(x - 2, y - 2, w + 4, h + 4, 3, 3, 'F');
+            pdf.addImage(img.dataUrl, 'PNG', x, y, w, h);
+            y += h + 12;
           }
 
-          // Add page number
-          pdf.setFontSize(10);
-          pdf.setTextColor(150);
-          pdf.text(`Page ${i + 1} of ${scenes.length}`, pageWidth / 2, margin / 2, { align: 'center' });
-
-          // Add image
-          try {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            
-            await new Promise((resolve, reject) => {
-              img.onload = resolve;
-              img.onerror = reject;
-              img.src = images[i];
-            });
-
-            const imgWidth = contentWidth;
-            const imgHeight = (img.height / img.width) * imgWidth;
-            const maxImgHeight = pageHeight * 0.5;
-            
-            const finalImgHeight = Math.min(imgHeight, maxImgHeight);
-            const finalImgWidth = (img.width / img.height) * finalImgHeight;
-            
-            const imgX = (pageWidth - finalImgWidth) / 2;
-            const imgY = margin + 10;
-
-            pdf.addImage(images[i], 'PNG', imgX, imgY, finalImgWidth, finalImgHeight);
-
-            // Add text below image
-            const textY = imgY + finalImgHeight + 15;
-            pdf.setFontSize(12);
-            pdf.setTextColor(0);
-            
-            const lines = pdf.splitTextToSize(scenes[i], contentWidth);
-            pdf.text(lines, margin, textY);
-
-          } catch (error) {
-            console.error(`Error loading image ${i}:`, error);
-            pdf.setFontSize(12);
-            pdf.setTextColor(0);
-            const lines = pdf.splitTextToSize(scenes[i], contentWidth);
-            pdf.text(lines, margin, margin + 20);
-          }
+          pdf.setFont('times', 'normal');
+          pdf.setFontSize(13);
+          pdf.setTextColor(...INK);
+          const lines = pdf.splitTextToSize(scenes[i], contentWidth - 6);
+          pdf.text(lines, margin + 3, y, { lineHeightFactor: 1.55 });
         }
       } else {
-        // Multiple scenes per page (2 per page)
-        const scenesPerPage = 2;
-        const totalPages = Math.ceil(scenes.length / scenesPerPage);
-        
-        for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
-          if (pageIdx > 0) {
-            pdf.addPage();
-          }
+        const perPage = 2;
+        const totalPages = Math.ceil(scenes.length / perPage);
+        for (let p = 0; p < totalPages; p++) {
+          pdf.addPage();
+          decoratePage(`Unique Story Book  ·  page ${p + 1} / ${totalPages}`);
 
-          // Add page number
-          pdf.setFontSize(10);
-          pdf.setTextColor(150);
-          pdf.text(`Page ${pageIdx + 1} of ${totalPages}`, pageWidth / 2, margin / 2, { align: 'center' });
+          const blockHeight = (pageHeight - margin * 2 - 10) / perPage;
+          for (let s = 0; s < perPage; s++) {
+            const idx = p * perPage + s;
+            if (idx >= scenes.length) break;
+            const top = margin + s * blockHeight;
 
-          const scenesOnThisPage = Math.min(scenesPerPage, scenes.length - (pageIdx * scenesPerPage));
-          const sceneHeight = (pageHeight - (2 * margin) - 10) / scenesPerPage;
+            pdf.setFillColor(...PINK);
+            pdf.roundedRect(margin, top, 30, 8, 4, 4, 'F');
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(8);
+            pdf.text(`SCENE ${idx + 1}`, margin + 15, top + 5.5, { align: 'center' });
 
-          for (let sceneIdx = 0; sceneIdx < scenesOnThisPage; sceneIdx++) {
-            const actualSceneIdx = (pageIdx * scenesPerPage) + sceneIdx;
-            const yOffset = margin + 10 + (sceneIdx * sceneHeight);
+            let y = top + 13;
+            const img = loadedImages[idx];
+            let textX = margin;
+            let textWidth = contentWidth;
 
-            try {
-              const img = new Image();
-              img.crossOrigin = 'anonymous';
-              
-              await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-                img.src = images[actualSceneIdx];
-              });
+            if (img) {
+              const w = contentWidth * 0.42;
+              const h = Math.min((img.height / img.width) * w, blockHeight - 20);
+              pdf.setFillColor(245, 240, 255);
+              pdf.roundedRect(margin - 1, y - 1, w + 2, h + 2, 2.5, 2.5, 'F');
+              pdf.addImage(img.dataUrl, 'PNG', margin, y, w, h);
+              textX = margin + w + 6;
+              textWidth = contentWidth - w - 6;
+            }
 
-              // Image dimensions for 2-per-page layout
-              const availableHeight = sceneHeight * 0.6;
-              const imgWidth = contentWidth * 0.7;
-              const imgHeight = Math.min((img.height / img.width) * imgWidth, availableHeight);
-              const finalImgWidth = (img.width / img.height) * imgHeight;
-              
-              const imgX = (pageWidth - finalImgWidth) / 2;
+            pdf.setFont('times', 'normal');
+            pdf.setFontSize(11);
+            pdf.setTextColor(...INK);
+            const lines = pdf.splitTextToSize(scenes[idx], textWidth);
+            const maxLines = Math.floor((blockHeight - 18) / 5.2);
+            pdf.text(lines.slice(0, maxLines), textX, y + 4, { lineHeightFactor: 1.5 });
 
-              pdf.addImage(images[actualSceneIdx], 'PNG', imgX, yOffset, finalImgWidth, imgHeight);
-
-              // Add text below image
-              const textY = yOffset + imgHeight + 5;
-              pdf.setFontSize(10);
-              pdf.setTextColor(0);
-              
-              const lines = pdf.splitTextToSize(scenes[actualSceneIdx], contentWidth);
-              const maxLines = 3;
-              const displayLines = lines.slice(0, maxLines);
-              pdf.text(displayLines, margin, textY);
-
-            } catch (error) {
-              console.error(`Error loading image ${actualSceneIdx}:`, error);
-              pdf.setFontSize(10);
-              pdf.setTextColor(0);
-              const lines = pdf.splitTextToSize(scenes[actualSceneIdx], contentWidth);
-              pdf.text(lines.slice(0, 3), margin, yOffset + 10);
+            if (s === 0 && idx + 1 < scenes.length) {
+              pdf.setDrawColor(230, 220, 245);
+              pdf.setLineWidth(0.4);
+              pdf.line(margin, top + blockHeight - 4, pageWidth - margin, top + blockHeight - 4);
             }
           }
         }
       }
 
-      pdf.save(`story-${Date.now()}.pdf`);
+      pdf.save(`story-book-${Date.now()}.pdf`);
       toast.success('PDF exported successfully!');
     } catch (error) {
       console.error('PDF export error:', error);
@@ -417,6 +486,8 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
       setIsExportingPDF(false);
     }
   };
+
+
 
   const togglePlay = () => {
     if (!isPlaying && currentScene >= scenes.length - 1) {
