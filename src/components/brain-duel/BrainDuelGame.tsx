@@ -425,22 +425,30 @@ export const BrainDuelGame = ({
 
   const finishMatch = async () => {
     if (!matchId) return;
-    setGamePhase('results');
 
-    try {
-      const { data, error } = await supabase.functions.invoke('brain-duel-finish-match', {
-        body: { match_id: matchId } });
-      if (error) throw error;
-      setMatchResult(data);
-      setMatchStatus('finished');
-      queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
-      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
-      queryClient.invalidateQueries({ queryKey: ['brain-duel-overview'] });
-    } catch (err: any) {
-      console.error('Finish match error:', err);
-      setMatchStatus('failed');
-      toast.error('Failed to finish match');
+    // Friend duels are played by two people: if the opponent has not finished
+    // yet, park on the waiting screen instead of closing the match early.
+    if (resumeMatchId && currentUser) {
+      const { data: match } = await supabase
+        .from('brain_duel_matches')
+        .select('*')
+        .eq('id', matchId)
+        .maybeSingle();
+      if (match) {
+        const isP1 = match.player1_id === currentUser.id;
+        const oppId = isP1 ? match.player2_id : match.player1_id;
+        const total = match.total_questions ?? questions.length ?? 10;
+        const oppAnswered = oppId ? await countAnswers(matchId, oppId) : total;
+        if (oppId && oppAnswered < total) {
+          setWaitingInfo({ answered: oppAnswered, total });
+          setMatchStatus('in_progress');
+          setGamePhase('waiting');
+          return;
+        }
+      }
     }
+
+    await finishMatchById(matchId);
   };
 
   const requestAiAnalysis = async () => {
