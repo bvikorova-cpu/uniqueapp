@@ -12,6 +12,8 @@ import { ArrowLeft, BarChart3, Shield, Crown, Timer, Trophy, Eye, Clock, Brain, 
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+
 
 import { ParentalHero } from "@/components/kids/parental/ParentalHero";
 import { ParentalDashboard } from "@/components/kids/ParentalDashboard";
@@ -43,14 +45,24 @@ interface UsageStats {
   total_time_minutes: number;
 }
 
+function formatExpiry(iso: string) {
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+}
+
 export default function KidsParentalDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { hasGoldPass, loading: goldPassLoading, expiresAt: goldPassExpiresAt } = useKidsGoldPass();
+  const daysLeft = goldPassExpiresAt
+    ? Math.max(0, Math.ceil((new Date(goldPassExpiresAt).getTime() - Date.now()) / 86400000))
+    : null;
 
   const [sleepTimerEnabled, setSleepTimerEnabled] = useState(false);
   const [dailyLimit, setDailyLimit] = useState("60");
   const [emailReports, setEmailReports] = useState(true);
+
 
   const { data: stats } = useQuery({
     queryKey: ["parental-stats", user?.id],
@@ -206,9 +218,43 @@ export default function KidsParentalDashboard() {
         <ParentalHero />
         <HeroRewardedAd sectionKey="page_kidsparentaldashboard" />
 
+        {/* Gold Pass status & expiry */}
+        <Card className="border-amber-300/70 bg-gradient-to-r from-amber-50 to-yellow-50">
+          <CardContent className="flex flex-wrap items-center gap-4 py-4">
+            <div className="rounded-full bg-amber-100 p-3">
+              <Crown className="h-6 w-6 text-amber-600" />
+            </div>
+            <div className="min-w-[200px] flex-1">
+              <p className="font-semibold text-amber-900">Kids Gold Pass</p>
+              {goldPassLoading ? (
+                <p className="text-sm text-amber-700">Checking subscription…</p>
+              ) : hasGoldPass ? (
+                <p className="text-sm text-amber-700">
+                  {goldPassExpiresAt
+                    ? `Active — valid until ${formatExpiry(goldPassExpiresAt)}${
+                        daysLeft !== null ? ` (${daysLeft} day${daysLeft === 1 ? "" : "s"} left)` : ""
+                      }`
+                    : "Active — unlimited access (no expiry date on record)"}
+                </p>
+              ) : (
+                <p className="text-sm text-amber-700">Not active — premium Kids modules are locked.</p>
+              )}
+            </div>
+            <Badge className={hasGoldPass ? "bg-amber-500" : "bg-muted text-muted-foreground"}>
+              {goldPassLoading ? "…" : hasGoldPass ? "Active" : "Inactive"}
+            </Badge>
+            {!goldPassLoading && !hasGoldPass && (
+              <Button size="sm" onClick={() => navigate("/kids-pricing")} className="bg-amber-500 hover:bg-amber-600">
+                Get Gold Pass
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+
         <ChildProfileCards />
 
         <ParentalDashboard />
+
 
         <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
           <CardContent className="flex items-center gap-4 py-4">

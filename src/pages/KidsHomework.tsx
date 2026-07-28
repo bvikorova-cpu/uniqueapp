@@ -26,6 +26,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { logKidsHomework } from "@/lib/kidsActivityLog";
 
 const __HIW_KIDSHOMEWORK_STEPS = [
   { title: 'Type or snap homework', desc: 'Kid photographs or types the question.' },
@@ -124,6 +125,12 @@ const KidsHomework = () => {
       if (data?.error) throw new Error(data.error);
 
       setResult(data);
+      void logKidsHomework({
+        subject,
+        question: question || "Photo problem",
+        aiExplanation: data?.explanation ?? data?.answer ?? null,
+        difficulty,
+      });
       setPhoto(null);
 
       const today = new Date().toISOString().split("T")[0];

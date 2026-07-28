@@ -24,6 +24,7 @@ import { AskTheScientist } from "@/components/kids-science/AskTheScientist";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { logKidsScienceExperiment } from "@/lib/kidsActivityLog";
 
 const __HIW_KIDSSCIENCELAB_STEPS = [
   { title: 'Pick an experiment', desc: 'Browse by topic and age — each has a safety label.' },
@@ -134,6 +135,14 @@ const KidsScienceLab = () => {
               correctIndex: Math.max(0, Math.min(2, Number(q?.correctIndex ?? 0))) }))
           : [] });
       setShowQuiz(true);
+      void logKidsScienceExperiment({
+        name: `${category} experiment`,
+        category,
+        hypothesis,
+        observations,
+        conclusion: String(data.conclusion ?? ""),
+        completed: true,
+      });
       setAnalysesCompleted((n) => n + 1);
       await credits.refresh();
       toast.success("AI analyzed your experiment! 🔬");
