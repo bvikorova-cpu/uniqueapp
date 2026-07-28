@@ -210,6 +210,17 @@ export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
                 <span className="text-xs font-bold text-green-500">{ch.reward}</span>
               </div>
               <p className="text-xs text-muted-foreground">{ch.desc}</p>
+              <div className="mt-2 flex items-center gap-2">
+                <div className="h-1.5 flex-1 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all"
+                    style={{ width: `${Math.min(100, (ch.current / Math.max(ch.goal, 1)) * 100)}%` }}
+                  />
+                </div>
+                <span className="text-[11px] font-semibold text-muted-foreground tabular-nums">
+                  {ch.current}/{ch.goal}
+                </span>
+              </div>
             </motion.div>
           ))}
         </div>
