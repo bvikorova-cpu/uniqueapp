@@ -22,6 +22,8 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const [thinking, setThinking] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [transcript, setTranscript] = useState("");
+  const [typed, setTyped] = useState("");
+
   const [turns, setTurns] = useState<Turn[]>([]);
   const [caption, setCaption] = useState<{ role: "user" | "assistant"; text: string } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
