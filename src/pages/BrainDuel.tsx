@@ -16,6 +16,7 @@ import { BrainDuelCreditsDisplay } from "@/components/brain-duel/BrainDuelCredit
 import { BrainDuelGame } from "@/components/brain-duel/BrainDuelGame";
 // BrainDuelLeaderboard import removed — not used on this page (AnimatedLeaderboard is used instead)
 import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
+import { DuelLiveLobby } from "@/components/brain-duel/DuelLiveLobby";
 import FriendChallengesLeaderboard from "@/components/brain-duel/FriendChallengesLeaderboard";
 import { GameModeSelector } from "@/components/brain-duel/GameModeSelector";
 import { LeagueSystem } from "@/components/brain-duel/LeagueSystem";
@@ -125,6 +126,29 @@ const BrainDuel = () => {
     const t = setTimeout(scroll, 400);
     return () => clearTimeout(t);
   }, [resumeMatchId, duelStartToken]);
+
+  // Live lobby (friend challenges only): both players must be present before the
+  // duel starts. Falls back to the classic async duel after the wait window.
+  const [lobbyState, setLobbyState] = useState<'idle' | 'checking' | 'lobby' | 'resolved'>('idle');
+
+  useEffect(() => {
+    if (!resumeMatchId) { setLobbyState('idle'); return; }
+    let cancelled = false;
+    setLobbyState('checking');
+    (async () => {
+      const { data } = await supabase
+        .from('brain_duel_friend_challenges')
+        .select('id')
+        .eq('match_id', resumeMatchId)
+        .maybeSingle();
+      if (cancelled) return;
+      setLobbyState(data ? 'lobby' : 'resolved');
+    })();
+    return () => { cancelled = true; };
+  }, [resumeMatchId, duelStartToken]);
+
+  const gameMatchId = lobbyState === 'resolved' ? resumeMatchId : null;
+
 
 
 
@@ -306,7 +330,16 @@ const BrainDuel = () => {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="max-w-3xl mx-auto mb-10 scroll-mt-24"
         >
-          <BrainDuelGame startRequest={startRequest} resumeMatchId={resumeMatchId} resumeToken={duelStartToken} />
+          {resumeMatchId && lobbyState === 'lobby' && (
+            <div className="mb-6">
+              <DuelLiveLobby
+                key={`${resumeMatchId}:${duelStartToken ?? ''}`}
+                matchId={resumeMatchId}
+                onResolved={() => setLobbyState('resolved')}
+              />
+            </div>
+          )}
+          <BrainDuelGame startRequest={startRequest} resumeMatchId={gameMatchId} resumeToken={duelStartToken} />
         </motion.div>
 
         {/* ===== ANIMATED LEADERBOARD & FRIENDS ===== */}
