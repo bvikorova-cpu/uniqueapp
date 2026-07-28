@@ -427,7 +427,6 @@ const Subscription = () => {
           })}
         </div>
 
-        {/* (3) Enterprise anchor tier */}
 
         {/* Trust badges */}
         <motion.div
@@ -459,7 +458,6 @@ const Subscription = () => {
           </div>
         )}
 
-        {/* (10) Perks spotlight */}
 
         {/* Savings calculator */}
         <SavingsCalculator />
