@@ -20,7 +20,12 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) throw new Error("Not authenticated");
 
-    const { category, gameMode = "quick", challenge_id } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const { category, gameMode = "quick", challenge_id } = body as any;
+
+    const fail = (msg: string, status = 400) =>
+      new Response(JSON.stringify({ error: msg }), {
+        status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     // ---- Friend challenge acceptance flow ----
     if (challenge_id) {
@@ -29,12 +34,12 @@ serve(async (req) => {
         .select("*")
         .eq("id", challenge_id)
         .maybeSingle();
-      if (!challenge) throw new Error("Challenge not found");
-      if (challenge.challenged_id !== user.id) throw new Error("This challenge is not for you");
-      if (challenge.status !== "pending") throw new Error("Challenge is no longer pending");
+      if (!challenge) return fail("Challenge not found");
+      if (challenge.challenged_id !== user.id) return fail("This challenge is not for you");
+      if (challenge.status !== "pending") return fail("Challenge is no longer pending");
       if (challenge.expires_at && new Date(challenge.expires_at) < new Date()) {
-        await supabase.from("brain_duel_friend_challenges").update({ status: "expired" }).eq("id", challenge_id);
-        throw new Error("Challenge has expired");
+        await supabase.from("brain_duel_friend_challenges").update({ status: "cancelled" }).eq("id", challenge_id);
+        return fail("Challenge has expired");
       }
 
       const stake = challenge.stake_credits || 10;
