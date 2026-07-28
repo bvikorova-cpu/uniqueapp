@@ -230,6 +230,44 @@ export const DailyChallenges = () => {
         )}
       </CardContent>
     </Card>
+
+    <Dialog open={quizOpen} onOpenChange={(open) => { if (!open && !submitEntry.isPending) setQuizOpen(false); }}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center justify-between gap-2 text-base">
+            <span>Question {current + 1}/{questions.length}</span>
+            <Badge variant="outline" className="gap-1">
+              <Clock className="h-3 w-3" /> {timeLeft}s
+            </Badge>
+          </DialogTitle>
+        </DialogHeader>
+
+        <Progress value={((current) / Math.max(questions.length, 1)) * 100} className="h-1.5" />
+
+        {submitEntry.isPending ? (
+          <div className="flex flex-col items-center gap-2 py-10">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Scoring your answers...</p>
+          </div>
+        ) : questions[current] ? (
+          <div className="space-y-3 py-2">
+            <p className="font-semibold text-sm">{questions[current].question}</p>
+            <div className="grid gap-2">
+              {questions[current].options.map((opt, i) => (
+                <Button
+                  key={i}
+                  variant={answers[current] === i ? "default" : "outline"}
+                  className="justify-start h-auto py-2.5 text-left whitespace-normal text-sm"
+                  onClick={() => answerQuestion(i)}
+                >
+                  <span className="font-bold mr-2">{String.fromCharCode(65 + i)}.</span> {opt}
+                </Button>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </DialogContent>
+    </Dialog>
     </>
   );
 };
