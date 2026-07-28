@@ -86,8 +86,8 @@ const Subscription = () => {
   const handleSubscribe = async (tier: string) => {
     if (!user) return;
     try {
-      const { data, error } = await supabase.functions.invoke("create-subscription-checkout", {
-        body: { tier, billing: yearly ? "yearly" : "monthly" } });
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "subscription", tier, billing: yearly ? "yearly" : "monthly" } });
       if (error) throw error;
       if (data?.url) setStripeUrl(data.url);
     } catch (error) {
