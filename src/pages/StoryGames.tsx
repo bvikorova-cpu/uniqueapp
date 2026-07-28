@@ -21,7 +21,7 @@ import { XPSystem } from "@/components/kids/games/XPSystem";
 import { DailyStreak } from "@/components/kids/games/DailyStreak";
 import { Leaderboard } from "@/components/kids/games/Leaderboard";
 import { UnlockableRewards } from "@/components/kids/games/UnlockableRewards";
-import { BonusRounds } from "@/components/kids/games/BonusRounds";
+
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
