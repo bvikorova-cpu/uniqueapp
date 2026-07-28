@@ -94,9 +94,22 @@ export function getNotificationRoute(n: NotifLike): string {
     // Stories / posts / wall
     story_view: "/wall",
     story_reaction: "/wall",
+    story_reply: "/wall/messages",
     post_like: "/wall",
     post_comment: "/wall",
-    post_share: "/wall",
+    post_share: n.post_id ? `/post/${n.post_id}` : "/wall",
+    video_like: n.post_id ? `/post/${n.post_id}` : "/wall",
+    megatalent_comment: "/megatalent",
+
+    // Credits / billing
+    gift_credits: "/ai-credits",
+    monthly_credits: "/ai-credits",
+    xp_bet_lost: "/rewards",
+    admin_withdrawal: "/admin/withdrawals",
+    job_listing_activated: "/employer-dashboard",
+    job_listing_renewed: "/employer-dashboard",
+    job_listing_payment_failed: "/employer-dashboard",
+
 
     // Course/education
     course_enrollment: "/education",
