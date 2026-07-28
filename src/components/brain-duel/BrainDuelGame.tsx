@@ -227,6 +227,69 @@ export const BrainDuelGame = ({
     }
   };
 
+  // Shared finisher so both the live flow and the "waiting for opponent" screen
+  // can close a match without duplicating logic.
+  const finishMatchById = useCallback(async (id: string) => {
+    setGamePhase('results');
+    try {
+      const { data, error } = await supabase.functions.invoke('brain-duel-finish-match', {
+        body: { match_id: id } });
+      if (error) throw error;
+      setMatchResult(data);
+      setMatchStatus('finished');
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-overview'] });
+    } catch (err: any) {
+      console.error('Finish match error:', err);
+      setMatchStatus('failed');
+      toast.error('Failed to finish match');
+    }
+  }, [queryClient]);
+
+  const countAnswers = async (mid: string, playerId: string) => {
+    const { count } = await supabase
+      .from('brain_duel_answers')
+      .select('id', { count: 'exact', head: true })
+      .eq('match_id', mid)
+      .eq('player_id', playerId);
+    return count ?? 0;
+  };
+
+  // Poll opponent progress while waiting; auto-finish once they are done.
+  const [waitingInfo, setWaitingInfo] = useState<{ answered: number; total: number } | null>(null);
+  const checkOpponentProgress = useCallback(async (silent = false) => {
+    if (!resumeMatchId || !currentUser) return;
+    const { data: match } = await supabase
+      .from('brain_duel_matches')
+      .select('*')
+      .eq('id', resumeMatchId)
+      .maybeSingle();
+    if (!match) return;
+    const isP1 = match.player1_id === currentUser.id;
+    const oppId = isP1 ? match.player2_id : match.player1_id;
+    const total = match.total_questions ?? 10;
+    setMyScore(isP1 ? match.player1_score ?? 0 : match.player2_score ?? 0);
+    setOpponentScore(isP1 ? match.player2_score ?? 0 : match.player1_score ?? 0);
+    const oppAnswered = oppId ? await countAnswers(match.id, oppId) : 0;
+    setWaitingInfo({ answered: oppAnswered, total });
+    if (match.status === 'completed' || match.status === 'finished' || match.finished_at) {
+      await finishMatchById(match.id);
+      return;
+    }
+    if (oppAnswered >= total) {
+      await finishMatchById(match.id);
+    } else if (!silent) {
+      toast.info(`Opponent answered ${oppAnswered}/${total} questions.`);
+    }
+  }, [resumeMatchId, currentUser, finishMatchById]);
+
+  useEffect(() => {
+    if (gamePhase !== 'waiting') return;
+    const id = setInterval(() => { void checkOpponentProgress(true); }, 8000);
+    return () => clearInterval(id);
+  }, [gamePhase, checkOpponentProgress]);
+
   // Resume an already-created match (e.g. an accepted friend challenge).
   // Credits were already deducted when the match was created — never charge again here.
   const resumedRef = useRef<string | null>(null);
