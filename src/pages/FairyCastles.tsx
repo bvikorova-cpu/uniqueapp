@@ -12,28 +12,17 @@ import { PremiumCastleCard } from "@/components/fairy-castles/PremiumCastleCard"
 import { StampCollection } from "@/components/fairy-castles/StampCollection";
 import { CastleLeaderboard } from "@/components/fairy-castles/CastleLeaderboard";
 import { CollectiblesAlbum } from "@/components/fairy-castles/CollectiblesAlbum";
-import cinderellaFlorida from "@/assets/fairy-castles/cinderella-castle-florida.jpg";
-import sleepingBeautyCalifornia from "@/assets/fairy-castles/sleeping-beauty-castle-california.jpg";
-import parisCastle from "@/assets/fairy-castles/paris-castle.jpg";
-import hongkongCastle from "@/assets/fairy-castles/hongkong-castle.jpg";
-import shanghaiCastle from "@/assets/fairy-castles/shanghai-castle.jpg";
-import tokyoCastle from "@/assets/fairy-castles/tokyo-castle-exterior.jpg";
-
-const castleImages: Record<string, string> = { "Cinderella Castle": cinderellaFlorida,
-  "Sleeping Beauty Castle": sleepingBeautyCalifornia,
-  "Le Château de la Belle au Bois Dormant": parisCastle,
-  "Castle of Magical Dreams": hongkongCastle,
-  "Enchanted Storybook Castle": shanghaiCastle };
-
-const getCastleImage = (name: string, parkName: string): string => {
-  if (name === "Tokyo Cinderella Castle") return tokyoCastle;
-  if (name === "Cinderella Castle") return cinderellaFlorida;
-  return castleImages[name] || "";
-};
+import { getCastleImage } from "@/lib/castleImages";
 
 function getCountryFlag(countryCode: string): string {
-  return { US: "🇺🇸", FR: "🇫🇷", CN: "🇨🇳", HK: "🇭🇰", JP: "🇯🇵" }[countryCode] || "🏰";
+  return (
+    {
+      US: "🇺🇸", FR: "🇫🇷", CN: "🇨🇳", HK: "🇭🇰", JP: "🇯🇵",
+      SK: "🇸🇰", GB: "🇬🇧", DE: "🇩🇪", CZ: "🇨🇿",
+    } as Record<string, string>
+  )[countryCode] || "🏰";
 }
+
 
 export default function FairyCastles() {
   const navigate = useNavigate();
@@ -118,7 +107,7 @@ export default function FairyCastles() {
               <PremiumCastleCard
                 key={castle.id}
                 castle={castle}
-                image={getCastleImage(castle.name, castle.park_name)}
+                image={getCastleImage(castle.name, castle.thumbnail_url)}
                 isVisited={visitedCastleIds.includes(castle.id)}
                 hasStamp={stampedCastleIds.includes(castle.id)}
                 countryFlag={getCountryFlag(castle.country_code)}

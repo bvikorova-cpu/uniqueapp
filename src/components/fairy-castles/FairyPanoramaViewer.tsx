@@ -558,6 +558,7 @@ export function FairyPanoramaViewer({
   const narratedText = audioGuideText ? `${guidePersona.prefix}${audioGuideText}` : audioGuideText;
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(true);
+  const [showMixer, setShowMixer] = useState(false);
   const [ambientVolume, setAmbientVolume] = useState<number>(() => {
     if (typeof window === 'undefined') return 0.3;
     const v = parseFloat(localStorage.getItem('fairy.ambientVolume') || '0.3');
@@ -1008,7 +1009,7 @@ export function FairyPanoramaViewer({
 
       {/* POI counter chip */}
       {pois.length > 0 && (
-        <div className="absolute top-[19rem] sm:top-44 right-3 sm:right-6 z-10 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
+        <div className="absolute bottom-24 right-3 sm:right-6 z-10 bg-black/55 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
           <MapPin className="h-3.5 w-3.5 text-amber-300" />
           <span className="font-semibold">{visitedPois.size}/{pois.length}</span>
           <span className="opacity-70">discovered</span>
@@ -1069,42 +1070,43 @@ export function FairyPanoramaViewer({
 
       {/* Audio Guide Control */}
       {audioGuideText && (
-        <div className="absolute top-24 left-6 z-20 flex flex-col gap-3">
+        <div className="absolute bottom-24 left-3 sm:left-6 z-20 flex flex-col gap-2">
           {/* Main Controls Row */}
           <div className="flex items-center gap-2">
             <Button
               onClick={handleSpeak}
-              size="lg"
+              size="sm"
               disabled={isGenerating}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-2xl disabled:opacity-50 min-w-[180px]"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-xl disabled:opacity-50"
             >
               {isGenerating ? (
                 <>
-                  <div className="mr-2 h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                   Generating...
                 </>
               ) : isPlaying ? (
                 <>
-                  <VolumeX className="mr-2 h-5 w-5" />
-                  Stop Story
+                  <VolumeX className="mr-2 h-4 w-4" />
+                  Stop
                 </>
               ) : (
                 <>
-                  <Volume2 className="mr-2 h-5 w-5" />
-                  🎧 Play Story
+                  <Volume2 className="mr-2 h-4 w-4" />
+                  Play Story
                 </>
               )}
             </Button>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  size="lg"
-                  className="bg-white/90 hover:bg-white shadow-xl"
+                  size="sm"
+                  className="bg-white/90 hover:bg-white shadow-lg"
                 >
-                  <Languages className="mr-2 h-4 w-4" />
-                  {LANGUAGES.find(l => l.code === selectedLanguage)?.flag} {LANGUAGES.find(l => l.code === selectedLanguage)?.name}
+                  <Languages className="mr-1.5 h-4 w-4" />
+                  <span>{LANGUAGES.find(l => l.code === selectedLanguage)?.flag}</span>
+                  <span className="hidden sm:inline ml-1">{LANGUAGES.find(l => l.code === selectedLanguage)?.name}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white max-h-[300px] overflow-y-auto">
@@ -1132,65 +1134,66 @@ export function FairyPanoramaViewer({
             </DropdownMenu>
           </div>
 
-          {/* Guide volume + mute */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg flex items-center gap-2">
-            <Button
-              onClick={() => setIsGuideMuted((m) => !m)}
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7"
-              aria-label={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
-              title={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
-            >
-              {isGuideMuted || guideVolume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-            </Button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={isGuideMuted ? 0 : guideVolume}
-              onChange={(e) => {
-                const v = parseFloat(e.target.value);
-                setGuideVolume(v);
-                if (v > 0 && isGuideMuted) setIsGuideMuted(false);
-              }}
-              className="w-28 accent-purple-600"
-              aria-label="Guide volume"
-            />
-            <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider">Guide</span>
-          </div>
           {isPlaying && (
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-lg max-w-xs">
-              <div className="flex items-center gap-2 mb-2">
-                {/* Sound Wave Animation */}
-                <div className="flex items-end gap-0.5 h-6">
-                  {[...Array(12)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-1 bg-gradient-to-t from-purple-600 to-blue-500 rounded-full animate-pulse"
-                      style={{
-                        height: `${20 + Math.random() * 80}%`,
-                        animationDelay: `${i * 0.1}s`,
-                        animationDuration: '0.5s' }}
-                    />
-                  ))}
-                </div>
-                <span className="text-xs text-gray-600 ml-auto">Playing...</span>
+            <div className="bg-black/55 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg flex items-center gap-2 w-fit">
+              <div className="flex items-end gap-0.5 h-3">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-0.5 bg-white rounded-full animate-pulse"
+                    style={{ height: `${30 + ((i * 17) % 70)}%`, animationDelay: `${i * 0.1}s`, animationDuration: "0.5s" }}
+                  />
+                ))}
               </div>
-              <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-purple-600 to-blue-500 animate-pulse w-full" />
-              </div>
+              <span className="text-[11px] text-white">Playing…</span>
             </div>
           )}
         </div>
       )}
 
-      {/* Audio Mixer (Ambient + POI) */}
-      <div className="absolute top-56 sm:top-24 right-3 sm:right-6 bg-white/90 backdrop-blur-sm p-2.5 sm:p-3 rounded-xl shadow-lg space-y-2 min-w-[160px] sm:min-w-[180px] max-w-[calc(100%-1.5rem)]">
+      {/* Audio Mixer (collapsible, keeps the panorama clear) */}
+      <button
+        onClick={() => setShowMixer((v) => !v)}
+        className="absolute top-32 sm:top-24 right-3 sm:right-6 z-20 h-10 w-10 rounded-full bg-black/55 backdrop-blur-sm border border-white/25 text-white flex items-center justify-center shadow-lg"
+        aria-label={showMixer ? "Hide audio settings" : "Show audio settings"}
+        title="Audio settings"
+      >
+        <Volume2 className="h-4 w-4" />
+      </button>
+      <div
+        className={`absolute top-44 sm:top-36 right-3 sm:right-6 z-20 bg-white/95 backdrop-blur-sm p-2.5 sm:p-3 rounded-xl shadow-lg space-y-2 min-w-[180px] max-w-[calc(100%-1.5rem)] transition-all ${showMixer ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none -translate-y-2"}`}
+      >
         <div className="flex items-center justify-center gap-1.5 pb-1.5 border-b border-black/10 text-[11px] font-semibold text-gray-700" aria-label={`Narrated by ${guidePersona.label}`}>
           <span className="text-base leading-none">{guidePersona.emoji}</span>
           <span>{guidePersona.label} narrating</span>
+        </div>
+        {/* Guide volume */}
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => setIsGuideMuted((m) => !m)}
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 flex-shrink-0"
+            aria-label={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
+            title={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
+          >
+            {isGuideMuted || guideVolume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </Button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={isGuideMuted ? 0 : guideVolume}
+            onChange={(e) => {
+              const v = parseFloat(e.target.value);
+              setGuideVolume(v);
+              if (v > 0 && isGuideMuted) setIsGuideMuted(false);
+            }}
+            className="w-24 accent-purple-600"
+            aria-label="Guide volume"
+          />
+          <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider w-14 text-right">Guide</span>
         </div>
         {ambientSound && (
           <div className="flex items-center gap-2">
