@@ -348,24 +348,6 @@ const BrainDuel = () => {
         >
           <NotificationCenter />
         </motion.div>
-        <motion.div
-          id="brain-duel-game-anchor"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="max-w-3xl mx-auto mb-10 scroll-mt-24"
-        >
-          {resumeMatchId && lobbyState === 'lobby' && (
-            <div className="mb-6">
-              <DuelLiveLobby
-                key={`${resumeMatchId}:${duelStartToken ?? ''}`}
-                matchId={resumeMatchId}
-                onResolved={() => setLobbyState('resolved')}
-              />
-            </div>
-          )}
-          <BrainDuelGame startRequest={startRequest} resumeMatchId={gameMatchId} resumeToken={duelStartToken} />
-        </motion.div>
 
         {/* ===== ANIMATED LEADERBOARD & FRIENDS ===== */}
         <motion.div
@@ -377,9 +359,30 @@ const BrainDuel = () => {
           <AnimatedLeaderboard />
           <div id="friend-challenges" className="space-y-6 scroll-mt-24">
             <FriendChallenges />
-            <FriendChallengesLeaderboard />
           </div>
         </motion.div>
+
+        {/* ===== GAME BOARD (opens below the Play button) ===== */}
+        <motion.div
+          id="brain-duel-game-anchor"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="max-w-3xl mx-auto mb-10 scroll-mt-24 space-y-6"
+        >
+          {resumeMatchId && lobbyState === 'lobby' && (
+            <div className="mb-6">
+              <DuelLiveLobby
+                key={`${resumeMatchId}:${duelStartToken ?? ''}`}
+                matchId={resumeMatchId}
+                onResolved={() => setLobbyState('resolved')}
+              />
+            </div>
+          )}
+          <BrainDuelGame startRequest={startRequest} resumeMatchId={gameMatchId} resumeToken={duelStartToken} />
+          <ScoringGuide />
+        </motion.div>
+
 
         {/* ===== DUEL HISTORY & REFERRAL ===== */}
         <motion.div
