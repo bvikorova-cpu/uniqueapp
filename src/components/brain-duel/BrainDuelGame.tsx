@@ -635,16 +635,16 @@ export const BrainDuelGame = ({
     return (
       <div className="space-y-3">
         {/* Score bar */}
-        <Card className="p-3 backdrop-blur-xl bg-card/80 border-primary/10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+        <Card className="p-3 backdrop-blur-xl bg-card/95 border-primary/10 sticky top-16 z-30 shadow-sm">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-3 min-w-0">
               <div className="text-center">
                 <div className="text-xs text-muted-foreground">You</div>
                 <div className="text-xl font-black text-primary">{myScore}</div>
               </div>
               <span className="text-muted-foreground font-bold">VS</span>
               <div className="text-center min-w-0">
-                <div className="text-xs text-muted-foreground flex items-center gap-1 truncate max-w-[120px]">
+                <div className="text-xs text-muted-foreground flex items-center gap-1 truncate max-w-[100px]">
                   {opponentName ? <UserIcon className="w-3 h-3" /> : <Bot className="w-3 h-3" />}
                   <span className="truncate">{opponentName ?? 'AI'}</span>
                 </div>
@@ -652,16 +652,17 @@ export const BrainDuelGame = ({
               </div>
 
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0 ml-auto">
               <MatchStatusIndicator status={matchStatus} matchId={matchId} />
               <Badge variant="outline" className="text-xs">Q{currentIndex + 1}/{questions.length}</Badge>
-              <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full ${timerBg}`}>
+              <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full shrink-0 ${timerBg}`}>
                 <Clock className={`w-4 h-4 ${timerColor}`} />
-                <span className={`text-lg font-black ${timerColor}`}>{timeLeft}</span>
+                <span className={`text-lg font-black tabular-nums ${timerColor}`}>{timeLeft}</span>
               </div>
             </div>
           </div>
         </Card>
+
 
         {/* Power-ups */}
         <div className="flex gap-1.5">
