@@ -109,7 +109,7 @@ export function CastleVoiceNarration({
     // Generate new audio
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', { body: {
+      const { data, error } = await supabase.functions.invoke('text-to-speech', { body: {
           text: fullNarrationText,
           language: selectedLanguage } });
 

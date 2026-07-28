@@ -764,7 +764,7 @@ export function FairyPanoramaViewer({
 
     if (!url) {
       try {
-        const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
+        const { data, error } = await supabase.functions.invoke('text-to-speech', {
           body: { text: `${poi.title}. ${poi.narrative}`, language: selectedLanguage } });
         if (error) throw error;
         if (data?.audioContent) {
@@ -906,7 +906,7 @@ export function FairyPanoramaViewer({
     // Generate new audio
     setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', { body: {
+      const { data, error } = await supabase.functions.invoke('text-to-speech', { body: {
           text: narratedText,
           language: selectedLanguage } });
 
