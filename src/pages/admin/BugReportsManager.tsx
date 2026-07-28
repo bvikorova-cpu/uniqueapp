@@ -21,7 +21,12 @@ import { Dialog,
   DialogTitle,
   DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Bug, CheckCircle2, Gift, Loader2, RefreshCw } from "lucide-react";
+import { Bug, CheckCircle2, Gift, Loader2, RefreshCw, Send } from "lucide-react";
+
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+
 
 type Severity = "minor" | "major" | "critical";
 type Status = "new" | "triage" | "confirmed" | "rejected" | "duplicate" | "fixed";
