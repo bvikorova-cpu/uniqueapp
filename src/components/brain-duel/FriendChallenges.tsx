@@ -353,7 +353,7 @@ export const FriendChallenges = () => {
                   </Select>
                 </div>
 
-                </div>
+
 
                 <div className="space-y-2">
                   <Label htmlFor="category-select">Category</Label>
