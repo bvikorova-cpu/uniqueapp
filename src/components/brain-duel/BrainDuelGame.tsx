@@ -73,7 +73,7 @@ export interface StartRequest {
   category?: string;
 }
 
-export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | null }) => {
+export const BrainDuelGame = ({ startRequest, resumeMatchId }: { startRequest?: StartRequest | null; resumeMatchId?: string | null }) => {
   const queryClient = useQueryClient();
   const { credits, isLoading: creditsLoading } = useBrainDuelCredits();
   const { powerups, consumePowerup: triggerPowerup } = useBrainDuelPowerups();
