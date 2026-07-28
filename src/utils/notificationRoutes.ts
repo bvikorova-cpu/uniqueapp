@@ -42,6 +42,8 @@ export function getNotificationRoute(n: NotifLike): string {
     brain_duel_challenge_declined: "/brain-duel#friend-challenges",
     brain_duel_challenge_cancelled: "/brain-duel#friend-challenges",
     brain_duel_challenge_expired: "/brain-duel#friend-challenges",
+    brain_duel_win: "/brain-duel#friend-challenges",
+
 
 
     // Secret Santa
