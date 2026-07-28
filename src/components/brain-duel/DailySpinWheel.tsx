@@ -95,22 +95,25 @@ export const DailySpinWheel = () => {
     setResult(null);
 
     // Server decides the reward and credits the account (client cannot self-award).
-    const { data, error } = await supabase.functions.invoke('brain-duel-daily-spin', { body: {} });
+    // Uses an atomic SECURITY DEFINER RPC so it works identically for every user.
+    const { data, error } = await supabase.rpc('brain_duel_daily_spin' as any);
+    const res = (data ?? {}) as { error?: string; index?: number };
 
-    if (error || !data || data.error) {
+    if (error || res.error) {
       setSpinning(false);
-      if (data?.error === 'already_spun') {
+      if (res.error === 'already_spun') {
         setCanSpin(false);
         setLastSpinDate(new Date().toISOString());
         toast.error('You already used today\'s free spin');
       } else {
-        toast.error('Spin failed, please try again');
+        toast.error(error?.message || res.error?.replace(/_/g, ' ') || 'Spin failed, please try again');
       }
       return;
     }
 
-    const selectedIndex: number = data.index ?? 0;
+    const selectedIndex: number = res.index ?? 0;
     const selected = WHEEL_SEGMENTS[selectedIndex];
+
 
     const segmentAngle = 360 / WHEEL_SEGMENTS.length;
     const targetAngle = 360 - (selectedIndex * segmentAngle + segmentAngle / 2);
