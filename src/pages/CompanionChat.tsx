@@ -17,6 +17,7 @@ const CompanionChat = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { hasGoldPass } = useKidsGoldPass();
   const [messages, setMessages] = useState<any[]>([]);
   const [character, setCharacter] = useState<any>(null);
   const [input, setInput] = useState("");
