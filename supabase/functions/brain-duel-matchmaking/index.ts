@@ -20,13 +20,22 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) throw new Error("Not authenticated");
 
-    const { category, gameMode = "classic" } = await req.json();
+    const { category, gameMode = "quick" } = await req.json();
     if (!category) throw new Error("Category required");
 
-    const entryCost = gameMode === "ranked" ? 20 : gameMode === "blitz" ? 15 : 10;
-    const winReward = entryCost * 2;
-    const totalQuestions = gameMode === "blitz" ? 5 : 10;
-    const timePerQuestion = gameMode === "blitz" ? 10 : 15;
+    const MODES: Record<string, { entry: number; reward: number; questions: number; time: number }> = {
+      quick: { entry: 10, reward: 20, questions: 10, time: 30 },
+      classic: { entry: 20, reward: 50, questions: 20, time: 30 },
+      championship: { entry: 50, reward: 150, questions: 30, time: 24 },
+      mystery: { entry: 30, reward: 90, questions: 10, time: 20 },
+      blitz: { entry: 15, reward: 30, questions: 5, time: 10 },
+      ranked: { entry: 20, reward: 40, questions: 10, time: 15 },
+    };
+    const cfg = MODES[gameMode] ?? MODES.quick;
+    const entryCost = cfg.entry;
+    const winReward = cfg.reward;
+    const totalQuestions = cfg.questions;
+    const timePerQuestion = cfg.time;
 
     // Check credits
     const { data: creditData } = await supabase
