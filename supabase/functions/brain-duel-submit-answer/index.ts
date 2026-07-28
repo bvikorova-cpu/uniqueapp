@@ -34,18 +34,6 @@ serve(async (req) => {
     const norm = (s: any) => String(s ?? "").trim().toLowerCase();
     const isCorrect = norm(answer) === norm(question.correct_answer);
 
-    // Calculate points (faster = more points)
-    const basePoints = isCorrect ? 100 : 0;
-    const timeBonus = isCorrect ? Math.max(0, Math.floor((15 - (time_taken || 15)) * 10)) : 0;
-    const totalPoints = basePoints + timeBonus;
-
-    // Save answer
-    await supabase.from("brain_duel_answers").insert({ match_id,
-      question_id,
-      player_id: user.id,
-      answer: answer || "timeout",
-      is_correct: isCorrect });
-
     // Update match score
     const { data: match } = await supabase
       .from("brain_duel_matches")
@@ -56,6 +44,20 @@ serve(async (req) => {
     if (!match) throw new Error("Match not found");
 
     const isPlayer1 = match.player1_id === user.id;
+    const timeLimit = typeof match.time_per_question === "number" ? match.time_per_question : 30;
+    const safeTime = Math.max(0, Math.min(Number(time_taken) || timeLimit, timeLimit));
+    const basePoints = isCorrect ? 100 : 0;
+    const timeBonus = isCorrect ? Math.max(0, Math.floor((timeLimit - safeTime) * 10)) : 0;
+    const totalPoints = basePoints + timeBonus;
+
+    // Save answer
+    await supabase.from("brain_duel_answers").insert({ match_id,
+      question_id,
+      player_id: user.id,
+      answer: answer || "timeout",
+      is_correct: isCorrect,
+      time_taken: safeTime });
+
     const newScore = (isPlayer1 ? match.player1_score : match.player2_score) + totalPoints;
 
     // Simulate AI opponent answer (60% accuracy for bot)

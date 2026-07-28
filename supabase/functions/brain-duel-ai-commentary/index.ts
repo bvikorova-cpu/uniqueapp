@@ -24,14 +24,14 @@ serve(async (req) => {
     const CREDITS_COST = 3;
     const commentaryStyle = style || "sports";
 
-    // Check credits
+    // Check unified AI credits
     const { data: credits } = await supabase
-      .from("brain_duel_credits")
-      .select("credits")
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
-    if (!credits || credits.credits < CREDITS_COST) {
+    if (!credits || credits.credits_remaining < CREDITS_COST) {
       return new Response(JSON.stringify({ error: "Insufficient credits. You need 3 credits for AI commentary." }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -102,11 +102,13 @@ Generate an engaging ${commentaryStyle}-style commentary of this match (200-400 
     const aiData = await aiResponse.json();
     const commentary = aiData.choices?.[0]?.message?.content || "Commentary unavailable.";
 
-    // Deduct credits
-    await supabase
-      .from("brain_duel_credits")
-      .update({ credits: credits.credits - CREDITS_COST })
-      .eq("user_id", user.id);
+    const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: CREDITS_COST,
+      p_reason: "brain_duel_ai_commentary",
+      p_source: "brain_duel"
+    });
+    if (deductError || deducted === false) throw new Error("Insufficient credits");
 
     // Save commentary
     const { data: saved } = await supabase
@@ -119,7 +121,7 @@ Generate an engaging ${commentaryStyle}-style commentary of this match (200-400 
       .select()
       .single();
 
-    return new Response(JSON.stringify({ commentary, id: saved?.id, credits_remaining: credits.credits - CREDITS_COST }), {
+    return new Response(JSON.stringify({ commentary, id: saved?.id, credits_remaining: credits.credits_remaining - CREDITS_COST }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("brain-duel-ai-commentary error:", e);

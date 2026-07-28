@@ -13,29 +13,13 @@ export const useBrainDuelCredits = () => {
       if (!user) throw new Error('Not authenticated');
 
       const { data, error } = await supabase
-        .from('brain_duel_credits')
-        .select('*')
+        .from('ai_credits')
+        .select('credits_remaining')
         .eq('user_id', user.id)
         .maybeSingle();
 
       if (error) throw error;
-
-      // Initialize credits if they don't exist
-      if (!data) {
-        const { data: newCredits, error: insertError } = await supabase
-          .from('brain_duel_credits')
-          .insert({
-            user_id: user.id,
-            credits: 100, // Starting credits
-          })
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        return newCredits.credits;
-      }
-
-      return data.credits;
+      return data?.credits_remaining ?? 0;
     } });
 
   const spendCredits = useMutation({
@@ -51,6 +35,7 @@ export const useBrainDuelCredits = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
     },
     onError: (error: any) => { const msg = (error?.message || '').toString();
       toast({
@@ -61,8 +46,8 @@ export const useBrainDuelCredits = () => {
         variant: 'destructive' });
     } });
 
-  // NOTE: `earnCredits` was removed — client cannot increase balance (DB trigger blocks it).
-  // Credit awards now happen exclusively server-side via brain-duel-router on verified events.
+  // Brain Duel displays the unified ai_credits balance. Awards happen server-side
+  // through add_ai_credits so every change is recorded in ai_credits_ledger.
 
   return { credits: credits || 0,
     isLoading,

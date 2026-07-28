@@ -61,7 +61,7 @@ interface LiveMatch {
 export const LiveSpectatorMode = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { credits, spendCredits } = useBrainDuelCredits();
+  const { credits, spendCreditsAsync } = useBrainDuelCredits();
   const [selectedMatch, setSelectedMatch] = useState<string | null>(null);
   const [chatMessage, setChatMessage] = useState('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -186,7 +186,7 @@ export const LiveSpectatorMode = () => {
   const sendGift = useMutation({
     mutationFn: async ({ gift, recipientId }: { gift: VirtualGift; recipientId: string }) => {
       if (credits < gift.cost) throw new Error('Insufficient credits');
-      spendCredits(gift.cost);
+      await spendCreditsAsync(gift.cost);
       const { error } = await supabase
         .from('brain_duel_gifts')
         .insert({ match_id: selectedMatch!, sender_id: userId!, recipient_id: recipientId, gift_type: gift.id, gift_cost: gift.cost });
@@ -198,6 +198,7 @@ export const LiveSpectatorMode = () => {
     },
     onSuccess: (gift) => {
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast({ title: `${gift.emoji} Gift sent!`, description: `You sent a ${gift.name} (${gift.cost} credits)` });
     },
     onError: (error: Error) => {

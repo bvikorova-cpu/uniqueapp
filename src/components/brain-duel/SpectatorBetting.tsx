@@ -19,7 +19,7 @@ interface Props {
 }
 
 export const SpectatorBetting = ({ matchId, player1Name, player2Name, player1Id, player2Id }: Props) => {
-  const { credits, spendCredits } = useBrainDuelCredits();
+  const { credits, spendCreditsAsync } = useBrainDuelCredits();
   const [betAmount, setBetAmount] = useState(5);
   const [placing, setPlacing] = useState(false);
   const [betPlaced, setBetPlaced] = useState<{ playerId: string; amount: number } | null>(null);
@@ -39,7 +39,7 @@ export const SpectatorBetting = ({ matchId, player1Name, player2Name, player1Id,
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast.error("Please sign in"); return; }
 
-      spendCredits(betAmount);
+      await spendCreditsAsync(betAmount);
 
       const { error } = await supabase.from("brain_duel_spectator_bets").insert({ user_id: user.id,
         match_id: matchId,
@@ -67,11 +67,11 @@ export const SpectatorBetting = ({ matchId, player1Name, player2Name, player1Id,
           <Coins className="h-4 w-4 text-amber-400" />
           Spectator Betting
           <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-[10px]">
-            Virtual Credits
+            AI Credits
           </Badge>
         </CardTitle>
         <CardDescription className="text-[11px]">
-          Bet virtual credits on who you think will win!
+          Bet AI Credits on who you think will win!
         </CardDescription>
       </CardHeader>
       <CardContent className="relative space-y-3">

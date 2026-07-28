@@ -53,6 +53,7 @@ export const DailyChallenges = () => {
       setQuizOpen(false);
       queryClient.invalidateQueries({ queryKey: ["brain-duel-daily-challenge"] });
       queryClient.invalidateQueries({ queryKey: ["brain-duel-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
       toast.success(`Challenge completed! Score: ${result.score}/${result.total}`, {
         description: result.reward ? `You earned ${result.reward} credits! 🎉` : "No reward this time — try again tomorrow!" });
     },

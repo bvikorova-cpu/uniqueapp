@@ -31,7 +31,7 @@ export const BrainDuelCreditsDisplay = () => {
               </motion.div>
               <div>
                 <p className="text-sm text-muted-foreground flex items-center gap-1">
-                  <Sparkles className="h-3 w-3" /> Virtual Credits
+                  <Sparkles className="h-3 w-3" /> AI Credits
                 </p>
                 <p className="text-2xl font-black">{credits}</p>
               </div>
@@ -48,7 +48,7 @@ export const BrainDuelCreditsDisplay = () => {
           </div>
           
           <p className="relative text-[10px] text-muted-foreground mt-2">
-            Virtual currency for entertainment only • No real money value
+            Unified AI Credits used across Unique tools and Brain Duel
           </p>
         </Card>
       </motion.div>

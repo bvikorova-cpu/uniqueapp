@@ -44,8 +44,20 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
   const handlePurchase = async (priceId: string) => {
     setLoading(priceId);
     try {
-      const { data, error } = await supabase.functions.invoke('create-brain-duel-payment', {
-        body: { priceId } });
+      const selectedPackage = CREDIT_PACKAGES.find((pkg) => pkg.priceId === priceId);
+      if (!selectedPackage) throw new Error('Invalid credit package');
+
+      const amount = Number(selectedPackage.price.replace('€', '').replace(',', '.')) * 100;
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          product: 'ai_credits',
+          amount: Math.round(amount),
+          productName: `${selectedPackage.credits} AI Credits`,
+          mode: 'payment',
+          metadata: { credits: String(selectedPackage.credits), source: 'brain_duel' },
+          successUrl: `${window.location.origin}/brain-duel?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}/brain-duel?payment=canceled`
+        } });
 
       if (error) throw error;
 
@@ -68,10 +80,10 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <Coins className="h-6 w-6 text-primary" />
-            Buy Credits
+            Buy AI Credits
           </DialogTitle>
           <DialogDescription>
-            Choose a credit package for fun on BrainDuel. Credits are for entertainment only.
+            Choose a unified AI Credits package for Brain Duel and other Unique AI tools.
           </DialogDescription>
         </DialogHeader>
 
@@ -98,7 +110,7 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
                   <div className="text-4xl mb-2">{pkg.icon}</div>
                   <div>
                     <p className="text-4xl font-black text-primary">{pkg.credits}</p>
-                    <p className="text-sm text-muted-foreground">credits</p>
+                    <p className="text-sm text-muted-foreground">AI Credits</p>
                   </div>
 
                   <div>
@@ -111,7 +123,7 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
                   </div>
 
                   <div className="space-y-2 text-sm text-muted-foreground">
-                    {['Virtual credits', 'Never expires', 'Instant delivery'].map(text => (
+                    {['Unified AI Credits', 'Never expires', 'Instant delivery'].map(text => (
                       <div key={text} className="flex items-center gap-2">
                         <Check className="h-4 w-4 text-primary" />
                         <span>{text}</span>
@@ -141,8 +153,7 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
         </div>
 
         <div className="text-xs text-muted-foreground text-center mt-4">
-          ℹ️ Credits are virtual currency for entertainment only and have no real monetary value. 
-          They cannot be exchanged for money.
+          ℹ️ AI Credits are used inside Unique for paid AI and game actions. They cannot be exchanged for money.
         </div>
       </DialogContent>
     </Dialog>

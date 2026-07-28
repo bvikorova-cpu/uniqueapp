@@ -25,28 +25,17 @@ const tierFor = (r: number) => [...TIERS].reverse().find(t => r >= t.min)!.name;
 
 async function spendBrainDuelCredits(admin: any, userId: string, amount: number) {
   if (amount <= 0) return;
-  const { data: row } = await admin
-    .from("brain_duel_credits")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (!row) {
-    // Auto-create with 0 -> insufficient
-    await admin.from("brain_duel_credits").insert({ user_id: userId, credits: 0 });
+  const { data: ok, error } = await admin.rpc("deduct_ai_credits", {
+    p_user_id: userId,
+    p_amount: amount,
+    p_reason: "brain_duel_router_action",
+    p_source: "brain_duel"
+  });
+  if (error || ok === false) {
     const e: any = new Error("Insufficient credits");
     e.status = 402;
     throw e;
   }
-  const bal = row.credits ?? 0;
-  if (bal < amount) {
-    const e: any = new Error("Insufficient credits");
-    e.status = 402;
-    throw e;
-  }
-  await admin
-    .from("brain_duel_credits")
-    .update({ credits: bal - amount })
-    .eq("user_id", userId);
 }
 
 async function callAI(prompt: string, system = "You are a precise quiz generator. Respond with valid JSON only.") {
@@ -352,7 +341,7 @@ Deno.serve(async (req) => {
 
       // ---------- 12. Credits balance ----------
       case "credits.balance": {
-        const { data } = await admin.from("brain_duel_credits").select("*").eq("user_id", user.id).maybeSingle();
+        const { data } = await admin.from("ai_credits").select("user_id, credits_remaining, credits_used, last_reset_at, updated_at").eq("user_id", user.id).maybeSingle();
         result = { credits: data };
         break;
       }

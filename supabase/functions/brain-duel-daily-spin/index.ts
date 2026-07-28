@@ -67,19 +67,18 @@ serve(async (req) => {
 
     let newBalance: number | null = null;
     if (!selected.type && selected.value > 0) {
+      await supabase.rpc("add_ai_credits", {
+        p_user_id: user.id,
+        p_amount: selected.value,
+        p_reason: "brain_duel_daily_spin",
+        p_source: "brain_duel"
+      });
       const { data: credits } = await supabase
-        .from("brain_duel_credits")
-        .select("credits")
+        .from("ai_credits")
+        .select("credits_remaining")
         .eq("user_id", user.id)
         .maybeSingle();
-
-      if (credits) {
-        newBalance = credits.credits + selected.value;
-        await supabase.from("brain_duel_credits").update({ credits: newBalance }).eq("user_id", user.id);
-      } else {
-        newBalance = 100 + selected.value;
-        await supabase.from("brain_duel_credits").insert({ user_id: user.id, credits: newBalance });
-      }
+      newBalance = credits?.credits_remaining ?? null;
     }
 
     return new Response(JSON.stringify({ index, reward: selected, balance: newBalance }), {

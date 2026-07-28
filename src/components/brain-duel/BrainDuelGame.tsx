@@ -9,6 +9,7 @@ import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { useBrainDuelPowerups } from '@/hooks/useBrainDuelPowerups';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { useQueryClient } from '@tanstack/react-query';
 import { LiveDuelChat } from './LiveDuelChat';
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -69,6 +70,7 @@ export interface StartRequest {
 }
 
 export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | null }) => {
+  const queryClient = useQueryClient();
   const { credits, isLoading: creditsLoading } = useBrainDuelCredits();
   const { powerups, consumePowerup: triggerPowerup } = useBrainDuelPowerups();
   const [gamePhase, setGamePhase] = useState<'category' | 'loading' | 'playing' | 'answer-reveal' | 'results' | 'analysis'>('category');
@@ -83,8 +85,9 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
   const [myScore, setMyScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
   // TEMP DEBUG: ?slow=1 extends timer to 60s for end-to-end testing (Nathalie)
-  const QUESTION_TIME = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('slow') === '1' ? 60 : 15;
-  const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
+  const defaultQuestionTime = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('slow') === '1' ? 60 : 30;
+  const [questionTime, setQuestionTime] = useState(defaultQuestionTime);
+  const [timeLeft, setTimeLeft] = useState(defaultQuestionTime);
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -160,6 +163,12 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
 
       
       setMatchId(matchData.match.id);
+      const matchQuestionTime = typeof matchData.match.time_per_question === 'number'
+        ? matchData.match.time_per_question
+        : cfg.time;
+      setQuestionTime(matchQuestionTime);
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
 
       // 2. Get AI-generated questions
       const { data: qData, error: qError } = await supabase.functions.invoke('brain-duel-get-questions', {
@@ -169,7 +178,7 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
 
       setQuestions(qData.questions);
       setGamePhase('playing');
-      setTimeLeft(QUESTION_TIME);
+      setTimeLeft(matchQuestionTime);
       setAnswerStartTime(Date.now());
       toast.success('Match started! AI generated unique questions for you.', { duration: 2000 });
     } catch (err: any) {
@@ -211,7 +220,7 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
       setAnswerResult(null);
       setHiddenOptions([]);
       setShowHint(false);
-      setTimeLeft(QUESTION_TIME);
+      setTimeLeft(questionTime);
       setAnswerStartTime(Date.now());
       setGamePhase('playing');
     } else {
@@ -228,6 +237,9 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
         body: { match_id: matchId } });
       if (error) throw error;
       setMatchResult(data);
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-overview'] });
     } catch (err: any) {
       console.error('Finish match error:', err);
       toast.error('Failed to finish match');
@@ -246,6 +258,8 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
 
       setAiAnalysis(data.analysis);
       setGamePhase('analysis');
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast.success(`AI Analysis complete! (${data.credits_spent} credits used)`);
     } catch (err: any) {
       console.error('AI analysis error:', err);
@@ -270,7 +284,7 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
         const wrong = ['a', 'b', 'c', 'd'].filter(o => o !== correct);
         setHiddenOptions(wrong.slice(0, 2));
       } else if (type === 'extra_time') {
-        setTimeLeft(t => Math.min(t + 10, 30));
+        setTimeLeft(t => Math.min(t + 15, questionTime + 15));
       } else if (type === 'hint') {
         setShowHint(true);
       } else if (type === 'skip') {

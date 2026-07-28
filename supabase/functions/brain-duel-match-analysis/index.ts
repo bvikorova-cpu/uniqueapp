@@ -32,14 +32,14 @@ serve(async (req) => {
 
     const ANALYSIS_COST = 5;
 
-    // Check credits
+    // Check unified AI credits
     const { data: creditData } = await supabase
-      .from("brain_duel_credits")
-      .select("credits")
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
-    const currentCredits = creditData?.credits || 0;
+    const currentCredits = creditData?.credits_remaining || 0;
     if (currentCredits < ANALYSIS_COST) {
       return new Response(JSON.stringify({ error: "Insufficient credits", required: ANALYSIS_COST, current: currentCredits }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -123,11 +123,13 @@ Provide:
     const aiData = await aiResponse.json();
     const analysis = aiData.choices?.[0]?.message?.content || "Analysis unavailable.";
 
-    // Deduct credits
-    await supabase
-      .from("brain_duel_credits")
-      .update({ credits: currentCredits - ANALYSIS_COST })
-      .eq("user_id", user.id);
+    const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: ANALYSIS_COST,
+      p_reason: "brain_duel_match_analysis",
+      p_source: "brain_duel"
+    });
+    if (deductError || deducted === false) throw new Error("Insufficient credits");
 
     return new Response(JSON.stringify({
       analysis,

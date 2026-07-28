@@ -24,14 +24,14 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await userClient.auth.getUser();
     if (userError || !user) throw new Error("Not authenticated");
 
-    // Check credits (costs 1 credit)
+    // Check unified AI credits
     const { data: credits } = await supabase
-      .from("brain_duel_credits")
-      .select("credits")
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (!credits || credits.credits < 5) {
+    if (!credits || credits.credits_remaining < 5) {
       return new Response(JSON.stringify({ error: "Insufficient credits. AI recap costs 5 credits." }), {
         status: 402,
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -122,11 +122,13 @@ Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas
     const aiData = await aiResponse.json();
     const recapText = aiData.choices?.[0]?.message?.content || "Unable to generate recap.";
 
-    // Deduct credits
-    await supabase
-      .from("brain_duel_credits")
-      .update({ credits: credits.credits - 5 })
-      .eq("user_id", user.id);
+    const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: 5,
+      p_reason: "brain_duel_ai_recap",
+      p_source: "brain_duel"
+    });
+    if (deductError || deducted === false) throw new Error("Insufficient credits");
 
     // Save recap (one row per user per week - refresh if it already exists)
     const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];

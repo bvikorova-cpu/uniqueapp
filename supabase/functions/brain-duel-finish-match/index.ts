@@ -51,18 +51,12 @@ serve(async (req) => {
     // Award credits to winner
     const isPlayerWinner = winnerId === user.id;
     if (isPlayerWinner && match.win_reward) {
-      const { data: creditData } = await supabase
-        .from("brain_duel_credits")
-        .select("credits")
-        .eq("user_id", user.id)
-        .single();
-
-      if (creditData) {
-        await supabase
-          .from("brain_duel_credits")
-          .update({ credits: creditData.credits + match.win_reward })
-          .eq("user_id", user.id);
-      }
+      await supabase.rpc("add_ai_credits", {
+        p_user_id: user.id,
+        p_amount: match.win_reward,
+        p_reason: "brain_duel_win_reward",
+        p_source: "brain_duel"
+      });
     }
 
     // Get answer details for summary

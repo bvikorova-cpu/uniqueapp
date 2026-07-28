@@ -73,22 +73,12 @@ serve(async (req) => {
 
     // Add credits to both users
     for (const uid of [user.id, codeData.user_id]) {
-      const { data: existingCredits } = await supabase
-        .from("brain_duel_credits")
-        .select("credits")
-        .eq("user_id", uid)
-        .maybeSingle();
-
-      if (existingCredits) {
-        await supabase
-          .from("brain_duel_credits")
-          .update({ credits: existingCredits.credits + BONUS_CREDITS })
-          .eq("user_id", uid);
-      } else {
-        await supabase
-          .from("brain_duel_credits")
-          .insert({ user_id: uid, credits: BONUS_CREDITS });
-      }
+      await supabase.rpc("add_ai_credits", {
+        p_user_id: uid,
+        p_amount: BONUS_CREDITS,
+        p_reason: "brain_duel_referral_bonus",
+        p_source: "brain_duel"
+      });
     }
 
     // Create notifications

@@ -68243,6 +68243,10 @@ export type Database = {
       }
       auto_release_coupon_escrow: { Args: never; Returns: number }
       auto_release_stale_brand_escrows: { Args: never; Returns: number }
+      award_brain_duel_credits: {
+        Args: { p_amount: number; p_reason?: string; p_user_id: string }
+        Returns: number
+      }
       award_eco_monthly_winner: { Args: never; Returns: Json }
       award_healthy_monthly_winner: {
         Args: { _month_key: string }

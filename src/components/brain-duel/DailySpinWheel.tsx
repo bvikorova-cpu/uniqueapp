@@ -122,6 +122,7 @@ export const DailySpinWheel = () => {
       setCanSpin(false);
       setLastSpinDate(new Date().toISOString());
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
 
       if (selected.rarity === 'legendary' || selected.rarity === 'rare') {
         confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });

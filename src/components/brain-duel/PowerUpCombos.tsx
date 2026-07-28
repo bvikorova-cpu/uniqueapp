@@ -10,17 +10,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const POWERUPS = [
-  { id: "fifty-fifty", name: "50:50", icon: Target, color: "text-yellow-400", bg: "bg-yellow-500/10" },
-  { id: "ask-ai", name: "Ask AI", icon: Brain, color: "text-blue-400", bg: "bg-blue-500/10" },
-  { id: "extra-time", name: "Extra Time", icon: Clock, color: "text-green-400", bg: "bg-green-500/10" },
-  { id: "double-points", name: "2× Points", icon: TrendingUp, color: "text-purple-400", bg: "bg-purple-500/10" },
+  { id: "fifty_fifty", name: "50:50", icon: Target, color: "text-yellow-400", bg: "bg-yellow-500/10" },
+  { id: "hint", name: "Hint", icon: Brain, color: "text-blue-400", bg: "bg-blue-500/10" },
+  { id: "extra_time", name: "Extra Time", icon: Clock, color: "text-green-400", bg: "bg-green-500/10" },
+  { id: "skip", name: "Skip", icon: TrendingUp, color: "text-purple-400", bg: "bg-purple-500/10" },
 ];
 
 const COMBOS = [
-  { id: "brain-blitz", p1: "ask-ai", p2: "extra-time", name: "Brain Blitz", effect: "AI hint + 20s extra time bonus", cost: 8, emoji: "🧠⚡" },
-  { id: "sniper-shot", p1: "fifty-fifty", p2: "ask-ai", name: "Sniper Shot", effect: "Remove 2 wrong + AI narrows to answer", cost: 12, emoji: "🎯🔫" },
-  { id: "time-warp", p1: "extra-time", p2: "double-points", name: "Time Warp", effect: "+20s and 2× points for this round", cost: 15, emoji: "⏰✨" },
-  { id: "nuclear", p1: "fifty-fifty", p2: "double-points", name: "Nuclear Option", effect: "50:50 elimination + 3× points!", cost: 20, emoji: "☢️💥" },
+  { id: "brain-blitz", p1: "hint", p2: "extra_time", name: "Brain Blitz", effect: "Hint + 20s extra time bonus", cost: 8, emoji: "🧠⚡" },
+  { id: "sniper-shot", p1: "fifty_fifty", p2: "hint", name: "Sniper Shot", effect: "Remove 2 wrong + hint narrows to answer", cost: 12, emoji: "🎯🔫" },
+  { id: "time-warp", p1: "extra_time", p2: "skip", name: "Time Warp", effect: "+20s and emergency skip", cost: 15, emoji: "⏰✨" },
+  { id: "nuclear", p1: "fifty_fifty", p2: "skip", name: "Nuclear Option", effect: "50:50 elimination + skip backup", cost: 20, emoji: "☢️💥" },
 ];
 
 export const PowerUpCombos = () => {

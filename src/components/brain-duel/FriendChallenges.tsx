@@ -282,7 +282,7 @@ export const FriendChallenges = () => {
               <div className="space-y-4">
                 <div className="p-3 bg-primary/5 rounded-lg border border-primary/20">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Your Credits:</span>
+                    <span className="text-muted-foreground">Your AI Credits:</span>
                     <span className="font-bold flex items-center gap-1">
                       <Coins className="h-4 w-4 text-yellow-500" />
                       {credits}
