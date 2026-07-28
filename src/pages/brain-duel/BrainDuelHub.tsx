@@ -234,11 +234,35 @@ export default function BrainDuelHub() {
               )}
 
               {active.id === "ai.cheatScan" && (
-                <>
-                  <Input placeholder="Duel ID" value={input.duelId ?? ""} onChange={(e) => setInput({ ...input, duelId: e.target.value })} />
-                  <Input placeholder="Response times ms (comma-separated)" value={input.responseTimes ?? ""} onChange={(e) => setInput({ ...input, responseTimes: e.target.value })} />
-                  <Input type="number" placeholder="Accuracy %" value={input.accuracy ?? ""} onChange={(e) => setInput({ ...input, accuracy: e.target.value })} />
-                </>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    Pick one of your duels — timings and accuracy are read from the server automatically.
+                  </p>
+                  {loadingDuels ? (
+                    <p className="text-sm text-muted-foreground">Loading your duels…</p>
+                  ) : recentDuels.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No duels found yet. Play a duel first, then scan it here.</p>
+                  ) : (
+                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                      {recentDuels.map((d) => (
+                        <button
+                          key={d.id}
+                          type="button"
+                          onClick={() => setInput({ ...input, duelId: d.id })}
+                          className={`w-full text-left rounded-md border p-3 text-sm transition-colors ${
+                            input.duelId === d.id ? "border-primary bg-primary/10" : "hover:bg-muted"
+                          }`}
+                        >
+                          <div className="font-medium capitalize">{d.category ?? "General"}</div>
+                          <div className="text-xs text-muted-foreground">
+                            Score {d.player1_score ?? 0}–{d.player2_score ?? 0} ·{" "}
+                            {new Date(d.finished_at ?? d.created_at).toLocaleString()}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               )}
               {active.id === "ai.shareCard" && (
                 <div className="grid grid-cols-2 gap-2">
