@@ -789,27 +789,35 @@ export const BrainDuelGame = ({
         </div>
         <div className="flex items-center justify-center gap-6">
           <div>
-            <p className="text-xs text-muted-foreground">You</p>
+            <p className="text-xs text-muted-foreground">Your score</p>
             <p className="text-2xl font-bold text-primary">{myScore}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Opponent</p>
+            <p className="text-xs text-muted-foreground truncate max-w-[9rem]">{opponentName || 'Opponent'}</p>
             <p className="text-2xl font-bold">{opponentScore}</p>
           </div>
         </div>
         {waitingInfo && (
-          <p className="text-xs text-muted-foreground">
-            Opponent progress: {waitingInfo.answered}/{waitingInfo.total} questions
-          </p>
+          <div className="text-xs text-muted-foreground space-y-0.5">
+            <p>Your progress: {myProgress}/{waitingInfo.total} questions</p>
+            <p>{opponentName || 'Opponent'} progress: {waitingInfo.answered}/{waitingInfo.total} questions</p>
+          </div>
         )}
         <div className="flex flex-col sm:flex-row gap-2 justify-center">
           <Button onClick={() => void checkOpponentProgress(false)} variant="default">
             Check now
           </Button>
+          <Button onClick={() => matchId && void finishMatchById(matchId)} variant="secondary">
+            Finish duel now
+          </Button>
           <Button onClick={resetGame} variant="outline">
             Back to duels
           </Button>
         </div>
+        <p className="text-[11px] text-muted-foreground">
+          The winner's credits are credited automatically when the duel ends.
+        </p>
+
         <MatchStatusIndicator status={matchStatus} matchId={matchId} showHint />
       </Card>
     );
