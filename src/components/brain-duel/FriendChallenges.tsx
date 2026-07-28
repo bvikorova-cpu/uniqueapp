@@ -284,7 +284,19 @@ export const FriendChallenges = () => {
       const { data, error } = await supabase.functions.invoke('brain-duel-matchmaking', {
         body: { challenge_id: challengeId } });
 
-      if (error) throw error;
+      if (error) {
+        // Surface the real server message instead of "non-2xx status code"
+        let serverMessage = error.message;
+        const res = (error as any)?.context;
+        try {
+          if (res && typeof res.json === 'function') {
+            const body = await res.json();
+            if (body?.error) serverMessage = body.error;
+          }
+        } catch { /* keep default message */ }
+        throw new Error(serverMessage);
+      }
+      if ((data as any)?.error) throw new Error((data as any).error);
       return data;
     },
     onSuccess: (data) => {
