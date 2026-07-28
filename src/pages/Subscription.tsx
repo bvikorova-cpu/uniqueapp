@@ -31,9 +31,7 @@ import { CurrencySelector,
   useDetectedCurrency,
   formatPrice } from "@/components/subscription/CurrencySelector";
 import { UrgencyTimer } from "@/components/subscription/UrgencyTimer";
-import { EnterpriseTier } from "@/components/subscription/EnterpriseTier";
 import { WinBackDialog } from "@/components/subscription/WinBackDialog";
-import { PerksCarousel } from "@/components/subscription/PerksCarousel";
 
 
 import { RoiDashboard } from "@/components/subscription/RoiDashboard";
@@ -436,7 +434,6 @@ const Subscription = () => {
         </div>
 
         {/* (3) Enterprise anchor tier */}
-        <EnterpriseTier />
 
         {/* Trust badges */}
         <motion.div
@@ -469,7 +466,6 @@ const Subscription = () => {
         )}
 
         {/* (10) Perks spotlight */}
-        <PerksCarousel />
 
         {/* Savings calculator */}
         <SavingsCalculator />
