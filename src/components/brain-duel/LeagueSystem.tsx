@@ -63,7 +63,7 @@ export const LeagueSystem = () => {
       const userIds = leagueData.map(l => l.user_id);
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name, avatar_url')
+        .select('id, full_name, username, avatar_url')
         .in('id', userIds);
       return leagueData.map(entry => ({ ...entry,
         profile: profiles?.find(p => p.id === entry.user_id) }));
@@ -278,7 +278,7 @@ export const LeagueSystem = () => {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
-                    <p className="font-medium">{entry.profile?.full_name || 'Anonymous'}</p>
+                    <p className="font-medium">{entry.profile?.full_name || entry.profile?.username || 'Player'}</p>
                     <p className="text-xs text-muted-foreground">
                       {entry.total_wins} wins • {entry.league} league
                     </p>

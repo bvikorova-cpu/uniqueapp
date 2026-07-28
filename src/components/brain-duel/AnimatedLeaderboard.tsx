@@ -79,7 +79,7 @@ export const AnimatedLeaderboard = () => {
       const userIds = entries.map((e) => e.user_id);
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("id, full_name, avatar_url")
+        .select("id, full_name, username, avatar_url")
         .in("id", userIds);
 
       // Compute rank changes
@@ -205,7 +205,7 @@ export const AnimatedLeaderboard = () => {
 
                       {/* Info */}
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm truncate">{entry.profile?.full_name || "Anonymous"}</p>
+                        <p className="font-semibold text-sm truncate">{entry.profile?.full_name || entry.profile?.username || "Player"}</p>
                         <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                           <span>{entry.total_games} games</span>
                           <span>•</span>

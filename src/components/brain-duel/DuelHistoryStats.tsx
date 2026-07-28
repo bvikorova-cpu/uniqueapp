@@ -64,13 +64,13 @@ export const DuelHistoryStats = () => {
       const opponentIds = Object.keys(h2h);
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("id, full_name, avatar_url")
+        .select("id, full_name, username, avatar_url")
         .in("id", opponentIds);
 
       const records: HeadToHeadRecord[] = opponentIds.map((id) => { const profile = profiles?.find((p) => p.id === id);
         return {
           opponentId: id,
-          opponentName: profile?.full_name || "Anonymous",
+          opponentName: profile?.full_name || profile?.username || "Player",
           opponentAvatar: profile?.avatar_url || null,
           wins: h2h[id].wins,
           losses: h2h[id].losses,
