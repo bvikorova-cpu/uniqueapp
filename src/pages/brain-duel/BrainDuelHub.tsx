@@ -43,6 +43,8 @@ export default function BrainDuelHub() {
   const [busy, setBusy] = useState(false);
   const [output, setOutput] = useState<any>(null);
   const [listening, setListening] = useState(false);
+  const [recentDuels, setRecentDuels] = useState<any[]>([]);
+  const [loadingDuels, setLoadingDuels] = useState(false);
   const recognitionRef = useRef<any>(null);
 
   const toggleDictation = () => {
