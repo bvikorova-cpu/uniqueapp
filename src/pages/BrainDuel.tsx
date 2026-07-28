@@ -65,6 +65,7 @@ const BrainDuel = () => {
   const queryClient = useQueryClient();
   const [userId, setUserId] = useState<string | null>(null);
   const [startRequest, setStartRequest] = useState<{ nonce: number; mode: string; category?: string } | null>(null);
+  const [selectedMode, setSelectedMode] = useState<string>("quick");
   const { purchasePowerup, isPurchasing } = useBrainDuelPowerups();
   const { onlineCount } = useBrainDuelOnlinePlayers();
   const { data: overview } = useBrainDuelOverview();
@@ -384,6 +385,7 @@ const BrainDuel = () => {
               </Card>
 
               <GameModeSelector onSelectMode={(mode) => {
+                setSelectedMode(mode.id);
                 setStartRequest({ nonce: Date.now(), mode: mode.id });
                 toast.success(`${mode.name} selected`, {
                   description: `${mode.questions} questions, ${mode.entry} credits entry. Pick a category to start!` });
@@ -421,7 +423,8 @@ const BrainDuel = () => {
                             variant="outline"
                             className={`h-auto min-h-[80px] sm:min-h-[90px] py-3 sm:py-4 flex-col gap-2 px-2 sm:px-3 whitespace-normal w-full bg-gradient-to-br ${category.bg} border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300`}
                             onClick={() => {
-                              toast.success(`${category.name} selected`, { description: "Choose this category in the duel panel above to start playing." });
+                              setStartRequest({ nonce: Date.now(), mode: selectedMode, category: category.name });
+                              toast.success(`${category.name} duel starting`, { description: "Matching you with an opponent..." });
                               document.getElementById("brain-duel-game-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
                             }}
                           >
