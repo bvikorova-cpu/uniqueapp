@@ -288,7 +288,7 @@ export const FriendChallenges = () => {
                 Challenge Friend
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md backdrop-blur-xl bg-card/95">
+            <DialogContent className="max-w-md backdrop-blur-xl bg-card/95 max-h-[85vh] overflow-y-auto overscroll-contain">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <Swords className="h-5 w-5 text-primary" />
