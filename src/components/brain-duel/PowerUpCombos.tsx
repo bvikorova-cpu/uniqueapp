@@ -24,9 +24,11 @@ const COMBOS = [
 ];
 
 export const PowerUpCombos = () => {
-  const { credits, spendCreditsAsync } = useBrainDuelCredits();
+  const { credits } = useBrainDuelCredits();
+  const queryClient = useQueryClient();
   const [activating, setActivating] = useState<string | null>(null);
   const [lastActivated, setLastActivated] = useState<string | null>(null);
+
 
   const activateCombo = async (combo: typeof COMBOS[0]) => {
     if (credits < combo.cost) {
