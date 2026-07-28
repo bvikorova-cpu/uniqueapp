@@ -129,8 +129,6 @@ export const TeenStudyPlanner = lazy(() => import("@/pages/TeenStudyPlanner"));
 export const TeenSkillBuilder = lazy(() => import("@/pages/TeenSkillBuilder"));
 export const TeenSocialCoach = lazy(() => import("@/pages/TeenSocialCoach"));
 export const KidsChannel = lazy(() => import("@/pages/KidsChannel"));
-export const KidsHub = lazy(() => import("@/pages/kids/KidsHub"));
-export const KidsFeature = lazy(() => import("@/pages/kids/KidsFeature"));
 export const KidsShareView = lazy(() => import("@/pages/kids/KidsShareView"));
 export const KidsShowDetail = lazy(() => import("@/pages/KidsShowDetail"));
 export const ChooseAdventure = lazy(() => import("@/pages/ChooseAdventure"));
