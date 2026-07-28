@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { UserPlus, Swords, Trophy, Clock, CheckCircle, XCircle, Coins, Zap } from 'lucide-react';
+import { Loader2, Search, UserPlus, Swords, Trophy, Clock, CheckCircle, XCircle, Coins, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
@@ -39,6 +39,7 @@ export const FriendChallenges = () => {
   const { credits } = useBrainDuelCredits();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState<string>('');
+  const [selectedFriendName, setSelectedFriendName] = useState<string>('');
   const [friendSearch, setFriendSearch] = useState<string>('');
   const [category, setCategory] = useState<string>('');
   const [stakeCredits, setStakeCredits] = useState<number>(10);
