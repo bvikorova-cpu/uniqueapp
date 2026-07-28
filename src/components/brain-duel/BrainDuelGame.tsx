@@ -108,6 +108,7 @@ export const BrainDuelGame = ({
   const [answerStartTime, setAnswerStartTime] = useState<number>(Date.now());
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [matchStatus, setMatchStatus] = useState<MatchStatus>('ready');
+  const [opponentName, setOpponentName] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => setCurrentUser(user));
