@@ -83,10 +83,10 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header");
+    if (!authHeader) return jsonResponse({ error: "Unauthorized" }, 401);
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    if (authError || !user) throw new Error("Not authenticated");
+    if (authError || !user) return jsonResponse({ error: "Not authenticated" }, 401);
 
     let body: { match_id?: unknown };
     try {
@@ -241,7 +241,9 @@ Provide:
       p_reason: "brain_duel_match_analysis",
       p_source: "brain_duel"
     });
-    if (deductError || deducted === false) throw new Error("Insufficient credits");
+    if (deductError || deducted === false) {
+      return jsonResponse({ error: "Insufficient credits", required: ANALYSIS_COST, current: currentCredits }, 400);
+    }
 
     return jsonResponse({
       analysis,
