@@ -101,8 +101,8 @@ export const NumberAdventure = ({ onComplete, onBack }: NumberAdventureProps) =>
         </div>
 
         <Card className="bg-white/90 backdrop-blur-sm border-4 border-white/50 shadow-2xl mb-6">
-          <CardContent className="p-8">
-            <h2 className="text-3xl font-bold text-red-600 text-center mb-4">
+          <CardContent className="p-4 sm:p-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-red-600 text-center mb-4">
               Number Adventure 🔢
             </h2>
             <p className="text-center text-gray-700 mb-6">
@@ -117,13 +117,13 @@ export const NumberAdventure = ({ onComplete, onBack }: NumberAdventureProps) =>
               </div>
             )}
 
-            <div className="mb-8 p-8 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl border-4 border-purple-300">
+            <div className="mb-8 p-4 sm:p-8 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl border-4 border-purple-300">
               <div className="text-center">
-                <div className="text-6xl font-bold text-purple-600 mb-6 flex items-center justify-center gap-4">
+                <div className="text-4xl sm:text-6xl font-bold text-purple-600 mb-6 flex items-center justify-center flex-wrap gap-2 sm:gap-4">
                   <span>{problem.num1}</span>
-                  <span className="text-5xl">{problem.operation}</span>
+                  <span className="text-3xl sm:text-5xl">{problem.operation}</span>
                   <span>{problem.num2}</span>
-                  <span className="text-5xl">=</span>
+                  <span className="text-3xl sm:text-5xl">=</span>
                   <span className="text-red-600">?</span>
                 </div>
 
@@ -133,11 +133,12 @@ export const NumberAdventure = ({ onComplete, onBack }: NumberAdventureProps) =>
                   onChange={(e) => setUserAnswer(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Your answer"
-                  className="w-64 h-16 text-3xl text-center border-4 border-purple-400 rounded-xl focus:border-purple-600 focus:outline-none"
+                  className="w-full max-w-xs h-14 sm:h-16 text-2xl sm:text-3xl text-center border-4 border-purple-400 rounded-xl focus:border-purple-600 focus:outline-none"
                   autoFocus
                 />
               </div>
             </div>
+
 
             <div className="flex justify-center gap-4">
               <Button

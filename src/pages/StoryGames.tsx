@@ -21,7 +21,7 @@ import { XPSystem } from "@/components/kids/games/XPSystem";
 import { DailyStreak } from "@/components/kids/games/DailyStreak";
 import { Leaderboard } from "@/components/kids/games/Leaderboard";
 import { UnlockableRewards } from "@/components/kids/games/UnlockableRewards";
-import { BonusRounds } from "@/components/kids/games/BonusRounds";
+
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -147,10 +147,6 @@ export default function StoryGames() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Main Content */}
             <div className="lg:col-span-3 space-y-6">
-              {/* Bonus Events */}
-              <Card className="p-5 bg-white/85 backdrop-blur-md border-white/50 shadow-xl">
-                <BonusRounds onPlay={(theme) => console.log("Bonus round:", theme)} />
-              </Card>
 
               {/* Games Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
