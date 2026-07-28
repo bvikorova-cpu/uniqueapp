@@ -188,7 +188,7 @@ export default function StoryGames() {
               </Card>
 
               <Card className="p-4 bg-white/85 backdrop-blur-md border-white/50 shadow-xl">
-                <DailyStreak currentStreak={streak} longestStreak={0} />
+                <DailyStreak currentStreak={streak} longestStreak={longestStreak} />
               </Card>
 
               <Card className="p-4 bg-white/85 backdrop-blur-md border-white/50 shadow-xl">
