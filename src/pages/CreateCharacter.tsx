@@ -164,6 +164,11 @@ export default function CreateCharacter() {
           costumeColor: selections.costume.name,
           ageGroup: selections.age.name,
           personality: selections.personality.name } });
+      if (data?.error === "rate_limited") {
+        toast({ title: "Slow down a little 🐢", description: "Too many stories at once. Please wait a minute and try again.", variant: "destructive" });
+        return;
+      }
+      if (data?.error) throw new Error(data.error);
       if (error) throw error;
       if (data?.story) {
         setGeneratedStory(data.story);

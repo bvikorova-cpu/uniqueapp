@@ -10,7 +10,11 @@ serve(async (req) => {
   }
 
   try {
-    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "character_story" });
+    const __auth = await requireAiCredits(req, corsHeaders, {
+      credits: 1,
+      usageType: "character_story",
+      // Kids flow: users retry/tweak often — allow a generous window.
+      rateLimit: { bucket: "ai.character_story", max: 20, windowSec: 300 } });
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
     const { characterName, hairColor, superpower, eyeColor, costumeColor, ageGroup, personality } = await req.json();
