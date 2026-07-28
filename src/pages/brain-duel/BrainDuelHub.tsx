@@ -195,8 +195,12 @@ export default function BrainDuelHub() {
                 <>
                   <Input placeholder="Topic" value={input.topic ?? ""} onChange={(e) => setInput({ ...input, topic: e.target.value })} />
                   <Textarea placeholder="Your spoken answer (transcript)" value={input.transcript ?? ""} onChange={(e) => setInput({ ...input, transcript: e.target.value })} />
+                  <Button type="button" variant={listening ? "destructive" : "outline"} className="w-full" onClick={toggleDictation}>
+                    <Mic className="h-4 w-4 mr-2" />{listening ? "Stop recording" : "Speak your answer"}
+                  </Button>
                 </>
               )}
+
               {active.id === "ai.cheatScan" && (
                 <>
                   <Input placeholder="Duel ID" value={input.duelId ?? ""} onChange={(e) => setInput({ ...input, duelId: e.target.value })} />
