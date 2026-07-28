@@ -238,7 +238,6 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // ─── Niche AI helpers → generate-gift-message ───
   // "calculate-karmic-debt", "find-genetic-matches", "find-soul-matches": real edge functions (Mystical audit fix)
 
-  "brain-duel-friend-match":            { target: "generate-gift-message", bodyExtras: { type: "brain_duel_match" } },
 
   // ─────────────────────────────────────────────────────────────────────
   // SHADOW / BATTLE / GAME ACTIONS → create-checkout (game actions)

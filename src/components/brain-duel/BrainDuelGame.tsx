@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -55,11 +55,26 @@ const CATEGORIES = [
   { id: 'Music', emoji: '🎵', color: 'from-pink-500/20 to-rose-600/10' },
 ];
 
-export const BrainDuelGame = () => {
+export const MODE_CONFIG: Record<string, { entry: number; reward: number; questions: number; time: number; label: string }> = {
+  quick: { entry: 10, reward: 20, questions: 10, time: 30, label: 'Quick Duel' },
+  classic: { entry: 20, reward: 50, questions: 20, time: 30, label: 'Classic Battle' },
+  championship: { entry: 50, reward: 150, questions: 30, time: 24, label: 'Championship' },
+  mystery: { entry: 30, reward: 90, questions: 10, time: 20, label: 'Mystery Category' },
+};
+
+export interface StartRequest {
+  nonce: number;
+  mode: string;
+  category?: string;
+}
+
+export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | null }) => {
   const { credits, isLoading: creditsLoading } = useBrainDuelCredits();
   const { powerups, consumePowerup: triggerPowerup } = useBrainDuelPowerups();
   const [gamePhase, setGamePhase] = useState<'category' | 'loading' | 'playing' | 'answer-reveal' | 'results' | 'analysis'>('category');
   const [category, setCategory] = useState('');
+  const [gameMode, setGameMode] = useState<string>('quick');
+
   const [matchId, setMatchId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -82,6 +97,26 @@ export const BrainDuelGame = () => {
     supabase.auth.getUser().then(({ data: { user } }) => setCurrentUser(user));
   }, []);
 
+  // React to external start requests (game mode selector / mystery card)
+  const lastNonceRef = useRef<number>(0);
+  useEffect(() => {
+    if (!startRequest || startRequest.nonce === lastNonceRef.current) return;
+    if (!currentUser) return;
+    lastNonceRef.current = startRequest.nonce;
+    setGameMode(startRequest.mode);
+    if (startRequest.category) {
+      startMatch(startRequest.category, startRequest.mode);
+    } else if (startRequest.mode === 'mystery') {
+      const random = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)].id;
+      toast.info(`🔮 Mystery category: ${random}`);
+      startMatch(random, 'mystery');
+    } else {
+      setGamePhase('category');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startRequest?.nonce, currentUser]);
+
+
   // Timer
   useEffect(() => {
     if (gamePhase !== 'playing' || timeLeft <= 0) return;
@@ -96,17 +131,19 @@ export const BrainDuelGame = () => {
     }
   }, [timeLeft, gamePhase, selectedAnswer]);
 
-  const startMatch = async (cat: string) => {
+  const startMatch = async (cat: string, mode: string = gameMode) => {
     if (!currentUser) {
       toast.error('Please sign in to play');
       return;
     }
-    if (credits < 10) {
-      toast.error('You need at least 10 credits to play');
+    const cfg = MODE_CONFIG[mode] ?? MODE_CONFIG.quick;
+    if (credits < cfg.entry) {
+      toast.error(`You need at least ${cfg.entry} credits for ${cfg.label}`);
       return;
     }
 
     setCategory(cat);
+    setGameMode(mode);
     setGamePhase('loading');
     setMyScore(0);
     setOpponentScore(0);
@@ -117,9 +154,10 @@ export const BrainDuelGame = () => {
     try {
       // 1. Create match
       const { data: matchData, error: matchError } = await supabase.functions.invoke('brain-duel-matchmaking', {
-        body: { category: cat } });
+        body: { category: cat, gameMode: mode } });
       if (matchError) throw matchError;
       if (matchData?.error) throw new Error(matchData.error);
+
       
       setMatchId(matchData.match.id);
 
@@ -265,13 +303,26 @@ export const BrainDuelGame = () => {
   if (gamePhase === 'category') {
     return (
       <Card className="p-4 sm:p-6 backdrop-blur-xl bg-card/80 border-primary/10">
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4 flex-wrap">
           <Brain className="h-6 w-6 text-primary" />
           <h2 className="text-xl sm:text-2xl font-bold">Choose Category</h2>
           <Badge variant="outline" className="ml-auto text-xs">{credits} credits</Badge>
         </div>
+        <div className="flex flex-wrap gap-2 mb-3">
+          {Object.entries(MODE_CONFIG).filter(([id]) => id !== 'mystery').map(([id, cfg]) => (
+            <Button
+              key={id}
+              size="sm"
+              variant={gameMode === id ? 'default' : 'outline'}
+              className="text-xs"
+              onClick={() => setGameMode(id)}
+            >
+              {cfg.label} · {cfg.entry}
+            </Button>
+          ))}
+        </div>
         <p className="text-sm text-muted-foreground mb-4">
-          AI generates unique questions each game • 10 credits entry • Winner takes 20
+          AI generates unique questions each game • {(MODE_CONFIG[gameMode] ?? MODE_CONFIG.quick).entry} credits entry • Winner takes {(MODE_CONFIG[gameMode] ?? MODE_CONFIG.quick).reward}
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
           {CATEGORIES.map((cat) => (
@@ -279,9 +330,10 @@ export const BrainDuelGame = () => {
               <Button
                 onClick={() => startMatch(cat.id)}
                 variant="outline"
-                disabled={credits < 10 || creditsLoading}
+                disabled={credits < (MODE_CONFIG[gameMode] ?? MODE_CONFIG.quick).entry || creditsLoading}
                 className={`h-auto min-h-[72px] sm:min-h-[80px] py-3 flex-col gap-1.5 px-2 whitespace-normal w-full bg-gradient-to-br ${cat.color} border-border/50 hover:border-primary/30`}
               >
+
                 <span className="text-2xl">{cat.emoji}</span>
                 <span className="text-[10px] sm:text-xs font-semibold text-center leading-tight">{cat.id}</span>
               </Button>

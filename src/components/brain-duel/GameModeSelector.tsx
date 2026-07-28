@@ -48,7 +48,7 @@ const gameModes: GameMode[] = [
     id: "championship",
     name: "Championship",
     duration: "20 min",
-    questions: 50,
+    questions: 30,
     timePerQuestion: 24,
     entry: 50,
     reward: 150,
@@ -154,7 +154,7 @@ export const GameModeSelector = ({ onSelectMode, isSearching = false }: GameMode
                         Finding opponent...
                       </span>
                     ) : (
-                      'Select Mode'
+                      'Play this mode'
                     )}
                   </Button>
                 </CardContent>

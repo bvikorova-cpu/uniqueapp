@@ -64,6 +64,7 @@ const BrainDuel = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [userId, setUserId] = useState<string | null>(null);
+  const [startRequest, setStartRequest] = useState<{ nonce: number; mode: string; category?: string } | null>(null);
   const { purchasePowerup, isPurchasing } = useBrainDuelPowerups();
   const { onlineCount } = useBrainDuelOnlinePlayers();
   const { data: overview } = useBrainDuelOverview();
@@ -268,7 +269,7 @@ const BrainDuel = () => {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="max-w-3xl mx-auto mb-10 scroll-mt-24"
         >
-          <BrainDuelGame />
+          <BrainDuelGame startRequest={startRequest} />
         </motion.div>
 
         {/* ===== ANIMATED LEADERBOARD & FRIENDS ===== */}
@@ -383,13 +384,17 @@ const BrainDuel = () => {
               </Card>
 
               <GameModeSelector onSelectMode={(mode) => {
-                toast.success(`${mode.name} mode selected`, {
-                  description: `${mode.questions} questions, ${mode.entry} credits entry. Scroll up to start a duel!` });
+                setStartRequest({ nonce: Date.now(), mode: mode.id });
+                toast.success(`${mode.name} selected`, {
+                  description: `${mode.questions} questions, ${mode.entry} credits entry. Pick a category to start!` });
                 document.getElementById("brain-duel-game-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
               }} />
 
               {/* Mystery Category */}
-              <MysteryCategory />
+              <MysteryCategory onStart={() => {
+                setStartRequest({ nonce: Date.now(), mode: "mystery" });
+                document.getElementById("brain-duel-game-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }} />
 
               {/* Categories */}
               <Card className="overflow-hidden">

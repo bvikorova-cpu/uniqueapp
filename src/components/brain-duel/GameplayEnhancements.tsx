@@ -58,10 +58,17 @@ export const BonusRoundCard = () => {
   );
 };
 
-export const MysteryCategory = () => {
+export const MysteryCategory = ({ onStart }: { onStart?: () => void }) => {
   return (
     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-      <Card className="relative overflow-hidden cursor-pointer border-primary/30 backdrop-blur-xl bg-card/80">
+      <Card
+        className="relative overflow-hidden cursor-pointer border-primary/30 backdrop-blur-xl bg-card/80"
+        role="button"
+        tabIndex={0}
+        onClick={() => onStart?.()}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onStart?.(); } }}
+      >
+
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-violet-500/5 to-cyan-500/10" />
         <CardContent className="p-6 text-center relative">
           <motion.div
@@ -72,11 +79,13 @@ export const MysteryCategory = () => {
             🔮
           </motion.div>
           <h3 className="font-bold text-lg mb-1">Mystery Category</h3>
-          <p className="text-sm text-muted-foreground mb-3">Random topic, higher stakes, bigger rewards</p>
+          <p className="text-sm text-muted-foreground mb-3">Random topic • 30 credits entry • Winner takes 90</p>
           <div className="flex justify-center gap-3">
             <Badge className="bg-primary/15 text-primary border-primary/30">3x Credits</Badge>
             <Badge className="bg-violet-500/15 text-violet-500 border-violet-500/30">+100 XP</Badge>
           </div>
+          <p className="text-xs text-primary font-semibold mt-3">Tap to start a mystery duel</p>
+
         </CardContent>
       </Card>
     </motion.div>

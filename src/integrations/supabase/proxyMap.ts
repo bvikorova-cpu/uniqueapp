@@ -30,7 +30,6 @@ export const AI_PROXY_MAP: Record<string, string> = { "activate-job-listing": "a
   "beauty-skin-analysis": "beauty_skin_analysis",
   "beauty-transformation": "beauty_transformation",
   "beauty-tutorial": "beauty_tutorial",
-  "brain-duel-friend-match": "brain_duel_friend_match",
   "bulk-generate-panoramas": "bulk_generate_panoramas",
   // "calculate-karmic-debt": real edge function, not proxied
   "capsule-wardrobe": "capsule_wardrobe",

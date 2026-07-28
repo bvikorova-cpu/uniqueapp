@@ -54,6 +54,7 @@ export const AnimatedLeaderboard = () => {
 
       matches.forEach((match: any) => {
         [match.player1_id, match.player2_id].forEach((pid: string) => {
+          if (!pid) return;
           if (!playerStats[pid]) playerStats[pid] = { wins: 0, total: 0 };
           playerStats[pid].total++;
           if (match.winner_id === pid) playerStats[pid].wins++;
@@ -70,7 +71,7 @@ export const AnimatedLeaderboard = () => {
             streak: league?.win_streak || 0,
             elo: league?.league_points || 1000 };
         })
-        .filter((e) => e.total_games >= 3)
+        .filter((e) => e.total_games >= 1)
         .sort((a, b) => b.elo !== a.elo ? b.elo - a.elo : b.wins - a.wins)
         .slice(0, 15);
 
@@ -139,7 +140,7 @@ export const AnimatedLeaderboard = () => {
         ) : !leaderboard || leaderboard.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Trophy className="h-10 w-10 mx-auto mb-2 opacity-30" />
-            <p className="text-sm">Play 3+ games to appear on the leaderboard!</p>
+            <p className="text-sm">Finish your first duel to appear on the leaderboard!</p>
           </div>
         ) : (
           <LayoutGroup>
