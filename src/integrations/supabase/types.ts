@@ -6314,6 +6314,56 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_duel_live_lobby: {
+        Row: {
+          created_at: string
+          live_started_at: string | null
+          match_id: string
+          player1_id: string
+          player1_ready: boolean
+          player1_seen_at: string | null
+          player2_id: string | null
+          player2_ready: boolean
+          player2_seen_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          live_started_at?: string | null
+          match_id: string
+          player1_id: string
+          player1_ready?: boolean
+          player1_seen_at?: string | null
+          player2_id?: string | null
+          player2_ready?: boolean
+          player2_seen_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          live_started_at?: string | null
+          match_id?: string
+          player1_id?: string
+          player1_ready?: boolean
+          player1_seen_at?: string | null
+          player2_id?: string | null
+          player2_ready?: boolean
+          player2_seen_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_duel_live_lobby_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: true
+            referencedRelation: "brain_duel_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brain_duel_match_chat: {
         Row: {
           created_at: string | null
@@ -68293,6 +68343,50 @@ export type Database = {
       brain_duel_fifty_fifty: {
         Args: { _question_id: string }
         Returns: string[]
+      }
+      brain_duel_live_fallback: {
+        Args: { p_match_id: string }
+        Returns: {
+          created_at: string
+          live_started_at: string | null
+          match_id: string
+          player1_id: string
+          player1_ready: boolean
+          player1_seen_at: string | null
+          player2_id: string | null
+          player2_ready: boolean
+          player2_seen_at: string | null
+          status: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "brain_duel_live_lobby"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      brain_duel_live_heartbeat: {
+        Args: { p_match_id: string; p_ready?: boolean }
+        Returns: {
+          created_at: string
+          live_started_at: string | null
+          match_id: string
+          player1_id: string
+          player1_ready: boolean
+          player1_seen_at: string | null
+          player2_id: string | null
+          player2_ready: boolean
+          player2_seen_at: string | null
+          status: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "brain_duel_live_lobby"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       brain_duel_spend_credits: { Args: { _amount: number }; Returns: number }
       bucket_30s: { Args: { ts: string }; Returns: number }
