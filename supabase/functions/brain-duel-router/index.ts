@@ -174,10 +174,13 @@ Deno.serve(async (req) => {
       // ---------- 1. AI Question Generator ----------
       case "ai.generateQuiz": {
         const { topic, count = 10, difficulty = "medium" } = body;
+        if (!topic || !String(topic).trim()) {
+          const e: any = new Error("Please enter a topic."); e.status = 400; throw e;
+        }
         const { text } = await callAI(
           `Generate ${count} ${difficulty} difficulty multiple-choice quiz questions on "${topic}". Return JSON {questions:[{q, options:[a,b,c,d], correct_index, explanation}]}.`
         );
-        result = { quiz: text };
+        result = { quiz: parseAIJson(text) };
         break;
       }
 
@@ -187,9 +190,10 @@ Deno.serve(async (req) => {
         const { text } = await callAI(
           `Read text from image at ${imageUrl} and create ${count} quiz questions. Return JSON {questions:[{q, options:[a,b,c,d], correct_index}]}.`
         );
-        result = { quiz: text };
+        result = { quiz: parseAIJson(text) };
         break;
       }
+
 
       // ---------- 3. Voice Quiz Battle ----------
       case "ai.voiceQuiz": {
