@@ -12,9 +12,10 @@ serve(async (req) => {
   try {
     const __auth = await requireAiCredits(req, corsHeaders, {
       credits: 1,
-      usageType: "character_story",
-      // Kids flow: users retry/tweak often — allow a generous window.
-      rateLimit: { bucket: "ai.character_story", max: 20, windowSec: 300 } });
+      usageType: "kids_character_story",
+      // Character stories are already protected by auth + credits / Kids Gold Pass.
+      // Disable the shared throttle here so children can retry/tweak without a 429 crash.
+      rateLimit: false });
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
     const { characterName, hairColor, superpower, eyeColor, costumeColor, ageGroup, personality } = await req.json();

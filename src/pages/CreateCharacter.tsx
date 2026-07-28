@@ -164,19 +164,25 @@ export default function CreateCharacter() {
           costumeColor: selections.costume.name,
           ageGroup: selections.age.name,
           personality: selections.personality.name } });
-      if (data?.error === "rate_limited") {
-        toast({ title: "Slow down a little 🐢", description: "Too many stories at once. Please wait a minute and try again.", variant: "destructive" });
-        return;
-      }
-      if (data?.error) throw new Error(data.error);
       if (error) throw error;
+      if (data?.error) throw new Error(data.message || data.error);
       if (data?.story) {
         setGeneratedStory(data.story);
         toast({ title: "Story Created! 📖", description: `${characterName}'s adventure is ready!` });
       }
     } catch (error) {
       console.error("Error generating story:", error);
-      toast({ title: "Generation Failed", description: error instanceof Error ? error.message : "Failed", variant: "destructive" });
+      const ctx = (error as any)?.context;
+      let msg = error instanceof Error ? error.message : "Failed to generate story.";
+      try {
+        const body = typeof ctx?.body === "string" ? JSON.parse(ctx.body) : ctx?.body;
+        if (body?.error === "rate_limited") {
+          msg = body.message || "Too many requests. Please wait a minute and try again.";
+        } else if (body?.error) {
+          msg = body.message || body.error;
+        }
+      } catch {}
+      toast({ title: "Story Generation Failed", description: msg, variant: "destructive" });
     } finally {
       setIsGeneratingStory(false);
     }
