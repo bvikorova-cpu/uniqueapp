@@ -576,7 +576,9 @@ const AdminFounders = lazy(() => import("@/pages/admin/AdminFounders"));
 const AdminAffiliateTiers = lazy(() => import("@/pages/admin/AdminAffiliateTiers"));
 const AdminContestPeriods = lazy(() => import("@/pages/admin/AdminContestPeriods"));
 const AdminPauseOverview = lazy(() => import("@/pages/admin/AdminPauseOverview"));
+const AdminSupportInbox = lazy(() => import("@/pages/admin/AdminSupportInbox"));
 const AdminErrorLogs = lazy(() => import("@/pages/admin/AdminErrorLogs"));
+
 const AdminRouteErrors = lazy(() => import("@/pages/admin/AdminRouteErrors"));
 const AdminClientErrors = lazy(() => import("@/pages/admin/AdminClientErrors"));
 const AdminAuditLog = lazy(() => import("@/pages/admin/AdminAuditLog"));
