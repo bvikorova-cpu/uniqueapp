@@ -293,7 +293,11 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
       setGamePhase('analysis');
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
-      toast.success(`AI Analysis complete! (${data.credits_spent} credits used)`);
+      if (data?.analysis_source === 'fallback') {
+        toast.warning(data.warning || 'Backup match analysis ready — no credits charged.');
+      } else {
+        toast.success(`AI Analysis complete! (${data.credits_spent} credits used)`);
+      }
     } catch (err: any) {
       console.error('AI analysis error:', err);
       toast.error(err.message || 'Failed to get AI analysis');
