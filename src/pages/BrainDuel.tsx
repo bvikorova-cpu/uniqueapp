@@ -523,21 +523,8 @@ const BrainDuel = () => {
               </Card>
             </TabsContent>
 
-            {/* Leagues Tab */}
-            <TabsContent value="leagues" className="space-y-6">
-              <LeagueSystem />
-            </TabsContent>
 
-            {/* Tournaments Tab */}
-            <TabsContent value="tournaments" className="space-y-6">
-              <WeeklyTournaments />
-            </TabsContent>
 
-            {/* Custom Challenges Tab */}
-            <TabsContent value="custom" className="space-y-6">
-              <CustomChallenge />
-              <FriendChallenges />
-            </TabsContent>
 
             {/* Power-ups Tab */}
             <TabsContent value="powerups" className="space-y-6">
