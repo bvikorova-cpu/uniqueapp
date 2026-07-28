@@ -126,7 +126,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "gpt-4o-mini",
           messages: [
-            { role: "system", content: `You are a children's story writer. Output ONLY a JSON object {"scenes":[...]} with exactly ${sceneCount} short scene descriptions in ${language}, each 2-3 sentences, warm, magical, safe for kids 4-10.` },
+            { role: "system", content: `You are a children's story writer. Write a complete, flowing fairy tale in ${language} split into exactly ${sceneCount} scenes. Output ONLY a JSON object {"scenes":[...]} where each entry is REAL narrative prose of 5-7 full sentences (at least 80 words each), with characters, dialogue and emotion. Never output titles, labels or one-word entries. The scenes together must form one continuous story with a beginning, middle and a happy ending. Warm, magical, safe for kids 4-10.` },
             { role: "user", content: `Theme: ${theme}` },
           ],
           response_format: { type: "json_object" } }) });
@@ -151,25 +151,29 @@ serve(async (req) => {
 
       // 2) Illustrations (parallel)
       const images = await Promise.all(scenes.map(async (scene, index) => {
-        try {
-          const r = await fetch("https://api.openai.com/v1/images/generations", {
-            method: "POST",
-            headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-            body: JSON.stringify({
-              model: "dall-e-3",
-              prompt: `Children's storybook illustration. Scene: ${scene}. Soft warm watercolor style, age-appropriate, friendly, no text, no letters, vibrant, full-bleed.`.slice(0, 4000),
-              n: 1,
-              size: "1024x1024",
-              response_format: "b64_json" }) });
-          if (!r.ok) { console.error("img fail", r.status, await r.text()); return placeholderStoryImage(scene, index); }
-          const j = await r.json();
-          const b64 = j?.data?.[0]?.b64_json;
-          return b64 ? `data:image/png;base64,${b64}` : (j?.data?.[0]?.url || placeholderStoryImage(scene, index));
-        } catch (error) {
-          console.error("img unexpected fail", error);
-          return placeholderStoryImage(scene, index);
+        const prompt = `Children's storybook illustration. Scene: ${scene}. Soft warm watercolor style, age-appropriate, friendly, no text, no letters, vibrant, full-bleed.`.slice(0, 3800);
+        const attempts: Record<string, unknown>[] = [
+          { model: "gpt-image-1", prompt, n: 1, size: "1024x1024" },
+          { model: "dall-e-3", prompt, n: 1, size: "1024x1024", response_format: "b64_json" },
+        ];
+        for (const body of attempts) {
+          try {
+            const r = await fetch("https://api.openai.com/v1/images/generations", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+              body: JSON.stringify(body) });
+            if (!r.ok) { console.error("img fail", (body as any).model, r.status, await r.text()); continue; }
+            const j = await r.json();
+            const b64 = j?.data?.[0]?.b64_json;
+            if (b64) return `data:image/png;base64,${b64}`;
+            if (j?.data?.[0]?.url) return j.data[0].url as string;
+          } catch (error) {
+            console.error("img unexpected fail", error);
+          }
         }
+        return placeholderStoryImage(scene, index);
       }));
+
 
       // 3) TTS (parallel)
       const audioFiles = wantAudio ? await Promise.all(scenes.map(async (scene) => {
