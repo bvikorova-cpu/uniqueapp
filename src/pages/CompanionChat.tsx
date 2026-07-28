@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Send, ArrowLeft, Loader2, Sparkles, Clock } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 
 const CompanionChat = () => {
   const { conversationId } = useParams();
