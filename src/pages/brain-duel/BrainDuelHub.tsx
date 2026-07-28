@@ -70,6 +70,13 @@ export default function BrainDuelHub() {
   useEffect(() => {
     if (!active) return;
     setOutput(null);
+    if (active.id === "ai.cheatScan") {
+      setLoadingDuels(true);
+      brainDuelCall<any>("duels.recent")
+        .then((r) => setRecentDuels(r?.duels ?? []))
+        .catch(() => setRecentDuels([]))
+        .finally(() => setLoadingDuels(false));
+    }
   }, [active]);
 
   const run = async () => {
