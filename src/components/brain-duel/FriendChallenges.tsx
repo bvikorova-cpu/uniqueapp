@@ -541,14 +541,14 @@ export const FriendChallenges = () => {
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <p className="text-[11px] text-muted-foreground flex items-center gap-1 whitespace-nowrap">
                       <Clock className="h-3 w-3" />
                       { formatDistanceToNow(new Date(challenge.created_at), {
                         addSuffix: true })}
                     </p>
                     {!isChallenger && challenge.status === 'pending' && (
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 ml-auto">
                         <Button
                           size="sm"
                           variant="default"
@@ -577,11 +577,12 @@ export const FriendChallenges = () => {
                       </div>
                     )}
                     {isChallenger && challenge.status === 'pending' && (
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge variant="secondary" className="text-[10px] ml-auto">
                         Waiting for response...
                       </Badge>
                     )}
                   </div>
+
                 </div>
               );
             })}
