@@ -20,6 +20,7 @@ import { StorybookDisplay } from "@/components/kids-story/StorybookDisplay";
 import { useNavigate } from "react-router-dom";
 import { useKidsStoryCreator } from "@/hooks/useKidsStoryCreator";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
