@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -42,6 +42,28 @@ export default function BrainDuelHub() {
   const [input, setInput] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [output, setOutput] = useState<any>(null);
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+
+  const toggleDictation = () => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) { toast.error("Speech recognition is not supported in this browser — please type your answer."); return; }
+    if (listening) { recognitionRef.current?.stop(); setListening(false); return; }
+    const rec = new SR();
+    rec.lang = navigator.language || "en-US";
+    rec.interimResults = false;
+    rec.continuous = false;
+    rec.onresult = (e: any) => {
+      const said = Array.from(e.results).map((r: any) => r[0].transcript).join(" ").trim();
+      if (said) setInput((s) => ({ ...s, transcript: `${s.transcript ? s.transcript + " " : ""}${said}` }));
+    };
+    rec.onerror = () => { setListening(false); toast.error("Could not hear you — please try again or type your answer."); };
+    rec.onend = () => setListening(false);
+    recognitionRef.current = rec;
+    setListening(true);
+    rec.start();
+  };
+
 
   useEffect(() => {
     if (!active) return;
@@ -195,8 +217,12 @@ export default function BrainDuelHub() {
                 <>
                   <Input placeholder="Topic" value={input.topic ?? ""} onChange={(e) => setInput({ ...input, topic: e.target.value })} />
                   <Textarea placeholder="Your spoken answer (transcript)" value={input.transcript ?? ""} onChange={(e) => setInput({ ...input, transcript: e.target.value })} />
+                  <Button type="button" variant={listening ? "destructive" : "outline"} className="w-full" onClick={toggleDictation}>
+                    <Mic className="h-4 w-4 mr-2" />{listening ? "Stop recording" : "Speak your answer"}
+                  </Button>
                 </>
               )}
+
               {active.id === "ai.cheatScan" && (
                 <>
                   <Input placeholder="Duel ID" value={input.duelId ?? ""} onChange={(e) => setInput({ ...input, duelId: e.target.value })} />
@@ -227,7 +253,19 @@ export default function BrainDuelHub() {
               {output && (
                 <Card className="bg-muted/30">
                   <CardContent className="pt-4 space-y-3">
-                    {Array.isArray(output?.quiz?.questions) ? (
+                    {output?.round ? (
+                      <div className="text-sm space-y-2">
+                        <p className="font-medium">{output.round.question}</p>
+                        <p className={output.round.user_correct ? "text-green-600 font-semibold" : "text-destructive font-semibold"}>
+                          {output.round.user_correct ? "Correct!" : "Not quite."}
+                          {typeof output.round.score === "number" ? ` (${output.round.score}/100)` : ""}
+                        </p>
+                        {output.round.correct_answer && (
+                          <p className="text-muted-foreground">Correct answer: {output.round.correct_answer}</p>
+                        )}
+                        {output.round.feedback && <p className="text-xs italic text-muted-foreground">{output.round.feedback}</p>}
+                      </div>
+                    ) : Array.isArray(output?.quiz?.questions) ? (
                       output.quiz.questions.map((q: any, i: number) => (
                         <div key={i} className="text-sm space-y-1">
                           <p className="font-medium">{i + 1}. {q.q ?? q.question}</p>

@@ -214,13 +214,18 @@ Deno.serve(async (req) => {
 
       // ---------- 3. Voice Quiz Battle ----------
       case "ai.voiceQuiz": {
-        const { topic, transcript } = body;
+        const topic = String(body.topic ?? "").trim();
+        const transcript = String(body.transcript ?? "").trim();
+        if (!topic) { const e: any = new Error("Please enter a topic."); e.status = 400; throw e; }
+        if (!transcript) { const e: any = new Error("Please speak or type your answer first."); e.status = 400; throw e; }
         const { text } = await callAI(
-          `Quiz question on "${topic}". User spoken answer: "${transcript}". Return JSON {question, correct_answer, user_correct:boolean, feedback}.`
+          `Topic: "${topic}". Invent one short quiz question about this topic, then judge this spoken answer: "${transcript}". Return JSON {"question":string,"correct_answer":string,"user_correct":boolean,"score":0-100,"feedback":string}.`,
+          "You are a quiz judge. Respond with valid JSON only."
         );
         result = { round: parseAIJson(text) };
         break;
       }
+
 
       // ---------- 4. AI Cheat Detection ----------
       case "ai.cheatScan": {
