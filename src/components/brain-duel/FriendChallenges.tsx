@@ -16,6 +16,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { useNavigate } from 'react-router-dom';
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { searchProfiles } from "@/lib/searchProfiles";
+
 
 const categories = [
   'General Knowledge',
@@ -142,19 +144,16 @@ export const FriendChallenges = () => {
   // Search any user by name/username (works even without friendships)
   const { data: searchResults, isFetching: isSearching } = useQuery({
     queryKey: ['friend-challenge-search', friendSearch],
-    enabled: friendSearch.trim().length >= 2,
+    enabled: friendSearch.trim().length >= 1,
     queryFn: async () => {
       const term = friendSearch.trim();
       const { data: { user } } = await supabase.auth.getUser();
-      const { data } = await supabase
-        .from('profiles')
-        .select('id, full_name, username, avatar_url')
-        .or(`full_name.ilike.%${term}%,username.ilike.%${term}%`)
-        .limit(20);
-      return (data || []).filter((p: any) => p.id !== user?.id);
+      const rows = await searchProfiles(term, { limit: 20 });
+      return rows.filter((p) => p.id !== user?.id);
     } });
 
-  const friendOptions = (friendSearch.trim().length >= 2 ? searchResults : friends) || [];
+  const friendOptions = (friendSearch.trim().length >= 1 ? searchResults : friends) || [];
+
 
 
   // Fetch challenges
@@ -289,7 +288,7 @@ export const FriendChallenges = () => {
                 Challenge Friend
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md backdrop-blur-xl bg-card/95">
+            <DialogContent className="max-w-md backdrop-blur-xl bg-card/95 max-h-[85vh] overflow-y-auto overscroll-contain">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <Swords className="h-5 w-5 text-primary" />
@@ -344,9 +343,10 @@ export const FriendChallenges = () => {
                         <SelectItem value="none" disabled>
                           {isSearching
                             ? 'Searching…'
-                            : friendSearch.trim().length >= 2
+                            : friendSearch.trim().length >= 1
                               ? 'No users found'
                               : 'No friends yet — type a name to search'}
+
                         </SelectItem>
                       )}
                     </SelectContent>
