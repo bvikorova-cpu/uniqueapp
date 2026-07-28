@@ -10,6 +10,11 @@ import "./index.css";
 initSentry();
 // Wire global error/rejection listeners to persist every error to Supabase.
 installGlobalErrorReporter();
+// Detect newly deployed builds in long-lived tabs so every user gets fixes,
+// not only the ones who happen to hard-refresh.
+import("./utils/appUpdateWatcher")
+  .then((m) => m.installAppUpdateWatcher())
+  .catch(() => {});
 
 // Keep dynamic imports inside React.lazy. Starting them at module top-level
 // delays execution of this whole file on slow mobile networks, leaving #root
