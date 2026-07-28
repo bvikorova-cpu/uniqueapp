@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Brain, Trophy, Clock, Target, Zap, Timer, Lightbulb, SkipForward, Sparkles, Bot, BarChart3, Loader2, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
+import { Brain, Trophy, Clock, Target, Zap, Timer, Lightbulb, SkipForward, Sparkles, Bot, BarChart3, Loader2, CheckCircle, XCircle, ArrowRight, User as UserIcon } from 'lucide-react';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { useBrainDuelPowerups } from '@/hooks/useBrainDuelPowerups';
 import { motion, AnimatePresence } from 'framer-motion';
