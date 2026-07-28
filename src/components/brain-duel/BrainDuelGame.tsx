@@ -741,6 +741,45 @@ export const BrainDuelGame = ({
     );
   }
 
+  // ===== WAITING FOR OPPONENT (friend duels) =====
+  if (gamePhase === 'waiting') {
+    return (
+      <Card className="p-6 sm:p-8 text-center backdrop-blur-xl bg-card/80 border-primary/10 space-y-4">
+        <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
+        <div>
+          <h3 className="text-lg font-bold">You're done — waiting for your opponent</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            Your answers are saved. The result is calculated as soon as your opponent finishes.
+          </p>
+        </div>
+        <div className="flex items-center justify-center gap-6">
+          <div>
+            <p className="text-xs text-muted-foreground">You</p>
+            <p className="text-2xl font-bold text-primary">{myScore}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Opponent</p>
+            <p className="text-2xl font-bold">{opponentScore}</p>
+          </div>
+        </div>
+        {waitingInfo && (
+          <p className="text-xs text-muted-foreground">
+            Opponent progress: {waitingInfo.answered}/{waitingInfo.total} questions
+          </p>
+        )}
+        <div className="flex flex-col sm:flex-row gap-2 justify-center">
+          <Button onClick={() => void checkOpponentProgress(false)} variant="default">
+            Check now
+          </Button>
+          <Button onClick={resetGame} variant="outline">
+            Back to duels
+          </Button>
+        </div>
+        <MatchStatusIndicator status={matchStatus} matchId={matchId} showHint />
+      </Card>
+    );
+  }
+
   // ===== RESULTS =====
   if (gamePhase === 'results') {
     if (!matchResult) {
