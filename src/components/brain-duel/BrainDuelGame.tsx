@@ -382,13 +382,12 @@ export const BrainDuelGame = ({ startRequest, resumeMatchId }: { startRequest?: 
 
     try {
       if (type === 'fifty_fifty') {
-        const { data } = await supabase
-          .from('brain_duel_questions')
-          .select('correct_answer')
-          .eq('id', questions[currentIndex].id)
-          .single();
-        const correct = data?.correct_answer || 'a';
-        const wrong = ['a', 'b', 'c', 'd'].filter(o => o !== correct);
+        // Server-side: never expose the correct answer to the browser and
+        // works for every signed-in user (question table is admin-only).
+        const { data, error } = await (supabase as any).rpc('brain_duel_fifty_fifty', {
+          _question_id: questions[currentIndex].id });
+        if (error) throw error;
+        const wrong = (data as string[] | null) ?? [];
         setHiddenOptions(wrong.slice(0, 2));
       } else if (type === 'extra_time') {
         setTimeLeft(t => Math.min(t + 15, questionTime + 15));
