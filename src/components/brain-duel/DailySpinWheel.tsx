@@ -94,73 +94,43 @@ export const DailySpinWheel = () => {
     setSpinning(true);
     setResult(null);
 
-    // Weighted random selection
-    const weights = WHEEL_SEGMENTS.map(s => {
-      if (s.rarity === 'legendary') return 2;
-      if (s.rarity === 'rare') return 8;
-      if (s.rarity === 'uncommon') return 15;
-      return 25;
-    });
-    const totalWeight = weights.reduce((a, b) => a + b, 0);
-    let random = Math.random() * totalWeight;
-    let selectedIndex = 0;
-    for (let i = 0; i < weights.length; i++) {
-      random -= weights[i];
-      if (random <= 0) {
-        selectedIndex = i;
-        break;
+    // Server decides the reward and credits the account (client cannot self-award).
+    const { data, error } = await supabase.functions.invoke('brain-duel-daily-spin', { body: {} });
+
+    if (error || !data || data.error) {
+      setSpinning(false);
+      if (data?.error === 'already_spun') {
+        setCanSpin(false);
+        setLastSpinDate(new Date().toISOString());
+        toast.error('You already used today\'s free spin');
+      } else {
+        toast.error('Spin failed, please try again');
       }
+      return;
     }
+
+    const selectedIndex: number = data.index ?? 0;
+    const selected = WHEEL_SEGMENTS[selectedIndex];
 
     const segmentAngle = 360 / WHEEL_SEGMENTS.length;
     const targetAngle = 360 - (selectedIndex * segmentAngle + segmentAngle / 2);
-    const totalRotation = rotation + 1440 + targetAngle;
-    setRotation(totalRotation);
+    setRotation((prev) => prev + 1440 + ((targetAngle - (prev % 360)) + 360) % 360);
 
-    setTimeout(async () => { const selected = WHEEL_SEGMENTS[selectedIndex];
+    setTimeout(() => {
       setResult(selected);
       setSpinning(false);
       setCanSpin(false);
       setLastSpinDate(new Date().toISOString());
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
 
-      // Award the prize
-      const today = new Date().toISOString().split('T')[0];
-
-      try {
-        await supabase.from('brain_duel_daily_spins' as any).insert({
-          user_id: user.id,
-          spin_date: today,
-          reward_type: selected.type || 'credits',
-          reward_value: selected.value,
-          reward_label: selected.label } as any);
-
-        if (selected.value > 0 && !selected.type) {
-          // Add credits
-          const { data: credits } = await supabase
-            .from('brain_duel_credits')
-            .select('credits')
-            .eq('user_id', user.id)
-            .maybeSingle();
-
-          if (credits) {
-            await supabase
-              .from('brain_duel_credits')
-              .update({ credits: credits.credits + selected.value })
-              .eq('user_id', user.id);
-          }
-          queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
-        }
-
-        if (selected.rarity === 'legendary' || selected.rarity === 'rare') {
-          confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-        }
-
-        toast.success(`🎉 You won: ${selected.label}!`, { description: selected.rarity === 'legendary' ? 'JACKPOT! Incredible luck!' : 'Come back tomorrow for another spin!' });
-      } catch (err) {
-        console.error('Error saving spin:', err);
+      if (selected.rarity === 'legendary' || selected.rarity === 'rare') {
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
       }
+
+      toast.success(`🎉 You won: ${selected.label}!`, { description: selected.rarity === 'legendary' ? 'JACKPOT! Incredible luck!' : 'Come back tomorrow for another spin!' });
     }, 4000);
   };
+
 
   const rarityColors: Record<string, string> = { common: 'bg-muted text-muted-foreground',
     uncommon: 'bg-green-500/20 text-green-400 border-green-500/30',

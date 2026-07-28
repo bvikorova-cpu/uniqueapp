@@ -6057,6 +6057,7 @@ export type Database = {
           description: string | null
           id: string
           question_count: number
+          questions: Json | null
           reward_credits: number
           time_limit: number
           title: string
@@ -6068,6 +6069,7 @@ export type Database = {
           description?: string | null
           id?: string
           question_count?: number
+          questions?: Json | null
           reward_credits?: number
           time_limit?: number
           title: string
@@ -6079,6 +6081,7 @@ export type Database = {
           description?: string | null
           id?: string
           question_count?: number
+          questions?: Json | null
           reward_credits?: number
           time_limit?: number
           title?: string

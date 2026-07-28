@@ -67,5 +67,6 @@ export const useBrainDuelCredits = () => {
   return { credits: credits || 0,
     isLoading,
     spendCredits: spendCredits.mutate,
+    spendCreditsAsync: spendCredits.mutateAsync,
     isSpending: spendCredits.isPending };
 };

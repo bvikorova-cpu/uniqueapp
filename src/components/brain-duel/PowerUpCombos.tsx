@@ -24,7 +24,7 @@ const COMBOS = [
 ];
 
 export const PowerUpCombos = () => {
-  const { credits, spendCredits } = useBrainDuelCredits();
+  const { credits, spendCreditsAsync } = useBrainDuelCredits();
   const [activating, setActivating] = useState<string | null>(null);
   const [lastActivated, setLastActivated] = useState<string | null>(null);
 
@@ -39,14 +39,16 @@ export const PowerUpCombos = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast.error("Please sign in"); return; }
 
-      spendCredits(combo.cost);
+      // Charge first — abort if the atomic RPC rejects (insufficient credits / race).
+      await spendCreditsAsync(combo.cost);
 
-      await supabase.from("brain_duel_powerup_combos").insert({ user_id: user.id,
+      const { error } = await supabase.from("brain_duel_powerup_combos").insert({ user_id: user.id,
         combo_type: combo.id,
         powerup_1: combo.p1,
         powerup_2: combo.p2,
         effect_description: combo.effect,
         credits_cost: combo.cost });
+      if (error) throw error;
 
       setLastActivated(combo.id);
       toast.success(`${combo.emoji} ${combo.name} activated!`, { description: combo.effect });
