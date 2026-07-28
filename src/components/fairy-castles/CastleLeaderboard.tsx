@@ -25,14 +25,15 @@ interface LeaderboardEntry {
 
 const AVATAR_EMOJIS = ["👸", "🤴", "🧙", "👧", "👦", "🧝", "🦸", "🧚", "🦄", "⭐"];
 
-const challenges = [
-  { title: "Speed Runner 🏃", desc: "Complete any castle tour under 10 minutes", reward: "+50 XP" },
-  { title: "Collector 🎒", desc: "Find 10 hidden collectibles this week", reward: "+100 XP" },
-  { title: "Quiz Master 🧠", desc: "Get 3 perfect quiz scores in a row", reward: "+75 XP" },
-];
-
 interface CastleLeaderboardProps {
   userStamps: number;
+}
+
+interface Progress {
+  totalCastles: number;
+  visited: number;
+  completed: number;
+  stamps: number;
 }
 
 export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
