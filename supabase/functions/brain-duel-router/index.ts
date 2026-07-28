@@ -229,11 +229,55 @@ Deno.serve(async (req) => {
 
       // ---------- 4. AI Cheat Detection ----------
       case "ai.cheatScan": {
-        const { responseTimes = [], accuracy = 0, duelId } = body;
+        const duelId = String(body.duelId ?? "").trim();
+        if (!duelId) { const e: any = new Error("Please select a duel to scan."); e.status = 400; throw e; }
+
+        const { data: match } = await admin
+          .from("brain_duel_matches")
+          .select("id,player1_id,player2_id,category,total_questions,player1_score,player2_score,finished_at")
+          .eq("id", duelId)
+          .maybeSingle();
+        if (!match) { const e: any = new Error("Duel not found."); e.status = 404; throw e; }
+        if (match.player1_id !== user.id && match.player2_id !== user.id) {
+          const e: any = new Error("You can only scan duels you played."); e.status = 403; throw e;
+        }
+
+        // Derive real stats from stored answers (response times = deltas between answers).
+        const { data: answers } = await admin
+          .from("brain_duel_answers")
+          .select("player_id,is_correct,answered_at")
+          .eq("match_id", duelId)
+          .order("answered_at", { ascending: true });
+
+        const mine = (answers ?? []).filter((a: any) => a.player_id === user.id);
+        const responseTimes: number[] = [];
+        for (let i = 1; i < mine.length; i++) {
+          responseTimes.push(
+            new Date(mine[i].answered_at).getTime() - new Date(mine[i - 1].answered_at).getTime(),
+          );
+        }
+        const correct = mine.filter((a: any) => a.is_correct).length;
+        const accuracy = mine.length ? Math.round((correct / mine.length) * 100) : 0;
+
+        if (!mine.length) { const e: any = new Error("This duel has no recorded answers to analyse yet."); e.status = 400; throw e; }
+
         const { text } = await callAI(
-          `Analyze duel ${duelId} for cheating. Response times (ms): ${JSON.stringify(responseTimes)}. Accuracy: ${accuracy}. Return JSON {suspicious:boolean, score:0-100, reasons:[]}.`
+          `Analyze a quiz duel for cheating signals. Category: ${match.category ?? "general"}. Questions answered: ${mine.length}. Accuracy: ${accuracy}%. Time between answers (ms): ${JSON.stringify(responseTimes)}. Return JSON {"suspicious":boolean,"score":0-100,"reasons":[string]}.`,
+          "You are a fair-play analyst. Respond with valid JSON only.",
         );
-        result = { report: parseAIJson(text) };
+        result = { report: parseAIJson(text), stats: { answers: mine.length, accuracy, responseTimes } };
+        break;
+      }
+
+      // Free helper: list the user's recent duels for the cheat-scan picker.
+      case "duels.recent": {
+        const { data } = await admin
+          .from("brain_duel_matches")
+          .select("id,category,player1_score,player2_score,finished_at,created_at")
+          .or(`player1_id.eq.${user.id},player2_id.eq.${user.id}`)
+          .order("created_at", { ascending: false })
+          .limit(20);
+        result = { duels: data ?? [] };
         break;
       }
 

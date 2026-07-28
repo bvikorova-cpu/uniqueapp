@@ -43,6 +43,8 @@ export default function BrainDuelHub() {
   const [busy, setBusy] = useState(false);
   const [output, setOutput] = useState<any>(null);
   const [listening, setListening] = useState(false);
+  const [recentDuels, setRecentDuels] = useState<any[]>([]);
+  const [loadingDuels, setLoadingDuels] = useState(false);
   const recognitionRef = useRef<any>(null);
 
   const toggleDictation = () => {
@@ -68,6 +70,13 @@ export default function BrainDuelHub() {
   useEffect(() => {
     if (!active) return;
     setOutput(null);
+    if (active.id === "ai.cheatScan") {
+      setLoadingDuels(true);
+      brainDuelCall<any>("duels.recent")
+        .then((r) => setRecentDuels(r?.duels ?? []))
+        .catch(() => setRecentDuels([]))
+        .finally(() => setLoadingDuels(false));
+    }
   }, [active]);
 
   const run = async () => {
@@ -84,7 +93,8 @@ export default function BrainDuelHub() {
         const r = await brainDuelCall<any>("ai.voiceQuiz", { topic: input.topic, transcript: input.transcript });
         setOutput(r); refetch(); toast.success("Round scored!");
       } else if (active.id === "ai.cheatScan") {
-        const r = await brainDuelCall<any>("ai.cheatScan", { duelId: input.duelId, responseTimes: (input.responseTimes || "").split(",").map(Number).filter(Boolean), accuracy: Number(input.accuracy) || 0 });
+        if (!input.duelId) { toast.error("Please select a duel first."); return; }
+        const r = await brainDuelCall<any>("ai.cheatScan", { duelId: input.duelId });
         setOutput(r); refetch(); toast.success("Cheat report ready");
       } else if (active.id === "ai.shareCard") {
         const r = await brainDuelCall<any>("ai.shareCard", { winner: input.winner, loser: input.loser, score: input.score, topic: input.topic });
@@ -224,11 +234,35 @@ export default function BrainDuelHub() {
               )}
 
               {active.id === "ai.cheatScan" && (
-                <>
-                  <Input placeholder="Duel ID" value={input.duelId ?? ""} onChange={(e) => setInput({ ...input, duelId: e.target.value })} />
-                  <Input placeholder="Response times ms (comma-separated)" value={input.responseTimes ?? ""} onChange={(e) => setInput({ ...input, responseTimes: e.target.value })} />
-                  <Input type="number" placeholder="Accuracy %" value={input.accuracy ?? ""} onChange={(e) => setInput({ ...input, accuracy: e.target.value })} />
-                </>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    Pick one of your duels — timings and accuracy are read from the server automatically.
+                  </p>
+                  {loadingDuels ? (
+                    <p className="text-sm text-muted-foreground">Loading your duels…</p>
+                  ) : recentDuels.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No duels found yet. Play a duel first, then scan it here.</p>
+                  ) : (
+                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                      {recentDuels.map((d) => (
+                        <button
+                          key={d.id}
+                          type="button"
+                          onClick={() => setInput({ ...input, duelId: d.id })}
+                          className={`w-full text-left rounded-md border p-3 text-sm transition-colors ${
+                            input.duelId === d.id ? "border-primary bg-primary/10" : "hover:bg-muted"
+                          }`}
+                        >
+                          <div className="font-medium capitalize">{d.category ?? "General"}</div>
+                          <div className="text-xs text-muted-foreground">
+                            Score {d.player1_score ?? 0}–{d.player2_score ?? 0} ·{" "}
+                            {new Date(d.finished_at ?? d.created_at).toLocaleString()}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               )}
               {active.id === "ai.shareCard" && (
                 <div className="grid grid-cols-2 gap-2">
@@ -264,6 +298,23 @@ export default function BrainDuelHub() {
                           <p className="text-muted-foreground">Correct answer: {output.round.correct_answer}</p>
                         )}
                         {output.round.feedback && <p className="text-xs italic text-muted-foreground">{output.round.feedback}</p>}
+                      </div>
+                    ) : output?.report ? (
+                      <div className="space-y-2 text-sm">
+                        <p className={output.report.suspicious ? "text-destructive font-semibold" : "text-green-600 font-semibold"}>
+                          {output.report.suspicious ? "Suspicious patterns detected" : "No cheating detected"}
+                          {typeof output.report.score === "number" ? ` · risk ${output.report.score}/100` : ""}
+                        </p>
+                        {output.stats && (
+                          <p className="text-xs text-muted-foreground">
+                            {output.stats.answers} answers · {output.stats.accuracy}% accuracy
+                          </p>
+                        )}
+                        {Array.isArray(output.report.reasons) && output.report.reasons.length > 0 && (
+                          <ul className="list-disc pl-5 text-muted-foreground text-xs">
+                            {output.report.reasons.map((r: string, i: number) => <li key={i}>{r}</li>)}
+                          </ul>
+                        )}
                       </div>
                     ) : Array.isArray(output?.quiz?.questions) ? (
                       output.quiz.questions.map((q: any, i: number) => (
