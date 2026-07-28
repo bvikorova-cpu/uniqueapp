@@ -198,8 +198,14 @@ Deno.serve(async (req) => {
       // ---------- 2. OCR Scan → Quiz ----------
       case "ai.ocrScan": {
         const { imageUrl, count = 8 } = body;
+        if (!imageUrl || !/^(https?:\/\/|data:image\/)/.test(String(imageUrl))) {
+          const e: any = new Error("Please upload a photo or paste a valid image URL.");
+          e.status = 400; throw e;
+        }
         const { text } = await callAI(
-          `Read text from image at ${imageUrl} and create ${count} quiz questions. Return JSON {questions:[{q, options:[a,b,c,d], correct_index}]}.`
+          `Read all text visible in this image and create ${count} multiple-choice quiz questions from it. Return JSON {questions:[{q, options:[a,b,c,d], correct_index, explanation}]}.`,
+          "You read images and generate quizzes. Respond with valid JSON only.",
+          String(imageUrl),
         );
         result = { quiz: parseAIJson(text) };
         break;
@@ -212,7 +218,7 @@ Deno.serve(async (req) => {
         const { text } = await callAI(
           `Quiz question on "${topic}". User spoken answer: "${transcript}". Return JSON {question, correct_answer, user_correct:boolean, feedback}.`
         );
-        result = { round: text };
+        result = { round: parseAIJson(text) };
         break;
       }
 
@@ -222,7 +228,7 @@ Deno.serve(async (req) => {
         const { text } = await callAI(
           `Analyze duel ${duelId} for cheating. Response times (ms): ${JSON.stringify(responseTimes)}. Accuracy: ${accuracy}. Return JSON {suspicious:boolean, score:0-100, reasons:[]}.`
         );
-        result = { report: text };
+        result = { report: parseAIJson(text) };
         break;
       }
 
@@ -232,9 +238,10 @@ Deno.serve(async (req) => {
         const { text } = await callAI(
           `Create Instagram story copy for Brain Duel result. Winner: ${winner}, loser: ${loser}, score: ${score}, topic: ${topic}. Return JSON {headline, caption, hashtags:[]}.`
         );
-        result = { card: text };
+        result = { card: parseAIJson(text) };
         break;
       }
+
 
       // ---------- 6. SRS (Spaced Repetition) ----------
       case "srs.addCard": {
