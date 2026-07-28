@@ -45,8 +45,14 @@ const StoryVideoDemo = () => {
 
     try {
       toast.info('Generating your story... This may take up to 2 minutes.');
-      const { data, error } = await supabase.functions.invoke('generate-story-video', {
-        body: { theme: config.theme, sceneCount: config.sceneCount, language: config.language } });
+      const { data, error } = await supabase.functions.invoke('generate-gift-message', {
+        body: {
+          type: 'story_video',
+          theme: config.theme,
+          sceneCount: config.sceneCount,
+          language: config.language,
+          audio: true,
+        } });
 
       if (error) {
         if (error.message?.includes('Too Many Requests') || error.message?.includes('rate limited')) {
@@ -55,6 +61,8 @@ const StoryVideoDemo = () => {
         throw error;
       }
       if (data.error) throw new Error(data.error);
+      if (!Array.isArray(data.scenes) || data.scenes.length === 0) throw new Error('Story generation returned no scenes');
+      if (!Array.isArray(data.images) || data.images.length === 0) throw new Error('Story generation returned no images');
 
       setStoryData(data);
 

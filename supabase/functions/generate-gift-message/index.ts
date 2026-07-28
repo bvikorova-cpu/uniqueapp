@@ -1,12 +1,35 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const OPENAI_TEXT_MODEL = "openai/gpt-5.4-mini";
 const LOVABLE_AI_GATEWAY_CHAT_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
+}
+
+function placeholderStoryImage(scene: string, index: number): string {
+  const safeScene = scene.replace(/[&<>'"]/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&apos;",
+    '"': "&quot;",
+  }[char] ?? char)).slice(0, 180);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#312e81"/><stop offset="0.5" stop-color="#7e22ce"/><stop offset="1" stop-color="#db2777"/></linearGradient></defs><rect width="1024" height="1024" fill="url(#g)"/><circle cx="820" cy="160" r="80" fill="#fde68a" opacity="0.85"/><path d="M0 760 C180 650 320 820 510 710 C700 600 840 740 1024 620 L1024 1024 L0 1024 Z" fill="#0f172a" opacity="0.45"/><text x="512" y="470" text-anchor="middle" font-size="84" font-family="Arial, sans-serif">✨</text><text x="512" y="585" text-anchor="middle" font-size="42" font-weight="700" font-family="Arial, sans-serif" fill="#ffffff">Scene ${index + 1}</text><foreignObject x="152" y="630" width="720" height="180"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Arial,sans-serif;color:white;font-size:28px;text-align:center;line-height:1.35">${safeScene}</div></foreignObject></svg>`;
+  return `data:image/svg+xml;base64,${arrayBufferToBase64(new TextEncoder().encode(svg).buffer)}`;
+}
 
 async function callOpenAIText(body: Record<string, unknown>) {
   const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
@@ -80,6 +103,7 @@ serve(async (req) => {
         Deno.env.get("SUPABASE_URL") ?? "",
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       );
+      const goldPass = await hasKidsGoldPass(authHeader).catch(() => false);
       const cost = 1 + sceneCount * 2 + (wantAudio ? sceneCount : 0);
       const { data: credRow } = await admin
         .from("kids_story_credits")
@@ -90,7 +114,7 @@ serve(async (req) => {
           user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
       }
       const balance = credRow?.credits_remaining ?? 0;
-      if (balance < cost) {
+      if (!goldPass && balance < cost) {
         return new Response(JSON.stringify({ error: "Insufficient credits", credits_remaining: balance, cost }), {
           status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
@@ -126,41 +150,53 @@ serve(async (req) => {
       }
 
       // 2) Illustrations (parallel)
-      const images = await Promise.all(scenes.map(async (scene) => {
-        const r = await fetch("https://api.openai.com/v1/images/generations", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "dall-e-3",
-            prompt: `Children's storybook illustration. Scene: ${scene}. Soft warm watercolor style, age-appropriate, friendly, no text, no letters, vibrant, full-bleed.`.slice(0, 4000),
-            n: 1,
-            size: "1024x1024",
-            response_format: "b64_json" }) });
-        if (!r.ok) { console.error("img fail", r.status); return ""; }
-        const j = await r.json();
-        const b64 = j?.data?.[0]?.b64_json;
-        return b64 ? `data:image/png;base64,${b64}` : (j?.data?.[0]?.url || "");
+      const images = await Promise.all(scenes.map(async (scene, index) => {
+        try {
+          const r = await fetch("https://api.openai.com/v1/images/generations", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "dall-e-3",
+              prompt: `Children's storybook illustration. Scene: ${scene}. Soft warm watercolor style, age-appropriate, friendly, no text, no letters, vibrant, full-bleed.`.slice(0, 4000),
+              n: 1,
+              size: "1024x1024",
+              response_format: "b64_json" }) });
+          if (!r.ok) { console.error("img fail", r.status, await r.text()); return placeholderStoryImage(scene, index); }
+          const j = await r.json();
+          const b64 = j?.data?.[0]?.b64_json;
+          return b64 ? `data:image/png;base64,${b64}` : (j?.data?.[0]?.url || placeholderStoryImage(scene, index));
+        } catch (error) {
+          console.error("img unexpected fail", error);
+          return placeholderStoryImage(scene, index);
+        }
       }));
 
       // 3) TTS (parallel)
       const audioFiles = wantAudio ? await Promise.all(scenes.map(async (scene) => {
-        const r = await fetch("https://api.openai.com/v1/audio/speech", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "tts-1", voice: "nova", input: scene.slice(0, 4000), response_format: "mp3" }) });
-        if (!r.ok) { console.error("tts fail", r.status); return ""; }
-        const buf = new Uint8Array(await r.arrayBuffer());
-        let bin = ""; for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
-        return `data:audio/mp3;base64,${btoa(bin)}`;
+        try {
+          const r = await fetch("https://api.openai.com/v1/audio/speech", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ model: "tts-1", voice: "nova", input: scene.slice(0, 4000), response_format: "mp3", speed: 0.85 }) });
+          if (!r.ok) { console.error("tts fail", r.status, await r.text()); return ""; }
+          return `data:audio/mp3;base64,${arrayBufferToBase64(await r.arrayBuffer())}`;
+        } catch (error) {
+          console.error("tts unexpected fail", error);
+          return "";
+        }
       })) : undefined;
 
-      await admin
-        .from("kids_story_credits")
-        .update({ credits_remaining: balance - cost, last_used_at: new Date().toISOString() })
-        .eq("user_id", user.id);
+      if (!goldPass) {
+        await admin
+          .from("kids_story_credits")
+          .update({ credits_remaining: balance - cost, last_used_at: new Date().toISOString() })
+          .eq("user_id", user.id);
+      }
 
       return new Response(JSON.stringify({ scenes, images, audioFiles,
-        credits_remaining: balance - cost, cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        credits_remaining: goldPass ? balance : balance - cost,
+        cost: goldPass ? 0 : cost,
+        unlimited: goldPass }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     // ─── END STORY VIDEO PIPELINE ───
 
