@@ -126,6 +126,29 @@ const BrainDuel = () => {
     return () => clearTimeout(t);
   }, [resumeMatchId, duelStartToken]);
 
+  // Live lobby (friend challenges only): both players must be present before the
+  // duel starts. Falls back to the classic async duel after the wait window.
+  const [lobbyState, setLobbyState] = useState<'idle' | 'checking' | 'lobby' | 'resolved'>('idle');
+
+  useEffect(() => {
+    if (!resumeMatchId) { setLobbyState('idle'); return; }
+    let cancelled = false;
+    setLobbyState('checking');
+    (async () => {
+      const { data } = await supabase
+        .from('brain_duel_friend_challenges')
+        .select('id')
+        .eq('match_id', resumeMatchId)
+        .maybeSingle();
+      if (cancelled) return;
+      setLobbyState(data ? 'lobby' : 'resolved');
+    })();
+    return () => { cancelled = true; };
+  }, [resumeMatchId, duelStartToken]);
+
+  const gameMatchId = lobbyState === 'resolved' ? resumeMatchId : null;
+
+
 
 
   const handlePaymentSuccess = async (sessionId: string) => {
