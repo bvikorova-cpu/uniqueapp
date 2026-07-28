@@ -14,6 +14,8 @@ import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { AnimatePresence, motion } from "framer-motion";
 import { useChatCredits } from "@/hooks/useChatCredits";
 import { ChatCreditBanner } from "@/components/kids/chat/ChatCreditBanner";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 
 // New chat components
 import { AnimatedChatBubble } from "@/components/kids/chat/AnimatedChatBubble";
@@ -43,6 +45,7 @@ export default function KidsVoiceChat() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { credits_remaining, loading: creditsLoading, canSendMessage, refresh: refreshCredits } = useChatCredits();
+  const { hasGoldPass } = useKidsGoldPass();
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -114,7 +117,7 @@ export default function KidsVoiceChat() {
     if (!msgText || !selectedCharacter || isLoading) return;
 
     // Paid-only guard
-    if (!canSendMessage) {
+    if (!hasGoldPass && !canSendMessage) {
       toast({
         title: "Out of Chat credits",
         description: "Buy more credits to keep chatting with your characters!",
@@ -260,7 +263,12 @@ export default function KidsVoiceChat() {
           </motion.div>
 
           {/* Credit balance banner (paid-only) */}
-          <ChatCreditBanner credits={credits_remaining} loading={creditsLoading} />
+          {hasGoldPass ? (
+            <KidsGoldPassBanner moduleName="Character Chat" />
+          ) : (
+            <ChatCreditBanner credits={credits_remaining} loading={creditsLoading} />
+          )}
+
 
           {!selectedCharacter ? (
             /* Character Selection */
