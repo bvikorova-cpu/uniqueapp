@@ -742,15 +742,10 @@ export function FairyPanoramaViewer({
       } catch (e) {
         console.error('POI audio generation failed:', e);
         // Browser TTS fallback so the experience still works
-        if ('speechSynthesis' in window) {
-          const u = new SpeechSynthesisUtterance(`${poi.title}. ${poi.narrative}`);
-          u.lang = selectedLanguage;
-          u.rate = 0.95;
-          window.speechSynthesis.cancel();
-          window.speechSynthesis.speak(u);
-        }
+        speakWithBrowser(`${poi.title}. ${poi.narrative}`, selectedLanguage);
         return;
       }
+
     }
 
     if (!url) return;
