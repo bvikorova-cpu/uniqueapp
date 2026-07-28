@@ -93,42 +93,62 @@ Player Stats This Week:
 
 Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas to Improve, and a motivational closing. Format with markdown.`;
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${openaiKey}`,
-        "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "You are a competitive gaming coach who writes engaging weekly performance recaps." },
-          { role: "user", content: prompt },
-        ] }) });
+    const buildFallbackRecap = () => {
+      const winRate = statsSnapshot.matches_played > 0 ? Math.round((wins / statsSnapshot.matches_played) * 100) : 0;
+      const tips: string[] = [];
+      if (accuracy < 70) tips.push("- Slow down slightly on tricky questions — accuracy is worth more than a few speed points.");
+      else tips.push("- Keep the accuracy up and push a bit harder on speed for extra bonus points.");
+      if (avgTime > 8) tips.push("- Try to answer within 8 seconds to collect the speed bonus (10 points per saved second).");
+      else tips.push("- Your answer speed is strong — use it to secure close matches.");
+      if (statsSnapshot.matches_played < 5) tips.push("- Play a few more duels this week; more matches mean faster ELO progress.");
+      else tips.push("- Mix in Ranked and Championship modes to grow your ELO faster.");
 
-    if (!aiResponse.ok) {
-      if (aiResponse.status === 429) {
-        return new Response(JSON.stringify({ error: "AI rate limited. Try again later." }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return `## Performance Summary\n\nYou played **${statsSnapshot.matches_played}** duels this week with **${wins}** wins and **${losses}** losses (**${winRate}%** win rate). You answered **${totalAnswers}** questions at **${accuracy}%** accuracy, averaging **${avgTime}s** per answer.\n\n## Highlights\n\n- League: **${statsSnapshot.league}**\n- ELO rating: **${statsSnapshot.elo}**\n- Correct answers: **${correctAnswers}/${totalAnswers}**\n\n## Areas to Improve\n\n${tips.join("\n")}\n\n## Keep Going\n\nEvery duel counts — stay consistent and your rating will climb. 🚀\n\n_(Offline recap: the AI coach was busy, so these numbers come straight from your match data.)_`;
+    };
+
+    let recapText = "";
+    let usedAi = false;
+
+    try {
+      const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${openaiKey}`,
+          "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: "You are a competitive gaming coach who writes engaging weekly performance recaps." },
+            { role: "user", content: prompt },
+          ] }) });
+
+      if (aiResponse.ok) {
+        const aiData = await aiResponse.json();
+        const text = aiData.choices?.[0]?.message?.content;
+        if (text) {
+          recapText = text;
+          usedAi = true;
+        }
+      } else {
+        console.warn("OpenAI recap failed with status", aiResponse.status);
       }
-      if (aiResponse.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted. Contact support." }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      throw new Error("OpenAI API error");
+    } catch (aiErr) {
+      console.warn("OpenAI recap threw:", aiErr);
     }
 
-    const aiData = await aiResponse.json();
-    const recapText = aiData.choices?.[0]?.message?.content || "Unable to generate recap.";
+    if (!recapText) recapText = buildFallbackRecap();
 
-    const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits", {
-      p_user_id: user.id,
-      p_amount: 5,
-      p_reason: "brain_duel_ai_recap",
-      p_source: "brain_duel"
-    });
-    if (deductError || deducted === false) throw new Error("Insufficient credits");
+    const creditsUsed = usedAi ? 5 : 0;
+
+    if (creditsUsed > 0) {
+      const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits", {
+        p_user_id: user.id,
+        p_amount: creditsUsed,
+        p_reason: "brain_duel_ai_recap",
+        p_source: "brain_duel"
+      });
+      if (deductError || deducted === false) throw new Error("Insufficient credits");
+    }
 
     // Save recap (one row per user per week - refresh if it already exists)
     const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
@@ -148,7 +168,7 @@ Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas
       week_start: weekStart,
       week_end: weekEnd,
       stats_snapshot: statsSnapshot,
-      credits_used: 5,
+      credits_used: creditsUsed,
     };
 
     const { data: recap, error: recapError } = existing
@@ -157,7 +177,7 @@ Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas
 
     if (recapError) throw recapError;
 
-    return new Response(JSON.stringify({ recap, stats: statsSnapshot }), {
+    return new Response(JSON.stringify({ recap, stats: statsSnapshot, ai_generated: usedAi }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error:", error);
