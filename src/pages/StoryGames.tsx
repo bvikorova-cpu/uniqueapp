@@ -32,20 +32,33 @@ export default function StoryGames() {
   const [gamesPlayed, setGamesPlayed] = useState(0);
   const [bestScores, setBestScores] = useState<Record<number, number>>({});
   const [userId, setUserId] = useState<string | null>(null);
+  const [streak, setStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
 
-  const level = Math.floor(score / 50) + 1;
-  const streak = 0;
+  // Level derived from same thresholds as XPSystem
+  const LEVEL_THRESHOLDS = [0, 50, 120, 200, 300, 420, 560, 720, 900, 1100];
+  const level = Math.max(
+    1,
+    LEVEL_THRESHOLDS.filter((t) => score >= t).length,
+  );
 
-  // Load persisted progress on mount
+  // Load persisted progress + streak on mount
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       setUserId(user.id);
-      const { data } = await supabase
-        .from("kids_game_progress")
-        .select("game_id, best_score, total_plays, total_xp")
-        .eq("user_id", user.id);
+      const [{ data }, { data: xpRow }] = await Promise.all([
+        supabase
+          .from("kids_game_progress")
+          .select("game_id, best_score, total_plays, total_xp")
+          .eq("user_id", user.id),
+        (supabase as any)
+          .from("kids_academy_xp")
+          .select("current_streak, longest_streak")
+          .eq("child_id", user.id)
+          .maybeSingle(),
+      ]);
       if (data) {
         const scores: Record<number, number> = {};
         let totalXP = 0;
@@ -59,8 +72,13 @@ export default function StoryGames() {
         setScore(totalXP);
         setGamesPlayed(totalPlays);
       }
+      if (xpRow) {
+        setStreak(Number(xpRow.current_streak) || 0);
+        setLongestStreak(Number(xpRow.longest_streak) || 0);
+      }
     })();
   }, []);
+
 
   const games = [
     { id: 1, title: "Memory Match", emoji: "🎴", description: "Match the story characters to unlock the next chapter!", difficulty: "Easy", stars: 3 },
