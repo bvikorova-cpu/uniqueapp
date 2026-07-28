@@ -39,25 +39,43 @@ serve(async (req) => {
     if (match.player1_score > match.player2_score) winnerId = match.player1_id;
     else if (match.player2_score > match.player1_score) winnerId = match.player2_id || "ai_bot";
 
-    const { data: updatedMatch } = await supabase
+    // Atomic transition: only one caller may flip the match to "finished".
+    const { data: updatedRows } = await supabase
       .from("brain_duel_matches")
       .update({ status: "finished",
         winner_id: winnerId === "ai_bot" ? null : winnerId,
         finished_at: new Date().toISOString() })
       .eq("id", match_id)
-      .select()
-      .single();
+      .neq("status", "finished")
+      .select();
 
-    // Award credits to winner
+    const didTransition = Array.isArray(updatedRows) && updatedRows.length > 0;
+    const updatedMatch = didTransition ? updatedRows[0] : match;
+
+    // Award credits to the WINNER — no matter who called finish-match.
     const isPlayerWinner = winnerId === user.id;
-    if (isPlayerWinner && match.win_reward) {
-      await supabase.rpc("add_ai_credits", {
-        p_user_id: user.id,
+    if (didTransition && winnerId && winnerId !== "ai_bot" && match.win_reward) {
+      const { error: awardError } = await supabase.rpc("add_ai_credits", {
+        p_user_id: winnerId,
         p_amount: match.win_reward,
         p_reason: "brain_duel_win_reward",
         p_source: "brain_duel"
       });
+      if (awardError) console.error("Award credits failed:", awardError);
+
+      // Tell the winner they won, even if the loser closed the match.
+      if (!isPlayerWinner) {
+        await supabase.from("notifications").insert({
+          user_id: winnerId,
+          type: "brain_duel_win",
+          title: "You won a Brain Duel!",
+          message: `Your opponent finished the duel — you won ${match.win_reward} credits.`,
+          related_id: match_id,
+          metadata: { match_id },
+        }).then(({ error }) => { if (error) console.error("Notify winner failed:", error); });
+      }
     }
+
 
     // Get answer details for summary
     const { data: answers } = await supabase
