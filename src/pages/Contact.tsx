@@ -215,9 +215,8 @@ const Contact = () => {
 
         <ContactFAQ highlightId={triageResult?.suggested_faq_id || null} />
 
-        <ContactChannels />
 
-        <VideoCallBooking />
+
 
         <Card className="border-2">
           <CardHeader>
