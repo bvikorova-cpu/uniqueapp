@@ -10,11 +10,14 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Send, ArrowLeft, Loader2, Sparkles, Clock } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 
 const CompanionChat = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { hasGoldPass } = useKidsGoldPass();
   const [messages, setMessages] = useState<any[]>([]);
   const [character, setCharacter] = useState<any>(null);
   const [input, setInput] = useState("");
@@ -113,7 +116,7 @@ const CompanionChat = () => {
     );
   }
 
-  const remainingMessages = messagesLimit && !messagesLimit.is_premium ? 20 - messagesLimit.messages_used_today : null;
+  const remainingMessages = !hasGoldPass && messagesLimit && !messagesLimit.is_premium ? 20 - messagesLimit.messages_used_today : null;
 
   return (
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
@@ -133,7 +136,9 @@ const CompanionChat = () => {
             <Button variant="ghost" onClick={() => navigate("/companions")}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Back
             </Button>
-            {remainingMessages !== null && (
+            {hasGoldPass ? (
+              <KidsGoldPassBanner compact />
+            ) : remainingMessages !== null && (
               <Badge variant="outline" className="animate-fade-in">
                 {remainingMessages} messages left today
               </Badge>
