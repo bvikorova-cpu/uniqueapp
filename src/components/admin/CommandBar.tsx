@@ -19,7 +19,9 @@ const commands = [
 
   { label: "Verifications", path: "/admin/verifications", icon: ShieldCheck, group: "Trust & Safety" },
   { label: "Tipsters", path: "/admin/tipsters", icon: FileSearch, group: "Trust & Safety" },
+  { label: "Bug Reports", path: "/admin/bug-reports", icon: Bug, group: "Trust & Safety" },
   { label: "Corporate Inquiries", path: "/admin/corporate-inquiries", icon: Briefcase, group: "Trust & Safety" },
+
 
   { label: "Brand Campaigns", path: "/admin/brand-campaigns", icon: Building2, group: "Content" },
   { label: "Brand Moderation", path: "/admin/brand-moderation", icon: ShieldCheck, group: "Trust & Safety" },
