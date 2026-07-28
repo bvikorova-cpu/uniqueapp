@@ -1133,55 +1133,18 @@ export function FairyPanoramaViewer({
             </DropdownMenu>
           </div>
 
-          {/* Guide volume + mute */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg flex items-center gap-2">
-            <Button
-              onClick={() => setIsGuideMuted((m) => !m)}
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7"
-              aria-label={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
-              title={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
-            >
-              {isGuideMuted || guideVolume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-            </Button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={isGuideMuted ? 0 : guideVolume}
-              onChange={(e) => {
-                const v = parseFloat(e.target.value);
-                setGuideVolume(v);
-                if (v > 0 && isGuideMuted) setIsGuideMuted(false);
-              }}
-              className="w-28 accent-purple-600"
-              aria-label="Guide volume"
-            />
-            <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider">Guide</span>
-          </div>
           {isPlaying && (
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-lg max-w-xs">
-              <div className="flex items-center gap-2 mb-2">
-                {/* Sound Wave Animation */}
-                <div className="flex items-end gap-0.5 h-6">
-                  {[...Array(12)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-1 bg-gradient-to-t from-purple-600 to-blue-500 rounded-full animate-pulse"
-                      style={{
-                        height: `${20 + Math.random() * 80}%`,
-                        animationDelay: `${i * 0.1}s`,
-                        animationDuration: '0.5s' }}
-                    />
-                  ))}
-                </div>
-                <span className="text-xs text-gray-600 ml-auto">Playing...</span>
+            <div className="bg-black/55 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg flex items-center gap-2 w-fit">
+              <div className="flex items-end gap-0.5 h-3">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-0.5 bg-white rounded-full animate-pulse"
+                    style={{ height: `${30 + ((i * 17) % 70)}%`, animationDelay: `${i * 0.1}s`, animationDuration: "0.5s" }}
+                  />
+                ))}
               </div>
-              <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-purple-600 to-blue-500 animate-pulse w-full" />
-              </div>
+              <span className="text-[11px] text-white">Playing…</span>
             </div>
           )}
         </div>
