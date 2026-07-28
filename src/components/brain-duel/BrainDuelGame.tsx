@@ -303,13 +303,26 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
   if (gamePhase === 'category') {
     return (
       <Card className="p-4 sm:p-6 backdrop-blur-xl bg-card/80 border-primary/10">
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4 flex-wrap">
           <Brain className="h-6 w-6 text-primary" />
           <h2 className="text-xl sm:text-2xl font-bold">Choose Category</h2>
           <Badge variant="outline" className="ml-auto text-xs">{credits} credits</Badge>
         </div>
+        <div className="flex flex-wrap gap-2 mb-3">
+          {Object.entries(MODE_CONFIG).filter(([id]) => id !== 'mystery').map(([id, cfg]) => (
+            <Button
+              key={id}
+              size="sm"
+              variant={gameMode === id ? 'default' : 'outline'}
+              className="text-xs"
+              onClick={() => setGameMode(id)}
+            >
+              {cfg.label} · {cfg.entry}
+            </Button>
+          ))}
+        </div>
         <p className="text-sm text-muted-foreground mb-4">
-          AI generates unique questions each game • 10 credits entry • Winner takes 20
+          AI generates unique questions each game • {(MODE_CONFIG[gameMode] ?? MODE_CONFIG.quick).entry} credits entry • Winner takes {(MODE_CONFIG[gameMode] ?? MODE_CONFIG.quick).reward}
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
           {CATEGORIES.map((cat) => (
@@ -317,9 +330,10 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
               <Button
                 onClick={() => startMatch(cat.id)}
                 variant="outline"
-                disabled={credits < 10 || creditsLoading}
+                disabled={credits < (MODE_CONFIG[gameMode] ?? MODE_CONFIG.quick).entry || creditsLoading}
                 className={`h-auto min-h-[72px] sm:min-h-[80px] py-3 flex-col gap-1.5 px-2 whitespace-normal w-full bg-gradient-to-br ${cat.color} border-border/50 hover:border-primary/30`}
               >
+
                 <span className="text-2xl">{cat.emoji}</span>
                 <span className="text-[10px] sm:text-xs font-semibold text-center leading-tight">{cat.id}</span>
               </Button>
