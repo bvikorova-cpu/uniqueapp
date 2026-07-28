@@ -126,7 +126,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "gpt-4o-mini",
           messages: [
-            { role: "system", content: `You are a children's story writer. Output ONLY a JSON object {"scenes":[...]} with exactly ${sceneCount} short scene descriptions in ${language}, each 2-3 sentences, warm, magical, safe for kids 4-10.` },
+            { role: "system", content: `You are a children's story writer. Write a complete, flowing fairy tale in ${language} split into exactly ${sceneCount} scenes. Output ONLY a JSON object {"scenes":[...]} where each entry is REAL narrative prose of 5-7 full sentences (at least 80 words each), with characters, dialogue and emotion. Never output titles, labels or one-word entries. The scenes together must form one continuous story with a beginning, middle and a happy ending. Warm, magical, safe for kids 4-10.` },
             { role: "user", content: `Theme: ${theme}` },
           ],
           response_format: { type: "json_object" } }) });
