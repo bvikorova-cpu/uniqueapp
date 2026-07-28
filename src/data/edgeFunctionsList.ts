@@ -215,7 +215,6 @@ export const EDGE_FUNCTIONS: string[] = [
   "get-payment-statistics",
   "get-referrer-info",
   "get-user-universes",
-  "gift-subscription",
   "glamour-ai-generate",
   "gp-racing-action",
   "handwriting-ai",
