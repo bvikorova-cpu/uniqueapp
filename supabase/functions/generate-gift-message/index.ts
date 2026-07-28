@@ -28,7 +28,7 @@ function placeholderStoryImage(scene: string, index: number): string {
     '"': "&quot;",
   }[char] ?? char)).slice(0, 180);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#312e81"/><stop offset="0.5" stop-color="#7e22ce"/><stop offset="1" stop-color="#db2777"/></linearGradient></defs><rect width="1024" height="1024" fill="url(#g)"/><circle cx="820" cy="160" r="80" fill="#fde68a" opacity="0.85"/><path d="M0 760 C180 650 320 820 510 710 C700 600 840 740 1024 620 L1024 1024 L0 1024 Z" fill="#0f172a" opacity="0.45"/><text x="512" y="470" text-anchor="middle" font-size="84" font-family="Arial, sans-serif">✨</text><text x="512" y="585" text-anchor="middle" font-size="42" font-weight="700" font-family="Arial, sans-serif" fill="#ffffff">Scene ${index + 1}</text><foreignObject x="152" y="630" width="720" height="180"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Arial,sans-serif;color:white;font-size:28px;text-align:center;line-height:1.35">${safeScene}</div></foreignObject></svg>`;
-  return `data:image/svg+xml;base64,${btoa(svg)}`;
+  return `data:image/svg+xml;base64,${arrayBufferToBase64(new TextEncoder().encode(svg).buffer)}`;
 }
 
 async function callOpenAIText(body: Record<string, unknown>) {
