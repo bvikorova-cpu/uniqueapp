@@ -155,7 +155,13 @@ export default function KidsVoiceChat() {
         navigate("/auth");
         return;
       }
-      if (response.status === 402) { toast({
+      if (response.status === 402) {
+        if (hasGoldPass) {
+          toast({ title: "Momentálna chyba", description: "Skús to prosím znova.", variant: "destructive" });
+          setMessages(prev => prev.slice(0, -1));
+          return;
+        }
+        toast({
           title: "Out of credits",
           description: "You need more Chat credits to continue.",
           variant: "destructive" });

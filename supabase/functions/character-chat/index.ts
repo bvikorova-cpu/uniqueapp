@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
+import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -56,47 +57,54 @@ serve(async (req) => {
         { auth: { persistSession: false } }
       );
 
-      // Read balance (lazy-create row if missing)
-      const { data: creditRow } = await adminClient
-        .from("chat_credits")
-        .select("credits_remaining")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      // Gold Pass unlimited access — bypass credit deduction entirely
+      const goldPass = await hasKidsGoldPass(authHeader).catch(() => false);
 
-      const balance = creditRow?.credits_remaining ?? 0;
-      if (balance < 1) {
-        if (!creditRow) {
-          await adminClient
-            .from("chat_credits")
-            .insert({ user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
-        }
-        return new Response(
-          JSON.stringify({ error: "Not enough Chat credits. Please buy more to keep chatting." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-
-      // Deduct 1 credit BEFORE calling AI (optimistic concurrency)
-      const { error: deductErr, data: deductData } = await adminClient
-        .from("chat_credits")
-        .update({ credits_remaining: balance - 1 })
-        .eq("user_id", user.id)
-        .eq("credits_remaining", balance)
-        .select("credits_remaining");
-
-      if (deductErr || !deductData || deductData.length === 0) {
-        return new Response(
-          JSON.stringify({ error: "Could not reserve credit, please try again." }),
-          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-
+      let balance = 0;
       const refund = async () => {
+        if (goldPass) return;
         await adminClient
           .from("chat_credits")
           .update({ credits_remaining: balance })
           .eq("user_id", user.id);
       };
+
+      if (!goldPass) {
+        // Read balance (lazy-create row if missing)
+        const { data: creditRow } = await adminClient
+          .from("chat_credits")
+          .select("credits_remaining")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        balance = creditRow?.credits_remaining ?? 0;
+        if (balance < 1) {
+          if (!creditRow) {
+            await adminClient
+              .from("chat_credits")
+              .insert({ user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
+          }
+          return new Response(
+            JSON.stringify({ error: "Not enough Chat credits. Please buy more to keep chatting." }),
+            { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+
+        // Deduct 1 credit BEFORE calling AI (optimistic concurrency)
+        const { error: deductErr, data: deductData } = await adminClient
+          .from("chat_credits")
+          .update({ credits_remaining: balance - 1 })
+          .eq("user_id", user.id)
+          .eq("credits_remaining", balance)
+          .select("credits_remaining");
+
+        if (deductErr || !deductData || deductData.length === 0) {
+          return new Response(
+            JSON.stringify({ error: "Could not reserve credit, please try again." }),
+            { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+      }
 
       // Cap payload
       const safeMessages = messages
