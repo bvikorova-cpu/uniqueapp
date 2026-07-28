@@ -26,6 +26,8 @@ export default function BedtimeStories() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentStory, setCurrentStory] = useState<number | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [customStory, setCustomStory] = useState<{ title: string; text: string } | null>(null);
+  const [isGeneratingCustom, setIsGeneratingCustom] = useState(false);
   const [language, setLanguage] = useState('en-US');
   const [visitedStories, setVisitedStories] = useState<Set<number>>(new Set());
   const [ratings, setRatings] = useState<Record<number, number>>({});
@@ -372,20 +374,76 @@ export default function BedtimeStories() {
 
               <Card className="p-4 bg-white/5 backdrop-blur-md border-purple-400/20 shadow-xl">
                 <CustomStoryGenerator
+                  isGenerating={isGeneratingCustom}
                   onGenerate={async (story) => {
                     try {
+                      setIsGeneratingCustom(true);
                       const { data: { session } } = await supabase.auth.getSession();
                       if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
                       const { data, error } = await supabase.functions.invoke("kids-story-generate", {
                         body: { prompt: story.text, title: story.title } });
                       if (error) throw error;
+                      const text = data?.story || data?.content || "";
+                      if (!text) throw new Error("Empty story");
+                      setCustomStory({ title: data?.title || story.title, text });
                       toast({ title: "✨ Story Created!", description: data?.title || story.title });
-                    } catch {
-                      toast({ title: "Story generation failed", description: "Please try again later.", variant: "destructive" });
+                    } catch (e: any) {
+                      toast({ title: "Story generation failed", description: e?.message || "Please try again.", variant: "destructive" });
+                    } finally {
+                      setIsGeneratingCustom(false);
                     }
                   }}
                 />
               </Card>
+
+              {customStory && (
+                <Card className="p-4 bg-white/5 backdrop-blur-md border-purple-400/20 shadow-xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-bold text-purple-100">✨ {customStory.title}</h3>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={async () => {
+                          setIsGenerating(true);
+                          try {
+                            const { data, error } = await supabase.functions.invoke('kids-story-tts', {
+                              body: { text: customStory.text, voice: 'nova', language, speed: 0.85 }
+                            });
+                            if (error) throw error;
+                            if (!data?.audioContent) throw new Error('No audio content received');
+                            const audioBlob = new Blob(
+                              [Uint8Array.from(atob(data.audioContent), c => c.charCodeAt(0))],
+                              { type: 'audio/mpeg' }
+                            );
+                            const url = URL.createObjectURL(audioBlob);
+                            if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+                            audioRef.current = new Audio(url);
+                            audioRef.current.volume = volume / 100;
+                            audioRef.current.onended = () => setIsPlaying(false);
+                            await audioRef.current.play();
+                            setIsPlaying(true);
+                            startSleepTimer();
+                            toast({ title: "Story started 🌙", description: customStory.title });
+                          } catch (e: any) {
+                            toast({ title: "Playback error", description: e?.message || "Failed", variant: "destructive" });
+                          } finally {
+                            setIsGenerating(false);
+                          }
+                        }}
+                        disabled={isGenerating}
+                        className="bg-purple-500/30 hover:bg-purple-500/50 text-white border-0"
+                      >
+                        {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => setCustomStory(null)} className="text-purple-200">✕</Button>
+                    </div>
+                  </div>
+                  <div className="max-h-64 overflow-y-auto text-sm text-purple-100/90 whitespace-pre-wrap leading-relaxed">
+                    {customStory.text}
+                  </div>
+                </Card>
+              )}
+
             </div>
           </div>
         </div>
