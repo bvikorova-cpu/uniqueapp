@@ -344,7 +344,7 @@ export const BrainDuelGame = ({
 
       // Show the real human opponent (friend duel) instead of the generic "AI" label.
       if (oppId) {
-        const { data: oppProfiles } = await (supabase as any).rpc('get_public_profiles', { _ids: [oppId] });
+        const { data: oppProfiles } = await (supabase as any).rpc('get_public_profiles', { ids: [oppId] });
         const opp = Array.isArray(oppProfiles) ? oppProfiles[0] : null;
         setOpponentName(opp?.full_name || opp?.username || 'Opponent');
       } else {
