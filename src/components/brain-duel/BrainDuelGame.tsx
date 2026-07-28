@@ -73,7 +73,15 @@ export interface StartRequest {
   category?: string;
 }
 
-export const BrainDuelGame = ({ startRequest, resumeMatchId }: { startRequest?: StartRequest | null; resumeMatchId?: string | null }) => {
+export const BrainDuelGame = ({
+  startRequest,
+  resumeMatchId,
+  resumeToken,
+}: {
+  startRequest?: StartRequest | null;
+  resumeMatchId?: string | null;
+  resumeToken?: string | null;
+}) => {
   const queryClient = useQueryClient();
   const { credits, isLoading: creditsLoading } = useBrainDuelCredits();
   const { powerups, consumePowerup: triggerPowerup } = useBrainDuelPowerups();
@@ -224,8 +232,9 @@ export const BrainDuelGame = ({ startRequest, resumeMatchId }: { startRequest?: 
   const resumedRef = useRef<string | null>(null);
   useEffect(() => {
     if (!resumeMatchId || !currentUser) return;
-    if (resumedRef.current === resumeMatchId) return;
-    resumedRef.current = resumeMatchId;
+    const resumeKey = `${resumeMatchId}:${resumeToken ?? ''}`;
+    if (resumedRef.current === resumeKey) return;
+    resumedRef.current = resumeKey;
 
     (async () => {
       setGamePhase('loading');
@@ -249,7 +258,7 @@ export const BrainDuelGame = ({ startRequest, resumeMatchId }: { startRequest?: 
         setGamePhase('category');
         return;
       }
-      if (match.status === 'completed' || match.finished_at) {
+      if (match.status === 'completed' || match.status === 'finished' || match.finished_at) {
         toast.info('This duel is already finished');
         setGamePhase('category');
         return;
@@ -287,7 +296,7 @@ export const BrainDuelGame = ({ startRequest, resumeMatchId }: { startRequest?: 
       toast.success('Duel started! Good luck 🎯', { duration: 2000 });
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resumeMatchId, currentUser]);
+  }, [resumeMatchId, resumeToken, currentUser]);
 
   const handleAnswer = async (answer: string) => {
     if (selectedAnswer || !matchId || !questions[currentIndex]) return;
