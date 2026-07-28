@@ -1,0 +1,1 @@
+ALTER TABLE public.brain_duel_daily_challenges ADD COLUMN IF NOT EXISTS questions jsonb;
