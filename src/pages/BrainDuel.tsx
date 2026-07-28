@@ -31,6 +31,7 @@ import { MatchReplay } from "@/components/brain-duel/MatchReplay";
 import { SeasonPass } from "@/components/brain-duel/SeasonPass";
 import { AIOpponent } from "@/components/brain-duel/AIOpponent";
 import { NotificationCenter } from "@/components/brain-duel/NotificationCenter";
+import { useBrainDuelOverview } from "@/hooks/useBrainDuelOverview";
 import { DuelHistoryStats } from "@/components/brain-duel/DuelHistoryStats";
 import { ReferralSystem } from "@/components/brain-duel/ReferralSystem";
 import { AnimatedLeaderboard } from "@/components/brain-duel/AnimatedLeaderboard";
@@ -223,9 +224,20 @@ const BrainDuel = () => {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="max-w-4xl mx-auto mb-8 space-y-4"
         >
-          <PlayerStatsDisplay />
+          <PlayerStatsDisplay
+            xp={overview?.xp ?? 0}
+            level={overview?.level ?? 1}
+            elo={overview?.elo ?? 1000}
+            wins={overview?.wins ?? 0}
+            losses={overview?.losses ?? 0}
+            streak={overview?.currentStreak ?? 0}
+          />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <DailyStreak />
+            <DailyStreak
+              currentStreak={overview?.currentStreak ?? 0}
+              longestStreak={overview?.longestStreak ?? 0}
+              todayPlayed={overview?.todayPlayed ?? false}
+            />
             <RankAvatarSystem />
             <div className="space-y-4">
               <BrainDuelCreditsDisplay />
