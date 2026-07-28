@@ -31,9 +31,7 @@ import { CurrencySelector,
   useDetectedCurrency,
   formatPrice } from "@/components/subscription/CurrencySelector";
 import { UrgencyTimer } from "@/components/subscription/UrgencyTimer";
-import { EnterpriseTier } from "@/components/subscription/EnterpriseTier";
 import { WinBackDialog } from "@/components/subscription/WinBackDialog";
-import { PerksCarousel } from "@/components/subscription/PerksCarousel";
 
 
 import { RoiDashboard } from "@/components/subscription/RoiDashboard";
@@ -88,8 +86,8 @@ const Subscription = () => {
   const handleSubscribe = async (tier: string) => {
     if (!user) return;
     try {
-      const { data, error } = await supabase.functions.invoke("create-subscription-checkout", {
-        body: { tier, billing: yearly ? "yearly" : "monthly" } });
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "subscription", tier, billing: yearly ? "yearly" : "monthly" } });
       if (error) throw error;
       if (data?.url) setStripeUrl(data.url);
     } catch (error) {
@@ -436,7 +434,6 @@ const Subscription = () => {
         </div>
 
         {/* (3) Enterprise anchor tier */}
-        <EnterpriseTier />
 
         {/* Trust badges */}
         <motion.div
@@ -469,7 +466,6 @@ const Subscription = () => {
         )}
 
         {/* (10) Perks spotlight */}
-        <PerksCarousel />
 
         {/* Savings calculator */}
         <SavingsCalculator />
