@@ -66,6 +66,7 @@ const BrainDuel = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const { purchasePowerup, isPurchasing } = useBrainDuelPowerups();
   const { onlineCount } = useBrainDuelOnlinePlayers();
+  const { data: overview } = useBrainDuelOverview();
   
   useBrainDuelRealTimeNotifications();
 
