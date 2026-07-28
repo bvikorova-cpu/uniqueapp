@@ -111,17 +111,19 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
     }
   }, [timeLeft, gamePhase, selectedAnswer]);
 
-  const startMatch = async (cat: string) => {
+  const startMatch = async (cat: string, mode: string = gameMode) => {
     if (!currentUser) {
       toast.error('Please sign in to play');
       return;
     }
-    if (credits < 10) {
-      toast.error('You need at least 10 credits to play');
+    const cfg = MODE_CONFIG[mode] ?? MODE_CONFIG.quick;
+    if (credits < cfg.entry) {
+      toast.error(`You need at least ${cfg.entry} credits for ${cfg.label}`);
       return;
     }
 
     setCategory(cat);
+    setGameMode(mode);
     setGamePhase('loading');
     setMyScore(0);
     setOpponentScore(0);
@@ -132,9 +134,10 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
     try {
       // 1. Create match
       const { data: matchData, error: matchError } = await supabase.functions.invoke('brain-duel-matchmaking', {
-        body: { category: cat } });
+        body: { category: cat, gameMode: mode } });
       if (matchError) throw matchError;
       if (matchData?.error) throw new Error(matchData.error);
+
       
       setMatchId(matchData.match.id);
 
