@@ -242,7 +242,7 @@ const BrainDuel = () => {
             onClick={() => navigate("/brain-duel/hub")}
             className="px-6 py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold shadow-lg hover:opacity-90 transition"
           >
-            ✨ Open Brain Duel Hub — 12 new features
+            ✨ Open Brain Duel Hub — 7 AI features
           </button>
         </div>
 
