@@ -107,7 +107,7 @@ export default function FairyCastles() {
               <PremiumCastleCard
                 key={castle.id}
                 castle={castle}
-                image={getCastleImage(castle.name, castle.park_name)}
+                image={getCastleImage(castle.name, castle.thumbnail_url)}
                 isVisited={visitedCastleIds.includes(castle.id)}
                 hasStamp={stampedCastleIds.includes(castle.id)}
                 countryFlag={getCountryFlag(castle.country_code)}
