@@ -85,7 +85,7 @@ export const BrainDuelGame = ({
   const queryClient = useQueryClient();
   const { credits, isLoading: creditsLoading } = useBrainDuelCredits();
   const { powerups, consumePowerup: triggerPowerup } = useBrainDuelPowerups();
-  const [gamePhase, setGamePhase] = useState<'category' | 'loading' | 'playing' | 'answer-reveal' | 'results' | 'analysis'>('category');
+  const [gamePhase, setGamePhase] = useState<'category' | 'loading' | 'playing' | 'answer-reveal' | 'results' | 'analysis' | 'waiting'>('category');
   const [category, setCategory] = useState('');
   const [gameMode, setGameMode] = useState<string>('quick');
 
@@ -227,6 +227,69 @@ export const BrainDuelGame = ({
     }
   };
 
+  // Shared finisher so both the live flow and the "waiting for opponent" screen
+  // can close a match without duplicating logic.
+  const finishMatchById = useCallback(async (id: string) => {
+    setGamePhase('results');
+    try {
+      const { data, error } = await supabase.functions.invoke('brain-duel-finish-match', {
+        body: { match_id: id } });
+      if (error) throw error;
+      setMatchResult(data);
+      setMatchStatus('finished');
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-overview'] });
+    } catch (err: any) {
+      console.error('Finish match error:', err);
+      setMatchStatus('failed');
+      toast.error('Failed to finish match');
+    }
+  }, [queryClient]);
+
+  const countAnswers = async (mid: string, playerId: string) => {
+    const { count } = await supabase
+      .from('brain_duel_answers')
+      .select('id', { count: 'exact', head: true })
+      .eq('match_id', mid)
+      .eq('player_id', playerId);
+    return count ?? 0;
+  };
+
+  // Poll opponent progress while waiting; auto-finish once they are done.
+  const [waitingInfo, setWaitingInfo] = useState<{ answered: number; total: number } | null>(null);
+  const checkOpponentProgress = useCallback(async (silent = false) => {
+    if (!resumeMatchId || !currentUser) return;
+    const { data: match } = await supabase
+      .from('brain_duel_matches')
+      .select('*')
+      .eq('id', resumeMatchId)
+      .maybeSingle();
+    if (!match) return;
+    const isP1 = match.player1_id === currentUser.id;
+    const oppId = isP1 ? match.player2_id : match.player1_id;
+    const total = match.total_questions ?? 10;
+    setMyScore(isP1 ? match.player1_score ?? 0 : match.player2_score ?? 0);
+    setOpponentScore(isP1 ? match.player2_score ?? 0 : match.player1_score ?? 0);
+    const oppAnswered = oppId ? await countAnswers(match.id, oppId) : 0;
+    setWaitingInfo({ answered: oppAnswered, total });
+    if (match.status === 'completed' || match.status === 'finished' || match.finished_at) {
+      await finishMatchById(match.id);
+      return;
+    }
+    if (oppAnswered >= total) {
+      await finishMatchById(match.id);
+    } else if (!silent) {
+      toast.info(`Opponent answered ${oppAnswered}/${total} questions.`);
+    }
+  }, [resumeMatchId, currentUser, finishMatchById]);
+
+  useEffect(() => {
+    if (gamePhase !== 'waiting') return;
+    const id = setInterval(() => { void checkOpponentProgress(true); }, 8000);
+    return () => clearInterval(id);
+  }, [gamePhase, checkOpponentProgress]);
+
   // Resume an already-created match (e.g. an accepted friend challenge).
   // Credits were already deducted when the match was created — never charge again here.
   const resumedRef = useRef<string | null>(null);
@@ -270,6 +333,27 @@ export const BrainDuelGame = ({
       setGameMode(match.game_mode === 'friend' ? 'quick' : (match.game_mode || 'quick'));
       setQuestionTime(t);
 
+      // Restore live scores + progress, so a player who already answered does not
+      // replay the duel (and sees a proper "waiting for opponent" screen instead).
+      const isP1 = match.player1_id === currentUser.id;
+      const oppId = isP1 ? match.player2_id : match.player1_id;
+      const total = match.total_questions ?? 10;
+      setMyScore(isP1 ? match.player1_score ?? 0 : match.player2_score ?? 0);
+      setOpponentScore(isP1 ? match.player2_score ?? 0 : match.player1_score ?? 0);
+
+      const myAnswered = await countAnswers(match.id, currentUser.id);
+      if (myAnswered >= total) {
+        const oppAnswered = oppId ? await countAnswers(match.id, oppId) : 0;
+        if (oppAnswered >= total) {
+          await finishMatchById(match.id);
+          return;
+        }
+        setWaitingInfo({ answered: oppAnswered, total });
+        setMatchStatus('in_progress');
+        setGamePhase('waiting');
+        return;
+      }
+
       let qData: any = null;
       for (let attempt = 0; attempt < 2; attempt++) {
         const { data, error: qErr } = await supabase.functions.invoke('brain-duel-get-questions', {
@@ -289,6 +373,7 @@ export const BrainDuelGame = ({
       }
 
       setQuestions(qData.questions);
+      setCurrentIndex(Math.min(myAnswered, qData.questions.length - 1));
       setMatchStatus('in_progress');
       setGamePhase('playing');
       setTimeLeft(t);
@@ -340,22 +425,30 @@ export const BrainDuelGame = ({
 
   const finishMatch = async () => {
     if (!matchId) return;
-    setGamePhase('results');
 
-    try {
-      const { data, error } = await supabase.functions.invoke('brain-duel-finish-match', {
-        body: { match_id: matchId } });
-      if (error) throw error;
-      setMatchResult(data);
-      setMatchStatus('finished');
-      queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
-      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
-      queryClient.invalidateQueries({ queryKey: ['brain-duel-overview'] });
-    } catch (err: any) {
-      console.error('Finish match error:', err);
-      setMatchStatus('failed');
-      toast.error('Failed to finish match');
+    // Friend duels are played by two people: if the opponent has not finished
+    // yet, park on the waiting screen instead of closing the match early.
+    if (resumeMatchId && currentUser) {
+      const { data: match } = await supabase
+        .from('brain_duel_matches')
+        .select('*')
+        .eq('id', matchId)
+        .maybeSingle();
+      if (match) {
+        const isP1 = match.player1_id === currentUser.id;
+        const oppId = isP1 ? match.player2_id : match.player1_id;
+        const total = match.total_questions ?? questions.length ?? 10;
+        const oppAnswered = oppId ? await countAnswers(matchId, oppId) : total;
+        if (oppId && oppAnswered < total) {
+          setWaitingInfo({ answered: oppAnswered, total });
+          setMatchStatus('in_progress');
+          setGamePhase('waiting');
+          return;
+        }
+      }
     }
+
+    await finishMatchById(matchId);
   };
 
   const requestAiAnalysis = async () => {
@@ -644,6 +737,45 @@ export const BrainDuelGame = ({
             </Button>
           </motion.div>
         </AnimatePresence>
+      </Card>
+    );
+  }
+
+  // ===== WAITING FOR OPPONENT (friend duels) =====
+  if (gamePhase === 'waiting') {
+    return (
+      <Card className="p-6 sm:p-8 text-center backdrop-blur-xl bg-card/80 border-primary/10 space-y-4">
+        <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
+        <div>
+          <h3 className="text-lg font-bold">You're done — waiting for your opponent</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            Your answers are saved. The result is calculated as soon as your opponent finishes.
+          </p>
+        </div>
+        <div className="flex items-center justify-center gap-6">
+          <div>
+            <p className="text-xs text-muted-foreground">You</p>
+            <p className="text-2xl font-bold text-primary">{myScore}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Opponent</p>
+            <p className="text-2xl font-bold">{opponentScore}</p>
+          </div>
+        </div>
+        {waitingInfo && (
+          <p className="text-xs text-muted-foreground">
+            Opponent progress: {waitingInfo.answered}/{waitingInfo.total} questions
+          </p>
+        )}
+        <div className="flex flex-col sm:flex-row gap-2 justify-center">
+          <Button onClick={() => void checkOpponentProgress(false)} variant="default">
+            Check now
+          </Button>
+          <Button onClick={resetGame} variant="outline">
+            Back to duels
+          </Button>
+        </div>
+        <MatchStatusIndicator status={matchStatus} matchId={matchId} showHint />
       </Card>
     );
   }
