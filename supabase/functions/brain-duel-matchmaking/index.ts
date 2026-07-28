@@ -73,7 +73,7 @@ serve(async (req) => {
             await supabase.rpc("add_ai_credits", {
               p_user_id: rid, p_amount: stake,
               p_reason: "brain_duel_friend_challenge_refund", p_source: "brain_duel"
-            }).catch?.(() => {});
+            });
           }
           console.error("friend challenge deduct failed", id, spendErr);
           return fail("Not enough credits to start this duel");
