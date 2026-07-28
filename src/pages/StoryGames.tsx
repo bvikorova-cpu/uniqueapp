@@ -122,6 +122,56 @@ export default function StoryGames() {
         }
       }
     }
+
+    // Log daily activity so the streak counts game days too
+    if (userId) {
+      try {
+        await (supabase as any).from("kids_academy_activity_log").insert({
+          parent_id: userId,
+          child_id: userId,
+          section: "story_games",
+          action: activeGame ?? "play",
+          xp_earned: gameScore,
+          meta: { game: activeGame, score: gameScore },
+        });
+
+        const today = new Date().toISOString().slice(0, 10);
+        const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+        const { data: cur } = await (supabase as any)
+          .from("kids_academy_xp")
+          .select("total_xp, current_streak, longest_streak, last_activity_date")
+          .eq("child_id", userId)
+          .maybeSingle();
+
+        let newStreak = cur?.current_streak ?? 0;
+        if (cur?.last_activity_date === today) {
+          // same day — keep streak
+          newStreak = Math.max(newStreak, 1);
+        } else if (cur?.last_activity_date === yesterday) {
+          newStreak = (cur?.current_streak ?? 0) + 1;
+        } else {
+          newStreak = 1;
+        }
+        const totalXp = (cur?.total_xp ?? 0) + gameScore;
+        const longest = Math.max(cur?.longest_streak ?? 0, newStreak);
+
+        await (supabase as any).from("kids_academy_xp").upsert({
+          parent_id: userId,
+          child_id: userId,
+          total_xp: totalXp,
+          level: Math.floor(totalXp / 100) + 1,
+          current_streak: newStreak,
+          longest_streak: longest,
+          last_activity_date: today,
+        }, { onConflict: "child_id" });
+
+        setStreak(newStreak);
+        setLongestStreak(longest);
+      } catch (e) {
+        console.error("Failed to log daily activity:", e);
+      }
+    }
+
     setActiveGame(null);
   };
 
