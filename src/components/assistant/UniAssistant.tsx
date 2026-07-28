@@ -22,6 +22,8 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const [thinking, setThinking] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [transcript, setTranscript] = useState("");
+  const [typed, setTyped] = useState("");
+
   const [turns, setTurns] = useState<Turn[]>([]);
   const [caption, setCaption] = useState<{ role: "user" | "assistant"; text: string } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
@@ -109,29 +111,64 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: { type: "uni_assistant", transcript: text, currentRoute: location.pathname } });
-      if (error) throw error;
-      if (data?.error === "INSUFFICIENT_CREDITS") {
+
+      // The Supabase SDK collapses every non-2xx response into a generic
+      // "non-2xx status code" error and hides the real body on error.context.
+      // Unwrap it so Uni can react to 401 / 402 / 429 properly.
+      let payload: any = data;
+      if (error) {
+        let status: number | undefined;
+        try {
+          const ctx = (error as any)?.context;
+          if (ctx && typeof ctx.json === "function") {
+            payload = await ctx.json();
+            status = typeof ctx.status === "number" ? ctx.status : undefined;
+          }
+        } catch { /* keep generic */ }
+        const code = String(payload?.error ?? "");
+        if (status === 401 || /not authenticated|auth_required|unauthor/i.test(code)) {
+          const msg = "Please sign in to talk to me.";
+          setTurns((t) => [...t, { role: "assistant", content: msg }]);
+          showCaption("assistant", msg, 6000);
+          toast({ title: "Sign in required", description: "Uni needs a signed-in account.", variant: "destructive" });
+          setTimeout(() => navigate("/auth"), 800);
+          return;
+        }
+        if (status === 402 || /insufficient/i.test(code)) {
+          payload = { error: "INSUFFICIENT_CREDITS" };
+        } else if (status === 429 || /rate limit/i.test(code)) {
+          const msg = "I'm getting a lot of requests right now — try again in a moment.";
+          setTurns((t) => [...t, { role: "assistant", content: msg }]);
+          showCaption("assistant", msg, 6000);
+          return;
+        } else if (!payload?.reply && !payload?.error) {
+          throw error;
+        }
+      }
+
+      if (payload?.error === "INSUFFICIENT_CREDITS") {
         toast({ title: "Not enough credits", description: "Uni costs 5 credits per command.", variant: "destructive" });
         const msg = "You need 5 credits to use me. Top up in Wallet.";
         setTurns((t) => [...t, { role: "assistant", content: msg }]);
         showCaption("assistant", msg, 6000);
         return;
       }
-      if (data?.error) throw new Error(data.error);
-      const reply = sanitizeVisibleText(data?.reply ?? data?.message ?? data?.text ?? data?.result ?? "Okay.");
+      if (payload?.error) throw new Error(String(payload.error));
+      const reply = sanitizeVisibleText(payload?.reply ?? payload?.message ?? payload?.text ?? payload?.result ?? "Okay.");
       setTurns((t) => [...t, { role: "assistant", content: reply }]);
       showCaption("assistant", reply);
       speak(reply);
-      if (data?.action?.type === "navigate" && data.action.path) {
-        setTimeout(() => navigate(data.action.path), 400);
+      if (payload?.action?.type === "navigate" && payload.action.path) {
+        setTimeout(() => navigate(payload.action.path), 400);
       }
     } catch (e: any) {
-      toast({ title: "Uni error", description: e.message ?? "Try again", variant: "destructive" });
+      toast({ title: "Uni error", description: e?.message ?? "Try again", variant: "destructive" });
     } finally {
       setThinking(false);
       setTranscript("");
     }
   };
+
 
   const startListening = () => {
     if (!supported) {
@@ -411,9 +448,35 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                 </Button>
               )}
             </div>
+
+            {/* Text fallback — works even when the browser has no speech
+                recognition or the mic permission is blocked. */}
+            <form
+              className="flex items-center gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const value = typed.trim();
+                if (!value || thinking) return;
+                setTyped("");
+                send(value);
+              }}
+            >
+              <input
+                value={typed}
+                onChange={(e) => setTyped(e.target.value)}
+                placeholder="…or type your question"
+                aria-label="Type a message to Uni"
+                className="flex-1 h-10 rounded-full border border-border bg-background px-4 text-sm outline-none focus:border-primary"
+              />
+              <Button type="submit" size="sm" className="rounded-full" disabled={thinking || !typed.trim()}>
+                Send
+              </Button>
+            </form>
+
             <p className="text-[10px] text-center text-muted-foreground">
-              {listening ? "Listening…" : thinking ? "Uni is thinking…" : speaking ? "Uni is speaking…" : "Tap the mic and speak"}
+              {listening ? "Listening…" : thinking ? "Uni is thinking…" : speaking ? "Uni is speaking…" : supported ? "Tap the mic and speak, or type below" : "Voice input is unavailable in this browser — type below"}
             </p>
+
           </motion.div>
         </motion.div>
       )}
