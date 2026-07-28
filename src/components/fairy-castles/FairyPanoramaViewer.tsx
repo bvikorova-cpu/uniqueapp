@@ -558,6 +558,7 @@ export function FairyPanoramaViewer({
   const narratedText = audioGuideText ? `${guidePersona.prefix}${audioGuideText}` : audioGuideText;
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(true);
+  const [showMixer, setShowMixer] = useState(false);
   const [ambientVolume, setAmbientVolume] = useState<number>(() => {
     if (typeof window === 'undefined') return 0.3;
     const v = parseFloat(localStorage.getItem('fairy.ambientVolume') || '0.3');
