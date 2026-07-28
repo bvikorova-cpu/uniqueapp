@@ -299,7 +299,7 @@ export const FriendChallenges = () => {
       if ((data as any)?.error) throw new Error((data as any).error);
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data, challengeId) => {
       queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
@@ -309,9 +309,23 @@ export const FriendChallenges = () => {
         description: `Match starting with ${data.stake_amount} credits at stake!` });
 
       setAcceptingChallenge(null);
-      const matchId = (data as any)?.match?.id;
-      if (matchId) navigate(`/brain-duel?match_id=${matchId}`);
+      let matchId = (data as any)?.match?.id || (data as any)?.match_id;
+      if (!matchId && challengeId) {
+        // Fallback: read the match id straight from the challenge row
+        const { data: row } = await supabase
+          .from('brain_duel_friend_challenges')
+          .select('match_id')
+          .eq('id', challengeId)
+          .maybeSingle();
+        matchId = (row as any)?.match_id || null;
+      }
+      if (matchId) {
+        navigate(`/brain-duel?match_id=${matchId}`);
+      } else {
+        navigate(`/brain-duel?challenge_id=${challengeId}`);
+      }
     },
+
     onError: (error: Error) => { setAcceptingChallenge(null);
       toast({
         title: 'Failed to accept challenge',
