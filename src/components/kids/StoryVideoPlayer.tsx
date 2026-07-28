@@ -145,7 +145,10 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
 
     // Play audio for current scene if available
     if (audioFiles && audioFiles[currentScene]) {
-      const audio = new Audio(`data:audio/mp3;base64,${audioFiles[currentScene]}`);
+      const audioSource = audioFiles[currentScene].startsWith('data:')
+        ? audioFiles[currentScene]
+        : `data:audio/mp3;base64,${audioFiles[currentScene]}`;
+      const audio = new Audio(audioSource);
       audio.playbackRate = voiceSpeed; // Apply voice speed
       audioRef.current = audio;
       audio.play().catch(err => console.error('Audio playback error:', err));
