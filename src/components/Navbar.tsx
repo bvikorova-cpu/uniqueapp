@@ -108,8 +108,6 @@ const Navbar = () => {
   const learningServices = [
     { path: "/education", label: "Education", icon: GraduationCap },
     { path: "/ai-mentor", label: "AI Personal Mentor", icon: UserCircle },
-    { path: "/kids-channel", label: "Kids Channel", icon: Video },
-    { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
     { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
   ];
 
@@ -122,6 +120,8 @@ const Navbar = () => {
 
   const kidsAcademyServices = [
     { path: "/kids", label: "Kids Academy Hub", icon: Sparkles },
+    { path: "/kids-channel", label: "Kids Channel", icon: Video },
+    { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
     { path: "/kids-homework", label: "Homework Helper (6-12y)", icon: BookOpen },
     { path: "/kids-story-creator", label: "Story Creator (6-12y)", icon: BookOpen },
     { path: "/kids-science-lab", label: "Science Lab (6-12y)", icon: FlaskConical },
