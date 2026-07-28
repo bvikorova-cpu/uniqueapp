@@ -263,7 +263,12 @@ export default function KidsVoiceChat() {
           </motion.div>
 
           {/* Credit balance banner (paid-only) */}
-          <ChatCreditBanner credits={credits_remaining} loading={creditsLoading} />
+          {hasGoldPass ? (
+            <KidsGoldPassBanner moduleName="Character Chat" />
+          ) : (
+            <ChatCreditBanner credits={credits_remaining} loading={creditsLoading} />
+          )}
+
 
           {!selectedCharacter ? (
             /* Character Selection */
