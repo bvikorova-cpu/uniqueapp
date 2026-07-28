@@ -16,6 +16,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { useNavigate } from 'react-router-dom';
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { searchProfiles } from "@/lib/searchProfiles";
+
 
 const categories = [
   'General Knowledge',
