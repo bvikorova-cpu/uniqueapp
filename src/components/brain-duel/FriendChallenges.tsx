@@ -37,6 +37,7 @@ export const FriendChallenges = () => {
   const { credits } = useBrainDuelCredits();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState<string>('');
+  const [friendSearch, setFriendSearch] = useState<string>('');
   const [category, setCategory] = useState<string>('');
   const [stakeCredits, setStakeCredits] = useState<number>(10);
   const [userId, setUserId] = useState<string | null>(null);
@@ -128,14 +129,33 @@ export const FriendChallenges = () => {
       const friendIds = friendships.map((f) =>
         f.user_id === user.id ? f.friend_id : f.user_id
       );
+      if (friendIds.length === 0) return [];
 
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name, avatar_url')
+        .select('id, full_name, username, avatar_url')
         .in('id', friendIds);
 
       return profiles || [];
     } });
+
+  // Search any user by name/username (works even without friendships)
+  const { data: searchResults, isFetching: isSearching } = useQuery({
+    queryKey: ['friend-challenge-search', friendSearch],
+    enabled: friendSearch.trim().length >= 2,
+    queryFn: async () => {
+      const term = friendSearch.trim();
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, full_name, username, avatar_url')
+        .or(`full_name.ilike.%${term}%,username.ilike.%${term}%`)
+        .limit(20);
+      return (data || []).filter((p: any) => p.id !== user?.id);
+    } });
+
+  const friendOptions = (friendSearch.trim().length >= 2 ? searchResults : friends) || [];
+
 
   // Fetch challenges
   const { data: challenges } = useQuery({
@@ -294,33 +314,46 @@ export const FriendChallenges = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="friend-select">Select Friend</Label>
+                  <Input
+                    id="friend-search"
+                    value={friendSearch}
+                    onChange={(e) => setFriendSearch(e.target.value)}
+                    placeholder="Search people by name or username…"
+                    autoComplete="off"
+                  />
                   <Select value={selectedFriend} onValueChange={setSelectedFriend}>
                     <SelectTrigger id="friend-select">
                       <SelectValue placeholder="Choose a friend to challenge" />
                     </SelectTrigger>
                     <SelectContent>
-                      {friends && friends.length > 0 ? (
-                        friends.map((friend) => (
+                      {friendOptions.length > 0 ? (
+                        friendOptions.map((friend: any) => (
                           <SelectItem key={friend.id} value={friend.id}>
                             <div className="flex items-center gap-2">
                               <Avatar className="h-6 w-6">
                                 <AvatarImage src={friend.avatar_url || undefined} />
                                 <AvatarFallback className="text-xs">
-                                  {friend.full_name?.[0]?.toUpperCase() || 'U'}
+                                  {(friend.full_name || friend.username)?.[0]?.toUpperCase() || 'U'}
                                 </AvatarFallback>
                               </Avatar>
-                              {friend.full_name || 'Anonymous'}
+                              {friend.full_name || friend.username || 'Anonymous'}
                             </div>
                           </SelectItem>
                         ))
                       ) : (
                         <SelectItem value="none" disabled>
-                          No friends available
+                          {isSearching
+                            ? 'Searching…'
+                            : friendSearch.trim().length >= 2
+                              ? 'No users found'
+                              : 'No friends yet — type a name to search'}
                         </SelectItem>
                       )}
                     </SelectContent>
                   </Select>
                 </div>
+
+
 
                 <div className="space-y-2">
                   <Label htmlFor="category-select">Category</Label>
