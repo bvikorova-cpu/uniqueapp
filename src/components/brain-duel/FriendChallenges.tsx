@@ -615,17 +615,24 @@ export const FriendChallenges = () => {
                         </Button>
                       </div>
                     )}
-                    {challenge.status === 'accepted' && challenge.match_id && (
+                    {(challenge.status === 'accepted' || challenge.status === 'active') && (
                       <Button
                         size="sm"
                         variant="default"
                         className="ml-auto"
-                        onClick={() => navigate(`/brain-duel?match_id=${challenge.match_id}`)}
+                        onClick={() =>
+                          navigate(
+                            challenge.match_id
+                              ? `/brain-duel?match_id=${challenge.match_id}`
+                              : '/brain-duel'
+                          )
+                        }
                       >
                         <Swords className="h-4 w-4 mr-1" />
                         Play duel
                       </Button>
                     )}
+
                     {isChallenger && challenge.status === 'pending' && (
                       <Badge variant="secondary" className="text-[10px] ml-auto">
                         Waiting for response...
