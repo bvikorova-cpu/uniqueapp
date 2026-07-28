@@ -32,19 +32,34 @@ const fetchPublicProfilesByIds = async (ids: string[]): Promise<BrainDuelPublicP
   const uniqueIds = Array.from(new Set(ids.filter(Boolean)));
   if (uniqueIds.length === 0) return [];
 
+  const normalize = (rows: any[]): BrainDuelPublicProfile[] =>
+    (rows || []).map((profile) => ({
+      id: profile.id,
+      full_name: profile.full_name ?? null,
+      username: profile.username ?? null,
+      avatar_url: profile.avatar_url ?? null,
+    }));
+
   const { data, error } = await (supabase as any).rpc('get_public_profiles', { ids: uniqueIds });
   if (error) {
     console.error('friend challenge profile lookup failed:', error);
-    return [];
   }
 
-  return ((data || []) as BrainDuelPublicProfile[]).map((profile) => ({
-    id: profile.id,
-    full_name: profile.full_name ?? null,
-    username: profile.username ?? null,
-    avatar_url: profile.avatar_url ?? null,
-  }));
+  let profiles = normalize(data as any[]);
+
+  // Fallback: direct read for any id the RPC did not return
+  const missing = uniqueIds.filter((id) => !profiles.some((p) => p.id === id));
+  if (missing.length > 0) {
+    const { data: fallback } = await supabase
+      .from('profiles')
+      .select('id, full_name, username, avatar_url')
+      .in('id', missing);
+    profiles = [...profiles, ...normalize(fallback as any[])];
+  }
+
+  return profiles;
 };
+
 
 
 const categories = [
