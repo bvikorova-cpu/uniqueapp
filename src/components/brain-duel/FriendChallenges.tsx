@@ -18,6 +18,34 @@ import { useNavigate } from 'react-router-dom';
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { searchProfiles } from "@/lib/searchProfiles";
 
+type BrainDuelPublicProfile = {
+  id: string;
+  full_name: string | null;
+  username: string | null;
+  avatar_url: string | null;
+};
+
+const getProfileDisplayName = (profile?: Partial<BrainDuelPublicProfile> | null) =>
+  profile?.full_name?.trim() || profile?.username?.trim() || 'Player';
+
+const fetchPublicProfilesByIds = async (ids: string[]): Promise<BrainDuelPublicProfile[]> => {
+  const uniqueIds = Array.from(new Set(ids.filter(Boolean)));
+  if (uniqueIds.length === 0) return [];
+
+  const { data, error } = await (supabase as any).rpc('get_public_profiles', { ids: uniqueIds });
+  if (error) {
+    console.error('friend challenge profile lookup failed:', error);
+    return [];
+  }
+
+  return ((data || []) as BrainDuelPublicProfile[]).map((profile) => ({
+    id: profile.id,
+    full_name: profile.full_name ?? null,
+    username: profile.username ?? null,
+    avatar_url: profile.avatar_url ?? null,
+  }));
+};
+
 
 const categories = [
   'General Knowledge',
@@ -68,15 +96,11 @@ export const FriendChallenges = () => {
           filter: `challenged_id=eq.${userId}` },
         async (payload) => {
           // Fetch challenger profile for notification
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('full_name')
-            .eq('id', payload.new.challenger_id)
-            .single();
+          const [profile] = await fetchPublicProfilesByIds([payload.new.challenger_id]);
 
           toast({
             title: '⚔️ New Challenge!',
-            description: `${profile?.full_name || 'Someone'} challenged you to ${payload.new.category}!` });
+            description: `${getProfileDisplayName(profile)} challenged you to ${payload.new.category}!` });
 
           // Refresh challenges list
           queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
@@ -92,15 +116,11 @@ export const FriendChallenges = () => {
         async (payload) => {
           // Only notify if status changed to accepted
           if (payload.new.status === 'accepted' && payload.old.status === 'pending') {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('full_name')
-              .eq('id', payload.new.challenged_id)
-              .single();
+            const [profile] = await fetchPublicProfilesByIds([payload.new.challenged_id]);
 
             toast({
               title: '🎉 Challenge Accepted!',
-              description: `${profile?.full_name || 'Your friend'} accepted your challenge!` });
+              description: `${getProfileDisplayName(profile)} accepted your challenge!` });
 
             // Refresh challenges list
             queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
@@ -134,12 +154,9 @@ export const FriendChallenges = () => {
       );
       if (friendIds.length === 0) return [];
 
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, full_name, username, avatar_url')
-        .in('id', friendIds);
+      const profiles = await fetchPublicProfilesByIds(friendIds);
 
-      return profiles || [];
+      return profiles;
     } });
 
   // Search any user by name/username (works even without friendships)
@@ -164,7 +181,7 @@ export const FriendChallenges = () => {
   };
 
   const handleFriendSelect = (friend: any) => {
-    const displayName = friend.full_name || friend.username || 'Anonymous';
+    const displayName = getProfileDisplayName(friend);
     setSelectedFriend(friend.id);
     setSelectedFriendName(displayName);
     setFriendSearch(displayName);
@@ -197,14 +214,11 @@ export const FriendChallenges = () => {
         userIds.add(challenge.challenged_id);
       });
 
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, full_name, username, avatar_url')
-        .in('id', Array.from(userIds));
+      const profiles = await fetchPublicProfilesByIds(Array.from(userIds));
 
       return data?.map((challenge) => ({ ...challenge,
-        challenger_profile: profiles?.find((p) => p.id === challenge.challenger_id),
-        challenged_profile: profiles?.find((p) => p.id === challenge.challenged_id) })) || [];
+        challenger_profile: profiles.find((p) => p.id === challenge.challenger_id),
+        challenged_profile: profiles.find((p) => p.id === challenge.challenged_id) })) || [];
     } });
 
   // Create challenge mutation
@@ -373,7 +387,7 @@ export const FriendChallenges = () => {
                             </Avatar>
                             <span className="min-w-0 flex-1">
                               <span className="block truncate font-medium">
-                                {friend.full_name || friend.username || 'Anonymous'}
+                                  {getProfileDisplayName(friend)}
                               </span>
                               {friend.username ? (
                                 <span className="block truncate text-xs text-muted-foreground">@{friend.username}</span>
@@ -474,10 +488,7 @@ export const FriendChallenges = () => {
                 ? challenge.challenged_profile
                 : challenge.challenger_profile;
 
-              const opponentName =
-                (opponent as { full_name?: string; username?: string } | undefined)?.full_name ||
-                (opponent as { username?: string } | undefined)?.username ||
-                'Player';
+              const opponentName = getProfileDisplayName(opponent);
 
               return (
                 <div 
