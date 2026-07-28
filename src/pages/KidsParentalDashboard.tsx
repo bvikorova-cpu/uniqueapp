@@ -12,6 +12,8 @@ import { ArrowLeft, BarChart3, Shield, Crown, Timer, Trophy, Eye, Clock, Brain, 
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+
 
 import { ParentalHero } from "@/components/kids/parental/ParentalHero";
 import { ParentalDashboard } from "@/components/kids/ParentalDashboard";
