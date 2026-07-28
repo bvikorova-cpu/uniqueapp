@@ -309,7 +309,7 @@ export const FriendChallenges = () => {
                 Challenge Friend
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md backdrop-blur-xl bg-card/95 max-h-[85vh] overflow-y-auto overscroll-contain">
+            <DialogContent className="top-4 max-w-md translate-y-0 backdrop-blur-xl bg-card/95 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain p-4 sm:top-[50%] sm:translate-y-[-50%] sm:max-h-[85vh] sm:p-6">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <Swords className="h-5 w-5 text-primary" />
@@ -334,44 +334,62 @@ export const FriendChallenges = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="friend-select">Select Friend</Label>
-                  <Input
-                    id="friend-search"
-                    value={friendSearch}
-                    onChange={(e) => setFriendSearch(e.target.value)}
-                    placeholder="Search people by name or username…"
-                    autoComplete="off"
-                  />
-                  <Select value={selectedFriend} onValueChange={setSelectedFriend}>
-                    <SelectTrigger id="friend-select">
-                      <SelectValue placeholder="Choose a friend to challenge" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {friendOptions.length > 0 ? (
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="friend-search"
+                      value={friendSearch}
+                      onChange={(e) => handleFriendSearchChange(e.target.value)}
+                      placeholder="Search people by name or username…"
+                      autoComplete="off"
+                      className="pl-9"
+                    />
+                  </div>
+                  {selectedFriend ? (
+                    <div className="rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">
+                      Selected: {selectedFriendName || friendSearch}
+                    </div>
+                  ) : (
+                    <div id="friend-select" className="max-h-56 overflow-y-auto rounded-md border border-border bg-background/80 p-1">
+                      {isSearching ? (
+                        <div className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Searching…
+                        </div>
+                      ) : friendOptions.length > 0 ? (
                         friendOptions.map((friend: any) => (
-                          <SelectItem key={friend.id} value={friend.id}>
-                            <div className="flex items-center gap-2">
-                              <Avatar className="h-6 w-6">
-                                <AvatarImage src={friend.avatar_url || undefined} />
-                                <AvatarFallback className="text-xs">
-                                  {(friend.full_name || friend.username)?.[0]?.toUpperCase() || 'U'}
-                                </AvatarFallback>
-                              </Avatar>
-                              {friend.full_name || friend.username || 'Anonymous'}
-                            </div>
-                          </SelectItem>
+                          <Button
+                            key={friend.id}
+                            type="button"
+                            variant="ghost"
+                            className="h-auto w-full justify-start gap-3 px-2 py-2 text-left"
+                            onClick={() => handleFriendSelect(friend)}
+                          >
+                            <Avatar className="h-8 w-8 shrink-0">
+                              <AvatarImage src={friend.avatar_url || undefined} />
+                              <AvatarFallback className="text-xs">
+                                {(friend.full_name || friend.username)?.[0]?.toUpperCase() || 'U'}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate font-medium">
+                                {friend.full_name || friend.username || 'Anonymous'}
+                              </span>
+                              {friend.username ? (
+                                <span className="block truncate text-xs text-muted-foreground">@{friend.username}</span>
+                              ) : null}
+                            </span>
+                          </Button>
                         ))
                       ) : (
-                        <SelectItem value="none" disabled>
-                          {isSearching
-                            ? 'Searching…'
-                            : friendSearch.trim().length >= 1
-                              ? 'No users found'
-                              : 'No friends yet — type a name to search'}
-
-                        </SelectItem>
+                        <div className="px-3 py-2 text-sm text-muted-foreground">
+                          {friendSearch.trim().length >= 1
+                            ? 'No users found'
+                            : 'Type a name to search people'}
+                        </div>
                       )}
-                    </SelectContent>
-                  </Select>
+                    </div>
+                  )}
                 </div>
 
 
