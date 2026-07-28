@@ -68339,6 +68339,16 @@ export type Database = {
         Args: { p_item_id: string; p_plan: string }
         Returns: Json
       }
+      brain_duel_activate_combo: {
+        Args: {
+          _combo_type: string
+          _cost: number
+          _effect_description: string
+          _powerup_1: string
+          _powerup_2: string
+        }
+        Returns: Json
+      }
       brain_duel_daily_spin: { Args: never; Returns: Json }
       brain_duel_fifty_fifty: {
         Args: { _question_id: string }

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,9 +26,11 @@ const COMBOS = [
 ];
 
 export const PowerUpCombos = () => {
-  const { credits, spendCreditsAsync } = useBrainDuelCredits();
+  const { credits } = useBrainDuelCredits();
+  const queryClient = useQueryClient();
   const [activating, setActivating] = useState<string | null>(null);
   const [lastActivated, setLastActivated] = useState<string | null>(null);
+
 
   const activateCombo = async (combo: typeof COMBOS[0]) => {
     if (credits < combo.cost) {
@@ -39,26 +43,35 @@ export const PowerUpCombos = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast.error("Please sign in"); return; }
 
-      // Charge first — abort if the atomic RPC rejects (insufficient credits / race).
-      await spendCreditsAsync(combo.cost);
-
-      const { error } = await supabase.from("brain_duel_powerup_combos").insert({ user_id: user.id,
-        combo_type: combo.id,
-        powerup_1: combo.p1,
-        powerup_2: combo.p2,
-        effect_description: combo.effect,
-        credits_cost: combo.cost });
+      // Atomic: charges credits, records the combo and adds both power-ups
+      // to the player's inventory so they can be used during a duel.
+      const { error } = await (supabase as any).rpc("brain_duel_activate_combo", {
+        _combo_type: combo.id,
+        _powerup_1: combo.p1,
+        _powerup_2: combo.p2,
+        _effect_description: combo.effect,
+        _cost: combo.cost });
       if (error) throw error;
 
+      queryClient.invalidateQueries({ queryKey: ["brain-duel-powerups"] });
+      queryClient.invalidateQueries({ queryKey: ["brain-duel-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+
       setLastActivated(combo.id);
-      toast.success(`${combo.emoji} ${combo.name} activated!`, { description: combo.effect });
+      toast.success(`${combo.emoji} ${combo.name} activated!`, {
+        description: `${combo.effect} — both power-ups added to your inventory.` });
       setTimeout(() => setLastActivated(null), 3000);
-    } catch (e) {
-      toast.error("Failed to activate combo");
+    } catch (e: any) {
+      toast.error(
+        String(e?.message || "").includes("Insufficient")
+          ? "Not enough credits for this combo!"
+          : "Failed to activate combo"
+      );
     } finally {
       setActivating(null);
     }
   };
+
 
   const getIcon = (id: string) => POWERUPS.find(p => p.id === id);
 
