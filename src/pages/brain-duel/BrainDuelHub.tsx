@@ -42,6 +42,28 @@ export default function BrainDuelHub() {
   const [input, setInput] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [output, setOutput] = useState<any>(null);
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+
+  const toggleDictation = () => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) { toast.error("Speech recognition is not supported in this browser — please type your answer."); return; }
+    if (listening) { recognitionRef.current?.stop(); setListening(false); return; }
+    const rec = new SR();
+    rec.lang = navigator.language || "en-US";
+    rec.interimResults = false;
+    rec.continuous = false;
+    rec.onresult = (e: any) => {
+      const said = Array.from(e.results).map((r: any) => r[0].transcript).join(" ").trim();
+      if (said) setInput((s) => ({ ...s, transcript: `${s.transcript ? s.transcript + " " : ""}${said}` }));
+    };
+    rec.onerror = () => { setListening(false); toast.error("Could not hear you — please try again or type your answer."); };
+    rec.onend = () => setListening(false);
+    recognitionRef.current = rec;
+    setListening(true);
+    rec.start();
+  };
+
 
   useEffect(() => {
     if (!active) return;
