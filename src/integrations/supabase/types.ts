@@ -70053,19 +70053,32 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      push_notification: {
-        Args: {
-          _action_url?: string
-          _actor_id: string
-          _message: string
-          _post_id?: string
-          _related_id?: string
-          _title: string
-          _type: string
-          _user_id: string
-        }
-        Returns: undefined
-      }
+      push_notification:
+        | {
+            Args: {
+              _action_url?: string
+              _actor_id: string
+              _message: string
+              _related_id?: string
+              _title: string
+              _type: string
+              _user_id: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              _action_url?: string
+              _actor_id: string
+              _message: string
+              _post_id?: string
+              _related_id?: string
+              _title: string
+              _type: string
+              _user_id: string
+            }
+            Returns: undefined
+          }
       recompute_affiliate_tier: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["affiliate_tier"]
