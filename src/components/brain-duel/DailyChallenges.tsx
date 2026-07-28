@@ -163,12 +163,12 @@ export const DailyChallenges = () => {
               </div>
             ) : (
               <Button
-                onClick={() => submitEntry.mutate()}
-                disabled={submitEntry.isPending}
+                onClick={startChallenge}
+                disabled={loadingQuiz || submitEntry.isPending}
                 className="w-full gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg"
               >
-                {submitEntry.isPending ? (
-                  <><Loader2 className="h-4 w-4 animate-spin" /> Submitting...</>
+                {loadingQuiz ? (
+                  <><Loader2 className="h-4 w-4 animate-spin" /> Preparing quiz...</>
                 ) : (
                   <><Zap className="h-4 w-4" /> Start Challenge</>
                 )}
