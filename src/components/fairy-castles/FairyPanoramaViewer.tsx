@@ -1187,8 +1187,18 @@ export function FairyPanoramaViewer({
         </div>
       )}
 
-      {/* Audio Mixer (Ambient + POI) */}
-      <div className="absolute top-56 sm:top-24 right-3 sm:right-6 bg-white/90 backdrop-blur-sm p-2.5 sm:p-3 rounded-xl shadow-lg space-y-2 min-w-[160px] sm:min-w-[180px] max-w-[calc(100%-1.5rem)]">
+      {/* Audio Mixer (collapsible, keeps the panorama clear) */}
+      <button
+        onClick={() => setShowMixer((v) => !v)}
+        className="absolute top-32 sm:top-24 right-3 sm:right-6 z-20 h-10 w-10 rounded-full bg-black/55 backdrop-blur-sm border border-white/25 text-white flex items-center justify-center shadow-lg"
+        aria-label={showMixer ? "Hide audio settings" : "Show audio settings"}
+        title="Audio settings"
+      >
+        <Volume2 className="h-4 w-4" />
+      </button>
+      <div
+        className={`absolute top-44 sm:top-36 right-3 sm:right-6 z-20 bg-white/95 backdrop-blur-sm p-2.5 sm:p-3 rounded-xl shadow-lg space-y-2 min-w-[180px] max-w-[calc(100%-1.5rem)] transition-all ${showMixer ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none -translate-y-2"}`}
+      >
         <div className="flex items-center justify-center gap-1.5 pb-1.5 border-b border-black/10 text-[11px] font-semibold text-gray-700" aria-label={`Narrated by ${guidePersona.label}`}>
           <span className="text-base leading-none">{guidePersona.emoji}</span>
           <span>{guidePersona.label} narrating</span>
