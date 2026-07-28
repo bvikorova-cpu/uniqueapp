@@ -55,11 +55,26 @@ const CATEGORIES = [
   { id: 'Music', emoji: '🎵', color: 'from-pink-500/20 to-rose-600/10' },
 ];
 
-export const BrainDuelGame = () => {
+export const MODE_CONFIG: Record<string, { entry: number; reward: number; questions: number; time: number; label: string }> = {
+  quick: { entry: 10, reward: 20, questions: 10, time: 30, label: 'Quick Duel' },
+  classic: { entry: 20, reward: 50, questions: 20, time: 30, label: 'Classic Battle' },
+  championship: { entry: 50, reward: 150, questions: 30, time: 24, label: 'Championship' },
+  mystery: { entry: 30, reward: 90, questions: 10, time: 20, label: 'Mystery Category' },
+};
+
+export interface StartRequest {
+  nonce: number;
+  mode: string;
+  category?: string;
+}
+
+export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | null }) => {
   const { credits, isLoading: creditsLoading } = useBrainDuelCredits();
   const { powerups, consumePowerup: triggerPowerup } = useBrainDuelPowerups();
   const [gamePhase, setGamePhase] = useState<'category' | 'loading' | 'playing' | 'answer-reveal' | 'results' | 'analysis'>('category');
   const [category, setCategory] = useState('');
+  const [gameMode, setGameMode] = useState<string>('quick');
+
   const [matchId, setMatchId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
