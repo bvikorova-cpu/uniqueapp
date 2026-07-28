@@ -14,12 +14,10 @@ import { Mail, MessageSquare, User, Send, Sparkles, Paperclip, X, Loader2, Check
 import { ContactHero } from "@/components/contact/ContactHero";
 import { SystemStatusWidget } from "@/components/contact/SystemStatusWidget";
 import { ContactFAQ } from "@/components/contact/ContactFAQ";
-import { ContactChannels } from "@/components/contact/ContactChannels";
 import { MyTickets } from "@/components/contact/MyTickets";
 import { VoiceRecorder } from "@/components/contact/VoiceRecorder";
 import { ScreenRecorder } from "@/components/contact/ScreenRecorder";
 
-import { VideoCallBooking } from "@/components/contact/VideoCallBooking";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const CATEGORIES = [
