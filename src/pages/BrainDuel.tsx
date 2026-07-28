@@ -17,7 +17,7 @@ import { BrainDuelGame } from "@/components/brain-duel/BrainDuelGame";
 // BrainDuelLeaderboard import removed — not used on this page (AnimatedLeaderboard is used instead)
 import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
 import { DuelLiveLobby } from "@/components/brain-duel/DuelLiveLobby";
-import FriendChallengesLeaderboard from "@/components/brain-duel/FriendChallengesLeaderboard";
+import ScoringGuide from "@/components/brain-duel/ScoringGuide";
 import { GameModeSelector } from "@/components/brain-duel/GameModeSelector";
 import { LeagueSystem } from "@/components/brain-duel/LeagueSystem";
 import { QuestionPackStore } from "@/components/brain-duel/QuestionPackStore";
