@@ -70,7 +70,7 @@ export default function BrainDuelHub() {
   useEffect(() => {
     if (!active) return;
     setOutput(null);
-    if (active.id === "ai.cheatScan") {
+    if (active.id === "ai.cheatScan" || active.id === "ai.shareCard") {
       setLoadingDuels(true);
       brainDuelCall<any>("duels.recent")
         .then((r) => setRecentDuels(r?.duels ?? []))
@@ -97,7 +97,7 @@ export default function BrainDuelHub() {
         const r = await brainDuelCall<any>("ai.cheatScan", { duelId: input.duelId });
         setOutput(r); refetch(); toast.success("Cheat report ready");
       } else if (active.id === "ai.shareCard") {
-        const r = await brainDuelCall<any>("ai.shareCard", { winner: input.winner, loser: input.loser, score: input.score, topic: input.topic });
+        const r = await brainDuelCall<any>("ai.shareCard", { duelId: input.duelId, winner: input.winner, loser: input.loser, score: input.score, topic: input.topic });
         setOutput(r); refetch(); toast.success("Share card generated!");
       } else if (active.id === "deck.publish") {
         const questions = input.questions ? JSON.parse(input.questions) : [];
@@ -265,11 +265,47 @@ export default function BrainDuelHub() {
                 </div>
               )}
               {active.id === "ai.shareCard" && (
-                <div className="grid grid-cols-2 gap-2">
-                  <Input placeholder="Winner" value={input.winner ?? ""} onChange={(e) => setInput({ ...input, winner: e.target.value })} />
-                  <Input placeholder="Loser" value={input.loser ?? ""} onChange={(e) => setInput({ ...input, loser: e.target.value })} />
-                  <Input placeholder="Score (e.g. 8-5)" value={input.score ?? ""} onChange={(e) => setInput({ ...input, score: e.target.value })} />
-                  <Input placeholder="Topic" value={input.topic ?? ""} onChange={(e) => setInput({ ...input, topic: e.target.value })} />
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">Pick a finished duel to create a card from real names, score and topic.</p>
+                    {loadingDuels ? (
+                      <p className="text-sm text-muted-foreground">Loading your duels…</p>
+                    ) : recentDuels.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No finished duels found yet. You can still fill the card manually below.</p>
+                    ) : (
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {recentDuels.map((d) => (
+                          <Button
+                            key={d.id}
+                            type="button"
+                            variant={input.duelId === d.id ? "secondary" : "outline"}
+                            className="h-auto w-full justify-start p-3 text-left"
+                            onClick={() => setInput({
+                              ...input,
+                              duelId: d.id,
+                              winner: d.winner_name ?? "",
+                              loser: d.loser_name ?? "",
+                              score: d.score_label ?? `${d.player1_score ?? 0}-${d.player2_score ?? 0}`,
+                              topic: d.category ?? "Brain Duel",
+                            })}
+                          >
+                            <span className="block">
+                              <span className="block font-medium normal-case">{d.result_label ?? "Finished duel"}</span>
+                              <span className="block text-xs text-muted-foreground normal-case">
+                                {d.category ?? "General"} · {new Date(d.finished_at ?? d.created_at).toLocaleString()}
+                              </span>
+                            </span>
+                          </Button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input placeholder="Winner" value={input.winner ?? ""} onChange={(e) => setInput({ ...input, winner: e.target.value })} />
+                    <Input placeholder="Loser" value={input.loser ?? ""} onChange={(e) => setInput({ ...input, loser: e.target.value })} />
+                    <Input placeholder="Score (e.g. 8-5)" value={input.score ?? ""} onChange={(e) => setInput({ ...input, score: e.target.value })} />
+                    <Input placeholder="Topic" value={input.topic ?? ""} onChange={(e) => setInput({ ...input, topic: e.target.value })} />
+                  </div>
                 </div>
               )}
               {active.id === "deck.publish" && (
@@ -314,6 +350,19 @@ export default function BrainDuelHub() {
                           <ul className="list-disc pl-5 text-muted-foreground text-xs">
                             {output.report.reasons.map((r: string, i: number) => <li key={i}>{r}</li>)}
                           </ul>
+                        )}
+                      </div>
+                    ) : output?.card ? (
+                      <div className="space-y-2 text-sm">
+                        {output.card.headline && <p className="font-semibold text-base">{output.card.headline}</p>}
+                        {output.source && (
+                          <p className="text-xs text-muted-foreground">
+                            {output.source.winner} vs {output.source.loser} · {output.source.score} · {output.source.topic}
+                          </p>
+                        )}
+                        {output.card.caption && <p className="whitespace-pre-wrap">{output.card.caption}</p>}
+                        {Array.isArray(output.card.hashtags) && output.card.hashtags.length > 0 && (
+                          <p className="text-primary text-xs">{output.card.hashtags.join(" ")}</p>
                         )}
                       </div>
                     ) : Array.isArray(output?.quiz?.questions) ? (
