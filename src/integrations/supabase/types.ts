@@ -68123,6 +68123,7 @@ export type Database = {
         Args: { p_theme_id: string; p_user_id: string }
         Returns: undefined
       }
+      actor_name: { Args: { _user_id: string }; Returns: string }
       add_ai_credits:
         | { Args: { p_amount: number; p_user_id: string }; Returns: boolean }
         | {
@@ -70050,6 +70051,19 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      push_notification: {
+        Args: {
+          _action_url?: string
+          _actor_id: string
+          _message: string
+          _post_id?: string
+          _related_id?: string
+          _title: string
+          _type: string
+          _user_id: string
+        }
+        Returns: undefined
       }
       recompute_affiliate_tier: {
         Args: { _user_id: string }
