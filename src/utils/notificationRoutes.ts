@@ -7,6 +7,7 @@ export interface NotifLike {
   comment_id?: string | null;
   related_id?: string | null;
   actor_id?: string | null;
+  metadata?: Record<string, any> | null;
 }
 
 export function getNotificationRoute(n: NotifLike): string {
