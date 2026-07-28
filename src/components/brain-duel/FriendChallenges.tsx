@@ -231,6 +231,8 @@ export const FriendChallenges = () => {
       queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
       setIsCreateOpen(false);
       setSelectedFriend('');
+      setSelectedFriendName('');
+      setFriendSearch('');
       setCategory('');
       setStakeCredits(10);
       toast({ title: 'Challenge sent! 🎯',
