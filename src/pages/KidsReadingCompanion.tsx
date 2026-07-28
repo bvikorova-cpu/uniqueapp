@@ -26,6 +26,7 @@ import { WordDefinitionPopover } from "@/components/kids-reading/WordDefinitionP
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { logKidsReadingSession } from "@/lib/kidsActivityLog";
 
 const __HIW_KIDSREADINGCOMPANION_STEPS = [
   { title: 'Choose a text', desc: 'Pick a book, story or upload a reading task.' },
@@ -99,6 +100,12 @@ const KidsReadingCompanion = () => {
       });
       if (error) throw error;
       setAnalysis(data);
+      void logKidsReadingSession({
+        bookTitle: bookText.trim().slice(0, 60) || "Reading session",
+        content: bookText,
+        vocabulary: Array.isArray(data?.vocabulary) ? data.vocabulary : [],
+        completed: false,
+      });
       setActiveView("results");
       refreshCredits();
       setStats(prev => ({ ...prev,

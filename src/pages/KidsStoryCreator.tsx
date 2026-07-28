@@ -24,6 +24,7 @@ import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { logKidsStory } from "@/lib/kidsActivityLog";
 
 const __HIW_KIDSSTORYCREATOR_STEPS = [
   { title: 'Choose theme & hero', desc: 'Pick a setting and a main character.' },
@@ -82,6 +83,14 @@ const KidsStoryCreator = () => {
       }
 
       setStory({ ...result, characters: data.characters, illustrationStyle: data.illustrationStyle, category: data.category });
+      void logKidsStory({
+        title: data.title,
+        storyText: String(result?.story ?? ""),
+        illustrationUrl: result?.imageUrl ?? result?.illustration_url ?? null,
+        characters: data.characters ? [data.characters] : [],
+        theme: data.theme,
+        category: data.category,
+      });
       refreshCredits();
       refreshUsage();
       toast.success("Your story is ready! 📖");
