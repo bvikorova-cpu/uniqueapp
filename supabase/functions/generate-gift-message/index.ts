@@ -151,25 +151,29 @@ serve(async (req) => {
 
       // 2) Illustrations (parallel)
       const images = await Promise.all(scenes.map(async (scene, index) => {
-        try {
-          const r = await fetch("https://api.openai.com/v1/images/generations", {
-            method: "POST",
-            headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-            body: JSON.stringify({
-              model: "dall-e-3",
-              prompt: `Children's storybook illustration. Scene: ${scene}. Soft warm watercolor style, age-appropriate, friendly, no text, no letters, vibrant, full-bleed.`.slice(0, 4000),
-              n: 1,
-              size: "1024x1024",
-              response_format: "b64_json" }) });
-          if (!r.ok) { console.error("img fail", r.status, await r.text()); return placeholderStoryImage(scene, index); }
-          const j = await r.json();
-          const b64 = j?.data?.[0]?.b64_json;
-          return b64 ? `data:image/png;base64,${b64}` : (j?.data?.[0]?.url || placeholderStoryImage(scene, index));
-        } catch (error) {
-          console.error("img unexpected fail", error);
-          return placeholderStoryImage(scene, index);
+        const prompt = `Children's storybook illustration. Scene: ${scene}. Soft warm watercolor style, age-appropriate, friendly, no text, no letters, vibrant, full-bleed.`.slice(0, 3800);
+        const attempts: Record<string, unknown>[] = [
+          { model: "gpt-image-1", prompt, n: 1, size: "1024x1024" },
+          { model: "dall-e-3", prompt, n: 1, size: "1024x1024", response_format: "b64_json" },
+        ];
+        for (const body of attempts) {
+          try {
+            const r = await fetch("https://api.openai.com/v1/images/generations", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+              body: JSON.stringify(body) });
+            if (!r.ok) { console.error("img fail", (body as any).model, r.status, await r.text()); continue; }
+            const j = await r.json();
+            const b64 = j?.data?.[0]?.b64_json;
+            if (b64) return `data:image/png;base64,${b64}`;
+            if (j?.data?.[0]?.url) return j.data[0].url as string;
+          } catch (error) {
+            console.error("img unexpected fail", error);
+          }
         }
+        return placeholderStoryImage(scene, index);
       }));
+
 
       // 3) TTS (parallel)
       const audioFiles = wantAudio ? await Promise.all(scenes.map(async (scene) => {
