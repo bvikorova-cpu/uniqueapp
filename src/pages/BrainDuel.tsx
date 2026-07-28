@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Trophy, Zap, Users, ShoppingCart, Crown, Clock, 
+  Trophy, Zap, Users, Crown, Clock, 
   Globe, BookOpen, FlaskConical, Film, Dumbbell, Music, 
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
   TrendingUp, Sparkles, Radio, ChevronRight,
@@ -19,7 +19,7 @@ import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
 import { DuelLiveLobby } from "@/components/brain-duel/DuelLiveLobby";
 import ScoringGuide from "@/components/brain-duel/ScoringGuide";
 import { GameModeSelector } from "@/components/brain-duel/GameModeSelector";
-import { QuestionPackStore } from "@/components/brain-duel/QuestionPackStore";
+
 import { BrainDuelHero } from "@/components/brain-duel/BrainDuelHero";
 import { PlayerStatsDisplay } from "@/components/brain-duel/PlayerStatsDisplay";
 import { DailyStreak } from "@/components/brain-duel/DailyStreak";
@@ -385,10 +385,6 @@ const BrainDuel = () => {
                 <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Power-ups
               </TabsTrigger>
-              <TabsTrigger value="packs" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
-                <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Packs
-              </TabsTrigger>
 
 
               <TabsTrigger value="ai-training" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
@@ -540,14 +536,6 @@ const BrainDuel = () => {
                 })}
               </div>
             </TabsContent>
-
-            {/* Question Packs Tab */}
-            <TabsContent value="packs" className="space-y-6">
-              <QuestionPackStore />
-            </TabsContent>
-
-
-
 
             {/* AI Training Tab */}
             <TabsContent value="ai-training" className="space-y-6">
