@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Trophy, Zap, Users, ShoppingCart, Crown, Clock, 
+  Trophy, Zap, Users, Crown, Clock, 
   Globe, BookOpen, FlaskConical, Film, Dumbbell, Music, 
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
   TrendingUp, Sparkles, Radio, ChevronRight,
