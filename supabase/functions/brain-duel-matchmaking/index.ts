@@ -20,7 +20,12 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) throw new Error("Not authenticated");
 
-    const { category, gameMode = "quick", challenge_id } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const { category, gameMode = "quick", challenge_id } = body as any;
+
+    const fail = (msg: string, status = 400) =>
+      new Response(JSON.stringify({ error: msg }), {
+        status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     // ---- Friend challenge acceptance flow ----
     if (challenge_id) {
@@ -29,12 +34,12 @@ serve(async (req) => {
         .select("*")
         .eq("id", challenge_id)
         .maybeSingle();
-      if (!challenge) throw new Error("Challenge not found");
-      if (challenge.challenged_id !== user.id) throw new Error("This challenge is not for you");
-      if (challenge.status !== "pending") throw new Error("Challenge is no longer pending");
+      if (!challenge) return fail("Challenge not found");
+      if (challenge.challenged_id !== user.id) return fail("This challenge is not for you");
+      if (challenge.status !== "pending") return fail("Challenge is no longer pending");
       if (challenge.expires_at && new Date(challenge.expires_at) < new Date()) {
-        await supabase.from("brain_duel_friend_challenges").update({ status: "expired" }).eq("id", challenge_id);
-        throw new Error("Challenge has expired");
+        await supabase.from("brain_duel_friend_challenges").update({ status: "cancelled" }).eq("id", challenge_id);
+        return fail("Challenge has expired");
       }
 
       const stake = challenge.stake_credits || 10;
@@ -54,6 +59,7 @@ serve(async (req) => {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
+      const deducted: string[] = [];
       for (const id of [challenge.challenger_id, challenge.challenged_id]) {
         const { data: ok, error: spendErr } = await supabase.rpc("deduct_ai_credits", {
           p_user_id: id,
@@ -61,7 +67,18 @@ serve(async (req) => {
           p_reason: "brain_duel_friend_challenge_entry",
           p_source: "brain_duel"
         });
-        if (spendErr || ok === false) throw new Error("Insufficient credits");
+        if (spendErr || ok === false) {
+          // refund anyone already charged
+          for (const rid of deducted) {
+            await supabase.rpc("add_ai_credits", {
+              p_user_id: rid, p_amount: stake,
+              p_reason: "brain_duel_friend_challenge_refund", p_source: "brain_duel"
+            });
+          }
+          console.error("friend challenge deduct failed", id, spendErr);
+          return fail("Not enough credits to start this duel");
+        }
+        deducted.push(id);
       }
 
       const { data: fMatch, error: fErr } = await supabase
@@ -81,7 +98,16 @@ serve(async (req) => {
           started_at: new Date().toISOString() })
         .select()
         .single();
-      if (fErr) throw fErr;
+      if (fErr || !fMatch) {
+        for (const rid of deducted) {
+          await supabase.rpc("add_ai_credits", {
+            p_user_id: rid, p_amount: stake,
+            p_reason: "brain_duel_friend_challenge_refund", p_source: "brain_duel"
+          });
+        }
+        console.error("friend match insert failed", fErr);
+        return fail("Could not create the match, credits were refunded", 500);
+      }
 
       await supabase.from("brain_duel_friend_challenges")
         .update({ status: "accepted", match_id: fMatch.id, accepted_at: new Date().toISOString() })
