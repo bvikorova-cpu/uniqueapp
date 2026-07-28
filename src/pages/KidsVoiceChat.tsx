@@ -20,7 +20,7 @@ import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 // New chat components
 import { AnimatedChatBubble } from "@/components/kids/chat/AnimatedChatBubble";
 import { TypingIndicator } from "@/components/kids/chat/TypingIndicator";
-import { VoiceInputWaveform } from "@/components/kids/chat/VoiceInputWaveform";
+
 import { CharacterMoodIndicator } from "@/components/kids/chat/CharacterMoodIndicator";
 import { ChatAchievements } from "@/components/kids/chat/ChatAchievements";
 import { StoryModePrompt } from "@/components/kids/chat/StoryModePrompt";
