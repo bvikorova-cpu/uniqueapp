@@ -771,9 +771,13 @@ const Admin = () => {
 
           <TabsContent value="messages">
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between gap-3 flex-wrap">
                 <CardTitle>Contact Messages</CardTitle>
+                <Button size="sm" onClick={() => navigate('/admin/support')}>
+                  Open Support Inbox (reply)
+                </Button>
               </CardHeader>
+
               <CardContent className="overflow-x-auto">
                 <Table>
                   <TableHeader>
