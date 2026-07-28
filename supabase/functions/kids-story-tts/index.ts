@@ -124,7 +124,45 @@ Deno.serve(async (req) => {
     }
 
 
-    const truncated = text.slice(0, MAX_TEXT_LENGTH);
+    // Translate to the requested language before TTS so the audio actually speaks it.
+    const LANG_NAMES: Record<string, string> = {
+      "en-US": "English", "en-GB": "English",
+      "sk-SK": "Slovak", "cs-CZ": "Czech",
+      "es-ES": "Spanish", "fr-FR": "French",
+      "de-DE": "German", "it-IT": "Italian",
+      "pt-PT": "Portuguese", "pl-PL": "Polish",
+      "hu-HU": "Hungarian", "nl-NL": "Dutch",
+      "ru-RU": "Russian",
+    };
+    const targetLanguage = LANG_NAMES[language] ?? "English";
+    let spokenText = text;
+    if (!language.startsWith("en")) {
+      try {
+        const tr = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            temperature: 0.3,
+            messages: [
+              { role: "system", content: `You are a professional translator for children's bedtime stories. Translate the user's text into ${targetLanguage}. Keep the calm, gentle tone and natural sentence rhythm. Output ONLY the translated story text, no notes.` },
+              { role: "user", content: text },
+            ],
+          }),
+        });
+        if (tr.ok) {
+          const j = await tr.json();
+          const translated = j?.choices?.[0]?.message?.content?.trim();
+          if (translated) spokenText = translated;
+        } else {
+          console.warn("translation failed, falling back to English:", tr.status);
+        }
+      } catch (e) {
+        console.warn("translation error, falling back to English:", e);
+      }
+    }
+
+    const truncated = spokenText.slice(0, MAX_TEXT_LENGTH);
 
     const ttsResponse = await fetch("https://api.openai.com/v1/audio/speech", {
       method: "POST",
@@ -135,7 +173,7 @@ Deno.serve(async (req) => {
         voice,
         input: truncated,
         response_format: "mp3",
-        speed: 0.95 }) });
+        speed }) });
 
     if (!ttsResponse.ok) {
       const errText = await ttsResponse.text();
