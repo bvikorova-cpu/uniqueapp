@@ -228,9 +228,19 @@ export default function CreateCharacter() {
         }
         toast({ title: "Character Created! 🎉", description: `${characterName} is ready for adventure!` });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating character:", error);
-      toast({ title: "Generation Failed", description: error instanceof Error ? error.message : "Failed", variant: "destructive" });
+      const ctx = error?.context;
+      let msg = error instanceof Error ? error.message : "Failed";
+      try {
+        const body = typeof ctx?.body === "string" ? JSON.parse(ctx.body) : ctx?.body;
+        if (body?.error === "rate_limited") {
+          msg = body.message || "Too many requests. Please wait a minute and try again.";
+        } else if (body?.error) {
+          msg = body.message || body.error;
+        }
+      } catch {}
+      toast({ title: "Generation Failed", description: msg, variant: "destructive" });
     } finally {
       setIsGenerating(false);
     }
