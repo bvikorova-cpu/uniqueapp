@@ -132,8 +132,20 @@ export function getNotificationRoute(n: NotifLike): string {
     bazaar_order: "/bazaar",
     creator_message: "/influ-king",
     creator_gift: "/influencer/earnings",
+
+    // InfluKing / creator economy
+    tip_received: "/influencer/earnings",
+    new_subscriber: "/influencer/earnings",
+    creator_purchase: "/influencer/earnings",
+    fan_club_post: "/influ-king",
+    brand_deal_application: "/influ-king",
+    brand_deal_status: "/influ-king",
+    challenge_reviewed: "/influ-king",
+    live_stream_started: "/influ-king",
+
     coffee_match: "/coffee",
     coffee_message: "/coffee" };
+
 
 
   if (typeMap[t]) return typeMap[t];
