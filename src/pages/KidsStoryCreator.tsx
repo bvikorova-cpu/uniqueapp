@@ -168,7 +168,9 @@ const KidsStoryCreator = () => {
 
           {user && !creditsLoading && !goldPassLoading && (
             <div className="mb-6 space-y-4">
-              {!hasGoldPass && (
+              {hasGoldPass ? (
+                <KidsGoldPassBanner moduleName="AI Story Creator" />
+              ) : (
                 <>
                   <StoryLimitBanner storiesCreatedThisMonth={storiesCreatedThisMonth} isPremium={isPremium || balance > 0} />
                   <CreditBanner
