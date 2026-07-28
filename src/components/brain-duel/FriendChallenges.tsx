@@ -333,7 +333,7 @@ export const FriendChallenges = () => {
                 <Separator />
 
                 <div className="space-y-2">
-                  <Label htmlFor="friend-select">Select Friend</Label>
+                  <Label htmlFor="friend-search">Select Friend</Label>
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
@@ -350,7 +350,7 @@ export const FriendChallenges = () => {
                       Selected: {selectedFriendName || friendSearch}
                     </div>
                   ) : (
-                    <div id="friend-select" className="max-h-56 overflow-y-auto rounded-md border border-border bg-background/80 p-1">
+                    <div className="max-h-56 overflow-y-auto rounded-md border border-border bg-background/80 p-1">
                       {isSearching ? (
                         <div className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground">
                           <Loader2 className="h-4 w-4 animate-spin" />
