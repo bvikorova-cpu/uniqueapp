@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { useQueryClient } from '@tanstack/react-query';
 import { LiveDuelChat } from './LiveDuelChat';
+import { MatchStatusIndicator, type MatchStatus } from './MatchStatusIndicator';
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Question {
@@ -98,6 +99,7 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
   const [showHint, setShowHint] = useState(false);
   const [answerStartTime, setAnswerStartTime] = useState<number>(Date.now());
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [matchStatus, setMatchStatus] = useState<MatchStatus>('ready');
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => setCurrentUser(user));
@@ -156,6 +158,7 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
     setCurrentIndex(0);
     setMatchResult(null);
     setAiAnalysis(null);
+    setMatchStatus('ready');
 
     // Extract a readable message from a non-2xx edge function response
     const readEdgeError = async (err: any, fallback: string) => {
@@ -200,6 +203,7 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
       if (!qData) throw new Error(await readEdgeError(lastErr, 'Questions are temporarily unavailable. Please try again in a moment.'));
 
       setQuestions(qData.questions);
+      setMatchStatus('in_progress');
       setGamePhase('playing');
       setTimeLeft(matchQuestionTime);
       setAnswerStartTime(Date.now());
@@ -210,6 +214,7 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
     } catch (err: any) {
       console.error('Start match error:', err);
       toast.error(err.message || 'Failed to start match');
+      setMatchStatus('failed');
       setGamePhase('category');
     }
   };
@@ -263,11 +268,13 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
         body: { match_id: matchId } });
       if (error) throw error;
       setMatchResult(data);
+      setMatchStatus('finished');
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       queryClient.invalidateQueries({ queryKey: ['brain-duel-overview'] });
     } catch (err: any) {
       console.error('Finish match error:', err);
+      setMatchStatus('failed');
       toast.error('Failed to finish match');
     }
   };
@@ -337,6 +344,7 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
     setAiAnalysis(null);
     setHiddenOptions([]);
     setShowHint(false);
+    setMatchStatus('ready');
   };
 
   // ===== CATEGORY SELECT =====
@@ -435,6 +443,7 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <MatchStatusIndicator status={matchStatus} matchId={matchId} />
               <Badge variant="outline" className="text-xs">Q{currentIndex + 1}/{questions.length}</Badge>
               <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full ${timerBg}`}>
                 <Clock className={`w-4 h-4 ${timerColor}`} />
@@ -564,6 +573,9 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
         <Card className="p-8 text-center backdrop-blur-xl bg-card/80 border-primary/10">
           <Loader2 className="w-10 h-10 text-primary mx-auto animate-spin mb-3" />
           <p>Calculating results...</p>
+          <div className="mt-3 flex justify-center">
+            <MatchStatusIndicator status={matchStatus} matchId={matchId} showHint />
+          </div>
         </Card>
       );
     }
@@ -573,6 +585,10 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
           <Trophy className={`w-20 h-20 mx-auto mb-4 ${matchResult.is_winner ? 'text-yellow-500' : matchResult.is_draw ? 'text-muted-foreground' : 'text-destructive/50'}`} />
         </motion.div>
+
+        <div className="flex justify-center mb-3">
+          <MatchStatusIndicator status={matchStatus} matchId={matchId} showHint />
+        </div>
 
         <h2 className="text-3xl font-black mb-1">
           {matchResult.is_winner ? '🏆 Victory!' : matchResult.is_draw ? '🤝 Draw!' : '😤 Defeat!'}
