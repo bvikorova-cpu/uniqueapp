@@ -104,6 +104,7 @@ serve(async (req) => {
         "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
+        temperature: 1.1,
         messages: [
           {
             role: "system",
@@ -112,6 +113,7 @@ serve(async (req) => {
           {
             role: "user",
             content: `Generate ${totalQuestions} unique trivia questions about "${category}". Mix easy, medium and hard difficulty.
+Randomisation seed: ${crypto.randomUUID()} (use it to pick fresh, varied subtopics every time).
 
 CRITICAL RULES:
 - "correct_answer_text" MUST be EXACTLY equal (character-for-character, same casing) to one of option_a/b/c/d
@@ -119,7 +121,10 @@ CRITICAL RULES:
 - Each question must have exactly 4 distinct options
 - Questions must be factual and verifiable
 - Mix difficulties (~30% easy, 40% medium, 30% hard)
-- No duplicate questions`
+- No duplicate questions
+- Cover different subtopics/eras/regions than typical "top 10" trivia
+${seenTexts.length ? `\nDO NOT repeat or paraphrase any of these already-used questions:\n${seenTexts.slice(-60).map((t) => `- ${t}`).join("\n")}` : ""}`
+
           }
         ],
         tools: [
