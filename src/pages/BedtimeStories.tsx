@@ -147,7 +147,7 @@ export default function BedtimeStories() {
 
     try {
       const { data, error } = await supabase.functions.invoke('kids-story-tts', {
-        body: { text: story.text, voice: 'nova' }
+        body: { text: story.text, voice: 'nova', language, speed: 0.85 }
       });
       if (error) throw error;
       if (!data?.audioContent) throw new Error('No audio content received');
