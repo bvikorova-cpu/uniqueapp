@@ -67,12 +67,13 @@ serve(async (req) => {
 
     let newBalance: number | null = null;
     if (!selected.type && selected.value > 0) {
-      await supabase.rpc("add_ai_credits", {
+      const { error: creditErr } = await supabase.rpc("add_ai_credits", {
         p_user_id: user.id,
         p_amount: selected.value,
         p_reason: "brain_duel_daily_spin",
         p_source: "brain_duel"
       });
+      if (creditErr) console.error("add_ai_credits failed:", creditErr);
       const { data: credits } = await supabase
         .from("ai_credits")
         .select("credits_remaining")

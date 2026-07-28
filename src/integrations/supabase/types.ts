@@ -68289,6 +68289,7 @@ export type Database = {
         Args: { p_item_id: string; p_plan: string }
         Returns: Json
       }
+      brain_duel_daily_spin: { Args: never; Returns: Json }
       brain_duel_spend_credits: { Args: { _amount: number }; Returns: number }
       bucket_30s: { Args: { ts: string }; Returns: number }
       buy_streak_freeze_xp: {
