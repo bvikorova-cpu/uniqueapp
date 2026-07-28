@@ -373,8 +373,10 @@ const KidsChannel = () => {
             iconColor="text-red-500"
             gradient="from-red-100/95 to-rose-100/95"
             badges={[{ text: "Interactive Games", color: "bg-red-500 text-white" }]}
-            onClick={() => navigate('/kids-stories/games')}
+            onClick={() => handleFeatureNavigation('/kids-stories/games', 'Story Games', false)}
             delay={0.05}
+            hasGoldPass={hasGoldPass}
+            showUnlocked
           />
 
           <FeatureCard
@@ -384,8 +386,10 @@ const KidsChannel = () => {
             iconColor="text-indigo-500"
             gradient="from-indigo-100/95 to-violet-100/95"
             badges={[{ text: "Relaxing", color: "bg-indigo-500 text-white" }]}
-            onClick={() => navigate('/kids-stories/bedtime')}
+            onClick={() => handleFeatureNavigation('/kids-stories/bedtime', 'Bedtime Stories', false)}
             delay={0.1}
+            hasGoldPass={hasGoldPass}
+            showUnlocked
           />
 
           <FeatureCard
@@ -395,8 +399,10 @@ const KidsChannel = () => {
             iconColor="text-purple-500"
             gradient="from-purple-100/95 to-fuchsia-100/95"
             badges={[{ text: "AI Video", color: "bg-purple-500 text-white" }]}
-            onClick={() => navigate('/story-video-demo')}
+            onClick={() => handleFeatureNavigation('/story-video-demo', 'Story Videos', false)}
             delay={0.15}
+            hasGoldPass={hasGoldPass}
+            showUnlocked
           />
 
           <FeatureCard
@@ -406,8 +412,10 @@ const KidsChannel = () => {
             iconColor="text-blue-500"
             gradient="from-blue-100/95 to-cyan-100/95"
             badges={[{ text: "Personalization", color: "bg-blue-500 text-white" }]}
-            onClick={() => navigate('/kids-stories/create-character')}
+            onClick={() => handleFeatureNavigation('/kids-stories/create-character', 'Create Your Hero', false)}
             delay={0.2}
+            hasGoldPass={hasGoldPass}
+            showUnlocked
           />
 
           <FeatureCard
@@ -417,8 +425,10 @@ const KidsChannel = () => {
             iconColor="text-yellow-500"
             gradient="from-yellow-100/95 to-orange-100/95"
             badges={[{ text: "Educational", color: "bg-yellow-500 text-white" }]}
-            onClick={() => navigate('/kids-stories/educational')}
+            onClick={() => handleFeatureNavigation('/kids-stories/educational', 'Learn & Play', false)}
             delay={0.25}
+            hasGoldPass={hasGoldPass}
+            showUnlocked
           />
 
           <FeatureCard
@@ -439,8 +449,10 @@ const KidsChannel = () => {
             iconColor="text-blue-500"
             gradient="from-blue-100/95 to-sky-100/95"
             badges={[{ text: "Virtual Tour", color: "bg-blue-500 text-white" }]}
-            onClick={() => navigate('/kids-channel/fairy-castles')}
+            onClick={() => handleFeatureNavigation('/kids-channel/fairy-castles', 'Fairy Castles', false)}
             delay={0.35}
+            hasGoldPass={hasGoldPass}
+            showUnlocked
           />
 
           <FeatureCard

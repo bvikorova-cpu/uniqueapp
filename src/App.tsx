@@ -1104,7 +1104,7 @@ const App = () => {
                         <Route path="/bedtime-stories" element={<KidsGoldPassGate moduleName="Bedtime Stories" redirectPath="/bedtime-stories"><KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard></KidsGoldPassGate>} />
                         <Route path="/story-games" element={<StoryGames />} />
                         <Route path="/kids-pricing" element={<KidsPricing />} />
-                        <Route path="/story-video-demo" element={<StoryVideoDemo />} />
+                        <Route path="/story-video-demo" element={<KidsGoldPassGate moduleName="Story Videos" redirectPath="/story-video-demo"><StoryVideoDemo /></KidsGoldPassGate>} />
                         <Route path="/story-gallery" element={<StoryGallery />} />
                         <Route path="/shared/:shareCode" element={<SharedStory />} />
                         <Route path="/kids-channel/my-gallery" element={<ProtectedRoute><KidsParentalGateGuard featureName="Magic Library" storageKey="pg_magic_library"><KidsMagicLibrary /></KidsParentalGateGuard></ProtectedRoute>} />
@@ -1335,15 +1335,15 @@ const App = () => {
                         <Route path="/concert-watch/:id" element={<ProtectedRoute><ConcertWatch /></ProtectedRoute>} />
                         
                         <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
-                        <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
-                        <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
-                        <Route path="/kids-stories/create-character" element={<CreateCharacter />} />
-                        <Route path="/kids-stories/character-gallery" element={<CharacterGalleryPage />} />
-                        <Route path="/kids-stories/battle" element={<CharacterBattle />} />
+                        <Route path="/kids-stories/adventure" element={<KidsGoldPassGate moduleName="Choose Adventure" redirectPath="/kids-stories/adventure"><ChooseAdventure /></KidsGoldPassGate>} />
+                        <Route path="/kids-stories/voice-chat" element={<KidsGoldPassGate moduleName="Character Chat" redirectPath="/kids-stories/voice-chat"><KidsVoiceChat /></KidsGoldPassGate>} />
+                        <Route path="/kids-stories/create-character" element={<KidsGoldPassGate moduleName="Create Your Hero" redirectPath="/kids-stories/create-character"><CreateCharacter /></KidsGoldPassGate>} />
+                        <Route path="/kids-stories/character-gallery" element={<KidsGoldPassGate moduleName="Character Gallery" redirectPath="/kids-stories/character-gallery"><CharacterGalleryPage /></KidsGoldPassGate>} />
+                        <Route path="/kids-stories/battle" element={<KidsGoldPassGate moduleName="Character Battle" redirectPath="/kids-stories/battle"><CharacterBattle /></KidsGoldPassGate>} />
                         <Route path="/character-gallery" element={<CharacterGallery />} />
-                        <Route path="/kids-stories/educational" element={<EducationalStories />} />
-                        <Route path="/kids-stories/bedtime" element={<KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard>} />
-                        <Route path="/kids-stories/games" element={<StoryGames />} />
+                        <Route path="/kids-stories/educational" element={<KidsGoldPassGate moduleName="Learn & Play" redirectPath="/kids-stories/educational"><EducationalStories /></KidsGoldPassGate>} />
+                        <Route path="/kids-stories/bedtime" element={<KidsGoldPassGate moduleName="Bedtime Stories" redirectPath="/kids-stories/bedtime"><KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard></KidsGoldPassGate>} />
+                        <Route path="/kids-stories/games" element={<KidsGoldPassGate moduleName="Story Games" redirectPath="/kids-stories/games"><StoryGames /></KidsGoldPassGate>} />
                         <Route path="/admin/image-editor" element={<ProtectedRoute requireAdmin={true}><AdminImageEditor /></ProtectedRoute>} />
                         <Route path="/iq-platform" element={<IQPlatform />} />
                         <Route path="/iq-platform/lab" element={<IQBrainLab />} />
