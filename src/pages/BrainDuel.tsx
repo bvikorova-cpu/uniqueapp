@@ -122,10 +122,11 @@ const BrainDuel = () => {
     const scroll = () => document
       .getElementById('brain-duel-game-anchor')
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    scroll();
-    const t = setTimeout(scroll, 400);
-    return () => clearTimeout(t);
+    // The game area mounts/changes height while questions load, so re-align a few times.
+    const timers = [0, 300, 900, 1800, 3000].map((d) => setTimeout(scroll, d));
+    return () => timers.forEach(clearTimeout);
   }, [resumeMatchId, duelStartToken]);
+
 
   // Live lobby (friend challenges only): both players must be present before the
   // duel starts. Falls back to the classic async duel after the wait window.
