@@ -7,7 +7,7 @@ import {
   Trophy, Zap, Users, ShoppingCart, Crown, Clock, 
   Globe, BookOpen, FlaskConical, Film, Dumbbell, Music, 
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
-  TrendingUp, Sparkles, User, Radio, ChevronRight,
+  TrendingUp, Sparkles, Radio, ChevronRight,
   Swords, Calendar, Bot, BarChart3, Loader2
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -290,20 +290,6 @@ const BrainDuel = () => {
           })}
         </motion.div>
 
-        {/* My Stats button */}
-        {userId && (
-          <div className="flex justify-center mb-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate(`/profile/${userId}?tab=brain-duel`)}
-              className="gap-2 text-xs sm:text-sm backdrop-blur-sm"
-            >
-              <User className="h-3 w-3 sm:h-4 sm:w-4" />
-              My Full Stats
-            </Button>
-          </div>
-        )}
 
         {/* ===== XP & ELO + STREAK ===== */}
         <motion.div
