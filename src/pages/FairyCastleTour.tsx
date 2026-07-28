@@ -171,7 +171,7 @@ export default function FairyCastleTour() {
 
   const getPanoramaUrl = () => {
     if (!castle || !currentRoom) return "/placeholder.svg";
-    return currentRoom.panorama_url;
+    return getRoomPanorama(castle.name, currentRoomIndex, currentRoom.panorama_url);
   };
 
   const getAmbientSound = () => {
