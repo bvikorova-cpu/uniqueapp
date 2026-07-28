@@ -184,18 +184,23 @@ export default function KidsSubscriptionPlans() {
             <CardContent className="space-y-6 relative z-10">
               <div className="grid grid-cols-1 gap-2">
                 {[
-                  '🎓 Homework Helper - Unlimited',
+                  '💬 Character Chat - Unlimited',
+                  '🎮 Story Games - Unlimited',
+                  '🌙 Bedtime Stories - All Content',
+                  '🎬 Story Videos - Unlimited',
+                  '🦸‍♀️ Create Your Hero - Unlimited',
+                  '🎓 Learn & Play - Unlimited',
+                  '🏰 Fairy Castles - Full Access',
+                  '📚 My Magic Library - Unlimited',
                   '📖 Story Creator - Unlimited',
+                  '🎓 Homework Helper - Unlimited',
                   '🎨 Drawing Buddy - Unlimited',
                   '🔬 Science Lab - Unlimited',
                   '📚 Reading Companion - Unlimited',
                   '🎨 Coloring Pages - Unlimited',
-                  '🏰 Fairy Castles - Full Access',
-                  '💬 Character Chat - Unlimited',
-                  '🌙 Bedtime Stories - All Content',
-                  '👨‍👩‍👧 Up to 5 child profiles',
-                  '📊 Monthly Progress Reports',
-                  '📈 Parental analytics dashboard',
+                  '⭐ Daily Stars & Weekly Themes',
+                  '👨‍👩‍👧 Parent Dashboard & Analytics',
+                  '🛡️ Parental Gate & Safe Mode',
                   '⭐ Priority support 24/7'
                 ].map((feature, idx) => (
                   <motion.div
