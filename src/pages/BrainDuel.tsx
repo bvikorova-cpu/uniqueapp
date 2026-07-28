@@ -385,6 +385,7 @@ const BrainDuel = () => {
               </Card>
 
               <GameModeSelector onSelectMode={(mode) => {
+                setSelectedMode(mode.id);
                 setStartRequest({ nonce: Date.now(), mode: mode.id });
                 toast.success(`${mode.name} selected`, {
                   description: `${mode.questions} questions, ${mode.entry} credits entry. Pick a category to start!` });
