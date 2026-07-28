@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { ArrowLeft, Sparkles, ScanLine, Mic, ShieldAlert, Image as ImageIcon,
-  Trophy, Layers } from "lucide-react";
+import { ArrowLeft, Sparkles, ScanLine, Mic, ShieldAlert, Image as ImageIcon, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -32,7 +31,6 @@ const FEATURES: Feature[] = [
   { id: "ai.cheatScan", title: "AI Cheat Detection", desc: "Anomaly scan on duel patterns", icon: ShieldAlert, credits: 2, ai: true, action: "ai.cheatScan" },
   { id: "ai.shareCard", title: "Share Result Card", desc: "Instagram story copy for your win", icon: ImageIcon, credits: 2, ai: true, action: "ai.shareCard" },
   { id: "deck.publish", title: "Publish Custom Deck", desc: "Author + monetize your quiz", icon: Layers, credits: 4, ai: false, action: "deck.publish" },
-  { id: "tournament.enter", title: "Real-Money Tournament", desc: "10-credit entry, EUR payout", icon: Trophy, credits: 10, ai: false, action: "tournament.enter" },
 ];
 
 export default function BrainDuelHub() {
@@ -73,9 +71,6 @@ export default function BrainDuelHub() {
         const questions = input.questions ? JSON.parse(input.questions) : [];
         const r = await brainDuelCall<any>("deck.publish", { title: input.title, topic: input.topic, questions });
         setOutput(r); refetch(); toast.success("Deck published!");
-      } else if (active.id === "tournament.enter") {
-        const r = await brainDuelCall<any>("tournament.enter", { tournamentId: input.tournamentId });
-        setOutput(r); refetch(); toast.success("You're in!");
       } else {
         const payload: any = {};
         Object.entries(input).forEach(([k, v]) => (payload[k] = v));
@@ -203,9 +198,6 @@ export default function BrainDuelHub() {
                   <Input placeholder="Topic" value={input.topic ?? ""} onChange={(e) => setInput({ ...input, topic: e.target.value })} />
                   <Textarea placeholder='Questions JSON [{q,options,correct_index}]' value={input.questions ?? ""} onChange={(e) => setInput({ ...input, questions: e.target.value })} />
                 </>
-              )}
-              {active.id === "tournament.enter" && (
-                <Input placeholder="Tournament ID" value={input.tournamentId ?? ""} onChange={(e) => setInput({ ...input, tournamentId: e.target.value })} />
               )}
 
               <Button onClick={run} disabled={busy} className="w-full">
