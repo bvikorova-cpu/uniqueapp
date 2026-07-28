@@ -7,7 +7,13 @@ interface StampCollectionProps {
   stampedIds: string[];
 }
 
-const getFlag = (code: string) => ({ US: "🇺🇸", FR: "🇫🇷", CN: "🇨🇳", HK: "🇭🇰", JP: "🇯🇵" }[code] || "🏰");
+const FLAGS: Record<string, string> = {
+  US: "🇺🇸", FR: "🇫🇷", CN: "🇨🇳", HK: "🇭🇰", JP: "🇯🇵",
+  SK: "🇸🇰", GB: "🇬🇧", UK: "🇬🇧", DE: "🇩🇪", CZ: "🇨🇿",
+  AT: "🇦🇹", ES: "🇪🇸", IT: "🇮🇹", PT: "🇵🇹", RO: "🇷🇴",
+  PL: "🇵🇱", HU: "🇭🇺", IE: "🇮🇪", RU: "🇷🇺", IN: "🇮🇳" };
+
+const getFlag = (code?: string | null) => FLAGS[(code || "").toUpperCase()] || "🏰";
 
 export function StampCollection({ castles, stampedIds }: StampCollectionProps) {
   const allComplete = castles.length > 0 && castles.every(c => stampedIds.includes(c.id));
