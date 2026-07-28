@@ -85,7 +85,7 @@ export const BrainDuelGame = ({
   const queryClient = useQueryClient();
   const { credits, isLoading: creditsLoading } = useBrainDuelCredits();
   const { powerups, consumePowerup: triggerPowerup } = useBrainDuelPowerups();
-  const [gamePhase, setGamePhase] = useState<'category' | 'loading' | 'playing' | 'answer-reveal' | 'results' | 'analysis'>('category');
+  const [gamePhase, setGamePhase] = useState<'category' | 'loading' | 'playing' | 'answer-reveal' | 'results' | 'analysis' | 'waiting'>('category');
   const [category, setCategory] = useState('');
   const [gameMode, setGameMode] = useState<string>('quick');
 
