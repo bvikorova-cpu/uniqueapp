@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Brain, Trophy, Clock, Target, Zap, Timer, Lightbulb, SkipForward, Sparkles, Bot, BarChart3, Loader2, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
+import { Brain, Trophy, Clock, Target, Zap, Timer, Lightbulb, SkipForward, Sparkles, Bot, BarChart3, Loader2, CheckCircle, XCircle, ArrowRight, User as UserIcon } from 'lucide-react';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { useBrainDuelPowerups } from '@/hooks/useBrainDuelPowerups';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -108,6 +108,7 @@ export const BrainDuelGame = ({
   const [answerStartTime, setAnswerStartTime] = useState<number>(Date.now());
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [matchStatus, setMatchStatus] = useState<MatchStatus>('ready');
+  const [opponentName, setOpponentName] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => setCurrentUser(user));
@@ -340,6 +341,17 @@ export const BrainDuelGame = ({
       const total = match.total_questions ?? 10;
       setMyScore(isP1 ? match.player1_score ?? 0 : match.player2_score ?? 0);
       setOpponentScore(isP1 ? match.player2_score ?? 0 : match.player1_score ?? 0);
+
+      // Show the real human opponent (friend duel) instead of the generic "AI" label.
+      if (oppId) {
+        const { data: oppProfiles } = await (supabase as any).rpc('get_public_profiles', { ids: [oppId] });
+        const opp = Array.isArray(oppProfiles) ? oppProfiles[0] : null;
+        setOpponentName(opp?.full_name || opp?.username || 'Opponent');
+      } else {
+        setOpponentName(null);
+      }
+
+
 
       const myAnswered = await countAnswers(match.id, currentUser.id);
       if (myAnswered >= total) {
@@ -578,8 +590,13 @@ export const BrainDuelGame = ({
         >
           <Brain className="w-16 h-16 text-primary" />
         </motion.div>
-        <h2 className="text-2xl font-bold mb-2">Generating Questions...</h2>
-        <p className="text-muted-foreground">AI is creating unique {category} questions</p>
+        <h2 className="text-2xl font-bold mb-2">{resumeMatchId ? 'Loading your duel…' : 'Generating Questions...'}</h2>
+        <p className="text-muted-foreground">
+          {resumeMatchId
+            ? `Getting the shared ${category} questions for you and ${opponentName ?? 'your opponent'}`
+            : `AI is creating unique ${category} questions`}
+        </p>
+
         <div className="flex items-center justify-center gap-2 mt-4">
           <Bot className="w-4 h-4 text-primary animate-pulse" />
           <span className="text-xs text-muted-foreground">Powered by OpenAI</span>
@@ -612,10 +629,14 @@ export const BrainDuelGame = ({
                 <div className="text-xl font-black text-primary">{myScore}</div>
               </div>
               <span className="text-muted-foreground font-bold">VS</span>
-              <div className="text-center">
-                <div className="text-xs text-muted-foreground flex items-center gap-1"><Bot className="w-3 h-3" />AI</div>
+              <div className="text-center min-w-0">
+                <div className="text-xs text-muted-foreground flex items-center gap-1 truncate max-w-[120px]">
+                  {opponentName ? <UserIcon className="w-3 h-3" /> : <Bot className="w-3 h-3" />}
+                  <span className="truncate">{opponentName ?? 'AI'}</span>
+                </div>
                 <div className="text-xl font-black">{opponentScore}</div>
               </div>
+
             </div>
             <div className="flex items-center gap-2">
               <MatchStatusIndicator status={matchStatus} matchId={matchId} />
