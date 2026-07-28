@@ -329,7 +329,16 @@ const BrainDuel = () => {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="max-w-3xl mx-auto mb-10 scroll-mt-24"
         >
-          <BrainDuelGame startRequest={startRequest} resumeMatchId={resumeMatchId} resumeToken={duelStartToken} />
+          {resumeMatchId && lobbyState === 'lobby' && (
+            <div className="mb-6">
+              <DuelLiveLobby
+                key={`${resumeMatchId}:${duelStartToken ?? ''}`}
+                matchId={resumeMatchId}
+                onResolved={() => setLobbyState('resolved')}
+              />
+            </div>
+          )}
+          <BrainDuelGame startRequest={startRequest} resumeMatchId={gameMatchId} resumeToken={duelStartToken} />
         </motion.div>
 
         {/* ===== ANIMATED LEADERBOARD & FRIENDS ===== */}
