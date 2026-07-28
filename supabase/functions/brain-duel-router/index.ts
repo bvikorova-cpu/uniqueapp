@@ -485,9 +485,26 @@ Deno.serve(async (req) => {
 
       // ---------- 9. Custom Decks (publish costs credits) ----------
       case "deck.publish": {
-        const { title, topic, questions } = body;
+        const title = String(body.title ?? "").trim();
+        const topic = String(body.topic ?? "").trim();
+        const rawQuestions = Array.isArray(body.questions) ? body.questions : [];
+        if (!title) { const e: any = new Error("Please enter a deck title."); e.status = 400; throw e; }
+        if (!topic) { const e: any = new Error("Please enter a topic."); e.status = 400; throw e; }
+        const questions = rawQuestions.map((question: any) => ({
+          q: String(question?.q ?? question?.question ?? "").trim(),
+          options: Array.isArray(question?.options)
+            ? question.options.map((option: unknown) => String(option ?? "").trim()).filter(Boolean).slice(0, 6)
+            : [],
+          correct_index: Number.isInteger(question?.correct_index) ? question.correct_index : Number(question?.correct_index ?? 0),
+          explanation: question?.explanation ? String(question.explanation).trim().slice(0, 500) : undefined,
+        })).filter((question: any) => question.q && question.options.length >= 2);
+        if (!questions.length) { const e: any = new Error("Add at least one complete question with two answers."); e.status = 400; throw e; }
+        const normalizedQuestions = questions.map((question: any) => ({
+          ...question,
+          correct_index: question.correct_index >= 0 && question.correct_index < question.options.length ? question.correct_index : 0,
+        }));
         const { data, error } = await admin.from("brain_duel_records")
-          .insert({ user_id: user.id, kind: "custom_deck", payload: { title, topic, questions }, is_public: true })
+          .insert({ user_id: user.id, kind: "custom_deck", payload: { title: title.slice(0, 120), topic: topic.slice(0, 80), questions: normalizedQuestions }, is_public: true })
           .select().single();
         if (error) throw error;
         result = { deck: data };
