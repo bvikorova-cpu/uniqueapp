@@ -43,14 +43,24 @@ interface UsageStats {
   total_time_minutes: number;
 }
 
+function formatExpiry(iso: string) {
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+}
+
 export default function KidsParentalDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { hasGoldPass, loading: goldPassLoading, expiresAt: goldPassExpiresAt } = useKidsGoldPass();
+  const daysLeft = goldPassExpiresAt
+    ? Math.max(0, Math.ceil((new Date(goldPassExpiresAt).getTime() - Date.now()) / 86400000))
+    : null;
 
   const [sleepTimerEnabled, setSleepTimerEnabled] = useState(false);
   const [dailyLimit, setDailyLimit] = useState("60");
   const [emailReports, setEmailReports] = useState(true);
+
 
   const { data: stats } = useQuery({
     queryKey: ["parental-stats", user?.id],
