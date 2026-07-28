@@ -147,10 +147,6 @@ export default function StoryGames() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Main Content */}
             <div className="lg:col-span-3 space-y-6">
-              {/* Bonus Events */}
-              <Card className="p-5 bg-white/85 backdrop-blur-md border-white/50 shadow-xl">
-                <BonusRounds onPlay={(theme) => console.log("Bonus round:", theme)} />
-              </Card>
 
               {/* Games Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
