@@ -206,13 +206,28 @@ export default function BrainDuelHub() {
 
               {output && (
                 <Card className="bg-muted/30">
-                  <CardContent className="pt-4">
-                    <pre className="text-xs overflow-auto whitespace-pre-wrap">
-                      {typeof output === "string" ? output : JSON.stringify(output, null, 2)}
-                    </pre>
+                  <CardContent className="pt-4 space-y-3">
+                    {Array.isArray(output?.quiz?.questions) ? (
+                      output.quiz.questions.map((q: any, i: number) => (
+                        <div key={i} className="text-sm space-y-1">
+                          <p className="font-medium">{i + 1}. {q.q ?? q.question}</p>
+                          <ul className="list-disc pl-5 text-muted-foreground">
+                            {(q.options ?? []).map((o: string, oi: number) => (
+                              <li key={oi} className={oi === q.correct_index ? "text-foreground font-semibold" : ""}>{o}</li>
+                            ))}
+                          </ul>
+                          {q.explanation && <p className="text-xs text-muted-foreground italic">{q.explanation}</p>}
+                        </div>
+                      ))
+                    ) : (
+                      <pre className="text-xs overflow-auto whitespace-pre-wrap">
+                        {typeof output === "string" ? output : JSON.stringify(output, null, 2)}
+                      </pre>
+                    )}
                   </CardContent>
                 </Card>
               )}
+
             </CardContent>
           </Card>
         )}
