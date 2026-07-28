@@ -70,7 +70,8 @@ serve(async (req) => {
           type: "brain_duel_win",
           title: "You won a Brain Duel!",
           message: `Your opponent finished the duel — you won ${match.win_reward} credits.`,
-          data: { match_id },
+          related_id: match_id,
+          metadata: { match_id },
         }).then(({ error }) => { if (error) console.error("Notify winner failed:", error); });
       }
     }
