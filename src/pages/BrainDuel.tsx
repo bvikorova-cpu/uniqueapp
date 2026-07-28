@@ -92,6 +92,15 @@ const BrainDuel = () => {
     }
   }, [searchParams, setSearchParams]);
 
+  // Resume an accepted friend-challenge match coming from a notification link
+  const resumeMatchId = searchParams.get('match_id');
+  useEffect(() => {
+    if (!resumeMatchId) return;
+    const el = document.getElementById('brain-duel-game-anchor');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [resumeMatchId]);
+
+
   const handlePaymentSuccess = async (sessionId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('verify-brain-duel-payment', {
@@ -270,7 +279,7 @@ const BrainDuel = () => {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="max-w-3xl mx-auto mb-10 scroll-mt-24"
         >
-          <BrainDuelGame startRequest={startRequest} />
+          <BrainDuelGame startRequest={startRequest} resumeMatchId={resumeMatchId} />
         </motion.div>
 
         {/* ===== ANIMATED LEADERBOARD & FRIENDS ===== */}

@@ -59,15 +59,14 @@ export const useBrainDuelRealTimeNotifications = () => {
           // Get the challenger's profile
           const { data: profile } = await supabase
             .from('profiles')
-            .select('full_name')
+            .select('full_name, username')
             .eq('id', newChallenge.challenger_id)
-            .single();
+            .maybeSingle();
 
-          if (profile) {
-            toast.info(`⚔️ ${profile.full_name} challenged you!`, {
-              description: `Stake: ${newChallenge.stake_credits} credits`,
-              duration: 7000 });
-          }
+          const name = profile?.full_name?.trim() || profile?.username?.trim() || 'A player';
+          toast.info(`⚔️ ${name} challenged you!`, {
+            description: `Stake: ${newChallenge.stake_credits} credits`,
+            duration: 7000 });
         }
       )
       .subscribe();

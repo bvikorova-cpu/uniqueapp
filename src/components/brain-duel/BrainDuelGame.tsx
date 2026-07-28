@@ -73,7 +73,7 @@ export interface StartRequest {
   category?: string;
 }
 
-export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | null }) => {
+export const BrainDuelGame = ({ startRequest, resumeMatchId }: { startRequest?: StartRequest | null; resumeMatchId?: string | null }) => {
   const queryClient = useQueryClient();
   const { credits, isLoading: creditsLoading } = useBrainDuelCredits();
   const { powerups, consumePowerup: triggerPowerup } = useBrainDuelPowerups();
@@ -218,6 +218,76 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
       setGamePhase('category');
     }
   };
+
+  // Resume an already-created match (e.g. an accepted friend challenge).
+  // Credits were already deducted when the match was created — never charge again here.
+  const resumedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!resumeMatchId || !currentUser) return;
+    if (resumedRef.current === resumeMatchId) return;
+    resumedRef.current = resumeMatchId;
+
+    (async () => {
+      setGamePhase('loading');
+      setMyScore(0);
+      setOpponentScore(0);
+      setCurrentIndex(0);
+      setMatchResult(null);
+      setAiAnalysis(null);
+      setSelectedAnswer(null);
+      setAnswerResult(null);
+      setMatchStatus('ready');
+
+      const { data: match, error } = await supabase
+        .from('brain_duel_matches')
+        .select('*')
+        .eq('id', resumeMatchId)
+        .maybeSingle();
+
+      if (error || !match) {
+        toast.error('Match not found');
+        setGamePhase('category');
+        return;
+      }
+      if (match.status === 'completed' || match.finished_at) {
+        toast.info('This duel is already finished');
+        setGamePhase('category');
+        return;
+      }
+
+      const t = typeof match.time_per_question === 'number' ? match.time_per_question : 30;
+      setMatchId(match.id);
+      setCategory(match.category || 'General Knowledge');
+      setGameMode(match.game_mode === 'friend' ? 'quick' : (match.game_mode || 'quick'));
+      setQuestionTime(t);
+
+      let qData: any = null;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const { data, error: qErr } = await supabase.functions.invoke('brain-duel-get-questions', {
+          body: { match_id: match.id, category: match.category } });
+        if (!qErr && !data?.error && Array.isArray(data?.questions) && data.questions.length > 0) {
+          qData = data;
+          break;
+        }
+        if (attempt === 0) await new Promise((r) => setTimeout(r, 1200));
+      }
+
+      if (!qData) {
+        toast.error('Questions are temporarily unavailable. Please try again in a moment.');
+        setMatchStatus('failed');
+        setGamePhase('category');
+        return;
+      }
+
+      setQuestions(qData.questions);
+      setMatchStatus('in_progress');
+      setGamePhase('playing');
+      setTimeLeft(t);
+      setAnswerStartTime(Date.now());
+      toast.success('Duel started! Good luck 🎯', { duration: 2000 });
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resumeMatchId, currentUser]);
 
   const handleAnswer = async (answer: string) => {
     if (selectedAnswer || !matchId || !questions[currentIndex]) return;
