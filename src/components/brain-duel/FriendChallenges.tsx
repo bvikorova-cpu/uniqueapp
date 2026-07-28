@@ -96,11 +96,7 @@ export const FriendChallenges = () => {
           filter: `challenged_id=eq.${userId}` },
         async (payload) => {
           // Fetch challenger profile for notification
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('full_name, username')
-            .eq('id', payload.new.challenger_id)
-            .single();
+          const [profile] = await fetchPublicProfilesByIds([payload.new.challenger_id]);
 
           toast({
             title: '⚔️ New Challenge!',
@@ -120,11 +116,7 @@ export const FriendChallenges = () => {
         async (payload) => {
           // Only notify if status changed to accepted
           if (payload.new.status === 'accepted' && payload.old.status === 'pending') {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('full_name, username')
-              .eq('id', payload.new.challenged_id)
-              .single();
+            const [profile] = await fetchPublicProfilesByIds([payload.new.challenged_id]);
 
             toast({
               title: '🎉 Challenge Accepted!',
