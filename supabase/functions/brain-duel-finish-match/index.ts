@@ -133,6 +133,8 @@ serve(async (req) => {
       is_winner: isPlayerWinner,
       is_draw: winnerId === null && match.player1_score === match.player2_score,
       credits_earned: isPlayerWinner ? match.win_reward : 0,
+      rp_earned: rpAwarded,
+      win_streak: winStreak,
       stats: {
         total_questions: totalAnswered,
         correct_answers: correctAnswers,
