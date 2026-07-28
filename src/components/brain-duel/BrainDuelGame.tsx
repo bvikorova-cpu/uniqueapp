@@ -238,6 +238,13 @@ export const BrainDuelGame = ({
       if (error) throw error;
       setMatchResult(data);
       setMatchStatus('finished');
+      if (data?.rp_earned) {
+        const streak = data?.win_streak ?? 0;
+        toast.success(
+          `+${data.rp_earned} RP${streak >= 3 && data?.is_winner ? ` · 🔥 ${streak}-win hot streak bonus` : ''}`
+        );
+      }
+      window.dispatchEvent(new Event('brain-duel-finished'));
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       queryClient.invalidateQueries({ queryKey: ['brain-duel-overview'] });
