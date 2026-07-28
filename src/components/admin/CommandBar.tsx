@@ -3,9 +3,10 @@ import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, C
 import { useNavigate } from "react-router-dom";
 import {
   Users, ChefHat, Mic2, ShieldCheck, Wallet, BarChart3, Building2, Image as ImageIcon,
-  Bell, Coins, FileSearch, CreditCard, Briefcase, Trophy
+  Bell, Coins, FileSearch, CreditCard, Briefcase, Trophy, Bug
 } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
 
 const commands = [
   { label: "KitchenStars Payouts", path: "/admin/masterchef-payouts", icon: ChefHat, group: "Finance" },
