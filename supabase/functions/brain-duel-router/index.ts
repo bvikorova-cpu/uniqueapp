@@ -40,7 +40,11 @@ async function spendBrainDuelCredits(admin: any, userId: string, amount: number)
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-async function callAI(prompt: string, system = "You are a precise quiz generator. Respond with valid JSON only.") {
+async function callAI(
+  prompt: string,
+  system = "You are a precise quiz generator. Respond with valid JSON only.",
+  imageUrl?: string,
+) {
   // Prefer Lovable AI Gateway; fall back to direct OpenAI if a key is configured.
   const useGateway = !!LOVABLE_API_KEY;
   if (!useGateway && !OPENAI_API_KEY) {
@@ -55,15 +59,22 @@ async function callAI(prompt: string, system = "You are a precise quiz generator
   if (useGateway) headers["Lovable-API-Key"] = LOVABLE_API_KEY!;
   else headers["Authorization"] = `Bearer ${OPENAI_API_KEY}`;
 
+  const userContent: any = imageUrl
+    ? [{ type: "text", text: prompt }, { type: "image_url", image_url: { url: imageUrl } }]
+    : prompt;
+
   const res = await fetch(url, {
     method: "POST",
     headers,
     body: JSON.stringify({
-      model: useGateway ? "openai/gpt-5.4-mini" : "gpt-4o-mini",
+      model: useGateway
+        ? (imageUrl ? "google/gemini-3.6-flash" : "openai/gpt-5.4-mini")
+        : "gpt-4o-mini",
       response_format: { type: "json_object" },
-      messages: [{ role: "system", content: system }, { role: "user", content: prompt }],
+      messages: [{ role: "system", content: system }, { role: "user", content: userContent }],
     }),
   });
+
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
     const e: any = new Error(
