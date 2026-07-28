@@ -142,7 +142,7 @@ export default function AdminSupportInbox() {
 
   const changeStatus = async (status: string) => {
     if (!selected) return;
-    const patch: Record<string, unknown> = { status };
+    const patch: { status: string; resolved_at?: string } = { status };
     if (status === "resolved") patch.resolved_at = new Date().toISOString();
     const { error } = await supabase.from("support_tickets").update(patch).eq("id", selected.id);
     if (error) return toast.error(error.message);
@@ -172,7 +172,7 @@ export default function AdminSupportInbox() {
       <AdminPageShell>
         <AdminPageHeader
           title="Support Inbox"
-          description="Messages sent from the Contact page — read, reply and change status."
+          subtitle="Messages sent from the Contact page — read, reply and change status."
           icon={Mail}
         />
 
