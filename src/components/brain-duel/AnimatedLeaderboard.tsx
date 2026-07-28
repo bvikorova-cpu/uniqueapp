@@ -19,6 +19,7 @@ interface LeaderEntry {
   previousRank?: number;
   profile: {
     full_name: string | null;
+    username?: string | null;
     avatar_url: string | null;
   } | null;
 }
