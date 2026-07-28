@@ -136,7 +136,9 @@ const CompanionChat = () => {
             <Button variant="ghost" onClick={() => navigate("/companions")}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Back
             </Button>
-            {remainingMessages !== null && (
+            {hasGoldPass ? (
+              <KidsGoldPassBanner compact />
+            ) : remainingMessages !== null && (
               <Badge variant="outline" className="animate-fade-in">
                 {remainingMessages} messages left today
               </Badge>
