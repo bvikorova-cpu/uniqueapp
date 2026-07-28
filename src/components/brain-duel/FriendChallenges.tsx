@@ -314,32 +314,45 @@ export const FriendChallenges = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="friend-select">Select Friend</Label>
+                  <Input
+                    id="friend-search"
+                    value={friendSearch}
+                    onChange={(e) => setFriendSearch(e.target.value)}
+                    placeholder="Search people by name or username…"
+                    autoComplete="off"
+                  />
                   <Select value={selectedFriend} onValueChange={setSelectedFriend}>
                     <SelectTrigger id="friend-select">
                       <SelectValue placeholder="Choose a friend to challenge" />
                     </SelectTrigger>
                     <SelectContent>
-                      {friends && friends.length > 0 ? (
-                        friends.map((friend) => (
+                      {friendOptions.length > 0 ? (
+                        friendOptions.map((friend: any) => (
                           <SelectItem key={friend.id} value={friend.id}>
                             <div className="flex items-center gap-2">
                               <Avatar className="h-6 w-6">
                                 <AvatarImage src={friend.avatar_url || undefined} />
                                 <AvatarFallback className="text-xs">
-                                  {friend.full_name?.[0]?.toUpperCase() || 'U'}
+                                  {(friend.full_name || friend.username)?.[0]?.toUpperCase() || 'U'}
                                 </AvatarFallback>
                               </Avatar>
-                              {friend.full_name || 'Anonymous'}
+                              {friend.full_name || friend.username || 'Anonymous'}
                             </div>
                           </SelectItem>
                         ))
                       ) : (
                         <SelectItem value="none" disabled>
-                          No friends available
+                          {isSearching
+                            ? 'Searching…'
+                            : friendSearch.trim().length >= 2
+                              ? 'No users found'
+                              : 'No friends yet — type a name to search'}
                         </SelectItem>
                       )}
                     </SelectContent>
                   </Select>
+                </div>
+
                 </div>
 
                 <div className="space-y-2">
