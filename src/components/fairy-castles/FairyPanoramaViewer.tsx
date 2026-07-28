@@ -925,12 +925,17 @@ export function FairyPanoramaViewer({
         // Cache the audio URL
         setAudioCache(prev => ({ ...prev, [cacheKey]: audioUrl }));
         playAudio(audioUrl);
+      } else {
+        // No audio returned → read the (possibly translated) text in-browser
+        speakWithBrowser(data?.translatedText || narratedText, selectedLanguage);
       }
     } catch (error) {
       console.error('Error generating audio:', error);
+      speakWithBrowser(narratedText, selectedLanguage);
     } finally {
       setIsGenerating(false);
     }
+
   };
 
   const playAudio = (audioUrl: string) => {
