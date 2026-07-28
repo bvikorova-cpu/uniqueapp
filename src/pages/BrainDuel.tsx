@@ -19,24 +19,17 @@ import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
 import { DuelLiveLobby } from "@/components/brain-duel/DuelLiveLobby";
 import ScoringGuide from "@/components/brain-duel/ScoringGuide";
 import { GameModeSelector } from "@/components/brain-duel/GameModeSelector";
-import { LeagueSystem } from "@/components/brain-duel/LeagueSystem";
 import { QuestionPackStore } from "@/components/brain-duel/QuestionPackStore";
-import { LiveSpectatorMode } from "@/components/brain-duel/LiveSpectatorMode";
 import { BrainDuelHero } from "@/components/brain-duel/BrainDuelHero";
 import { PlayerStatsDisplay } from "@/components/brain-duel/PlayerStatsDisplay";
 import { DailyStreak } from "@/components/brain-duel/DailyStreak";
-import { BonusRoundCard, MysteryCategory, CustomChallenge } from "@/components/brain-duel/GameplayEnhancements";
-import { WeeklyTournaments } from "@/components/brain-duel/WeeklyTournaments";
+import { BonusRoundCard, MysteryCategory } from "@/components/brain-duel/GameplayEnhancements";
 import { DailySpinWheel } from "@/components/brain-duel/DailySpinWheel";
 import { MatchReplay } from "@/components/brain-duel/MatchReplay";
-import { SeasonPass } from "@/components/brain-duel/SeasonPass";
 import { AIOpponent } from "@/components/brain-duel/AIOpponent";
-import { NotificationCenter } from "@/components/brain-duel/NotificationCenter";
 import { useBrainDuelOverview } from "@/hooks/useBrainDuelOverview";
 import { DuelHistoryStats } from "@/components/brain-duel/DuelHistoryStats";
-import { ReferralSystem } from "@/components/brain-duel/ReferralSystem";
 
-import { AIWeeklyRecap } from "@/components/brain-duel/AIWeeklyRecap";
 import { RankAvatarSystem } from "@/components/brain-duel/RankAvatarSystem";
 import { PowerUpCombos } from "@/components/brain-duel/PowerUpCombos";
 import { SeasonalThemes } from "@/components/brain-duel/SeasonalThemes";
@@ -325,15 +318,8 @@ const BrainDuel = () => {
           <DailySpinWheel />
         </motion.div>
 
-        {/* ===== NOTIFICATIONS ===== */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.45 }}
-          className="max-w-4xl mx-auto mb-8"
-        >
-          <NotificationCenter />
-        </motion.div>
+
+
 
         {/* ===== FRIEND CHALLENGES ===== */}
         <motion.div
@@ -369,26 +355,16 @@ const BrainDuel = () => {
         </motion.div>
 
 
-        {/* ===== DUEL HISTORY & REFERRAL ===== */}
+        {/* ===== DUEL HISTORY ===== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.65 }}
-          className="max-w-6xl mx-auto mb-10 grid md:grid-cols-1 lg:grid-cols-2 gap-6"
-        >
-          <DuelHistoryStats />
-          <ReferralSystem />
-        </motion.div>
-
-        {/* ===== AI WEEKLY RECAP ===== */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.68 }}
           className="max-w-4xl mx-auto mb-10"
         >
-          <AIWeeklyRecap />
+          <DuelHistoryStats />
         </motion.div>
+
 
         {/* ===== TABS ===== */}
         <motion.div
@@ -403,18 +379,8 @@ const BrainDuel = () => {
                 <span className="hidden sm:inline">Play Now</span>
                 <span className="sm:hidden">Play</span>
               </TabsTrigger>
-              <TabsTrigger value="leagues" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
-                <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Leagues
-              </TabsTrigger>
-              <TabsTrigger value="tournaments" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
-                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Tournaments
-              </TabsTrigger>
-              <TabsTrigger value="custom" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
-                <Swords className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Custom
-              </TabsTrigger>
+
+
               <TabsTrigger value="powerups" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
                 <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Power-ups
@@ -423,15 +389,8 @@ const BrainDuel = () => {
                 <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Packs
               </TabsTrigger>
-              <TabsTrigger value="audience" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
-                <Radio className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Live
-              </TabsTrigger>
-              <TabsTrigger value="season" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
-                <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Season</span>
-                <span className="sm:hidden">Pass</span>
-              </TabsTrigger>
+
+
               <TabsTrigger value="ai-training" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
                 <Bot className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">AI Training</span>
@@ -523,21 +482,8 @@ const BrainDuel = () => {
               </Card>
             </TabsContent>
 
-            {/* Leagues Tab */}
-            <TabsContent value="leagues" className="space-y-6">
-              <LeagueSystem />
-            </TabsContent>
 
-            {/* Tournaments Tab */}
-            <TabsContent value="tournaments" className="space-y-6">
-              <WeeklyTournaments />
-            </TabsContent>
 
-            {/* Custom Challenges Tab */}
-            <TabsContent value="custom" className="space-y-6">
-              <CustomChallenge />
-              <FriendChallenges />
-            </TabsContent>
 
             {/* Power-ups Tab */}
             <TabsContent value="powerups" className="space-y-6">
@@ -600,15 +546,8 @@ const BrainDuel = () => {
               <QuestionPackStore />
             </TabsContent>
 
-            {/* Live Audience Tab */}
-            <TabsContent value="audience" className="space-y-6">
-              <LiveSpectatorMode />
-            </TabsContent>
 
-            {/* Season Pass Tab */}
-            <TabsContent value="season" className="space-y-6">
-              <SeasonPass />
-            </TabsContent>
+
 
             {/* AI Training Tab */}
             <TabsContent value="ai-training" className="space-y-6">
