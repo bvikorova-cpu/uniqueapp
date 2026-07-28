@@ -1070,42 +1070,43 @@ export function FairyPanoramaViewer({
 
       {/* Audio Guide Control */}
       {audioGuideText && (
-        <div className="absolute top-24 left-6 z-20 flex flex-col gap-3">
+        <div className="absolute bottom-24 left-3 sm:left-6 z-20 flex flex-col gap-2">
           {/* Main Controls Row */}
           <div className="flex items-center gap-2">
             <Button
               onClick={handleSpeak}
-              size="lg"
+              size="sm"
               disabled={isGenerating}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-2xl disabled:opacity-50 min-w-[180px]"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-xl disabled:opacity-50"
             >
               {isGenerating ? (
                 <>
-                  <div className="mr-2 h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                   Generating...
                 </>
               ) : isPlaying ? (
                 <>
-                  <VolumeX className="mr-2 h-5 w-5" />
-                  Stop Story
+                  <VolumeX className="mr-2 h-4 w-4" />
+                  Stop
                 </>
               ) : (
                 <>
-                  <Volume2 className="mr-2 h-5 w-5" />
-                  🎧 Play Story
+                  <Volume2 className="mr-2 h-4 w-4" />
+                  Play Story
                 </>
               )}
             </Button>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  size="lg"
-                  className="bg-white/90 hover:bg-white shadow-xl"
+                  size="sm"
+                  className="bg-white/90 hover:bg-white shadow-lg"
                 >
-                  <Languages className="mr-2 h-4 w-4" />
-                  {LANGUAGES.find(l => l.code === selectedLanguage)?.flag} {LANGUAGES.find(l => l.code === selectedLanguage)?.name}
+                  <Languages className="mr-1.5 h-4 w-4" />
+                  <span>{LANGUAGES.find(l => l.code === selectedLanguage)?.flag}</span>
+                  <span className="hidden sm:inline ml-1">{LANGUAGES.find(l => l.code === selectedLanguage)?.name}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-white max-h-[300px] overflow-y-auto">
