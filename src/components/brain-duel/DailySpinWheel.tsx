@@ -64,6 +64,7 @@ export const DailySpinWheel = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // The server records spins with the UTC date — compare against the same value.
     const today = new Date().toISOString().split('T')[0];
 
     const { data } = await supabase
@@ -96,20 +97,32 @@ export const DailySpinWheel = () => {
 
     // Server decides the reward and credits the account (client cannot self-award).
     // Uses an atomic SECURITY DEFINER RPC so it works identically for every user.
-    const { data, error } = await supabase.rpc('brain_duel_daily_spin' as any);
-    const res = (data ?? {}) as { error?: string; index?: number };
+    let res: { error?: string; index?: number } = {};
+    let failure: string | null = null;
 
-    if (error || res.error) {
+    const { data, error } = await supabase.rpc('brain_duel_daily_spin' as any);
+    if (error) {
+      // Older cached clients / stale schema cache: fall back to the edge endpoint,
+      // which simply forwards to the very same RPC.
+      const fb = await supabase.functions.invoke('brain-duel-daily-spin');
+      if (fb.error && !fb.data) failure = error.message;
+      else res = (fb.data ?? {}) as typeof res;
+    } else {
+      res = (data ?? {}) as typeof res;
+    }
+
+    if (failure || res.error) {
       setSpinning(false);
       if (res.error === 'already_spun') {
         setCanSpin(false);
         setLastSpinDate(new Date().toISOString());
         toast.error('You already used today\'s free spin');
       } else {
-        toast.error(error?.message || res.error?.replace(/_/g, ' ') || 'Spin failed, please try again');
+        toast.error(failure || res.error?.replace(/_/g, ' ') || 'Spin failed, please try again');
       }
       return;
     }
+
 
     const selectedIndex: number = res.index ?? 0;
     const selected = WHEEL_SEGMENTS[selectedIndex];
