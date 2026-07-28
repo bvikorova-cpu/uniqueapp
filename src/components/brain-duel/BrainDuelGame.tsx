@@ -333,6 +333,27 @@ export const BrainDuelGame = ({
       setGameMode(match.game_mode === 'friend' ? 'quick' : (match.game_mode || 'quick'));
       setQuestionTime(t);
 
+      // Restore live scores + progress, so a player who already answered does not
+      // replay the duel (and sees a proper "waiting for opponent" screen instead).
+      const isP1 = match.player1_id === currentUser.id;
+      const oppId = isP1 ? match.player2_id : match.player1_id;
+      const total = match.total_questions ?? 10;
+      setMyScore(isP1 ? match.player1_score ?? 0 : match.player2_score ?? 0);
+      setOpponentScore(isP1 ? match.player2_score ?? 0 : match.player1_score ?? 0);
+
+      const myAnswered = await countAnswers(match.id, currentUser.id);
+      if (myAnswered >= total) {
+        const oppAnswered = oppId ? await countAnswers(match.id, oppId) : 0;
+        if (oppAnswered >= total) {
+          await finishMatchById(match.id);
+          return;
+        }
+        setWaitingInfo({ answered: oppAnswered, total });
+        setMatchStatus('in_progress');
+        setGamePhase('waiting');
+        return;
+      }
+
       let qData: any = null;
       for (let attempt = 0; attempt < 2; attempt++) {
         const { data, error: qErr } = await supabase.functions.invoke('brain-duel-get-questions', {
@@ -352,6 +373,7 @@ export const BrainDuelGame = ({
       }
 
       setQuestions(qData.questions);
+      setCurrentIndex(Math.min(myAnswered, qData.questions.length - 1));
       setMatchStatus('in_progress');
       setGamePhase('playing');
       setTimeLeft(t);
