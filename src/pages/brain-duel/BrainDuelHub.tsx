@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { ArrowLeft, Sparkles, ScanLine, Mic, ShieldAlert, Image as ImageIcon, Layers } from "lucide-react";
+import { ArrowLeft, Sparkles, ScanLine, Mic, ShieldAlert, Image as ImageIcon, Layers, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { brainDuelCall } from "@/hooks/useBrainDuelRouter";
 import { useBrainDuelCredits } from "@/hooks/useBrainDuelCredits";
 import { useQueryClient } from "@tanstack/react-query";
@@ -23,6 +24,18 @@ type Feature = {
   ai?: boolean;
   action?: string;
 };
+
+type DeckQuestionDraft = {
+  q: string;
+  options: string[];
+  correct_index: number;
+};
+
+const createEmptyDeckQuestion = (): DeckQuestionDraft => ({
+  q: "",
+  options: ["", "", "", ""],
+  correct_index: 0,
+});
 
 const FEATURES: Feature[] = [
   { id: "ai.generateQuiz", title: "AI Question Generator", desc: "Any topic, any difficulty — 10 fresh MCQs", icon: Sparkles, credits: 5, ai: true, action: "ai.generateQuiz" },
@@ -45,7 +58,25 @@ export default function BrainDuelHub() {
   const [listening, setListening] = useState(false);
   const [recentDuels, setRecentDuels] = useState<any[]>([]);
   const [loadingDuels, setLoadingDuels] = useState(false);
+  const [deckQuestions, setDeckQuestions] = useState<DeckQuestionDraft[]>([createEmptyDeckQuestion()]);
   const recognitionRef = useRef<any>(null);
+
+  const updateDeckQuestion = (index: number, patch: Partial<DeckQuestionDraft>) => {
+    setDeckQuestions((questions) => questions.map((question, i) => i === index ? { ...question, ...patch } : question));
+  };
+
+  const updateDeckOption = (questionIndex: number, optionIndex: number, value: string) => {
+    setDeckQuestions((questions) => questions.map((question, i) => {
+      if (i !== questionIndex) return question;
+      const options = [...question.options];
+      options[optionIndex] = value;
+      return { ...question, options };
+    }));
+  };
+
+  const removeDeckQuestion = (index: number) => {
+    setDeckQuestions((questions) => questions.length > 1 ? questions.filter((_, i) => i !== index) : [createEmptyDeckQuestion()]);
+  };
 
   const toggleDictation = () => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -100,7 +131,14 @@ export default function BrainDuelHub() {
         const r = await brainDuelCall<any>("ai.shareCard", { duelId: input.duelId, winner: input.winner, loser: input.loser, score: input.score, topic: input.topic });
         setOutput(r); refetch(); toast.success("Share card generated!");
       } else if (active.id === "deck.publish") {
-        const questions = input.questions ? JSON.parse(input.questions) : [];
+        if (!input.title?.trim()) { toast.error("Please enter a deck title."); return; }
+        if (!input.topic?.trim()) { toast.error("Please enter a topic."); return; }
+        const questions = deckQuestions.map((question) => ({
+          q: question.q.trim(),
+          options: question.options.map((option) => option.trim()),
+          correct_index: question.correct_index,
+        })).filter((question) => question.q && question.options.filter(Boolean).length >= 2);
+        if (questions.length === 0) { toast.error("Add at least one complete question with two answers."); return; }
         const r = await brainDuelCall<any>("deck.publish", { title: input.title, topic: input.topic, questions });
         setOutput(r); refetch(); toast.success("Deck published!");
       } else {
@@ -309,11 +347,53 @@ export default function BrainDuelHub() {
                 </div>
               )}
               {active.id === "deck.publish" && (
-                <>
+                <div className="space-y-4">
                   <Input placeholder="Deck title" value={input.title ?? ""} onChange={(e) => setInput({ ...input, title: e.target.value })} />
                   <Input placeholder="Topic" value={input.topic ?? ""} onChange={(e) => setInput({ ...input, topic: e.target.value })} />
-                  <Textarea placeholder='Questions JSON [{q,options,correct_index}]' value={input.questions ?? ""} onChange={(e) => setInput({ ...input, questions: e.target.value })} />
-                </>
+                  <div className="space-y-3">
+                    {deckQuestions.map((question, questionIndex) => (
+                      <div key={questionIndex} className="rounded-md border bg-muted/20 p-3 space-y-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <Badge variant="outline">Question {questionIndex + 1}</Badge>
+                          <Button type="button" variant="ghost" size="icon" onClick={() => removeDeckQuestion(questionIndex)} aria-label="Remove question">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <Textarea
+                          placeholder="Question"
+                          value={question.q}
+                          onChange={(e) => updateDeckQuestion(questionIndex, { q: e.target.value })}
+                        />
+                        <div className="grid gap-2 sm:grid-cols-2">
+                          {question.options.map((option, optionIndex) => (
+                            <Input
+                              key={optionIndex}
+                              placeholder={`Answer ${optionIndex + 1}`}
+                              value={option}
+                              onChange={(e) => updateDeckOption(questionIndex, optionIndex, e.target.value)}
+                            />
+                          ))}
+                        </div>
+                        <Select
+                          value={String(question.correct_index)}
+                          onValueChange={(value) => updateDeckQuestion(questionIndex, { correct_index: Number(value) })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Correct answer" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {question.options.map((_, optionIndex) => (
+                              <SelectItem key={optionIndex} value={String(optionIndex)}>Correct answer: {optionIndex + 1}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                    <Button type="button" variant="outline" className="w-full" onClick={() => setDeckQuestions((questions) => [...questions, createEmptyDeckQuestion()])}>
+                      <Plus className="h-4 w-4 mr-2" /> Add question
+                    </Button>
+                  </div>
+                </div>
               )}
 
               <Button onClick={run} disabled={busy} className="w-full">
@@ -364,6 +444,16 @@ export default function BrainDuelHub() {
                         {Array.isArray(output.card.hashtags) && output.card.hashtags.length > 0 && (
                           <p className="text-primary text-xs">{output.card.hashtags.join(" ")}</p>
                         )}
+                      </div>
+                    ) : output?.deck ? (
+                      <div className="space-y-2 text-sm">
+                        <p className="font-semibold text-base">Deck published</p>
+                        <p className="text-muted-foreground">
+                          {output.deck.payload?.title ?? "Custom deck"} · {output.deck.payload?.topic ?? "Brain Duel"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {(output.deck.payload?.questions ?? []).length} questions saved and ready to use.
+                        </p>
                       </div>
                     ) : Array.isArray(output?.quiz?.questions) ? (
                       output.quiz.questions.map((q: any, i: number) => (
