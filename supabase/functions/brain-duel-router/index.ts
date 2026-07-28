@@ -138,7 +138,9 @@ Deno.serve(async (req) => {
 
     let result: any = { ok: true };
 
+    try {
     switch (action) {
+
       // ---------- Records CRUD ----------
       case "records.list": {
         const { kind, parent_id, mine, limit = 50 } = body;
