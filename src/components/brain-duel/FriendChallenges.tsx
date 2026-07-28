@@ -343,9 +343,10 @@ export const FriendChallenges = () => {
                         <SelectItem value="none" disabled>
                           {isSearching
                             ? 'Searching…'
-                            : friendSearch.trim().length >= 2
+                            : friendSearch.trim().length >= 1
                               ? 'No users found'
                               : 'No friends yet — type a name to search'}
+
                         </SelectItem>
                       )}
                     </SelectContent>
