@@ -128,14 +128,33 @@ export const FriendChallenges = () => {
       const friendIds = friendships.map((f) =>
         f.user_id === user.id ? f.friend_id : f.user_id
       );
+      if (friendIds.length === 0) return [];
 
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name, avatar_url')
+        .select('id, full_name, username, avatar_url')
         .in('id', friendIds);
 
       return profiles || [];
     } });
+
+  // Search any user by name/username (works even without friendships)
+  const { data: searchResults, isFetching: isSearching } = useQuery({
+    queryKey: ['friend-challenge-search', friendSearch],
+    enabled: friendSearch.trim().length >= 2,
+    queryFn: async () => {
+      const term = friendSearch.trim();
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, full_name, username, avatar_url')
+        .or(`full_name.ilike.%${term}%,username.ilike.%${term}%`)
+        .limit(20);
+      return (data || []).filter((p: any) => p.id !== user?.id);
+    } });
+
+  const friendOptions = (friendSearch.trim().length >= 2 ? searchResults : friends) || [];
+
 
   // Fetch challenges
   const { data: challenges } = useQuery({
