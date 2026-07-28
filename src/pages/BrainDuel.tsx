@@ -65,6 +65,7 @@ const BrainDuel = () => {
   const queryClient = useQueryClient();
   const [userId, setUserId] = useState<string | null>(null);
   const [startRequest, setStartRequest] = useState<{ nonce: number; mode: string; category?: string } | null>(null);
+  const [selectedMode, setSelectedMode] = useState<string>("quick");
   const { purchasePowerup, isPurchasing } = useBrainDuelPowerups();
   const { onlineCount } = useBrainDuelOnlinePlayers();
   const { data: overview } = useBrainDuelOverview();
