@@ -546,10 +546,37 @@ const EditProfile = () => {
                 </TabsList>
 
                 <TabsContent value="identity" className="space-y-4">
-                  <div>
-                    <Label htmlFor="full_name">Full Name</Label>
-                    <Input id="full_name" value={profile.full_name || ""} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <Label htmlFor="first_name">First name</Label>
+                      <Input
+                        id="first_name"
+                        value={(profile.full_name || "").split(" ")[0] || ""}
+                        onChange={(e) => {
+                          const parts = (profile.full_name || "").trim().split(/\s+/);
+                          const last = parts.slice(1).join(" ");
+                          setProfile({ ...profile, full_name: [e.target.value, last].filter(Boolean).join(" ") });
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="last_name">Last name</Label>
+                      <Input
+                        id="last_name"
+                        value={(profile.full_name || "").trim().split(/\s+/).slice(1).join(" ")}
+                        onChange={(e) => {
+                          const first = (profile.full_name || "").trim().split(/\s+/)[0] || "";
+                          setProfile({ ...profile, full_name: [first, e.target.value].filter(Boolean).join(" ") });
+                        }}
+                      />
+                    </div>
                   </div>
+                  <div>
+                    <Label htmlFor="full_name">Display name (full)</Label>
+                    <Input id="full_name" value={profile.full_name || ""} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} />
+                    <p className="text-[10px] text-muted-foreground mt-1">This is what everyone sees across the platform. You can change it anytime.</p>
+                  </div>
+
                   <div>
                     <Label htmlFor="headline">Headline / Tagline</Label>
                     <Input id="headline" placeholder="e.g. Building beautiful things at the edge of AI" maxLength={80} value={profile.headline || ""} onChange={(e) => setProfile({ ...profile, headline: e.target.value })} />
