@@ -1126,7 +1126,9 @@ const App = () => {
                         <Route path="/become-creator" element={<BecomeCreator />} />
                         <Route path="/instructor-earnings" element={<ProtectedRoute><InstructorEarnings /></ProtectedRoute>} />
                         <Route path="/admin/withdrawals" element={<ProtectedRoute requireAdmin={true}><AdminWithdrawals /></ProtectedRoute>} />
+                        <Route path="/admin/support" element={<ProtectedRoute requireAdmin={true}><AdminSupportInbox /></ProtectedRoute>} />
                         <Route path="/admin/error-logs" element={<ProtectedRoute requireAdmin={true}><AdminErrorLogs /></ProtectedRoute>} />
+
                         <Route path="/admin/route-errors" element={<ProtectedRoute requireAdmin={true}><AdminRouteErrors /></ProtectedRoute>} />
                         <Route path="/admin/client-errors" element={<ProtectedRoute requireAdmin={true}><AdminClientErrors /></ProtectedRoute>} />
                         <Route path="/admin/audit-log" element={<ProtectedRoute requireAdmin={true}><AdminAuditLog /></ProtectedRoute>} />
