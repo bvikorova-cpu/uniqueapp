@@ -26,6 +26,8 @@ export default function BedtimeStories() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentStory, setCurrentStory] = useState<number | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [customStory, setCustomStory] = useState<{ title: string; text: string } | null>(null);
+  const [isGeneratingCustom, setIsGeneratingCustom] = useState(false);
   const [language, setLanguage] = useState('en-US');
   const [visitedStories, setVisitedStories] = useState<Set<number>>(new Set());
   const [ratings, setRatings] = useState<Record<number, number>>({});
