@@ -1,31 +1,44 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
+/**
+ * Real online count: distinct users currently in an active/waiting match
+ * + distinct users with profile activity in the last 5 minutes.
+ * No estimates, no multipliers — deduplicated real user ids.
+ */
 export const useBrainDuelOnlinePlayers = () => {
   const { data: onlineCount } = useQuery({
     queryKey: ['brain-duel-online-players'],
+    staleTime: 10_000,
+    refetchInterval: 15_000,
     queryFn: async () => {
-      // Count active matches (players currently in game)
-      const { count: activeMatchesCount } = await supabase
-        .from('brain_duel_matches')
-        .select('*', { count: 'exact', head: true })
-        .in('status', ['active', 'waiting']);
-
-      // Count recently active users (logged in within last 5 minutes)
       const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-      const { count: recentUsersCount } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .gte('updated_at', fiveMinutesAgo);
 
-      // Estimate online players (active matches count × 2 + recent users / 3)
-      const activePlayersInMatches = (activeMatchesCount || 0) * 2;
-      const browsingUsers = Math.floor((recentUsersCount || 0) / 3);
-      
-      return Math.max(activePlayersInMatches + browsingUsers, 1);
+      const [matchesRes, recentRes] = await Promise.all([
+        supabase
+          .from('brain_duel_matches')
+          .select('player1_id, player2_id')
+          .in('status', ['active', 'waiting'])
+          .limit(500),
+        supabase
+          .from('profiles')
+          .select('id')
+          .gte('updated_at', fiveMinutesAgo)
+          .limit(500),
+      ]);
+
+      const ids = new Set<string>();
+      (matchesRes.data ?? []).forEach((m: any) => {
+        if (m.player1_id) ids.add(m.player1_id);
+        if (m.player2_id) ids.add(m.player2_id);
+      });
+      (recentRes.data ?? []).forEach((p: any) => {
+        if (p.id) ids.add(p.id);
+      });
+
+      return ids.size;
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
-  return { onlineCount: onlineCount || 0 };
+  return { onlineCount: onlineCount ?? 0 };
 };
