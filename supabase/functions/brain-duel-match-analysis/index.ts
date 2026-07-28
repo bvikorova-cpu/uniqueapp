@@ -88,8 +88,15 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) throw new Error("Not authenticated");
 
-    const { match_id } = await req.json();
-    if (!match_id) throw new Error("match_id required");
+    let body: { match_id?: unknown };
+    try {
+      body = await req.json();
+    } catch {
+      return jsonResponse({ error: "Invalid request body" }, 400);
+    }
+
+    const match_id = typeof body.match_id === "string" ? body.match_id.trim() : "";
+    if (!match_id) return jsonResponse({ error: "match_id required" }, 400);
 
     const ANALYSIS_COST = 5;
 
@@ -112,7 +119,10 @@ serve(async (req) => {
       .eq("id", match_id)
       .single();
 
-    if (!match) throw new Error("Match not found");
+    if (!match) return jsonResponse({ error: "Match not found" }, 404);
+    if (match.player1_id !== user.id && match.player2_id !== user.id) {
+      return jsonResponse({ error: "You can only analyze your own matches" }, 403);
+    }
 
     // Get player answers with questions
     const { data: answers } = await supabase
@@ -210,7 +220,19 @@ Provide:
       });
     }
 
-    const aiData = await aiResponse.json();
+    let aiData: any;
+    try {
+      aiData = await aiResponse.json();
+    } catch (parseError) {
+      console.warn("OpenAI match analysis response parse failed, using fallback:", parseError);
+      return jsonResponse({
+        analysis: fallbackAnalysis(),
+        stats: { accuracy, correct, total: totalQ, wrong_answers: wrongAnswers },
+        credits_spent: 0,
+        analysis_source: "fallback",
+        warning: "AI coach returned an unreadable response; backup analysis used real match data.",
+      });
+    }
     const analysis = aiData.choices?.[0]?.message?.content || fallbackAnalysis();
 
     const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits", {
