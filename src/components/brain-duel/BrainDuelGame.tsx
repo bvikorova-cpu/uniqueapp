@@ -56,11 +56,14 @@ const CATEGORIES = [
   { id: 'Music', emoji: '🎵', color: 'from-pink-500/20 to-rose-600/10' },
 ];
 
+// Keep in sync with supabase/functions/brain-duel-matchmaking MODES
 export const MODE_CONFIG: Record<string, { entry: number; reward: number; questions: number; time: number; label: string }> = {
   quick: { entry: 10, reward: 20, questions: 10, time: 30, label: 'Quick Duel' },
   classic: { entry: 20, reward: 50, questions: 20, time: 30, label: 'Classic Battle' },
   championship: { entry: 50, reward: 150, questions: 30, time: 24, label: 'Championship' },
   mystery: { entry: 30, reward: 90, questions: 10, time: 20, label: 'Mystery Category' },
+  blitz: { entry: 15, reward: 30, questions: 5, time: 10, label: 'Blitz' },
+  ranked: { entry: 20, reward: 40, questions: 10, time: 15, label: 'Ranked' },
 };
 
 export interface StartRequest {
