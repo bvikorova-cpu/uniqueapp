@@ -33,27 +33,61 @@ serve(async (req) => {
 
     const totalQuestions = match.total_questions || 10;
 
+    // ---- Anti-duplicate: collect every question both players already answered ----
+    const playerIds = [match.player1_id, match.player2_id].filter(Boolean);
+    const seenIds = new Set<string>();
+    const seenTexts: string[] = [];
+    if (playerIds.length) {
+      const { data: prevAnswers } = await supabase
+        .from("brain_duel_answers")
+        .select("question_id")
+        .in("user_id", playerIds)
+        .limit(2000);
+      (prevAnswers || []).forEach((a: any) => a.question_id && seenIds.add(a.question_id));
+      const ids = Array.from(seenIds);
+      if (ids.length) {
+        const { data: seenQs } = await supabase
+          .from("brain_duel_questions")
+          .select("question")
+          .in("id", ids.slice(-300));
+        (seenQs || []).forEach((q: any) => q.question && seenTexts.push(q.question));
+      }
+    }
+
     // Fallback: serve questions from the existing question bank so a duel never
     // dies on an AI outage / rate limit (entry credits are already deducted).
     const serveFromBank = async (reason: string) => {
       console.warn("Falling back to question bank:", reason);
-      let { data: bank } = await supabase
-        .from("brain_duel_questions")
-        .select("id, question, option_a, option_b, option_c, option_d, difficulty")
-        .eq("category", category)
-        .limit(200);
-      if (!bank || bank.length < totalQuestions) {
-        const { data: anyBank } = await supabase
+      const fetchBank = async (useCategory: boolean) => {
+        // Random window over the bank so repeated duels don't hit the same rows.
+        const offset = Math.floor(Math.random() * 500);
+        let q = supabase
           .from("brain_duel_questions")
-          .select("id, question, option_a, option_b, option_c, option_d, difficulty")
-          .limit(200);
-        bank = [...(bank || []), ...((anyBank || []).filter((q: any) => !(bank || []).some((b: any) => b.id === q.id)))];
+          .select("id, question, option_a, option_b, option_c, option_d, difficulty");
+        if (useCategory) q = q.eq("category", category);
+        const { data } = await q.range(offset, offset + 199);
+        if (data && data.length) return data;
+        const { data: head } = await (useCategory
+          ? supabase.from("brain_duel_questions").select("id, question, option_a, option_b, option_c, option_d, difficulty").eq("category", category).limit(200)
+          : supabase.from("brain_duel_questions").select("id, question, option_a, option_b, option_c, option_d, difficulty").limit(200));
+        return head || [];
+      };
+
+      let bank = await fetchBank(true);
+      let fresh = bank.filter((q: any) => !seenIds.has(q.id));
+      if (fresh.length < totalQuestions) {
+        const any = await fetchBank(false);
+        const merged = [...fresh, ...any.filter((q: any) => !seenIds.has(q.id) && !fresh.some((f: any) => f.id === q.id))];
+        fresh = merged;
       }
-      if (!bank || bank.length === 0) return null;
-      const shuffled = bank.sort(() => Math.random() - 0.5).slice(0, totalQuestions);
+      // Only if there is genuinely nothing fresh do we allow repeats.
+      const pool = fresh.length >= totalQuestions ? fresh : (fresh.length ? fresh : bank);
+      if (!pool || pool.length === 0) return null;
+      const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, totalQuestions);
       return new Response(JSON.stringify({ questions: shuffled, source: "bank" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     };
+
 
     // Generate questions with AI
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
@@ -70,6 +104,7 @@ serve(async (req) => {
         "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
+        temperature: 1.1,
         messages: [
           {
             role: "system",
@@ -78,6 +113,7 @@ serve(async (req) => {
           {
             role: "user",
             content: `Generate ${totalQuestions} unique trivia questions about "${category}". Mix easy, medium and hard difficulty.
+Randomisation seed: ${crypto.randomUUID()} (use it to pick fresh, varied subtopics every time).
 
 CRITICAL RULES:
 - "correct_answer_text" MUST be EXACTLY equal (character-for-character, same casing) to one of option_a/b/c/d
@@ -85,7 +121,10 @@ CRITICAL RULES:
 - Each question must have exactly 4 distinct options
 - Questions must be factual and verifiable
 - Mix difficulties (~30% easy, 40% medium, 30% hard)
-- No duplicate questions`
+- No duplicate questions
+- Cover different subtopics/eras/regions than typical "top 10" trivia
+${seenTexts.length ? `\nDO NOT repeat or paraphrase any of these already-used questions:\n${seenTexts.slice(-60).map((t) => `- ${t}`).join("\n")}` : ""}`
+
           }
         ],
         tools: [
@@ -177,7 +216,10 @@ CRITICAL RULES:
           correct_answer: letter,
           difficulty: q.difficulty || "medium" };
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      // Drop anything the players already saw in earlier duels.
+      .filter((q: any) => !seenTexts.some((t) => norm(t) === norm(q.question)));
+
 
     if (questionsToInsert.length === 0) {
       const fb = await serveFromBank("no_valid_questions");
