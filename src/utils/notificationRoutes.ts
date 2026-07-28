@@ -20,8 +20,9 @@ export function getNotificationRoute(n: NotifLike): string {
   const duelMatchId = n.metadata?.match_id || n.metadata?.matchId;
   const duelChallengeId = n.metadata?.challenge_id || n.metadata?.challengeId;
   if (t.startsWith("brain_duel_challenge")) {
-    if (duelMatchId) return `/brain-duel?match_id=${duelMatchId}`;
-    if (duelChallengeId) return `/brain-duel?challenge_id=${duelChallengeId}`;
+    const forceStart = `duel_start=${Date.now()}`;
+    if (duelMatchId) return `/brain-duel?match_id=${duelMatchId}&${forceStart}`;
+    if (duelChallengeId) return `/brain-duel?challenge_id=${duelChallengeId}&${forceStart}`;
   }
 
   // 2) Type-based routing (specific verticals)
