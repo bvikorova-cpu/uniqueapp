@@ -142,19 +142,16 @@ export const FriendChallenges = () => {
   // Search any user by name/username (works even without friendships)
   const { data: searchResults, isFetching: isSearching } = useQuery({
     queryKey: ['friend-challenge-search', friendSearch],
-    enabled: friendSearch.trim().length >= 2,
+    enabled: friendSearch.trim().length >= 1,
     queryFn: async () => {
       const term = friendSearch.trim();
       const { data: { user } } = await supabase.auth.getUser();
-      const { data } = await supabase
-        .from('profiles')
-        .select('id, full_name, username, avatar_url')
-        .or(`full_name.ilike.%${term}%,username.ilike.%${term}%`)
-        .limit(20);
-      return (data || []).filter((p: any) => p.id !== user?.id);
+      const rows = await searchProfiles(term, { limit: 20 });
+      return rows.filter((p) => p.id !== user?.id);
     } });
 
-  const friendOptions = (friendSearch.trim().length >= 2 ? searchResults : friends) || [];
+  const friendOptions = (friendSearch.trim().length >= 1 ? searchResults : friends) || [];
+
 
 
   // Fetch challenges
