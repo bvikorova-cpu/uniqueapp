@@ -7,8 +7,10 @@ import { Megaphone,
   Users,
   Sparkles,
   ChevronRight,
-  Zap } from "lucide-react";
+  Zap,
+  Bug } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
 
 export const QuickActionsDock = () => {
   const nav = useNavigate();
