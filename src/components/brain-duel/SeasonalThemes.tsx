@@ -16,7 +16,21 @@ export const SeasonalThemes = () => {
       return data || [];
     } });
 
-  const activeTheme = themes?.find((t: any) => t.is_active);
+  // Pick the theme that matches the current calendar season (northern hemisphere),
+  // so we never show a spring theme in the middle of summer.
+  const currentSeasonKey = (() => {
+    const m = new Date().getMonth() + 1;
+    if (m === 10) return "halloween";
+    if (m === 12) return "christmas";
+    if (m >= 3 && m <= 5) return "spring";
+    if (m >= 6 && m <= 8) return "summer";
+    if (m >= 9 && m <= 11) return "autumn";
+    return "winter";
+  })();
+
+  const activeTheme =
+    themes?.find((t: any) => t.theme_key === currentSeasonKey) ||
+    themes?.find((t: any) => t.is_active);
 
   if (!activeTheme) return null;
 
