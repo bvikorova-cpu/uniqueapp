@@ -169,8 +169,28 @@ export default function BrainDuelHub() {
                 </>
               )}
               {active.id === "ai.ocrScan" && (
-                <Input placeholder="Image URL (notes/textbook page)" value={input.imageUrl ?? ""} onChange={(e) => setInput({ ...input, imageUrl: e.target.value })} />
+                <div className="space-y-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="block w-full text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      if (f.size > 4 * 1024 * 1024) { toast.error("Image too large (max 4 MB)"); return; }
+                      const reader = new FileReader();
+                      reader.onload = () => setInput((s) => ({ ...s, imageUrl: String(reader.result) }));
+                      reader.readAsDataURL(f);
+                    }}
+                  />
+                  {input.imageUrl?.startsWith("data:image") && (
+                    <img src={input.imageUrl} alt="Scanned notes preview" className="max-h-40 rounded-md border" />
+                  )}
+                  <Input placeholder="…or paste an image URL" value={input.imageUrl?.startsWith("data:") ? "" : (input.imageUrl ?? "")} onChange={(e) => setInput({ ...input, imageUrl: e.target.value })} />
+                </div>
               )}
+
               {active.id === "ai.voiceQuiz" && (
                 <>
                   <Input placeholder="Topic" value={input.topic ?? ""} onChange={(e) => setInput({ ...input, topic: e.target.value })} />
