@@ -56,11 +56,14 @@ const CATEGORIES = [
   { id: 'Music', emoji: '🎵', color: 'from-pink-500/20 to-rose-600/10' },
 ];
 
+// Keep in sync with supabase/functions/brain-duel-matchmaking MODES
 export const MODE_CONFIG: Record<string, { entry: number; reward: number; questions: number; time: number; label: string }> = {
   quick: { entry: 10, reward: 20, questions: 10, time: 30, label: 'Quick Duel' },
   classic: { entry: 20, reward: 50, questions: 20, time: 30, label: 'Classic Battle' },
   championship: { entry: 50, reward: 150, questions: 30, time: 24, label: 'Championship' },
   mystery: { entry: 30, reward: 90, questions: 10, time: 20, label: 'Mystery Category' },
+  blitz: { entry: 15, reward: 30, questions: 5, time: 10, label: 'Blitz' },
+  ranked: { entry: 20, reward: 40, questions: 10, time: 15, label: 'Ranked' },
 };
 
 export interface StartRequest {
@@ -154,14 +157,24 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
     setMatchResult(null);
     setAiAnalysis(null);
 
+    // Extract a readable message from a non-2xx edge function response
+    const readEdgeError = async (err: any, fallback: string) => {
+      try {
+        const body = await err?.context?.json?.();
+        if (body?.error) return String(body.error);
+      } catch { /* ignore */ }
+      const msg = String(err?.message || '');
+      return msg && !msg.includes('non-2xx') ? msg : fallback;
+    };
+
     try {
       // 1. Create match
       const { data: matchData, error: matchError } = await supabase.functions.invoke('brain-duel-matchmaking', {
         body: { category: cat, gameMode: mode } });
-      if (matchError) throw matchError;
+      if (matchError) throw new Error(await readEdgeError(matchError, 'Could not start the match. Please try again.'));
       if (matchData?.error) throw new Error(matchData.error);
+      if (!matchData?.match?.id) throw new Error('Could not create the match. Please try again.');
 
-      
       setMatchId(matchData.match.id);
       const matchQuestionTime = typeof matchData.match.time_per_question === 'number'
         ? matchData.match.time_per_question
@@ -170,17 +183,30 @@ export const BrainDuelGame = ({ startRequest }: { startRequest?: StartRequest | 
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
 
-      // 2. Get AI-generated questions
-      const { data: qData, error: qError } = await supabase.functions.invoke('brain-duel-get-questions', {
-        body: { match_id: matchData.match.id, category: cat } });
-      if (qError) throw qError;
-      if (qData?.error) throw new Error(qData.error);
+      // 2. Get questions (AI generated, with server-side question-bank fallback).
+      //    Retry once — transient AI hiccups should never end the duel.
+      let qData: any = null;
+      let lastErr: any = null;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const { data, error } = await supabase.functions.invoke('brain-duel-get-questions', {
+          body: { match_id: matchData.match.id, category: cat } });
+        if (!error && !data?.error && Array.isArray(data?.questions) && data.questions.length > 0) {
+          qData = data;
+          break;
+        }
+        lastErr = error || new Error(data?.error || 'No questions returned');
+        if (attempt === 0) await new Promise((r) => setTimeout(r, 1200));
+      }
+      if (!qData) throw new Error(await readEdgeError(lastErr, 'Questions are temporarily unavailable. Please try again in a moment.'));
 
       setQuestions(qData.questions);
       setGamePhase('playing');
       setTimeLeft(matchQuestionTime);
       setAnswerStartTime(Date.now());
-      toast.success('Match started! AI generated unique questions for you.', { duration: 2000 });
+      toast.success(
+        qData.source === 'bank' ? 'Match started! Questions loaded.' : 'Match started! AI generated unique questions for you.',
+        { duration: 2000 }
+      );
     } catch (err: any) {
       console.error('Start match error:', err);
       toast.error(err.message || 'Failed to start match');

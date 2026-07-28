@@ -33,9 +33,35 @@ serve(async (req) => {
 
     const totalQuestions = match.total_questions || 10;
 
+    // Fallback: serve questions from the existing question bank so a duel never
+    // dies on an AI outage / rate limit (entry credits are already deducted).
+    const serveFromBank = async (reason: string) => {
+      console.warn("Falling back to question bank:", reason);
+      let { data: bank } = await supabase
+        .from("brain_duel_questions")
+        .select("id, question, option_a, option_b, option_c, option_d, difficulty")
+        .eq("category", category)
+        .limit(200);
+      if (!bank || bank.length < totalQuestions) {
+        const { data: anyBank } = await supabase
+          .from("brain_duel_questions")
+          .select("id, question, option_a, option_b, option_c, option_d, difficulty")
+          .limit(200);
+        bank = [...(bank || []), ...((anyBank || []).filter((q: any) => !(bank || []).some((b: any) => b.id === q.id)))];
+      }
+      if (!bank || bank.length === 0) return null;
+      const shuffled = bank.sort(() => Math.random() - 0.5).slice(0, totalQuestions);
+      return new Response(JSON.stringify({ questions: shuffled, source: "bank" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    };
+
     // Generate questions with AI
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("AI API key not configured");
+    if (!OPENAI_API_KEY) {
+      const fb = await serveFromBank("missing_api_key");
+      if (fb) return fb;
+      throw new Error("AI API key not configured");
+    }
 
     const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -97,6 +123,8 @@ CRITICAL RULES:
       }) });
 
     if (!aiResponse.ok) {
+      const fb = await serveFromBank(`ai_status_${aiResponse.status}`);
+      if (fb) return fb;
       if (aiResponse.status === 429) {
         return new Response(JSON.stringify({ error: "AI rate limit exceeded. Please try again in a moment." }), {
           status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -122,6 +150,8 @@ CRITICAL RULES:
       if (jsonMatch) {
         generatedQuestions = JSON.parse(jsonMatch[0]);
       } else {
+        const fb = await serveFromBank("parse_failed");
+        if (fb) return fb;
         throw new Error("Failed to parse AI response");
       }
     }
@@ -149,14 +179,22 @@ CRITICAL RULES:
       })
       .filter(Boolean);
 
-    if (questionsToInsert.length === 0) throw new Error("AI returned no valid questions");
+    if (questionsToInsert.length === 0) {
+      const fb = await serveFromBank("no_valid_questions");
+      if (fb) return fb;
+      throw new Error("AI returned no valid questions");
+    }
 
     const { data: savedQuestions, error: qError } = await supabase
       .from("brain_duel_questions")
       .insert(questionsToInsert)
       .select();
 
-    if (qError) throw qError;
+    if (qError) {
+      const fb = await serveFromBank("insert_failed");
+      if (fb) return fb;
+      throw qError;
+    }
 
     // Return questions without correct_answer
     const clientQuestions = savedQuestions.map((q: any) => ({ id: q.id,
