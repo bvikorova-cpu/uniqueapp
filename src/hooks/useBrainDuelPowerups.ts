@@ -39,9 +39,10 @@ export const useBrainDuelPowerups = () => {
         title: 'Purchase failed',
         description: error.message === 'Insufficient credits'
           ? 'Not enough credits to buy this power-up'
-          : 'Failed to purchase power-up',
+          : (error.message || 'Failed to purchase power-up'),
         variant: 'destructive' });
     } });
+
 
   const usePowerupMutation = useMutation({
     mutationFn: async ({ powerupId, quantity }: { powerupId: string; quantity: number }) => {
