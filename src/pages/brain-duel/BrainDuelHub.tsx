@@ -253,7 +253,19 @@ export default function BrainDuelHub() {
               {output && (
                 <Card className="bg-muted/30">
                   <CardContent className="pt-4 space-y-3">
-                    {Array.isArray(output?.quiz?.questions) ? (
+                    {output?.round ? (
+                      <div className="text-sm space-y-2">
+                        <p className="font-medium">{output.round.question}</p>
+                        <p className={output.round.user_correct ? "text-green-600 font-semibold" : "text-destructive font-semibold"}>
+                          {output.round.user_correct ? "Correct!" : "Not quite."}
+                          {typeof output.round.score === "number" ? ` (${output.round.score}/100)` : ""}
+                        </p>
+                        {output.round.correct_answer && (
+                          <p className="text-muted-foreground">Correct answer: {output.round.correct_answer}</p>
+                        )}
+                        {output.round.feedback && <p className="text-xs italic text-muted-foreground">{output.round.feedback}</p>}
+                      </div>
+                    ) : Array.isArray(output?.quiz?.questions) ? (
                       output.quiz.questions.map((q: any, i: number) => (
                         <div key={i} className="text-sm space-y-1">
                           <p className="font-medium">{i + 1}. {q.q ?? q.question}</p>
