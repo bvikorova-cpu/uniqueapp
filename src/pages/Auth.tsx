@@ -213,7 +213,7 @@ const Auth = () => {
     const selectedLanguage = 'en';
     const isoBirthDate = format(birthDate, "yyyy-MM-dd");
 
-    const { error } = await supabase.auth.signUp({
+    const { data: signUpData, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
