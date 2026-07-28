@@ -38,18 +38,55 @@ async function spendBrainDuelCredits(admin: any, userId: string, amount: number)
   }
 }
 
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+
 async function callAI(prompt: string, system = "You are a precise quiz generator. Respond with valid JSON only.") {
-  if (!OPENAI_API_KEY) return { text: "AI unavailable" };
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  // Prefer Lovable AI Gateway; fall back to direct OpenAI if a key is configured.
+  const useGateway = !!LOVABLE_API_KEY;
+  if (!useGateway && !OPENAI_API_KEY) {
+    const e: any = new Error("AI is not configured. Please contact support.");
+    e.status = 503;
+    throw e;
+  }
+  const url = useGateway
+    ? "https://ai.gateway.lovable.dev/v1/chat/completions"
+    : "https://api.openai.com/v1/chat/completions";
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (useGateway) headers["Lovable-API-Key"] = LOVABLE_API_KEY!;
+  else headers["Authorization"] = `Bearer ${OPENAI_API_KEY}`;
+
+  const res = await fetch(url, {
     method: "POST",
-    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [{ role: "system", content: system }, { role: "user", content: prompt }] }) });
-  if (!res.ok) throw new Error(`AI gateway error ${res.status}`);
+      model: useGateway ? "openai/gpt-5.4-mini" : "gpt-4o-mini",
+      response_format: { type: "json_object" },
+      messages: [{ role: "system", content: system }, { role: "user", content: prompt }],
+    }),
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    const e: any = new Error(
+      res.status === 429
+        ? "AI rate limited. Try again in a moment."
+        : res.status === 402
+        ? "AI credits exhausted. Please top up."
+        : `AI error ${res.status}: ${detail.slice(0, 200)}`
+    );
+    e.status = res.status;
+    throw e;
+  }
   const j = await res.json();
   return { text: j.choices?.[0]?.message?.content ?? "" };
 }
+
+function parseAIJson(text: string): any {
+  try { return JSON.parse(text); } catch { /* noop */ }
+  const m = text.match(/\{[\s\S]*\}/);
+  if (m) { try { return JSON.parse(m[0]); } catch { /* noop */ } }
+  return { raw: text };
+}
+
 
 function eloUpdate(ra: number, rb: number, scoreA: number, k = 32) {
   const ea = 1 / (1 + Math.pow(10, (rb - ra) / 400));
