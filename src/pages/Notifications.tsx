@@ -41,6 +41,7 @@ const FILTERS = [
   { key: "all", label: "All" },
   { key: "unread", label: "Unread" },
   { key: "friend_request", label: "Friend requests" },
+  { key: "brain_duel_challenge", label: "Brain Duel" },
   { key: "like", label: "Likes" },
   { key: "comment", label: "Comments" },
   { key: "follow", label: "Follows" },

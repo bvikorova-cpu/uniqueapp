@@ -26,6 +26,13 @@ export function getNotificationRoute(n: NotifLike): string {
     friend_quest_accepted: "/rewards?tab=friend-quests",
     friend_quest_rejected: "/rewards?tab=friend-quests",
 
+    // Brain Duel
+    brain_duel_challenge: "/brain-duel?tab=friends",
+    brain_duel_challenge_accepted: n.related_id ? `/brain-duel?tab=friends&challenge_id=${n.related_id}` : "/brain-duel?tab=friends",
+    brain_duel_challenge_declined: "/brain-duel?tab=friends",
+    brain_duel_challenge_cancelled: "/brain-duel?tab=friends",
+    brain_duel_challenge_expired: "/brain-duel?tab=friends",
+
     // Secret Santa
     secret_santa_gift: "/secret-santa?tab=received",
     secret_santa_received: "/secret-santa?tab=received",
