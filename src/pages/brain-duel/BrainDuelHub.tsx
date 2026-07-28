@@ -93,7 +93,8 @@ export default function BrainDuelHub() {
         const r = await brainDuelCall<any>("ai.voiceQuiz", { topic: input.topic, transcript: input.transcript });
         setOutput(r); refetch(); toast.success("Round scored!");
       } else if (active.id === "ai.cheatScan") {
-        const r = await brainDuelCall<any>("ai.cheatScan", { duelId: input.duelId, responseTimes: (input.responseTimes || "").split(",").map(Number).filter(Boolean), accuracy: Number(input.accuracy) || 0 });
+        if (!input.duelId) { toast.error("Please select a duel first."); return; }
+        const r = await brainDuelCall<any>("ai.cheatScan", { duelId: input.duelId });
         setOutput(r); refetch(); toast.success("Cheat report ready");
       } else if (active.id === "ai.shareCard") {
         const r = await brainDuelCall<any>("ai.shareCard", { winner: input.winner, loser: input.loser, score: input.score, topic: input.topic });
