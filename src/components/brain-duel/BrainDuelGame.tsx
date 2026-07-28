@@ -590,8 +590,13 @@ export const BrainDuelGame = ({
         >
           <Brain className="w-16 h-16 text-primary" />
         </motion.div>
-        <h2 className="text-2xl font-bold mb-2">Generating Questions...</h2>
-        <p className="text-muted-foreground">AI is creating unique {category} questions</p>
+        <h2 className="text-2xl font-bold mb-2">{resumeMatchId ? 'Loading your duel…' : 'Generating Questions...'}</h2>
+        <p className="text-muted-foreground">
+          {resumeMatchId
+            ? `Getting the shared ${category} questions for you and ${opponentName ?? 'your opponent'}`
+            : `AI is creating unique ${category} questions`}
+        </p>
+
         <div className="flex items-center justify-center gap-2 mt-4">
           <Bot className="w-4 h-4 text-primary animate-pulse" />
           <span className="text-xs text-muted-foreground">Powered by OpenAI</span>
