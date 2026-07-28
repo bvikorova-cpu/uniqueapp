@@ -40,7 +40,11 @@ async function spendBrainDuelCredits(admin: any, userId: string, amount: number)
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-async function callAI(prompt: string, system = "You are a precise quiz generator. Respond with valid JSON only.") {
+async function callAI(
+  prompt: string,
+  system = "You are a precise quiz generator. Respond with valid JSON only.",
+  imageUrl?: string,
+) {
   // Prefer Lovable AI Gateway; fall back to direct OpenAI if a key is configured.
   const useGateway = !!LOVABLE_API_KEY;
   if (!useGateway && !OPENAI_API_KEY) {
@@ -55,15 +59,22 @@ async function callAI(prompt: string, system = "You are a precise quiz generator
   if (useGateway) headers["Lovable-API-Key"] = LOVABLE_API_KEY!;
   else headers["Authorization"] = `Bearer ${OPENAI_API_KEY}`;
 
+  const userContent: any = imageUrl
+    ? [{ type: "text", text: prompt }, { type: "image_url", image_url: { url: imageUrl } }]
+    : prompt;
+
   const res = await fetch(url, {
     method: "POST",
     headers,
     body: JSON.stringify({
-      model: useGateway ? "openai/gpt-5.4-mini" : "gpt-4o-mini",
+      model: useGateway
+        ? (imageUrl ? "google/gemini-3.6-flash" : "openai/gpt-5.4-mini")
+        : "gpt-4o-mini",
       response_format: { type: "json_object" },
-      messages: [{ role: "system", content: system }, { role: "user", content: prompt }],
+      messages: [{ role: "system", content: system }, { role: "user", content: userContent }],
     }),
   });
+
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
     const e: any = new Error(
@@ -187,8 +198,14 @@ Deno.serve(async (req) => {
       // ---------- 2. OCR Scan → Quiz ----------
       case "ai.ocrScan": {
         const { imageUrl, count = 8 } = body;
+        if (!imageUrl || !/^(https?:\/\/|data:image\/)/.test(String(imageUrl))) {
+          const e: any = new Error("Please upload a photo or paste a valid image URL.");
+          e.status = 400; throw e;
+        }
         const { text } = await callAI(
-          `Read text from image at ${imageUrl} and create ${count} quiz questions. Return JSON {questions:[{q, options:[a,b,c,d], correct_index}]}.`
+          `Read all text visible in this image and create ${count} multiple-choice quiz questions from it. Return JSON {questions:[{q, options:[a,b,c,d], correct_index, explanation}]}.`,
+          "You read images and generate quizzes. Respond with valid JSON only.",
+          String(imageUrl),
         );
         result = { quiz: parseAIJson(text) };
         break;
@@ -201,7 +218,7 @@ Deno.serve(async (req) => {
         const { text } = await callAI(
           `Quiz question on "${topic}". User spoken answer: "${transcript}". Return JSON {question, correct_answer, user_correct:boolean, feedback}.`
         );
-        result = { round: text };
+        result = { round: parseAIJson(text) };
         break;
       }
 
@@ -211,7 +228,7 @@ Deno.serve(async (req) => {
         const { text } = await callAI(
           `Analyze duel ${duelId} for cheating. Response times (ms): ${JSON.stringify(responseTimes)}. Accuracy: ${accuracy}. Return JSON {suspicious:boolean, score:0-100, reasons:[]}.`
         );
-        result = { report: text };
+        result = { report: parseAIJson(text) };
         break;
       }
 
@@ -221,9 +238,10 @@ Deno.serve(async (req) => {
         const { text } = await callAI(
           `Create Instagram story copy for Brain Duel result. Winner: ${winner}, loser: ${loser}, score: ${score}, topic: ${topic}. Return JSON {headline, caption, hashtags:[]}.`
         );
-        result = { card: text };
+        result = { card: parseAIJson(text) };
         break;
       }
+
 
       // ---------- 6. SRS (Spaced Repetition) ----------
       case "srs.addCard": {
