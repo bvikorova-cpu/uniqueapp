@@ -206,9 +206,43 @@ export default function KidsParentalDashboard() {
         <ParentalHero />
         <HeroRewardedAd sectionKey="page_kidsparentaldashboard" />
 
+        {/* Gold Pass status & expiry */}
+        <Card className="border-amber-300/70 bg-gradient-to-r from-amber-50 to-yellow-50">
+          <CardContent className="flex flex-wrap items-center gap-4 py-4">
+            <div className="rounded-full bg-amber-100 p-3">
+              <Crown className="h-6 w-6 text-amber-600" />
+            </div>
+            <div className="min-w-[200px] flex-1">
+              <p className="font-semibold text-amber-900">Kids Gold Pass</p>
+              {goldPassLoading ? (
+                <p className="text-sm text-amber-700">Checking subscription…</p>
+              ) : hasGoldPass ? (
+                <p className="text-sm text-amber-700">
+                  {goldPassExpiresAt
+                    ? `Active — valid until ${formatExpiry(goldPassExpiresAt)}${
+                        daysLeft !== null ? ` (${daysLeft} day${daysLeft === 1 ? "" : "s"} left)` : ""
+                      }`
+                    : "Active — unlimited access (no expiry date on record)"}
+                </p>
+              ) : (
+                <p className="text-sm text-amber-700">Not active — premium Kids modules are locked.</p>
+              )}
+            </div>
+            <Badge className={hasGoldPass ? "bg-amber-500" : "bg-muted text-muted-foreground"}>
+              {goldPassLoading ? "…" : hasGoldPass ? "Active" : "Inactive"}
+            </Badge>
+            {!goldPassLoading && !hasGoldPass && (
+              <Button size="sm" onClick={() => navigate("/kids-pricing")} className="bg-amber-500 hover:bg-amber-600">
+                Get Gold Pass
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+
         <ChildProfileCards />
 
         <ParentalDashboard />
+
 
         <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
           <CardContent className="flex items-center gap-4 py-4">
