@@ -216,7 +216,10 @@ ${seenTexts.length ? `\nDO NOT repeat or paraphrase any of these already-used qu
           correct_answer: letter,
           difficulty: q.difficulty || "medium" };
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      // Drop anything the players already saw in earlier duels.
+      .filter((q: any) => !seenTexts.some((t) => norm(t) === norm(q.question)));
+
 
     if (questionsToInsert.length === 0) {
       const fb = await serveFromBank("no_valid_questions");
