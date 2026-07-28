@@ -92,13 +92,38 @@ const BrainDuel = () => {
     }
   }, [searchParams, setSearchParams]);
 
-  // Resume an accepted friend-challenge match coming from a notification link
-  const resumeMatchId = searchParams.get('match_id');
+  // Resume an accepted friend-challenge match coming from a notification link.
+  // Supports both ?match_id=... and ?challenge_id=... (resolved to its match).
+  const urlMatchId = searchParams.get('match_id');
+  const urlChallengeId = searchParams.get('challenge_id');
+  const [resolvedMatchId, setResolvedMatchId] = useState<string | null>(null);
+  const resumeMatchId = urlMatchId || resolvedMatchId;
+
+  useEffect(() => {
+    if (urlMatchId || !urlChallengeId) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from('brain_duel_friend_challenges')
+        .select('match_id')
+        .eq('id', urlChallengeId)
+        .maybeSingle();
+      const mid = (data as any)?.match_id || null;
+      if (!cancelled && mid) setResolvedMatchId(mid);
+    })();
+    return () => { cancelled = true; };
+  }, [urlChallengeId, urlMatchId]);
+
   useEffect(() => {
     if (!resumeMatchId) return;
-    const el = document.getElementById('brain-duel-game-anchor');
-    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const scroll = () => document
+      .getElementById('brain-duel-game-anchor')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scroll();
+    const t = setTimeout(scroll, 400);
+    return () => clearTimeout(t);
   }, [resumeMatchId]);
+
 
 
   const handlePaymentSuccess = async (sessionId: string) => {
