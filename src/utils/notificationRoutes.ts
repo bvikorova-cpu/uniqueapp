@@ -16,6 +16,14 @@ export function getNotificationRoute(n: NotifLike): string {
 
   const t = (n.type || "").toLowerCase();
 
+  // Brain Duel: when the notification carries a match, jump straight into the duel
+  const duelMatchId = n.metadata?.match_id || n.metadata?.matchId;
+  const duelChallengeId = n.metadata?.challenge_id || n.metadata?.challengeId;
+  if (t.startsWith("brain_duel_challenge")) {
+    if (duelMatchId) return `/brain-duel?match_id=${duelMatchId}`;
+    if (duelChallengeId) return `/brain-duel?challenge_id=${duelChallengeId}`;
+  }
+
   // 2) Type-based routing (specific verticals)
   const typeMap: Record<string, string> = {
     // Friends
@@ -33,6 +41,7 @@ export function getNotificationRoute(n: NotifLike): string {
     brain_duel_challenge_declined: "/brain-duel#friend-challenges",
     brain_duel_challenge_cancelled: "/brain-duel#friend-challenges",
     brain_duel_challenge_expired: "/brain-duel#friend-challenges",
+
 
     // Secret Santa
     secret_santa_gift: "/secret-santa?tab=received",
