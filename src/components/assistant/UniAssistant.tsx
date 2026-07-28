@@ -446,9 +446,35 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                 </Button>
               )}
             </div>
+
+            {/* Text fallback — works even when the browser has no speech
+                recognition or the mic permission is blocked. */}
+            <form
+              className="flex items-center gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const value = typed.trim();
+                if (!value || thinking) return;
+                setTyped("");
+                send(value);
+              }}
+            >
+              <input
+                value={typed}
+                onChange={(e) => setTyped(e.target.value)}
+                placeholder="…or type your question"
+                aria-label="Type a message to Uni"
+                className="flex-1 h-10 rounded-full border border-border bg-background px-4 text-sm outline-none focus:border-primary"
+              />
+              <Button type="submit" size="sm" className="rounded-full" disabled={thinking || !typed.trim()}>
+                Send
+              </Button>
+            </form>
+
             <p className="text-[10px] text-center text-muted-foreground">
-              {listening ? "Listening…" : thinking ? "Uni is thinking…" : speaking ? "Uni is speaking…" : "Tap the mic and speak"}
+              {listening ? "Listening…" : thinking ? "Uni is thinking…" : speaking ? "Uni is speaking…" : supported ? "Tap the mic and speak, or type below" : "Voice input is unavailable in this browser — type below"}
             </p>
+
           </motion.div>
         </motion.div>
       )}
