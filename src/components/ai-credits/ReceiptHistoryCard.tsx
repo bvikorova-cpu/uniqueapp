@@ -4,6 +4,7 @@ import { Receipt } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { prettifyUsageType } from "@/lib/aiUsageLabels";
 
 export function ReceiptHistoryCard() {
   const [rows, setRows] = useState<any[]>([]);
@@ -45,7 +46,7 @@ export function ReceiptHistoryCard() {
                 </div>
                 <div className="text-right">
                   <p className="font-bold">€{((r.amount || 0) / 100).toFixed(2)}</p>
-                  <Badge variant="outline" className="text-[10px]">{r.credit_type || "one-off"}</Badge>
+                  <Badge variant="outline" className="text-[10px]">{prettifyUsageType(r.credit_type || "one_off")}</Badge>
                 </div>
               </div>
             ))}

@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Activity, Image as ImageIcon, Wand2, Brush, Cpu, Sparkles, TrendingUp } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { prettifyUsageType } from "@/lib/aiUsageLabels";
 
 interface DayBucket { day: string; credits: number; }
 
@@ -84,7 +85,7 @@ export const AIUsageAnalytics = () => {
         <div className="rounded-xl p-3 bg-cyan-500/10 border border-cyan-500/30">
           <p className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Top tool</p>
           <p className="text-base font-black text-foreground truncate">
-            {loading ? "—" : breakdown[0] ? (TYPE_META[breakdown[0].type]?.label ?? breakdown[0].type) : "—"}
+            {loading ? "—" : breakdown[0] ? (TYPE_META[breakdown[0].type]?.label ?? prettifyUsageType(breakdown[0].type)) : "—"}
           </p>
         </div>
       </div>
@@ -116,7 +117,7 @@ export const AIUsageAnalytics = () => {
         )}
         <div className="space-y-2">
           {breakdown.slice(0, 5).map(b => {
-            const meta = TYPE_META[b.type] ?? { label: b.type, icon: TrendingUp, color: "text-foreground" };
+            const meta = TYPE_META[b.type] ?? { label: prettifyUsageType(b.type), icon: TrendingUp, color: "text-foreground" };
             const Icon = meta.icon;
             const pct = Math.round((b.total / breakdownTotal) * 100);
             return (

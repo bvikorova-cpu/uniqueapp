@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { ChartPie } from "lucide-react";
+import { prettifyUsageType } from "@/lib/aiUsageLabels";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const COLORS = ["hsl(var(--primary))", "#a855f7", "#ec4899", "#10b981", "#f59e0b", "#3b82f6", "#ef4444"];
@@ -25,7 +26,11 @@ export function UsageBreakdownChart() {
         const k = r.usage_type || "other";
         map.set(k, (map.get(k) || 0) + (r.credits_used || 0));
       });
-      setData([...map.entries()].map(([name, value]) => ({ name, value })));
+      setData(
+        [...map.entries()]
+          .map(([key, value]) => ({ name: prettifyUsageType(key), value }))
+          .sort((a, b) => b.value - a.value),
+      );
     })();
   }, []);
 
@@ -42,14 +47,31 @@ export function UsageBreakdownChart() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-64">
+        <div className="h-72 sm:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={data} dataKey="value" nameKey="name" outerRadius={80} label>
+              <Pie
+                data={data}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="42%"
+                outerRadius="62%"
+                innerRadius="34%"
+                paddingAngle={2}
+                stroke="hsl(var(--background))"
+                strokeWidth={2}
+              >
                 {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
               </Pie>
-              <Tooltip />
-              <Legend />
+              <Tooltip formatter={(v: any, n: any) => [`${v} credits`, n]} />
+              <Legend
+                verticalAlign="bottom"
+                align="center"
+                iconSize={8}
+                wrapperStyle={{ fontSize: 11, lineHeight: "16px", paddingTop: 8 }}
+                formatter={(value: any, entry: any) => `${value} · ${entry?.payload?.value ?? 0}`}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
