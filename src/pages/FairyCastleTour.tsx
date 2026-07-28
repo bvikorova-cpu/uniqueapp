@@ -14,6 +14,7 @@ import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp, useUserSta
 import { useRoomCollectibles, useCollectDisneyItem, useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { useSaveCertificate } from "@/hooks/useCertificates";
 import { supabase } from "@/integrations/supabase/client";
+import { getRoomPanorama } from "@/lib/castleImages";
 import { motion } from "framer-motion";
 
 export default function FairyCastleTour() {
