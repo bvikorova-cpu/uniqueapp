@@ -370,16 +370,16 @@ const BrainDuel = () => {
                     <div className="p-2 rounded-xl bg-primary/10">
                       <Trophy className="h-5 w-5 text-primary" />
                     </div>
-                    Virtual Competition System
+                    AI Credits Competition System
                   </CardTitle>
                   <CardDescription>
-                    Play for fun • Win virtual credits • No real money involved
+                    Play for fun • Win AI Credits • No cash-out or real-money exchange
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="relative">
                   <p className="text-sm text-muted-foreground">
-                    Compete against other players in knowledge battles. Winners earn virtual credits that can be used within the game. 
-                    All credits are for entertainment purposes only and have no real-world monetary value.
+                    Compete against other players in knowledge battles. Winners earn unified AI Credits that can be used inside Brain Duel and other Unique AI tools.
+                    Credits cannot be exchanged for money.
                   </p>
                 </CardContent>
               </Card>
