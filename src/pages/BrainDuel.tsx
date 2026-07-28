@@ -96,11 +96,13 @@ const BrainDuel = () => {
   // Supports both ?match_id=... and ?challenge_id=... (resolved to its match).
   const urlMatchId = searchParams.get('match_id');
   const urlChallengeId = searchParams.get('challenge_id');
+  const duelStartToken = searchParams.get('duel_start');
   const [resolvedMatchId, setResolvedMatchId] = useState<string | null>(null);
   const resumeMatchId = urlMatchId || resolvedMatchId;
 
   useEffect(() => {
     if (urlMatchId || !urlChallengeId) return;
+    setResolvedMatchId(null);
     let cancelled = false;
     (async () => {
       const { data } = await supabase
@@ -112,7 +114,7 @@ const BrainDuel = () => {
       if (!cancelled && mid) setResolvedMatchId(mid);
     })();
     return () => { cancelled = true; };
-  }, [urlChallengeId, urlMatchId]);
+  }, [urlChallengeId, urlMatchId, duelStartToken]);
 
   useEffect(() => {
     if (!resumeMatchId) return;
@@ -122,7 +124,7 @@ const BrainDuel = () => {
     scroll();
     const t = setTimeout(scroll, 400);
     return () => clearTimeout(t);
-  }, [resumeMatchId]);
+  }, [resumeMatchId, duelStartToken]);
 
 
 
@@ -304,7 +306,7 @@ const BrainDuel = () => {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="max-w-3xl mx-auto mb-10 scroll-mt-24"
         >
-          <BrainDuelGame startRequest={startRequest} resumeMatchId={resumeMatchId} />
+          <BrainDuelGame startRequest={startRequest} resumeMatchId={resumeMatchId} resumeToken={duelStartToken} />
         </motion.div>
 
         {/* ===== ANIMATED LEADERBOARD & FRIENDS ===== */}

@@ -207,6 +207,18 @@ export const FriendChallenges = () => {
     }
   };
 
+  const openDuel = (challengeId: string, matchId?: string | null) => {
+    const params = new URLSearchParams();
+    if (matchId) {
+      params.set('match_id', matchId);
+    } else {
+      params.set('challenge_id', challengeId);
+    }
+    // Forces BrainDuelGame to retry/resume even when the user is already on the same duel URL.
+    params.set('duel_start', String(Date.now()));
+    navigate(`/brain-duel?${params.toString()}`);
+  };
+
   // Fetch challenges
   const { data: challenges } = useQuery({
     queryKey: ['friend-challenges'],
@@ -320,9 +332,9 @@ export const FriendChallenges = () => {
         matchId = (row as any)?.match_id || null;
       }
       if (matchId) {
-        navigate(`/brain-duel?match_id=${matchId}`);
+        openDuel(challengeId, matchId);
       } else {
-        navigate(`/brain-duel?challenge_id=${challengeId}`);
+        openDuel(challengeId);
       }
     },
 
@@ -530,6 +542,8 @@ export const FriendChallenges = () => {
                 : challenge.challenger_profile;
 
               const opponentName = getProfileDisplayName(opponent);
+              const canPlayDuel = Boolean(challenge.match_id)
+                || ['accepted', 'active', 'ready', 'in_progress'].includes(String(challenge.status));
 
               return (
                 <div 
@@ -549,7 +563,7 @@ export const FriendChallenges = () => {
                     </Avatar>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2 w-full min-w-0">
-                        <p className="font-semibold text-sm sm:text-base leading-snug truncate min-w-0 flex-1">
+                        <p className="font-semibold text-sm sm:text-base leading-snug min-w-0 flex-1 break-words">
                           {isChallenger ? '⚔️ To' : '🎯 From'} {opponentName}
                         </p>
 
@@ -629,18 +643,12 @@ export const FriendChallenges = () => {
                         </Button>
                       </div>
                     )}
-                    {(challenge.status === 'accepted' || challenge.status === 'active') && (
+                    {canPlayDuel && (
                       <Button
                         size="sm"
                         variant="default"
-                        className="ml-auto"
-                        onClick={() =>
-                          navigate(
-                            challenge.match_id
-                              ? `/brain-duel?match_id=${challenge.match_id}`
-                              : '/brain-duel'
-                          )
-                        }
+                        className="ml-auto w-full sm:w-auto"
+                        onClick={() => openDuel(challenge.id, challenge.match_id)}
                       >
                         <Swords className="h-4 w-4 mr-1" />
                         Play duel
