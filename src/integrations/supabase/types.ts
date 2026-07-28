@@ -68298,6 +68298,10 @@ export type Database = {
         Args: { p_amount: number; p_reason?: string; p_user_id: string }
         Returns: number
       }
+      award_brain_duel_rp: {
+        Args: { _reason?: string; _rp: number; _user_id: string }
+        Returns: number
+      }
       award_eco_monthly_winner: { Args: never; Returns: Json }
       award_healthy_monthly_winner: {
         Args: { _month_key: string }

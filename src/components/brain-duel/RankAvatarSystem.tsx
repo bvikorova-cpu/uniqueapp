@@ -35,15 +35,19 @@ export const RankAvatarSystem = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let userId: string | null = null;
+
     const load = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
+      userId = user.id;
 
       const { data } = await supabase
         .from("brain_duel_rank_avatars")
         .select("rank_tier, rank_points")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (data) {
         setRankData(data);
@@ -53,9 +57,40 @@ export const RankAvatarSystem = () => {
         setRankData({ rank_tier: "bronze", rank_points: 0 });
       }
       setLoading(false);
+
+      // Live updates whenever RP is awarded (duel finish, chat, streaks)
+      channel = supabase
+        .channel(`rank-avatar:${user.id}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "brain_duel_rank_avatars", filter: `user_id=eq.${user.id}` },
+          (payload: any) => {
+            if (payload.new) {
+              setRankData({ rank_tier: payload.new.rank_tier, rank_points: payload.new.rank_points });
+            }
+          }
+        )
+        .subscribe();
     };
     load();
+
+    const onDuelFinished = async () => {
+      if (!userId) return;
+      const { data } = await supabase
+        .from("brain_duel_rank_avatars")
+        .select("rank_tier, rank_points")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (data) setRankData(data);
+    };
+    window.addEventListener("brain-duel-finished", onDuelFinished);
+
+    return () => {
+      window.removeEventListener("brain-duel-finished", onDuelFinished);
+      if (channel) supabase.removeChannel(channel);
+    };
   }, []);
+
 
   if (loading || !rankData) return null;
 
