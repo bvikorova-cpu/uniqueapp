@@ -155,7 +155,25 @@ export const FriendChallenges = () => {
 
   const friendOptions = (friendSearch.trim().length >= 1 ? searchResults : friends) || [];
 
+  const handleFriendSearchChange = (value: string) => {
+    setFriendSearch(value);
+    if (selectedFriend) {
+      setSelectedFriend('');
+      setSelectedFriendName('');
+    }
+  };
 
+  const handleFriendSelect = (friend: any) => {
+    const displayName = friend.full_name || friend.username || 'Anonymous';
+    setSelectedFriend(friend.id);
+    setSelectedFriendName(displayName);
+    setFriendSearch(displayName);
+
+    const active = document.activeElement;
+    if (active instanceof HTMLElement) {
+      active.blur();
+    }
+  };
 
   // Fetch challenges
   const { data: challenges } = useQuery({
