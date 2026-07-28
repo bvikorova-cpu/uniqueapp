@@ -98,6 +98,47 @@ function parseAIJson(text: string): any {
   return { raw: text };
 }
 
+async function enrichDuelsWithProfiles(admin: any, duels: any[]) {
+  const ids = Array.from(new Set(
+    duels
+      .flatMap((d: any) => [d.player1_id, d.player2_id, d.winner_id])
+      .filter((id: unknown) => typeof id === "string" && id.length > 0),
+  ));
+  if (!ids.length) return duels;
+
+  const { data: profiles } = await admin
+    .from("profiles")
+    .select("id,full_name,username")
+    .in("id", ids);
+  const byId = new Map(
+    (profiles ?? []).map((p: any) => [
+      p.id,
+      String(p.full_name || p.username || "Player").trim() || "Player",
+    ]),
+  );
+
+  return duels.map((d: any) => {
+    const player1Name = byId.get(d.player1_id) ?? "Player 1";
+    const player2Name = d.player2_id ? (byId.get(d.player2_id) ?? "Player 2") : "Opponent";
+    const player1Score = Number(d.player1_score ?? 0);
+    const player2Score = Number(d.player2_score ?? 0);
+    const winnerIsPlayer1 = d.winner_id
+      ? d.winner_id === d.player1_id
+      : player1Score >= player2Score;
+    const winnerName = winnerIsPlayer1 ? player1Name : player2Name;
+    const loserName = winnerIsPlayer1 ? player2Name : player1Name;
+    return {
+      ...d,
+      player1_name: player1Name,
+      player2_name: player2Name,
+      winner_name: winnerName,
+      loser_name: loserName,
+      score_label: `${player1Score}-${player2Score}`,
+      result_label: `${winnerName} beat ${loserName} ${player1Score}-${player2Score}`,
+    };
+  });
+}
+
 
 function eloUpdate(ra: number, rb: number, scoreA: number, k = 32) {
   const ea = 1 / (1 + Math.pow(10, (rb - ra) / 400));
@@ -273,21 +314,50 @@ Deno.serve(async (req) => {
       case "duels.recent": {
         const { data } = await admin
           .from("brain_duel_matches")
-          .select("id,category,player1_score,player2_score,finished_at,created_at")
+          .select("id,category,player1_id,player2_id,winner_id,player1_score,player2_score,finished_at,created_at")
           .or(`player1_id.eq.${user.id},player2_id.eq.${user.id}`)
-          .order("created_at", { ascending: false })
+          .not("finished_at", "is", null)
+          .order("finished_at", { ascending: false })
           .limit(20);
-        result = { duels: data ?? [] };
+        result = { duels: await enrichDuelsWithProfiles(admin, data ?? []) };
         break;
       }
 
       // ---------- 5. Shareable Result Card ----------
       case "ai.shareCard": {
-        const { winner, loser, score, topic } = body;
+        let winner = String(body.winner ?? "").trim();
+        let loser = String(body.loser ?? "").trim();
+        let score = String(body.score ?? "").trim();
+        let topic = String(body.topic ?? "").trim();
+
+        const duelId = String(body.duelId ?? "").trim();
+        if (duelId) {
+          const { data: match } = await admin
+            .from("brain_duel_matches")
+            .select("id,category,player1_id,player2_id,winner_id,player1_score,player2_score,finished_at,created_at")
+            .eq("id", duelId)
+            .maybeSingle();
+          if (!match) { const e: any = new Error("Duel not found."); e.status = 404; throw e; }
+          if (match.player1_id !== user.id && match.player2_id !== user.id) {
+            const e: any = new Error("You can only share duels you played."); e.status = 403; throw e;
+          }
+          if (!match.finished_at) { const e: any = new Error("Only finished duels can be shared."); e.status = 400; throw e; }
+          const [enriched] = await enrichDuelsWithProfiles(admin, [match]);
+          winner = enriched.winner_name;
+          loser = enriched.loser_name;
+          score = enriched.score_label;
+          topic = enriched.category ?? topic;
+        }
+
+        if (!winner || !loser || !score || !topic) {
+          const e: any = new Error("Pick a finished duel or fill winner, loser, score and topic.");
+          e.status = 400;
+          throw e;
+        }
         const { text } = await callAI(
           `Create Instagram story copy for Brain Duel result. Winner: ${winner}, loser: ${loser}, score: ${score}, topic: ${topic}. Return JSON {headline, caption, hashtags:[]}.`
         );
-        result = { card: parseAIJson(text) };
+        result = { card: parseAIJson(text), source: { winner, loser, score, topic } };
         break;
       }
 
