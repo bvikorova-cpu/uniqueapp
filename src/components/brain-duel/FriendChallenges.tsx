@@ -199,7 +199,7 @@ export const FriendChallenges = () => {
 
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name, avatar_url')
+        .select('id, full_name, username, avatar_url')
         .in('id', Array.from(userIds));
 
       return data?.map((challenge) => ({ ...challenge,
