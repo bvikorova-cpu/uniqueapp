@@ -128,20 +128,30 @@ Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas
       .update({ credits: credits.credits - 5 })
       .eq("user_id", user.id);
 
-    // Save recap
+    // Save recap (one row per user per week - refresh if it already exists)
     const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
     const weekEnd = new Date().toISOString().split("T")[0];
 
-    const { data: recap, error: recapError } = await supabase
+    const { data: existing } = await supabase
       .from("brain_duel_ai_recaps")
-      .insert({ user_id: user.id,
-        recap_text: recapText,
-        week_start: weekStart,
-        week_end: weekEnd,
-        stats_snapshot: statsSnapshot,
-        credits_used: 5 })
-      .select()
-      .single();
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("week_start", weekStart)
+      .eq("week_end", weekEnd)
+      .maybeSingle();
+
+    const payload = {
+      user_id: user.id,
+      recap_text: recapText,
+      week_start: weekStart,
+      week_end: weekEnd,
+      stats_snapshot: statsSnapshot,
+      credits_used: 5,
+    };
+
+    const { data: recap, error: recapError } = existing
+      ? await supabase.from("brain_duel_ai_recaps").update(payload).eq("id", existing.id).select().single()
+      : await supabase.from("brain_duel_ai_recaps").insert(payload).select().single();
 
     if (recapError) throw recapError;
 
