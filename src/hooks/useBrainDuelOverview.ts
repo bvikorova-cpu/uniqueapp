@@ -76,9 +76,9 @@ export const useBrainDuelOverview = () => {
           .limit(500),
         supabase
           .from("brain_duel_daily_challenge_entries")
-          .select("created_at, score")
+          .select("completed_at, score")
           .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
+          .order("completed_at", { ascending: false })
           .limit(180),
       ]);
 
@@ -97,7 +97,7 @@ export const useBrainDuelOverview = () => {
 
       const days = new Set<string>();
       matches.forEach((m: any) => days.add(dayKey(new Date(m.created_at))));
-      entries.forEach((e: any) => days.add(dayKey(new Date(e.created_at))));
+      entries.forEach((e: any) => { if (e.completed_at) days.add(dayKey(new Date(e.completed_at))); });
       const { current, longest, todayPlayed } = computeStreaks(days);
 
       return {
