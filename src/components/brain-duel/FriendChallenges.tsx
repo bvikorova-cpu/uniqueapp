@@ -302,15 +302,15 @@ export const FriendChallenges = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
-      
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
+
       toast({
         title: 'Challenge accepted! ⚔️',
         description: `Match starting with ${data.stake_amount} credits at stake!` });
 
-      // Navigate to game after a short delay
-      setTimeout(() => {
-        window.location.href = '/brain-duel?match_id=' + data.match.id;
-      }, 1500);
+      setAcceptingChallenge(null);
+      const matchId = (data as any)?.match?.id;
+      if (matchId) navigate(`/brain-duel?match_id=${matchId}`);
     },
     onError: (error: Error) => { setAcceptingChallenge(null);
       toast({
