@@ -212,7 +212,7 @@ export const DailyChallenges = () => {
                         </Avatar>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold truncate">
-                            {entry.profile?.full_name || "Anonymous"}
+                            {entry.profile?.full_name || entry.profile?.username || "Player"}
                           </p>
                         </div>
                         <div className="text-right shrink-0">

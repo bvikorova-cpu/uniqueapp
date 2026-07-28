@@ -67,7 +67,7 @@ export const BrainDuelLeaderboard = () => {
       const userIds = leaderboardData.map((entry) => entry.user_id);
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name, avatar_url')
+        .select('id, full_name, username, avatar_url')
         .in('id', userIds);
 
       return leaderboardData.map((entry) => ({ ...entry,
@@ -162,7 +162,7 @@ export const BrainDuelLeaderboard = () => {
                 </Avatar>
                 <div>
                   <p className="font-semibold">
-                    {entry.profile?.full_name || 'Anonymous User'}
+                    {entry.profile?.full_name || entry.profile?.username || 'Player'}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {entry.total_games} games • {entry.win_rate.toFixed(1)}% win rate
