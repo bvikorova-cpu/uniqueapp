@@ -299,6 +299,23 @@ export default function BrainDuelHub() {
                         )}
                         {output.round.feedback && <p className="text-xs italic text-muted-foreground">{output.round.feedback}</p>}
                       </div>
+                    ) : output?.report ? (
+                      <div className="space-y-2 text-sm">
+                        <p className={output.report.suspicious ? "text-destructive font-semibold" : "text-green-600 font-semibold"}>
+                          {output.report.suspicious ? "Suspicious patterns detected" : "No cheating detected"}
+                          {typeof output.report.score === "number" ? ` · risk ${output.report.score}/100` : ""}
+                        </p>
+                        {output.stats && (
+                          <p className="text-xs text-muted-foreground">
+                            {output.stats.answers} answers · {output.stats.accuracy}% accuracy
+                          </p>
+                        )}
+                        {Array.isArray(output.report.reasons) && output.report.reasons.length > 0 && (
+                          <ul className="list-disc pl-5 text-muted-foreground text-xs">
+                            {output.report.reasons.map((r: string, i: number) => <li key={i}>{r}</li>)}
+                          </ul>
+                        )}
+                      </div>
                     ) : Array.isArray(output?.quiz?.questions) ? (
                       output.quiz.questions.map((q: any, i: number) => (
                         <div key={i} className="text-sm space-y-1">
