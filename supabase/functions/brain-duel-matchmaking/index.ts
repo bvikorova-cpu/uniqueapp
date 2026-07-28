@@ -39,10 +39,10 @@ serve(async (req) => {
 
       const stake = challenge.stake_credits || 10;
       const { data: rows } = await supabase
-        .from("brain_duel_credits")
-        .select("user_id, credits")
+        .from("ai_credits")
+        .select("user_id, credits_remaining")
         .in("user_id", [challenge.challenger_id, challenge.challenged_id]);
-      const bal = (id: string) => rows?.find((r: any) => r.user_id === id)?.credits ?? 0;
+      const bal = (id: string) => rows?.find((r: any) => r.user_id === id)?.credits_remaining ?? 0;
 
       if (bal(user.id) < stake) {
         return new Response(JSON.stringify({ error: `You need ${stake} credits to accept this challenge` }), {
@@ -55,7 +55,13 @@ serve(async (req) => {
       }
 
       for (const id of [challenge.challenger_id, challenge.challenged_id]) {
-        await supabase.from("brain_duel_credits").update({ credits: bal(id) - stake }).eq("user_id", id);
+        const { data: ok, error: spendErr } = await supabase.rpc("deduct_ai_credits", {
+          p_user_id: id,
+          p_amount: stake,
+          p_reason: "brain_duel_friend_challenge_entry",
+          p_source: "brain_duel"
+        });
+        if (spendErr || ok === false) throw new Error("Insufficient credits");
       }
 
       const { data: fMatch, error: fErr } = await supabase
@@ -101,24 +107,26 @@ serve(async (req) => {
     const totalQuestions = cfg.questions;
     const timePerQuestion = cfg.time;
 
-    // Check credits
+    // Check unified AI credits
     const { data: creditData } = await supabase
-      .from("brain_duel_credits")
-      .select("credits")
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
-    const currentCredits = creditData?.credits || 0;
+    const currentCredits = creditData?.credits_remaining || 0;
     if (currentCredits < entryCost) {
       return new Response(JSON.stringify({ error: "Insufficient credits", required: entryCost, current: currentCredits }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Deduct entry cost
-    await supabase
-      .from("brain_duel_credits")
-      .update({ credits: currentCredits - entryCost })
-      .eq("user_id", user.id);
+    const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: entryCost,
+      p_reason: `brain_duel_${gameMode}_entry`,
+      p_source: "brain_duel"
+    });
+    if (deductError || deducted === false) throw new Error("Insufficient credits");
 
     // Create match (solo vs AI bot)
     const { data: match, error: matchError } = await supabase

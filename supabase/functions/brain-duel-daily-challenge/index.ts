@@ -196,17 +196,12 @@ serve(async (req) => {
       let reward = 0;
       if (score >= Math.ceil((questions.length || 5) * 0.6)) {
         reward = challenge.reward_credits || 10;
-        const { data: credits } = await supabase
-          .from("brain_duel_credits")
-          .select("credits")
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-        if (credits) {
-          await supabase.from("brain_duel_credits").update({ credits: credits.credits + reward }).eq("user_id", user.id);
-        } else {
-          await supabase.from("brain_duel_credits").insert({ user_id: user.id, credits: 100 + reward });
-        }
+        await supabase.rpc("add_ai_credits", {
+          p_user_id: user.id,
+          p_amount: reward,
+          p_reason: "brain_duel_daily_challenge_reward",
+          p_source: "brain_duel"
+        });
       }
 
       return new Response(JSON.stringify({ entry, score, total: questions.length, reward }), {

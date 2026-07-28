@@ -31,6 +31,7 @@ export const useBrainDuelPowerups = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['brain-duel-powerups'] });
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast({ title: 'Power-up purchased!',
         description: 'Your power-up has been added to your inventory' });
     },

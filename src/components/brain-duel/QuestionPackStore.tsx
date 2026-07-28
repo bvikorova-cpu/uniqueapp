@@ -25,7 +25,7 @@ const categoryIcons: Record<string, typeof Globe> = { 'Entertainment': Star,
 export const QuestionPackStore = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { credits, spendCredits } = useBrainDuelCredits();
+  const { credits, spendCreditsAsync } = useBrainDuelCredits();
 
   const { data: packs, isLoading } = useQuery({
     queryKey: ['brain-duel-question-packs'],
@@ -54,7 +54,7 @@ export const QuestionPackStore = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
       if (credits < pack.price_credits) throw new Error('Insufficient credits');
-      spendCredits(pack.price_credits);
+      await spendCreditsAsync(pack.price_credits);
       const { error } = await supabase.from('brain_duel_user_packs').insert({ user_id: user.id, pack_id: pack.id });
       if (error) throw error;
       return pack;
@@ -62,6 +62,7 @@ export const QuestionPackStore = () => {
     onSuccess: (pack) => {
       queryClient.invalidateQueries({ queryKey: ['brain-duel-user-packs'] });
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast({ title: 'Pack purchased! 📚', description: `${pack.name} has been added to your collection` });
     },
     onError: (error: Error) => {
@@ -86,7 +87,7 @@ export const QuestionPackStore = () => {
         </CardHeader>
         <CardContent className="relative">
           <div className="flex items-center justify-between p-3 bg-background/50 backdrop-blur-sm rounded-lg border border-primary/5">
-            <span className="text-sm text-muted-foreground">Your Credits:</span>
+            <span className="text-sm text-muted-foreground">Your AI Credits:</span>
             <Badge variant="outline" className="text-lg font-bold border-primary/20">
               <Brain className="h-4 w-4 mr-2" />
               {credits}
@@ -196,7 +197,7 @@ export const QuestionPackStore = () => {
                   const category = window.prompt("Enter a category (Geography, History, Science, Sports, Music, Technology, Art, Entertainment):");
                   if (!category) return;
                   if (credits < 50) { toast({ title: "Not enough credits", description: "Custom AI pack costs 50 credits", variant: "destructive" }); return; }
-                  try { await spendCredits(50); } catch { return; }
+                  try { await spendCreditsAsync(50); } catch { return; }
                   try {
                     const { data, error } = await supabase.functions.invoke("generate-gift-message", {
                       body: { type: "brain_duel_pack", prompt: `Generate 10 trivia questions about ${category}. Format: JSON array of {question, options:[4], correct_index}.` }

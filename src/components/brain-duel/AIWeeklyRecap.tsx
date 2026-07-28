@@ -41,6 +41,7 @@ export const AIWeeklyRecap = () => {
       toast.success("AI Weekly Recap generated! 🧠");
       queryClient.invalidateQueries({ queryKey: ["brain-duel-ai-recaps"] });
       queryClient.invalidateQueries({ queryKey: ["brain-duel-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
     },
     onError: (err: Error) => {
       if (err.message.includes("Insufficient")) {

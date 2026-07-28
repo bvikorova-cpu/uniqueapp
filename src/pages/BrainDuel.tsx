@@ -127,10 +127,10 @@ const BrainDuel = () => {
   ];
 
   const powerUps = [
-    { id: "fifty-fifty", name: "50:50", description: "Remove 2 wrong answers", price: 5, icon: Target, color: "text-yellow-400", glow: "shadow-yellow-500/20" },
-    { id: "ask-ai", name: "Ask AI", description: "AI hint for the answer", price: 3, icon: Brain, color: "text-blue-400", glow: "shadow-blue-500/20" },
-    { id: "extra-time", name: "Extra Time", description: "+15 seconds bonus", price: 2, icon: Clock, color: "text-green-400", glow: "shadow-green-500/20" },
-    { id: "double-points", name: "Double Points", description: "2× credits from this question", price: 10, icon: TrendingUp, color: "text-purple-400", glow: "shadow-purple-500/20" }
+    { id: "fifty_fifty", name: "50:50", description: "Remove 2 wrong answers", price: 5, icon: Target, color: "text-yellow-400", glow: "shadow-yellow-500/20" },
+    { id: "hint", name: "Hint", description: "OpenAI hint for the answer", price: 3, icon: Brain, color: "text-blue-400", glow: "shadow-blue-500/20" },
+    { id: "extra_time", name: "Extra Time", description: "+15 seconds bonus", price: 2, icon: Clock, color: "text-green-400", glow: "shadow-green-500/20" },
+    { id: "skip", name: "Skip", description: "Skip a difficult question", price: 10, icon: TrendingUp, color: "text-purple-400", glow: "shadow-purple-500/20" }
   ];
 
   const howItWorks = [
@@ -370,16 +370,16 @@ const BrainDuel = () => {
                     <div className="p-2 rounded-xl bg-primary/10">
                       <Trophy className="h-5 w-5 text-primary" />
                     </div>
-                    Virtual Competition System
+                    AI Credits Competition System
                   </CardTitle>
                   <CardDescription>
-                    Play for fun • Win virtual credits • No real money involved
+                    Play for fun • Win AI Credits • No cash-out or real-money exchange
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="relative">
                   <p className="text-sm text-muted-foreground">
-                    Compete against other players in knowledge battles. Winners earn virtual credits that can be used within the game. 
-                    All credits are for entertainment purposes only and have no real-world monetary value.
+                    Compete against other players in knowledge battles. Winners earn unified AI Credits that can be used inside Brain Duel and other Unique AI tools.
+                    Credits cannot be exchanged for money.
                   </p>
                 </CardContent>
               </Card>
