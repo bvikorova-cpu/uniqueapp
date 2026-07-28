@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,7 +32,9 @@ const leagues: League[] = [
 
 export const LeagueSystem = () => {
   const { toast } = useToast();
-  const { credits } = useBrainDuelCredits();
+  const queryClient = useQueryClient();
+  const { credits, spendCreditsAsync } = useBrainDuelCredits();
+  const [joining, setJoining] = useState<string | null>(null);
 
   const { data: userLeague } = useQuery({
     queryKey: ['brain-duel-user-league'],
@@ -66,12 +69,53 @@ export const LeagueSystem = () => {
         profile: profiles?.find(p => p.id === entry.user_id) }));
     } });
 
-  const handleJoinLeague = (league: League) => {
+  const handleJoinLeague = async (league: League) => {
     if (credits < league.entry) {
       toast({ title: 'Insufficient Credits', description: `You need ${league.entry} credits to join ${league.name}`, variant: 'destructive' });
       return;
     }
-    toast({ title: 'Joining League...', description: `Searching for opponents in ${league.name}` });
+
+    setJoining(league.id);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({ title: 'Sign in required', description: 'Please sign in to join a league.', variant: 'destructive' });
+        return;
+      }
+
+      // Atomic charge first — aborts if the RPC rejects (insufficient credits / race).
+      await spendCreditsAsync(league.entry);
+
+      const { data: existing } = await supabase
+        .from('brain_duel_leagues')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('season', 'Q1-2026')
+        .maybeSingle();
+
+      if (existing) {
+        const { error } = await supabase
+          .from('brain_duel_leagues')
+          .update({ league: league.id, updated_at: new Date().toISOString() })
+          .eq('id', existing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('brain_duel_leagues')
+          .insert({ user_id: user.id, league: league.id, season: 'Q1-2026' });
+        if (error) throw error;
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ['brain-duel-user-league'] });
+      await queryClient.invalidateQueries({ queryKey: ['brain-duel-league-leaderboard'] });
+
+      toast({ title: `${league.icon} Joined ${league.name}`, description: 'Start a duel — your wins now count toward this league.' });
+      document.getElementById('brain-duel-game-anchor')?.scrollIntoView({ behavior: 'smooth' });
+    } catch (e: any) {
+      toast({ title: 'Could not join league', description: e?.message ?? 'Please try again.', variant: 'destructive' });
+    } finally {
+      setJoining(null);
+    }
   };
 
   const getCurrentLeague = () => {
@@ -191,8 +235,8 @@ export const LeagueSystem = () => {
                           {league.entry} credits
                         </Badge>
                       </div>
-                      <Button className="w-full" onClick={() => handleJoinLeague(league)} disabled={!canAfford}>
-                        Join Tournament
+                      <Button className="w-full" onClick={() => handleJoinLeague(league)} disabled={!canAfford || !!joining}>
+                        {joining === league.id ? 'Joining…' : 'Join Tournament'}
                       </Button>
                     </CardContent>
                   </Card>
