@@ -14,6 +14,8 @@ import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { AnimatePresence, motion } from "framer-motion";
 import { useChatCredits } from "@/hooks/useChatCredits";
 import { ChatCreditBanner } from "@/components/kids/chat/ChatCreditBanner";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 
 // New chat components
 import { AnimatedChatBubble } from "@/components/kids/chat/AnimatedChatBubble";
