@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    let body: { text?: unknown; voice?: unknown };
+    let body: { text?: unknown; voice?: unknown; language?: unknown; speed?: unknown };
     try {
       body = await req.json();
     } catch {
@@ -93,6 +93,9 @@ Deno.serve(async (req) => {
       typeof body.voice === "string" && ALLOWED_VOICES.has(body.voice)
         ? body.voice
         : "nova"; // friendly default for kids
+    const language = typeof body.language === "string" ? body.language : "en-US";
+    const requestedSpeed = typeof body.speed === "number" ? body.speed : 0.85;
+    const speed = Math.min(1.1, Math.max(0.7, requestedSpeed));
 
     if (!text) {
       return new Response(
