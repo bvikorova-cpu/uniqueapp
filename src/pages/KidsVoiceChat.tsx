@@ -45,6 +45,7 @@ export default function KidsVoiceChat() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { credits_remaining, loading: creditsLoading, canSendMessage, refresh: refreshCredits } = useChatCredits();
+  const { hasGoldPass } = useKidsGoldPass();
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [inputMessage, setInputMessage] = useState("");
