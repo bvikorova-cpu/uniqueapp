@@ -112,6 +112,42 @@ interface FairyPanoramaViewerProps {
   collectedIds?: string[];
 }
 
+// Browser speech-synthesis fallback that actually picks a voice matching the
+// requested language (otherwise the OS default voice reads English with a
+// Slovak/local accent).
+const BCP47: Record<string, string> = {
+  en: "en-US", sk: "sk-SK", cs: "cs-CZ", de: "de-DE", es: "es-ES", fr: "fr-FR",
+  it: "it-IT", hu: "hu-HU", pl: "pl-PL", ru: "ru-RU", ja: "ja-JP", ko: "ko-KR",
+  zh: "zh-CN", pt: "pt-PT", nl: "nl-NL" };
+
+function speakWithBrowser(text: string, language: string) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  const base = (language || "en").toLowerCase().split(/[-_]/)[0];
+  const tag = BCP47[base] || "en-US";
+
+  const speak = () => {
+    const voices = window.speechSynthesis.getVoices();
+    const voice =
+      voices.find((v) => v.lang?.toLowerCase() === tag.toLowerCase()) ||
+      voices.find((v) => v.lang?.toLowerCase().startsWith(base));
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = tag;
+    if (voice) u.voice = voice;
+    u.rate = 0.95;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  };
+
+  if (window.speechSynthesis.getVoices().length === 0) {
+    window.speechSynthesis.addEventListener("voiceschanged", speak, { once: true });
+    setTimeout(speak, 300);
+  } else {
+    speak();
+  }
+}
+
+
+
 function PanoramaSphere({ imageUrl }: { imageUrl: string }) { const meshRef = useRef<THREE.Mesh>(null);
   const [texture, setTexture] = useState<THREE.Texture | null>(null);
 
