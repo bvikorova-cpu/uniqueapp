@@ -259,6 +259,8 @@ export const BrainDuelGame = ({
 
   // Poll opponent progress while waiting; auto-finish once they are done.
   const [waitingInfo, setWaitingInfo] = useState<{ answered: number; total: number } | null>(null);
+  const [myProgress, setMyProgress] = useState<number>(0);
+  const stallRef = useRef<{ answered: number; since: number }>({ answered: -1, since: Date.now() });
   const checkOpponentProgress = useCallback(async (silent = false) => {
     if (!resumeMatchId || !currentUser) return;
     const { data: match } = await supabase
@@ -273,6 +275,7 @@ export const BrainDuelGame = ({
     setMyScore(isP1 ? match.player1_score ?? 0 : match.player2_score ?? 0);
     setOpponentScore(isP1 ? match.player2_score ?? 0 : match.player1_score ?? 0);
     const oppAnswered = oppId ? await countAnswers(match.id, oppId) : 0;
+    setMyProgress(await countAnswers(match.id, currentUser.id));
     setWaitingInfo({ answered: oppAnswered, total });
     if (match.status === 'completed' || match.status === 'finished' || match.finished_at) {
       await finishMatchById(match.id);
@@ -280,7 +283,17 @@ export const BrainDuelGame = ({
     }
     if (oppAnswered >= total) {
       await finishMatchById(match.id);
-    } else if (!silent) {
+      return;
+    }
+    // Auto-finish stalled duels: if the opponent made no progress for 2 minutes,
+    // close the match so the winner gets the credits automatically.
+    if (stallRef.current.answered !== oppAnswered) {
+      stallRef.current = { answered: oppAnswered, since: Date.now() };
+    } else if (Date.now() - stallRef.current.since > 120000) {
+      await finishMatchById(match.id);
+      return;
+    }
+    if (!silent) {
       toast.info(`Opponent answered ${oppAnswered}/${total} questions.`);
     }
   }, [resumeMatchId, currentUser, finishMatchById]);
@@ -290,6 +303,7 @@ export const BrainDuelGame = ({
     const id = setInterval(() => { void checkOpponentProgress(true); }, 8000);
     return () => clearInterval(id);
   }, [gamePhase, checkOpponentProgress]);
+
 
   // Resume an already-created match (e.g. an accepted friend challenge).
   // Credits were already deducted when the match was created — never charge again here.
@@ -775,27 +789,35 @@ export const BrainDuelGame = ({
         </div>
         <div className="flex items-center justify-center gap-6">
           <div>
-            <p className="text-xs text-muted-foreground">You</p>
+            <p className="text-xs text-muted-foreground">Your score</p>
             <p className="text-2xl font-bold text-primary">{myScore}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Opponent</p>
+            <p className="text-xs text-muted-foreground truncate max-w-[9rem]">{opponentName || 'Opponent'}</p>
             <p className="text-2xl font-bold">{opponentScore}</p>
           </div>
         </div>
         {waitingInfo && (
-          <p className="text-xs text-muted-foreground">
-            Opponent progress: {waitingInfo.answered}/{waitingInfo.total} questions
-          </p>
+          <div className="text-xs text-muted-foreground space-y-0.5">
+            <p>Your progress: {myProgress}/{waitingInfo.total} questions</p>
+            <p>{opponentName || 'Opponent'} progress: {waitingInfo.answered}/{waitingInfo.total} questions</p>
+          </div>
         )}
         <div className="flex flex-col sm:flex-row gap-2 justify-center">
           <Button onClick={() => void checkOpponentProgress(false)} variant="default">
             Check now
           </Button>
+          <Button onClick={() => matchId && void finishMatchById(matchId)} variant="secondary">
+            Finish duel now
+          </Button>
           <Button onClick={resetGame} variant="outline">
             Back to duels
           </Button>
         </div>
+        <p className="text-[11px] text-muted-foreground">
+          The winner's credits are credited automatically when the duel ends.
+        </p>
+
         <MatchStatusIndicator status={matchStatus} matchId={matchId} showHint />
       </Card>
     );
