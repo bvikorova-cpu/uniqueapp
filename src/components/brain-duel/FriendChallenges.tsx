@@ -37,6 +37,7 @@ export const FriendChallenges = () => {
   const { credits } = useBrainDuelCredits();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState<string>('');
+  const [friendSearch, setFriendSearch] = useState<string>('');
   const [category, setCategory] = useState<string>('');
   const [stakeCredits, setStakeCredits] = useState<number>(10);
   const [userId, setUserId] = useState<string | null>(null);
