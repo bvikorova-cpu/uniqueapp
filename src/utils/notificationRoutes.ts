@@ -101,7 +101,27 @@ export function getNotificationRoute(n: NotifLike): string {
     // Course/education
     course_enrollment: "/education",
     course_completed: "/education/certificates",
-    certificate_issued: "/education/certificates" };
+    certificate_issued: "/education/certificates",
+
+    // User-to-user interactions
+    comment: n.post_id ? `/post/${n.post_id}` : "/wall",
+    comment_reply: n.post_id ? `/post/${n.post_id}` : "/wall",
+    comment_reaction: n.post_id ? `/post/${n.post_id}` : "/wall",
+    mention: n.post_id ? `/post/${n.post_id}` : "/wall",
+    group_message: "/wall/groups",
+    dating_match: "/dating",
+    dating_message: "/dating",
+    dating_like: "/dating",
+    dating_super_like: "/dating",
+    forum_comment: "/megaforum",
+    forum_like: "/megaforum",
+    bazaar_message: "/bazaar",
+    bazaar_order: "/bazaar",
+    creator_message: "/influ-king",
+    creator_gift: "/influencer/earnings",
+    coffee_match: "/coffee",
+    coffee_message: "/coffee" };
+
 
   if (typeMap[t]) return typeMap[t];
 
