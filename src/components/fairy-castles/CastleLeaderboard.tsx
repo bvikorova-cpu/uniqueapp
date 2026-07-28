@@ -56,7 +56,7 @@ export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
       avatar: AVATAR_EMOJIS[i % AVATAR_EMOJIS.length],
       isYou: !!user && r.user_id === user.id }));
 
-    if (!base.some((e) => e.isYou)) { base.push({
+    if (user && !base.some((e) => e.isYou)) { base.push({
         rank: base.length + 1,
         name: "You",
         stamps: userStamps,
@@ -69,6 +69,58 @@ export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
       .sort((a, b) => b.xp - a.xp || b.stamps - a.stamps)
       .map((e, i) => ({ ...e, rank: i + 1 }));
   }, [rows, user, userStamps]);
+
+  // Real progress for the challenge tracker
+  const { data: progress } = useQuery({
+    queryKey: ["castle-challenge-progress", user?.id],
+    queryFn: async (): Promise<Progress> => {
+      const { count: totalCastles } = await supabase
+        .from("fairy_castles")
+        .select("id", { count: "exact", head: true });
+
+      if (!user) {
+        return { totalCastles: totalCastles ?? 0, visited: 0, completed: 0, stamps: 0 };
+      }
+
+      const [{ data: visits }, { count: stamps }] = await Promise.all([
+        supabase.from("user_castle_visits").select("castle_id, completed").eq("user_id", user.id),
+        supabase
+          .from("user_castle_stamps")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id) ]);
+
+      return {
+        totalCastles: totalCastles ?? 0,
+        visited: new Set((visits ?? []).map((v) => v.castle_id)).size,
+        completed: (visits ?? []).filter((v) => v.completed).length,
+        stamps: stamps ?? 0 };
+    },
+    staleTime: 30_000 });
+
+  const totalCastles = progress?.totalCastles || 0;
+
+  const challenges = useMemo(() => [
+    {
+      title: "Explorer 🗺️",
+      desc: "Start a tour in 3 different castles",
+      reward: "+50 XP",
+      current: Math.min(progress?.visited ?? 0, 3),
+      goal: 3 },
+    {
+      title: "Tour Finisher 🏁",
+      desc: "Complete 3 full castle tours",
+      reward: "+75 XP",
+      current: Math.min(progress?.completed ?? 0, 3),
+      goal: 3 },
+    {
+      title: "Stamp Collector 🏆",
+      desc: totalCastles ? `Earn all ${totalCastles} explorer stamps` : "Earn explorer stamps",
+      reward: "+100 XP",
+      current: progress?.stamps ?? 0,
+      goal: totalCastles || 1 },
+  ], [progress, totalCastles]);
+
+
 
   return (
     <>
