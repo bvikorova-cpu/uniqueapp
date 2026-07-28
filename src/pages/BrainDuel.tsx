@@ -281,7 +281,7 @@ const BrainDuel = () => {
           className="max-w-6xl mx-auto mb-10 grid md:grid-cols-1 lg:grid-cols-2 gap-6"
         >
           <AnimatedLeaderboard />
-          <div className="space-y-6">
+          <div id="friend-challenges" className="space-y-6 scroll-mt-24">
             <FriendChallenges />
             <FriendChallengesLeaderboard />
           </div>
