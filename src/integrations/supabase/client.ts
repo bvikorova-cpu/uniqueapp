@@ -38,6 +38,26 @@ const _origRemoveChannel = supabase.removeChannel.bind(supabase);
 };
 
 // ---------------------------------------------------------------------------
+// Safety wrapper around channel(): supabase-js returns an *existing* channel
+// when the same topic is requested twice. If that channel was already
+// subscribed (e.g. a component remounted before its cleanup ran, or two
+// components share a topic), calling .on('postgres_changes', ...) throws
+// "cannot add `postgres_changes` callbacks ... after `subscribe()`" and the
+// whole page crashes for that user. Always hand back a fresh channel.
+// ---------------------------------------------------------------------------
+const _origChannel = supabase.channel.bind(supabase);
+(supabase as any).channel = (topic: string, params?: any) => {
+  try {
+    const existing = supabase.getChannels().find((c: any) => c.topic === `realtime:${topic}` || c.topic === topic);
+    if (existing) {
+      try { void (supabase as any).removeChannel(existing); } catch { /* noop */ }
+    }
+  } catch { /* noop */ }
+  return params ? _origChannel(topic, params) : _origChannel(topic);
+};
+
+
+// ---------------------------------------------------------------------------
 // Edge function consolidation: transparently rewrites legacy proxy function
 // names to their universal router equivalents (generate-gift-message,
 // create-checkout, verify-payment). The 179 proxy functions previously hosted
