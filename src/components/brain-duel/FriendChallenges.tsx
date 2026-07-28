@@ -474,52 +474,57 @@ export const FriendChallenges = () => {
                 ? challenge.challenged_profile
                 : challenge.challenger_profile;
 
+              const opponentName =
+                (opponent as { full_name?: string; username?: string } | undefined)?.full_name ||
+                (opponent as { username?: string } | undefined)?.username ||
+                'Player';
+
               return (
                 <div 
                   key={challenge.id} 
-                  className={`p-4 rounded-lg border backdrop-blur-sm transition-all ${
+                  className={`p-3 sm:p-4 rounded-lg border backdrop-blur-sm transition-all ${
                     challenge.status === 'pending' && !isChallenger 
-                      ? 'border-primary/30 bg-primary/5 animate-pulse' 
+                      ? 'border-primary/30 bg-primary/5' 
                       : 'border-primary/10 bg-muted/20 hover:bg-muted/30'
                   }`}
                 >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-12 w-12 ring-2 ring-primary/20">
-                        <AvatarImage src={opponent?.avatar_url || undefined} />
-                        <AvatarFallback className="bg-primary/10">
-                          {opponent?.full_name?.[0]?.toUpperCase() || 'U'}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-semibold text-lg">
-                          {isChallenger ? '⚔️ Challenge to' : '🎯 Challenge from'}{' '}
-                          {opponent?.full_name || 'Anonymous'}
+                  <div className="flex items-start gap-3 mb-3">
+                    <Avatar className="h-10 w-10 shrink-0 ring-2 ring-primary/20">
+                      <AvatarImage src={opponent?.avatar_url || undefined} />
+                      <AvatarFallback className="bg-primary/10">
+                        {opponentName[0]?.toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="font-semibold text-sm sm:text-base leading-snug truncate">
+                          {isChallenger ? '⚔️ To' : '🎯 From'} {opponentName}
                         </p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="secondary" className="text-xs">
-                            {challenge.category}
-                          </Badge>
-                          <span className="text-sm text-muted-foreground flex items-center gap-1">
-                            <Coins className="h-3 w-3 text-yellow-500" />
-                            {challenge.stake_credits} credits
-                          </span>
-                        </div>
+                        <Badge
+                          variant={
+                            challenge.status === 'pending'
+                              ? 'secondary'
+                              : challenge.status === 'accepted' || challenge.status === 'active'
+                              ? 'default'
+                              : 'outline'
+                          }
+                          className="capitalize shrink-0 text-[10px] px-2 py-0.5"
+                        >
+                          {challenge.status}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center flex-wrap gap-2 mt-1.5">
+                        <Badge variant="secondary" className="text-[10px]">
+                          {challenge.category}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1 whitespace-nowrap">
+                          <Coins className="h-3 w-3 text-yellow-500" />
+                          {challenge.stake_credits} credits
+                        </span>
                       </div>
                     </div>
-                    <Badge
-                      variant={
-                        challenge.status === 'pending'
-                          ? 'secondary'
-                          : challenge.status === 'accepted' || challenge.status === 'active'
-                          ? 'default'
-                          : 'outline'
-                      }
-                      className="capitalize"
-                    >
-                      {challenge.status}
-                    </Badge>
                   </div>
+
 
                   {!isChallenger && challenge.status === 'pending' && (
                     <div className="p-3 mb-3 bg-accent/50 rounded-lg">
