@@ -117,7 +117,7 @@ export default function KidsVoiceChat() {
     if (!msgText || !selectedCharacter || isLoading) return;
 
     // Paid-only guard
-    if (!canSendMessage) {
+    if (!hasGoldPass && !canSendMessage) {
       toast({
         title: "Out of Chat credits",
         description: "Buy more credits to keep chatting with your characters!",
