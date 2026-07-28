@@ -411,10 +411,6 @@ export default function KidsVoiceChat() {
                         disabled={isLoading}
                         className="flex-1 rounded-full border-2 border-purple-200 focus:border-purple-400 px-4"
                       />
-                      <VoiceInputWaveform
-                        onTranscript={(text) => { setInputMessage(text); }}
-                        disabled={isLoading}
-                      />
                       <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                         <Button
                           onClick={() => sendMessage()}
