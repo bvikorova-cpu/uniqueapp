@@ -7,7 +7,13 @@ interface StampCollectionProps {
   stampedIds: string[];
 }
 
-const getFlag = (code: string) => ({ US: "🇺🇸", FR: "🇫🇷", CN: "🇨🇳", HK: "🇭🇰", JP: "🇯🇵" }[code] || "🏰");
+const FLAGS: Record<string, string> = {
+  US: "🇺🇸", FR: "🇫🇷", CN: "🇨🇳", HK: "🇭🇰", JP: "🇯🇵",
+  SK: "🇸🇰", GB: "🇬🇧", UK: "🇬🇧", DE: "🇩🇪", CZ: "🇨🇿",
+  AT: "🇦🇹", ES: "🇪🇸", IT: "🇮🇹", PT: "🇵🇹", RO: "🇷🇴",
+  PL: "🇵🇱", HU: "🇭🇺", IE: "🇮🇪", RU: "🇷🇺", IN: "🇮🇳" };
+
+const getFlag = (code?: string | null) => FLAGS[(code || "").toUpperCase()] || "🏰";
 
 export function StampCollection({ castles, stampedIds }: StampCollectionProps) {
   const allComplete = castles.length > 0 && castles.every(c => stampedIds.includes(c.id));
@@ -28,7 +34,9 @@ export function StampCollection({ castles, stampedIds }: StampCollectionProps) {
             Explorer Stamp Collection
           </span>
         </h2>
-        <p className="text-muted-foreground">Collect all 6 stamps to become a Master Fairy Explorer!</p>
+        <p className="text-muted-foreground">
+          Collect all {castles.length || "—"} stamps to become a Master Fairy Explorer!
+        </p>
       </div>
 
       <div className="flex justify-center gap-4 flex-wrap mb-6">
