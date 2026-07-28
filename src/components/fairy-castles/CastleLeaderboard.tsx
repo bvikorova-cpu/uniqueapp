@@ -176,7 +176,9 @@ export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
                     <p className={`text-sm font-semibold ${isYou ? "text-primary" : ""}`}>
                       {isYou ? "You" : entry.name} {isYou && "⬅️"}
                     </p>
-                    <p className="text-xs text-muted-foreground">{entry.stamps}/6 stamps</p>
+                    <p className="text-xs text-muted-foreground">
+                      {entry.stamps}{totalCastles ? `/${totalCastles}` : ""} stamps
+                    </p>
                   </div>
                 </div>
                 <span className="text-sm font-bold text-amber-600 dark:text-amber-400">{entry.xp} XP</span>
