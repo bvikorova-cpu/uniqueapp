@@ -35,8 +35,6 @@ import { WinBackDialog } from "@/components/subscription/WinBackDialog";
 
 
 import { RoiDashboard } from "@/components/subscription/RoiDashboard";
-import { GiftSubscriptionDialog } from "@/components/subscription/GiftSubscriptionDialog";
-import { RedeemGiftDialog } from "@/components/subscription/RedeemGiftDialog";
 import { PlanRecommenderCard } from "@/components/subscription/PlanRecommenderCard";
 import { SeatManagement } from "@/components/subscription/SeatManagement";
 import { LoyaltyTierBadge } from "@/components/subscription/LoyaltyTierBadge";
