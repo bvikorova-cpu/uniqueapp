@@ -76,6 +76,48 @@ serve(async (req) => {
       }
     }
 
+    // ---- Rank Points (RP) for the rank avatar system ----
+    let rpAwarded = 0;
+    let winStreak = 0;
+    if (didTransition) {
+      const players = [match.player1_id, match.player2_id].filter(
+        (p: string | null) => !!p && p !== "ai_bot"
+      ) as string[];
+
+      // Compute the winner's current consecutive-win streak (hot streak bonus).
+      if (winnerId && winnerId !== "ai_bot") {
+        const { data: recent } = await supabase
+          .from("brain_duel_matches")
+          .select("winner_id, finished_at")
+          .or(`player1_id.eq.${winnerId},player2_id.eq.${winnerId}`)
+          .eq("status", "finished")
+          .order("finished_at", { ascending: false })
+          .limit(20);
+        for (const m of recent ?? []) {
+          if (m.winner_id === winnerId) winStreak += 1;
+          else break;
+        }
+      }
+
+      for (const pid of players) {
+        let rp = 8; // participation
+        if (winnerId === pid) {
+          rp = 25;
+          if (winStreak >= 5) rp += 30;
+          else if (winStreak >= 3) rp += 15;
+        } else if (!winnerId) {
+          rp = 12; // draw
+        }
+        const { error: rpError } = await supabase.rpc("award_brain_duel_rp", {
+          _user_id: pid,
+          _rp: rp,
+          _reason: winnerId === pid ? "duel_win" : (!winnerId ? "duel_draw" : "duel_play"),
+        });
+        if (rpError) console.error("Award RP failed:", rpError);
+        if (pid === user.id) rpAwarded = rp;
+      }
+    }
+
 
     // Get answer details for summary
     const { data: answers } = await supabase
