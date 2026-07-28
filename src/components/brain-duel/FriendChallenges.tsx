@@ -212,7 +212,7 @@ export const FriendChallenges = () => {
     mutationFn: async (challengeId: string) => {
       setAcceptingChallenge(challengeId);
       
-      const { data, error } = await supabase.functions.invoke('brain-duel-friend-match', {
+      const { data, error } = await supabase.functions.invoke('brain-duel-matchmaking', {
         body: { challenge_id: challengeId } });
 
       if (error) throw error;

@@ -20,7 +20,71 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) throw new Error("Not authenticated");
 
-    const { category, gameMode = "quick" } = await req.json();
+    const { category, gameMode = "quick", challenge_id } = await req.json();
+
+    // ---- Friend challenge acceptance flow ----
+    if (challenge_id) {
+      const { data: challenge } = await supabase
+        .from("brain_duel_friend_challenges")
+        .select("*")
+        .eq("id", challenge_id)
+        .maybeSingle();
+      if (!challenge) throw new Error("Challenge not found");
+      if (challenge.challenged_id !== user.id) throw new Error("This challenge is not for you");
+      if (challenge.status !== "pending") throw new Error("Challenge is no longer pending");
+      if (challenge.expires_at && new Date(challenge.expires_at) < new Date()) {
+        await supabase.from("brain_duel_friend_challenges").update({ status: "expired" }).eq("id", challenge_id);
+        throw new Error("Challenge has expired");
+      }
+
+      const stake = challenge.stake_credits || 10;
+      const { data: rows } = await supabase
+        .from("brain_duel_credits")
+        .select("user_id, credits")
+        .in("user_id", [challenge.challenger_id, challenge.challenged_id]);
+      const bal = (id: string) => rows?.find((r: any) => r.user_id === id)?.credits ?? 0;
+
+      if (bal(user.id) < stake) {
+        return new Response(JSON.stringify({ error: `You need ${stake} credits to accept this challenge` }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      if (bal(challenge.challenger_id) < stake) {
+        await supabase.from("brain_duel_friend_challenges").update({ status: "cancelled" }).eq("id", challenge_id);
+        return new Response(JSON.stringify({ error: "Challenger no longer has enough credits" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      for (const id of [challenge.challenger_id, challenge.challenged_id]) {
+        await supabase.from("brain_duel_credits").update({ credits: bal(id) - stake }).eq("user_id", id);
+      }
+
+      const { data: fMatch, error: fErr } = await supabase
+        .from("brain_duel_matches")
+        .insert({ category: challenge.category || "General Knowledge",
+          player1_id: challenge.challenger_id,
+          player2_id: challenge.challenged_id,
+          status: "ready",
+          player1_score: 0,
+          player2_score: 0,
+          current_question_index: 0,
+          total_questions: 10,
+          game_mode: "friend",
+          time_per_question: 30,
+          entry_cost: stake,
+          win_reward: stake * 2,
+          started_at: new Date().toISOString() })
+        .select()
+        .single();
+      if (fErr) throw fErr;
+
+      await supabase.from("brain_duel_friend_challenges")
+        .update({ status: "accepted", match_id: fMatch.id, accepted_at: new Date().toISOString() })
+        .eq("id", challenge_id);
+
+      return new Response(JSON.stringify({ match: fMatch, stake_amount: stake }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     if (!category) throw new Error("Category required");
 
     const MODES: Record<string, { entry: number; reward: number; questions: number; time: number }> = {
