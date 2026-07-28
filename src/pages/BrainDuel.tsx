@@ -270,7 +270,7 @@ const BrainDuel = () => {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="max-w-3xl mx-auto mb-10 scroll-mt-24"
         >
-          <BrainDuelGame startRequest={startRequest} />
+          <BrainDuelGame startRequest={startRequest} resumeMatchId={resumeMatchId} />
         </motion.div>
 
         {/* ===== ANIMATED LEADERBOARD & FRIENDS ===== */}
