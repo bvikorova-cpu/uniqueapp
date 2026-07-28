@@ -8289,6 +8289,8 @@ export type Database = {
           email: string | null
           id: string
           page_url: string | null
+          response_at: string | null
+          response_message: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           reward_amount: number
@@ -8307,6 +8309,8 @@ export type Database = {
           email?: string | null
           id?: string
           page_url?: string | null
+          response_at?: string | null
+          response_message?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           reward_amount?: number
@@ -8325,6 +8329,8 @@ export type Database = {
           email?: string | null
           id?: string
           page_url?: string | null
+          response_at?: string | null
+          response_message?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           reward_amount?: number
