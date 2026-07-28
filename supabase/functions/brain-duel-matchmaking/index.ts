@@ -59,6 +59,7 @@ serve(async (req) => {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
+      const deducted: string[] = [];
       for (const id of [challenge.challenger_id, challenge.challenged_id]) {
         const { data: ok, error: spendErr } = await supabase.rpc("deduct_ai_credits", {
           p_user_id: id,
@@ -66,7 +67,18 @@ serve(async (req) => {
           p_reason: "brain_duel_friend_challenge_entry",
           p_source: "brain_duel"
         });
-        if (spendErr || ok === false) throw new Error("Insufficient credits");
+        if (spendErr || ok === false) {
+          // refund anyone already charged
+          for (const rid of deducted) {
+            await supabase.rpc("add_ai_credits", {
+              p_user_id: rid, p_amount: stake,
+              p_reason: "brain_duel_friend_challenge_refund", p_source: "brain_duel"
+            }).catch?.(() => {});
+          }
+          console.error("friend challenge deduct failed", id, spendErr);
+          return fail("Not enough credits to start this duel");
+        }
+        deducted.push(id);
       }
 
       const { data: fMatch, error: fErr } = await supabase
