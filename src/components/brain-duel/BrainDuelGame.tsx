@@ -624,10 +624,14 @@ export const BrainDuelGame = ({
                 <div className="text-xl font-black text-primary">{myScore}</div>
               </div>
               <span className="text-muted-foreground font-bold">VS</span>
-              <div className="text-center">
-                <div className="text-xs text-muted-foreground flex items-center gap-1"><Bot className="w-3 h-3" />AI</div>
+              <div className="text-center min-w-0">
+                <div className="text-xs text-muted-foreground flex items-center gap-1 truncate max-w-[120px]">
+                  {opponentName ? <UserIcon className="w-3 h-3" /> : <Bot className="w-3 h-3" />}
+                  <span className="truncate">{opponentName ?? 'AI'}</span>
+                </div>
                 <div className="text-xl font-black">{opponentScore}</div>
               </div>
+
             </div>
             <div className="flex items-center gap-2">
               <MatchStatusIndicator status={matchStatus} matchId={matchId} />
