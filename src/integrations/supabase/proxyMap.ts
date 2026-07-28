@@ -107,7 +107,7 @@ export const AI_PROXY_MAP: Record<string, string> = { "activate-job-listing": "a
   "submit-fashion-challenge": "submit_fashion_challenge",
   "teen-career-counselor": "teen_career_counselor",
   "trade-phobia": "trade_phobia",
-  "translate-and-generate-audio": "translate_and_generate_audio",
+  // "translate-and-generate-audio": real edge function, not proxied
   "virtual-tryon": "virtual_tryon",
   "vote-fashion-challenge": "vote_fashion_challenge" };
 

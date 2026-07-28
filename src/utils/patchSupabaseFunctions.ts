@@ -232,7 +232,6 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "generate-video-thumbnail":           { target: "generate-gift-message", bodyExtras: { type: "video_thumbnail" } },
   "generate-virtual-tour":              { target: "generate-gift-message", bodyExtras: { type: "virtual_tour" } },
   "generate-weekly-meal-plan":          { target: "generate-gift-message", bodyExtras: { type: "weekly_meal_plan" } },
-  "translate-and-generate-audio":       { target: "generate-gift-message", bodyExtras: { type: "translate_audio" } },
   "bulk-generate-panoramas":            { target: "generate-gift-message", bodyExtras: { type: "bulk_panoramas" } },
   "enhance-shadow-story":               { target: "generate-gift-message", bodyExtras: { type: "shadow_story" } },
 
