@@ -25,6 +25,19 @@ const STATUS_META: Record<string, { icon: typeof Clock; color: string; label: st
 
 export const MyTickets = ({ userId }: { userId: string }) => {
   const [tickets, setTickets] = useState<T[]>([]);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [thread, setThread] = useState<{ id: string; sender_role: string; content: string; created_at: string }[]>([]);
+
+  const openThread = async (id: string) => {
+    if (openId === id) { setOpenId(null); setThread([]); return; }
+    setOpenId(id);
+    const { data } = await supabase
+      .from("support_ticket_messages")
+      .select("id, sender_role, content, created_at")
+      .eq("ticket_id", id)
+      .order("created_at", { ascending: true });
+    setThread((data as any) ?? []);
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -66,7 +79,8 @@ export const MyTickets = ({ userId }: { userId: string }) => {
           const meta = STATUS_META[t.status] ?? STATUS_META.open;
           const Icon = meta.icon;
           return (
-            <div key={t.id} className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors">
+            <div key={t.id}>
+            <div onClick={() => openThread(t.id)} role="button" tabIndex={0} className="cursor-pointer flex items-center gap-3 p-3 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors">
               <div className={`shrink-0 px-2 py-1 rounded-md border text-[10px] font-bold uppercase flex items-center gap-1 ${meta.color}`}>
                 <Icon className={`h-3 w-3 ${t.status === "in_progress" ? "animate-spin" : ""}`} />
                 {meta.label}
@@ -77,6 +91,20 @@ export const MyTickets = ({ userId }: { userId: string }) => {
                   {t.ticket_number} · {t.category} · {formatDistanceToNow(new Date(t.created_at), { addSuffix: true })}
                 </p>
               </div>
+            </div>
+            {openId === t.id && (
+              <div className="mt-2 ml-2 space-y-2">
+                {thread.length === 0 && (
+                  <p className="text-[11px] text-muted-foreground">No replies yet.</p>
+                )}
+                {thread.map((m) => (
+                  <div key={m.id} className={`p-2 rounded-md border text-xs whitespace-pre-wrap ${m.sender_role === "admin" ? "bg-primary/10 border-primary/30" : "bg-muted/40"}`}>
+                    <p className="font-semibold mb-1">{m.sender_role === "admin" ? "Support team" : "You"}</p>
+                    {m.content}
+                  </div>
+                ))}
+              </div>
+            )}
             </div>
           );
         })}
