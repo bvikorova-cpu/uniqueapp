@@ -213,7 +213,7 @@ const Auth = () => {
     const selectedLanguage = 'en';
     const isoBirthDate = format(birthDate, "yyyy-MM-dd");
 
-    const { error } = await supabase.auth.signUp({
+    const { data: signUpData, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -245,6 +245,14 @@ const Auth = () => {
       toast({ variant: "destructive",
         title: "Registration error",
         description: error.message });
+    } else if (signUpData?.user && (signUpData.user.identities?.length ?? 0) === 0) {
+      // Supabase returns success without sending a new email when the address
+      // already has an account. Tell the user instead of waiting for a mail.
+      toast({
+        variant: "destructive",
+        title: "This email is already registered",
+        description: "Sign in instead, or use \"Forgot password\" to reset it. No new confirmation email is sent for existing accounts.",
+      });
     } else { setUnconfirmedEmail(email);
       toast({
         title: "Registration successful!",
