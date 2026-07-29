@@ -60,14 +60,11 @@ export const AnalyzerToolLayout = ({
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center">
           <Button variant="ghost" onClick={onBack} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
             Back
           </Button>
-          <Badge variant="outline" className="bg-cyan-500/10 border-cyan-500/30 text-cyan-400">
-            {creditsLoading ? "..." : credits?.credits_remaining || 0} Credits
-          </Badge>
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
