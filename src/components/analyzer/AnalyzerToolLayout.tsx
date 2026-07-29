@@ -29,10 +29,15 @@ export const AnalyzerToolLayout = ({
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
+  const { credits, isLoading: creditsLoading } = useAnalyzerCredits();
 
   const handleSubmit = async () => {
     if (!input.trim()) {
       toast.error("Please provide input");
+      return;
+    }
+    if (!credits || credits.credits_remaining < creditCost) {
+      toast.error(`Insufficient credits. You need ${creditCost} credits.`);
       return;
     }
 
@@ -55,7 +60,7 @@ export const AnalyzerToolLayout = ({
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center">
           <Button variant="ghost" onClick={onBack} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
             Back
