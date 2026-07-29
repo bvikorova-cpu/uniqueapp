@@ -8,48 +8,60 @@ export const STYLE_TRANSFER_COST = 8;
 export const VOICE_TO_SCRIPT_COST = 10;
 export const ROOM_AI_COST = 4;
 
+/** Supabase hides the edge-function body inside FunctionsHttpError — read it for a real message. */
+const invokeCreative = async (fn: string, body: Record<string, unknown>) => {
+  const { data, error } = await supabase.functions.invoke(fn, { body });
+  if (error) {
+    const res = (error as any)?.context;
+    let payload: any = null;
+    let status: number | undefined;
+    if (res && typeof res.json === "function") {
+      status = res.status;
+      try { payload = await res.clone().json(); } catch { payload = null; }
+    }
+    const msg = payload?.error || payload?.message;
+    if (status === 402 || /insufficient credits/i.test(msg || "")) {
+      throw new Error(msg && !/insufficient credits/i.test(msg) ? msg : "Not enough Creative Forge credits.");
+    }
+    if (status === 429) throw new Error(msg || "AI is busy right now. Please try again in a few seconds.");
+    if (status === 401 || status === 403) throw new Error("Please sign in again to use this tool.");
+    if (status === 404) throw new Error("This AI tool is not available right now.");
+    throw new Error(msg || (error as any)?.message || "AI request failed");
+  }
+  if (data?.error) throw new Error(data.error);
+  return data;
+};
+
 export const useCreativeAITools = () => {
   const queryClient = useQueryClient();
 
   const styleTransfer = useMutation({
-    mutationFn: async ({ text, targetStyle }: { text: string; targetStyle: string }) => {
-      const { data, error } = await supabase.functions.invoke("creative-style-transfer", {
-        body: { text, targetStyle } });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      return data;
-    },
+    mutationFn: async ({ text, targetStyle }: { text: string; targetStyle: string }) =>
+      invokeCreative("creative-style-transfer", { text, targetStyle }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Style transformation complete!");
     },
     onError: (e: Error) => toast.error(e.message || "Style transfer failed") });
 
   const voiceToScript = useMutation({
-    mutationFn: async ({ transcript, category }: { transcript: string; category: string }) => {
-      const { data, error } = await supabase.functions.invoke("creative-voice-to-script", {
-        body: { transcript, category } });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      return data;
-    },
+    mutationFn: async ({ transcript, category }: { transcript: string; category: string }) =>
+      invokeCreative("creative-voice-to-script", { transcript, category }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Voice transcript turned into a draft!");
     },
     onError: (e: Error) => toast.error(e.message || "Voice-to-script failed") });
 
   const askRoomAI = useMutation({
-    mutationFn: async ({ roomId, action, prompt }: { roomId: string; action: "moderate" | "suggest" | "chat"; prompt?: string }) => {
-      const { data, error } = await supabase.functions.invoke("creative-room-ai", {
-        body: { roomId, action, prompt } });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      return data;
-    },
+    mutationFn: async ({ roomId, action, prompt }: { roomId: string; action: "moderate" | "suggest" | "chat"; prompt?: string }) =>
+      invokeCreative("creative-room-ai", { roomId, action, prompt }),
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
       queryClient.invalidateQueries({ queryKey: ["room-messages", vars.roomId] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
     },
     onError: (e: Error) => toast.error(e.message || "AI moderator failed") });
 
