@@ -1,0 +1,18 @@
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.creative_forge_brand_voices TO authenticated;
+GRANT ALL ON public.creative_forge_brand_voices TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.creative_forge_content_scores TO authenticated;
+GRANT ALL ON public.creative_forge_content_scores TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.creative_forge_cowriter_sessions TO authenticated;
+GRANT ALL ON public.creative_forge_cowriter_sessions TO service_role;
+GRANT SELECT, INSERT, UPDATE ON public.creative_forge_credits TO authenticated;
+GRANT ALL ON public.creative_forge_credits TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.creative_forge_projects TO authenticated;
+GRANT ALL ON public.creative_forge_projects TO service_role;
+GRANT SELECT, INSERT, DELETE ON public.creative_forge_room_members TO authenticated;
+GRANT ALL ON public.creative_forge_room_members TO service_role;
+GRANT SELECT, INSERT ON public.creative_forge_room_messages TO authenticated;
+GRANT ALL ON public.creative_forge_room_messages TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.creative_forge_rooms TO authenticated;
+GRANT ALL ON public.creative_forge_rooms TO service_role;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.creative_forge_story_bible TO authenticated;
+GRANT ALL ON public.creative_forge_story_bible TO service_role;
