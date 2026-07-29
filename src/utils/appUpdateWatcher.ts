@@ -127,5 +127,5 @@ export function installAppUpdateWatcher() {
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) void checkForUpdate();
   });
-  window.setTimeout(() => void checkForUpdate(), 30_000);
+  window.setTimeout(() => void checkForUpdate(), 2_000);
 }
