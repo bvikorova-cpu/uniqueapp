@@ -19,21 +19,34 @@ serve(async (req) => {
   }
 
   try {
-    // Use ANON KEY - RLS policies will enforce access control
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: req.headers.get("Authorization")! } }, auth: { persistSession: false } }
-    );
-
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data: userData } = await supabaseClient.auth.getUser(token);
-    const user = userData.user;
-
-    if (!user) {
-      throw new Error("Unauthorized");
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace("Bearer ", "").trim();
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")
+      ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY")
+      ?? "";
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+
+    // Auth client (validates the caller's JWT)
+    const authClient = createClient(supabaseUrl, anonKey || serviceKey, {
+      auth: { persistSession: false } });
+    const { data: userData, error: userError } = await authClient.auth.getUser(token);
+    const user = userData?.user;
+
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Data client (service role, scoped manually to the authenticated user)
+    const supabaseClient = createClient(supabaseUrl, serviceKey || anonKey, {
+      auth: { persistSession: false } });
+
 
     // Rate limit check
     const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders, user.id);
@@ -43,19 +56,29 @@ serve(async (req) => {
     
     const creditsNeeded = CREDIT_COSTS[contentType as keyof typeof CREDIT_COSTS] || 1;
 
-    // Check and deduct credits
-    const { data: creditData } = await supabaseClient
+    // Check credits (auto-create the row if the user has none yet)
+    let { data: creditData } = await supabaseClient
       .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
-    if (!creditData || creditData.credits_remaining < creditsNeeded) {
+    if (!creditData) {
+      const { data: created } = await supabaseClient
+        .from("ai_credits")
+        .insert({ user_id: user.id, credits_remaining: 10 })
+        .select("credits_remaining")
+        .maybeSingle();
+      creditData = created ?? { credits_remaining: 0 };
+    }
+
+    if ((creditData.credits_remaining ?? 0) < creditsNeeded) {
       return new Response(
         JSON.stringify({ error: "Insufficient credits" }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
 
     // NOTE: credits are deducted AFTER successful AI response (see below) so
     // upstream OpenAI/save failures do not consume the user's balance.
