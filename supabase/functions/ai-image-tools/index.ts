@@ -351,15 +351,35 @@ serve(async (req) => {
           break;
         }
         case "prompt_gallery": {
-          const j = await chatJSON([
-            { role: "system", content: "You are a creative AI image prompt expert. Generate 8 unique, highly detailed image prompts. Return JSON object with key 'prompts' that is an array of objects with 'title' (3-5 words), 'prompt' (20-40 words), 'category' (Nature|Fantasy|Sci-Fi|Portrait|Abstract|Architecture|Food|Animals), and 'difficulty' (Easy|Medium|Hard)." },
-            { role: "user", content: prompt || "Generate diverse trending AI art prompts for various styles" },
-          ]);
-          const list = j?.prompts ?? j?.suggestions ?? (Array.isArray(j) ? j : null) ??
-            (Object.values(j || {}).find((v) => Array.isArray(v)) as any[] | undefined);
-          result = { prompts: list || [] };
+          const fallbackPrompts = (theme: string) => {
+            const t = theme?.trim() || "trending AI art";
+            return [
+              { title: "Golden Hour Vista", prompt: `Sweeping landscape inspired by ${t}, golden hour light, volumetric rays, ultra detailed, 8k photography`, category: "Nature", difficulty: "Easy" },
+              { title: "Neon Dreamscape", prompt: `Futuristic neon-lit scene of ${t}, rain-soaked reflections, cinematic wide shot, cyberpunk color grading`, category: "Sci-Fi", difficulty: "Medium" },
+              { title: "Painted Myth", prompt: `Epic fantasy oil painting depicting ${t}, dramatic chiaroscuro lighting, intricate detail, classical composition`, category: "Fantasy", difficulty: "Hard" },
+              { title: "Studio Portrait", prompt: `Editorial studio portrait themed around ${t}, softbox lighting, 85mm lens, shallow depth of field, photorealistic skin`, category: "Portrait", difficulty: "Medium" },
+              { title: "Abstract Flow", prompt: `Abstract fluid art interpretation of ${t}, iridescent gradients, macro texture, museum-grade print quality`, category: "Abstract", difficulty: "Easy" },
+              { title: "Concrete Poetry", prompt: `Minimalist architectural photograph inspired by ${t}, brutalist concrete forms, hard shadows, symmetrical framing`, category: "Architecture", difficulty: "Medium" },
+              { title: "Gourmet Close-Up", prompt: `Michelin-style food photography of a dish inspired by ${t}, moody dark backdrop, steam, glistening textures`, category: "Food", difficulty: "Easy" },
+              { title: "Wild Encounter", prompt: `Wildlife photograph capturing ${t}, telephoto compression, natural habitat, razor-sharp eyes, National Geographic style`, category: "Animals", difficulty: "Hard" },
+            ];
+          };
+          try {
+            const j = await chatJSON([
+              { role: "system", content: "You are a creative AI image prompt expert. Generate 8 unique, highly detailed image prompts. Return JSON object with key 'prompts' that is an array of objects with 'title' (3-5 words), 'prompt' (20-40 words), 'category' (Nature|Fantasy|Sci-Fi|Portrait|Abstract|Architecture|Food|Animals), and 'difficulty' (Easy|Medium|Hard)." },
+              { role: "user", content: prompt || "Generate diverse trending AI art prompts for various styles" },
+            ]);
+            const list = j?.prompts ?? j?.suggestions ?? (Array.isArray(j) ? j : null) ??
+              (Object.values(j || {}).find((v) => Array.isArray(v)) as any[] | undefined);
+            const clean = (list || []).filter((item: any) => (typeof item === "string" ? item.trim() : item?.prompt?.trim()));
+            result = { prompts: clean.length > 0 ? clean : fallbackPrompts(prompt) };
+          } catch (galleryError) {
+            console.error("prompt_gallery AI failed, using fallback:", galleryError);
+            result = { prompts: fallbackPrompts(prompt) };
+          }
           break;
         }
+
       }
     } catch (e) {
       await refund();
