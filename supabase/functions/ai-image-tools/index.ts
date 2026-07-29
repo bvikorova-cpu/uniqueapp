@@ -93,7 +93,7 @@ serve(async (req) => {
 
     const cost = TOOL_COSTS[action] || 0;
 
-    let creditsBefore = 0;
+    let charged = false;
     if (cost > 0) {
       const { data: credits } = await supabase
         .from("ai_credits")
@@ -103,20 +103,24 @@ serve(async (req) => {
       if (!credits || credits.credits_remaining < cost) {
         return json({ error: `Insufficient credits. Need ${cost} credits.` }, 402);
       }
-      creditsBefore = credits.credits_remaining;
-      const { error: deductErr } = await supabase
-        .from("ai_credits")
-        .update({ credits_remaining: creditsBefore - cost, last_used_at: new Date().toISOString() })
-        .eq("user_id", user.id);
+      const { error: deductErr } = await supabase.rpc("deduct_ai_credits", {
+        p_user_id: user.id,
+        p_amount: cost,
+        p_reason: `AI Image ${action}`,
+        p_source: "ai-image-tools",
+      });
       if (deductErr) return json({ error: "Failed to reserve credits" }, 500);
+      charged = true;
     }
 
     const refund = async () => {
-      if (cost > 0) {
-        await supabase
-          .from("ai_credits")
-          .update({ credits_remaining: creditsBefore })
-          .eq("user_id", user.id);
+      if (cost > 0 && charged) {
+        await supabase.rpc("add_ai_credits", {
+          p_user_id: user.id,
+          p_amount: cost,
+          p_reason: `AI Image ${action} refund`,
+          p_source: "ai-image-tools",
+        });
       }
     };
 
