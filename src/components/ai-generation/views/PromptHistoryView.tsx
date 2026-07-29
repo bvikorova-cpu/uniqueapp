@@ -45,7 +45,7 @@ export const PromptHistoryView = ({ onSelectPrompt }: Props) => {
   return (
     <>
       <FloatingHowItWorks title={"Prompt History View - How it works"} steps={[{ title: 'Open', desc: 'Access the Prompt History View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Prompt History View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-3xl mx-auto space-y-6 pb-44 sm:pb-0">
       <div>
         <h2 className="text-2xl font-black mb-2">📜 Prompt History</h2>
         <p className="text-muted-foreground text-sm">Your saved prompts and favorites</p>
@@ -77,7 +77,7 @@ export const PromptHistoryView = ({ onSelectPrompt }: Props) => {
                     <span className="text-[10px] text-muted-foreground">{p.category}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => copyPrompt(p.prompt)}><Copy className="w-3 h-3" /></Button>
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => toggleFavorite(p.id, p.is_favorite || false)}>
                     <Star className={`w-3 h-3 ${p.is_favorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
