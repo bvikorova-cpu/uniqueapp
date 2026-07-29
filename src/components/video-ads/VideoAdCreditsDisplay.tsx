@@ -22,9 +22,9 @@ export const VideoAdCreditsDisplay = () => {
     <>
       <FloatingHowItWorks title={"Video Ad Credits Display - How it works"} steps={[{ title: 'Open', desc: 'Access the Video Ad Credits Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Video Ad Credits Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <Video className="h-8 w-8 text-primary" />
+          <Video className="h-8 w-8 text-primary shrink-0" />
           <div>
             <p className="text-sm text-muted-foreground">Available Credits</p>
             <p className="text-3xl font-bold">{credits?.credits_remaining || 0}</p>
@@ -34,11 +34,12 @@ export const VideoAdCreditsDisplay = () => {
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           <Button
             onClick={() => handlePurchase(10)}
             variant="outline"
             size="sm"
+            className="w-full justify-center sm:w-auto"
           >
             <Plus className="mr-2 h-4 w-4" />
             10 Credits - €8
@@ -47,6 +48,7 @@ export const VideoAdCreditsDisplay = () => {
             size="sm"
             variant="outline"
             onClick={() => handlePurchase(25)}
+            className="w-full justify-center sm:w-auto"
           >
             <Plus className="mr-2 h-4 w-4" />
             25 Credits - €18
@@ -55,6 +57,7 @@ export const VideoAdCreditsDisplay = () => {
             size="sm"
             variant="outline"
             onClick={() => handlePurchase(50)}
+            className="w-full justify-center sm:w-auto"
           >
             <Plus className="mr-2 h-4 w-4" />
             50 Credits - €30
@@ -62,6 +65,7 @@ export const VideoAdCreditsDisplay = () => {
         </div>
       </div>
     </Card>
+
     </>
   );
 };
