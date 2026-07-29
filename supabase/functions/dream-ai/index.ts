@@ -67,53 +67,52 @@ Deno.serve(async (req) => {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-
     let result: any;
     switch (action) {
       case "dictionary":
-        result = await callOpenAI(apiKey, [
+        result = await aiChat([
           { role: "system", content: "You are a world-class dream analyst combining Jungian psychology, Freudian analysis, cultural mythology, and modern neuroscience. Provide comprehensive dream symbol interpretations with: Universal Meaning, Psychological Analysis, Cultural Variations, Emotional Significance, Personal Context Analysis, Common Dream Scenarios, Shadow Aspect, Action Guidance, Related Symbols. Use markdown." },
           { role: "user", content: `Interpret this dream symbol: "${symbol}"${context ? `. Personal context: "${context}"` : ""}` }
         ]);
         break;
       case "lucid-coach":
-        result = await callOpenAI(apiKey, [
+        result = await aiChat([
           { role: "system", content: "You are an expert lucid dreaming coach. Provide: Reality Check Techniques, MILD/WILD Techniques, Dream Journal Tips, Sleep Hygiene, Tonight's Exercise, Weekly Plan. Use markdown." },
           { role: "user", content: `Experience level: ${experience}\nGoal/Dream: ${goal}` },
         ]);
         break;
       case "mood-correlation":
-        result = await callOpenAI(apiKey, [
+        result = await aiChat([
           { role: "system", content: "You are a dream psychology data analyst. Analyze dream-mood correlations. Provide: Correlation Overview, Mood→Dream Mapping, Stress Impact, Positive/Negative Patterns, Temporal Patterns, Recurring Themes, Predictive Insights, Recommendations, Wellness Score. Use markdown." },
           { role: "user", content: `Analyze correlations:\nDREAM ENTRIES:\n${JSON.stringify(dreams || [], null, 2)}\nMOOD RECORDS:\n${JSON.stringify(moods || [], null, 2)}` }
         ]);
         break;
       case "pattern-analysis":
-        result = await callOpenAI(apiKey, [
+        result = await aiChat([
           { role: "system", content: "You are an expert dream analyst for pattern recognition. Provide: Recurring Themes, Emotional Arc, Symbol Dictionary, Dream Connections, Psychological Insights, Predictive Patterns, Recommendations. Use markdown." },
           { role: "user", content: `Analyze these ${(dreams || []).length} dreams for patterns:\n\n${(dreams || []).map((d: any) => `${d.title || "Dream"}: ${d.description || d.content || ""}`).join("\n\n")}` },
         ]);
         break;
       case "sleep-analyzer":
-        result = await callOpenAI(apiKey, [
+        result = await aiChat([
           { role: "system", content: "You are an expert sleep scientist. Provide: Sleep Score (1-100), Analysis, Sleep Architecture, Issues, Improvement Plan, Optimal Schedule, Dream Enhancement tips. Use markdown." },
           { role: "user", content: `Sleep Data:\n- Hours: ${sleepHours}\n- Quality: ${quality}\n- Night wake-ups: ${wakeUps}\n- Notes: ${notes || "None"}` },
         ]);
         break;
       case "sleep-ritual":
-        result = await callOpenAI(apiKey, [
+        result = await aiChat([
           { role: "system", content: "You are a sleep scientist and meditation expert. Create personalized bedtime rituals with: Ritual Overview, Environment Setup, Step-by-Step Timeline, Breathing Exercises, Body Scan, Visualization, Sleep Affirmations, Wake-Up Protocol, Weekly Progression, Scientific References. Use markdown." },
           { role: "user", content: `Create a ${duration}-minute bedtime ritual for goal: "${sleepGoal}".${challenges ? ` Sleep challenges: "${challenges}"` : ""}` }
         ]);
         break;
       case "soundscapes":
-        result = await callOpenAI(apiKey, [
+        result = await aiChat([
           { role: "system", content: "You are an expert sound designer. Create dream-inspired ambient soundscapes with: Soundscape Name, Core Layers, Binaural Beat Prescription, Guided Visualization Script, Listening Schedule, Science, DIY Tips. Use markdown." },
           { role: "user", content: `Create a dream soundscape for theme: "${dreamTheme}". Desired mood: ${mood}.` }
         ]);
         break;
       case "visualizer":
-        result = await callOpenAI(apiKey, [
+        result = await aiChat([
           { role: "system", content: "You are a dream visualization expert. Create a vivid visual description of the dream that could be used as an art prompt. Include colors, atmosphere, key imagery, and emotional tone. Use markdown." },
           { role: "user", content: `Visualize this dream: ${params.dreamDescription || ""}` }
         ]);
