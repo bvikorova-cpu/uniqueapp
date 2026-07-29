@@ -79,8 +79,14 @@
   .ai-mobile-tool-shell input,
   .ai-mobile-tool-shell textarea,
   .ai-mobile-tool-shell [role="combobox"],
+  .ai-mobile-tool-shell .ai-mobile-safe-panel,
   .ai-mobile-tool-shell .ai-mobile-safe-action {
     max-width: calc(100vw - 11rem) !important;
+  }
+
+  .ai-mobile-safe-panel {
+    width: calc(100vw - 11rem) !important;
+    min-width: 0 !important;
   }
 
   .ai-mobile-safe-action {
