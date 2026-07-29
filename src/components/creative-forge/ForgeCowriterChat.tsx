@@ -14,15 +14,25 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
+export interface CowriterBrandVoice {
+  name: string;
+  tone?: string | null;
+  audience?: string | null;
+  do_use?: string | null;
+  dont_use?: string | null;
+  sample_text?: string | null;
+}
+
 interface Props {
   open: boolean;
   onClose: () => void;
   category: string;
   currentText: string;
   onInsert: (text: string) => void;
+  brandVoice?: CowriterBrandVoice | null;
 }
 
-export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInsert }: Props) => {
+export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInsert, brandVoice }: Props) => {
   const [messages, setMessages] = useState<Msg[]>([
     { role: "assistant", content: `Hi! I'm your AI Co-Writer for **${category.replace("_", " ")}**. I can suggest sentences, polish your prose, brainstorm ideas, fix dialogue, or break through writer's block. What can I help you with?` },
   ]);
@@ -30,6 +40,7 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
