@@ -15,12 +15,10 @@ Deno.serve(async (req) => {
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
     const { action, ...params } = await req.json();
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) throw new Error("API key not configured");
     let result: any;
     switch (action) {
       case "competitor-analyzer":
-        result = await callAI(apiKey, [
+        result = await callAI([
           {
             role: "system",
             content: `You are a brand strategy consultant. Analyze competitors and create a unique positioning strategy. Return JSON with:
@@ -34,7 +32,7 @@ Deno.serve(async (req) => {
         ]);
         break;
       case "name-generator":
-        result = await callAI(apiKey, [
+        result = await callAI([
           {
             role: "system",
             content: "You are a world-class brand naming expert. Generate creative, memorable, and unique brand names. Return JSON with a 'names' array of objects with 'name', 'meaning', 'domain_suggestion', and 'tagline' fields. Generate exactly 10 names."
@@ -46,7 +44,7 @@ Deno.serve(async (req) => {
         ]);
         break;
       case "social-media-kit":
-        result = await callAI(apiKey, [
+        result = await callAI([
           {
             role: "system",
             content: `You are a social media branding expert. Generate complete social media kits for brands. Return JSON with "platforms" object containing keys for "instagram", "twitter", "linkedin", "tiktok", "facebook". Each platform object should have: "bio" (max 160 chars), "handle_suggestions" (array of 3), "content_pillars" (array of 4), "hashtags" (array of 10), "posting_schedule" (string), "content_ideas" (array of 5), "tone_guidelines" (string).`
