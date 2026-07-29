@@ -193,9 +193,11 @@ async function callProvider(
   useGateway: boolean,
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
+  cheap = true,
 ): Promise<UnifiedAIResult> {
-  const data = await callProviderRaw(useGateway, messages, opts);
+  const data = await callProviderRaw(useGateway, messages, opts, cheap);
   const message = data.choices?.[0]?.message;
+
   const content = message?.content?.toString().trim() || "";
   if (!content && !message?.tool_calls) {
     throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", useGateway ? "Lovable AI Gateway" : "OpenAI");
