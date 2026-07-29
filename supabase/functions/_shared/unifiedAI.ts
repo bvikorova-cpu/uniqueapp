@@ -236,30 +236,39 @@ export async function callUnifiedAIEx(
   const order: boolean[] = openaiKey ? [false, true] : [true];
   let lastError: UnifiedAIError | undefined;
 
-  for (const useGateway of order) {
-    try {
-      return await callProvider(useGateway, messages, opts);
-    } catch (e) {
-      if (e instanceof UnifiedAIError && isRetryableStatus(e.status)) {
-        lastError = e;
-        console.warn(`UnifiedAI provider ${e.provider || "unknown"} failed (${e.status}), trying fallback...`);
-        continue;
+  // Pass 1: cheap model on every provider. Pass 2: escalate to the requested
+  // (possibly more expensive) model only if the cheap attempts failed.
+  const passes: boolean[] = opts.tier === "premium" ? [false] : [true, false];
+
+  for (const cheap of passes) {
+    for (const useGateway of order) {
+      try {
+        return await callProvider(useGateway, messages, opts, cheap);
+      } catch (e) {
+        if (e instanceof UnifiedAIError && isRetryableStatus(e.status)) {
+          lastError = e;
+          console.warn(
+            `UnifiedAI ${e.provider || "unknown"} (${cheap ? "cheap" : "premium"}) failed (${e.status}), trying fallback...`,
+          );
+          continue;
+        }
+        throw e;
       }
-      throw e;
     }
   }
 
-  // If both providers failed with retryable errors, retry each once with backoff.
+  // Final backoff retry with the cheap model.
   for (let attempt = 1; attempt <= 2; attempt++) {
     for (const useGateway of order) {
       try {
         await new Promise((r) => setTimeout(r, attempt * 1200));
-        return await callProvider(useGateway, messages, opts);
+        return await callProvider(useGateway, messages, opts, opts.tier !== "premium");
       } catch (e) {
         if (e instanceof UnifiedAIError) lastError = e;
       }
     }
   }
+
 
   throw lastError || new UnifiedAIError(502, "All AI providers are unavailable. Please try again later.");
 }
