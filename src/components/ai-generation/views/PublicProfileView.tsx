@@ -68,7 +68,7 @@ export const PublicProfileView = () => {
             <p className="font-bold">Enable public AI gallery</p>
             <p className="text-xs text-muted-foreground">Visitors can browse your shared generations.</p>
           </div>
-          <Switch checked={enabled} onCheckedChange={toggle} />
+          <Switch checked={enabled} disabled={saving || !user} onCheckedChange={toggle} />
         </div>
 
         {enabled && user && (
