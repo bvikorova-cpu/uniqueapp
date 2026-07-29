@@ -329,7 +329,7 @@ export default function BugReportsManager() {
                           <DialogTrigger asChild>
                             <Button size="sm" variant="outline">Review</Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-2xl">
+                          <DialogContent className="max-w-2xl w-[calc(100vw-1.5rem)] sm:w-full max-h-[85vh] overflow-y-auto">
                             <DialogHeader>
                               <DialogTitle>{r.title}</DialogTitle>
                             </DialogHeader>
