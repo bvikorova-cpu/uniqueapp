@@ -47,7 +47,8 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const cost = action === "templates" ? (TEMPLATE_COST[String(templateType || "")] ?? ACTION_COST.templates) : ACTION_COST[action];
-    const auth = await requireAiCredits(req, corsHeaders, { credits: cost, usageType: action === "templates" ? `content_studio_templates_${templateType || "custom"}` : `content_studio_${action}` });
+    const auth = await requireAiCredits(req, corsHeaders, { credits: cost, usageType: `content_studio_${action}`,
+      description: action === "templates" ? `Content Studio template: ${templateType || "custom"}` : undefined });
     if (auth.errorResponse) return auth.errorResponse;
 
     let result: any;
