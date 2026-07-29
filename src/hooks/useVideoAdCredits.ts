@@ -155,16 +155,23 @@ export const useVideoAdCredits = () => {
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {
     try {
-      const { data, error } = await supabase.functions.invoke('create-video-ad-credits-payment', {
-        body: { credits }
+      const PRICE_PER_CREDIT = 80; // cents, EUR
+      const { data, error } = await supabase.functions.invoke('create-one-off-payment', {
+        body: {
+          productKey: 'video_ad_credits',
+          amount: Math.max(100, Math.round(credits * PRICE_PER_CREDIT)),
+          name: `${credits} Video Ad Credits`,
+          metadata: { type: 'video_ad_credits', product: 'video_ad_credits', credits: String(credits) }
+        }
       });
-      
+
       if (error) throw error;
-      
+
       if (data?.url) {
         return data.url;
       }
       return null;
+
     } catch (error) {
       console.error('Error:', error);
       toast.error("Error creating payment session");
