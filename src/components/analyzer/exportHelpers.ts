@@ -25,14 +25,37 @@ export const exportAnalysisPDF = async (
   w.document.close();
 };
 
-export const shareAnalysisCard = async (title: string, url: string) => {
-  const data = { title, text: `Check out this analysis: ${title}`, url };
+const copyToClipboard = async (text: string) => {
   try {
-    if ((navigator as any).share) await (navigator as any).share(data);
-    else {
-      await navigator.clipboard.writeText(url);
-      return "copied";
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
     }
-  } catch { /* user cancelled */ }
-  return "shared";
+  } catch { /* fall through to legacy path */ }
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove();
+    return ok;
+  } catch { return false; }
 };
+
+export const shareAnalysisCard = async (title: string, url: string): Promise<"shared" | "copied" | "cancelled" | "failed"> => {
+  const data = { title, text: `Check out this analysis: ${title}`, url };
+  if (typeof navigator !== "undefined" && (navigator as any).share) {
+    try {
+      await (navigator as any).share(data);
+      return "shared";
+    } catch (e: any) {
+      if (e?.name === "AbortError") return "cancelled";
+      // Fall back to copying when share is blocked/unsupported at runtime.
+    }
+  }
+  return (await copyToClipboard(url)) ? "copied" : "failed";
+};
+

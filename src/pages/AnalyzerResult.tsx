@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, Share2, Heart, ShoppingBag, FileDown } from "lucide-react";
+import { ArrowLeft, Download, Share2, ShoppingBag, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -61,15 +61,8 @@ export default function AnalyzerResult() {
     } finally { setIsLoading(false); }
   };
 
-  const toggleFavorite = async () => {
-    if (!analysis) return;
-    try {
-      const { error } = await supabase.from('vision_analyses').update({ is_favorite: !analysis.is_favorite }).eq('id', analysis.id);
-      if (error) throw error;
-      setAnalysis({ ...analysis, is_favorite: !analysis.is_favorite });
-      toast.success(analysis.is_favorite ? "Removed from favorites" : "Added to favorites");
-    } catch (error) { toast.error("Failed to update favorite"); }
-  };
+
+
 
   if (isLoading) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -129,12 +122,11 @@ export default function AnalyzerResult() {
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Analyzer
           </Button>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" onClick={toggleFavorite} className="border-cyan-500/20">
-              <Heart className={`w-4 h-4 ${analysis.is_favorite ? 'fill-red-500 text-red-500' : ''}`} />
-            </Button>
-            <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={async () => {
-              const r = await shareAnalysisCard(analysis.main_identification || "Analysis", window.location.href);
+            <Button variant="outline" size="icon" className="border-cyan-500/20" title="Share" onClick={async () => {
+              const r = await shareAnalysisCard(info.mainIdentification || "Analysis", window.location.href);
               if (r === "copied") toast.success("Link copied!");
+              else if (r === "shared") toast.success("Shared");
+              else if (r === "failed") toast.error("Sharing not available");
             }}><Share2 className="w-4 h-4" /></Button>
             <Button variant="outline" size="icon" className="border-cyan-500/20" title="Export PDF" onClick={() => {
               exportAnalysisPDF(
@@ -150,19 +142,41 @@ export default function AnalyzerResult() {
                 ]
               );
             }}><FileDown className="w-4 h-4" /></Button>
-            <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={async () => {
-              try {
-                const blob = await (await fetch(analysis.image_url)).blob();
+            <Button variant="outline" size="icon" className="border-cyan-500/20" title="Download image + description" onClick={async () => {
+              const base = (info.mainIdentification || "analysis").replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-") || "analysis";
+              const saveBlob = (blob: Blob, filename: string) => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = `${(analysis.main_identification || "analysis").replace(/\s+/g, "-")}.jpg`;
+                a.download = filename;
                 document.body.appendChild(a); a.click(); a.remove();
-                URL.revokeObjectURL(url);
-                toast.success("Downloaded");
-              } catch { toast.error("Download failed"); }
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+              };
+              try {
+                const blob = await (await fetch(analysis.image_url)).blob();
+                saveBlob(blob, `${base}.jpg`);
+              } catch { toast.error("Image download failed"); }
+
+              const lines = [
+                info.mainIdentification,
+                `Category: ${analysis.category}`,
+                `Confidence: ${confidencePercent}%`,
+                "",
+                "DESCRIPTION",
+                info.details.description || "",
+                ...(info.details.specifications?.length ? ["", "SPECIFICATIONS", info.details.specifications.join("\n")] : []),
+                ...(info.details.careInstructions ? ["", "CARE INSTRUCTIONS", info.details.careInstructions] : []),
+                ...(info.details.safety ? ["", "SAFETY", info.details.safety] : []),
+                ...(info.details.value ? ["", "ESTIMATED VALUE", info.details.value] : []),
+                ...(info.details.whereToFind ? ["", "WHERE TO FIND", info.details.whereToFind] : []),
+                ...(info.additionalInfo ? ["", "ADDITIONAL INFORMATION", info.additionalInfo] : []),
+                ...(analysis.tags?.length ? ["", `Tags: ${analysis.tags.join(", ")}`] : []),
+              ].join("\n");
+              saveBlob(new Blob([lines], { type: "text/plain;charset=utf-8" }), `${base}.txt`);
+              toast.success("Downloaded image + description");
             }}><Download className="w-4 h-4" /></Button>
           </div>
+
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
