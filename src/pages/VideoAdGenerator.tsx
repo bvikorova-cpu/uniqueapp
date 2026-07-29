@@ -152,37 +152,9 @@ const ScriptGeneratorView = ({ onBack }: { onBack: () => void }) => {
 };
 
 const tools = [
-  { id: "script", icon: Video, title: "Video Script Generator", desc: "Complete ad scripts with scenes", cost: "1+ CR", gradient: "from-orange-500 to-red-600" },
-  { id: "storyboard", icon: Layout, title: "Storyboard Creator", desc: "Visual frame-by-frame breakdown", cost: "3 CR", gradient: "from-orange-500 to-red-600" },
-  { id: "ad-copy", icon: PenTool, title: "Ad Copy Optimizer", desc: "Headlines, CTAs & hashtags", cost: "2 CR", gradient: "from-orange-500 to-amber-600" },
-  { id: "audience", icon: Users, title: "Audience Analyzer", desc: "Deep audience insights", cost: "2 CR", gradient: "from-blue-500 to-cyan-600" },
-  { id: "performance", icon: BarChart3, title: "Performance Predictor", desc: "Predict reach & conversions", cost: "3 CR", gradient: "from-emerald-500 to-teal-600" },
-  { id: "multi-platform", icon: Globe, title: "Multi-Platform Adapter", desc: "Adapt for all platforms", cost: "3 CR", gradient: "from-violet-500 to-purple-600" },
-  { id: "competitor", icon: Search, title: "Competitor Analyzer", desc: "Competitive intelligence", cost: "4 CR", gradient: "from-red-500 to-rose-600" },
-  { id: "voiceover", icon: Mic, title: "Voiceover Script", desc: "Professional VO direction", cost: "2 CR", gradient: "from-pink-500 to-rose-600" },
-  { id: "music", icon: Music, title: "Music Director", desc: "Music & sound design", cost: "3 CR", gradient: "from-yellow-500 to-orange-600" },
-  { id: "campaign", icon: Target, title: "Campaign Planner", desc: "Complete campaign strategy", cost: "4 CR", gradient: "from-indigo-500 to-blue-600" },
-  { id: "roi", icon: Calculator, title: "ROI Calculator", desc: "Predict return on investment", cost: "2 CR", gradient: "from-green-500 to-emerald-600" },
-  { id: "thumbnail", icon: ImageIcon, title: "Thumbnail Generator", desc: "Click-worthy thumbnails", cost: "2 CR", gradient: "from-pink-500 to-rose-600" },
-  { id: "social-calendar", icon: CalendarDays, title: "Social Media Calendar", desc: "30-day posting schedule", cost: "3 CR", gradient: "from-blue-500 to-indigo-600" },
-  { id: "brand-voice", icon: Mic2, title: "Brand Voice Matcher", desc: "Define your brand identity", cost: "2 CR", gradient: "from-teal-500 to-cyan-600" },
-  { id: "ad-analytics", icon: BarChart2, title: "Ad Analytics Dashboard", desc: "Campaign insights & stats", cost: "3 CR", gradient: "from-emerald-500 to-green-600" },
-  { id: "multi-language", icon: Globe2, title: "Multi-Language Translator", desc: "Localize for global markets", cost: "3 CR", gradient: "from-cyan-500 to-blue-600" },
-  { id: "ab-tester", icon: FlaskConical, title: "Ad A/B Tester", desc: "Compare ad variants", cost: "4 CR", gradient: "from-purple-500 to-violet-600" },
-  { id: "url-to-video", icon: Link2, title: "URL to Video", desc: "Product link → full ad storyboard", cost: "5 CR", gradient: "from-fuchsia-500 to-purple-600" },
-  { id: "tts", icon: Mic2, title: "AI Voiceover (Real)", desc: "ElevenLabs professional voice", cost: "5 CR", gradient: "from-pink-500 to-rose-600" },
-  { id: "captions", icon: Subtitles, title: "Auto Captions", desc: "Animated captions + SRT", cost: "3 CR", gradient: "from-amber-500 to-orange-600" },
-  { id: "hook-analyzer", icon: Flame, title: "Hook Analyzer", desc: "Analysis of the first 3 seconds", cost: "3 CR", gradient: "from-red-500 to-orange-600" },
-  { id: "brand-kit", icon: Palette, title: "Brand Kit", desc: "Logo, fonty, farby, voice", cost: "3 CR", gradient: "from-indigo-500 to-purple-600" },
-  { id: "winning-ads", icon: Award, title: "Winning Ads Library", desc: "Top performing ad inspirations", cost: "3 CR", gradient: "from-yellow-500 to-amber-600" },
-  { id: "avatar", icon: UserCircle2, title: "AI Avatar / Talking Head", desc: "Synthesia/HeyGen-style presenter", cost: "3+5+5 CR", gradient: "from-sky-500 to-indigo-600" },
-  { id: "text-to-video", icon: Film, title: "Text-to-Video Scenes", desc: "Runway/Sora-style B-roll", cost: "3+5 CR", gradient: "from-violet-500 to-fuchsia-600" },
-  { id: "stock-footage", icon: Library, title: "Stock Footage Matcher", desc: "Pexels/Pixabay/Unsplash auto-pair", cost: "3 CR", gradient: "from-emerald-500 to-teal-600" },
-  { id: "video-resizer", icon: Crop, title: "Video Resizer / Auto-Crop", desc: "Reframing for all formats", cost: "3 CR", gradient: "from-orange-500 to-pink-600" },
-  { id: "voice-clone", icon: Mic, title: "Voice Cloning", desc: "Clone your own voice", cost: "10 CR", gradient: "from-rose-500 to-purple-600" },
-  { id: "sfx", icon: Volume2, title: "Sound Effects Library", desc: "AI-generated SFX", cost: "5 CR", gradient: "from-lime-500 to-emerald-600" },
-  { id: "final-composer", icon: Film, title: "🎬 Final Video Composer", desc: "Combine scenes + cloned voice + SFX → MP4", cost: "Free render", gradient: "from-fuchsia-500 to-purple-600" }
+  { id: "script", icon: Video, title: "Video Script Generator", desc: "Complete ad scripts with scenes", cost: "1+ CR", gradient: "from-orange-500 to-red-600" }
 ];
+
 
 const VideoAdGenerator = () => {
   const [activeView, setActiveView] = useState("dashboard");
