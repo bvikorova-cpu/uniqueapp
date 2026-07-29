@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { getUnifiedAiCreditBalance, isInsufficientCreditsError, spendUnifiedAiCredits } from "../_shared/unifiedCredits.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -68,9 +69,6 @@ serve(async (req) => {
   }
 
   try {
-    // NOTE: CreativeForge uses its own dedicated `creative_forge_credits` ledger
-    // (purchased via the dedicated checkout). Do NOT also debit the unified
-    // ai_credits ledger here — that caused double-charging users.
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
@@ -88,18 +86,11 @@ serve(async (req) => {
 
     const creditCost = isRevision ? CREDIT_COSTS.revision : (CREDIT_COSTS[category] || 10);
 
-    // Check credits
-    const { data: credits, error: creditsError } = await supabase
-      .from("creative_forge_credits")
-      .select("credits_remaining")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (creditsError) throw creditsError;
-
-    const currentCredits = credits?.credits_remaining || 0;
-    if (currentCredits < creditCost) {
-      throw new Error(`Insufficient credits. You need ${creditCost} credits but have ${currentCredits}.`);
+    const currentCredits = await getUnifiedAiCreditBalance(supabase, user.id);
+    if (currentCredits.total < creditCost) {
+      return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS", required: creditCost, available: currentCredits.total }), {
+        status: 402,
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Build prompt
@@ -193,16 +184,13 @@ serve(async (req) => {
       throw new Error("No content generated");
     }
 
-    // Deduct credits
-    const { error: updateError } = await supabase
-      .from("creative_forge_credits")
-      .update({ 
-        credits_remaining: currentCredits - creditCost,
-        updated_at: new Date().toISOString()
-      })
-      .eq("user_id", user.id);
-
-    if (updateError) throw updateError;
+    const spendResult = await spendUnifiedAiCredits(
+      supabase,
+      user.id,
+      creditCost,
+      `creative_forge_${category}${isRevision ? "_revision" : ""}`,
+      "generate-creative-content",
+    );
 
     // Save project
     const { data: project, error: projectError } = await supabase
@@ -232,11 +220,18 @@ serve(async (req) => {
       content: generatedContent,
       project,
       creditsUsed: creditCost,
-      creditsRemaining: currentCredits - creditCost
+      creditsRemaining: spendResult.total,
+      freeCreditsRemaining: spendResult.free,
+      paidCreditsRemaining: spendResult.paid
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error: any) {
     console.error("Error in generate-creative-content:", error);
+    if (isInsufficientCreditsError(error)) {
+      return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS" }), {
+        status: 402,
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     return new Response(JSON.stringify({ error: error.message || "Unknown error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" } });

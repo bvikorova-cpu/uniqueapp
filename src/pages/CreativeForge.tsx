@@ -72,6 +72,7 @@ export default function CreativeForge() {
   const { toast } = useToast();
   
   const { credits, isLoading: creditsLoading, purchaseCredits, verifyPayment, refreshCredits } = useCreativeForgeCredits();
+  const availableCredits = credits?.credits_remaining || 0;
 
   const [activeView, setActiveView] = useState<"hub" | "create" | "history" | "credits">("hub");
   const [selectedCategory, setSelectedCategory] = useState<CreativeCategory>("song_lyrics");
@@ -142,7 +143,7 @@ export default function CreativeForge() {
   const handleGenerate = async () => {
     if (!title.trim()) { toast({ title: "Error", description: "Please enter a title or theme", variant: "destructive" }); return; }
     const cost = CREDIT_COSTS[selectedCategory];
-    if ((credits?.credits_remaining || 0) < cost) { toast({ title: "Insufficient Credits", description: `You need ${cost} credits.`, variant: "destructive" }); setActiveView("credits"); return; }
+    if (availableCredits < cost) { toast({ title: "Insufficient Credits", description: `You need ${cost} credits.`, variant: "destructive" }); setActiveView("credits"); return; }
     setIsGenerating(true);
     if (generatedContent) setPreviousContent(generatedContent);
     setGeneratedContent(null);
@@ -160,7 +161,7 @@ export default function CreativeForge() {
   };
 
   const handleRevision = async (originalContent: string, revisionNotes: string) => {
-    if ((credits?.credits_remaining || 0) < CREDIT_COSTS.revision) { toast({ title: "Insufficient Credits", description: `You need ${CREDIT_COSTS.revision} credits.`, variant: "destructive" }); return; }
+    if (availableCredits < CREDIT_COSTS.revision) { toast({ title: "Insufficient Credits", description: `You need ${CREDIT_COSTS.revision} credits.`, variant: "destructive" }); return; }
     setIsGenerating(true); setPreviousContent(originalContent);
     try {
       const { data, error } = await supabase.functions.invoke("generate-creative-content", { body: { category: selectedCategory, title, inputData: { revisionNotes }, isRevision: true, originalContent } });
@@ -465,7 +466,9 @@ export default function CreativeForge() {
       <div className="fixed inset-0 pointer-events-none z-0"><FloatingParticles /></div>
       <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12 max-w-7xl">
         <ForgeHero
-          credits={credits?.credits_remaining || 0}
+          credits={availableCredits}
+          freeCredits={credits?.free_credits_remaining || 0}
+          paidCredits={credits?.paid_credits_remaining || 0}
           creditsLoading={creditsLoading}
           onStartCreating={() => openTool("song_lyrics")}
           onOpenCowriter={() => setCowriterOpen(true)}

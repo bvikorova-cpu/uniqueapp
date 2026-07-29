@@ -34,33 +34,16 @@ serve(async (req) => {
       throw new Error("Payment not completed");
     }
 
-    // Check if already processed
-    const { data: existing } = await supabase
-      .from("creative_forge_credits")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
     const creditsToAdd = parseInt(credits);
+    if (!Number.isFinite(creditsToAdd) || creditsToAdd <= 0) throw new Error("Invalid credit amount");
 
-    if (existing) {
-      const { error: updateError } = await supabase
-        .from("creative_forge_credits")
-        .update({ credits_remaining: existing.credits_remaining + creditsToAdd,
-          total_credits_purchased: existing.total_credits_purchased + creditsToAdd,
-          updated_at: new Date().toISOString() })
-        .eq("user_id", user.id);
+    const { error: addError } = await supabase.rpc("add_ai_credits", {
+      p_user_id: user.id,
+      p_amount: creditsToAdd,
+      p_reason: "creative_forge_legacy_stripe_purchase",
+      p_source: "verify-creative-forge-payment" });
 
-      if (updateError) throw updateError;
-    } else {
-      const { error: insertError } = await supabase
-        .from("creative_forge_credits")
-        .insert({ user_id: user.id,
-          credits_remaining: creditsToAdd,
-          total_credits_purchased: creditsToAdd });
-
-      if (insertError) throw insertError;
-    }
+    if (addError) throw addError;
 
     console.log(`Added ${creditsToAdd} credits to user ${user.id}`);
 

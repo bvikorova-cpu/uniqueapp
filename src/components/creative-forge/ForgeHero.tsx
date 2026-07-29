@@ -23,12 +23,14 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
 
 interface ForgeHeroProps {
   credits: number;
+  freeCredits?: number;
+  paidCredits?: number;
   creditsLoading: boolean;
   onStartCreating?: () => void;
   onOpenCowriter?: () => void;
 }
 
-export function ForgeHero({ credits, creditsLoading, onStartCreating, onOpenCowriter }: ForgeHeroProps) {
+export function ForgeHero({ credits, freeCredits = 0, paidCredits = 0, creditsLoading, onStartCreating, onOpenCowriter }: ForgeHeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
@@ -145,9 +147,14 @@ export function ForgeHero({ credits, creditsLoading, onStartCreating, onOpenCowr
           initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.35 }}
           className="flex justify-center mb-5"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/45 backdrop-blur-xl text-amber-100 text-xs font-medium border border-amber-400/30">
+          <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4 py-1.5 rounded-full bg-black/45 backdrop-blur-xl text-amber-100 text-xs font-medium border border-amber-400/30">
             <Award className="w-3.5 h-3.5 text-amber-300" />
-            {creditsLoading ? "..." : credits} credits available
+            {creditsLoading ? "..." : `${credits.toLocaleString()} credits available`}
+            {!creditsLoading && (
+              <span className="text-amber-100/70">
+                ({freeCredits.toLocaleString()} free + {paidCredits.toLocaleString()} paid)
+              </span>
+            )}
           </span>
         </motion.div>
 

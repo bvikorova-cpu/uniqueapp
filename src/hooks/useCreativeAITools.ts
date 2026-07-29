@@ -40,6 +40,8 @@ export const useCreativeAITools = () => {
       invokeCreative("creative-style-transfer", { text, targetStyle }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
       window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Style transformation complete!");
     },
@@ -50,6 +52,8 @@ export const useCreativeAITools = () => {
       invokeCreative("creative-voice-to-script", { transcript, category }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
       window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Voice transcript turned into a draft!");
     },
@@ -60,6 +64,8 @@ export const useCreativeAITools = () => {
       invokeCreative("creative-room-ai", { roomId, action, prompt }),
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
       queryClient.invalidateQueries({ queryKey: ["room-messages", vars.roomId] });
       window.dispatchEvent(new Event("ai-credits-updated"));
     },

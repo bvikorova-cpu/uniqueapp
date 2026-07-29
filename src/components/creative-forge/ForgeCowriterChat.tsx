@@ -92,6 +92,8 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
       }
       setMessages([...next, { role: "assistant", content: reply }]);
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
       window.dispatchEvent(new Event("ai-credits-updated"));
     } catch (e: any) {
       toast.error(e?.message || "Co-writer failed");

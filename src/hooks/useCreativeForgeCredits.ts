@@ -23,28 +23,24 @@ export const useCreativeForgeCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { data, error } = await supabase
-        .from("creative_forge_credits")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const [{ data: paidRow, error: paidError }, { data: freeRow, error: freeError }] = await Promise.all([
+        supabase.from("ai_credits").select("credits_remaining, total_credits_purchased").eq("user_id", user.id).maybeSingle(),
+        (supabase as any).from("free_tier_credits").select("balance").eq("user_id", user.id).maybeSingle(),
+      ]);
 
-      if (error) throw error;
+      if (paidError) throw paidError;
+      if (freeError) throw freeError;
 
-      if (!data) {
-        const { data: newData, error: insertError } = await supabase
-          .from("creative_forge_credits")
-          .insert({ user_id: user.id,
-            credits_remaining: 0,
-            total_credits_purchased: 0 })
-          .select()
-          .single();
+      const paidCredits = paidRow?.credits_remaining || 0;
+      const freeCredits = (freeRow as any)?.balance || 0;
 
-        if (insertError) throw insertError;
-        return newData;
-      }
-
-      return data;
+      return {
+        user_id: user.id,
+        credits_remaining: paidCredits + freeCredits,
+        free_credits_remaining: freeCredits,
+        paid_credits_remaining: paidCredits,
+        total_credits_purchased: paidRow?.total_credits_purchased || 0,
+      };
     } });
 
   const purchaseCredits = async (creditAmount: number): Promise<string | null> => {
@@ -81,10 +77,14 @@ export const useCreativeForgeCredits = () => {
           body: { sessionId, credits } });
         if (legacy.error) throw legacy.error;
         queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+        queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+        queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
         return legacy.data;
       }
 
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
       return data;
     } catch (error) {
       console.error("Error verifying payment:", error);
@@ -94,6 +94,8 @@ export const useCreativeForgeCredits = () => {
 
   const refreshCredits = () => {
     queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+    queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+    queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
   };
 
   return { credits,
