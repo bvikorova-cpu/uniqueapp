@@ -310,6 +310,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const fab = (
     <div className={cn(
       "flex flex-col items-end gap-2",
+      docked && "hidden md:flex",
       !docked && "fixed bottom-24 right-4 md:right-6 z-[9998]"
     )}>
       {supported && !docked && (
