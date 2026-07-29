@@ -21,7 +21,7 @@ export function FloatingAssistantDock({ children, className }: FloatingAssistant
       className={cn(
         isAiGeneration
           ? "hidden md:fixed md:bottom-6 md:right-6 md:z-[9990] md:flex"
-          : "fixed bottom-[calc(11rem+env(safe-area-inset-bottom))] right-1 md:bottom-6 md:right-6 z-[9990] flex",
+          : "hidden md:fixed md:bottom-6 md:right-6 md:z-[9990] md:flex",
         "flex-col-reverse items-end gap-1.5 md:gap-3 scale-75 origin-bottom-right md:scale-100",
         className
       )}
