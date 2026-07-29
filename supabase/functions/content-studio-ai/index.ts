@@ -44,8 +44,8 @@ Deno.serve(async (req) => {
       case "ab-test":
         result = await callAI(apiKey, [
           { role: "system", content: "You are an expert A/B testing copywriter. Generate multiple high-converting variants and recommend the best one with reasoning." },
-          { role: "user", content: `Generate ${count || 3} A/B test variants for:\nTopic: ${topic}\nContent Type: ${contentType || "email_subject"}\n${context ? `Context: ${context}` : ""}\n\nEach variant should be unique in approach. Recommend the best variant.` },
-        ]);
+          { role: "user", content: `Generate ${count || 3} A/B test variants for:\nTopic: ${topic}\nContent Type: ${contentType || "email_subject"}\n${context ? `Context: ${context}` : ""}\n\nEach variant should be unique in approach. Recommend the best variant. Return JSON: {"variants":[{"title":"","content":"","angle":""}],"recommendation":""}` },
+        ], true);
         break;
       case "brand-voice":
         result = await callAI(apiKey, [
@@ -56,8 +56,8 @@ Deno.serve(async (req) => {
       case "bulk-generate":
         result = await callAI(apiKey, [
           { role: "system", content: "You are a social media content expert. Generate unique, engaging posts that each take a different angle on the topic." },
-          { role: "user", content: `Generate ${postCount || 5} unique ${platform || "social media"} posts about: ${topic}\n\nPlatform guidelines: ${platformGuide[platform] || "General social media"}\n${guidelines ? `Brand guidelines: ${guidelines}` : ""}\n\nEach post must be unique with a different angle, hook, or perspective.` },
-        ]);
+          { role: "user", content: `Generate ${postCount || 5} unique ${platform || "social media"} posts about: ${topic}\n\nPlatform guidelines: ${platformGuide[platform] || "General social media"}\n${guidelines ? `Brand guidelines: ${guidelines}` : ""}\n\nEach post must be unique with a different angle, hook, or perspective. Return JSON: {"posts":[{"content":"","hashtags":[""]}]}` },
+        ], true);
         break;
       case "plagiarism":
         result = await callAI(apiKey, [
@@ -66,19 +66,19 @@ Deno.serve(async (req) => {
             content: `You are a plagiarism and originality checker. Analyze the provided text. Return JSON: { "originalityScore": number (0-100), "analysis": "string", "suggestions": ["string"] }`
           },
           { role: "user", content: content || "" },
-        ]);
+        ], true);
         break;
       case "repurpose":
         result = await callAI(apiKey, [
           { role: "system", content: "You are a content repurposing expert. Transform the given content into the requested formats. Return valid JSON only." },
-          { role: "user", content: `Transform this content into multiple formats. Return a JSON object with format names as keys and repurposed content as string values.\n\nSource content:\n${sourceContent || content || ""}` },
-        ]);
+          { role: "user", content: `Transform this content into multiple formats. Return JSON: {"results":{"<format name>":"<repurposed content>"}}.\n\nSource content:\n${sourceContent || content || ""}` },
+        ], true);
         break;
       case "seo-analyze":
         result = await callAI(apiKey, [
           { role: "system", content: "You are an expert SEO analyst. Analyze content for keyword optimization, readability, and provide actionable improvements." },
-          { role: "user", content: `Analyze this content for SEO optimization with target keyword "${targetKeyword || ""}".\n\nContent:\n${(content || "").substring(0, 5000)}\n\nProvide: overall score (0-100), keyword density analysis, readability score, 5+ improvement suggestions, and a suggested meta description.` },
-        ]);
+          { role: "user", content: `Analyze this content for SEO optimization with target keyword "${targetKeyword || ""}".\n\nContent:\n${(content || "").substring(0, 5000)}\n\nProvide: overall score (0-100), keyword density analysis, readability score, 5+ improvement suggestions, and a suggested meta description. Return JSON: {"score":0,"keywordDensity":"","readability":"","suggestions":[""],"metaDescription":""}` },
+        ], true);
         break;
       case "templates":
         result = await callAI(apiKey, [
