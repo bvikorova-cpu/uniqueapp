@@ -68971,6 +68971,15 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_content_studio_stats: {
+        Args: never
+        Returns: {
+          active_creators: number
+          ai_generations: number
+          content_created: number
+          total_uses: number
+        }[]
+      }
       get_coupon_discount_code: {
         Args: { _listing_id: string }
         Returns: string

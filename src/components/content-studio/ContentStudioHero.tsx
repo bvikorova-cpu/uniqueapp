@@ -1,23 +1,37 @@
 import { motion } from "framer-motion";
 import { Sparkles, FileText, Image as ImageIcon, Users } from "lucide-react";
-import { useLiveStats } from "@/hooks/useLiveStats";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import heroVideo from "@/assets/content-studio-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const ContentStudioHero = () => {
-  const { stats } = useLiveStats([
-    { key: "content", table: "ai_generated_content" },
-    { key: "creators", table: "ai_credits" },
-    { key: "usage", table: "ai_usage_history" },
-    { key: "images", table: "ai_generated_content" },
-  ]);
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ["content-studio-stats"],
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).rpc("get_content_studio_stats");
+      if (error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      return {
+        content: Number(row?.content_created ?? 0),
+        generations: Number(row?.ai_generations ?? 0),
+        creators: Number(row?.active_creators ?? 0),
+        uses: Number(row?.total_uses ?? 0),
+      };
+    },
+  });
+
+  const fmt = (n?: number) => (isLoading ? "…" : (n ?? 0).toLocaleString());
 
   const statItems = [
-    { label: "Content Created", value: stats.content || 0, icon: FileText },
-    { label: "AI Generations", value: stats.usage || 0, icon: ImageIcon },
-    { label: "Active Creators", value: stats.creators || 0, icon: Users },
-    { label: "Total Uses", value: stats.images || 0, icon: Sparkles },
+    { label: "Content Created", value: fmt(stats?.content), icon: FileText },
+    { label: "AI Generations", value: fmt(stats?.generations), icon: ImageIcon },
+    { label: "Active Creators", value: fmt(stats?.creators), icon: Users },
+    { label: "Credits Used", value: fmt(stats?.uses), icon: Sparkles },
   ];
+
 
   return (
     <>
@@ -71,8 +85,9 @@ const ContentStudioHero = () => {
               >
                 <Icon className="h-5 w-5 text-primary mx-auto mb-1" />
                 <div className="text-xl md:text-2xl font-black text-white">
-                  {stat.value || "—"}
+                  {stat.value}
                 </div>
+
                 <div className="text-[10px] md:text-xs text-white/60 uppercase tracking-wider">
                   {stat.label}
                 </div>
