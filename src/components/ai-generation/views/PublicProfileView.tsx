@@ -5,29 +5,38 @@ import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export const PublicProfileView = () => {
   const [enabled, setEnabled] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [user, setUser] = useState<{ id: string; email?: string | null } | null>(null);
-  const profileUrl = user ? `${window.location.origin}/u/${user.id}/ai-gallery` : "";
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const profileUrl = user?.id ? `${window.location.origin}/u/${user.id}/ai-gallery` : "";
 
   useEffect(() => {
+    if (loading || !user?.id) return;
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) return;
-      setUser({ id: data.user.id, email: data.user.email });
-      const { data: row } = await supabase
+      const { data: row, error } = await supabase
         .from("ai_public_profiles")
         .select("enabled")
-        .eq("user_id", data.user.id)
+        .eq("user_id", user.id)
         .maybeSingle();
+      if (error) {
+        toast.error("Could not load public profile setting");
+        return;
+      }
       setEnabled(!!row?.enabled);
     })();
-  }, []);
+  }, [loading, user?.id]);
 
   const toggle = async (v: boolean) => {
-    if (!user) { toast.error("Please sign in first"); return; }
+    if (!user?.id) {
+      toast.error("Please sign in first");
+      navigate("/auth");
+      return;
+    }
     const prev = enabled;
     setEnabled(v);
     setSaving(true);
@@ -68,8 +77,12 @@ export const PublicProfileView = () => {
             <p className="font-bold">Enable public AI gallery</p>
             <p className="text-xs text-muted-foreground">Visitors can browse your shared generations.</p>
           </div>
-          <Switch checked={enabled} disabled={saving || !user} onCheckedChange={toggle} />
+          <Switch checked={enabled} disabled={saving || loading} onCheckedChange={toggle} />
         </div>
+
+        {!loading && !user && (
+          <Button className="w-full" onClick={() => navigate("/auth")}>Sign in to enable gallery</Button>
+        )}
 
         {enabled && user && (
           <div className="space-y-2">

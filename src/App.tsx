@@ -840,7 +840,7 @@ const App = () => {
                         <Route path="/gift/history" element={<ProtectedRoute><GiftHistory /></ProtectedRoute>} />
                         <Route path="/auction" element={<Auction />} />
                         <Route path="/my-auctions" element={<ProtectedRoute><MyAuctions /></ProtectedRoute>} />
-                        <Route path="/ai-generation" element={<AIGeneration />} />
+                        <Route path="/ai-generation" element={<ProtectedRoute><AIGeneration /></ProtectedRoute>} />
                         <Route path="/best-friend" element={<BestFriend />} />
                         <Route path="/cooking" element={<Cooking />} />
                         <Route path="/cooking-ai" element={<CookingAI />} />

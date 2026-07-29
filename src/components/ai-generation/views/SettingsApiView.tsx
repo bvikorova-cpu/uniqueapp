@@ -5,36 +5,45 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const FUNCTIONS_BASE = "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1";
 
 export const SettingsApiView = () => {
   const [watermark, setWatermark] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (loading || !user?.id) return;
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) return;
-      setUserId(data.user.id);
-      const { data: row } = await supabase
+      const { data: row, error } = await supabase
         .from("ai_public_profiles")
         .select("watermark_enabled")
-        .eq("user_id", data.user.id)
+        .eq("user_id", user.id)
         .maybeSingle();
+      if (error) {
+        toast.error("Could not load watermark setting");
+        return;
+      }
       if (row) setWatermark(row.watermark_enabled !== false);
     })();
-  }, []);
+  }, [loading, user?.id]);
 
   const toggle = async (v: boolean) => {
-    if (!userId) { toast.error("Please sign in first"); return; }
+    if (!user?.id) {
+      toast.error("Please sign in first");
+      navigate("/auth");
+      return;
+    }
     const prev = watermark;
     setWatermark(v);
     setSaving(true);
     const { error } = await supabase
       .from("ai_public_profiles")
-      .upsert({ user_id: userId, watermark_enabled: v, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+      .upsert({ user_id: user.id, watermark_enabled: v, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
     setSaving(false);
     if (error) {
       setWatermark(prev);
@@ -74,8 +83,11 @@ export const SettingsApiView = () => {
             <p className="font-bold flex items-center gap-2"><Key className="w-4 h-4 text-primary" /> Watermark on downloads</p>
             <p className="text-xs text-muted-foreground">Free users get watermarked exports. Pro users can disable.</p>
           </div>
-          <Switch checked={watermark} disabled={saving || !userId} onCheckedChange={toggle} />
+          <Switch checked={watermark} disabled={saving || loading} onCheckedChange={toggle} />
         </div>
+        {!loading && !user && (
+          <Button className="w-full" onClick={() => navigate("/auth")}>Sign in to save settings</Button>
+        )}
       </div>
 
       <div className="rounded-xl border border-border bg-card/80 p-4 space-y-3">
