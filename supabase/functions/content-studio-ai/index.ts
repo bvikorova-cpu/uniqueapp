@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireAiCredits } from "../_shared/credit-check.ts";
+import { askAI, UnifiedAIError } from "../_shared/unifiedAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -7,14 +8,10 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 const ACTION_COST: Record<string, number> = { "ab-test": 4, "brand-voice": 3, "bulk-generate": 5, "plagiarism": 3,
   "repurpose": 4, "seo-analyze": 4, "templates": 3 };
 
-async function callAI(apiKey: string, messages: any[]) {
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "gpt-4o-mini", messages }) });
-  if (!response.ok) throw new Error(`AI error: ${response.status}`);
-  const data = await response.json();
-  const content = data.choices?.[0]?.message?.content || "";
+async function callAI(_apiKey: string | undefined, messages: any[]) {
+  const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
+  const user = messages.filter((m) => m.role !== "system").map((m) => m.content).join("\n\n");
+  const content = await askAI(system, user, { model: "gpt-4o-mini" });
   try { return JSON.parse(content); } catch { return { result: content }; }
 }
 
@@ -29,7 +26,6 @@ Deno.serve(async (req) => {
   try {
     const { action, topic, content, context, details, prompt, sourceContent, targetKeyword, count, contentType, platform, postCount, guidelines, systemPrompt, ...params } = await req.json();
     const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) throw new Error("API key not configured");
 
     if (!action || !(action in ACTION_COST)) {
       return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -90,6 +86,8 @@ Deno.serve(async (req) => {
     try { await auth.deduct!(); } catch (e) { console.error("[content-studio-ai] deduct-failed", e); }
     return new Response(JSON.stringify({ ...result, creditsCharged: cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const status = e instanceof UnifiedAIError ? (e.status === 402 ? 402 : e.status === 429 ? 429 : 500) : 500;
+    console.error("[content-studio-ai] failed", e?.message);
+    return new Response(JSON.stringify({ error: e?.message || "AI request failed" }), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
