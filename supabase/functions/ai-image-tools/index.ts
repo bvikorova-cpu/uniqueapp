@@ -64,16 +64,22 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    const authSupabase = createClient(supabaseUrl, supabaseAnonKey);
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return json({ error: "Missing Authorization header" }, 401);
     const token = authHeader.replace("Bearer ", "");
-    const { data: { user } } = await supabase.auth.getUser(token);
+    const { data: { user } } = await authSupabase.auth.getUser(token);
     if (!user) return json({ error: "Not authenticated" }, 401);
+
+    const supabase = createClient(
+      supabaseUrl,
+      supabaseServiceKey || supabaseAnonKey,
+      supabaseServiceKey ? undefined : { global: { headers: { Authorization: authHeader } } },
+    );
 
     const body = await req.json().catch(() => ({}));
     const { action, prompt, imageUrl, style, targetSize, editPrompt, region, variationIndex,
