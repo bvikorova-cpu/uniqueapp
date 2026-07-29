@@ -49,33 +49,33 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
   return (
     <>
       <FloatingHowItWorks title={"Image Editor View - How it works"} steps={[{ title: 'Open', desc: 'Access the Image Editor View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Image Editor View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-4xl mx-auto space-y-6">
-      <Card className="border-2 border-primary/20">
-        <CardHeader>
+      <div className="ai-mobile-tool-shell ai-editor-mobile-guard w-full max-w-4xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
+      <Card className="ai-editor-mobile-card border-2 border-primary/20">
+        <CardHeader className="ai-editor-card-header">
           <CardTitle className="flex items-center gap-2"><Pencil className="w-5 h-5 text-primary" /> AI Image Editor</CardTitle>
           <CardDescription>Describe your image and the edits you want — 3 credits per edit</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="ai-editor-card-content space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Describe the original image</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="e.g. A portrait of a woman with brown hair in a garden..."
-              className="w-full min-h-[80px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+              className="ai-editor-mobile-field w-full min-h-[80px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
               disabled={loading}
             />
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Quick Edit Actions</label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="ai-editor-actions-grid grid grid-cols-3 gap-2">
               {editActions.map((a) => (
                 <Button
                   key={a.label}
                   variant="outline"
                   size="sm"
-                  className="flex-col h-auto py-3 gap-1"
+                  className="ai-editor-quick-action flex-col h-auto py-3 gap-1"
                   disabled={loading || !description.trim()}
                   onClick={() => handleEdit(a.instruction)}
                 >
@@ -92,12 +92,12 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
               value={editInstruction}
               onChange={(e) => setEditInstruction(e.target.value)}
               placeholder="e.g. Change the background to a sunset, add warm lighting..."
-              className="w-full min-h-[80px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+              className="ai-editor-mobile-field w-full min-h-[80px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
               disabled={loading}
             />
           </div>
 
-          <Button onClick={() => handleEdit()} disabled={loading || !description.trim() || !editInstruction.trim()} size="lg" className="w-full">
+          <Button onClick={() => handleEdit()} disabled={loading || !description.trim() || !editInstruction.trim()} size="lg" className="ai-mobile-safe-action w-full">
             {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Editing...</> : <><Pencil className="w-4 h-4 mr-2" />Apply Edit (3 credits)</>}
           </Button>
 

@@ -165,6 +165,44 @@
     min-width: 0 !important;
     box-sizing: border-box !important;
   }
+
+  .ai-editor-mobile-guard {
+    width: calc(100vw - 12rem) !important;
+    max-width: calc(100vw - 12rem) !important;
+    min-width: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 28rem !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .ai-editor-mobile-card,
+  .ai-editor-mobile-field,
+  .ai-editor-actions-grid,
+  .ai-editor-quick-action,
+  .ai-editor-mobile-guard .ai-mobile-safe-action {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .ai-editor-card-header,
+  .ai-editor-card-content {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .ai-editor-actions-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ai-editor-quick-action {
+    min-height: 3.25rem !important;
+    white-space: normal !important;
+    line-height: 1.15 !important;
+  }
 }
 
 /* Dark Interrogation Mode — global red noir filter */
