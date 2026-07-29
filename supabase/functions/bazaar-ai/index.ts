@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callOpenAI } from "../_shared/openai.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -7,12 +8,10 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  // Early auth pre-check (returns 401 instead of crashing inside try → 500)
   const _earlyAuth = req.headers.get("Authorization");
   if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
   try {
@@ -32,10 +31,7 @@ serve(async (req) => {
     }
 
     const { action, ...params } = await req.json();
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OpenAI API key not configured");
 
-    // Credit costs per action
     const creditCosts: Record<string, number> = { "price-estimator": 3,
       "listing-optimizer": 3,
       "buyer-match": 4,
@@ -44,7 +40,6 @@ serve(async (req) => {
     const cost = creditCosts[action];
     if (!cost) throw new Error(`Unknown action: ${action}`);
 
-    // Check & deduct credits
     const { data: credits } = await supabase
       .from("ai_credits")
       .select("*")
@@ -63,107 +58,28 @@ serve(async (req) => {
     switch (action) {
       case "price-estimator": {
         systemPrompt = "You are an expert marketplace pricing analyst. Analyze the item and provide a detailed fair market price estimate.";
-        userPrompt = `Analyze this item for pricing:
-Title: ${params.title || "N/A"}
-Category: ${params.category || "N/A"}
-Condition: ${params.condition || "N/A"}
-Description: ${params.description || "N/A"}
-Seller's asking price: €${params.askingPrice || "Not set"}
-
-Provide:
-1. **Fair Market Value**: Estimated price range (€)
-2. **Price Analysis**: How the asking price compares to market value
-3. **Pricing Strategy**: Suggestions to maximize sale price
-4. **Market Demand**: Current demand level for this type of item (High/Medium/Low)
-5. **Quick Sale Price**: Price for a fast sale
-6. **Premium Price**: Maximum you could ask with patience
-7. **Key Value Factors**: What affects this item's value most`;
+        userPrompt = `Analyze this item for pricing:\nTitle: ${params.title || "N/A"}\nCategory: ${params.category || "N/A"}\nCondition: ${params.condition || "N/A"}\nDescription: ${params.description || "N/A"}\nSeller's asking price: €${params.askingPrice || "Not set"}\n\nProvide:\n1. **Fair Market Value**: Estimated price range (€)\n2. **Price Analysis**: How the asking price compares to market value\n3. **Pricing Strategy**: Suggestions to maximize sale price\n4. **Market Demand**: Current demand level for this type of item (High/Medium/Low)\n5. **Quick Sale Price**: Price for a fast sale\n6. **Premium Price**: Maximum you could ask with patience\n7. **Key Value Factors**: What affects this item's value most`;
         break;
       }
-
       case "listing-optimizer": {
         systemPrompt = "You are a conversion optimization expert for online marketplaces. Rewrite listings for maximum engagement and sales.";
-        userPrompt = `Optimize this listing for maximum sales:
-Title: ${params.title || "N/A"}
-Description: ${params.description || "N/A"}
-Category: ${params.category || "N/A"}
-Condition: ${params.condition || "N/A"}
-Price: €${params.price || "N/A"}
-
-Provide:
-1. **Optimized Title**: SEO-friendly, attention-grabbing title (max 80 chars)
-2. **Optimized Description**: Compelling, detailed description with bullet points
-3. **Suggested Tags**: 5-8 search keywords
-4. **Photo Tips**: Specific advice for product photography
-5. **Pricing Psychology**: Price presentation tips
-6. **Urgency Triggers**: Phrases to create buying urgency
-7. **Trust Signals**: Elements to build buyer confidence`;
+        userPrompt = `Optimize this listing for maximum sales:\nTitle: ${params.title || "N/A"}\nDescription: ${params.description || "N/A"}\nCategory: ${params.category || "N/A"}\nCondition: ${params.condition || "N/A"}\nPrice: €${params.price || "N/A"}\n\nProvide:\n1. **Optimized Title**: SEO-friendly, attention-grabbing title (max 80 chars)\n2. **Optimized Description**: Compelling, detailed description with bullet points\n3. **Suggested Tags**: 5-8 search keywords\n4. **Photo Tips**: Specific advice for product photography\n5. **Pricing Psychology**: Price presentation tips\n6. **Urgency Triggers**: Phrases to create buying urgency\n7. **Trust Signals**: Elements to build buyer confidence`;
         break;
       }
-
       case "buyer-match": {
         systemPrompt = "You are a marketplace matchmaking expert. Analyze items and identify ideal buyer profiles and selling strategies.";
-        userPrompt = `Find ideal buyers for this item:
-Title: ${params.title || "N/A"}
-Category: ${params.category || "N/A"}
-Condition: ${params.condition || "N/A"}
-Description: ${params.description || "N/A"}
-Price: €${params.price || "N/A"}
-
-Provide:
-1. **Ideal Buyer Profiles**: 3-4 specific buyer personas who would want this item
-2. **Target Demographics**: Age, interests, lifestyle of likely buyers
-3. **Best Selling Channels**: Where to reach these buyers
-4. **Timing Strategy**: Best time/season to list this item
-5. **Cross-Sell Opportunities**: Related items buyers might also want
-6. **Marketing Angles**: Different ways to position this item
-7. **Negotiation Tips**: How to handle different buyer types`;
+        userPrompt = `Find ideal buyers for this item:\nTitle: ${params.title || "N/A"}\nCategory: ${params.category || "N/A"}\nCondition: ${params.condition || "N/A"}\nDescription: ${params.description || "N/A"}\nPrice: €${params.price || "N/A"}\n\nProvide:\n1. **Ideal Buyer Profiles**: 3-4 specific buyer personas who would want this item\n2. **Target Demographics**: Age, interests, lifestyle of likely buyers\n3. **Best Selling Channels**: Where to reach these buyers\n4. **Timing Strategy**: Best time/season to list this item\n5. **Cross-Sell Opportunities**: Related items buyers might also want\n6. **Marketing Angles**: Different ways to position this item\n7. **Negotiation Tips**: How to handle different buyer types`;
         break;
       }
-
       case "fraud-detector": {
         systemPrompt = "You are a marketplace fraud detection and authenticity verification expert. Analyze listings for red flags and provide trust assessments.";
-        userPrompt = `Analyze this listing for authenticity and potential issues:
-Title: ${params.title || "N/A"}
-Category: ${params.category || "N/A"}
-Condition: ${params.condition || "N/A"}
-Description: ${params.description || "N/A"}
-Price: €${params.price || "N/A"}
-Seller info: ${params.sellerInfo || "N/A"}
-
-Provide:
-1. **Trust Score**: 0-100 rating with explanation
-2. **Red Flags**: Any concerning signals detected (or "None found")
-3. **Authenticity Assessment**: Likelihood the item is genuine
-4. **Price Fairness**: Whether the price seems legitimate for the item
-5. **Description Quality**: How detailed and honest the description appears
-6. **Safety Tips**: Recommendations for safe transaction
-7. **Verification Checklist**: Questions buyer should ask before purchasing`;
+        userPrompt = `Analyze this listing for authenticity and potential issues:\nTitle: ${params.title || "N/A"}\nCategory: ${params.category || "N/A"}\nCondition: ${params.condition || "N/A"}\nDescription: ${params.description || "N/A"}\nPrice: €${params.price || "N/A"}\nSeller info: ${params.sellerInfo || "N/A"}\n\nProvide:\n1. **Trust Score**: 0-100 rating with explanation\n2. **Red Flags**: Any concerning signals detected (or "None found")\n3. **Authenticity Assessment**: Likelihood the item is genuine\n4. **Price Fairness**: Whether the price seems legitimate for the item\n5. **Description Quality**: How detailed and honest the description appears\n6. **Safety Tips**: Recommendations for safe transaction\n7. **Verification Checklist**: Questions buyer should ask before purchasing`;
         break;
       }
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        max_completion_tokens: 1500 }) });
+    const result = await callOpenAI({ system: systemPrompt, user: userPrompt, model: "gpt-4o-mini", max_completion_tokens: 1500 });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("OpenAI error:", errText);
-      throw new Error("AI processing failed");
-    }
-
-    const aiData = await response.json();
-    const result = aiData.choices?.[0]?.message?.content || "No result generated";
-
-    // Deduct credits
     if (credits) {
       await supabase
         .from("ai_credits")
@@ -171,7 +87,6 @@ Provide:
         .eq("user_id", user.id);
     }
 
-    // Log usage
     await supabase.from("ai_usage_history").insert({
       user_id: user.id,
       usage_type: `bazaar_${action}`,
@@ -182,8 +97,7 @@ Provide:
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("bazaar-ai error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: error.message.includes("Insufficient") ? 402 : 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
