@@ -80,7 +80,7 @@ export const GenerateView = ({ onCreditsUsed }: GenerateViewProps) => {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) { toast.error("Please enter a description"); return; }
-    setLoading(true); setGeneratedImage(null);
+    setLoading(true); setGeneratedImage(null); setShared(false);
     try {
       const seedNum = seed ? Number(seed) : undefined;
       const { data, error } = await supabase.functions.invoke('ai-image-tools', {
