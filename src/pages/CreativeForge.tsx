@@ -296,13 +296,13 @@ export default function CreativeForge() {
         />
         <div className="fixed inset-0 pointer-events-none z-0"><FloatingParticles /></div>
         {sharedModals}
-        <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12 max-w-7xl">
+        <div className="relative z-10 container mx-auto px-3 sm:px-4 pt-20 pb-12 max-w-7xl">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4 flex items-center gap-3">
             <Button variant="ghost" onClick={() => setActiveView("hub")} className="gap-2">
               <ArrowLeft className="h-4 w-4" /> {"Back to CreativeForge"}
             </Button>
             {activeView === "create" && (
-              <div className="flex flex-wrap gap-2 ml-auto">
+              <div className="flex flex-wrap gap-2.5 ml-auto">
                 <Button variant="outline" size="sm" onClick={() => setAiStudioOpen(true)} className="gap-1 border-primary/40 text-primary hover:bg-primary/10"><SparkleIcon className="h-3.5 w-3.5" /> AI Studio</Button>
                 <Button variant="outline" size="sm" onClick={() => setBrandVoiceOpen(true)} className="gap-1"><Palette className="h-3.5 w-3.5" /> {activeBrandVoice ? `Voice: ${activeBrandVoice.name}` : "Brand Voice"}</Button>
                 <Button variant="outline" size="sm" onClick={() => setStoryBibleOpen(true)} className="gap-1"><BookMarked className="h-3.5 w-3.5" /> Story Bible</Button>
@@ -500,7 +500,7 @@ export default function CreativeForge() {
     <div className="relative min-h-screen">
       {sharedModals}
       <div className="fixed inset-0 pointer-events-none z-0"><FloatingParticles /></div>
-      <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12 max-w-7xl">
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 pt-20 pb-12 max-w-7xl">
         <ForgeHero
           credits={availableCredits}
           freeCredits={credits?.free_credits_remaining || 0}
@@ -511,7 +511,7 @@ export default function CreativeForge() {
         />
 
         {/* Premium AI Tools Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           <button onClick={() => setAiStudioOpen(true)} className="group p-4 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-xl hover:border-primary/60 hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] transition-all text-left">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-accent shadow-lg group-hover:scale-110 transition-transform"><SparkleIcon className="h-5 w-5 text-white" /></div>
@@ -532,7 +532,7 @@ export default function CreativeForge() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <button onClick={() => setStyleOpen(true)} className="group p-4 rounded-2xl border border-amber-700/30 bg-gradient-to-br from-[hsl(30,15%,9%)]/80 to-[hsl(0,20%,8%)]/80 backdrop-blur-xl hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(251,191,36,0.2)] transition-all text-left">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-700 to-rose-700 shadow-lg group-hover:scale-110 transition-transform">
