@@ -32,11 +32,25 @@ export function ForgeHero({ credits, creditsLoading, onStartCreating, onOpenCowr
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const { stats, loading } = useLiveStats([
-    { key: "writers", table: "creative_forge_credits" },
-    { key: "projects", table: "creative_forge_projects" },
-    { key: "content", table: "ai_generated_content" },
-  ]);
+  const [stats, setStats] = useState({ writers: 0, projects: 0, drafts: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data, error } = await (supabase as any).rpc("get_creative_forge_stats");
+      if (!active) return;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!error && row) {
+        setStats({
+          writers: Number(row.writers) || 0,
+          projects: Number(row.projects) || 0,
+          drafts: Number(row.drafts) || 0 });
+      }
+      setLoading(false);
+    })();
+    return () => { active = false; };
+  }, []);
 
   useEffect(() => {
     if (videoRef.current) videoRef.current.play().catch(() => setIsPlaying(false));
@@ -46,10 +60,11 @@ export function ForgeHero({ credits, creditsLoading, onStartCreating, onOpenCowr
   const toggleMute = () => { if (!videoRef.current) return; videoRef.current.muted = !isMuted; setIsMuted(!isMuted); };
 
   const heroStats = [
-    { icon: Users, label: "Writers", value: stats.writers || 0, suffix: "+" },
-    { icon: FileText, label: "Projects", value: stats.projects || 0, suffix: "+" },
-    { icon: Star, label: "AI Drafts", value: stats.content || 0, suffix: "+" },
+    { icon: Users, label: "Writers", value: stats.writers, suffix: "" },
+    { icon: FileText, label: "Projects", value: stats.projects, suffix: "" },
+    { icon: Star, label: "AI Drafts", value: stats.drafts, suffix: "" },
   ];
+
 
   return (
     <div className="relative h-[78vh] min-h-[560px] w-full overflow-hidden rounded-3xl border border-amber-700/30 mb-8 shadow-[0_0_80px_-20px_rgba(180,83,9,0.5)]">
