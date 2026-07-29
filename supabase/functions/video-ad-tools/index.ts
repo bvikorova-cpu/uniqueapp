@@ -92,7 +92,7 @@ serve(async (req) => {
 
     if (!isAdmin) {
       const { data: credits } = await supabase
-        .from('video_ad_credits').select('credits_remaining')
+        .from('ai_credits').select('credits_remaining')
         .eq('user_id', user.id).maybeSingle();
 
       if (!credits || credits.credits_remaining < cost) {
@@ -101,18 +101,26 @@ serve(async (req) => {
       }
       prevCredits = credits.credits_remaining;
 
-      await supabase.from('video_ad_credits')
-        .update({ credits_remaining: prevCredits - cost })
-        .eq('user_id', user.id);
+      const { error: deductErr } = await supabase.rpc('deduct_ai_credits', {
+        p_user_id: user.id,
+        p_amount: cost,
+        p_reason: `video_ad:${action}`,
+        p_source: 'video-ad-tools' });
+      if (deductErr) {
+        return new Response(JSON.stringify({ error: 'Insufficient credits. Please purchase more.' }), {
+          status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
       refundOnError = true;
     }
 
     const refund = async () => {
       if (!refundOnError) return;
       try {
-        await supabase.from('video_ad_credits')
-          .update({ credits_remaining: prevCredits })
-          .eq('user_id', user.id);
+        await supabase.rpc('add_ai_credits', {
+          p_user_id: user.id,
+          p_amount: cost,
+          p_reason: `video_ad_refund:${action}`,
+          p_source: 'video-ad-tools' });
       } catch (_) { /* swallow */ }
     };
 
