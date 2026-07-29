@@ -139,7 +139,7 @@ const SEOKeywordOptimizer = ({ onBack }: Props) => {
           <div className="pb-16 sm:pb-3">
             <Button
               onClick={handleAnalyze}
-              disabled={loading || !content.trim() || !targetKeyword.trim()}
+              disabled={loading}
               className={cn(
                 "h-auto min-h-12 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-3 text-center leading-tight disabled:opacity-60",
                 "whitespace-normal break-words [overflow-wrap:anywhere]",
