@@ -433,7 +433,7 @@ serve(async (req) => {
       return json({ error: msg }, 500);
     }
 
-    if (cost > 0) {
+    if (cost > 0 && charged) {
       supabase.from("ai_usage_history").insert({
         user_id: user.id,
         usage_type: `image_${action}`,
