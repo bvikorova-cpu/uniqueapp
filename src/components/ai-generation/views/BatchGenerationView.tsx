@@ -49,7 +49,7 @@ export const BatchGenerationView = ({ onCreditsUsed }: Props) => {
   return (
     <>
       <FloatingHowItWorks title={"Batch Generation View - How it works"} steps={[{ title: 'Open', desc: 'Access the Batch Generation View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Batch Generation View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-3xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
+      <div className="ai-mobile-tool-shell ai-batch-mobile-guard w-full max-w-3xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
       <div>
         <h2 className="text-2xl font-black mb-2">📦 Batch Generation</h2>
         <p className="text-muted-foreground text-sm">Generate up to 10 images at once. Cost: 5 CR per image</p>
@@ -70,12 +70,12 @@ export const BatchGenerationView = ({ onCreditsUsed }: Props) => {
         )}
       </div>
 
-      <div className="flex flex-col items-stretch gap-3 p-3 rounded-xl bg-card/80 border min-[430px]:flex-row min-[430px]:items-center min-[430px]:justify-between">
+      <div className="ai-batch-summary-panel flex flex-col items-stretch gap-3 p-3 rounded-xl bg-card/80 border sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-bold">{validPrompts.length} images queued</p>
           <p className="text-xs text-muted-foreground">Total cost: {totalCost} CR</p>
         </div>
-        <Button onClick={generate} disabled={loading || validPrompts.length === 0} className="min-h-12 w-full max-w-[calc(100vw-11rem)] gap-2 whitespace-normal text-center leading-snug md:max-w-none min-[430px]:w-auto">
+        <Button onClick={generate} disabled={loading || validPrompts.length === 0} className="ai-mobile-safe-action min-h-12 w-full gap-2 whitespace-normal text-center leading-snug sm:w-auto">
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Layers className="w-4 h-4" />}
           {loading ? `${progress}/${validPrompts.length}` : `Generate All (${totalCost} CR)`}
         </Button>
