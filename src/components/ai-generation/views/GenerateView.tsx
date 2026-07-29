@@ -105,34 +105,34 @@ export const GenerateView = ({ onCreditsUsed, initialPrompt = "" }: GenerateView
   return (
     <>
       <FloatingHowItWorks title={"Generate View - How it works"} steps={[{ title: 'Open', desc: 'Access the Generate View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Generate View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-4xl mx-auto space-y-6">
-      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
-        <CardHeader>
+      <div className="ai-mobile-tool-shell ai-generate-mobile-guard w-full max-w-4xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
+      <Card className="ai-generate-mobile-card border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
+        <CardHeader className="ai-generate-card-header">
           <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-primary" />Custom AI Generation</CardTitle>
           <CardDescription>5 credits per image. Use Magic Enhance (1 CR) for richer prompts.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Describe the image you want to create in detail..." className="w-full min-h-[110px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary" disabled={loading} />
+        <CardContent className="ai-generate-card-content space-y-4">
+          <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Describe the image you want to create in detail..." className="ai-generate-mobile-field w-full min-h-[110px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary" disabled={loading} />
 
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" size="sm" onClick={handleEnhance} disabled={enhancing || !prompt.trim()} className="gap-1">
+            <Button type="button" variant="outline" size="sm" onClick={handleEnhance} disabled={enhancing || !prompt.trim()} className="ai-generate-enhance-button gap-1">
               {enhancing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand className="w-3 h-3" />}
               Magic Enhance (1 CR)
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="ai-generate-controls-grid grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
               <label className="text-xs font-bold mb-1 block text-muted-foreground">Aspect Ratio</label>
               <Select value={aspectRatio} onValueChange={setAspectRatio}>
-                <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="ai-generate-mobile-field h-9 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>{ASPECT_RATIOS.map(r => <SelectItem key={r.v} value={r.v}>{r.label}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
               <label className="text-xs font-bold mb-1 block text-muted-foreground">Model</label>
               <Select value={model} onValueChange={setModel}>
-                <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="ai-generate-mobile-field h-9 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="gpt-image-1">GPT-Image 1 (Default)</SelectItem>
                   <SelectItem value="gpt-image-1-hd">GPT-Image HD</SelectItem>
@@ -142,20 +142,20 @@ export const GenerateView = ({ onCreditsUsed, initialPrompt = "" }: GenerateView
             </div>
             <div>
               <label className="text-xs font-bold mb-1 block text-muted-foreground">Seed (optional)</label>
-              <Input type="number" placeholder="random" value={seed} onChange={(e) => setSeed(e.target.value)} className="h-9 text-xs" />
+              <Input type="number" placeholder="random" value={seed} onChange={(e) => setSeed(e.target.value)} className="ai-generate-mobile-field h-9 text-xs" />
             </div>
             <div className="col-span-2 sm:col-span-1">
               <label className="text-xs font-bold mb-1 block text-muted-foreground">Negative</label>
-              <Input placeholder="blurry, deformed..." value={negativePrompt} onChange={(e) => setNegativePrompt(e.target.value)} className="h-9 text-xs" />
+              <Input placeholder="blurry, deformed..." value={negativePrompt} onChange={(e) => setNegativePrompt(e.target.value)} className="ai-generate-mobile-field h-9 text-xs" />
             </div>
           </div>
 
-          <Button onClick={handleGenerate} disabled={loading || !prompt.trim()} size="lg" className="w-full">
+          <Button onClick={handleGenerate} disabled={loading || !prompt.trim()} size="lg" className="ai-mobile-safe-action w-full">
             {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><Wand2 className="w-4 h-4 mr-2" />Generate Image (5 credits)</>}
           </Button>
 
           {generatedImage && (
-            <div className="mt-6 border rounded-lg p-4 bg-background">
+            <div className="ai-generate-result-panel mt-6 border rounded-lg p-4 bg-background">
               <div className="relative group">
                 <img src={generatedImage} alt="Generated" className="w-full rounded-lg" />
               </div>
@@ -165,10 +165,10 @@ export const GenerateView = ({ onCreditsUsed, initialPrompt = "" }: GenerateView
                   link.download = `ai-generated-${Date.now()}.webp`;
                   document.body.appendChild(link); link.click(); document.body.removeChild(link);
                   toast.success("Downloading!");
-                }} className="min-h-11 whitespace-normal">
+                  }} className="ai-mobile-safe-action min-h-11 whitespace-normal">
                   <Download className="w-4 h-4 mr-2" />Download
                 </Button>
-                <Button onClick={handleShareToGallery} disabled={sharing || shared} className="min-h-11 whitespace-normal">
+                <Button onClick={handleShareToGallery} disabled={sharing || shared} className="ai-mobile-safe-action min-h-11 whitespace-normal">
                   {sharing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Globe2 className="w-4 h-4 mr-2" />}
                   {shared ? "Shared to Gallery" : "Share to Community Gallery"}
                 </Button>
@@ -178,7 +178,7 @@ export const GenerateView = ({ onCreditsUsed, initialPrompt = "" }: GenerateView
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="ai-generate-mobile-card">
         <CardHeader><CardTitle className="text-lg">Example Prompts</CardTitle></CardHeader>
         <CardContent>
           <div className="grid sm:grid-cols-2 gap-3">
