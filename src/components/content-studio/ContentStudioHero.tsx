@@ -14,22 +14,26 @@ const ContentStudioHero = () => {
       const { data, error } = await (supabase as any).rpc("get_content_studio_stats");
       if (error) throw error;
       const row = Array.isArray(data) ? data[0] : data;
+      const { data: authData } = await supabase.auth.getUser();
+      const signedIn = !!authData?.user;
       return {
-        content: Number(row?.content_created ?? 0),
-        generations: Number(row?.ai_generations ?? 0),
+        signedIn,
+        content: Number((signedIn ? row?.my_content : row?.content_created) ?? 0),
+        generations: Number((signedIn ? row?.my_generations : row?.ai_generations) ?? 0),
         creators: Number(row?.active_creators ?? 0),
-        uses: Number(row?.total_uses ?? 0),
+        uses: Number((signedIn ? row?.my_credits_used : row?.total_uses) ?? 0),
       };
     },
   });
 
   const fmt = (n?: number) => (isLoading ? "…" : (n ?? 0).toLocaleString());
 
+  const mine = stats?.signedIn ?? false;
   const statItems = [
-    { label: "Content Created", value: fmt(stats?.content), icon: FileText },
-    { label: "AI Generations", value: fmt(stats?.generations), icon: ImageIcon },
+    { label: mine ? "Your Content" : "Content Created", value: fmt(stats?.content), icon: FileText },
+    { label: mine ? "Your Generations" : "AI Generations", value: fmt(stats?.generations), icon: ImageIcon },
     { label: "Active Creators", value: fmt(stats?.creators), icon: Users },
-    { label: "Credits Used", value: fmt(stats?.uses), icon: Sparkles },
+    { label: mine ? "Your Credits Used" : "Credits Used", value: fmt(stats?.uses), icon: Sparkles },
   ];
 
 

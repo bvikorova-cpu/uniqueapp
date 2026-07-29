@@ -68977,6 +68977,9 @@ export type Database = {
           active_creators: number
           ai_generations: number
           content_created: number
+          my_content: number
+          my_credits_used: number
+          my_generations: number
           total_uses: number
         }[]
       }
