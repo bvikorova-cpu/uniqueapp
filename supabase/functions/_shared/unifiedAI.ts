@@ -121,14 +121,18 @@ function buildBody(
 
   // gpt-5.x rejects non-default temperature.
   if (opts.temperature !== undefined && !needsCompletionTokens) body.temperature = opts.temperature;
+  // Gemini "flash" models also spend hidden thinking tokens before emitting
+  // text, so a tight limit returns an empty answer. Keep headroom everywhere.
+  const isThinkingModel = needsCompletionTokens || /gemini/i.test(targetModel);
   if (requested) {
-    if (needsCompletionTokens) {
-      // Reasoning-capable models spend tokens before emitting text; keep headroom.
-      body.max_completion_tokens = Math.max(requested, 1024);
-    } else {
-      body.max_tokens = requested;
-    }
+    const budget = isThinkingModel ? Math.max(requested, 2048) : requested;
+    if (needsCompletionTokens) body.max_completion_tokens = budget;
+    else body.max_tokens = budget;
+  } else if (isThinkingModel) {
+    if (needsCompletionTokens) body.max_completion_tokens = 2048;
+    else body.max_tokens = 2048;
   }
+
 
   if (opts.response_format) body.response_format = opts.response_format;
   else if (opts.json) body.response_format = { type: "json_object" };
