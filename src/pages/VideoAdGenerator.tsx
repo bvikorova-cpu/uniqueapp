@@ -161,6 +161,8 @@ const tools = [
 const VideoAdGenerator = () => {
   const [activeView, setActiveView] = useState("dashboard");
   const queryClient = useQueryClient();
+  const { data: stats, isLoading: statsLoading } = useVideoAdStats();
+
 
   // Auto-verify Stripe credits payment on redirect back from Checkout
   useEffect(() => {
