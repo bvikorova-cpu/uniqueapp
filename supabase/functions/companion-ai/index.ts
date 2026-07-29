@@ -11,12 +11,10 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
     const { action, character, otherCompanions, historyFormatted, message, characterList, mood, context, ...params } = await req.json();
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) throw new Error("API key not configured");
     let result: any;
     switch (action) {
       case "group-chat":
-        result = await callAI(apiKey, [
+        result = await callAI([
           {
             role: "system",
             content: `${character?.system_prompt || "You are an AI companion."}\n\nYou are in a GROUP CHAT with ${otherCompanions || "other companions"}. Keep responses short (1-3 sentences). Stay in character. You may reference or respond to what other companions said. Be natural and conversational.`
@@ -26,7 +24,7 @@ Deno.serve(async (req) => {
         ]);
         break;
       case "memory-analyze":
-        result = await callAI(apiKey, [
+        result = await callAI([
           {
             role: "system",
             content: `Analyze this conversation and extract key memory points about the user. Return JSON: {"summary":"2-3 sentence summary of relationship and topics","memory_context":{"name":"user's name if mentioned","interests":["list"],"topics_discussed":["list"],"emotional_patterns":["list"]}}`
@@ -35,7 +33,7 @@ Deno.serve(async (req) => {
         ]);
         break;
       case "mood-matcher":
-        result = await callAI(apiKey, [
+        result = await callAI([
           {
             role: "system",
             content: `You are a mood analysis AI. Based on the user's mood, recommend the best AI companion from this list:\n${characterList || "[]"}\n\nRespond in JSON: {"recommended_companion":"name","reason":"why this companion is perfect","mood_insight":"brief analysis of user's emotional state","conversation_starters":["3 suggested opening messages"]}`
@@ -44,7 +42,7 @@ Deno.serve(async (req) => {
         ]);
         break;
       case "voice-message":
-        result = await callAI(apiKey, [
+        result = await callAI([
           { role: "system", content: character?.system_prompt || "You are an AI companion." },
           { role: "user", content: message || "" },
         ]);
