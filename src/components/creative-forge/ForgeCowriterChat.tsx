@@ -137,11 +137,15 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
         >
           <Card className="border-amber-700/40 bg-[hsl(30,15%,8%)]/95 backdrop-blur-2xl shadow-[0_0_60px_rgba(251,191,36,0.2)]">
             <CardHeader className="pb-3 border-b border-amber-700/30 flex-row items-center justify-between space-y-0">
-              <CardTitle className="flex items-center gap-2 text-amber-100" style={{ fontFamily: "Georgia, serif" }}>
+              <CardTitle className="flex items-center gap-2 flex-wrap text-amber-100" style={{ fontFamily: "Georgia, serif" }}>
                 <Sparkles className="h-5 w-5 text-amber-400" />
                 AI Co-Writer
                 <Badge variant="outline" className="border-amber-600/40 text-amber-300 text-[10px] ml-2">{COWRITER_COST} cr / msg</Badge>
+                {brandVoice && (
+                  <Badge variant="outline" className="border-amber-500/60 text-amber-200 text-[10px]">Voice: {brandVoice.name}</Badge>
+                )}
               </CardTitle>
+
               <Button variant="ghost" size="icon" onClick={onClose} className="text-amber-200 hover:text-amber-100 hover:bg-amber-900/20">
                 <X className="h-4 w-4" />
               </Button>
