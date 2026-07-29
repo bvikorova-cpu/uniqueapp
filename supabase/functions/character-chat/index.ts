@@ -2,11 +2,14 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
+import { callOpenAI } from "../_shared/openai.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const KIDS_SAFETY_PROMPT = `\n\nIMPORTANT SAFETY RULES (children ages 6-12):
+const KIDS_SAFETY_PROMPT = `
+
+IMPORTANT SAFETY RULES (children ages 6-12):
 - Always be kind, encouraging, and age-appropriate
 - Never discuss violence, scary content, romance, drugs, alcohol, or adult themes
 - Never share personal information requests (address, school, last name, phone)
@@ -14,6 +17,16 @@ const KIDS_SAFETY_PROMPT = `\n\nIMPORTANT SAFETY RULES (children ages 6-12):
 - Use simple, friendly language
 - Encourage creativity, learning, and positive values
 - If the child seems sad or upset, suggest they talk to a parent or trusted adult`;
+
+async function tryStreamAI(provider: "openai" | "lovable", messages: any[]) {
+  const isLovable = provider === "lovable";
+  const url = isLovable ? "https://ai.gateway.lovable.dev/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
+  const key = Deno.env.get(isLovable ? "LOVABLE_API_KEY" : "OPENAI_API_KEY");
+  if (!key) throw new Error(`${provider} key not configured`);
+  const headers = isLovable ? { "Lovable-API-Key": key, "Content-Type": "application/json" } : { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" };
+  const body = { model: isLovable ? "openai/gpt-5.4-mini" : "gpt-4o-mini", messages, stream: true };
+  return fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -44,9 +57,6 @@ serve(async (req) => {
       characterName,
       characterPersonality,
       message } = body;
-
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
     // ============ KIDS MODE: stateless chat with safety guardrails (paid-only, 1 credit/message) ============
     if (Array.isArray(messages) && characterName) {
@@ -114,33 +124,20 @@ serve(async (req) => {
 
       const systemPrompt = `You are ${characterName}, a beloved children's character. Personality: ${characterPersonality || "friendly, kind, playful"}.${KIDS_SAFETY_PROMPT}`;
 
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [{ role: "system", content: systemPrompt }, ...safeMessages],
-          stream: true }) });
-
-      if (response.status === 429) {
-        await refund();
-        return new Response(JSON.stringify({ error: "Too many messages. Please slow down!" }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      if (response.status === 402) {
-        await refund();
-        return new Response(JSON.stringify({ error: "AI service unavailable. Credit refunded." }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      if (!response.ok || !response.body) {
-        await refund();
-        const errText = await response.text();
-        console.error("AI Gateway error:", response.status, errText);
-        throw new Error("AI service error");
+      let response: Response | null = null;
+      try {
+        response = await tryStreamAI("openai", [{ role: "system", content: systemPrompt }, ...safeMessages]);
+        if (!response.ok || !response.body) throw new Error("OpenAI streaming failed");
+      } catch (e) {
+        console.warn("character-chat OpenAI stream failed, trying Lovable:", e instanceof Error ? e.message : String(e));
+        try {
+          response = await tryStreamAI("lovable", [{ role: "system", content: systemPrompt }, ...safeMessages]);
+          if (!response.ok || !response.body) throw new Error("Lovable streaming failed");
+        } catch (e2) {
+          await refund();
+          return new Response(JSON.stringify({ error: "AI service unavailable. Credit refunded." }), {
+            status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
       }
 
       return new Response(response.body, { headers: {
@@ -185,8 +182,7 @@ serve(async (req) => {
         .maybeSingle();
       if (!access) {
         return new Response(JSON.stringify({ error: "Premium character access required" }), {
-          status: 403,
-          headers: { ...corsHeaders, "Content-Type": "application/json" } });
+          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
     }
 
@@ -201,8 +197,7 @@ serve(async (req) => {
       const freeUsed = companionsSub?.free_messages_used || 0;
       if (!isSubscribed && freeUsed >= 5) {
         return new Response(JSON.stringify({ error: "Free message limit reached. Subscribe for unlimited." }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" } });
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
     }
 
@@ -218,36 +213,14 @@ serve(async (req) => {
       : "";
     const sumStr = conv.summary ? `\n\nSummary: ${conv.summary}` : "";
 
-    const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: charCheck.system_prompt + memStr + sumStr + KIDS_SAFETY_PROMPT },
-          ...(history || []),
-          { role: "user", content: userMessage },
-        ] }) });
-
-    if (aiResp.status === 429) {
-      return new Response(JSON.stringify({ error: "Too many requests" }), {
-        status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-    if (aiResp.status === 402) {
-      return new Response(JSON.stringify({ error: "AI credits exhausted" }), {
-        status: 402,
-        headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-    if (!aiResp.ok) {
-      console.error("AI Gateway error:", aiResp.status, await aiResp.text());
-      throw new Error("AI service error");
-    }
-
-    const aiData = await aiResp.json();
-    const aiMsg = aiData.choices?.[0]?.message?.content;
+    const aiMsg = await callOpenAI({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: charCheck.system_prompt + memStr + sumStr + KIDS_SAFETY_PROMPT },
+        ...(history || []),
+        { role: "user", content: userMessage },
+      ],
+    });
     if (!aiMsg) throw new Error("No response generated");
 
     await supabaseClient.from("character_messages").insert([
