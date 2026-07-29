@@ -94,6 +94,38 @@
     min-width: 0 !important;
     align-self: flex-start !important;
   }
+
+  .ai-generation-active-shell {
+    padding-right: 0 !important;
+    padding-bottom: 28rem !important;
+    width: calc(100vw - 2rem) !important;
+    max-width: calc(100vw - 2rem) !important;
+    overflow: visible !important;
+  }
+
+  .ai-realtime-mobile-guard {
+    width: calc(100vw - 12rem) !important;
+    max-width: calc(100vw - 12rem) !important;
+    min-width: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 26rem !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .ai-realtime-mobile-guard .ai-realtime-mobile-input,
+  .ai-realtime-mobile-guard .ai-mobile-safe-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .ai-realtime-mobile-guard .ai-mobile-safe-panel {
+    aspect-ratio: 1 / 1 !important;
+    max-height: calc(100vh - 28rem) !important;
+  }
 }
 
 /* Dark Interrogation Mode — global red noir filter */

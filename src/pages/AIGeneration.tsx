@@ -148,7 +148,7 @@ const AIGeneration = () => {
       />
       <div className="container mx-auto px-3 sm:px-4 py-6 pt-16">
         {activeView !== 'hub' ? (
-          <div className="mb-6 pb-80 pr-24 sm:pb-0 sm:pr-0">
+          <div className="ai-generation-active-shell mb-6 pb-80 pr-24 sm:pb-0 sm:pr-0">
             <Button variant="ghost" size="sm" onClick={() => setActiveView('hub')} className="gap-2">
               <ArrowLeft className="w-4 h-4" /> Back to Studio
             </Button>

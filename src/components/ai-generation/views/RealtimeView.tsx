@@ -29,12 +29,12 @@ export const RealtimeView = ({ onCreditsUsed }: { onCreditsUsed: () => void }) =
   }, [prompt, onCreditsUsed]);
 
   return (
-    <div className="ai-mobile-tool-shell max-w-3xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
+    <div className="ai-mobile-tool-shell ai-realtime-mobile-guard w-full max-w-3xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
       <div>
         <h2 className="text-2xl font-black mb-1">⚡ Realtime Generation</h2>
         <p className="text-muted-foreground text-sm">Image regenerates as you type. 5 CR per render — pause typing 1.5s to trigger.</p>
       </div>
-      <Textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Start typing... (min 12 chars to trigger)" rows={3} className="resize-none" />
+      <Textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Start typing... (min 12 chars to trigger)" rows={3} className="ai-realtime-mobile-input resize-none" />
       <div className="ai-mobile-safe-panel aspect-square rounded-xl border border-border bg-muted/30 flex items-center justify-center overflow-hidden relative">
         {imageUrl && <img src={imageUrl} alt="Realtime" className="w-full h-full object-cover" />}
         {loading && (
