@@ -56,6 +56,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Cookie banner pushes main content up on mobile so fixed bars don't overlap it */
+@media (max-width: 767px) {
+  body.cookie-banner-visible #main-content {
+    padding-bottom: calc(10.5rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+
 @media (max-width: 767px) {
   [aria-label="Assistant dock"],
   [aria-label="Open Uni — voice AI assistant (like Siri)"],
