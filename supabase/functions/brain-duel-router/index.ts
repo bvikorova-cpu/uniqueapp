@@ -46,50 +46,71 @@ async function callAI(
   system = "You are a precise quiz generator. Respond with valid JSON only.",
   imageUrl?: string,
 ) {
-  // Prefer Lovable AI Gateway; fall back to direct OpenAI if a key is configured.
-  const useGateway = !!LOVABLE_API_KEY;
-  if (!useGateway && !OPENAI_API_KEY) {
+  // Text-only: use the unified provider (OpenAI primary, Lovable fallback).
+  if (!imageUrl) {
+    try {
+      const result = await callOpenAIJSON({ system, user: prompt, model: "gpt-4o-mini" });
+      return { text: JSON.stringify(result) };
+    } catch (e: any) {
+      const err: any = new Error(e?.message || "AI request failed");
+      err.status = e?.status || 502;
+      throw err;
+    }
+  }
+
+  // Vision (OCR): OpenAI primary, Lovable fallback for rate-limit/quota/server errors.
+  const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+  const openaiKey = Deno.env.get("OPENAI_API_KEY");
+  if (!openaiKey && !lovableKey) {
     const e: any = new Error("AI is not configured. Please contact support.");
     e.status = 503;
     throw e;
   }
-  const url = useGateway
-    ? "https://ai.gateway.lovable.dev/v1/chat/completions"
-    : "https://api.openai.com/v1/chat/completions";
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (useGateway) headers["Lovable-API-Key"] = LOVABLE_API_KEY!;
-  else headers["Authorization"] = `Bearer ${OPENAI_API_KEY}`;
 
-  const userContent: any = imageUrl
-    ? [{ type: "text", text: prompt }, { type: "image_url", image_url: { url: imageUrl } }]
-    : prompt;
+  const userContent = [{ type: "text" as const, text: prompt }, { type: "image_url" as const, image_url: { url: imageUrl } }];
+  const order = openaiKey ? [false, true] : [true];
+  let lastErr: any;
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
-      model: useGateway
-        ? (imageUrl ? "google/gemini-3.6-flash" : "openai/gpt-5.4-mini")
-        : "gpt-4o-mini",
-      response_format: { type: "json_object" },
-      messages: [{ role: "system", content: system }, { role: "user", content: userContent }],
-    }),
-  });
-
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    const e: any = new Error(
-      res.status === 429
-        ? "AI rate limited. Try again in a moment."
-        : res.status === 402
-        ? "AI credits exhausted. Please top up."
-        : `AI error ${res.status}: ${detail.slice(0, 200)}`
-    );
-    e.status = res.status;
-    throw e;
+  for (const useGateway of order) {
+    try {
+      const res = await fetch(
+        useGateway ? "https://ai.gateway.lovable.dev/v1/chat/completions" : "https://api.openai.com/v1/chat/completions",
+        {
+          method: "POST",
+          headers: useGateway
+            ? { "Lovable-API-Key": lovableKey!, "Content-Type": "application/json" }
+            : { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: useGateway ? "google/gemini-3.6-flash" : "gpt-4o-mini",
+            response_format: { type: "json_object" },
+            messages: [{ role: "system", content: system }, { role: "user", content: userContent }],
+          }),
+        },
+      );
+      if (!res.ok) {
+        const detail = await res.text().catch(() => "");
+        if (res.status === 429 || res.status === 402 || res.status >= 500) {
+          lastErr = { status: res.status, message: `AI ${res.status}: ${detail.slice(0, 200)}` };
+          continue;
+        }
+        const e: any = new Error(`AI error ${res.status}: ${detail.slice(0, 200)}`);
+        e.status = res.status;
+        throw e;
+      }
+      const j = await res.json();
+      return { text: j.choices?.[0]?.message?.content ?? "" };
+    } catch (e: any) {
+      if (e.status === 429 || e.status === 402 || e.status >= 500) {
+        lastErr = e;
+        continue;
+      }
+      throw e;
+    }
   }
-  const j = await res.json();
-  return { text: j.choices?.[0]?.message?.content ?? "" };
+
+  const err: any = new Error(lastErr?.message || "AI request failed. Please try again.");
+  err.status = lastErr?.status || 502;
+  throw err;
 }
 
 function parseAIJson(text: string): any {
