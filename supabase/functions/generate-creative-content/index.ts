@@ -120,7 +120,6 @@ serve(async (req) => {
       user: userPrompt,
       model: "gpt-4o-mini",
     });
-    const generatedContent = aiData.choices?.[0]?.message?.content;
 
     if (!generatedContent) {
       throw new Error("No content generated");
