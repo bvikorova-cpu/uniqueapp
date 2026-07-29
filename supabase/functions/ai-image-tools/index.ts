@@ -128,7 +128,7 @@ serve(async (req) => {
       const finalPrompt = negativePrompt && typeof negativePrompt === "string" && negativePrompt.trim()
         ? `${p}\n\nDo NOT include: ${negativePrompt.trim()}.`
         : p;
-      const useLovable = Boolean(LOVABLE_API_KEY && !preferOpenAI);
+      const useLovable = Boolean(LOVABLE_API_KEY && (!preferOpenAI || !OPENAI_API_KEY));
       const res = await rawFetch(useLovable ? LOVABLE_IMAGE_URL : OPENAI_IMAGE_URL, {
         method: "POST",
         headers: useLovable
@@ -172,7 +172,7 @@ serve(async (req) => {
     };
 
     const chatJSON = async (messages: any[]) => {
-      const useLovable = Boolean(LOVABLE_API_KEY && !preferOpenAI);
+      const useLovable = Boolean(LOVABLE_API_KEY && (!preferOpenAI || !OPENAI_API_KEY));
       const call = async (lovable: boolean) => rawFetch(lovable ? LOVABLE_CHAT_URL : OPENAI_CHAT_URL, {
         method: "POST",
         headers: lovable
