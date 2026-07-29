@@ -38,7 +38,7 @@ export const VariationsView = ({ onCreditsUsed }: Props) => {
   return (
     <>
       <FloatingHowItWorks title={"Variations View - How it works"} steps={[{ title: 'Open', desc: 'Access the Variations View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Variations View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-4xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
       <div>
         <h2 className="text-2xl font-black mb-2">🎨 AI Image Variations</h2>
         <p className="text-muted-foreground text-sm">Generate 4 unique variations from a single prompt. Cost: 8 CR total (2 CR each)</p>
@@ -46,7 +46,7 @@ export const VariationsView = ({ onCreditsUsed }: Props) => {
 
       <Textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="Describe your image concept..." rows={3} className="resize-none" />
       
-      <Button onClick={generate} disabled={loading || !prompt.trim()} className="w-full gap-2">
+      <Button onClick={generate} disabled={loading || !prompt.trim()} className="min-h-12 w-full max-w-[calc(100vw-11rem)] gap-2 whitespace-normal text-center leading-snug md:max-w-none">
         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Copy className="w-4 h-4" />}
         {loading ? "Generating 4 Variations..." : "Generate 4 Variations (8 CR)"}
       </Button>
