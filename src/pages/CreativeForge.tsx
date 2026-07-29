@@ -32,6 +32,8 @@ import { ForgeVoiceToScript } from "@/components/creative-forge/ForgeVoiceToScri
 import { ForgeRooms } from "@/components/creative-forge/ForgeRooms";
 import { ForgeIdeasShowcase } from "@/components/creative-forge/ForgeIdeasShowcase";
 import { ForgeBrandVoice, type BrandVoice } from "@/components/creative-forge/ForgeBrandVoice";
+import { useActiveBrandVoice } from "@/hooks/useActiveBrandVoice";
+
 import { ForgeStoryBible } from "@/components/creative-forge/ForgeStoryBible";
 import { ForgeAIStudio } from "@/components/creative-forge/ForgeAIStudio";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
