@@ -56,19 +56,29 @@ serve(async (req) => {
     
     const creditsNeeded = CREDIT_COSTS[contentType as keyof typeof CREDIT_COSTS] || 1;
 
-    // Check and deduct credits
-    const { data: creditData } = await supabaseClient
+    // Check credits (auto-create the row if the user has none yet)
+    let { data: creditData } = await supabaseClient
       .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
-    if (!creditData || creditData.credits_remaining < creditsNeeded) {
+    if (!creditData) {
+      const { data: created } = await supabaseClient
+        .from("ai_credits")
+        .insert({ user_id: user.id, credits_remaining: 10 })
+        .select("credits_remaining")
+        .maybeSingle();
+      creditData = created ?? { credits_remaining: 0 };
+    }
+
+    if ((creditData.credits_remaining ?? 0) < creditsNeeded) {
       return new Response(
         JSON.stringify({ error: "Insufficient credits" }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
 
     // NOTE: credits are deducted AFTER successful AI response (see below) so
     // upstream OpenAI/save failures do not consume the user's balance.
