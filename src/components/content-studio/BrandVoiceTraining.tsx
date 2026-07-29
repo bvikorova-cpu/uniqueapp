@@ -119,23 +119,23 @@ const BrandVoiceTraining = ({ onBack }: Props) => { const [voices, setVoices] = 
           { title: 'Use everywhere', desc: 'Applied across all Studio tools.' },
         ]}
       />
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={onBack}>
+    <div className="space-y-6 overflow-x-hidden pb-80 sm:pb-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-[auto_1fr_auto] sm:items-center">
+        <Button variant="ghost" size="sm" onClick={onBack} className="w-fit">
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
         </Button>
-        <div className="flex-1">
-          <h2 className="text-2xl font-black">Brand Voice Training</h2>
-          <p className="text-muted-foreground">Train AI to write in your brand's unique tone & style</p>
+        <div className="min-w-0">
+          <h2 className="text-2xl font-black leading-tight sm:text-3xl">Brand Voice Training</h2>
+          <p className="max-w-prose text-muted-foreground">Train AI to write in your brand's unique tone & style</p>
         </div>
-        <Button onClick={() => setShowForm(true)}>
+        <Button onClick={() => setShowForm(true)} className="min-h-12 w-full whitespace-normal sm:w-auto">
           <Plus className="h-4 w-4 mr-2" /> New Voice
         </Button>
       </div>
 
       {showForm && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <Card>
+          <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Create Brand Voice Profile</CardTitle>
               <CardDescription>Define your brand's personality for consistent AI-generated content</CardDescription>
@@ -159,9 +159,9 @@ const BrandVoiceTraining = ({ onBack }: Props) => { const [voices, setVoices] = 
                 <label className="text-sm font-medium">Sample Content (for AI to learn from)</label>
                 <Textarea value={form.sample_content} onChange={(e) => setForm({ ...form, sample_content: e.target.value })} placeholder="Paste examples of your existing content so AI can match the style..." rows={5} />
               </div>
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
-                <Button onClick={handleSave} disabled={saving}>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <Button variant="outline" onClick={() => setShowForm(false)} className="min-h-12 w-full">Cancel</Button>
+                <Button onClick={handleSave} disabled={saving} className="min-h-12 w-full whitespace-normal">
                   {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
                   Save Brand Voice
                 </Button>
@@ -174,12 +174,12 @@ const BrandVoiceTraining = ({ onBack }: Props) => { const [voices, setVoices] = 
       {loading ? (
         <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
       ) : voices.length === 0 && !showForm ? (
-        <Card className="text-center py-12">
-          <CardContent>
+        <Card className="overflow-hidden text-center py-12">
+          <CardContent className="px-4">
             <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-bold mb-2">No Brand Voices Yet</h3>
-            <p className="text-muted-foreground mb-4">Create your first brand voice profile to generate consistent, on-brand content.</p>
-            <Button onClick={() => setShowForm(true)}>
+            <p className="mx-auto mb-4 max-w-sm text-muted-foreground">Create your first brand voice profile to generate consistent, on-brand content.</p>
+            <Button onClick={() => setShowForm(true)} className="min-h-12 w-full max-w-sm whitespace-normal">
               <Plus className="h-4 w-4 mr-2" /> Create Brand Voice
             </Button>
           </CardContent>
@@ -188,12 +188,12 @@ const BrandVoiceTraining = ({ onBack }: Props) => { const [voices, setVoices] = 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {voices.map((v) => (
             <motion.div key={v.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              <Card className={`cursor-pointer transition-all ${selectedVoice === v.id ? "border-primary ring-2 ring-primary/20" : "hover:border-primary/30"}`}>
+              <Card className={`cursor-pointer overflow-hidden transition-all ${selectedVoice === v.id ? "border-primary ring-2 ring-primary/20" : "hover:border-primary/30"}`}>
                 <CardContent className="p-5" onClick={() => setSelectedVoice(selectedVoice === v.id ? null : v.id)}>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-bold text-lg">{v.brand_name}</h3>
-                      <Badge variant="outline" className="mt-1">{v.tone}</Badge>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="break-words text-lg font-bold">{v.brand_name}</h3>
+                      <Badge variant="outline" className="mt-1 max-w-full whitespace-normal break-words text-left">{v.tone}</Badge>
                     </div>
                     <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); handleDelete(v.id); }}>
                       <Trash2 className="h-4 w-4 text-destructive" />
@@ -219,7 +219,7 @@ const BrandVoiceTraining = ({ onBack }: Props) => { const [voices, setVoices] = 
             </CardHeader>
             <CardContent className="space-y-4">
               <Textarea value={testPrompt} onChange={(e) => setTestPrompt(e.target.value)} placeholder="What content do you want to generate in this brand's voice?" rows={3} />
-              <Button onClick={handleTestVoice} disabled={generating || !testPrompt.trim()}>
+              <Button onClick={handleTestVoice} disabled={generating || !testPrompt.trim()} className="min-h-12 w-full whitespace-normal sm:w-auto">
                 {generating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
                 {generating ? "Generating..." : "Generate Content"}
               </Button>
