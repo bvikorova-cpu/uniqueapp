@@ -8,11 +8,16 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 const ACTION_COST: Record<string, number> = { "ab-test": 4, "brand-voice": 3, "bulk-generate": 5, "plagiarism": 3,
   "repurpose": 4, "seo-analyze": 4, "templates": 3 };
 
-async function callAI(_apiKey: string | undefined, messages: any[]) {
+async function callAI(_apiKey: string | undefined, messages: any[], json = false) {
   const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
   const user = messages.filter((m) => m.role !== "system").map((m) => m.content).join("\n\n");
-  const content = await askAI(system, user, { model: "gpt-4o-mini" });
-  try { return JSON.parse(content); } catch { return { result: content }; }
+  const content = await askAI(system, user, { model: "gpt-4o-mini", ...(json ? { json: true } : {}) });
+  const cleaned = content.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+  let parsed: any = null;
+  if (json) { try { parsed = JSON.parse(cleaned); } catch { parsed = null; } }
+  // Always expose the raw text as `content`/`result` so every client shape works.
+  return { ...(parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {}),
+    content: cleaned, result: cleaned };
 }
 
 const platformGuide: Record<string, string> = { instagram: "Visual-first, 2200 char limit, hashtag-driven",
@@ -84,7 +89,7 @@ Deno.serve(async (req) => {
       default: throw new Error(`Unknown action: ${action}`);
     }
     try { await auth.deduct!(); } catch (e) { console.error("[content-studio-ai] deduct-failed", e); }
-    return new Response(JSON.stringify({ ...result, creditsCharged: cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ ...result, creditsCharged: cost, creditsUsed: cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     const status = e instanceof UnifiedAIError ? (e.status === 402 ? 402 : e.status === 429 ? 429 : 500) : 500;
     console.error("[content-studio-ai] failed", e?.message);
