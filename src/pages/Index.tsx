@@ -327,7 +327,7 @@ const Index = () => {
             </AnimatePresence>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-3 w-full px-4">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full px-4">
             <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-white text-slate-900 hover:bg-white/90 shadow-2xl font-bold rounded-xl px-8 w-full sm:w-auto">
               <Zap className="w-4 h-4" /> Explore Now
             </Button>
@@ -347,7 +347,7 @@ const Index = () => {
         {/* Rendered BEFORE FoundingMembersBanner so the async banner
             (which appears after a hook resolves) can't push the stats
             grid downward and trigger CLS (~0.085 on PageSpeed mobile). */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-2 sm:-mt-16 relative z-20 [contain:layout]">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5 mt-4 sm:-mt-16 relative z-20 [contain:layout]">
           {stats.map((stat, i) => (
             <div
               key={i}
@@ -371,7 +371,7 @@ const Index = () => {
         {/* ── Quick Actions ────────────────────────────── */}
         <section>
           <SectionHeader icon={Zap} title="Quick Actions" />
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
             {quickActions.map((action, i) => (
               <Card
                 key={i}
@@ -455,7 +455,7 @@ const Index = () => {
         {favoriteModules.length > 0 && (
           <section>
             <SectionHeader icon={Pin} title="Your Favorites" />
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {favoriteModules.map((mod: any, i) => <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
             </div>
           </section>
@@ -465,7 +465,7 @@ const Index = () => {
         {recentModules.length > 0 && (
           <section>
             <SectionHeader icon={Clock} title="Recently Visited" />
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
               {recentModules.map((mod: any, i) => <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
             </div>
           </section>
@@ -474,7 +474,7 @@ const Index = () => {
         {/* ── Ecosystem ────────────────────────────────── */}
         <section>
           <SectionHeader icon={Crown} title="Ecosystem Modules" badge="Premium" badgeClass="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 border-yellow-500/30" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             {ecosystemModules.map((mod, i) => (
               <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
             ))}
@@ -535,7 +535,7 @@ const Index = () => {
             caption="💄 Beauty Studio — AI makeup & skincare"
           />
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             {coreModules.map((mod, i) => (
               <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
             ))}
@@ -551,7 +551,7 @@ const Index = () => {
         {/* ── All Services ─────────────────────────────── */}
         <section>
           <SectionHeader icon={Zap} title="All Services" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {services.map((mod, i) => (
               <ModuleCard key={i} mod={{ ...mod, description: "" }} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
             ))}
