@@ -191,7 +191,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
                 <Button variant="outline" className="h-auto min-h-11 w-full xl:w-auto" onClick={() => { setSelectedTemplate(null); setResult(null); setTopicTouched(false); }}>
                   Change Template
                 </Button>
-                <Button onClick={handleGenerate} disabled={loading || !topic.trim()} className="h-auto min-h-11 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-2 text-center [white-space:normal] disabled:opacity-60">
+                <Button onClick={handleGenerate} disabled={loading} className="h-auto min-h-11 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-2 text-center [white-space:normal] disabled:opacity-60">
                   {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
                   <span className="min-w-0 break-words leading-tight">{loading ? "Generating..." : `Generate (${template?.credits} credits)`}</span>
                 </Button>
