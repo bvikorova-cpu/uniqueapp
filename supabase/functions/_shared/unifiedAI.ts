@@ -12,7 +12,20 @@
 
 export interface UnifiedMessage {
   role: "system" | "user" | "assistant";
-  content: string;
+  content: string | null;
+  /** Optional for tool results. */
+  name?: string;
+  tool_calls?: unknown[];
+  tool_call_id?: string;
+}
+
+export interface UnifiedToolDefinition {
+  type: "function";
+  function: {
+    name: string;
+    description: string;
+    parameters?: Record<string, unknown>;
+  };
 }
 
 export interface UnifiedAIOptions {
@@ -20,9 +33,12 @@ export interface UnifiedAIOptions {
   model?: string;
   temperature?: number;
   max_tokens?: number;
+  max_completion_tokens?: number;
   response_format?: { type: "json_object" } | { type: "text" };
   /** Force response_format=json_object. */
   json?: boolean;
+  tools?: UnifiedToolDefinition[];
+  tool_choice?: "auto" | "none" | { type: "function"; function: { name: string } };
 }
 
 export class UnifiedAIError extends Error {
@@ -67,19 +83,22 @@ function buildBody(
   const body: Record<string, unknown> = {
     model: useGateway ? gatewayModel(openaiModel) : openaiModel,
     messages,
-    temperature: opts.temperature ?? 0.7,
   };
+  if (opts.temperature !== undefined) body.temperature = opts.temperature;
   if (opts.max_tokens) body.max_tokens = opts.max_tokens;
+  if (opts.max_completion_tokens) body.max_completion_tokens = opts.max_completion_tokens;
   if (opts.response_format) body.response_format = opts.response_format;
   else if (opts.json) body.response_format = { type: "json_object" };
+  if (opts.tools?.length) body.tools = opts.tools;
+  if (opts.tool_choice) body.tool_choice = opts.tool_choice;
   return body;
 }
 
-async function callProvider(
+async function callProviderRaw(
   useGateway: boolean,
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
-): Promise<{ content: string; usage?: unknown }> {
+): Promise<any> {
   const key = useGateway
     ? Deno.env.get("LOVABLE_API_KEY")
     : Deno.env.get("OPENAI_API_KEY");
@@ -114,12 +133,33 @@ async function callProvider(
     throw new UnifiedAIError(res.status, "AI request failed. Please try again.", providerName);
   }
 
-  const data = await res.json();
-  const content = data.choices?.[0]?.message?.content?.toString().trim() || "";
-  if (!content) {
-    throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", providerName);
+  return await res.json();
+}
+
+export interface UnifiedAIResult {
+  content: string;
+  tool_calls?: unknown[];
+  usage?: unknown;
+  raw: any;
+}
+
+async function callProvider(
+  useGateway: boolean,
+  messages: UnifiedMessage[],
+  opts: UnifiedAIOptions,
+): Promise<UnifiedAIResult> {
+  const data = await callProviderRaw(useGateway, messages, opts);
+  const message = data.choices?.[0]?.message;
+  const content = message?.content?.toString().trim() || "";
+  if (!content && !message?.tool_calls) {
+    throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", useGateway ? "Lovable AI Gateway" : "OpenAI");
   }
-  return { content, usage: data.usage };
+  return {
+    content,
+    tool_calls: message?.tool_calls,
+    usage: data.usage,
+    raw: data,
+  };
 }
 
 /**
@@ -130,6 +170,14 @@ export async function callUnifiedAI(
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions = {},
 ): Promise<string> {
+  const result = await callUnifiedAIEx(messages, opts);
+  return result.content;
+}
+
+export async function callUnifiedAIEx(
+  messages: UnifiedMessage[],
+  opts: UnifiedAIOptions = {},
+): Promise<UnifiedAIResult> {
   const openaiKey = Deno.env.get("OPENAI_API_KEY");
   const lovableKey = Deno.env.get("LOVABLE_API_KEY");
   if (!openaiKey && !lovableKey) {
@@ -142,8 +190,7 @@ export async function callUnifiedAI(
 
   for (const useGateway of order) {
     try {
-      const result = await callProvider(useGateway, messages, opts);
-      return result.content;
+      return await callProvider(useGateway, messages, opts);
     } catch (e) {
       if (e instanceof UnifiedAIError && isRetryableStatus(e.status)) {
         lastError = e;
@@ -159,8 +206,7 @@ export async function callUnifiedAI(
     for (const useGateway of order) {
       try {
         await new Promise((r) => setTimeout(r, attempt * 1200));
-        const result = await callProvider(useGateway, messages, opts);
-        return result.content;
+        return await callProvider(useGateway, messages, opts);
       } catch (e) {
         if (e instanceof UnifiedAIError) lastError = e;
       }
@@ -207,4 +253,39 @@ export async function askAIJSON<T = any>(system: string, user: string, opts?: Om
     ],
     opts,
   );
+}
+
+/** Image generation via OpenAI Images API (no gateway fallback for images). */
+export async function generateOpenAIImage(prompt: string, size: "1024x1024" | "1024x1536" | "1536x1024" = "1024x1024"): Promise<{ url?: string; b64_json?: string }> {
+  const key = Deno.env.get("OPENAI_API_KEY");
+  if (!key) throw new UnifiedAIError(500, "OPENAI_API_KEY is not configured for image generation");
+  const res = await fetch("https://api.openai.com/v1/images/generations", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: "dall-e-3", prompt, n: 1, size, response_format: "b64_json" }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    console.error("OpenAI image generation error:", res.status, text);
+    throw new UnifiedAIError(res.status === 429 ? 429 : res.status === 402 ? 402 : 502, "Image generation failed. Please try again.");
+  }
+  const data = await res.json();
+  return { b64_json: data?.data?.[0]?.b64_json, url: data?.data?.[0]?.url };
+}
+
+/** Text-to-speech via OpenAI TTS API (no gateway fallback for audio). */
+export async function generateOpenAITTS(text: string, voice: string = "nova", speed: number = 1.0): Promise<ArrayBuffer> {
+  const key = Deno.env.get("OPENAI_API_KEY");
+  if (!key) throw new UnifiedAIError(500, "OPENAI_API_KEY is not configured for TTS");
+  const res = await fetch("https://api.openai.com/v1/audio/speech", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: "tts-1", voice, input: text.slice(0, 4000), response_format: "mp3", speed }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    console.error("OpenAI TTS error:", res.status, text);
+    throw new UnifiedAIError(res.status === 429 ? 429 : res.status === 402 ? 402 : 502, "Text-to-speech failed. Please try again.");
+  }
+  return await res.arrayBuffer();
 }
