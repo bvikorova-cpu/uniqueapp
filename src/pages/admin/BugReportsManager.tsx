@@ -150,16 +150,22 @@ export default function BugReportsManager() {
   const sendResponse = async () => {
     if (!selected || !response.trim()) return;
     setSendingResponse(true);
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("bug_reports")
       .update({
         response_message: response.trim(),
         response_at: new Date().toISOString(),
+        admin_notes: notes.trim() || null,
       })
-      .eq("id", selected.id);
+      .eq("id", selected.id)
+      .select("id");
     setSendingResponse(false);
     if (error) {
       toast.error(error.message);
+      return;
+    }
+    if (!data || data.length === 0) {
+      toast.error("Reply was not saved — you do not have admin permission for this report.");
       return;
     }
     toast.success("Reply sent — user will receive a notification.");
@@ -167,6 +173,7 @@ export default function BugReportsManager() {
     await load();
     setSelected(null);
   };
+
 
   const reporterName = (r: BugReport) =>
     r.user_id ? profileNames[r.user_id] || r.email || r.user_id.slice(0, 8) : r.email || "Anonymous";
