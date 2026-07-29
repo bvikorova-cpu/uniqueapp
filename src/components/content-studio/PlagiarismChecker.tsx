@@ -38,10 +38,16 @@ const PlagiarismChecker = ({ onBack }: Props) => {
         body: { action: "plagiarism", content } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      setResult(data.result);
-      toast.success(`Check complete! ${data.creditsUsed} credits used.`);
+      const raw = data?.result ?? data;
+      setResult({
+        originalityScore: Number(raw?.originalityScore) || 0,
+        analysis: String(raw?.analysis || "No analysis available."),
+        suggestions: Array.isArray(raw?.suggestions) ? raw.suggestions : [],
+        flaggedSections: Array.isArray(raw?.flaggedSections) ? raw.flaggedSections : [],
+      });
+      toast.success(data?.fallback ? "Check complete (offline mode, no credits used)." : `Check complete! ${data?.creditsUsed ?? 0} credits used.`);
     } catch (e: any) {
-      toast.error(e.message || "Failed to check content");
+      toast.error(e?.context?.error || e.message || "Failed to check content");
     } finally {
       setLoading(false);
     }
