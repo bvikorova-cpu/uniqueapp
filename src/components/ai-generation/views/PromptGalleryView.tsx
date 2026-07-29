@@ -140,7 +140,7 @@ export const PromptGalleryView = ({ onSelectPrompt }: PromptGalleryViewProps) =>
           <CardDescription>Hand-picked prompts for stunning results</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:overflow-visible">
+          <div className="flex gap-2 overflow-x-auto pb-2 pr-20 sm:pr-0 sm:flex-wrap sm:overflow-visible">
             {categories.map((c) => (
               <Button
                 key={c}
