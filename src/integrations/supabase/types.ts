@@ -68328,6 +68328,10 @@ export type Database = {
         Returns: Json
       }
       aggregate_group_insights: { Args: { _day?: string }; Returns: number }
+      analyzer_spend_credits: {
+        Args: { _amount: number; _reason?: string }
+        Returns: number
+      }
       apply_chat_timeout: {
         Args: {
           _base_minutes: number
