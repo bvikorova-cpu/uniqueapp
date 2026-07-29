@@ -386,7 +386,7 @@ serve(async (req) => {
           : [];
 
     if (historyPrompts.length > 0) {
-      (async () => {
+      try {
         for (const historyPrompt of historyPrompts) {
           const { data: existing } = await supabase
             .from("ai_prompt_history")
@@ -402,7 +402,9 @@ serve(async (req) => {
               user_id: user.id, prompt: historyPrompt, title: historyPrompt.substring(0, 50), category: action });
           }
         }
-      })().catch(() => {});
+      } catch (historyError) {
+        console.error("Prompt history save failed:", historyError);
+      }
     }
 
     return json(result);
