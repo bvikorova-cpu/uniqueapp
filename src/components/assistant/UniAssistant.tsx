@@ -17,6 +17,10 @@ interface UniAssistantProps {
 }
 
 export function UniAssistant({ docked = false }: UniAssistantProps) {
+  const [isMobileViewport, setIsMobileViewport] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth < 768;
+  });
   const [open, setOpen] = useState(false);
   const [listening, setListening] = useState(false);
   const [thinking, setThinking] = useState(false);
@@ -61,6 +65,17 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
   const supported = typeof window !== "undefined" &&
     ("webkitSpeechRecognition" in window || "SpeechRecognition" in window);
+
+  useEffect(() => {
+    const updateViewport = () => setIsMobileViewport(window.innerWidth < 768);
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    window.addEventListener("orientationchange", updateViewport);
+    return () => {
+      window.removeEventListener("resize", updateViewport);
+      window.removeEventListener("orientationchange", updateViewport);
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -274,14 +289,19 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
   // Auto-start wake word if user previously enabled it
   useEffect(() => {
+    if (isMobileViewport) {
+      stopWakeWord();
+      return;
+    }
     if (wakeEnabled && supported && !wakeRef.current && !listening) {
       startWakeWord();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wakeEnabled, supported]);
+  }, [wakeEnabled, supported, isMobileViewport]);
 
   // Pause wake recognizer while actively listening; resume after
   useEffect(() => {
+    if (isMobileViewport) return;
     if (listening && wakeRef.current) {
       try { wakeRef.current.stop(); } catch {}
       wakeRef.current = null;
@@ -291,7 +311,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       return () => clearTimeout(t);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listening, wakeEnabled]);
+  }, [listening, wakeEnabled, isMobileViewport]);
 
   const uniButton = (
     <button
@@ -508,7 +528,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     </AnimatePresence>
   );
 
-  if (typeof document === "undefined") return null;
+  if (typeof document === "undefined" || isMobileViewport) return null;
   return (
     <>
       {docked ? fab : createPortal(fab, document.body)}
