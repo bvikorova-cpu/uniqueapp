@@ -76,54 +76,41 @@
     pointer-events: none !important;
   }
 
-  .ai-mobile-tool-shell {
-    padding-right: 9.5rem !important;
-    padding-bottom: 24rem !important;
-    margin-left: 0 !important;
-    margin-right: auto !important;
+  .ai-generation-active-shell,
+  .ai-generation-active-shell > div,
+  .ai-mobile-tool-shell,
+  .ai-realtime-mobile-guard,
+  .ai-batch-mobile-guard,
+  .ai-variations-mobile-guard,
+  .ai-editor-mobile-guard,
+  .ai-generate-mobile-guard {
+    width: 100% !important;
     max-width: 100% !important;
-  }
-
-  .ai-mobile-tool-shell input,
-  .ai-mobile-tool-shell textarea,
-  .ai-mobile-tool-shell [role="combobox"],
-  .ai-mobile-tool-shell .ai-mobile-safe-panel,
-  .ai-mobile-tool-shell .ai-mobile-safe-action {
-    max-width: calc(100vw - 11rem) !important;
-  }
-
-  .ai-mobile-safe-panel {
-    width: calc(100vw - 11rem) !important;
     min-width: 0 !important;
-  }
-
-  .ai-mobile-safe-action {
-    width: calc(100vw - 11rem) !important;
-    min-width: 0 !important;
-    align-self: flex-start !important;
-  }
-
-  .ai-generation-active-shell {
     padding-right: 0 !important;
-    padding-bottom: 28rem !important;
-    width: calc(100vw - 2rem) !important;
-    max-width: calc(100vw - 2rem) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
     overflow: visible !important;
   }
 
-  .ai-realtime-mobile-guard {
-    width: calc(100vw - 12rem) !important;
-    max-width: calc(100vw - 12rem) !important;
-    min-width: 0 !important;
-    padding-right: 0 !important;
-    padding-bottom: 26rem !important;
-    margin-left: 0 !important;
-    margin-right: auto !important;
-    box-sizing: border-box !important;
+  .ai-generation-active-shell,
+  .ai-generation-active-shell > div,
+  .ai-mobile-tool-shell,
+  .ai-realtime-mobile-guard,
+  .ai-batch-mobile-guard,
+  .ai-variations-mobile-guard,
+  .ai-editor-mobile-guard,
+  .ai-generate-mobile-guard {
+    padding-bottom: 20rem !important;
   }
 
-  .ai-realtime-mobile-guard .ai-realtime-mobile-input,
-  .ai-realtime-mobile-guard .ai-mobile-safe-panel {
+  .ai-generation-active-shell input,
+  .ai-generation-active-shell textarea,
+  .ai-generation-active-shell [role="combobox"],
+  .ai-mobile-safe-panel,
+  .ai-mobile-safe-action,
+  .ai-batch-summary-panel {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
@@ -132,57 +119,10 @@
 
   .ai-realtime-mobile-guard .ai-mobile-safe-panel {
     aspect-ratio: 1 / 1 !important;
-    max-height: calc(100vh - 28rem) !important;
-  }
-
-  .ai-batch-mobile-guard {
-    width: calc(100vw - 12rem) !important;
-    max-width: calc(100vw - 12rem) !important;
-    min-width: 0 !important;
-    padding-right: 0 !important;
-    padding-bottom: 26rem !important;
-    margin-left: 0 !important;
-    margin-right: auto !important;
-    box-sizing: border-box !important;
-  }
-
-  .ai-batch-mobile-guard input,
-  .ai-batch-mobile-guard .ai-batch-summary-panel,
-  .ai-batch-mobile-guard .ai-mobile-safe-action {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  .ai-variations-mobile-guard {
-    width: calc(100vw - 12rem) !important;
-    max-width: calc(100vw - 12rem) !important;
-    min-width: 0 !important;
-    padding-right: 0 !important;
-    padding-bottom: 26rem !important;
-    margin-left: 0 !important;
-    margin-right: auto !important;
-    box-sizing: border-box !important;
-  }
-
-  .ai-variations-mobile-guard .ai-variations-mobile-input,
-  .ai-variations-mobile-guard .ai-mobile-safe-action {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
   }
 
   .ai-editor-mobile-guard {
-    width: calc(100vw - 12rem) !important;
-    max-width: calc(100vw - 12rem) !important;
-    min-width: 0 !important;
-    padding-right: 0 !important;
-    padding-bottom: 28rem !important;
-    margin-left: 0 !important;
-    margin-right: auto !important;
-    box-sizing: border-box !important;
+    padding-bottom: 20rem !important;
   }
 
   .ai-editor-mobile-card,
@@ -210,17 +150,6 @@
     min-height: 3.25rem !important;
     white-space: normal !important;
     line-height: 1.15 !important;
-  }
-
-  .ai-generate-mobile-guard {
-    width: calc(100vw - 12rem) !important;
-    max-width: calc(100vw - 12rem) !important;
-    min-width: 0 !important;
-    padding-right: 0 !important;
-    padding-bottom: 28rem !important;
-    margin-left: 0 !important;
-    margin-right: auto !important;
-    box-sizing: border-box !important;
   }
 
   .ai-generate-mobile-card,
