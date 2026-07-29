@@ -117,7 +117,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
           { title: 'Save favorites', desc: 'Reuse templates that convert.' },
         ]}
       />
-    <div className="space-y-6 pb-32 sm:pb-6">
+    <div className="space-y-6 pb-48 sm:pb-20">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
@@ -199,7 +199,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
                   rows={4}
                 />
               </div>
-              <div className="grid w-full min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="flex w-full min-w-0 flex-col gap-3 pb-3">
                 <Button variant="outline" className="h-auto min-h-12 w-full min-w-0 max-w-full px-3 py-3 whitespace-normal leading-tight" onClick={() => { setSelectedTemplate(null); setResult(null); setTopicTouched(false); }}>
                   Change Template
                 </Button>
