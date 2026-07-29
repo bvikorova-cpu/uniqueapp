@@ -57,7 +57,7 @@ export const StyleTransferView = ({ onCreditsUsed }: StyleTransferViewProps) => 
   return (
     <>
       <FloatingHowItWorks title={"Style Transfer View - How it works"} steps={[{ title: 'Open', desc: 'Access the Style Transfer View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Style Transfer View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-4xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
       <Card className="border-2 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Brush className="w-5 h-5 text-primary" /> AI Style Transfer</CardTitle>
@@ -77,7 +77,7 @@ export const StyleTransferView = ({ onCreditsUsed }: StyleTransferViewProps) => 
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Choose an art style</label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 min-[430px]:grid-cols-2 sm:grid-cols-3 gap-2">
               {artStyles.map((s) => (
                 <button
                   key={s.name}
@@ -96,7 +96,7 @@ export const StyleTransferView = ({ onCreditsUsed }: StyleTransferViewProps) => 
             </div>
           </div>
 
-          <Button onClick={handleTransfer} disabled={loading || !description.trim() || !selectedStyle} size="lg" className="w-full">
+          <Button onClick={handleTransfer} disabled={loading || !description.trim() || !selectedStyle} size="lg" className="min-h-12 w-full max-w-[calc(100vw-11rem)] whitespace-normal text-center leading-snug md:max-w-none">
             {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Applying Style...</> : <><Brush className="w-4 h-4 mr-2" />Apply {selectedStyle || 'Style'} (3 credits)</>}
           </Button>
 
