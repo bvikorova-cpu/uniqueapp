@@ -302,7 +302,7 @@ export default function CreativeForge() {
               <ArrowLeft className="h-4 w-4" /> {"Back to CreativeForge"}
             </Button>
             {activeView === "create" && (
-              <div className="flex flex-wrap gap-2 ml-auto">
+              <div className="flex flex-wrap gap-2.5 ml-auto">
                 <Button variant="outline" size="sm" onClick={() => setAiStudioOpen(true)} className="gap-1 border-primary/40 text-primary hover:bg-primary/10"><SparkleIcon className="h-3.5 w-3.5" /> AI Studio</Button>
                 <Button variant="outline" size="sm" onClick={() => setBrandVoiceOpen(true)} className="gap-1"><Palette className="h-3.5 w-3.5" /> {activeBrandVoice ? `Voice: ${activeBrandVoice.name}` : "Brand Voice"}</Button>
                 <Button variant="outline" size="sm" onClick={() => setStoryBibleOpen(true)} className="gap-1"><BookMarked className="h-3.5 w-3.5" /> Story Bible</Button>
