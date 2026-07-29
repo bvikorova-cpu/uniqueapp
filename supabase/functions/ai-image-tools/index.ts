@@ -39,6 +39,43 @@ const OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions";
 const LOVABLE_IMAGE_URL = "https://ai.gateway.lovable.dev/v1/images/generations";
 const LOVABLE_CHAT_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 
+const svgDataUri = (svg: string) =>
+  `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+
+const buildMotionKeyframeFallback = (promptText: string, aspectRatio?: string) => {
+  const landscape = aspectRatio !== "9:16" && aspectRatio !== "3:4" && aspectRatio !== "4:5";
+  const width = landscape ? 1600 : 1024;
+  const height = landscape ? 900 : 1536;
+  const safePrompt = (promptText || "dynamic animation")
+    .replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "\"": "&quot;" }[c] ?? c))
+    .slice(0, 140);
+  return svgDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7c3aed"/>
+          <stop offset="0.48" stop-color="#ec4899"/>
+          <stop offset="1" stop-color="#f59e0b"/>
+        </linearGradient>
+        <filter id="blur"><feGaussianBlur stdDeviation="18"/></filter>
+      </defs>
+      <rect width="${width}" height="${height}" fill="url(#bg)"/>
+      <g opacity="0.28" filter="url(#blur)">
+        <circle cx="${width * 0.22}" cy="${height * 0.28}" r="${Math.min(width, height) * 0.22}" fill="#ffffff"/>
+        <circle cx="${width * 0.78}" cy="${height * 0.7}" r="${Math.min(width, height) * 0.26}" fill="#111827"/>
+      </g>
+      <g fill="none" stroke="#ffffff" stroke-width="${Math.max(8, width * 0.012)}" stroke-linecap="round" opacity="0.78">
+        <path d="M ${width * 0.12} ${height * 0.62} C ${width * 0.34} ${height * 0.22}, ${width * 0.62} ${height * 0.88}, ${width * 0.9} ${height * 0.34}"/>
+        <path d="M ${width * 0.18} ${height * 0.75} C ${width * 0.4} ${height * 0.42}, ${width * 0.62} ${height * 0.62}, ${width * 0.86} ${height * 0.18}" opacity="0.42"/>
+      </g>
+      <g font-family="Inter, Arial, sans-serif" fill="#ffffff">
+        <text x="${width * 0.08}" y="${height * 0.16}" font-size="${width * 0.052}" font-weight="900" letter-spacing="0">Motion keyframe</text>
+        <text x="${width * 0.08}" y="${height * 0.23}" font-size="${width * 0.026}" font-weight="700" opacity="0.86">${safePrompt}</text>
+        <text x="${width * 0.08}" y="${height * 0.9}" font-size="${width * 0.022}" font-weight="700" opacity="0.72">AI preview fallback — ready to regenerate when the image model is available</text>
+      </g>
+    </svg>`);
+};
+
 // Map aspectRatio + size tier to OpenAI-supported size
 const resolveSize = (aspectRatio?: string, targetSize?: string) => {
   const valid = ["1024x1024", "1792x1024", "1024x1792"];
@@ -327,10 +364,19 @@ serve(async (req) => {
         }
         case "animate_image": {
           if (!prompt?.trim()) throw new Error("Animation description required");
-          // Render a stylized motion-blur frame as preview; true video is out of scope here.
-          result = {
-            imageUrl: await generateImage(`A single keyframe representing the START of an animation: ${prompt}. Add subtle motion-blur and dynamic energy hinting at movement.`, size),
-            note: "Static keyframe preview. Full video animation coming soon." };
+          try {
+            // Render a stylized motion-blur frame as preview; true video is out of scope here.
+            result = {
+              imageUrl: await generateImage(`A single keyframe representing the START of an animation: ${prompt}. Add subtle motion-blur and dynamic energy hinting at movement.`, size),
+              note: "Static keyframe preview. Full video animation coming soon." };
+          } catch (animationError) {
+            console.error("animate_image AI failed, using local fallback:", animationError);
+            await refund();
+            charged = false;
+            result = {
+              imageUrl: buildMotionKeyframeFallback(prompt, aspectRatio),
+              note: "AI image model is busy, so I returned a free motion-keyframe fallback and refunded the credits." };
+          }
           break;
         }
         case "prompt_enhance": {
@@ -387,7 +433,7 @@ serve(async (req) => {
       return json({ error: msg }, 500);
     }
 
-    if (cost > 0) {
+    if (cost > 0 && charged) {
       supabase.from("ai_usage_history").insert({
         user_id: user.id,
         usage_type: `image_${action}`,
