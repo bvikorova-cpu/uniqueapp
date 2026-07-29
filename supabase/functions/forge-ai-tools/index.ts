@@ -93,41 +93,30 @@ serve(async (req) => {
       userPrompt = `Brand voice profile:\n${JSON.stringify(extra.brand_voice)}\n\n${userPrompt}`;
     }
 
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) throw new Error("OPENAI_API_KEY missing");
+    const messages = action === "cowriter"
+      ? [
+          { role: "system" as const, content: `${SYSTEM_PROMPTS.cowriter}\nContext: writing a ${(extra.category ?? "piece").toString().replace(/_/g, " ")}.${extra.brand_voice ? `\n\nAlways write in this brand voice profile:\n${JSON.stringify(extra.brand_voice)}` : ""}${extra.currentText ? `\n\nCurrent draft:\n"""${String(extra.currentText).slice(0, 6000)}"""` : ""}` },
+          ...(Array.isArray(extra.history) ? extra.history : [])
+            .filter((m: any) => m?.role === "user" || m?.role === "assistant")
+            .slice(-16)
+            .map((m: any) => ({ role: m.role as "user" | "assistant", content: String(m.content ?? "").slice(0, 8000) })),
+        ]
+      : [
+          { role: "system" as const, content: SYSTEM_PROMPTS[action] },
+          { role: "user" as const, content: userPrompt },
+        ];
 
-    const ai = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: action === "cowriter"
-          ? [
-              { role: "system", content: `${SYSTEM_PROMPTS.cowriter}\nContext: writing a ${(extra.category ?? "piece").toString().replace(/_/g, " ")}.${extra.brand_voice ? `\n\nAlways write in this brand voice profile:\n${JSON.stringify(extra.brand_voice)}` : ""}${extra.currentText ? `\n\nCurrent draft:\n"""${String(extra.currentText).slice(0, 6000)}"""` : ""}` },
-              ...(Array.isArray(extra.history) ? extra.history : [])
-                .filter((m: any) => m?.role === "user" || m?.role === "assistant")
-                .slice(-16)
-                .map((m: any) => ({ role: m.role, content: String(m.content ?? "").slice(0, 8000) })),
-            ]
-          : [
-              { role: "system", content: SYSTEM_PROMPTS[action] },
-              { role: "user", content: userPrompt },
-            ] }) });
-
-    if (!ai.ok) {
-      const errText = await ai.text();
-      console.error("Gateway error", ai.status, errText);
-      if (ai.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limited. Please retry shortly." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      if (ai.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted on the platform. Please contact support." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      throw new Error("AI gateway failed");
+    let content = "";
+    try {
+      content = await callCreativeAI(messages);
+    } catch (err: any) {
+      const status = err?.status ?? 502;
+      console.error("Creative AI failed", status, err?.message);
+      return new Response(
+        JSON.stringify({ error: err?.message ?? "AI request failed. Please try again." }),
+        { status, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
-
-    const data = await ai.json();
-    let content: string = data.choices?.[0]?.message?.content ?? "";
 
     // Try parse JSON for structured actions
     let parsed: any = null;
