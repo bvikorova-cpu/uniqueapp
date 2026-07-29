@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,15 +34,25 @@ const AIContentTemplates = ({ onBack }: Props) => {
   const [details, setDetails] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [topicTouched, setTopicTouched] = useState(false);
+  const resultRef = useRef<HTMLDivElement | null>(null);
 
   const template = TEMPLATES.find((t) => t.id === selectedTemplate);
+
+  useEffect(() => {
+    if (result) {
+      resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result]);
 
   const handleGenerate = async () => {
     if (!selectedTemplate) {
       toast.error("Choose a template first");
       return;
     }
-    if (!topic.trim()) {
+    const cleanTopic = topic.trim();
+    if (!cleanTopic) {
+      setTopicTouched(true);
       toast.error("Enter a topic / subject first");
       return;
     }
@@ -53,8 +63,8 @@ const AIContentTemplates = ({ onBack }: Props) => {
         body: {
           action: "templates",
           templateType: selectedTemplate,
-          topic,
-          details,
+          topic: cleanTopic,
+          details: details.trim(),
           systemPrompt: `You are a world-class copywriter. Write a professional "${template?.name ?? selectedTemplate}" (${template?.desc ?? ""}). Return polished, ready-to-use plain text — no JSON, no markdown code fences.`,
         } });
       if (error) {
@@ -152,19 +162,28 @@ const AIContentTemplates = ({ onBack }: Props) => {
           })}
         </div>
       ) : (
-        <div className="mx-auto w-full max-w-3xl space-y-6 overflow-hidden">
+        <div className="mx-auto w-full max-w-3xl space-y-6 overflow-hidden px-0 sm:px-1">
           <Card className="overflow-hidden">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex flex-wrap items-center gap-2 text-balance">
                 {template && <template.icon className="h-5 w-5 text-primary" />}
-                {template?.name}
-                <Badge variant="outline">{template?.credits} credits</Badge>
+                <span className="min-w-0 break-words">{template?.name}</span>
+                <Badge variant="outline" className="shrink-0">{template?.credits} credits</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <label className="text-sm font-medium">Topic / Subject *</label>
-                <Input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="What is this content about?" />
+                <Input
+                  value={topic}
+                  onBlur={() => setTopicTouched(true)}
+                  onChange={(e) => setTopic(e.target.value)}
+                  placeholder="What is this content about?"
+                  aria-invalid={topicTouched && !topic.trim()}
+                />
+                {topicTouched && !topic.trim() && (
+                  <p className="mt-1 text-sm text-destructive">Topic is required before generating.</p>
+                )}
               </div>
               <div>
                 <label className="text-sm font-medium">Additional Details</label>
@@ -175,11 +194,11 @@ const AIContentTemplates = ({ onBack }: Props) => {
                   rows={4}
                 />
               </div>
-              <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-[auto_minmax(0,1fr)]">
-                <Button variant="outline" className="h-auto min-h-10 w-full md:w-auto" onClick={() => { setSelectedTemplate(null); setResult(null); }}>
+              <div className="grid w-full grid-cols-1 gap-3 xl:grid-cols-[auto_minmax(0,1fr)]">
+                <Button variant="outline" className="h-auto min-h-11 w-full xl:w-auto" onClick={() => { setSelectedTemplate(null); setResult(null); setTopicTouched(false); }}>
                   Change Template
                 </Button>
-                <Button onClick={handleGenerate} disabled={loading} className="h-auto min-h-11 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-2 text-center [white-space:normal]">
+                <Button onClick={handleGenerate} disabled={loading} className="h-auto min-h-11 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-2 text-center [white-space:normal] disabled:opacity-60">
                   {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
                   <span className="min-w-0 break-words leading-tight">{loading ? "Generating..." : `Generate (${template?.credits} credits)`}</span>
                 </Button>
@@ -188,7 +207,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
           </Card>
 
           {result && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <motion.div ref={resultRef} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
