@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
+import { callOpenAI } from "../_shared/openai.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -11,48 +12,6 @@ const ACTION_COSTS: Record<string, number> = { "generate-action-plan": 5,
 const ACTION_USAGE_TYPES: Record<string, string> = { "generate-action-plan": "mentor_action_plan",
   "voice-coaching": "mentor_voice_coaching",
   "mood-insight": "mentor_mood_insight" };
-
-const OPENAI_TEXT_MODEL = "openai/gpt-5.4-mini";
-const LOVABLE_AI_GATEWAY_CHAT_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
-
-async function callOpenAI(systemPrompt: string, userPrompt: string, maxTokens = 1000) {
-  const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
-  const body = {
-    model: OPENAI_TEXT_MODEL,
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt.slice(0, 6000) },
-    ],
-    max_completion_tokens: maxTokens };
-
-  if (lovableApiKey) {
-    return await fetch(LOVABLE_AI_GATEWAY_CHAT_URL, {
-      method: "POST",
-      headers: {
-        "Lovable-API-Key": lovableApiKey,
-        "X-Lovable-AIG-SDK": "supabase-edge",
-        "Content-Type": "application/json" },
-      body: JSON.stringify(body) });
-  }
-
-  const openAiKey = Deno.env.get("OPENAI_API_KEY");
-  if (!openAiKey) throw new Error("AI service is not configured");
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${openAiKey}`,
-      "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt.slice(0, 6000) },
-      ],
-      max_tokens: maxTokens }) });
-
-  return response;
-}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -105,15 +64,7 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
         ? `Here's my recent data:\n${contextParts.join("\n")}\n\nGenerate my personalized weekly action plan for ${area}.`
         : `Generate a starter weekly action plan for ${area} coaching. I'm just getting started.`;
 
-      const response = await callOpenAI(systemPrompt, userPrompt, 1500);
-      if (!response.ok) {
-        if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited. Try again shortly." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        if (response.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Top up at Settings → Workspace → Usage." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        throw new Error("OpenAI API error");
-      }
-
-      const aiData = await response.json();
-      const planContent = aiData.choices?.[0]?.message?.content || "Could not generate plan.";
+      const planContent = await callOpenAI({ system: systemPrompt, user: userPrompt, max_tokens: 1500 });
       const title = `Week of ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })} — ${area.charAt(0).toUpperCase() + area.slice(1)}`;
 
       await supabase.from("mentor_action_plans").insert({ user_id: user.id,
@@ -138,15 +89,7 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
       const area = (mentorArea || "career").toLowerCase();
       const systemPrompt = `You are a warm, encouraging ${area} coach speaking directly to your client. Give brief, motivational spoken-style advice (2-3 paragraphs max). Sound natural, empathetic, and actionable. Use "you" language. Don't use markdown formatting — write as if speaking aloud.`;
 
-      const response = await callOpenAI(systemPrompt, message.slice(0, 2000), 600);
-      if (!response.ok) {
-        if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        if (response.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        throw new Error("OpenAI API error");
-      }
-
-      const aiData = await response.json();
-      const reply = aiData.choices?.[0]?.message?.content || "I'm here for you. Let's talk.";
+      const reply = await callOpenAI({ system: systemPrompt, user: message.slice(0, 2000), max_tokens: 600 });
 
       await deduct();
       await awardXP(supabase, user.id, 10, "voice_session");
@@ -172,17 +115,10 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
       const systemPrompt = "You are a wellness coach analyzing mood patterns. Give brief, actionable insights about trends, patterns, and recommendations. Be encouraging. Keep it under 200 words.";
       const userPrompt = `Analyze my mood data (last ${moodData.length} entries): ${JSON.stringify(moodData.map((m: any) => ({ date: m.created_at, mood: m.mood_score, energy: m.energy_score, stress: m.stress_score })))}`;
 
-      const response = await callOpenAI(systemPrompt, userPrompt, 500);
-      if (!response.ok) {
-        if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        if (response.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        throw new Error("OpenAI API error");
-      }
-
-      const aiData = await response.json();
+      const insight = await callOpenAI({ system: systemPrompt, user: userPrompt, max_tokens: 500 });
       await deduct();
       return new Response(
-        JSON.stringify({ insight: aiData.choices?.[0]?.message?.content || "Not enough data yet." }),
+        JSON.stringify({ insight }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

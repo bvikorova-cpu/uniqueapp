@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { callOpenAI } from "../_shared/openai.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -8,9 +9,6 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_KEY) throw new Error("OPENAI_API_KEY not set");
-
     const { action, ...params } = await req.json();
 
     let systemPrompt = "";
@@ -41,8 +39,6 @@ serve(async (req) => {
         systemPrompt = "You are an AI visual search expert. Based on item descriptions, find similar items, alternatives, and shopping recommendations. Provide: item identification, similar products with estimated prices in EUR, where to buy (Amazon, eBay, AliExpress search links), alternatives at different price points, and style matching suggestions. Use markdown with clickable links where possible.";
         userPrompt = `Find similar items and shopping recommendations for: ${params.query}\nBudget: ${params.budget || 'any'}\nPreferences: ${params.preferences || 'none'}\n\nProvide comprehensive shopping recommendations.`;
         break;
-
-      // ===== NEW ACTIONS =====
       case "chat-followup":
         systemPrompt = "You are an AI assistant continuing an analysis conversation. The user previously analyzed an item and now asks follow-up questions. Be concise, helpful, and reference the prior analysis context.";
         userPrompt = `Prior analysis context:\n"""${params.context || ''}"""\n\nUser question: ${params.question || ''}`;
@@ -67,23 +63,13 @@ serve(async (req) => {
         systemPrompt = "You are a nutritionist. Calculate calories, macros, allergens, and a healthiness score (1-10) for the described meal. Suggest improvements.";
         userPrompt = `Meal description: ${params.meal}\nDietary restrictions: ${params.diet || 'none'}`;
         break;
-
       default:
         return new Response(JSON.stringify({ error: "Unknown action" }), {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
-        max_completion_tokens: 2000 }) });
-
-    const data = await response.json();
-    const result = data.choices?.[0]?.message?.content || "No result";
+    const result = await callOpenAI({ system: systemPrompt, user: userPrompt, model: "gpt-4o-mini", max_completion_tokens: 2000 });
 
     return new Response(JSON.stringify({ result }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });

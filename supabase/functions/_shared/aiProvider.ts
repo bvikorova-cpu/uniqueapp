@@ -1,23 +1,21 @@
 /**
- * Centralized AI Provider Module
- * 
- * Single point of entry for all OpenAI API calls.
- * Change the model here to update all edge functions at once.
+ * Centralized AI Provider Module (legacy compatibility wrapper)
+ *
+ * Single point of entry for all AI API calls. Now backed by unifiedAI.ts.
+ * OpenAI is primary; Lovable AI Gateway is the fallback on 429/402/5xx.
  */
 
-// Configuration - change these values to update all functions
+import { callUnifiedAI, callUnifiedAIJSON, UnifiedMessage } from "./unifiedAI.ts";
+
 export const AI_CONFIG = { // Default model for all AI calls
   defaultModel: "gpt-4o-mini",
-  
+
   // Model for complex reasoning tasks
   advancedModel: "gpt-4o",
-  
-  // API endpoint
-  apiEndpoint: "https://api.openai.com/v1/chat/completions",
-  
+
   // Default max tokens
   defaultMaxTokens: 1000,
-  
+
   // Default temperature
   defaultTemperature: 0.7 };
 
@@ -44,68 +42,57 @@ export interface AIResponse {
   };
 }
 
-/**
- * Get OpenAI API key from environment
- */
-export function getOpenAIKey(): string {
-  const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key) {
-    throw new Error("OPENAI_API_KEY not configured");
+export class AIRateLimitError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AIRateLimitError";
   }
-  return key;
+}
+
+export class AIPaymentError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AIPaymentError";
+  }
+}
+
+function toUnified(opts: AIRequestOptions) {
+  return {
+    model: opts.model || AI_CONFIG.defaultModel,
+    temperature: opts.temperature ?? AI_CONFIG.defaultTemperature,
+    max_tokens: opts.maxTokens || AI_CONFIG.defaultMaxTokens,
+    response_format: opts.responseFormat === "json_object" ? { type: "json_object" } as const : undefined,
+  };
 }
 
 /**
- * Make a chat completion request to OpenAI
+ * Make a chat completion request with automatic provider fallback.
  */
-export async function chatCompletion(options: AIRequestOptions): Promise<AIResponse> { const apiKey = getOpenAIKey();
-  
-  const body: Record<string, unknown> = {
-    model: options.model || AI_CONFIG.defaultModel,
-    messages: options.messages,
-    max_completion_tokens: options.maxTokens || AI_CONFIG.defaultMaxTokens };
-  
-  if (options.responseFormat === "json_object") {
-    body.response_format = { type: "json_object" };
+export async function chatCompletion(options: AIRequestOptions): Promise<AIResponse> {
+  try {
+    const content = await callUnifiedAI(options.messages as UnifiedMessage[], toUnified(options));
+    return { content };
+  } catch (e) {
+    const status = e instanceof Error && "status" in e ? (e as { status: number }).status : 500;
+    if (status === 429) throw new AIRateLimitError("AI is busy right now. Please try again in a few seconds.");
+    if (status === 402) throw new AIPaymentError("AI service temporarily unavailable. Please try again later.");
+    throw e;
   }
-
-  const response = await fetch(AI_CONFIG.apiEndpoint, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json" },
-    body: JSON.stringify(body) });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("OpenAI API error:", response.status, errorText);
-    
-    if (response.status === 429) {
-      throw new AIRateLimitError("OpenAI rate limit exceeded");
-    }
-    if (response.status === 402) {
-      throw new AIPaymentError("OpenAI payment required");
-    }
-    
-    throw new Error(`OpenAI API error: ${response.status}`);
-  }
-
-  const data = await response.json();
-  
-  return { content: data.choices[0].message.content,
-    usage: data.usage };
 }
 
 /**
- * Make a streaming chat completion request
+ * Make a streaming chat completion request.
+ * Note: streaming currently uses OpenAI directly because provider fallback
+ * for streaming is not yet implemented in the unified provider.
  */
 export async function streamChatCompletion(options: AIRequestOptions): Promise<Response> {
-  const apiKey = getOpenAIKey();
-  
-  const response = await fetch(AI_CONFIG.apiEndpoint, {
+  const key = Deno.env.get("OPENAI_API_KEY");
+  if (!key) throw new Error("OPENAI_API_KEY not configured");
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${apiKey}`,
+      "Authorization": `Bearer ${key}`,
       "Content-Type": "application/json" },
     body: JSON.stringify({ model: options.model || AI_CONFIG.defaultModel,
       messages: options.messages,
@@ -114,14 +101,8 @@ export async function streamChatCompletion(options: AIRequestOptions): Promise<R
   if (!response.ok) {
     const errorText = await response.text();
     console.error("OpenAI API error:", response.status, errorText);
-    
-    if (response.status === 429) {
-      throw new AIRateLimitError("OpenAI rate limit exceeded");
-    }
-    if (response.status === 402) {
-      throw new AIPaymentError("OpenAI payment required");
-    }
-    
+    if (response.status === 429) throw new AIRateLimitError("OpenAI rate limit exceeded");
+    if (response.status === 402) throw new AIPaymentError("OpenAI payment required");
     throw new Error(`OpenAI API error: ${response.status}`);
   }
 
@@ -142,33 +123,16 @@ export function parseAIJson<T>(content: string, fallback: T): T {
   }
 }
 
-// Custom error classes
-export class AIRateLimitError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "AIRateLimitError";
-  }
-}
-
-export class AIPaymentError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "AIPaymentError";
-  }
-}
-
 // ============================================
 // COMMON AI TASKS - Universal methods
 // ============================================
 
-/**
- * Analyze text content (emotions, sentiment, themes)
- */
 export async function analyzeText(
   text: string,
   analysisType: "emotion" | "sentiment" | "themes" | "summary",
   language: string = "en"
-): Promise<AIResponse> { const prompts: Record<string, string> = {
+): Promise<AIResponse> {
+  const prompts: Record<string, string> = {
     emotion: `Analyze the emotional content of this text and return a JSON object with emotion scores (0-100): joy, sadness, anger, fear, excitement, peace. Include "dominant_emotion" and "summary" fields.`,
     sentiment: `Analyze the sentiment of this text. Return JSON with: sentiment (positive/negative/neutral), confidence (0-100), and explanation.`,
     themes: `Identify the main themes in this text. Return JSON with: themes (array of strings), keywords (array), and summary.`,
@@ -183,16 +147,13 @@ export async function analyzeText(
     maxTokens: 500 });
 }
 
-/**
- * Generate creative content
- */
 export async function generateContent(
   prompt: string,
   contentType: "story" | "article" | "social_post" | "description",
   options?: { tone?: string; length?: "short" | "medium" | "long"; language?: string }
 ): Promise<AIResponse> {
   const lengthTokens = { short: 200, medium: 500, long: 1000 };
-  
+
   const systemPrompts: Record<string, string> = { story: "You are a creative storyteller. Write engaging narratives.",
     article: "You are a professional content writer. Create well-structured articles.",
     social_post: "You are a social media expert. Create engaging posts with emojis and hashtags.",
@@ -200,8 +161,8 @@ export async function generateContent(
 
   return chatCompletion({
     messages: [
-      { 
-        role: "system", 
+      {
+        role: "system",
         content: `${systemPrompts[contentType]} Tone: ${options?.tone || "professional"}. Language: ${options?.language || "en"}.`
       },
       { role: "user", content: prompt }
@@ -209,9 +170,6 @@ export async function generateContent(
     maxTokens: lengthTokens[options?.length || "medium"] });
 }
 
-/**
- * Chat with AI persona
- */
 export async function chatWithPersona(
   messages: AIMessage[],
   persona: string,
@@ -229,19 +187,18 @@ export async function chatWithPersona(
   return chatCompletion({ messages: allMessages });
 }
 
-/**
- * Analyze image (vision)
- */
 export async function analyzeImage(
   imageUrl: string,
   prompt: string
 ): Promise<AIResponse> {
-  const apiKey = getOpenAIKey();
+  // Vision is not yet supported in the unified fallback, so we try OpenAI directly.
+  const key = Deno.env.get("OPENAI_API_KEY");
+  if (!key) throw new Error("OPENAI_API_KEY not configured for vision");
 
-  const response = await fetch(AI_CONFIG.apiEndpoint, {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${apiKey}`,
+      "Authorization": `Bearer ${key}`,
       "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "gpt-4o-mini",

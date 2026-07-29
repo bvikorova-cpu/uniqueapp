@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { callOpenAIRaw } from "../_shared/openai.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,28 +11,16 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 
 const COSTS: Record<string, number> = { photo_math: 3, pdf_to_quiz: 3, generate_quiz: 5 };
 
 const jsonRes = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-const aiGateway = (body: unknown) =>
-  fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    if (!OPENAI_API_KEY) return jsonRes({ error: "OPENAI_API_KEY not configured" }, 500);
     if (!SERVICE_KEY) return jsonRes({ error: "SUPABASE_SERVICE_ROLE_KEY not configured" }, 500);
 
     const authHeader = req.headers.get("Authorization");
@@ -180,31 +169,38 @@ serve(async (req) => {
       return newLesson.id;
     };
 
+    const quizToolDefinition = {
+      type: "function" as const,
+      function: {
+        name: "create_quiz", description: "Return the generated quiz",
+        parameters: { type: "object", properties: {
+          title: { type: "string" },
+          questions: { type: "array", items: { type: "object", properties: {
+            question: { type: "string" },
+            options: { type: "array", items: { type: "string" } },
+            correct_index: { type: "integer" },
+            explanation: { type: "string" } },
+            required: ["question", "options", "correct_index", "explanation"] } } },
+          required: ["title", "questions"] } }
+    };
+
     // ─── PHOTO MATH ───
     if (action === "photo_math") {
       const { imageDataUrl, question } = body;
       if (!imageDataUrl || !String(imageDataUrl).startsWith("data:image/")) {
         return jsonRes({ error: "imageDataUrl required" }, 400);
       }
-      const res = await aiGateway({
+      const data = await callOpenAIRaw({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a brilliant math tutor. Look at the photo of the math problem and explain the solution step by step. Use LaTeX ($...$ inline, $$...$$ block). Always answer in English. If not a math problem, say so politely." },
           { role: "user", content: [
               { type: "text", text: question || "Solve this problem step by step." },
               { type: "image_url", image_url: { url: imageDataUrl } },
-            ] },
+            ] as any },
         ],
       });
 
-      if (res.status === 429) return jsonRes({ error: "Rate limit, try again shortly" }, 429);
-      if (res.status === 402) return jsonRes({ error: "AI credits exhausted on platform" }, 402);
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        console.error("[education-ai] OpenAI error", res.status, txt);
-        return jsonRes({ error: `AI error: ${res.status}` }, 500);
-      }
-      const data = await res.json();
       const solution = data?.choices?.[0]?.message?.content ?? "";
 
       const creditsRemaining = await deductUnified();
@@ -217,34 +213,16 @@ serve(async (req) => {
       const safeText = typeof text === "string" ? text.slice(0, 20000) : "";
       if (safeText.trim().length < 50) return jsonRes({ error: "Text too short" }, 400);
       const safeN = Math.max(3, Math.min(20, Number(numQuestions) || 8));
-      const res = await aiGateway({
+      const data = await callOpenAIRaw({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a quiz designer. From the study text, generate a multiple-choice quiz. Always English. Each question has 4 options and one correct index (0-3). Respond ONLY by calling the create_quiz tool." },
           { role: "user", content: `Difficulty: ${difficulty}. Create ${safeN} questions from:\n\n${safeText}` },
         ],
-        tools: [{ type: "function", function: {
-          name: "create_quiz", description: "Return the generated quiz",
-          parameters: { type: "object", properties: {
-            title: { type: "string" },
-            questions: { type: "array", items: { type: "object", properties: {
-              question: { type: "string" },
-              options: { type: "array", items: { type: "string" } },
-              correct_index: { type: "integer" },
-              explanation: { type: "string" } },
-              required: ["question", "options", "correct_index", "explanation"] } } },
-            required: ["title", "questions"] } } }],
+        tools: [quizToolDefinition],
         tool_choice: { type: "function", function: { name: "create_quiz" } },
       });
 
-      if (res.status === 429) return jsonRes({ error: "Rate limit, try again shortly" }, 429);
-      if (res.status === 402) return jsonRes({ error: "AI credits exhausted on platform" }, 402);
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        console.error("[education-ai] OpenAI error", res.status, txt);
-        return jsonRes({ error: `AI error: ${res.status}` }, 500);
-      }
-      const data = await res.json();
       const quiz = parseToolQuiz(data);
 
       const creditsRemaining = await deductUnified();
@@ -260,35 +238,16 @@ serve(async (req) => {
         ? String(body.difficulty)
         : "medium";
 
-      const res = await aiGateway({
+      const data = await callOpenAIRaw({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are an expert education quiz designer. Generate high-quality multiple-choice questions in English. Each question has 4 concise options and one correct index (0-3). Respond ONLY by calling the create_quiz tool." },
           { role: "user", content: `Topic: ${topic}\nDifficulty: ${difficulty}\nCreate ${safeN} questions suitable for a learner to practice.` },
         ],
-        tools: [{ type: "function", function: {
-          name: "create_quiz", description: "Return the generated quiz",
-          parameters: { type: "object", properties: {
-            title: { type: "string" },
-            questions: { type: "array", items: { type: "object", properties: {
-              question: { type: "string" },
-              options: { type: "array", items: { type: "string" } },
-              correct_index: { type: "integer" },
-              explanation: { type: "string" } },
-              required: ["question", "options", "correct_index", "explanation"] } } },
-            required: ["title", "questions"] } } }],
+        tools: [quizToolDefinition],
         tool_choice: { type: "function", function: { name: "create_quiz" } },
       });
 
-      if (res.status === 429) return jsonRes({ error: "Rate limit, try again shortly" }, 429);
-      if (res.status === 402) return jsonRes({ error: "AI credits exhausted on platform" }, 402);
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        console.error("[education-ai] OpenAI error", res.status, txt);
-        return jsonRes({ error: `AI error: ${res.status}` }, 500);
-      }
-
-      const data = await res.json();
       const quiz = parseToolQuiz(data);
       const lessonId = await ensureGeneratedQuizLesson();
       const { data: quizRow, error: quizInsertError } = await admin

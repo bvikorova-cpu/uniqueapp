@@ -1,26 +1,9 @@
 // Dating AI Coach: conversation_starter (A/B), bio_coach, rerank_discovery
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { callOpenAIJSON } from "../_shared/openai.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
-
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-const AI_URL = "https://api.openai.com/v1/chat/completions";
-
-async function callAI(messages: any[], json = false, model = "gpt-4o-mini") {
-  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
-  const body: any = { model, messages };
-  if (json) body.response_format = { type: "json_object" };
-  const r = await fetch(AI_URL, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body) });
-  if (r.status === 429) throw new Error("Rate limit, try again shortly");
-  if (r.status === 402) throw new Error("AI credits exhausted");
-  if (!r.ok) throw new Error(`AI error ${r.status}: ${await r.text()}`);
-  const data = await r.json();
-  return data.choices?.[0]?.message?.content ?? "";
-}
 
 function pickWeighted<T extends { weight: number }>(items: T[]): T {
   const total = items.reduce((s, i) => s + (i.weight || 1), 0);
@@ -63,12 +46,11 @@ Deno.serve(async (req) => {
         ? `Recent chat:\n${recentMessages.slice(-6).map((m: any) => `${m.mine ? "me" : "them"}: ${m.content}`).join("\n")}`
         : "No messages yet.";
 
-      const raw = await callAI([
-        { role: "system", content: chosen.prompt },
-        { role: "user", content: `${profileSummary}\n\n${history}\n\nReturn STRICT JSON: {"starters":["..","..",".."]}` },
-      ], true);
-      let starters: string[] = [];
-      try { starters = JSON.parse(raw).starters || []; } catch { starters = []; }
+      const raw = await callOpenAIJSON({
+        system: chosen.prompt,
+        user: `${profileSummary}\n\n${history}\n\nReturn STRICT JSON: {"starters":["..","..",".."]}`
+      });
+      let starters: string[] = Array.isArray(raw?.starters) ? raw.starters : [];
       starters = starters.filter(Boolean).slice(0, 3);
 
       const { data: exp } = await admin.from("dating_ai_experiments").insert({
@@ -99,20 +81,22 @@ Deno.serve(async (req) => {
     if (action === "bio_coach") {
       const { bio: rawBio, profile } = payload;
       if (!rawBio || typeof rawBio !== "string") throw new Error("bio required");
-      // DoS guard: cap bio length sent to the model
       const bio = rawBio.slice(0, 800);
       const ctx = profile
         ? `Profile type: age ${profile.age}, gender ${profile.gender}, looking for ${profile.looking_for}, interests: ${(profile.interests || []).slice(0, 20).join(", ")}, location ${(profile.location || "?").toString().slice(0, 80)}.`
         : "";
-      const raw = await callAI([
-        { role: "system", content: `You are an elite dating profile coach. Analyze the bio and return STRICT JSON:
-{"score":0-100,"strengths":["..","..",".."],"weaknesses":["..","..",".."],"tips":["..","..","..","..",".."],"rewrites":[{"label":"Warm","text":"..."},{"label":"Playful","text":"..."},{"label":"Confident","text":"..."}]}
-Tips MUST be concrete and tailored to the profile type. Rewrites MUST be under 280 chars each.` },
-        { role: "user", content: `${ctx}\n\nBIO:\n"${bio}"` },
-      ], true);
-      let parsed: any = {};
-      try { parsed = JSON.parse(raw); } catch { parsed = { score: 50, strengths: [], weaknesses: [], tips: [], rewrites: [] }; }
-      return new Response(JSON.stringify(parsed), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const parsed = await callOpenAIJSON({
+        system: `You are an elite dating profile coach. Analyze the bio and return STRICT JSON:\n{"score":0-100,"strengths":["..","..",".."],"weaknesses":["..","..",".."],"tips":["..","..","..","..",".."],"rewrites":[{"label":"Warm","text":"..."},{"label":"Playful","text":"..."},{"label":"Confident","text":"..."}]}\nTips MUST be concrete and tailored to the profile type. Rewrites MUST be under 280 chars each.`,
+        user: `${ctx}\n\nBIO:\n"${bio}"`,
+        model: "gpt-4o-mini",
+      });
+      return new Response(JSON.stringify({
+        score: parsed?.score ?? 50,
+        strengths: Array.isArray(parsed?.strengths) ? parsed.strengths : [],
+        weaknesses: Array.isArray(parsed?.weaknesses) ? parsed.weaknesses : [],
+        tips: Array.isArray(parsed?.tips) ? parsed.tips : [],
+        rewrites: Array.isArray(parsed?.rewrites) ? parsed.rewrites : [],
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // ============ DISCOVERY RE-RANK ============
@@ -130,12 +114,12 @@ Tips MUST be concrete and tailored to the profile type. Rewrites MUST be under 2
         prompts: Array.isArray(c.prompts) ? c.prompts.length : 0 }));
       const myCtx = me ? { age: me.age, gender: me.gender, looking_for: me.looking_for,
         interests: me.interests || [], bio: (me.bio || "").slice(0, 200) } : {};
-      const raw = await callAI([
-        { role: "system", content: `You predict like→match probability for a dating app. Given the viewer profile and candidate profiles, score each candidate 0-100 reflecting the probability the viewer will like AND the candidate will like back (mutual match). Reward shared interests, compatible age/orientation, profile completeness, and conversation potential. Return STRICT JSON: {"scores":[{"id":"...","p":0-100}]}.` },
-        { role: "user", content: `Viewer:\n${JSON.stringify(myCtx)}\n\nCandidates:\n${JSON.stringify(slim)}` },
-      ], true, "gpt-4o-mini");
-      let scores: any[] = [];
-      try { scores = JSON.parse(raw).scores || []; } catch { scores = []; }
+      const raw = await callOpenAIJSON({
+        system: `You predict like→match probability for a dating app. Given the viewer profile and candidate profiles, score each candidate 0-100 reflecting the probability the viewer will like AND the candidate will like back (mutual match). Reward shared interests, compatible age/orientation, profile completeness, and conversation potential. Return STRICT JSON: {"scores":[{"id":"...","p":0-100}]}.`,
+        user: `Viewer:\n${JSON.stringify(myCtx)}\n\nCandidates:\n${JSON.stringify(slim)}`,
+        model: "gpt-4o-mini",
+      });
+      const scores = Array.isArray(raw?.scores) ? raw.scores : [];
       return new Response(JSON.stringify({ scores }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
