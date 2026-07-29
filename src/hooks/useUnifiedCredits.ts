@@ -54,12 +54,12 @@ export const useUnifiedCredits = () => {
 
   // Calculate total credits
   const totalCredits = creditBalances
-    ? Object.values(creditBalances).reduce((sum, val) => sum + val, 0)
+    ? creditBalances.handwriting + creditBalances.pastLife + creditBalances.anonymousDate + creditBalances.lieDetector + creditBalances.creativeForge
     : 0;
 
   // Purchase credits for a specific service
   const purchaseCredits = async (
-    service: keyof CreditBalance,
+    service: "handwriting" | "pastLife" | "anonymousDate" | "lieDetector" | "creativeForge",
     amount: number
   ): Promise<string | null> => { const functionMap = {
       handwriting: "create-handwriting-credits-payment",
