@@ -71,8 +71,7 @@ Summarize the brainstorming so far, identify the strongest 2-3 ideas, and propos
       { role: "user", content: `Room: ${room.name}\nCategory: ${room.category}\nDescription: ${room.description || "none"}\n\nCurrent draft:\n${(room.current_content || "").slice(0, 2000)}\n\nRecent discussion:\n${conversationContext}\n\nUser prompt: ${prompt || "Help us"}` },
     ]);
 
-    const data = await aiResponse.json();
-    const aiContent = data.choices?.[0]?.message?.content || "";
+    const aiContent = aiContentRaw;
 
     // Save AI message
     await supabase.from("creative_forge_room_messages").insert({

@@ -56,8 +56,7 @@ Extract the core idea, organize it cleanly, expand thin areas, and remove filler
       { role: "user", content: `Voice transcript:\n\n${transcript}` },
     ]);
 
-    const data = await aiResponse.json();
-    const script = data.choices?.[0]?.message?.content || "";
+    const script = scriptRaw;
 
     await supabase.from("creative_forge_credits").update({ credits_remaining: credits.credits_remaining - VOICE_COST }).eq("user_id", user.id);
 

@@ -47,8 +47,7 @@ Return ONLY the rewritten text, no commentary, no preamble.`;
       { role: "user", content: text },
     ]);
 
-    const data = await aiResponse.json();
-    const rewritten = data.choices?.[0]?.message?.content || "";
+    const rewritten = rewrittenRaw;
 
     await supabase.from("creative_forge_credits").update({ credits_remaining: credits.credits_remaining - STYLE_COST }).eq("user_id", user.id);
 
