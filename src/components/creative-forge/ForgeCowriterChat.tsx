@@ -60,7 +60,8 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
         body: {
           action: "cowriter",
           text: userMsg.content,
-          extra: { category, currentText, history: next } } });
+          extra: { category, currentText, history: next, brand_voice: brandVoice ?? undefined } } });
+
 
       if (error) {
         // Supabase FunctionsHttpError hides the body — read it for a real message.
