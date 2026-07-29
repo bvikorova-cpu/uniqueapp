@@ -92,7 +92,7 @@ export const ImageToPromptView = ({ onCreditsUsed, onUsePrompt }: Props) => {
           </div>
         )}
 
-        <Button onClick={analyze} disabled={analyzing || !imageUrl.trim()} className="w-full min-h-12 gap-2 whitespace-normal px-4">
+        <Button onClick={analyze} disabled={analyzing || !imageUrl.trim()} className="w-[calc(100%-5rem)] sm:w-full min-h-12 gap-2 whitespace-normal px-4">
           {analyzing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ScanSearch className="w-4 h-4" />}
           {analyzing ? "Analyzing Image..." : "Analyze Image (3 CR)"}
         </Button>
