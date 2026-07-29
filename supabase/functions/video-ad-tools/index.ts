@@ -117,7 +117,9 @@ serve(async (req) => {
     };
 
     const openaiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openaiKey) { await refund(); throw new Error('OpenAI not configured'); }
+    const lovableKey = Deno.env.get('LOVABLE_API_KEY');
+    if (!openaiKey && !lovableKey) { await refund(); throw new Error('AI not configured'); }
+
 
     let systemPrompt = '';
     let userPrompt = '';
@@ -353,23 +355,48 @@ serve(async (req) => {
 
     let result: unknown;
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${openaiKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ],
-          response_format: { type: 'json_object' } }) });
-      if (!response.ok) {
-        const txt = await response.text();
-        throw new Error(`AI gateway error ${response.status}: ${txt.slice(0, 200)}`);
+      const callChat = async (target: 'lovable' | 'openai') => {
+        const url = target === 'lovable'
+          ? 'https://ai.gateway.lovable.dev/v1/chat/completions'
+          : 'https://api.openai.com/v1/chat/completions';
+        const headers: Record<string, string> = target === 'lovable'
+          ? { 'Lovable-API-Key': lovableKey as string, 'Content-Type': 'application/json' }
+          : { 'Authorization': `Bearer ${openaiKey}`, 'Content-Type': 'application/json' };
+        const model = target === 'lovable' ? 'google/gemini-3.6-flash' : 'gpt-4o-mini';
+        // deno-lint-ignore no-explicit-any
+        const originalFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+        return await originalFetch(url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt }
+            ],
+            response_format: { type: 'json_object' } }) });
+      };
+
+      let response: Response | null = null;
+      let lastErr = '';
+      const order: Array<'lovable' | 'openai'> = [];
+      if (lovableKey) order.push('lovable');
+      if (openaiKey) order.push('openai');
+
+      for (const target of order) {
+        const r = await callChat(target);
+        if (r.ok) { response = r; break; }
+        lastErr = `${target} ${r.status}: ${(await r.text()).slice(0, 200)}`;
+        console.error('[video-ad-tools] provider failed:', lastErr);
       }
+      if (!response) throw new Error(`AI unavailable — ${lastErr}`);
+
       const aiData = await response.json();
-      result = JSON.parse(aiData.choices[0].message.content);
+      const content = aiData.choices?.[0]?.message?.content ?? '';
+      const cleaned = String(content).replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
+      result = JSON.parse(cleaned);
     } catch (aiErr) {
+
       await refund();
       const msg = aiErr instanceof Error ? aiErr.message : String(aiErr);
       console.error('[video-ad-tools] AI error:', msg);

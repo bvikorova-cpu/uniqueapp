@@ -124,10 +124,17 @@ export const PRODUCTS: Record<string, ProductDef> = { // === Jobs (Phase 4 part 
     cancelPath: "/rewards" },
 
   // === Skills Marketplace: one-off service order (dynamic amount) ===
+  // === Video Ad Studio credits (dynamic amount) ===
+  video_ad_credits: { currency: "eur",
+    name: "Video Ad Credits",
+    successPath: "/video-ad-generator?payment=success",
+    cancelPath: "/video-ad-generator?payment=canceled" },
+
   skill_service_order: { currency: "eur",
     name: "Skills Marketplace Order",
     successPath: "/skills-marketplace/orders/success",
     cancelPath: "/skills-marketplace/orders" } };
+
 
 export function getStripe(): Stripe { return new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
     apiVersion: "2025-08-27.basil" });
