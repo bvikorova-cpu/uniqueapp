@@ -95,8 +95,6 @@ import { installGlobalErrorHandlers } from "@/utils/logger";
 import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { prewarmHotRoutes } from "@/utils/prewarmRoutes";
 import { HelmetProvider } from "react-helmet-async";
-import GoogleTranslateWidget from "@/components/GoogleTranslateWidget";
-import { FloatingAssistantDock } from "@/components/FloatingAssistantDock";
 import { GlobalPaymentCleanup } from "@/components/payment/GlobalPaymentCleanup";
 import { GameAdGateHost } from "@/components/games/GameAdGateHost";
 
@@ -107,7 +105,6 @@ const ProtectedRoute = lazy(() => import("@/components/ProtectedRoute").then((mo
 const SubscriptionGuard = lazy(() => import("@/components/SubscriptionGuard").then((module) => ({ default: module.SubscriptionGuard })));
 const MegatalentGuard = lazy(() => import("@/components/megatalent/MegatalentGuard").then((module) => ({ default: module.MegatalentGuard })));
 const ProgressiveOnboarding = lazy(() => import("./components/onboarding/ProgressiveOnboarding"));
-const UniAssistant = lazy(() => import("./components/assistant/UniAssistant"));
 const GlobalAnnouncementBanner = lazy(() => import("./components/GlobalAnnouncementBanner").then((module) => ({ default: module.GlobalAnnouncementBanner })));
 const ReferralCaptureMount = lazy(() => import("@/components/referral/ReferralCaptureMount").then((module) => ({ default: module.ReferralCaptureMount })));
 const IQReferralCaptureMount = lazy(() => import("@/components/iq/IQReferralCaptureMount"));
@@ -685,13 +682,6 @@ const App = () => {
                 </Suspense>
                 <Toaster />
                 <Sonner />
-                <Suspense fallback={null}>
-                  <FloatingAssistantDock>
-                    <UniAssistant docked />
-                    <GoogleTranslateWidget docked />
-                  </FloatingAssistantDock>
-                </Suspense>
-
                 <div className="flex flex-col min-h-screen">
                   <ErrorBoundary>
                     <Suspense fallback={<div className="h-16 border-b border-border bg-background/95" aria-hidden="true" />}>
