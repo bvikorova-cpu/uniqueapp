@@ -190,7 +190,40 @@ export function ForgeBrandVoice({ open, onClose, onSelect }: Props) {
         ) : (
           <div className="space-y-3">
             <Button onClick={() => setEditing(EMPTY as any)} className="w-full"><Plus className="h-4 w-4 mr-2" />New Brand Voice</Button>
-            {voices.length === 0 && <p className="text-sm text-muted-foreground text-center py-6">No brand voices yet.</p>}
+
+            <div className="rounded-lg border border-dashed p-3 space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-semibold flex items-center gap-2"><Wand2 className="h-4 w-4" />Starter voices</p>
+                  <p className="text-xs text-muted-foreground">Add a ready-made profile and tweak it later.</p>
+                </div>
+                <Button size="sm" variant="secondary" onClick={addAllStarters} disabled={seeding !== null}>
+                  {seeding === "__all__" ? <Loader2 className="h-3 w-3 animate-spin" /> : "Add all"}
+                </Button>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-2">
+                {STARTER_VOICES.map((p) => {
+                  const already = voices.some((v) => v.name.toLowerCase() === p.name.toLowerCase());
+                  return (
+                    <Card key={p.name} className="p-3 space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="text-sm font-semibold truncate">{p.name}</h4>
+                        {already && <Badge variant="outline" className="text-[10px]">Saved</Badge>}
+                      </div>
+                      <p className="text-xs text-muted-foreground line-clamp-2">{p.description}</p>
+                      <div className="flex gap-2">
+                        <Button size="sm" className="h-7 text-xs" disabled={already || seeding !== null} onClick={() => addStarter(p)}>
+                          {seeding === p.name ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Plus className="h-3 w-3 mr-1" />Add</>}
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditing(p as any)}>Customize</Button>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+
+            {voices.length === 0 && <p className="text-sm text-muted-foreground text-center py-2">No saved brand voices yet — pick a starter above.</p>}
             {voices.map((v) => (
               <Card key={v.id} className="p-3 flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
