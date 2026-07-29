@@ -20,6 +20,11 @@ verify_jwt = true
 [functions.creative-room-ai]
 verify_jwt = true
 
+[functions.creative-cowriter]
+verify_jwt = true
+
+
+
 [functions.generate-gift-message]
 verify_jwt = true
 
