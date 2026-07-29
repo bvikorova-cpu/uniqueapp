@@ -145,7 +145,7 @@ const ContentStudio = () => {
   if (activeView === "repurpose") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><ContentRepurposer onBack={() => setActiveView("main")} /></div></div>;
   if (activeView === "analytics") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><ContentAnalytics onBack={() => setActiveView("main")} /></div></div>;
   if (activeView === "ab-test") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><ABABTesting onBack={() => setActiveView("main")} /></div></div>;
-  if (activeView === "bulk") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><BulkContentGenerator onBack={() => setActiveView("main")} /></div></div>;
+  if (activeView === "bulk") return <div className="min-h-screen overflow-x-hidden bg-background pt-20 pb-56 sm:pb-20"><div className="container mx-auto max-w-7xl px-4"><BulkContentGenerator onBack={() => setActiveView("main")} /></div></div>;
   if (activeView === "seo") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><SEOKeywordOptimizer onBack={() => setActiveView("main")} /></div></div>;
 
   if (activeView === "generate") {

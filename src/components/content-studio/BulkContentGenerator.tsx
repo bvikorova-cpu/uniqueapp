@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,19 +32,31 @@ const BulkContentGenerator = ({ onBack }: Props) => {
   const [results, setResults] = useState<{ id: number; content: string; hashtags?: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [copiedIds, setCopiedIds] = useState<Set<number>>(new Set());
+  const [topicError, setTopicError] = useState("");
+  const topicInputRef = useRef<HTMLInputElement>(null);
 
   const handleGenerate = async () => {
     if (!topic.trim()) {
-      toast.error("Please provide a topic");
+      setTopicError("Topic / Theme is required");
+      topicInputRef.current?.focus();
+      toast.error("Topic / Theme is required");
       return;
     }
+    setTopicError("");
     setLoading(true);
     setResults([]);
     setCopiedIds(new Set());
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
         body: { action: "bulk-generate", topic, guidelines, platform, count } });
-      if (error) throw error;
+      if (error) {
+        let detail = "";
+        try {
+          const body = await (error as any)?.context?.json?.();
+          detail = body?.error || body?.message || "";
+        } catch { /* ignore */ }
+        throw new Error(detail || error.message || "Failed to generate content");
+      }
       if (data?.error) throw new Error(data.error);
       setResults(data.posts || []);
       toast.success(`Generated ${data.posts?.length || 0} posts! ${data.creditsUsed} credits used.`);
@@ -80,30 +92,41 @@ const BulkContentGenerator = ({ onBack }: Props) => {
           { title: 'Export', desc: 'Copy or download for scheduling.' },
         ]}
       />
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={onBack}>
+    <div className="space-y-6 overflow-x-hidden pb-56 sm:pb-20">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <Button variant="ghost" size="sm" onClick={onBack} className="w-fit">
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
         </Button>
         <div className="flex-1">
           <h2 className="text-2xl font-black">Bulk Content Generator</h2>
           <p className="text-muted-foreground">Generate multiple posts from a single prompt — save hours of work</p>
         </div>
-        <Badge variant="outline">2 credits per post</Badge>
+        <Badge variant="outline" className="w-fit">2 credits per post</Badge>
       </div>
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Batch Configuration</CardTitle>
           <CardDescription>Define your topic and AI will generate multiple unique posts</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5 p-4 sm:p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium">Topic / Theme *</label>
-              <Input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="e.g. AI productivity tips, fitness motivation..." />
+            <div className="min-w-0 space-y-2">
+              <label className="text-sm font-medium" htmlFor="bulk-topic">Topic / Theme *</label>
+              <Input
+                id="bulk-topic"
+                ref={topicInputRef}
+                value={topic}
+                onChange={(e) => {
+                  setTopic(e.target.value);
+                  if (topicError) setTopicError("");
+                }}
+                placeholder="e.g. AI productivity tips"
+                aria-invalid={Boolean(topicError)}
+              />
+              {topicError && <p className="text-sm font-medium text-destructive">{topicError}</p>}
             </div>
-            <div>
+            <div className="min-w-0 space-y-2">
               <label className="text-sm font-medium">Platform</label>
               <Select value={platform} onValueChange={setPlatform}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
@@ -115,21 +138,21 @@ const BulkContentGenerator = ({ onBack }: Props) => {
               </Select>
             </div>
           </div>
-          <div>
+          <div className="min-w-0 space-y-2">
             <label className="text-sm font-medium">Brand Guidelines / Tone (Optional)</label>
             <Textarea value={guidelines} onChange={(e) => setGuidelines(e.target.value)} placeholder="Describe your brand voice, tone, target audience..." rows={3} />
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <label className="text-sm font-medium">Number of posts:</label>
+          <div className="grid gap-3 sm:flex sm:items-center sm:justify-between">
+            <div className="grid grid-cols-4 items-center gap-2 sm:flex sm:gap-3">
+              <label className="col-span-4 text-sm font-medium sm:col-span-1">Number of posts:</label>
               {[3, 5, 7, 10].map(n => (
-                <Button key={n} size="sm" variant={count === n ? "default" : "outline"} onClick={() => setCount(n)}>{n}</Button>
+                <Button key={n} size="sm" variant={count === n ? "default" : "outline"} onClick={() => setCount(n)} className="min-h-11 w-full sm:w-auto">{n}</Button>
               ))}
             </div>
-            <div className="text-sm text-muted-foreground">{count * 2} credits total</div>
+            <div className="text-sm font-medium text-muted-foreground sm:text-right">{count * 2} credits total</div>
           </div>
-          <Button onClick={handleGenerate} disabled={loading || !topic.trim()} className="w-full">
-            {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating {count} posts...</> : <><Layers className="h-4 w-4 mr-2" /> Generate {count} Posts</>}
+          <Button onClick={handleGenerate} disabled={loading} className="min-h-12 w-full whitespace-normal leading-tight">
+            {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating {count} posts...</> : <><Layers className="h-4 w-4 mr-2" /> {topic.trim() ? `Generate ${count} Posts` : "Topic required"}</>}
           </Button>
         </CardContent>
       </Card>
