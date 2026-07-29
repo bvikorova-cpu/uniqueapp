@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
+import typography from "@tailwindcss/typography";
 
 export default {
   darkMode: ["class"],
@@ -159,4 +160,4 @@ export default {
         "blink": "blink 1s step-start infinite",
         "hero-kenburns": "hero-kenburns 6s ease-out forwards",
         "bell-ring": "bell-ring 1s ease-in-out 2" } } },
-  plugins: [tailwindcssAnimate] } satisfies Config;
+  plugins: [tailwindcssAnimate, typography] } satisfies Config;

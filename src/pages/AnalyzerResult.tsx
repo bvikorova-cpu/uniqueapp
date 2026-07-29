@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Download, Share2, Heart, ShoppingBag, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -88,7 +90,23 @@ export default function AnalyzerResult() {
 
   if (!analysis) return null;
   const rawInfo: any = analysis.detailed_info || {};
-  const info: any = { mainIdentification: rawInfo.mainIdentification || analysis.main_identification || "Analysis result",
+
+  // The AI often returns one long markdown blob. Derive a short, clean title
+  // from it and render the rest as proper markdown instead of raw text.
+  const cleanTitle = (raw: string) => {
+    const text = (raw || "").replace(/\r/g, "");
+    const line = text
+      .split("\n")
+      .map((l) => l.trim())
+      .find((l) => l && !/^-{2,}$/.test(l)) || "Analysis result";
+    const stripped = line
+      .replace(/[#*_`>]/g, "")
+      .replace(/^\d+\.\s*/, "")
+      .replace(/^Here is an? .*?:\s*/i, "")
+      .trim();
+    return (stripped.length > 70 ? stripped.slice(0, 70).trimEnd() + "…" : stripped) || "Analysis result";
+  };
+  const info: any = { mainIdentification: cleanTitle(rawInfo.mainIdentification || analysis.main_identification || ""),
     confidence: typeof rawInfo.confidence === "number" ? rawInfo.confidence : (analysis.confidence_score ?? 0),
     category: rawInfo.category || analysis.category,
     details: rawInfo.details || {
@@ -175,9 +193,18 @@ export default function AnalyzerResult() {
                 </div>
                 <Separator className="bg-cyan-500/20" />
                 <div>
-                  <h2 className="text-lg font-bold mb-2 text-cyan-400">Description</h2>
-                  <p className="text-muted-foreground text-sm">{info.details.description}</p>
+                  <h2 className="text-lg font-bold mb-2 text-cyan-400">Details</h2>
+                  <div className="prose prose-sm dark:prose-invert max-w-none break-words
+                                  prose-headings:text-foreground prose-headings:font-bold prose-headings:mt-4 prose-headings:mb-1
+                                  prose-h1:text-base prose-h2:text-base prose-h3:text-sm
+                                  prose-p:text-muted-foreground prose-li:text-muted-foreground
+                                  prose-strong:text-foreground prose-hr:border-cyan-500/20">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {String(info.details.description || "")}
+                    </ReactMarkdown>
+                  </div>
                 </div>
+
                 {info.details.specifications?.length > 0 && (<>
                   <Separator className="bg-cyan-500/20" />
                   <div>
