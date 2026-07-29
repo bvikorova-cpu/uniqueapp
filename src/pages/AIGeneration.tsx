@@ -91,22 +91,28 @@ const GROUPS = ["Core", "Editing", "Pro", "Inspiration", "Organize"];
 
 const AIGeneration = () => {
   const [activeView, setActiveView] = useState<ActiveView>('hub');
+  const [selectedPrompt, setSelectedPrompt] = useState("");
   const { credits, refresh } = useAICredits();
   const navigate = useNavigate();
 
+  const openGenerateWithPrompt = (prompt: string) => {
+    setSelectedPrompt(prompt);
+    setActiveView('generate');
+  };
+
   const renderView = () => {
     switch (activeView) {
-      case 'generate': return <GenerateView onCreditsUsed={refresh} />;
+      case 'generate': return <GenerateView onCreditsUsed={refresh} initialPrompt={selectedPrompt} />;
       case 'editor': return <ImageEditorView onCreditsUsed={refresh} />;
       case 'style': return <StyleTransferView onCreditsUsed={refresh} />;
       case 'upscaler': return <UpscalerView onCreditsUsed={refresh} />;
-      case 'gallery': return <PromptGalleryView onSelectPrompt={() => setActiveView('generate')} />;
+      case 'gallery': return <PromptGalleryView onSelectPrompt={openGenerateWithPrompt} />;
       case 'variations': return <VariationsView onCreditsUsed={refresh} />;
       case 'community': return <CommunityGalleryView />;
       case 'inpainting': return <InpaintingView onCreditsUsed={refresh} />;
       case 'batch': return <BatchGenerationView onCreditsUsed={refresh} />;
-      case 'history': return <PromptHistoryView onSelectPrompt={() => setActiveView('generate')} />;
-      case 'img2prompt': return <ImageToPromptView onCreditsUsed={refresh} onUsePrompt={() => setActiveView('generate')} />;
+      case 'history': return <PromptHistoryView onSelectPrompt={openGenerateWithPrompt} />;
+      case 'img2prompt': return <ImageToPromptView onCreditsUsed={refresh} onUsePrompt={openGenerateWithPrompt} />;
       case 'bg_remove': return <BackgroundRemoveView onCreditsUsed={refresh} />;
       case 'bg_replace': return <BackgroundReplaceView onCreditsUsed={refresh} />;
       case 'outpainting': return <OutpaintingView onCreditsUsed={refresh} />;

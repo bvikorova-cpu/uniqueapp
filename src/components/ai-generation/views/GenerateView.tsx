@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
-interface GenerateViewProps { onCreditsUsed: () => void; }
+interface GenerateViewProps { onCreditsUsed: () => void; initialPrompt?: string; }
 
 const ASPECT_RATIOS = [
   { v: "1:1", label: "Square 1:1" },
@@ -26,7 +26,7 @@ const examplePrompts = [
   "Enchanted forest with glowing mushrooms, fairy tale atmosphere, magical lighting",
 ];
 
-export const GenerateView = ({ onCreditsUsed }: GenerateViewProps) => {
+export const GenerateView = ({ onCreditsUsed, initialPrompt = "" }: GenerateViewProps) => {
   const [prompt, setPrompt] = useState("");
   const [negativePrompt, setNegativePrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState("1:1");
@@ -37,6 +37,14 @@ export const GenerateView = ({ onCreditsUsed }: GenerateViewProps) => {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [sharing, setSharing] = useState(false);
   const [shared, setShared] = useState(false);
+
+  useEffect(() => {
+    if (initialPrompt.trim()) {
+      setPrompt(initialPrompt);
+      setGeneratedImage(null);
+      setShared(false);
+    }
+  }, [initialPrompt]);
 
   const handleShareToGallery = async () => {
     if (!generatedImage) return;

@@ -47,11 +47,24 @@ export const PromptGalleryView = ({ onSelectPrompt }: PromptGalleryViewProps) =>
       if (error) throw error;
       if (data.error) { toast.error(data.error); return; }
       const parsed = data.prompts?.suggestions || data.prompts?.prompts || data.prompts;
-      if (Array.isArray(parsed)) {
-        setAiPrompts(parsed);
+       if (Array.isArray(parsed)) {
+         setAiPrompts(parsed.map((item, index) => {
+           const raw = typeof item === "string" ? item : item?.prompt || item?.text || item?.description || "";
+           return {
+             title: typeof item === "string" ? `Prompt ${index + 1}` : item?.title || item?.name || `Prompt ${index + 1}`,
+             prompt: raw,
+             category: typeof item === "string" ? "AI" : item?.category || "AI",
+             difficulty: typeof item === "string" ? "Easy" : item?.difficulty || "Easy",
+           };
+         }).filter((item) => item.prompt.trim()));
       } else if (parsed && typeof parsed === 'object') {
         const arr = Object.values(parsed).find(v => Array.isArray(v)) as PromptItem[] | undefined;
-        if (arr) setAiPrompts(arr);
+         if (arr) setAiPrompts(arr.map((item, index) => ({
+           title: item.title || `Prompt ${index + 1}`,
+           prompt: item.prompt,
+           category: item.category || "AI",
+           difficulty: item.difficulty || "Easy",
+         })).filter((item) => item.prompt?.trim()));
       }
       toast.success("AI prompts generated!");
     } catch (e: any) {
@@ -78,7 +91,7 @@ export const PromptGalleryView = ({ onSelectPrompt }: PromptGalleryViewProps) =>
   return (
     <>
       <FloatingHowItWorks title={"Prompt Gallery View - How it works"} steps={[{ title: 'Open', desc: 'Access the Prompt Gallery View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Prompt Gallery View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-4xl mx-auto space-y-6 pb-44 sm:pb-0">
       {/* AI Prompt Generator */}
       <Card className="border-2 border-primary/20">
         <CardHeader>
@@ -100,16 +113,16 @@ export const PromptGalleryView = ({ onSelectPrompt }: PromptGalleryViewProps) =>
             <div className="grid sm:grid-cols-2 gap-3 mt-4">
               {aiPrompts.map((p, i) => (
                 <div key={i} className="p-3 rounded-xl border bg-card hover:border-primary/30 transition-all space-y-2">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold text-sm">{p.title}</p>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full border ${difficultyColor(p.difficulty)}`}>{p.difficulty}</span>
+                   <div className="flex items-start justify-between gap-2">
+                     <p className="font-semibold text-sm break-words">{p.title}</p>
+                     <span className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full border ${difficultyColor(p.difficulty)}`}>{p.difficulty}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{p.prompt}</p>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => copyPrompt(p.prompt)}>
+                   <p className="text-xs text-muted-foreground break-words">{p.prompt}</p>
+                   <div className="grid grid-cols-2 gap-2 pr-16 sm:pr-0">
+                     <Button size="sm" variant="outline" className="text-xs min-h-9 h-auto whitespace-normal" onClick={() => copyPrompt(p.prompt)}>
                       <Copy className="w-3 h-3 mr-1" />Copy
                     </Button>
-                    <Button size="sm" className="text-xs h-7" onClick={() => onSelectPrompt(p.prompt)}>
+                     <Button size="sm" className="text-xs min-h-9 h-auto whitespace-normal" onClick={() => onSelectPrompt(p.prompt)}>
                       Use Prompt
                     </Button>
                   </div>
@@ -127,34 +140,35 @@ export const PromptGalleryView = ({ onSelectPrompt }: PromptGalleryViewProps) =>
           <CardDescription>Hand-picked prompts for stunning results</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:overflow-visible">
             {categories.map((c) => (
-              <button
+              <Button
                 key={c}
+                type="button"
+                variant={activeCategory === c ? "default" : "secondary"}
+                size="sm"
                 onClick={() => setActiveCategory(c)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                  activeCategory === c ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'
-                }`}
+                className="shrink-0 rounded-full text-xs font-medium"
               >
                 {c}
-              </button>
+              </Button>
             ))}
           </div>
 
           <div className="grid sm:grid-cols-2 gap-3">
             {filteredCurated.map((p, i) => (
               <div key={i} className="p-3 rounded-xl border bg-card hover:border-primary/30 transition-all space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="font-semibold text-sm">{p.title}</p>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full border ${difficultyColor(p.difficulty)}`}>{p.difficulty}</span>
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-semibold text-sm break-words">{p.title}</p>
+                  <span className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full border ${difficultyColor(p.difficulty)}`}>{p.difficulty}</span>
                 </div>
                 <span className="inline-block text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary">{p.category}</span>
-                <p className="text-xs text-muted-foreground">{p.prompt}</p>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => copyPrompt(p.prompt)}>
+                <p className="text-xs text-muted-foreground break-words">{p.prompt}</p>
+                <div className="grid grid-cols-2 gap-2 pr-16 sm:pr-0">
+                  <Button size="sm" variant="outline" className="text-xs min-h-9 h-auto whitespace-normal" onClick={() => copyPrompt(p.prompt)}>
                     <Copy className="w-3 h-3 mr-1" />Copy
                   </Button>
-                  <Button size="sm" className="text-xs h-7" onClick={() => onSelectPrompt(p.prompt)}>
+                  <Button size="sm" className="text-xs min-h-9 h-auto whitespace-normal" onClick={() => onSelectPrompt(p.prompt)}>
                     Use Prompt
                   </Button>
                 </div>
