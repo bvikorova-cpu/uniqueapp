@@ -191,9 +191,18 @@ export default function AnalyzerResult() {
                 </div>
                 <Separator className="bg-cyan-500/20" />
                 <div>
-                  <h2 className="text-lg font-bold mb-2 text-cyan-400">Description</h2>
-                  <p className="text-muted-foreground text-sm">{info.details.description}</p>
+                  <h2 className="text-lg font-bold mb-2 text-cyan-400">Details</h2>
+                  <div className="prose prose-sm dark:prose-invert max-w-none break-words
+                                  prose-headings:text-foreground prose-headings:font-bold prose-headings:mt-4 prose-headings:mb-1
+                                  prose-h1:text-base prose-h2:text-base prose-h3:text-sm
+                                  prose-p:text-muted-foreground prose-li:text-muted-foreground
+                                  prose-strong:text-foreground prose-hr:border-cyan-500/20">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {String(info.details.description || "")}
+                    </ReactMarkdown>
+                  </div>
                 </div>
+
                 {info.details.specifications?.length > 0 && (<>
                   <Separator className="bg-cyan-500/20" />
                   <div>
