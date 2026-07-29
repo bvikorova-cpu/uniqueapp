@@ -367,13 +367,20 @@ Deno.serve(async (req) => {
         }
         break;
       case "plagiarism":
-        result = await callAI(apiKey, [
-          {
-            role: "system",
-            content: `You are a plagiarism and originality checker. Analyze the provided text. Return JSON: { "originalityScore": number (0-100), "analysis": "string", "suggestions": ["string"] }`
-          },
-          { role: "user", content: content || "" },
-        ], true);
+        try {
+          const aiResult = await callAI(apiKey, [
+            {
+              role: "system",
+              content: `You are a plagiarism and originality checker. Analyze the provided text. Return JSON: { "originalityScore": number (0-100), "analysis": "string", "suggestions": ["string"], "flaggedSections": [{"text":"","reason":""}] }`
+            },
+            { role: "user", content: String(content || "").substring(0, 6000) },
+          ], true);
+          result = { result: buildPlagiarismResult(content, aiResult) };
+        } catch (e) {
+          if (!(e instanceof UnifiedAIError)) throw e;
+          result = { result: buildPlagiarismResult(content), fallback: true };
+          chargedCost = 0;
+        }
         break;
       case "repurpose":
         try {
