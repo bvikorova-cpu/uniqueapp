@@ -126,6 +126,26 @@
     aspect-ratio: 1 / 1 !important;
     max-height: calc(100vh - 28rem) !important;
   }
+
+  .ai-batch-mobile-guard {
+    width: calc(100vw - 12rem) !important;
+    max-width: calc(100vw - 12rem) !important;
+    min-width: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 26rem !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .ai-batch-mobile-guard input,
+  .ai-batch-mobile-guard .ai-batch-summary-panel,
+  .ai-batch-mobile-guard .ai-mobile-safe-action {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
 }
 
 /* Dark Interrogation Mode — global red noir filter */
