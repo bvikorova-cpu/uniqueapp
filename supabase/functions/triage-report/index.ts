@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // AI moderation triage via OpenAI
 // Categorizes a report and updates moderation_queue with severity + categories
 import "https://deno.land/x/xhr@0.1.0/mod.ts";

@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // AI triage for incoming contact messages — categorizes, suggests FAQ, detects sentiment & language
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":

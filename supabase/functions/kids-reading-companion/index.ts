@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Kids Reading Companion: analyze, multi-quiz, define actions.
 // Credit-gated against the `kids_reading_credits` table.
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";

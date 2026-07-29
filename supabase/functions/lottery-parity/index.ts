@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Lottery Numbers parity pack router. 8 actions, fixed cost 5 credits each.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";

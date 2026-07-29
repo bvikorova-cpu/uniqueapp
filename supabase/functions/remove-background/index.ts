@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Universal photo processing edge function.
 // Handles: bg-remove, restore, colorize, repair, enhance, colorize-pro,
 // face-enhance, upscale. Uses OpenAI gpt-image-1 for real image edits.

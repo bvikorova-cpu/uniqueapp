@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Past Life Reading edge function.
 // Aliased from "analyze-past-life" via patchSupabaseFunctions.ts.
 //

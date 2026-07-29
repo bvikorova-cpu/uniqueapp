@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // AI Tag Suggester for Stock Content (OpenAI)
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };

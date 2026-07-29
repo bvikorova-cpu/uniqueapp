@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Voice-to-text via OpenAI Whisper
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",

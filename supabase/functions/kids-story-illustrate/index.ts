@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Kids Story Illustrate — generates a single AI illustration for one story page.
 // Costs 2 kids_story credits per page. Uses OpenAI DALL-E 3.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";

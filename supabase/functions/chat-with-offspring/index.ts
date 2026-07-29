@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Chats with a digital_offspring using its system_prompt, persists conversation rows.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 

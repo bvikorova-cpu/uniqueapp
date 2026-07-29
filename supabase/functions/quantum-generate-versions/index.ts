@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Quantum Social — Generate alternate post versions using OpenAI.
 // One call per post returns N stylistic rewrites of the same base content.
 

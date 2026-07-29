@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Pre-send AI moderation for dating chat messages.
 // Returns { allow: boolean, reason?: string, severity?: 'low'|'medium'|'high' }
 import { createClient } from "npm:@supabase/supabase-js@2";

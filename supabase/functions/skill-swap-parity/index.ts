@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Global Skill Swap parity pack router.
 // 8 actions, fixed cost 6 credits each, deducted from skill_swap_credits.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";

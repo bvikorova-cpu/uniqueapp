@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Uni premium TTS — proxies OpenAI /v1/audio/speech. Returns MP3 audio bytes. Auth required; no extra
 // credit charge (voice is part of the 5-credit Uni command).
 import { corsHeaders } from "../_shared/cors.ts";

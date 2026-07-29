@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Router edge function – consolidates handwriting AI tools + billing into one slot.
 // AI actions: signature, compatibility, mood, forgery, twin, famous, academy, pdf-report,
 //             voice-diary, hr-bulk-analyze, couples-record-compatibility

@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Universal edge function for module-course curriculum, final exam and
 // certificate PDF issuing. Actions:
 //   - "curriculum"   : returns rich structured curriculum (cached)

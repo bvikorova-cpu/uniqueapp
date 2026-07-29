@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Lie Detector AI Router — consolidates 18 lie-detector-* functions into one
 // Routes via { action: "polygraph" | "cross-exam" | "voice" | ... } in body
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";

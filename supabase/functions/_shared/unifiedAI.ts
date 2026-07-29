@@ -1,3 +1,4 @@
+import "./aiRedirect.ts";
 /**
  * Unified AI provider for all Supabase Edge Functions.
  *

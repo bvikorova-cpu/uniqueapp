@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Anonymous Date AI - paid AI features via OpenAI
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders,

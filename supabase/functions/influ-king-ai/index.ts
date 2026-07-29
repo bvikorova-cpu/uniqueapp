@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
