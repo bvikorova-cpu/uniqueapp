@@ -169,7 +169,7 @@ export function ForgeBrandVoice({ open, onClose, onSelect, activeVoiceId, onClea
       <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Brand Voices</DialogTitle>
-          <DialogDescription>Save reusable tone profiles. Applied to every generation when selected.</DialogDescription>
+          <DialogDescription>Save reusable tone profiles. The active voice is applied to the AI Co-Writer and generations, and is remembered for your next session.</DialogDescription>
         </DialogHeader>
 
         {editing ? (
