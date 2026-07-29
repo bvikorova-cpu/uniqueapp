@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +36,7 @@ const ContentCalendar = ({ onBack }: Props) => { const [entries, setEntries] = u
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const detailRef = useRef<HTMLDivElement | null>(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -50,13 +51,14 @@ const ContentCalendar = ({ onBack }: Props) => { const [entries, setEntries] = u
     if (!user) return;
     const start = startOfMonth(currentMonth);
     const end = endOfMonth(currentMonth);
-    const { data } = await (supabase as any)
+    const { data, error } = await (supabase as any)
       .from("content_calendar")
       .select("*")
       .eq("user_id", user.id)
       .gte("scheduled_date", start.toISOString())
       .lte("scheduled_date", end.toISOString())
       .order("scheduled_date");
+    if (error) toast.error(error.message);
     setEntries((data as any[]) || []);
     setLoading(false);
   };
@@ -87,14 +89,16 @@ const ContentCalendar = ({ onBack }: Props) => { const [entries, setEntries] = u
   };
 
   const handleDelete = async (id: string) => {
-    await (supabase as any).from("content_calendar").delete().eq("id", id);
+    const { error } = await (supabase as any).from("content_calendar").delete().eq("id", id);
+    if (error) { toast.error(error.message); return; }
     toast.success("Entry removed");
     loadEntries();
   };
 
   const handleToggleStatus = async (entry: CalendarEntry) => {
     const newStatus = entry.status === "published" ? "planned" : "published";
-    await (supabase as any).from("content_calendar").update({ status: newStatus }).eq("id", entry.id);
+    const { error } = await (supabase as any).from("content_calendar").update({ status: newStatus }).eq("id", entry.id);
+    if (error) { toast.error(error.message); return; }
     loadEntries();
   };
 
@@ -113,7 +117,7 @@ const ContentCalendar = ({ onBack }: Props) => { const [entries, setEntries] = u
           { title: 'Publish or export', desc: 'Push to schedulers or download CSV.' },
         ]}
       />
-    <div className="space-y-6">
+    <div className="space-y-6 pb-56 md:pb-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
@@ -151,7 +155,11 @@ const ContentCalendar = ({ onBack }: Props) => { const [entries, setEntries] = u
                 return (
                   <button
                     key={day.toISOString()}
-                    onClick={() => setSelectedDate(day)}
+                    onClick={() => {
+                      setSelectedDate(day);
+                      setShowForm(true);
+                      setTimeout(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+                    }}
                     className={`relative p-2 rounded-lg text-sm transition-all min-h-[50px] ${
                       isSelected ? "bg-primary text-primary-foreground" : isToday(day) ? "bg-accent" : "hover:bg-muted"
                     }`}
@@ -171,7 +179,7 @@ const ContentCalendar = ({ onBack }: Props) => { const [entries, setEntries] = u
           </CardContent>
         </Card>
 
-        <div className="space-y-4">
+        <div className="space-y-4" ref={detailRef}>
           {selectedDate && (
             <>
               <div className="flex items-center justify-between">
@@ -197,11 +205,11 @@ const ContentCalendar = ({ onBack }: Props) => { const [entries, setEntries] = u
                         </Select>
                       </div>
                       <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Notes..." rows={2} />
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => setShowForm(false)}>Cancel</Button>
-                        <Button size="sm" onClick={handleSave} disabled={saving || !form.title.trim()}>
-                          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <Button className="w-full" onClick={handleSave} disabled={saving || !form.title.trim()}>
+                          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : form.title.trim() ? "Save" : "Title required"}
                         </Button>
+                        <Button variant="outline" className="w-full" onClick={() => setShowForm(false)}>Cancel</Button>
                       </div>
                     </CardContent>
                   </Card>
