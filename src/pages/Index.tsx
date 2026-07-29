@@ -455,7 +455,7 @@ const Index = () => {
         {favoriteModules.length > 0 && (
           <section>
             <SectionHeader icon={Pin} title="Your Favorites" />
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {favoriteModules.map((mod: any, i) => <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
             </div>
           </section>
@@ -465,7 +465,7 @@ const Index = () => {
         {recentModules.length > 0 && (
           <section>
             <SectionHeader icon={Clock} title="Recently Visited" />
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
               {recentModules.map((mod: any, i) => <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
             </div>
           </section>
