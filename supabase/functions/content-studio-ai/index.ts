@@ -55,6 +55,70 @@ function buildTemplateFallback(templateType: string, topic: unknown, details: un
   }
 }
 
+function countOccurrences(content: string, keyword: string) {
+  const cleanKeyword = keyword.trim().toLowerCase();
+  if (!cleanKeyword) return 0;
+  const escaped = cleanKeyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const matches = content.toLowerCase().match(new RegExp(`\\b${escaped}\\b`, "g"));
+  return matches?.length ?? 0;
+}
+
+function wordCount(content: string) {
+  return content.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function numberFrom(value: unknown, fallback: number) {
+  const match = String(value ?? "").match(/\d+(?:\.\d+)?/);
+  const parsed = match ? Number(match[0]) : Number(value);
+  return Number.isFinite(parsed) ? Math.max(0, Math.min(100, Math.round(parsed))) : fallback;
+}
+
+function arrayFrom(value: unknown, fallback: string[]) {
+  return Array.isArray(value) ? value.map((item) => String(item).trim()).filter(Boolean) : fallback;
+}
+
+function buildSeoAnalysis(content: unknown, targetKeyword: unknown, aiResult: any = {}) {
+  const cleanContent = String(content || "").trim();
+  const keyword = sentence(targetKeyword, "target keyword");
+  const words = Math.max(1, wordCount(cleanContent));
+  const occurrences = countOccurrences(cleanContent, keyword);
+  const density = Number(((occurrences / words) * 100).toFixed(1));
+  const hasKeyword = occurrences > 0;
+  const roughLengthScore = words >= 300 ? 85 : words >= 120 ? 70 : 45;
+  const densityScore = density >= 0.5 && density <= 2.5 ? 90 : density > 2.5 ? 62 : hasKeyword ? 70 : 38;
+  const readabilityScore = numberFrom(aiResult.readability?.score ?? aiResult.readability, roughLengthScore);
+  const overallScore = numberFrom(aiResult.overall_score ?? aiResult.score, Math.round((roughLengthScore + densityScore + readabilityScore) / 3));
+  const suggestions = arrayFrom(aiResult.suggestions, [
+    hasKeyword ? `Keep "${keyword}" visible in the title, opening paragraph, and one subheading.` : `Add "${keyword}" naturally in the title and first paragraph.`,
+    words < 300 ? "Expand the content with practical examples, FAQs, and clearer section headings." : "Strengthen internal structure with short headings and scannable sections.",
+    "Add one clear meta description, one primary call to action, and supporting related phrases.",
+    "Use concise paragraphs and bullet points so readers can scan the page quickly.",
+    "Review the final copy for search intent: problem, solution, proof, and next step.",
+  ]);
+
+  return {
+    overall_score: overallScore,
+    title_analysis: {
+      score: hasKeyword ? 82 : 45,
+      feedback: hasKeyword ? `The target keyword "${keyword}" appears in the content. Use it in the page title if it is not already there.` : `The target keyword "${keyword}" is missing. Add it naturally to the title or H1.`,
+    },
+    keyword_analysis: [
+      {
+        keyword,
+        density,
+        occurrences,
+        recommendation: density === 0 ? "Missing — add naturally in the title, intro, and one heading." : density > 2.5 ? "High density — reduce repetition and use related phrases." : "Healthy usage — keep it natural and context-rich.",
+      },
+    ],
+    readability: {
+      score: readabilityScore,
+      feedback: typeof aiResult.readability?.feedback === "string" ? aiResult.readability.feedback : words < 120 ? "Content is very short; add more context for better SEO value." : "Readability looks usable. Keep sentences direct and sectioned.",
+    },
+    suggestions,
+    meta_description_suggestion: sentence(aiResult.meta_description_suggestion ?? aiResult.metaDescription, `Discover ${keyword} with practical guidance, clear benefits, and simple next steps for readers who want useful results.`).slice(0, 180),
+  };
+}
+
 async function callAI(_apiKey: string | undefined, messages: any[], json = false) {
   const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
   const user = messages.filter((m) => m.role !== "system").map((m) => m.content).join("\n\n");
@@ -124,10 +188,18 @@ Deno.serve(async (req) => {
         ], true);
         break;
       case "seo-analyze":
-        result = await callAI(apiKey, [
-          { role: "system", content: "You are an expert SEO analyst. Analyze content for keyword optimization, readability, and provide actionable improvements." },
-          { role: "user", content: `Analyze this content for SEO optimization with target keyword "${targetKeyword || ""}".\n\nContent:\n${(content || "").substring(0, 5000)}\n\nProvide: overall score (0-100), keyword density analysis, readability score, 5+ improvement suggestions, and a suggested meta description. Return JSON: {"score":0,"keywordDensity":"","readability":"","suggestions":[""],"metaDescription":""}` },
-        ], true);
+        try {
+          const aiResult = await callAI(apiKey, [
+            { role: "system", content: "You are an expert SEO analyst. Analyze content for keyword optimization, readability, and provide actionable improvements." },
+            { role: "user", content: `Analyze this content for SEO optimization with target keyword "${targetKeyword || ""}".\n\nContent:\n${(content || "").substring(0, 5000)}\n\nProvide: overall score (0-100), keyword density analysis, readability score, 5+ improvement suggestions, and a suggested meta description. Return JSON: {"score":0,"keywordDensity":"","readability":"","suggestions":[""],"metaDescription":""}` },
+          ], true);
+          const analysis = buildSeoAnalysis(content, targetKeyword, aiResult);
+          result = { ...aiResult, analysis };
+        } catch (e) {
+          if (!(e instanceof UnifiedAIError)) throw e;
+          result = { analysis: buildSeoAnalysis(content, targetKeyword), fallback: true };
+          chargedCost = 0;
+        }
         break;
       case "templates":
         try {

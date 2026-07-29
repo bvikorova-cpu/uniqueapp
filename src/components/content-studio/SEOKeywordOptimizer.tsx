@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Loader2, Search, TrendingUp, AlertTriangle, CheckCircle, Target } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { cn } from "@/lib/utils";
 interface KeywordResult {
   keyword: string;
   density: number;
@@ -36,9 +37,15 @@ const SEOKeywordOptimizer = ({ onBack }: Props) => {
   const [targetKeyword, setTargetKeyword] = useState("");
   const [analysis, setAnalysis] = useState<SEOAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const keywordRef = useRef<HTMLInputElement | null>(null);
+  const contentRef = useRef<HTMLTextAreaElement | null>(null);
 
   const handleAnalyze = async () => {
     if (!content.trim() || !targetKeyword.trim()) {
+      setSubmitted(true);
+      if (!targetKeyword.trim()) keywordRef.current?.focus();
+      else contentRef.current?.focus();
       toast.error("Please provide content and a target keyword");
       return;
     }
@@ -83,36 +90,67 @@ const SEOKeywordOptimizer = ({ onBack }: Props) => {
           { title: 'Optimize', desc: 'Update content and re-check.' },
         ]}
       />
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
+    <div className="mx-auto w-full max-w-3xl space-y-6 overflow-x-clip pb-48 sm:max-w-7xl sm:pb-20">
+      <div className="flex items-start gap-3 sm:items-center sm:gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
         </Button>
-        <div className="flex-1">
-          <h2 className="text-2xl font-black">SEO Keyword Optimizer</h2>
-          <p className="text-muted-foreground">AI-driven keyword density analysis and optimization recommendations</p>
+        <div className="min-w-0 flex-1">
+          <h2 className="text-2xl font-black leading-tight">SEO Keyword Optimizer</h2>
+          <p className="text-sm text-muted-foreground sm:text-base">AI-driven keyword density analysis and optimization recommendations</p>
         </div>
-        <Badge variant="outline">4 credits</Badge>
+        <Badge variant="outline" className="hidden shrink-0 sm:inline-flex">4 credits</Badge>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Content to Analyze</CardTitle>
+      <Card className="w-full max-w-[calc(100vw-2rem)] overflow-hidden sm:max-w-full">
+        <CardHeader className="px-4 sm:px-6">
+          <CardTitle className="text-2xl leading-tight sm:text-3xl">Content to Analyze</CardTitle>
           <CardDescription>Paste your content and specify your target keyword for SEO analysis</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 px-4 sm:px-6">
           <div>
             <label className="text-sm font-medium">Target Keyword *</label>
-            <Input value={targetKeyword} onChange={(e) => setTargetKeyword(e.target.value)} placeholder="e.g. AI content marketing, best travel tips..." />
+            <Input
+              ref={keywordRef}
+              value={targetKeyword}
+              onChange={(e) => setTargetKeyword(e.target.value)}
+              placeholder="e.g. AI content marketing, best travel tips..."
+              aria-invalid={submitted && !targetKeyword.trim()}
+            />
+            {submitted && !targetKeyword.trim() && (
+              <p className="mt-1 text-sm text-destructive">Target keyword is required.</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium">Content *</label>
-            <Textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Paste your blog post, article, or landing page content..." rows={10} />
+            <Textarea
+              ref={contentRef}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Paste your blog post, article, or landing page content..."
+              rows={10}
+              aria-invalid={submitted && !content.trim()}
+            />
             <p className="text-xs text-muted-foreground mt-1">{content.split(/\s+/).filter(Boolean).length} words</p>
+            {submitted && !content.trim() && (
+              <p className="mt-1 text-sm text-destructive">Content is required before analysis.</p>
+            )}
           </div>
-          <Button onClick={handleAnalyze} disabled={loading || !content.trim() || !targetKeyword.trim()} className="w-full">
-            {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Analyzing...</> : <><Search className="h-4 w-4 mr-2" /> Analyze SEO</>}
-          </Button>
+          <div className="pb-16 sm:pb-3">
+            <Button
+              onClick={handleAnalyze}
+              disabled={loading}
+              className={cn(
+                "h-auto min-h-12 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-3 text-center leading-tight disabled:opacity-60",
+                "whitespace-normal break-words [overflow-wrap:anywhere]",
+              )}
+            >
+              {loading ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Search className="h-4 w-4 shrink-0" />}
+              <span className="min-w-0 break-words leading-tight">
+                {loading ? "Analyzing..." : content.trim() && targetKeyword.trim() ? "Analyze SEO" : "Fill required fields"}
+              </span>
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
