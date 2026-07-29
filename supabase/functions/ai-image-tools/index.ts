@@ -251,6 +251,39 @@ serve(async (req) => {
       return `data:image/png;base64,${b64}`;
     };
 
+    // Real image-to-image edit: sends the uploaded image + instruction to a Gemini image model
+    const editUploadedImage = async (sourceUrl: string, instruction: string) => {
+      if (!LOVABLE_API_KEY) throw new Error("Image editing is not configured");
+      const res = await rawFetch(LOVABLE_IMAGE_URL, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "google/gemini-3.1-flash-image",
+          messages: [
+            {
+              role: "user",
+              content: [
+                { type: "text", text: `Edit this image: ${instruction}. Keep the original subject, composition and identity intact unless the instruction says otherwise. Return only the edited image.` },
+                { type: "image_url", image_url: { url: sourceUrl } },
+              ],
+            },
+          ],
+          modalities: ["image", "text"],
+        }),
+      });
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error("Lovable image edit error:", res.status, text);
+        throw new Error(`Image editing failed (${res.status})`);
+      }
+      const data = await res.json();
+      const b64 = data?.data?.[0]?.b64_json;
+      if (!b64) throw new Error("No edited image returned by AI");
+      return `data:image/png;base64,${b64}`;
+    };
+
+
+
     const parseJSON = (content: string) => {
       try { return JSON.parse(content); } catch { /* try fenced/embedded JSON below */ }
       const fenced = content.match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1]?.trim();
@@ -307,9 +340,16 @@ serve(async (req) => {
           break;
         }
         case "edit": {
+          if (imageUrl && typeof imageUrl === "string") {
+            const instruction = (editPrompt || prompt || "").toString().trim();
+            if (!instruction) throw new Error("Edit instruction is required");
+            result = { imageUrl: await editUploadedImage(imageUrl, instruction) };
+            break;
+          }
           if (!prompt?.trim()) throw new Error("Prompt is required");
           result = { imageUrl: await generateImage(`${prompt}. Based on the original image concept, create an edited version.`, size) };
           break;
+
         }
         case "style_transfer": {
           if (!prompt?.trim() || !style) throw new Error("Prompt and style required");
