@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { COWRITER_COST } from "@/hooks/useCreativeAITools";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -28,6 +29,7 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -65,6 +67,8 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
         return;
       }
       setMessages([...next, { role: "assistant", content: reply }]);
+      queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
     } catch (e: any) {
       toast.error(e?.message || "Co-writer failed");
     } finally {
