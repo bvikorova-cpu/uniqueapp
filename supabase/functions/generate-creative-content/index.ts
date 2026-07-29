@@ -115,69 +115,11 @@ serve(async (req) => {
 
     console.log(`Generating ${category} content for user ${user.id}, cost: ${creditCost} credits`);
 
-    // Prefer Lovable AI Gateway; fall back to direct OpenAI when configured.
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!OPENAI_API_KEY && !LOVABLE_API_KEY) throw new Error("AI is not configured");
-
-    const callAI = (useGateway: boolean) =>
-      fetch(
-        useGateway
-          ? "https://ai.gateway.lovable.dev/v1/chat/completions"
-          : "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: useGateway
-            ? { "Lovable-API-Key": LOVABLE_API_KEY!, "Content-Type": "application/json" }
-            : { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: useGateway ? "openai/gpt-5.4-mini" : "gpt-4o-mini",
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: userPrompt },
-            ] }) });
-
-    let usingGateway = !!LOVABLE_API_KEY;
-    let aiResponse = await callAI(usingGateway);
-
-    // OpenAI quota exhausted / rate limited -> switch to the gateway (or vice versa).
-    if (!aiResponse.ok && (aiResponse.status === 429 || aiResponse.status === 402)) {
-      const canSwitch = usingGateway ? !!OPENAI_API_KEY : !!LOVABLE_API_KEY;
-      if (canSwitch) {
-        await aiResponse.text().catch(() => {});
-        console.warn(`Primary AI provider ${aiResponse.status}; switching provider`);
-        usingGateway = !usingGateway;
-        aiResponse = await callAI(usingGateway);
-      }
-    }
-
-    // Retry on transient upstream rate limits (429) / server errors with backoff.
-    for (let attempt = 1; attempt <= 2 && (aiResponse.status === 429 || aiResponse.status >= 500); attempt++) {
-      const retryAfter = Number(aiResponse.headers.get("retry-after")) || 0;
-      const waitMs = retryAfter > 0 ? retryAfter * 1000 : attempt * 1200;
-      console.warn(`AI ${aiResponse.status}, retry ${attempt} in ${waitMs}ms`);
-      await aiResponse.text().catch(() => {});
-      await new Promise((r) => setTimeout(r, waitMs));
-      aiResponse = await callAI(usingGateway);
-    }
-
-    if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error("OpenAI API error:", aiResponse.status, errorText);
-      const status = aiResponse.status === 429 ? 429 : aiResponse.status === 402 ? 402 : 502;
-      const message =
-        status === 429
-          ? "AI is busy right now. Please try again in a few seconds."
-          : status === 402
-          ? "Service temporarily unavailable. Please try again later."
-          : "Failed to generate content";
-      return new Response(JSON.stringify({ error: message }), {
-        status,
-        headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-
-
-    const aiData = await aiResponse.json();
+    const generatedContent = await callOpenAI({
+      system: systemPrompt,
+      user: userPrompt,
+      model: "gpt-4o-mini",
+    });
     const generatedContent = aiData.choices?.[0]?.message?.content;
 
     if (!generatedContent) {
