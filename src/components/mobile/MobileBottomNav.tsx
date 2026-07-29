@@ -42,7 +42,7 @@ export const MobileBottomNav = () => {
       className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-background/85 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
       aria-label="Primary mobile navigation"
     >
-      <ul className="grid grid-cols-5">
+      <ul className="grid grid-cols-5 gap-1 px-1">
         {(user ? ITEMS_AUTH : ITEMS_GUEST).map(({ path, label, icon: Icon }) => {
           const active = path === "/" ? pathname === "/" : pathname.startsWith(path);
           const target = path === "/profile" ? (user ? `/profile/${user.id}` : "/auth") : path;
