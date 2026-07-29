@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { VideoAdHero } from "@/components/video-ads/VideoAdHero";
 import { VideoAdCreditsDisplay } from "@/components/video-ads/VideoAdCreditsDisplay";
+import { useVideoAdStats } from "@/hooks/useVideoAdStats";
+
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Video, Layout, PenTool, Users, BarChart3, Globe, Search, Mic, Music, Target, Calculator, Flame, Trophy, Star, Lightbulb, ImageIcon, CalendarDays, Mic2, BarChart2, Globe2, FlaskConical, Link2, Subtitles, Palette, Award, UserCircle2, Film, Library, Crop, Volume2 } from "lucide-react";
@@ -161,6 +163,8 @@ const tools = [
 const VideoAdGenerator = () => {
   const [activeView, setActiveView] = useState("dashboard");
   const queryClient = useQueryClient();
+  const { data: stats, isLoading: statsLoading } = useVideoAdStats();
+
 
   // Auto-verify Stripe credits payment on redirect back from Checkout
   useEffect(() => {
@@ -230,15 +234,16 @@ const VideoAdGenerator = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
               <Card className="p-4 bg-gradient-to-br from-orange-500/10 to-red-500/5 border-orange-500/20">
-                <div className="flex items-center gap-3"><Flame className="w-8 h-8 text-orange-500" /><div><p className="text-2xl font-black">7</p><p className="text-xs text-muted-foreground">Day Streak</p></div></div>
+                <div className="flex items-center gap-3"><Flame className="w-8 h-8 text-orange-500" /><div><p className="text-2xl font-black">{statsLoading ? "—" : stats?.dayStreak ?? 0}</p><p className="text-xs text-muted-foreground">Day Streak</p></div></div>
               </Card>
               <Card className="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/5 border-blue-500/20">
-                <div className="flex items-center gap-3"><Trophy className="w-8 h-8 text-blue-500" /><div><p className="text-2xl font-black">142</p><p className="text-xs text-muted-foreground">Ads Created</p></div></div>
+                <div className="flex items-center gap-3"><Trophy className="w-8 h-8 text-blue-500" /><div><p className="text-2xl font-black">{statsLoading ? "—" : stats?.adsCreated ?? 0}</p><p className="text-xs text-muted-foreground">Ads Created</p></div></div>
               </Card>
               <Card className="p-4 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border-amber-500/20">
-                <div className="flex items-center gap-3"><Star className="w-8 h-8 text-amber-500" /><div><p className="text-2xl font-black">Pro</p><p className="text-xs text-muted-foreground">Creator Level</p></div></div>
+                <div className="flex items-center gap-3"><Star className="w-8 h-8 text-amber-500" /><div><p className="text-2xl font-black capitalize">{statsLoading ? "—" : stats?.tier ?? "free"}</p><p className="text-xs text-muted-foreground">Creator Level</p></div></div>
               </Card>
             </div>
+
             <VideoAdCreditsDisplay />
             <h2 className="text-xl font-bold mt-8 mb-4">AI Tools & Features</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">

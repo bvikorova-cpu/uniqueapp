@@ -91,6 +91,8 @@ export const useVideoAdCredits = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["video-ad-credits"] });
       queryClient.invalidateQueries({ queryKey: ["video-ad-history"] });
+      queryClient.invalidateQueries({ queryKey: ["video-ad-stats"] });
+
       toast.success("Video ad generated successfully!");
     },
     onError: (error: Error) => {
