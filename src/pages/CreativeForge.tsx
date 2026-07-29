@@ -86,7 +86,7 @@ export default function CreativeForge() {
   const [brandVoiceOpen, setBrandVoiceOpen] = useState(false);
   const [storyBibleOpen, setStoryBibleOpen] = useState(false);
   const [aiStudioOpen, setAiStudioOpen] = useState(false);
-  const [activeBrandVoice, setActiveBrandVoice] = useState<BrandVoice | null>(null);
+  const { activeVoice: activeBrandVoice, selectVoice: setActiveBrandVoice, clearVoice: clearBrandVoice } = useActiveBrandVoice();
 
   // Any view switch must bring the user to the top, otherwise the new view renders
   // off-screen (page stays scrolled deep) and the click looks like it did nothing.
