@@ -18,21 +18,38 @@ const editActions = [
 
 export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
   const [description, setDescription] = useState("");
+  const [sourceImage, setSourceImage] = useState<string | null>(null);
   const [editInstruction, setEditInstruction] = useState("");
   const [loading, setLoading] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
 
+  const handleUpload = (file?: File | null) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { toast.error("Please select an image file"); return; }
+    if (file.size > 8 * 1024 * 1024) { toast.error("Image must be smaller than 8 MB"); return; }
+    const reader = new FileReader();
+    reader.onload = () => setSourceImage(reader.result as string);
+    reader.onerror = () => toast.error("Could not read the image");
+    reader.readAsDataURL(file);
+  };
+
   const handleEdit = async (instruction?: string) => {
     const finalInstruction = instruction || editInstruction;
-    if (!description.trim() || !finalInstruction.trim()) {
-      toast.error("Please describe your image and the edit you want");
+    if (!finalInstruction.trim()) {
+      toast.error("Please describe the edit you want");
+      return;
+    }
+    if (!sourceImage && !description.trim()) {
+      toast.error("Upload an image or describe the original image");
       return;
     }
     setLoading(true);
     setResultImage(null);
     try {
       const { data, error } = await supabase.functions.invoke('ai-image-tools', {
-        body: { action: 'edit', prompt: `Original image: ${description}. Edit: ${finalInstruction}` }
+        body: sourceImage
+          ? { action: 'edit', imageUrl: sourceImage, editPrompt: finalInstruction, prompt: finalInstruction }
+          : { action: 'edit', prompt: `Original image: ${description}. Edit: ${finalInstruction}` }
       });
       if (error) throw error;
       if (data.error) { toast.error(data.error); return; }
@@ -46,26 +63,62 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
     }
   };
 
+  const canEdit = Boolean(sourceImage) || description.trim().length > 0;
+
   return (
     <>
-      <FloatingHowItWorks title={"Image Editor View - How it works"} steps={[{ title: 'Open', desc: 'Access the Image Editor View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Image Editor View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <FloatingHowItWorks title={"Image Editor View - How it works"} steps={[{ title: 'Upload', desc: 'Upload the image you want to edit (or describe it in words).' }, { title: 'Instruct', desc: 'Pick a quick action or write your own edit instruction.' }, { title: 'Apply', desc: 'Apply the edit — it costs 3 credits.' }, { title: 'Download', desc: 'Review the result and download the edited image.' }]} />
       <div className="ai-mobile-tool-shell ai-editor-mobile-guard w-full max-w-4xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
       <Card className="ai-editor-mobile-card border-2 border-primary/20">
         <CardHeader className="ai-editor-card-header">
           <CardTitle className="flex items-center gap-2"><Pencil className="w-5 h-5 text-primary" /> AI Image Editor</CardTitle>
-          <CardDescription>Describe your image and the edits you want — 3 credits per edit</CardDescription>
+          <CardDescription>Upload an image and describe the edits you want — 3 credits per edit</CardDescription>
         </CardHeader>
         <CardContent className="ai-editor-card-content space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Describe the original image</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. A portrait of a woman with brown hair in a garden..."
-              className="ai-editor-mobile-field w-full min-h-[80px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
-              disabled={loading}
-            />
+            <label className="text-sm font-medium">Upload image to edit</label>
+            {sourceImage ? (
+              <div className="relative rounded-lg border overflow-hidden bg-muted/30">
+                <img src={sourceImage} alt="Image to edit" className="w-full max-h-72 object-contain" />
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="absolute top-2 right-2"
+                  onClick={() => setSourceImage(null)}
+                  disabled={loading}
+                >
+                  Replace
+                </Button>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center gap-2 w-full min-h-[140px] p-4 rounded-lg border-2 border-dashed cursor-pointer hover:border-primary/60 transition-colors">
+                <Upload className="w-6 h-6 text-primary" />
+                <span className="text-sm font-medium">Tap to upload an image</span>
+                <span className="text-xs text-muted-foreground">PNG or JPG, max 8 MB</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={loading}
+                  onChange={(e) => handleUpload(e.target.files?.[0])}
+                />
+              </label>
+            )}
           </div>
+
+          {!sourceImage && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Or describe the original image</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="e.g. A portrait of a woman with brown hair in a garden..."
+                className="ai-editor-mobile-field w-full min-h-[80px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+                disabled={loading}
+              />
+            </div>
+          )}
+
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Quick Edit Actions</label>
