@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Barcode / QR product lookup using free Open Food Facts API + AI fallback.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 

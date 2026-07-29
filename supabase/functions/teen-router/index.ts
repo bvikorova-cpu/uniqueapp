@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Teen Hub unified AI router — handles all 6 Teen modules with credit deduction.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";

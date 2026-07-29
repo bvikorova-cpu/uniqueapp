@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Generates a year-in-review JSON for the user (top moments, mood, stats).
 // Frontend renders it as printable HTML / PDF.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";

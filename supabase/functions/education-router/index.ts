@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Universal Education edge function - one slot handles all education actions
 // Actions: srs.*, daily.*, achievement.*, league.*, cert.*, math.*, notes.*,
 //          tutor.*, deck.*, course.* (curriculum/exam/submit/videos/workbook/

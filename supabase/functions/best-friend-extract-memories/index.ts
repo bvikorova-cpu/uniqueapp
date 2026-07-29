@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Background memory extractor: scans recent user messages, extracts durable facts,
 // stores top-N into best_friend_memories. Called by client opportunistically (e.g. every 10 messages)
 // or by user on demand.

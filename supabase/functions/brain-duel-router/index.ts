@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { callOpenAIJSON } from "../_shared/openai.ts";
 

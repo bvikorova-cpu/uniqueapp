@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Generate AI Best Friend avatar (Pixar-style portrait) and save URL on persona row.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 

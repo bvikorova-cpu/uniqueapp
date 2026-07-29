@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Kids Academy Hub router — meta features across all kids sections.
 // Actions:
 //   hub.credits              (free)  → { credits }

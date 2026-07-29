@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 
 const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY')!

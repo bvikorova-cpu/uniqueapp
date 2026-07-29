@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Lottery AI tuning features: dream decoder, numerology, heatmap analysis
 // Uses OpenAI. Credits deducted atomically via deduct_ai_credits RPC.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";

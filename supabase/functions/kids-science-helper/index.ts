@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Kids Science Lab helper: safety checker + ask-the-scientist Q&A.
 // All actions are credit-gated against the `science_credits` table (2 credits each).
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";

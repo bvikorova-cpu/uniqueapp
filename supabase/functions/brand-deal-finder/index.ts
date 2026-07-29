@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // AI-powered brand deal generator for InfluKing.
 // Uses OpenAI (gpt-4o-mini) to produce 6 tailored brand deal opportunities
 // based on the caller's influencer profile. Deducts 3 AI credits per call.

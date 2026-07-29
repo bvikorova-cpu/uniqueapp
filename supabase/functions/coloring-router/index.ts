@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Coloring Hub universal router — handles all 18 features.
 // AI actions deduct credits from coloring_credits.
 import { createClient } from "npm:@supabase/supabase-js@2.45.0";

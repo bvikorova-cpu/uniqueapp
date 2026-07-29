@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Teen Career Counselor — AI guidance, day-in-the-life simulator, skill gap analyzer, mentor chat.
 // Credit-gated against the unified ai_credits pool.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";

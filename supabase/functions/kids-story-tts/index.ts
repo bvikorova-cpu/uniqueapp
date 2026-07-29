@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Kids Story TTS — converts story text to speech using OpenAI TTS
 // Returns base64 MP3 audio for client playback
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
