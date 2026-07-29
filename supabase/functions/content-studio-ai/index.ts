@@ -221,6 +221,51 @@ function buildAbTestVariants(topic: unknown, contentTypeValue: unknown, requeste
   };
 }
 
+const REPURPOSE_FORMATS: Record<string, { name: string; fallback: (source: string) => string }> = {
+  twitter_thread: {
+    name: "Twitter Thread",
+    fallback: (source) => `1/ ${source.slice(0, 180)}\n\n2/ Key idea: turn the main message into one clear takeaway.\n\n3/ Add a practical example or proof point.\n\n4/ Close with one simple action for readers.`,
+  },
+  linkedin_post: {
+    name: "LinkedIn Post",
+    fallback: (source) => `${source.slice(0, 220)}\n\nThe practical takeaway is simple: communicate the value clearly, support it with context, and end with a confident next step.\n\nWhat would you add?`,
+  },
+  instagram_caption: {
+    name: "Instagram Caption",
+    fallback: (source) => `${source.slice(0, 180)}\n\nSave this for later and use it as a quick reminder.\n\n#unique #creatorlife #contentstrategy #digitaltools`,
+  },
+  email_newsletter: {
+    name: "Email Newsletter",
+    fallback: (source) => `Subject: A useful update for you\n\nHi,\n\n${source.slice(0, 350)}\n\nThe main benefit is clarity: one message, one reason to care, and one next step.\n\nBest,\nUnique`,
+  },
+  blog_summary: {
+    name: "Blog Summary",
+    fallback: (source) => `Summary\n\n${source.slice(0, 450)}\n\nKey takeaways:\n• Keep the main message clear.\n• Explain why it matters.\n• Give readers one practical next step.`,
+  },
+  sms_marketing: {
+    name: "SMS / Short Message",
+    fallback: (source) => `${source.slice(0, 120)} Learn more and take the next step today.`,
+  },
+};
+
+function normalizeRepurposeFormats(value: unknown) {
+  const requested = Array.isArray(value) ? value.map((item) => String(item)).filter((id) => id in REPURPOSE_FORMATS) : [];
+  return requested.length > 0 ? requested : ["linkedin_post"];
+}
+
+function buildRepurposeResults(source: unknown, formatsValue: unknown, aiResult: any = {}) {
+  const cleanSource = sentence(source, "Your original content");
+  const formats = normalizeRepurposeFormats(formatsValue);
+  const rawResults = aiResult?.results && typeof aiResult.results === "object" ? aiResult.results : {};
+  return Object.fromEntries(
+    formats.map((formatId) => {
+      const label = REPURPOSE_FORMATS[formatId].name;
+      const aiText = rawResults[formatId] ?? rawResults[label] ?? rawResults[label.toLowerCase()] ?? rawResults[formatId.replace(/_/g, " ")];
+      return [formatId, sentence(aiText, REPURPOSE_FORMATS[formatId].fallback(cleanSource))];
+    }),
+  );
+}
+
 async function callAI(_apiKey: string | undefined, messages: any[], json = false) {
   const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
   const user = messages.filter((m) => m.role !== "system").map((m) => m.content).join("\n\n");
@@ -248,7 +293,11 @@ Deno.serve(async (req) => {
     if (!action || !(action in ACTION_COST)) {
       return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    const cost = action === "templates" ? (TEMPLATE_COST[String(templateType || "")] ?? ACTION_COST.templates) : ACTION_COST[action];
+    const cost = action === "templates"
+      ? (TEMPLATE_COST[String(templateType || "")] ?? ACTION_COST.templates)
+      : action === "repurpose"
+        ? normalizeRepurposeFormats(params.formats).length * 3
+        : ACTION_COST[action];
     const auth = await requireAiCredits(req, corsHeaders, { credits: cost, usageType: `content_studio_${action}`,
       description: action === "templates" ? `Content Studio template: ${templateType || "custom"}` : undefined });
     if (auth.errorResponse) return auth.errorResponse;
@@ -300,10 +349,19 @@ Deno.serve(async (req) => {
         ], true);
         break;
       case "repurpose":
-        result = await callAI(apiKey, [
-          { role: "system", content: "You are a content repurposing expert. Transform the given content into the requested formats. Return valid JSON only." },
-          { role: "user", content: `Transform this content into multiple formats. Return JSON: {"results":{"<format name>":"<repurposed content>"}}.\n\nSource content:\n${sourceContent || content || ""}` },
-        ], true);
+        try {
+          const formats = normalizeRepurposeFormats(params.formats);
+          const formatList = formats.map((id) => `${id}: ${REPURPOSE_FORMATS[id].name}`).join("\n");
+          const aiResult = await callAI(apiKey, [
+            { role: "system", content: "You are a content repurposing expert. Transform the given content into the exact requested format IDs. Return valid JSON only." },
+            { role: "user", content: `Transform this content into the requested formats below. Return JSON exactly like: {"results":{"format_id":"repurposed content"}}.\n\nRequested format IDs:\n${formatList}\n\nSource content:\n${sourceContent || content || ""}` },
+          ], true);
+          result = { ...aiResult, results: buildRepurposeResults(sourceContent || content, formats, aiResult) };
+        } catch (e) {
+          if (!(e instanceof UnifiedAIError)) throw e;
+          result = { results: buildRepurposeResults(sourceContent || content, params.formats), fallback: true };
+          chargedCost = 0;
+        }
         break;
       case "seo-analyze":
         try {
