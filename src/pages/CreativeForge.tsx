@@ -183,7 +183,15 @@ export default function CreativeForge() {
     setGeneratedContent(null);
     setPreviousContent(null);
     setTitle(""); setGenre(""); setMood(""); setDescription(""); setCharacters(""); setSetting(""); setTargetAudience(""); setStyleReference(""); setContentLength("medium");
+    // Ensure the newly opened Create view is visible (otherwise the page stays
+    // scrolled deep in the hub and the click appears to do nothing on mobile).
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
   };
+
 
   // Shared modals (used both in hub & create view)
   const sharedModals = (
