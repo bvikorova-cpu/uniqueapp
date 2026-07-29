@@ -41,75 +41,37 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
     setInput("");
     setLoading(true);
 
-    let assistantSoFar = "";
     try {
-      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/creative-cowriter`;
-      const { data: { session } } = await (await import("@/integrations/supabase/client")).supabase.auth.getSession();
-      const resp = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.access_token}` },
-        body: JSON.stringify({ messages: next, category, currentText }) });
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data, error } = await supabase.functions.invoke("forge-ai-tools", {
+        body: {
+          action: "cowriter",
+          text: userMsg.content,
+          extra: { category, currentText, history: next } } });
 
-      if (resp.status === 402) {
-        const err = await resp.json();
-        toast.error(err.error || "Insufficient credits");
-        setLoading(false);
+      if (error) throw error;
+      if (data?.error === "INSUFFICIENT_CREDITS") {
+        toast.error(`You need ${COWRITER_COST} credits to keep chatting.`);
         return;
       }
-      if (resp.status === 429) {
-        toast.error("Too many requests. Please wait a moment.");
-        setLoading(false);
-        return;
-      }
-      if (!resp.ok || !resp.body) {
-        toast.error("Co-writer unavailable");
-        setLoading(false);
+      if (data?.error) {
+        toast.error(data.error);
         return;
       }
 
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      setMessages([...next, { role: "assistant", content: "" }]);
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        let nl;
-        while ((nl = buffer.indexOf("\n")) !== -1) {
-          let line = buffer.slice(0, nl);
-          buffer = buffer.slice(nl + 1);
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (!line.startsWith("data: ")) continue;
-          const json = line.slice(6).trim();
-          if (json === "[DONE]") continue;
-          try {
-            const parsed = JSON.parse(json);
-            const delta = parsed.choices?.[0]?.delta?.content;
-            if (delta) {
-              assistantSoFar += delta;
-              setMessages(prev => {
-                const copy = [...prev];
-                copy[copy.length - 1] = { role: "assistant", content: assistantSoFar };
-                return copy;
-              });
-            }
-          } catch {
-            buffer = line + "\n" + buffer;
-            break;
-          }
-        }
+      const reply = (data?.content ?? "").toString().trim();
+      if (!reply) {
+        toast.error("Co-writer returned an empty reply. Try again.");
+        return;
       }
+      setMessages([...next, { role: "assistant", content: reply }]);
     } catch (e: any) {
-      toast.error(e.message || "Co-writer failed");
+      toast.error(e?.message || "Co-writer failed");
     } finally {
       setLoading(false);
     }
   };
+
 
   if (!open) return null;
 
