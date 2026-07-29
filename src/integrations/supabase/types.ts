@@ -68975,6 +68975,14 @@ export type Database = {
         Args: { _listing_id: string }
         Returns: string
       }
+      get_creative_forge_stats: {
+        Args: never
+        Returns: {
+          drafts: number
+          projects: number
+          writers: number
+        }[]
+      }
       get_creator_available_cents: {
         Args: { _user_id: string }
         Returns: number
