@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Loader2, Download, Upload, Eraser, Paintbrush, Layers } from "lucide-react";
+import { Pencil, Loader2, Download, Upload, Eraser } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
