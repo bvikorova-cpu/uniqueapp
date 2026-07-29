@@ -16,7 +16,7 @@ export async function reserveAnalyzerCredits(cost: number): Promise<{
   if (!user) throw new Error("Not authenticated");
 
   const { data: row, error } = await supabase
-    .from("analyzer_credits")
+    .from("ai_credits")
     .select("credits_remaining")
     .eq("user_id", user.id)
     .maybeSingle();
@@ -31,11 +31,8 @@ export async function reserveAnalyzerCredits(cost: number): Promise<{
     commit: async () => {
       if (committed) return;
       committed = true;
-      const next = Math.max(0, balance - cost);
-      const { error: upErr } = await supabase
-        .from("analyzer_credits")
-        .update({ credits_remaining: next })
-        .eq("user_id", user.id);
+      const { error: upErr } = await supabase.rpc("analyzer_spend_credits" as any, {
+        _amount: cost, _reason: "analyzer_tool" } as any);
       if (upErr) {
         committed = false;
         throw upErr;

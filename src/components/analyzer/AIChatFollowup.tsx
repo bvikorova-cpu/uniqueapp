@@ -30,15 +30,7 @@ export const AIChatFollowup = ({ context }: { context: string }) => {
       if (data?.error) throw new Error(data.error);
       setMessages((m) => [...m, { role: "ai", text: data.result }]);
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: cred } = await supabase.from("analyzer_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
-        if (cred) {
-          await supabase.from("analyzer_credits")
-            .update({ credits_remaining: Math.max(0, (cred.credits_remaining ?? 0) - 1) })
-            .eq("user_id", user.id);
-        }
-      }
+      await supabase.rpc("analyzer_spend_credits" as any, { _amount: 1, _reason: "analyzer_chat_followup" } as any);
     } catch (e: any) { toast.error(e.message || "Chat failed"); }
     finally { setLoading(false); }
   };

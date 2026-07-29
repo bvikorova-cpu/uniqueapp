@@ -48,12 +48,8 @@ export const AnalyzerToolLayout = ({
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);
-      // Deduct credits client-side (RLS scoped to auth.uid())
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const remaining = Math.max(0, (credits?.credits_remaining ?? 0) - creditCost);
-        await supabase.from("analyzer_credits").update({ credits_remaining: remaining }).eq("user_id", user.id);
-      }
+      // Deduct from the unified ai_credits wallet (ledger-tracked).
+      await supabase.rpc("analyzer_spend_credits" as any, { _amount: creditCost, _reason: action } as any);
     } catch (err: any) {
       toast.error(err.message || "Analysis failed");
     } finally {
