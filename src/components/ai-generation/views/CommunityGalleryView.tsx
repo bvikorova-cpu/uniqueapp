@@ -55,7 +55,7 @@ export const CommunityGalleryView = () => {
   return (
     <>
       <FloatingHowItWorks title={"Community Gallery View - How it works"} steps={[{ title: 'Open', desc: 'Access the Community Gallery View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Community Gallery View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-4xl mx-auto space-y-6 pb-44">
       <div>
         <h2 className="text-2xl font-black mb-2">🌍 Community Gallery</h2>
         <p className="text-muted-foreground text-sm">Browse and like AI-generated images shared by the community</p>
@@ -64,10 +64,10 @@ export const CommunityGalleryView = () => {
       {isLoading ? (
         <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
       ) : items.length === 0 ? (
-        <div className="text-center py-20 border rounded-xl bg-card/60">
+        <div className="text-center py-16 px-4 border rounded-xl bg-card/60">
           <ImageIcon className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
           <p className="text-muted-foreground">No images shared yet. Be the first!</p>
-          <p className="text-xs text-muted-foreground mt-1">Generate images and share them to the gallery</p>
+          <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">Open Generate, create an image, then tap "Share to Community Gallery".</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
