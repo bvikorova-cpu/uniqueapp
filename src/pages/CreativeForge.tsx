@@ -214,11 +214,13 @@ export default function CreativeForge() {
         onClose={() => setCowriterOpen(false)}
         category={selectedCategory}
         currentText={generatedContent || description || ""}
+        brandVoice={activeBrandVoice ? { name: activeBrandVoice.name, tone: activeBrandVoice.tone, audience: activeBrandVoice.audience, do_use: activeBrandVoice.do_use, dont_use: activeBrandVoice.dont_use, sample_text: activeBrandVoice.sample_text } : null}
         onInsert={(text) => {
           setGeneratedContent((prev) => (prev ? prev + "\n\n" + text : text));
           setActiveView("create");
         }}
       />
+
       <ForgeStyleTransfer
         open={styleOpen}
         onClose={() => setStyleOpen(false)}
