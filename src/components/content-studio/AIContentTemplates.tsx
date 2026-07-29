@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { cn } from "@/lib/utils";
 import { ArrowLeft, Loader2, Copy, Sparkles, Mail, Megaphone, Linkedin, Twitter,
   Instagram, FileText, Presentation, ShoppingBag, Newspaper, MessageSquare } from "lucide-react";
 
@@ -163,8 +164,8 @@ const AIContentTemplates = ({ onBack }: Props) => {
           })}
         </div>
       ) : (
-        <div className="mx-auto w-full max-w-3xl space-y-6 overflow-x-hidden px-0 sm:px-1">
-          <Card className="w-full max-w-full overflow-hidden">
+        <div className="mx-auto w-full max-w-3xl space-y-6 overflow-x-clip px-0 sm:px-1">
+          <Card className="w-full max-w-[calc(100vw-2rem)] overflow-hidden sm:max-w-full">
             <CardHeader className="px-4 sm:px-6">
               <CardTitle className="flex flex-wrap items-center gap-2 text-left text-balance">
                 {template && <template.icon className="h-5 w-5 text-primary" />}
@@ -199,14 +200,28 @@ const AIContentTemplates = ({ onBack }: Props) => {
                   rows={4}
                 />
               </div>
-              <div className="flex w-full min-w-0 flex-col gap-3 pb-3">
-                <Button variant="outline" className="h-auto min-h-12 w-full min-w-0 max-w-full px-3 py-3 whitespace-normal leading-tight" onClick={() => { setSelectedTemplate(null); setResult(null); setTopicTouched(false); }}>
+              <div className="grid w-full min-w-0 grid-cols-1 gap-3 pb-16 sm:pb-3">
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "h-auto min-h-12 w-full min-w-0 max-w-full px-3 py-3 text-center leading-tight",
+                    "whitespace-normal break-words [overflow-wrap:anywhere]",
+                  )}
+                  onClick={() => { setSelectedTemplate(null); setResult(null); setTopicTouched(false); }}
+                >
                   Change Template
                 </Button>
-                <Button onClick={handleGenerate} disabled={loading} className="h-auto min-h-12 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-3 text-center whitespace-normal leading-tight disabled:opacity-60">
+                <Button
+                  onClick={handleGenerate}
+                  disabled={loading || !topic.trim()}
+                  className={cn(
+                    "h-auto min-h-12 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-3 text-center leading-tight disabled:opacity-60",
+                    "whitespace-normal break-words [overflow-wrap:anywhere]",
+                  )}
+                >
                   {loading ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Sparkles className="h-4 w-4 shrink-0" />}
                   <span className="min-w-0 break-words leading-tight">
-                    {loading ? "Generating..." : topic.trim() ? `Generate (${template?.credits} credits)` : "Enter topic first"}
+                    {loading ? "Generating..." : topic.trim() ? `Generate • ${template?.credits} cr` : "Topic required"}
                   </span>
                 </Button>
               </div>
