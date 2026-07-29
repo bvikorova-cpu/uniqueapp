@@ -29,11 +29,22 @@ export const VirtualTryOn = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Supabase SDK hides the JSON body on non-2xx; read it for a real message.
+        let message = error.message || "Try-on failed";
+        const ctx: any = (error as any).context;
+        try {
+          const body = typeof ctx?.json === "function" ? await ctx.json() : null;
+          if (body?.error === "rate_limited") message = body.message || "Too many requests. Please wait a moment.";
+          else if (body?.error) message = body.message || body.error;
+        } catch { /* keep default message */ }
+        throw new Error(message);
+      }
+      if ((data as any)?.error) throw new Error((data as any).message || (data as any).error);
       return data;
     },
     onSuccess: (data) => {
-      setResult(data.result);
+      setResult(data?.result ?? data?.text ?? "");
       toast.success('Virtual try-on complete!');
     },
     onError: (error: any) => {
