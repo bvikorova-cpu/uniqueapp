@@ -49,7 +49,8 @@ serve(async (req) => {
     if (!rawText) return json({ error: "Text required" }, 400);
 
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openaiKey) return json({ error: "OpenAI API key not configured" }, 500);
+    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!openaiKey && !lovableKey) return json({ error: "No AI provider configured" }, 500);
 
     const langCode = String(body?.language ?? "en").toLowerCase().split(/[-_]/)[0];
     const langName = LANG_NAMES[langCode] ?? "English";
@@ -62,40 +63,85 @@ serve(async (req) => {
     // Translate first so the narration is in the requested language (and the
     // TTS voice uses a native accent instead of reading foreign text).
     if (langCode !== "en") {
-      const tr = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "gpt-4o-mini",
-          temperature: 0.2,
-          messages: [
-            { role: "system",
-              content: `You are a professional translator. Translate the user's text into natural, fluent ${langName}. Keep the tone and meaning, keep proper names untranslated, and reply with the translation ONLY — no notes, no quotes.` },
-            { role: "user", content: source },
-          ] }) });
-      if (tr.ok) {
-        const d = await tr.json();
-        const out = d?.choices?.[0]?.message?.content?.trim();
-        if (out) translated = out;
-      } else {
-        console.error("translation failed:", tr.status, await tr.text());
+      const messages = [
+        { role: "system",
+          content: `You are a professional translator. Translate the user's text into natural, fluent ${langName}. Keep the tone and meaning, keep proper names untranslated, and reply with the translation ONLY — no notes, no quotes.` },
+        { role: "user", content: source },
+      ];
+      const chatAttempts: Array<{ url: string; key?: string; model: string }> = [];
+      if (openaiKey) chatAttempts.push({ url: "https://api.openai.com/v1/chat/completions", key: openaiKey, model: "gpt-4o-mini" });
+      if (lovableKey) chatAttempts.push({ url: "https://ai.gateway.lovable.dev/v1/chat/completions", key: lovableKey, model: "google/gemini-2.5-flash" });
+
+      for (const attempt of chatAttempts) {
+        try {
+          const tr = await fetch(attempt.url, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${attempt.key}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ model: attempt.model, temperature: 0.2, messages }) });
+          if (tr.ok) {
+            const d = await tr.json();
+            const out = d?.choices?.[0]?.message?.content?.trim();
+            if (out) { translated = out; break; }
+          } else {
+            console.error("translation failed:", attempt.model, tr.status, (await tr.text()).slice(0, 200));
+          }
+        } catch (err) {
+          console.error("translation error:", attempt.model, err);
+        }
       }
     }
 
-    const res = await fetch("https://api.openai.com/v1/audio/speech", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "gpt-4o-mini-tts",
-        input: translated,
-        voice,
-        speed,
-        response_format: "mp3",
-        instructions: `Speak in ${langName} with a natural native ${langName} accent, warm and clear storytelling delivery.` }) });
-
-    if (!res.ok) {
-      const details = await res.text().catch(() => "");
-      console.error("TTS failed:", res.status, details);
-      return json({ error: "TTS generation failed", status: res.status, details: details.slice(0, 300), translatedText: translated }, 502);
+    // TTS: try OpenAI first, then fall back to Lovable AI Gateway on any failure
+    // (429 insufficient_quota, 5xx, network errors).
+    const speechAttempts: Array<{ url: string; key?: string; body: Record<string, unknown> }> = [];
+    if (openaiKey) {
+      speechAttempts.push({
+        url: "https://api.openai.com/v1/audio/speech",
+        key: openaiKey,
+        body: { model: "gpt-4o-mini-tts",
+          input: translated,
+          voice,
+          speed,
+          response_format: "mp3",
+          instructions: `Speak in ${langName} with a natural native ${langName} accent, warm and clear storytelling delivery.` } });
     }
+    if (lovableKey) {
+      speechAttempts.push({
+        url: "https://ai.gateway.lovable.dev/v1/audio/speech",
+        key: lovableKey,
+        body: { model: "openai/gpt-4o-mini-tts",
+          input: translated,
+          voice,
+          speed,
+          response_format: "mp3",
+          instructions: `Speak in ${langName} with a natural native ${langName} accent, warm and clear storytelling delivery.` } });
+    }
+
+    let audioBuffer: ArrayBuffer | null = null;
+    let lastStatus = 500;
+    let lastDetails = "";
+
+    for (const attempt of speechAttempts) {
+      try {
+        const res = await fetch(attempt.url, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${attempt.key}`, "Content-Type": "application/json" },
+          body: JSON.stringify(attempt.body) });
+        if (res.ok) { audioBuffer = await res.arrayBuffer(); break; }
+        lastStatus = res.status;
+        lastDetails = (await res.text().catch(() => "")).slice(0, 300);
+        console.error("TTS failed:", attempt.url, res.status, lastDetails);
+      } catch (err) {
+        lastDetails = err instanceof Error ? err.message : String(err);
+        console.error("TTS error:", attempt.url, lastDetails);
+      }
+    }
+
+    if (!audioBuffer) {
+      return json({ error: "TTS generation failed", status: lastStatus, details: lastDetails, translatedText: translated }, 502);
+    }
+    const res = { arrayBuffer: async () => audioBuffer! };
+
 
     const audioContent = base64FromBuffer(await res.arrayBuffer());
 
