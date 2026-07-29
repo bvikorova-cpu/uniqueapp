@@ -117,7 +117,9 @@ serve(async (req) => {
     };
 
     const openaiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openaiKey) { await refund(); throw new Error('OpenAI not configured'); }
+    const lovableKey = Deno.env.get('LOVABLE_API_KEY');
+    if (!openaiKey && !lovableKey) { await refund(); throw new Error('AI not configured'); }
+
 
     let systemPrompt = '';
     let userPrompt = '';
