@@ -119,6 +119,68 @@ function buildSeoAnalysis(content: unknown, targetKeyword: unknown, aiResult: an
   };
 }
 
+function normalizeCount(value: unknown, fallback = 5) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.max(3, Math.min(10, Math.round(parsed)));
+}
+
+function hashtagSeed(topic: string, platform: string) {
+  const base = topic
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((word) => word.length > 2)
+    .slice(0, 3)
+    .map((word) => `#${word}`);
+  const platformTags: Record<string, string[]> = {
+    twitter: ["#thread", "#growth"],
+    linkedin: ["#business", "#leadership"],
+    instagram: ["#creatorlife", "#content"],
+    facebook: ["#community", "#social"],
+    blog: ["#blog", "#strategy"],
+    email: ["#emailmarketing", "#newsletter"],
+  };
+  return Array.from(new Set([...base, ...(platformTags[platform] ?? ["#unique", "#content"])]));
+}
+
+function buildBulkPosts(topic: unknown, platformValue: unknown, requestedCount: unknown, guidelines: unknown, aiResult: any = {}) {
+  const cleanTopic = sentence(topic, "your topic");
+  const platform = String(platformValue || "social");
+  const count = normalizeCount(requestedCount);
+  const voice = String(guidelines || "").trim();
+  const rawPosts = Array.isArray(aiResult.posts) ? aiResult.posts : [];
+  const angles = [
+    "quick practical tip",
+    "common mistake",
+    "step-by-step mini guide",
+    "benefit-led hook",
+    "question for engagement",
+    "short story angle",
+    "checklist format",
+    "myth versus reality",
+    "before and after framing",
+    "direct call to action",
+  ];
+
+  return Array.from({ length: count }, (_, index) => {
+    const raw = rawPosts[index];
+    const rawContent = typeof raw === "string" ? raw : raw?.content;
+    const content = sentence(
+      rawContent,
+      `${cleanTopic}\n\nAngle ${index + 1}: ${angles[index % angles.length]}. Share one clear insight, make it easy to act on, and invite the audience to respond.${voice ? `\n\nTone: ${voice}` : ""}`,
+    );
+    const rawHashtags = Array.isArray(raw?.hashtags) ? raw.hashtags : typeof raw?.hashtags === "string" ? raw.hashtags.split(/[\s,]+/) : hashtagSeed(cleanTopic, platform);
+    const hashtags = rawHashtags
+      .map((tag: unknown) => String(tag).trim())
+      .filter(Boolean)
+      .map((tag: string) => tag.startsWith("#") ? tag : `#${tag.replace(/^#+/, "")}`)
+      .slice(0, 6)
+      .join(" ");
+    return { id: index + 1, content, hashtags };
+  });
+}
+
 async function callAI(_apiKey: string | undefined, messages: any[], json = false) {
   const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
   const user = messages.filter((m) => m.role !== "system").map((m) => m.content).join("\n\n");
@@ -167,10 +229,18 @@ Deno.serve(async (req) => {
         ]);
         break;
       case "bulk-generate":
-        result = await callAI(apiKey, [
-          { role: "system", content: "You are a social media content expert. Generate unique, engaging posts that each take a different angle on the topic." },
-          { role: "user", content: `Generate ${postCount || 5} unique ${platform || "social media"} posts about: ${topic}\n\nPlatform guidelines: ${platformGuide[platform] || "General social media"}\n${guidelines ? `Brand guidelines: ${guidelines}` : ""}\n\nEach post must be unique with a different angle, hook, or perspective. Return JSON: {"posts":[{"content":"","hashtags":[""]}]}` },
-        ], true);
+        try {
+          const requestedCount = normalizeCount(count ?? postCount);
+          const aiResult = await callAI(apiKey, [
+            { role: "system", content: "You are a social media content expert. Generate unique, engaging posts that each take a different angle on the topic." },
+            { role: "user", content: `Generate ${requestedCount} unique ${platform || "social media"} posts about: ${topic}\n\nPlatform guidelines: ${platformGuide[platform] || "General social media"}\n${guidelines ? `Brand guidelines: ${guidelines}` : ""}\n\nEach post must be unique with a different angle, hook, or perspective. Return JSON: {"posts":[{"content":"","hashtags":[""]}]}` },
+          ], true);
+          result = { ...aiResult, posts: buildBulkPosts(topic, platform, requestedCount, guidelines, aiResult) };
+        } catch (e) {
+          if (!(e instanceof UnifiedAIError)) throw e;
+          result = { posts: buildBulkPosts(topic, platform, count ?? postCount, guidelines), fallback: true };
+          chargedCost = 0;
+        }
         break;
       case "plagiarism":
         result = await callAI(apiKey, [
