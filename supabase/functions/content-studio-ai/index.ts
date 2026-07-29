@@ -8,6 +8,17 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 const ACTION_COST: Record<string, number> = { "ab-test": 4, "brand-voice": 3, "bulk-generate": 5, "plagiarism": 3,
   "repurpose": 4, "seo-analyze": 4, "templates": 3 };
 
+const TEMPLATE_COST: Record<string, number> = { email_marketing: 3,
+  facebook_ad: 2,
+  linkedin_post: 2,
+  twitter_thread: 3,
+  instagram_caption: 1,
+  press_release: 5,
+  product_description: 2,
+  pitch_deck: 5,
+  newsletter: 3,
+  chatbot_script: 3 };
+
 async function callAI(_apiKey: string | undefined, messages: any[], json = false) {
   const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
   const user = messages.filter((m) => m.role !== "system").map((m) => m.content).join("\n\n");
@@ -29,14 +40,15 @@ const platformGuide: Record<string, string> = { instagram: "Visual-first, 2200 c
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { action, topic, content, context, details, prompt, sourceContent, targetKeyword, count, contentType, platform, postCount, guidelines, systemPrompt, ...params } = await req.json();
+    const { action, templateType, topic, content, context, details, prompt, sourceContent, targetKeyword, count, contentType, platform, postCount, guidelines, systemPrompt, ...params } = await req.json();
     const apiKey = Deno.env.get("OPENAI_API_KEY");
 
     if (!action || !(action in ACTION_COST)) {
       return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    const cost = ACTION_COST[action];
-    const auth = await requireAiCredits(req, corsHeaders, { credits: cost, usageType: `content_studio_${action}` });
+    const cost = action === "templates" ? (TEMPLATE_COST[String(templateType || "")] ?? ACTION_COST.templates) : ACTION_COST[action];
+    const auth = await requireAiCredits(req, corsHeaders, { credits: cost, usageType: `content_studio_${action}`,
+      description: action === "templates" ? `Content Studio template: ${templateType || "custom"}` : undefined });
     if (auth.errorResponse) return auth.errorResponse;
 
     let result: any;
