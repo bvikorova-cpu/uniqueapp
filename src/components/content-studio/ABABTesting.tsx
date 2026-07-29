@@ -45,7 +45,14 @@ const ABABTesting = ({ onBack }: Props) => {
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
         body: { action: "ab-test", topic, context, contentType, variantCount } });
-      if (error) throw error;
+      if (error) {
+        let detail = "";
+        try {
+          const body = await (error as any)?.context?.clone?.().json?.();
+          detail = body?.error || body?.message || "";
+        } catch { /* ignore */ }
+        throw new Error(detail || error.message || "Failed to generate variants");
+      }
       if (data?.error) throw new Error(data.error);
       setVariants(data.variants || []);
       setWinner(data.recommended || null);
