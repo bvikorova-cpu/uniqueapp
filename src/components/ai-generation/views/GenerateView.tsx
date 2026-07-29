@@ -150,13 +150,19 @@ export const GenerateView = ({ onCreditsUsed }: GenerateViewProps) => {
             <div className="mt-6 border rounded-lg p-4 bg-background">
               <div className="relative group">
                 <img src={generatedImage} alt="Generated" className="w-full rounded-lg" />
-                <Button onClick={() => {
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+                <Button variant="outline" onClick={() => {
                   const link = document.createElement('a'); link.href = generatedImage;
                   link.download = `ai-generated-${Date.now()}.webp`;
                   document.body.appendChild(link); link.click(); document.body.removeChild(link);
                   toast.success("Downloading!");
-                }} className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity" size="sm">
+                }} className="min-h-11 whitespace-normal">
                   <Download className="w-4 h-4 mr-2" />Download
+                </Button>
+                <Button onClick={handleShareToGallery} disabled={sharing || shared} className="min-h-11 whitespace-normal">
+                  {sharing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Globe2 className="w-4 h-4 mr-2" />}
+                  {shared ? "Shared to Gallery" : "Share to Community Gallery"}
                 </Button>
               </div>
             </div>
