@@ -108,9 +108,9 @@ function buildBody(
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
   useGateway: boolean,
+  cheap: boolean,
 ): Record<string, unknown> {
-  const openaiModel = opts.model || "gpt-4o-mini";
-  const targetModel = useGateway ? gatewayModel(openaiModel) : openaiModel;
+  const targetModel = resolveModel(opts, useGateway, cheap);
   const body: Record<string, unknown> = { model: targetModel, messages };
 
   // Newer OpenAI generations (gpt-5.x and o-series) reject `max_tokens` and
@@ -119,7 +119,8 @@ function buildBody(
   const needsCompletionTokens = /gpt-5|o1|o3|o4/i.test(targetModel);
   const requested = opts.max_completion_tokens ?? opts.max_tokens;
 
-  if (opts.temperature !== undefined) body.temperature = opts.temperature;
+  // gpt-5.x rejects non-default temperature.
+  if (opts.temperature !== undefined && !needsCompletionTokens) body.temperature = opts.temperature;
   if (requested) {
     if (needsCompletionTokens) {
       // Reasoning-capable models spend tokens before emitting text; keep headroom.
@@ -128,6 +129,7 @@ function buildBody(
       body.max_tokens = requested;
     }
   }
+
   if (opts.response_format) body.response_format = opts.response_format;
   else if (opts.json) body.response_format = { type: "json_object" };
   if (opts.tools?.length) body.tools = opts.tools;
