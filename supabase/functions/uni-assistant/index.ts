@@ -4,7 +4,6 @@ import { corsHeaders } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { callOpenAI } from "../_shared/openai.ts";
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SUPABASE_SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -44,8 +43,6 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY missing");
-
     const authHeader = req.headers.get("Authorization") ?? "";
     const userClient = createClient(SUPABASE_URL, SUPABASE_ANON, {
       global: { headers: { Authorization: authHeader } } });
@@ -59,7 +56,7 @@ Deno.serve(async (req) => {
     const currentRoute = String(body?.currentRoute ?? "/").slice(0, 200);
     if (!transcript) return json({ error: "empty_transcript" }, 400);
 
-    // Pre-check 5 credits; deduct only after a successful OpenAI response.
+    // Pre-check 5 credits; deduct only after a successful AI response.
     const svc = createClient(SUPABASE_URL, SUPABASE_SERVICE);
     const { data: creditRow } = await svc
       .from("ai_credits")
@@ -68,41 +65,27 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if ((creditRow?.credits_remaining ?? 0) < COST) return json({ error: "INSUFFICIENT_CREDITS" }, 402);
 
-    // Call OpenAI with tool calling
-    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "system", content: `The user is currently on route: ${currentRoute}` },
-          { role: "user", content: transcript },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "navigate",
-            description: "Navigate the app to a route from the allowed list.",
-            parameters: {
-              type: "object",
-              properties: {
-                path: { type: "string", description: "Route path starting with /" } },
-              required: ["path"],
-              additionalProperties: false } } }],
-        tool_choice: "auto" }) });
+    // Call unified AI with tool calling
+    const raw = await callOpenAI({
+      system: SYSTEM_PROMPT,
+      user: transcript,
+      extra_messages: [{ role: "system", content: `The user is currently on route: ${currentRoute}` }],
+      model: "gpt-4o-mini",
+      tools: [{
+        type: "function",
+        function: {
+          name: "navigate",
+          description: "Navigate the app to a route from the allowed list.",
+          parameters: {
+            type: "object",
+            properties: {
+              path: { type: "string", description: "Route path starting with /" } },
+            required: ["path"],
+            additionalProperties: false } } }],
+      tool_choice: "auto",
+    });
 
-    if (aiRes.status === 429) return json({ error: "rate_limited" }, 429);
-    if (aiRes.status === 402) return json({ error: "ai_credits_exhausted" }, 402);
-    if (!aiRes.ok) {
-      const t = await aiRes.text();
-      return json({ error: `ai_error: ${aiRes.status} ${t.slice(0, 200)}` }, 500);
-    }
-
-    const data = await aiRes.json();
-    const msg = data?.choices?.[0]?.message ?? {};
+    const msg = raw?.choices?.[0]?.message ?? {};
     const toolCall = msg.tool_calls?.[0];
     let action: { type: "navigate"; path: string } | null = null;
     if (toolCall?.function?.name === "navigate") {
