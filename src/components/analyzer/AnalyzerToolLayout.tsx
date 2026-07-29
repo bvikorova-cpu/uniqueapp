@@ -28,15 +28,10 @@ export const AnalyzerToolLayout = ({
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
-  const { credits, isLoading: creditsLoading } = useAnalyzerCredits();
 
   const handleSubmit = async () => {
     if (!input.trim()) {
       toast.error("Please provide input");
-      return;
-    }
-    if (!credits || credits.credits_remaining < creditCost) {
-      toast.error(`Insufficient credits. You need ${creditCost} credits.`);
       return;
     }
 
@@ -64,9 +59,6 @@ export const AnalyzerToolLayout = ({
             <ArrowLeft className="w-4 h-4" />
             Back
           </Button>
-          <Badge variant="outline" className="bg-cyan-500/10 border-cyan-500/30 text-cyan-400">
-            {creditsLoading ? "..." : credits?.credits_remaining || 0} Credits
-          </Badge>
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
