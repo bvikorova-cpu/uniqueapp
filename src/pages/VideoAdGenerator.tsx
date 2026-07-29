@@ -171,7 +171,7 @@ const VideoAdGenerator = () => {
     const url = new URL(window.location.href);
     const sessionId = url.searchParams.get("session_id");
     const payment = url.searchParams.get("payment");
-    if (payment === "success" && sessionId) {
+    if (sessionId && payment !== "canceled") {
       (async () => {
         const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
           body: { session_id: sessionId } });
@@ -180,7 +180,10 @@ const VideoAdGenerator = () => {
         } else if (data?.success) {
           toast.success(`✅ ${data.credits_added ?? ""} credits added to your account!`);
           queryClient.invalidateQueries({ queryKey: ["video-ad-credits"] });
+          queryClient.invalidateQueries({ queryKey: ["video-ad-stats"] });
+          window.dispatchEvent(new Event("ai-credits-updated"));
         }
+
         url.searchParams.delete("session_id");
         url.searchParams.delete("payment");
         url.searchParams.delete("credits");
