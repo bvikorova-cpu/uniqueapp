@@ -15,8 +15,8 @@ export function FloatingAssistantDock({ children, className }: FloatingAssistant
   return (
     <div
       className={cn(
-        "fixed bottom-[calc(8.5rem+env(safe-area-inset-bottom))] right-2 md:bottom-6 md:right-6 z-[9990]",
-        "flex flex-col-reverse items-end gap-2 md:gap-3 scale-90 origin-bottom-right md:scale-100",
+        "fixed bottom-[calc(11rem+env(safe-area-inset-bottom))] right-1 md:bottom-6 md:right-6 z-[9990]",
+        "flex flex-col-reverse items-end gap-1.5 md:gap-3 scale-75 origin-bottom-right md:scale-100",
         className
       )}
       aria-label="Assistant dock"

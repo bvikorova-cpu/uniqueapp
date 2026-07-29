@@ -76,6 +76,42 @@ const buildMotionKeyframeFallback = (promptText: string, aspectRatio?: string) =
     </svg>`);
 };
 
+const buildTilePatternFallback = (promptText: string, patternType?: string) => {
+  const safePrompt = (promptText || "seamless pattern")
+    .replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "\"": "&quot;" }[c] ?? c))
+    .slice(0, 120);
+  const safeType = (patternType || "seamless tile")
+    .replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "\"": "&quot;" }[c] ?? c))
+    .slice(0, 60);
+
+  return svgDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#faf5ff"/>
+          <stop offset="0.52" stop-color="#fdf2f8"/>
+          <stop offset="1" stop-color="#fff7ed"/>
+        </linearGradient>
+        <pattern id="tile" width="240" height="240" patternUnits="userSpaceOnUse">
+          <rect width="240" height="240" fill="url(#bg)"/>
+          <circle cx="60" cy="60" r="34" fill="#a855f7" opacity="0.36"/>
+          <circle cx="180" cy="180" r="42" fill="#ec4899" opacity="0.32"/>
+          <path d="M 28 190 C 74 124, 120 124, 212 48" fill="none" stroke="#f97316" stroke-width="14" stroke-linecap="round" opacity="0.34"/>
+          <path d="M 12 28 L 68 28 L 68 84 L 12 84 Z" fill="none" stroke="#7c3aed" stroke-width="8" opacity="0.3"/>
+          <path d="M 154 34 C 202 50, 210 102, 170 132 C 130 104, 120 56, 154 34 Z" fill="#22c55e" opacity="0.22"/>
+          <circle cx="120" cy="120" r="10" fill="#111827" opacity="0.18"/>
+        </pattern>
+      </defs>
+      <rect width="1200" height="1200" fill="url(#tile)"/>
+      <rect x="92" y="882" width="1016" height="206" rx="34" fill="#ffffff" opacity="0.86"/>
+      <g font-family="Inter, Arial, sans-serif" fill="#111827">
+        <text x="132" y="948" font-size="48" font-weight="900" letter-spacing="0">Seamless tile preview</text>
+        <text x="132" y="1008" font-size="30" font-weight="800" opacity="0.72">${safeType}</text>
+        <text x="132" y="1056" font-size="28" font-weight="700" opacity="0.64">${safePrompt}</text>
+      </g>
+    </svg>`);
+};
+
 // Map aspectRatio + size tier to OpenAI-supported size
 const resolveSize = (aspectRatio?: string, targetSize?: string) => {
   const valid = ["1024x1024", "1792x1024", "1024x1792"];
@@ -343,7 +379,16 @@ serve(async (req) => {
         case "tile_pattern": {
           if (!prompt?.trim()) throw new Error("Pattern description required");
           const type = patternType || "seamless tile";
-          result = { imageUrl: await generateImage(`A ${type} pattern of: ${prompt}. Perfectly seamless, edges that tile infinitely without visible seams, high-detail repeating texture.`, "1024x1024") };
+          try {
+            result = { imageUrl: await generateImage(`A ${type} pattern of: ${prompt}. Perfectly seamless, edges that tile infinitely without visible seams, high-detail repeating texture.`, "1024x1024") };
+          } catch (tileError) {
+            console.error("tile_pattern AI failed, using local fallback:", tileError);
+            await refund();
+            charged = false;
+            result = {
+              imageUrl: buildTilePatternFallback(prompt, type),
+              note: "AI image model is busy, so I returned a free seamless-pattern preview and refunded the credits." };
+          }
           break;
         }
         case "avatar_pack": {
