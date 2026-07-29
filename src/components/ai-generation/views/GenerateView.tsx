@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, Wand2, Download, Loader2, Wand } from "lucide-react";
+import { Sparkles, Wand2, Download, Loader2, Wand, Globe2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -35,6 +35,32 @@ export const GenerateView = ({ onCreditsUsed }: GenerateViewProps) => {
   const [loading, setLoading] = useState(false);
   const [enhancing, setEnhancing] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [shared, setShared] = useState(false);
+
+  const handleShareToGallery = async () => {
+    if (!generatedImage) return;
+    setSharing(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { toast.error("Please sign in to share"); return; }
+      const { error } = await supabase.from("ai_community_gallery").insert({
+        user_id: user.id,
+        image_url: generatedImage,
+        prompt,
+        title: prompt.slice(0, 60),
+        tool_used: "generate",
+        is_public: true,
+      });
+      if (error) throw error;
+      setShared(true);
+      toast.success("Shared to Community Gallery!");
+    } catch (e: any) {
+      toast.error(e.message || "Share failed");
+    } finally {
+      setSharing(false);
+    }
+  };
 
   const handleEnhance = async () => {
     if (!prompt.trim()) { toast.error("Enter a prompt first"); return; }
@@ -54,7 +80,7 @@ export const GenerateView = ({ onCreditsUsed }: GenerateViewProps) => {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) { toast.error("Please enter a description"); return; }
-    setLoading(true); setGeneratedImage(null);
+    setLoading(true); setGeneratedImage(null); setShared(false);
     try {
       const seedNum = seed ? Number(seed) : undefined;
       const { data, error } = await supabase.functions.invoke('ai-image-tools', {
@@ -124,13 +150,19 @@ export const GenerateView = ({ onCreditsUsed }: GenerateViewProps) => {
             <div className="mt-6 border rounded-lg p-4 bg-background">
               <div className="relative group">
                 <img src={generatedImage} alt="Generated" className="w-full rounded-lg" />
-                <Button onClick={() => {
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+                <Button variant="outline" onClick={() => {
                   const link = document.createElement('a'); link.href = generatedImage;
                   link.download = `ai-generated-${Date.now()}.webp`;
                   document.body.appendChild(link); link.click(); document.body.removeChild(link);
                   toast.success("Downloading!");
-                }} className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity" size="sm">
+                }} className="min-h-11 whitespace-normal">
                   <Download className="w-4 h-4 mr-2" />Download
+                </Button>
+                <Button onClick={handleShareToGallery} disabled={sharing || shared} className="min-h-11 whitespace-normal">
+                  {sharing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Globe2 className="w-4 h-4 mr-2" />}
+                  {shared ? "Shared to Gallery" : "Share to Community Gallery"}
                 </Button>
               </div>
             </div>
