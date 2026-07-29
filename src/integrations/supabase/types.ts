@@ -1012,18 +1012,21 @@ export type Database = {
           enabled: boolean
           updated_at: string
           user_id: string
+          watermark_enabled: boolean
         }
         Insert: {
           created_at?: string
           enabled?: boolean
           updated_at?: string
           user_id: string
+          watermark_enabled?: boolean
         }
         Update: {
           created_at?: string
           enabled?: boolean
           updated_at?: string
           user_id?: string
+          watermark_enabled?: boolean
         }
         Relationships: []
       }
