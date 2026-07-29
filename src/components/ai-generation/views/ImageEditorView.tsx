@@ -150,7 +150,7 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
             />
           </div>
 
-          <Button onClick={() => handleEdit()} disabled={loading || !description.trim() || !editInstruction.trim()} size="lg" className="ai-mobile-safe-action w-full">
+          <Button onClick={() => handleEdit()} disabled={loading || !canEdit || !editInstruction.trim()} size="lg" className="ai-mobile-safe-action w-full">
             {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Editing...</> : <><Pencil className="w-4 h-4 mr-2" />Apply Edit (3 credits)</>}
           </Button>
 
