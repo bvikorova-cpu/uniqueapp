@@ -120,7 +120,7 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Quick Edit Actions</label>
-            <div className="ai-editor-actions-grid grid grid-cols-3 gap-2">
+            <div className="ai-editor-actions-grid grid grid-cols-1 gap-2">
               {editActions.map((a) => (
                 <Button
                   key={a.label}
