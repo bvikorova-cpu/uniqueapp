@@ -21,8 +21,23 @@ interface GoogleTranslateWidgetProps {
  * Hidden visually on mobile until tapped, so it never blocks the feed.
  */
 export default function GoogleTranslateWidget({ docked = false }: GoogleTranslateWidgetProps) {
+  const [isMobileViewport, setIsMobileViewport] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth < 768;
+  });
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const updateViewport = () => setIsMobileViewport(window.innerWidth < 768);
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    window.addEventListener("orientationchange", updateViewport);
+    return () => {
+      window.removeEventListener("resize", updateViewport);
+      window.removeEventListener("orientationchange", updateViewport);
+    };
+  }, []);
 
   const installTranslateStyles = () => {
     if (document.getElementById("google-translate-style")) return;
@@ -195,6 +210,8 @@ export default function GoogleTranslateWidget({ docked = false }: GoogleTranslat
       )}
     />
   );
+
+  if (isMobileViewport) return null;
 
   if (docked) {
     return (

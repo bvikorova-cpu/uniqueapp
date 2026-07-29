@@ -56,6 +56,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (max-width: 767px) {
+  [aria-label="Assistant dock"],
+  [aria-label="Open Uni — voice AI assistant (like Siri)"],
+  [aria-label="Enable 'Hey Uni' wake word"],
+  [aria-label="Disable 'Hey Uni' wake word"],
+  [aria-label="Translate page"],
+  [aria-label="Hide translator"] {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
 /* Dark Interrogation Mode — global red noir filter */
 html.interrogation-mode {
   filter: hue-rotate(-15deg) saturate(1.15) contrast(1.05);
