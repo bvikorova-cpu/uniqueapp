@@ -30,7 +30,11 @@ serve(async (req) => {
       );
     }
 
-    const { user_id, credits, credit_type } = session.metadata || {};
+    const md = (session.metadata || {}) as Record<string, string>;
+    // Fallbacks: universal one-off checkout writes `userId` + `product`
+    const user_id = md.user_id || md.userId || (session.client_reference_id ?? "");
+    const credits = md.credits;
+    const credit_type = md.credit_type || md.product || md.type;
     if (!user_id || !credits || !credit_type) {
       throw new Error("Missing metadata");
     }
