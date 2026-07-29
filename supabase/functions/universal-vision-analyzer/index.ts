@@ -2,6 +2,7 @@ import "../_shared/aiRedirect.ts";
 // Universal Vision Analyzer — handles all vision/image AI tasks via `task` param.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
+import { callUnifiedAI, UnifiedAIError } from "../_shared/unifiedAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
