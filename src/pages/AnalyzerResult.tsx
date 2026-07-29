@@ -104,7 +104,7 @@ export default function AnalyzerResult() {
       .trim();
     return (stripped.length > 70 ? stripped.slice(0, 70).trimEnd() + "…" : stripped) || "Analysis result";
   };
-  const info: any = { mainIdentification: rawInfo.mainIdentification || analysis.main_identification || "Analysis result",
+  const info: any = { mainIdentification: cleanTitle(rawInfo.mainIdentification || analysis.main_identification || ""),
     confidence: typeof rawInfo.confidence === "number" ? rawInfo.confidence : (analysis.confidence_score ?? 0),
     category: rawInfo.category || analysis.category,
     details: rawInfo.details || {
