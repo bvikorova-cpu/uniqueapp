@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { VideoAdHero } from "@/components/video-ads/VideoAdHero";
 import { VideoAdCreditsDisplay } from "@/components/video-ads/VideoAdCreditsDisplay";
+import { useVideoAdStats } from "@/hooks/useVideoAdStats";
+
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Video, Layout, PenTool, Users, BarChart3, Globe, Search, Mic, Music, Target, Calculator, Flame, Trophy, Star, Lightbulb, ImageIcon, CalendarDays, Mic2, BarChart2, Globe2, FlaskConical, Link2, Subtitles, Palette, Award, UserCircle2, Film, Library, Crop, Volume2 } from "lucide-react";
