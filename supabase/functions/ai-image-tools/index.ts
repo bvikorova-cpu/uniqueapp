@@ -340,9 +340,16 @@ serve(async (req) => {
           break;
         }
         case "edit": {
+          if (imageUrl && typeof imageUrl === "string") {
+            const instruction = (editPrompt || prompt || "").toString().trim();
+            if (!instruction) throw new Error("Edit instruction is required");
+            result = { imageUrl: await editUploadedImage(imageUrl, instruction) };
+            break;
+          }
           if (!prompt?.trim()) throw new Error("Prompt is required");
           result = { imageUrl: await generateImage(`${prompt}. Based on the original image concept, create an edited version.`, size) };
           break;
+
         }
         case "style_transfer": {
           if (!prompt?.trim() || !style) throw new Error("Prompt and style required");
