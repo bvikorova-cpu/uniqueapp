@@ -95,6 +95,14 @@
     align-self: flex-start !important;
   }
 
+  .ai-generation-active-shell {
+    padding-right: 0 !important;
+    padding-bottom: 28rem !important;
+    width: calc(100vw - 2rem) !important;
+    max-width: calc(100vw - 2rem) !important;
+    overflow: visible !important;
+  }
+
   .ai-realtime-mobile-guard {
     width: calc(100vw - 12rem) !important;
     max-width: calc(100vw - 12rem) !important;
