@@ -156,12 +156,24 @@ export const useVideoAdCredits = () => {
   const purchaseCredits = async (credits: number): Promise<string | null> => {
     try {
       const PRICE_PER_CREDIT = 80; // cents, EUR
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Please log in to buy credits");
+        return null;
+      }
       const { data, error } = await supabase.functions.invoke('create-one-off-payment', {
         body: {
           productKey: 'video_ad_credits',
           amount: Math.max(100, Math.round(credits * PRICE_PER_CREDIT)),
           name: `${credits} Video Ad Credits`,
-          metadata: { type: 'video_ad_credits', product: 'video_ad_credits', credits: String(credits) }
+          // verify-credits-payment reads user_id / credits / credit_type from session metadata
+          metadata: {
+            type: 'video_ad_credits',
+            product: 'video_ad_credits',
+            credits: String(credits),
+            credit_type: 'video_ad_credits',
+            user_id: user.id
+          }
         }
       });
 
