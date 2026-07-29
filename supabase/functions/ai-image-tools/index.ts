@@ -36,6 +36,8 @@ const json = (body: unknown, status = 200) =>
 
 const OPENAI_IMAGE_URL = "https://api.openai.com/v1/images/generations";
 const OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions";
+const LOVABLE_IMAGE_URL = "https://ai.gateway.lovable.dev/v1/images/generations";
+const LOVABLE_CHAT_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 
 // Map aspectRatio + size tier to OpenAI-supported size
 const resolveSize = (aspectRatio?: string, targetSize?: string) => {
@@ -113,9 +115,12 @@ serve(async (req) => {
     };
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) {
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const preferOpenAI = (Deno.env.get("AI_PROVIDER") ?? "").toLowerCase() === "openai";
+    const rawFetch = ((globalThis as any).__ORIGINAL_FETCH__ as typeof fetch | undefined) ?? fetch;
+    if (!OPENAI_API_KEY && !LOVABLE_API_KEY) {
       await refund();
-      return json({ error: "OPENAI_API_KEY is not configured" }, 500);
+      return json({ error: "AI service is not configured" }, 500);
     }
 
     const generateImage = async (p: string, size = "1024x1024") => {
@@ -123,41 +128,73 @@ serve(async (req) => {
       const finalPrompt = negativePrompt && typeof negativePrompt === "string" && negativePrompt.trim()
         ? `${p}\n\nDo NOT include: ${negativePrompt.trim()}.`
         : p;
-      const res = await fetch(OPENAI_IMAGE_URL, {
+      const useLovable = Boolean(LOVABLE_API_KEY && !preferOpenAI);
+      const res = await rawFetch(useLovable ? LOVABLE_IMAGE_URL : OPENAI_IMAGE_URL, {
         method: "POST",
-        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "gpt-image-1",
-          prompt: finalPrompt,
-          n: 1,
-          size,
-          quality: "high",
-          output_format: "webp",
-          output_compression: 90 }) });
+        headers: useLovable
+          ? { "Lovable-API-Key": LOVABLE_API_KEY ?? "", "Content-Type": "application/json" }
+          : { Authorization: `Bearer ${OPENAI_API_KEY ?? ""}`, "Content-Type": "application/json" },
+        body: JSON.stringify(useLovable
+          ? { model: "openai/gpt-image-1-mini", prompt: finalPrompt, n: 1, size, quality: "low" }
+          : { model: "gpt-image-1", prompt: finalPrompt, n: 1, size, quality: "low" }) });
       if (!res.ok) {
         const text = await res.text();
-        console.error("OpenAI image API error:", res.status, text);
+        console.error(`${useLovable ? "Lovable" : "OpenAI"} image API error:`, res.status, text);
+        if (useLovable && OPENAI_API_KEY) {
+          const fallback = await rawFetch(OPENAI_IMAGE_URL, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ model: "gpt-image-1", prompt: finalPrompt, n: 1, size, quality: "low" }) });
+          if (fallback.ok) {
+            const data = await fallback.json();
+            const b64 = data?.data?.[0]?.b64_json;
+            if (b64) return `data:image/png;base64,${b64}`;
+          }
+        }
         throw new Error(`Image generation failed (${res.status})`);
       }
       const data = await res.json();
       const b64 = data?.data?.[0]?.b64_json;
-      if (!b64) throw new Error("No image returned by OpenAI");
-      return `data:image/webp;base64,${b64}`;
+      if (!b64) throw new Error("No image returned by AI");
+      return `data:image/png;base64,${b64}`;
+    };
+
+    const parseJSON = (content: string) => {
+      try { return JSON.parse(content); } catch { /* try fenced/embedded JSON below */ }
+      const fenced = content.match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1]?.trim();
+      if (fenced) {
+        try { return JSON.parse(fenced); } catch { /* continue */ }
+      }
+      const start = content.indexOf("{");
+      const end = content.lastIndexOf("}");
+      if (start >= 0 && end > start) return JSON.parse(content.slice(start, end + 1));
+      throw new Error("AI returned invalid JSON");
     };
 
     const chatJSON = async (messages: any[]) => {
-      const res = await fetch(OPENAI_CHAT_URL, {
+      const useLovable = Boolean(LOVABLE_API_KEY && !preferOpenAI);
+      const call = async (lovable: boolean) => rawFetch(lovable ? LOVABLE_CHAT_URL : OPENAI_CHAT_URL, {
         method: "POST",
-        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "gpt-4o-mini", messages, response_format: { type: "json_object" } }) });
+        headers: lovable
+          ? { "Lovable-API-Key": LOVABLE_API_KEY ?? "", "Content-Type": "application/json" }
+          : { Authorization: `Bearer ${OPENAI_API_KEY ?? ""}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: lovable ? "google/gemini-3.6-flash" : "gpt-4o-mini", messages, response_format: { type: "json_object" }, max_tokens: 2048 }) });
+
+      let res = await call(useLovable);
+      if (!res.ok && useLovable && OPENAI_API_KEY) {
+        const text = await res.text().catch(() => "");
+        console.error("Lovable chat API error:", res.status, text);
+        res = await call(false);
+      }
       if (!res.ok) {
         const text = await res.text();
-        console.error("OpenAI chat API error:", res.status, text);
+        console.error(`${useLovable ? "AI" : "OpenAI"} chat API error:`, res.status, text);
         throw new Error(`AI request failed (${res.status})`);
       }
       const data = await res.json();
       const content = data?.choices?.[0]?.message?.content;
       if (!content) throw new Error("Empty AI response");
-      return JSON.parse(content);
+      return parseJSON(content);
     };
 
     const size = resolveSize(aspectRatio, targetSize);

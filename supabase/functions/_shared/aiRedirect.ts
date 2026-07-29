@@ -31,7 +31,7 @@ const MODEL_MAP: Record<string, string> = {
 };
 
 const DEFAULT_CHAT_MODEL = "google/gemini-3.6-flash";
-const DEFAULT_IMAGE_MODEL = "google/gemini-2.5-flash-image";
+const DEFAULT_IMAGE_MODEL = "openai/gpt-image-1-mini";
 
 function mapChatModel(model: unknown): string {
   if (typeof model !== "string" || !model) return DEFAULT_CHAT_MODEL;
@@ -66,7 +66,8 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
         return await originalFetch(input as any, init);
       }
 
-      const lovableKey = Deno.env.get("LOVABLE_API_KEY")!;
+        const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+        if (!lovableKey) return await originalFetch(input as any, init);
 
       // Only JSON bodies from plain fetch calls can be rewritten safely.
       const rawBody = init?.body;
@@ -110,6 +111,7 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
           prompt: body.prompt,
           n: 1,
           ...(body.size ? { size: body.size } : {}),
+          quality: "low",
         };
         const res = await originalFetch(`${GATEWAY_BASE}/images/generations`, {
           method: "POST",

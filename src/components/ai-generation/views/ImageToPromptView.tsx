@@ -20,18 +20,21 @@ export const ImageToPromptView = ({ onCreditsUsed, onUsePrompt }: Props) => {
     if (!file) return;
     setUploading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!file.type.startsWith("image/")) throw new Error("Please choose an image file");
+      if (file.size > 8 * 1024 * 1024) throw new Error("Image is too large. Please use an image under 8 MB.");
 
-      const ext = file.name.split('.').pop();
-      const path = `${user.id}/img2prompt-${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("ai-generations").upload(path, file);
-      if (error) throw error;
-      const { data: { publicUrl } } = supabase.storage.from("ai-generations").getPublicUrl(path);
-      setImageUrl(publicUrl);
-      toast.success("Image uploaded!");
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("Could not read image"));
+        reader.onerror = () => reject(new Error("Could not read image"));
+        reader.readAsDataURL(file);
+      });
+
+      setImageUrl(dataUrl);
+      setResult(null);
+      toast.success("Image ready for analysis");
     } catch (e: any) {
-      toast.error("Upload failed: " + e.message);
+      toast.error(e.message || "Image upload failed");
     } finally {
       setUploading(false);
     }
@@ -44,6 +47,7 @@ export const ImageToPromptView = ({ onCreditsUsed, onUsePrompt }: Props) => {
       const { data, error } = await supabase.functions.invoke("ai-image-tools", {
         body: { action: "image_to_prompt", imageUrl: imageUrl.trim() } });
       if (error) throw error;
+      if (!data?.prompt) throw new Error(data?.error || "Analysis returned no prompt");
       setResult(data);
       onCreditsUsed();
       toast.success("Image analyzed!");
@@ -64,7 +68,7 @@ export const ImageToPromptView = ({ onCreditsUsed, onUsePrompt }: Props) => {
   return (
     <>
       <FloatingHowItWorks title={"Image To Prompt View - How it works"} steps={[{ title: 'Open', desc: 'Access the Image To Prompt View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Image To Prompt View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-2xl mx-auto space-y-6 pb-44 sm:pb-0">
       <div>
         <h2 className="text-2xl font-black mb-2">🔍 AI Image-to-Prompt</h2>
         <p className="text-muted-foreground text-sm">Reverse engineer a detailed prompt from any image. Cost: 3 CR</p>
@@ -88,7 +92,7 @@ export const ImageToPromptView = ({ onCreditsUsed, onUsePrompt }: Props) => {
           </div>
         )}
 
-        <Button onClick={analyze} disabled={analyzing || !imageUrl.trim()} className="w-full gap-2">
+        <Button onClick={analyze} disabled={analyzing || !imageUrl.trim()} className="w-full min-h-12 gap-2 whitespace-normal px-4">
           {analyzing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ScanSearch className="w-4 h-4" />}
           {analyzing ? "Analyzing Image..." : "Analyze Image (3 CR)"}
         </Button>
@@ -100,8 +104,8 @@ export const ImageToPromptView = ({ onCreditsUsed, onUsePrompt }: Props) => {
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-bold text-sm">Generated Prompt</h3>
               <div className="flex gap-1">
-                <Button size="sm" variant="outline" onClick={copyPrompt} className="gap-1 h-7"><Copy className="w-3 h-3" /> Copy</Button>
-                <Button size="sm" onClick={() => onUsePrompt(result.prompt)} className="gap-1 h-7"><Wand2 className="w-3 h-3" /> Generate</Button>
+                <Button size="sm" variant="outline" onClick={copyPrompt} className="gap-1 min-h-7 h-auto"><Copy className="w-3 h-3" /> Copy</Button>
+                <Button size="sm" onClick={() => onUsePrompt(result.prompt)} className="gap-1 min-h-7 h-auto"><Wand2 className="w-3 h-3" /> Generate</Button>
               </div>
             </div>
             <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">{result.prompt}</p>
