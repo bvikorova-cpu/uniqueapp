@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
+import { callOpenAIRaw } from "../_shared/openai.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -11,8 +12,6 @@ serve(async (req) => {
     const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "wall_assistant" });
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
     const { type, content, language } = await req.json();
     const lang = language || "sk";
@@ -111,37 +110,15 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        tools,
-        tool_choice }) });
+    const data = await callOpenAIRaw({
+      system: systemPrompt,
+      user: userPrompt,
+      model: "gpt-4o-mini",
+      tools,
+      tool_choice,
+    });
 
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limit exceeded, try again later." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      const text = await response.text();
-      console.error("OpenAI API error:", response.status, text);
-      throw new Error("OpenAI API error");
-    }
-
-    const data = await response.json();
     const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-    
     if (!toolCall) {
       throw new Error("No tool call in response");
     }
