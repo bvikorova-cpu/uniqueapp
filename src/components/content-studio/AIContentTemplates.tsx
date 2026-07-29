@@ -43,11 +43,39 @@ const AIContentTemplates = ({ onBack }: Props) => {
     setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
-        body: { action: "templates", templateType: selectedTemplate, topic, details } });
-      if (error) throw error;
+        body: {
+          action: "templates",
+          templateType: selectedTemplate,
+          topic,
+          details,
+          systemPrompt: `You are a world-class copywriter. Write a professional "${template?.name ?? selectedTemplate}" (${template?.desc ?? ""}). Return polished, ready-to-use plain text — no JSON, no markdown code fences.`,
+        } });
+      if (error) {
+        const ctx: any = (error as any)?.context;
+        let msg = error.message;
+        try {
+          if (ctx && typeof ctx.json === "function") {
+            const body = await ctx.json();
+            if (body?.error) msg = String(body.error);
+          }
+        } catch { /* ignore */ }
+        throw new Error(msg);
+      }
       if (data?.error) throw new Error(data.error);
-      setResult(data.content);
-      toast.success(`Template generated! ${data.creditsUsed} credits used.`);
+
+      const text =
+        typeof data?.content === "string" ? data.content
+        : typeof data?.result === "string" ? data.result
+        : typeof data?.text === "string" ? data.text
+        : data ? JSON.stringify(
+            Object.fromEntries(Object.entries(data).filter(([k]) => k !== "creditsCharged")),
+            null, 2,
+          )
+        : "";
+
+      if (!text.trim()) throw new Error("AI returned an empty response. Please try again.");
+      setResult(text);
+      toast.success(`Template generated! ${data?.creditsCharged ?? template?.credits ?? 0} credits used.`);
     } catch (e: any) {
       toast.error(e.message || "Failed to generate template");
     } finally {
