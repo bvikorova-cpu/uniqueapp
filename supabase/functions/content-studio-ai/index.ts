@@ -19,6 +19,42 @@ const TEMPLATE_COST: Record<string, number> = { email_marketing: 3,
   newsletter: 3,
   chatbot_script: 3 };
 
+function sentence(value: unknown, fallback: string) {
+  const text = String(value || "").trim();
+  return text || fallback;
+}
+
+function buildTemplateFallback(templateType: string, topic: unknown, details: unknown) {
+  const cleanTopic = sentence(topic, "your offer");
+  const cleanDetails = sentence(details, "a broad audience looking for a clear, trustworthy reason to act");
+  const type = String(templateType || "content_template");
+
+  switch (type) {
+    case "facebook_ad":
+      return `Headline: ${cleanTopic}\n\nPrimary text:\nReady to make ${cleanTopic} easier, faster, and more valuable? Discover a practical solution built for ${cleanDetails}.\n\nWhy it works:\n• Clear benefit from the first line\n• Simple reason to trust the offer\n• Direct call to action\n\nCall to action: Learn more today.`;
+    case "instagram_caption":
+      return `${cleanTopic}\n\nMake it simple. Make it useful. Make it worth saving.\n\n${cleanDetails}\n\nWhat would you try first?\n\n#unique #creatorlife #digitaltools #growth #content`;
+    case "twitter_thread":
+      return `1/ ${cleanTopic}: here is the simple version.\n\n2/ Start with the audience problem: ${cleanDetails}.\n\n3/ Show the practical benefit in one sentence.\n\n4/ Add proof, a clear example, or a quick result.\n\n5/ End with one action: try it, save it, or share it.`;
+    case "linkedin_post":
+      return `${cleanTopic}\n\nMost people do not need more noise. They need a clear next step.\n\nFor ${cleanDetails}, the winning approach is simple:\n\n• Name the problem\n• Explain the value\n• Show the outcome\n• Invite action\n\nClarity builds trust before any sale happens.`;
+    case "email_marketing":
+      return `Subject: A simpler way to approach ${cleanTopic}\n\nHi,\n\nIf ${cleanTopic} matters to you, this is designed to help.\n\nThe focus is simple: ${cleanDetails}.\n\nYou get a clearer path, less friction, and a reason to take action now.\n\nReady to see it?\n\nBest,\nUnique`;
+    case "press_release":
+      return `FOR IMMEDIATE RELEASE\n\nUnique Announces ${cleanTopic}\n\nUnique today announced ${cleanTopic}, created for ${cleanDetails}.\n\nThe launch focuses on practical value, clear user benefits, and a smoother digital experience.\n\n“People want tools that feel useful immediately,” said the Unique team. “This update is built around that expectation.”\n\nAvailability begins now through Unique.`;
+    case "product_description":
+      return `${cleanTopic}\n\nA practical solution for ${cleanDetails}. Built to be easy to understand, quick to use, and valuable from the first interaction.\n\nKey benefits:\n• Clear purpose\n• Smooth experience\n• Useful results\n• Designed for everyday use`;
+    case "pitch_deck":
+      return `Slide 1: ${cleanTopic}\nThe opportunity and why now.\n\nSlide 2: Problem\n${cleanDetails}.\n\nSlide 3: Solution\nA focused, easy-to-use experience with clear value.\n\nSlide 4: Market\nUsers want faster, simpler digital tools.\n\nSlide 5: Ask\nSupport growth, adoption, and product expansion.`;
+    case "newsletter":
+      return `This week: ${cleanTopic}\n\nMain update\n${cleanDetails}.\n\nWhy it matters\nIt helps users move faster, understand the value clearly, and take action with confidence.\n\nTry this\nPick one goal, use the simplest version first, then improve from there.`;
+    case "chatbot_script":
+      return `Bot: Hi! I can help with ${cleanTopic}.\n\nUser: What can I do here?\n\nBot: You can get a quick answer, understand the next step, or choose the option that fits you best.\n\nUser: Who is it for?\n\nBot: It is ideal for ${cleanDetails}.\n\nBot: Would you like to start now?`;
+    default:
+      return `${cleanTopic}\n\nAudience/context: ${cleanDetails}\n\nCore message:\nA clear, useful offer with an immediate benefit and a simple next step.\n\nCall to action:\nStart now.`;
+  }
+}
+
 async function callAI(_apiKey: string | undefined, messages: any[], json = false) {
   const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
   const user = messages.filter((m) => m.role !== "system").map((m) => m.content).join("\n\n");
@@ -52,6 +88,7 @@ Deno.serve(async (req) => {
     if (auth.errorResponse) return auth.errorResponse;
 
     let result: any;
+    let chargedCost = cost;
     switch (action) {
       case "ab-test":
         result = await callAI(apiKey, [
@@ -93,15 +130,24 @@ Deno.serve(async (req) => {
         ], true);
         break;
       case "templates":
-        result = await callAI(apiKey, [
-          { role: "system", content: systemPrompt || "You are a content creation expert." },
-          { role: "user", content: `Topic: ${topic}\n\nAdditional details: ${details || "None provided"}` },
-        ]);
+        try {
+          result = await callAI(apiKey, [
+            { role: "system", content: systemPrompt || "You are a content creation expert." },
+            { role: "user", content: `Topic: ${topic}\n\nAdditional details: ${details || "None provided"}` },
+          ]);
+        } catch (e) {
+          if (!(e instanceof UnifiedAIError)) throw e;
+          const fallback = buildTemplateFallback(String(templateType || ""), topic, details);
+          result = { content: fallback, result: fallback, fallback: true };
+          chargedCost = 0;
+        }
         break;
       default: throw new Error(`Unknown action: ${action}`);
     }
-    try { await auth.deduct!(); } catch (e) { console.error("[content-studio-ai] deduct-failed", e); }
-    return new Response(JSON.stringify({ ...result, creditsCharged: cost, creditsUsed: cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (chargedCost > 0) {
+      try { await auth.deduct!(); } catch (e) { console.error("[content-studio-ai] deduct-failed", e); }
+    }
+    return new Response(JSON.stringify({ ...result, creditsCharged: chargedCost, creditsUsed: chargedCost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     const status = e instanceof UnifiedAIError ? (e.status === 402 ? 402 : e.status === 429 ? 429 : 500) : 500;
     console.error("[content-studio-ai] failed", e?.message);
