@@ -86,7 +86,7 @@ const ContentRepurposer = ({ onBack }: Props) => {
           { title: 'Publish', desc: 'Copy each variant and post.' },
         ]}
       />
-    <div className="space-y-6 pb-56 sm:pb-20">
+    <div className="space-y-5 pb-80 sm:space-y-6 sm:pb-20">
       <div className="grid gap-3 sm:flex sm:items-center sm:gap-4">
         <Button variant="ghost" size="sm" onClick={onBack} className="w-fit">
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
@@ -99,17 +99,17 @@ const ContentRepurposer = ({ onBack }: Props) => {
       </div>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="px-4 sm:px-6">
           <CardTitle>Source Content</CardTitle>
           <CardDescription>Paste your original content — blog post, article, script, or any text</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6">
           <Textarea
             ref={sourceRef}
             value={sourceContent}
             onChange={(e) => setSourceContent(e.target.value)}
             placeholder="Paste your blog post, article, or any content here..."
-            rows={6}
+            rows={4}
             className="mb-4"
           />
           <p className="text-xs text-muted-foreground">{sourceContent.length} characters</p>
@@ -117,11 +117,19 @@ const ContentRepurposer = ({ onBack }: Props) => {
       </Card>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="px-4 sm:px-6">
           <CardTitle>Output Formats</CardTitle>
           <CardDescription>Select one or more formats to convert your content into</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6">
+          <div className="mb-4 grid gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3 sm:flex sm:items-center sm:justify-between">
+            <p className="text-sm text-muted-foreground min-w-0">
+              {selectedFormats.length} format{selectedFormats.length !== 1 ? "s" : ""} selected — {selectedFormats.length * 3} credits total
+            </p>
+            <Button onClick={handleRepurpose} disabled={loading} className="h-auto min-h-11 w-full whitespace-normal px-3 py-2 sm:w-auto">
+              {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin shrink-0" /> Repurposing...</> : <><Recycle className="h-4 w-4 mr-2 shrink-0" /> {!sourceContent.trim() ? "Content required" : selectedFormats.length === 0 ? "Select format" : "Repurpose"}</>}
+            </Button>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {OUTPUT_FORMATS.map((fmt) => {
               const Icon = fmt.icon;
@@ -129,16 +137,16 @@ const ContentRepurposer = ({ onBack }: Props) => {
               return (
                 <motion.div key={fmt.id} whileTap={{ scale: 0.97 }}>
                   <div
-                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                    className={`rounded-lg border-2 p-3 cursor-pointer transition-all sm:p-4 ${
                       selected ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
                     }`}
                     onClick={() => toggleFormat(fmt.id)}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon className={`h-5 w-5 ${selected ? "text-primary" : "text-muted-foreground"}`} />
-                      <div>
+                      <Icon className={`h-5 w-5 shrink-0 ${selected ? "text-primary" : "text-muted-foreground"}`} />
+                      <div className="min-w-0">
                         <p className="font-medium text-sm">{fmt.name}</p>
-                        <p className="text-xs text-muted-foreground">{fmt.desc}</p>
+                        <p className="text-xs leading-snug text-muted-foreground">{fmt.desc}</p>
                       </div>
                     </div>
                   </div>
@@ -146,7 +154,7 @@ const ContentRepurposer = ({ onBack }: Props) => {
               );
             })}
           </div>
-          <div className="mt-5 grid gap-3 sm:flex sm:items-center sm:justify-between">
+          <div className="mt-5 grid gap-3 pb-10 sm:flex sm:items-center sm:justify-between sm:pb-0">
             <p className="text-sm text-muted-foreground min-w-0">
               {selectedFormats.length} format{selectedFormats.length !== 1 ? "s" : ""} selected — {selectedFormats.length * 3} credits total
             </p>
