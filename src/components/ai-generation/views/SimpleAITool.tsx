@@ -24,6 +24,17 @@ export const SimpleAITool = ({ title, emoji, description, cost, action, buttonLa
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<string[]>([]);
 
+  const readInvokeError = async (error: unknown) => {
+    const res = (error as any)?.context;
+    if (res && typeof res.json === "function") {
+      try {
+        const payload = await res.clone().json();
+        if (payload?.error || payload?.message) return payload.error || payload.message;
+      } catch { /* fall back below */ }
+    }
+    return (error as any)?.message || "AI tool failed";
+  };
+
   const run = async () => {
     const body = buildBody();
     if (!body) return;
@@ -31,12 +42,13 @@ export const SimpleAITool = ({ title, emoji, description, cost, action, buttonLa
     try {
       const { data, error } = await supabase.functions.invoke("ai-image-tools", {
         body: { action, ...body } });
-      if (error) throw error;
+      if (error) throw new Error(await readInvokeError(error));
       if (data?.error) { toast.error(data.error); return; }
       const out = resultKey === "imageUrls" ? (data.imageUrls || []) : (data.imageUrl ? [data.imageUrl] : []);
+      if (out.length === 0) throw new Error("No result returned. Please try again.");
       setResults(out);
       onCreditsUsed();
-      toast.success(`${title} complete!`);
+      toast.success(data?.note || `${title} complete!`);
     } catch (e: any) { toast.error(e.message || "Failed"); }
     finally { setLoading(false); }
   };
@@ -44,7 +56,7 @@ export const SimpleAITool = ({ title, emoji, description, cost, action, buttonLa
   return (
     <>
       <FloatingHowItWorks title={"Simple A I Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Simple A I Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Simple A I Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-2xl mx-auto space-y-6 pb-56 sm:pb-6">
       <div>
         <h2 className="text-2xl font-black mb-1">{emoji} {title}</h2>
         <p className="text-muted-foreground text-sm">{description} Cost: {cost} CR</p>
@@ -52,7 +64,7 @@ export const SimpleAITool = ({ title, emoji, description, cost, action, buttonLa
 
       <div className="space-y-3">{children}</div>
 
-      <Button onClick={run} disabled={loading} className="w-full gap-2">
+      <Button onClick={run} disabled={loading} className="min-h-12 w-[calc(100%-5.75rem)] sm:w-full gap-2 whitespace-normal text-center">
         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
         {loading ? "Processing..." : `${buttonLabel} (${cost} CR)`}
       </Button>
