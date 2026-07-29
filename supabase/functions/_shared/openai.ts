@@ -11,6 +11,7 @@ import {
   callUnifiedAI,
   callUnifiedAIEx,
   callUnifiedAIJSON,
+  UnifiedAIError,
   UnifiedAIOptions,
   UnifiedMessage,
 } from "./unifiedAI.ts";
