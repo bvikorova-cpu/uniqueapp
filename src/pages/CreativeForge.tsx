@@ -175,7 +175,20 @@ export default function CreativeForge() {
   };
 
   const handlePurchase = async (creditAmount: number) => { const url = await purchaseCredits(creditAmount); if (url) window.open(url, "_blank"); };
-  const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text); toast({ title: "Copied!", description: "Content copied to clipboard" }); };
+  const copyToClipboard = async (text: string) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
+      }
+      toast({ title: "Copied!", description: "Content copied to clipboard" });
+    } catch {
+      toast({ title: "Copy failed", description: "Select the text and copy manually", variant: "destructive" });
+    }
+  };
   const downloadContent = (content: string, filename: string) => {
     const blob = new Blob([content], { type: "text/plain" }); const url = URL.createObjectURL(blob);
     const a = document.createElement("a"); a.href = url; a.download = `${filename}.txt`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
