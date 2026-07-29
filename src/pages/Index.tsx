@@ -371,7 +371,7 @@ const Index = () => {
         {/* ── Quick Actions ────────────────────────────── */}
         <section>
           <SectionHeader icon={Zap} title="Quick Actions" />
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
             {quickActions.map((action, i) => (
               <Card
                 key={i}
