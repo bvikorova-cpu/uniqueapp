@@ -42,7 +42,7 @@ export const UpscalerView = ({ onCreditsUsed }: UpscalerViewProps) => {
   };
 
   return (
-    <div className="max-w-4xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
+    <div className="max-w-4xl mx-auto space-y-6 pb-80 md:pb-6">
       <Card className="border-2 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><ArrowUpRight className="w-5 h-5 text-primary" /> AI Image Upscaler</CardTitle>
@@ -80,7 +80,7 @@ export const UpscalerView = ({ onCreditsUsed }: UpscalerViewProps) => {
             </div>
           </div>
 
-          <Button onClick={handleUpscale} disabled={loading || !description.trim()} size="lg" className="w-full max-w-[calc(100vw-11rem)] min-h-12 whitespace-normal text-center leading-snug md:max-w-none">
+          <Button onClick={handleUpscale} disabled={loading || !description.trim()} size="lg" className="w-full min-h-12 whitespace-normal text-center leading-snug">
             {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Enhancing...</> : <><ArrowUpRight className="w-4 h-4 mr-2" />Upscale to HD (2 credits)</>}
           </Button>
 
