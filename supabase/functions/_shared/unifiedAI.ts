@@ -39,7 +39,15 @@ export interface UnifiedAIOptions {
   json?: boolean;
   tools?: UnifiedToolDefinition[];
   tool_choice?: "auto" | "none" | { type: "function"; function: { name: string } };
+  /**
+   * Cost tier. Default "cheap": the first attempt always uses a low-cost model
+   * (gpt-4o-mini / gemini-3.6-flash) and only escalates to the requested,
+   * more expensive model if the cheap attempt fails.
+   * Set "premium" to always use the requested model directly.
+   */
+  tier?: "cheap" | "premium";
 }
+
 
 export class UnifiedAIError extends Error {
   status: number;
@@ -64,23 +72,45 @@ const GATEWAY_MODEL_MAP: Record<string, string> = {
   "gpt-3.5-turbo": "openai/gpt-5.4-mini",
 };
 
+/** Low-cost defaults used for the first attempt of every call. */
+export const CHEAP_OPENAI_MODEL = "gpt-4o-mini";
+export const CHEAP_GATEWAY_MODEL = "google/gemini-3.6-flash";
+
+/** Models we consider expensive and downgrade on the first (cheap) attempt. */
+function isExpensiveModel(model: string): boolean {
+  return /gpt-4o(?!-mini)|gpt-4(?!o)|gpt-5(?!\.\d-(mini|nano))|pro/i.test(model);
+}
+
 function isRetryableStatus(status: number) {
   return status === 429 || status === 402 || status >= 500;
 }
 
 function gatewayModel(model?: string): string {
-  if (!model) return "openai/gpt-5.4-mini";
+  if (!model) return CHEAP_GATEWAY_MODEL;
   if (model.includes("/")) return model; // already a gateway id
   return GATEWAY_MODEL_MAP[model] || `openai/${model}`;
 }
+
+/**
+ * Resolve the model to use for a given attempt.
+ * cheap=true -> force the low-cost model, unless the caller asked for "premium".
+ */
+function resolveModel(opts: UnifiedAIOptions, useGateway: boolean, cheap: boolean): string {
+  const requested = opts.model || CHEAP_OPENAI_MODEL;
+  const target = useGateway ? gatewayModel(requested) : requested;
+  if (!cheap || opts.tier === "premium") return target;
+  if (!isExpensiveModel(target)) return target;
+  return useGateway ? CHEAP_GATEWAY_MODEL : CHEAP_OPENAI_MODEL;
+}
+
 
 function buildBody(
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
   useGateway: boolean,
+  cheap: boolean,
 ): Record<string, unknown> {
-  const openaiModel = opts.model || "gpt-4o-mini";
-  const targetModel = useGateway ? gatewayModel(openaiModel) : openaiModel;
+  const targetModel = resolveModel(opts, useGateway, cheap);
   const body: Record<string, unknown> = { model: targetModel, messages };
 
   // Newer OpenAI generations (gpt-5.x and o-series) reject `max_tokens` and
@@ -89,15 +119,21 @@ function buildBody(
   const needsCompletionTokens = /gpt-5|o1|o3|o4/i.test(targetModel);
   const requested = opts.max_completion_tokens ?? opts.max_tokens;
 
-  if (opts.temperature !== undefined) body.temperature = opts.temperature;
+  // gpt-5.x rejects non-default temperature.
+  if (opts.temperature !== undefined && !needsCompletionTokens) body.temperature = opts.temperature;
+  // Gemini "flash" models also spend hidden thinking tokens before emitting
+  // text, so a tight limit returns an empty answer. Keep headroom everywhere.
+  const isThinkingModel = needsCompletionTokens || /gemini/i.test(targetModel);
   if (requested) {
-    if (needsCompletionTokens) {
-      // Reasoning-capable models spend tokens before emitting text; keep headroom.
-      body.max_completion_tokens = Math.max(requested, 1024);
-    } else {
-      body.max_tokens = requested;
-    }
+    const budget = isThinkingModel ? Math.max(requested, 2048) : requested;
+    if (needsCompletionTokens) body.max_completion_tokens = budget;
+    else body.max_tokens = budget;
+  } else if (isThinkingModel) {
+    if (needsCompletionTokens) body.max_completion_tokens = 2048;
+    else body.max_tokens = 2048;
   }
+
+
   if (opts.response_format) body.response_format = opts.response_format;
   else if (opts.json) body.response_format = { type: "json_object" };
   if (opts.tools?.length) body.tools = opts.tools;
@@ -110,7 +146,9 @@ async function callProviderRaw(
   useGateway: boolean,
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
+  cheap: boolean,
 ): Promise<any> {
+
   const key = useGateway
     ? Deno.env.get("LOVABLE_API_KEY")
     : Deno.env.get("OPENAI_API_KEY");
@@ -127,7 +165,7 @@ async function callProviderRaw(
   const res = await fetch(useGateway ? GATEWAY_URL : OPENAI_URL, {
     method: "POST",
     headers,
-    body: JSON.stringify(buildBody(messages, opts, useGateway)),
+    body: JSON.stringify(buildBody(messages, opts, useGateway, cheap)),
   });
 
   if (!res.ok) {
@@ -159,9 +197,11 @@ async function callProvider(
   useGateway: boolean,
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
+  cheap = true,
 ): Promise<UnifiedAIResult> {
-  const data = await callProviderRaw(useGateway, messages, opts);
+  const data = await callProviderRaw(useGateway, messages, opts, cheap);
   const message = data.choices?.[0]?.message;
+
   const content = message?.content?.toString().trim() || "";
   if (!content && !message?.tool_calls) {
     throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", useGateway ? "Lovable AI Gateway" : "OpenAI");
@@ -200,30 +240,39 @@ export async function callUnifiedAIEx(
   const order: boolean[] = openaiKey ? [false, true] : [true];
   let lastError: UnifiedAIError | undefined;
 
-  for (const useGateway of order) {
-    try {
-      return await callProvider(useGateway, messages, opts);
-    } catch (e) {
-      if (e instanceof UnifiedAIError && isRetryableStatus(e.status)) {
-        lastError = e;
-        console.warn(`UnifiedAI provider ${e.provider || "unknown"} failed (${e.status}), trying fallback...`);
-        continue;
+  // Pass 1: cheap model on every provider. Pass 2: escalate to the requested
+  // (possibly more expensive) model only if the cheap attempts failed.
+  const passes: boolean[] = opts.tier === "premium" ? [false] : [true, false];
+
+  for (const cheap of passes) {
+    for (const useGateway of order) {
+      try {
+        return await callProvider(useGateway, messages, opts, cheap);
+      } catch (e) {
+        if (e instanceof UnifiedAIError && isRetryableStatus(e.status)) {
+          lastError = e;
+          console.warn(
+            `UnifiedAI ${e.provider || "unknown"} (${cheap ? "cheap" : "premium"}) failed (${e.status}), trying fallback...`,
+          );
+          continue;
+        }
+        throw e;
       }
-      throw e;
     }
   }
 
-  // If both providers failed with retryable errors, retry each once with backoff.
+  // Final backoff retry with the cheap model.
   for (let attempt = 1; attempt <= 2; attempt++) {
     for (const useGateway of order) {
       try {
         await new Promise((r) => setTimeout(r, attempt * 1200));
-        return await callProvider(useGateway, messages, opts);
+        return await callProvider(useGateway, messages, opts, opts.tier !== "premium");
       } catch (e) {
         if (e instanceof UnifiedAIError) lastError = e;
       }
     }
   }
+
 
   throw lastError || new UnifiedAIError(502, "All AI providers are unavailable. Please try again later.");
 }
