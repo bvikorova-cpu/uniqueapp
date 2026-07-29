@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,6 +27,7 @@ const ContentRepurposer = ({ onBack }: Props) => {
   const [selectedFormats, setSelectedFormats] = useState<string[]>([]);
   const [results, setResults] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const sourceRef = useRef<HTMLTextAreaElement>(null);
 
   const toggleFormat = (id: string) => {
     setSelectedFormats(prev =>
@@ -35,8 +36,13 @@ const ContentRepurposer = ({ onBack }: Props) => {
   };
 
   const handleRepurpose = async () => {
-    if (!sourceContent.trim() || selectedFormats.length === 0) {
-      toast.error("Please provide content and select at least one output format");
+    if (!sourceContent.trim()) {
+      toast.error("Please paste source content first");
+      sourceRef.current?.focus();
+      return;
+    }
+    if (selectedFormats.length === 0) {
+      toast.error("Select at least one output format");
       return;
     }
     setLoading(true);
@@ -44,7 +50,14 @@ const ContentRepurposer = ({ onBack }: Props) => {
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
         body: { action: "repurpose", sourceContent, formats: selectedFormats } });
-      if (error) throw error;
+      if (error) {
+        const context = (error as any)?.context;
+        if (context && typeof context.clone === "function") {
+          const body = await context.clone().json().catch(() => null);
+          throw new Error(body?.error || error.message);
+        }
+        throw error;
+      }
       if (data?.error) throw new Error(data.error);
       setResults(data.results || {});
       toast.success(`Repurposed into ${Object.keys(data.results || {}).length} formats! ${data.creditsUsed} credits used.`);
@@ -73,16 +86,16 @@ const ContentRepurposer = ({ onBack }: Props) => {
           { title: 'Publish', desc: 'Copy each variant and post.' },
         ]}
       />
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={onBack}>
+    <div className="space-y-6 pb-56 sm:pb-20">
+      <div className="grid gap-3 sm:flex sm:items-center sm:gap-4">
+        <Button variant="ghost" size="sm" onClick={onBack} className="w-fit">
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
         </Button>
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <h2 className="text-2xl font-black">AI Content Repurposer</h2>
           <p className="text-muted-foreground">Transform one piece of content into multiple formats instantly</p>
         </div>
-        <Badge variant="outline">3 credits per format</Badge>
+        <Badge variant="outline" className="w-fit whitespace-normal text-left">3 credits per format</Badge>
       </div>
 
       <Card>
@@ -92,10 +105,11 @@ const ContentRepurposer = ({ onBack }: Props) => {
         </CardHeader>
         <CardContent>
           <Textarea
+            ref={sourceRef}
             value={sourceContent}
             onChange={(e) => setSourceContent(e.target.value)}
             placeholder="Paste your blog post, article, or any content here..."
-            rows={8}
+            rows={6}
             className="mb-4"
           />
           <p className="text-xs text-muted-foreground">{sourceContent.length} characters</p>
@@ -132,12 +146,12 @@ const ContentRepurposer = ({ onBack }: Props) => {
               );
             })}
           </div>
-          <div className="mt-4 flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
+          <div className="mt-5 grid gap-3 sm:flex sm:items-center sm:justify-between">
+            <p className="text-sm text-muted-foreground min-w-0">
               {selectedFormats.length} format{selectedFormats.length !== 1 ? "s" : ""} selected — {selectedFormats.length * 3} credits total
             </p>
-            <Button onClick={handleRepurpose} disabled={loading || !sourceContent.trim() || selectedFormats.length === 0}>
-              {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Repurposing...</> : <><Recycle className="h-4 w-4 mr-2" /> Repurpose Content</>}
+            <Button onClick={handleRepurpose} disabled={loading} className="min-h-11 w-full whitespace-normal sm:w-auto">
+              {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin shrink-0" /> Repurposing...</> : <><Recycle className="h-4 w-4 mr-2 shrink-0" /> {!sourceContent.trim() ? "Content required" : selectedFormats.length === 0 ? "Select format" : "Repurpose Content"}</>}
             </Button>
           </div>
         </CardContent>
