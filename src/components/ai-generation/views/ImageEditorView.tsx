@@ -129,7 +129,7 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
                   variant="outline"
                   size="sm"
                   className="ai-editor-quick-action flex-col h-auto py-3 gap-1"
-                  disabled={loading || !description.trim()}
+                  disabled={loading || !canEdit}
                   onClick={() => handleEdit(a.instruction)}
                 >
                   <a.icon className="w-4 h-4 text-primary" />
