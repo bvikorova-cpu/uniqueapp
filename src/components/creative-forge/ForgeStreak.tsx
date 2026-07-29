@@ -2,12 +2,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Flame, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { useCreativeForgeProgress } from "@/hooks/useCreativeForgeProgress";
 
 export const ForgeStreak = () => {
   const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   const today = new Date().getDay();
   const adjustedToday = today === 0 ? 6 : today - 1;
-  const currentStreak = 0;
+  const { data } = useCreativeForgeProgress();
+  const currentStreak = data?.currentStreak ?? 0;
+  const bestStreak = data?.bestStreak ?? 0;
+  const weekActivity = data?.weekActivity ?? [];
 
   return (
     <>
@@ -30,9 +34,16 @@ export const ForgeStreak = () => {
           <div className="flex gap-1 mb-3">
             {days.map((day, i) => {
               const isToday = i === adjustedToday;
+              const isActive = weekActivity[i];
               return (
                 <motion.div key={day} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.35 + i * 0.04 }} className="flex-1 flex flex-col items-center gap-1">
-                  <div className={`w-full aspect-square rounded-xl flex items-center justify-center text-xs font-bold transition-all ${isToday ? "bg-pink-500/20 border-2 border-dashed border-pink-400 text-pink-500" : "bg-muted/30 text-muted-foreground border border-border/20"}`}>
+                  <div className={`w-full aspect-square rounded-xl flex items-center justify-center text-xs font-bold transition-all ${
+                    isActive
+                      ? "bg-pink-500 text-primary-foreground border-2 border-pink-500"
+                      : isToday
+                        ? "bg-pink-500/20 border-2 border-dashed border-pink-400 text-pink-500"
+                        : "bg-muted/30 text-muted-foreground border border-border/20"
+                  }`}>
                     {day}
                   </div>
                 </motion.div>
@@ -40,8 +51,10 @@ export const ForgeStreak = () => {
             })}
           </div>
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> Best: 0 days</span>
-            <span className="text-pink-500 font-semibold animate-pulse">Start creating! ✍️</span>
+            <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> Best: {bestStreak} days</span>
+            <span className="text-pink-500 font-semibold animate-pulse">
+              {currentStreak > 0 ? "Keep it going! 🔥" : "Start creating! ✍️"}
+            </span>
           </div>
         </CardContent>
       </Card>

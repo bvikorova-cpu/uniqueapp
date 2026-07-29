@@ -2,26 +2,35 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award, Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-
-const badges = [
-  { name: "First Draft", icon: "✍️", description: "Generate your first piece of content", unlocked: false },
-  { name: "3-Day Streak", icon: "🔥", description: "Create content 3 days in a row", unlocked: false },
-  { name: "Genre Explorer", icon: "🎭", description: "Try 4 different content types", unlocked: false },
-  { name: "Prolific Writer", icon: "📚", description: "Generate 20 pieces of content", unlocked: false },
-  { name: "Style Master", icon: "🎨", description: "Use 5 different style references", unlocked: false },
-  { name: "Full Catalog", icon: "🌟", description: "Try all 8 content categories", unlocked: false },
-];
+import { useCreativeForgeProgress } from "@/hooks/useCreativeForgeProgress";
 
 export const ForgeAchievements = () => {
+  const { data } = useCreativeForgeProgress();
+  const s = data;
+
+  const badges = [
+    { name: "First Draft", icon: "✍️", description: "Generate your first piece of content", unlocked: (s?.totalProjects ?? 0) >= 1 },
+    { name: "3-Day Streak", icon: "🔥", description: "Create content 3 days in a row", unlocked: (s?.bestStreak ?? 0) >= 3 },
+    { name: "Genre Explorer", icon: "🎭", description: "Try 4 different content types", unlocked: (s?.categories.length ?? 0) >= 4 },
+    { name: "Prolific Writer", icon: "📚", description: "Generate 20 pieces of content", unlocked: (s?.totalProjects ?? 0) >= 20 },
+    { name: "Style Master", icon: "🎨", description: "Use 5 different style references", unlocked: (s?.styleReferences.length ?? 0) >= 5 },
+    { name: "Full Catalog", icon: "🌟", description: "Try all 8 content categories", unlocked: (s?.categories.length ?? 0) >= 8 },
+  ];
+
+  const unlockedCount = badges.filter((b) => b.unlocked).length;
+
   return (
     <>
       <FloatingHowItWorks title={"Forge Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 h-full">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Award className="w-4 h-4 text-yellow-500" />
-            Achievements
+          <CardTitle className="flex items-center justify-between text-base">
+            <span className="flex items-center gap-2">
+              <Award className="w-4 h-4 text-yellow-500" />
+              Achievements
+            </span>
+            <span className="text-xs font-semibold text-muted-foreground">{unlockedCount}/{badges.length}</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
