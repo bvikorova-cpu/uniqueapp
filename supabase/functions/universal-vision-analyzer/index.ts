@@ -100,9 +100,6 @@ serve(async (req) => {
       rateLimit: { bucket: "ai.vision", max: 120, windowSec: 60 } });
     if (auth.errorResponse) return auth.errorResponse;
 
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) return json({ error: "AI service not configured" }, 503);
-
     log("invoke", { task, userId: auth.user!.id, cost, hasImage: !!imageUrl });
 
     const userContent: any[] = [];
@@ -111,23 +108,24 @@ serve(async (req) => {
     if (imageUrl) userContent.push({ type: "image_url", image_url: { url: imageUrl } });
     if (userContent.length === 0) userContent.push({ type: "text", text: "Proceed with the analysis." });
 
-    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "system", content: cfg.prompt }, { role: "user", content: userContent }] }) });
-
-    if (aiRes.status === 429) return json({ error: "Rate limit exceeded. Try again shortly." }, 429);
-    if (aiRes.status === 402) return json({ error: "AI credits exhausted." }, 402);
-    if (!aiRes.ok) {
-      const errText = await aiRes.text();
-      log("ai-error", { status: aiRes.status, errText });
-      return json({ error: "AI request failed" }, 502);
+    // Unified provider: if OpenAI is rate limited (429) / out of credits / down,
+    // this transparently falls back to the Lovable AI Gateway instead of
+    // surfacing a 429 to the user.
+    let result = "";
+    try {
+      result = await callUnifiedAI(
+        [
+          { role: "system", content: cfg.prompt },
+          { role: "user", content: userContent as any },
+        ],
+        { model: "gpt-4o-mini" },
+      );
+    } catch (e) {
+      const status = e instanceof UnifiedAIError ? e.status : 502;
+      log("ai-error", { status, err: String(e) });
+      if (status === 402) return json({ error: "AI credits exhausted." }, 402);
+      return json({ error: "AI request failed. Please try again." }, status === 429 ? 429 : 502);
     }
-
-    const data = await aiRes.json();
-    const result = data?.choices?.[0]?.message?.content ?? "";
 
     // Deduct only after successful AI response. Don't fail the user response if deduct logging fails.
     try { await auth.deduct!(); } catch (e) { log("deduct-failed", { err: String(e) }); }
