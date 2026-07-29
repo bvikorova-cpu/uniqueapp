@@ -88,6 +88,22 @@ export default function AnalyzerResult() {
 
   if (!analysis) return null;
   const rawInfo: any = analysis.detailed_info || {};
+
+  // The AI often returns one long markdown blob. Derive a short, clean title
+  // from it and render the rest as proper markdown instead of raw text.
+  const cleanTitle = (raw: string) => {
+    const text = (raw || "").replace(/\r/g, "");
+    const line = text
+      .split("\n")
+      .map((l) => l.trim())
+      .find((l) => l && !/^-{2,}$/.test(l)) || "Analysis result";
+    const stripped = line
+      .replace(/[#*_`>]/g, "")
+      .replace(/^\d+\.\s*/, "")
+      .replace(/^Here is an? .*?:\s*/i, "")
+      .trim();
+    return (stripped.length > 70 ? stripped.slice(0, 70).trimEnd() + "…" : stripped) || "Analysis result";
+  };
   const info: any = { mainIdentification: rawInfo.mainIdentification || analysis.main_identification || "Analysis result",
     confidence: typeof rawInfo.confidence === "number" ? rawInfo.confidence : (analysis.confidence_score ?? 0),
     category: rawInfo.category || analysis.category,
