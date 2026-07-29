@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Loader2, Download, Upload, Eraser, Paintbrush, Layers } from "lucide-react";
+import { Pencil, Loader2, Download, Upload, Eraser } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
@@ -12,8 +12,6 @@ interface ImageEditorViewProps {
 
 const editActions = [
   { label: "Remove Background", icon: Eraser, instruction: "Remove the background completely, make it transparent white" },
-  { label: "Enhance Colors", icon: Paintbrush, instruction: "Enhance the colors, make them more vibrant and saturated while keeping natural look" },
-  { label: "Add Artistic Filter", icon: Layers, instruction: "Apply a professional artistic filter with enhanced contrast and cinematic color grading" },
 ];
 
 export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
@@ -122,7 +120,7 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Quick Edit Actions</label>
-            <div className="ai-editor-actions-grid grid grid-cols-3 gap-2">
+            <div className="ai-editor-actions-grid grid grid-cols-1 gap-2">
               {editActions.map((a) => (
                 <Button
                   key={a.label}
