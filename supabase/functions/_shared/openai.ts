@@ -1,12 +1,14 @@
-// Centralized OpenAI API wrapper for all edge functions.
-// Handles auth, default model (gpt-4o), error normalization (429/402/5xx),
-// and consistent request/response shape.
+// Centralized AI API wrapper for all edge functions.
+// Now uses both OpenAI and Lovable AI Gateway with automatic fallback.
+// OpenAI is primary; Lovable is the fallback when OpenAI is rate-limited (429),
+// out of quota (402), or experiences a server error (>=500).
 //
 // Usage:
 //   import { callOpenAI, callOpenAIJSON } from "../_shared/openai.ts";
 //   const reply = await callOpenAI({ system: "...", user: "..." });
 
-const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
+import { callUnifiedAI, callUnifiedAIJSON, UnifiedMessage } from "./unifiedAI.ts";
+
 export const DEFAULT_MODEL = "gpt-4o";
 
 export const corsHeaders = { "Access-Control-Allow-Origin": "*",
@@ -52,32 +54,28 @@ function buildMessages(opts: CallOptions): ChatMessage[] {
   return m;
 }
 
-export async function callOpenAIRaw(opts: CallOptions): Promise<any> { const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key) throw new OpenAIError("OPENAI_API_KEY is not configured", 500);
-
-  const body: Record<string, unknown> = {
+function toUnifiedOptions(opts: CallOptions) {
+  return {
     model: opts.model || DEFAULT_MODEL,
-    messages: buildMessages(opts) };
-  if (opts.temperature !== undefined) body.temperature = opts.temperature;
-  if (opts.max_tokens !== undefined) body.max_tokens = opts.max_tokens;
-  if (opts.response_format) body.response_format = opts.response_format;
-  else if (opts.json) body.response_format = { type: "json_object" };
+    temperature: opts.temperature,
+    max_tokens: opts.max_tokens,
+    response_format: opts.response_format,
+    json: opts.json,
+  };
+}
 
-  const res = await fetch(OPENAI_URL, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body) });
-
-  if (res.status === 429) throw new OpenAIError("Rate limit exceeded, please try again later.", 429);
-  if (res.status === 402 || res.status === 401) {
-    throw new OpenAIError("OpenAI auth/quota issue. Please check your OPENAI_API_KEY or billing.", 402);
+export async function callOpenAIRaw(opts: CallOptions): Promise<any> {
+  const messages = buildMessages(opts) as UnifiedMessage[];
+  try {
+    const content = await callUnifiedAI(messages, toUnifiedOptions(opts));
+    return {
+      choices: [{ message: { role: "assistant", content }, index: 0, finish_reason: "stop" }],
+      usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+    };
+  } catch (e) {
+    const status = e instanceof Error && "status" in e ? (e as { status: number }).status : 500;
+    throw new OpenAIError(e instanceof Error ? e.message : "AI request failed", status);
   }
-  if (!res.ok) {
-    const t = await res.text().catch(() => "");
-    console.error("OpenAI error", res.status, t);
-    throw new OpenAIError(`OpenAI error (${res.status})`, 500);
-  }
-  return await res.json();
 }
 
 /** Returns the assistant text content. */
@@ -88,7 +86,11 @@ export async function callOpenAI(opts: CallOptions): Promise<string> {
 
 /** Returns parsed JSON. Forces response_format=json_object. */
 export async function callOpenAIJSON<T = any>(opts: CallOptions): Promise<T> {
-  const text = await callOpenAI({ ...opts, response_format: { type: "json_object" } });
-  const cleaned = text.replace(/^```(?:json)?/i, "").replace(/```$/i, "").trim();
-  return JSON.parse(cleaned) as T;
+  const messages = buildMessages(opts) as UnifiedMessage[];
+  try {
+    return await callUnifiedAIJSON<T>(messages, toUnifiedOptions(opts));
+  } catch (e) {
+    const status = e instanceof Error && "status" in e ? (e as { status: number }).status : 500;
+    throw new OpenAIError(e instanceof Error ? e.message : "AI request failed", status);
+  }
 }
