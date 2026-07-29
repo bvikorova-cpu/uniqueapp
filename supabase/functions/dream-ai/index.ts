@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { callOpenAI } from "../_shared/openai.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -13,20 +14,8 @@ const ACTION_COSTS: Record<string, number> = { "dictionary": 1,
   "soundscapes": 2,
   "visualizer": 3 };
 
-async function callOpenAI(apiKey: string, messages: any[]) {
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "gpt-4o-mini", messages }) });
-  if (!response.ok) {
-    const errorText = await response.text();
-    if (response.status === 429) throw new Error("Rate limit exceeded. Please try again later.");
-    if (response.status === 402) throw new Error("AI credits exhausted on platform.");
-    console.error("OpenAI error:", response.status, errorText);
-    throw new Error(`AI error: ${response.status}`);
-  }
-  const data = await response.json();
-  const content = data.choices?.[0]?.message?.content || "";
+async function aiChat(messages: any[]) {
+  const content = await callOpenAI({ messages, model: "gpt-4o-mini", max_completion_tokens: 1200 });
   try { return JSON.parse(content); } catch { return { result: content }; }
 }
 
