@@ -21,6 +21,15 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
   const [loading, setLoading] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
 
+  const handleQuickAction = (instruction: string) => {
+    setEditInstruction((current) => {
+      const trimmed = current.trim();
+      if (!trimmed) return instruction;
+      if (trimmed.includes(instruction)) return current;
+      return `${instruction}. ${trimmed}`;
+    });
+  };
+
   const handleUpload = (file?: File | null) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) { toast.error("Please select an image file"); return; }
@@ -128,7 +137,7 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
                   size="sm"
                   className="ai-editor-quick-action flex-col h-auto py-3 gap-1"
                   disabled={loading || !canEdit}
-                  onClick={() => handleEdit(a.instruction)}
+                  onClick={() => handleQuickAction(a.instruction)}
                 >
                   <a.icon className="w-4 h-4 text-primary" />
                   <span className="text-[11px]">{a.label}</span>
