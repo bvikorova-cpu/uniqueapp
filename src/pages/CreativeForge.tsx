@@ -175,13 +175,38 @@ export default function CreativeForge() {
   };
 
   const handlePurchase = async (creditAmount: number) => { const url = await purchaseCredits(creditAmount); if (url) window.open(url, "_blank"); };
-  const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text); toast({ title: "Copied!", description: "Content copied to clipboard" }); };
+  const copyToClipboard = async (text: string) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
+      }
+      toast({ title: "Copied!", description: "Content copied to clipboard" });
+    } catch {
+      toast({ title: "Copy failed", description: "Select the text and copy manually", variant: "destructive" });
+    }
+  };
   const downloadContent = (content: string, filename: string) => {
     const blob = new Blob([content], { type: "text/plain" }); const url = URL.createObjectURL(blob);
     const a = document.createElement("a"); a.href = url; a.download = `${filename}.txt`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
     toast({ title: "Downloaded!", description: "Content saved to file" });
   };
-  const shareContent = (content: string, ttl: string) => { if (navigator.share) { navigator.share({ title: `CreativeForge: ${ttl}`, text: content }).catch(() => {}); } else { copyToClipboard(content); } };
+  const shareContent = async (content: string, ttl: string) => {
+    const shareTitle = `CreativeForge: ${ttl || "My creation"}`;
+    try {
+      if (typeof navigator !== "undefined" && navigator.share && navigator.canShare?.({ text: content })) {
+        await navigator.share({ title: shareTitle, text: content });
+        return;
+      }
+    } catch (err: any) {
+      if (err?.name === "AbortError") return; // user cancelled — not an error
+    }
+    // Fallback: copy to clipboard (share is blocked in iframes/desktop browsers)
+    copyToClipboard(`${shareTitle}\n\n${content}`);
+  };
   const applyTemplate = (tpl: QuickTemplate) => { setTitle(tpl.title); setGenre(tpl.genre); setMood(tpl.mood); setDescription(tpl.description); setCharacters(tpl.characters); setSetting(tpl.setting); setStyleReference(tpl.styleReference); toast({ title: "Template Applied", description: `"${tpl.label}" loaded — customize and generate!` }); };
 
   const filteredProjects = (projects || []).filter((p: any) => {
