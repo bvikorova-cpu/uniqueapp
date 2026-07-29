@@ -6,20 +6,52 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
-const STORAGE_KEY = "ai_image_public_profile";
-
 export const PublicProfileView = () => {
   const [enabled, setEnabled] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [user, setUser] = useState<{ id: string; email?: string | null } | null>(null);
   const profileUrl = user ? `${window.location.origin}/u/${user.id}/ai-gallery` : "";
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user ? { id: data.user.id, email: data.user.email } : null));
-    setEnabled(localStorage.getItem(STORAGE_KEY) === "true");
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return;
+      setUser({ id: data.user.id, email: data.user.email });
+      const { data: row } = await supabase
+        .from("ai_public_profiles")
+        .select("enabled")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      setEnabled(!!row?.enabled);
+    })();
   }, []);
 
-  const toggle = (v: boolean) => { setEnabled(v); localStorage.setItem(STORAGE_KEY, String(v)); toast.success(v ? "Public profile enabled" : "Public profile disabled"); };
-  const copy = () => { navigator.clipboard.writeText(profileUrl); toast.success("Link copied!"); };
+  const toggle = async (v: boolean) => {
+    if (!user) { toast.error("Please sign in first"); return; }
+    const prev = enabled;
+    setEnabled(v);
+    setSaving(true);
+    const { error } = await supabase
+      .from("ai_public_profiles")
+      .upsert({ user_id: user.id, enabled: v, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+    setSaving(false);
+    if (error) {
+      setEnabled(prev);
+      toast.error("Could not save setting");
+      return;
+    }
+    toast.success(v ? "Public profile enabled" : "Public profile disabled");
+  };
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(profileUrl);
+      toast.success("Link copied!");
+    } catch {
+      toast.error("Copy failed — select the link manually");
+    }
+  };
+
 
   return (
     <>
@@ -36,7 +68,7 @@ export const PublicProfileView = () => {
             <p className="font-bold">Enable public AI gallery</p>
             <p className="text-xs text-muted-foreground">Visitors can browse your shared generations.</p>
           </div>
-          <Switch checked={enabled} onCheckedChange={toggle} />
+          <Switch checked={enabled} disabled={saving || !user} onCheckedChange={toggle} />
         </div>
 
         {enabled && user && (
