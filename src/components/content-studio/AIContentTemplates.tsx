@@ -53,6 +53,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
     const cleanTopic = topic.trim();
     if (!cleanTopic) {
       setTopicTouched(true);
+      document.getElementById("content-template-topic")?.focus();
       toast.error("Enter a topic / subject first");
       return;
     }
@@ -116,7 +117,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
           { title: 'Save favorites', desc: 'Reuse templates that convert.' },
         ]}
       />
-    <div className="space-y-6">
+    <div className="space-y-6 pb-48 sm:pb-20">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
@@ -163,21 +164,25 @@ const AIContentTemplates = ({ onBack }: Props) => {
         </div>
       ) : (
         <div className="mx-auto w-full max-w-3xl space-y-6 overflow-x-hidden px-0 sm:px-1">
-          <Card className="overflow-hidden">
-            <CardHeader>
-              <CardTitle className="flex flex-wrap items-center gap-2 text-balance">
+          <Card className="w-full max-w-full overflow-hidden">
+            <CardHeader className="px-4 sm:px-6">
+              <CardTitle className="flex flex-wrap items-center gap-2 text-left text-balance">
                 {template && <template.icon className="h-5 w-5 text-primary" />}
                 <span className="min-w-0 break-words">{template?.name}</span>
                 <Badge variant="outline" className="shrink-0">{template?.credits} credits</Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 px-4 sm:px-6">
               <div>
                 <label className="text-sm font-medium">Topic / Subject *</label>
                 <Input
+                  id="content-template-topic"
                   value={topic}
                   onBlur={() => setTopicTouched(true)}
-                  onChange={(e) => setTopic(e.target.value)}
+                  onChange={(e) => {
+                    setTopic(e.target.value);
+                    if (e.target.value.trim()) setTopicTouched(false);
+                  }}
                   placeholder="What is this content about?"
                   aria-invalid={topicTouched && !topic.trim()}
                 />
@@ -194,13 +199,15 @@ const AIContentTemplates = ({ onBack }: Props) => {
                   rows={4}
                 />
               </div>
-              <div className="flex w-full min-w-0 flex-col gap-3">
-                <Button variant="outline" className="h-auto min-h-11 w-full min-w-0 max-w-full px-3 py-2 [white-space:normal]" onClick={() => { setSelectedTemplate(null); setResult(null); setTopicTouched(false); }}>
+              <div className="flex w-full min-w-0 flex-col gap-3 pb-3">
+                <Button variant="outline" className="h-auto min-h-12 w-full min-w-0 max-w-full px-3 py-3 whitespace-normal leading-tight" onClick={() => { setSelectedTemplate(null); setResult(null); setTopicTouched(false); }}>
                   Change Template
                 </Button>
-                <Button onClick={handleGenerate} disabled={loading} className="h-auto min-h-11 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-2 text-center [white-space:normal] disabled:opacity-60">
+                <Button onClick={handleGenerate} disabled={loading} className="h-auto min-h-12 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-3 text-center whitespace-normal leading-tight disabled:opacity-60">
                   {loading ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Sparkles className="h-4 w-4 shrink-0" />}
-                  <span className="min-w-0 break-words leading-tight">{loading ? "Generating..." : `Generate (${template?.credits} credits)`}</span>
+                  <span className="min-w-0 break-words leading-tight">
+                    {loading ? "Generating..." : topic.trim() ? `Generate (${template?.credits} credits)` : "Enter topic first"}
+                  </span>
                 </Button>
               </div>
             </CardContent>
