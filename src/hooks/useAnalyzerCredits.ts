@@ -12,32 +12,24 @@ export const useAnalyzerCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // UNIFIED CREDITS: the analyzer section reads the shared ai_credits wallet
+      // so the header badge always matches the platform-wide balance.
       const { data, error } = await supabase
-        .from("analyzer_credits")
-        .select("*")
+        .from("ai_credits")
+        .select("credits_remaining")
         .eq("user_id", user.id)
         .maybeSingle();
-
       if (error) throw error;
-      
-      // If no credits record exists, create one with basic tier
-      if (!data) {
-        const { data: newData, error: insertError } = await supabase
-          .from("analyzer_credits")
-          .insert({
-            user_id: user.id,
-            credits_remaining: 10,
-            total_credits_purchased: 10,
-            tier: 'basic'
-          })
-          .select()
-          .single();
 
-        if (insertError) throw insertError;
-        return newData;
-      }
-
-      return data;
+      return {
+        id: user.id,
+        user_id: user.id,
+        credits_remaining: data?.credits_remaining ?? 0,
+        total_credits_purchased: 0,
+        tier: "unified",
+        tier_expires_at: null,
+        created_at: "",
+        updated_at: "" } as AnalyzerCredits;
     } });
 
   const analyzeImage = useMutation({ mutationFn: async ({
@@ -99,17 +91,17 @@ export const useAnalyzerCredits = () => {
         .single();
       if (insErr) throw insErr;
 
-      // Decrement credits (RLS: user_id = auth.uid())
-      const remaining = Math.max(0, (credits?.credits_remaining ?? 0) - creditsCost);
-      await supabase
-        .from('analyzer_credits')
-        .update({ credits_remaining: remaining })
-        .eq('user_id', user.id);
+      // Decrement unified credits atomically (writes ai_credits_ledger).
+      const { error: spendErr } = await supabase.rpc('analyzer_spend_credits' as any, {
+        _amount: creditsCost, _reason: 'analyzer_vision' } as any);
+      if (spendErr) throw spendErr;
 
       return { analysis: row, result: resultText };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["analyzer-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
       queryClient.invalidateQueries({ queryKey: ["vision-analyses"] });
     },
     onError: (error: Error) => {
