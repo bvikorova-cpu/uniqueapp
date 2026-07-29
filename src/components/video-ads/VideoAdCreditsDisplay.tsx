@@ -3,15 +3,39 @@ import { Button } from '@/components/ui/button';
 import { useVideoAdCredits } from '@/hooks/useVideoAdCredits';
 import { Video, Plus } from 'lucide-react';
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { useState } from 'react';
 
 export const VideoAdCreditsDisplay = () => {
   const { credits, isLoading, purchaseCredits } = useVideoAdCredits();
+  const [purchasing, setPurchasing] = useState<number | null>(null);
 
   const handlePurchase = async (amount: number) => {
-    const url = await purchaseCredits(amount);
-    if (url) {
-      // Same-tab redirect so Stripe returns to the app and payment gets verified
-      window.location.href = url;
+    if (purchasing) return;
+    setPurchasing(amount);
+
+    // Open immediately from the tap/click event so mobile browsers and the
+    // Lovable preview iframe do not block Stripe after the async checkout call.
+    const checkoutTab = window.open("", "_blank");
+    if (checkoutTab) {
+      checkoutTab.document.write("<p>Opening secure Stripe checkout…</p>");
+      checkoutTab.document.close();
+    }
+
+    try {
+      const url = await purchaseCredits(amount);
+      if (!url) {
+        checkoutTab?.close();
+        return;
+      }
+
+      if (checkoutTab && !checkoutTab.closed) {
+        checkoutTab.location.assign(url);
+        checkoutTab.opener = null;
+      } else {
+        window.location.assign(url);
+      }
+    } finally {
+      setPurchasing(null);
     }
   };
 
@@ -37,30 +61,33 @@ export const VideoAdCreditsDisplay = () => {
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           <Button
             onClick={() => handlePurchase(10)}
+            disabled={purchasing !== null}
             variant="outline"
             size="sm"
             className="w-full justify-center sm:w-auto"
           >
             <Plus className="mr-2 h-4 w-4" />
-            10 Credits - €8
+            {purchasing === 10 ? "Opening Stripe…" : "10 Credits - €8"}
           </Button>
           <Button
             size="sm"
             variant="outline"
             onClick={() => handlePurchase(25)}
+            disabled={purchasing !== null}
             className="w-full justify-center sm:w-auto"
           >
             <Plus className="mr-2 h-4 w-4" />
-            25 Credits - €18
+            {purchasing === 25 ? "Opening Stripe…" : "25 Credits - €18"}
           </Button>
           <Button
             size="sm"
             variant="outline"
             onClick={() => handlePurchase(50)}
+            disabled={purchasing !== null}
             className="w-full justify-center sm:w-auto"
           >
             <Plus className="mr-2 h-4 w-4" />
-            50 Credits - €30
+            {purchasing === 50 ? "Opening Stripe…" : "50 Credits - €30"}
           </Button>
         </div>
       </div>
