@@ -67,11 +67,6 @@ Deno.serve(async (req) => {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) {
-      return new Response(JSON.stringify({ error: "API key not configured" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
 
     let result: any;
     switch (action) {
