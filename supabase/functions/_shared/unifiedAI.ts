@@ -39,7 +39,15 @@ export interface UnifiedAIOptions {
   json?: boolean;
   tools?: UnifiedToolDefinition[];
   tool_choice?: "auto" | "none" | { type: "function"; function: { name: string } };
+  /**
+   * Cost tier. Default "cheap": the first attempt always uses a low-cost model
+   * (gpt-4o-mini / gemini-3.6-flash) and only escalates to the requested,
+   * more expensive model if the cheap attempt fails.
+   * Set "premium" to always use the requested model directly.
+   */
+  tier?: "cheap" | "premium";
 }
+
 
 export class UnifiedAIError extends Error {
   status: number;
