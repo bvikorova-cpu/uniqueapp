@@ -103,7 +103,7 @@ serve(async (req) => {
         model: MODEL,
         messages: action === "cowriter"
           ? [
-              { role: "system", content: `${SYSTEM_PROMPTS.cowriter}\nContext: writing a ${(extra.category ?? "piece").toString().replace(/_/g, " ")}.${extra.currentText ? `\n\nCurrent draft:\n"""${String(extra.currentText).slice(0, 6000)}"""` : ""}` },
+              { role: "system", content: `${SYSTEM_PROMPTS.cowriter}\nContext: writing a ${(extra.category ?? "piece").toString().replace(/_/g, " ")}.${extra.brand_voice ? `\n\nAlways write in this brand voice profile:\n${JSON.stringify(extra.brand_voice)}` : ""}${extra.currentText ? `\n\nCurrent draft:\n"""${String(extra.currentText).slice(0, 6000)}"""` : ""}` },
               ...(Array.isArray(extra.history) ? extra.history : [])
                 .filter((m: any) => m?.role === "user" || m?.role === "assistant")
                 .slice(-16)

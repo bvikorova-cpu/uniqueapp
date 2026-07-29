@@ -27,7 +27,10 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onSelect?: (voice: BrandVoice) => void;
+  activeVoiceId?: string | null;
+  onClearActive?: () => void;
 }
+
 
 const EMPTY: Omit<BrandVoice, "id" | "is_default"> = { name: "", description: "", tone: "", audience: "", do_use: "", dont_use: "", sample_text: "" };
 
@@ -70,7 +73,7 @@ const STARTER_VOICES: Omit<BrandVoice, "id" | "is_default">[] = [
   },
 ];
 
-export function ForgeBrandVoice({ open, onClose, onSelect }: Props) {
+export function ForgeBrandVoice({ open, onClose, onSelect, activeVoiceId, onClearActive }: Props) {
   const [voices, setVoices] = useState<BrandVoice[]>([]);
   const [editing, setEditing] = useState<Partial<BrandVoice> | null>(null);
   const [loading, setLoading] = useState(false);
@@ -166,7 +169,7 @@ export function ForgeBrandVoice({ open, onClose, onSelect }: Props) {
       <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Brand Voices</DialogTitle>
-          <DialogDescription>Save reusable tone profiles. Applied to every generation when selected.</DialogDescription>
+          <DialogDescription>Save reusable tone profiles. The active voice is applied to the AI Co-Writer and generations, and is remembered for your next session.</DialogDescription>
         </DialogHeader>
 
         {editing ? (
@@ -224,24 +227,30 @@ export function ForgeBrandVoice({ open, onClose, onSelect }: Props) {
             </div>
 
             {voices.length === 0 && <p className="text-sm text-muted-foreground text-center py-2">No saved brand voices yet — pick a starter above.</p>}
-            {voices.map((v) => (
-              <Card key={v.id} className="p-3 flex items-start justify-between gap-3">
+            {voices.map((v) => {
+              const isActive = activeVoiceId === v.id;
+              return (
+              <Card key={v.id} className={`p-3 flex items-start justify-between gap-3 ${isActive ? "border-primary ring-1 ring-primary/40" : ""}`}>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-semibold truncate">{v.name}</h3>
+                    {isActive && <Badge><Check className="h-3 w-3 mr-1" />Active for Co-Writer</Badge>}
                     {v.is_default && <Badge variant="secondary"><Star className="h-3 w-3 mr-1" />Default</Badge>}
                   </div>
                   {v.tone && <p className="text-xs text-muted-foreground">Tone: {v.tone}</p>}
                   {v.description && <p className="text-xs mt-1 line-clamp-2">{v.description}</p>}
                 </div>
                 <div className="flex flex-col gap-1">
-                  {onSelect && <Button size="sm" onClick={() => { onSelect(v); onClose(); }}>Use</Button>}
+                  {onSelect && (isActive
+                    ? onClearActive && <Button size="sm" variant="outline" onClick={() => { onClearActive(); }}>Deactivate</Button>
+                    : <Button size="sm" onClick={() => { onSelect(v); onClose(); }}>Use</Button>)}
                   <Button size="sm" variant="ghost" onClick={() => setEditing(v)}>Edit</Button>
                   {!v.is_default && <Button size="sm" variant="ghost" onClick={() => setDefault(v.id)}><Star className="h-3 w-3" /></Button>}
                   <Button size="sm" variant="ghost" onClick={() => remove(v.id)}><Trash2 className="h-3 w-3" /></Button>
                 </div>
               </Card>
-            ))}
+            );})}
+
           </div>
         )}
       </DialogContent>

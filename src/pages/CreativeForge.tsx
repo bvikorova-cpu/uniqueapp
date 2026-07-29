@@ -32,6 +32,8 @@ import { ForgeVoiceToScript } from "@/components/creative-forge/ForgeVoiceToScri
 import { ForgeRooms } from "@/components/creative-forge/ForgeRooms";
 import { ForgeIdeasShowcase } from "@/components/creative-forge/ForgeIdeasShowcase";
 import { ForgeBrandVoice, type BrandVoice } from "@/components/creative-forge/ForgeBrandVoice";
+import { useActiveBrandVoice } from "@/hooks/useActiveBrandVoice";
+
 import { ForgeStoryBible } from "@/components/creative-forge/ForgeStoryBible";
 import { ForgeAIStudio } from "@/components/creative-forge/ForgeAIStudio";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
@@ -86,7 +88,7 @@ export default function CreativeForge() {
   const [brandVoiceOpen, setBrandVoiceOpen] = useState(false);
   const [storyBibleOpen, setStoryBibleOpen] = useState(false);
   const [aiStudioOpen, setAiStudioOpen] = useState(false);
-  const [activeBrandVoice, setActiveBrandVoice] = useState<BrandVoice | null>(null);
+  const { activeVoice: activeBrandVoice, selectVoice: setActiveBrandVoice, clearVoice: clearBrandVoice } = useActiveBrandVoice();
 
   // Any view switch must bring the user to the top, otherwise the new view renders
   // off-screen (page stays scrolled deep) and the click looks like it did nothing.
@@ -212,11 +214,13 @@ export default function CreativeForge() {
         onClose={() => setCowriterOpen(false)}
         category={selectedCategory}
         currentText={generatedContent || description || ""}
+        brandVoice={activeBrandVoice ? { name: activeBrandVoice.name, tone: activeBrandVoice.tone, audience: activeBrandVoice.audience, do_use: activeBrandVoice.do_use, dont_use: activeBrandVoice.dont_use, sample_text: activeBrandVoice.sample_text } : null}
         onInsert={(text) => {
           setGeneratedContent((prev) => (prev ? prev + "\n\n" + text : text));
           setActiveView("create");
         }}
       />
+
       <ForgeStyleTransfer
         open={styleOpen}
         onClose={() => setStyleOpen(false)}
@@ -230,7 +234,14 @@ export default function CreativeForge() {
         onApply={(text) => { setGeneratedContent(text); setActiveView("create"); }}
       />
       <ForgeRooms open={roomsOpen} onClose={() => setRoomsOpen(false)} />
-      <ForgeBrandVoice open={brandVoiceOpen} onClose={() => setBrandVoiceOpen(false)} onSelect={(v) => { setActiveBrandVoice(v); toast({ title: "Brand voice active", description: v.name }); }} />
+      <ForgeBrandVoice
+        open={brandVoiceOpen}
+        onClose={() => setBrandVoiceOpen(false)}
+        activeVoiceId={activeBrandVoice?.id ?? null}
+        onClearActive={() => { clearBrandVoice(); toast({ title: "Brand voice deactivated" }); }}
+        onSelect={(v) => { setActiveBrandVoice(v); toast({ title: "Brand voice active", description: `${v.name} — saved for your next sessions too` }); }}
+      />
+
       <ForgeStoryBible open={storyBibleOpen} onClose={() => setStoryBibleOpen(false)} />
       <ForgeAIStudio
         open={aiStudioOpen}
