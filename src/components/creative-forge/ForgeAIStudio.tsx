@@ -77,13 +77,13 @@ export function ForgeAIStudio({ open, onClose, currentText, onReplace, onAppend,
         </DialogHeader>
 
         <Tabs defaultValue="quick" className="w-full">
-          <TabsList className="grid grid-cols-6 w-full">
-            <TabsTrigger value="quick"><Wand2 className="h-3.5 w-3.5 mr-1" />Quick</TabsTrigger>
-            <TabsTrigger value="brainstorm"><Sparkles className="h-3.5 w-3.5 mr-1" />Brainstorm</TabsTrigger>
-            <TabsTrigger value="seo"><Search className="h-3.5 w-3.5 mr-1" />SEO</TabsTrigger>
-            <TabsTrigger value="plagiarism"><ShieldCheck className="h-3.5 w-3.5 mr-1" />Originality</TabsTrigger>
-            <TabsTrigger value="translate"><Globe className="h-3.5 w-3.5 mr-1" />Translate</TabsTrigger>
-            <TabsTrigger value="score"><BarChart3 className="h-3.5 w-3.5 mr-1" />Score</TabsTrigger>
+          <TabsList className="flex flex-wrap sm:grid sm:grid-cols-6 gap-2 w-full h-auto p-1">
+            <TabsTrigger value="quick" className="flex-1 sm:flex-initial gap-1 px-2 py-1.5 text-xs sm:text-sm"><Wand2 className="h-3.5 w-3.5" />Quick</TabsTrigger>
+            <TabsTrigger value="brainstorm" className="flex-1 sm:flex-initial gap-1 px-2 py-1.5 text-xs sm:text-sm"><Sparkles className="h-3.5 w-3.5" />Brainstorm</TabsTrigger>
+            <TabsTrigger value="seo" className="flex-1 sm:flex-initial gap-1 px-2 py-1.5 text-xs sm:text-sm"><Search className="h-3.5 w-3.5" />SEO</TabsTrigger>
+            <TabsTrigger value="plagiarism" className="flex-1 sm:flex-initial gap-1 px-2 py-1.5 text-xs sm:text-sm"><ShieldCheck className="h-3.5 w-3.5" />Originality</TabsTrigger>
+            <TabsTrigger value="translate" className="flex-1 sm:flex-initial gap-1 px-2 py-1.5 text-xs sm:text-sm"><Globe className="h-3.5 w-3.5" />Translate</TabsTrigger>
+            <TabsTrigger value="score" className="flex-1 sm:flex-initial gap-1 px-2 py-1.5 text-xs sm:text-sm"><BarChart3 className="h-3.5 w-3.5" />Score</TabsTrigger>
           </TabsList>
 
           <TabsContent value="quick" className="space-y-3">
