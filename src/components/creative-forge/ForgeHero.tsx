@@ -3,7 +3,7 @@ import { Feather, Sparkles, Users, FileText, Star, Play, Pause, Volume2, VolumeX
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import heroVideo from "@/assets/creative-forge-hero.mp4.asset.json";
-import { useLiveStats } from "@/hooks/useLiveStats";
+import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
@@ -18,7 +18,7 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
     }, duration / steps);
     return () => clearInterval(t);
   }, [target]);
-  return <span>{target === 0 ? "—" : `${count.toLocaleString()}${suffix}`}</span>;
+  return <span>{`${count.toLocaleString()}${suffix}`}</span>;
 };
 
 interface ForgeHeroProps {
