@@ -10,9 +10,11 @@ export const VideoAdCreditsDisplay = () => {
   const handlePurchase = async (amount: number) => {
     const url = await purchaseCredits(amount);
     if (url) {
-      { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
+      // Same-tab redirect so Stripe returns to the app and payment gets verified
+      window.location.href = url;
     }
   };
+
 
   if (isLoading) return null;
 
