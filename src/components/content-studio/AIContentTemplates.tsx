@@ -162,7 +162,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
           })}
         </div>
       ) : (
-        <div className="mx-auto w-full max-w-3xl space-y-6 overflow-hidden px-0 sm:px-1">
+        <div className="mx-auto w-full max-w-3xl space-y-6 overflow-x-hidden px-0 sm:px-1">
           <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle className="flex flex-wrap items-center gap-2 text-balance">
@@ -194,12 +194,12 @@ const AIContentTemplates = ({ onBack }: Props) => {
                   rows={4}
                 />
               </div>
-              <div className="grid w-full grid-cols-1 gap-3 xl:grid-cols-[auto_minmax(0,1fr)]">
-                <Button variant="outline" className="h-auto min-h-11 w-full xl:w-auto" onClick={() => { setSelectedTemplate(null); setResult(null); setTopicTouched(false); }}>
+              <div className="flex w-full min-w-0 flex-col gap-3">
+                <Button variant="outline" className="h-auto min-h-11 w-full min-w-0 max-w-full px-3 py-2 [white-space:normal]" onClick={() => { setSelectedTemplate(null); setResult(null); setTopicTouched(false); }}>
                   Change Template
                 </Button>
                 <Button onClick={handleGenerate} disabled={loading} className="h-auto min-h-11 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-2 text-center [white-space:normal] disabled:opacity-60">
-                  {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
+                  {loading ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Sparkles className="h-4 w-4 shrink-0" />}
                   <span className="min-w-0 break-words leading-tight">{loading ? "Generating..." : `Generate (${template?.credits} credits)`}</span>
                 </Button>
               </div>
