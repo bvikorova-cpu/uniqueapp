@@ -67,6 +67,27 @@
     visibility: hidden !important;
     pointer-events: none !important;
   }
+
+  .ai-mobile-tool-shell {
+    padding-right: 9.5rem !important;
+    padding-bottom: 24rem !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+  }
+
+  .ai-mobile-tool-shell input,
+  .ai-mobile-tool-shell textarea,
+  .ai-mobile-tool-shell [role="combobox"],
+  .ai-mobile-tool-shell .ai-mobile-safe-action {
+    max-width: calc(100vw - 11rem) !important;
+  }
+
+  .ai-mobile-safe-action {
+    width: calc(100vw - 11rem) !important;
+    min-width: 0 !important;
+    align-self: flex-start !important;
+  }
 }
 
 /* Dark Interrogation Mode — global red noir filter */
