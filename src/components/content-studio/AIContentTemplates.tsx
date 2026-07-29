@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,8 +35,15 @@ const AIContentTemplates = ({ onBack }: Props) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [topicTouched, setTopicTouched] = useState(false);
+  const resultRef = useRef<HTMLDivElement | null>(null);
 
   const template = TEMPLATES.find((t) => t.id === selectedTemplate);
+
+  useEffect(() => {
+    if (result) {
+      resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result]);
 
   const handleGenerate = async () => {
     if (!selectedTemplate) {
@@ -200,7 +207,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
           </Card>
 
           {result && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <motion.div ref={resultRef} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
