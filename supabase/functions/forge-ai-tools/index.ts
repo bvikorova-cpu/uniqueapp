@@ -8,6 +8,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
     "authorization, x-client-info, apikey, content-type" };
 
 const CREDIT_COST = 6;
+const COST_OVERRIDES: Record<string, number> = { cowriter: 2 };
 const MODEL = "gpt-4o-mini";
 
 type Action =
@@ -19,7 +20,8 @@ type Action =
   | "seo_optimize"
   | "plagiarism_check"
   | "translate"
-  | "score_content";
+  | "score_content"
+  | "cowriter";
 
 const SYSTEM_PROMPTS: Record<Action, string> = {
   brainstorm:
@@ -38,6 +40,8 @@ const SYSTEM_PROMPTS: Record<Action, string> = {
     "You are an originality auditor. Analyze the text for clichéd phrasing, overused patterns and likely-derivative passages. Return JSON: {\"originality_score\":0-100,\"flagged\":[{\"excerpt\":\"...\",\"reason\":\"...\"}],\"suggestions\":[\"...\"]}. Never claim certainty of plagiarism — flag risk only.",
   translate:
     "You are a literary translator. Translate the text to the target language preserving voice, style and cultural nuance. Return only the translation.",
+  cowriter:
+    "You are an elite AI Co-Writer. Suggest sentences, polish prose, brainstorm ideas, fix dialogue and break writer's block. Be concise, concrete and stay in the user's voice. Use markdown when helpful.",
   score_content:
     "You are a literary critic. Score the text on quality, readability, emotional resonance and structure. Return JSON: {\"overall\":0-100,\"breakdown\":{\"quality\":0-100,\"readability\":0-100,\"emotion\":0-100,\"structure\":0-100},\"suggestions\":[\"...\"]}" };
 
@@ -60,9 +64,10 @@ serve(async (req) => {
     const action = body.action as Action;
     const text = (body.text ?? "").toString();
     const extra = body.extra ?? {};
+    const cost = COST_OVERRIDES[action] ?? CREDIT_COST;
 
     if (!SYSTEM_PROMPTS[action]) throw new Error(`Unknown action: ${action}`);
-    if (!text.trim() && action !== "brainstorm") throw new Error("Text is required");
+    if (!text.trim() && action !== "brainstorm" && action !== "cowriter") throw new Error("Text is required");
 
     // Credit check (read-only pre-flight for nice 402 UX)
     const { data: credits } = await supabase
@@ -71,9 +76,9 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle();
     const current = credits?.credits_remaining ?? 0;
-    if (current < CREDIT_COST) {
+    if (current < cost) {
       return new Response(
-        JSON.stringify({ error: "INSUFFICIENT_CREDITS", required: CREDIT_COST, available: current }),
+        JSON.stringify({ error: "INSUFFICIENT_CREDITS", required: cost, available: current }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -101,10 +106,18 @@ serve(async (req) => {
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: MODEL,
-        messages: [
-          { role: "system", content: SYSTEM_PROMPTS[action] },
-          { role: "user", content: userPrompt },
-        ] }) });
+        messages: action === "cowriter"
+          ? [
+              { role: "system", content: `${SYSTEM_PROMPTS.cowriter}\nContext: writing a ${(extra.category ?? "piece").toString().replace(/_/g, " ")}.${extra.currentText ? `\n\nCurrent draft:\n"""${String(extra.currentText).slice(0, 6000)}"""` : ""}` },
+              ...(Array.isArray(extra.history) ? extra.history : [])
+                .filter((m: any) => m?.role === "user" || m?.role === "assistant")
+                .slice(-16)
+                .map((m: any) => ({ role: m.role, content: String(m.content ?? "").slice(0, 8000) })),
+            ]
+          : [
+              { role: "system", content: SYSTEM_PROMPTS[action] },
+              { role: "user", content: userPrompt },
+            ] }) });
 
     if (!ai.ok) {
       const errText = await ai.text();
@@ -131,7 +144,7 @@ serve(async (req) => {
     }
 
     // Atomic credit deduction AFTER successful AI call (race-safe)
-    const { data: newRemaining, error: dedErr } = await supabase.rpc("deduct_creative_forge_credits", { _user_id: user.id, _amount: CREDIT_COST });
+    const { data: newRemaining, error: dedErr } = await supabase.rpc("deduct_creative_forge_credits", { _user_id: user.id, _amount: cost });
     if (dedErr) {
       if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
         return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -157,7 +170,7 @@ serve(async (req) => {
       JSON.stringify({ action,
         content,
         parsed,
-        creditsUsed: CREDIT_COST,
+        creditsUsed: cost,
         creditsRemaining: newRemaining }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
