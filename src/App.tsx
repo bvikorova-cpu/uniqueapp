@@ -123,6 +123,8 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Download = lazy(() => import("./pages/Download"));
 const VerifyReport = lazy(() => import("./pages/VerifyReport"));
 const UsernameRedirect = lazy(() => import("./pages/UsernameRedirect"));
+const PublicAIGallery = lazy(() => import("./pages/PublicAIGallery"));
+
 const ProfileRedirect = lazy(() => import("./pages/ProfileRedirect"));
 const PropertyFavorites = lazy(() => import("./pages/PropertyFavorites"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
