@@ -38,7 +38,6 @@ const AIContentTemplates = ({ onBack }: Props) => {
   const resultRef = useRef<HTMLDivElement | null>(null);
 
   const template = TEMPLATES.find((t) => t.id === selectedTemplate);
-  const canGenerate = Boolean(topic.trim()) && !loading;
 
   useEffect(() => {
     if (result) {
@@ -204,7 +203,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
                 <Button variant="outline" className="h-auto min-h-12 w-full min-w-0 max-w-full px-3 py-3 whitespace-normal leading-tight" onClick={() => { setSelectedTemplate(null); setResult(null); setTopicTouched(false); }}>
                   Change Template
                 </Button>
-                <Button onClick={handleGenerate} disabled={!canGenerate} className="h-auto min-h-12 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-3 text-center whitespace-normal leading-tight disabled:opacity-60">
+                <Button onClick={handleGenerate} disabled={loading} className="h-auto min-h-12 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-3 text-center whitespace-normal leading-tight disabled:opacity-60">
                   {loading ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Sparkles className="h-4 w-4 shrink-0" />}
                   <span className="min-w-0 break-words leading-tight">
                     {loading ? "Generating..." : topic.trim() ? `Generate (${template?.credits} credits)` : "Enter topic first"}
