@@ -19,21 +19,34 @@ serve(async (req) => {
   }
 
   try {
-    // Use ANON KEY - RLS policies will enforce access control
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: req.headers.get("Authorization")! } }, auth: { persistSession: false } }
-    );
-
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data: userData } = await supabaseClient.auth.getUser(token);
-    const user = userData.user;
-
-    if (!user) {
-      throw new Error("Unauthorized");
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace("Bearer ", "").trim();
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")
+      ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY")
+      ?? "";
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+
+    // Auth client (validates the caller's JWT)
+    const authClient = createClient(supabaseUrl, anonKey || serviceKey, {
+      auth: { persistSession: false } });
+    const { data: userData, error: userError } = await authClient.auth.getUser(token);
+    const user = userData?.user;
+
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Data client (service role, scoped manually to the authenticated user)
+    const supabaseClient = createClient(supabaseUrl, serviceKey || anonKey, {
+      auth: { persistSession: false } });
+
 
     // Rate limit check
     const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders, user.id);
