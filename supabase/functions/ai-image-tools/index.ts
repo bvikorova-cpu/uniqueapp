@@ -215,10 +215,10 @@ serve(async (req) => {
       const res = await rawFetch(useLovable ? LOVABLE_IMAGE_URL : OPENAI_IMAGE_URL, {
         method: "POST",
         headers: useLovable
-          ? { "Lovable-API-Key": LOVABLE_API_KEY ?? "", "Content-Type": "application/json" }
+          ? { Authorization: `Bearer ${LOVABLE_API_KEY ?? ""}`, "Content-Type": "application/json" }
           : { Authorization: `Bearer ${OPENAI_API_KEY ?? ""}`, "Content-Type": "application/json" },
         body: JSON.stringify(useLovable
-          ? { model: "openai/gpt-image-1-mini", prompt: finalPrompt, n: 1, size, quality: "low" }
+          ? { model: "openai/gpt-image-1-mini", prompt: finalPrompt, size, quality: "low" }
           : { model: "gpt-image-1", prompt: finalPrompt, n: 1, size, quality: "low" }) });
       if (!res.ok) {
         const text = await res.text();
