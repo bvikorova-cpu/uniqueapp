@@ -7,7 +7,6 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
 const CREDIT_COSTS: Record<string, number> = { "ai.generateQuiz": 5,
   "ai.ocrScan": 5,
@@ -38,8 +37,6 @@ async function spendBrainDuelCredits(admin: any, userId: string, amount: number)
     throw e;
   }
 }
-
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
 async function callAI(
   prompt: string,
