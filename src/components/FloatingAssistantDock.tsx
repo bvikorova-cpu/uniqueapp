@@ -20,9 +20,9 @@ export function FloatingAssistantDock({ children, className }: FloatingAssistant
     <div
       className={cn(
         isAiGeneration
-          ? "fixed bottom-[calc(12rem+env(safe-area-inset-bottom))] left-1 md:left-auto md:bottom-6 md:right-6 z-[9990]"
-          : "fixed bottom-[calc(11rem+env(safe-area-inset-bottom))] right-1 md:bottom-6 md:right-6 z-[9990]",
-        "flex flex-col-reverse items-end gap-1.5 md:gap-3 scale-75 origin-bottom-right md:scale-100",
+          ? "hidden md:fixed md:bottom-6 md:right-6 md:z-[9990] md:flex"
+          : "fixed bottom-[calc(11rem+env(safe-area-inset-bottom))] right-1 md:bottom-6 md:right-6 z-[9990] flex",
+        "flex-col-reverse items-end gap-1.5 md:gap-3 scale-75 origin-bottom-right md:scale-100",
         className
       )}
       aria-label="Assistant dock"
