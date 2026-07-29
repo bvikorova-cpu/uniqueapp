@@ -51,23 +51,10 @@ Deno.serve(async (req) => {
 ${formats[category] || ""}
 Extract the core idea, organize it cleanly, expand thin areas, and remove filler. Return ONLY the formatted draft.`;
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Voice transcript:\n\n${transcript}` },
-        ] }) });
-
-    if (!aiResponse.ok) {
-      if (aiResponse.status === 429) return new Response(JSON.stringify({ error: "Rate limited" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (aiResponse.status === 401) return new Response(JSON.stringify({ error: "Invalid OpenAI key" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      const errText = await aiResponse.text();
-      console.error("OpenAI error:", aiResponse.status, errText);
-      throw new Error("OpenAI API error");
-    }
+    const scriptRaw = await callCreativeAI([
+      { role: "system", content: systemPrompt },
+      { role: "user", content: `Voice transcript:\n\n${transcript}` },
+    ]);
 
     const data = await aiResponse.json();
     const script = data.choices?.[0]?.message?.content || "";
