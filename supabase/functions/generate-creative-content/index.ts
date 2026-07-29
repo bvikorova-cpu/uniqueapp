@@ -128,29 +128,45 @@ serve(async (req) => {
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ] }) });
+    const callOpenAI = () =>
+      fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ] }) });
+
+    // Retry on transient upstream rate limits (429) / server errors with backoff.
+    let aiResponse = await callOpenAI();
+    for (let attempt = 1; attempt <= 3 && (aiResponse.status === 429 || aiResponse.status >= 500); attempt++) {
+      const retryAfter = Number(aiResponse.headers.get("retry-after")) || 0;
+      const waitMs = retryAfter > 0 ? retryAfter * 1000 : attempt * 1200;
+      console.warn(`OpenAI ${aiResponse.status}, retry ${attempt} in ${waitMs}ms`);
+      await aiResponse.text().catch(() => {});
+      await new Promise((r) => setTimeout(r, waitMs));
+      aiResponse = await callOpenAI();
+    }
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
       console.error("OpenAI API error:", aiResponse.status, errorText);
-      if (aiResponse.status === 429) {
-        throw new Error("Rate limit exceeded. Please try again in a moment.");
-      }
-      if (aiResponse.status === 402) {
-        throw new Error("Service temporarily unavailable. Please try again later.");
-      }
-      throw new Error("Failed to generate content");
+      const status = aiResponse.status === 429 ? 429 : aiResponse.status === 402 ? 402 : 502;
+      const message =
+        status === 429
+          ? "AI is busy right now. Please try again in a few seconds."
+          : status === 402
+          ? "Service temporarily unavailable. Please try again later."
+          : "Failed to generate content";
+      return new Response(JSON.stringify({ error: message }), {
+        status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
 
     const aiData = await aiResponse.json();
     const generatedContent = aiData.choices?.[0]?.message?.content;
