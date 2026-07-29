@@ -91,7 +91,12 @@ serve(async (req) => {
     if (cfg.visionRequired && !imageUrl) return json({ error: `Task '${task}' requires imageUrl` }, 400);
 
     const cost = TASK_COST[task] ?? DEFAULT_TASK_COST;
-    const auth = await requireAiCredits(req, corsHeaders, { credits: cost, usageType: `vision_${task}` });
+    const auth = await requireAiCredits(req, corsHeaders, {
+      credits: cost,
+      usageType: `vision_${task}`,
+      // Vision tasks are heavy and often retried by the UI; keep a generous
+      // shared bucket so a normal user never hits a hard 429.
+      rateLimit: { bucket: "ai.vision", max: 120, windowSec: 60 } });
     if (auth.errorResponse) return auth.errorResponse;
 
     const apiKey = Deno.env.get("OPENAI_API_KEY");
