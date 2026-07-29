@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { callCreativeAI, CreativeAIError } from "../_shared/creativeAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -10,8 +11,6 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openaiKey) throw new Error("OPENAI_API_KEY not configured");
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -43,26 +42,12 @@ Deno.serve(async (req) => {
 Preserve the original meaning, story beats and characters. Mimic vocabulary, rhythm, sentence length, dialogue patterns and signature devices.
 Return ONLY the rewritten text, no commentary, no preamble.`;
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: text },
-        ] }) });
+    const rewrittenRaw = await callCreativeAI([
+      { role: "system", content: systemPrompt },
+      { role: "user", content: text },
+    ]);
 
-    if (!aiResponse.ok) {
-      if (aiResponse.status === 429) return new Response(JSON.stringify({ error: "Rate limited" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (aiResponse.status === 401) return new Response(JSON.stringify({ error: "Invalid OpenAI key" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      const errText = await aiResponse.text();
-      console.error("OpenAI error:", aiResponse.status, errText);
-      throw new Error("OpenAI API error");
-    }
-
-    const data = await aiResponse.json();
-    const rewritten = data.choices?.[0]?.message?.content || "";
+    const rewritten = rewrittenRaw;
 
     await supabase.from("creative_forge_credits").update({ credits_remaining: credits.credits_remaining - STYLE_COST }).eq("user_id", user.id);
 
@@ -71,7 +56,7 @@ Return ONLY the rewritten text, no commentary, no preamble.`;
   } catch (e) {
     console.error("style-transfer error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), {
-      status: 500,
+      status: e instanceof CreativeAIError ? e.status : 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

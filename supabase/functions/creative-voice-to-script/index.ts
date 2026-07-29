@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { callCreativeAI, CreativeAIError } from "../_shared/creativeAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -10,8 +11,6 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openaiKey) throw new Error("OPENAI_API_KEY not configured");
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -52,26 +51,12 @@ Deno.serve(async (req) => {
 ${formats[category] || ""}
 Extract the core idea, organize it cleanly, expand thin areas, and remove filler. Return ONLY the formatted draft.`;
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Voice transcript:\n\n${transcript}` },
-        ] }) });
+    const scriptRaw = await callCreativeAI([
+      { role: "system", content: systemPrompt },
+      { role: "user", content: `Voice transcript:\n\n${transcript}` },
+    ]);
 
-    if (!aiResponse.ok) {
-      if (aiResponse.status === 429) return new Response(JSON.stringify({ error: "Rate limited" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (aiResponse.status === 401) return new Response(JSON.stringify({ error: "Invalid OpenAI key" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      const errText = await aiResponse.text();
-      console.error("OpenAI error:", aiResponse.status, errText);
-      throw new Error("OpenAI API error");
-    }
-
-    const data = await aiResponse.json();
-    const script = data.choices?.[0]?.message?.content || "";
+    const script = scriptRaw;
 
     await supabase.from("creative_forge_credits").update({ credits_remaining: credits.credits_remaining - VOICE_COST }).eq("user_id", user.id);
 
@@ -80,7 +65,7 @@ Extract the core idea, organize it cleanly, expand thin areas, and remove filler
   } catch (e) {
     console.error("voice-to-script error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), {
-      status: 500,
+      status: e instanceof CreativeAIError ? e.status : 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
