@@ -67,9 +67,11 @@ Deno.serve(async (req) => {
 
     // Call unified AI with tool calling
     const raw = await callOpenAI({
-      system: SYSTEM_PROMPT,
-      user: transcript,
-      extra_messages: [{ role: "system", content: `The user is currently on route: ${currentRoute}` }],
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: `The user is currently on route: ${currentRoute}` },
+        { role: "user", content: transcript },
+      ],
       model: "gpt-4o-mini",
       tools: [{
         type: "function",
