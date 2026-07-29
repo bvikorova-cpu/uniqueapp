@@ -198,7 +198,7 @@ export default function GoogleTranslateWidget({ docked = false }: GoogleTranslat
 
   if (docked) {
     return (
-      <div className="relative flex flex-col items-end gap-2">
+      <div className="relative hidden md:flex flex-col items-end gap-2">
         <div
           className={cn(
             "absolute bottom-full right-0 mb-2 transition-all duration-300",
