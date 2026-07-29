@@ -161,7 +161,7 @@ async function callProviderRaw(
   const res = await fetch(useGateway ? GATEWAY_URL : OPENAI_URL, {
     method: "POST",
     headers,
-    body: JSON.stringify(buildBody(messages, opts, useGateway)),
+    body: JSON.stringify(buildBody(messages, opts, useGateway, cheap)),
   });
 
   if (!res.ok) {
