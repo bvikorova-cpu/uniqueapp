@@ -80,19 +80,31 @@ function buildBody(
   useGateway: boolean,
 ): Record<string, unknown> {
   const openaiModel = opts.model || "gpt-4o-mini";
-  const body: Record<string, unknown> = {
-    model: useGateway ? gatewayModel(openaiModel) : openaiModel,
-    messages,
-  };
+  const targetModel = useGateway ? gatewayModel(openaiModel) : openaiModel;
+  const body: Record<string, unknown> = { model: targetModel, messages };
+
+  // Newer OpenAI generations (gpt-5.x and o-series) reject `max_tokens` and
+  // require `max_completion_tokens`. The Lovable gateway maps legacy ids onto
+  // those models, so translate the body instead of failing with a 400.
+  const needsCompletionTokens = /gpt-5|o1|o3|o4/i.test(targetModel);
+  const requested = opts.max_completion_tokens ?? opts.max_tokens;
+
   if (opts.temperature !== undefined) body.temperature = opts.temperature;
-  if (opts.max_tokens) body.max_tokens = opts.max_tokens;
-  if (opts.max_completion_tokens) body.max_completion_tokens = opts.max_completion_tokens;
+  if (requested) {
+    if (needsCompletionTokens) {
+      // Reasoning-capable models spend tokens before emitting text; keep headroom.
+      body.max_completion_tokens = Math.max(requested, 1024);
+    } else {
+      body.max_tokens = requested;
+    }
+  }
   if (opts.response_format) body.response_format = opts.response_format;
   else if (opts.json) body.response_format = { type: "json_object" };
   if (opts.tools?.length) body.tools = opts.tools;
   if (opts.tool_choice) body.tool_choice = opts.tool_choice;
   return body;
 }
+
 
 async function callProviderRaw(
   useGateway: boolean,
