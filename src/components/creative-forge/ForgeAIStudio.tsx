@@ -88,7 +88,7 @@ export function ForgeAIStudio({ open, onClose, currentText, onReplace, onAppend,
 
           <TabsContent value="quick" className="space-y-3">
             <p className="text-xs text-muted-foreground">Acts on your current generated content.</p>
-            <div className="grid sm:grid-cols-2 gap-2">
+            <div className="grid sm:grid-cols-2 gap-3">
               <Quick action="describe" icon={ScanText} label="Describe" hint="Add vivid sensory detail" />
               <Quick action="expand" icon={Maximize2} label="Expand" hint="Continue ~2 paragraphs" />
               <Quick action="rewrite" icon={Wand2} label="Rewrite" hint="Improve clarity & rhythm" />
