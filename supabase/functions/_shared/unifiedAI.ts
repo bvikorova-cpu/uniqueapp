@@ -99,8 +99,9 @@ function resolveModel(opts: UnifiedAIOptions, useGateway: boolean, cheap: boolea
   const requested = opts.model || CHEAP_OPENAI_MODEL;
   const target = useGateway ? gatewayModel(requested) : requested;
   if (!cheap || opts.tier === "premium") return target;
+  if (useGateway) return CHEAP_GATEWAY_MODEL;
   if (!isExpensiveModel(target)) return target;
-  return useGateway ? CHEAP_GATEWAY_MODEL : CHEAP_OPENAI_MODEL;
+  return CHEAP_OPENAI_MODEL;
 }
 
 
