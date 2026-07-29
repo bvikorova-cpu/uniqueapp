@@ -3,21 +3,61 @@ import { Switch } from "@/components/ui/switch";
 import { Code2, Key, BookOpen, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
-const KEY_STORAGE = "ai_image_watermark";
+const FUNCTIONS_BASE = "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1";
 
 export const SettingsApiView = () => {
   const [watermark, setWatermark] = useState(true);
-  useEffect(() => { setWatermark(localStorage.getItem(KEY_STORAGE) !== "false"); }, []);
-  const toggle = (v: boolean) => { setWatermark(v); localStorage.setItem(KEY_STORAGE, String(v)); toast.success(v ? "Watermark enabled" : "Watermark disabled (Pro)"); };
+  const [userId, setUserId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
-  const exampleCurl = `curl -X POST https://YOUR-PROJECT.supabase.co/functions/v1/ai-image-tools \\
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return;
+      setUserId(data.user.id);
+      const { data: row } = await supabase
+        .from("ai_public_profiles")
+        .select("watermark_enabled")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      if (row) setWatermark(row.watermark_enabled !== false);
+    })();
+  }, []);
+
+  const toggle = async (v: boolean) => {
+    if (!userId) { toast.error("Please sign in first"); return; }
+    const prev = watermark;
+    setWatermark(v);
+    setSaving(true);
+    const { error } = await supabase
+      .from("ai_public_profiles")
+      .upsert({ user_id: userId, watermark_enabled: v, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+    setSaving(false);
+    if (error) {
+      setWatermark(prev);
+      toast.error("Could not save setting");
+      return;
+    }
+    toast.success(v ? "Watermark enabled" : "Watermark disabled");
+  };
+
+  const exampleCurl = `curl -X POST ${FUNCTIONS_BASE}/ai-image-tools \\
   -H "Authorization: Bearer YOUR_USER_JWT" \\
   -H "Content-Type: application/json" \\
   -d '{"action":"generate","prompt":"a sunset over mountains","aspectRatio":"16:9"}'`;
 
-  const copy = (s: string) => { navigator.clipboard.writeText(s); toast.success("Copied"); };
+  const copy = async (s: string) => {
+    try {
+      await navigator.clipboard.writeText(s);
+      toast.success("Copied");
+    } catch {
+      toast.error("Copy failed — select the text manually");
+    }
+  };
+
 
   return (
     <>
