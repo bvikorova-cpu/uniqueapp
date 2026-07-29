@@ -36,47 +36,27 @@ export const useVideoAdCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Kontrola admin statusu
-      const { data: adminRole } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('role', 'admin')
+      // Unified wallet: balance always comes from ai_credits
+      const { data: wallet, error: walletError } = await supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
         .maybeSingle();
+      if (walletError) throw walletError;
 
-      if (adminRole) {
-        return {
-          credits_remaining: 999999,
-          tier: 'agency' as const,
-          subscription_end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
-        };
-      }
-
-      const { data, error } = await supabase
+      const { data: tierRow } = await supabase
         .from("video_ad_credits")
-        .select("*")
+        .select("tier, subscription_end_date")
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (error) throw error;
-      
-      if (!data) {
-        const { data: newData, error: insertError } = await supabase
-          .from("video_ad_credits")
-          .insert({
-            user_id: user.id,
-            credits_remaining: 50,
-            tier: 'pro'
-          })
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        return newData as VideoAdCredits;
-      }
-
-      return data as VideoAdCredits;
+      return {
+        credits_remaining: wallet?.credits_remaining ?? 0,
+        tier: (tierRow?.tier as 'pro' | 'agency') ?? 'pro',
+        subscription_end_date: tierRow?.subscription_end_date ?? undefined,
+      } as VideoAdCredits;
     } });
+
 
   const generateVideoAd = useMutation({
     mutationFn: async (params: GenerateVideoAdParams) => {
@@ -168,12 +148,13 @@ export const useVideoAdCredits = () => {
           productKey: 'video_ad_credits',
           amount: Math.max(100, Math.round(credits * PRICE_PER_CREDIT)),
           name: `${credits} Video Ad Credits`,
-          // verify-credits-payment reads user_id / credits / credit_type from session metadata
+          // verify-credits-payment reads user_id / credits / credit_type from session metadata.
+          // Credits land in the unified ai_credits wallet.
           metadata: {
-            type: 'video_ad_credits',
-            product: 'video_ad_credits',
+            type: 'ai_credits',
+            product: 'ai_credits',
             credits: String(credits),
-            credit_type: 'video_ad_credits',
+            credit_type: 'ai_credits',
             user_id: user.id
           }
         }
