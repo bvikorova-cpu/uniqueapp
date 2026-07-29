@@ -373,22 +373,38 @@ serve(async (req) => {
         credits_used: cost,
         description: `AI Image ${action}: ${(prompt || "").substring(0, 100)}` }).then(() => {}, () => {});
     }
-    if (["generate", "variations", "inpainting", "style_transfer", "outpainting", "bg_replace", "reference_image", "logo_text"].includes(action) && prompt) {
-      (async () => {
-        const { data: existing } = await supabase
-          .from("ai_prompt_history")
-          .select("id, use_count")
-          .eq("user_id", user.id)
-          .eq("prompt", prompt)
-          .maybeSingle();
-        if (existing) {
-          await supabase.from("ai_prompt_history")
-            .update({ use_count: (existing.use_count || 1) + 1, last_used_at: new Date().toISOString() })
-            .eq("id", existing.id);
-        } else { await supabase.from("ai_prompt_history").insert({
-            user_id: user.id, prompt, title: prompt.substring(0, 50), category: action });
+    const historyActions = ["generate", "variations", "inpainting", "style_transfer", "outpainting", "bg_replace", "reference_image", "logo_text"];
+    const historyPrompts: string[] = action === "image_to_prompt" && typeof result?.prompt === "string"
+      ? [result.prompt]
+      : action === "prompt_gallery" && Array.isArray(result?.prompts)
+        ? result.prompts
+          .map((item: any) => typeof item === "string" ? item : item?.prompt)
+          .filter((value: unknown): value is string => typeof value === "string" && value.trim().length > 0)
+          .slice(0, 8)
+        : historyActions.includes(action) && typeof prompt === "string" && prompt.trim().length > 0
+          ? [prompt]
+          : [];
+
+    if (historyPrompts.length > 0) {
+      try {
+        for (const historyPrompt of historyPrompts) {
+          const { data: existing } = await supabase
+            .from("ai_prompt_history")
+            .select("id, use_count")
+            .eq("user_id", user.id)
+            .eq("prompt", historyPrompt)
+            .maybeSingle();
+          if (existing) {
+            await supabase.from("ai_prompt_history")
+              .update({ use_count: (existing.use_count || 1) + 1, last_used_at: new Date().toISOString() })
+              .eq("id", existing.id);
+          } else { await supabase.from("ai_prompt_history").insert({
+              user_id: user.id, prompt: historyPrompt, title: historyPrompt.substring(0, 50), category: action });
+          }
         }
-      })().catch(() => {});
+      } catch (historyError) {
+        console.error("Prompt history save failed:", historyError);
+      }
     }
 
     return json(result);
