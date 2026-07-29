@@ -37,6 +37,7 @@ import { VideoResizerView } from "@/components/video-ads/views/VideoResizerView"
 import { VoiceCloneView } from "@/components/video-ads/views/VoiceCloneView";
 import { SoundEffectsView } from "@/components/video-ads/views/SoundEffectsView";
 import { FinalVideoComposerView } from "@/components/video-ads/views/FinalVideoComposerView";
+import { AiVideoBuilderView } from "@/components/video-ads/views/AiVideoBuilderView";
 import { useVideoAdCredits } from "@/hooks/useVideoAdCredits";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -152,7 +153,8 @@ const ScriptGeneratorView = ({ onBack }: { onBack: () => void }) => {
 };
 
 const tools = [
-  { id: "script", icon: Video, title: "Video Script Generator", desc: "Complete ad scripts with scenes", cost: "1+ CR", gradient: "from-orange-500 to-red-600" }
+  { id: "script", icon: Video, title: "Video Script Generator", desc: "Complete ad scripts with scenes", cost: "1+ CR", gradient: "from-orange-500 to-red-600" },
+  { id: "ai-video", icon: Film, title: "AI Video Generator", desc: "Script + AI scenes + voiceover rendered to video", cost: "1 + 5 CR/scene", gradient: "from-fuchsia-500 to-purple-600" }
 ];
 
 
@@ -189,6 +191,7 @@ const VideoAdGenerator = () => {
 
   const renderView = () => {
     switch (activeView) {
+      case "ai-video": return <AiVideoBuilderView onBack={() => setActiveView("dashboard")} />;
       case "script": return <ScriptGeneratorView onBack={() => setActiveView("dashboard")} />;
       case "storyboard": return <StoryboardView onBack={() => setActiveView("dashboard")} />;
       case "ad-copy": return <AdCopyView onBack={() => setActiveView("dashboard")} />;
