@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
+import { askAI, UnifiedAIError } from "../_shared/unifiedAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -68,33 +69,23 @@ serve(async (req) => {
       cover_letter: "You are a career consultant. Write compelling, personalized cover letters that highlight candidate strengths.",
       business_document: "You are a business writer. Create professional, clear business documents with proper structure." };
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY not configured");
+    let generatedText: string;
+    try {
+      generatedText = await askAI(
+        systemPrompts[contentType as keyof typeof systemPrompts] || "You are a helpful assistant.",
+        prompt,
+        { model: "gpt-4o-mini" },
+      );
+    } catch (e) {
+      const status = e instanceof UnifiedAIError ? e.status : 500;
+      console.error("Unified AI error:", status, e instanceof Error ? e.message : String(e));
+      return new Response(
+        JSON.stringify({ error: status === 429
+          ? "AI is busy right now. Please try again in a moment."
+          : "AI service is temporarily unavailable. Please try again." }),
+        { status, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
-
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: systemPrompts[contentType as keyof typeof systemPrompts] || "You are a helpful assistant." },
-          { role: "user",
-            content: prompt },
-        ] }) });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("OpenAI API error:", response.status, errorText);
-      throw new Error("Failed to generate content");
-    }
-
-    const data = await response.json();
-    const generatedText = data.choices?.[0]?.message?.content;
 
     if (!generatedText) {
       throw new Error("No content generated");
