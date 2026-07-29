@@ -474,7 +474,7 @@ const Index = () => {
         {/* ── Ecosystem ────────────────────────────────── */}
         <section>
           <SectionHeader icon={Crown} title="Ecosystem Modules" badge="Premium" badgeClass="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 border-yellow-500/30" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             {ecosystemModules.map((mod, i) => (
               <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
             ))}
