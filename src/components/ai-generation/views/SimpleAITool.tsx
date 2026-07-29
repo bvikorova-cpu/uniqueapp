@@ -56,7 +56,7 @@ export const SimpleAITool = ({ title, emoji, description, cost, action, buttonLa
   return (
     <>
       <FloatingHowItWorks title={"Simple A I Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Simple A I Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Simple A I Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-2xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
+      <div className="ai-mobile-tool-shell max-w-2xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
       <div>
         <h2 className="text-2xl font-black mb-1">{emoji} {title}</h2>
         <p className="text-muted-foreground text-sm">{description} Cost: {cost} CR</p>
@@ -64,7 +64,7 @@ export const SimpleAITool = ({ title, emoji, description, cost, action, buttonLa
 
       <div className="space-y-3">{children}</div>
 
-      <Button onClick={run} disabled={loading} className="min-h-12 w-full max-w-[calc(100vw-11rem)] gap-2 whitespace-normal text-center leading-snug md:max-w-none">
+      <Button onClick={run} disabled={loading} className="ai-mobile-safe-action min-h-12 w-full gap-2 whitespace-normal text-center leading-snug">
         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
         {loading ? "Processing..." : `${buttonLabel} (${cost} CR)`}
       </Button>
