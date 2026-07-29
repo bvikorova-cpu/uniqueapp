@@ -10,7 +10,7 @@
  * Deliberately vanilla DOM: it must never depend on (or crash) React code.
  */
 
-const CHECK_INTERVAL_MS = 5 * 60 * 1000; // every 5 minutes
+const CHECK_INTERVAL_MS = 60 * 1000; // every minute
 const BANNER_ID = "unique-update-banner";
 
 let currentEntry: string | null = null;
@@ -127,5 +127,5 @@ export function installAppUpdateWatcher() {
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) void checkForUpdate();
   });
-  window.setTimeout(() => void checkForUpdate(), 30_000);
+  window.setTimeout(() => void checkForUpdate(), 2_000);
 }
