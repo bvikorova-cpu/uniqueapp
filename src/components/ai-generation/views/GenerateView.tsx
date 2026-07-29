@@ -35,6 +35,32 @@ export const GenerateView = ({ onCreditsUsed }: GenerateViewProps) => {
   const [loading, setLoading] = useState(false);
   const [enhancing, setEnhancing] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [shared, setShared] = useState(false);
+
+  const handleShareToGallery = async () => {
+    if (!generatedImage) return;
+    setSharing(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { toast.error("Please sign in to share"); return; }
+      const { error } = await supabase.from("ai_community_gallery").insert({
+        user_id: user.id,
+        image_url: generatedImage,
+        prompt,
+        title: prompt.slice(0, 60),
+        tool_used: "generate",
+        is_public: true,
+      });
+      if (error) throw error;
+      setShared(true);
+      toast.success("Shared to Community Gallery!");
+    } catch (e: any) {
+      toast.error(e.message || "Share failed");
+    } finally {
+      setSharing(false);
+    }
+  };
 
   const handleEnhance = async () => {
     if (!prompt.trim()) { toast.error("Enter a prompt first"); return; }
