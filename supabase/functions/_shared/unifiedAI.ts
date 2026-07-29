@@ -72,15 +72,37 @@ const GATEWAY_MODEL_MAP: Record<string, string> = {
   "gpt-3.5-turbo": "openai/gpt-5.4-mini",
 };
 
+/** Low-cost defaults used for the first attempt of every call. */
+export const CHEAP_OPENAI_MODEL = "gpt-4o-mini";
+export const CHEAP_GATEWAY_MODEL = "google/gemini-3.6-flash";
+
+/** Models we consider expensive and downgrade on the first (cheap) attempt. */
+function isExpensiveModel(model: string): boolean {
+  return /gpt-4o(?!-mini)|gpt-4(?!o)|gpt-5(?!\.\d-(mini|nano))|pro/i.test(model);
+}
+
 function isRetryableStatus(status: number) {
   return status === 429 || status === 402 || status >= 500;
 }
 
 function gatewayModel(model?: string): string {
-  if (!model) return "openai/gpt-5.4-mini";
+  if (!model) return CHEAP_GATEWAY_MODEL;
   if (model.includes("/")) return model; // already a gateway id
   return GATEWAY_MODEL_MAP[model] || `openai/${model}`;
 }
+
+/**
+ * Resolve the model to use for a given attempt.
+ * cheap=true -> force the low-cost model, unless the caller asked for "premium".
+ */
+function resolveModel(opts: UnifiedAIOptions, useGateway: boolean, cheap: boolean): string {
+  const requested = opts.model || CHEAP_OPENAI_MODEL;
+  const target = useGateway ? gatewayModel(requested) : requested;
+  if (!cheap || opts.tier === "premium") return target;
+  if (!isExpensiveModel(target)) return target;
+  return useGateway ? CHEAP_GATEWAY_MODEL : CHEAP_OPENAI_MODEL;
+}
+
 
 function buildBody(
   messages: UnifiedMessage[],
