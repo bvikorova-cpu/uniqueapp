@@ -139,7 +139,7 @@ const ContentStudio = () => {
 
   // Sub-view rendering
   if (activeView === "templates") return <div className="min-h-screen overflow-x-hidden bg-background pt-20 pb-48 sm:pb-20"><div className="container mx-auto max-w-7xl px-4"><AIContentTemplates onBack={() => setActiveView("main")} /></div></div>;
-  if (activeView === "brand-voice") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><BrandVoiceTraining onBack={() => setActiveView("main")} /></div></div>;
+  if (activeView === "brand-voice") return <div className="min-h-screen overflow-x-hidden bg-background pt-20 pb-80 sm:pb-20"><div className="container mx-auto max-w-7xl px-4"><BrandVoiceTraining onBack={() => setActiveView("main")} /></div></div>;
   if (activeView === "calendar") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><ContentCalendar onBack={() => setActiveView("main")} /></div></div>;
   if (activeView === "plagiarism") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><PlagiarismChecker onBack={() => setActiveView("main")} /></div></div>;
   if (activeView === "repurpose") return <div className="min-h-screen overflow-x-hidden bg-background pt-20 pb-56 sm:pb-20"><div className="container mx-auto max-w-7xl px-4"><ContentRepurposer onBack={() => setActiveView("main")} /></div></div>;
