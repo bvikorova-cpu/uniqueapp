@@ -873,7 +873,9 @@ const App = () => {
                         <Route path="/profile" element={<ProfileRedirect />} />
                         <Route path="/profile/edit" element={<Navigate to="/edit-profile" replace />} />
                         <Route path="/profile/:userId" element={<Profile />} />
+                        <Route path="/u/:userId/ai-gallery" element={<PublicAIGallery />} />
                         <Route path="/u/:username" element={<UsernameRedirect />} />
+
                         <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
                         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                         <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
