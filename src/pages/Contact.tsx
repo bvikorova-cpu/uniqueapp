@@ -209,9 +209,30 @@ const Contact = () => {
 
         <SystemStatusWidget />
 
-        {user && <MyTickets userId={user.id} />}
+        {user && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <MyTickets userId={user.id} />
+            <Card className="border border-primary/20 hover:border-primary/40 transition">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Bug className="h-5 w-5 text-primary" />
+                  My bug reports
+                </CardTitle>
+                <CardDescription>
+                  Track the status of your beta bug submissions and read replies from the team.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Button variant="outline" size="sm" onClick={() => window.location.href = "/my-bug-reports"}>
+                  View bug reports
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         <ContactFAQ highlightId={triageResult?.suggested_faq_id || null} />
+
 
 
 
