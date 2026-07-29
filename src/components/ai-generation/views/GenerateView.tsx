@@ -159,7 +159,7 @@ export const GenerateView = ({ onCreditsUsed, initialPrompt = "" }: GenerateView
               <div className="relative group">
                 <img src={generatedImage} alt="Generated" className="w-full rounded-lg" />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+              <div className="grid grid-cols-1 gap-2 mt-3">
                 <Button variant="outline" onClick={() => {
                   const link = document.createElement('a'); link.href = generatedImage;
                   link.download = `ai-generated-${Date.now()}.webp`;
@@ -168,11 +168,8 @@ export const GenerateView = ({ onCreditsUsed, initialPrompt = "" }: GenerateView
                   }} className="ai-mobile-safe-action min-h-11 whitespace-normal">
                   <Download className="w-4 h-4 mr-2" />Download
                 </Button>
-                <Button onClick={handleShareToGallery} disabled={sharing || shared} className="ai-mobile-safe-action min-h-11 whitespace-normal">
-                  {sharing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Globe2 className="w-4 h-4 mr-2" />}
-                  {shared ? "Shared to Gallery" : "Share to Community Gallery"}
-                </Button>
               </div>
+
             </div>
           )}
         </CardContent>
