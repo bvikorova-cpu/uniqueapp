@@ -296,7 +296,7 @@ export default function CreativeForge() {
         />
         <div className="fixed inset-0 pointer-events-none z-0"><FloatingParticles /></div>
         {sharedModals}
-        <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12 max-w-7xl">
+        <div className="relative z-10 container mx-auto px-3 sm:px-4 pt-20 pb-12 max-w-7xl">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4 flex items-center gap-3">
             <Button variant="ghost" onClick={() => setActiveView("hub")} className="gap-2">
               <ArrowLeft className="h-4 w-4" /> {"Back to CreativeForge"}
