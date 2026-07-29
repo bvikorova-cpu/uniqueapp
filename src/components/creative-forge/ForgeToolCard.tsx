@@ -38,10 +38,10 @@ export const ForgeToolCard = ({ tool, onSelect, index }: ForgeToolCardProps) => 
         <div className={`h-[2px] bg-gradient-to-r from-amber-700/0 via-amber-500 to-amber-700/0`} />
 
         {/* Subtle decorative glow on hover */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-[0.08] transition-opacity duration-700`} />
+        <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-[0.08] transition-opacity duration-700`} />
 
         {/* Corner ornament */}
-        <div className="absolute top-3 right-3">
+        <div className="pointer-events-none absolute top-3 right-3">
           <Badge className="bg-amber-900/40 text-amber-200 border border-amber-600/30 text-[10px] font-serif tracking-wide">
             {tool.credits} cr
           </Badge>
