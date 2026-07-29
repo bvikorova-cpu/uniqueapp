@@ -61,15 +61,8 @@ export default function AnalyzerResult() {
     } finally { setIsLoading(false); }
   };
 
-  const toggleFavorite = async () => {
-    if (!analysis) return;
-    try {
-      const { error } = await supabase.from('vision_analyses').update({ is_favorite: !analysis.is_favorite }).eq('id', analysis.id);
-      if (error) throw error;
-      setAnalysis({ ...analysis, is_favorite: !analysis.is_favorite });
-      toast.success(analysis.is_favorite ? "Removed from favorites" : "Added to favorites");
-    } catch (error) { toast.error("Failed to update favorite"); }
-  };
+
+
 
   if (isLoading) return (
     <div className="min-h-screen flex items-center justify-center">
