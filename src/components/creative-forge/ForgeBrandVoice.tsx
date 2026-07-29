@@ -27,7 +27,10 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onSelect?: (voice: BrandVoice) => void;
+  activeVoiceId?: string | null;
+  onClearActive?: () => void;
 }
+
 
 const EMPTY: Omit<BrandVoice, "id" | "is_default"> = { name: "", description: "", tone: "", audience: "", do_use: "", dont_use: "", sample_text: "" };
 
