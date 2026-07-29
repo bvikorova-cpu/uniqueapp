@@ -213,7 +213,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
                 </Button>
                 <Button
                   onClick={handleGenerate}
-                  disabled={loading}
+                  disabled={loading || !topic.trim()}
                   className={cn(
                     "h-auto min-h-12 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-3 text-center leading-tight disabled:opacity-60",
                     "whitespace-normal break-words [overflow-wrap:anywhere]",
@@ -221,7 +221,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
                 >
                   {loading ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Sparkles className="h-4 w-4 shrink-0" />}
                   <span className="min-w-0 break-words leading-tight">
-                    {loading ? "Generating..." : topic.trim() ? `Generate (${template?.credits} credits)` : "Enter topic first"}
+                    {loading ? "Generating..." : topic.trim() ? `Generate • ${template?.credits} cr` : "Topic required"}
                   </span>
                 </Button>
               </div>
