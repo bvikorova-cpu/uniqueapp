@@ -32,30 +32,35 @@ function placeholderStoryImage(scene: string, index: number): string {
   return `data:image/svg+xml;base64,${arrayBufferToBase64(new TextEncoder().encode(svg).buffer)}`;
 }
 
-async function callOpenAIText(body: Record<string, unknown>) {
-  const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
-  const gatewayBody = { ...body, model: OPENAI_TEXT_MODEL };
-
-  if (lovableApiKey) {
-    return await fetch(LOVABLE_AI_GATEWAY_CHAT_URL, {
-      method: "POST",
-      headers: {
-        "Lovable-API-Key": lovableApiKey,
-        "X-Lovable-AIG-SDK": "supabase-edge",
-        "Content-Type": "application/json" },
-      body: JSON.stringify(gatewayBody) });
+async function callOpenAIText(body: Record<string, unknown>): Promise<Response> {
+  const messages = (body.messages as any[]) || [];
+  const hasTools = Array.isArray(body.tools) && body.tools.length > 0;
+  try {
+    if (hasTools) {
+      const raw = await callOpenAIRaw({
+        messages,
+        tools: body.tools as any[],
+        tool_choice: body.tool_choice as any,
+        max_completion_tokens: body.max_completion_tokens as number,
+      });
+      return new Response(JSON.stringify(raw), {
+        status: 200,
+        headers: { "Content-Type": "application/json" } });
+    }
+    const content = await callOpenAI({
+      messages,
+      max_completion_tokens: body.max_completion_tokens as number,
+      max_tokens: body.max_tokens as number,
+    });
+    return new Response(JSON.stringify({ choices: [{ message: { content } }] }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" } });
+  } catch (e: any) {
+    const status = e?.status || 500;
+    return new Response(JSON.stringify({ error: e?.message || "AI request failed" }), { status });
   }
-
-  const openAiKey = Deno.env.get("OPENAI_API_KEY");
-  if (!openAiKey) throw new Error("AI service is not configured");
-
-  return await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${openAiKey}`,
-      "Content-Type": "application/json" },
-    body: JSON.stringify({ ...body, model: "gpt-4o-mini" }) });
 }
+
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
