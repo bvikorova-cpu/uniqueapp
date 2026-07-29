@@ -38,7 +38,14 @@ const AIContentTemplates = ({ onBack }: Props) => {
   const template = TEMPLATES.find((t) => t.id === selectedTemplate);
 
   const handleGenerate = async () => {
-    if (!selectedTemplate || !topic.trim()) return;
+    if (!selectedTemplate) {
+      toast.error("Choose a template first");
+      return;
+    }
+    if (!topic.trim()) {
+      toast.error("Enter a topic / subject first");
+      return;
+    }
     setLoading(true);
     setResult(null);
     try {
@@ -145,8 +152,8 @@ const AIContentTemplates = ({ onBack }: Props) => {
           })}
         </div>
       ) : (
-        <div className="max-w-3xl mx-auto space-y-6">
-          <Card>
+        <div className="mx-auto w-full max-w-3xl space-y-6 overflow-hidden">
+          <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 {template && <template.icon className="h-5 w-5 text-primary" />}
@@ -168,11 +175,11 @@ const AIContentTemplates = ({ onBack }: Props) => {
                   rows={4}
                 />
               </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-[auto_1fr]">
-                <Button variant="outline" className="h-auto min-h-10 w-full sm:w-auto" onClick={() => { setSelectedTemplate(null); setResult(null); }}>
+              <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-[auto_minmax(0,1fr)]">
+                <Button variant="outline" className="h-auto min-h-10 w-full md:w-auto" onClick={() => { setSelectedTemplate(null); setResult(null); }}>
                   Change Template
                 </Button>
-                <Button onClick={handleGenerate} disabled={loading || !topic.trim()} className="h-auto min-h-10 min-w-0 justify-center py-2 text-center [white-space:normal]">
+                <Button onClick={handleGenerate} disabled={loading} className="h-auto min-h-11 w-full min-w-0 max-w-full justify-center overflow-hidden px-3 py-2 text-center [white-space:normal]">
                   {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
                   <span className="min-w-0 break-words leading-tight">{loading ? "Generating..." : `Generate (${template?.credits} credits)`}</span>
                 </Button>
