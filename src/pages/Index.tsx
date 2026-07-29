@@ -347,7 +347,7 @@ const Index = () => {
         {/* Rendered BEFORE FoundingMembersBanner so the async banner
             (which appears after a hook resolves) can't push the stats
             grid downward and trigger CLS (~0.085 on PageSpeed mobile). */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-2 sm:-mt-16 relative z-20 [contain:layout]">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5 mt-4 sm:-mt-16 relative z-20 [contain:layout]">
           {stats.map((stat, i) => (
             <div
               key={i}
