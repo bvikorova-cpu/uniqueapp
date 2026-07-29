@@ -3,9 +3,10 @@ import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, C
 import { useNavigate } from "react-router-dom";
 import {
   Users, ChefHat, Mic2, ShieldCheck, Wallet, BarChart3, Building2, Image as ImageIcon,
-  Bell, Coins, FileSearch, CreditCard, Briefcase, Trophy
+  Bell, Coins, FileSearch, CreditCard, Briefcase, Trophy, Bug
 } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
 
 const commands = [
   { label: "KitchenStars Payouts", path: "/admin/masterchef-payouts", icon: ChefHat, group: "Finance" },
@@ -18,7 +19,9 @@ const commands = [
 
   { label: "Verifications", path: "/admin/verifications", icon: ShieldCheck, group: "Trust & Safety" },
   { label: "Tipsters", path: "/admin/tipsters", icon: FileSearch, group: "Trust & Safety" },
+  { label: "Bug Reports", path: "/admin/bug-reports", icon: Bug, group: "Trust & Safety" },
   { label: "Corporate Inquiries", path: "/admin/corporate-inquiries", icon: Briefcase, group: "Trust & Safety" },
+
 
   { label: "Brand Campaigns", path: "/admin/brand-campaigns", icon: Building2, group: "Content" },
   { label: "Brand Moderation", path: "/admin/brand-moderation", icon: ShieldCheck, group: "Trust & Safety" },

@@ -7,8 +7,10 @@ import { Megaphone,
   Users,
   Sparkles,
   ChevronRight,
-  Zap } from "lucide-react";
+  Zap,
+  Bug } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
 
 export const QuickActionsDock = () => {
   const nav = useNavigate();
@@ -18,11 +20,13 @@ export const QuickActionsDock = () => {
 
   const actions = [
     { icon: ShieldCheck, label: "Verifications", path: "/admin/verifications", color: "from-emerald-500 to-teal-500" },
+    { icon: Bug, label: "Bug Reports", path: "/admin/bug-reports", color: "from-red-500 to-rose-500" },
     { icon: Banknote, label: "Withdrawals", path: "/admin/withdrawals", color: "from-amber-500 to-orange-500" },
     { icon: Megaphone, label: "Broadcast", path: "#broadcast-center", color: "from-fuchsia-500 to-pink-500" },
     { icon: Users, label: "Users", path: "/admin/users", color: "from-cyan-500 to-blue-500" },
     { icon: Download, label: "Earnings", path: "/admin/platform-earnings", color: "from-violet-500 to-indigo-500" },
   ];
+
 
   const go = (path: string) => {
     if (path.startsWith("#")) {

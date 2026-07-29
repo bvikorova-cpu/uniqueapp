@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Mail, MessageSquare, User, Send, Sparkles, Paperclip, X, Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Mail, MessageSquare, User, Send, Sparkles, Paperclip, X, Loader2, CheckCircle2, AlertTriangle, Bug } from "lucide-react";
 import { ContactHero } from "@/components/contact/ContactHero";
 import { SystemStatusWidget } from "@/components/contact/SystemStatusWidget";
 import { ContactFAQ } from "@/components/contact/ContactFAQ";
@@ -211,7 +211,28 @@ const Contact = () => {
 
         {user && <MyTickets userId={user.id} />}
 
+        {user && (
+          <Card className="border border-primary/20 hover:border-primary/40 transition mb-6">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Bug className="h-5 w-5 text-primary" />
+                My bug reports
+              </CardTitle>
+              <CardDescription>
+                Track the status of your beta bug submissions and read replies from the team.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Button variant="outline" size="sm" onClick={() => window.location.href = "/my-bug-reports"}>
+                View bug reports
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         <ContactFAQ highlightId={triageResult?.suggested_faq_id || null} />
+
+
 
 
 

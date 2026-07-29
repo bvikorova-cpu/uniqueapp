@@ -567,6 +567,8 @@ const AdminClubShipping = lazy(() => import("@/pages/admin/AdminClubShipping"));
 const AdminCrawler = lazy(() => import("@/pages/admin/AdminCrawler"));
 const BugReportsManager = lazy(() => import("@/pages/admin/BugReportsManager"));
 const ReportBug = lazy(() => import("@/pages/ReportBug"));
+const MyBugReports = lazy(() => import("@/pages/MyBugReports"));
+
 const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
 const AdminWinBack = lazy(() => import("@/pages/admin/AdminWinBack"));
 const AdminSCA = lazy(() => import("@/pages/admin/AdminSCA"));
@@ -1162,6 +1164,8 @@ const App = () => {
 
                         <Route path="/admin/bug-reports" element={<ProtectedRoute requireAdmin={true}><BugReportsManager /></ProtectedRoute>} />
                         <Route path="/report-bug" element={<ReportBug />} />
+                        <Route path="/my-bug-reports" element={<ProtectedRoute><MyBugReports /></ProtectedRoute>} />
+
 
                         <Route path="/admin/pwa-stats" element={<ProtectedRoute requireAdmin={true}><AdminPwaStats /></ProtectedRoute>} />
                         <Route path="/admin/dunning" element={<ProtectedRoute requireAdmin={true}><AdminDunning /></ProtectedRoute>} />
