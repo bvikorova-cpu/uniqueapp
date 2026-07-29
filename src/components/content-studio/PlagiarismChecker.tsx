@@ -76,7 +76,7 @@ const PlagiarismChecker = ({ onBack }: Props) => {
           { title: 'Rewrite', desc: 'Use suggestions to make it original.' },
         ]}
       />
-    <div className="space-y-6">
+    <div className="space-y-6 pb-56">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
@@ -90,7 +90,7 @@ const PlagiarismChecker = ({ onBack }: Props) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex flex-wrap items-center gap-2">
               <Shield className="h-5 w-5 text-primary" />
               Content to Check
               <Badge variant="outline">3 credits</Badge>
@@ -101,21 +101,28 @@ const PlagiarismChecker = ({ onBack }: Props) => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Paste your content here to check for originality (minimum 50 characters)..."
-              rows={12}
+              rows={10}
               className="resize-none"
             />
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">{content.length} characters</span>
-              <Button onClick={handleCheck} disabled={loading || content.trim().length < 50}>
+            <div className="grid grid-cols-1 gap-2">
+              <Button
+                className="w-full whitespace-normal"
+                onClick={handleCheck}
+                disabled={loading || content.trim().length < 50}
+              >
                 {loading ? (
                   <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Analyzing...</>
+                ) : content.trim().length < 50 ? (
+                  <><Shield className="h-4 w-4 mr-2 shrink-0" /> Min. 50 characters</>
                 ) : (
-                  <><Shield className="h-4 w-4 mr-2" /> Check Originality</>
+                  <><Shield className="h-4 w-4 mr-2 shrink-0" /> Check Originality • 3 cr</>
                 )}
               </Button>
+              <span className="text-xs text-muted-foreground text-center">{content.length} characters</span>
             </div>
           </CardContent>
         </Card>
+
 
         {result ? (
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
