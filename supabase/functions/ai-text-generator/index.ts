@@ -13,19 +13,12 @@ serve(async (req) => {
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
     const { prompt } = await req.json();
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openaiKey) throw new Error("AI service not configured");
 
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
-        max_completion_tokens: 2000 }) });
-
-    const data = await res.json();
-    const text = data.choices?.[0]?.message?.content || "";
+    const text = await callOpenAI({
+      messages: [{ role: "user", content: prompt }],
+      model: "gpt-4o-mini",
+      max_completion_tokens: 2000,
+    });
 
     await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ text, content: text }), {
