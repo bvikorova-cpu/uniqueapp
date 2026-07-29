@@ -49,7 +49,7 @@ export const InpaintingView = ({ onCreditsUsed }: Props) => {
   return (
     <>
       <FloatingHowItWorks title={"Inpainting View - How it works"} steps={[{ title: 'Open', desc: 'Access the Inpainting View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Inpainting View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="ai-mobile-tool-shell max-w-2xl mr-auto space-y-6 pb-96 pr-32 md:mx-auto md:pb-6 md:pr-0">
       <div>
         <h2 className="text-2xl font-black mb-2">🎯 AI Inpainting</h2>
         <p className="text-muted-foreground text-sm">Selectively edit specific areas of an image concept. Cost: 4 CR</p>
@@ -76,7 +76,7 @@ export const InpaintingView = ({ onCreditsUsed }: Props) => {
           <Textarea value={editPrompt} onChange={(e) => setEditPrompt(e.target.value)} placeholder="Describe the change (e.g., 'Replace with a sunset sky with aurora borealis')" rows={2} className="resize-none" />
         </div>
 
-        <Button onClick={handleInpaint} disabled={loading} className="w-full gap-2">
+        <Button onClick={handleInpaint} disabled={loading} className="ai-mobile-safe-action min-h-12 w-full gap-2 whitespace-normal text-center leading-snug">
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Eraser className="w-4 h-4" />}
           {loading ? "Processing Inpainting..." : "Apply Inpainting (4 CR)"}
         </Button>
