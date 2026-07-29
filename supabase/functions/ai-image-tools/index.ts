@@ -191,9 +191,10 @@ serve(async (req) => {
         body: JSON.stringify({
           model: lovable ? "google/gemini-3.6-flash" : "gpt-4o-mini",
           messages,
-          max_tokens: 2048,
-          ...(lovable ? {} : { response_format: { type: "json_object" } }),
+          max_tokens: 4096,
+          response_format: { type: "json_object" },
         }) });
+
 
       let res = await call(useLovable);
       if (!res.ok && useLovable && OPENAI_API_KEY) {
