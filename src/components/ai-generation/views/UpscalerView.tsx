@@ -42,7 +42,7 @@ export const UpscalerView = ({ onCreditsUsed }: UpscalerViewProps) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 pb-80 pr-24 sm:pb-0 sm:pr-0">
       <Card className="border-2 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><ArrowUpRight className="w-5 h-5 text-primary" /> AI Image Upscaler</CardTitle>
@@ -62,12 +62,12 @@ export const UpscalerView = ({ onCreditsUsed }: UpscalerViewProps) => {
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Target resolution</label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 min-[430px]:grid-cols-3 gap-2">
               {sizes.map((s) => (
                 <button
                   key={s.value}
                   onClick={() => setTargetSize(s.value)}
-                  className={`p-3 rounded-xl border-2 text-center transition-all ${
+                  className={`min-h-16 p-3 rounded-xl border-2 text-center transition-all ${
                     targetSize === s.value
                       ? 'border-primary bg-primary/10'
                       : 'border-border hover:border-primary/30'
@@ -80,7 +80,7 @@ export const UpscalerView = ({ onCreditsUsed }: UpscalerViewProps) => {
             </div>
           </div>
 
-          <Button onClick={handleUpscale} disabled={loading || !description.trim()} size="lg" className="w-full">
+          <Button onClick={handleUpscale} disabled={loading || !description.trim()} size="lg" className="w-full min-h-12 whitespace-normal text-center leading-snug">
             {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Enhancing...</> : <><ArrowUpRight className="w-4 h-4 mr-2" />Upscale to HD (2 credits)</>}
           </Button>
 
