@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { useAnalyzerCredits } from "@/hooks/useAnalyzerCredits";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { motion } from "framer-motion";
