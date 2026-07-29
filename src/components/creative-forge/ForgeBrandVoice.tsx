@@ -73,7 +73,7 @@ const STARTER_VOICES: Omit<BrandVoice, "id" | "is_default">[] = [
   },
 ];
 
-export function ForgeBrandVoice({ open, onClose, onSelect }: Props) {
+export function ForgeBrandVoice({ open, onClose, onSelect, activeVoiceId, onClearActive }: Props) {
   const [voices, setVoices] = useState<BrandVoice[]>([]);
   const [editing, setEditing] = useState<Partial<BrandVoice> | null>(null);
   const [loading, setLoading] = useState(false);
