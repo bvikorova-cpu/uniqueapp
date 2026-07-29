@@ -51,7 +51,31 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
           text: userMsg.content,
           extra: { category, currentText, history: next } } });
 
-      if (error) throw error;
+      if (error) {
+        // Supabase FunctionsHttpError hides the body — read it for a real message.
+        let status: number | undefined;
+        let body: any = null;
+        const res = (error as any)?.context;
+        if (res && typeof res.json === "function") {
+          status = res.status;
+          try { body = await res.clone().json(); } catch { body = null; }
+        }
+        const serverMsg = body?.error || body?.message;
+
+        if (status === 404) {
+          toast.error("AI Co-Writer service is not available right now. Please try again later.");
+        } else if (status === 429 || /rate limit/i.test(serverMsg || "")) {
+          toast.error("AI is rate limited. Please wait a moment and try again.");
+        } else if (status === 402 || serverMsg === "INSUFFICIENT_CREDITS") {
+          toast.error(`You need ${COWRITER_COST} credits to keep chatting.`);
+        } else if (status === 401 || status === 403) {
+          toast.error("Please sign in again to use the AI Co-Writer.");
+        } else {
+          toast.error(serverMsg || (error as any)?.message || "Co-writer is temporarily unavailable.");
+        }
+        return;
+      }
+
       if (data?.error === "INSUFFICIENT_CREDITS") {
         toast.error(`You need ${COWRITER_COST} credits to keep chatting.`);
         return;
