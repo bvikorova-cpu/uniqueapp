@@ -168,13 +168,13 @@ const AIContentTemplates = ({ onBack }: Props) => {
                   rows={4}
                 />
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button variant="outline" className="w-full sm:w-auto" onClick={() => { setSelectedTemplate(null); setResult(null); }}>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-[auto_1fr]">
+                <Button variant="outline" className="h-auto min-h-10 w-full sm:w-auto" onClick={() => { setSelectedTemplate(null); setResult(null); }}>
                   Change Template
                 </Button>
-                <Button onClick={handleGenerate} disabled={loading || !topic.trim()} className="min-w-0 flex-1 whitespace-normal text-center">
+                <Button onClick={handleGenerate} disabled={loading || !topic.trim()} className="h-auto min-h-10 min-w-0 justify-center py-2 text-center [white-space:normal]">
                   {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
-                  {loading ? "Generating..." : `Generate (${template?.credits} credits)`}
+                  <span className="min-w-0 break-words leading-tight">{loading ? "Generating..." : `Generate (${template?.credits} credits)`}</span>
                 </Button>
               </div>
             </CardContent>
