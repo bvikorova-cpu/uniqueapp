@@ -9,6 +9,8 @@ interface CreditBalance {
   anonymousDate: number;
   lieDetector: number;
   creativeForge: number;
+  creativeForgeFree: number;
+  creativeForgePaid: number;
 }
 
 export const useUnifiedCredits = () => {
@@ -27,30 +29,37 @@ export const useUnifiedCredits = () => {
         pastLifeRes,
         anonymousDateRes,
         lieDetectorRes,
-        creativeForgeRes,
+        paidAiRes,
+        freeTierRes,
       ] = await Promise.all([
         supabase.from("handwriting_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
         supabase.from("past_life_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
         supabase.from("anonymous_dating_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
         supabase.from("lie_detector_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
-        supabase.from("creative_forge_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
+        supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
+        (supabase as any).from("free_tier_credits").select("balance").eq("user_id", user.id).maybeSingle(),
       ]);
+
+      const creativeForgeFree = (freeTierRes.data as any)?.balance || 0;
+      const creativeForgePaid = paidAiRes.data?.credits_remaining || 0;
 
       return { handwriting: handwritingRes.data?.credits_remaining || 0,
         pastLife: pastLifeRes.data?.credits_remaining || 0,
         anonymousDate: anonymousDateRes.data?.credits_remaining || 0,
         lieDetector: lieDetectorRes.data?.credits_remaining || 0,
-        creativeForge: creativeForgeRes.data?.credits_remaining || 0 } as CreditBalance;
+        creativeForge: creativeForgeFree + creativeForgePaid,
+        creativeForgeFree,
+        creativeForgePaid } as CreditBalance;
     } });
 
   // Calculate total credits
   const totalCredits = creditBalances
-    ? Object.values(creditBalances).reduce((sum, val) => sum + val, 0)
+    ? creditBalances.handwriting + creditBalances.pastLife + creditBalances.anonymousDate + creditBalances.lieDetector + creditBalances.creativeForge
     : 0;
 
   // Purchase credits for a specific service
   const purchaseCredits = async (
-    service: keyof CreditBalance,
+    service: "handwriting" | "pastLife" | "anonymousDate" | "lieDetector" | "creativeForge",
     amount: number
   ): Promise<string | null> => { const functionMap = {
       handwriting: "create-handwriting-credits-payment",

@@ -70378,6 +70378,21 @@ export type Database = {
       }
       spend_comedy_coins: { Args: { _amount: number }; Returns: number }
       spend_glamour_coins: { Args: { _amount: number }; Returns: number }
+      spend_unified_ai_credits_for_user: {
+        Args: {
+          p_amount: number
+          p_reason?: string
+          p_source?: string
+          p_user_id: string
+        }
+        Returns: {
+          free_balance: number
+          free_spent: number
+          paid_balance: number
+          paid_spent: number
+          total_balance: number
+        }[]
+      }
       spin_lucky_wheel: { Args: never; Returns: Json }
       start_battle_royale: {
         Args: { _category: string; _max?: number; _round_hours?: number }

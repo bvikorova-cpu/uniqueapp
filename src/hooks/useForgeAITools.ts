@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type ForgeAction =
   | "brainstorm"
@@ -17,6 +18,7 @@ export const FORGE_AI_COST = 6;
 
 export function useForgeAITools(onCreditsRefresh?: () => void) {
   const [loading, setLoading] = useState<ForgeAction | null>(null);
+  const queryClient = useQueryClient();
 
   const run = async <T = any>(
     action: ForgeAction,
@@ -39,6 +41,10 @@ export function useForgeAITools(onCreditsRefresh?: () => void) {
         toast({ title: "AI error", description: data.error, variant: "destructive" });
         return null;
       }
+      queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
       onCreditsRefresh?.();
       return data;
     } catch (e: any) {

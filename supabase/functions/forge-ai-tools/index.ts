@@ -2,6 +2,7 @@
 // translate, score. 6 credits per action (revision is 3).
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { getUnifiedAiCreditBalance, isInsufficientCreditsError, spendUnifiedAiCredits } from "../_shared/creativeAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -69,16 +70,10 @@ serve(async (req) => {
     if (!SYSTEM_PROMPTS[action]) throw new Error(`Unknown action: ${action}`);
     if (!text.trim() && action !== "brainstorm" && action !== "cowriter") throw new Error("Text is required");
 
-    // Credit check (read-only pre-flight for nice 402 UX)
-    const { data: credits } = await supabase
-      .from("creative_forge_credits")
-      .select("credits_remaining")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    const current = credits?.credits_remaining ?? 0;
-    if (current < cost) {
+    const current = await getUnifiedAiCreditBalance(supabase, user.id);
+    if (current.total < cost) {
       return new Response(
-        JSON.stringify({ error: "INSUFFICIENT_CREDITS", required: cost, available: current }),
+        JSON.stringify({ error: "INSUFFICIENT_CREDITS", required: cost, available: current.total }),
         { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -144,13 +139,7 @@ serve(async (req) => {
     }
 
     // Atomic credit deduction AFTER successful AI call (race-safe)
-    const { data: newRemaining, error: dedErr } = await supabase.rpc("deduct_creative_forge_credits", { _user_id: user.id, _amount: cost });
-    if (dedErr) {
-      if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
-        return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      throw dedErr;
-    }
+    const spendResult = await spendUnifiedAiCredits(supabase, user.id, cost, `creative_forge_${action}`, "forge-ai-tools");
 
     // Persist score-type results (refund on failure)
     if (parsed && ["seo_optimize", "plagiarism_check", "score_content"].includes(action)) {
@@ -171,12 +160,17 @@ serve(async (req) => {
         content,
         parsed,
         creditsUsed: cost,
-        creditsRemaining: newRemaining }),
+        creditsRemaining: spendResult.total,
+        freeCreditsRemaining: spendResult.free,
+        paidCreditsRemaining: spendResult.paid }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
 
   } catch (e: any) {
     console.error("forge-ai-tools error", e);
+    if (isInsufficientCreditsError(e)) {
+      return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     return new Response(
       JSON.stringify({ error: e?.message ?? "Internal error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },

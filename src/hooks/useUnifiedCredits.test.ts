@@ -32,6 +32,16 @@ function mockTable(value: number | null) {
             error: null }) }) }) };
 }
 
+function mockFreeTier(value: number | null) {
+  return {
+    select: () => ({
+      eq: () => ({
+        maybeSingle: () =>
+          Promise.resolve({
+            data: value === null ? null : { balance: value },
+            error: null }) }) }) };
+}
+
 describe("useUnifiedCredits", () => {
   beforeEach(() => {
     getUserMock.mockReset();
@@ -45,13 +55,17 @@ describe("useUnifiedCredits", () => {
       past_life_credits: 5,
       anonymous_dating_credits: 0,
       lie_detector_credits: 7,
-      creative_forge_credits: 3 };
-    fromMock.mockImplementation((t: string) => mockTable(values[t] ?? 0));
+      ai_credits: 3,
+      free_tier_credits: 2 };
+    fromMock.mockImplementation((t: string) =>
+      t === "free_tier_credits" ? mockFreeTier(values[t] ?? 0) : mockTable(values[t] ?? 0)
+    );
 
     const { result } = renderHook(() => useUnifiedCredits(), { wrapper });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
-    expect(result.current.totalCredits).toBe(25);
+    expect(result.current.totalCredits).toBe(27);
     expect(result.current.creditBalances?.handwriting).toBe(10);
+    expect(result.current.creditBalances?.creativeForge).toBe(5);
   });
 
   it("returns 0 for missing rows", async () => {

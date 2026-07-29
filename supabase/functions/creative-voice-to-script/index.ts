@@ -1,6 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { callCreativeAI, CreativeAIError } from "../_shared/creativeAI.ts";
+import { callCreativeAI, CreativeAIError, getUnifiedAiCreditBalance, isInsufficientCreditsError, spendUnifiedAiCredits } from "../_shared/creativeAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -26,14 +26,9 @@ Deno.serve(async (req) => {
     const { transcript, category } = await req.json();
     if (!transcript) return new Response(JSON.stringify({ error: "Missing transcript" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const { data: credits } = await supabase
-      .from("creative_forge_credits")
-      .select("credits_remaining")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (!credits || credits.credits_remaining < VOICE_COST) {
-      return new Response(JSON.stringify({ error: "Insufficient credits", required: VOICE_COST }), {
+    const credits = await getUnifiedAiCreditBalance(supabase, user.id);
+    if (credits.total < VOICE_COST) {
+      return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS", required: VOICE_COST, available: credits.total }), {
         status: 402,
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -58,12 +53,17 @@ Extract the core idea, organize it cleanly, expand thin areas, and remove filler
 
     const script = scriptRaw;
 
-    await supabase.from("creative_forge_credits").update({ credits_remaining: credits.credits_remaining - VOICE_COST }).eq("user_id", user.id);
+    const spendResult = await spendUnifiedAiCredits(supabase, user.id, VOICE_COST, "creative_forge_voice_to_script", "creative-voice-to-script");
 
-    return new Response(JSON.stringify({ script, creditsUsed: VOICE_COST, creditsRemaining: credits.credits_remaining - VOICE_COST }), {
+    return new Response(JSON.stringify({ script, creditsUsed: VOICE_COST, creditsRemaining: spendResult.total, freeCreditsRemaining: spendResult.free, paidCreditsRemaining: spendResult.paid }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("voice-to-script error:", e);
+    if (isInsufficientCreditsError(e)) {
+      return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS" }), {
+        status: 402,
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), {
       status: e instanceof CreativeAIError ? e.status : 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" } });

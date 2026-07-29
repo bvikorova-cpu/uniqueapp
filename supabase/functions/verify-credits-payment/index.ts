@@ -40,7 +40,7 @@ serve(async (req) => {
       throw new Error("Invalid credit amount");
     }
 
-    const legacyUnifiedTypes = new Set(["teen_career_credits", "teen_hub_credits"]);
+    const legacyUnifiedTypes = new Set(["teen_career_credits", "teen_hub_credits", "creative_forge_credits"]);
     const tableName = legacyUnifiedTypes.has(credit_type) ? "ai_credits" : credit_type;
 
     // Check if payment already processed
