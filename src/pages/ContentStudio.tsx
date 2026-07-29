@@ -93,7 +93,15 @@ const ContentStudio = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-content", { body: { contentType: selectedType, title, prompt, metadata: {} } });
-      if (error) throw error;
+      if (error) {
+        let detail = "";
+        try {
+          const body = await (error as any)?.context?.json?.();
+          detail = body?.error || body?.message || "";
+        } catch { /* ignore */ }
+        throw new Error(detail || error.message || "Failed to generate content");
+      }
+      if (data?.error) throw new Error(data.error);
       setGeneratedContent(data.content);
       setCredits(data.creditsRemaining);
       await loadSavedContent(user.id);
@@ -104,6 +112,7 @@ const ContentStudio = () => {
       setLoading(false);
     }
   };
+
 
   const handleGenerateImage = async () => {
     if (!generatedContent) return;
