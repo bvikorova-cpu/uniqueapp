@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,10 +31,12 @@ const ABABTesting = ({ onBack }: Props) => {
   const [variants, setVariants] = useState<{ id: string; content: string; reasoning: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [winner, setWinner] = useState<string | null>(null);
+  const topicInputRef = useRef<HTMLInputElement>(null);
 
   const handleGenerate = async () => {
     if (!topic.trim()) {
       toast.error("Please provide a topic or product name");
+      topicInputRef.current?.focus();
       return;
     }
     setLoading(true);
@@ -43,7 +45,14 @@ const ABABTesting = ({ onBack }: Props) => {
     try {
       const { data, error } = await supabase.functions.invoke("content-studio-ai", {
         body: { action: "ab-test", topic, context, contentType, variantCount } });
-      if (error) throw error;
+      if (error) {
+        let detail = "";
+        try {
+          const body = await (error as any)?.context?.clone?.().json?.();
+          detail = body?.error || body?.message || "";
+        } catch { /* ignore */ }
+        throw new Error(detail || error.message || "Failed to generate variants");
+      }
       if (data?.error) throw new Error(data.error);
       setVariants(data.variants || []);
       setWinner(data.recommended || null);
@@ -73,19 +82,19 @@ const ABABTesting = ({ onBack }: Props) => {
           { title: 'Roll out winner', desc: 'Promote the best-performing variant.' },
         ]}
       />
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={onBack}>
+    <div className="max-w-full space-y-6 overflow-x-hidden pb-56 sm:pb-20">
+      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <Button variant="ghost" size="sm" onClick={onBack} className="w-fit">
           <ArrowLeft className="h-4 w-4 mr-2" /> Back
         </Button>
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <h2 className="text-2xl font-black">AI A/B Testing</h2>
           <p className="text-muted-foreground">Generate and compare multiple content variations with AI recommendations</p>
         </div>
-        <Badge variant="outline">5 credits</Badge>
+        <Badge variant="outline" className="w-fit">5 credits</Badge>
       </div>
 
-      <Card>
+      <Card className="max-w-full overflow-hidden">
         <CardHeader>
           <CardTitle>Test Configuration</CardTitle>
           <CardDescription>Define what you want to test and AI will generate optimized variants</CardDescription>
@@ -94,7 +103,7 @@ const ABABTesting = ({ onBack }: Props) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium">Topic / Product *</label>
-              <Input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="e.g. Summer Sale, New App Launch..." />
+              <Input ref={topicInputRef} value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="e.g. Summer Sale, New App Launch..." aria-invalid={!topic.trim()} />
             </div>
             <div>
               <label className="text-sm font-medium">Content Type</label>
@@ -112,15 +121,15 @@ const ABABTesting = ({ onBack }: Props) => {
             <label className="text-sm font-medium">Additional Context (Optional)</label>
             <Textarea value={context} onChange={(e) => setContext(e.target.value)} placeholder="Target audience, brand tone, specific requirements..." rows={3} />
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="grid gap-4 sm:flex sm:items-center sm:justify-between">
+            <div className="flex min-w-0 flex-wrap items-center gap-3">
               <label className="text-sm font-medium">Variants:</label>
               {[2, 3, 4, 5].map(n => (
-                <Button key={n} size="sm" variant={variantCount === n ? "default" : "outline"} onClick={() => setVariantCount(n)}>{n}</Button>
+                <Button key={n} size="sm" variant={variantCount === n ? "default" : "outline"} onClick={() => setVariantCount(n)} className="h-10 min-w-10 shrink-0 px-4">{n}</Button>
               ))}
             </div>
-            <Button onClick={handleGenerate} disabled={loading || !topic.trim()}>
-              {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating...</> : <><FlaskConical className="h-4 w-4 mr-2" /> Generate Variants</>}
+            <Button onClick={handleGenerate} disabled={loading} className="min-h-11 w-[calc(100%-5.5rem)] max-w-full justify-center whitespace-normal break-words leading-tight sm:w-auto sm:whitespace-nowrap">
+              {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating...</> : <><FlaskConical className="h-4 w-4 mr-2" /> {topic.trim() ? "Generate Variants" : "Topic required"}</>}
             </Button>
           </div>
         </CardContent>

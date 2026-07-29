@@ -5,7 +5,7 @@ import { askAI, UnifiedAIError } from "../_shared/unifiedAI.ts";
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const ACTION_COST: Record<string, number> = { "ab-test": 4, "brand-voice": 3, "bulk-generate": 5, "plagiarism": 3,
+const ACTION_COST: Record<string, number> = { "ab-test": 5, "brand-voice": 3, "bulk-generate": 5, "plagiarism": 3,
   "repurpose": 4, "seo-analyze": 4, "templates": 3 };
 
 const TEMPLATE_COST: Record<string, number> = { email_marketing: 3,
@@ -181,6 +181,46 @@ function buildBulkPosts(topic: unknown, platformValue: unknown, requestedCount: 
   });
 }
 
+function normalizeVariantCount(value: unknown) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 3;
+  return Math.max(2, Math.min(5, Math.round(parsed)));
+}
+
+function buildAbTestVariants(topic: unknown, contentTypeValue: unknown, requestedCount: unknown, context: unknown, aiResult: any = {}) {
+  const cleanTopic = sentence(topic, "your offer");
+  const contentType = String(contentTypeValue || "email_subject").replace(/_/g, " ");
+  const cleanContext = String(context || "").trim();
+  const count = normalizeVariantCount(requestedCount);
+  const rawVariants = Array.isArray(aiResult.variants) ? aiResult.variants : [];
+  const angles = [
+    "benefit-first clarity",
+    "urgency without pressure",
+    "social proof and trust",
+    "curiosity-led hook",
+    "direct problem-solution framing",
+  ];
+
+  const variants = Array.from({ length: count }, (_, index) => {
+    const raw = rawVariants[index];
+    const content = sentence(
+      typeof raw === "string" ? raw : raw?.content ?? raw?.title,
+      `${cleanTopic}: ${angles[index % angles.length]} for ${contentType}${cleanContext ? ` — ${cleanContext}` : ""}.`,
+    );
+    const reasoning = sentence(
+      raw?.reasoning ?? raw?.angle,
+      `Uses ${angles[index % angles.length]} to test a distinct audience motivation.`,
+    );
+    return { id: `variant-${index + 1}`, content, reasoning };
+  });
+
+  return {
+    variants,
+    recommended: variants[0]?.id ?? null,
+    recommendation: sentence(aiResult.recommendation, "Start with Variant A because it communicates the clearest value quickly."),
+  };
+}
+
 async function callAI(_apiKey: string | undefined, messages: any[], json = false) {
   const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
   const user = messages.filter((m) => m.role !== "system").map((m) => m.content).join("\n\n");
@@ -217,10 +257,18 @@ Deno.serve(async (req) => {
     let chargedCost = cost;
     switch (action) {
       case "ab-test":
-        result = await callAI(apiKey, [
-          { role: "system", content: "You are an expert A/B testing copywriter. Generate multiple high-converting variants and recommend the best one with reasoning." },
-          { role: "user", content: `Generate ${count || 3} A/B test variants for:\nTopic: ${topic}\nContent Type: ${contentType || "email_subject"}\n${context ? `Context: ${context}` : ""}\n\nEach variant should be unique in approach. Recommend the best variant. Return JSON: {"variants":[{"title":"","content":"","angle":""}],"recommendation":""}` },
-        ], true);
+        try {
+          const requestedCount = normalizeVariantCount(params.variantCount ?? count);
+          const aiResult = await callAI(apiKey, [
+            { role: "system", content: "You are an expert A/B testing copywriter. Generate multiple high-converting variants and recommend the best one with reasoning." },
+            { role: "user", content: `Generate ${requestedCount} A/B test variants for:\nTopic: ${topic}\nContent Type: ${contentType || "email_subject"}\n${context ? `Context: ${context}` : ""}\n\nEach variant should be unique in approach. Recommend the best variant. Return JSON: {"variants":[{"content":"","reasoning":""}],"recommendation":""}` },
+          ], true);
+          result = { ...aiResult, ...buildAbTestVariants(topic, contentType, requestedCount, context, aiResult) };
+        } catch (e) {
+          if (!(e instanceof UnifiedAIError)) throw e;
+          result = { ...buildAbTestVariants(topic, contentType, params.variantCount ?? count, context), fallback: true };
+          chargedCost = 0;
+        }
         break;
       case "brand-voice":
         result = await callAI(apiKey, [
