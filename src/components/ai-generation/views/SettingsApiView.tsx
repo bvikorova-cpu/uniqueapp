@@ -74,7 +74,7 @@ export const SettingsApiView = () => {
             <p className="font-bold flex items-center gap-2"><Key className="w-4 h-4 text-primary" /> Watermark on downloads</p>
             <p className="text-xs text-muted-foreground">Free users get watermarked exports. Pro users can disable.</p>
           </div>
-          <Switch checked={watermark} onCheckedChange={toggle} />
+          <Switch checked={watermark} disabled={saving || !userId} onCheckedChange={toggle} />
         </div>
       </div>
 
