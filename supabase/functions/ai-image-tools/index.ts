@@ -206,7 +206,16 @@ serve(async (req) => {
       return json({ error: "AI service is not configured" }, 500);
     }
 
-    const generateImage = async (p: string, size = "1024x1024") => {
+    const SUPPORTED_SIZES = ["1024x1024", "1024x1536", "1536x1024", "auto"];
+    const normalizeSize = (s?: string) => {
+      if (!s || SUPPORTED_SIZES.includes(s)) return s || "1024x1024";
+      const [w, h] = s.split("x").map(Number);
+      if (!w || !h) return "1024x1024";
+      if (w === h) return "1024x1024";
+      return w > h ? "1536x1024" : "1024x1536";
+    };
+    const generateImage = async (p: string, rawSize = "1024x1024") => {
+      const size = normalizeSize(rawSize);
       // Append negative prompt as natural-language exclusion if provided
       const finalPrompt = negativePrompt && typeof negativePrompt === "string" && negativePrompt.trim()
         ? `${p}\n\nDo NOT include: ${negativePrompt.trim()}.`
