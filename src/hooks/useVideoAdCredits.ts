@@ -148,12 +148,13 @@ export const useVideoAdCredits = () => {
           productKey: 'video_ad_credits',
           amount: Math.max(100, Math.round(credits * PRICE_PER_CREDIT)),
           name: `${credits} Video Ad Credits`,
-          // verify-credits-payment reads user_id / credits / credit_type from session metadata
+          // verify-credits-payment reads user_id / credits / credit_type from session metadata.
+          // Credits land in the unified ai_credits wallet.
           metadata: {
-            type: 'video_ad_credits',
-            product: 'video_ad_credits',
+            type: 'ai_credits',
+            product: 'ai_credits',
             credits: String(credits),
-            credit_type: 'video_ad_credits',
+            credit_type: 'ai_credits',
             user_id: user.id
           }
         }
