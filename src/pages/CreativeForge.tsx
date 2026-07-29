@@ -87,6 +87,16 @@ export default function CreativeForge() {
   const [aiStudioOpen, setAiStudioOpen] = useState(false);
   const [activeBrandVoice, setActiveBrandVoice] = useState<BrandVoice | null>(null);
 
+  // Any view switch must bring the user to the top, otherwise the new view renders
+  // off-screen (page stays scrolled deep) and the click looks like it did nothing.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [activeView]);
+
+
+
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [mood, setMood] = useState("");
