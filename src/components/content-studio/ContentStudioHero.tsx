@@ -85,8 +85,9 @@ const ContentStudioHero = () => {
               >
                 <Icon className="h-5 w-5 text-primary mx-auto mb-1" />
                 <div className="text-xl md:text-2xl font-black text-white">
-                  {stat.value || "—"}
+                  {stat.value}
                 </div>
+
                 <div className="text-[10px] md:text-xs text-white/60 uppercase tracking-wider">
                   {stat.label}
                 </div>
