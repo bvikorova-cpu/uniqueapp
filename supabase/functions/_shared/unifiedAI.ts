@@ -142,7 +142,9 @@ async function callProviderRaw(
   useGateway: boolean,
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
+  cheap: boolean,
 ): Promise<any> {
+
   const key = useGateway
     ? Deno.env.get("LOVABLE_API_KEY")
     : Deno.env.get("OPENAI_API_KEY");
