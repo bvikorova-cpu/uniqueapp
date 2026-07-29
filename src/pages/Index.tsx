@@ -535,7 +535,7 @@ const Index = () => {
             caption="💄 Beauty Studio — AI makeup & skincare"
           />
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             {coreModules.map((mod, i) => (
               <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
             ))}
@@ -551,7 +551,7 @@ const Index = () => {
         {/* ── All Services ─────────────────────────────── */}
         <section>
           <SectionHeader icon={Zap} title="All Services" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {services.map((mod, i) => (
               <ModuleCard key={i} mod={{ ...mod, description: "" }} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
             ))}
