@@ -414,6 +414,11 @@ verify_jwt = true
 [functions.create-past-life-credits-payment]
 verify_jwt = true
 
+[functions.create-video-ad-credits-payment]
+verify_jwt = true
+
+
+
 [functions.holographic-battle-simulate]
 verify_jwt = true
 
