@@ -283,12 +283,13 @@ export const MyPets = ({ onSelectPet, selectedPetId }: MyPetsProps) => {
 
       {/* Header */}
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-end">
         <div>
           <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             My Pets ({pets?.length || 0})
           </h2>
           <p className="text-xs text-muted-foreground">Adopt, feed, train & evolve your companions</p>
+          <p className="text-[11px] text-primary mt-1">👆 Tap a pet card to select it for Customize, Battle, Games or Breeding.</p>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
