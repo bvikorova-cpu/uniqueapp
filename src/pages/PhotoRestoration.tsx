@@ -33,7 +33,7 @@ const PhotoRestoration = () => {
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState<ActiveView>("hub");
   const [stats, setStats] = useState({ restorations: 0, colorizations: 0, enhancements: 0, removals: 0 });
-  const { credits, purchaseCredits } = usePhotoCredits();
+  const { credits } = usePhotoCredits();
 
   // Classic restore states
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -209,29 +209,22 @@ const PhotoRestoration = () => {
     <div className="min-h-screen bg-background"><Navbar />
       <div className="container mx-auto px-3 pt-20 pb-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <Card className="p-6">
-            <h2 className="text-2xl font-bold mb-2">Buy Restoration Credits</h2>
-            <p className="text-muted-foreground mb-6">Choose the right package for your needs</p>
-            <div className="grid sm:grid-cols-3 gap-4">
-              {[{ c: 5, p: 10, label: "Starter" }, { c: 20, p: 30, label: "Popular", featured: true }, { c: 50, p: 60, label: "Pro" }].map(pkg => (
-                <motion.div key={pkg.c} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                  <Card className={`p-5 text-center ${pkg.featured ? 'border-primary ring-2 ring-primary/30' : ''}`}>
-                    {pkg.featured && <Badge className="mb-2 bg-primary/20 text-primary border-primary/30">Most Popular</Badge>}
-                    <p className="text-sm text-muted-foreground">{pkg.label}</p>
-                    <p className="text-3xl font-black mt-1">{pkg.c}</p>
-                    <p className="text-xs text-muted-foreground">credits</p>
-                    <p className="text-2xl font-bold text-primary mt-2">€{pkg.p}</p>
-                    <Button className="w-full mt-4" variant={pkg.featured ? "default" : "outline"} onClick={() => purchaseCredits(pkg.c, pkg.p)}>Buy Now</Button>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+          <Card className="p-6 text-center">
+            <h2 className="text-2xl font-bold mb-2">Credits</h2>
+            <p className="text-muted-foreground mb-2">
+              Photo Restoration uses your shared AI credit balance — there is no separate restoration credit anymore.
+            </p>
+            <p className="text-sm text-muted-foreground mb-6">
+              Current balance: <span className="font-bold text-foreground">{credits?.credits_remaining ?? 0}</span> credits
+            </p>
+            <Button onClick={() => navigate("/ai-credits-store")}>Buy AI Credits</Button>
           </Card>
         </motion.div>
         <Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       </div>
     </div>
   );
+
 
   return (
     <div className="min-h-screen bg-background">
