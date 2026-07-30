@@ -154,6 +154,43 @@ export function CloneDating() {
         </CardContent>
       </Card>
 
+      <Card className="bg-card/80 backdrop-blur-xl border-pink-500/20">
+        <CardHeader className="flex flex-row items-center justify-between gap-2">
+          <CardTitle className="text-base">Your Dating Sessions</CardTitle>
+          <Button variant="outline" size="sm" onClick={loadSessions} disabled={loadingSessions}>
+            {loadingSessions ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Refresh"}
+          </Button>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {loadingSessions ? (
+            <p className="text-sm text-muted-foreground">Loading…</p>
+          ) : sessions.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No sessions yet. After a successful payment your session appears here.
+            </p>
+          ) : (
+            sessions.map((s) => (
+              <div key={s.id} className="flex items-center justify-between gap-3 rounded-lg border border-border/50 p-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium">Speed dating session</p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(s.created_at).toLocaleString()} · €{Number(s.payment_amount ?? 0).toFixed(2)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {s.compatibility_score != null && (
+                    <Badge variant="secondary">{s.compatibility_score}%</Badge>
+                  )}
+                  <Badge variant="outline" className="capitalize">{s.status}</Badge>
+                </div>
+              </div>
+            ))
+          )}
+        </CardContent>
+      </Card>
+
+
+
       <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
         <CardHeader>
           <CardTitle>How Clone Dating Works</CardTitle>
