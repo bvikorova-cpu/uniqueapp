@@ -48,6 +48,33 @@ export default function PetSocialNetwork() {
   const [commentText, setCommentText] = useState("");
   const [commentBusy, setCommentBusy] = useState(false);
 
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaPreview, setMediaPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const pickMedia = (file?: File | null) => {
+    if (!file) return;
+    if (file.size > MAX_MEDIA_MB * 1024 * 1024) {
+      toast.error(`File is too large (max ${MAX_MEDIA_MB} MB)`);
+      return;
+    }
+    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+      toast.error("Only photos and videos are allowed");
+      return;
+    }
+    setMediaFile(file);
+    setMediaPreview(URL.createObjectURL(file));
+  };
+
+  const clearMedia = () => {
+    if (mediaPreview) URL.revokeObjectURL(mediaPreview);
+    setMediaFile(null);
+    setMediaPreview(null);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+
   const load = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
