@@ -22,6 +22,10 @@ export default function PetAudioRecorder({ onBack }: { onBack: () => void }) {
 
   const startRecording = async () => {
     try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        toast.error("Recording is not supported in this browser.");
+        return;
+      }
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
@@ -38,10 +42,28 @@ export default function PetAudioRecorder({ onBack }: { onBack: () => void }) {
       setIsRecording(true);
       setRecordingTime(0);
       timerRef.current = setInterval(() => setRecordingTime(t => t + 1), 1000);
-    } catch {
-      toast.error("Microphone access denied. Please allow microphone access.");
+    } catch (err: any) {
+      const inIframe = typeof window !== "undefined" && window.self !== window.top;
+      if (inIframe) {
+        toast.error("Microphone is blocked inside the preview frame.", {
+          description: "Open the app in a new tab to record.",
+          action: {
+            label: "Open app",
+            onClick: () => window.open(window.location.href, "_blank", "noopener"),
+          },
+        });
+        return;
+      }
+      if (err?.name === "NotAllowedError") {
+        toast.error("Microphone access denied. Allow the microphone in your browser settings (lock icon in the address bar) and try again.");
+      } else if (err?.name === "NotFoundError") {
+        toast.error("No microphone found on this device.");
+      } else {
+        toast.error("Could not start recording. Please try again.");
+      }
     }
   };
+
 
   const stopRecording = () => {
     mediaRecorderRef.current?.stop();
