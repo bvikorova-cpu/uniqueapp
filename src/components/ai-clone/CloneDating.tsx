@@ -30,6 +30,26 @@ export function CloneDating() {
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [openSession, setOpenSession] = useState<DatingSession | null>(null);
   const [runningId, setRunningId] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [stage, setStage] = useState(0);
+  const timersRef = useRef<ReturnType<typeof setInterval>[]>([]);
+
+  const RUN_STAGES = [
+    "Matching your clones…",
+    "Warming up the conversation…",
+    "Clones are chatting…",
+    "Measuring chemistry…",
+    "Almost done…",
+  ];
+
+  const clearTimers = () => {
+    timersRef.current.forEach((t) => clearInterval(t));
+    timersRef.current = [];
+  };
+
+  useEffect(() => () => clearTimers(), []);
+
+
 
 
   const loadSessions = useCallback(async () => {
