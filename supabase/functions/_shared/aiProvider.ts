@@ -88,7 +88,7 @@ export async function chatCompletion(options: AIRequestOptions): Promise<AIRespo
  */
 export async function streamChatCompletion(options: AIRequestOptions): Promise<Response> {
   const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key) throw new Error("OPENAI_API_KEY not configured");
+  if (!key && !Deno.env.get("LOVABLE_API_KEY")) throw new Error("AI is not configured");
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -194,7 +194,7 @@ export async function analyzeImage(
 ): Promise<AIResponse> {
   // Vision is not yet supported in the unified fallback, so we try OpenAI directly.
   const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key) throw new Error("OPENAI_API_KEY not configured for vision");
+  if (!key && !Deno.env.get("LOVABLE_API_KEY")) throw new Error("AI is not configured for vision");
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
