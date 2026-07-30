@@ -9,10 +9,10 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-interface MiniGamesProps { selectedPetId: string | null; }
+interface MiniGamesProps { selectedPetId: string | null; onSelectPet?: (id: string) => void; }
 type GameType = 'catch' | 'memory';
 
-export const MiniGames = ({ selectedPetId }: MiniGamesProps) => {
+export const MiniGames = ({ selectedPetId, onSelectPet }: MiniGamesProps) => {
   const queryClient = useQueryClient();
   const [activeGame, setActiveGame] = useState<GameType | null>(null);
   const [gameScore, setGameScore] = useState(0);
