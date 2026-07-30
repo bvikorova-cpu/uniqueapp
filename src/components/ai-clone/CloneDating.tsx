@@ -87,7 +87,7 @@ export function CloneDating() {
       const rows = (data as DatingSession[]) ?? [];
       setSessions(rows);
 
-      // Chat always targets ANOTHER user's clone (the date partner), never my own.
+      // Chat always targets ANOTHER user's clone owner (a real person), never me.
       const mine = new Set(ids);
       const partnerIds = Array.from(new Set(
         rows.flatMap((r) => [r.clone_1_id, r.clone_2_id].filter((cid): cid is string => !!cid && !mine.has(cid))),
@@ -96,7 +96,7 @@ export function CloneDating() {
       if (partnerIds.length) {
         const { data: partnerRows } = await supabase
           .from("personality_clones")
-          .select("id, clone_name, personality_data")
+          .select("id, clone_name, personality_data, user_id")
           .in("id", partnerIds);
         (partnerRows ?? []).forEach((c: any) => { byId[c.id] = c as MatchClone; });
       }
@@ -109,7 +109,7 @@ export function CloneDating() {
       if (needsFallback) {
         const { data: others } = await supabase
           .from("personality_clones")
-          .select("id, clone_name, personality_data")
+          .select("id, clone_name, personality_data, user_id")
           .neq("user_id", user.id)
           .limit(50);
         pool = (others ?? []) as MatchClone[];
@@ -123,7 +123,22 @@ export function CloneDating() {
           (pool.length ? pool[Math.floor(Math.random() * pool.length)] : null);
         if (partner) map[r.id] = partner;
       });
+
+      // Resolve the real owner names so the button points at a person, not a bot.
+      const ownerIds = Array.from(new Set(
+        Object.values(map).map((c) => c.user_id).filter((u): u is string => !!u && u !== user.id),
+      ));
+      if (ownerIds.length) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("id, full_name, username")
+          .in("id", ownerIds);
+        const nameById: Record<string, string> = {};
+        (profiles ?? []).forEach((p: any) => { nameById[p.id] = p.full_name || p.username || "your match"; });
+        Object.values(map).forEach((c) => { if (c.user_id) c.owner_name = nameById[c.user_id] ?? null; });
+      }
       setMatches(map);
+
 
 
     } finally {
