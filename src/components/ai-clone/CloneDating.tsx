@@ -10,12 +10,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { Heart, MessageCircle, Sparkles, Bot, Loader2, Play, ChevronRight, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { CloneChatDialog } from "./CloneChatDialog";
 
 interface DateMessage { speaker: string; text: string }
 
 
+interface MatchClone {
+  id: string;
+  clone_name: string;
+  personality_data: any;
+}
+
 interface DatingSession {
   id: string;
+  clone_1_id?: string | null;
+  clone_2_id?: string | null;
   status: string;
   compatibility_score: number | null;
   payment_amount: number | null;
@@ -32,6 +41,8 @@ export function CloneDating() {
   const [runningId, setRunningId] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [stage, setStage] = useState(0);
+  const [matches, setMatches] = useState<Record<string, MatchClone>>({});
+  const [chatClone, setChatClone] = useState<MatchClone | null>(null);
   const timersRef = useRef<ReturnType<typeof setInterval>[]>([]);
 
   const RUN_STAGES = [
@@ -65,11 +76,29 @@ export function CloneDating() {
       if (!ids.length) { setSessions([]); return; }
       const { data } = await supabase
         .from("clone_dating_sessions")
-        .select("id, status, compatibility_score, payment_amount, created_at, session_data")
+        .select("id, clone_1_id, clone_2_id, status, compatibility_score, payment_amount, created_at, session_data")
         .or(`clone_1_id.in.(${ids.join(",")}),clone_2_id.in.(${ids.join(",")})`)
         .order("created_at", { ascending: false })
         .limit(20);
-      setSessions((data as DatingSession[]) ?? []);
+      const rows = (data as DatingSession[]) ?? [];
+      setSessions(rows);
+
+      // Resolve, for each session, the clone the user can actually chat with (the match).
+      const mine = new Set(ids);
+      const matchIds = Array.from(new Set(
+        rows.flatMap((r) => [r.clone_1_id, r.clone_2_id].filter((cid): cid is string => !!cid && !mine.has(cid))),
+      ));
+      if (matchIds.length) {
+        const { data: matchRows } = await supabase
+          .from("personality_clones")
+          .select("id, clone_name, personality_data")
+          .in("id", matchIds);
+        const map: Record<string, MatchClone> = {};
+        (matchRows ?? []).forEach((c: any) => { map[c.id] = c as MatchClone; });
+        setMatches(map);
+      } else {
+        setMatches({});
+      }
     } finally {
       setLoadingSessions(false);
     }
@@ -119,6 +148,11 @@ export function CloneDating() {
     }
   };
 
+
+  const matchOf = useCallback((s: DatingSession | null): MatchClone | null => {
+    if (!s) return null;
+    return matches[s.clone_2_id ?? ""] ?? matches[s.clone_1_id ?? ""] ?? null;
+  }, [matches]);
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
 
@@ -345,6 +379,20 @@ export function CloneDating() {
                       <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> Date completed
                     </p>
                   )}
+                  {matchOf(openSession) && (
+                    <Button
+                      className="w-full"
+                      onClick={() => {
+                        const m = matchOf(openSession);
+                        if (!m) return;
+                        setOpenSession(null);
+                        setChatClone(m);
+                      }}
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Chat with {matchOf(openSession)?.clone_name}
+                    </Button>
+                  )}
                   {openSession.session_data?.summary && (
                     <div className="rounded-lg border border-border/50 p-3">
 
@@ -359,7 +407,11 @@ export function CloneDating() {
         </DialogContent>
       </Dialog>
 
-
+      <CloneChatDialog
+        open={!!chatClone}
+        onOpenChange={(o) => !o && setChatClone(null)}
+        clone={chatClone ? { id: chatClone.id, clone_name: chatClone.clone_name, personality_data: chatClone.personality_data } : null}
+      />
 
 
 
@@ -372,7 +424,7 @@ export function CloneDating() {
             "Your AI clone is matched with another compatible clone",
             "They have an automatic conversation for 10 minutes",
             "AI analyzes compatibility and generates a match score",
-            "Review the conversation and decide if you want to connect",
+            "Review the conversation, then chat live with the matched clone yourself",
           ].map((step, i) => (
             <div key={i} className="flex gap-3">
               <Badge variant="outline" className="h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0">{i + 1}</Badge>
