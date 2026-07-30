@@ -142,6 +142,26 @@ serve(async (req) => {
 
     // Skill Swap now uses a standard €1/month Stripe subscription — falls through to generic check below.
 
+    const cloneTiers = new Set(["clone", "clone_basic", "clone_advanced", "clone_celebrity"]);
+    if (cloneTiers.has(tier)) {
+      const cloneTier = tier.startsWith("clone_") ? tier.replace("clone_", "") : null;
+      let query = supabaseClient
+        .from("clone_subscriptions")
+        .select("tier, expires_at")
+        .eq("user_id", user.id)
+        .eq("status", "active")
+        .gt("expires_at", new Date().toISOString())
+        .order("started_at", { ascending: false })
+        .limit(1);
+      if (cloneTier) query = query.eq("tier", cloneTier);
+      const { data: cloneSub } = await query.maybeSingle();
+      return json({
+        subscribed: !!cloneSub,
+        tier: cloneSub?.tier ?? tier,
+        product_id: null,
+        subscription_end: cloneSub?.expires_at ?? null }, 200);
+    }
+
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
