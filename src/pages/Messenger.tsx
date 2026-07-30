@@ -819,6 +819,19 @@ const Messenger = () => {
     fetchConversations();
   };
 
+  // Deep link: /messenger?user=<userId> opens (or creates) that 1:1 conversation.
+  const deepLinkHandled = useRef(false);
+  useEffect(() => {
+    if (!user || deepLinkHandled.current) return;
+    const target = new URLSearchParams(window.location.search).get("user");
+    if (!target || target === user.id) return;
+    deepLinkHandled.current = true;
+    createConversation(target);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+
+
 
   const sendMessage = async (overrideText?: string, overrideReplyId?: string | null) => {
     const text = sanitizeMessageContent(overrideText ?? newMessage);

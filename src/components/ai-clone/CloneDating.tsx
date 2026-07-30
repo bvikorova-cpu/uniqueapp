@@ -9,8 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, MessageCircle, Sparkles, Bot, Loader2, Play, ChevronRight, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-import { CloneChatDialog } from "./CloneChatDialog";
 
 interface DateMessage { speaker: string; text: string }
 
@@ -19,7 +19,10 @@ interface MatchClone {
   id: string;
   clone_name: string;
   personality_data: any;
+  user_id?: string | null;
+  owner_name?: string | null;
 }
+
 
 interface DatingSession {
   id: string;
@@ -34,6 +37,7 @@ interface DatingSession {
 
 export function CloneDating() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isSearching, setIsSearching] = useState(false);
   const [sessions, setSessions] = useState<DatingSession[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
@@ -42,7 +46,7 @@ export function CloneDating() {
   const [progress, setProgress] = useState(0);
   const [stage, setStage] = useState(0);
   const [matches, setMatches] = useState<Record<string, MatchClone>>({});
-  const [chatClone, setChatClone] = useState<MatchClone | null>(null);
+
   const timersRef = useRef<ReturnType<typeof setInterval>[]>([]);
 
   const RUN_STAGES = [
@@ -83,7 +87,7 @@ export function CloneDating() {
       const rows = (data as DatingSession[]) ?? [];
       setSessions(rows);
 
-      // Chat always targets ANOTHER user's clone (the date partner), never my own.
+      // Chat always targets ANOTHER user's clone owner (a real person), never me.
       const mine = new Set(ids);
       const partnerIds = Array.from(new Set(
         rows.flatMap((r) => [r.clone_1_id, r.clone_2_id].filter((cid): cid is string => !!cid && !mine.has(cid))),
@@ -92,7 +96,7 @@ export function CloneDating() {
       if (partnerIds.length) {
         const { data: partnerRows } = await supabase
           .from("personality_clones")
-          .select("id, clone_name, personality_data")
+          .select("id, clone_name, personality_data, user_id")
           .in("id", partnerIds);
         (partnerRows ?? []).forEach((c: any) => { byId[c.id] = c as MatchClone; });
       }
@@ -105,7 +109,7 @@ export function CloneDating() {
       if (needsFallback) {
         const { data: others } = await supabase
           .from("personality_clones")
-          .select("id, clone_name, personality_data")
+          .select("id, clone_name, personality_data, user_id")
           .neq("user_id", user.id)
           .limit(50);
         pool = (others ?? []) as MatchClone[];
@@ -119,7 +123,22 @@ export function CloneDating() {
           (pool.length ? pool[Math.floor(Math.random() * pool.length)] : null);
         if (partner) map[r.id] = partner;
       });
+
+      // Resolve the real owner names so the button points at a person, not a bot.
+      const ownerIds = Array.from(new Set(
+        Object.values(map).map((c) => c.user_id).filter((u): u is string => !!u && u !== user.id),
+      ));
+      if (ownerIds.length) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("id, full_name, username")
+          .in("id", ownerIds);
+        const nameById: Record<string, string> = {};
+        (profiles ?? []).forEach((p: any) => { nameById[p.id] = p.full_name || p.username || "your match"; });
+        Object.values(map).forEach((c) => { if (c.user_id) c.owner_name = nameById[c.user_id] ?? null; });
+      }
       setMatches(map);
+
 
 
     } finally {
@@ -405,20 +424,21 @@ export function CloneDating() {
                       <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> Date completed
                     </p>
                   )}
-                  {matchOf(openSession) && (
+                  {matchOf(openSession)?.user_id && (
                     <Button
                       className="w-full"
                       onClick={() => {
                         const m = matchOf(openSession);
-                        if (!m) return;
+                        if (!m?.user_id) return;
                         setOpenSession(null);
-                        setChatClone(m);
+                        navigate(`/messenger?user=${m.user_id}`);
                       }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Chat with {matchOf(openSession)?.clone_name}
+                      Message {matchOf(openSession)?.owner_name ?? "your match"}
                     </Button>
                   )}
+
                   {openSession.session_data?.summary && (
                     <div className="rounded-lg border border-border/50 p-3">
 
@@ -433,11 +453,8 @@ export function CloneDating() {
         </DialogContent>
       </Dialog>
 
-      <CloneChatDialog
-        open={!!chatClone}
-        onOpenChange={(o) => !o && setChatClone(null)}
-        clone={chatClone ? { id: chatClone.id, clone_name: chatClone.clone_name, personality_data: chatClone.personality_data } : null}
-      />
+
+
 
 
 
@@ -450,7 +467,7 @@ export function CloneDating() {
             "Your AI clone is matched with another compatible clone",
             "They have an automatic conversation for 10 minutes",
             "AI analyzes compatibility and generates a match score",
-            "Review the conversation, then chat live yourself with the matched clone of another user",
+            "Review the conversation, then message the real user behind the matched clone",
           ].map((step, i) => (
             <div key={i} className="flex gap-3">
               <Badge variant="outline" className="h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0">{i + 1}</Badge>
