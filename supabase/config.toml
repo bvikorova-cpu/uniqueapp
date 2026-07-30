@@ -422,3 +422,7 @@ verify_jwt = true
 
 [functions.pet-translator-ai]
 verify_jwt = true
+
+[functions.future-face-image]
+verify_jwt = true
+
