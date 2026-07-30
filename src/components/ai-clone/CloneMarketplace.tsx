@@ -27,8 +27,10 @@ export function CloneMarketplace() {
   const [chatOpen, setChatOpen] = useState(false);
 
   // Server-side search (debounced) so results aren't limited to the first page.
+  const [suggestOpen, setSuggestOpen] = useState(false);
+
   useEffect(() => {
-    const t = setTimeout(() => { fetchPublicClones(searchTerm.trim()); }, 300);
+    const t = setTimeout(() => { fetchPublicClones(searchTerm.trim()); }, 150);
     return () => clearTimeout(t);
   }, [searchTerm]);
 
