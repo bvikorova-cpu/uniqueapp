@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Brain, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Brain, Check, Loader2, PawPrint, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { handleEdgeError } from "@/lib/handleEdgeError";
@@ -21,21 +20,28 @@ export const AIPetPersonalityCoach = ({ onBack }: Props) => {
   const { credits } = useAICredits();
   const navigate = useNavigate();
 
-  const { data: pets } = useQuery({
-    queryKey: ['my-pets'],
+  const { data: pets = [], isLoading: petsLoading, isError: petsError, refetch } = useQuery({
+    queryKey: ['my-pets', 'personality-coach'],
     queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Login required");
       const { data, error } = await supabase.from('pets').select('*, pet_types(*)').order('created_at', { ascending: false });
       if (error) throw error;
-      return data;
+      return data ?? [];
     }
   });
+
+  useEffect(() => {
+    if (!selectedPetId && pets.length > 0) setSelectedPetId(pets[0].id);
+  }, [pets, selectedPetId]);
 
   const analyze = async () => {
     if (!selectedPetId) return toast.error("Select a pet first");
     if (credits.credits_remaining < 5) return toast.error("Not enough credits (5 required)");
     setLoading(true);
     try {
-      const pet = pets?.find(p => p.id === selectedPetId);
+      const pet = pets.find(p => p.id === selectedPetId);
+      if (!pet) return toast.error("Select a pet first");
       const { data, error } = await supabase.functions.invoke('pet-translator-ai', {
         body: { action: 'vp_personality_coach', petName: pet?.name, species: pet?.pet_types?.species, level: pet?.level, happiness: pet?.happiness, energy: pet?.energy, hunger: pet?.hunger }
       });
@@ -66,17 +72,46 @@ export const AIPetPersonalityCoach = ({ onBack }: Props) => {
 
       <Card className="border-border/40 bg-card/80 backdrop-blur-xl">
         <CardContent className="p-6 space-y-4">
-          <Select value={selectedPetId} onValueChange={setSelectedPetId}>
-            <SelectTrigger><SelectValue placeholder="Select your pet..." /></SelectTrigger>
-            <SelectContent>
-              {pets?.map(p => (
-                <SelectItem key={p.id} value={p.id}>
-                  {p.name} (Lv.{p.level} {p.pet_types?.name})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button onClick={analyze} disabled={loading || !selectedPetId} className="w-full gap-2">
+          {petsLoading ? (
+            <div className="flex min-h-20 items-center justify-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" /> Loading your pets...
+            </div>
+          ) : petsError ? (
+            <div className="space-y-3 text-center">
+              <p className="text-sm text-destructive">Your pets could not be loaded.</p>
+              <Button type="button" variant="outline" onClick={() => refetch()}>Try again</Button>
+            </div>
+          ) : pets.length === 0 ? (
+            <div className="space-y-3 text-center">
+              <PawPrint className="mx-auto h-7 w-7 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">Create a pet before using the coach.</p>
+              <Button type="button" variant="outline" onClick={() => navigate('/virtual-pet?tab=pets')}>Go to My Pets</Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-2" role="radiogroup" aria-label="Select your pet">
+              {pets.map(p => {
+                const selected = selectedPetId === p.id;
+                return (
+                  <Button
+                    key={p.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    variant={selected ? "default" : "outline"}
+                    className="h-auto min-h-12 w-full justify-between gap-3 px-4 py-3 text-left"
+                    onClick={() => setSelectedPetId(p.id)}
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate font-semibold">{p.name}</span>
+                      <span className="block text-xs opacity-80">Level {p.level} · {p.pet_types?.name ?? p.pet_types?.species ?? "Pet"}</span>
+                    </span>
+                    {selected && <Check className="h-5 w-5 shrink-0" />}
+                  </Button>
+                );
+              })}
+            </div>
+          )}
+          <Button onClick={analyze} disabled={loading || petsLoading || petsError || !selectedPetId} className="w-full gap-2">
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             Analyze Personality
           </Button>
