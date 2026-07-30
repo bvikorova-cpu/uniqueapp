@@ -83,9 +83,20 @@ Deno.serve(async (req) => {
         .limit(100);
       if (pool?.length) opponent = pool[Math.floor(Math.random() * pool.length)];
     }
-    if (!opponent) return j({ error: "No other clones are available to battle right now. Try again later." }, 400);
+    // No real rival on the platform yet -> stage a wild AI challenger so the arena still works.
+    let isWildRival = false;
+    if (!opponent) {
+      isWildRival = true;
+      const wild = WILD_RIVALS[Math.floor(Math.random() * WILD_RIVALS.length)];
+      opponent = {
+        id: null,
+        user_id: null,
+        clone_name: wild.name,
+        personality_data: { personality: wild.persona, tone: wild.tone },
+      };
+    }
 
-    let opponentOwner = "Another creator";
+    let opponentOwner = isWildRival ? "Wild challenger" : "Another creator";
     if (opponent.user_id) {
       const { data: prof } = await admin
         .from("profiles")
