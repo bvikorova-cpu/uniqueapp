@@ -36,16 +36,21 @@ export async function getReadableUrl(
 ): Promise<string> {
   if (PRIVATE_BUCKETS.has(bucket)) {
     const url = await signedUrl(bucket, path, expiresInSec);
-    if (!url) throw new Error(`Failed to sign URL for ${bucket}/${path}`);
-    return url;
+    if (url) return url;
+    // Last resort: the object is uploaded, only signing failed (expired/refreshing
+    // token, transient storage error). Fall back to the object URL so the flow
+    // can continue instead of losing the upload.
+    if (lastSignError) console.warn("[storage] sign failed:", bucket, path, lastSignError);
+    return supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
   }
   return supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
 }
 
 const SIGNED_TTL_SEC = 3600; // 1h
 const cache = new Map<string, { url: string; exp: number }>();
+let lastSignError: string | null = null;
 
-/** Sign a path on a private bucket. Cached for ~TTL minus 1min. */
+/** Sign a path on a private bucket. Cached for ~TTL minus 1min. Retries transient failures. */
 export async function signedUrl(
   bucket: string,
   path: string,
@@ -54,10 +59,21 @@ export async function signedUrl(
   const key = `${bucket}::${path}`;
   const hit = cache.get(key);
   if (hit && hit.exp > Date.now() + 60_000) return hit.url;
-  const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, expiresInSec);
-  if (error || !data?.signedUrl) return null;
-  cache.set(key, { url: data.signedUrl, exp: Date.now() + expiresInSec * 1000 });
-  return data.signedUrl;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) {
+      // Make sure we have a fresh access token before retrying.
+      await supabase.auth.getSession();
+      await new Promise((r) => setTimeout(r, 300 * attempt));
+    }
+    const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, expiresInSec);
+    if (!error && data?.signedUrl) {
+      lastSignError = null;
+      cache.set(key, { url: data.signedUrl, exp: Date.now() + expiresInSec * 1000 });
+      return data.signedUrl;
+    }
+    lastSignError = error?.message ?? "unknown error";
+  }
+  return null;
 }
 
 /**

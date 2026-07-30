@@ -57,10 +57,19 @@ serve(async (req) => {
         const bytes = Uint8Array.from(atob(m[2]), c => c.charCodeAt(0));
         return new Blob([bytes], { type: m[1] });
       }
+      // Storage objects (public/sign URLs or raw bucket paths) are downloaded with
+      // the service role — private buckets can't be fetched over plain HTTP.
+      const st = url.match(/\/storage\/v1\/object\/(?:public|sign|authenticated)\/([^/]+)\/(.+?)(?:\?.*)?$/);
+      if (st) {
+        const { data, error } = await supabase.storage.from(st[1]).download(decodeURIComponent(st[2]));
+        if (error || !data) throw new Error(`Source download failed: ${error?.message ?? "no data"}`);
+        return data;
+      }
       const r = await fetch(url);
       if (!r.ok) throw new Error(`Source fetch failed ${r.status}`);
       return await r.blob();
     }
+
 
     let aiRes: Response;
     try {
