@@ -214,12 +214,29 @@ serve(async (req) => {
     } else if (type === 'care_guide') {
       const { healingStage, concerns } = params;
       const guide = await chatCompletion(
-        'You are a tattoo aftercare specialist and dermatology expert.',
-        `Personalized tattoo care guide for stage: ${healingStage}, concerns: ${concerns || 'general care'}. Include DAILY CHECKLIST, PRODUCTS, WHAT TO AVOID, WASHING, SUN PROTECTION, WATER EXPOSURE, CLOTHING, WARNING SIGNS, NEXT STEPS, PRO TIPS.`,
-        1200
+        'You are a tattoo aftercare specialist and dermatology expert. Write in PLAIN TEXT only — never use markdown symbols such as #, *, _ or backticks. Use UPPERCASE section headers followed by short lines starting with "- ". Always finish every section completely.',
+        `Write a complete personalized tattoo aftercare guide.
+Healing stage: ${healingStage}
+Concerns: ${concerns || 'general care'}
+
+Use exactly these sections, in this order, each with 3-5 concrete bullet lines:
+DAILY CHECKLIST
+WASHING ROUTINE
+RECOMMENDED PRODUCTS
+WHAT TO AVOID
+SUN PROTECTION
+WATER EXPOSURE
+CLOTHING
+WARNING SIGNS
+NEXT STEPS
+PRO TIPS
+
+Keep each bullet under 20 words so the whole guide fits.`,
+        2500
       );
       payload = { guide };
     }
+
 
     await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify(payload), {
