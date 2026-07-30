@@ -1,15 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, MessageCircle, Sparkles, Bot, Loader2, Play, ChevronRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { Heart, MessageCircle, Sparkles, Bot, Loader2, Play, ChevronRight, CheckCircle2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface DateMessage { speaker: string; text: string }
+
 
 interface DatingSession {
   id: string;
@@ -27,6 +30,26 @@ export function CloneDating() {
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [openSession, setOpenSession] = useState<DatingSession | null>(null);
   const [runningId, setRunningId] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [stage, setStage] = useState(0);
+  const timersRef = useRef<ReturnType<typeof setInterval>[]>([]);
+
+  const RUN_STAGES = [
+    "Matching your clones…",
+    "Warming up the conversation…",
+    "Clones are chatting…",
+    "Measuring chemistry…",
+    "Almost done…",
+  ];
+
+  const clearTimers = () => {
+    timersRef.current.forEach((t) => clearInterval(t));
+    timersRef.current = [];
+  };
+
+  useEffect(() => () => clearTimers(), []);
+
+
 
 
   const loadSessions = useCallback(async () => {
@@ -57,6 +80,15 @@ export function CloneDating() {
     setOpenSession(session);
     if (hasTranscript) return;
     setRunningId(session.id);
+    setProgress(6);
+    setStage(0);
+    clearTimers();
+    timersRef.current.push(
+      setInterval(() => setProgress((p) => (p < 92 ? p + Math.max(1, Math.round((95 - p) / 18)) : p)), 400),
+    );
+    timersRef.current.push(
+      setInterval(() => setStage((s) => Math.min(s + 1, RUN_STAGES.length - 1)), 2600),
+    );
     try {
       const { data, error } = await supabase.functions.invoke("clone-chat", { body: { mode: "date", sessionId: session.id } });
       if (error) throw error;
@@ -67,8 +99,13 @@ export function CloneDating() {
         compatibility_score: data.score ?? session.compatibility_score,
         session_data: { messages: data.messages ?? [], summary: data.summary ?? "" },
       };
+      clearTimers();
+      setProgress(100);
       setOpenSession(updated);
       setSessions((prev) => prev.map((s) => (s.id === session.id ? updated : s)));
+      toast({ title: "The date is ready", description: `Compatibility ${updated.compatibility_score ?? "—"}%` });
+      // refresh from DB so the list always reflects persisted state
+      loadSessions();
     } catch (err: unknown) {
       toast({
         title: "Error",
@@ -76,7 +113,9 @@ export function CloneDating() {
         variant: "destructive",
       });
     } finally {
+      clearTimers();
       setRunningId(null);
+
     }
   };
 
@@ -222,14 +261,16 @@ export function CloneDating() {
                     </p>
                     <p className="text-xs text-pink-400 mt-1 flex items-center gap-1">
                       {runningId === s.id ? (
-                        <><Loader2 className="h-3 w-3 animate-spin" /> Running the date…</>
+                        <><Loader2 className="h-3 w-3 animate-spin" /> {RUN_STAGES[stage]}</>
                       ) : hasTranscript ? (
                         <><MessageCircle className="h-3 w-3" /> View conversation</>
                       ) : (
                         <><Play className="h-3 w-3" /> Run the date</>
                       )}
                     </p>
+                    {runningId === s.id && <Progress value={progress} className="h-1 mt-2" />}
                   </div>
+
                   <div className="flex items-center gap-2 flex-shrink-0">
                     {s.compatibility_score != null && (
                       <Badge variant="secondary">{s.compatibility_score}%</Badge>
@@ -261,24 +302,52 @@ export function CloneDating() {
                 </div>
               )}
               {runningId === openSession.id ? (
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Your clones are chatting…
-                </p>
-              ) : (
-                <>
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    {(openSession.session_data?.messages ?? []).map((m, i) => (
-                      <div
-                        key={i}
-                        className={`rounded-lg p-3 text-sm ${i % 2 === 0 ? "bg-primary/10" : "bg-pink-500/10"}`}
-                      >
-                        <p className="text-xs font-semibold mb-1">{m.speaker}</p>
-                        <p>{m.text}</p>
+                    <p className="text-sm font-medium flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin text-pink-400" /> {RUN_STAGES[stage]}
+                    </p>
+                    <Progress value={progress} className="h-2" />
+                    <p className="text-xs text-muted-foreground">
+                      This usually takes 10-20 seconds. The result appears here automatically.
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    {[0, 1, 2].map((i) => (
+                      <div key={i} className={`rounded-lg p-3 ${i % 2 === 0 ? "bg-primary/5" : "bg-pink-500/5"}`}>
+                        <Skeleton className="h-3 w-24 mb-2" />
+                        <Skeleton className="h-3 w-full mb-1.5" />
+                        <Skeleton className="h-3 w-4/5" />
                       </div>
                     ))}
                   </div>
+                </div>
+              ) : (
+                <>
+                  <AnimatePresence initial={false}>
+                    <div className="space-y-2">
+                      {(openSession.session_data?.messages ?? []).map((m, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: Math.min(i * 0.08, 0.6) }}
+                          className={`rounded-lg p-3 text-sm ${i % 2 === 0 ? "bg-primary/10" : "bg-pink-500/10"}`}
+                        >
+                          <p className="text-xs font-semibold mb-1">{m.speaker}</p>
+                          <p>{m.text}</p>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </AnimatePresence>
+                  {(openSession.session_data?.messages?.length ?? 0) > 0 && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> Date completed
+                    </p>
+                  )}
                   {openSession.session_data?.summary && (
                     <div className="rounded-lg border border-border/50 p-3">
+
                       <p className="text-xs font-semibold mb-1">Chemistry summary</p>
                       <p className="text-sm text-muted-foreground">{openSession.session_data.summary}</p>
                     </div>
