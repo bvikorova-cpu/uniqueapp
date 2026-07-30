@@ -114,8 +114,10 @@ serve(async (req) => {
       if (upsertErr) log("upsert error", upsertErr);
     }
 
-    // Apply business logic per product type — ONLY if not already credited
-    if (isPaid && userId && !alreadyCredited) {
+    // Apply business logic per product type — ONLY if not already credited.
+    // Clone subscriptions are idempotently re-applied so older payments that
+    // were verified before the DB fix can activate when the user returns.
+    if (isPaid && userId && (!alreadyCredited || detectedType === "clone_subscription")) {
       try {
         await applyPurchase(supabaseAdmin, userId, detectedType, result);
       } catch (e) {
@@ -249,12 +251,23 @@ async function applyPurchase(
 
   // AI Personality Clone subscriptions — record in clone_subscriptions
   if (productType === "clone_subscription" && md.tier) {
+    const nowIso = new Date().toISOString();
+    const { data: existingSub } = await db
+      .from("clone_subscriptions")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("tier", md.tier)
+      .eq("status", "active")
+      .gt("expires_at", nowIso)
+      .maybeSingle();
+    if (existingSub) return;
+
     const tierPrices: Record<string, number> = { basic: 9.99, advanced: 29.99, celebrity: 99.0 };
     await db.from("clone_subscriptions").insert({ user_id: userId,
       tier: md.tier,
       price: tierPrices[md.tier] ?? 0,
       status: "active",
-      started_at: new Date().toISOString(),
+      started_at: nowIso,
       expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() });
     return;
   }

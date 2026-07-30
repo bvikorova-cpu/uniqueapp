@@ -67,12 +67,14 @@ export function CloneSubscriptions() {
   const [subscribingTier, setSubscribingTier] = useState<string | null>(null);
 
   const handleSubscribe = async (tier: string) => {
+    const checkoutWindow = window.open("about:blank", "_blank");
     try {
       setSubscribingTier(tier);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        checkoutWindow?.close();
         toast({ title: "Authentication Required", description: "Please sign in to subscribe", variant: "destructive" });
-        navigate("/auth");
+        navigate("/auth?redirect=/ai-clone");
         return;
       }
 
@@ -81,9 +83,17 @@ export function CloneSubscriptions() {
 
       if (error) throw error;
       if (data?.url) {
-        window.location.href = data.url;
+        if (checkoutWindow) {
+          checkoutWindow.location.href = data.url;
+        } else {
+          window.location.href = data.url;
+        }
+      } else {
+        checkoutWindow?.close();
+        throw new Error("Stripe checkout URL was not returned.");
       }
     } catch (error: any) {
+      checkoutWindow?.close();
       toast({ title: "Error", description: error.message || "Failed to start checkout", variant: "destructive" });
     } finally {
       setSubscribingTier(null);
