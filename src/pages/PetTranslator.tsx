@@ -189,19 +189,6 @@ const PetTranslator = () => {
           </Tabs>
         )}
 
-        {subscription.subscribed && (
-          <div className="mt-8 text-center">
-            <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-lg px-4 py-2">
-              <Badge className="bg-purple-500 text-white">{subscription.tier}</Badge>
-              <span className="text-sm text-muted-foreground">
-                Pets: {subscription.pets_tracked}/{subscription.max_pets}
-              </span>
-              <Link to="/pet-translator-pricing">
-                <Button variant="ghost" size="sm" className="text-xs">Manage</Button>
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
