@@ -48,9 +48,15 @@ async function callAI(body: unknown, attempt = 0): Promise<string> {
 }
 
 
-async function chargeCredits(supabase: any, userId: string, cost: number) {
-  // Unified AI credits pool + ledger (single source of truth)
-  const { error } = await supabase.rpc("spend_unified_ai_credits_for_user", {
+async function chargeCredits(_supabase: any, userId: string, cost: number) {
+  // Unified AI credits pool + ledger (single source of truth).
+  // Uses a dedicated service-role client: the request-scoped client forwards the
+  // caller's JWT, and the RPC is only executable by service_role.
+  const admin = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  );
+  const { error } = await admin.rpc("spend_unified_ai_credits_for_user", {
     p_user_id: userId,
     p_amount: cost,
     p_reason: "handwriting_atelier",
