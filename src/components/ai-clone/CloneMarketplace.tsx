@@ -88,8 +88,44 @@ export function CloneMarketplace() {
         <CardContent>
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search clones..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10 bg-background/50" />
+            <Input
+              placeholder="Search clones..."
+              value={searchTerm}
+              onChange={(e) => { setSearchTerm(e.target.value); setSuggestOpen(true); }}
+              onFocus={() => setSuggestOpen(true)}
+              onBlur={() => setTimeout(() => setSuggestOpen(false), 150)}
+              className="pl-10 bg-background/50"
+            />
+            {suggestOpen && searchTerm.trim().length >= 1 && clones.length > 0 && (
+              <div className="absolute z-50 mt-1 w-full rounded-md border border-primary/20 bg-popover shadow-lg max-h-72 overflow-y-auto">
+                {clones.slice(0, 8).map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-accent transition-colors"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => { setSuggestOpen(false); handleStartChat(c); }}
+                  >
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Bot className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{c.clone_name}</p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {(c.personality_data as any)?.personality || `${c.total_conversations} conversations`}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+            {suggestOpen && searchTerm.trim().length >= 1 && !loading && clones.length === 0 && (
+              <div className="absolute z-50 mt-1 w-full rounded-md border border-primary/20 bg-popover shadow-lg px-3 py-2 text-sm text-muted-foreground">
+                No clones found
+              </div>
+            )}
           </div>
+
         </CardContent>
       </Card>
 
