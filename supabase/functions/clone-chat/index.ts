@@ -58,10 +58,22 @@ Respond in 1-3 short sentences. Never mention being an AI.`;
       throw e;
     }
 
+    // First-ever message from this user to this clone => new conversation
+    const { count: priorMessages } = await admin
+      .from("clone_chat_messages")
+      .select("id", { count: "exact", head: true })
+      .eq("clone_id", cloneId)
+      .eq("user_id", user.id);
+
     await admin.from("clone_chat_messages").insert([
       { clone_id: cloneId, user_id: user.id, role: "user", content: message },
       { clone_id: cloneId, user_id: user.id, role: "assistant", content: reply },
     ]);
+
+    if (!priorMessages) {
+      await admin.rpc("increment_clone_conversations", { p_clone_id: cloneId });
+    }
+
     if (limit) {
       await admin.from("clone_chat_daily_limits").update({ responses_used: used + 1 }).eq("id", limit.id);
     } else {
