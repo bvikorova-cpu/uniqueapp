@@ -93,14 +93,34 @@ Deno.serve(async (req) => {
       if (!(clones ?? []).some((c: any) => c.user_id === user.id)) return j({ error: "Forbidden" }, 403);
 
       const existing = (session.session_data ?? {}) as Record<string, unknown>;
-      if (session.status === "completed" && Array.isArray(existing.messages)) {
-        return j({ ok: true, messages: existing.messages, summary: existing.summary, score: session.compatibility_score });
-      }
+
 
       const a = (clones ?? []).find((c: any) => c.id === session.clone_1_id);
       const b = (clones ?? []).find((c: any) => c.id === session.clone_2_id);
-      const nameA = a?.clone_name ?? "Clone A";
-      const nameB = b?.clone_name ?? "Clone B";
+      let nameA = (a?.clone_name ?? "Clone A").trim();
+      let nameB = (b?.clone_name ?? "Clone B").trim();
+      // Two clones can share the same name (or be the same clone) — keep speakers distinguishable.
+      if (nameA.toLowerCase() === nameB.toLowerCase()) {
+        nameA = `${nameA} (you)`;
+        nameB = `${nameB} (match)`;
+      }
+
+      // Reuse a cached transcript only if it already has two distinct speakers;
+      // older sessions were saved with one repeated label, so regenerate those.
+      if (session.status === "completed" && Array.isArray(existing.messages) && existing.messages.length) {
+        const cached = existing.messages as { speaker?: string; text?: string }[];
+        const distinct = new Set(cached.map((m) => (m.speaker ?? "").toLowerCase()));
+        if (distinct.size >= 2) {
+          return j({ ok: true, messages: cached, summary: existing.summary, score: session.compatibility_score });
+        }
+        // repair labels in place without a new AI call
+        const repaired = cached.map((m, i) => ({ speaker: i % 2 === 0 ? nameA : nameB, text: String(m.text ?? "") }));
+        await admin.from("clone_dating_sessions")
+          .update({ session_data: { ...existing, messages: repaired } })
+          .eq("id", sessionId);
+        return j({ ok: true, messages: repaired, summary: existing.summary, score: session.compatibility_score });
+      }
+
 
       let dateMessages: { speaker: string; text: string }[] = [];
       let summary = "";
@@ -111,6 +131,7 @@ Deno.serve(async (req) => {
         const prompt = `Write a short speed-dating conversation between two AI personality clones.
 Clone A: ${nameA}. Personality: ${JSON.stringify(a?.personality_data ?? { personality: "friendly, curious" })}.
 Clone B: ${nameB}. Personality: ${JSON.stringify(b?.personality_data ?? { personality: "warm, playful" })}.
+They are two DIFFERENT people. Messages must strictly alternate, starting with ${nameA}.
 Return STRICT JSON only, no markdown:
 {"messages":[{"speaker":"${nameA}","text":"..."},{"speaker":"${nameB}","text":"..."}],"summary":"2-3 sentences about the chemistry","score":0-100}
 Use 8 alternating messages, each max 200 characters, in English.`;
@@ -129,7 +150,13 @@ Use 8 alternating messages, each max 200 characters, in English.`;
             const cleaned = String(payload?.choices?.[0]?.message?.content ?? "").replace(/```json|```/g, "").trim();
             try {
               const parsed = JSON.parse(cleaned);
-              if (Array.isArray(parsed.messages)) dateMessages = parsed.messages.slice(0, 20);
+              if (Array.isArray(parsed.messages)) {
+                // Force strict alternation so both sides never carry the same label.
+                dateMessages = parsed.messages.slice(0, 20).map((m: any, i: number) => ({
+                  speaker: i % 2 === 0 ? nameA : nameB,
+                  text: String(m?.text ?? ""),
+                })).filter((m: any) => m.text);
+              }
               if (typeof parsed.summary === "string") summary = parsed.summary;
               if (typeof parsed.score === "number") score = Math.max(0, Math.min(100, Math.round(parsed.score)));
             } catch { summary = cleaned.slice(0, 800); }
