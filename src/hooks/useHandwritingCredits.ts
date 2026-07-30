@@ -37,7 +37,7 @@ export const useHandwritingCredits = () => {
 
   const analyzeHandwriting = useMutation({
     mutationFn: async ({ imageUrl, analysisType }: { imageUrl: string; analysisType: string }) => {
-      const { data, error } = await supabase.functions.invoke("handwriting-ai", {
+      const { data, error } = await supabase.functions.invoke("handwriting-router", {
         body: { action: "analyze", imageUrl, analysisType } });
 
       if (error) throw error;

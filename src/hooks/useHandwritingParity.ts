@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const invoke = async (action: string, payload: Record<string, unknown>) => {
-  const { data, error } = await supabase.functions.invoke("handwriting-ai", {
+  const { data, error } = await supabase.functions.invoke("handwriting-router", {
     body: { action, ...payload } });
   if (error) throw error;
   if ((data as any)?.error) throw new Error((data as any).error);
