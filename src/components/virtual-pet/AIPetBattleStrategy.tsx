@@ -43,8 +43,8 @@ export const AIPetBattleStrategy = ({ onBack }: Props) => {
         name: p.name, species: p.pet_types?.species, level: p.level,
         happiness: p.happiness, energy: p.energy, battleWins: p.battle_wins, battleLosses: p.battle_losses
       }));
-      const { data, error } = await supabase.functions.invoke('pet-battle-strategy', {
-        body: { pets: selectedPets }
+      const { data, error } = await supabase.functions.invoke('pet-translator-ai', {
+        body: { action: 'vp_battle_strategy', pets: selectedPets }
       });
       if (error) throw error;
       setResult(data.result);

@@ -36,8 +36,8 @@ export const AIPetMoodAnalyzer = ({ onBack }: Props) => {
     setLoading(true);
     try {
       const pet = pets?.find(p => p.id === selectedPetId);
-      const { data, error } = await supabase.functions.invoke('pet-mood-analyzer', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('pet-translator-ai', {
+        body: { action: 'vp_mood_analyzer',
           petName: pet?.name, species: pet?.pet_types?.species, level: pet?.level,
           happiness: pet?.happiness, energy: pet?.energy, hunger: pet?.hunger,
           battleWins: pet?.battle_wins, battleLosses: pet?.battle_losses,

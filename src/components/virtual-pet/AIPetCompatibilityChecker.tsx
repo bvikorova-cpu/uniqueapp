@@ -39,8 +39,8 @@ export const AIPetCompatibilityChecker = ({ onBack }: Props) => {
     try {
       const p1 = pets?.find(p => p.id === pet1Id);
       const p2 = pets?.find(p => p.id === pet2Id);
-      const { data, error } = await supabase.functions.invoke('pet-compatibility-checker', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('pet-translator-ai', {
+        body: { action: 'vp_compatibility',
           pet1: { name: p1?.name, species: p1?.pet_types?.species, level: p1?.level, happiness: p1?.happiness, energy: p1?.energy },
           pet2: { name: p2?.name, species: p2?.pet_types?.species, level: p2?.level, happiness: p2?.happiness, energy: p2?.energy }
         }

@@ -31,8 +31,8 @@ export const AIPetNameGenerator = ({ onBack }: Props) => {
     if (credits.credits_remaining < 3) return toast.error("Not enough credits (3 required)");
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('pet-name-generator', {
-        body: { species, theme, personality }
+      const { data, error } = await supabase.functions.invoke('pet-translator-ai', {
+        body: { action: 'vp_name_generator', species, theme, personality }
       });
       if (error) throw error;
       setNames(data.names || []);
