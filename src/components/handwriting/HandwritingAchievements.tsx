@@ -2,20 +2,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-
-const achievements = [
-  { icon: "✍️", name: "First Analysis", unlocked: false },
-  { icon: "🎯", name: "Detail Spotter", unlocked: false },
-  { icon: "🧠", name: "Mind Reader", unlocked: false },
-  { icon: "💼", name: "Pro Analyst", unlocked: false },
-  { icon: "💕", name: "Heart Expert", unlocked: false },
-  { icon: "👑", name: "Master Graphologist", unlocked: false },
-];
+import { useHandwritingStats } from "@/hooks/useHandwritingStats";
 
 export const HandwritingAchievements = () => {
+  const { data } = useHandwritingStats();
+  const counts = data?.counts ?? {};
+  const total = data?.total ?? 0;
+  const streak = data?.streak ?? 0;
+
+  const achievements = [
+    { icon: "✍️", name: "First Analysis", unlocked: total >= 1 },
+    { icon: "🎯", name: "Detail Spotter", unlocked: total >= 5 },
+    { icon: "🧠", name: "Mind Reader", unlocked: (counts["personal"] ?? 0) >= 3 },
+    { icon: "💼", name: "Pro Analyst", unlocked: (counts["professional"] ?? 0) + (counts["business"] ?? 0) >= 3 },
+    { icon: "💕", name: "Heart Expert", unlocked: (counts["relationship"] ?? 0) >= 2 },
+    { icon: "👑", name: "Master Graphologist", unlocked: total >= 15 || streak >= 7 },
+  ];
+
   return (
     <>
-      <FloatingHowItWorks title={"Handwriting Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <FloatingHowItWorks title={"Handwriting Achievements - How it works"} steps={[{ title: 'Analyze', desc: 'Each completed analysis counts towards your achievements.' }, { title: 'Vary', desc: 'Personal, professional and relationship analyses unlock different badges.' }, { title: 'Unlock', desc: 'Badges light up automatically once their condition is met.' }, { title: 'Review', desc: 'All badges reflect real analyses stored on your account.' }]} />
       <Card className="bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
