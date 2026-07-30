@@ -139,14 +139,31 @@ serve(async (req) => {
       );
       payload = { meaning };
     } else if (type === 'cover_up') {
-      const { preferences } = params;
+      const { preferences, imageUrl } = params;
+      let existingTattooDescription = '';
+      if (imageUrl && typeof imageUrl === 'string') {
+        try {
+          existingTattooDescription = await chatCompletion(
+            'You are a tattoo expert analyzing a photo of an existing tattoo for a cover-up. Be concise.',
+            'Describe the existing tattoo in this image in 2-3 sentences: approximate size, colors, style, subject, and how dark/dense it looks.',
+            400,
+            imageUrl
+          ) || '';
+        } catch (e) {
+          console.error('cover-up image analysis failed:', e);
+        }
+      }
+
+      const baseDescription = existingTattooDescription || 'a small, colorful existing tattoo';
+      const userPreferences = preferences || 'elegant, balanced, not overly dark or aggressive';
+
       const suggestions = await chatCompletion(
-        'You are an expert tattoo cover-up artist with 20+ years of experience.',
-        `Client preferences: "${preferences || 'open to suggestions'}". Provide DESIGN APPROACH, COLOR STRATEGY, SIZE, STYLE RECOMMENDATIONS, 3 DESIGN IDEAS, SESSION ESTIMATE, COST RANGE, IMPORTANT NOTES.`,
-        1200
+        'You are an expert tattoo cover-up artist with 20+ years of experience. You specialize in soft, elegant cover-ups that transform old tattoos without defaulting to dark or aggressive designs unless the client explicitly asks for that.',
+        `Client wants a cover-up for this existing tattoo: ${baseDescription}.\nClient preferences: "${userPreferences}".\n\nImportant style guidance:\n- If the client says "Japanese" or "Japan", recommend elegant, graceful motifs like cherry blossoms, koi fish, cranes, waves, maple leaves, or chrysanthemums with flowing lines. Do NOT suggest fierce dragons, demons, samurai, or oni unless the client explicitly asks for them.\n- Do NOT default to "dark and bold" unless the client specifically asks for it.\n- Provide a gentle, balanced design strategy that matches the size and mood of the existing tattoo.\n\nProvide: DESIGN APPROACH, COLOR STRATEGY, SIZE, STYLE RECOMMENDATIONS, 3 GENTLE DESIGN IDEAS, SESSION ESTIMATE, COST RANGE, IMPORTANT NOTES.`,
+        1400
       );
       const coverUpUrl = await generateImage(
-        `Professional tattoo cover-up design. ${preferences || 'Bold dark design with intricate details'}. Dense detailed artwork ideal for covering existing tattoos. Rich dark tones. Clean white background.`
+        `Flat tattoo flash artwork on plain white paper, designed as a professional cover-up. The existing tattoo being covered is: ${baseDescription}. Client's style preferences: "${userPreferences}". Create a beautiful, harmonious cover-up design that is elegant and balanced, NOT scary, violent, or overly dark unless the user explicitly asked for that. If Japanese style is requested, use graceful motifs like cherry blossoms, koi fish, waves, cranes, or maple leaves — NOT aggressive dragons, demons, or samurai. Clean linework, professional tattoo stencil quality, isolated on pure white background. NO human skin, body parts, mannequins, photos of people, text, frames, or backgrounds.`
       );
       payload = { suggestions, coverUpUrl };
     } else if (type === 'pain_info') {
