@@ -20,7 +20,7 @@ import { AIPetBattleStrategy } from "@/components/virtual-pet/AIPetBattleStrateg
 import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
 import {
   Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords,
-  Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star,
+  Brain, Wand2, Activity, BookOpen, CreditCard, Star,
   SmilePlus, CalendarDays, HeartHandshake, Target
 } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
