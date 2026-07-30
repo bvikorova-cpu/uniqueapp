@@ -70129,6 +70129,21 @@ export type Database = {
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
       join_guild: { Args: { _guild_id: string }; Returns: Json }
       leave_guild: { Args: never; Returns: Json }
+      list_pet_pvp_opponents: {
+        Args: { _limit?: number }
+        Returns: {
+          battle_losses: number
+          battle_wins: number
+          level: number
+          owner_avatar: string
+          owner_id: string
+          owner_name: string
+          pet_id: string
+          pet_name: string
+          power: number
+          species: string
+        }[]
+      }
       list_verified_founders: {
         Args: never
         Returns: {
