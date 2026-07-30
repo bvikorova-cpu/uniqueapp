@@ -134,7 +134,7 @@ serve(async (req) => {
 
     // Decode base64 data URL and upload to storage
     const m = imageUrl.match(/^data:(image\/[^;]+);base64,(.+)$/);
-    let publicUrl = imageUrl;
+    let resultUrl = imageUrl;
     if (m) {
       const mime = m[1];
       const ext = mime.split("/")[1] || "png";
@@ -143,16 +143,24 @@ serve(async (req) => {
       const { error: upErr } = await supabase.storage.from("future-face-photos").upload(path, bytes, { contentType: mime, upsert: false });
       if (upErr) console.error("storage upload error:", upErr);
       else {
-        const { data: pub } = supabase.storage.from("future-face-photos").getPublicUrl(path);
-        publicUrl = pub.publicUrl;
+        // Sign with the service-role client. The bucket is private and client-side
+        // signing can be blocked by unrelated storage RLS helper permissions.
+        const { data: signed, error: signError } = await supabase.storage
+          .from("future-face-photos")
+          .createSignedUrl(path, 7200);
+        if (signError || !signed?.signedUrl) {
+          console.error("result signing error:", signError);
+          return json({ error: "Generated image could not be opened" }, 500);
+        }
+        resultUrl = signed.signedUrl;
       }
     }
 
     // Save history
     await supabase.from("future_face_images").insert({
-      user_id: user.id, action, source_url: sourceUrl, result_url: publicUrl, metadata: params || {} });
+      user_id: user.id, action, source_url: sourceUrl, result_url: resultUrl, metadata: params || {} });
 
-    return json({ resultUrl: publicUrl, action, creditsUsed: cfg.cost });
+    return json({ resultUrl, action, creditsUsed: cfg.cost });
   } catch (error: any) {
     console.error("future-face-image error:", error);
     return json({ error: error?.message || "Internal error" }, 500);
