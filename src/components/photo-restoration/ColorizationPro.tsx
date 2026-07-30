@@ -61,7 +61,7 @@ export const ColorizationPro = ({ onBack }: Props) => {
           <Palette className="h-6 w-6 text-rose-500" />
           AI Colorization Pro
         </h2>
-        <p className="text-muted-foreground mb-6">Advanced colorization with era-accurate color palettes. Cost: 8 credits</p>
+        <p className="text-muted-foreground mb-6">Advanced colorization with era-accurate color palettes. Cost: 16 credits</p>
 
         <div className="space-y-4 mb-6">
           <div>

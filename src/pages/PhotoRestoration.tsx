@@ -80,10 +80,10 @@ const PhotoRestoration = () => {
 
   const tools = [
     { id: "damage-detection" as ActiveView, icon: ScanLine, title: "Damage Detection", desc: "AI scans for scratches & tears", cost: "4 Credits", color: "text-red-500" },
-    { id: "colorize" as ActiveView, icon: Sparkles, title: "Colorization", desc: "Add colors to B&W photos", cost: "1 Credit", color: "text-amber-500" },
-    { id: "repair" as ActiveView, icon: Wand2, title: "Photo Repair", desc: "Remove scratches & damage", cost: "1 Credit", color: "text-blue-500" },
+    { id: "colorize" as ActiveView, icon: Sparkles, title: "Colorization", desc: "Add colors to B&W photos", cost: "12 Credits", color: "text-amber-500" },
+    { id: "repair" as ActiveView, icon: Wand2, title: "Photo Repair", desc: "Remove scratches & damage", cost: "12 Credits", color: "text-blue-500" },
     { id: "background-removal" as ActiveView, icon: Scissors, title: "Background Removal", desc: "AI background removal", cost: "3 Credits", color: "text-purple-500" },
-    { id: "colorization-pro" as ActiveView, icon: Palette, title: "Colorization Pro", desc: "Era-accurate colorization", cost: "8 Credits", color: "text-rose-500" },
+    { id: "colorization-pro" as ActiveView, icon: Palette, title: "Colorization Pro", desc: "Era-accurate colorization", cost: "16 Credits", color: "text-rose-500" },
     { id: "credits" as ActiveView, icon: ShoppingBag, title: "Buy Credits", desc: "Get more restoration credits", cost: "From €10", color: "text-emerald-500" },
   ];
 
