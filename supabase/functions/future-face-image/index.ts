@@ -28,7 +28,7 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const lovableKey = Deno.env.get("OPENAI_API_KEY");
+    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
     if (!lovableKey) return json({ error: "AI gateway not configured" }, 500);
 
     const authHeader = req.headers.get("Authorization");
@@ -54,7 +54,7 @@ serve(async (req) => {
     if (deductError) { console.error("deduct error:", deductError); return json({ error: `Credit deduction failed: ${deductError.message}` }, 500); }
     if (!deducted) return json({ error: `Insufficient credits. Need ${cfg.cost}.` }, 402);
 
-    // Fetch source image(s) and send to OpenAI gpt-image-1 /v1/images/edits
+    // Fetch source image(s) and send to Lovable AI Gateway (image-to-image)
     async function fetchAsBlob(url: string): Promise<Blob> {
       if (url.startsWith("data:")) {
         const m = url.match(/^data:([^;]+);base64,(.+)$/);
@@ -75,27 +75,33 @@ serve(async (req) => {
       return await r.blob();
     }
 
+    async function toDataUrl(url: string): Promise<string> {
+      if (url.startsWith("data:")) return url;
+      const blob = await fetchAsBlob(url);
+      const buf = new Uint8Array(await blob.arrayBuffer());
+      let bin = "";
+      for (let i = 0; i < buf.length; i += 8192) {
+        bin += String.fromCharCode(...buf.subarray(i, i + 8192));
+      }
+      return `data:${blob.type || "image/png"};base64,${btoa(bin)}`;
+    }
 
     let aiRes: Response;
     try {
-      const form = new FormData();
-      form.append("model", "gpt-image-1");
-      form.append("prompt", cfg.prompt(params || {}).slice(0, 4000));
-      form.append("n", "1");
-      form.append("size", "1024x1024");
-      const b1 = await fetchAsBlob(sourceUrl);
-      form.append("image", b1, "source.png");
-      if (sourceUrl2) {
-        const b2 = await fetchAsBlob(sourceUrl2);
-        form.append("image", b2, "source2.png");
-      }
+      const content: any[] = [{ type: "text", text: cfg.prompt(params || {}).slice(0, 4000) }];
+      content.push({ type: "image_url", image_url: { url: await toDataUrl(sourceUrl) } });
+      if (sourceUrl2) content.push({ type: "image_url", image_url: { url: await toDataUrl(sourceUrl2) } });
 
-      aiRes = await fetch("https://api.openai.com/v1/images/edits", {
+      aiRes = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
         method: "POST",
-        headers: { "Authorization": `Bearer ${lovableKey}` },
-        body: form });
+        headers: { "Authorization": `Bearer ${lovableKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "google/gemini-3.1-flash-image",
+          messages: [{ role: "user", content }],
+          modalities: ["image", "text"],
+        }) });
     } catch (e: any) {
-      console.error("OpenAI image edit fetch error:", e);
+      console.error("Lovable image edit fetch error:", e);
       try {
         const { data: cur } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).single();
         await supabase.from("ai_credits").update({ credits_remaining: (cur?.credits_remaining || 0) + cfg.cost }).eq("user_id", user.id);
