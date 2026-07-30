@@ -49,19 +49,18 @@ async function callAI(body: unknown, attempt = 0): Promise<string> {
 
 
 async function chargeCredits(supabase: any, userId: string, cost: number) {
-  const { data: credits } = await supabase
-    .from("handwriting_credits")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (!credits || (credits.credits_remaining ?? 0) < cost) {
+  // Unified AI credits pool + ledger (single source of truth)
+  const { error } = await supabase.rpc("spend_unified_ai_credits_for_user", {
+    p_user_id: userId,
+    p_amount: cost,
+    p_reason: "handwriting_atelier",
+    p_source: "handwriting-router",
+  });
+  if (error) {
+    console.error("chargeCredits failed", error);
     throw new Error("Insufficient credits");
   }
-  await supabase
-    .from("handwriting_credits")
-    .update({ credits_remaining: credits.credits_remaining - cost })
-    .eq("user_id", userId);
-  return credits;
+  return { credits_remaining: null };
 }
 
 function cosine(a: Record<string, number>, b: Record<string, number>) {

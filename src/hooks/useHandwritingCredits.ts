@@ -11,28 +11,16 @@ export const useHandwritingCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Unified AI credits pool (single source of truth)
       const { data, error } = await supabase
-        .from("handwriting_credits")
-        .select("*")
+        .from("ai_credits")
+        .select("credits_remaining")
         .eq("user_id", user.id)
         .maybeSingle();
 
       if (error) throw error;
 
-      if (!data) {
-        const { data: newData, error: insertError } = await supabase
-          .from("handwriting_credits")
-          .insert({ user_id: user.id,
-            credits_remaining: 0,
-            total_credits_purchased: 0 })
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        return newData;
-      }
-
-      return data;
+      return { credits_remaining: data?.credits_remaining ?? 0 };
     } });
 
   const analyzeHandwriting = useMutation({
