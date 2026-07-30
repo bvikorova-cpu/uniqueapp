@@ -266,7 +266,22 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+      {/* How it works */}
+      <details className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
+        <summary className="cursor-pointer list-none flex items-center gap-2 text-sm font-bold text-primary">
+          <Sparkles className="h-4 w-4" /> How it works
+        </summary>
+        <ol className="mt-3 space-y-2 text-xs text-muted-foreground list-decimal pl-4">
+          <li><span className="font-semibold text-foreground">Adopt a pet</span> — tap “Adopt Pet”, pick a species and name it. You can keep several companions.</li>
+          <li><span className="font-semibold text-foreground">Watch the bars</span> — happiness, hunger, energy and growth drop over time. Green means healthy, red needs care now.</li>
+          <li><span className="font-semibold text-foreground">Use the care buttons</span> — feed, pet, train and let it sleep. Each action refills the matching bar and gives XP.</li>
+          <li><span className="font-semibold text-foreground">Level up &amp; evolve</span> — XP raises the level; at milestones your pet evolves into a new stage with a new look.</li>
+          <li><span className="font-semibold text-foreground">Keep the streak</span> — daily care keeps stats high; neglected pets lose stats and stop progressing. AI extras cost credits.</li>
+        </ol>
+      </details>
+
       {/* Header */}
+
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
