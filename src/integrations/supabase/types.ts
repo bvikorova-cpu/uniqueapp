@@ -45465,6 +45465,8 @@ export type Database = {
           created_at: string
           id: string
           likes_count: number
+          media_type: string | null
+          media_url: string | null
           mood: string | null
           pet_name: string
           photo_url: string | null
@@ -45478,6 +45480,8 @@ export type Database = {
           created_at?: string
           id?: string
           likes_count?: number
+          media_type?: string | null
+          media_url?: string | null
           mood?: string | null
           pet_name: string
           photo_url?: string | null
@@ -45491,6 +45495,8 @@ export type Database = {
           created_at?: string
           id?: string
           likes_count?: number
+          media_type?: string | null
+          media_url?: string | null
           mood?: string | null
           pet_name?: string
           photo_url?: string | null

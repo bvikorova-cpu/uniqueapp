@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share2, Star, PawPrint, Loader2, Trash2, Send } from "lucide-react";
+import { Heart, MessageCircle, Share2, Star, PawPrint, Loader2, Trash2, Send, ImagePlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,6 +19,8 @@ type PetPost = {
   species: string | null;
   mood: string | null;
   caption: string | null;
+  media_url: string | null;
+  media_type: string | null;
   score: number;
   likes_count: number;
   comments_count: number;
@@ -28,6 +30,8 @@ type PetPost = {
 type PetComment = { id: string; user_id: string; content: string; created_at: string };
 
 const MOODS = ["Happy", "Playful", "Sleepy", "Hungry", "Anxious", "Curious"];
+const MAX_MEDIA_MB = 25;
+
 
 export default function PetSocialNetwork() {
   const { user } = useAuth();
@@ -43,6 +47,33 @@ export default function PetSocialNetwork() {
   const [comments, setComments] = useState<PetComment[]>([]);
   const [commentText, setCommentText] = useState("");
   const [commentBusy, setCommentBusy] = useState(false);
+
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaPreview, setMediaPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const pickMedia = (file?: File | null) => {
+    if (!file) return;
+    if (file.size > MAX_MEDIA_MB * 1024 * 1024) {
+      toast.error(`File is too large (max ${MAX_MEDIA_MB} MB)`);
+      return;
+    }
+    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+      toast.error("Only photos and videos are allowed");
+      return;
+    }
+    setMediaFile(file);
+    setMediaPreview(URL.createObjectURL(file));
+  };
+
+  const clearMedia = () => {
+    if (mediaPreview) URL.revokeObjectURL(mediaPreview);
+    setMediaFile(null);
+    setMediaPreview(null);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -95,21 +126,46 @@ export default function PetSocialNetwork() {
     if (!user) { toast.error("Please sign in to share your pet"); return; }
     if (!form.pet_name.trim()) { toast.error("Pet name is required"); return; }
     setCreating(true);
+
+    let media_url: string | null = null;
+    let media_type: string | null = null;
+
+    if (mediaFile) {
+      setUploading(true);
+      const ext = mediaFile.name.split(".").pop()?.toLowerCase() || "bin";
+      const path = `${user.id}/social/${crypto.randomUUID()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("pet-photos")
+        .upload(path, mediaFile, { contentType: mediaFile.type, upsert: false });
+      setUploading(false);
+      if (upErr) {
+        setCreating(false);
+        toast.error(`Upload failed: ${upErr.message}`);
+        return;
+      }
+      media_url = supabase.storage.from("pet-photos").getPublicUrl(path).data.publicUrl;
+      media_type = mediaFile.type.startsWith("video/") ? "video" : "image";
+    }
+
     const { error } = await supabase.from("pet_social_posts").insert({
       user_id: user.id,
       pet_name: form.pet_name.trim(),
       species: form.species.trim() || null,
       mood: form.mood,
       caption: form.caption.trim() || null,
+      media_url,
+      media_type,
       score: Math.floor(60 + Math.random() * 41),
     });
     setCreating(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Shared with the community!");
     setForm({ pet_name: "", species: "", mood: MOODS[0], caption: "" });
+    clearMedia();
     setOpen(false);
     load();
   };
+
 
   const toggleLike = async (post: PetPost) => {
     if (!user) { toast.error("Please sign in to like posts"); return; }
@@ -229,6 +285,17 @@ export default function PetSocialNetwork() {
                             {post.pet_name}{post.species ? ` · ${post.species}` : ""}
                           </p>
                           {post.caption && <p className="text-sm mt-2 break-words">{post.caption}</p>}
+                          {post.media_url && (
+                            <div className="mt-2 rounded-xl overflow-hidden border border-border/40 bg-muted/30">
+                              {post.media_type === "video" ? (
+                                <video src={post.media_url} controls playsInline preload="metadata"
+                                  className="w-full max-h-72 object-contain bg-black" />
+                              ) : (
+                                <img src={post.media_url} alt={`${post.pet_name} shared by ${author}`}
+                                  loading="lazy" className="w-full max-h-72 object-cover" />
+                              )}
+                            </div>
+                          )}
                           <div className="flex items-center gap-2 mt-2 flex-wrap">
                             {post.mood && (
                               <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-[10px]">{post.mood}</Badge>
@@ -280,13 +347,36 @@ export default function PetSocialNetwork() {
             </div>
             <Textarea placeholder="What is your pet up to?" rows={3} value={form.caption}
               onChange={e => setForm({ ...form, caption: e.target.value })} />
+
+            <input ref={fileRef} type="file" accept="image/*,video/*" className="hidden"
+              onChange={e => pickMedia(e.target.files?.[0])} />
+
+            {mediaPreview ? (
+              <div className="relative rounded-xl overflow-hidden border border-border/40">
+                {mediaFile?.type.startsWith("video/") ? (
+                  <video src={mediaPreview} controls playsInline className="w-full max-h-48 object-contain bg-black" />
+                ) : (
+                  <img src={mediaPreview} alt="Selected pet media preview" className="w-full max-h-48 object-cover" />
+                )}
+                <button onClick={clearMedia} aria-label="Remove media"
+                  className="absolute top-2 right-2 rounded-full bg-background/80 p-1 hover:bg-background">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <Button type="button" variant="outline" className="w-full" onClick={() => fileRef.current?.click()}>
+                <ImagePlus className="h-4 w-4 mr-2" /> Add photo or video
+              </Button>
+            )}
+            <p className="text-[11px] text-muted-foreground">Photos and videos up to {MAX_MEDIA_MB} MB. Everyone in the community can see them.</p>
           </div>
           <DialogFooter>
-            <Button onClick={createPost} disabled={creating} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600">
-              {creating ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <PawPrint className="h-4 w-4 mr-1" />}
-              Post
+            <Button onClick={createPost} disabled={creating || uploading} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600">
+              {creating || uploading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <PawPrint className="h-4 w-4 mr-1" />}
+              {uploading ? "Uploading..." : "Post"}
             </Button>
           </DialogFooter>
+
         </DialogContent>
       </Dialog>
 
