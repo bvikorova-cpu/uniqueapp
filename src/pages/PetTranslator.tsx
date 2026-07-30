@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import PetTranslatorHero from '@/components/pet-translator/PetTranslatorHero';
 import PetToolsGrid from '@/components/pet-translator/PetToolsGrid';
 import PetMoodStreaks from '@/components/pet-translator/PetMoodStreaks';
-import PetLeaderboard from '@/components/pet-translator/PetLeaderboard';
 import PetAchievements from '@/components/pet-translator/PetAchievements';
 import PetPhotoAnalysis from '@/components/pet-translator/PetPhotoAnalysis';
 import PetHealthDashboard from '@/components/pet-translator/PetHealthDashboard';
