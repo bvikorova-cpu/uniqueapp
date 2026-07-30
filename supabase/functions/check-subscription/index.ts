@@ -194,7 +194,17 @@ serve(async (req) => {
         // or exact price ID.
         if (allowedProducts.length === 0 || allowedProducts.includes(productId) || allowedPriceIds.includes(priceId)) {
           matchedProduct = productId;
-          subscriptionEnd = new Date(sub.current_period_end * 1000).toISOString();
+          // Stripe moved current_period_end onto subscription items in newer API
+          // versions; fall back safely so we never build an invalid Date.
+          const periodEnd =
+            (item as any).current_period_end ??
+            (sub as any).current_period_end ??
+            (sub as any).cancel_at ??
+            null;
+          subscriptionEnd =
+            typeof periodEnd === "number" && Number.isFinite(periodEnd)
+              ? new Date(periodEnd * 1000).toISOString()
+              : null;
           hasAccess = true;
           break;
         }
