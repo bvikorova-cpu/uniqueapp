@@ -159,7 +159,7 @@ const PhotoRestoration = () => {
                   </div>
                   {selectedFile && (
                     <Button className="w-full mt-4" onClick={() => handleRestore(type)} disabled={isRestoring || !credits || credits.credits_remaining < 1}>
-                      {isRestoring ? "Restoring..." : `Restore Photo (1 credit)`}
+                      {isRestoring ? "Restoring..." : "Restore Photo"}
                     </Button>
                   )}
                 </div>

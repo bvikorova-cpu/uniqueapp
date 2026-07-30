@@ -80,7 +80,7 @@ export const BackgroundRemoval = ({ onBack }: Props) => {
               )}
             </div>
             <Button className="w-full mt-4" onClick={handleProcess} disabled={loading || !file || (credits?.credits_remaining ?? 0) < 3}>
-              {loading ? "Processing..." : "Remove Background (3 credits)"}
+              {loading ? "Processing..." : "Remove Background"}
             </Button>
           </div>
 
