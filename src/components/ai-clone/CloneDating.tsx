@@ -80,6 +80,15 @@ export function CloneDating() {
     setOpenSession(session);
     if (hasTranscript) return;
     setRunningId(session.id);
+    setProgress(6);
+    setStage(0);
+    clearTimers();
+    timersRef.current.push(
+      setInterval(() => setProgress((p) => (p < 92 ? p + Math.max(1, Math.round((95 - p) / 18)) : p)), 400),
+    );
+    timersRef.current.push(
+      setInterval(() => setStage((s) => Math.min(s + 1, RUN_STAGES.length - 1)), 2600),
+    );
     try {
       const { data, error } = await supabase.functions.invoke("clone-chat", { body: { mode: "date", sessionId: session.id } });
       if (error) throw error;
@@ -90,8 +99,13 @@ export function CloneDating() {
         compatibility_score: data.score ?? session.compatibility_score,
         session_data: { messages: data.messages ?? [], summary: data.summary ?? "" },
       };
+      clearTimers();
+      setProgress(100);
       setOpenSession(updated);
       setSessions((prev) => prev.map((s) => (s.id === session.id ? updated : s)));
+      toast({ title: "The date is ready", description: `Compatibility ${updated.compatibility_score ?? "—"}%` });
+      // refresh from DB so the list always reflects persisted state
+      loadSessions();
     } catch (err: unknown) {
       toast({
         title: "Error",
@@ -99,7 +113,9 @@ export function CloneDating() {
         variant: "destructive",
       });
     } finally {
+      clearTimers();
       setRunningId(null);
+
     }
   };
 
