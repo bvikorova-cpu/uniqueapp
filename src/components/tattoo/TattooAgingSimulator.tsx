@@ -137,12 +137,27 @@ export const TattooAgingSimulator = ({ onBack }: Props) => {
                 <h3 className="font-black text-lg mb-3 bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">
                   Aging Analysis — {years} Years
                 </h3>
-                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-line leading-relaxed">
-                  {result.analysis}
+
+                {result.agedImageUrl && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground mb-1">Today</p>
+                      {tattooImage && <img src={tattooImage} alt="Tattoo today" className="w-full rounded-lg shadow" />}
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-amber-400 mb-1">After {years} years</p>
+                      <img src={result.agedImageUrl} alt={`Tattoo after ${years} years`} className="w-full rounded-lg shadow" />
+                    </div>
+                  </div>
+                )}
+
+                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-line leading-relaxed break-words">
+                  {result.analysis || "No analysis returned. Please try again."}
                 </div>
               </Card>
             </motion.div>
           )}
+
         </div>
       </Card>
     </div>
