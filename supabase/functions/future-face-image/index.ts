@@ -44,9 +44,14 @@ serve(async (req) => {
 
     const cfg = ACTIONS[action];
 
-    // Atomic credit deduction
-    const { data: deducted, error: deductError } = await supabase.rpc("deduct_ai_credits" as any, { p_user_id: user.id, p_amount: cfg.cost });
-    if (deductError) { console.error("deduct error:", deductError); return json({ error: "Credit deduction failed" }, 500); }
+    // Atomic credit deduction (unified ai_credits pool + ledger)
+    const { data: deducted, error: deductError } = await supabase.rpc("spend_unified_ai_credits_for_user" as any, {
+      p_user_id: user.id,
+      p_amount: cfg.cost,
+      p_reason: `future_face_${action}`,
+      p_source: "future-face-image",
+    });
+    if (deductError) { console.error("deduct error:", deductError); return json({ error: `Credit deduction failed: ${deductError.message}` }, 500); }
     if (!deducted) return json({ error: `Insufficient credits. Need ${cfg.cost}.` }, 402);
 
     // Fetch source image(s) and send to OpenAI gpt-image-1 /v1/images/edits
