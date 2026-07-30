@@ -34,32 +34,66 @@ serve(async (req) => {
     const __deduct = __auth.deduct!;
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not configured');
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!OPENAI_API_KEY && !LOVABLE_API_KEY) throw new Error('AI service is not configured');
+
+    const rawFetch = ((globalThis as any).__ORIGINAL_FETCH__ as typeof fetch | undefined) ?? fetch;
+    const OPENAI_CHAT_URL = 'https://api.openai.com/v1/chat/completions';
+    const OPENAI_IMAGE_URL = 'https://api.openai.com/v1/images/generations';
+    const LOVABLE_CHAT_URL = 'https://ai.gateway.lovable.dev/v1/chat/completions';
+    const LOVABLE_IMAGE_URL = 'https://ai.gateway.lovable.dev/v1/images/generations';
 
     const chatCompletion = async (systemPrompt: string, userPrompt: string, maxTokens = 1000) => {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      const messages = [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }];
+      const call = (lovable: boolean) => rawFetch(lovable ? LOVABLE_CHAT_URL : OPENAI_CHAT_URL, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
-          max_completion_tokens: maxTokens }) });
-      if (!response.ok) throw new Error(`OpenAI API error: ${response.status}`);
+        headers: lovable
+          ? { 'Lovable-API-Key': LOVABLE_API_KEY ?? '', 'Content-Type': 'application/json' }
+          : { 'Authorization': `Bearer ${OPENAI_API_KEY ?? ''}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(lovable
+          ? { model: 'google/gemini-3.6-flash', messages, max_tokens: maxTokens }
+          : { model: 'gpt-4o-mini', messages, max_completion_tokens: maxTokens }) });
+
+      let response = LOVABLE_API_KEY ? await call(true) : await call(false);
+      if (!response.ok && LOVABLE_API_KEY && OPENAI_API_KEY) {
+        console.error('Lovable chat failed:', response.status, await response.text().catch(() => ''));
+        response = await call(false);
+      }
+      if (!response.ok) {
+        if (response.status === 429) throw new Error('Rate limit exceeded. Please try again shortly.');
+        throw new Error(`AI text error: ${response.status}`);
+      }
       const data = await response.json();
       return data.choices?.[0]?.message?.content;
     };
 
+    const extractImage = (data: any): string | null => {
+      const b64 = data?.data?.[0]?.b64_json;
+      if (b64) return `data:image/png;base64,${b64}`;
+      const url = data?.data?.[0]?.url;
+      if (url) return url;
+      const fromMessage = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      return fromMessage ?? null;
+    };
+
     const generateImage = async (prompt: string) => {
-      const response = await fetch('https://api.openai.com/v1/images/generations', {
+      const call = (lovable: boolean) => rawFetch(lovable ? LOVABLE_IMAGE_URL : OPENAI_IMAGE_URL, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: "gpt-image-1", prompt, n: 1, size: "1024x1024" }) });
+        headers: { 'Authorization': `Bearer ${(lovable ? LOVABLE_API_KEY : OPENAI_API_KEY) ?? ''}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(lovable
+          ? { model: 'openai/gpt-image-1-mini', prompt, size: '1024x1024', quality: 'low' }
+          : { model: 'gpt-image-1', prompt, n: 1, size: '1024x1024', quality: 'low' }) });
+
+      let response = LOVABLE_API_KEY ? await call(true) : await call(false);
+      if (!response.ok && LOVABLE_API_KEY && OPENAI_API_KEY) {
+        console.error('Lovable image failed:', response.status, await response.text().catch(() => ''));
+        response = await call(false);
+      }
       if (!response.ok) {
         if (response.status === 429) throw new Error('Rate limit exceeded. Please try again shortly.');
         throw new Error(`Image generation error: ${response.status}`);
       }
-      const data = await response.json();
-      const imageUrl = data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null;
+      const imageUrl = extractImage(await response.json());
       if (!imageUrl) throw new Error('No image generated');
       return imageUrl;
     };
