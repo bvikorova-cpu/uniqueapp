@@ -32,23 +32,28 @@ export const BackgroundRemoval = ({ onBack }: Props) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage.from('old-photos').upload(fileName, file);
-      if (uploadError) throw uploadError;
-      const publicUrl = await getReadableUrl('old-photos', fileName);
+      // Send the image inline so no private-bucket signing is required
+      const dataUrl: string = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error("Could not read the file"));
+        reader.readAsDataURL(file);
+      });
 
-      const { data, error } = await supabase.functions.invoke('photo-background-removal', {
-        body: { imageUrl: publicUrl }
+      const { data, error } = await supabase.functions.invoke('future-face-image', {
+        body: { action: 'bg_remove', sourceUrl: dataUrl }
       });
       if (error) throw error;
-      setResult(data.processedImageUrl);
+      if (data?.error) throw new Error(data.error);
+      setResult(data.resultUrl || data.processedImageUrl);
+      window.dispatchEvent(new Event('ai-credits-updated'));
       toast.success("Background removed successfully!");
     } catch (error: any) {
       console.error(error);
       toast.error(error.message || "Failed to process photo");
     } finally { setLoading(false); }
   };
+
 
   return (
     <>
