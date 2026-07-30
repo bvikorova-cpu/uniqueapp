@@ -94,7 +94,10 @@ serve(async (req) => {
 
       aiRes = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
         method: "POST",
-        headers: { "Authorization": `Bearer ${lovableKey}`, "Content-Type": "application/json" },
+        headers: {
+          "Lovable-API-Key": lovableKey,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           model: "google/gemini-3.1-flash-image",
           messages: [{ role: "user", content }],
@@ -111,7 +114,7 @@ serve(async (req) => {
 
     if (!aiRes.ok) {
       const errText = await aiRes.text();
-      console.error("OpenAI image error:", aiRes.status, errText);
+      console.error("Lovable image error:", aiRes.status, errText);
       try {
         const { data: cur } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).single();
         await supabase.from("ai_credits").update({ credits_remaining: (cur?.credits_remaining || 0) + cfg.cost }).eq("user_id", user.id);
