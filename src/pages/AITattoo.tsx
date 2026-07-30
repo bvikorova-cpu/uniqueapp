@@ -19,7 +19,6 @@ import { TattooHero } from "@/components/tattoo/TattooHero";
 import { TattooStyleMixer } from "@/components/tattoo/TattooStyleMixer";
 import { TattooAgingSimulator } from "@/components/tattoo/TattooAgingSimulator";
 import { TattooARPreview } from "@/components/tattoo/TattooARPreview";
-import { TattooArtistMarketplace } from "@/components/tattoo/TattooArtistMarketplace";
 import { TattooColorPalette } from "@/components/tattoo/TattooColorPalette";
 import { TattooMeaningEncyclopedia } from "@/components/tattoo/TattooMeaningEncyclopedia";
 import { TattooCoverUpGenerator } from "@/components/tattoo/TattooCoverUpGenerator";
@@ -28,7 +27,7 @@ import { TattooCareAssistant } from "@/components/tattoo/TattooCareAssistant";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ActiveView = "dashboard" | "generate" | "gallery" | "ar_preview" | "style_mixer" | "aging_sim" | "marketplace" | "color_palette" | "meaning" | "cover_up" | "pain_map" | "care";
+type ActiveView = "dashboard" | "generate" | "gallery" | "ar_preview" | "style_mixer" | "aging_sim" | "color_palette" | "meaning" | "cover_up" | "pain_map" | "care";
 
 interface TattooDesign {
   id: string;
@@ -51,7 +50,6 @@ const TOOLS: { id: ActiveView; icon: any; label: string; desc: string; cost: str
   { id: "pain_map", icon: MapPin, label: "Pain Map", desc: "Detailed pain levels for every body part", cost: "3 credits", gradient: "from-red-500 to-orange-500" },
   { id: "care", icon: ShieldCheck, label: "Care Assistant", desc: "AI healing guide & aftercare checklist", cost: "5 credits", gradient: "from-green-500 to-lime-500" },
   { id: "gallery", icon: Grid3X3, label: "My Collection", desc: "Browse your personal design gallery", cost: "Free", gradient: "from-rose-500 to-orange-500" },
-  { id: "marketplace", icon: Store, label: "Artist Marketplace", desc: "Connect with elite tattoo masters", cost: "Free", gradient: "from-indigo-500 to-violet-500" },
 ];
 
 const styles = [
@@ -164,7 +162,6 @@ const AITattoo = () => {
   if (activeView === "style_mixer") return wrapView(<TattooStyleMixer onBack={goBack} />);
   if (activeView === "aging_sim") return wrapView(<TattooAgingSimulator onBack={goBack} />);
   if (activeView === "ar_preview") return wrapView(<TattooARPreview onBack={goBack} />);
-  if (activeView === "marketplace") return wrapView(<TattooArtistMarketplace onBack={goBack} />);
   if (activeView === "color_palette") return wrapView(<TattooColorPalette onBack={goBack} />);
   if (activeView === "meaning") return wrapView(<TattooMeaningEncyclopedia onBack={goBack} />);
   if (activeView === "cover_up") return wrapView(<TattooCoverUpGenerator onBack={goBack} />);
