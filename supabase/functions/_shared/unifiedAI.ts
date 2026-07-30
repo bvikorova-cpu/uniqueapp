@@ -238,11 +238,11 @@ export async function callUnifiedAIEx(
     throw new UnifiedAIError(500, "AI is not configured. Please add an API key.");
   }
 
-  // TEMPORARY: Lovable AI Gateway is primary; OpenAI only as fallback.
-  // Set the secret AI_PROVIDER=openai to switch back to OpenAI-first.
+  // TEMPORARY PLATFORM-WIDE SWITCH: Lovable AI Gateway ONLY.
+  // OpenAI is not used at all unless the secret AI_PROVIDER=openai is set.
   const openaiFirst = (Deno.env.get("AI_PROVIDER") ?? "").toLowerCase() === "openai";
   const order: boolean[] = lovableKey
-    ? (openaiFirst && openaiKey ? [false, true] : (openaiKey ? [true, false] : [true]))
+    ? (openaiFirst && openaiKey ? [false, true] : [true])
     : [false];
   let lastError: UnifiedAIError | undefined;
 
