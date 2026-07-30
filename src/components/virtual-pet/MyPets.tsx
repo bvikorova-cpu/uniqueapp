@@ -459,12 +459,13 @@ export const MyPets = ({ onSelectPet, selectedPetId }: MyPetsProps) => {
                   </div>
 
                   {/* Action Buttons - styled */}
-                  <div className="grid grid-cols-4 gap-1.5">
+                  <div className="grid grid-cols-5 gap-1.5">
                     {[
                       { icon: Utensils, action: () => feedPetMutation.mutate(pet.id), tip: "Feed", gradient: "hover:bg-orange-500/10 hover:border-orange-500/30 hover:text-orange-500" },
                       { icon: Heart, action: () => playWithPetMutation.mutate(pet.id), tip: "Play", gradient: "hover:bg-pink-500/10 hover:border-pink-500/30 hover:text-pink-500" },
                       { icon: Dumbbell, action: () => trainPetMutation.mutate(pet.id), tip: "Train", gradient: "hover:bg-cyan-500/10 hover:border-cyan-500/30 hover:text-cyan-500" },
                       { icon: Moon, action: () => restPetMutation.mutate(pet.id), tip: "Rest", gradient: "hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-500" },
+                      { icon: isSelected ? Check : Sparkles, action: () => { onSelectPet(pet.id); toast.success(`${pet.name} selected!`); }, tip: isSelected ? "Selected" : "Select", gradient: isSelected ? "bg-primary/10 border-primary/30 text-primary" : "hover:bg-primary/10 hover:border-primary/30 hover:text-primary" },
                     ].map((btn) => (
                       <Button key={btn.tip} size="sm" variant="outline"
                         className={`h-9 px-1 active:scale-[0.93] transition-all duration-200 ${btn.gradient}`}
