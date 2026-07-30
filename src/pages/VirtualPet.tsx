@@ -82,7 +82,7 @@ const VirtualPet = () => {
 
   const renderView = () => {
     switch (activeView) {
-      case "pets": return <MyPets onSelectPet={setSelectedPetId} />;
+      case "pets": return <MyPets onSelectPet={setSelectedPetId} selectedPetId={selectedPetId} />;
       case "battle": return <PetBattle />;
       case "shop": return <PetShop />;
       case "customize": return <PetCustomization selectedPetId={selectedPetId} />;
