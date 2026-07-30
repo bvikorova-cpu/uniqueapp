@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -80,6 +80,48 @@ export const PetTrading = () => {
     },
     enabled: !!user
   });
+
+  // Realtime: nové ponuky a výsledky accept/reject bez refreshu.
+  useEffect(() => {
+    if (!user) return;
+    const refresh = () => {
+      queryClient.invalidateQueries({ queryKey: ['my-trades'] });
+      queryClient.invalidateQueries({ queryKey: ['public-trades', user.id] });
+      queryClient.invalidateQueries({ queryKey: ['my-pets-trading'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
+    };
+
+    const channel = supabase
+      .channel(`pet-trades-rt-${user.id}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pet_trades' }, (payload) => {
+        const row: any = payload.new ?? payload.old;
+        if (!row) return;
+        const isOpenOffer = !row.to_user_id;
+        const involvesMe = row.from_user_id === user.id || row.to_user_id === user.id;
+        if (!involvesMe && !isOpenOffer) return;
+
+        refresh();
+
+        if (payload.eventType === 'INSERT' && row.from_user_id !== user.id) {
+          if (row.to_user_id === user.id) {
+            toast.info('📨 New trade offer for you!');
+          } else if (isOpenOffer) {
+            toast.info('🛒 A new open offer appeared on the trade board');
+          }
+        }
+
+        if (payload.eventType === 'UPDATE' && row.from_user_id === user.id) {
+          const prev: any = payload.old;
+          if (prev?.status !== row.status) {
+            if (row.status === 'completed') toast.success('✅ Your trade offer was accepted!');
+            if (row.status === 'rejected') toast.error('❌ Your trade offer was rejected');
+          }
+        }
+      })
+      .subscribe();
+
+    return () => { void supabase.removeChannel(channel); };
+  }, [user?.id, queryClient]);
 
 
   const createTradeMutation = useMutation({
