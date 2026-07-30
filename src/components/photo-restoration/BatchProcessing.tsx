@@ -63,9 +63,9 @@ export const BatchProcessing = ({ onBack }: Props) => {
             action: operation === "repair" ? "photo_repair" : operation === "enhance" ? "photo_enhance" : "photo_colorize",
             sourceUrl: publicUrl };
 
-          if (operation === "background-removal") { fnName = "photo-background-removal"; body = { imageUrl: publicUrl }; }
-          else if (operation === "face-enhancement") { fnName = "photo-face-enhancement"; body = { imageUrl: publicUrl }; }
-          else if (operation === "colorization-pro") { fnName = "photo-colorization-pro"; body = { imageUrl: publicUrl, era: "auto" }; }
+          if (operation === "background-removal") { body = { action: "bg_remove", sourceUrl: publicUrl }; }
+          else if (operation === "face-enhancement") { body = { action: "face_enhance", sourceUrl: publicUrl }; }
+          else if (operation === "colorization-pro") { body = { action: "photo_colorize", sourceUrl: publicUrl }; }
 
           const { data, error } = await supabase.functions.invoke(fnName, { body });
           if (error) throw error;

@@ -24,6 +24,8 @@ const ACTIONS: Record<string, { cost: number; prompt: (p: any) => string }> = {
   photo_colorize: { cost: 1, prompt: () => `Colorize this old black-and-white or sepia photograph with realistic, period-accurate colors. Natural skin tones, believable clothing and scenery colors. Keep every detail, composition and grain structure identical. Photorealistic result.` },
   photo_repair: { cost: 1, prompt: () => `Restore this damaged old photograph: remove scratches, dust, stains, creases and tears, repair missing areas naturally. Keep the original composition, subjects and tonality unchanged. Photorealistic restoration.` },
   photo_enhance: { cost: 1, prompt: () => `Enhance this photograph: increase sharpness and clarity, reduce noise and blur, improve contrast and dynamic range, recover fine detail. Do not change composition, colors or content. Photorealistic.` },
+  bg_remove: { cost: 3, prompt: () => `Remove the background completely from this image. Keep only the main subject with clean, precise edges (including fine details like hair). Place the subject on a plain solid white background. Do not alter the subject itself.` },
+  face_enhance: { cost: 3, prompt: () => `Enhance the faces in this photo: sharpen facial detail, reduce noise and blur, improve skin texture naturally and fix lighting. Keep identity, expression, composition and background unchanged. Photorealistic.` },
   mood_emotion: { cost: 5, prompt: ({ mood }) => `Re-render this face expressing the emotion: ${mood || "joyful happiness"}. Adjust facial muscles, mouth, eyes and brows naturally. Keep identity, hair, lighting and background unchanged. Photorealistic.` } };
 
 serve(async (req) => {
