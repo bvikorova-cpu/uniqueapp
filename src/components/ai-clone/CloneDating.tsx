@@ -70,10 +70,9 @@ export function CloneDating() {
       if (!user) { setSessions([]); return; }
       const { data: clones } = await supabase
         .from("personality_clones")
-        .select("id, clone_name, personality_data")
+        .select("id")
         .eq("user_id", user.id);
-      const myClones = (clones ?? []) as MatchClone[];
-      const ids = myClones.map((c) => c.id);
+      const ids = (clones ?? []).map((c: { id: string }) => c.id);
       if (!ids.length) { setSessions([]); return; }
       const { data } = await supabase
         .from("clone_dating_sessions")
@@ -84,10 +83,44 @@ export function CloneDating() {
       const rows = (data as DatingSession[]) ?? [];
       setSessions(rows);
 
-      // Chat always targets the user's OWN clone taking part in the session.
+      // Chat always targets ANOTHER user's clone (the date partner), never my own.
+      const mine = new Set(ids);
+      const partnerIds = Array.from(new Set(
+        rows.flatMap((r) => [r.clone_1_id, r.clone_2_id].filter((cid): cid is string => !!cid && !mine.has(cid))),
+      ));
+      const byId: Record<string, MatchClone> = {};
+      if (partnerIds.length) {
+        const { data: partnerRows } = await supabase
+          .from("personality_clones")
+          .select("id, clone_name, personality_data")
+          .in("id", partnerIds);
+        (partnerRows ?? []).forEach((c: any) => { byId[c.id] = c as MatchClone; });
+      }
+
+      // Fallback pool: random clones from other users for sessions without a partner.
+      const needsFallback = rows.some(
+        (r) => !( (r.clone_1_id && byId[r.clone_1_id]) || (r.clone_2_id && byId[r.clone_2_id]) ),
+      );
+      let pool: MatchClone[] = [];
+      if (needsFallback) {
+        const { data: others } = await supabase
+          .from("personality_clones")
+          .select("id, clone_name, personality_data")
+          .neq("user_id", user.id)
+          .limit(50);
+        pool = (others ?? []) as MatchClone[];
+      }
+
       const map: Record<string, MatchClone> = {};
-      myClones.forEach((c) => { map[c.id] = c; });
+      rows.forEach((r) => {
+        const partner =
+          (r.clone_1_id && byId[r.clone_1_id]) ||
+          (r.clone_2_id && byId[r.clone_2_id]) ||
+          (pool.length ? pool[Math.floor(Math.random() * pool.length)] : null);
+        if (partner) map[r.id] = partner;
+      });
       setMatches(map);
+
 
     } finally {
       setLoadingSessions(false);
