@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { getReadableUrl } from "@/lib/storageSigned";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -40,11 +39,15 @@ export const DamageDetection = ({ onBack }: Props) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage.from('old-photos').upload(fileName, file);
-      if (uploadError) throw uploadError;
-      const publicUrl = await getReadableUrl('old-photos', fileName);
+      // Send the image inline as a data URL — the private `old-photos` bucket
+      // is not fetchable by the AI provider, which returned a 400.
+      const publicUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error("Could not read the selected photo"));
+        reader.readAsDataURL(file);
+      });
+
 
       const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
         body: {
