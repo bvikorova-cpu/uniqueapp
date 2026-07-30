@@ -92,15 +92,12 @@ export const PetTrading = () => {
     mutationFn: async ({ tradeId, accept }: { tradeId: string; accept: boolean }) => {
       if (!user) throw new Error('Not authenticated');
       if (accept) {
-        const trade = myTrades?.find(t => t.id === tradeId);
-        if (!trade) throw new Error('Trade not found');
-        if (trade.offered_pet_id) await supabase.from('pets').update({ user_id: trade.to_user_id }).eq('id', trade.offered_pet_id);
-        if (trade.requested_pet_id) await supabase.from('pets').update({ user_id: trade.from_user_id }).eq('id', trade.requested_pet_id);
+        const { data, error } = await (supabase as any).rpc('accept_pet_trade', { p_trade_id: tradeId });
+        if (error) throw error;
+        return data;
       }
       const { data, error } = await supabase.from('pet_trades').update({
-        status: accept ? 'completed' : 'rejected',
-        accepted_at: accept ? new Date().toISOString() : null,
-        completed_at: accept ? new Date().toISOString() : null
+        status: 'rejected'
       }).eq('id', tradeId).select().single();
       if (error) throw error;
       return data;
@@ -108,9 +105,14 @@ export const PetTrading = () => {
     onSuccess: (_, { accept }) => {
       queryClient.invalidateQueries({ queryKey: ['my-trades'] });
       queryClient.invalidateQueries({ queryKey: ['my-pets'] });
-      toast.success(accept ? 'Trade accepted! Pets exchanged. ✅' : 'Trade rejected ❌');
+      queryClient.invalidateQueries({ queryKey: ['my-pets-trading'] });
+      queryClient.invalidateQueries({ queryKey: ['all-pets-for-trading'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
+      if (accept) window.dispatchEvent(new CustomEvent('ai-credits-updated'));
+      toast.success(accept ? 'Trade completed! Pets and credits transferred. ✅' : 'Trade rejected ❌');
     },
     onError: (error: any) => toast.error(error.message || 'Failed to respond')
+
   });
 
   const getStatusVariant = (status: string) => {
