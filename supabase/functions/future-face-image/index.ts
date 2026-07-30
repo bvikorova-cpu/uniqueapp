@@ -92,44 +92,83 @@ serve(async (req) => {
       return `data:${blob.type || "image/png"};base64,${btoa(bin)}`;
     }
 
-    let aiRes: Response;
+    const refund = async () => {
+      try {
+        const { data: cur } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).single();
+        await supabase.from("ai_credits").update({ credits_remaining: (cur?.credits_remaining || 0) + cfg.cost }).eq("user_id", user.id);
+      } catch (_) {}
+    };
+
+    const extractImage = (d: any): string | undefined => {
+      const m0 = d?.choices?.[0]?.message;
+      const chatImg =
+        m0?.images?.[0]?.image_url?.url ||
+        (Array.isArray(m0?.content)
+          ? m0.content.find((c: any) => c?.type === "image_url")?.image_url?.url
+          : undefined);
+      const b64x = d?.data?.[0]?.b64_json;
+      return b64x ? `data:image/png;base64,${b64x}` : (d?.data?.[0]?.url || chatImg);
+    };
+
+    let content: any[];
     try {
-      const content: any[] = [{ type: "text", text: cfg.prompt(params || {}).slice(0, 4000) }];
+      content = [{ type: "text", text: cfg.prompt(params || {}).slice(0, 4000) }];
       content.push({ type: "image_url", image_url: { url: await toDataUrl(sourceUrl) } });
       if (sourceUrl2) content.push({ type: "image_url", image_url: { url: await toDataUrl(sourceUrl2) } });
-
-      aiRes = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-        method: "POST",
-        headers: {
-          "Lovable-API-Key": lovableKey,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3.1-flash-image",
-          messages: [{ role: "user", content }],
-          modalities: ["image", "text"],
-        }) });
     } catch (e: any) {
-      console.error("Lovable image edit fetch error:", e);
-      try {
-        const { data: cur } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).single();
-        await supabase.from("ai_credits").update({ credits_remaining: (cur?.credits_remaining || 0) + cfg.cost }).eq("user_id", user.id);
-      } catch (_) {}
-      return json({ error: "Image generation failed. Credits refunded." }, 502);
+      console.error("Source image read error:", e);
+      await refund();
+      return json({ error: "Could not read the source image. Credits refunded." }, 502);
     }
 
-    if (!aiRes.ok) {
-      const errText = await aiRes.text();
-      console.error("Lovable image error:", aiRes.status, errText);
+    let aiData: any = null;
+    let imageUrl: string | undefined;
+    const models = ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"];
+
+    for (const model of models) {
+      let aiRes: Response;
       try {
-        const { data: cur } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).single();
-        await supabase.from("ai_credits").update({ credits_remaining: (cur?.credits_remaining || 0) + cfg.cost }).eq("user_id", user.id);
-      } catch (_) {}
-      if (aiRes.status === 429) return json({ error: "Rate limit exceeded. Try again shortly." }, 429);
-      return json({ error: "Image generation failed. Credits refunded." }, 502);
+        aiRes = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+          method: "POST",
+          headers: {
+            "Lovable-API-Key": lovableKey,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model,
+            messages: [{ role: "user", content }],
+            modalities: ["image", "text"],
+          }) });
+      } catch (e: any) {
+        console.error("Lovable image edit fetch error:", model, e);
+        continue;
+      }
+
+      if (!aiRes.ok) {
+        const errText = await aiRes.text();
+        console.error("Lovable image error:", model, aiRes.status, errText);
+        if (aiRes.status === 429) {
+          await refund();
+          return json({ error: "Rate limit exceeded. Try again shortly." }, 429);
+        }
+        if (aiRes.status === 402) {
+          await refund();
+          return json({ error: "AI credits exhausted. Please try again later." }, 402);
+        }
+        continue;
+      }
+
+      aiData = await aiRes.json();
+      imageUrl = extractImage(aiData);
+      if (imageUrl) break;
+      console.error("No image in AI response", model, JSON.stringify(aiData).slice(0, 800));
     }
 
-    const aiData = await aiRes.json();
+    if (!imageUrl) {
+      await refund();
+      return json({ error: "The AI could not generate an image for this photo. Credits refunded — try another photo." }, 502);
+    }
+
     const msg = aiData?.choices?.[0]?.message;
     const chatImg =
       msg?.images?.[0]?.image_url?.url ||
