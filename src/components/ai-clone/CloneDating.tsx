@@ -70,10 +70,9 @@ export function CloneDating() {
       if (!user) { setSessions([]); return; }
       const { data: clones } = await supabase
         .from("personality_clones")
-        .select("id, clone_name, personality_data")
+        .select("id")
         .eq("user_id", user.id);
-      const myClones = (clones ?? []) as MatchClone[];
-      const ids = myClones.map((c) => c.id);
+      const ids = (clones ?? []).map((c: { id: string }) => c.id);
       if (!ids.length) { setSessions([]); return; }
       const { data } = await supabase
         .from("clone_dating_sessions")
@@ -84,10 +83,44 @@ export function CloneDating() {
       const rows = (data as DatingSession[]) ?? [];
       setSessions(rows);
 
-      // Chat always targets the user's OWN clone taking part in the session.
+      // Chat always targets ANOTHER user's clone (the date partner), never my own.
+      const mine = new Set(ids);
+      const partnerIds = Array.from(new Set(
+        rows.flatMap((r) => [r.clone_1_id, r.clone_2_id].filter((cid): cid is string => !!cid && !mine.has(cid))),
+      ));
+      const byId: Record<string, MatchClone> = {};
+      if (partnerIds.length) {
+        const { data: partnerRows } = await supabase
+          .from("personality_clones")
+          .select("id, clone_name, personality_data")
+          .in("id", partnerIds);
+        (partnerRows ?? []).forEach((c: any) => { byId[c.id] = c as MatchClone; });
+      }
+
+      // Fallback pool: random clones from other users for sessions without a partner.
+      const needsFallback = rows.some(
+        (r) => !( (r.clone_1_id && byId[r.clone_1_id]) || (r.clone_2_id && byId[r.clone_2_id]) ),
+      );
+      let pool: MatchClone[] = [];
+      if (needsFallback) {
+        const { data: others } = await supabase
+          .from("personality_clones")
+          .select("id, clone_name, personality_data")
+          .neq("user_id", user.id)
+          .limit(50);
+        pool = (others ?? []) as MatchClone[];
+      }
+
       const map: Record<string, MatchClone> = {};
-      myClones.forEach((c) => { map[c.id] = c; });
+      rows.forEach((r) => {
+        const partner =
+          (r.clone_1_id && byId[r.clone_1_id]) ||
+          (r.clone_2_id && byId[r.clone_2_id]) ||
+          (pool.length ? pool[Math.floor(Math.random() * pool.length)] : null);
+        if (partner) map[r.id] = partner;
+      });
       setMatches(map);
+
 
     } finally {
       setLoadingSessions(false);
@@ -141,9 +174,10 @@ export function CloneDating() {
 
   const matchOf = useCallback((s: DatingSession | null): MatchClone | null => {
     if (!s) return null;
-    // Always the user's own clone from this session.
-    return matches[s.clone_1_id ?? ""] ?? matches[s.clone_2_id ?? ""] ?? null;
+    // The date partner: another user's clone, resolved per session.
+    return matches[s.id] ?? null;
   }, [matches]);
+
 
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
@@ -416,7 +450,7 @@ export function CloneDating() {
             "Your AI clone is matched with another compatible clone",
             "They have an automatic conversation for 10 minutes",
             "AI analyzes compatibility and generates a match score",
-            "Review the conversation, then chat live with your own clone",
+            "Review the conversation, then chat live yourself with the matched clone of another user",
           ].map((step, i) => (
             <div key={i} className="flex gap-3">
               <Badge variant="outline" className="h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0">{i + 1}</Badge>
