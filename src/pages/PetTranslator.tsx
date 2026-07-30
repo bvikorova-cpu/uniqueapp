@@ -27,7 +27,6 @@ import PetSoundWall from '@/components/pet-translator/PetSoundWall';
 import PetTrainingCourses from '@/components/pet-translator/PetTrainingCourses';
 import PetSymptomChecker from '@/components/pet-translator/PetSymptomChecker';
 import PetWearableTeaser from '@/components/pet-translator/PetWearableTeaser';
-import PetLanguageSelector from '@/components/pet-translator/PetLanguageSelector';
 import PetActiveSwitcher from '@/components/pet-translator/PetActiveSwitcher';
 import PetCrossPromo from '@/components/pet-translator/PetCrossPromo';
 import { trackPetActivity } from '@/lib/petLover';
@@ -116,7 +115,7 @@ const PetTranslator = () => {
               </div>
               <h2 className="text-3xl font-black mb-4">Unlock AI Pet Translation</h2>
               <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-                Subscribe to access 12 powerful AI tools, gamification, and weekly challenges
+                Subscribe to access 12 powerful AI tools, streaks and achievements
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
                 {[
@@ -148,7 +147,6 @@ const PetTranslator = () => {
               <PetDailyTip />
               <div className="flex items-center gap-2">
                 <PetActiveSwitcher />
-                <PetLanguageSelector />
               </div>
             </div>
             <div className="mb-4"><PetCrossPromo side="translator" /></div>

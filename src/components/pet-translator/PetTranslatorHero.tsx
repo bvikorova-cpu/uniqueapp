@@ -32,7 +32,6 @@ export default function PetTranslatorHero({ totalTranslations, totalUsers, strea
 
   const statCards = [
     { value: totalTranslations > 0 ? totalTranslations.toLocaleString() : "—", label: "Translations", icon: Mic, accent: "from-purple-500/20 to-violet-500/10", iconColor: "text-purple-400" },
-    { value: `${timeLeft.hours}h ${timeLeft.minutes}m`, label: "Challenge Ends", icon: Sparkles, accent: "from-pink-500/20 to-rose-500/10", iconColor: "text-pink-400" },
     { value: totalUsers > 0 ? totalUsers.toLocaleString() : "—", label: "Pet Owners", icon: Users, accent: "from-violet-500/20 to-purple-500/10", iconColor: "text-violet-400" },
     { value: streak > 0 ? `${streak}🔥` : "—", label: "Your Streak", icon: Heart, accent: "from-fuchsia-500/20 to-pink-500/10", iconColor: "text-fuchsia-400" },
   ];
@@ -95,7 +94,7 @@ export default function PetTranslatorHero({ totalTranslations, totalUsers, strea
       </motion.div>
 
       {/* Stat Cards below video */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         {statCards.map((item, i) => (
           <motion.div
             key={item.label}
