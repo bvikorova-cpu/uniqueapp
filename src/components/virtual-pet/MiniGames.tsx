@@ -288,30 +288,7 @@ export const MiniGames = ({ selectedPetId, onSelectPet }: MiniGamesProps) => {
         ))}
       </div>
 
-      {/* Leaderboard */}
-      <Card className="border-border/40 bg-card/80 backdrop-blur-xl">
-        <CardContent className="p-4">
-          <h3 className="font-black text-sm mb-3 flex items-center gap-2"><Trophy className="h-4 w-4 text-amber-500" />Leaderboard</h3>
-          {leaderboard && leaderboard.length > 0 ? (
-            <div className="space-y-1.5">
-              {leaderboard.map((entry, index) => (
-                <div key={entry.id} className="flex items-center justify-between p-2 rounded-lg bg-background/30">
-                  <div className="flex items-center gap-2">
-                    <span className="font-black text-sm w-6">#{index + 1}</span>
-                    <div>
-                      <p className="font-bold text-xs">{entry.pets?.name || 'Unknown'}</p>
-                      <p className="text-[10px] text-muted-foreground capitalize">{entry.game_type}</p>
-                    </div>
-                  </div>
-                  <Badge variant="outline" className="gap-1"><Star className="h-3 w-3 text-amber-500" />{entry.score}</Badge>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-xs text-muted-foreground text-center py-4">No scores yet. Be the first to play!</p>
-          )}
-        </CardContent>
-      </Card>
+
     </motion.div>
   );
 };
