@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
 
       const { data: clones } = await admin
         .from("personality_clones")
-        .select("id, user_id, clone_name, personality_summary")
+        .select("id, user_id, clone_name, personality_data")
         .in("id", [session.clone_1_id, session.clone_2_id]);
       if (!(clones ?? []).some((c: any) => c.user_id === user.id)) return j({ error: "Forbidden" }, 403);
 
@@ -55,14 +55,18 @@ Deno.serve(async (req) => {
       if (apiKey) {
         const prompt = `Write a short speed-dating conversation between two AI personality clones.
 Clone A: ${nameA}. Personality: ${a?.personality_summary ?? "friendly, curious"}.
-Clone B: ${nameB}. Personality: ${b?.personality_summary ?? "warm, playful"}.
+Clone B: ${nameB}. Personality: ${JSON.stringify(b?.personality_data ?? { personality: "warm, playful" })}.
 Return STRICT JSON only, no markdown:
 {"messages":[{"speaker":"${nameA}","text":"..."},{"speaker":"${nameB}","text":"..."}],"summary":"2-3 sentences about the chemistry","score":0-100}
 Use 8 alternating messages, each max 200 characters, in English.`;
         try {
           const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
             method: "POST",
-            headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+            headers: {
+              "Lovable-API-Key": apiKey,
+              "X-Lovable-AIG-SDK": "vercel-ai-sdk",
+              "Content-Type": "application/json",
+            },
             body: JSON.stringify({ model: "google/gemini-3.6-flash", messages: [{ role: "user", content: prompt }] }),
           });
           if (res.ok) {
