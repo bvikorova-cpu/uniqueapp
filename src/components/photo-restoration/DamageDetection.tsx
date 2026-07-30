@@ -46,12 +46,32 @@ export const DamageDetection = ({ onBack }: Props) => {
       if (uploadError) throw uploadError;
       const publicUrl = await getReadableUrl('old-photos', fileName);
 
-      const { data, error } = await supabase.functions.invoke('photo-damage-detection', {
-        body: { imageUrl: publicUrl }
+      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: {
+          task: 'photo_damage',
+          imageUrl: publicUrl,
+          prompt:
+            'Analyze this old photo for damage. Reply with ONLY valid JSON (no markdown fences) in this exact shape: ' +
+            '{"overallScore":0-100,"damages":[{"type":"","severity":"low|medium|high","location":"","repairDifficulty":"easy|moderate|hard"}],' +
+            '"recommendation":"","estimatedRepairCredits":4}'
+        }
       });
       if (error) throw error;
-      setReport(data);
+      if ((data as any)?.error) throw new Error((data as any).error);
+
+      const raw = String((data as any)?.result ?? (data as any)?.text ?? "");
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error("Could not read the damage report. Please try again.");
+      const parsed = JSON.parse(match[0]);
+      setReport({
+        overallScore: Math.max(0, Math.min(100, Number(parsed.overallScore) || 0)),
+        damages: Array.isArray(parsed.damages) ? parsed.damages : [],
+        recommendation: parsed.recommendation || "Standard restoration recommended.",
+        estimatedRepairCredits: Number(parsed.estimatedRepairCredits) || 4 });
+      window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Damage analysis complete!");
+
+
     } catch (error: any) {
       console.error(error);
       toast.error(error.message || "Failed to analyze photo");
