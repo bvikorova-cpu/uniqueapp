@@ -149,22 +149,27 @@ export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
 
       <Card className="border-border/40 bg-card/80 backdrop-blur-xl">
         <CardContent className="p-4">
-          <h3 className="font-black text-sm mb-3">Your Accessories ({ownedAccessories?.length || 0})</h3>
+          <h3 className="font-black text-sm mb-1">My Inventory ({ownedAccessories?.length || 0})</h3>
+          <p className="text-[10px] text-muted-foreground mb-3">Tap an item to see its details, stats and which pets can wear it.</p>
           {ownedAccessories && ownedAccessories.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {ownedAccessories.map((item, i) => {
+                const acc: any = item.pet_accessories;
                 const isEquipped = equippedIds.includes(item.accessory_id);
+                const rarity = (acc?.rarity || 'common') as string;
                 return (
                   <motion.div key={item.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }}>
-                    <Card className={`cursor-pointer transition-all active:scale-[0.95] ${
+                    <Card className={`cursor-pointer transition-all active:scale-[0.95] h-full ${
                       isEquipped ? 'border-primary/50 bg-primary/5' : 'border-border/40 hover:border-primary/20'
-                    }`} onClick={() => equipMutation.mutate(item.accessory_id)}>
+                    }`} onClick={() => setDetailItem(item)}>
                       <CardContent className="p-3 text-center space-y-1">
-                        <p className="font-bold text-xs">{item.pet_accessories?.name}</p>
-                        <p className="text-[10px] text-muted-foreground capitalize">{item.pet_accessories?.accessory_type}</p>
-                        <Badge variant={isEquipped ? 'default' : 'outline'} className="text-[9px]">
-                          {isEquipped ? <><Check className="h-2.5 w-2.5 mr-0.5" />Equipped</> : 'Equip'}
-                        </Badge>
+                        <p className="font-bold text-xs line-clamp-1">{acc?.name}</p>
+                        <p className="text-[10px] text-muted-foreground capitalize">{acc?.accessory_type}</p>
+                        <Badge variant="outline" className={`text-[9px] capitalize ${RARITY_STYLES[rarity] || RARITY_STYLES.common}`}>{rarity}</Badge>
+                        <div className="flex items-center justify-center gap-1 pt-0.5">
+                          {isEquipped && <Badge className="text-[9px]"><Check className="h-2.5 w-2.5 mr-0.5" />Equipped</Badge>}
+                          <Badge variant="secondary" className="text-[9px] gap-0.5"><Info className="h-2.5 w-2.5" />Details</Badge>
+                        </div>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -178,6 +183,92 @@ export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={!!detailItem} onOpenChange={(o) => !o && setDetailItem(null)}>
+        <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
+          {detailItem && (() => {
+            const acc: any = detailItem.pet_accessories;
+            const rarity = (acc?.rarity || 'common') as string;
+            const effect = (acc?.effect || {}) as Record<string, any>;
+            const stats = Object.entries(effect).filter(([, v]) => typeof v === 'number');
+            const isBattleGear = ['armor', 'weapon', 'helmet', 'boots', 'amulet', 'shield'].includes(acc?.accessory_type);
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    {isBattleGear ? <Sword className="h-4 w-4 text-primary" /> : <Sparkles className="h-4 w-4 text-primary" />}
+                    {acc?.name}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {acc?.description || 'A special item for your pet.'}
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline" className={`capitalize ${RARITY_STYLES[rarity] || RARITY_STYLES.common}`}>{rarity}</Badge>
+                  <Badge variant="secondary" className="capitalize">{acc?.accessory_type}</Badge>
+                  <Badge variant="outline">{isBattleGear ? 'Battle gear' : 'Cosmetic'}</Badge>
+                  {acc?.is_premium && <Badge className="bg-amber-500/15 text-amber-600 border-amber-500/30">Premium</Badge>}
+                </div>
+
+                <div className="rounded-xl border border-border/40 p-3">
+                  <p className="font-black text-xs mb-2 flex items-center gap-1"><Shield className="h-3 w-3 text-primary" /> Stats</p>
+                  {stats.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      {stats.map(([key, value]) => (
+                        <div key={key} className="flex items-center justify-between rounded-lg bg-muted/40 px-2 py-1.5">
+                          <span className="text-[11px] capitalize">{STAT_LABELS[key] || key.replace(/_/g, ' ')}</span>
+                          <span className="text-[11px] font-black text-primary">{Number(value) > 0 ? `+${value}` : value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-muted-foreground">Purely cosmetic — no battle stats, just style points.</p>
+                  )}
+                </div>
+
+                <div className="rounded-xl border border-border/40 p-3">
+                  <p className="font-black text-xs mb-2">Equip on a pet</p>
+                  {myPets && myPets.length > 0 ? (
+                    <div className="space-y-2">
+                      {myPets.map((pet: any) => {
+                        const petEquipped = ((pet.customization as any)?.equipped_accessories || []) as string[];
+                        const on = petEquipped.includes(detailItem.accessory_id);
+                        return (
+                          <div key={pet.id} className="flex items-center justify-between gap-2 rounded-lg bg-muted/30 px-2 py-1.5">
+                            <div className="min-w-0">
+                              <p className="text-xs font-bold truncate">{pet.name}</p>
+                              <p className="text-[10px] text-muted-foreground capitalize">{pet.pet_types?.name} • Level {pet.level}</p>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant={on ? 'default' : 'outline'}
+                              className="h-7 text-[11px] shrink-0"
+                              disabled={equipToPetMutation.isPending}
+                              onClick={() => equipToPetMutation.mutate({ petId: pet.id, accessoryId: detailItem.accessory_id })}
+                            >
+                              {on ? <><Check className="h-3 w-3 mr-1" />Equipped</> : 'Equip'}
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-3">
+                      <p className="text-[11px] text-muted-foreground mb-2">You have no pets yet.</p>
+                      <Button size="sm" className="gap-1" onClick={() => navigate('/virtual-pet?tab=pets')}>
+                        Adopt a pet <ArrowRight className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
+                  <p className="text-[10px] text-muted-foreground mt-2">Every item can be worn by any of your pets, one pet at a time per pet slot. Battle gear boosts power in the Battle Arena.</p>
+                </div>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </motion.div>
+
   );
 };
