@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getReadableUrl } from "@/lib/storageSigned";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,19 +14,41 @@ const STEPS = [10, 20, 30, 40, 50];
 
 export default function FutureFaceMultiAgeTimeline() {
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
+  const [sourcePreviewUrl, setSourcePreviewUrl] = useState<string | null>(null);
   const [results, setResults] = useState<Record<number, string>>({});
   const [loading, setLoading] = useState<number | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const localPreviewRef = useRef<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  useEffect(() => () => {
+    if (localPreviewRef.current) URL.revokeObjectURL(localPreviewRef.current);
+  }, []);
+
   const handleUpload = async (file: File | null) => {
     if (!file) return;
+    if (localPreviewRef.current) URL.revokeObjectURL(localPreviewRef.current);
+    const localPreview = URL.createObjectURL(file);
+    localPreviewRef.current = localPreview;
+    setSourcePreviewUrl(localPreview);
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { navigate("/auth"); return; }
+    if (!session) {
+      URL.revokeObjectURL(localPreview);
+      localPreviewRef.current = null;
+      setSourcePreviewUrl(null);
+      navigate("/auth");
+      return;
+    }
     const path = `${session.user.id}/timeline-${Date.now()}.${file.name.split(".").pop()}`;
     const { error } = await supabase.storage.from("future-face-photos").upload(path, file, { contentType: file.type });
-    if (error) { toast({ title: "Upload failed", description: error.message, variant: "destructive" }); return; }
+    if (error) {
+      URL.revokeObjectURL(localPreview);
+      localPreviewRef.current = null;
+      setSourcePreviewUrl(null);
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+      return;
+    }
     setSourceUrl((await getReadableUrl("future-face-photos", path)));
     setResults({});
   };
@@ -60,8 +82,8 @@ export default function FutureFaceMultiAgeTimeline() {
       </div>
       <Card className="border-cyan-500/20 bg-gradient-to-br from-cyan-500/5 to-purple-500/5">
         <CardContent className="p-4 space-y-4">
-          {sourceUrl ? (
-            <img src={sourceUrl} alt="You today" className="w-32 h-32 object-cover rounded-lg border-2 border-cyan-500/40 mx-auto" />
+          {sourcePreviewUrl ? (
+            <img src={sourcePreviewUrl} alt="You today" className="w-32 h-32 object-cover rounded-lg border-2 border-cyan-500/40 mx-auto" />
           ) : (
             <Button variant="outline" onClick={() => fileRef.current?.click()} className="w-full">
               <Upload className="h-4 w-4 mr-2" /> Upload your photo
@@ -78,7 +100,7 @@ export default function FutureFaceMultiAgeTimeline() {
           {sourceUrl && (
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               <div className="text-center">
-                <img src={sourceUrl} alt="Today" className="w-full aspect-square object-cover rounded-lg border border-border/40" />
+                 <img src={sourcePreviewUrl || sourceUrl} alt="Today" className="w-full aspect-square object-cover rounded-lg border border-border/40" />
                 <p className="text-[10px] font-bold mt-1">Today</p>
               </div>
               {STEPS.map(y => (
