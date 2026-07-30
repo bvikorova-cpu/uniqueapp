@@ -58,8 +58,10 @@ export const BatchProcessing = ({ onBack }: Props) => {
           await supabase.storage.from('old-photos').upload(fileName, item.file);
           const publicUrl = await getReadableUrl('old-photos', fileName);
 
-          let fnName = "restore-old-photo";
-          let body: any = { imageUrl: publicUrl, restorationType: operation };
+          let fnName = "future-face-image";
+          let body: any = {
+            action: operation === "repair" ? "photo_repair" : operation === "enhance" ? "photo_enhance" : "photo_colorize",
+            sourceUrl: publicUrl };
 
           if (operation === "background-removal") { fnName = "photo-background-removal"; body = { imageUrl: publicUrl }; }
           else if (operation === "face-enhancement") { fnName = "photo-face-enhancement"; body = { imageUrl: publicUrl }; }
@@ -68,7 +70,7 @@ export const BatchProcessing = ({ onBack }: Props) => {
           const { data, error } = await supabase.functions.invoke(fnName, { body });
           if (error) throw error;
 
-          const resultUrl = data.restoredImageUrl || data.processedImageUrl || data.enhancedImageUrl || data.colorizedImageUrl || "";
+          const resultUrl = data.resultUrl || data.restoredImageUrl || data.processedImageUrl || data.enhancedImageUrl || data.colorizedImageUrl || "";
           setItems(prev => prev.map((p, idx) => idx === i ? { ...p, status: "done", result: resultUrl } : p));
         } catch {
           setItems(prev => prev.map((p, idx) => idx === i ? { ...p, status: "error" } : p));
