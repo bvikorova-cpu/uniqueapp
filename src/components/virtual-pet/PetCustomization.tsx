@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Palette, Check, ArrowRight } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Palette, Check, ArrowRight, Sparkles, Shield, Sword, Info } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -13,9 +15,31 @@ interface PetCustomizationProps {
   selectedPetId: string | null;
 }
 
+const RARITY_STYLES: Record<string, string> = {
+  common: 'bg-muted text-muted-foreground border-border',
+  uncommon: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30',
+  rare: 'bg-sky-500/10 text-sky-600 border-sky-500/30',
+  epic: 'bg-violet-500/10 text-violet-600 border-violet-500/30',
+  legendary: 'bg-amber-500/10 text-amber-600 border-amber-500/30',
+};
+
+const STAT_LABELS: Record<string, string> = {
+  attack: 'Attack',
+  defense: 'Defense',
+  power: 'Power',
+  speed: 'Speed',
+  happiness: 'Happiness',
+  health: 'Health',
+  energy: 'Energy',
+  xp_boost: 'XP Boost',
+  luck: 'Luck',
+};
+
 export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [detailItem, setDetailItem] = useState<any | null>(null);
+
 
   const { data: ownedAccessories } = useQuery({
     queryKey: ['owned-accessories'],
