@@ -181,6 +181,32 @@ export const PetTrading = () => {
         </Dialog>
       </div>
 
+      <div className="space-y-3">
+        <h3 className="text-sm font-black">Public Trade Board</h3>
+        {openTrades && openTrades.length > 0 ? openTrades.map((trade: any) => (
+          <Card key={trade.id} className="border-border/40 bg-card/80 backdrop-blur-xl">
+            <CardContent className="p-4 flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] text-muted-foreground">From {trade.from_user?.full_name || 'Player'}</p>
+                <p className="font-bold text-sm truncate">{trade.offered_pet?.name} <span className="text-[10px] text-muted-foreground">Lv{trade.offered_pet?.level} {trade.offered_pet?.pet_types?.name}</span></p>
+                <p className="text-xs text-primary font-bold">Price: {trade.requested_credits || 0} credits</p>
+                {trade.message && <p className="text-[10px] text-muted-foreground italic mt-1">"{trade.message}"</p>}
+              </div>
+              <Button size="sm" className="active:scale-[0.97]" disabled={respondTradeMutation.isPending}
+                onClick={() => respondTradeMutation.mutate({ tradeId: trade.id, accept: true })}>
+                Buy
+              </Button>
+            </CardContent>
+          </Card>
+        )) : (
+          <Card className="border-border/40 bg-card/80 backdrop-blur-xl">
+            <CardContent className="py-6 text-center text-xs text-muted-foreground">No open offers right now.</CardContent>
+          </Card>
+        )}
+      </div>
+
+      <h3 className="text-sm font-black pt-2">My Trades</h3>
+
       {myTrades?.map((trade: any, i: number) => (
         <motion.div key={trade.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
           <Card className="border-border/40 bg-card/80 backdrop-blur-xl">
