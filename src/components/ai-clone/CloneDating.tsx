@@ -2,11 +2,14 @@ import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, MessageCircle, Sparkles, Bot, Loader2 } from "lucide-react";
+import { Heart, MessageCircle, Sparkles, Bot, Loader2, Play, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
+interface DateMessage { speaker: string; text: string }
 
 interface DatingSession {
   id: string;
@@ -14,6 +17,7 @@ interface DatingSession {
   compatibility_score: number | null;
   payment_amount: number | null;
   created_at: string;
+  session_data?: { messages?: DateMessage[]; summary?: string } | null;
 }
 
 export function CloneDating() {
@@ -21,6 +25,9 @@ export function CloneDating() {
   const [isSearching, setIsSearching] = useState(false);
   const [sessions, setSessions] = useState<DatingSession[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
+  const [openSession, setOpenSession] = useState<DatingSession | null>(null);
+  const [runningId, setRunningId] = useState<string | null>(null);
+
 
   const loadSessions = useCallback(async () => {
     setLoadingSessions(true);
