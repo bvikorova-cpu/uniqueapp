@@ -368,12 +368,15 @@ export const MyPets = ({ onSelectPet, selectedPetId }: MyPetsProps) => {
 
           const overallHealth = Math.round((pet.happiness + pet.hunger + pet.energy) / 3);
           const healthGradient = overallHealth >= 70 ? 'from-emerald-500 to-teal-400' : overallHealth >= 40 ? 'from-amber-500 to-yellow-400' : 'from-red-500 to-rose-400';
+          const isSelected = selectedPetId === pet.id;
 
           return (
             <motion.div key={pet.id} initial={{ opacity: 0, y: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: i * 0.08, type: "spring", stiffness: 120 }}>
               <Card
-                className="relative border-border/30 bg-card/90 backdrop-blur-xl hover:border-primary/40 transition-all duration-300 cursor-pointer active:scale-[0.97] group overflow-hidden hover:shadow-lg hover:shadow-primary/10"
-                onClick={() => onSelectPet(pet.id)}
+                className={`relative border-border/30 bg-card/90 backdrop-blur-xl hover:border-primary/40 transition-all duration-300 cursor-pointer active:scale-[0.97] group overflow-hidden hover:shadow-lg hover:shadow-primary/10 ${
+                  isSelected ? 'ring-2 ring-primary border-primary shadow-lg shadow-primary/20' : ''
+                }`}
+                onClick={() => { onSelectPet(pet.id); toast.success(`${pet.name} selected!`); }}
               >
                 {/* Top accent gradient */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${healthGradient}`} />
