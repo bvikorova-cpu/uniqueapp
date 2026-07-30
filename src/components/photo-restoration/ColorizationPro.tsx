@@ -40,7 +40,7 @@ export const ColorizationPro = ({ onBack }: Props) => {
       if (uploadError) throw uploadError;
       const publicUrl = await getReadableUrl('old-photos', fileName);
 
-      const { data, error } = await supabase.functions.invoke('photo-face-ai', {
+      const { data, error } = await supabase.functions.invoke('future-face-image', {
         body: { action: 'photo_colorize_pro', sourceUrl: publicUrl, era }
       });
       if (error) throw error;

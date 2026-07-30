@@ -69,7 +69,7 @@ export default function FutureFaceLiveAR() {
       const { error } = await supabase.storage.from("future-face-photos").upload(path, blob, { contentType: "image/jpeg" });
       if (error) throw error;
       const url = (await getReadableUrl("future-face-photos", path));
-      const res = await supabase.functions.invoke("photo-face-ai", {
+      const res = await supabase.functions.invoke("future-face-image", {
         body: { action: "age_progression", sourceUrl: url, params: { years: 25 } } });
       const data = throwIfInvokeError(res);
       setAged(data.resultUrl);

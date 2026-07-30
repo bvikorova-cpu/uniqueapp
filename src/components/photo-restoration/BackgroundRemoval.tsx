@@ -40,7 +40,7 @@ export const BackgroundRemoval = ({ onBack }: Props) => {
         reader.readAsDataURL(file);
       });
 
-      const { data, error } = await supabase.functions.invoke('photo-face-ai', {
+      const { data, error } = await supabase.functions.invoke('future-face-image', {
         body: { action: 'bg_remove', sourceUrl: dataUrl }
       });
       if (error) throw error;

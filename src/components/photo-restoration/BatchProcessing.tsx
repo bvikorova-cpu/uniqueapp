@@ -58,7 +58,7 @@ export const BatchProcessing = ({ onBack }: Props) => {
           await supabase.storage.from('old-photos').upload(fileName, item.file);
           const publicUrl = await getReadableUrl('old-photos', fileName);
 
-          let fnName = "photo-face-ai";
+          let fnName = "future-face-image";
           let body: any = {
             action: operation === "repair" ? "photo_repair" : operation === "enhance" ? "photo_enhance" : "photo_colorize",
             sourceUrl: publicUrl };
