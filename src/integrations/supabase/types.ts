@@ -44800,6 +44800,7 @@ export type Database = {
           created_at: string
           id: string
           is_active: boolean
+          is_public: boolean
           personality_data: Json
           subscription_tier: string
           total_conversations: number
@@ -44812,6 +44813,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean
+          is_public?: boolean
           personality_data?: Json
           subscription_tier?: string
           total_conversations?: number
@@ -44824,6 +44826,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean
+          is_public?: boolean
           personality_data?: Json
           subscription_tier?: string
           total_conversations?: number
@@ -67608,6 +67611,7 @@ export type Database = {
           created_at: string | null
           id: string | null
           is_active: boolean | null
+          is_public: boolean | null
           personality_summary: string | null
           subscription_tier: string | null
           tone: string | null
@@ -67619,6 +67623,7 @@ export type Database = {
           created_at?: string | null
           id?: string | null
           is_active?: boolean | null
+          is_public?: boolean | null
           personality_summary?: never
           subscription_tier?: string | null
           tone?: never
@@ -67630,6 +67635,7 @@ export type Database = {
           created_at?: string | null
           id?: string | null
           is_active?: boolean | null
+          is_public?: boolean | null
           personality_summary?: never
           subscription_tier?: string | null
           tone?: never
@@ -69351,6 +69357,7 @@ export type Database = {
           created_at: string
           id: string
           is_active: boolean
+          is_public: boolean
           personality_data: Json
           subscription_tier: string
           total_conversations: number
