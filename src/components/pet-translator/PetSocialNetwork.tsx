@@ -285,6 +285,17 @@ export default function PetSocialNetwork() {
                             {post.pet_name}{post.species ? ` · ${post.species}` : ""}
                           </p>
                           {post.caption && <p className="text-sm mt-2 break-words">{post.caption}</p>}
+                          {post.media_url && (
+                            <div className="mt-2 rounded-xl overflow-hidden border border-border/40 bg-muted/30">
+                              {post.media_type === "video" ? (
+                                <video src={post.media_url} controls playsInline preload="metadata"
+                                  className="w-full max-h-72 object-contain bg-black" />
+                              ) : (
+                                <img src={post.media_url} alt={`${post.pet_name} shared by ${author}`}
+                                  loading="lazy" className="w-full max-h-72 object-cover" />
+                              )}
+                            </div>
+                          )}
                           <div className="flex items-center gap-2 mt-2 flex-wrap">
                             {post.mood && (
                               <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-[10px]">{post.mood}</Badge>
