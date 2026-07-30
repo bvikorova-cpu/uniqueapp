@@ -9,8 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, MessageCircle, Sparkles, Bot, Loader2, Play, ChevronRight, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-import { CloneChatDialog } from "./CloneChatDialog";
 
 interface DateMessage { speaker: string; text: string }
 
@@ -19,7 +19,10 @@ interface MatchClone {
   id: string;
   clone_name: string;
   personality_data: any;
+  user_id?: string | null;
+  owner_name?: string | null;
 }
+
 
 interface DatingSession {
   id: string;
