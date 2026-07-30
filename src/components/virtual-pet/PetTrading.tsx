@@ -122,6 +122,7 @@ export const PetTrading = () => {
     },
     onSuccess: (_, { accept }) => {
       queryClient.invalidateQueries({ queryKey: ['my-trades'] });
+      queryClient.invalidateQueries({ queryKey: ['public-trades'] });
       queryClient.invalidateQueries({ queryKey: ['my-pets'] });
       queryClient.invalidateQueries({ queryKey: ['my-pets-trading'] });
       queryClient.invalidateQueries({ queryKey: ['all-pets-for-trading'] });
