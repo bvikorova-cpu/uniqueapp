@@ -62,17 +62,20 @@ export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
     return (
       <>
         <FloatingHowItWorks title="How Pet Customization works" steps={[
-          { title: 'Open this section', desc: 'Review what it offers.' },
-          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
-          { title: 'Review results', desc: 'Check output and save or share.' },
-          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+          { title: 'Buy items', desc: 'Purchase accessories or battle gear in the Pet Shop.' },
+          { title: 'Select a pet', desc: 'Go to My Pets and choose the pet you want to dress up.' },
+          { title: 'Equip', desc: 'Tap any owned accessory to put it on (or off) your pet.' },
+          { title: 'Battle boost', desc: 'Battle gear adds power in the Battle Arena.' },
         ]} />
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
         <div className="w-16 h-16 mx-auto rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
           <Palette className="h-8 w-8 text-primary" />
         </div>
         <h3 className="text-lg font-black mb-2">No Pet Selected</h3>
-        <p className="text-sm text-muted-foreground">Select a pet from "My Pets" to customize it!</p>
+        <p className="text-sm text-muted-foreground mb-4">Select a pet from "My Pets" first, then equip your shop items here.</p>
+        <Button size="sm" className="gap-2" onClick={() => navigate('/virtual-pet?tab=pets')}>
+          Go to My Pets <ArrowRight className="h-4 w-4" />
+        </Button>
       </motion.div>
       </>
       );
