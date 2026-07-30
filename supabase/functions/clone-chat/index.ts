@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
       const apiKey = Deno.env.get("LOVABLE_API_KEY");
       if (apiKey) {
         const prompt = `Write a short speed-dating conversation between two AI personality clones.
-Clone A: ${nameA}. Personality: ${a?.personality_summary ?? "friendly, curious"}.
+Clone A: ${nameA}. Personality: ${JSON.stringify(a?.personality_data ?? { personality: "friendly, curious" })}.
 Clone B: ${nameB}. Personality: ${JSON.stringify(b?.personality_data ?? { personality: "warm, playful" })}.
 Return STRICT JSON only, no markdown:
 {"messages":[{"speaker":"${nameA}","text":"..."},{"speaker":"${nameB}","text":"..."}],"summary":"2-3 sentences about the chemistry","score":0-100}
