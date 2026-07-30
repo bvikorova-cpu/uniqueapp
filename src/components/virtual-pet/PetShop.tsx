@@ -34,6 +34,15 @@ export const PetShop = () => {
     }
   });
 
+  const { data: ownedAccessories } = useQuery({
+    queryKey: ['owned-accessories'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('user_pet_accessories').select('*, pet_accessories(*)').order('acquired_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    }
+  });
+
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
       case 'legendary': return 'text-amber-500 border-amber-500/30 bg-amber-500/10';
