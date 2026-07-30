@@ -274,6 +274,7 @@ export const MyPets = ({ onSelectPet, selectedPetId }: MyPetsProps) => {
         </summary>
         <ol className="mt-3 space-y-2 text-xs text-muted-foreground list-decimal pl-4">
           <li><span className="font-semibold text-foreground">Adopt a pet</span> — tap “Adopt Pet”, pick a species and name it. You can keep several companions.</li>
+          <li><span className="font-semibold text-foreground">Select a pet</span> — tap any pet card (or the ✨ Select button) to choose which companion is used in Battle, Games, Customize and Breeding.</li>
           <li><span className="font-semibold text-foreground">Watch the bars</span> — happiness, hunger, energy and growth drop over time. Green means healthy, red needs care now.</li>
           <li><span className="font-semibold text-foreground">Use the care buttons</span> — feed, pet, train and let it sleep. Each action refills the matching bar and gives XP.</li>
           <li><span className="font-semibold text-foreground">Level up &amp; evolve</span> — XP raises the level; at milestones your pet evolves into a new stage with a new look.</li>
