@@ -18,8 +18,90 @@ Deno.serve(async (req) => {
     const { data: { user } } = await admin.auth.getUser(auth.replace("Bearer ", ""));
     if (!user) return j({ error: "Unauthorized" }, 401);
 
-    const { cloneId, message, history } = await req.json();
+    const body = await req.json();
+    const { cloneId, message, history, mode, sessionId } = body ?? {};
+
+    // ---- Speed dating mode: run an AI date between two clones ----
+    if (mode === "date") {
+      if (!sessionId || typeof sessionId !== "string") return j({ error: "sessionId is required" }, 400);
+
+      const { data: session } = await admin
+        .from("clone_dating_sessions")
+        .select("id, clone_1_id, clone_2_id, status, session_data, compatibility_score")
+        .eq("id", sessionId).maybeSingle();
+      if (!session) return j({ error: "Session not found" }, 404);
+
+      const { data: clones } = await admin
+        .from("personality_clones")
+        .select("id, user_id, clone_name, personality_summary")
+        .in("id", [session.clone_1_id, session.clone_2_id]);
+      if (!(clones ?? []).some((c: any) => c.user_id === user.id)) return j({ error: "Forbidden" }, 403);
+
+      const existing = (session.session_data ?? {}) as Record<string, unknown>;
+      if (session.status === "completed" && Array.isArray(existing.messages)) {
+        return j({ ok: true, messages: existing.messages, summary: existing.summary, score: session.compatibility_score });
+      }
+
+      const a = (clones ?? []).find((c: any) => c.id === session.clone_1_id);
+      const b = (clones ?? []).find((c: any) => c.id === session.clone_2_id);
+      const nameA = a?.clone_name ?? "Clone A";
+      const nameB = b?.clone_name ?? "Clone B";
+
+      let dateMessages: { speaker: string; text: string }[] = [];
+      let summary = "";
+      let score = 60 + Math.floor(Math.random() * 35);
+
+      const apiKey = Deno.env.get("LOVABLE_API_KEY");
+      if (apiKey) {
+        const prompt = `Write a short speed-dating conversation between two AI personality clones.
+Clone A: ${nameA}. Personality: ${a?.personality_summary ?? "friendly, curious"}.
+Clone B: ${nameB}. Personality: ${b?.personality_summary ?? "warm, playful"}.
+Return STRICT JSON only, no markdown:
+{"messages":[{"speaker":"${nameA}","text":"..."},{"speaker":"${nameB}","text":"..."}],"summary":"2-3 sentences about the chemistry","score":0-100}
+Use 8 alternating messages, each max 200 characters, in English.`;
+        try {
+          const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ model: "google/gemini-3.6-flash", messages: [{ role: "user", content: prompt }] }),
+          });
+          if (res.ok) {
+            const payload = await res.json();
+            const cleaned = String(payload?.choices?.[0]?.message?.content ?? "").replace(/```json|```/g, "").trim();
+            try {
+              const parsed = JSON.parse(cleaned);
+              if (Array.isArray(parsed.messages)) dateMessages = parsed.messages.slice(0, 20);
+              if (typeof parsed.summary === "string") summary = parsed.summary;
+              if (typeof parsed.score === "number") score = Math.max(0, Math.min(100, Math.round(parsed.score)));
+            } catch { summary = cleaned.slice(0, 800); }
+          }
+        } catch (_) { /* fall back below */ }
+      }
+
+      if (!dateMessages.length) {
+        dateMessages = [
+          { speaker: nameA, text: "Hi! We only have ten minutes — what's the most interesting thing about you?" },
+          { speaker: nameB, text: "I collect strange facts. Did you know octopuses have three hearts?" },
+          { speaker: nameA, text: "Then we have something in common: I love things that break the rules." },
+          { speaker: nameB, text: "Rule-breakers make the best conversations. What keeps you up at night?" },
+          { speaker: nameA, text: "Ideas I haven't finished yet. And you?" },
+          { speaker: nameB, text: "Songs I can't stop humming. I think we'd get along." },
+        ];
+        if (!summary) summary = "Easy rhythm and shared curiosity — a promising first match.";
+      }
+
+      await admin.from("clone_dating_sessions").update({
+        status: "completed",
+        compatibility_score: score,
+        completed_at: new Date().toISOString(),
+        session_data: { ...existing, messages: dateMessages, summary },
+      }).eq("id", sessionId);
+
+      return j({ ok: true, messages: dateMessages, summary, score });
+    }
+
     if (!cloneId || !message?.trim()) return j({ error: "cloneId and message required" }, 400);
+
 
     const today = new Date().toISOString().slice(0, 10);
     const { data: limit } = await admin
