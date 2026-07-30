@@ -45,6 +45,7 @@ export default function PetSmartReminders({ onBack }: { onBack: () => void }) {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Smart schedule generated!");
     } catch (e: any) {
       toast.error(e.message || "Failed");

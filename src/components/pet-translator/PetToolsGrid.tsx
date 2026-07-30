@@ -50,6 +50,7 @@ export default function PetToolsGrid({ activeView, setActiveView }: PetToolsGrid
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Analysis complete!");
     } catch (e: any) {
       toast.error(e.message || "Failed to process");

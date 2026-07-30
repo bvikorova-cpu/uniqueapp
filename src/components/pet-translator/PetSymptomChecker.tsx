@@ -33,6 +33,7 @@ export default function PetSymptomChecker({ onBack }: { onBack: () => void }) {
     if (error || data?.error) return toast.error(error?.message || data.error);
     const text: string = data.result || "";
     setResult(text);
+    window.dispatchEvent(new Event("ai-credits-updated"));
     const m = text.match(/🔴|🟡|🟢/);
     setUrgency(m?.[0] || null);
     const { data: { user } } = await supabase.auth.getUser();
