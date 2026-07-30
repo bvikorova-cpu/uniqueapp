@@ -104,9 +104,6 @@ serve(async (req) => {
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
       auth: { persistSession: false } });
 
-    const ADMIN_USER_ID = Deno.env.get("ADMIN_USER_ID");
-    const isAdmin = ADMIN_USER_ID && user.id === ADMIN_USER_ID;
-
     // Check the same unified balance displayed across the platform.
     const [{ data: paidRow }, { data: freeRow }] = await Promise.all([
       admin.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
@@ -114,7 +111,7 @@ serve(async (req) => {
     ]);
     const remaining = (freeRow?.balance ?? 0) + (paidRow?.credits_remaining ?? 0);
 
-    if (!isAdmin && remaining < cost) {
+    if (remaining < cost) {
       return new Response(
         JSON.stringify({
           error: "INSUFFICIENT_CREDITS",
@@ -204,20 +201,18 @@ serve(async (req) => {
 
     // Atomically deduct from free credits first, then paid AI credits, and write
     // the corresponding ledger entry. Never report success if deduction fails.
-    let creditsRemaining = remaining;
-    if (!isAdmin) {
-      const { data: spent, error: spendError } = await admin.rpc("spend_unified_ai_credits_for_user", {
-        p_user_id: user.id,
-        p_amount: cost,
-        p_reason: `photo_restoration_${operation}`,
-        p_source: "remove-background",
-      });
-      if (spendError || !Array.isArray(spent) || !spent[0]) {
-        console.error("Unified credit deduction failed", spendError);
-        throw new Error(spendError?.message ?? "Credit deduction failed");
-      }
-      creditsRemaining = spent[0].total_balance;
+    const { data: spent, error: spendError } = await admin.rpc("spend_unified_ai_credits_for_user", {
+      p_user_id: user.id,
+      p_amount: cost,
+      p_reason: `photo_restoration_${operation}`,
+      p_source: "remove-background",
+    });
+    if (spendError || !Array.isArray(spent) || !spent[0]) {
+      console.error("Unified credit deduction failed", spendError);
+      await admin.storage.from(bucket).remove([filePath]);
+      throw new Error(spendError?.message ?? "Credit deduction failed");
     }
+    const creditsRemaining = spent[0].total_balance;
 
     try {
         await admin.from("old_photos").insert({
@@ -239,8 +234,8 @@ serve(async (req) => {
         filePath,
         operation,
         bgColor: body.bgColor ?? null,
-        creditsDeducted: isAdmin ? 0 : cost,
-        creditsRemaining: isAdmin ? 999999 : creditsRemaining }),
+        creditsDeducted: cost,
+        creditsRemaining }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err: any) {

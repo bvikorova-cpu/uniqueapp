@@ -1,11 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useIsAdmin } from "./useIsAdmin";
 
 export const usePhotoCredits = () => {
   const queryClient = useQueryClient();
-  const { isAdmin } = useIsAdmin();
 
   const { data: credits, isLoading } = useQuery({
     queryKey: ["photo-credits"],
@@ -25,11 +23,6 @@ export const usePhotoCredits = () => {
         last_used_at: paid.data?.last_used_at ?? null,
       };
     } });
-
-  // Admin always has unlimited credits
-  const effectiveCredits = isAdmin && credits
-    ? { ...credits, credits_remaining: 999999 } 
-    : credits;
 
   const restorePhoto = useMutation({
     mutationFn: async ({ imageUrl, restorationType }: { imageUrl: string; restorationType: 'colorize' | 'repair' | 'enhance' }) => {
@@ -87,7 +80,7 @@ export const usePhotoCredits = () => {
     }
   };
 
-  return { credits: effectiveCredits,
+  return { credits,
     isLoading,
     restorePhoto: restorePhoto.mutate,
     isRestoring: restorePhoto.isPending,
