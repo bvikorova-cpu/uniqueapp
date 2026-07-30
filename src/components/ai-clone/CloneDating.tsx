@@ -37,6 +37,7 @@ interface DatingSession {
 
 export function CloneDating() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isSearching, setIsSearching] = useState(false);
   const [sessions, setSessions] = useState<DatingSession[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
@@ -45,7 +46,7 @@ export function CloneDating() {
   const [progress, setProgress] = useState(0);
   const [stage, setStage] = useState(0);
   const [matches, setMatches] = useState<Record<string, MatchClone>>({});
-  const [chatClone, setChatClone] = useState<MatchClone | null>(null);
+
   const timersRef = useRef<ReturnType<typeof setInterval>[]>([]);
 
   const RUN_STAGES = [
