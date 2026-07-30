@@ -45397,6 +45397,109 @@ export type Database = {
         }
         Relationships: []
       }
+      pet_social_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_social_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "pet_social_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pet_social_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_social_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "pet_social_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pet_social_posts: {
+        Row: {
+          caption: string | null
+          comments_count: number
+          created_at: string
+          id: string
+          likes_count: number
+          mood: string | null
+          pet_name: string
+          photo_url: string | null
+          score: number
+          species: string | null
+          user_id: string
+        }
+        Insert: {
+          caption?: string | null
+          comments_count?: number
+          created_at?: string
+          id?: string
+          likes_count?: number
+          mood?: string | null
+          pet_name: string
+          photo_url?: string | null
+          score?: number
+          species?: string | null
+          user_id: string
+        }
+        Update: {
+          caption?: string | null
+          comments_count?: number
+          created_at?: string
+          id?: string
+          likes_count?: number
+          mood?: string | null
+          pet_name?: string
+          photo_url?: string | null
+          score?: number
+          species?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       pet_sound_wall: {
         Row: {
           audio_url: string
