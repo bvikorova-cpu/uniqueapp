@@ -80,10 +80,10 @@ const PhotoRestoration = () => {
 
   const tools = [
     { id: "damage-detection" as ActiveView, icon: ScanLine, title: "Damage Detection", desc: "AI scans for scratches & tears", cost: "4 Credits", color: "text-red-500" },
-    { id: "colorize" as ActiveView, icon: Sparkles, title: "Colorization", desc: "Add colors to B&W photos", cost: "1 Credit", color: "text-amber-500" },
-    { id: "repair" as ActiveView, icon: Wand2, title: "Photo Repair", desc: "Remove scratches & damage", cost: "1 Credit", color: "text-blue-500" },
+    { id: "colorize" as ActiveView, icon: Sparkles, title: "Colorization", desc: "Add colors to B&W photos", cost: "12 Credits", color: "text-amber-500" },
+    { id: "repair" as ActiveView, icon: Wand2, title: "Photo Repair", desc: "Remove scratches & damage", cost: "12 Credits", color: "text-blue-500" },
     { id: "background-removal" as ActiveView, icon: Scissors, title: "Background Removal", desc: "AI background removal", cost: "3 Credits", color: "text-purple-500" },
-    { id: "colorization-pro" as ActiveView, icon: Palette, title: "Colorization Pro", desc: "Era-accurate colorization", cost: "8 Credits", color: "text-rose-500" },
+    { id: "colorization-pro" as ActiveView, icon: Palette, title: "Colorization Pro", desc: "Era-accurate colorization", cost: "16 Credits", color: "text-rose-500" },
     { id: "credits" as ActiveView, icon: ShoppingBag, title: "Buy Credits", desc: "Get more restoration credits", cost: "From €10", color: "text-emerald-500" },
   ];
 
@@ -143,7 +143,7 @@ const PhotoRestoration = () => {
                 <Icon className="h-6 w-6 text-primary" />
                 {title}
               </h2>
-              <p className="text-muted-foreground mb-6">Upload a photo and AI will {type === 'colorize' ? 'add realistic colors' : type === 'repair' ? 'remove damage and scratches' : 'enhance quality and sharpness'}. Cost: 1 credit</p>
+              <p className="text-muted-foreground mb-6">Upload a photo and AI will {type === 'colorize' ? 'add realistic colors' : type === 'repair' ? 'remove damage and scratches' : 'enhance quality and sharpness'}. Cost: 12 credits</p>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-semibold mb-3">Original Photo</h3>

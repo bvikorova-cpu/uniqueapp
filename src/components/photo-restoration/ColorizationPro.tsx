@@ -40,11 +40,11 @@ export const ColorizationPro = ({ onBack }: Props) => {
       if (uploadError) throw uploadError;
       const publicUrl = await getReadableUrl('old-photos', fileName);
 
-      const { data, error } = await supabase.functions.invoke('photo-colorization-pro', {
-        body: { imageUrl: publicUrl, era }
+      const { data, error } = await supabase.functions.invoke('future-face-image', {
+        body: { action: 'photo_colorize_pro', sourceUrl: publicUrl, era }
       });
       if (error) throw error;
-      setResult(data);
+      setResult({ colorizedImageUrl: (data as any)?.resultUrl });
       toast.success("Pro colorization complete!");
     } catch (error: any) {
       console.error(error);
@@ -61,7 +61,7 @@ export const ColorizationPro = ({ onBack }: Props) => {
           <Palette className="h-6 w-6 text-rose-500" />
           AI Colorization Pro
         </h2>
-        <p className="text-muted-foreground mb-6">Advanced colorization with era-accurate color palettes. Cost: 8 credits</p>
+        <p className="text-muted-foreground mb-6">Advanced colorization with era-accurate color palettes. Cost: 16 credits</p>
 
         <div className="space-y-4 mb-6">
           <div>
@@ -95,8 +95,8 @@ export const ColorizationPro = ({ onBack }: Props) => {
                 </div>
               )}
             </div>
-            <Button className="w-full mt-4" onClick={handleProcess} disabled={loading || !file || (credits?.credits_remaining ?? 0) < 8}>
-              {loading ? "Colorizing..." : "Colorize Pro (8 credits)"}
+            <Button className="w-full mt-4" onClick={handleProcess} disabled={loading || !file || (credits?.credits_remaining ?? 0) < 16}>
+              {loading ? "Colorizing..." : "Colorize Pro (16 credits)"}
             </Button>
           </div>
 
