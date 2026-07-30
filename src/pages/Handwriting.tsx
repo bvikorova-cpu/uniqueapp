@@ -99,7 +99,9 @@ const Handwriting = () => {
   const openTool = (toolId: string) => {
     setSelectedType(toolId);
     setActiveView("analyze");
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
   };
+
 
   const getViewLabel = () => {
     if (activeView === "analyze") return ANALYSIS_TOOLS.find(t => t.id === selectedType)?.name || "Analysis";
@@ -146,7 +148,7 @@ const Handwriting = () => {
                 <Button
                   variant="outline"
                   className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30"
-                  onClick={() => setActiveView("credits")}
+                  onClick={() => { setActiveView("credits"); requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" })); }}
                 >
                   <Coins className="w-4 h-4 text-primary" />
                   Buy Credits
@@ -154,7 +156,7 @@ const Handwriting = () => {
                 <Button
                   variant="outline"
                   className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30"
-                  onClick={() => setActiveView("history")}
+                  onClick={() => { setActiveView("history"); requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" })); }}
                 >
                   <History className="w-4 h-4 text-primary" />
                   View History
