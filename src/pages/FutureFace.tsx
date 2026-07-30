@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { Gem, Camera, Medal, CalendarDays } from "lucide-react";
+import FutureFaceHero from "@/components/future-face/FutureFaceHero";
 import FutureFacePhotoStudio from "@/components/future-face/FutureFacePhotoStudio";
 import FutureFaceMultiAgeTimeline from "@/components/future-face/FutureFaceMultiAgeTimeline";
 
