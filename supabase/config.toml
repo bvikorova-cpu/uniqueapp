@@ -421,3 +421,27 @@ verify_jwt = true
 
 [functions.holographic-breeding-simulate]
 verify_jwt = true
+
+[functions.pet-personality-coach]
+verify_jwt = true
+
+[functions.pet-name-generator]
+verify_jwt = true
+
+[functions.pet-health-predictor]
+verify_jwt = true
+
+[functions.pet-story-generator]
+verify_jwt = true
+
+[functions.pet-mood-analyzer]
+verify_jwt = true
+
+[functions.pet-training-planner]
+verify_jwt = true
+
+[functions.pet-compatibility-checker]
+verify_jwt = true
+
+[functions.pet-battle-strategy]
+verify_jwt = true
