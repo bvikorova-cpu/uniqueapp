@@ -124,7 +124,7 @@ export function CloneMarketplace() {
         ))}
       </div>
 
-      {filteredClones.length === 0 && (
+      {!loading && filteredClones.length === 0 && (
         <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
           <CardContent className="text-center py-12">
             <Bot className="h-16 w-16 mx-auto mb-4 text-muted-foreground/50" />
