@@ -103,7 +103,7 @@ serve(async (req) => {
     if (type === 'design') {
       const { prompt, style, colorScheme, placement, size } = params;
       const imageUrl = await generateImage(
-        `Professional tattoo design. Concept: ${prompt}. Style: ${style || 'traditional'}. Color scheme: ${colorScheme || 'black & grey'}. Intended placement: ${placement || 'arm'}. Size: ${size || 'medium'}. Clean lines, high detail, professional tattoo art quality. Pure white background. Ultra high resolution.`
+        `Flat tattoo flash artwork on plain white paper. Subject (draw exactly this and nothing else): ${prompt}. Tattoo style: ${style || 'traditional'}. Color scheme: ${colorScheme || 'black & grey'}. Proportions suited for ${placement || 'arm'} placement, ${size || 'medium'} size. Clean bold linework, high detail, professional tattoo stencil quality, isolated design, pure white background. Do NOT draw human skin, body parts, mannequins, photos of people wearing the tattoo, backgrounds, frames or text.`
       );
       payload = { imageUrl };
     } else if (type === 'style_mix') {
