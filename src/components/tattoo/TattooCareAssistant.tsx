@@ -93,7 +93,9 @@ export const TattooCareAssistant = ({ onBack }: Props) => {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               <Card className="p-5 mt-2 bg-gradient-to-br from-amber-500/5 to-yellow-600/5 border-amber-500/20">
                 <h3 className="font-black text-lg mb-3 bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">Your Personalized Care Guide</h3>
-                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-line leading-relaxed">{result.guide}</div>
+                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-line leading-relaxed break-words">
+                  {result.guide?.replace(/^#{1,6}\s*/gm, "").replace(/\*\*/g, "").replace(/^\s*[-*]\s+/gm, "• ")}
+                </div>
               </Card>
             </motion.div>
           )}
