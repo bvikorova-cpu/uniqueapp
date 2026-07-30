@@ -70,9 +70,10 @@ export function CloneDating() {
       if (!user) { setSessions([]); return; }
       const { data: clones } = await supabase
         .from("personality_clones")
-        .select("id")
+        .select("id, clone_name, personality_data")
         .eq("user_id", user.id);
-      const ids = (clones ?? []).map((c: { id: string }) => c.id);
+      const myClones = (clones ?? []) as MatchClone[];
+      const ids = myClones.map((c) => c.id);
       if (!ids.length) { setSessions([]); return; }
       const { data } = await supabase
         .from("clone_dating_sessions")
@@ -83,22 +84,11 @@ export function CloneDating() {
       const rows = (data as DatingSession[]) ?? [];
       setSessions(rows);
 
-      // Resolve, for each session, the clone the user can actually chat with (the match).
-      const mine = new Set(ids);
-      const matchIds = Array.from(new Set(
-        rows.flatMap((r) => [r.clone_1_id, r.clone_2_id].filter((cid): cid is string => !!cid && !mine.has(cid))),
-      ));
-      if (matchIds.length) {
-        const { data: matchRows } = await supabase
-          .from("personality_clones")
-          .select("id, clone_name, personality_data")
-          .in("id", matchIds);
-        const map: Record<string, MatchClone> = {};
-        (matchRows ?? []).forEach((c: any) => { map[c.id] = c as MatchClone; });
-        setMatches(map);
-      } else {
-        setMatches({});
-      }
+      // Chat always targets the user's OWN clone taking part in the session.
+      const map: Record<string, MatchClone> = {};
+      myClones.forEach((c) => { map[c.id] = c; });
+      setMatches(map);
+
     } finally {
       setLoadingSessions(false);
     }
