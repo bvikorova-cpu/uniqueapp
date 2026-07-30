@@ -108,8 +108,26 @@ export const PetShop = () => {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <div>
         <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Pet Shop</h2>
-        <p className="text-xs text-muted-foreground">Buy accessories, battle gear & mystery boxes</p>
+        <p className="text-xs text-muted-foreground">Buy accessories, battle gear & mystery boxes. Items land in your inventory — equip them in Customize.</p>
       </div>
+
+      {/* Inventory quick link */}
+      <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+        <CardContent className="p-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+              <Backpack className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <p className="font-bold text-sm">My Inventory</p>
+              <p className="text-[10px] text-muted-foreground">{ownedAccessories?.length || 0} item(s) owned</p>
+            </div>
+          </div>
+          <Button size="sm" variant="outline" className="gap-1 shrink-0" onClick={() => navigate('/virtual-pet?tab=customize')}>
+            Equip <ArrowRight className="h-3 w-3" />
+          </Button>
+        </CardContent>
+      </Card>
 
       <Tabs defaultValue="battle" className="w-full">
         <TabsList className="grid grid-cols-3 w-full">
