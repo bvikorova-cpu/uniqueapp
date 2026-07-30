@@ -240,10 +240,13 @@ Provide:
 
     if (!aiResponse.ok) {
       const status = aiResponse.status;
+      const detail = await aiResponse.text().catch(() => "");
+      console.error("pet-translator-ai upstream", status, detail.slice(0, 500));
       if (status === 429) return new Response(JSON.stringify({ error: "AI is busy right now. Please try again in a few seconds." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Please top up." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      throw new Error("AI service error");
+      if (status === 402 || status === 403) return new Response(JSON.stringify({ error: "AI credits exhausted for this workspace. Please top up AI credits to continue." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      throw new Error(`AI service error (${status})`);
     }
+
 
 
     const aiData = await aiResponse.json();
