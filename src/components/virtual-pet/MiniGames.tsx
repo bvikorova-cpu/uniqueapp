@@ -131,21 +131,47 @@ export const MiniGames = ({ selectedPetId, onSelectPet }: MiniGamesProps) => {
     return (
       <>
         <FloatingHowItWorks title="How Mini Games works" steps={[
-          { title: 'Open this section', desc: 'Review what it offers.' },
-          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
-          { title: 'Review results', desc: 'Check output and save or share.' },
-          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+          { title: 'Pick a pet', desc: 'Choose one of your pets below to play with.' },
+          { title: 'Choose a game', desc: 'Catch the Treats or Memory Match. Each game costs 5 energy.' },
+          { title: 'Play & earn', desc: 'Score points to gain XP, happiness and coins.' },
+          { title: 'Iterate', desc: 'Repeat anytime — progress is saved.' },
         ]} />
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-        <div className="w-16 h-16 mx-auto rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-4">
-          <Gamepad2 className="h-8 w-8 text-cyan-500" />
-        </div>
-        <h3 className="text-lg font-black mb-2">No Pet Selected</h3>
-        <p className="text-sm text-muted-foreground">Select a pet from "My Pets" to play games!</p>
-      </motion.div>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-10 max-w-lg mx-auto">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-4">
+              <Gamepad2 className="h-8 w-8 text-cyan-500" />
+            </div>
+            <h3 className="text-lg font-black mb-1">Choose a pet to play</h3>
+            <p className="text-sm text-muted-foreground">Tap one of your pets below to start playing.</p>
+          </div>
+
+          {myPets === undefined ? (
+            <p className="text-center text-sm text-muted-foreground">Loading your pets…</p>
+          ) : myPets.length === 0 ? (
+            <p className="text-center text-sm text-muted-foreground">You don't have any pets yet — adopt one in "My Pets" first.</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              {myPets.map((p: any) => (
+                <button
+                  key={p.id}
+                  onClick={() => {
+                    onSelectPet?.(p.id);
+                    toast.success(`${p.name} is ready to play!`);
+                  }}
+                  className="text-left p-3 rounded-xl border border-border hover:border-cyan-500 hover:bg-cyan-500/5 transition-colors"
+                >
+                  <div className="text-2xl mb-1">{p.pet_types?.emoji || '🐾'}</div>
+                  <p className="font-bold text-sm truncate">{p.name}</p>
+                  <p className="text-[11px] text-muted-foreground">Lvl {p.level ?? 1} · ⚡ {p.energy ?? 0}</p>
+                </button>
+              ))}
+            </div>
+          )}
+        </motion.div>
       </>
       );
   }
+
 
   if (activeGame === 'memory') {
     return (
