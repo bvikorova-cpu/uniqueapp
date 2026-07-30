@@ -82,6 +82,37 @@ export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
     onError: (error: any) => toast.error(error.message || 'Failed to equip')
   });
 
+  const { data: myPets } = useQuery({
+    queryKey: ['my-pets-for-equip'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('pets').select('id, name, level, customization, pet_types(name)').order('created_at', { ascending: true });
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const equipToPetMutation = useMutation({
+    mutationFn: async ({ petId, accessoryId }: { petId: string; accessoryId: string }) => {
+      const pet = myPets?.find((p: any) => p.id === petId);
+      const currentCustomization = (pet?.customization as any) || {};
+      const currentEquipped: string[] = currentCustomization.equipped_accessories || [];
+      const newEquipped = currentEquipped.includes(accessoryId)
+        ? currentEquipped.filter((id) => id !== accessoryId)
+        : [...currentEquipped, accessoryId];
+      const { error } = await supabase.from('pets').update({
+        customization: { ...currentCustomization, equipped_accessories: newEquipped }
+      }).eq('id', petId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-pets-for-equip'] });
+      queryClient.invalidateQueries({ queryKey: ['selected-pet', selectedPetId] });
+      queryClient.invalidateQueries({ queryKey: ['pets'] });
+      toast.success('Accessory updated! ✨');
+    },
+    onError: (error: any) => toast.error(error.message || 'Failed to equip')
+  });
+
   if (!selectedPetId) {
     return (
       <>
