@@ -2,17 +2,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-
-const progressItems = [
-  { label: "Personal Analyses", value: 0, max: 10, color: "bg-primary" },
-  { label: "Professional Analyses", value: 0, max: 5, color: "bg-accent" },
-  { label: "Relationship Analyses", value: 0, max: 3, color: "bg-pink-500" },
-];
+import { useHandwritingStats } from "@/hooks/useHandwritingStats";
 
 export const HandwritingProgressPreview = () => {
+  const { data, isLoading } = useHandwritingStats();
+  const counts = data?.counts ?? {};
+
+  const progressItems = [
+    { label: "Personal Analyses", value: counts["personal"] ?? 0, max: 10, color: "bg-primary" },
+    {
+      label: "Professional Analyses",
+      value: (counts["professional"] ?? 0) + (counts["business"] ?? 0),
+      max: 5,
+      color: "bg-accent",
+    },
+    { label: "Relationship Analyses", value: counts["relationship"] ?? 0, max: 3, color: "bg-pink-500" },
+  ];
+
   return (
     <>
-      <FloatingHowItWorks title={"Handwriting Progress Preview - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Progress Preview section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Progress Preview.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <FloatingHowItWorks title={"Handwriting Progress Preview - How it works"} steps={[{ title: 'Analyze', desc: 'Every analysis you run is counted by its type.' }, { title: 'Fill the bars', desc: 'Reach the target count for each analysis type.' }, { title: 'Live data', desc: 'Numbers come straight from your saved analyses.' }, { title: 'Review', desc: 'Progress refreshes automatically after each new analysis.' }]} />
       <Card className="bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
@@ -25,12 +34,14 @@ export const HandwritingProgressPreview = () => {
           <div key={item.label}>
             <div className="flex justify-between text-[11px] mb-1">
               <span className="text-muted-foreground">{item.label}</span>
-              <span className="text-foreground font-medium">{item.value}/{item.max}</span>
+              <span className="text-foreground font-medium">
+                {isLoading ? "…" : `${Math.min(item.value, item.max)}/${item.max}`}
+              </span>
             </div>
             <div className="h-1.5 rounded-full bg-muted/30 overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: `${(item.value / item.max) * 100}%` }}
+                animate={{ width: `${Math.min(100, (item.value / item.max) * 100)}%` }}
                 transition={{ delay: 0.3 + i * 0.1, duration: 0.8 }}
                 className={`h-full rounded-full ${item.color}`}
               />
