@@ -70,7 +70,7 @@ export function servePetAiTool(config: PetToolConfig) {
         { role: "user", content: config.buildPrompt(params) },
       ];
 
-      const models = ["google/gemini-2.5-flash", "google/gemini-2.5-flash-lite"];
+      const models = ["google/gemini-3.6-flash", "google/gemini-3.1-flash-lite"];
       let aiRes: Response | null = null;
       for (const model of models) {
         for (let attempt = 0; attempt < 2; attempt++) {
