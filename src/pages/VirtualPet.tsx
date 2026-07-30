@@ -19,7 +19,7 @@ import { AIPetCompatibilityChecker } from "@/components/virtual-pet/AIPetCompati
 import { AIPetBattleStrategy } from "@/components/virtual-pet/AIPetBattleStrategy";
 import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
 import {
-  Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords, Dna,
+  Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords,
   Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star,
   SmilePlus, CalendarDays, HeartHandshake, Target
 } from "lucide-react";
@@ -187,7 +187,7 @@ const VirtualPet = () => {
                     {[
                       { icon: Heart, title: "1. Adopt", desc: "Choose from 28+ species including mythical creatures" },
                       { icon: Gamepad2, title: "2. Play & Care", desc: "Feed, play mini-games, and keep your pet happy" },
-                      { icon: Swords, title: "3. Battle & Breed", desc: "Fight AI opponents and breed rare offspring" },
+                      { icon: Swords, title: "3. Battle", desc: "Fight AI and real players in the arena" },
                       { icon: Brain, title: "4. AI Services", desc: "Use AI coaches, predictors & strategy advisors" },
                     ].map((step, i) => (
                       <div key={i} className="text-center space-y-2">
@@ -210,9 +210,7 @@ const VirtualPet = () => {
                     <li>• Start with a Cat or Dog (20 credits each) — cheapest to adopt!</li>
                     <li>• Use AI Battle Strategy before arena fights for +30% win rate</li>
                     <li>• AI Training Planner creates optimal XP routes — level up 2x faster</li>
-                    <li>• Check Compatibility before breeding to predict rare mutations</li>
                     <li>• AI Mood Analyzer helps identify hidden stress — boost happiness by 25%</li>
-                    <li>• Pets need Level 10+ to breed — feed and play daily to level up fast</li>
                     <li>• Generate adventure stories to share with the community</li>
                   </ul>
                 </CardContent>
