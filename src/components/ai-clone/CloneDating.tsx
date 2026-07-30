@@ -174,9 +174,10 @@ export function CloneDating() {
 
   const matchOf = useCallback((s: DatingSession | null): MatchClone | null => {
     if (!s) return null;
-    // Always the user's own clone from this session.
-    return matches[s.clone_1_id ?? ""] ?? matches[s.clone_2_id ?? ""] ?? null;
+    // The date partner: another user's clone, resolved per session.
+    return matches[s.id] ?? null;
   }, [matches]);
+
 
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
