@@ -261,14 +261,16 @@ export function CloneDating() {
                     </p>
                     <p className="text-xs text-pink-400 mt-1 flex items-center gap-1">
                       {runningId === s.id ? (
-                        <><Loader2 className="h-3 w-3 animate-spin" /> Running the date…</>
+                        <><Loader2 className="h-3 w-3 animate-spin" /> {RUN_STAGES[stage]}</>
                       ) : hasTranscript ? (
                         <><MessageCircle className="h-3 w-3" /> View conversation</>
                       ) : (
                         <><Play className="h-3 w-3" /> Run the date</>
                       )}
                     </p>
+                    {runningId === s.id && <Progress value={progress} className="h-1 mt-2" />}
                   </div>
+
                   <div className="flex items-center gap-2 flex-shrink-0">
                     {s.compatibility_score != null && (
                       <Badge variant="secondary">{s.compatibility_score}%</Badge>
