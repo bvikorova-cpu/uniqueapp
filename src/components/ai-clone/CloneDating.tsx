@@ -302,24 +302,52 @@ export function CloneDating() {
                 </div>
               )}
               {runningId === openSession.id ? (
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Your clones are chatting…
-                </p>
-              ) : (
-                <>
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    {(openSession.session_data?.messages ?? []).map((m, i) => (
-                      <div
-                        key={i}
-                        className={`rounded-lg p-3 text-sm ${i % 2 === 0 ? "bg-primary/10" : "bg-pink-500/10"}`}
-                      >
-                        <p className="text-xs font-semibold mb-1">{m.speaker}</p>
-                        <p>{m.text}</p>
+                    <p className="text-sm font-medium flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin text-pink-400" /> {RUN_STAGES[stage]}
+                    </p>
+                    <Progress value={progress} className="h-2" />
+                    <p className="text-xs text-muted-foreground">
+                      This usually takes 10-20 seconds. The result appears here automatically.
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    {[0, 1, 2].map((i) => (
+                      <div key={i} className={`rounded-lg p-3 ${i % 2 === 0 ? "bg-primary/5" : "bg-pink-500/5"}`}>
+                        <Skeleton className="h-3 w-24 mb-2" />
+                        <Skeleton className="h-3 w-full mb-1.5" />
+                        <Skeleton className="h-3 w-4/5" />
                       </div>
                     ))}
                   </div>
+                </div>
+              ) : (
+                <>
+                  <AnimatePresence initial={false}>
+                    <div className="space-y-2">
+                      {(openSession.session_data?.messages ?? []).map((m, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: Math.min(i * 0.08, 0.6) }}
+                          className={`rounded-lg p-3 text-sm ${i % 2 === 0 ? "bg-primary/10" : "bg-pink-500/10"}`}
+                        >
+                          <p className="text-xs font-semibold mb-1">{m.speaker}</p>
+                          <p>{m.text}</p>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </AnimatePresence>
+                  {(openSession.session_data?.messages?.length ?? 0) > 0 && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> Date completed
+                    </p>
+                  )}
                   {openSession.session_data?.summary && (
                     <div className="rounded-lg border border-border/50 p-3">
+
                       <p className="text-xs font-semibold mb-1">Chemistry summary</p>
                       <p className="text-sm text-muted-foreground">{openSession.session_data.summary}</p>
                     </div>
