@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Gem, Camera, Medal, CalendarDays } from "lucide-react";
+import { Gem, Camera, CalendarDays } from "lucide-react";
 import FutureFaceHero from "@/components/future-face/FutureFaceHero";
 import FutureFacePhotoStudio from "@/components/future-face/FutureFacePhotoStudio";
 import FutureFaceMultiAgeTimeline from "@/components/future-face/FutureFaceMultiAgeTimeline";
@@ -62,25 +62,6 @@ const FutureFace = () => {
           <Button size="sm" variant="outline" onClick={() => navigate('/ai-credits-store')}>
             <Gem className="h-3.5 w-3.5 mr-1.5" /> Buy AI Credits
           </Button>
-        </div>
-
-        {/* 3-Column Engagement Row */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
-          <div className="bg-card/60 backdrop-blur-md border border-cyan-500/20 rounded-xl p-3 sm:p-4 text-center">
-            <Camera className="h-5 w-5 mx-auto mb-1 text-cyan-400" />
-            <p className="text-xs font-bold">Selfie Streak</p>
-            <p className="text-lg font-black">0 Days</p>
-          </div>
-          <div className="bg-card/60 backdrop-blur-md border border-purple-500/20 rounded-xl p-3 sm:p-4 text-center">
-            <Gem className="h-5 w-5 mx-auto mb-1 text-purple-400" />
-            <p className="text-xs font-bold">Tools Used</p>
-            <p className="text-lg font-black">0/14</p>
-          </div>
-          <div className="bg-card/60 backdrop-blur-md border border-pink-500/20 rounded-xl p-3 sm:p-4 text-center">
-            <Medal className="h-5 w-5 mx-auto mb-1 text-pink-400" />
-            <p className="text-xs font-bold">Achievements</p>
-            <p className="text-lg font-black">0/12</p>
-          </div>
         </div>
 
         {/* Tabs */}
