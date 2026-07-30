@@ -421,6 +421,3 @@ verify_jwt = true
 
 [functions.holographic-breeding-simulate]
 verify_jwt = true
-
-[functions.clone-date-run]
-verify_jwt = true
