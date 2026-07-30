@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Swords, Loader2, Trophy, Zap, Star, Shield, CheckCircle } from "lucide-react";
+import { Swords, Loader2, Trophy, Zap, Star, Shield, CheckCircle, Users, Bot, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
 import puppyImg from "@/assets/pets/cute-puppy.png";
 import kittenImg from "@/assets/pets/cute-kitten.png";
@@ -16,6 +16,8 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export const PetBattle = () => {
   const [selectedPets, setSelectedPets] = useState<string[]>([]);
   const [battleResult, setBattleResult] = useState<any>(null);
+  const [mode, setMode] = useState<'ai' | 'pvp'>('pvp');
+  const [opponentOwnerId, setOpponentOwnerId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const { data: pets, isLoading } = useQuery({
@@ -36,11 +38,32 @@ export const PetBattle = () => {
     }
   });
 
+  const { data: opponents, isLoading: opponentsLoading, refetch: refetchOpponents, isFetching: opponentsFetching } = useQuery({
+    queryKey: ['pet-pvp-opponents'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('list_pet_pvp_opponents', { _limit: 12 });
+      if (error) throw error;
+      return (data || []) as any[];
+    },
+    enabled: mode === 'pvp'
+  });
+
+  const opponentTeams = (opponents || []).reduce((acc: Record<string, any>, o: any) => {
+    if (!acc[o.owner_id]) acc[o.owner_id] = { ownerId: o.owner_id, ownerName: o.owner_name, avatar: o.owner_avatar, pets: [] };
+    acc[o.owner_id].pets.push(o);
+    return acc;
+  }, {});
+  const opponentList: any[] = Object.values(opponentTeams);
+  const selectedOpponent = opponentList.find(t => t.ownerId === opponentOwnerId) || null;
+
   const battleMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('battle-pets', {
-        body: { myPetIds: selectedPets, battleType: 'ai' }
-      });
+      const body: any = { myPetIds: selectedPets, battleType: mode };
+      if (mode === 'pvp') {
+        if (!selectedOpponent) throw new Error('Select an opponent first');
+        body.opponentPetIds = selectedOpponent.pets.slice(0, 4).map((p: any) => p.pet_id);
+      }
+      const { data, error } = await supabase.functions.invoke('battle-pets', { body });
       if (error) throw error;
       return data;
     },
@@ -64,6 +87,7 @@ export const PetBattle = () => {
 
   const startBattle = () => {
     if (selectedPets.length === 0) return toast.error('Select at least one pet for battle');
+    if (mode === 'pvp' && !selectedOpponent) return toast.error("Select another player's pets to battle");
     setBattleResult(null);
     battleMutation.mutate();
   };
@@ -108,7 +132,7 @@ export const PetBattle = () => {
             <div>
               <h3 className="font-black text-base">Pet Battle Arena</h3>
               <p className="text-xs text-muted-foreground mt-1">
-                Select up to 4 pets to battle against AI opponents! Power = Level×10 + Stats
+                Battle another player's pets — or train against AI. Power = Level×10 + Stats
               </p>
             </div>
           </div>
@@ -122,6 +146,66 @@ export const PetBattle = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Mode switch */}
+      <div className="grid grid-cols-2 gap-2">
+        <Button variant={mode === 'pvp' ? 'default' : 'outline'} className="gap-2" onClick={() => { setMode('pvp'); setBattleResult(null); }}>
+          <Users className="h-4 w-4" /> Real players
+        </Button>
+        <Button variant={mode === 'ai' ? 'default' : 'outline'} className="gap-2" onClick={() => { setMode('ai'); setBattleResult(null); }}>
+          <Bot className="h-4 w-4" /> AI training
+        </Button>
+      </div>
+
+      {/* Opponent Selection */}
+      {mode === 'pvp' && (
+        <Card className="border-border/40 bg-card/80 backdrop-blur-xl">
+          <CardContent className="p-4">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-lg font-black flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" /> Choose Opponent
+              </h2>
+              <Button size="sm" variant="ghost" className="gap-1 text-xs" onClick={() => refetchOpponents()} disabled={opponentsFetching}>
+                <RefreshCw className={`h-3.5 w-3.5 ${opponentsFetching ? 'animate-spin' : ''}`} /> Shuffle
+              </Button>
+            </div>
+
+            {opponentsLoading ? (
+              <div className="flex justify-center py-6"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
+            ) : opponentList.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-6">No other players with pets yet. Try AI training mode.</p>
+            ) : (
+              <div className="space-y-2">
+                {opponentList.map((team) => {
+                  const teamPower = team.pets.slice(0, 4).reduce((s: number, p: any) => s + (p.power || 0), 0);
+                  const isSel = team.ownerId === opponentOwnerId;
+                  return (
+                    <Card key={team.ownerId}
+                      onClick={() => setOpponentOwnerId(isSel ? null : team.ownerId)}
+                      className={`p-3 cursor-pointer transition-all active:scale-[0.98] ${isSel ? 'border-2 border-destructive bg-destructive/5' : 'border-border/40 hover:border-destructive/30'}`}>
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-muted overflow-hidden flex items-center justify-center flex-shrink-0">
+                          {team.avatar ? <img src={team.avatar} alt={team.ownerName} className="w-full h-full object-cover" /> : <Users className="h-4 w-4 text-muted-foreground" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-sm truncate">{team.ownerName}</p>
+                          <p className="text-[10px] text-muted-foreground truncate">
+                            {team.pets.slice(0, 4).map((p: any) => `${p.pet_name} (Lv${p.level})`).join(' · ')}
+                          </p>
+                        </div>
+                        <Badge variant="secondary" className="text-[10px] gap-1 flex-shrink-0">
+                          <Zap className="h-3 w-3" />{teamPower}
+                        </Badge>
+                        {isSel && <CheckCircle className="h-4 w-4 text-destructive flex-shrink-0" />}
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Pet Selection */}
       <Card className="border-border/40 bg-card/80 backdrop-blur-xl">
@@ -199,7 +283,7 @@ export const PetBattle = () => {
             {battleMutation.isPending ? (
               <><Loader2 className="h-4 w-4 animate-spin" />Battle in Progress...</>
             ) : (
-              <><Swords className="h-4 w-4" />Start Battle ({selectedPets.length} Pet{selectedPets.length !== 1 ? 's' : ''})</>
+              <><Swords className="h-4 w-4" />{mode === 'pvp' ? (selectedOpponent ? `Battle ${selectedOpponent.ownerName}` : 'Select an opponent') : 'Start AI Battle'} ({selectedPets.length} Pet{selectedPets.length !== 1 ? 's' : ''})</>
             )}
           </Button>
         </CardContent>
@@ -223,7 +307,7 @@ export const PetBattle = () => {
                   <p className="text-2xl font-black text-primary">{battleResult.myTeamPower}</p>
                 </CardContent></Card>
                 <Card className="border-border/20 bg-background/50"><CardContent className="p-3 text-center">
-                  <p className="text-[10px] text-muted-foreground">Opponent</p>
+                  <p className="text-[10px] text-muted-foreground">{battleResult.battleType === 'pvp' && selectedOpponent ? selectedOpponent.ownerName : 'Opponent'}</p>
                   <p className="text-2xl font-black text-destructive">{battleResult.opponentPower}</p>
                 </CardContent></Card>
               </div>
