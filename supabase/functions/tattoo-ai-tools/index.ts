@@ -43,8 +43,11 @@ serve(async (req) => {
     const LOVABLE_CHAT_URL = 'https://ai.gateway.lovable.dev/v1/chat/completions';
     const LOVABLE_IMAGE_URL = 'https://ai.gateway.lovable.dev/v1/images/generations';
 
-    const chatCompletion = async (systemPrompt: string, userPrompt: string, maxTokens = 1000) => {
-      const messages = [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }];
+    const chatCompletion = async (systemPrompt: string, userPrompt: string, maxTokens = 1000, imageUrl?: string) => {
+      const userContent: any = imageUrl
+        ? [{ type: 'text', text: userPrompt }, { type: 'image_url', image_url: { url: imageUrl } }]
+        : userPrompt;
+      const messages = [{ role: 'system', content: systemPrompt }, { role: 'user', content: userContent }];
       const call = (lovable: boolean) => rawFetch(lovable ? LOVABLE_CHAT_URL : OPENAI_CHAT_URL, {
         method: 'POST',
         headers: lovable
