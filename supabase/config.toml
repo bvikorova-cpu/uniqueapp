@@ -425,4 +425,5 @@ verify_jwt = true
 
 [functions.future-face-image]
 verify_jwt = true
+entrypoint = "./functions/future-face-image/index.ts"
 
