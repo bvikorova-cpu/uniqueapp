@@ -21,6 +21,9 @@ const ACTIONS: Record<string, { cost: number; prompt: (p: any) => string }> = {
   healthy_lifestyle: { cost: 6, prompt: ({ years }) => `Show this face after ${years || 10} years of optimal healthy lifestyle: glowing skin, fit appearance, bright eyes, minimal wrinkles. Photorealistic.` },
   unhealthy_lifestyle: { cost: 6, prompt: ({ years }) => `Show this face after ${years || 10} years of poor lifestyle (smoking, sun damage, stress, poor sleep): premature wrinkles, dull skin, dark circles, sallow tone. Photorealistic.` },
   genetic_twin: { cost: 7, prompt: ({ ethnicity }) => `Generate a photorealistic portrait of a "genetic twin" — a different person who shares strong facial bone structure, eye shape, nose and lip proportions with the person in this photo${ethnicity ? `, with ${ethnicity} appearance` : ""}. Different hair, different styling, neutral studio background. Same age range.` },
+  photo_colorize: { cost: 1, prompt: () => `Colorize this old black-and-white or sepia photograph with realistic, period-accurate colors. Natural skin tones, believable clothing and scenery colors. Keep every detail, composition and grain structure identical. Photorealistic result.` },
+  photo_repair: { cost: 1, prompt: () => `Restore this damaged old photograph: remove scratches, dust, stains, creases and tears, repair missing areas naturally. Keep the original composition, subjects and tonality unchanged. Photorealistic restoration.` },
+  photo_enhance: { cost: 1, prompt: () => `Enhance this photograph: increase sharpness and clarity, reduce noise and blur, improve contrast and dynamic range, recover fine detail. Do not change composition, colors or content. Photorealistic.` },
   mood_emotion: { cost: 5, prompt: ({ mood }) => `Re-render this face expressing the emotion: ${mood || "joyful happiness"}. Adjust facial muscles, mouth, eyes and brows naturally. Keep identity, hair, lighting and background unchanged. Photorealistic.` } };
 
 serve(async (req) => {
@@ -157,8 +160,10 @@ serve(async (req) => {
     }
 
     // Save history
-    await supabase.from("future_face_images").insert({
-      user_id: user.id, action, source_url: sourceUrl, result_url: resultUrl, metadata: params || {} });
+    try {
+      await supabase.from("future_face_images").insert({
+        user_id: user.id, action, source_url: sourceUrl, result_url: resultUrl, metadata: params || {} });
+    } catch (e) { console.error("history insert failed:", e); }
 
     return json({ resultUrl, action, creditsUsed: cfg.cost });
   } catch (error: any) {
