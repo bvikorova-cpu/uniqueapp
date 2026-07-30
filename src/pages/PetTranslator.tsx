@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import PetTranslatorHero from '@/components/pet-translator/PetTranslatorHero';
 import PetToolsGrid from '@/components/pet-translator/PetToolsGrid';
 import PetMoodStreaks from '@/components/pet-translator/PetMoodStreaks';
-import PetLeaderboard from '@/components/pet-translator/PetLeaderboard';
 import PetAchievements from '@/components/pet-translator/PetAchievements';
 import PetPhotoAnalysis from '@/components/pet-translator/PetPhotoAnalysis';
 import PetHealthDashboard from '@/components/pet-translator/PetHealthDashboard';
@@ -162,7 +161,6 @@ const PetTranslator = () => {
                 { key: "social", label: "🌍 Social" },
                 { key: "streaks", label: "🔥 Streaks" },
                 
-                { key: "leaderboard", label: "🏆 Leaderboard" },
                 { key: "achievements", label: "🏅 Achievements" },
               ].map(tab => (
                 <TabsTrigger key={tab.key} value={tab.key} className="flex-1 min-w-[70px] text-[10px] sm:text-xs capitalize">
@@ -184,14 +182,12 @@ const PetTranslator = () => {
               <PetSocialNetwork />
             </TabsContent>
             <TabsContent value="streaks">
-              <PetMoodStreaks currentStreak={0} />
-            </TabsContent>
-            <TabsContent value="leaderboard">
-              <PetLeaderboard />
+              <PetMoodStreaks />
             </TabsContent>
             <TabsContent value="achievements">
-              <PetAchievements totalPoints={0} />
+              <PetAchievements />
             </TabsContent>
+
           </Tabs>
         )}
 
