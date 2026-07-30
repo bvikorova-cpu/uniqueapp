@@ -61,27 +61,6 @@ export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
     enabled: !!selectedPetId
   });
 
-  const equipMutation = useMutation({
-    mutationFn: async (accessoryId: string) => {
-      if (!selectedPetId) return;
-      const currentCustomization = (selectedPet?.customization as any) || {};
-      const currentEquipped = currentCustomization.equipped_accessories || [];
-      const newEquipped = currentEquipped.includes(accessoryId)
-        ? currentEquipped.filter((id: string) => id !== accessoryId)
-        : [...currentEquipped, accessoryId];
-      const { data, error } = await supabase.from('pets').update({
-        customization: { ...currentCustomization, equipped_accessories: newEquipped }
-      }).eq('id', selectedPetId).select().single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['selected-pet', selectedPetId] });
-      toast.success('Accessory updated! ✨');
-    },
-    onError: (error: any) => toast.error(error.message || 'Failed to equip')
-  });
-
   const { data: myPets } = useQuery({
     queryKey: ['my-pets-for-equip'],
     queryFn: async () => {
