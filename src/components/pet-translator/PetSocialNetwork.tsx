@@ -347,13 +347,36 @@ export default function PetSocialNetwork() {
             </div>
             <Textarea placeholder="What is your pet up to?" rows={3} value={form.caption}
               onChange={e => setForm({ ...form, caption: e.target.value })} />
+
+            <input ref={fileRef} type="file" accept="image/*,video/*" className="hidden"
+              onChange={e => pickMedia(e.target.files?.[0])} />
+
+            {mediaPreview ? (
+              <div className="relative rounded-xl overflow-hidden border border-border/40">
+                {mediaFile?.type.startsWith("video/") ? (
+                  <video src={mediaPreview} controls playsInline className="w-full max-h-48 object-contain bg-black" />
+                ) : (
+                  <img src={mediaPreview} alt="Selected pet media preview" className="w-full max-h-48 object-cover" />
+                )}
+                <button onClick={clearMedia} aria-label="Remove media"
+                  className="absolute top-2 right-2 rounded-full bg-background/80 p-1 hover:bg-background">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <Button type="button" variant="outline" className="w-full" onClick={() => fileRef.current?.click()}>
+                <ImagePlus className="h-4 w-4 mr-2" /> Add photo or video
+              </Button>
+            )}
+            <p className="text-[11px] text-muted-foreground">Photos and videos up to {MAX_MEDIA_MB} MB. Everyone in the community can see them.</p>
           </div>
           <DialogFooter>
-            <Button onClick={createPost} disabled={creating} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600">
-              {creating ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <PawPrint className="h-4 w-4 mr-1" />}
-              Post
+            <Button onClick={createPost} disabled={creating || uploading} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600">
+              {creating || uploading ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <PawPrint className="h-4 w-4 mr-1" />}
+              {uploading ? "Uploading..." : "Post"}
             </Button>
           </DialogFooter>
+
         </DialogContent>
       </Dialog>
 
