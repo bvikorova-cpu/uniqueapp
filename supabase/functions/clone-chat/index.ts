@@ -135,7 +135,13 @@ Use 8 alternating messages, each max 200 characters, in English.`;
             const cleaned = String(payload?.choices?.[0]?.message?.content ?? "").replace(/```json|```/g, "").trim();
             try {
               const parsed = JSON.parse(cleaned);
-              if (Array.isArray(parsed.messages)) dateMessages = parsed.messages.slice(0, 20);
+              if (Array.isArray(parsed.messages)) {
+                // Force strict alternation so both sides never carry the same label.
+                dateMessages = parsed.messages.slice(0, 20).map((m: any, i: number) => ({
+                  speaker: i % 2 === 0 ? nameA : nameB,
+                  text: String(m?.text ?? ""),
+                })).filter((m: any) => m.text);
+              }
               if (typeof parsed.summary === "string") summary = parsed.summary;
               if (typeof parsed.score === "number") score = Math.max(0, Math.min(100, Math.round(parsed.score)));
             } catch { summary = cleaned.slice(0, 800); }
