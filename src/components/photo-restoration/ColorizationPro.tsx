@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { getReadableUrl } from "@/lib/storageSigned";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -11,6 +10,7 @@ import { Palette, Upload, ArrowLeft, Download } from "lucide-react";
 import { usePhotoCredits } from "@/hooks/usePhotoCredits";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 
 interface Props { onBack: () => void; }
 
@@ -34,21 +34,27 @@ export const ColorizationPro = ({ onBack }: Props) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage.from('old-photos').upload(fileName, file);
-      if (uploadError) throw uploadError;
-      const publicUrl = await getReadableUrl('old-photos', fileName);
-
-      const { data, error } = await supabase.functions.invoke('future-face-image', {
-        body: { action: 'photo_colorize_pro', sourceUrl: publicUrl, era }
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => typeof reader.result === "string"
+          ? resolve(reader.result)
+          : reject(new Error("Could not read the photo"));
+        reader.onerror = () => reject(new Error("Could not read the photo"));
+        reader.readAsDataURL(file);
       });
-      if (error) throw error;
+
+      const invocation = await supabase.functions.invoke('future-face-image', {
+        body: { action: 'photo_colorize_pro', sourceUrl: dataUrl, params: { era } }
+      });
+      const data = throwIfInvokeError(invocation);
       setResult({ colorizedImageUrl: (data as any)?.resultUrl });
+      window.dispatchEvent(new Event('ai-credits-updated'));
       toast.success("Pro colorization complete!");
     } catch (error: any) {
       console.error(error);
-      toast.error(error.message || "Failed to colorize photo");
+      if (!handleEdgeError(error, { context: "Colorization Pro" })) {
+        toast.error(error.message || "Failed to colorize photo");
+      }
     } finally { setLoading(false); }
   };
 
