@@ -1,19 +1,8 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { PawPrint, Heart, Users, Sparkles, Crown, Mic } from "lucide-react";
 import heroVideo from "@/assets/pet-translator-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-
-function getDailyTimeLeft() {
-  const now = new Date();
-  const end = new Date(now);
-  end.setHours(23, 59, 59, 999);
-  const diff = end.getTime() - now.getTime();
-  const hours = Math.floor(diff / 3600000);
-  const minutes = Math.floor((diff % 3600000) / 60000);
-  return { hours, minutes };
-}
 
 interface PetTranslatorHeroProps {
   totalTranslations: number;
@@ -23,13 +12,6 @@ interface PetTranslatorHeroProps {
 }
 
 export default function PetTranslatorHero({ totalTranslations, totalUsers, streak, isSubscribed }: PetTranslatorHeroProps) {
-  const [timeLeft, setTimeLeft] = useState(getDailyTimeLeft());
-
-  useEffect(() => {
-    const timer = setInterval(() => setTimeLeft(getDailyTimeLeft()), 60000);
-    return () => clearInterval(timer);
-  }, []);
-
   const statCards = [
     { value: totalTranslations > 0 ? totalTranslations.toLocaleString() : "—", label: "Translations", icon: Mic, accent: "from-purple-500/20 to-violet-500/10", iconColor: "text-purple-400" },
     { value: totalUsers > 0 ? totalUsers.toLocaleString() : "—", label: "Pet Owners", icon: Users, accent: "from-violet-500/20 to-purple-500/10", iconColor: "text-violet-400" },
