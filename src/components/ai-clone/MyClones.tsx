@@ -4,9 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Bot, MessageCircle, Pause, Play, Download, RefreshCw, Loader2 } from "lucide-react";
+import { Bot, MessageCircle, Pause, Play, Download, RefreshCw, Loader2, Pencil, Eye, EyeOff, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { CloneChatDialog } from "./CloneChatDialog";
+import { CloneEditDialog } from "./CloneEditDialog";
 
 interface Clone {
   id: string;
@@ -16,6 +18,7 @@ interface Clone {
   subscription_tier: string;
   total_conversations: number;
   is_active: boolean;
+  is_public: boolean;
   created_at: string;
 }
 
@@ -24,6 +27,10 @@ export function MyClones() {
   const [clones, setClones] = useState<Clone[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [chatClone, setChatClone] = useState<Clone | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [editClone, setEditClone] = useState<Clone | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => { fetchClones(); }, []);
 
@@ -33,7 +40,7 @@ export function MyClones() {
       if (!user) return;
       const { data, error } = await supabase.from('personality_clones').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
       if (error) throw error;
-      setClones(data || []);
+      setClones((data || []).map((c: any) => ({ ...c, is_public: !!c.is_public })));
     } catch (error) {
       console.error('Error fetching clones:', error);
     } finally {
@@ -49,6 +56,29 @@ export function MyClones() {
       fetchClones();
     } catch {
       toast({ title: "Error", description: "Failed to update clone status", variant: "destructive" });
+    }
+  };
+
+  const togglePublic = async (clone: Clone) => {
+    try {
+      const { error } = await supabase.from('personality_clones').update({ is_public: !clone.is_public }).eq('id', clone.id);
+      if (error) throw error;
+      toast({ title: clone.is_public ? "Clone is now private" : "Clone published to Marketplace" });
+      fetchClones();
+    } catch {
+      toast({ title: "Error", description: "Failed to update visibility", variant: "destructive" });
+    }
+  };
+
+  const deleteClone = async (cloneId: string) => {
+    if (!window.confirm("Are you sure you want to permanently delete this clone?")) return;
+    try {
+      const { error } = await supabase.from('personality_clones').delete().eq('id', cloneId);
+      if (error) throw error;
+      toast({ title: "Clone deleted" });
+      fetchClones();
+    } catch {
+      toast({ title: "Error", description: "Failed to delete clone", variant: "destructive" });
     }
   };
 
@@ -84,6 +114,16 @@ export function MyClones() {
     } catch {
       toast({ title: "Error", description: "Failed to export conversations", variant: "destructive" });
     }
+  };
+
+  const openChat = (clone: Clone) => {
+    setChatClone(clone);
+    setChatOpen(true);
+  };
+
+  const openEdit = (clone: Clone) => {
+    setEditClone(clone);
+    setEditOpen(true);
   };
 
   if (isLoading) {
@@ -128,20 +168,33 @@ export function MyClones() {
                       {clone.total_conversations} conversations • Created {new Date(clone.created_at).toLocaleDateString()}
                     </CardDescription>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap justify-end">
                     <Badge variant={clone.training_status === 'active' ? 'default' : 'secondary'}>{clone.training_status}</Badge>
                     <Badge variant="outline">{clone.subscription_tier}</Badge>
+                    {clone.is_public && <Badge variant="default" className="bg-emerald-500">Public</Badge>}
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
+                  <Button variant="default" size="sm" onClick={() => openChat(clone)}>
+                    <MessageCircle className="h-4 w-4 mr-2" /> Chat
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => openEdit(clone)}>
+                    <Pencil className="h-4 w-4 mr-2" /> Edit
+                  </Button>
                   <Button variant="outline" size="sm" onClick={() => toggleCloneStatus(clone.id, clone.is_active)}>
                     {clone.is_active ? <><Pause className="h-4 w-4 mr-2" /> Pause</> : <><Play className="h-4 w-4 mr-2" /> Activate</>}
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => togglePublic(clone)}>
+                    {clone.is_public ? <><EyeOff className="h-4 w-4 mr-2" /> Unpublish</> : <><Eye className="h-4 w-4 mr-2" /> Publish</>}
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => exportConversations(clone.id)}>
                     <Download className="h-4 w-4 mr-2" />
                     Export
+                  </Button>
+                  <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={() => deleteClone(clone.id)}>
+                    <Trash2 className="h-4 w-4 mr-2" /> Delete
                   </Button>
                 </div>
               </CardContent>
@@ -149,6 +202,19 @@ export function MyClones() {
           </motion.div>
         ))}
       </div>
+
+      <CloneChatDialog
+        open={chatOpen}
+        onOpenChange={setChatOpen}
+        clone={chatClone ? { id: chatClone.id, clone_name: chatClone.clone_name, personality_data: chatClone.personality_data } : null}
+      />
+      <CloneEditDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        clone={editClone ? { id: editClone.id, clone_name: editClone.clone_name, personality_data: editClone.personality_data } : null}
+        onSaved={fetchClones}
+      />
     </div>
   );
 }
+
