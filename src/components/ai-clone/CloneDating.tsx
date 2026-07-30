@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,9 +8,45 @@ import { Heart, MessageCircle, Sparkles, Bot, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
+interface DatingSession {
+  id: string;
+  status: string;
+  compatibility_score: number | null;
+  payment_amount: number | null;
+  created_at: string;
+}
+
 export function CloneDating() {
   const { toast } = useToast();
   const [isSearching, setIsSearching] = useState(false);
+  const [sessions, setSessions] = useState<DatingSession[]>([]);
+  const [loadingSessions, setLoadingSessions] = useState(true);
+
+  const loadSessions = useCallback(async () => {
+    setLoadingSessions(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setSessions([]); return; }
+      const { data: clones } = await supabase
+        .from("personality_clones")
+        .select("id")
+        .eq("user_id", user.id);
+      const ids = (clones ?? []).map((c: { id: string }) => c.id);
+      if (!ids.length) { setSessions([]); return; }
+      const { data } = await supabase
+        .from("clone_dating_sessions")
+        .select("id, status, compatibility_score, payment_amount, created_at")
+        .or(`clone_1_id.in.(${ids.join(",")}),clone_2_id.in.(${ids.join(",")})`)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      setSessions((data as DatingSession[]) ?? []);
+    } finally {
+      setLoadingSessions(false);
+    }
+  }, []);
+
+  useEffect(() => { loadSessions(); }, [loadSessions]);
+
 
   const startDatingSession = async () => {
     // Open synchronously so mobile browsers do not block Stripe as a popup
