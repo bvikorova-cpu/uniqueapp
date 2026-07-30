@@ -101,7 +101,6 @@ export const EDGE_FUNCTIONS: string[] = [
   "clone-battle",
   "clone-chat",
   "clone-quiz-analyze",
-  "clone-voice-transform",
   "coffee-checkout",
   "collectible-ai",
   "coloring-ai-tools",
