@@ -205,22 +205,42 @@ export function CloneDating() {
               No sessions yet. After a successful payment your session appears here.
             </p>
           ) : (
-            sessions.map((s) => (
-              <div key={s.id} className="flex items-center justify-between gap-3 rounded-lg border border-border/50 p-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium">Speed dating session</p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(s.created_at).toLocaleString()} · €{Number(s.payment_amount ?? 0).toFixed(2)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  {s.compatibility_score != null && (
-                    <Badge variant="secondary">{s.compatibility_score}%</Badge>
-                  )}
-                  <Badge variant="outline" className="capitalize">{s.status}</Badge>
-                </div>
-              </div>
-            ))
+            sessions.map((s) => {
+              const hasTranscript = (s.session_data?.messages?.length ?? 0) > 0;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => openOrRun(s)}
+                  disabled={runningId === s.id}
+                  className="w-full flex items-center justify-between gap-3 rounded-lg border border-border/50 p-3 text-left transition-colors hover:bg-muted/50 disabled:opacity-70"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">Speed dating session</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {new Date(s.created_at).toLocaleString()} · €{Number(s.payment_amount ?? 0).toFixed(2)}
+                    </p>
+                    <p className="text-xs text-pink-400 mt-1 flex items-center gap-1">
+                      {runningId === s.id ? (
+                        <><Loader2 className="h-3 w-3 animate-spin" /> Running the date…</>
+                      ) : hasTranscript ? (
+                        <><MessageCircle className="h-3 w-3" /> View conversation</>
+                      ) : (
+                        <><Play className="h-3 w-3" /> Run the date</>
+                      )}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {s.compatibility_score != null && (
+                      <Badge variant="secondary">{s.compatibility_score}%</Badge>
+                    )}
+                    <Badge variant="outline" className="capitalize">{s.status}</Badge>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                </button>
+              );
+            })
+
           )}
         </CardContent>
       </Card>
