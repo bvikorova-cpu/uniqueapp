@@ -10692,7 +10692,7 @@ export type Database = {
       }
       clone_subscriptions: {
         Row: {
-          clone_id: string
+          clone_id: string | null
           created_at: string
           expires_at: string
           id: string
@@ -10703,7 +10703,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          clone_id: string
+          clone_id?: string | null
           created_at?: string
           expires_at: string
           id?: string
@@ -10714,7 +10714,7 @@ export type Database = {
           user_id: string
         }
         Update: {
-          clone_id?: string
+          clone_id?: string | null
           created_at?: string
           expires_at?: string
           id?: string
