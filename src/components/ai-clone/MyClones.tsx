@@ -176,27 +176,27 @@ export function MyClones() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  <Button variant="default" size="sm" onClick={() => openChat(clone)}>
-                    <MessageCircle className="h-4 w-4 mr-2" /> Chat
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full">
+                  <Button variant="default" size="sm" className="w-full min-w-0 justify-center" onClick={() => openChat(clone)}>
+                    <MessageCircle className="h-4 w-4 mr-1.5 shrink-0" /> <span className="truncate">Chat</span>
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => openEdit(clone)}>
-                    <Pencil className="h-4 w-4 mr-2" /> Edit
+                  <Button variant="outline" size="sm" className="w-full min-w-0 justify-center" onClick={() => openEdit(clone)}>
+                    <Pencil className="h-4 w-4 mr-1.5 shrink-0" /> <span className="truncate">Edit</span>
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => toggleCloneStatus(clone.id, clone.is_active)}>
-                    {clone.is_active ? <><Pause className="h-4 w-4 mr-2" /> Pause</> : <><Play className="h-4 w-4 mr-2" /> Activate</>}
+                  <Button variant="outline" size="sm" className="w-full min-w-0 justify-center" onClick={() => toggleCloneStatus(clone.id, clone.is_active)}>
+                    {clone.is_active ? <><Pause className="h-4 w-4 mr-1.5 shrink-0" /> <span className="truncate">Pause</span></> : <><Play className="h-4 w-4 mr-1.5 shrink-0" /> <span className="truncate">Activate</span></>}
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => togglePublic(clone)}>
-                    {clone.is_public ? <><EyeOff className="h-4 w-4 mr-2" /> Unpublish</> : <><Eye className="h-4 w-4 mr-2" /> Publish</>}
+                  <Button variant="outline" size="sm" className="w-full min-w-0 justify-center" onClick={() => togglePublic(clone)}>
+                    {clone.is_public ? <><EyeOff className="h-4 w-4 mr-1.5 shrink-0" /> <span className="truncate">Unpublish</span></> : <><Eye className="h-4 w-4 mr-1.5 shrink-0" /> <span className="truncate">Publish</span></>}
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => exportConversations(clone.id)}>
-                    <Download className="h-4 w-4 mr-2" />
-                    Export
+                  <Button variant="outline" size="sm" className="w-full min-w-0 justify-center" onClick={() => exportConversations(clone.id)}>
+                    <Download className="h-4 w-4 mr-1.5 shrink-0" /> <span className="truncate">Export</span>
                   </Button>
-                  <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={() => deleteClone(clone.id)}>
-                    <Trash2 className="h-4 w-4 mr-2" /> Delete
+                  <Button variant="outline" size="sm" className="w-full min-w-0 justify-center text-destructive hover:text-destructive" onClick={() => deleteClone(clone.id)}>
+                    <Trash2 className="h-4 w-4 mr-1.5 shrink-0" /> <span className="truncate">Delete</span>
                   </Button>
                 </div>
+
               </CardContent>
             </Card>
           </motion.div>
