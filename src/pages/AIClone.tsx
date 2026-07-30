@@ -13,7 +13,6 @@ import { CloneDating } from "@/components/ai-clone/CloneDating";
 import { CloneSubscriptions } from "@/components/ai-clone/CloneSubscriptions";
 import { CloneAnalytics } from "@/components/ai-clone/CloneAnalytics";
 import { ClonePersonalityQuiz } from "@/components/ai-clone/ClonePersonalityQuiz";
-import { CloneVoice } from "@/components/ai-clone/CloneVoice";
 import { CloneBattles } from "@/components/ai-clone/CloneBattles";
 import { CloneLeaderboard } from "@/components/ai-clone/CloneLeaderboard";
 import { CloneSocialFeed } from "@/components/ai-clone/CloneSocialFeed";
@@ -23,7 +22,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ViewType = "hub" | "create" | "my-clones" | "marketplace" | "dating" | "subscriptions" | "analytics" | "quiz" | "voice" | "battles" | "leaderboard" | "feed";
+type ViewType = "hub" | "create" | "my-clones" | "marketplace" | "dating" | "subscriptions" | "analytics" | "quiz" | "battles" | "leaderboard" | "feed";
 
 const TOOLS = [
   { id: "create" as ViewType, icon: Sparkles, label: "Create Clone", desc: "Build your AI twin", color: "text-purple-400" },
@@ -31,7 +30,6 @@ const TOOLS = [
   { id: "marketplace" as ViewType, icon: Users, label: "Marketplace", desc: "Explore public clones", color: "text-emerald-400" },
   { id: "dating" as ViewType, icon: Heart, label: "Clone Dating", desc: "Auto-match clones", color: "text-pink-400" },
   { id: "quiz" as ViewType, icon: Brain, label: "Personality Quiz", desc: "Discover your profile", color: "text-amber-400" },
-  { id: "voice" as ViewType, icon: Mic, label: "Voice Studio", desc: "Define clone voice", color: "text-indigo-400" },
   { id: "battles" as ViewType, icon: Swords, label: "Clone Battles", desc: "Wit & charm duels", color: "text-red-400" },
   { id: "analytics" as ViewType, icon: BarChart3, label: "Analytics", desc: "Performance insights", color: "text-teal-400" },
   { id: "leaderboard" as ViewType, icon: Trophy, label: "Leaderboard", desc: "Top clones ranking", color: "text-yellow-400" },
@@ -85,7 +83,6 @@ export default function AIClone() {
       case "subscriptions": return <CloneSubscriptions />;
       case "analytics": return <CloneAnalytics />;
       case "quiz": return <ClonePersonalityQuiz />;
-      case "voice": return <CloneVoice />;
       case "battles": return <CloneBattles />;
       case "leaderboard": return <CloneLeaderboard />;
       case "feed": return <CloneSocialFeed />;
