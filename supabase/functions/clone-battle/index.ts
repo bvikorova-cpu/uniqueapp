@@ -184,10 +184,10 @@ Deno.serve(async (req) => {
       rounds.map((r: any) => `Round ${r.round}\n${r.a}\n${r.b}`).join("\n\n") +
       (verdict ? `\n\nJudge: ${verdict}` : "");
 
-    await admin.from("clone_battles").insert({
+    const { error: insertError } = await admin.from("clone_battles").insert({
       user_id: user.id,
       user_clone_id: myClone.id,
-      opponent_clone_id: opponent.id,
+      opponent_clone_id: opponent.id ?? null,
       opponent_user_id: opponent.user_id ?? null,
       winner: winnerSide,
       user_clone_name: myClone.clone_name,
@@ -198,6 +198,7 @@ Deno.serve(async (req) => {
       transcript: rounds,
       analysis,
     });
+    if (insertError) console.error("clone_battles insert failed:", insertError.message);
 
     return j({
       winner: winnerName,
@@ -208,9 +209,10 @@ Deno.serve(async (req) => {
       rounds,
       userScore,
       opponentScore,
+      isWildRival,
       myClone: { id: myClone.id, name: myClone.clone_name },
       opponent: {
-        id: opponent.id,
+        id: opponent.id ?? null,
         name: opponent.clone_name,
         userId: opponent.user_id ?? null,
         owner: opponentOwner,
