@@ -55,6 +55,83 @@ Deno.serve(async (req) => {
 
     const myTeamPower = myPets.reduce((s, p) => s + calcPower(p), 0);
 
+    // ---- PvP: battle against another user's pets ----
+    const rawOpponentIds: string[] = Array.isArray(body?.opponentPetIds) ? body.opponentPetIds : [];
+    if (battleType === "pvp" && rawOpponentIds.length > 0) {
+      const { data: oppPets, error: oppErr } = await admin
+        .from("pets")
+        .select("*, pet_types(name, species)")
+        .in("id", rawOpponentIds);
+
+      if (oppErr) return json({ error: oppErr.message }, 500);
+      if (!oppPets || oppPets.length === 0) return json({ error: "Opponent pets not found" }, 400);
+      if (oppPets.some((p: any) => p.user_id === userId))
+        return json({ error: "You cannot battle your own pets" }, 400);
+
+      const opponentUserId = oppPets[0].user_id;
+      const opponentPetsSameOwner = oppPets.filter((p: any) => p.user_id === opponentUserId);
+      const opponentPowerPvp = opponentPetsSameOwner.reduce((s: number, p: any) => s + calcPower(p), 0);
+
+      const rounds = Math.max(myPets.length, opponentPetsSameOwner.length);
+      const logPvp = [];
+      for (let i = 0; i < rounds; i++) {
+        const mine = myPets[i % myPets.length];
+        const theirs = opponentPetsSameOwner[i % opponentPetsSameOwner.length];
+        const myRoll = calcPower(mine) * (0.85 + Math.random() * 0.3);
+        const oppRoll = calcPower(theirs) * (0.85 + Math.random() * 0.3);
+        logPvp.push({
+          myPet: { name: mine.name, power: calcPower(mine) },
+          opponent: { name: theirs.name, power: calcPower(theirs), level: theirs.level || 1 },
+          winner: myRoll >= oppRoll ? "challenger" : "opponent" });
+      }
+
+      const myWinsPvp = logPvp.filter((l) => l.winner === "challenger").length;
+      const isWinnerPvp = myWinsPvp > logPvp.length / 2;
+      const xpEarnedPvp = isWinnerPvp
+        ? 35 + Math.floor(Math.random() * 16)
+        : 15 + Math.floor(Math.random() * 11);
+      const xpPerPetPvp = Math.max(1, Math.floor(xpEarnedPvp / myPets.length));
+
+      for (const p of myPets) {
+        let newXP = (p.experience || 0) + xpPerPetPvp;
+        let newLevel = p.level || 1;
+        while (newXP >= xpToNext(newLevel)) { newXP -= xpToNext(newLevel); newLevel += 1; }
+        await admin.from("pets").update({
+          experience: newXP,
+          level: newLevel,
+          energy: Math.max(0, (p.energy || 50) - 15),
+          battle_wins: (p.battle_wins || 0) + (isWinnerPvp ? 1 : 0),
+          battle_losses: (p.battle_losses || 0) + (isWinnerPvp ? 0 : 1),
+          last_activity_at: new Date().toISOString() }).eq("id", p.id);
+      }
+
+      for (const p of opponentPetsSameOwner) {
+        await admin.from("pets").update({
+          battle_wins: (p.battle_wins || 0) + (isWinnerPvp ? 0 : 1),
+          battle_losses: (p.battle_losses || 0) + (isWinnerPvp ? 1 : 0) }).eq("id", p.id);
+      }
+
+      await admin.from("pet_battles").insert({
+        challenger_id: userId,
+        challenger_pets: myPetIds,
+        challenger_power: myTeamPower,
+        opponent_id: opponentUserId,
+        opponent_pets: opponentPetsSameOwner.map((p: any) => p.id),
+        opponent_power: opponentPowerPvp,
+        winner_id: isWinnerPvp ? userId : opponentUserId,
+        xp_earned: xpEarnedPvp,
+        battle_type: "pvp",
+        battle_log: logPvp });
+
+      return json({
+        isWinner: isWinnerPvp,
+        myTeamPower,
+        opponentPower: opponentPowerPvp,
+        xpEarned: xpEarnedPvp,
+        battleLog: logPvp,
+        battleType: "pvp" });
+    }
+
     // AI opponent: generate per-pet enemies with ~80-120% of each pet's power
     const opponentTeam = myPets.map((p) => { const power = Math.round(calcPower(p) * (0.8 + Math.random() * 0.4));
       const level = Math.max(1, Math.round(power / 12));
