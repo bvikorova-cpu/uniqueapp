@@ -69881,6 +69881,10 @@ export type Database = {
         Args: { p_delta: number; p_item_id: string }
         Returns: number
       }
+      increment_clone_conversations: {
+        Args: { p_clone_id: string }
+        Returns: undefined
+      }
       increment_collection_pages: {
         Args: { p_collection_id: string }
         Returns: undefined
