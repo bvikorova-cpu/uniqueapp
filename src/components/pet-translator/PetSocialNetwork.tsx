@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share2, Star, PawPrint, Loader2, Trash2, Send } from "lucide-react";
+import { Heart, MessageCircle, Share2, Star, PawPrint, Loader2, Trash2, Send, ImagePlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,6 +19,8 @@ type PetPost = {
   species: string | null;
   mood: string | null;
   caption: string | null;
+  media_url: string | null;
+  media_type: string | null;
   score: number;
   likes_count: number;
   comments_count: number;
@@ -28,6 +30,8 @@ type PetPost = {
 type PetComment = { id: string; user_id: string; content: string; created_at: string };
 
 const MOODS = ["Happy", "Playful", "Sleepy", "Hungry", "Anxious", "Curious"];
+const MAX_MEDIA_MB = 25;
+
 
 export default function PetSocialNetwork() {
   const { user } = useAuth();
