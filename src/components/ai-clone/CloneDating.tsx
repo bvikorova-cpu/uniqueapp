@@ -416,7 +416,7 @@ export function CloneDating() {
             "Your AI clone is matched with another compatible clone",
             "They have an automatic conversation for 10 minutes",
             "AI analyzes compatibility and generates a match score",
-            "Review the conversation, then chat live with the matched clone yourself",
+            "Review the conversation, then chat live with your own clone",
           ].map((step, i) => (
             <div key={i} className="flex gap-3">
               <Badge variant="outline" className="h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0">{i + 1}</Badge>
