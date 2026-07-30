@@ -436,11 +436,8 @@ export function CloneDating() {
         </DialogContent>
       </Dialog>
 
-      <CloneChatDialog
-        open={!!chatClone}
-        onOpenChange={(o) => !o && setChatClone(null)}
-        clone={chatClone ? { id: chatClone.id, clone_name: chatClone.clone_name, personality_data: chatClone.personality_data } : null}
-      />
+
+
 
 
 
