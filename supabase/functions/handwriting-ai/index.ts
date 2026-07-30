@@ -23,17 +23,30 @@ const json = (b: unknown, status = 200) =>
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 const AI_URL = "https://api.openai.com/v1/chat/completions";
 
-async function callAI(body: unknown) {
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function callAI(body: unknown, attempt = 0): Promise<string> {
   const res = await fetch(AI_URL, {
     method: "POST",
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(body) });
-  if (res.status === 429) throw new Error("Rate limited");
+  if (res.status === 429 || res.status === 503) {
+    if (attempt < 3) {
+      await sleep(800 * Math.pow(2, attempt) + Math.random() * 400);
+      // downgrade to the lighter model on later retries
+      const next = attempt >= 1 && body && typeof body === "object"
+        ? { ...(body as Record<string, unknown>), model: "google/gemini-3.1-flash-lite" }
+        : body;
+      return await callAI(next, attempt + 1);
+    }
+    throw new Error("Rate limited");
+  }
   if (res.status === 402) throw new Error("AI credits exhausted");
   if (!res.ok) throw new Error(`AI error ${res.status}`);
   const data = await res.json();
   return data.choices[0].message.content;
 }
+
 
 async function chargeCredits(supabase: any, userId: string, cost: number) {
   const { data: credits } = await supabase
