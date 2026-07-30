@@ -9,7 +9,6 @@ import { PetCustomization } from "@/components/virtual-pet/PetCustomization";
 import { PetTrading } from "@/components/virtual-pet/PetTrading";
 import { MiniGames } from "@/components/virtual-pet/MiniGames";
 import { PetBattle } from "@/components/virtual-pet/PetBattle";
-import { PetBreeding } from "@/components/virtual-pet/PetBreeding";
 import { AIPetPersonalityCoach } from "@/components/virtual-pet/AIPetPersonalityCoach";
 import { AIPetNameGenerator } from "@/components/virtual-pet/AIPetNameGenerator";
 import { AIPetHealthPredictor } from "@/components/virtual-pet/AIPetHealthPredictor";
@@ -31,7 +30,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import PetCrossPromo from "@/components/pet-translator/PetCrossPromo";
 import { trackPetActivity } from "@/lib/petLover";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
+type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" |
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
   "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy";
 
@@ -42,7 +41,6 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
   { id: "customize", icon: Palette, title: "Customize", description: "Equip skins & accessories", color: "purple" },
   { id: "trading", icon: ArrowLeftRight, title: "Trading Post", description: "Trade rare pets with players", color: "orange" },
   { id: "games", icon: Gamepad2, title: "Mini Games", description: "Earn rewards & XP from games", color: "cyan" },
-  { id: "breeding", icon: Dna, title: "Breeding Lab", description: "Combine pets for rare offspring", color: "emerald" },
   { id: "personality-coach", icon: Brain, title: "AI Personality Coach", description: "AI care routines & analysis", color: "violet", badge: "5 Cr", isNew: true },
   { id: "name-generator", icon: Wand2, title: "AI Name Generator", description: "Creative AI-generated pet names", color: "pink", badge: "3 Cr", isNew: true },
   { id: "health-predictor", icon: Activity, title: "AI Health Predictor", description: "Forecast evolution & health trends", color: "emerald", badge: "8 Cr", isNew: true },
@@ -88,7 +86,6 @@ const VirtualPet = () => {
       case "customize": return <PetCustomization selectedPetId={selectedPetId} />;
       case "trading": return <PetTrading />;
       case "games": return <MiniGames selectedPetId={selectedPetId} />;
-      case "breeding": return <PetBreeding selectedPetId={selectedPetId} />;
       case "personality-coach": return <AIPetPersonalityCoach onBack={goBack} />;
       case "name-generator": return <AIPetNameGenerator onBack={goBack} />;
       case "health-predictor": return <AIPetHealthPredictor onBack={goBack} />;
@@ -101,7 +98,7 @@ const VirtualPet = () => {
     }
   };
 
-  const oldViews: ActiveView[] = ["pets", "battle", "shop", "customize", "trading", "games", "breeding"];
+  const oldViews: ActiveView[] = ["pets", "battle", "shop", "customize", "trading", "games"];
 
   return (
     <>
