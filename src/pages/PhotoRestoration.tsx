@@ -143,7 +143,7 @@ const PhotoRestoration = () => {
                 <Icon className="h-6 w-6 text-primary" />
                 {title}
               </h2>
-              <p className="text-muted-foreground mb-6">Upload a photo and AI will {type === 'colorize' ? 'add realistic colors' : type === 'repair' ? 'remove damage and scratches' : 'enhance quality and sharpness'}. Cost: 1 credit</p>
+              <p className="text-muted-foreground mb-6">Upload a photo and AI will {type === 'colorize' ? 'add realistic colors' : type === 'repair' ? 'remove damage and scratches' : 'enhance quality and sharpness'}. Cost: 12 credits</p>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-semibold mb-3">Original Photo</h3>
