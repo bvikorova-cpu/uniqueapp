@@ -104,7 +104,7 @@ export const TattooCoverUpGenerator = ({ onBack }: Props) => {
 
           <div>
             <Label className="text-amber-400/80 font-semibold">Style Preferences (Optional)</Label>
-            <Textarea placeholder="e.g., I'd like something floral, dark and bold, Japanese style..." value={preferences} onChange={(e) => setPreferences(e.target.value)} rows={3} className="mt-1 border-amber-500/20 focus:border-amber-500/50 bg-background/50" />
+            <Textarea placeholder="e.g., I'd like something floral, Japanese style, soft and elegant..." value={preferences} onChange={(e) => setPreferences(e.target.value)} rows={3} className="mt-1 border-amber-500/20 focus:border-amber-500/50 bg-background/50" />
           </div>
 
           <Button onClick={generate} disabled={loading || !oldTattooImg} className="w-full gap-2 h-12 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold text-base shadow-lg shadow-amber-500/20">
