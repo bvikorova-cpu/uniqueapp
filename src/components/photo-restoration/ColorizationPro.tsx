@@ -96,7 +96,7 @@ export const ColorizationPro = ({ onBack }: Props) => {
               )}
             </div>
             <Button className="w-full mt-4" onClick={handleProcess} disabled={loading || !file || (credits?.credits_remaining ?? 0) < 16}>
-              {loading ? "Colorizing..." : "Colorize Pro (16 credits)"}
+              {loading ? "Colorizing..." : "Colorize Pro"}
             </Button>
           </div>
 

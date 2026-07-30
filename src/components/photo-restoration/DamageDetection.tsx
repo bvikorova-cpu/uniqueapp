@@ -114,7 +114,7 @@ export const DamageDetection = ({ onBack }: Props) => {
               )}
             </div>
             <Button className="w-full mt-4" onClick={handleAnalyze} disabled={loading || !file || (credits?.credits_remaining ?? 0) < 4}>
-              {loading ? "Analyzing..." : "Detect Damage (4 credits)"}
+              {loading ? "Analyzing..." : "Detect Damage"}
             </Button>
           </div>
 
