@@ -24,6 +24,21 @@ export const MiniGames = ({ selectedPetId, onSelectPet }: MiniGamesProps) => {
   const [fallingItems, setFallingItems] = useState<Array<{id: number, x: number, y: number}>>([]);
   const [catcherPosition, setCatcherPosition] = useState(50);
 
+  const { data: myPets } = useQuery({
+    queryKey: ['my-pets-for-games'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('pets')
+        .select('*, pet_types(*)')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
   const { data: pet } = useQuery({
     queryKey: ['pet-for-game', selectedPetId],
     queryFn: async () => {
