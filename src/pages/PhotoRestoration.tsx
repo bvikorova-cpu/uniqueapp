@@ -18,16 +18,11 @@ import heroVideo from "@/assets/photo-restoration-hero.mp4.asset.json";
 
 // Sub-modules
 import { BackgroundRemoval } from "@/components/photo-restoration/BackgroundRemoval";
-import { FaceEnhancement } from "@/components/photo-restoration/FaceEnhancement";
 import { ColorizationPro } from "@/components/photo-restoration/ColorizationPro";
-import { PhotoGallery } from "@/components/photo-restoration/PhotoGallery";
 import { DamageDetection } from "@/components/photo-restoration/DamageDetection";
-import { BatchProcessing } from "@/components/photo-restoration/BatchProcessing";
-import { ComparisonSlider } from "@/components/photo-restoration/ComparisonSlider";
-import { AIUpscaling } from "@/components/photo-restoration/AIUpscaling";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-type ActiveView = "hub" | "colorize" | "repair" | "enhance" | "background-removal" | "face-enhancement" | "colorization-pro" | "gallery" | "credits" | "damage-detection" | "batch-processing" | "comparison-slider" | "ai-upscaling";
+type ActiveView = "hub" | "colorize" | "repair" | "background-removal" | "colorization-pro" | "credits" | "damage-detection";
 
 const PhotoRestoration = () => {
   const navigate = useNavigate();
@@ -87,22 +82,15 @@ const PhotoRestoration = () => {
     { id: "damage-detection" as ActiveView, icon: ScanLine, title: "Damage Detection", desc: "AI scans for scratches & tears", cost: "4 Credits", color: "text-red-500" },
     { id: "colorize" as ActiveView, icon: Sparkles, title: "Colorization", desc: "Add colors to B&W photos", cost: "1 Credit", color: "text-amber-500" },
     { id: "repair" as ActiveView, icon: Wand2, title: "Photo Repair", desc: "Remove scratches & damage", cost: "1 Credit", color: "text-blue-500" },
-    { id: "enhance" as ActiveView, icon: ImageIcon, title: "Enhancement", desc: "Improve quality & sharpness", cost: "1 Credit", color: "text-green-500" },
     { id: "background-removal" as ActiveView, icon: Scissors, title: "Background Removal", desc: "AI background removal", cost: "3 Credits", color: "text-purple-500" },
-    { id: "face-enhancement" as ActiveView, icon: Users, title: "Face Enhancement", desc: "Upscale & enhance faces", cost: "5 Credits", color: "text-pink-500" },
     { id: "colorization-pro" as ActiveView, icon: Palette, title: "Colorization Pro", desc: "Era-accurate colorization", cost: "8 Credits", color: "text-rose-500" },
-    { id: "ai-upscaling" as ActiveView, icon: Maximize, title: "AI Upscaling 4K", desc: "Ultra-high resolution output", cost: "5-10 Credits", color: "text-teal-500" },
-    { id: "batch-processing" as ActiveView, icon: Layers, title: "Batch Processing", desc: "Restore up to 10 at once", cost: "Varies", color: "text-indigo-500" },
-    { id: "comparison-slider" as ActiveView, icon: Move, title: "Comparison Slider", desc: "Side-by-side before/after", cost: "Free", color: "text-cyan-500" },
-    { id: "gallery" as ActiveView, icon: Camera, title: "Before/After Gallery", desc: "Community restorations", cost: "Free", color: "text-orange-500" },
     { id: "credits" as ActiveView, icon: ShoppingBag, title: "Buy Credits", desc: "Get more restoration credits", cost: "From €10", color: "text-emerald-500" },
   ];
 
   const statItems = [
     { label: "Restorations", value: stats.restorations, icon: Wand2 },
-    { label: "Gallery", value: stats.removals, icon: Camera },
     { label: "Credits", value: credits?.credits_remaining || 0, icon: Star },
-    { label: "Tools", value: 12, icon: Sparkles },
+    { label: "Tools", value: 6, icon: Sparkles },
   ];
 
   // Classic restore handler
@@ -195,15 +183,9 @@ const PhotoRestoration = () => {
 
   if (activeView === "colorize") return renderClassicRestore("colorize", "AI Colorization", Sparkles);
   if (activeView === "repair") return renderClassicRestore("repair", "AI Photo Repair", Wand2);
-  if (activeView === "enhance") return renderClassicRestore("enhance", "AI Enhancement", ImageIcon);
   if (activeView === "background-removal") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><BackgroundRemoval onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "face-enhancement") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><FaceEnhancement onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "colorization-pro") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><ColorizationPro onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "gallery") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><PhotoGallery onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "damage-detection") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><DamageDetection onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "batch-processing") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><BatchProcessing onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "comparison-slider") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><ComparisonSlider onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "ai-upscaling") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><AIUpscaling onBack={() => setActiveView("hub")} /></div></div>;
 
   if (activeView === "credits") return (
     <div className="min-h-screen bg-background"><Navbar />
