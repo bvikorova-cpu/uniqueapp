@@ -13,10 +13,14 @@ export function CloneDating() {
   const [isSearching, setIsSearching] = useState(false);
 
   const startDatingSession = async () => {
+    // Open synchronously so mobile browsers do not block Stripe as a popup
+    // after the asynchronous authentication and checkout requests finish.
+    const checkoutWindow = window.open("about:blank", "_blank");
     setIsSearching(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        checkoutWindow?.close();
         toast({ title: "Authentication Required", description: "Please sign in to use Clone Dating", variant: "destructive" });
         return;
       }
@@ -29,6 +33,7 @@ export function CloneDating() {
         .limit(1);
 
       if (!userClones || userClones.length === 0) {
+        checkoutWindow?.close();
         toast({ title: "No Active Clone", description: "You need an active clone to use Clone Dating", variant: "destructive" });
         return;
       }
@@ -39,9 +44,17 @@ export function CloneDating() {
 
       if (error) throw error;
       if (data?.url) {
-        window.location.href = data.url;
+        if (checkoutWindow) {
+          checkoutWindow.location.href = data.url;
+        } else {
+          window.location.href = data.url;
+        }
+      } else {
+        checkoutWindow?.close();
+        throw new Error("Stripe checkout URL was not returned.");
       }
     } catch (error: any) {
+      checkoutWindow?.close();
       toast({ title: "Error", description: error.message || "Failed to start dating session", variant: "destructive" });
     } finally {
       setIsSearching(false);
