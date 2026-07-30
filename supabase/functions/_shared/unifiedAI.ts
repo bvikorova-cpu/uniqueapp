@@ -238,11 +238,11 @@ export async function callUnifiedAIEx(
     throw new UnifiedAIError(500, "AI is not configured. Please add an API key.");
   }
 
-  // TEMPORARY: Lovable AI Gateway is primary; OpenAI only as fallback.
-  // Set the secret AI_PROVIDER=openai to switch back to OpenAI-first.
+  // TEMPORARY PLATFORM-WIDE SWITCH: Lovable AI Gateway ONLY.
+  // OpenAI is not used at all unless the secret AI_PROVIDER=openai is set.
   const openaiFirst = (Deno.env.get("AI_PROVIDER") ?? "").toLowerCase() === "openai";
   const order: boolean[] = lovableKey
-    ? (openaiFirst && openaiKey ? [false, true] : (openaiKey ? [true, false] : [true]))
+    ? (openaiFirst && openaiKey ? [false, true] : [true])
     : [false];
   let lastError: UnifiedAIError | undefined;
 
@@ -325,7 +325,7 @@ export async function askAIJSON<T = any>(system: string, user: string, opts?: Om
 /** Image generation via OpenAI Images API (no gateway fallback for images). */
 export async function generateOpenAIImage(prompt: string, size: "1024x1024" | "1024x1536" | "1536x1024" = "1024x1024"): Promise<{ url?: string; b64_json?: string }> {
   const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key) throw new UnifiedAIError(500, "OPENAI_API_KEY is not configured for image generation");
+  if (!key && !Deno.env.get("LOVABLE_API_KEY")) throw new UnifiedAIError(500, "AI image generation is not configured");
   const res = await fetch("https://api.openai.com/v1/images/generations", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
