@@ -199,26 +199,52 @@ Provide:
     if (!prompt) throw new Error("Invalid action: " + action);
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("AI not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "You are a professional pet care AI assistant. Provide detailed, accurate, and helpful responses in Markdown format. Be warm and caring in tone." },
-          { role: "user", content: prompt },
-        ] }) });
+    const messages = [
+      { role: "system", content: "You are a professional pet care AI assistant. Provide detailed, accurate, and helpful responses in Markdown format. Be warm and caring in tone." },
+      { role: "user", content: prompt },
+    ];
+
+    const callProvider = async (url: string, key: string, model: string) =>
+      await fetch(url, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model, messages }) });
+
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    let aiResponse: Response | null = null;
+
+    // 1) Try OpenAI with short backoff on 429
+    if (OPENAI_API_KEY) {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        aiResponse = await callProvider("https://api.openai.com/v1/chat/completions", OPENAI_API_KEY, "gpt-4o-mini");
+        if (aiResponse.ok || (aiResponse.status !== 429 && aiResponse.status !== 402 && aiResponse.status < 500)) break;
+        await sleep(800 * (attempt + 1));
+      }
+    }
+
+    // 2) Fallback to Lovable AI Gateway
+    if ((!aiResponse || !aiResponse.ok) && LOVABLE_API_KEY) {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const fallback = await callProvider("https://ai.gateway.lovable.dev/v1/chat/completions", LOVABLE_API_KEY, "google/gemini-2.5-flash");
+        if (fallback.ok) { aiResponse = fallback; break; }
+        aiResponse = fallback;
+        if (fallback.status !== 429 && fallback.status < 500) break;
+        await sleep(800 * (attempt + 1));
+      }
+    }
+
+    if (!aiResponse) throw new Error("AI not configured");
 
     if (!aiResponse.ok) {
       const status = aiResponse.status;
-      if (status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (status === 402) return new Response(JSON.stringify({ error: "AI service payment required." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (status === 429) return new Response(JSON.stringify({ error: "AI is busy right now. Please try again in a few seconds." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Please top up." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       throw new Error("AI service error");
     }
+
 
     const aiData = await aiResponse.json();
     const result = aiData.choices?.[0]?.message?.content || "No result generated.";
