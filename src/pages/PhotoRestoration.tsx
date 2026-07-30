@@ -33,7 +33,7 @@ const PhotoRestoration = () => {
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState<ActiveView>("hub");
   const [stats, setStats] = useState({ restorations: 0, colorizations: 0, enhancements: 0, removals: 0 });
-  const { credits, purchaseCredits } = usePhotoCredits();
+  const { credits } = usePhotoCredits();
 
   // Classic restore states
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
