@@ -408,20 +408,21 @@ export function CloneDating() {
                       <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> Date completed
                     </p>
                   )}
-                  {matchOf(openSession) && (
+                  {matchOf(openSession)?.user_id && (
                     <Button
                       className="w-full"
                       onClick={() => {
                         const m = matchOf(openSession);
-                        if (!m) return;
+                        if (!m?.user_id) return;
                         setOpenSession(null);
-                        setChatClone(m);
+                        navigate(`/messenger?user=${m.user_id}`);
                       }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Chat with {matchOf(openSession)?.clone_name}
+                      Message {matchOf(openSession)?.owner_name ?? "your match"}
                     </Button>
                   )}
+
                   {openSession.session_data?.summary && (
                     <div className="rounded-lg border border-border/50 p-3">
 
