@@ -58,7 +58,7 @@ export function CloneDating() {
     if (hasTranscript) return;
     setRunningId(session.id);
     try {
-      const { data, error } = await supabase.functions.invoke("clone-date-run", { body: { sessionId: session.id } });
+      const { data, error } = await supabase.functions.invoke("clone-chat", { body: { mode: "date", sessionId: session.id } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       const updated: DatingSession = {
