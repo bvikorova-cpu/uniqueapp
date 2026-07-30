@@ -132,7 +132,7 @@ const AITattoo = () => {
   const loadDesigns = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const { data } = await supabase.from('ai_tattoo_designs').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20);
+    const { data } = await supabase.from('ai_tattoo_designs').select('*').eq('user_id', user.id).not('design_url', 'is', null).order('created_at', { ascending: false }).limit(50);
     setDesigns(data || []);
   };
 

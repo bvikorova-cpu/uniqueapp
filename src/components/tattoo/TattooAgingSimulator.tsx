@@ -48,8 +48,20 @@ export const TattooAgingSimulator = ({ onBack }: Props) => {
         body: { type: "aging_simulation", imageUrl: tattooImage, years: parseInt(years), skinType } });
       if (error) throw error;
       setResult(data);
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user && data?.agedImageUrl) {
+        await supabase.from("ai_tattoo_designs").insert({
+          user_id: user.id,
+          prompt: `Aging Simulation: +${years} years (${skinType} skin)`,
+          style: "aging-simulation",
+          design_url: data.agedImageUrl,
+          credits_used: 10,
+          metadata: { tool: "aging_simulation", years: parseInt(years), skin_type: skinType, analysis: data.analysis ?? null } as any });
+      }
+
       await refresh();
-      toast.success("Aging simulation complete!");
+      toast.success("Aging simulation saved to My Collection!");
     } catch (e: any) {
       toast.error(e.message || "Error simulating aging");
     } finally {
