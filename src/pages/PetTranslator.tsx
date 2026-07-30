@@ -162,7 +162,6 @@ const PetTranslator = () => {
                 { key: "social", label: "🌍 Social" },
                 { key: "streaks", label: "🔥 Streaks" },
                 
-                { key: "leaderboard", label: "🏆 Leaderboard" },
                 { key: "achievements", label: "🏅 Achievements" },
               ].map(tab => (
                 <TabsTrigger key={tab.key} value={tab.key} className="flex-1 min-w-[70px] text-[10px] sm:text-xs capitalize">
@@ -184,14 +183,12 @@ const PetTranslator = () => {
               <PetSocialNetwork />
             </TabsContent>
             <TabsContent value="streaks">
-              <PetMoodStreaks currentStreak={0} />
-            </TabsContent>
-            <TabsContent value="leaderboard">
-              <PetLeaderboard />
+              <PetMoodStreaks />
             </TabsContent>
             <TabsContent value="achievements">
-              <PetAchievements totalPoints={0} />
+              <PetAchievements />
             </TabsContent>
+
           </Tabs>
         )}
 
