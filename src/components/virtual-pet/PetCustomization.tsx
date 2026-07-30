@@ -15,6 +15,7 @@ interface PetCustomizationProps {
 
 export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: ownedAccessories } = useQuery({
     queryKey: ['owned-accessories'],
