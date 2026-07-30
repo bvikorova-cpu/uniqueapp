@@ -281,17 +281,23 @@ async function applyPurchase(
       .order("created_at", { ascending: false }).limit(1);
     const clone1 = mine?.[0]?.id;
     if (!clone1) return;
-    // Pick a random opponent
+    // Pick a random opponent (other users first, then any clone, finally own clone)
     // @ts-ignore
     const { data: opp } = await db.from("personality_clones")
       .select("id").neq("user_id", userId).eq("is_active", true).limit(20);
-    const clone2 = opp?.length ? opp[Math.floor(Math.random() * opp.length)].id : null;
-    if (!clone2) return;
+    let clone2 = opp?.length ? opp[Math.floor(Math.random() * opp.length)].id : null;
+    if (!clone2) {
+      // @ts-ignore
+      const { data: anyOther } = await db.from("personality_clones")
+        .select("id").neq("id", clone1).limit(20);
+      clone2 = anyOther?.length ? anyOther[Math.floor(Math.random() * anyOther.length)].id : clone1;
+    }
     await db.from("clone_dating_sessions").insert({ clone_1_id: clone1,
       clone_2_id: clone2,
       payment_amount: (result.amount_cents || 0) / 100,
       status: "active" });
     return;
+
   }
 
   // Quantum Social subscriptions — unlock features in quantum_profiles + insert quantum_subscriptions row
