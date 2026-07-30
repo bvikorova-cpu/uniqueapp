@@ -9,7 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import { CloneChatDialog } from "./CloneChatDialog";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-type FeedKind = "battle" | "new" | "milestone" | "date";
+type FeedKind = "battle" | "new" | "milestone";
 
 interface FeedItem {
   id: string;
@@ -31,7 +31,6 @@ interface TrendingClone {
 const FILTERS: { id: FeedKind | "all"; label: string; icon: any }[] = [
   { id: "all", label: "Everything", icon: Activity },
   { id: "battle", label: "Battles", icon: Swords },
-  { id: "date", label: "Dates", icon: Heart },
   { id: "new", label: "New clones", icon: Sparkles },
   { id: "milestone", label: "Milestones", icon: Flame },
 ];
@@ -40,7 +39,6 @@ const KIND_STYLE: Record<FeedKind, { icon: any; className: string }> = {
   battle: { icon: Swords, className: "text-accent" },
   new: { icon: Sparkles, className: "text-primary" },
   milestone: { icon: Flame, className: "text-orange-500" },
-  date: { icon: Heart, className: "text-pink-500" },
 };
 
 export function CloneSocialFeed() {
@@ -55,7 +53,7 @@ export function CloneSocialFeed() {
     setLoading(true);
     const collected: FeedItem[] = [];
 
-    const [battlesRes, clonesRes, datesRes] = await Promise.all([
+    const [battlesRes, clonesRes] = await Promise.all([
       supabase
         .from("clone_battles")
         .select("id, topic, winner, user_clone_name, opponent_clone_name, user_score, opponent_score, created_at")
@@ -66,11 +64,6 @@ export function CloneSocialFeed() {
         .select("id, clone_name, subscription_tier, total_conversations, personality_summary, tone, created_at")
         .order("created_at", { ascending: false })
         .limit(30),
-      supabase
-        .from("clone_dating_sessions")
-        .select("id, compatibility_score, status, created_at")
-        .order("created_at", { ascending: false })
-        .limit(10),
     ]);
 
     (battlesRes.data ?? []).forEach((b: any) => {
@@ -107,15 +100,6 @@ export function CloneSocialFeed() {
       }
     });
 
-    (datesRes.data ?? []).forEach((d: any) => {
-      collected.push({
-        id: `date-${d.id}`,
-        kind: "date",
-        title: d.compatibility_score != null ? `A speed date scored ${d.compatibility_score}% chemistry` : "Two clones went on a date",
-        detail: d.status === "completed" ? "The transcript is in the Dating lab" : "The date is still running",
-        highlight: d.compatibility_score != null ? `${d.compatibility_score}%` : undefined,
-        time: d.created_at,
-      });
     });
 
     collected.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
@@ -156,8 +140,8 @@ export function CloneSocialFeed() {
       <FloatingHowItWorks
         title="Clone Network Feed - How it works"
         steps={[
-          { title: "Watch the network", desc: "See live battles, dates, new clones and milestones from real users." },
-          { title: "Filter", desc: "Switch between battles, dates, new clones and milestones." },
+          { title: "Watch the network", desc: "See live battles, new clones and milestones from real users." },
+          { title: "Filter", desc: "Switch between battles, new clones and milestones." },
           { title: "Trending", desc: "The trending list ranks clones by how much people talk to them." },
           { title: "Jump in", desc: "Start a chat with any trending clone straight from the feed." },
         ]}

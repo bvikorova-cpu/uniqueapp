@@ -23,7 +23,7 @@ export function CloneAnalytics() {
       const [clonesRes, convsRes, sessionsRes] = await Promise.allSettled([
         supabase.from("personality_clones").select("id", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("clone_conversations").select("id", { count: "exact", head: true }),
-        supabase.from("clone_dating_sessions").select("id", { count: "exact", head: true }).eq("status", "active"),
+        supabase.from("clone_battles").select("id", { count: "exact", head: true }),
       ]);
 
       setData({ totalClones: clonesRes.status === "fulfilled" ? (clonesRes.value as any).count || 0 : 0,
@@ -37,7 +37,7 @@ export function CloneAnalytics() {
   const stats = [
     { icon: Brain, label: "Your Clones", value: data.totalClones, color: "text-purple-400" },
     { icon: MessageCircle, label: "Total Chats", value: data.totalConversations, color: "text-cyan-400" },
-    { icon: Users, label: "Active Sessions", value: data.activeSessions, color: "text-pink-400" },
+    { icon: Users, label: "Battles", value: data.activeSessions, color: "text-pink-400" },
     { icon: Clock, label: "Avg Response", value: data.avgResponseTime, color: "text-amber-400" },
   ];
 

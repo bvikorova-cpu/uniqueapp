@@ -9,7 +9,6 @@ import { CloneHero } from "@/components/ai-clone/CloneHero";
 import { CloneCreator } from "@/components/ai-clone/CloneCreator";
 import { MyClones } from "@/components/ai-clone/MyClones";
 import { CloneMarketplace } from "@/components/ai-clone/CloneMarketplace";
-import { CloneDating } from "@/components/ai-clone/CloneDating";
 import { CloneSubscriptions } from "@/components/ai-clone/CloneSubscriptions";
 import { CloneAnalytics } from "@/components/ai-clone/CloneAnalytics";
 import { ClonePersonalityQuiz } from "@/components/ai-clone/ClonePersonalityQuiz";
@@ -22,13 +21,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ViewType = "hub" | "create" | "my-clones" | "marketplace" | "dating" | "subscriptions" | "analytics" | "quiz" | "battles" | "leaderboard" | "feed";
+type ViewType = "hub" | "create" | "my-clones" | "marketplace" | "subscriptions" | "analytics" | "quiz" | "battles" | "leaderboard" | "feed";
 
 const TOOLS = [
   { id: "create" as ViewType, icon: Sparkles, label: "Create Clone", desc: "Build your AI twin", color: "text-purple-400" },
   { id: "my-clones" as ViewType, icon: Bot, label: "My Clones", desc: "Manage your clones", color: "text-cyan-400" },
   { id: "marketplace" as ViewType, icon: Users, label: "Marketplace", desc: "Explore public clones", color: "text-emerald-400" },
-  { id: "dating" as ViewType, icon: Heart, label: "Clone Dating", desc: "Auto-match clones", color: "text-pink-400" },
   { id: "quiz" as ViewType, icon: Brain, label: "Personality Quiz", desc: "Discover your profile", color: "text-amber-400" },
   { id: "battles" as ViewType, icon: Swords, label: "Clone Battles", desc: "Wit & charm duels", color: "text-red-400" },
   { id: "analytics" as ViewType, icon: BarChart3, label: "Analytics", desc: "Performance insights", color: "text-teal-400" },
@@ -50,7 +48,6 @@ export default function AIClone() {
         .then(({ data }) => {
           if (data?.verified) {
             toast.success("Payment confirmed! Your purchase is now active.");
-            if (data?.product_type === "clone_dating") setActiveView("dating");
           } else toast.error("Payment could not be verified.");
         })
         .catch(() => toast.error("Payment verification failed."));
@@ -79,7 +76,6 @@ export default function AIClone() {
       case "create": return <CloneCreator />;
       case "my-clones": return <MyClones />;
       case "marketplace": return <CloneMarketplace />;
-      case "dating": return <CloneDating />;
       case "subscriptions": return <CloneSubscriptions />;
       case "analytics": return <CloneAnalytics />;
       case "quiz": return <ClonePersonalityQuiz />;
@@ -98,7 +94,7 @@ export default function AIClone() {
         steps={[
           { title: "Upload samples", desc: "Photos, voice recordings, writing samples." },
           { title: "Train the clone", desc: "AI learns your tone and appearance." },
-          { title: "Chat with your clone", desc: "Practice interviews, dating, presentations." },
+          { title: "Chat with your clone", desc: "Practice interviews, pitches, presentations." },
           { title: "Generate content", desc: "Let the clone reply to fans or write drafts." },
           { title: "Manage privacy", desc: "Delete data or lock the clone anytime." }
         ]}
@@ -171,7 +167,7 @@ export default function AIClone() {
               <p className="text-sm text-muted-foreground mb-4">
                 Create an intelligent digital version of yourself that learns your communication style, 
                 personality traits, and interests. Your clone interacts with others on your behalf 24/7 — 
-                building connections, having conversations, and even dating while you sleep or work.
+                building connections and having conversations while you sleep or work.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
                 <div className="p-3 bg-background/50 rounded-xl border border-border/50">
