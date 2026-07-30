@@ -10434,9 +10434,14 @@ export type Database = {
           id: string
           opponent_clone_id: string | null
           opponent_clone_name: string | null
+          opponent_score: number
+          opponent_user_id: string | null
+          topic: string | null
+          transcript: Json
           user_clone_id: string | null
           user_clone_name: string | null
           user_id: string
+          user_score: number
           winner: string
         }
         Insert: {
@@ -10445,9 +10450,14 @@ export type Database = {
           id?: string
           opponent_clone_id?: string | null
           opponent_clone_name?: string | null
+          opponent_score?: number
+          opponent_user_id?: string | null
+          topic?: string | null
+          transcript?: Json
           user_clone_id?: string | null
           user_clone_name?: string | null
           user_id: string
+          user_score?: number
           winner: string
         }
         Update: {
@@ -10456,9 +10466,14 @@ export type Database = {
           id?: string
           opponent_clone_id?: string | null
           opponent_clone_name?: string | null
+          opponent_score?: number
+          opponent_user_id?: string | null
+          topic?: string | null
+          transcript?: Json
           user_clone_id?: string | null
           user_clone_name?: string | null
           user_id?: string
+          user_score?: number
           winner?: string
         }
         Relationships: []
