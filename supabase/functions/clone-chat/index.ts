@@ -99,8 +99,13 @@ Deno.serve(async (req) => {
 
       const a = (clones ?? []).find((c: any) => c.id === session.clone_1_id);
       const b = (clones ?? []).find((c: any) => c.id === session.clone_2_id);
-      const nameA = a?.clone_name ?? "Clone A";
-      const nameB = b?.clone_name ?? "Clone B";
+      let nameA = (a?.clone_name ?? "Clone A").trim();
+      let nameB = (b?.clone_name ?? "Clone B").trim();
+      // Two clones can share the same name (or be the same clone) — keep speakers distinguishable.
+      if (nameA.toLowerCase() === nameB.toLowerCase()) {
+        nameA = `${nameA} (you)`;
+        nameB = `${nameB} (match)`;
+      }
 
       let dateMessages: { speaker: string; text: string }[] = [];
       let summary = "";
@@ -111,6 +116,7 @@ Deno.serve(async (req) => {
         const prompt = `Write a short speed-dating conversation between two AI personality clones.
 Clone A: ${nameA}. Personality: ${JSON.stringify(a?.personality_data ?? { personality: "friendly, curious" })}.
 Clone B: ${nameB}. Personality: ${JSON.stringify(b?.personality_data ?? { personality: "warm, playful" })}.
+They are two DIFFERENT people. Messages must strictly alternate, starting with ${nameA}.
 Return STRICT JSON only, no markdown:
 {"messages":[{"speaker":"${nameA}","text":"..."},{"speaker":"${nameB}","text":"..."}],"summary":"2-3 sentences about the chemistry","score":0-100}
 Use 8 alternating messages, each max 200 characters, in English.`;
