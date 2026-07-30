@@ -18,6 +18,14 @@ const TOPICS = [
   "Do the best decisions come from the gut or the spreadsheet?",
 ];
 
+const WILD_RIVALS = [
+  { name: "Nova", persona: "A fearless optimist who turns every argument into a pep talk.", tone: "warm, punchy" },
+  { name: "Vex", persona: "A dry, sarcastic realist who wins by asking uncomfortable questions.", tone: "deadpan" },
+  { name: "Echo", persona: "A poetic thinker who reframes debates into metaphors.", tone: "lyrical" },
+  { name: "Kairo", persona: "A hyper-logical strategist obsessed with data and odds.", tone: "clinical, confident" },
+  { name: "Luma", persona: "A playful chaos-agent who wins by charm and surprise.", tone: "mischievous" },
+];
+
 const j = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
