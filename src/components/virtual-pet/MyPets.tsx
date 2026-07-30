@@ -19,9 +19,10 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MyPetsProps {
   onSelectPet: (petId: string) => void;
+  selectedPetId?: string | null;
 }
 
-export const MyPets = ({ onSelectPet }: MyPetsProps) => {
+export const MyPets = ({ onSelectPet, selectedPetId }: MyPetsProps) => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [newPetName, setNewPetName] = useState("");
   const [selectedTypeId, setSelectedTypeId] = useState("");
