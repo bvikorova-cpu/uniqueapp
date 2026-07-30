@@ -50,14 +50,8 @@ export const MiniGames = ({ selectedPetId, onSelectPet }: MiniGamesProps) => {
     enabled: !!selectedPetId
   });
 
-  const { data: leaderboard } = useQuery({
-    queryKey: ['game-leaderboard'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('pet_game_scores').select('*, pets(name)').order('score', { ascending: false }).limit(10);
-      if (error) throw error;
-      return data;
-    }
-  });
+
+
 
   const saveScoreMutation = useMutation({
     mutationFn: async ({ gameType, score, rewards }: { gameType: string; score: number; rewards: any }) => {
