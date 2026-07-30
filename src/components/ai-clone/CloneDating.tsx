@@ -245,6 +245,53 @@ export function CloneDating() {
         </CardContent>
       </Card>
 
+      <Dialog open={!!openSession} onOpenChange={(o) => !o && setOpenSession(null)}>
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Heart className="h-5 w-5 text-pink-400" /> Speed dating result
+            </DialogTitle>
+          </DialogHeader>
+          {openSession && (
+            <div className="space-y-4">
+              {openSession.compatibility_score != null && (
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">Compatibility {openSession.compatibility_score}%</Badge>
+                  <Badge variant="outline" className="capitalize">{openSession.status}</Badge>
+                </div>
+              )}
+              {runningId === openSession.id ? (
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Your clones are chatting…
+                </p>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    {(openSession.session_data?.messages ?? []).map((m, i) => (
+                      <div
+                        key={i}
+                        className={`rounded-lg p-3 text-sm ${i % 2 === 0 ? "bg-primary/10" : "bg-pink-500/10"}`}
+                      >
+                        <p className="text-xs font-semibold mb-1">{m.speaker}</p>
+                        <p>{m.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {openSession.session_data?.summary && (
+                    <div className="rounded-lg border border-border/50 p-3">
+                      <p className="text-xs font-semibold mb-1">Chemistry summary</p>
+                      <p className="text-sm text-muted-foreground">{openSession.session_data.summary}</p>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+
+
 
 
       <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
