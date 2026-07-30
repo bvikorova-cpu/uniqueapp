@@ -42,7 +42,7 @@ export function CloneDating() {
       if (!ids.length) { setSessions([]); return; }
       const { data } = await supabase
         .from("clone_dating_sessions")
-        .select("id, status, compatibility_score, payment_amount, created_at")
+        .select("id, status, compatibility_score, payment_amount, created_at, session_data")
         .or(`clone_1_id.in.(${ids.join(",")}),clone_2_id.in.(${ids.join(",")})`)
         .order("created_at", { ascending: false })
         .limit(20);
@@ -51,6 +51,35 @@ export function CloneDating() {
       setLoadingSessions(false);
     }
   }, []);
+
+  const openOrRun = async (session: DatingSession) => {
+    const hasTranscript = Array.isArray(session.session_data?.messages) && session.session_data!.messages!.length > 0;
+    setOpenSession(session);
+    if (hasTranscript) return;
+    setRunningId(session.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("clone-date-run", { body: { sessionId: session.id } });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      const updated: DatingSession = {
+        ...session,
+        status: "completed",
+        compatibility_score: data.score ?? session.compatibility_score,
+        session_data: { messages: data.messages ?? [], summary: data.summary ?? "" },
+      };
+      setOpenSession(updated);
+      setSessions((prev) => prev.map((s) => (s.id === session.id ? updated : s)));
+    } catch (err: unknown) {
+      toast({
+        title: "Error",
+        description: err instanceof Error ? err.message : "Could not load the date",
+        variant: "destructive",
+      });
+    } finally {
+      setRunningId(null);
+    }
+  };
+
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
 
