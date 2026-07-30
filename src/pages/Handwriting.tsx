@@ -200,52 +200,6 @@ const Handwriting = () => {
                 </div>
               </motion.div>
 
-              {/* Premium Membership */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.57 }}
-                className="space-y-4"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
-                  <h2 className="text-2xl font-black text-amber-900 dark:text-amber-200" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Premium Memberships</h2>
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <CouplesSubscriptionCard />
-                  <HrProCard />
-                  <VoiceDiaryCard />
-                </div>
-              </motion.div>
-
-              {/* Living Studio: Live Ink + Time Capsule */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.58 }}
-                className="space-y-4"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
-                  <h2 className="text-2xl font-black text-amber-900 dark:text-amber-200" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>The Living Studio</h2>
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
-                </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <LiveInkCard />
-                  <TimeCapsuleCard />
-                </div>
-              </motion.div>
-
-              {/* Public Gallery */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.59 }}
-              >
-                <PublicGalleryCard />
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.595 }}
-              >
-                <HandwritingParityPack />
-              </motion.div>
-
               {/* Engagement Workshop */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
@@ -257,8 +211,6 @@ const Handwriting = () => {
                   <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <AcademyCard />
-                  <TwinFinderCard />
                   <FamousComparisonCard />
                   <Card className="bg-gradient-to-br from-amber-50/80 to-yellow-100/60 border-amber-300/40">
                     <CardHeader>
