@@ -93,9 +93,7 @@ Deno.serve(async (req) => {
       if (!(clones ?? []).some((c: any) => c.user_id === user.id)) return j({ error: "Forbidden" }, 403);
 
       const existing = (session.session_data ?? {}) as Record<string, unknown>;
-      if (session.status === "completed" && Array.isArray(existing.messages)) {
-        return j({ ok: true, messages: existing.messages, summary: existing.summary, score: session.compatibility_score });
-      }
+
 
       const a = (clones ?? []).find((c: any) => c.id === session.clone_1_id);
       const b = (clones ?? []).find((c: any) => c.id === session.clone_2_id);
