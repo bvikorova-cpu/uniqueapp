@@ -85,7 +85,7 @@ const VirtualPet = () => {
       case "shop": return <PetShop />;
       case "customize": return <PetCustomization selectedPetId={selectedPetId} />;
       case "trading": return <PetTrading />;
-      case "games": return <MiniGames selectedPetId={selectedPetId} />;
+      case "games": return <MiniGames selectedPetId={selectedPetId} onSelectPet={setSelectedPetId} />;
       case "personality-coach": return <AIPetPersonalityCoach onBack={goBack} />;
       case "name-generator": return <AIPetNameGenerator onBack={goBack} />;
       case "health-predictor": return <AIPetHealthPredictor onBack={goBack} />;
