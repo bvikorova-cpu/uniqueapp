@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   Bot, Sparkles, Users, MessageCircle, Heart, BarChart3, Brain, 
-  Mic, Swords, Trophy, Activity, Crown, Flame, Star, Award 
+  Swords, Trophy, Activity, Crown, Flame, Star, Award 
 } from "lucide-react";
 import { CloneHero } from "@/components/ai-clone/CloneHero";
 import { CloneCreator } from "@/components/ai-clone/CloneCreator";
