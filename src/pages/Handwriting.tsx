@@ -14,16 +14,7 @@ import { SignatureAnalyzerCard } from "@/components/handwriting/SignatureAnalyze
 import { CompatibilityCard } from "@/components/handwriting/CompatibilityCard";
 import { MoodTrackerCard } from "@/components/handwriting/MoodTrackerCard";
 import { ForgeryDetectorCard } from "@/components/handwriting/ForgeryDetectorCard";
-import { TwinFinderCard } from "@/components/handwriting/TwinFinderCard";
 import { FamousComparisonCard } from "@/components/handwriting/FamousComparisonCard";
-import { AcademyCard } from "@/components/handwriting/AcademyCard";
-import { CouplesSubscriptionCard } from "@/components/handwriting/CouplesSubscriptionCard";
-import { HrProCard } from "@/components/handwriting/HrProCard";
-import { VoiceDiaryCard } from "@/components/handwriting/VoiceDiaryCard";
-import { LiveInkCard } from "@/components/handwriting/LiveInkCard";
-import { TimeCapsuleCard } from "@/components/handwriting/TimeCapsuleCard";
-import { PublicGalleryCard } from "@/components/handwriting/PublicGalleryCard";
-import HandwritingParityPack from "@/components/handwriting/HandwritingParityPack";
 import { useHandwritingCredits } from "@/hooks/useHandwritingCredits";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
