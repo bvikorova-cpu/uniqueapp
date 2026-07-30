@@ -123,27 +123,6 @@ const VirtualPet = () => {
 
               <div className="mb-6"><PetCrossPromo side="virtual" /></div>
 
-              {/* Engagement Row */}
-              <div className="grid grid-cols-3 gap-3 mb-8">
-                {[
-                  { icon: Flame, label: "Care Streak", value: "7 Days", color: "text-orange-500", action: () => setActiveView('pets') },
-                  { icon: Coins, label: "Credits", value: `${credits.credits_remaining}`, color: "text-amber-500", action: () => navigate('/ai-credits-store') },
-                  { icon: Trophy, label: "Pet Master", value: "Level 12", color: "text-amber-500", action: () => setActiveView('battle') },
-
-                ].map((item, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}>
-                    <Card className="border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all cursor-pointer active:scale-[0.97]"
-                      onClick={item.action}>
-                      <CardContent className="p-3 text-center">
-                        <item.icon className={`w-5 h-5 mx-auto mb-1 ${item.color}`} />
-                        <p className="text-lg font-black">{item.value}</p>
-                        <p className="text-[10px] text-muted-foreground">{item.label}</p>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-
               <div className="flex justify-center mb-6">
                 <Button onClick={() => navigate('/ai-credits-store')} className="gap-2">
                   <CreditCard className="h-4 w-4" />Buy Credits
