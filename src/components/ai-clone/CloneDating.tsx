@@ -21,6 +21,7 @@ interface MatchClone {
   personality_data: any;
   user_id?: string | null;
   owner_name?: string | null;
+  avatar_url?: string | null;
 }
 
 
@@ -101,18 +102,27 @@ export function CloneDating() {
         (partnerRows ?? []).forEach((c: any) => { byId[c.id] = c as MatchClone; });
       }
 
-      // Fallback pool: random clones from other users for sessions without a partner.
+      // Fallback pool: real dating users. A session must never point back to the
+      // current user's own clone just because no second public clone exists yet.
       const needsFallback = rows.some(
         (r) => !( (r.clone_1_id && byId[r.clone_1_id]) || (r.clone_2_id && byId[r.clone_2_id]) ),
       );
       let pool: MatchClone[] = [];
       if (needsFallback) {
-        const { data: others } = await supabase
-          .from("personality_clones")
-          .select("id, clone_name, personality_data, user_id")
+        const { data: datingUsers } = await supabase
+          .from("dating_profiles_public")
+          .select("id, user_id, display_name, profile_photo_url, interests, bio")
           .neq("user_id", user.id)
+          .eq("is_active", true)
           .limit(50);
-        pool = (others ?? []) as MatchClone[];
+        pool = (datingUsers ?? []).map((profile: any) => ({
+          id: profile.id,
+          user_id: profile.user_id,
+          clone_name: profile.display_name || "Your match",
+          owner_name: profile.display_name || "your match",
+          avatar_url: profile.profile_photo_url,
+          personality_data: { interests: profile.interests, bio: profile.bio },
+        }));
       }
 
       const map: Record<string, MatchClone> = {};
@@ -120,7 +130,7 @@ export function CloneDating() {
         const partner =
           (r.clone_1_id && byId[r.clone_1_id]) ||
           (r.clone_2_id && byId[r.clone_2_id]) ||
-          (pool.length ? pool[Math.floor(Math.random() * pool.length)] : null);
+          (pool.length ? pool[Math.abs(r.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0)) % pool.length] : null);
         if (partner) map[r.id] = partner;
       });
 
@@ -147,47 +157,12 @@ export function CloneDating() {
   }, []);
 
   const openOrRun = async (session: DatingSession) => {
-    const hasTranscript = Array.isArray(session.session_data?.messages) && session.session_data!.messages!.length > 0;
-    setOpenSession(session);
-    if (hasTranscript) return;
-    setRunningId(session.id);
-    setProgress(6);
-    setStage(0);
-    clearTimers();
-    timersRef.current.push(
-      setInterval(() => setProgress((p) => (p < 92 ? p + Math.max(1, Math.round((95 - p) / 18)) : p)), 400),
-    );
-    timersRef.current.push(
-      setInterval(() => setStage((s) => Math.min(s + 1, RUN_STAGES.length - 1)), 2600),
-    );
-    try {
-      const { data, error } = await supabase.functions.invoke("clone-chat", { body: { mode: "date", sessionId: session.id } });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      const updated: DatingSession = {
-        ...session,
-        status: "completed",
-        compatibility_score: data.score ?? session.compatibility_score,
-        session_data: { messages: data.messages ?? [], summary: data.summary ?? "" },
-      };
-      clearTimers();
-      setProgress(100);
-      setOpenSession(updated);
-      setSessions((prev) => prev.map((s) => (s.id === session.id ? updated : s)));
-      toast({ title: "The date is ready", description: `Compatibility ${updated.compatibility_score ?? "—"}%` });
-      // refresh from DB so the list always reflects persisted state
-      loadSessions();
-    } catch (err: unknown) {
-      toast({
-        title: "Error",
-        description: err instanceof Error ? err.message : "Could not load the date",
-        variant: "destructive",
-      });
-    } finally {
-      clearTimers();
-      setRunningId(null);
-
+    const match = matchOf(session);
+    if (!match?.user_id) {
+      toast({ title: "Finding a real match", description: "No other available user was found yet. Please refresh shortly." });
+      return;
     }
+    navigate(`/messenger?user=${match.user_id}`);
   };
 
 
@@ -262,7 +237,7 @@ export function CloneDating() {
             Clone-to-Clone Speed Dating
           </CardTitle>
           <CardDescription>
-            Let your AI clone meet and chat with other clones to build connections
+            Get matched with another real user and start a private conversation
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -279,9 +254,9 @@ export function CloneDating() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               {[
-                { icon: MessageCircle, title: "Auto Conversations", desc: "Clones chat automatically", color: "text-primary" },
-                { icon: Sparkles, title: "Compatibility Score", desc: "AI-generated match rating", color: "text-pink-400" },
-                { icon: Heart, title: "New Connections", desc: "Expand your network", color: "text-accent" },
+                { icon: MessageCircle, title: "Real conversation", desc: "You write the messages", color: "text-primary" },
+                { icon: Sparkles, title: "Matched for you", desc: "Meet another platform user", color: "text-pink-400" },
+                { icon: Heart, title: "Private Messenger", desc: "Continue one-to-one", color: "text-accent" },
               ].map((item, i) => (
                 <Card key={i} className="bg-background/50 border-border/50">
                   <CardContent className="pt-6 text-center">
@@ -302,7 +277,7 @@ export function CloneDating() {
             </Button>
 
             <p className="text-xs text-muted-foreground">
-              Your clone will have a 10-minute speed dating session with another compatible clone
+              After payment, open your match and chat as yourself in Messenger
             </p>
           </div>
         </CardContent>
@@ -324,7 +299,7 @@ export function CloneDating() {
             </p>
           ) : (
             sessions.map((s) => {
-              const hasTranscript = (s.session_data?.messages?.length ?? 0) > 0;
+              const match = matchOf(s);
               return (
                 <button
                   key={s.id}
@@ -334,18 +309,12 @@ export function CloneDating() {
                   className="w-full flex items-center justify-between gap-3 rounded-lg border border-border/50 p-3 text-left transition-colors hover:bg-muted/50 disabled:opacity-70"
                 >
                   <div className="min-w-0">
-                    <p className="text-sm font-medium">Speed dating session</p>
+                    <p className="text-sm font-medium">{match?.owner_name ?? match?.clone_name ?? "Finding your match"}</p>
                     <p className="text-xs text-muted-foreground truncate">
                       {new Date(s.created_at).toLocaleString()} · €{Number(s.payment_amount ?? 0).toFixed(2)}
                     </p>
                     <p className="text-xs text-pink-400 mt-1 flex items-center gap-1">
-                      {runningId === s.id ? (
-                        <><Loader2 className="h-3 w-3 animate-spin" /> {RUN_STAGES[stage]}</>
-                      ) : hasTranscript ? (
-                        <><MessageCircle className="h-3 w-3" /> View conversation</>
-                      ) : (
-                        <><Play className="h-3 w-3" /> Run the date</>
-                      )}
+                      <><MessageCircle className="h-3 w-3" /> Open real chat</>
                     </p>
                     {runningId === s.id && <Progress value={progress} className="h-1 mt-2" />}
                   </div>
@@ -464,10 +433,10 @@ export function CloneDating() {
         </CardHeader>
         <CardContent className="space-y-3">
           {[
-            "Your AI clone is matched with another compatible clone",
-            "They have an automatic conversation for 10 minutes",
-            "AI analyzes compatibility and generates a match score",
-            "Review the conversation, then message the real user behind the matched clone",
+            "You are matched with another available platform user",
+            "Open the match directly from your dating sessions",
+            "Write your own messages in a private Messenger conversation",
+            "There is no pre-written clone conversation pretending to be you",
           ].map((step, i) => (
             <div key={i} className="flex gap-3">
               <Badge variant="outline" className="h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0">{i + 1}</Badge>
