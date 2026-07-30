@@ -26,12 +26,23 @@ export const usePhotoCredits = () => {
 
   const restorePhoto = useMutation({
     mutationFn: async ({ imageUrl, restorationType }: { imageUrl: string; restorationType: 'colorize' | 'repair' | 'enhance' }) => {
-      const { data, error } = await supabase.functions.invoke('restore-old-photo', {
-        body: { imageUrl, restorationType }
+      const action =
+        restorationType === 'colorize' ? 'photo_colorize'
+        : restorationType === 'repair' ? 'photo_repair'
+        : 'photo_enhance';
+
+      const { data, error } = await supabase.functions.invoke('future-face-image', {
+        body: { action, sourceUrl: imageUrl }
       });
-      
-      if (error) throw error;
-      return data;
+
+      if (error) {
+        const ctx = (error as any)?.context;
+        let msg = error.message;
+        try { if (ctx?.json) { const b = await ctx.json(); if (b?.error) msg = b.error; } } catch { /* noop */ }
+        throw new Error(msg);
+      }
+      if ((data as any)?.error) throw new Error((data as any).error);
+      return { ...data, restoredImageUrl: (data as any)?.resultUrl };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["photo-credits"] });
