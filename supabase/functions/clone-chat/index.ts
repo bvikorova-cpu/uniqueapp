@@ -19,7 +19,62 @@ Deno.serve(async (req) => {
     if (!user) return j({ error: "Unauthorized" }, 401);
 
     const body = await req.json();
-    const { cloneId, message, history, mode, sessionId } = body ?? {};
+    const { cloneId, message, history, mode, sessionId, text, style } = body ?? {};
+
+    // ---- Voice style mode: rewrite sample text without depending on a separate function ----
+    if (mode === "voice") {
+      if (typeof text !== "string" || !text.trim()) return j({ error: "text is required" }, 400);
+      if (text.trim().length > 4000) return j({ error: "Text is too long (maximum 4,000 characters)" }, 400);
+
+      const styleDescriptions: Record<string, string> = {
+        warm: "warm, friendly, slightly casual, and empathetic",
+        professional: "polished, precise, courteous, and business-appropriate",
+        energetic: "upbeat, enthusiastic, motivational, and lively",
+        calm: "calm, measured, soothing, and thoughtful",
+        authoritative: "direct, confident, decisive, and leadership-focused",
+      };
+      const selectedStyle = typeof style === "string" && styleDescriptions[style]
+        ? style
+        : "warm";
+      const sourceText = text.trim();
+      let transformed = sourceText;
+
+      const apiKey = Deno.env.get("LOVABLE_API_KEY");
+      if (apiKey) {
+        try {
+          const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Lovable-API-Key": apiKey,
+              "X-Lovable-AIG-SDK": "vercel-ai-sdk",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: "google/gemini-3.6-flash",
+              messages: [
+                {
+                  role: "system",
+                  content: `Rewrite the user's message in a ${styleDescriptions[selectedStyle]} voice. Preserve its meaning and language. Return only the rewritten message without labels, markdown, or explanation.`,
+                },
+                { role: "user", content: sourceText },
+              ],
+            }),
+          });
+
+          if (response.ok) {
+            const payload = await response.json();
+            const generated = payload?.choices?.[0]?.message?.content;
+            if (typeof generated === "string" && generated.trim()) transformed = generated.trim();
+          } else {
+            console.error("Voice transform gateway error", response.status, await response.text());
+          }
+        } catch (error) {
+          console.error("Voice transform request failed", error);
+        }
+      }
+
+      return j({ transformed, style: selectedStyle });
+    }
 
     // ---- Speed dating mode: run an AI date between two clones ----
     if (mode === "date") {
