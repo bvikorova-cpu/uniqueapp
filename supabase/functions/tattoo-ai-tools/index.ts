@@ -101,6 +101,32 @@ serve(async (req) => {
       return imageUrl;
     };
 
+    // Image-to-image edit (Gemini chat-image shape) — used by the aging simulator
+    const editImage = async (prompt: string, sourceImage: string) => {
+      const call = () => rawFetch(LOVABLE_IMAGE_URL, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${LOVABLE_API_KEY ?? ''}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'google/gemini-3.1-flash-image',
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'text', text: prompt },
+              { type: 'image_url', image_url: { url: sourceImage } },
+            ],
+          }],
+          modalities: ['image', 'text'],
+        }) });
+
+      if (!LOVABLE_API_KEY) return null;
+      let response = await call();
+      if (!response.ok) {
+        console.error('Aged image edit failed:', response.status, await response.text().catch(() => ''));
+        return null;
+      }
+      return extractImage(await response.json());
+    };
+
     let payload: Record<string, unknown> = {};
 
     if (type === 'design') {
