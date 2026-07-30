@@ -31,7 +31,7 @@ export const usePhotoCredits = () => {
         : restorationType === 'repair' ? 'photo_repair'
         : 'photo_enhance';
 
-      const { data, error } = await supabase.functions.invoke('future-face-image', {
+      const { data, error } = await supabase.functions.invoke('photo-face-ai', {
         body: { action, sourceUrl: imageUrl }
       });
 

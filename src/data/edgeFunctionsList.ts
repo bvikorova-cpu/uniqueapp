@@ -182,7 +182,7 @@ export const EDGE_FUNCTIONS: string[] = [
   "fundraising-dunning-cron",
   "fuse-characters",
   "future-face-ai",
-  "future-face-image",
+  "photo-face-ai",
   "generate-avatar",
   "generate-bio",
   "generate-brand-kit",

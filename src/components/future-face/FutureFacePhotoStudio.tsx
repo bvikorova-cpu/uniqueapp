@@ -86,7 +86,7 @@ export default function FutureFacePhotoStudio() {
       if (action === "hair_makeover" || action === "beard_filter") params.style = styleParam || undefined;
       if (action === "botox_simulator") params.area = styleParam || undefined;
 
-      const res = await supabase.functions.invoke("future-face-image", {
+      const res = await supabase.functions.invoke("photo-face-ai", {
         body: { action, sourceUrl, sourceUrl2: secondUrl, params } });
       const data = throwIfInvokeError(res);
       setResultUrl((await resolveStorageUrl(data.resultUrl)) || data.resultUrl);

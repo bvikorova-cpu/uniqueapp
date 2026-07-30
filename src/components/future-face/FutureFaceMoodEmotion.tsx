@@ -50,7 +50,7 @@ export default function FutureFaceMoodEmotion() {
       setLoading(true); setResultUrl(null);
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate("/auth"); return; }
-      const res = await supabase.functions.invoke("future-face-image", {
+      const res = await supabase.functions.invoke("photo-face-ai", {
         body: { action: "mood_emotion", sourceUrl, params: { mood } } });
       const data = throwIfInvokeError(res);
       setResultUrl(data.resultUrl);
