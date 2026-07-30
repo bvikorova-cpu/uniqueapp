@@ -2,11 +2,14 @@ import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, MessageCircle, Sparkles, Bot, Loader2 } from "lucide-react";
+import { Heart, MessageCircle, Sparkles, Bot, Loader2, Play, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
+interface DateMessage { speaker: string; text: string }
 
 interface DatingSession {
   id: string;
@@ -14,6 +17,7 @@ interface DatingSession {
   compatibility_score: number | null;
   payment_amount: number | null;
   created_at: string;
+  session_data?: { messages?: DateMessage[]; summary?: string } | null;
 }
 
 export function CloneDating() {
@@ -21,6 +25,9 @@ export function CloneDating() {
   const [isSearching, setIsSearching] = useState(false);
   const [sessions, setSessions] = useState<DatingSession[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
+  const [openSession, setOpenSession] = useState<DatingSession | null>(null);
+  const [runningId, setRunningId] = useState<string | null>(null);
+
 
   const loadSessions = useCallback(async () => {
     setLoadingSessions(true);
@@ -35,7 +42,7 @@ export function CloneDating() {
       if (!ids.length) { setSessions([]); return; }
       const { data } = await supabase
         .from("clone_dating_sessions")
-        .select("id, status, compatibility_score, payment_amount, created_at")
+        .select("id, status, compatibility_score, payment_amount, created_at, session_data")
         .or(`clone_1_id.in.(${ids.join(",")}),clone_2_id.in.(${ids.join(",")})`)
         .order("created_at", { ascending: false })
         .limit(20);
@@ -44,6 +51,35 @@ export function CloneDating() {
       setLoadingSessions(false);
     }
   }, []);
+
+  const openOrRun = async (session: DatingSession) => {
+    const hasTranscript = Array.isArray(session.session_data?.messages) && session.session_data!.messages!.length > 0;
+    setOpenSession(session);
+    if (hasTranscript) return;
+    setRunningId(session.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("clone-date-run", { body: { sessionId: session.id } });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      const updated: DatingSession = {
+        ...session,
+        status: "completed",
+        compatibility_score: data.score ?? session.compatibility_score,
+        session_data: { messages: data.messages ?? [], summary: data.summary ?? "" },
+      };
+      setOpenSession(updated);
+      setSessions((prev) => prev.map((s) => (s.id === session.id ? updated : s)));
+    } catch (err: unknown) {
+      toast({
+        title: "Error",
+        description: err instanceof Error ? err.message : "Could not load the date",
+        variant: "destructive",
+      });
+    } finally {
+      setRunningId(null);
+    }
+  };
+
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
 
@@ -169,25 +205,92 @@ export function CloneDating() {
               No sessions yet. After a successful payment your session appears here.
             </p>
           ) : (
-            sessions.map((s) => (
-              <div key={s.id} className="flex items-center justify-between gap-3 rounded-lg border border-border/50 p-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium">Speed dating session</p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(s.created_at).toLocaleString()} · €{Number(s.payment_amount ?? 0).toFixed(2)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  {s.compatibility_score != null && (
-                    <Badge variant="secondary">{s.compatibility_score}%</Badge>
-                  )}
-                  <Badge variant="outline" className="capitalize">{s.status}</Badge>
-                </div>
-              </div>
-            ))
+            sessions.map((s) => {
+              const hasTranscript = (s.session_data?.messages?.length ?? 0) > 0;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => openOrRun(s)}
+                  disabled={runningId === s.id}
+                  className="w-full flex items-center justify-between gap-3 rounded-lg border border-border/50 p-3 text-left transition-colors hover:bg-muted/50 disabled:opacity-70"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">Speed dating session</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {new Date(s.created_at).toLocaleString()} · €{Number(s.payment_amount ?? 0).toFixed(2)}
+                    </p>
+                    <p className="text-xs text-pink-400 mt-1 flex items-center gap-1">
+                      {runningId === s.id ? (
+                        <><Loader2 className="h-3 w-3 animate-spin" /> Running the date…</>
+                      ) : hasTranscript ? (
+                        <><MessageCircle className="h-3 w-3" /> View conversation</>
+                      ) : (
+                        <><Play className="h-3 w-3" /> Run the date</>
+                      )}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {s.compatibility_score != null && (
+                      <Badge variant="secondary">{s.compatibility_score}%</Badge>
+                    )}
+                    <Badge variant="outline" className="capitalize">{s.status}</Badge>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                </button>
+              );
+            })
+
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={!!openSession} onOpenChange={(o) => !o && setOpenSession(null)}>
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Heart className="h-5 w-5 text-pink-400" /> Speed dating result
+            </DialogTitle>
+          </DialogHeader>
+          {openSession && (
+            <div className="space-y-4">
+              {openSession.compatibility_score != null && (
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">Compatibility {openSession.compatibility_score}%</Badge>
+                  <Badge variant="outline" className="capitalize">{openSession.status}</Badge>
+                </div>
+              )}
+              {runningId === openSession.id ? (
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Your clones are chatting…
+                </p>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    {(openSession.session_data?.messages ?? []).map((m, i) => (
+                      <div
+                        key={i}
+                        className={`rounded-lg p-3 text-sm ${i % 2 === 0 ? "bg-primary/10" : "bg-pink-500/10"}`}
+                      >
+                        <p className="text-xs font-semibold mb-1">{m.speaker}</p>
+                        <p>{m.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {openSession.session_data?.summary && (
+                    <div className="rounded-lg border border-border/50 p-3">
+                      <p className="text-xs font-semibold mb-1">Chemistry summary</p>
+                      <p className="text-sm text-muted-foreground">{openSession.session_data.summary}</p>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+
 
 
 
