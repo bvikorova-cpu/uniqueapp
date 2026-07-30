@@ -99,7 +99,9 @@ const Handwriting = () => {
   const openTool = (toolId: string) => {
     setSelectedType(toolId);
     setActiveView("analyze");
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
   };
+
 
   const getViewLabel = () => {
     if (activeView === "analyze") return ANALYSIS_TOOLS.find(t => t.id === selectedType)?.name || "Analysis";
