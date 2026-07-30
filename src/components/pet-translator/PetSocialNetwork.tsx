@@ -126,21 +126,46 @@ export default function PetSocialNetwork() {
     if (!user) { toast.error("Please sign in to share your pet"); return; }
     if (!form.pet_name.trim()) { toast.error("Pet name is required"); return; }
     setCreating(true);
+
+    let media_url: string | null = null;
+    let media_type: string | null = null;
+
+    if (mediaFile) {
+      setUploading(true);
+      const ext = mediaFile.name.split(".").pop()?.toLowerCase() || "bin";
+      const path = `${user.id}/social/${crypto.randomUUID()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("pet-photos")
+        .upload(path, mediaFile, { contentType: mediaFile.type, upsert: false });
+      setUploading(false);
+      if (upErr) {
+        setCreating(false);
+        toast.error(`Upload failed: ${upErr.message}`);
+        return;
+      }
+      media_url = supabase.storage.from("pet-photos").getPublicUrl(path).data.publicUrl;
+      media_type = mediaFile.type.startsWith("video/") ? "video" : "image";
+    }
+
     const { error } = await supabase.from("pet_social_posts").insert({
       user_id: user.id,
       pet_name: form.pet_name.trim(),
       species: form.species.trim() || null,
       mood: form.mood,
       caption: form.caption.trim() || null,
+      media_url,
+      media_type,
       score: Math.floor(60 + Math.random() * 41),
     });
     setCreating(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Shared with the community!");
     setForm({ pet_name: "", species: "", mood: MOODS[0], caption: "" });
+    clearMedia();
     setOpen(false);
     load();
   };
+
 
   const toggleLike = async (post: PetPost) => {
     if (!user) { toast.error("Please sign in to like posts"); return; }
