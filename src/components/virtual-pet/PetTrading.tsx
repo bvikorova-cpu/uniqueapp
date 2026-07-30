@@ -63,6 +63,24 @@ export const PetTrading = () => {
     },
     enabled: !!user
   });
+  const { data: openTrades } = useQuery({
+    queryKey: ['public-trades', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('pet_trades').select(`
+        *,
+        offered_pet:pets!pet_trades_offered_pet_id_fkey(name, level, pet_types(name))
+      `).is('to_user_id', null).eq('status', 'pending').order('created_at', { ascending: false }).limit(30);
+      if (error) throw error;
+      const rows = (data || []).filter((r: any) => r.from_user_id !== user?.id);
+      const ids = Array.from(new Set(rows.map((r: any) => r.from_user_id)));
+      if (ids.length === 0) return rows;
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name").in("id", ids);
+      const pmap = new Map<string, any>((profs || []).map((p: any) => [p.id, p]));
+      return rows.map((r: any) => ({ ...r, from_user: pmap.get(r.from_user_id) || null }));
+    },
+    enabled: !!user
+  });
+
 
   const createTradeMutation = useMutation({
     mutationFn: async () => {
