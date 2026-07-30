@@ -130,13 +130,26 @@ serve(async (req) => {
     }
 
     const aiData = await aiRes.json();
+    const msg = aiData?.choices?.[0]?.message;
+    const chatImg =
+      msg?.images?.[0]?.image_url?.url ||
+      (Array.isArray(msg?.content)
+        ? msg.content.find((c: any) => c?.type === "image_url")?.image_url?.url
+        : undefined);
     const b64 = aiData?.data?.[0]?.b64_json;
     const urlResp = aiData?.data?.[0]?.url;
-    const imageUrl: string | undefined = b64 ? `data:image/png;base64,${b64}` : urlResp;
+    const imageUrl: string | undefined = b64
+      ? `data:image/png;base64,${b64}`
+      : (urlResp || chatImg);
     if (!imageUrl) {
-      console.error("No image in AI response", JSON.stringify(aiData).slice(0, 500));
-      return json({ error: "No image returned" }, 502);
+      console.error("No image in AI response", JSON.stringify(aiData).slice(0, 800));
+      try {
+        const { data: cur } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).single();
+        await supabase.from("ai_credits").update({ credits_remaining: (cur?.credits_remaining || 0) + cfg.cost }).eq("user_id", user.id);
+      } catch (_) {}
+      return json({ error: "No image returned. Credits refunded." }, 502);
     }
+
 
     // Decode base64 data URL and upload to storage
     const m = imageUrl.match(/^data:(image\/[^;]+);base64,(.+)$/);
