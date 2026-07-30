@@ -29,13 +29,13 @@ export const CloneHero = () => {
   const { stats, loading } = useLiveStats([
     { key: "clones", table: "personality_clones", filter: { column: "is_active", value: "true" } },
     { key: "conversations", table: "clone_conversations" },
-    { key: "sessions", table: "clone_dating_sessions" },
+    { key: "battles", table: "clone_battles" },
   ]);
 
   const heroStats = [
     { icon: Bot, label: "Active Clones", value: stats.clones || 0, suffix: "+" },
     { icon: MessageCircle, label: "Conversations", value: stats.conversations || 0, suffix: "+" },
-    { icon: Users, label: "Dating Sessions", value: stats.sessions || 0, suffix: "+" },
+    { icon: Users, label: "Clone Battles", value: stats.battles || 0, suffix: "+" },
     { icon: Zap, label: "AI Accuracy", value: 0, suffix: "", staticLabel: "97%" },
   ];
 
