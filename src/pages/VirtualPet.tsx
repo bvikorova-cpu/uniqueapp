@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -54,10 +54,27 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
 ];
 
 const VirtualPet = () => {
-  const [activeView, setActiveView] = useState<ActiveView>("dashboard");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeView, setActiveViewState] = useState<ActiveView>("dashboard");
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const { credits } = useAICredits();
   const navigate = useNavigate();
+
+  const setActiveView = (view: ActiveView) => {
+    setActiveViewState(view);
+    if (view === "dashboard") {
+      setSearchParams({}, { replace: true });
+    } else {
+      setSearchParams({ tab: view }, { replace: true });
+    }
+  };
+
+  useEffect(() => {
+    const tab = searchParams.get('tab') as ActiveView | null;
+    if (tab && tools.some(t => t.id === tab)) {
+      setActiveViewState(tab);
+    }
+  }, [searchParams]);
 
   const goBack = () => setActiveView("dashboard");
 
