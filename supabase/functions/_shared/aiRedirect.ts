@@ -87,6 +87,30 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
         "Lovable-API-Key": lovableKey,
       };
 
+      // Retry transient gateway failures (429 / 5xx) with backoff before giving up.
+      const postWithRetry = async (
+        endpoint: string,
+        payload: Record<string, unknown>,
+        fallbackModels: string[] = [],
+      ): Promise<Response> => {
+        const models = [payload.model as string, ...fallbackModels].filter(Boolean);
+        let last: Response | null = null;
+        for (let i = 0; i < Math.max(models.length, 1) + 1; i++) {
+          const model = models[Math.min(i, models.length - 1)];
+          const res = await originalFetch(endpoint, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({ ...payload, ...(model ? { model } : {}) }),
+          });
+          if (res.ok) return res;
+          if (res.status !== 429 && res.status < 500) return res;
+          last = res;
+          console.warn(`[aiRedirect] gateway ${res.status} on ${model}, retry #${i + 1}`);
+          await new Promise((r) => setTimeout(r, 600 * (i + 1)));
+        }
+        return last!;
+      };
+
       if (url.includes("/chat/completions")) {
         const model = mapChatModel(body.model);
         body.model = model;
@@ -98,11 +122,14 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
         if (/gpt-5/i.test(model)) delete body.temperature;
         if (/gpt-5\.6/i.test(model)) body.reasoning_effort = "none";
 
-        return await originalFetch(`${GATEWAY_BASE}/chat/completions`, {
-          method: "POST",
-          headers,
-          body: JSON.stringify(body),
-        });
+        const res = await postWithRetry(`${GATEWAY_BASE}/chat/completions`, body, [
+          "google/gemini-3.1-flash-lite",
+          "openai/gpt-5.4-mini",
+        ]);
+        if (res.ok) return res;
+        console.warn("[aiRedirect] gateway chat failed:", res.status, "- trying OpenAI");
+        const direct = await originalFetch(input as any, init);
+        return direct.ok ? direct : res;
       }
 
       if (url.includes("/images/generations")) {
@@ -113,18 +140,18 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
           ...(body.size ? { size: body.size } : {}),
           quality: "low",
         };
-        const res = await originalFetch(`${GATEWAY_BASE}/images/generations`, {
-          method: "POST",
-          headers,
-          body: JSON.stringify(gwBody),
-        });
+        const res = await postWithRetry(`${GATEWAY_BASE}/images/generations`, gwBody, [
+          "google/gemini-3-pro-image",
+        ]);
         if (res.ok) return res;
         console.warn("[aiRedirect] gateway image generation failed:", res.status);
-        return await originalFetch(input as any, init);
+        const direct = await originalFetch(input as any, init);
+        return direct.ok ? direct : res;
       }
 
       // Anything else (audio/speech, transcriptions, embeddings...) stays on OpenAI.
       return await originalFetch(input as any, init);
+
     } catch (e) {
       console.error("[aiRedirect] error, falling back to original fetch:", e);
       return await originalFetch(input as any, init);
