@@ -50,11 +50,14 @@ export default function AIClone() {
     if (payment === "success" && sessionId) {
       supabase.functions.invoke("verify-payment", { body: { session_id: sessionId } })
         .then(({ data }) => {
-          if (data?.verified) toast.success("Payment confirmed! Your purchase is now active.");
-          else toast.error("Payment could not be verified.");
+          if (data?.verified) {
+            toast.success("Payment confirmed! Your purchase is now active.");
+            if (data?.product_type === "clone_dating") setActiveView("dating");
+          } else toast.error("Payment could not be verified.");
         })
         .catch(() => toast.error("Payment verification failed."));
       window.history.replaceState({}, "", "/ai-clone");
+
     } else if (payment === "canceled") {
       toast.info("Payment canceled.");
       window.history.replaceState({}, "", "/ai-clone");
