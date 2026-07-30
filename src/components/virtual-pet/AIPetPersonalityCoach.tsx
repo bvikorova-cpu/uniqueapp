@@ -36,8 +36,8 @@ export const AIPetPersonalityCoach = ({ onBack }: Props) => {
     setLoading(true);
     try {
       const pet = pets?.find(p => p.id === selectedPetId);
-      const { data, error } = await supabase.functions.invoke('pet-personality-coach', {
-        body: { petName: pet?.name, species: pet?.pet_types?.species, level: pet?.level, happiness: pet?.happiness, energy: pet?.energy, hunger: pet?.hunger }
+      const { data, error } = await supabase.functions.invoke('pet-translator-ai', {
+        body: { action: 'vp_personality_coach', petName: pet?.name, species: pet?.pet_types?.species, level: pet?.level, happiness: pet?.happiness, energy: pet?.energy, hunger: pet?.hunger }
       });
       if (error) throw error;
       setResult(data.result);

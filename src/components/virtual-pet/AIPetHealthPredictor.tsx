@@ -37,8 +37,8 @@ export const AIPetHealthPredictor = ({ onBack }: Props) => {
     setLoading(true);
     try {
       const pet = pets?.find(p => p.id === selectedPetId);
-      const { data, error } = await supabase.functions.invoke('pet-health-predictor', {
-        body: { petName: pet?.name, species: pet?.pet_types?.species, level: pet?.level, happiness: pet?.happiness, energy: pet?.energy, hunger: pet?.hunger, experience: pet?.experience, timeframeDays: parseInt(timeframe) }
+      const { data, error } = await supabase.functions.invoke('pet-translator-ai', {
+        body: { action: 'vp_health_predictor', petName: pet?.name, species: pet?.pet_types?.species, level: pet?.level, happiness: pet?.happiness, energy: pet?.energy, hunger: pet?.hunger, experience: pet?.experience, timeframeDays: parseInt(timeframe) }
       });
       if (error) throw error;
       setResult(data.result);

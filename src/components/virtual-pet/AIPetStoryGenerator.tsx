@@ -50,8 +50,8 @@ export const AIPetStoryGenerator = ({ onBack }: Props) => {
       const selectedPets = pets?.filter(p => selectedPetIds.includes(p.id)).map(p => ({
         name: p.name, species: p.pet_types?.species, level: p.level
       }));
-      const { data, error } = await supabase.functions.invoke('pet-story-generator', {
-        body: { pets: selectedPets, genre, setting }
+      const { data, error } = await supabase.functions.invoke('pet-translator-ai', {
+        body: { action: 'vp_story_generator', pets: selectedPets, genre, setting }
       });
       if (error) throw error;
       setResult(data.result);

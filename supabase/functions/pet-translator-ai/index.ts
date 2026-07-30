@@ -32,7 +32,9 @@ serve(async (req) => {
     const costMap: Record<string, number> = { translate: 4, emotion: 4, health: 5, training: 4, diet: 4, behavior: 5,
       photo_emotion: 5, audio_translate: 5, health_certificate: 6, smart_reminders: 4,
       reverse_translate: 3, symptom_check: 5, breed_identify: 4, video_analyze: 6,
-      daily_tip: 1, onboarding_personalize: 2 };
+      daily_tip: 1, onboarding_personalize: 2,
+      vp_personality_coach: 5, vp_name_generator: 3, vp_health_predictor: 8, vp_story_generator: 6,
+      vp_mood_analyzer: 4, vp_training_planner: 5, vp_compatibility: 6, vp_battle_strategy: 4 };
     const cost = costMap[action] || 4;
 
     const { data: credits } = await supabase
@@ -193,7 +195,33 @@ Provide:
 
       daily_tip: `Generate ONE concise (max 280 chars), actionable, fun daily care tip for a ${params.species || "pet"} owner. Include 1 emoji. No intro, no markdown.`,
 
-      onboarding_personalize: `Based on quiz answers ${JSON.stringify(params.answers || {})}, write a 2-sentence personalized welcome for this pet owner and recommend the FIRST tool they should try (translate / emotion / health / training). Markdown OK.` };
+      onboarding_personalize: `Based on quiz answers ${JSON.stringify(params.answers || {})}, write a 2-sentence personalized welcome for this pet owner and recommend the FIRST tool they should try (translate / emotion / health / training). Markdown OK.`,
+
+      vp_personality_coach: `You are a virtual pet personality coach. Pet data: ${JSON.stringify(params)}.
+Provide in Markdown: 1. **Personality Profile** 2. **Current State Read** (what the stats mean) 3. **Daily Care Routine** (morning/afternoon/evening) 4. **Bonding Activities** 5. **Warning Signs** 6. **7-Day Improvement Goal**`,
+
+      vp_name_generator: `Generate 10 original, memorable names for a virtual pet.
+Species: ${params.species || "unknown"} | Theme: ${params.theme || "any"} | Traits: ${params.personality || "not specified"}.
+Reply with ONLY a JSON array of 10 short name strings, no markdown, no commentary.`,
+
+      vp_health_predictor: `You are a virtual pet health forecasting AI. Pet data: ${JSON.stringify(params)}. Forecast window: ${params.timeframeDays || 7} days.
+Provide in Markdown: 1. **Health Score Today** (0-100 + why) 2. **Projected Stats** at end of window 3. **Evolution Outlook** 4. **Risk Factors** 🟢🟡🔴 5. **Action Plan** (day by day) 6. **Best vs worst case**`,
+
+      vp_story_generator: `Write an engaging 600-900 word adventure story starring these virtual pets: ${JSON.stringify(params.pets || [])}.
+Genre: ${params.genre || "fantasy adventure"} | Setting: ${params.setting || "a magical world"}.
+Give each pet a distinct voice, include a challenge, a twist and a satisfying ending. Start with a bold Markdown title.`,
+
+      vp_mood_analyzer: `You are a virtual pet emotion specialist. Pet data: ${JSON.stringify(params)}.
+Provide in Markdown: 1. **Primary Mood** (with emoji) 2. **Secondary Emotions** 3. **Stress Level** (1-10 + why) 4. **What drives the mood** 5. **3 Immediate Mood Boosters** 6. **Pet Quote** in the pet's own voice`,
+
+      vp_training_planner: `You are a virtual pet training strategist. Data: ${JSON.stringify(params)}.
+Provide in Markdown: 1. **Goal Assessment** 2. **Daily Schedule** (time blocks) 3. **Weekly Plan** (day 1-7) 4. **XP Optimization Tips** 5. **Stat Balance Warnings** 6. **Milestones & Rewards**`,
+
+      vp_compatibility: `You are a virtual pet compatibility analyst. Data: ${JSON.stringify(params)}.
+Provide in Markdown: 1. **Compatibility Score** (0-100 + reason) 2. **Temperament Match** 3. **Stat Synergy** 4. **Offspring / Fusion Prediction** 5. **Potential Conflicts** 6. **Recommendation**`,
+
+      vp_battle_strategy: `You are an elite virtual pet battle tactician. Team: ${JSON.stringify(params.pets || [])}.
+Provide in Markdown: 1. **Team Assessment** 2. **Optimal Formation / Lead Order** 3. **Round-by-Round Tactics** 4. **Best Matchups & Counters** 5. **Pre-Battle Prep** 6. **Estimated Win Rate** with key risk` };
 
     const prompt = prompts[action];
     if (!prompt) throw new Error("Invalid action: " + action);

@@ -103,8 +103,6 @@ verify_jwt = false
 [functions.create-checkout]
 verify_jwt = true
 
-[functions.stripe-webhook]
-verify_jwt = false
 
 [functions.generate-meal-plan]
 verify_jwt = true
@@ -420,4 +418,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.holographic-breeding-simulate]
+verify_jwt = true
+
+[functions.pet-translator-ai]
 verify_jwt = true
