@@ -9,7 +9,7 @@ import { HandwritingProgressPreview } from "@/components/handwriting/Handwriting
 import { HandwritingAchievements } from "@/components/handwriting/HandwritingAchievements";
 import { HandwritingToolCard } from "@/components/handwriting/HandwritingToolCard";
 import { HandwritingTestimonials } from "@/components/handwriting/HandwritingTestimonials";
-import { HandwritingComparisonTable } from "@/components/handwriting/HandwritingComparisonTable";
+
 import { SignatureAnalyzerCard } from "@/components/handwriting/SignatureAnalyzerCard";
 import { CompatibilityCard } from "@/components/handwriting/CompatibilityCard";
 import { MoodTrackerCard } from "@/components/handwriting/MoodTrackerCard";
@@ -187,7 +187,7 @@ const Handwriting = () => {
 
                 <div className="space-y-4">
                   <HandwritingTestimonials />
-                  <HandwritingComparisonTable />
+                  
                 </div>
               </div>
 
