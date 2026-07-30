@@ -122,14 +122,12 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
         if (/gpt-5/i.test(model)) delete body.temperature;
         if (/gpt-5\.6/i.test(model)) body.reasoning_effort = "none";
 
-        const res = await postWithRetry(`${GATEWAY_BASE}/chat/completions`, body, [
+        // Lovable-only: never fall back to OpenAI.
+        return await postWithRetry(`${GATEWAY_BASE}/chat/completions`, body, [
           "google/gemini-3.1-flash-lite",
+          "google/gemini-3.5-flash",
           "openai/gpt-5.4-mini",
         ]);
-        if (res.ok) return res;
-        console.warn("[aiRedirect] gateway chat failed:", res.status, "- trying OpenAI");
-        const direct = await originalFetch(input as any, init);
-        return direct.ok ? direct : res;
       }
 
       if (url.includes("/images/generations")) {
@@ -140,13 +138,20 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
           ...(body.size ? { size: body.size } : {}),
           quality: "low",
         };
-        const res = await postWithRetry(`${GATEWAY_BASE}/images/generations`, gwBody, [
+        // Lovable-only: never fall back to OpenAI.
+        return await postWithRetry(`${GATEWAY_BASE}/images/generations`, gwBody, [
           "google/gemini-3-pro-image",
         ]);
-        if (res.ok) return res;
-        console.warn("[aiRedirect] gateway image generation failed:", res.status);
-        const direct = await originalFetch(input as any, init);
-        return direct.ok ? direct : res;
+      }
+
+      if (url.includes("/embeddings")) {
+        const gwBody = {
+          ...body,
+          model: typeof body.model === "string" && body.model.includes("/")
+            ? body.model
+            : "openai/text-embedding-3-small",
+        };
+        return await postWithRetry(`${GATEWAY_BASE}/embeddings`, gwBody);
       }
 
       // Anything else (audio/speech, transcriptions, embeddings...) stays on OpenAI.
