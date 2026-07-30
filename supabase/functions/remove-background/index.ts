@@ -1,9 +1,8 @@
 import "../_shared/aiRedirect.ts";
 // Universal photo processing edge function.
 // Handles: bg-remove, restore, colorize, repair, enhance, colorize-pro,
-// face-enhance, upscale. Uses OpenAI gpt-image-1 for real image edits.
-// Supports two credit pools: `photo_credits` (default for photo-restoration page)
-// and `ai_credits` (legacy `remove-background` callers).
+// face-enhance, upscale. Uses Lovable AI for real image edits and the
+// platform-wide unified AI credit pool.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
@@ -78,8 +77,8 @@ serve(async (req) => {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
     const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
@@ -102,26 +101,17 @@ serve(async (req) => {
     const operation: Operation = ALIAS[rawOp] ?? "bg-remove";
     const cost = COSTS[operation];
 
-    // Credit pool selection — photo_credits is the photo-restoration page,
-    // ai_credits is the legacy general AI tools pool.
-    const creditPool: "photo_credits" | "ai_credits" =
-      body.creditPool === "ai_credits" ? "ai_credits" : "photo_credits";
-
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
       auth: { persistSession: false } });
 
-    const ADMIN_USER_ID = Deno.env.get("ADMIN_USER_ID");
-    const isAdmin = ADMIN_USER_ID && user.id === ADMIN_USER_ID;
+    // Check the same unified balance displayed across the platform.
+    const [{ data: paidRow }, { data: freeRow }] = await Promise.all([
+      admin.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
+      admin.from("free_tier_credits").select("balance").eq("user_id", user.id).maybeSingle(),
+    ]);
+    const remaining = (freeRow?.balance ?? 0) + (paidRow?.credits_remaining ?? 0);
 
-    // Check credits
-    const { data: creditRow } = await admin
-      .from(creditPool)
-      .select("credits_remaining")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    const remaining = creditRow?.credits_remaining ?? 0;
-
-    if (!isAdmin && remaining < cost) {
+    if (remaining < cost) {
       return new Response(
         JSON.stringify({
           error: "INSUFFICIENT_CREDITS",
@@ -131,10 +121,23 @@ serve(async (req) => {
       );
     }
 
-    // Fetch source image
-    const srcRes = await fetch(imageUrl);
-    if (!srcRes.ok) throw new Error("Could not fetch source image");
-    const srcBlob = new Blob([await srcRes.arrayBuffer()], { type: srcRes.headers.get("content-type") ?? "image/png" });
+    // Resolve private Storage URLs with service-role access, then send the image
+    // inline so the image provider never needs access to the private bucket.
+    const storageMatch = imageUrl.match(/\/storage\/v1\/object\/(?:public|sign|authenticated)\/([^/]+)\/(.+?)(?:\?.*)?$/);
+    let srcBlob: Blob;
+    if (imageUrl.startsWith("data:")) {
+      const match = imageUrl.match(/^data:([^;]+);base64,(.+)$/);
+      if (!match) throw new Error("Invalid source image");
+      srcBlob = new Blob([Uint8Array.from(atob(match[2]), (c) => c.charCodeAt(0))], { type: match[1] });
+    } else if (storageMatch) {
+      const { data, error } = await admin.storage.from(storageMatch[1]).download(decodeURIComponent(storageMatch[2]));
+      if (error || !data) throw new Error(`Could not download source image: ${error?.message ?? "no data"}`);
+      srcBlob = data;
+    } else {
+      const srcRes = await fetch(imageUrl);
+      if (!srcRes.ok) throw new Error("Could not fetch source image");
+      srcBlob = await srcRes.blob();
+    }
 
     // Pick prompt — bg-remove supports color variants
     let prompt = PROMPTS[operation];
@@ -142,62 +145,76 @@ serve(async (req) => {
       prompt = BG_PROMPTS[body.bgColor];
     }
 
-    const form = new FormData();
-    form.append("model", "gpt-image-1");
-    form.append("image", srcBlob, "input.png");
-    form.append("prompt", prompt);
-    // gpt-image-1 supports 1024x1024, 1024x1536, 1536x1024 (no 1536x1536)
-    form.append("size", operation === "upscale" ? "1536x1024" : "1024x1024");
-    if (operation === "bg-remove" && (!body.bgColor || body.bgColor === "transparent")) {
-      form.append("background", "transparent");
+    const srcBytes = new Uint8Array(await srcBlob.arrayBuffer());
+    let sourceBinary = "";
+    for (let i = 0; i < srcBytes.length; i += 8192) {
+      sourceBinary += String.fromCharCode(...srcBytes.subarray(i, i + 8192));
     }
+    const sourceDataUrl = `data:${srcBlob.type || "image/png"};base64,${btoa(sourceBinary)}`;
 
-    const aiRes = await fetch("https://api.openai.com/v1/images/edits", {
+    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
       method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
-      body: form });
+      headers: {
+        "Lovable-API-Key": LOVABLE_API_KEY,
+        "X-Lovable-AIG-SDK": "vercel-ai-sdk",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3.1-flash-image",
+        messages: [{ role: "user", content: [
+          { type: "text", text: `${prompt} Return only the edited image.` },
+          { type: "image_url", image_url: { url: sourceDataUrl } },
+        ] }],
+        modalities: ["image", "text"],
+      }) });
 
     if (!aiRes.ok) {
       const txt = await aiRes.text();
-      console.error("OpenAI error", aiRes.status, txt);
+      console.error("Lovable AI image error", aiRes.status, txt);
       if (aiRes.status === 429) {
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded, please try again." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
-      throw new Error(`OpenAI ${aiRes.status}: ${txt.slice(0, 200)}`);
+      throw new Error(`Image restoration failed (${aiRes.status})`);
     }
 
     const aiData = await aiRes.json();
     const b64 = aiData?.data?.[0]?.b64_json;
-    if (!b64) throw new Error("OpenAI did not return an image");
+    if (!b64) throw new Error("AI did not return an image");
     const bin = atob(b64);
     const out = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
 
-    // Upload — photo pool to old-photos bucket, ai pool to stock-content
-    const bucket = creditPool === "photo_credits" ? "old-photos" : "stock-content";
+    // Photo restoration output remains in the private old-photos bucket.
+    const bucket = "old-photos";
     const folder = operation === "bg-remove" ? "bg-removed" : "restored";
     const filePath = `${user.id}/${folder}/${Date.now()}-${operation}.png`;
     const { error: upErr } = await admin.storage
       .from(bucket)
       .upload(filePath, out, { contentType: "image/png", upsert: false });
     if (upErr) throw upErr;
-    const { data: urlData } = admin.storage.from(bucket).getPublicUrl(filePath);
-    const resultUrl = urlData.publicUrl;
+    const { data: signed, error: signError } = await admin.storage.from(bucket).createSignedUrl(filePath, 7200);
+    if (signError || !signed?.signedUrl) throw new Error("Could not open restored image");
+    const resultUrl = signed.signedUrl;
 
-    // Deduct credits (skip for admin)
-    if (!isAdmin) { await admin
-        .from(creditPool)
-        .update({
-          credits_remaining: remaining - cost,
-          updated_at: new Date().toISOString() })
-        .eq("user_id", user.id);
+    // Atomically deduct from free credits first, then paid AI credits, and write
+    // the corresponding ledger entry. Never report success if deduction fails.
+    const { data: spent, error: spendError } = await admin.rpc("spend_unified_ai_credits_for_user", {
+      p_user_id: user.id,
+      p_amount: cost,
+      p_reason: `photo_restoration_${operation}`,
+      p_source: "remove-background",
+    });
+    if (spendError || !Array.isArray(spent) || !spent[0]) {
+      console.error("Unified credit deduction failed", spendError);
+      await admin.storage.from(bucket).remove([filePath]);
+      throw new Error(spendError?.message ?? "Credit deduction failed");
     }
+    const creditsRemaining = spent[0].total_balance;
 
-    // Log to old_photos if photo pool
-    if (creditPool === "photo_credits") { try {
+    try {
         await admin.from("old_photos").insert({
           user_id: user.id,
           original_url: imageUrl,
@@ -205,15 +222,6 @@ serve(async (req) => {
           restoration_type: operation,
           credits_used: cost });
       } catch (_e) {/* non-blocking */}
-    } else {
-      try {
-        await admin.from("ai_usage_history").insert({
-          user_id: user.id,
-          usage_type: `image_${operation}`,
-          credits_used: cost,
-          description: `Photo ${operation}` });
-      } catch (_e) {/* non-blocking */}
-    }
 
     return new Response(
       JSON.stringify({ success: true,
@@ -226,8 +234,8 @@ serve(async (req) => {
         filePath,
         operation,
         bgColor: body.bgColor ?? null,
-        creditsDeducted: isAdmin ? 0 : cost,
-        creditsRemaining: isAdmin ? 999999 : remaining - cost }),
+        creditsDeducted: cost,
+        creditsRemaining }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err: any) {
