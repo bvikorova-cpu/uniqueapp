@@ -13,31 +13,17 @@ export const usePhotoCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { data, error } = await supabase
-        .from("photo_credits")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (error) throw error;
-      
-      // If no credits record exists, create one
-      if (!data) {
-        const { data: newData, error: insertError } = await supabase
-          .from("photo_credits")
-          .insert({
-            user_id: user.id,
-            credits_remaining: 0,
-            total_credits_purchased: 0
-          })
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        return newData;
-      }
-
-      return data;
+      const [paid, free] = await Promise.all([
+        supabase.from("ai_credits").select("credits_remaining,total_credits_purchased,last_used_at").eq("user_id", user.id).maybeSingle(),
+        (supabase as any).from("free_tier_credits").select("balance").eq("user_id", user.id).maybeSingle(),
+      ]);
+      if (paid.error) throw paid.error;
+      if (free.error) throw free.error;
+      return {
+        credits_remaining: (paid.data?.credits_remaining ?? 0) + ((free.data as any)?.balance ?? 0),
+        total_credits_purchased: paid.data?.total_credits_purchased ?? 0,
+        last_used_at: paid.data?.last_used_at ?? null,
+      };
     } });
 
   // Admin always has unlimited credits
@@ -56,6 +42,9 @@ export const usePhotoCredits = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["photo-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["free-tier-credits"] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
     },
     onError: (error: Error) => {
       if (error.message.includes('credits')) {
