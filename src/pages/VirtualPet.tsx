@@ -9,7 +9,6 @@ import { PetCustomization } from "@/components/virtual-pet/PetCustomization";
 import { PetTrading } from "@/components/virtual-pet/PetTrading";
 import { MiniGames } from "@/components/virtual-pet/MiniGames";
 import { PetBattle } from "@/components/virtual-pet/PetBattle";
-import { PetBreeding } from "@/components/virtual-pet/PetBreeding";
 import { AIPetPersonalityCoach } from "@/components/virtual-pet/AIPetPersonalityCoach";
 import { AIPetNameGenerator } from "@/components/virtual-pet/AIPetNameGenerator";
 import { AIPetHealthPredictor } from "@/components/virtual-pet/AIPetHealthPredictor";
@@ -20,7 +19,7 @@ import { AIPetCompatibilityChecker } from "@/components/virtual-pet/AIPetCompati
 import { AIPetBattleStrategy } from "@/components/virtual-pet/AIPetBattleStrategy";
 import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
 import {
-  Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords, Dna,
+  Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords,
   Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star,
   SmilePlus, CalendarDays, HeartHandshake, Target
 } from "lucide-react";
@@ -31,7 +30,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import PetCrossPromo from "@/components/pet-translator/PetCrossPromo";
 import { trackPetActivity } from "@/lib/petLover";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
+type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" |
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
   "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy";
 
@@ -42,7 +41,6 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
   { id: "customize", icon: Palette, title: "Customize", description: "Equip skins & accessories", color: "purple" },
   { id: "trading", icon: ArrowLeftRight, title: "Trading Post", description: "Trade rare pets with players", color: "orange" },
   { id: "games", icon: Gamepad2, title: "Mini Games", description: "Earn rewards & XP from games", color: "cyan" },
-  { id: "breeding", icon: Dna, title: "Breeding Lab", description: "Combine pets for rare offspring", color: "emerald" },
   { id: "personality-coach", icon: Brain, title: "AI Personality Coach", description: "AI care routines & analysis", color: "violet", badge: "5 Cr", isNew: true },
   { id: "name-generator", icon: Wand2, title: "AI Name Generator", description: "Creative AI-generated pet names", color: "pink", badge: "3 Cr", isNew: true },
   { id: "health-predictor", icon: Activity, title: "AI Health Predictor", description: "Forecast evolution & health trends", color: "emerald", badge: "8 Cr", isNew: true },
@@ -88,7 +86,6 @@ const VirtualPet = () => {
       case "customize": return <PetCustomization selectedPetId={selectedPetId} />;
       case "trading": return <PetTrading />;
       case "games": return <MiniGames selectedPetId={selectedPetId} />;
-      case "breeding": return <PetBreeding selectedPetId={selectedPetId} />;
       case "personality-coach": return <AIPetPersonalityCoach onBack={goBack} />;
       case "name-generator": return <AIPetNameGenerator onBack={goBack} />;
       case "health-predictor": return <AIPetHealthPredictor onBack={goBack} />;
@@ -101,7 +98,7 @@ const VirtualPet = () => {
     }
   };
 
-  const oldViews: ActiveView[] = ["pets", "battle", "shop", "customize", "trading", "games", "breeding"];
+  const oldViews: ActiveView[] = ["pets", "battle", "shop", "customize", "trading", "games"];
 
   return (
     <>
@@ -190,7 +187,7 @@ const VirtualPet = () => {
                     {[
                       { icon: Heart, title: "1. Adopt", desc: "Choose from 28+ species including mythical creatures" },
                       { icon: Gamepad2, title: "2. Play & Care", desc: "Feed, play mini-games, and keep your pet happy" },
-                      { icon: Swords, title: "3. Battle & Breed", desc: "Fight AI opponents and breed rare offspring" },
+                      { icon: Swords, title: "3. Battle", desc: "Fight AI and real players in the arena" },
                       { icon: Brain, title: "4. AI Services", desc: "Use AI coaches, predictors & strategy advisors" },
                     ].map((step, i) => (
                       <div key={i} className="text-center space-y-2">
@@ -213,9 +210,7 @@ const VirtualPet = () => {
                     <li>• Start with a Cat or Dog (20 credits each) — cheapest to adopt!</li>
                     <li>• Use AI Battle Strategy before arena fights for +30% win rate</li>
                     <li>• AI Training Planner creates optimal XP routes — level up 2x faster</li>
-                    <li>• Check Compatibility before breeding to predict rare mutations</li>
                     <li>• AI Mood Analyzer helps identify hidden stress — boost happiness by 25%</li>
-                    <li>• Pets need Level 10+ to breed — feed and play daily to level up fast</li>
                     <li>• Generate adventure stories to share with the community</li>
                   </ul>
                 </CardContent>
