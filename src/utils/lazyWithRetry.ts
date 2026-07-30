@@ -63,8 +63,32 @@ export function retryImport<T>(
 export function lazyWithRetry<T extends ComponentType<any>>(
   factory: () => Promise<{ default: T }>,
 ) {
-  return lazy(() => retryImport(factory));
+  return lazy(async () => {
+    const mod: any = await retryImport(factory);
+    // Stale-deploy safety net: if the resolved module is missing (or has no
+    // default export) React.lazy would crash with
+    // "Cannot read properties of undefined (reading 'default')".
+    // Recover with one cache-busted reload instead of showing an error screen.
+    if (!mod || typeof mod !== "object" || !("default" in mod) || !mod.default) {
+      if (typeof window !== "undefined") {
+        try {
+          if (!sessionStorage.getItem(RELOAD_KEY)) {
+            sessionStorage.setItem(RELOAD_KEY, String(Date.now()));
+            const url = new URL(window.location.href);
+            url.searchParams.set("__r", String(Date.now()));
+            window.location.replace(url.toString());
+            return new Promise<{ default: T }>(() => {});
+          }
+        } catch {
+          /* noop */
+        }
+      }
+      throw new Error("Module loaded without a default export (stale chunk)");
+    }
+    return mod as { default: T };
+  });
 }
+
 
 // Clear the reload guard once the app has successfully booted, so future
 // stale-chunk events can trigger a fresh recovery.
