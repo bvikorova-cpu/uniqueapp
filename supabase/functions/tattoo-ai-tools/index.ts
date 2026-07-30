@@ -142,12 +142,23 @@ serve(async (req) => {
       );
       payload = { imageUrl };
     } else if (type === 'aging_simulation') {
-      const { years, skinType } = params;
-      const analysis = await chatCompletion(
-        'You are a professional tattoo aging expert. Provide detailed, scientific analysis of how tattoos age over time based on skin type, ink quality, and environmental factors.',
-        `Analyze how a tattoo would age over ${years} years on ${skinType} skin. Provide:\n1. Color fading prediction\n2. Line blur estimate\n3. Overall appearance change percentage\n4. Recommended touch-up timeline\n5. Care tips to slow aging\n6. Best and worst case scenarios\nFormat with clear headers and bullet points.`
-      );
-      payload = { analysis };
+      const { years, skinType, imageUrl: sourceImage } = params;
+      const [analysis, agedImageUrl] = await Promise.all([
+        chatCompletion(
+          'You are a professional tattoo aging expert. Answer with concrete, structured content — never with a preamble like "Here is an analysis". Start directly with the first section header.',
+          `Analyze how THIS tattoo would look after ${years} years on ${skinType} skin. Use these exact section headers and short bullet points under each:\n\nCOLOR FADING\nLINE BLUR\nOVERALL CHANGE (%)\nTOUCH-UP TIMELINE\nCARE TIPS\nBEST & WORST CASE\n\nBe specific and practical. No introduction, no closing paragraph.`,
+          1500,
+          typeof sourceImage === 'string' ? sourceImage : undefined
+        ),
+        typeof sourceImage === 'string' && sourceImage
+          ? editImage(
+              `Edit this tattoo photo to show realistically how it will look after ${years} years of natural aging on ${skinType} skin tone. Keep the exact same subject, composition, placement and framing — only apply aging effects: faded and slightly desaturated ink, softened and blurred/spread linework, reduced contrast, subtle blowout of fine lines, slight skin texture change. Do not redraw or change the design. Photorealistic result.`,
+              sourceImage
+            ).catch((e) => { console.error('aging image failed:', e); return null; })
+          : Promise.resolve(null),
+      ]);
+      payload = { analysis, agedImageUrl };
+
     } else if (type === 'color_palette') {
       const { skinTone, description } = params;
       const palette = await chatCompletion(
