@@ -35,7 +35,19 @@ export const AIPetNameGenerator = ({ onBack }: Props) => {
         body: { action: 'vp_name_generator', species, theme, personality }
       });
       if (error) throw error;
-      setNames(data.names || []);
+      const raw: string = data?.result ?? "";
+      let parsed: string[] = Array.isArray(data?.names) ? data.names : [];
+      if (!parsed.length && raw) {
+        const match = raw.match(/\[[\s\S]*\]/);
+        if (match) { try { parsed = JSON.parse(match[0]); } catch { /* ignore */ } }
+        if (!parsed.length) {
+          parsed = raw.split("\n")
+            .map((l) => l.replace(/^[\s\-*\d.)"']+/, "").replace(/["',]+$/, "").trim())
+            .filter((l) => l.length > 0 && l.length < 40)
+            .slice(0, 12);
+        }
+      }
+      setNames(parsed);
     } catch (e: any) { handleEdgeError(e, { navigate, context: "AI Pet" }); }
     finally { setLoading(false); }
   };
