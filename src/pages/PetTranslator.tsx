@@ -158,11 +158,11 @@ const PetTranslator = () => {
               {[
                 { key: "tools", label: "🧬 AI Tools" },
                 { key: "pets", label: "🐾 My Pets" },
-                { key: "more", label: "✨ More" },
+                
                 { key: "dashboard", label: "📊 Dashboard" },
                 { key: "social", label: "🌍 Social" },
                 { key: "streaks", label: "🔥 Streaks" },
-                { key: "challenges", label: "🎯 Challenges" },
+                
                 { key: "leaderboard", label: "🏆 Leaderboard" },
                 { key: "achievements", label: "🏅 Achievements" },
               ].map(tab => (
@@ -178,29 +178,6 @@ const PetTranslator = () => {
             <TabsContent value="pets">
               <PetProfileManager />
             </TabsContent>
-            <TabsContent value="more">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {[
-                  { k: "reverse", icon: MessageSquareText, label: "Speak Pet" },
-                  { k: "history", icon: History, label: "History" },
-                  { k: "live", icon: Radio, label: "Live Listen" },
-                  { k: "video", icon: Video, label: "Video Analysis" },
-                  { k: "breed", icon: Search, label: "Breed ID" },
-                  { k: "symptoms", icon: Stethoscope, label: "Symptom Check" },
-                  { k: "vet", icon: Stethoscope, label: "Talk to Vet" },
-                  { k: "courses", icon: BookOpen, label: "Training Courses" },
-                  { k: "soundwall", icon: Users, label: "Sound Wall" },
-                  { k: "quiz", icon: Sparkles, label: "Onboarding Quiz" },
-                  { k: "wearable", icon: Watch, label: "Smart Collar" },
-                ].map(t => (
-                  <button key={t.k} onClick={() => setActiveView(t.k)}
-                    className="p-4 rounded-xl border border-border/40 bg-card/50 hover:border-primary/40 hover:bg-primary/5 transition-all text-left">
-                    <t.icon className="w-5 h-5 text-primary mb-2" />
-                    <div className="text-sm font-semibold">{t.label}</div>
-                  </button>
-                ))}
-              </div>
-            </TabsContent>
             <TabsContent value="dashboard">
               <PetHealthDashboard />
             </TabsContent>
@@ -209,9 +186,6 @@ const PetTranslator = () => {
             </TabsContent>
             <TabsContent value="streaks">
               <PetMoodStreaks currentStreak={0} />
-            </TabsContent>
-            <TabsContent value="challenges">
-              <PetWeeklyChallenges />
             </TabsContent>
             <TabsContent value="leaderboard">
               <PetLeaderboard />
