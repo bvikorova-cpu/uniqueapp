@@ -22,18 +22,31 @@ export function CloneMarketplace() {
   const { toast } = useToast();
   const [clones, setClones] = useState<Clone[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
   const [selectedClone, setSelectedClone] = useState<Clone | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
 
-  useEffect(() => { fetchPublicClones(); }, []);
+  // Server-side search (debounced) so results aren't limited to the first page.
+  useEffect(() => {
+    const t = setTimeout(() => { fetchPublicClones(searchTerm.trim()); }, 300);
+    return () => clearTimeout(t);
+  }, [searchTerm]);
 
-  const fetchPublicClones = async () => {
+  const fetchPublicClones = async (term = "") => {
+    setLoading(true);
     try {
-      const { data, error } = await (supabase as any)
+      let query = (supabase as any)
         .from('public_clones')
-        .select('id, clone_name, subscription_tier, total_conversations, personality_summary, tone')
+        .select('id, clone_name, subscription_tier, total_conversations, personality_summary, tone');
+
+      if (term) {
+        const safe = term.replace(/[%,()]/g, " ").trim();
+        query = query.or(`clone_name.ilike.%${safe}%,personality_summary.ilike.%${safe}%`);
+      }
+
+      const { data, error } = await query
         .order('total_conversations', { ascending: false })
-        .limit(20);
+        .limit(60);
       if (error) throw error;
       setClones((data || []).map((c: any) => ({
         id: c.id,
@@ -43,6 +56,8 @@ export function CloneMarketplace() {
         personality_data: { personality: c.personality_summary, tone: c.tone } })));
     } catch (error) {
       console.error('Error fetching clones:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,9 +71,8 @@ export function CloneMarketplace() {
     setChatOpen(true);
   };
 
-  const filteredClones = clones.filter(clone =>
-    clone.clone_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredClones = clones;
+
 
   return (
     <>
@@ -110,7 +124,7 @@ export function CloneMarketplace() {
         ))}
       </div>
 
-      {filteredClones.length === 0 && (
+      {!loading && filteredClones.length === 0 && (
         <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
           <CardContent className="text-center py-12">
             <Bot className="h-16 w-16 mx-auto mb-4 text-muted-foreground/50" />
