@@ -69,6 +69,8 @@ export const DamageDetection = ({ onBack }: Props) => {
         recommendation: parsed.recommendation || "Standard restoration recommended.",
         estimatedRepairCredits: Number(parsed.estimatedRepairCredits) || 4 });
       window.dispatchEvent(new Event("ai-credits-updated"));
+      toast.success("Damage analysis complete!");
+
 
     } catch (error: any) {
       console.error(error);
