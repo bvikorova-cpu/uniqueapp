@@ -382,6 +382,12 @@ export const MyPets = ({ onSelectPet, selectedPetId }: MyPetsProps) => {
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${healthGradient}`} />
                 {/* Subtle glow */}
                 <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full bg-gradient-to-br ${healthGradient} opacity-[0.07] blur-2xl group-hover:opacity-[0.12] transition-opacity`} />
+                {/* Selected badge */}
+                {isSelected && (
+                  <div className="absolute top-2 right-2 z-10 bg-primary text-primary-foreground text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                    <Sparkles className="h-3 w-3" /> Selected
+                  </div>
+                )}
 
                 <CardContent className="p-4 space-y-3 relative">
                   {/* Pet Avatar & Info */}
