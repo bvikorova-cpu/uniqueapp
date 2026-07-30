@@ -55,10 +55,9 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("clone-chat", {
+      const { data, error } = await safeInvoke<any>("clone-chat", {
         body: { cloneId: clone.id, message: userMessage, history: messages } });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+      if (error) throw new Error(error);
       setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
       if (typeof data.remaining === "number" && data.remaining <= 3) {
         toast({ title: `${data.remaining} AI responses left today` });
