@@ -54,12 +54,23 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
 ];
 
 const VirtualPet = () => {
+  const [searchParams] = useSearchParams();
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const { credits } = useAICredits();
   const navigate = useNavigate();
 
-  const goBack = () => setActiveView("dashboard");
+  useEffect(() => {
+    const tab = searchParams.get('tab') as ActiveView | null;
+    if (tab && tools.some(t => t.id === tab)) {
+      setActiveView(tab);
+    }
+  }, [searchParams]);
+
+  const goBack = () => {
+    setActiveView("dashboard");
+    navigate('/virtual-pet', { replace: true });
+  };
 
   useEffect(() => { trackPetActivity('virtual'); }, []);
 
