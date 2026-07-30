@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { Heart, Utensils, Zap, Star, Plus, Loader2, TrendingUp, Dumbbell, Sparkles, Moon, Shield } from "lucide-react";
+import { Heart, Utensils, Zap, Star, Plus, Loader2, TrendingUp, Dumbbell, Sparkles, Moon, Shield, Check } from "lucide-react";
 import { calculateDecay } from "@/utils/petDecay";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -19,9 +19,10 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MyPetsProps {
   onSelectPet: (petId: string) => void;
+  selectedPetId?: string | null;
 }
 
-export const MyPets = ({ onSelectPet }: MyPetsProps) => {
+export const MyPets = ({ onSelectPet, selectedPetId }: MyPetsProps) => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [newPetName, setNewPetName] = useState("");
   const [selectedTypeId, setSelectedTypeId] = useState("");
@@ -273,6 +274,7 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
         </summary>
         <ol className="mt-3 space-y-2 text-xs text-muted-foreground list-decimal pl-4">
           <li><span className="font-semibold text-foreground">Adopt a pet</span> — tap “Adopt Pet”, pick a species and name it. You can keep several companions.</li>
+          <li><span className="font-semibold text-foreground">Select a pet</span> — tap any pet card (or the ✨ Select button) to choose which companion is used in Battle, Games, Customize and Breeding.</li>
           <li><span className="font-semibold text-foreground">Watch the bars</span> — happiness, hunger, energy and growth drop over time. Green means healthy, red needs care now.</li>
           <li><span className="font-semibold text-foreground">Use the care buttons</span> — feed, pet, train and let it sleep. Each action refills the matching bar and gives XP.</li>
           <li><span className="font-semibold text-foreground">Level up &amp; evolve</span> — XP raises the level; at milestones your pet evolves into a new stage with a new look.</li>
@@ -282,12 +284,13 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
 
       {/* Header */}
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-end">
         <div>
           <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             My Pets ({pets?.length || 0})
           </h2>
           <p className="text-xs text-muted-foreground">Adopt, feed, train & evolve your companions</p>
+          <p className="text-[11px] text-primary mt-1">👆 Tap a pet card to select it for Customize, Battle, Games or Breeding.</p>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
@@ -366,17 +369,26 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
 
           const overallHealth = Math.round((pet.happiness + pet.hunger + pet.energy) / 3);
           const healthGradient = overallHealth >= 70 ? 'from-emerald-500 to-teal-400' : overallHealth >= 40 ? 'from-amber-500 to-yellow-400' : 'from-red-500 to-rose-400';
+          const isSelected = selectedPetId === pet.id;
 
           return (
             <motion.div key={pet.id} initial={{ opacity: 0, y: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: i * 0.08, type: "spring", stiffness: 120 }}>
               <Card
-                className="relative border-border/30 bg-card/90 backdrop-blur-xl hover:border-primary/40 transition-all duration-300 cursor-pointer active:scale-[0.97] group overflow-hidden hover:shadow-lg hover:shadow-primary/10"
-                onClick={() => onSelectPet(pet.id)}
+                className={`relative border-border/30 bg-card/90 backdrop-blur-xl hover:border-primary/40 transition-all duration-300 cursor-pointer active:scale-[0.97] group overflow-hidden hover:shadow-lg hover:shadow-primary/10 ${
+                  isSelected ? 'ring-2 ring-primary border-primary shadow-lg shadow-primary/20' : ''
+                }`}
+                onClick={() => { onSelectPet(pet.id); toast.success(`${pet.name} selected!`); }}
               >
                 {/* Top accent gradient */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${healthGradient}`} />
                 {/* Subtle glow */}
                 <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full bg-gradient-to-br ${healthGradient} opacity-[0.07] blur-2xl group-hover:opacity-[0.12] transition-opacity`} />
+                {/* Selected badge */}
+                {isSelected && (
+                  <div className="absolute top-2 right-2 z-10 bg-primary text-primary-foreground text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                    <Sparkles className="h-3 w-3" /> Selected
+                  </div>
+                )}
 
                 <CardContent className="p-4 space-y-3 relative">
                   {/* Pet Avatar & Info */}
@@ -448,12 +460,13 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
                   </div>
 
                   {/* Action Buttons - styled */}
-                  <div className="grid grid-cols-4 gap-1.5">
+                  <div className="grid grid-cols-5 gap-1.5">
                     {[
                       { icon: Utensils, action: () => feedPetMutation.mutate(pet.id), tip: "Feed", gradient: "hover:bg-orange-500/10 hover:border-orange-500/30 hover:text-orange-500" },
                       { icon: Heart, action: () => playWithPetMutation.mutate(pet.id), tip: "Play", gradient: "hover:bg-pink-500/10 hover:border-pink-500/30 hover:text-pink-500" },
                       { icon: Dumbbell, action: () => trainPetMutation.mutate(pet.id), tip: "Train", gradient: "hover:bg-cyan-500/10 hover:border-cyan-500/30 hover:text-cyan-500" },
                       { icon: Moon, action: () => restPetMutation.mutate(pet.id), tip: "Rest", gradient: "hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-500" },
+                      { icon: isSelected ? Check : Sparkles, action: () => { onSelectPet(pet.id); toast.success(`${pet.name} selected!`); }, tip: isSelected ? "Selected" : "Select", gradient: isSelected ? "bg-primary/10 border-primary/30 text-primary" : "hover:bg-primary/10 hover:border-primary/30 hover:text-primary" },
                     ].map((btn) => (
                       <Button key={btn.tip} size="sm" variant="outline"
                         className={`h-9 px-1 active:scale-[0.93] transition-all duration-200 ${btn.gradient}`}
