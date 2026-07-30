@@ -105,6 +105,23 @@ Deno.serve(async (req) => {
         nameB = `${nameB} (match)`;
       }
 
+      // Reuse a cached transcript only if it already has two distinct speakers;
+      // older sessions were saved with one repeated label, so regenerate those.
+      if (session.status === "completed" && Array.isArray(existing.messages) && existing.messages.length) {
+        const cached = existing.messages as { speaker?: string; text?: string }[];
+        const distinct = new Set(cached.map((m) => (m.speaker ?? "").toLowerCase()));
+        if (distinct.size >= 2) {
+          return j({ ok: true, messages: cached, summary: existing.summary, score: session.compatibility_score });
+        }
+        // repair labels in place without a new AI call
+        const repaired = cached.map((m, i) => ({ speaker: i % 2 === 0 ? nameA : nameB, text: String(m.text ?? "") }));
+        await admin.from("clone_dating_sessions")
+          .update({ session_data: { ...existing, messages: repaired } })
+          .eq("id", sessionId);
+        return j({ ok: true, messages: repaired, summary: existing.summary, score: session.compatibility_score });
+      }
+
+
       let dateMessages: { speaker: string; text: string }[] = [];
       let summary = "";
       let score = 60 + Math.floor(Math.random() * 35);
