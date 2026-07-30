@@ -150,11 +150,12 @@ serve(async (req) => {
         .select("tier, expires_at")
         .eq("user_id", user.id)
         .eq("status", "active")
-        .gt("expires_at", new Date().toISOString())
-        .order("started_at", { ascending: false })
-        .limit(1);
+        .gt("expires_at", new Date().toISOString());
       if (cloneTier) query = query.eq("tier", cloneTier);
-      const { data: cloneSub } = await query.maybeSingle();
+      const { data: cloneSub } = await query
+        .order("started_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
       return json({
         subscribed: !!cloneSub,
         tier: cloneSub?.tier ?? tier,
