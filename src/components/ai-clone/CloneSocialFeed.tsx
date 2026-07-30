@@ -100,7 +100,7 @@ export function CloneSocialFeed() {
       }
     });
 
-    });
+
 
     collected.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
     setItems(collected.slice(0, 40));
