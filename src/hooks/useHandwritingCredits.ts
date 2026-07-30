@@ -34,6 +34,7 @@ export const useHandwritingCredits = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["handwriting-credits"] });
       queryClient.invalidateQueries({ queryKey: ["handwriting-analyses"] });
+      queryClient.invalidateQueries({ queryKey: ["handwriting-stats"] });
     },
     onError: (error: Error) => {
       if (error.message.includes("credits")) {
