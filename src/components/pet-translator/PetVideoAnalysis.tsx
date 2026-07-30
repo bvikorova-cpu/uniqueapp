@@ -25,6 +25,7 @@ export default function PetVideoAnalysis({ onBack }: { onBack: () => void }) {
     setLoading(false);
     if (error || data?.error) return toast.error(error?.message || data.error);
     setResult(data.result);
+    window.dispatchEvent(new Event("ai-credits-updated"));
   };
 
   return (

@@ -30,6 +30,7 @@ export default function PetHealthCertificate({ onBack }: { onBack: () => void })
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Certificate generated!");
     } catch (e: any) {
       toast.error(e.message || "Failed");
