@@ -18,6 +18,14 @@ const TOPICS = [
   "Do the best decisions come from the gut or the spreadsheet?",
 ];
 
+const WILD_RIVALS = [
+  { name: "Nova", persona: "A fearless optimist who turns every argument into a pep talk.", tone: "warm, punchy" },
+  { name: "Vex", persona: "A dry, sarcastic realist who wins by asking uncomfortable questions.", tone: "deadpan" },
+  { name: "Echo", persona: "A poetic thinker who reframes debates into metaphors.", tone: "lyrical" },
+  { name: "Kairo", persona: "A hyper-logical strategist obsessed with data and odds.", tone: "clinical, confident" },
+  { name: "Luma", persona: "A playful chaos-agent who wins by charm and surprise.", tone: "mischievous" },
+];
+
 const j = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
@@ -83,9 +91,20 @@ Deno.serve(async (req) => {
         .limit(100);
       if (pool?.length) opponent = pool[Math.floor(Math.random() * pool.length)];
     }
-    if (!opponent) return j({ error: "No other clones are available to battle right now. Try again later." }, 400);
+    // No real rival on the platform yet -> stage a wild AI challenger so the arena still works.
+    let isWildRival = false;
+    if (!opponent) {
+      isWildRival = true;
+      const wild = WILD_RIVALS[Math.floor(Math.random() * WILD_RIVALS.length)];
+      opponent = {
+        id: null,
+        user_id: null,
+        clone_name: wild.name,
+        personality_data: { personality: wild.persona, tone: wild.tone },
+      };
+    }
 
-    let opponentOwner = "Another creator";
+    let opponentOwner = isWildRival ? "Wild challenger" : "Another creator";
     if (opponent.user_id) {
       const { data: prof } = await admin
         .from("profiles")
@@ -165,10 +184,10 @@ Deno.serve(async (req) => {
       rounds.map((r: any) => `Round ${r.round}\n${r.a}\n${r.b}`).join("\n\n") +
       (verdict ? `\n\nJudge: ${verdict}` : "");
 
-    await admin.from("clone_battles").insert({
+    const { error: insertError } = await admin.from("clone_battles").insert({
       user_id: user.id,
       user_clone_id: myClone.id,
-      opponent_clone_id: opponent.id,
+      opponent_clone_id: opponent.id ?? null,
       opponent_user_id: opponent.user_id ?? null,
       winner: winnerSide,
       user_clone_name: myClone.clone_name,
@@ -179,6 +198,7 @@ Deno.serve(async (req) => {
       transcript: rounds,
       analysis,
     });
+    if (insertError) console.error("clone_battles insert failed:", insertError.message);
 
     return j({
       winner: winnerName,
@@ -189,9 +209,10 @@ Deno.serve(async (req) => {
       rounds,
       userScore,
       opponentScore,
+      isWildRival,
       myClone: { id: myClone.id, name: myClone.clone_name },
       opponent: {
-        id: opponent.id,
+        id: opponent.id ?? null,
         name: opponent.clone_name,
         userId: opponent.user_id ?? null,
         owner: opponentOwner,

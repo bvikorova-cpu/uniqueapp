@@ -94,7 +94,17 @@ export function CloneBattles() {
       const { data, error } = await supabase.functions.invoke("clone-battle", {
         body: { topic: topic === TOPICS[0] ? undefined : topic },
       });
-      if (error) throw error;
+      if (error) {
+        let msg = error.message || "Please try again";
+        const ctx: any = (error as any).context;
+        try {
+          if (ctx && typeof ctx.json === "function") {
+            const body = await ctx.clone().json();
+            if (body?.error) msg = String(body.error);
+          }
+        } catch { /* keep generic message */ }
+        throw new Error(msg);
+      }
       if (data?.error) throw new Error(data.error);
       setResult(data as BattleResult);
       loadHistory();
