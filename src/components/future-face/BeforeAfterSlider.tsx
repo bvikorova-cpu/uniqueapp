@@ -40,9 +40,12 @@ export default function BeforeAfterSlider({ before, after, className = "", alt =
       className={`relative w-full overflow-hidden rounded-xl select-none touch-none aspect-square bg-muted ${className}`}
     >
       <img src={after} alt={`${alt} – after`} className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute inset-0 overflow-hidden" style={{ width: `${pct}%` }}>
-        <img src={before} alt={`${alt} – before`} className="absolute inset-0 h-full w-auto max-w-none object-cover" style={{ width: wrapRef.current?.offsetWidth || "100%" }} />
-      </div>
+      <img
+        src={before}
+        alt={`${alt} – before`}
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ clipPath: `inset(0 ${100 - pct}% 0 0)` }}
+      />
       <div
         className="absolute top-0 bottom-0 w-1 bg-white shadow-[0_0_12px_rgba(0,0,0,0.6)] cursor-ew-resize"
         style={{ left: `calc(${pct}% - 2px)` }}

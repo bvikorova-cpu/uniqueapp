@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { getReadableUrl } from "@/lib/storageSigned";
+import { getReadableUrl, resolveStorageUrl } from "@/lib/storageSigned";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +41,10 @@ async function uploadPhoto(file: File, userId: string): Promise<string> {
 export default function FutureFacePhotoStudio() {
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [secondUrl, setSecondUrl] = useState<string | null>(null);
+  // Local blob previews so the chosen photo is visible instantly, even if the
+  // private-bucket signed URL fails to load.
+  const [sourcePreview, setSourcePreview] = useState<string | null>(null);
+  const [secondPreview, setSecondPreview] = useState<string | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [action, setAction] = useState<ActionId>("age_progression");
   const [years, setYears] = useState("20");
@@ -55,6 +59,9 @@ export default function FutureFacePhotoStudio() {
   const handleSelect = async (file: File | null, slot: 1 | 2) => {
     if (!file) return;
     if (file.size > 8 * 1024 * 1024) { toast({ title: "Photo too large (max 8 MB)", variant: "destructive" }); return; }
+    const localPreview = URL.createObjectURL(file);
+    if (slot === 1) { setSourcePreview(localPreview); setResultUrl(null); }
+    else setSecondPreview(localPreview);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate("/auth"); return; }
@@ -82,7 +89,7 @@ export default function FutureFacePhotoStudio() {
       const res = await supabase.functions.invoke("future-face-image", {
         body: { action, sourceUrl, sourceUrl2: secondUrl, params } });
       const data = throwIfInvokeError(res);
-      setResultUrl(data.resultUrl);
+      setResultUrl((await resolveStorageUrl(data.resultUrl)) || data.resultUrl);
       toast({ title: "Generated!", description: `Used ${data.creditsUsed} credits.` });
     } catch (err: any) {
       if (!handleEdgeError(err, { navigate, context: "Future Face Photo" })) {
@@ -107,8 +114,8 @@ export default function FutureFacePhotoStudio() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <p className="text-xs font-bold mb-1.5">Your Photo</p>
-              {sourceUrl ? (
-                <img src={sourceUrl} alt="Source" className="w-full aspect-square object-cover rounded-lg border-2 border-cyan-500/30" />
+              {(sourcePreview || sourceUrl) ? (
+                <img src={sourcePreview || sourceUrl!} alt="Source" className="w-full aspect-square object-cover rounded-lg border-2 border-cyan-500/30" />
               ) : (
                 <div className="w-full aspect-square rounded-lg border-2 border-dashed border-cyan-500/30 grid place-items-center bg-card/50">
                   <Upload className="h-8 w-8 text-muted-foreground" />
@@ -128,8 +135,8 @@ export default function FutureFacePhotoStudio() {
             {cur.needs2 && (
               <div>
                 <p className="text-xs font-bold mb-1.5">Partner Photo</p>
-                {secondUrl ? (
-                  <img src={secondUrl} alt="Second" className="w-full aspect-square object-cover rounded-lg border-2 border-pink-500/30" />
+                {(secondPreview || secondUrl) ? (
+                  <img src={secondPreview || secondUrl!} alt="Second" className="w-full aspect-square object-cover rounded-lg border-2 border-pink-500/30" />
                 ) : (
                   <div className="w-full aspect-square rounded-lg border-2 border-dashed border-pink-500/30 grid place-items-center bg-card/50">
                     <Baby className="h-8 w-8 text-muted-foreground" />
@@ -191,19 +198,19 @@ export default function FutureFacePhotoStudio() {
           </Button>
 
           {/* Result */}
-          {resultUrl && sourceUrl && (
+          {resultUrl && (sourcePreview || sourceUrl) && (
             <Tabs defaultValue="slider">
               <TabsList className="grid grid-cols-2 w-full">
                 <TabsTrigger value="slider">Slider</TabsTrigger>
                 <TabsTrigger value="side">Side-by-side</TabsTrigger>
               </TabsList>
               <TabsContent value="slider">
-                <BeforeAfterSlider before={sourceUrl} after={resultUrl} />
+                <BeforeAfterSlider before={(sourcePreview || sourceUrl)!} after={resultUrl} />
               </TabsContent>
               <TabsContent value="side" className="grid grid-cols-2 gap-2">
                 <div>
                   <p className="text-[10px] font-bold mb-1 uppercase">Before</p>
-                  <img src={sourceUrl} alt="Before" className="w-full aspect-square object-cover rounded-lg" />
+                  <img src={(sourcePreview || sourceUrl)!} alt="Before" className="w-full aspect-square object-cover rounded-lg" />
                 </div>
                 <div>
                   <p className="text-[10px] font-bold mb-1 uppercase">After</p>
