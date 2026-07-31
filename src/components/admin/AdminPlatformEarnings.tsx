@@ -32,6 +32,18 @@ interface InfluencerDetail {
   availableBalance: number;
 }
 
+interface CreatorDetail {
+  id: string;
+  name: string;
+  avatar_url: string | null;
+  type: string;
+  lifetime_earnings: number;
+  pending_balance: number;
+  total_withdrawn: number;
+  pendingWithdrawals: number;
+  availableBalance: number;
+}
+
 interface StockCreatorDetail {
   id: string;
   name: string;
@@ -42,6 +54,7 @@ interface StockCreatorDetail {
   pendingWithdrawals: number;
   availableBalance: number;
 }
+
 
 
 export function AdminPlatformEarnings() {
