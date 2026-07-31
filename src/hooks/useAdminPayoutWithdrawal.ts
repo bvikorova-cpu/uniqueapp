@@ -9,14 +9,9 @@ export type PayoutKind =
   | "influencer"
   | "auction"
   | "referral"
-  | "campaign";
+  | "campaign"
+  | "stock";
 
-/**
- * Admin-only hook: pays out a withdrawal request via Stripe Connect transfer.
- * On approve → creates a `transfers.create` to the creator's Connect account
- * and marks the withdrawal `completed`.
- * On reject  → marks the withdrawal `rejected`.
- */
 export function useAdminPayoutWithdrawal() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -34,19 +29,12 @@ export function useAdminPayoutWithdrawal() {
       if ((data as any)?.error) throw new Error((data as any).error);
 
       toast({
-        title:
-          params.action === "approve"
-            ? "Payout sent via Stripe"
-            : "Withdrawal rejected",
-        description:
-          params.action === "approve"
-            ? `Transfer ${(data as any)?.transfer_id ?? ""} created.`
-            : "The creator has been notified." });
+        title: params.action === "approve" ? "Payout sent via Stripe" : "Withdrawal rejected",
+        description: params.action === "approve" ? `Transfer ${(data as any)?.transfer_id ?? ""} created.` : "The creator has been notified.",
+      });
       return data;
-    } catch (e: any) { toast({
-        title: "Payout failed",
-        description: e?.message || "Unknown error",
-        variant: "destructive" });
+    } catch (e: any) {
+      toast({ title: "Payout failed", description: e?.message || "Unknown error", variant: "destructive" });
       throw e;
     } finally {
       setLoading(false);

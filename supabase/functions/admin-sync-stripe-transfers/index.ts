@@ -18,6 +18,7 @@ const TABLES: { name: string; transferCol: string }[] = [
   { name: "auction_withdrawal_requests", transferCol: "stripe_payout_id" },
   { name: "referral_withdrawal_requests", transferCol: "stripe_transfer_id" },
   { name: "withdrawal_requests", transferCol: "stripe_transfer_id" },
+  { name: "stock_withdrawal_requests", transferCol: "stripe_transfer_id" },
 ];
 
 const log = (s: string, d?: unknown) =>

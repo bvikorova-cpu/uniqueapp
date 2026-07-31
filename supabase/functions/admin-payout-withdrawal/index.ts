@@ -1,204 +1,196 @@
-// Admin → Stripe Connect transfer for any creator withdrawal request.
-// Body: { kind: 'instructor'|'musician'|'masterchef'|'influencer'|'auction'|'referral'|'campaign',
-//         withdrawalId: string, action: 'approve'|'reject', adminNotes?: string }
-// On 'approve' → creates a Stripe transfer to the creator's Connect account, marks row as completed.
-// On 'reject'  → just updates DB.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
-const corsHeaders = { "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
-
-const log = (s: string, d?: unknown) =>
-  console.log(`[ADMIN-PAYOUT-WITHDRAWAL] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
-
-type Kind = "instructor" | "musician" | "masterchef" | "influencer" | "auction" | "referral" | "campaign";
-
-// Per-kind table + creator-id column mapping.
-const KIND_MAP: Record<Kind, { table: string; creatorCol: string; transferCol: string }> = {
-  instructor:  { table: "instructor_withdrawal_requests",  creatorCol: "instructor_id",  transferCol: "stripe_transfer_id" },
-  musician:    { table: "musician_withdrawal_requests",    creatorCol: "musician_id",    transferCol: "stripe_transfer_id" },
-  masterchef:  { table: "masterchef_withdrawal_requests",  creatorCol: "chef_id",        transferCol: "stripe_transfer_id" },
-  influencer:  { table: "influencer_withdrawal_requests",  creatorCol: "influencer_id",  transferCol: "stripe_transfer_id" },
-  auction:     { table: "auction_withdrawal_requests",     creatorCol: "seller_id",      transferCol: "stripe_payout_id"   },
-  referral:    { table: "referral_withdrawal_requests",    creatorCol: "referrer_id",    transferCol: "stripe_transfer_id" },
-  campaign:    { table: "withdrawal_requests",             creatorCol: "user_id",        transferCol: "stripe_transfer_id" } };
+const KIND_MAP = {
+  instructor: {
+    table: "instructor_withdrawal_requests",
+    statusColumn: "status",
+    userIdColumn: "instructor_id",
+    transferIdColumn: "stripe_transfer_id",
+    currency: "EUR",
+    amountColumn: "amount",
+  },
+  musician: {
+    table: "musician_withdrawal_requests",
+    statusColumn: "status",
+    userIdColumn: "user_id",
+    transferIdColumn: "stripe_transfer_id",
+    currency: "EUR",
+    amountColumn: "amount",
+  },
+  masterchef: {
+    table: "masterchef_withdrawal_requests",
+    statusColumn: "status",
+    userIdColumn: "user_id",
+    transferIdColumn: "stripe_transfer_id",
+    currency: "EUR",
+    amountColumn: "amount",
+  },
+  influencer: {
+    table: "influencer_withdrawal_requests",
+    statusColumn: "status",
+    userIdColumn: "user_id",
+    transferIdColumn: "stripe_transfer_id",
+    currency: "EUR",
+    amountColumn: "amount",
+  },
+  auction: {
+    table: "auction_withdrawal_requests",
+    statusColumn: "status",
+    userIdColumn: "user_id",
+    transferIdColumn: "stripe_transfer_id",
+    currency: "EUR",
+    amountColumn: "amount",
+  },
+  referral: {
+    table: "referral_withdrawal_requests",
+    statusColumn: "status",
+    userIdColumn: "user_id",
+    transferIdColumn: "stripe_transfer_id",
+    currency: "EUR",
+    amountColumn: "amount",
+  },
+  campaign: {
+    table: "withdrawal_requests",
+    statusColumn: "status",
+    userIdColumn: "user_id",
+    transferIdColumn: "stripe_transfer_id",
+    currency: "EUR",
+    amountColumn: "amount",
+  },
+  stock: {
+    table: "stock_withdrawal_requests",
+    statusColumn: "status",
+    userIdColumn: "creator_id",
+    transferIdColumn: "stripe_transfer_id",
+    currency: "EUR",
+    amountColumn: "amount",
+  },
+} as const;
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
-
-  // Early auth pre-check (returns 401 instead of crashing inside try → 500)
-  const _earlyAuth = req.headers.get("Authorization");
-  if (!_earlyAuth || !_earlyAuth.toLowerCase().startsWith("bearer ")) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY not configured");
+    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY missing");
 
-    const supaUrl = Deno.env.get("SUPABASE_URL")!;
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
 
-    // Auth — admin only
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("Missing Authorization header");
-    const userClient = createClient(supaUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } } });
-    const { data: u, error: uErr } = await userClient.auth.getUser();
-    if (uErr || !u.user) throw new Error("Not authenticated");
-    const adminId = u.user.id;
+    if (!authHeader) throw new Error("No authorization header");
 
-    const admin = createClient(supaUrl, serviceKey, { auth: { persistSession: false } });
-    const { data: isAdmin, error: roleErr } = await admin.rpc("has_role", { _user_id: adminId,
-      _role: "admin" });
-    if (roleErr) throw new Error(`Role check failed: ${roleErr.message}`);
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData, error: userError } = await supabaseAdmin.auth.getUser(token);
+    if (userError || !userData?.user) throw new Error("Admin authentication failed");
+
+    const adminId = userData.user.id;
+    const { data: isAdmin } = await supabaseAdmin.rpc("has_role", {
+      _user_id: adminId,
+      _role: "admin",
+    });
     if (!isAdmin) throw new Error("Admin role required");
 
-    const body = await req.json().catch(() => ({}));
-    const kind = String(body.kind || "") as Kind;
-    const withdrawalId = String(body.withdrawalId || "");
-    const action = String(body.action || "");
-    const adminNotes = body.adminNotes ? String(body.adminNotes) : null;
+    const body = await req.json();
+    const { kind, withdrawalId, action, adminNotes } = body as {
+      kind: keyof typeof KIND_MAP;
+      withdrawalId: string;
+      action: "approve" | "reject";
+      adminNotes?: string;
+    };
 
-    if (!KIND_MAP[kind]) throw new Error(`Invalid kind: ${kind}`);
-    if (!withdrawalId) throw new Error("withdrawalId required");
-    if (!["approve", "reject"].includes(action)) throw new Error("action must be approve|reject");
+    if (!KIND_MAP[kind]) throw new Error(`Unknown payout kind: ${kind}`);
+    if (!withdrawalId) throw new Error("Missing withdrawalId");
+    if (!action || !["approve", "reject"].includes(action)) throw new Error("Invalid action");
 
-    const { table, creatorCol, transferCol } = KIND_MAP[kind];
-    log("processing", { kind, withdrawalId, action });
+    const meta = KIND_MAP[kind];
 
-    // Load withdrawal row
-    const { data: wd, error: wdErr } = await admin.from(table).select("*").eq("id", withdrawalId).maybeSingle();
-    if (wdErr) throw new Error(`Load failed: ${wdErr.message}`);
-    if (!wd) throw new Error("Withdrawal not found");
-    if (wd.status === "completed" || wd.status === "rejected") {
-      throw new Error(`Withdrawal already ${wd.status}`);
+    const { data: request, error: requestError } = await supabaseAdmin
+      .from(meta.table)
+      .select(`id, ${meta.userIdColumn}, ${meta.amountColumn}, ${meta.statusColumn}, ${meta.transferIdColumn}`)
+      .eq("id", withdrawalId)
+      .maybeSingle();
+    if (requestError || !request) throw new Error("Withdrawal request not found");
+
+    if (request[meta.statusColumn] !== "pending") {
+      throw new Error(`Request is already ${request[meta.statusColumn]}`);
     }
 
-    // Reject path
-    if (action === "reject") {
-      const { error: upErr } = await admin
-        .from(table)
-        .update({ status: "rejected",
-          admin_notes: adminNotes,
-          processed_at: new Date().toISOString() })
-        .eq("id", withdrawalId);
-      if (upErr) throw new Error(`Update failed: ${upErr.message}`);
+    const userId = request[meta.userIdColumn] as string;
+    const amount = Number(request[meta.amountColumn]);
 
-      await admin.from("admin_audit_log").insert({
-        admin_id: adminId,
-        action: "withdrawal_rejected",
-        target_id: withdrawalId,
-        target_type: table,
-        details: { kind, amount: wd.amount, notes: adminNotes } });
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("stripe_connect_account_id")
+      .eq("id", userId)
+      .maybeSingle();
+
+    const connectId = profile?.stripe_connect_account_id;
+
+    if (action === "reject") {
+      const { error: updateError } = await supabaseAdmin
+        .from(meta.table)
+        .update({
+          [meta.statusColumn]: "rejected",
+          admin_notes: adminNotes ?? null,
+          processed_by: adminId,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", withdrawalId);
+      if (updateError) throw updateError;
 
       return new Response(JSON.stringify({ success: true, status: "rejected" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
     }
 
-    // Approve path → Stripe transfer
-    const creatorId = wd[creatorCol];
-    if (!creatorId) throw new Error(`Missing ${creatorCol}`);
-
-    // Short-circuit if a previous attempt already recorded a Stripe transfer ID
-    // (e.g. transfer succeeded but DB finalize failed). Idempotent re-run.
-    if (wd[transferCol]) {
-      log("transfer already exists on row — finalizing only", { transferId: wd[transferCol] });
-    }
-
-    const { data: profile, error: pErr } = await admin
-      .from("profiles")
-      .select("stripe_connect_account_id, stripe_connect_payouts_enabled")
-      .eq("id", creatorId)
-      .maybeSingle();
-    if (pErr) throw new Error(`Profile load failed: ${pErr.message}`);
-    if (!profile?.stripe_connect_account_id) {
-      throw new Error("Creator has no Stripe Connect account");
-    }
-    if (!profile.stripe_connect_payouts_enabled) {
-      throw new Error("Creator's Stripe Connect payouts not enabled");
-    }
-
-    const amountCents = Math.round(Number(wd.amount) * 100);
-    if (!Number.isFinite(amountCents) || amountCents <= 0) {
-      throw new Error(`Invalid amount: ${wd.amount}`);
-    }
-
-    // Atomic claim: flip status pending → processing. If 0 rows updated,
-    // another admin (or a concurrent click) already claimed it.
-    const { data: claimed, error: claimErr } = await admin
-      .from(table)
-      .update({ status: "processing" })
-      .eq("id", withdrawalId)
-      .in("status", ["pending", "requested", "approved"])
-      .select("id");
-    if (claimErr) throw new Error(`Claim failed: ${claimErr.message}`);
-    if (!claimed || claimed.length === 0) {
-      // Not an error if our own previous run set processing — re-check row state
-      const { data: recheck } = await admin.from(table).select("status").eq("id", withdrawalId).maybeSingle();
-      if (!recheck || recheck.status === "completed" || recheck.status === "rejected") {
-        throw new Error(`Withdrawal already ${recheck?.status ?? "claimed"}`);
-      }
-      if (recheck.status !== "processing") {
-        throw new Error(`Cannot claim withdrawal in status ${recheck.status}`);
-      }
-      log("row already in processing — continuing idempotently");
-    }
+    if (!connectId) throw new Error("Creator has no connected Stripe account");
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    log("creating transfer", { amountCents, dest: profile.stripe_connect_account_id });
 
-    // Idempotency key keyed on withdrawal id → Stripe collapses duplicate
-    // requests within 24h into a single transfer. Protects against double-pay
-    // on retries, network errors, and concurrent clicks.
-    const transfer = await stripe.transfers.create(
-      {
-        amount: amountCents,
-        currency: "eur",
-        destination: profile.stripe_connect_account_id,
-        description: `${kind} withdrawal ${withdrawalId}`,
-        metadata: { kind, withdrawal_id: withdrawalId, creator_id: creatorId } },
-      { idempotencyKey: `payout_${kind}_${withdrawalId}` },
-    );
+    const transfer = await stripe.transfers.create({
+      amount: Math.round(amount * 100),
+      currency: meta.currency.toLowerCase(),
+      destination: connectId,
+      description: `Payout ${withdrawalId}`,
+      metadata: {
+        withdrawal_id: withdrawalId,
+        kind,
+        admin_id: adminId,
+        source: "admin_payout",
+      },
+    });
 
-    log("transfer created", { id: transfer.id });
+    const { error: updateError } = await supabaseAdmin
+      .from(meta.table)
+      .update({
+        [meta.statusColumn]: "completed",
+        [meta.transferIdColumn]: transfer.id,
+        processed_by: adminId,
+        admin_notes: adminNotes ?? null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", withdrawalId);
+    if (updateError) throw updateError;
 
-    const updateData: Record<string, unknown> = { status: "completed",
-      admin_notes: adminNotes,
-      processed_at: new Date().toISOString(),
-      [transferCol]: transfer.id };
-    // Only some tables have processed_by
-    if ("processed_by" in wd) updateData.processed_by = adminId;
-
-    const { error: upErr } = await admin.from(table).update(updateData).eq("id", withdrawalId);
-    if (upErr) {
-      // Transfer succeeded but DB failed — surface clearly
-      log("DB update failed after transfer", { transferId: transfer.id, err: upErr.message });
-      throw new Error(`Transfer ${transfer.id} succeeded but DB update failed: ${upErr.message}`);
-    }
-
-    await admin.from("admin_audit_log").insert({
-      admin_id: adminId,
-      action: "withdrawal_paid",
-      target_id: withdrawalId,
-      target_type: table,
-      details: { kind, amount: wd.amount, transfer_id: transfer.id, creator_id: creatorId } });
-
-    return new Response(
-      JSON.stringify({ success: true, status: "completed", transfer_id: transfer.id }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ success: true, transfer_id: transfer.id, status: "completed" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    log("ERROR", { msg });
     return new Response(JSON.stringify({ error: msg }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    });
   }
 });

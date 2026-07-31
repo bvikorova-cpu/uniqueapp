@@ -58658,8 +58658,11 @@ export type Database = {
           payment_details: Json
           payment_method: string
           processed_at: string | null
+          processed_by: string | null
           status: string | null
+          stripe_transfer_id: string | null
           updated_at: string | null
+          wallet_deducted: boolean | null
         }
         Insert: {
           admin_notes?: string | null
@@ -58670,8 +58673,11 @@ export type Database = {
           payment_details: Json
           payment_method: string
           processed_at?: string | null
+          processed_by?: string | null
           status?: string | null
+          stripe_transfer_id?: string | null
           updated_at?: string | null
+          wallet_deducted?: boolean | null
         }
         Update: {
           admin_notes?: string | null
@@ -58682,8 +58688,11 @@ export type Database = {
           payment_details?: Json
           payment_method?: string
           processed_at?: string | null
+          processed_by?: string | null
           status?: string | null
+          stripe_transfer_id?: string | null
           updated_at?: string | null
+          wallet_deducted?: boolean | null
         }
         Relationships: []
       }
