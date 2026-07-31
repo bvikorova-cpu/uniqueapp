@@ -137,7 +137,13 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filtered.map(item => (
             <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1">
-              <div className="relative h-40 bg-secondary/20">
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => openLicenseDialog(item)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLicenseDialog(item); } }}
+                className="relative h-40 bg-secondary/20 cursor-pointer"
+              >
                 {item.thumbnail_url ? (
                   <img src={item.thumbnail_url} alt={item.title} className="w-full h-full object-cover" />
                 ) : (
