@@ -6,9 +6,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Sparkles, Wand2, Image as ImageIcon, Upload, ArrowLeft, Flame, Trophy,
-  TrendingUp, Search, Scissors, Camera, Star, Palette, ShoppingBag, Users,
+  Sparkles, Wand2, Image as ImageIcon, Upload, ArrowLeft, Search, Scissors, Camera, Star, Palette, ShoppingBag, Users,
   ScanLine, Layers, Move, Maximize
+
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -248,25 +248,6 @@ const PhotoRestoration = () => {
       </div>
 
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10">
-        {/* Engagement Row */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-amber-500/20">
-            <Flame className="h-6 w-6 text-orange-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">7</p>
-            <p className="text-xs text-muted-foreground">Day Streak</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-primary/20">
-            <TrendingUp className="h-6 w-6 text-primary mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{stats.restorations}</p>
-            <p className="text-xs text-muted-foreground">Total Restores</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-yellow-500/20">
-            <Trophy className="h-6 w-6 text-yellow-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">3</p>
-            <p className="text-xs text-muted-foreground">Achievements</p>
-          </Card>
-        </motion.div>
-
         {/* Tools Grid */}
         <h2 className="text-2xl sm:text-3xl font-black mb-4"
           style={{ 
@@ -277,6 +258,7 @@ const PhotoRestoration = () => {
             Restoration Tools
           </span>
         </h2>
+
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {tools.map((tool, i) => (
             <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
