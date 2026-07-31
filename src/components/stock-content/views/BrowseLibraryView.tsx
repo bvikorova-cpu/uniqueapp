@@ -110,23 +110,38 @@ export function BrowseLibraryView({ onBack, purchasedContentId }: BrowseLibraryV
       toast({ title: "File unavailable", description: "The original file is missing.", variant: "destructive" });
       return;
     }
-    window.open(url, '_blank');
-    // Count the real download (only buyers pass the server-side ownership check)
-    const { error } = await (supabase as any).rpc("record_stock_content_download", { p_content_id: item.id });
-    if (error) {
-      console.error("Could not record download:", error);
-      return;
+    // Record the download server-side (only buyers pass the ownership check)
+    void (supabase as any).rpc("record_stock_content_download", { p_content_id: item.id });
+
+    const extFromUrl = url.split("?")[0].split(".").pop() || "jpg";
+    const safeTitle = (item.title || "unique-asset").replace(/[^\w\d-_]+/g, "-").slice(0, 60);
+    const filename = `${safeTitle}.${extFromUrl}`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("fetch failed");
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
+      toast({ title: "Download started", description: filename });
+    } catch {
+      // Fallback: direct link download
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.target = "_blank";
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     }
-    // Always read the authoritative counter back from the database
-    const { data: fresh } = await supabase
-      .from('stock_content_items')
-      .select('total_downloads')
-      .eq('id', item.id)
-      .maybeSingle();
-    const total = fresh?.total_downloads ?? 0;
-    setItems((prev) => prev.map((it: any) => (it.id === item.id ? { ...it, total_downloads: total } : it)));
-    setPreviewItem((prev: any) => (prev && prev.id === item.id ? { ...prev, total_downloads: total } : prev));
   };
+
 
 
 
