@@ -107,13 +107,22 @@ export function BrowseLibraryView({ onBack, purchasedContentId }: BrowseLibraryV
     }
     window.open(url, '_blank');
     // Count the real download (only buyers pass the server-side ownership check)
-    const { data, error } = await (supabase as any).rpc("record_stock_content_download", { p_content_id: item.id });
-    if (!error) {
-      const total = typeof data === "number" ? data : (item.total_downloads ?? 0) + 1;
-      setItems((prev) => prev.map((it: any) => (it.id === item.id ? { ...it, total_downloads: total } : it)));
-      setPreviewItem((prev: any) => (prev && prev.id === item.id ? { ...prev, total_downloads: total } : prev));
+    const { error } = await (supabase as any).rpc("record_stock_content_download", { p_content_id: item.id });
+    if (error) {
+      console.error("Could not record download:", error);
+      return;
     }
+    // Always read the authoritative counter back from the database
+    const { data: fresh } = await supabase
+      .from('stock_content_items')
+      .select('total_downloads')
+      .eq('id', item.id)
+      .maybeSingle();
+    const total = fresh?.total_downloads ?? 0;
+    setItems((prev) => prev.map((it: any) => (it.id === item.id ? { ...it, total_downloads: total } : it)));
+    setPreviewItem((prev: any) => (prev && prev.id === item.id ? { ...prev, total_downloads: total } : prev));
   };
+
 
 
   const openPreview = (item: any) => {
