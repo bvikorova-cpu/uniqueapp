@@ -205,7 +205,66 @@ export function AdminPlatformEarnings() {
       return data || [];
     } });
 
+  // Fetch Stock Content earnings
+  const { data: stockEarnings } = useQuery({
+    queryKey: ["admin-stock-content-earnings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("stock_content_sales")
+        .select("id, amount_paid, platform_fee, creator_earning, created_at, status")
+        .or("status.eq.completed,status.eq.paid,status.eq.succeeded")
+        .order("created_at", { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  // Fetch Stock Content creator details
+  const { data: stockCreatorDetails } = useQuery({
+    queryKey: ["admin-stock-creator-details"],
+    queryFn: async () => {
+      const { data: earnings, error: earningsError } = await supabase
+        .from("stock_creator_earnings")
+        .select("*");
+      if (earningsError) throw earningsError;
+
+      const creatorIds = (earnings || []).map((e) => e.creator_id);
+      const [{ data: profiles }, { data: withdrawals }] = await Promise.all([
+        creatorIds.length > 0
+          ? supabase.from("profiles").select("id, full_name, avatar_url").in("id", creatorIds)
+          : Promise.resolve({ data: [] }),
+        supabase.from("stock_withdrawal_requests").select("*").eq("status", "pending"),
+      ]);
+
+      const profileMap = new Map((profiles || []).map((p) => [p.id, p]));
+      return (earnings || [])
+        .map((profile) => {
+          const pendingWithdrawals = (withdrawals || [])
+            .filter((w) => w.creator_id === profile.creator_id)
+            .reduce((sum, w) => sum + (w.amount || 0), 0);
+          const availableBalance =
+            (profile.total_earnings || 0) -
+            (profile.total_withdrawn || 0) -
+            pendingWithdrawals;
+          const p = profileMap.get(profile.creator_id);
+          return {
+            id: profile.creator_id,
+            name: p?.full_name || `Creator ${profile.creator_id.slice(0, 8)}`,
+            avatar_url: p?.avatar_url || null,
+            total_earnings: profile.total_earnings || 0,
+            pending_balance: profile.pending_balance || 0,
+            total_withdrawn: profile.total_withdrawn || 0,
+            pendingWithdrawals,
+            availableBalance,
+          } as StockCreatorDetail;
+        })
+        .sort((a, b) => b.total_earnings - a.total_earnings);
+    },
+  });
+
   // Calculate statistics
+
   const calculateStats = (earnings: any[], commissionField: string): EarningStats => {
     if (!earnings || earnings.length === 0) {
       return { total: 0, count: 0, avgPerTransaction: 0 };
