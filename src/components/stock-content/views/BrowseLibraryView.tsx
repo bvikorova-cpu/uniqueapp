@@ -100,6 +100,7 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           productName: `${selectedItem.title || 'Stock content'} — ${sel.licenseType} license`,
+
           amount: Math.round(sel.totalEur * 100),
           successUrl: `${window.location.origin}/stock-content-library?purchase=success&view=browse&session_id={CHECKOUT_SESSION_ID}`,
           cancelUrl: `${window.location.origin}/stock-content-library?purchase=cancelled`,
