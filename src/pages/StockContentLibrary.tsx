@@ -8,26 +8,9 @@ import { StockContentEngagement } from "@/components/stock-content/StockContentE
 import { StockContentToolGrid } from "@/components/stock-content/StockContentToolGrid";
 import { UploadContentDialog } from "@/components/stock-library/UploadContentDialog";
 import { BrowseLibraryView } from "@/components/stock-content/views/BrowseLibraryView";
-import { TrendingView } from "@/components/stock-content/views/TrendingView";
 import { EarningsDashboardView } from "@/components/stock-content/views/EarningsDashboardView";
-import { MyContentView } from "@/components/stock-content/views/MyContentView";
-import { MyPurchasesView } from "@/components/stock-content/views/MyPurchasesView";
 import { AIContentGeneratorView } from "@/components/stock-content/views/AIContentGeneratorView";
-import { CollectionsView } from "@/components/stock-content/views/CollectionsView";
-import { GenericToolView } from "@/components/stock-content/views/GenericToolView";
-import { PlagiarismScannerView } from "@/components/stock-content/views/PlagiarismScannerView";
-import { ContentSubscriptionsView } from "@/components/stock-content/views/ContentSubscriptionsView";
-import { CreatorLeaderboardView } from "@/components/stock-content/views/CreatorLeaderboardView";
 import { BackgroundRemoverView } from "@/components/stock-content/views/BackgroundRemoverView";
-import { BulkUploadView } from "@/components/stock-content/views/BulkUploadView";
-import { ContentAnalyticsView } from "@/components/stock-content/views/ContentAnalyticsView";
-import { ContributorPortfoliosView } from "@/components/stock-content/views/ContributorPortfoliosView";
-import { SmartSearchView } from "@/components/stock-content/views/SmartSearchView";
-import { EditorsPicksView } from "@/components/stock-content/views/EditorsPicksView";
-import { AITagSuggesterView } from "@/components/stock-content/views/AITagSuggesterView";
-import { LicenseManagerView } from "@/components/stock-content/views/LicenseManagerView";
-import { WatermarkToolView } from "@/components/stock-content/views/WatermarkToolView";
-import { Tags, Palette, Wand2, Star, Eye, Download } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -58,46 +41,12 @@ const StockContentLibrary = () => {
     switch (activeView) {
       case "browse":
         return <BrowseLibraryView onBack={() => setActiveView("dashboard")} />;
-      case "trending":
-        return <TrendingView onBack={() => setActiveView("dashboard")} />;
       case "earnings":
         return <EarningsDashboardView onBack={() => setActiveView("dashboard")} />;
-      case "my-content":
-        return <MyContentView onBack={() => setActiveView("dashboard")} onUpload={() => setUploadDialogOpen(true)} />;
-      case "purchases":
-        return <MyPurchasesView onBack={() => setActiveView("dashboard")} />;
       case "ai-generator":
         return <AIContentGeneratorView onBack={() => setActiveView("dashboard")} />;
-      case "collections":
-        return <CollectionsView onBack={() => setActiveView("dashboard")} />;
-      case "ai-tags":
-        return <AITagSuggesterView onBack={() => setActiveView("dashboard")} />;
-      case "color-search":
-        return <GenericToolView onBack={() => setActiveView("dashboard")} title="Color Search" description="Find content by dominant colors. Upload a color palette or pick colors to discover matching stock assets." icon={Palette} iconColor="text-pink-500" features={["Color picker search", "Palette matching", "Complementary color suggestions", "Brand color filtering", "Hex/RGB input support", "Visual color wheel"]} />;
-      case "ai-enhance":
-        return <GenericToolView onBack={() => setActiveView("dashboard")} title="AI Image Enhancer" description="Upscale resolution, remove noise, enhance colors, and improve overall image quality using AI." icon={Wand2} iconColor="text-violet-500" credits={4} features={["4x upscaling", "Noise reduction", "Color enhancement", "Sharpening", "HDR effect", "Batch processing"]} />;
-      case "featured":
-        return <EditorsPicksView onBack={() => setActiveView("dashboard")} />;
-      case "preview":
-        return <WatermarkToolView onBack={() => setActiveView("dashboard")} />;
-      case "download-history":
-        return <LicenseManagerView onBack={() => setActiveView("dashboard")} />;
-      case "plagiarism-scanner":
-        return <PlagiarismScannerView onBack={() => setActiveView("dashboard")} />;
-      case "subscriptions":
-        return <ContentSubscriptionsView onBack={() => setActiveView("dashboard")} />;
-      case "leaderboard":
-        return <CreatorLeaderboardView onBack={() => setActiveView("dashboard")} />;
       case "bg-remover":
         return <BackgroundRemoverView onBack={() => setActiveView("dashboard")} />;
-      case "bulk-upload":
-        return <BulkUploadView onBack={() => setActiveView("dashboard")} />;
-      case "content-analytics":
-        return <ContentAnalyticsView onBack={() => setActiveView("dashboard")} />;
-      case "contributors":
-        return <ContributorPortfoliosView onBack={() => setActiveView("dashboard")} />;
-      case "smart-search":
-        return <SmartSearchView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>

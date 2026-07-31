@@ -1,11 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import {
-  ImageIcon, Upload, Download, TrendingUp, Sparkles, Tags,
-  FolderOpen, Search, BarChart3, Palette, Wand2, ShoppingBag,
-  Star, Layers, Eye, ShieldCheck, Crown, Trophy, Eraser, FolderUp, PieChart, Users
-} from "lucide-react";
+import { Upload, Sparkles, Search, BarChart3, Eraser } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StockContentToolGridProps {
@@ -16,25 +12,8 @@ const tools = [
   { id: "browse", label: "Browse Library", desc: "Explore premium digital content", icon: Search, color: "from-blue-500 to-blue-700", credits: null },
   { id: "upload", label: "Upload Content", desc: "Publish your digital creations", icon: Upload, color: "from-emerald-500 to-emerald-700", credits: null },
   { id: "ai-generator", label: "AI Content Generator", desc: "Generate stock images with AI", icon: Sparkles, color: "from-purple-500 to-purple-700", credits: 5 },
-  { id: "collections", label: "Collections & Bundles", desc: "Curated content packages", icon: FolderOpen, color: "from-amber-500 to-amber-700", credits: null },
-  { id: "trending", label: "Trending Content", desc: "Top sellers & most popular", icon: TrendingUp, color: "from-rose-500 to-rose-700", credits: null },
-  { id: "ai-tags", label: "AI Tag Suggester", desc: "Auto-tag your uploads with AI", icon: Tags, color: "from-cyan-500 to-cyan-700", credits: 3 },
-  { id: "my-content", label: "My Content", desc: "Manage your published assets", icon: Layers, color: "from-indigo-500 to-indigo-700", credits: null },
-  { id: "purchases", label: "My Purchases", desc: "Download your licensed content", icon: ShoppingBag, color: "from-teal-500 to-teal-700", credits: null },
   { id: "earnings", label: "Earnings Dashboard", desc: "Revenue analytics & payouts", icon: BarChart3, color: "from-green-500 to-green-700", credits: null },
-  { id: "color-search", label: "Color Search", desc: "Find content by color palette", icon: Palette, color: "from-pink-500 to-pink-700", credits: null },
-  { id: "ai-enhance", label: "AI Image Enhancer", desc: "Upscale & improve quality", icon: Wand2, color: "from-violet-500 to-violet-700", credits: 4 },
-  { id: "featured", label: "Featured Picks", desc: "Editor's choice selections", icon: Star, color: "from-yellow-500 to-yellow-700", credits: null },
-  { id: "preview", label: "Content Preview", desc: "Preview before purchase", icon: Eye, color: "from-slate-500 to-slate-700", credits: null },
-  { id: "download-history", label: "Download History", desc: "All your past downloads", icon: Download, color: "from-orange-500 to-orange-700", credits: null },
-  { id: "plagiarism-scanner", label: "AI Plagiarism Scanner", desc: "Check content originality with AI", icon: ShieldCheck, color: "from-emerald-500 to-teal-700", credits: 4 },
-  { id: "subscriptions", label: "Subscription Plans", desc: "Unlimited downloads with plans", icon: Crown, color: "from-amber-500 to-yellow-700", credits: null },
-  { id: "leaderboard", label: "Creator Leaderboard", desc: "Top creators & rankings", icon: Trophy, color: "from-yellow-500 to-amber-700", credits: null },
   { id: "bg-remover", label: "AI Background Remover", desc: "Remove backgrounds instantly", icon: Eraser, color: "from-rose-500 to-pink-700", credits: 3 },
-  { id: "bulk-upload", label: "Bulk Upload Manager", desc: "Upload multiple files at once", icon: FolderUp, color: "from-indigo-500 to-blue-700", credits: null },
-  { id: "content-analytics", label: "Content Analytics", desc: "Detailed asset performance stats", icon: PieChart, color: "from-sky-500 to-cyan-700", credits: null },
-  { id: "contributors", label: "Contributor Portfolios", desc: "Discover top creators & their work", icon: Users, color: "from-fuchsia-500 to-pink-700", credits: null },
-  { id: "smart-search", label: "Smart Search (AI)", desc: "Reverse-image & visual similarity search", icon: Sparkles, color: "from-violet-500 to-purple-700", credits: 4 },
 ];
 
 export function StockContentToolGrid({ onToolSelect }: StockContentToolGridProps) {
