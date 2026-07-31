@@ -155,35 +155,25 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
 
           <div>
             <h4 className="text-sm font-semibold mb-2">
-              2. Download size <span className="text-muted-foreground font-normal">— price stays the same</span>
+              2. Download
             </h4>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {(Object.keys(RESOLUTIONS) as ResolutionKey[]).map((k) => {
-                const d = RESOLUTIONS[k];
-                const meta = item.resolutions?.[k] || {};
-                const width = Number(meta.width ?? d.width);
-                const Icon = d.icon;
-                const active = k === resolution;
-                return (
-                  <Card
-                    key={k}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => setResolution(k)}
-                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setResolution(k); } }}
-                    className={`p-3 cursor-pointer border-2 transition-all ${active ? "border-primary shadow-md" : "border-border hover:border-primary/50"}`}
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-2 shadow-sm">
-                      <Icon className="w-4 h-4 text-primary-foreground" />
-                    </div>
-                    <h5 className="font-bold text-xs">{d.label}</h5>
-                    <p className="text-[10px] text-muted-foreground mb-1">{d.sub}</p>
-                    <Badge variant="outline" className="text-[10px] mb-1">{width > 0 ? `${width}px` : "Full size"}</Badge>
-                    <p className="text-[10px] font-semibold text-green-600">Included</p>
-                  </Card>
-                );
-              })}
-            </div>
+            <Card className="p-4 border-2 border-primary shadow-md">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow">
+                  <Maximize2 className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <div className="flex-1">
+                  <h5 className="font-bold text-sm">Original / Full download</h5>
+                  <p className="text-[11px] text-muted-foreground">All resolutions included — one fixed price set by the seller.</p>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-baseline gap-0.5 justify-end">
+                    <Euro className="w-3.5 h-3.5" />
+                    <span className="text-xl font-black">{assetPrice.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
           </div>
 
 
