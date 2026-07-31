@@ -15,7 +15,7 @@ import { AIContentGeneratorView } from "@/components/stock-content/views/AIConte
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const StockContentLibrary = () => {
-  const [searchParams] = useSearchParams();
+  
   const { toast } = useToast();
   const [activeView, setActiveView] = useState("dashboard");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
