@@ -32,17 +32,17 @@ interface InfluencerDetail {
   availableBalance: number;
 }
 
-interface CreatorDetail {
+interface StockCreatorDetail {
   id: string;
   name: string;
   avatar_url: string | null;
-  type: string;
-  lifetime_earnings: number;
+  total_earnings: number;
   pending_balance: number;
   total_withdrawn: number;
   pendingWithdrawals: number;
   availableBalance: number;
 }
+
 
 export function AdminPlatformEarnings() {
   // Fetch InfluKing earnings
