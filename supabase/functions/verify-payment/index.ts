@@ -191,7 +191,7 @@ async function applyPurchase(
   if (productType === "stock_content_purchase" && md.content_id) {
     // @ts-ignore
     const { data: item } = await db.from("stock_content_items")
-      .select("id, creator_id, total_downloads, total_revenue_eur")
+      .select("id, title, creator_id, total_downloads, total_revenue_eur")
       .eq("id", md.content_id)
       .maybeSingle();
     if (!item) return;
@@ -213,9 +213,37 @@ async function applyPurchase(
       stripe_payment_intent_id: result.payment_intent_id ?? null,
       stripe_session_id: md.session_id ?? null });
 
-    await db.from("stock_content_items").update({ total_downloads: (item.total_downloads ?? 0) + 1,
-      total_revenue_eur: (item.total_revenue_eur ?? 0) + total }).eq("id", item.id);
+    // Revenue only — download count is incremented on real downloads.
+    await db.from("stock_content_items")
+      .update({ total_revenue_eur: (item.total_revenue_eur ?? 0) + total })
+      .eq("id", item.id);
+
+    if (item.creator_id) {
+      // Pay out 70% into the creator's EUR wallet balance
+      const { data: wallet } = await db.from("wallet_balances")
+        .select("id, balance")
+        .eq("user_id", item.creator_id)
+        .eq("currency", "EUR")
+        .maybeSingle();
+      if (wallet) {
+        await db.from("wallet_balances")
+          .update({ balance: Number(wallet.balance ?? 0) + creatorEarning, updated_at: new Date().toISOString() })
+          .eq("id", wallet.id);
+      } else {
+        await db.from("wallet_balances").insert({ user_id: item.creator_id, currency: "EUR", balance: creatorEarning });
+      }
+
+      // Bell notification for the seller
+      await db.from("notifications").insert({ user_id: item.creator_id,
+        type: "stock_content_sale",
+        title: "Your content was sold! 🎉",
+        message: `"${item.title ?? "Your asset"}" sold for €${total.toFixed(2)} — €${creatorEarning.toFixed(2)} (70%) was added to your wallet.`,
+        action_url: "/stock-content-library",
+        related_id: item.id,
+        metadata: { content_id: item.id, amount_paid: total, creator_earning: creatorEarning } });
+    }
     return;
+
   }
 
 

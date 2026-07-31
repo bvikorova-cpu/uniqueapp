@@ -70441,6 +70441,10 @@ export type Database = {
         }[]
       }
       record_job_checkin: { Args: never; Returns: Json }
+      record_stock_content_download: {
+        Args: { p_content_id: string }
+        Returns: number
+      }
       redeem_iq_promo_code: { Args: { _code: string }; Returns: Json }
       redeem_iq_referral_code: { Args: { _code: string }; Returns: Json }
       redeem_referral: {

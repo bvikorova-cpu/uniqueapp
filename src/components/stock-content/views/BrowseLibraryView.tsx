@@ -81,14 +81,22 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     setPurchaseDialogOpen(true);
   };
 
-  const handleDownload = (item: any) => {
+  const handleDownload = async (item: any) => {
     const url = item.file_url || item.preview_url;
     if (!url) {
       toast({ title: "File unavailable", description: "The original file is missing.", variant: "destructive" });
       return;
     }
     window.open(url, '_blank');
+    // Count the real download (only buyers pass the server-side ownership check)
+    const { data, error } = await (supabase as any).rpc("record_stock_content_download", { p_content_id: item.id });
+    if (!error) {
+      const total = typeof data === "number" ? data : (item.total_downloads ?? 0) + 1;
+      setItems((prev) => prev.map((it: any) => (it.id === item.id ? { ...it, total_downloads: total } : it)));
+      setPreviewItem((prev: any) => (prev && prev.id === item.id ? { ...prev, total_downloads: total } : prev));
+    }
   };
+
 
   const openPreview = (item: any) => {
     setPreviewItem(item);
