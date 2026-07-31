@@ -34,26 +34,10 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      // Confirm a returning Stripe checkout before reading owned assets.
-      const params = new URLSearchParams(window.location.search);
-      const sessionId = params.get("session_id");
-      if (sessionId) {
-        try {
-          await supabase.functions.invoke("verify-payment", {
-            body: { session_id: sessionId, product_type: "stock_content_purchase" },
-          });
-          toast({ title: "Payment confirmed", description: "Your download is ready — watermark free." });
-        } catch { /* ignore, ownership check below still runs */ }
-        const url = new URL(window.location.href);
-        url.searchParams.delete("session_id");
-        url.searchParams.delete("purchase");
-        window.history.replaceState({}, "", url.pathname + url.search);
-      }
-      await loadOwned();
-    })();
+    loadOwned();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   const loadOwned = async () => {
     const { data: auth } = await supabase.auth.getUser();
@@ -116,8 +100,9 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           productName: `${selectedItem.title || 'Stock content'} — ${sel.licenseType} license`,
+
           amount: Math.round(sel.totalEur * 100),
-          successUrl: `${window.location.origin}/stock-content-library?purchase=success&session_id={CHECKOUT_SESSION_ID}`,
+          successUrl: `${window.location.origin}/stock-content-library?purchase=success&view=browse&session_id={CHECKOUT_SESSION_ID}`,
           cancelUrl: `${window.location.origin}/stock-content-library?purchase=cancelled`,
           metadata: {
             type: 'stock_content_purchase',
