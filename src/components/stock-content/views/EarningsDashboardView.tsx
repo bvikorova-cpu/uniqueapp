@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Euro, Download, ImageIcon, TrendingUp, BarChart3, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { StockPayoutCard } from "./StockPayoutCard";
+
 
 interface EarningsDashboardViewProps {
   onBack: () => void;
