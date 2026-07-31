@@ -34,9 +34,11 @@ const StockContentLibrary = () => {
 
       if (purchaseStatus === "success" && sessionId) {
         try {
-          await supabase.functions.invoke("verify-payment", {
+          const { data, error } = await supabase.functions.invoke("verify-payment", {
             body: { session_id: sessionId, product_type: "stock_content_purchase" },
           });
+          if (error) throw error;
+          if (!data?.verified) throw new Error(data?.error || "Payment could not be verified");
           setPurchasedContentId(contentId);
           setActiveView("browse");
           toast({ title: "Purchase Successful!", description: "Your download is ready — watermark free." });

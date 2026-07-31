@@ -49,12 +49,23 @@ export function BrowseLibraryView({ onBack, purchasedContentId }: BrowseLibraryV
   const loadOwned = async () => {
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) return;
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('stock_content_sales')
       .select('content_id')
-      .eq('buyer_id', auth.user.id);
+      .eq('buyer_id', auth.user.id)
+      .eq('status', 'completed');
+    if (error) {
+      console.error("Could not load purchased stock content:", error);
+      return;
+    }
     setOwnedIds(new Set((data || []).map((r: any) => r.content_id)));
   };
+
+  useEffect(() => {
+    if (!purchasedContentId) return;
+    void loadOwned();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [purchasedContentId]);
 
   const loadContent = async () => {
     setLoading(true);
