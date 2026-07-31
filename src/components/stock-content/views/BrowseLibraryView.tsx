@@ -170,15 +170,16 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                     ))}
                   </div>
                 )}
-                <div className="flex items-center justify-between gap-1">
-                  <span className="font-bold flex items-center gap-0.5"><Euro className="w-3.5 h-3.5" />{item.price_eur?.toFixed(2)}</span>
-                  <div className="flex gap-1">
-                    <Button size="sm" variant="outline" className="px-2" title="Add to Lightbox" onClick={() => setLightboxItemId(item.id)}>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="font-bold text-sm flex items-center gap-0.5 shrink-0"><Euro className="w-3.5 h-3.5" />{item.price_eur?.toFixed(2)}</span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Button size="sm" variant="outline" className="h-8 w-8 p-0" title="Add to Lightbox" onClick={() => setLightboxItemId(item.id)}>
                       <FolderHeart className="w-3.5 h-3.5" />
                     </Button>
-                    <Button size="sm" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1" />Buy</Button>
+                    <Button size="sm" className="h-8 px-2.5 text-xs" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1" />Buy</Button>
                   </div>
                 </div>
+
               </div>
             </Card>
           ))}
