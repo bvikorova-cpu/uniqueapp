@@ -187,6 +187,38 @@ async function applyPurchase(
   const credits = parseInt(md.credits ?? "0", 10);
   const coins = parseInt(md.coins ?? "0", 10);
 
+  // Stock Content Library — one-off asset + license purchase (70% creator / 30% platform)
+  if (productType === "stock_content_purchase" && md.content_id) {
+    // @ts-ignore
+    const { data: item } = await db.from("stock_content_items")
+      .select("id, creator_id, total_downloads, total_revenue_eur")
+      .eq("id", md.content_id)
+      .maybeSingle();
+    if (!item) return;
+
+    const total = parseFloat(md.total_eur ?? "0") || (result.amount_cents || 0) / 100;
+    const creatorEarning = Math.round(total * 0.7 * 100) / 100;
+    const platformFee = Math.round((total - creatorEarning) * 100) / 100;
+
+    await db.from("stock_content_sales").insert({ content_id: item.id,
+      creator_id: item.creator_id,
+      buyer_id: userId,
+      buyer_email: result.customer_email ?? null,
+      license_type: md.license_type ?? "standard",
+      resolution: md.resolution ?? "original",
+      amount_paid: total,
+      creator_earning: creatorEarning,
+      platform_fee: platformFee,
+      status: "completed",
+      stripe_payment_intent_id: result.payment_intent_id ?? null,
+      stripe_session_id: md.session_id ?? null });
+
+    await db.from("stock_content_items").update({ total_downloads: (item.total_downloads ?? 0) + 1,
+      total_revenue_eur: (item.total_revenue_eur ?? 0) + total }).eq("id", item.id);
+    return;
+  }
+
+
   // Generic credits handler — covers most *_credits product types
   if (productType.endsWith("_credits") && credits > 0) {
     const tableMap: Record<string, string> = {
