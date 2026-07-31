@@ -56,21 +56,29 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     if (!selectedItem) return;
     setPurchaseDialogOpen(false);
     try {
-      const { data, error } = await supabase.functions.invoke('stock-content-checkout', {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
-          contentId: String(selectedItem.id),
-          title: selectedItem.title,
-          licenseType: sel.licenseType,
-          resolution: sel.resolution,
-          licenseFeeEur: sel.licenseFeeEur,
-          assetPriceEur: sel.assetPriceEur,
-          totalEur: sel.totalEur,
+          productName: `${selectedItem.title || 'Stock content'} — ${sel.licenseType} license`,
+          amount: Math.round(sel.totalEur * 100),
+          successUrl: `${window.location.origin}/stock-content-library?purchase=success`,
+          cancelUrl: `${window.location.origin}/stock-content-library?purchase=cancelled`,
+          metadata: {
+            type: 'stock_content_purchase',
+            content_id: String(selectedItem.id),
+            license_type: sel.licenseType,
+            resolution: sel.resolution,
+            license_fee_eur: String(sel.licenseFeeEur),
+            asset_price_eur: String(sel.assetPriceEur),
+            total_eur: String(sel.totalEur),
+          },
         },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      if (data?.url) window.open(data.url, '_blank');
+      const url = data?.url || data?.data?.url;
+      if (url) window.open(url, '_blank');
       else throw new Error('Checkout URL not returned');
+
 
 
 
