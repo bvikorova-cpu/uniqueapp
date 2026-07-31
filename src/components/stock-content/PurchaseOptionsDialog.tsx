@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Check, Crown, Euro, ImageIcon, Maximize2, Monitor, Newspaper, Smartphone, Tv } from "lucide-react";
+import { Check, Crown, Euro, ImageIcon, Maximize2, Newspaper } from "lucide-react";
 
 export type LicenseKey = "standard" | "extended" | "editorial";
 export type ResolutionKey = "small" | "medium" | "large" | "original";
