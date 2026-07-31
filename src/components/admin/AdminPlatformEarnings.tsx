@@ -324,7 +324,6 @@ export function AdminPlatformEarnings() {
         StockContent: stockDaily,
         Total: influkingDaily + masterchefDaily + sportsDaily + stockDaily });
     }
-    }
     return days;
   };
 
