@@ -27,10 +27,43 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
   const [purchaseDialogOpen, setPurchaseDialogOpen] = useState(false);
   const [lightboxItemId, setLightboxItemId] = useState<string | null>(null);
   const [previewItem, setPreviewItem] = useState<any | null>(null);
+  const [ownedIds, setOwnedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadContent();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      // Confirm a returning Stripe checkout before reading owned assets.
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get("session_id");
+      if (sessionId) {
+        try {
+          await supabase.functions.invoke("verify-payment", {
+            body: { session_id: sessionId, product_type: "stock_content_purchase" },
+          });
+          toast({ title: "Payment confirmed", description: "Your download is ready — watermark free." });
+        } catch { /* ignore, ownership check below still runs */ }
+        const url = new URL(window.location.href);
+        url.searchParams.delete("session_id");
+        url.searchParams.delete("purchase");
+        window.history.replaceState({}, "", url.pathname + url.search);
+      }
+      await loadOwned();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadOwned = async () => {
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) return;
+    const { data } = await supabase
+      .from('stock_content_sales')
+      .select('content_id')
+      .eq('buyer_id', auth.user.id);
+    setOwnedIds(new Set((data || []).map((r: any) => r.content_id)));
+  };
 
   const loadContent = async () => {
     setLoading(true);
@@ -48,9 +81,19 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     setPurchaseDialogOpen(true);
   };
 
+  const handleDownload = (item: any) => {
+    const url = item.file_url || item.preview_url;
+    if (!url) {
+      toast({ title: "File unavailable", description: "The original file is missing.", variant: "destructive" });
+      return;
+    }
+    window.open(url, '_blank');
+  };
+
   const openPreview = (item: any) => {
     setPreviewItem(item);
   };
+
 
   const handlePurchaseConfirmed = async (sel: {
     licenseType: "standard" | "extended" | "editorial";
