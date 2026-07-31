@@ -49,12 +49,39 @@ export function BrowseLibraryView({ onBack, purchasedContentId }: BrowseLibraryV
   const loadOwned = async () => {
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) return;
-    const { data } = await supabase
-      .from('stock_content_sales')
-      .select('content_id')
-      .eq('buyer_id', auth.user.id);
-    setOwnedIds(new Set((data || []).map((r: any) => r.content_id)));
+    const [{ data: sales, error: salesError }, { data: payments, error: paymentsError }] = await Promise.all([
+      supabase
+        .from('stock_content_sales')
+        .select('content_id')
+        .eq('buyer_id', auth.user.id)
+        .eq('status', 'completed'),
+      supabase
+        .from('payment_records')
+        .select('metadata')
+        .eq('user_id', auth.user.id)
+        .eq('product_type', 'stock_content_purchase')
+        .eq('status', 'paid')
+        .not('verified_at', 'is', null),
+    ]);
+    if (salesError) console.error("Could not load stock sales:", salesError);
+    if (paymentsError) console.error("Could not load verified stock payments:", paymentsError);
+
+    const purchasedIds = new Set<string>();
+    (sales || []).forEach((row: any) => {
+      if (row.content_id) purchasedIds.add(String(row.content_id));
+    });
+    (payments || []).forEach((row: any) => {
+      const contentId = row.metadata?.content_id;
+      if (contentId) purchasedIds.add(String(contentId));
+    });
+    setOwnedIds(purchasedIds);
   };
+
+  useEffect(() => {
+    if (!purchasedContentId) return;
+    void loadOwned();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [purchasedContentId]);
 
   const loadContent = async () => {
     setLoading(true);

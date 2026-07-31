@@ -22,6 +22,7 @@ interface VerifyResult {
   metadata: Record<string, string>;
   customer_email?: string;
   payment_intent_id?: string;
+  stripe_session_id: string;
 }
 
 serve(async (req) => {
@@ -58,6 +59,16 @@ serve(async (req) => {
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const session = await stripe.checkout.sessions.retrieve(session_id, { expand: ["payment_intent", "subscription", "line_items"] });
 
+    // Checkout writes the authenticated owner into Stripe metadata. A Stripe
+    // redirect may return before the new tab has restored the Supabase session,
+    // so use that server-created identity as a safe fallback. Never permit an
+    // authenticated user to claim a session belonging to somebody else.
+    const metadataUserId = session.metadata?.user_id ?? null;
+    if (userId && metadataUserId && userId !== metadataUserId) {
+      throw new Error("Payment session belongs to a different user");
+    }
+    userId = userId ?? metadataUserId;
+
     const isPaid = session.payment_status === "paid" || session.status === "complete";
     const detectedType = product_type || session.metadata?.product_type || session.metadata?.type || "unknown";
     const amount = session.amount_total ?? 0;
@@ -73,7 +84,8 @@ serve(async (req) => {
       payment_intent_id:
         typeof session.payment_intent === "string"
           ? session.payment_intent
-          : session.payment_intent?.id };
+          : session.payment_intent?.id,
+      stripe_session_id: session.id };
 
     log("Stripe result", { isPaid, type: detectedType, amount });
 
@@ -117,11 +129,29 @@ serve(async (req) => {
     // Apply business logic per product type — ONLY if not already credited.
     // Clone subscriptions are idempotently re-applied so older payments that
     // were verified before the DB fix can activate when the user returns.
-    if (isPaid && userId && (!alreadyCredited || detectedType === "clone_subscription")) {
+    let stockPurchaseExists = false;
+    if (isPaid && userId && detectedType === "stock_content_purchase") {
+      const { data: existingStockSale } = await supabaseAdmin
+        .from("stock_content_sales")
+        .select("id")
+        .eq("buyer_id", userId)
+        .eq("content_id", result.metadata?.content_id ?? "")
+        .or(`stripe_session_id.eq.${session.id}${result.payment_intent_id ? `,stripe_payment_intent_id.eq.${result.payment_intent_id}` : ""}`)
+        .maybeSingle();
+      stockPurchaseExists = !!existingStockSale;
+      log("Stock ownership check", { stockPurchaseExists });
+    }
+
+    const shouldApplyPurchase = !alreadyCredited
+      || detectedType === "clone_subscription"
+      || (detectedType === "stock_content_purchase" && !stockPurchaseExists);
+
+    if (isPaid && userId && shouldApplyPurchase) {
       try {
         await applyPurchase(supabaseAdmin, userId, detectedType, result);
       } catch (e) {
         log("applyPurchase error", e instanceof Error ? e.message : e);
+        throw e;
       }
     } else if (alreadyCredited) {
       log("Skipping applyPurchase — session already credited", { session_id: session.id });
@@ -200,7 +230,7 @@ async function applyPurchase(
     const creatorEarning = Math.round(total * 0.7 * 100) / 100;
     const platformFee = Math.round((total - creatorEarning) * 100) / 100;
 
-    await db.from("stock_content_sales").insert({ content_id: item.id,
+    const { error: saleError } = await db.from("stock_content_sales").insert({ content_id: item.id,
       creator_id: item.creator_id,
       buyer_id: userId,
       buyer_email: result.customer_email ?? null,
@@ -211,7 +241,8 @@ async function applyPurchase(
       platform_fee: platformFee,
       status: "completed",
       stripe_payment_intent_id: result.payment_intent_id ?? null,
-      stripe_session_id: md.session_id ?? null });
+      stripe_session_id: result.stripe_session_id });
+    if (saleError) throw new Error(`Could not record stock purchase: ${saleError.message}`);
 
     // Revenue only — download count is incremented on real downloads.
     await db.from("stock_content_items")
