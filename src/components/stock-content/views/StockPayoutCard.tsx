@@ -87,11 +87,10 @@ export function StockPayoutCard() {
       const { error } = await supabase.from("stock_withdrawal_requests").insert({
         creator_id: user.user.id,
         amount: value,
-        currency: "EUR",
         payment_method: "stripe_connect",
-        payment_details: {},
+        payment_details: { source: "stock_content" },
         status: "pending",
-        notes: "Payout to Stripe Connect account",
+        admin_notes: "Payout to Stripe Connect account",
       });
 
       if (error) throw error;
