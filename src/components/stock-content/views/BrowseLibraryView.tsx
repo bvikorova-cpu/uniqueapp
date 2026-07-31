@@ -247,7 +247,11 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                     <Button size="sm" variant="outline" className="h-8 w-8 p-0 shrink-0" title="Add to Lightbox" onClick={() => setLightboxItemId(item.id)}>
                       <FolderHeart className="w-3.5 h-3.5" />
                     </Button>
-                    <Button size="sm" className="h-8 flex-1 min-w-0 px-2 text-xs" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1 shrink-0" />Buy</Button>
+                    {ownedIds.has(item.id) ? (
+                      <Button size="sm" variant="secondary" className="h-8 flex-1 min-w-0 px-2 text-xs" onClick={() => handleDownload(item)}><Download className="w-3 h-3 mr-1 shrink-0" />Download</Button>
+                    ) : (
+                      <Button size="sm" className="h-8 flex-1 min-w-0 px-2 text-xs" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1 shrink-0" />Buy</Button>
+                    )}
                   </div>
                 </div>
 
