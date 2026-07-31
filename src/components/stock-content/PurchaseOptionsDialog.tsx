@@ -75,12 +75,10 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
   }, [base, item?.is_editorial, JSON.stringify(pricing)]);
 
   const [license, setLicense] = useState<LicenseKey>("standard");
-  const [resolution, setResolution] = useState<ResolutionKey>("large");
 
   useEffect(() => {
     if (open) {
       setLicense(licenses[0]?.type ?? "standard");
-      setResolution("large");
     }
   }, [open, item?.id]);
 
