@@ -14,9 +14,10 @@ import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface BrowseLibraryViewProps {
   onBack: () => void;
+  purchasedContentId?: string | null;
 }
 
-export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
+export function BrowseLibraryView({ onBack, purchasedContentId }: BrowseLibraryViewProps) {
   const { toast } = useToast();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,12 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     loadOwned();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!purchasedContentId || items.length === 0) return;
+    const purchasedItem = items.find((item) => String(item.id) === purchasedContentId);
+    if (purchasedItem) setPreviewItem(purchasedItem);
+  }, [items, purchasedContentId]);
 
 
   const loadOwned = async () => {
@@ -102,7 +109,7 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
           productName: `${selectedItem.title || 'Stock content'} — ${sel.licenseType} license`,
 
           amount: Math.round(sel.totalEur * 100),
-          successUrl: `${window.location.origin}/stock-content-library?purchase=success&view=browse&session_id={CHECKOUT_SESSION_ID}`,
+          successUrl: `${window.location.origin}/stock-content-library?purchase=success&view=browse&content_id=${encodeURIComponent(String(selectedItem.id))}&session_id={CHECKOUT_SESSION_ID}`,
           cancelUrl: `${window.location.origin}/stock-content-library?purchase=cancelled`,
           metadata: {
             type: 'stock_content_purchase',
