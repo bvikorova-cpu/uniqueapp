@@ -41,8 +41,9 @@ export function AIContentGeneratorView({ onBack }: AIContentGeneratorViewProps) 
 
     setGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('ai-stock-content-generator', {
-        body: { prompt, style, category }
+      const stockPrompt = `Create an original, commercially usable stock image. Subject: ${prompt}. Visual style: ${style}. Category: ${category}. Professional composition, clean detail, no logos, no watermark, no written text.`;
+      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
+        body: { action: "generate", prompt: stockPrompt, aspectRatio: "1:1" }
       });
       if (error) {
         let message = error.message || "Failed to generate content";
