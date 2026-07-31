@@ -127,20 +127,26 @@ export function AIContentGeneratorView({ onBack }: AIContentGeneratorViewProps) 
               <img src={generatedImage} alt="Generated" className="w-full rounded-lg shadow-lg" />
               <Button className="w-full" variant="outline" onClick={async () => {
                 try {
-                  const { supabase } = await import("@/integrations/supabase/client");
-                  const { data: { user } } = await supabase.auth.getUser();
-                  if (!user) { toast({ description: "First log in" }); return; }
-                  const fileName = `${user.id}/stock-${Date.now()}.png`;
-                  const blob = await (await fetch(generatedImage)).blob();
-                  const { error } = await supabase.storage.from("stock-content").upload(fileName, blob, { contentType: "image/png", upsert: false });
-                  if (error) throw error;
-                  toast({ description: "Added to library!" });
+                  const res = await fetch(generatedImage);
+                  const blob = await res.blob();
+                  const url = URL.createObjectURL(blob);
+                  const safe = (prompt || "ai-content").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "ai-content";
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${safe}-${Date.now()}.png`;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                  setTimeout(() => URL.revokeObjectURL(url), 2000);
+                  toast({ description: "Download started" });
                 } catch (e: any) {
-                  toast({ description: e.message || "Upload zlyhal" });
+                  toast({ description: e.message || "Download failed" });
                 }
               }}>
-                Upload to Library
+                <Download className="w-4 h-4 mr-2" />
+                Download
               </Button>
+
             </div>
           ) : (
             <div className="h-64 bg-secondary/20 rounded-lg flex items-center justify-center">
