@@ -46,7 +46,28 @@ const StockContentLibrary = () => {
           if (finalizeError) console.error("Could not finalize stock sale:", finalizeError);
           setPurchasedContentId(contentId);
           setActiveView("browse");
-          toast({ title: "Purchase Successful!", description: "Your download is ready — watermark free." });
+
+          // In-app bell notification for the buyer
+          try {
+            const { data: auth } = await supabase.auth.getUser();
+            if (auth?.user?.id) {
+              await supabase.from("notifications").insert({
+                user_id: auth.user.id,
+                type: "stock_content_unlocked",
+                title: "Content unlocked",
+                message: "Your payment was successful — the file is now available to download without a watermark.",
+                related_id: contentId,
+                action_url: contentId
+                  ? `/stock-content-library?view=browse&content_id=${contentId}`
+                  : "/stock-content-library?view=browse",
+              });
+            }
+          } catch (e) {
+            console.error("Could not create buyer notification:", e);
+          }
+
+          toast({ title: "Purchase Successful!", description: "Content unlocked — your watermark-free download is ready." });
+
         } catch {
           toast({ title: "Verification pending", description: "We could not confirm the payment yet. Refresh in a moment.", variant: "destructive" });
         }
