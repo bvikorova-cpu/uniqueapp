@@ -284,8 +284,8 @@ export function BrowseLibraryView({ onBack, purchasedContentId }: BrowseLibraryV
                 {item.description && <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{item.description}</p>}
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="outline" className="text-xs">{item.category}</Badge>
-                  <span className="text-xs text-muted-foreground flex items-center gap-0.5"><Download className="w-3 h-3" />{item.total_downloads ?? 0}</span>
                 </div>
+
                 {item.tags?.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-2">
                     {item.tags.slice(0, 3).map((tag: string, i: number) => (
