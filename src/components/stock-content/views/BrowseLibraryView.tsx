@@ -46,6 +46,10 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     setPurchaseDialogOpen(true);
   };
 
+  const openPreview = (item: any) => {
+    setPreviewItem(item);
+  };
+
   const handlePurchaseConfirmed = async (sel: {
     licenseType: "standard" | "extended" | "editorial";
     resolution: string;
