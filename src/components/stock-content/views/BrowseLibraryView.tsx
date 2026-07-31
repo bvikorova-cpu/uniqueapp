@@ -101,26 +101,29 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search assets..." className="pl-9" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
         </div>
-        <Select value={contentType} onValueChange={setContentType}>
-          <SelectTrigger className="w-[150px]"><Filter className="w-3 h-3 mr-1" /><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="image">Images</SelectItem>
-            <SelectItem value="video">Videos</SelectItem>
-            <SelectItem value="audio">Audio</SelectItem>
-            <SelectItem value="document">Documents</SelectItem>
-            <SelectItem value="3d_model">3D Models</SelectItem>
-          </SelectContent>
-        </Select>
-        {categories.length > 0 && (
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-[150px]"><SelectValue /></SelectTrigger>
+        <div className="flex gap-3">
+          <Select value={contentType} onValueChange={setContentType}>
+            <SelectTrigger className="flex-1 md:w-[150px] md:flex-none"><Filter className="w-3 h-3 mr-1" /><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="image">Images</SelectItem>
+              <SelectItem value="video">Videos</SelectItem>
+              <SelectItem value="audio">Audio</SelectItem>
+              <SelectItem value="document">Documents</SelectItem>
+              <SelectItem value="3d_model">3D Models</SelectItem>
             </SelectContent>
           </Select>
-        )}
+          {categories.length > 0 && (
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="flex-1 md:w-[150px] md:flex-none"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+
       </div>
 
       {loading ? (
@@ -167,15 +170,16 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                     ))}
                   </div>
                 )}
-                <div className="flex items-center justify-between gap-1">
-                  <span className="font-bold flex items-center gap-0.5"><Euro className="w-3.5 h-3.5" />{item.price_eur?.toFixed(2)}</span>
-                  <div className="flex gap-1">
-                    <Button size="sm" variant="outline" className="px-2" title="Add to Lightbox" onClick={() => setLightboxItemId(item.id)}>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="font-bold text-sm flex items-center gap-0.5 shrink-0"><Euro className="w-3.5 h-3.5" />{item.price_eur?.toFixed(2)}</span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Button size="sm" variant="outline" className="h-8 w-8 p-0" title="Add to Lightbox" onClick={() => setLightboxItemId(item.id)}>
                       <FolderHeart className="w-3.5 h-3.5" />
                     </Button>
-                    <Button size="sm" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1" />Buy</Button>
+                    <Button size="sm" className="h-8 px-2.5 text-xs" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1" />Buy</Button>
                   </div>
                 </div>
+
               </div>
             </Card>
           ))}
