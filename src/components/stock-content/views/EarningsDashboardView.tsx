@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Euro, Download, ImageIcon, TrendingUp, BarChart3 } from "lucide-react";
+import { ArrowLeft, Euro, Download, ImageIcon, TrendingUp, BarChart3, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
@@ -9,27 +9,77 @@ interface EarningsDashboardViewProps {
   onBack: () => void;
 }
 
+interface SaleRow {
+  id: string;
+  amount_paid: number | string | null;
+  creator_earning: number | string | null;
+  platform_fee: number | string | null;
+  license_type: string | null;
+  created_at: string;
+}
+
+const num = (v: unknown) => {
+  const n = parseFloat(String(v ?? 0));
+  return Number.isFinite(n) ? n : 0;
+};
+
 export function EarningsDashboardView({ onBack }: EarningsDashboardViewProps) {
-  const [earnings, setEarnings] = useState({ total_revenue: 0, total_downloads: 0, items_count: 0 });
+  const [earnings, setEarnings] = useState({
+    total_revenue: 0,
+    platform_fees: 0,
+    gross: 0,
+    total_downloads: 0,
+    items_count: 0,
+  });
+  const [sales, setSales] = useState<SaleRow[]>([]);
+  const [signedIn, setSignedIn] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const load = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setLoading(false); return; }
+  const load = useCallback(async () => {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSignedIn(false); setLoading(false); return; }
+    setSignedIn(true);
 
-      const { data } = await supabase
+    const [salesRes, itemsRes] = await Promise.all([
+      supabase
+        .from('stock_content_sales')
+        .select('id, amount_paid, creator_earning, platform_fee, license_type, created_at, status')
+        .eq('creator_id', user.id)
+        .order('created_at', { ascending: false }),
+      supabase
         .from('stock_content_items')
-        .select('*')
-        .eq('creator_id', user.id);
+        .select('id', { count: 'exact', head: true })
+        .eq('creator_id', user.id),
+    ]);
 
-      const totalRevenue = data?.reduce((sum, item) => sum + parseFloat(String(item.total_revenue_eur || 0)), 0) || 0;
-      const totalDownloads = data?.reduce((sum, item) => sum + (item.total_downloads || 0), 0) || 0;
-      setEarnings({ total_revenue: totalRevenue * 0.7, total_downloads: totalDownloads, items_count: data?.length || 0 });
-      setLoading(false);
-    };
-    load();
+    const paid = (salesRes.data || []).filter(
+      (s: any) => !s.status || ['completed', 'paid', 'succeeded'].includes(String(s.status))
+    ) as SaleRow[];
+
+    const gross = paid.reduce((sum, s) => sum + num(s.amount_paid), 0);
+    const net = paid.reduce(
+      (sum, s) => sum + (s.creator_earning != null ? num(s.creator_earning) : num(s.amount_paid) * 0.7),
+      0
+    );
+    const fees = paid.reduce(
+      (sum, s) => sum + (s.platform_fee != null ? num(s.platform_fee) : num(s.amount_paid) * 0.3),
+      0
+    );
+
+    setSales(paid.slice(0, 10));
+    setEarnings({
+      total_revenue: net,
+      platform_fees: fees,
+      gross,
+      total_downloads: paid.length,
+      items_count: itemsRes.count || 0,
+    });
+    setLoading(false);
   }, []);
+
+  useEffect(() => { load(); }, [load]);
+
 
   return (
     <>
