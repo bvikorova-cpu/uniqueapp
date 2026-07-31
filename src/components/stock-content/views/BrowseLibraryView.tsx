@@ -27,10 +27,43 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
   const [purchaseDialogOpen, setPurchaseDialogOpen] = useState(false);
   const [lightboxItemId, setLightboxItemId] = useState<string | null>(null);
   const [previewItem, setPreviewItem] = useState<any | null>(null);
+  const [ownedIds, setOwnedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadContent();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      // Confirm a returning Stripe checkout before reading owned assets.
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get("session_id");
+      if (sessionId) {
+        try {
+          await supabase.functions.invoke("verify-payment", {
+            body: { session_id: sessionId, product_type: "stock_content_purchase" },
+          });
+          toast({ title: "Payment confirmed", description: "Your download is ready — watermark free." });
+        } catch { /* ignore, ownership check below still runs */ }
+        const url = new URL(window.location.href);
+        url.searchParams.delete("session_id");
+        url.searchParams.delete("purchase");
+        window.history.replaceState({}, "", url.pathname + url.search);
+      }
+      await loadOwned();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadOwned = async () => {
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) return;
+    const { data } = await supabase
+      .from('stock_content_sales')
+      .select('content_id')
+      .eq('buyer_id', auth.user.id);
+    setOwnedIds(new Set((data || []).map((r: any) => r.content_id)));
+  };
 
   const loadContent = async () => {
     setLoading(true);
@@ -48,9 +81,19 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     setPurchaseDialogOpen(true);
   };
 
+  const handleDownload = (item: any) => {
+    const url = item.file_url || item.preview_url;
+    if (!url) {
+      toast({ title: "File unavailable", description: "The original file is missing.", variant: "destructive" });
+      return;
+    }
+    window.open(url, '_blank');
+  };
+
   const openPreview = (item: any) => {
     setPreviewItem(item);
   };
+
 
   const handlePurchaseConfirmed = async (sel: {
     licenseType: "standard" | "extended" | "editorial";
@@ -66,7 +109,7 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
         body: {
           productName: `${selectedItem.title || 'Stock content'} — ${sel.licenseType} license`,
           amount: Math.round(sel.totalEur * 100),
-          successUrl: `${window.location.origin}/stock-content-library?purchase=success`,
+          successUrl: `${window.location.origin}/stock-content-library?purchase=success&session_id={CHECKOUT_SESSION_ID}`,
           cancelUrl: `${window.location.origin}/stock-content-library?purchase=cancelled`,
           metadata: {
             type: 'stock_content_purchase',
@@ -165,9 +208,11 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                 ) : (
                   <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-10 h-10 text-muted-foreground" /></div>
                 )}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="transform rotate-[-25deg] opacity-30 text-3xl font-bold text-white tracking-widest select-none" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>UNIQUE</span>
-                </div>
+                {!ownedIds.has(item.id) && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span className="transform rotate-[-25deg] opacity-30 text-3xl font-bold text-white tracking-widest select-none" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>UNIQUE</span>
+                  </div>
+                )}
                 <Badge className="absolute top-2 right-2" variant="secondary">{item.content_type}</Badge>
                 {item.requires_release && (
                   <Badge
@@ -202,7 +247,11 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                     <Button size="sm" variant="outline" className="h-8 w-8 p-0 shrink-0" title="Add to Lightbox" onClick={() => setLightboxItemId(item.id)}>
                       <FolderHeart className="w-3.5 h-3.5" />
                     </Button>
-                    <Button size="sm" className="h-8 flex-1 min-w-0 px-2 text-xs" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1 shrink-0" />Buy</Button>
+                    {ownedIds.has(item.id) ? (
+                      <Button size="sm" variant="secondary" className="h-8 flex-1 min-w-0 px-2 text-xs" onClick={() => handleDownload(item)}><Download className="w-3 h-3 mr-1 shrink-0" />Download</Button>
+                    ) : (
+                      <Button size="sm" className="h-8 flex-1 min-w-0 px-2 text-xs" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1 shrink-0" />Buy</Button>
+                    )}
                   </div>
                 </div>
 
@@ -233,9 +282,11 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                 ) : (
                   <div className="h-48 flex items-center justify-center"><ImageIcon className="w-10 h-10 text-muted-foreground" /></div>
                 )}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="transform rotate-[-25deg] opacity-30 text-4xl font-bold text-white tracking-widest select-none" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>UNIQUE</span>
-                </div>
+                {!ownedIds.has(previewItem.id) && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span className="transform rotate-[-25deg] opacity-30 text-4xl font-bold text-white tracking-widest select-none" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>UNIQUE</span>
+                  </div>
+                )}
               </div>
               {previewItem.description && <p className="text-sm text-muted-foreground">{previewItem.description}</p>}
               <div className="flex flex-wrap gap-1">
@@ -250,9 +301,15 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                   <Euro className="w-3.5 h-3.5" />{previewItem.price_eur?.toFixed(2)}
                   <span className="text-[10px] font-normal text-muted-foreground">+ license</span>
                 </span>
-                <Button size="sm" onClick={() => { const it = previewItem; setPreviewItem(null); openLicenseDialog(it); }}>
-                  <Download className="w-3 h-3 mr-1" />Buy
-                </Button>
+                {ownedIds.has(previewItem.id) ? (
+                  <Button size="sm" variant="secondary" onClick={() => handleDownload(previewItem)}>
+                    <Download className="w-3 h-3 mr-1" />Download
+                  </Button>
+                ) : (
+                  <Button size="sm" onClick={() => { const it = previewItem; setPreviewItem(null); openLicenseDialog(it); }}>
+                    <Download className="w-3 h-3 mr-1" />Buy
+                  </Button>
+                )}
               </div>
             </div>
           )}
