@@ -57,25 +57,27 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     setPurchaseDialogOpen(false);
     try {
       const amountCents = Math.round(sel.totalEur * 100);
-      const { data, error } = await supabase.functions.invoke('purchase-stock-content', {
+      const { data, error } = await supabase.functions.invoke('create-one-off-payment', {
         body: {
-          contentId: selectedItem.id,
-          licenseType: sel.licenseType,
-          resolution: sel.resolution,
+          productKey: 'stock_content_purchase',
           amount: amountCents,
-          productName: `${selectedItem.title} (${sel.licenseType} license + ${sel.resolution})`,
-          lineItems: [
-            { label: `Platform license (${sel.licenseType})`, amount_eur: sel.licenseFeeEur },
-            { label: `Asset (${sel.resolution})`, amount_eur: sel.assetPriceEur },
-          ],
-          metadata: { content_id: selectedItem.id,
+          name: `${selectedItem.title} — ${sel.licenseType} license + asset`,
+          description: `Platform license (${sel.licenseType}) €${sel.licenseFeeEur.toFixed(2)} + Asset €${sel.assetPriceEur.toFixed(2)}`,
+          metadata: {
+            content_id: String(selectedItem.id),
             license_type: sel.licenseType,
             resolution: sel.resolution,
-            license_fee_eur: sel.licenseFeeEur,
-            asset_price_eur: sel.assetPriceEur,
-            total_eur: sel.totalEur } } });
+            license_fee_eur: String(sel.licenseFeeEur),
+            asset_price_eur: String(sel.assetPriceEur),
+            total_eur: String(sel.totalEur),
+          },
+        },
+      });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       if (data?.url) window.open(data.url, '_blank');
+      else throw new Error('Checkout URL not returned');
+
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to initiate purchase", variant: "destructive" });
     }
