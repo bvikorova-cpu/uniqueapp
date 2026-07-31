@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Sparkles, Loader2, ImageIcon, Wand2 } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, ImageIcon, Wand2, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
@@ -56,7 +56,7 @@ export function AIContentGeneratorView({ onBack }: AIContentGeneratorViewProps) 
       }
       if (!data?.imageUrl) throw new Error(data?.error || "The AI returned no image");
       setGeneratedImage(data.imageUrl);
-      toast({ title: "Image Generated!", description: "Your AI content is ready. You can now upload it to the library." });
+      toast({ title: "Image Generated!", description: "Your AI content is ready — you can download it now." });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to generate content";
       toast({ title: "Generation Failed", description: message, variant: "destructive" });
@@ -127,20 +127,26 @@ export function AIContentGeneratorView({ onBack }: AIContentGeneratorViewProps) 
               <img src={generatedImage} alt="Generated" className="w-full rounded-lg shadow-lg" />
               <Button className="w-full" variant="outline" onClick={async () => {
                 try {
-                  const { supabase } = await import("@/integrations/supabase/client");
-                  const { data: { user } } = await supabase.auth.getUser();
-                  if (!user) { toast({ description: "First log in" }); return; }
-                  const fileName = `${user.id}/stock-${Date.now()}.png`;
-                  const blob = await (await fetch(generatedImage)).blob();
-                  const { error } = await supabase.storage.from("stock-content").upload(fileName, blob, { contentType: "image/png", upsert: false });
-                  if (error) throw error;
-                  toast({ description: "Added to library!" });
+                  const res = await fetch(generatedImage);
+                  const blob = await res.blob();
+                  const url = URL.createObjectURL(blob);
+                  const safe = (prompt || "ai-content").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "ai-content";
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${safe}-${Date.now()}.png`;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                  setTimeout(() => URL.revokeObjectURL(url), 2000);
+                  toast({ description: "Download started" });
                 } catch (e: any) {
-                  toast({ description: e.message || "Upload zlyhal" });
+                  toast({ description: e.message || "Download failed" });
                 }
               }}>
-                Upload to Library
+                <Download className="w-4 h-4 mr-2" />
+                Download
               </Button>
+
             </div>
           ) : (
             <div className="h-64 bg-secondary/20 rounded-lg flex items-center justify-center">
