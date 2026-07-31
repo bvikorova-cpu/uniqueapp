@@ -101,26 +101,29 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search assets..." className="pl-9" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
         </div>
-        <Select value={contentType} onValueChange={setContentType}>
-          <SelectTrigger className="w-[150px]"><Filter className="w-3 h-3 mr-1" /><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="image">Images</SelectItem>
-            <SelectItem value="video">Videos</SelectItem>
-            <SelectItem value="audio">Audio</SelectItem>
-            <SelectItem value="document">Documents</SelectItem>
-            <SelectItem value="3d_model">3D Models</SelectItem>
-          </SelectContent>
-        </Select>
-        {categories.length > 0 && (
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-[150px]"><SelectValue /></SelectTrigger>
+        <div className="flex gap-3">
+          <Select value={contentType} onValueChange={setContentType}>
+            <SelectTrigger className="flex-1 md:w-[150px] md:flex-none"><Filter className="w-3 h-3 mr-1" /><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="image">Images</SelectItem>
+              <SelectItem value="video">Videos</SelectItem>
+              <SelectItem value="audio">Audio</SelectItem>
+              <SelectItem value="document">Documents</SelectItem>
+              <SelectItem value="3d_model">3D Models</SelectItem>
             </SelectContent>
           </Select>
-        )}
+          {categories.length > 0 && (
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="flex-1 md:w-[150px] md:flex-none"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+
       </div>
 
       {loading ? (
