@@ -280,15 +280,17 @@ export function AdminPlatformEarnings() {
   const influkingStats = calculateStats(influkingEarnings || [], "commission_amount");
   const masterchefStats = calculateStats(masterchefEarnings || [], "commission_amount");
   const sportsStats = calculateStats(sportsEarnings || [], "platform_commission");
+  const stockStats = calculateStats(stockEarnings || [], "platform_fee");
 
-  const totalEarnings = influkingStats.total + masterchefStats.total + sportsStats.total;
-  const totalTransactions = influkingStats.count + masterchefStats.count + sportsStats.count;
+  const totalEarnings = influkingStats.total + masterchefStats.total + sportsStats.total + stockStats.total;
+  const totalTransactions = influkingStats.count + masterchefStats.count + sportsStats.count + stockStats.count;
 
   // Prepare chart data
   const pieData = [
     { name: "InfluKing", value: influkingStats.total, color: "#8B5CF6" },
     { name: "KitchenStars", value: masterchefStats.total, color: "#F59E0B" },
     { name: "Sports", value: sportsStats.total, color: "#10B981" },
+    { name: "Stock Content", value: stockStats.total, color: "#EC4899" },
   ].filter(item => item.value > 0);
 
   // Prepare timeline data (last 7 days)
