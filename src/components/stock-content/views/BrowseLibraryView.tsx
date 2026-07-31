@@ -7,8 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Download, Euro, ImageIcon, ArrowLeft, Filter, ShieldCheck, ShieldAlert, FolderHeart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { LicenseSelectorDialog } from "../LicenseSelectorDialog";
-import { ResolutionSelectorDialog, type ResolutionKey } from "../ResolutionSelectorDialog";
+import { PurchaseOptionsDialog } from "../PurchaseOptionsDialog";
 import { LightboxManagerDialog } from "../LightboxManagerDialog";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
@@ -24,9 +23,7 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
   const [category, setCategory] = useState("all");
   const [contentType, setContentType] = useState("all");
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
-  const [licenseDialogOpen, setLicenseDialogOpen] = useState(false);
-  const [resolutionDialogOpen, setResolutionDialogOpen] = useState(false);
-  const [chosenLicense, setChosenLicense] = useState<{ type: "standard" | "extended" | "editorial"; price: number } | null>(null);
+  const [purchaseDialogOpen, setPurchaseDialogOpen] = useState(false);
   const [lightboxItemId, setLightboxItemId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,30 +43,37 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
 
   const openLicenseDialog = (item: any) => {
     setSelectedItem(item);
-    setLicenseDialogOpen(true);
+    setPurchaseDialogOpen(true);
   };
 
-  const handleLicenseSelected = (licenseType: "standard" | "extended" | "editorial", priceEur: number) => {
-    setChosenLicense({ type: licenseType, price: priceEur });
-    setLicenseDialogOpen(false);
-    setResolutionDialogOpen(true);
-  };
-
-  const handleResolutionSelected = async (resolution: ResolutionKey, finalPriceEur: number) => {
-    if (!selectedItem || !chosenLicense) return;
-    setResolutionDialogOpen(false);
+  const handlePurchaseConfirmed = async (sel: {
+    licenseType: "standard" | "extended" | "editorial";
+    resolution: string;
+    licenseFeeEur: number;
+    assetPriceEur: number;
+    totalEur: number;
+  }) => {
+    if (!selectedItem) return;
+    setPurchaseDialogOpen(false);
     try {
-      const amountCents = Math.round(finalPriceEur * 100);
+      const amountCents = Math.round(sel.totalEur * 100);
       const { data, error } = await supabase.functions.invoke('purchase-stock-content', {
         body: {
           contentId: selectedItem.id,
-          licenseType: chosenLicense.type,
-          resolution,
+          licenseType: sel.licenseType,
+          resolution: sel.resolution,
           amount: amountCents,
-          productName: `${selectedItem.title} (${chosenLicense.type} · ${resolution})`,
+          productName: `${selectedItem.title} (${sel.licenseType} license + ${sel.resolution})`,
+          lineItems: [
+            { label: `Platform license (${sel.licenseType})`, amount_eur: sel.licenseFeeEur },
+            { label: `Asset (${sel.resolution})`, amount_eur: sel.assetPriceEur },
+          ],
           metadata: { content_id: selectedItem.id,
-            license_type: chosenLicense.type,
-            resolution } } });
+            license_type: sel.licenseType,
+            resolution: sel.resolution,
+            license_fee_eur: sel.licenseFeeEur,
+            asset_price_eur: sel.assetPriceEur,
+            total_eur: sel.totalEur } } });
       if (error) throw error;
       if (data?.url) window.open(data.url, '_blank');
     } catch (error: any) {
