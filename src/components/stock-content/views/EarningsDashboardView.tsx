@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Euro, Download, ImageIcon, TrendingUp, BarChart3, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { StockPayoutCard } from "./StockPayoutCard";
+
 
 interface EarningsDashboardViewProps {
   onBack: () => void;
@@ -137,8 +139,11 @@ export function EarningsDashboardView({ onBack }: EarningsDashboardViewProps) {
             </Card>
           </div>
 
+          <StockPayoutCard />
+
           <Card className="p-6">
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><TrendingUp className="w-5 h-5" /> Revenue insights</h3>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 bg-muted/50 rounded-lg text-center">
                 <p className="text-sm text-muted-foreground">Gross sales</p>
