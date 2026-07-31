@@ -98,7 +98,7 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
         <DialogHeader>
           <DialogTitle>Complete your purchase</DialogTitle>
           <DialogDescription>
-            Choose a license and download size for "{item.title}" — one single payment.
+            Choose a license for "{item.title}" — full download is included at the seller's fixed price.
           </DialogDescription>
         </DialogHeader>
 
