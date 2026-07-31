@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Download, Euro, ImageIcon, ArrowLeft, Filter, ShieldCheck, ShieldAlert, FolderHeart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -155,8 +156,8 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
               <div
                 role="button"
                 tabIndex={0}
-                onClick={() => openLicenseDialog(item)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLicenseDialog(item); } }}
+                onClick={() => openPreview(item)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPreview(item); } }}
                 className="relative h-40 bg-secondary/20 cursor-pointer"
               >
                 {item.thumbnail_url ? (
@@ -178,7 +179,7 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                 )}
               </div>
               <div className="p-3">
-                <h3 className="font-semibold text-sm mb-1 line-clamp-1 cursor-pointer hover:text-primary" onClick={() => openLicenseDialog(item)}>{item.title}</h3>
+                <h3 className="font-semibold text-sm mb-1 line-clamp-1 cursor-pointer hover:text-primary" onClick={() => openPreview(item)}>{item.title}</h3>
                 {item.description && <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{item.description}</p>}
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="outline" className="text-xs">{item.category}</Badge>
@@ -217,6 +218,46 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
         item={selectedItem}
         onConfirm={handlePurchaseConfirmed}
       />
+
+      <Dialog open={!!previewItem} onOpenChange={(o) => { if (!o) setPreviewItem(null); }}>
+        <DialogContent className="max-w-2xl w-[calc(100vw-2rem)] max-h-[85vh] overflow-y-auto overscroll-contain">
+          <DialogHeader>
+            <DialogTitle>{previewItem?.title}</DialogTitle>
+            <DialogDescription>Preview only — no payment is taken here.</DialogDescription>
+          </DialogHeader>
+          {previewItem && (
+            <div className="space-y-3">
+              <div className="relative rounded-lg overflow-hidden bg-secondary/20">
+                {previewItem.thumbnail_url ? (
+                  <img src={previewItem.thumbnail_url} alt={previewItem.title} className="w-full max-h-[45vh] object-contain" />
+                ) : (
+                  <div className="h-48 flex items-center justify-center"><ImageIcon className="w-10 h-10 text-muted-foreground" /></div>
+                )}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span className="transform rotate-[-25deg] opacity-30 text-4xl font-bold text-white tracking-widest select-none" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>UNIQUE</span>
+                </div>
+              </div>
+              {previewItem.description && <p className="text-sm text-muted-foreground">{previewItem.description}</p>}
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="outline" className="text-xs">{previewItem.category}</Badge>
+                <Badge variant="secondary" className="text-xs">{previewItem.content_type}</Badge>
+                {previewItem.tags?.slice(0, 6).map((t: string, i: number) => (
+                  <span key={i} className="text-[10px] bg-secondary/50 px-1.5 py-0.5 rounded">{t}</span>
+                ))}
+              </div>
+              <div className="flex items-center justify-between gap-2 pt-1">
+                <span className="font-bold text-sm flex items-center gap-1">
+                  <Euro className="w-3.5 h-3.5" />{previewItem.price_eur?.toFixed(2)}
+                  <span className="text-[10px] font-normal text-muted-foreground">+ license</span>
+                </span>
+                <Button size="sm" onClick={() => { const it = previewItem; setPreviewItem(null); openLicenseDialog(it); }}>
+                  <Download className="w-3 h-3 mr-1" />Buy
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <LightboxManagerDialog
         open={!!lightboxItemId}
