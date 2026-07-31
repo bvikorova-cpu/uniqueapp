@@ -16,7 +16,9 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const StockContentLibrary = () => {
   
   const { toast } = useToast();
-  const [activeView, setActiveView] = useState("dashboard");
+  const initialParams = new URLSearchParams(window.location.search);
+  const [activeView, setActiveView] = useState(initialParams.get("view") === "browse" ? "browse" : "dashboard");
+  const [purchasedContentId, setPurchasedContentId] = useState<string | null>(initialParams.get("content_id"));
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -24,6 +26,7 @@ const StockContentLibrary = () => {
       const params = new URLSearchParams(window.location.search);
       const purchaseStatus = params.get("purchase");
       const sessionId = params.get("session_id");
+      const contentId = params.get("content_id");
 
       if (purchaseStatus === "cancelled") {
         toast({ title: "Purchase Cancelled", description: "Your payment was cancelled", variant: "destructive" });
@@ -34,6 +37,8 @@ const StockContentLibrary = () => {
           await supabase.functions.invoke("verify-payment", {
             body: { session_id: sessionId, product_type: "stock_content_purchase" },
           });
+          setPurchasedContentId(contentId);
+          setActiveView("browse");
           toast({ title: "Purchase Successful!", description: "Your download is ready — watermark free." });
         } catch {
           toast({ title: "Verification pending", description: "We could not confirm the payment yet. Refresh in a moment.", variant: "destructive" });
@@ -42,7 +47,7 @@ const StockContentLibrary = () => {
 
       if (purchaseStatus) {
         const url = new URL(window.location.href);
-        ["session_id", "purchase", "view"].forEach((k) => url.searchParams.delete(k));
+        ["session_id", "purchase", "view", "content_id"].forEach((k) => url.searchParams.delete(k));
         window.history.replaceState({}, "", url.pathname + url.search);
         if (purchaseStatus === "success") setActiveView("browse");
       }
@@ -62,7 +67,7 @@ const StockContentLibrary = () => {
   const renderView = () => {
     switch (activeView) {
       case "browse":
-        return <BrowseLibraryView onBack={() => setActiveView("dashboard")} />;
+        return <BrowseLibraryView onBack={() => setActiveView("dashboard")} purchasedContentId={purchasedContentId} />;
       case "earnings":
         return <EarningsDashboardView onBack={() => setActiveView("dashboard")} />;
       case "ai-generator":
