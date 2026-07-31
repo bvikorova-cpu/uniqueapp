@@ -133,7 +133,14 @@ export const PRODUCTS: Record<string, ProductDef> = { // === Jobs (Phase 4 part 
   skill_service_order: { currency: "eur",
     name: "Skills Marketplace Order",
     successPath: "/skills-marketplace/orders/success",
-    cancelPath: "/skills-marketplace/orders" } };
+    cancelPath: "/skills-marketplace/orders" },
+
+  // === Stock Content: license + asset in one payment (dynamic amount) ===
+  stock_content_purchase: { currency: "eur",
+    name: "Stock Content Purchase",
+    successPath: "/stock-content?payment=success",
+    cancelPath: "/stock-content?payment=canceled" } };
+
 
 
 export function getStripe(): Stripe { return new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
