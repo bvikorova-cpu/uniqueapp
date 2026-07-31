@@ -138,8 +138,9 @@ export const PRODUCTS: Record<string, ProductDef> = { // === Jobs (Phase 4 part 
   // === Stock Content: license + asset in one payment (dynamic amount) ===
   stock_content_purchase: { currency: "eur",
     name: "Stock Content Purchase",
-    successPath: "/stock-content?payment=success",
-    cancelPath: "/stock-content?payment=canceled" } };
+    successPath: "/stock-content-library?purchase=success",
+    cancelPath: "/stock-content-library?purchase=cancelled" } };
+
 
 
 
