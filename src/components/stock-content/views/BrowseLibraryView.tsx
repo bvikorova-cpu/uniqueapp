@@ -25,6 +25,7 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [purchaseDialogOpen, setPurchaseDialogOpen] = useState(false);
   const [lightboxItemId, setLightboxItemId] = useState<string | null>(null);
+  const [previewItem, setPreviewItem] = useState<any | null>(null);
 
   useEffect(() => {
     loadContent();
