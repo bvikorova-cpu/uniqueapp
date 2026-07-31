@@ -31,7 +31,7 @@ export function ResolutionSelectorDialog({ open, onOpenChange, basePrice, resolu
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-3xl w-[calc(100vw-2rem)] max-h-[85vh] overflow-y-auto overscroll-contain">
         <DialogHeader>
           <DialogTitle>Choose download size</DialogTitle>
           <DialogDescription>Pick the resolution that fits your project</DialogDescription>
