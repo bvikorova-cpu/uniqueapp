@@ -1,192 +1,223 @@
-import { useCallback, useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Wallet, Banknote } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { Loader2, CreditCard, Wallet, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
+import { useStripeConnect, type ConnectStatus } from "@/hooks/useStripeConnect";
 
-const MIN_PAYOUT = 10;
-
-interface PayoutRow {
+type Withdrawal = {
   id: string;
-  amount: number | string;
-  status: string | null;
+  amount: number;
+  status: string;
   payment_method: string;
   created_at: string;
-}
-
-const num = (v: unknown) => {
-  const n = parseFloat(String(v ?? 0));
-  return Number.isFinite(n) ? n : 0;
 };
 
 export function StockPayoutCard() {
   const { toast } = useToast();
-  const [balance, setBalance] = useState(0);
-  const [requests, setRequests] = useState<PayoutRow[]>([]);
-  const [open, setOpen] = useState(false);
+  const { getStatus, createAccount, startOnboarding, openDashboard, loading: connectLoading } = useStripeConnect();
+  const [connectStatus, setConnectStatus] = useState<ConnectStatus>("none");
+  const [balance, setBalance] = useState<number>(0);
   const [amount, setAmount] = useState("");
-  const [iban, setIban] = useState("");
-  const [holder, setHolder] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState<Withdrawal[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
-  const load = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+  const loadData = useCallback(async () => {
+    const { data: user } = await supabase.auth.getUser();
+    if (!user.user) return;
 
-    const [walletRes, reqRes] = await Promise.all([
-      supabase
-        .from("wallet_balances")
-        .select("balance")
-        .eq("user_id", user.id)
-        .eq("currency", "EUR")
-        .maybeSingle(),
-      supabase
-        .from("stock_withdrawal_requests")
-        .select("id, amount, status, payment_method, created_at")
-        .eq("creator_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(5),
-    ]);
+    const status = await getStatus();
+    setConnectStatus(status);
 
-    setBalance(num(walletRes.data?.balance));
-    setRequests((reqRes.data || []) as PayoutRow[]);
-  }, []);
+    const { data: wallet } = await supabase
+      .from("wallet_balances")
+      .select("balance")
+      .eq("user_id", user.user.id)
+      .eq("currency", "EUR")
+      .maybeSingle();
+    setBalance(wallet?.balance ?? 0);
 
-  useEffect(() => { load(); }, [load]);
+    setHistoryLoading(true);
+    const { data: withdrawals } = await supabase
+      .from("stock_withdrawal_requests")
+      .select("id, amount, status, payment_method, created_at")
+      .eq("creator_id", user.user.id)
+      .order("created_at", { ascending: false })
+      .limit(10);
+    setHistory(withdrawals || []);
+    setHistoryLoading(false);
+  }, [getStatus]);
 
-  const pending = requests
-    .filter((r) => (r.status || "pending") === "pending")
-    .reduce((s, r) => s + num(r.amount), 0);
-  const available = Math.max(0, balance - pending);
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
-  const submit = async () => {
-    const value = num(amount);
-    if (value < MIN_PAYOUT) {
-      toast({ title: "Amount too low", description: `Minimum payout is €${MIN_PAYOUT}.`, variant: "destructive" });
+  const handleConnect = async () => {
+    try {
+      const status = await getStatus();
+      if (status === "none") {
+        await createAccount();
+      }
+      await startOnboarding();
+    } catch (e: any) {
+      toast({ title: "Stripe setup failed", description: e?.message, variant: "destructive" });
+    }
+  };
+
+  const handleRequest = async () => {
+    const value = parseFloat(amount);
+    if (!value || value <= 0) {
+      toast({ title: "Enter amount", description: "Please enter a positive amount.", variant: "destructive" });
       return;
     }
-    if (value > available) {
-      toast({ title: "Not enough balance", description: `You can request up to €${available.toFixed(2)}.`, variant: "destructive" });
-      return;
-    }
-    if (!iban.trim() || !holder.trim()) {
-      toast({ title: "Missing details", description: "Fill in the account holder and IBAN.", variant: "destructive" });
-      return;
-    }
-
-    setSubmitting(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setSubmitting(false); return; }
-
-    const { error } = await supabase.from("stock_withdrawal_requests").insert({
-      creator_id: user.id,
-      amount: value,
-      payment_method: "iban",
-      payment_details: { account_holder: holder.trim(), iban: iban.trim().toUpperCase() },
-    });
-    setSubmitting(false);
-
-    if (error) {
-      toast({ title: "Request failed", description: error.message, variant: "destructive" });
+    if (value > balance) {
+      toast({ title: "Insufficient balance", description: `Available: €${balance.toFixed(2)}`, variant: "destructive" });
       return;
     }
 
-    toast({ title: "Payout requested", description: `€${value.toFixed(2)} will be sent after review (1–5 business days).` });
-    setOpen(false);
-    setAmount("");
-    load();
+    setLoading(true);
+    try {
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) throw new Error("Not signed in");
+
+      const { error } = await supabase.from("stock_withdrawal_requests").insert({
+        creator_id: user.user.id,
+        amount: value,
+        currency: "EUR",
+        payment_method: "stripe_connect",
+        status: "pending",
+        notes: "Payout to Stripe Connect account",
+      });
+
+      if (error) throw error;
+
+      toast({ title: "Payout requested", description: "We will transfer your earnings to your Stripe account after approval." });
+      setAmount("");
+      await loadData();
+    } catch (e: any) {
+      toast({ title: "Request failed", description: e?.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const statusMessage: Record<ConnectStatus, string> = {
+    none: "Connect your Stripe account to receive payouts instantly.",
+    pending: "Your Stripe account is being reviewed. Payouts will begin once active.",
+    active: "Your Stripe account is connected. Request a payout below.",
+    restricted: "Your Stripe account needs attention. Open the dashboard to fix it.",
+    error: "We could not verify your Stripe account status.",
   };
 
   return (
-    <Card className="p-6 space-y-4">
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-            <Wallet className="w-6 h-6 text-primary-foreground" />
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Available for payout</p>
-            <p className="text-2xl font-black">€{available.toFixed(2)}</p>
-            {pending > 0 && (
-              <p className="text-xs text-muted-foreground">€{pending.toFixed(2)} pending review</p>
-            )}
-          </div>
-        </div>
-        <Button className="gap-2" onClick={() => setOpen(true)} disabled={available < MIN_PAYOUT}>
-          <Banknote className="w-4 h-4" /> Request payout
-        </Button>
-      </div>
-
-      <p className="text-xs text-muted-foreground">
-        Your 70% share of every sale lands in your EUR wallet automatically. Request a bank transfer from €{MIN_PAYOUT}.
-      </p>
-
-      {requests.length > 0 && (
-        <div className="space-y-2">
-          {requests.map((r) => (
-            <div key={r.id} className="flex items-center justify-between gap-3 p-3 rounded-lg bg-muted/40 text-sm">
-              <div className="min-w-0">
-                <p className="font-medium">€{num(r.amount).toFixed(2)}</p>
-                <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString()}</p>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Wallet className="w-5 h-5 text-primary" />
+            Stock Content Earnings
+          </CardTitle>
+          <CardDescription>
+            Available balance: <strong>€{balance.toFixed(2)}</strong>
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="rounded-lg border p-4 bg-muted/50">
+            <div className="flex items-start gap-3">
+              <CreditCard className="w-5 h-5 mt-0.5 text-primary" />
+              <div className="flex-1">
+                <p className="font-medium">Stripe Connect</p>
+                <p className="text-sm text-muted-foreground">{statusMessage[connectStatus]}</p>
               </div>
-              <Badge variant={(r.status || "pending") === "paid" ? "default" : "secondary"}>
-                {r.status || "pending"}
-              </Badge>
+              {connectStatus === "active" ? (
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+              ) : connectStatus === "restricted" || connectStatus === "error" ? (
+                <AlertCircle className="w-5 h-5 text-amber-500" />
+              ) : null}
             </div>
-          ))}
-        </div>
-      )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Request a payout</DialogTitle>
-            <DialogDescription>
-              Available: €{available.toFixed(2)} · minimum €{MIN_PAYOUT}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3">
-            <div className="space-y-1">
-              <Label htmlFor="payout-amount">Amount (EUR)</Label>
-              <Input
-                id="payout-amount"
-                type="number"
-                min={MIN_PAYOUT}
-                step="0.01"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder={available.toFixed(2)}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="payout-holder">Account holder</Label>
-              <Input id="payout-holder" value={holder} onChange={(e) => setHolder(e.target.value)} placeholder="Full name" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="payout-iban">IBAN</Label>
-              <Input id="payout-iban" value={iban} onChange={(e) => setIban(e.target.value)} placeholder="SK00 0000 0000 0000 0000 0000" />
+            <div className="mt-4 flex flex-wrap gap-2">
+              {connectStatus === "active" ? (
+                <Button variant="outline" onClick={openDashboard} disabled={connectLoading}>
+                  {connectLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Open Stripe Dashboard"}
+                </Button>
+              ) : (
+                <Button onClick={handleConnect} disabled={connectLoading}>
+                  {connectLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      Connect Stripe Account <ArrowRight className="w-4 h-4 ml-2" />
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button onClick={submit} disabled={submitting}>
-              {submitting ? "Sending..." : "Send request"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </Card>
+
+          {connectStatus === "active" ? (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="payout-amount">Payout amount (EUR)</Label>
+                <div className="flex gap-2 mt-1.5">
+                  <Input
+                    id="payout-amount"
+                    type="number"
+                    min={1}
+                    max={balance}
+                    step={0.01}
+                    placeholder="0.00"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    disabled={loading}
+                  />
+                  <Button onClick={handleRequest} disabled={loading || !amount}>
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Request Payout"}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Minimum €1.00. Funds move to Stripe once an admin approves.</p>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
+              Connect Stripe to request payouts. Until then, your earnings stay in your wallet.
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Withdrawal History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {historyLoading ? (
+            <div className="flex justify-center py-6">
+              <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : history.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No withdrawal requests yet.</p>
+          ) : (
+            <ul className="space-y-3">
+              {history.map((w) => (
+                <li key={w.id} className="flex justify-between items-center border-b last:border-0 pb-2">
+                  <div>
+                    <p className="font-medium">€{w.amount.toFixed(2)}</p>
+                    <p className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleDateString()}</p>
+                  </div>
+                  <span className="text-xs uppercase tracking-wide font-medium px-2 py-1 rounded-full bg-muted">
+                    {w.status}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }

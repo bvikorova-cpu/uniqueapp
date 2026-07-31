@@ -1,34 +1,26 @@
-// Scheduled job: auto-pays small pending creator withdrawals via Stripe Connect
-// transfers. Designed to be triggered by pg_cron weekly. Only auto-pays rows
-// that satisfy ALL of:
-//   - status = 'pending'
-//   - amount <= AUTO_PAYOUT_MAX_EUR (default 200 EUR)
-//   - creator has stripe_connect_payouts_enabled = true
-// Bigger amounts stay pending for manual admin review.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-
-const corsHeaders = { "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 const log = (s: string, d?: unknown) =>
   console.log(`[AUTO-PAYOUT] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
 
 const KIND_MAP = {
   instructor: { table: "instructor_withdrawal_requests", creatorCol: "instructor_id", transferCol: "stripe_transfer_id" },
-  musician:   { table: "musician_withdrawal_requests",   creatorCol: "musician_id",   transferCol: "stripe_transfer_id" },
-  masterchef: { table: "masterchef_withdrawal_requests", creatorCol: "chef_id",       transferCol: "stripe_transfer_id" },
+  musician: { table: "musician_withdrawal_requests", creatorCol: "musician_id", transferCol: "stripe_transfer_id" },
+  masterchef: { table: "masterchef_withdrawal_requests", creatorCol: "chef_id", transferCol: "stripe_transfer_id" },
   influencer: { table: "influencer_withdrawal_requests", creatorCol: "influencer_id", transferCol: "stripe_transfer_id" },
-  auction:    { table: "auction_withdrawal_requests",    creatorCol: "seller_id",     transferCol: "stripe_payout_id"   },
-  referral:   { table: "referral_withdrawal_requests",   creatorCol: "referrer_id",   transferCol: "stripe_transfer_id" },
-  campaign:   { table: "withdrawal_requests",            creatorCol: "user_id",       transferCol: "stripe_transfer_id" } } as const;
+  auction: { table: "auction_withdrawal_requests", creatorCol: "seller_id", transferCol: "stripe_payout_id" },
+  referral: { table: "referral_withdrawal_requests", creatorCol: "referrer_id", transferCol: "stripe_transfer_id" },
+  campaign: { table: "withdrawal_requests", creatorCol: "user_id", transferCol: "stripe_transfer_id" },
+  stock: { table: "stock_withdrawal_requests", creatorCol: "creator_id", transferCol: "stripe_transfer_id" },
+} as const;
 
 const AUTO_MAX_EUR = Number(Deno.env.get("AUTO_PAYOUT_MAX_EUR") ?? "200");
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   const results: any[] = [];
   let totalPaid = 0;
@@ -63,8 +55,6 @@ serve(async (req) => {
 
       log(`${kind}: ${rows.length} pending candidates`);
 
-      // SCALE: batch-fetch all creator profiles in one query instead of
-      // N sequential round-trips inside the loop.
       const creatorIds = Array.from(new Set(rows.map((r: any) => r[cfg.creatorCol]).filter(Boolean)));
       const profilesMap = new Map<string, { stripe_connect_account_id: string | null; stripe_connect_payouts_enabled: boolean | null }>();
       if (creatorIds.length > 0) {
@@ -96,9 +86,7 @@ serve(async (req) => {
           continue;
         }
 
-
         try {
-          // ATOMIC CLAIM: pending -> processing. Skip if another sweep grabbed it.
           const { data: claimed, error: claimErr } = await admin
             .from(cfg.table)
             .update({ status: "processing" })
@@ -116,16 +104,19 @@ serve(async (req) => {
             currency: "eur",
             destination: profile.stripe_connect_account_id,
             description: `auto ${kind} withdrawal ${wd.id}`,
-            metadata: { kind, withdrawal_id: wd.id, creator_id: creatorId, auto: "true" } }, {
-            idempotencyKey: `auto-payout-${kind}-${wd.id}` });
+            metadata: { kind, withdrawal_id: wd.id, creator_id: creatorId, auto: "true" },
+          }, {
+            idempotencyKey: `auto-payout-${kind}-${wd.id}`,
+          });
 
-          const updateData: Record<string, unknown> = { status: "completed",
+          const updateData: Record<string, unknown> = {
+            status: "completed",
             admin_notes: "Auto-paid by scheduled job",
             processed_at: new Date().toISOString(),
-            [cfg.transferCol]: transfer.id };
+            [cfg.transferCol]: transfer.id,
+          };
           await admin.from(cfg.table).update(updateData).eq("id", wd.id);
 
-          // For referral kind, mark earnings as paid FIFO up to the withdrawn amount
           if (kind === "referral") {
             const { data: unpaid } = await admin
               .from("megatalent_referral_earnings")
@@ -141,10 +132,7 @@ serve(async (req) => {
               remaining -= Number(row.amount);
             }
             if (idsToMark.length > 0) {
-              await admin
-                .from("megatalent_referral_earnings")
-                .update({ paid: true })
-                .in("id", idsToMark);
+              await admin.from("megatalent_referral_earnings").update({ paid: true }).in("id", idsToMark);
             }
           }
 
@@ -153,7 +141,8 @@ serve(async (req) => {
             action: "withdrawal_auto_paid",
             target_id: wd.id,
             target_type: cfg.table,
-            details: { kind, amount: wd.amount, transfer_id: transfer.id } });
+            details: { kind, amount: wd.amount, transfer_id: transfer.id },
+          });
 
           totalPaid++;
           results.push({ kind, id: wd.id, transfer_id: transfer.id, amount: wd.amount });
@@ -161,9 +150,7 @@ serve(async (req) => {
           totalFailed++;
           const msg = e instanceof Error ? e.message : String(e);
           log(`transfer failed for ${kind}/${wd.id}`, { msg });
-          // revert claim so the row can be retried (only if we don't already have a transfer id)
-          await admin.from(cfg.table).update({ status: "pending" })
-            .eq("id", wd.id).eq("status", "processing").is(cfg.transferCol, null);
+          await admin.from(cfg.table).update({ status: "pending" }).eq("id", wd.id).eq("status", "processing").is(cfg.transferCol, null);
           results.push({ kind, id: wd.id, error: msg });
         }
       }
@@ -172,11 +159,7 @@ serve(async (req) => {
     log("sweep complete", { paid: totalPaid, skipped: totalSkipped, failed: totalFailed });
 
     return new Response(
-      JSON.stringify({ success: true,
-        paid: totalPaid,
-        skipped: totalSkipped,
-        failed: totalFailed,
-        details: results }),
+      JSON.stringify({ success: true, paid: totalPaid, skipped: totalSkipped, failed: totalFailed, details: results }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
@@ -184,6 +167,7 @@ serve(async (req) => {
     log("FATAL", { msg });
     return new Response(JSON.stringify({ error: msg, paid: totalPaid, failed: totalFailed }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });

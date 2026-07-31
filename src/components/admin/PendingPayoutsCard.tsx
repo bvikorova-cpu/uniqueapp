@@ -15,13 +15,9 @@ const TABLES = [
   "auction_withdrawal_requests",
   "referral_withdrawal_requests",
   "withdrawal_requests",
+  "stock_withdrawal_requests",
 ] as const;
 
-/**
- * Admin widget: shows total pending withdrawal count + sum across every
- * creator type, plus a one-click "Run auto-payout sweep now" trigger that
- * invokes the same scheduled edge function manually.
- */
 export function PendingPayoutsCard() {
   const { toast } = useToast();
   const [count, setCount] = useState<number | null>(null);
@@ -57,18 +53,15 @@ export function PendingPayoutsCard() {
   const runSweep = async () => {
     setRunning(true);
     try {
-      const { data, error } = await supabase.functions.invoke(
-        "auto-payout-pending-withdrawals",
-      );
+      const { data, error } = await supabase.functions.invoke("auto-payout-pending-withdrawals");
       if (error) throw error;
       toast({
         title: "Auto-payout sweep complete",
-        description: `Paid: ${(data as any)?.paid ?? 0} · Skipped: ${(data as any)?.skipped ?? 0} · Failed: ${(data as any)?.failed ?? 0}` });
+        description: `Paid: ${(data as any)?.paid ?? 0} · Skipped: ${(data as any)?.skipped ?? 0} · Failed: ${(data as any)?.failed ?? 0}`,
+      });
       await load();
-    } catch (e: any) { toast({
-        title: "Sweep failed",
-        description: e?.message || "Unknown error",
-        variant: "destructive" });
+    } catch (e: any) {
+      toast({ title: "Sweep failed", description: e?.message || "Unknown error", variant: "destructive" });
     } finally {
       setRunning(false);
     }
@@ -78,47 +71,43 @@ export function PendingPayoutsCard() {
     <>
       <FloatingHowItWorks title={"Pending Payouts Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Pending Payouts Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pending Payouts Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="border-primary/20 bg-card/60 backdrop-blur-xl">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium flex items-center gap-2">
-          <Banknote className="h-4 w-4 text-amber-500" />
-          Pending Creator Payouts
-        </CardTitle>
-        <Badge variant="secondary">all 7 hubs</Badge>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {loading ? (
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
-          </div>
-        ) : (
-          <>
-            <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-bold">{count ?? 0}</span>
-              <span className="text-sm text-muted-foreground">
-                requests · €{sum.toFixed(2)} total
-              </span>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <Banknote className="h-4 w-4 text-amber-500" />
+            Pending Creator Payouts
+          </CardTitle>
+          <Badge variant="secondary">all 8 hubs</Badge>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {loading ? (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" /> Loading…
             </div>
-            <Button
-              onClick={runSweep}
-              disabled={running || count === 0}
-              className="w-full gap-2"
-              size="sm"
-            >
-              {running ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Zap className="h-4 w-4" />
-              )}
-              {running ? "Running sweep…" : "Run auto-payout sweep"}
-            </Button>
-            <p className="text-[11px] text-muted-foreground leading-tight">
-              Auto-pays pending withdrawals ≤ €200 to creators with active
-              Stripe Connect. Larger amounts stay for manual review.
-            </p>
-          </>
-        )}
-      </CardContent>
-    </Card>
+          ) : (
+            <>
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-bold">{count ?? 0}</span>
+                <span className="text-sm text-muted-foreground">
+                  requests · €{sum.toFixed(2)} total
+                </span>
+              </div>
+              <Button
+                onClick={runSweep}
+                disabled={running || count === 0}
+                className="w-full gap-2"
+                size="sm"
+              >
+                {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
+                {running ? "Running sweep…" : "Run auto-payout sweep"}
+              </Button>
+              <p className="text-[11px] text-muted-foreground leading-tight">
+                Auto-pays pending withdrawals ≤ €200 to creators with active
+                Stripe Connect. Larger amounts stay for manual review.
+              </p>
+            </>
+          )}
+        </CardContent>
+      </Card>
     </>
   );
 }
