@@ -85,23 +85,28 @@ export function EarningsDashboardView({ onBack }: EarningsDashboardViewProps) {
     <>
       <FloatingHowItWorks title={"Earnings Dashboard View - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Dashboard View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Dashboard View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-6">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 flex-wrap">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
-        <h2 className="text-2xl font-bold flex items-center gap-2"><BarChart3 className="w-6 h-6 text-green-500" /> Earnings Dashboard</h2>
+        <h2 className="text-xl md:text-2xl font-bold flex items-center gap-2"><BarChart3 className="w-6 h-6 text-green-500" /> Earnings Dashboard</h2>
+        <Button variant="outline" size="sm" className="ml-auto gap-1" onClick={load} disabled={loading}>
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /> Refresh
+        </Button>
       </div>
 
       {loading ? (
         <div className="text-center py-12 text-muted-foreground">Loading earnings...</div>
+      ) : !signedIn ? (
+        <Card className="p-8 text-center text-muted-foreground">Sign in to see your real earnings.</Card>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
-                  <Euro className="w-7 h-7 text-white" />
+                  <Euro className="w-7 h-7 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Earnings (70%)</p>
+                  <p className="text-sm text-muted-foreground">Your earnings (70%)</p>
                   <p className="text-3xl font-black">€{earnings.total_revenue.toFixed(2)}</p>
                 </div>
               </div>
@@ -110,10 +115,10 @@ export function EarningsDashboardView({ onBack }: EarningsDashboardViewProps) {
             <Card className="p-6 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border-blue-500/20">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
-                  <Download className="w-7 h-7 text-white" />
+                  <Download className="w-7 h-7 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Downloads</p>
+                  <p className="text-sm text-muted-foreground">Paid downloads</p>
                   <p className="text-3xl font-black">{earnings.total_downloads}</p>
                 </div>
               </div>
@@ -122,10 +127,10 @@ export function EarningsDashboardView({ onBack }: EarningsDashboardViewProps) {
             <Card className="p-6 bg-gradient-to-br from-purple-500/10 to-violet-500/10 border-purple-500/20">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
-                  <ImageIcon className="w-7 h-7 text-white" />
+                  <ImageIcon className="w-7 h-7 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Items Published</p>
+                  <p className="text-sm text-muted-foreground">Items published</p>
                   <p className="text-3xl font-black">{earnings.items_count}</p>
                 </div>
               </div>
@@ -133,28 +138,52 @@ export function EarningsDashboardView({ onBack }: EarningsDashboardViewProps) {
           </div>
 
           <Card className="p-6">
-            <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><TrendingUp className="w-5 h-5" /> Revenue Insights</h3>
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><TrendingUp className="w-5 h-5" /> Revenue insights</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 bg-muted/50 rounded-lg text-center">
-                <p className="text-sm text-muted-foreground">Avg. Price</p>
-                <p className="text-xl font-bold">€{earnings.items_count > 0 ? ((earnings.total_revenue / 0.7) / earnings.items_count).toFixed(2) : "0.00"}</p>
+                <p className="text-sm text-muted-foreground">Gross sales</p>
+                <p className="text-xl font-bold">€{earnings.gross.toFixed(2)}</p>
               </div>
               <div className="p-4 bg-muted/50 rounded-lg text-center">
-                <p className="text-sm text-muted-foreground">Avg. Downloads/Item</p>
-                <p className="text-xl font-bold">{earnings.items_count > 0 ? Math.round(earnings.total_downloads / earnings.items_count) : 0}</p>
+                <p className="text-sm text-muted-foreground">Avg. sale price</p>
+                <p className="text-xl font-bold">€{earnings.total_downloads > 0 ? (earnings.gross / earnings.total_downloads).toFixed(2) : "0.00"}</p>
               </div>
               <div className="p-4 bg-muted/50 rounded-lg text-center">
-                <p className="text-sm text-muted-foreground">Revenue/Download</p>
+                <p className="text-sm text-muted-foreground">Your revenue / download</p>
                 <p className="text-xl font-bold">€{earnings.total_downloads > 0 ? (earnings.total_revenue / earnings.total_downloads).toFixed(2) : "0.00"}</p>
               </div>
               <div className="p-4 bg-muted/50 rounded-lg text-center">
-                <p className="text-sm text-muted-foreground">Platform Fee (30%)</p>
-                <p className="text-xl font-bold">€{(earnings.total_revenue / 0.7 * 0.3).toFixed(2)}</p>
+                <p className="text-sm text-muted-foreground">Platform fee (30%)</p>
+                <p className="text-xl font-bold">€{earnings.platform_fees.toFixed(2)}</p>
               </div>
             </div>
           </Card>
+
+          <Card className="p-6">
+            <h3 className="text-lg font-bold mb-4">Recent sales</h3>
+            {sales.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No sales yet. Upload content and your real earnings will appear here automatically.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {sales.map((s) => (
+                  <div key={s.id} className="flex items-center justify-between gap-3 p-3 rounded-lg bg-muted/40 text-sm">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{s.license_type || "Standard"} license</p>
+                      <p className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <p className="font-bold shrink-0">
+                      +€{(s.creator_earning != null ? num(s.creator_earning) : num(s.amount_paid) * 0.7).toFixed(2)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
         </>
       )}
+
     </div>
     </>
   );
