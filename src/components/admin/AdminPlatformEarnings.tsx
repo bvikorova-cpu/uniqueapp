@@ -423,7 +423,7 @@ export function AdminPlatformEarnings() {
 
       {/* Section Details */}
       <Tabs defaultValue="influencers" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="influencers">
             <User className="w-4 h-4 mr-2" />
             Influencers
@@ -442,6 +442,10 @@ export function AdminPlatformEarnings() {
           </TabsTrigger>
           <TabsTrigger value="sports">
             Sports (€{sportsStats.total.toFixed(2)})
+          </TabsTrigger>
+          <TabsTrigger value="stock-content">
+            <ImageIcon className="w-4 h-4 mr-2" />
+            Stock Content (€{stockStats.total.toFixed(2)})
           </TabsTrigger>
         </TabsList>
 
