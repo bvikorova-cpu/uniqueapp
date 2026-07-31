@@ -1,4 +1,5 @@
 import "../_shared/aiRedirect.ts";
+console.log("remove-background build: lovable-gateway-v3");
 // Universal photo processing edge function.
 // Handles: bg-remove, restore, colorize, repair, enhance, colorize-pro,
 // face-enhance, upscale. Uses Lovable AI for real image edits and the
