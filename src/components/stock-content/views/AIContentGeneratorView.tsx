@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Sparkles, Loader2, ImageIcon, Wand2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { toast } from "sonner";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface AIContentGeneratorViewProps {
@@ -45,13 +44,21 @@ export function AIContentGeneratorView({ onBack }: AIContentGeneratorViewProps) 
       const { data, error } = await supabase.functions.invoke('ai-stock-content-generator', {
         body: { prompt, style, category }
       });
-      if (error) throw error;
-      if (data?.imageUrl) {
-        setGeneratedImage(data.imageUrl);
-        toast({ title: "Image Generated!", description: "Your AI content is ready. You can now upload it to the library." });
+      if (error) {
+        let message = error.message || "Failed to generate content";
+        try {
+          const context = error.context as Response | undefined;
+          const payload = context ? await context.clone().json() : undefined;
+          if (payload?.error) message = payload.error;
+        } catch { /* Keep the original invocation error. */ }
+        throw new Error(message);
       }
-    } catch (error: any) {
-      toast({ title: "Generation Failed", description: error.message || "Failed to generate content", variant: "destructive" });
+      if (!data?.imageUrl) throw new Error(data?.error || "The AI returned no image");
+      setGeneratedImage(data.imageUrl);
+      toast({ title: "Image Generated!", description: "Your AI content is ready. You can now upload it to the library." });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to generate content";
+      toast({ title: "Generation Failed", description: message, variant: "destructive" });
     } finally {
       setGenerating(false);
     }
