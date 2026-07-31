@@ -89,6 +89,7 @@ export function StockPayoutCard() {
         amount: value,
         currency: "EUR",
         payment_method: "stripe_connect",
+        payment_details: {},
         status: "pending",
         notes: "Payout to Stripe Connect account",
       });
