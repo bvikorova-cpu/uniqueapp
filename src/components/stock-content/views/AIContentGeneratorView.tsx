@@ -56,7 +56,7 @@ export function AIContentGeneratorView({ onBack }: AIContentGeneratorViewProps) 
       }
       if (!data?.imageUrl) throw new Error(data?.error || "The AI returned no image");
       setGeneratedImage(data.imageUrl);
-      toast({ title: "Image Generated!", description: "Your AI content is ready. You can now upload it to the library." });
+      toast({ title: "Image Generated!", description: "Your AI content is ready — you can download it now." });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to generate content";
       toast({ title: "Generation Failed", description: message, variant: "destructive" });
