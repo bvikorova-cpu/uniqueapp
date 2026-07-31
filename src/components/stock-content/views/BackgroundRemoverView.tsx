@@ -45,7 +45,9 @@ export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
 
-      const filePath = `bg-removal-src/${user.id}/${Date.now()}-${file.name}`;
+      // Storage RLS requires the first folder to be the user id
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const filePath = `${user.id}/bg-removal-src/${Date.now()}-${safeName}`;
       const { error: uploadError } = await supabase.storage
         .from("stock-content")
         .upload(filePath, file);
