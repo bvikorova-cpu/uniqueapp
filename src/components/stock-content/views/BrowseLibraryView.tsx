@@ -208,9 +208,11 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                 ) : (
                   <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-10 h-10 text-muted-foreground" /></div>
                 )}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="transform rotate-[-25deg] opacity-30 text-3xl font-bold text-white tracking-widest select-none" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>UNIQUE</span>
-                </div>
+                {!ownedIds.has(item.id) && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span className="transform rotate-[-25deg] opacity-30 text-3xl font-bold text-white tracking-widest select-none" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>UNIQUE</span>
+                  </div>
+                )}
                 <Badge className="absolute top-2 right-2" variant="secondary">{item.content_type}</Badge>
                 {item.requires_release && (
                   <Badge
