@@ -196,7 +196,7 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
               onClick={() =>
                 onConfirm({
                   licenseType: license,
-                  resolution,
+                  resolution: "original",
                   licenseFeeEur: Number(licenseFee.toFixed(2)),
                   assetPriceEur: Number(assetPrice.toFixed(2)),
                   totalEur: Number(total.toFixed(2)),
