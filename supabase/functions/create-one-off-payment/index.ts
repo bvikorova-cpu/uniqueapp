@@ -25,10 +25,11 @@ async function handler(req: Request): Promise<Response> {
 
     if (!PRODUCTS[productKey]) {
       return new Response(
-        JSON.stringify({ error: `Unknown productKey: ${productKey}` }),
+        JSON.stringify({ error: `Unknown productKey: ${productKey}`, build: "v4-stock", known: Object.keys(PRODUCTS).length }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
 
     // Optional auth — pass through user email/id when available
     let userEmail: string | undefined;
