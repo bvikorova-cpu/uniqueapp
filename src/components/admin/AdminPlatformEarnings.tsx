@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { TrendingUp, DollarSign, Users, Calendar, User } from "lucide-react";
+import { TrendingUp, DollarSign, Users, Calendar, User, Image as ImageIcon } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -43,6 +43,19 @@ interface CreatorDetail {
   pendingWithdrawals: number;
   availableBalance: number;
 }
+
+interface StockCreatorDetail {
+  id: string;
+  name: string;
+  avatar_url: string | null;
+  total_earnings: number;
+  pending_balance: number;
+  total_withdrawn: number;
+  pendingWithdrawals: number;
+  availableBalance: number;
+}
+
+
 
 export function AdminPlatformEarnings() {
   // Fetch InfluKing earnings
@@ -192,7 +205,66 @@ export function AdminPlatformEarnings() {
       return data || [];
     } });
 
+  // Fetch Stock Content earnings
+  const { data: stockEarnings } = useQuery({
+    queryKey: ["admin-stock-content-earnings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("stock_content_sales")
+        .select("id, amount_paid, platform_fee, creator_earning, created_at, status")
+        .or("status.eq.completed,status.eq.paid,status.eq.succeeded")
+        .order("created_at", { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  // Fetch Stock Content creator details
+  const { data: stockCreatorDetails } = useQuery({
+    queryKey: ["admin-stock-creator-details"],
+    queryFn: async () => {
+      const { data: earnings, error: earningsError } = await supabase
+        .from("stock_creator_earnings")
+        .select("*");
+      if (earningsError) throw earningsError;
+
+      const creatorIds = (earnings || []).map((e) => e.creator_id);
+      const [{ data: profiles }, { data: withdrawals }] = await Promise.all([
+        creatorIds.length > 0
+          ? supabase.from("profiles").select("id, full_name, avatar_url").in("id", creatorIds)
+          : Promise.resolve({ data: [] }),
+        supabase.from("stock_withdrawal_requests").select("*").eq("status", "pending"),
+      ]);
+
+      const profileMap = new Map((profiles || []).map((p) => [p.id, p]));
+      return (earnings || [])
+        .map((profile) => {
+          const pendingWithdrawals = (withdrawals || [])
+            .filter((w) => w.creator_id === profile.creator_id)
+            .reduce((sum, w) => sum + (w.amount || 0), 0);
+          const availableBalance =
+            (profile.total_earnings || 0) -
+            (profile.total_withdrawn || 0) -
+            pendingWithdrawals;
+          const p = profileMap.get(profile.creator_id);
+          return {
+            id: profile.creator_id,
+            name: p?.full_name || `Creator ${profile.creator_id.slice(0, 8)}`,
+            avatar_url: p?.avatar_url || null,
+            total_earnings: profile.total_earnings || 0,
+            pending_balance: profile.pending_balance || 0,
+            total_withdrawn: profile.total_withdrawn || 0,
+            pendingWithdrawals,
+            availableBalance,
+          } as StockCreatorDetail;
+        })
+        .sort((a, b) => b.total_earnings - a.total_earnings);
+    },
+  });
+
   // Calculate statistics
+
   const calculateStats = (earnings: any[], commissionField: string): EarningStats => {
     if (!earnings || earnings.length === 0) {
       return { total: 0, count: 0, avgPerTransaction: 0 };
@@ -208,15 +280,17 @@ export function AdminPlatformEarnings() {
   const influkingStats = calculateStats(influkingEarnings || [], "commission_amount");
   const masterchefStats = calculateStats(masterchefEarnings || [], "commission_amount");
   const sportsStats = calculateStats(sportsEarnings || [], "platform_commission");
+  const stockStats = calculateStats(stockEarnings || [], "platform_fee");
 
-  const totalEarnings = influkingStats.total + masterchefStats.total + sportsStats.total;
-  const totalTransactions = influkingStats.count + masterchefStats.count + sportsStats.count;
+  const totalEarnings = influkingStats.total + masterchefStats.total + sportsStats.total + stockStats.total;
+  const totalTransactions = influkingStats.count + masterchefStats.count + sportsStats.count + stockStats.count;
 
   // Prepare chart data
   const pieData = [
     { name: "InfluKing", value: influkingStats.total, color: "#8B5CF6" },
     { name: "KitchenStars", value: masterchefStats.total, color: "#F59E0B" },
     { name: "Sports", value: sportsStats.total, color: "#10B981" },
+    { name: "Stock Content", value: stockStats.total, color: "#EC4899" },
   ].filter(item => item.value > 0);
 
   // Prepare timeline data (last 7 days)
@@ -238,12 +312,17 @@ export function AdminPlatformEarnings() {
         .filter(e => e.created_at?.startsWith(dateStr))
         .reduce((sum, e) => sum + (e.platform_commission || 0), 0);
       
+      const stockDaily = (stockEarnings || [])
+        .filter(e => e.created_at?.startsWith(dateStr))
+        .reduce((sum, e) => sum + (e.platform_fee || 0), 0);
+      
       days.push({
         date: format(date, "MMM dd"),
         InfluKing: influkingDaily,
         KitchenStars: masterchefDaily,
         Sports: sportsDaily,
-        Total: influkingDaily + masterchefDaily + sportsDaily });
+        StockContent: stockDaily,
+        Total: influkingDaily + masterchefDaily + sportsDaily + stockDaily });
     }
     return days;
   };
@@ -336,6 +415,7 @@ export function AdminPlatformEarnings() {
               <Line type="monotone" dataKey="InfluKing" stroke="#8B5CF6" strokeWidth={2} />
               <Line type="monotone" dataKey="KitchenStars" stroke="#F59E0B" strokeWidth={2} />
               <Line type="monotone" dataKey="Sports" stroke="#10B981" strokeWidth={2} />
+              <Line type="monotone" dataKey="StockContent" stroke="#EC4899" strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
         </Card>
@@ -343,7 +423,7 @@ export function AdminPlatformEarnings() {
 
       {/* Section Details */}
       <Tabs defaultValue="influencers" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="influencers">
             <User className="w-4 h-4 mr-2" />
             Influencers
@@ -362,6 +442,10 @@ export function AdminPlatformEarnings() {
           </TabsTrigger>
           <TabsTrigger value="sports">
             Sports (€{sportsStats.total.toFixed(2)})
+          </TabsTrigger>
+          <TabsTrigger value="stock-content">
+            <ImageIcon className="w-4 h-4 mr-2" />
+            Stock Content (€{stockStats.total.toFixed(2)})
           </TabsTrigger>
         </TabsList>
 
@@ -686,6 +770,108 @@ export function AdminPlatformEarnings() {
                       <div className="text-right">
                         <p className="font-semibold text-primary">€{earning.platform_commission?.toFixed(2)}</p>
                         <p className="text-sm text-muted-foreground">Your Commission</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="stock-content" className="mt-6">
+          <Card className="p-6">
+            <div className="space-y-6">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Platform Fees</p>
+                  <p className="text-xl font-bold">€{stockStats.total.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Transactions</p>
+                  <p className="text-xl font-bold">{stockStats.count}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Avg per Transaction</p>
+                  <p className="text-xl font-bold">€{stockStats.avgPerTransaction.toFixed(2)}</p>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-4">Stock Creators</h4>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Creator</TableHead>
+                        <TableHead className="text-right">Total Earnings</TableHead>
+                        <TableHead className="text-right">Withdrawn</TableHead>
+                        <TableHead className="text-right">Pending Withdrawals</TableHead>
+                        <TableHead className="text-right">Available Balance</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(stockCreatorDetails || []).map((creator) => (
+                        <TableRow key={creator.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              {creator.avatar_url ? (
+                                <img
+                                  src={creator.avatar_url}
+                                  alt={creator.name}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                                  <User className="w-5 h-5 text-muted-foreground" />
+                                </div>
+                              )}
+                              <div>
+                                <p className="font-medium">{creator.name}</p>
+                                <p className="text-xs text-muted-foreground">ID: {creator.id.slice(0, 8)}...</p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right font-semibold">
+                            €{creator.total_earnings.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right text-muted-foreground">
+                            €{creator.total_withdrawn.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right text-amber-600">
+                            €{creator.pendingWithdrawals.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-green-600">
+                            €{creator.availableBalance.toFixed(2)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {(!stockCreatorDetails || stockCreatorDetails.length === 0) && (
+                        <TableRow>
+                          <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                            No stock content creators yet
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-4">Recent Transactions</h4>
+                <div className="space-y-2">
+                  {(stockEarnings || []).slice(0, 10).map((earning) => (
+                    <div key={earning.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                      <div>
+                        <p className="font-medium">€{earning.amount_paid?.toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {earning.created_at ? format(new Date(earning.created_at), "PPp") : "N/A"}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-primary">€{earning.platform_fee?.toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground">Platform Fee</p>
                       </div>
                     </div>
                   ))}
