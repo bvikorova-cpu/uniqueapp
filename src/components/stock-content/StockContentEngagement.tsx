@@ -90,9 +90,10 @@ export function StockContentEngagement() {
             </div>
           </div>
           <p className="text-[11px] text-muted-foreground mt-3">
-            Example: you set €10.00 at upload — you receive €7.00 and €3.00 covers the platform. The buyer's
-            license fee is charged separately on top of your price.
+            Example: you set €10.00 at upload — you receive €7.00 and €3.00 (30%) covers the platform. The buyer's
+            license fee is charged on top of your price and goes to the platform in full.
           </p>
+
         </div>
       </Card>
     </>
