@@ -778,6 +778,108 @@ export function AdminPlatformEarnings() {
             </div>
           </Card>
         </TabsContent>
+
+        <TabsContent value="stock-content" className="mt-6">
+          <Card className="p-6">
+            <div className="space-y-6">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Platform Fees</p>
+                  <p className="text-xl font-bold">€{stockStats.total.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Transactions</p>
+                  <p className="text-xl font-bold">{stockStats.count}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Avg per Transaction</p>
+                  <p className="text-xl font-bold">€{stockStats.avgPerTransaction.toFixed(2)}</p>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-4">Stock Creators</h4>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Creator</TableHead>
+                        <TableHead className="text-right">Total Earnings</TableHead>
+                        <TableHead className="text-right">Withdrawn</TableHead>
+                        <TableHead className="text-right">Pending Withdrawals</TableHead>
+                        <TableHead className="text-right">Available Balance</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(stockCreatorDetails || []).map((creator) => (
+                        <TableRow key={creator.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              {creator.avatar_url ? (
+                                <img
+                                  src={creator.avatar_url}
+                                  alt={creator.name}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                                  <User className="w-5 h-5 text-muted-foreground" />
+                                </div>
+                              )}
+                              <div>
+                                <p className="font-medium">{creator.name}</p>
+                                <p className="text-xs text-muted-foreground">ID: {creator.id.slice(0, 8)}...</p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right font-semibold">
+                            €{creator.total_earnings.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right text-muted-foreground">
+                            €{creator.total_withdrawn.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right text-amber-600">
+                            €{creator.pendingWithdrawals.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-green-600">
+                            €{creator.availableBalance.toFixed(2)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {(!stockCreatorDetails || stockCreatorDetails.length === 0) && (
+                        <TableRow>
+                          <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                            No stock content creators yet
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-4">Recent Transactions</h4>
+                <div className="space-y-2">
+                  {(stockEarnings || []).slice(0, 10).map((earning) => (
+                    <div key={earning.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                      <div>
+                        <p className="font-medium">€{earning.amount_paid?.toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {earning.created_at ? format(new Date(earning.created_at), "PPp") : "N/A"}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-primary">€{earning.platform_fee?.toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground">Platform Fee</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
