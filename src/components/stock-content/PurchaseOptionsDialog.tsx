@@ -93,12 +93,12 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
   if (!item) return null;
 
   const activeLicense = licenses.find((l) => l.type === license) ?? licenses[0];
-  const resMeta = item.resolutions?.[resolution] || {};
-  const resMult = Number(resMeta.price_multiplier ?? RESOLUTIONS[resolution].mult);
 
   const licenseFee = Math.max(0, Number(activeLicense?.fee || 0));
-  const assetPrice = Math.max(0.01, base * resMult);
+  // Seller sets a fixed asset price — resolution does NOT change it.
+  const assetPrice = base;
   const total = licenseFee + assetPrice;
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -154,14 +154,14 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold mb-2">2. Download size</h4>
+            <h4 className="text-sm font-semibold mb-2">
+              2. Download size <span className="text-muted-foreground font-normal">— price stays the same</span>
+            </h4>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {(Object.keys(RESOLUTIONS) as ResolutionKey[]).map((k) => {
                 const d = RESOLUTIONS[k];
                 const meta = item.resolutions?.[k] || {};
-                const mult = Number(meta.price_multiplier ?? d.mult);
                 const width = Number(meta.width ?? d.width);
-                const price = Math.max(0.01, base * mult);
                 const Icon = d.icon;
                 const active = k === resolution;
                 return (
@@ -179,15 +179,13 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
                     <h5 className="font-bold text-xs">{d.label}</h5>
                     <p className="text-[10px] text-muted-foreground mb-1">{d.sub}</p>
                     <Badge variant="outline" className="text-[10px] mb-1">{width > 0 ? `${width}px` : "Full size"}</Badge>
-                    <div className="flex items-baseline gap-0.5">
-                      <Euro className="w-3 h-3" />
-                      <span className="text-sm font-black">{price.toFixed(2)}</span>
-                    </div>
+                    <p className="text-[10px] font-semibold text-green-600">Included</p>
                   </Card>
                 );
               })}
             </div>
           </div>
+
 
           <Card className="p-4 bg-muted/40">
             <h4 className="text-sm font-semibold mb-3">Order summary</h4>
@@ -200,9 +198,10 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
               </div>
               <div className="flex items-center justify-between gap-2">
                 <span className="text-muted-foreground">
-                  Asset price ({RESOLUTIONS[resolution].label})
+                  Asset price (fixed by seller)
                 </span>
                 <span className="font-semibold whitespace-nowrap">€{assetPrice.toFixed(2)}</span>
+
               </div>
               <Separator />
               <div className="flex items-center justify-between gap-2 text-base">
