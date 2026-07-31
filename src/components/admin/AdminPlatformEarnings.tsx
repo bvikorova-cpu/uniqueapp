@@ -312,12 +312,18 @@ export function AdminPlatformEarnings() {
         .filter(e => e.created_at?.startsWith(dateStr))
         .reduce((sum, e) => sum + (e.platform_commission || 0), 0);
       
+      const stockDaily = (stockEarnings || [])
+        .filter(e => e.created_at?.startsWith(dateStr))
+        .reduce((sum, e) => sum + (e.platform_fee || 0), 0);
+      
       days.push({
         date: format(date, "MMM dd"),
         InfluKing: influkingDaily,
         KitchenStars: masterchefDaily,
         Sports: sportsDaily,
-        Total: influkingDaily + masterchefDaily + sportsDaily });
+        StockContent: stockDaily,
+        Total: influkingDaily + masterchefDaily + sportsDaily + stockDaily });
+    }
     }
     return days;
   };
