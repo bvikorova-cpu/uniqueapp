@@ -93,12 +93,12 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
   if (!item) return null;
 
   const activeLicense = licenses.find((l) => l.type === license) ?? licenses[0];
-  const resMeta = item.resolutions?.[resolution] || {};
-  const resMult = Number(resMeta.price_multiplier ?? RESOLUTIONS[resolution].mult);
 
   const licenseFee = Math.max(0, Number(activeLicense?.fee || 0));
-  const assetPrice = Math.max(0.01, base * resMult);
+  // Seller sets a fixed asset price — resolution does NOT change it.
+  const assetPrice = base;
   const total = licenseFee + assetPrice;
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
