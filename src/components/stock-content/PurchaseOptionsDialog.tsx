@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Check, Crown, Euro, ImageIcon, Maximize2, Monitor, Newspaper, Smartphone, Tv } from "lucide-react";
+import { Check, Crown, Euro, ImageIcon, Maximize2, Newspaper } from "lucide-react";
 
 export type LicenseKey = "standard" | "extended" | "editorial";
 export type ResolutionKey = "small" | "medium" | "large" | "original";
@@ -35,12 +35,6 @@ interface PurchaseOptionsDialogProps {
   }) => void;
 }
 
-const RESOLUTIONS: Record<ResolutionKey, { label: string; sub: string; mult: number; width: number; icon: any }> = {
-  small: { label: "Small", sub: "Web & social", mult: 0.4, width: 640, icon: Smartphone },
-  medium: { label: "Medium", sub: "Blogs & email", mult: 0.7, width: 1280, icon: Monitor },
-  large: { label: "Large", sub: "HD print & web", mult: 1.0, width: 1920, icon: Tv },
-  original: { label: "Original", sub: "Max resolution", mult: 1.5, width: 0, icon: Maximize2 },
-};
 
 export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: PurchaseOptionsDialogProps) {
   const base = Number(item?.price_eur || 0);
@@ -81,12 +75,10 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
   }, [base, item?.is_editorial, JSON.stringify(pricing)]);
 
   const [license, setLicense] = useState<LicenseKey>("standard");
-  const [resolution, setResolution] = useState<ResolutionKey>("large");
 
   useEffect(() => {
     if (open) {
       setLicense(licenses[0]?.type ?? "standard");
-      setResolution("large");
     }
   }, [open, item?.id]);
 
@@ -106,7 +98,7 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
         <DialogHeader>
           <DialogTitle>Complete your purchase</DialogTitle>
           <DialogDescription>
-            Choose a license and download size for "{item.title}" — one single payment.
+            Choose a license for "{item.title}" — full download is included at the seller's fixed price.
           </DialogDescription>
         </DialogHeader>
 
@@ -155,35 +147,25 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
 
           <div>
             <h4 className="text-sm font-semibold mb-2">
-              2. Download size <span className="text-muted-foreground font-normal">— price stays the same</span>
+              2. Download
             </h4>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {(Object.keys(RESOLUTIONS) as ResolutionKey[]).map((k) => {
-                const d = RESOLUTIONS[k];
-                const meta = item.resolutions?.[k] || {};
-                const width = Number(meta.width ?? d.width);
-                const Icon = d.icon;
-                const active = k === resolution;
-                return (
-                  <Card
-                    key={k}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => setResolution(k)}
-                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setResolution(k); } }}
-                    className={`p-3 cursor-pointer border-2 transition-all ${active ? "border-primary shadow-md" : "border-border hover:border-primary/50"}`}
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-2 shadow-sm">
-                      <Icon className="w-4 h-4 text-primary-foreground" />
-                    </div>
-                    <h5 className="font-bold text-xs">{d.label}</h5>
-                    <p className="text-[10px] text-muted-foreground mb-1">{d.sub}</p>
-                    <Badge variant="outline" className="text-[10px] mb-1">{width > 0 ? `${width}px` : "Full size"}</Badge>
-                    <p className="text-[10px] font-semibold text-green-600">Included</p>
-                  </Card>
-                );
-              })}
-            </div>
+            <Card className="p-4 border-2 border-primary shadow-md">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow">
+                  <Maximize2 className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <div className="flex-1">
+                  <h5 className="font-bold text-sm">Original / Full download</h5>
+                  <p className="text-[11px] text-muted-foreground">All resolutions included — one fixed price set by the seller.</p>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-baseline gap-0.5 justify-end">
+                    <Euro className="w-3.5 h-3.5" />
+                    <span className="text-xl font-black">{assetPrice.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
           </div>
 
 
@@ -214,7 +196,7 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
               onClick={() =>
                 onConfirm({
                   licenseType: license,
-                  resolution,
+                  resolution: "original",
                   licenseFeeEur: Number(licenseFee.toFixed(2)),
                   assetPriceEur: Number(assetPrice.toFixed(2)),
                   totalEur: Number(total.toFixed(2)),
