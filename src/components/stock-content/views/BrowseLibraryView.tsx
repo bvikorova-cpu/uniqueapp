@@ -181,7 +181,11 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                   </div>
                 )}
                 <div className="flex flex-col gap-2">
-                  <span className="font-bold text-sm flex items-center gap-0.5"><Euro className="w-3.5 h-3.5" />{item.price_eur?.toFixed(2)}</span>
+                  <span className="font-bold text-sm flex items-center gap-1">
+                    <Euro className="w-3.5 h-3.5" />
+                    {item.price_eur?.toFixed(2)}
+                    <span className="text-[10px] font-normal text-muted-foreground">+ licencia</span>
+                  </span>
                   <div className="flex items-center gap-1 w-full">
                     <Button size="sm" variant="outline" className="h-8 w-8 p-0 shrink-0" title="Add to Lightbox" onClick={() => setLightboxItemId(item.id)}>
                       <FolderHeart className="w-3.5 h-3.5" />
