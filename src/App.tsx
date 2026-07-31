@@ -499,6 +499,7 @@ import { ResetPassword,
   AdminBrandCampaigns,
   AdminBrandModeration,
   AdminPlatformEarnings,
+  AdminPlatformWithdrawals,
   AdminIQDashboard,
   AdminIQAnalytics,
   AdminVerifications,
@@ -1134,6 +1135,7 @@ const App = () => {
                         <Route path="/admin/smoke-test" element={<ProtectedRoute requireAdmin={true}><AdminSmokeTest /></ProtectedRoute>} />
                         <Route path="/admin/influencer-payouts" element={<ProtectedRoute requireAdmin={true}><AdminInfluencerPayouts /></ProtectedRoute>} />
                         <Route path="/admin/platform-earnings" element={<ProtectedRoute requireAdmin={true}><AdminPlatformEarnings /></ProtectedRoute>} />
+                        <Route path="/admin/platform-withdrawals" element={<ProtectedRoute requireAdmin={true}><AdminPlatformWithdrawals /></ProtectedRoute>} />
                         <Route path="/admin/iq" element={<ProtectedRoute requireAdmin={true}><AdminIQDashboard /></ProtectedRoute>} />
                         <Route path="/admin/iq-analytics" element={<ProtectedRoute requireAdmin={true}><AdminIQAnalytics /></ProtectedRoute>} />
                         <Route path="/admin/refunds" element={<ProtectedRoute requireAdmin={true}><AdminRefunds /></ProtectedRoute>} />
