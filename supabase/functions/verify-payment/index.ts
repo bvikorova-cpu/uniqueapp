@@ -102,7 +102,8 @@ serve(async (req) => {
       .maybeSingle();
 
     const alreadyCredited = !!existingRecord?.verified_at;
-    log("Idempotency check", { existing: !!existingRecord, alreadyCredited });
+    log("Idempotency check v4-stock-recovery", { existing: !!existingRecord, alreadyCredited });
+
 
     // Record the payment (idempotent via unique stripe_session_id).
     // IMPORTANT: do NOT overwrite verified_at if it was already set — preserves audit trail.

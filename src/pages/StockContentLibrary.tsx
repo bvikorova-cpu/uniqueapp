@@ -39,6 +39,11 @@ const StockContentLibrary = () => {
           });
           if (error) throw error;
           if (!data?.verified) throw new Error(data?.error || "Payment could not be verified");
+          // Record the sale, pay the seller 70% and send the seller a bell notification
+          const { error: finalizeError } = await (supabase as any).rpc("finalize_stock_content_sale", {
+            p_session_id: sessionId,
+          });
+          if (finalizeError) console.error("Could not finalize stock sale:", finalizeError);
           setPurchasedContentId(contentId);
           setActiveView("browse");
           toast({ title: "Purchase Successful!", description: "Your download is ready — watermark free." });
@@ -46,6 +51,7 @@ const StockContentLibrary = () => {
           toast({ title: "Verification pending", description: "We could not confirm the payment yet. Refresh in a moment.", variant: "destructive" });
         }
       }
+
 
       if (purchaseStatus) {
         const url = new URL(window.location.href);

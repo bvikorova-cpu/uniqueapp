@@ -35,9 +35,14 @@ export function BrowseLibraryView({ onBack, purchasedContentId }: BrowseLibraryV
   }, []);
 
   useEffect(() => {
-    loadOwned();
+    (async () => {
+      // Recover any paid purchase that has no sale record yet (seller payout + notification)
+      await (supabase as any).rpc("finalize_stock_content_sale", { p_session_id: null });
+      await loadOwned();
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   useEffect(() => {
     if (!purchasedContentId || items.length === 0) return;
