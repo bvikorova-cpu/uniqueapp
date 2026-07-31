@@ -21,13 +21,36 @@ const StockContentLibrary = () => {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   useEffect(() => {
-    const purchaseStatus = searchParams.get("purchase");
-    if (purchaseStatus === "success") {
-      toast({ title: "Purchase Successful!", description: "Your download is ready" });
-    } else if (purchaseStatus === "cancelled") {
-      toast({ title: "Purchase Cancelled", description: "Your payment was cancelled", variant: "destructive" });
-    }
-  }, [searchParams, toast]);
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const purchaseStatus = params.get("purchase");
+      const sessionId = params.get("session_id");
+
+      if (purchaseStatus === "cancelled") {
+        toast({ title: "Purchase Cancelled", description: "Your payment was cancelled", variant: "destructive" });
+      }
+
+      if (purchaseStatus === "success" && sessionId) {
+        try {
+          await supabase.functions.invoke("verify-payment", {
+            body: { session_id: sessionId, product_type: "stock_content_purchase" },
+          });
+          toast({ title: "Purchase Successful!", description: "Your download is ready — watermark free." });
+        } catch {
+          toast({ title: "Verification pending", description: "We could not confirm the payment yet. Refresh in a moment.", variant: "destructive" });
+        }
+      }
+
+      if (purchaseStatus) {
+        const url = new URL(window.location.href);
+        ["session_id", "purchase", "view"].forEach((k) => url.searchParams.delete(k));
+        window.history.replaceState({}, "", url.pathname + url.search);
+        if (purchaseStatus === "success") setActiveView("browse");
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   const handleToolSelect = (tool: string) => {
     if (tool === "upload") {
