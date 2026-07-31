@@ -416,6 +416,7 @@ export function AdminPlatformEarnings() {
               <Line type="monotone" dataKey="InfluKing" stroke="#8B5CF6" strokeWidth={2} />
               <Line type="monotone" dataKey="KitchenStars" stroke="#F59E0B" strokeWidth={2} />
               <Line type="monotone" dataKey="Sports" stroke="#10B981" strokeWidth={2} />
+              <Line type="monotone" dataKey="StockContent" stroke="#EC4899" strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
         </Card>
