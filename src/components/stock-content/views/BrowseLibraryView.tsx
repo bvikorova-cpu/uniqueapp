@@ -196,19 +196,11 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
         </div>
       )}
 
-      <LicenseSelectorDialog
-        open={licenseDialogOpen}
-        onOpenChange={setLicenseDialogOpen}
+      <PurchaseOptionsDialog
+        open={purchaseDialogOpen}
+        onOpenChange={setPurchaseDialogOpen}
         item={selectedItem}
-        onSelect={handleLicenseSelected}
-      />
-
-      <ResolutionSelectorDialog
-        open={resolutionDialogOpen}
-        onOpenChange={setResolutionDialogOpen}
-        basePrice={chosenLicense?.price ?? 0}
-        resolutions={selectedItem?.resolutions}
-        onSelect={handleResolutionSelected}
+        onConfirm={handlePurchaseConfirmed}
       />
 
       <LightboxManagerDialog
