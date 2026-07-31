@@ -69022,6 +69022,10 @@ export type Database = {
         Returns: Json
       }
       finalize_iq_tournaments: { Args: never; Returns: number }
+      finalize_stock_content_sale: {
+        Args: { p_session_id?: string }
+        Returns: number
+      }
       find_similar_jobs: {
         Args: { _job_id: string; _limit?: number }
         Returns: {
