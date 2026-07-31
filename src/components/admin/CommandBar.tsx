@@ -14,6 +14,7 @@ const commands = [
   { label: "Withdrawals", path: "/admin/withdrawals", icon: Wallet, group: "Finance" },
   { label: "Influencer Payouts", path: "/admin/influencer-payouts", icon: Trophy, group: "Finance" },
   { label: "Platform Earnings", path: "/admin/platform-earnings", icon: BarChart3, group: "Finance" },
+  { label: "Platform Withdrawals", path: "/admin/platform-withdrawals", icon: BarChart3, group: "Finance" },
   { label: "Payment Dashboard", path: "/admin/payment-dashboard", icon: CreditCard, group: "Finance" },
   { label: "Transactions", path: "/admin/transactions", icon: Coins, group: "Finance" },
 
