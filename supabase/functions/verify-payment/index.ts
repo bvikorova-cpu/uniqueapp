@@ -59,6 +59,16 @@ serve(async (req) => {
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const session = await stripe.checkout.sessions.retrieve(session_id, { expand: ["payment_intent", "subscription", "line_items"] });
 
+    // Checkout writes the authenticated owner into Stripe metadata. A Stripe
+    // redirect may return before the new tab has restored the Supabase session,
+    // so use that server-created identity as a safe fallback. Never permit an
+    // authenticated user to claim a session belonging to somebody else.
+    const metadataUserId = session.metadata?.user_id ?? null;
+    if (userId && metadataUserId && userId !== metadataUserId) {
+      throw new Error("Payment session belongs to a different user");
+    }
+    userId = userId ?? metadataUserId;
+
     const isPaid = session.payment_status === "paid" || session.status === "complete";
     const detectedType = product_type || session.metadata?.product_type || session.metadata?.type || "unknown";
     const amount = session.amount_total ?? 0;
