@@ -130,7 +130,7 @@ export function AIContentGeneratorView({ onBack }: AIContentGeneratorViewProps) 
                   const { supabase } = await import("@/integrations/supabase/client");
                   const { data: { user } } = await supabase.auth.getUser();
                   if (!user) { toast({ description: "First log in" }); return; }
-                  const fileName = `stock-${user.id}-${Date.now()}.png`;
+                  const fileName = `${user.id}/stock-${Date.now()}.png`;
                   const blob = await (await fetch(generatedImage)).blob();
                   const { error } = await supabase.storage.from("stock-content").upload(fileName, blob, { contentType: "image/png", upsert: false });
                   if (error) throw error;
