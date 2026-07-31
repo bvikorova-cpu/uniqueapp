@@ -163,7 +163,7 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                 )}
               </div>
               <div className="p-3">
-                <h3 className="font-semibold text-sm mb-1 line-clamp-1">{item.title}</h3>
+                <h3 className="font-semibold text-sm mb-1 line-clamp-1 cursor-pointer hover:text-primary" onClick={() => openLicenseDialog(item)}>{item.title}</h3>
                 {item.description && <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{item.description}</p>}
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="outline" className="text-xs">{item.category}</Badge>
