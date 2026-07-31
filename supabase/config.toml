@@ -230,9 +230,6 @@ verify_jwt = true
 [functions.generate-content-image]
 verify_jwt = true
 
-[functions.ai-stock-content-generator]
-verify_jwt = true
-
 [functions.purchase-course]
 verify_jwt = true
 
