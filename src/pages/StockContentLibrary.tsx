@@ -10,7 +10,7 @@ import { UploadContentDialog } from "@/components/stock-library/UploadContentDia
 import { BrowseLibraryView } from "@/components/stock-content/views/BrowseLibraryView";
 import { EarningsDashboardView } from "@/components/stock-content/views/EarningsDashboardView";
 import { AIContentGeneratorView } from "@/components/stock-content/views/AIContentGeneratorView";
-import { BackgroundRemoverView } from "@/components/stock-content/views/BackgroundRemoverView";
+
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -45,8 +45,6 @@ const StockContentLibrary = () => {
         return <EarningsDashboardView onBack={() => setActiveView("dashboard")} />;
       case "ai-generator":
         return <AIContentGeneratorView onBack={() => setActiveView("dashboard")} />;
-      case "bg-remover":
-        return <BackgroundRemoverView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>

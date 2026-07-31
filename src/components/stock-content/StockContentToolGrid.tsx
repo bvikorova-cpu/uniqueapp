@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Upload, Sparkles, Search, BarChart3, Eraser } from "lucide-react";
+import { Upload, Sparkles, Search, BarChart3 } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StockContentToolGridProps {
@@ -13,7 +13,7 @@ const tools = [
   { id: "upload", label: "Upload Content", desc: "Publish your digital creations", icon: Upload, color: "from-emerald-500 to-emerald-700", credits: null },
   { id: "ai-generator", label: "AI Content Generator", desc: "Generate stock images with AI", icon: Sparkles, color: "from-purple-500 to-purple-700", credits: 5 },
   { id: "earnings", label: "Earnings Dashboard", desc: "Revenue analytics & payouts", icon: BarChart3, color: "from-green-500 to-green-700", credits: null },
-  { id: "bg-remover", label: "AI Background Remover", desc: "Remove backgrounds instantly", icon: Eraser, color: "from-rose-500 to-pink-700", credits: 3 },
+  
 ];
 
 export function StockContentToolGrid({ onToolSelect }: StockContentToolGridProps) {
