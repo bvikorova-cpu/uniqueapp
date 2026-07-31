@@ -23,7 +23,7 @@ const StockContentLibrary = () => {
   useEffect(() => {
     const purchaseStatus = searchParams.get("purchase");
     if (purchaseStatus === "success") {
-      toast({ title: "Purchase Successful!", description: "Your content is now available in 'My Purchases'" });
+      toast({ title: "Purchase Successful!", description: "Your download is ready" });
     } else if (purchaseStatus === "cancelled") {
       toast({ title: "Purchase Cancelled", description: "Your payment was cancelled", variant: "destructive" });
     }
