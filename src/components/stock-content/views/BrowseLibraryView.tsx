@@ -56,27 +56,23 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     if (!selectedItem) return;
     setPurchaseDialogOpen(false);
     try {
-      const amountCents = Math.round(sel.totalEur * 100);
-      const { data, error } = await supabase.functions.invoke('create-one-off-payment', {
+      const { data, error } = await supabase.functions.invoke('stock-content-checkout', {
         body: {
-          productKey: 'stock_content_purchase',
-          amount: amountCents,
-          name: `${selectedItem.title} — ${sel.licenseType} license + asset`,
-          description: `Platform license (${sel.licenseType}) €${sel.licenseFeeEur.toFixed(2)} + Asset €${sel.assetPriceEur.toFixed(2)}`,
-          metadata: {
-            content_id: String(selectedItem.id),
-            license_type: sel.licenseType,
-            resolution: sel.resolution,
-            license_fee_eur: String(sel.licenseFeeEur),
-            asset_price_eur: String(sel.assetPriceEur),
-            total_eur: String(sel.totalEur),
-          },
+          contentId: String(selectedItem.id),
+          title: selectedItem.title,
+          licenseType: sel.licenseType,
+          resolution: sel.resolution,
+          licenseFeeEur: sel.licenseFeeEur,
+          assetPriceEur: sel.assetPriceEur,
+          totalEur: sel.totalEur,
         },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       if (data?.url) window.open(data.url, '_blank');
       else throw new Error('Checkout URL not returned');
+
+
 
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to initiate purchase", variant: "destructive" });
