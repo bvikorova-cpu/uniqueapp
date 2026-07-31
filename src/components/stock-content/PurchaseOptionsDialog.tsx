@@ -110,13 +110,12 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
                 const Icon = lic.icon;
                 const active = lic.type === license;
                 return (
-                  <Card
+                  <button
                     key={lic.type}
-                    role="button"
-                    tabIndex={0}
+                    type="button"
                     onClick={() => setLicense(lic.type)}
-                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLicense(lic.type); } }}
-                    className={`relative p-4 cursor-pointer border-2 transition-all ${active ? "border-primary shadow-md" : "border-border hover:border-primary/50"}`}
+                    aria-pressed={active}
+                    className={`relative text-left w-full p-4 rounded-lg bg-card cursor-pointer border-2 transition-all touch-manipulation ${active ? "border-primary shadow-md" : "border-border hover:border-primary/50"}`}
                   >
                     {lic.badge && (
                       <Badge className="absolute -top-2 right-2 bg-gradient-to-r from-amber-500 to-orange-600 text-[10px]">
@@ -139,7 +138,7 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
                         </li>
                       ))}
                     </ul>
-                  </Card>
+                  </button>
                 );
               })}
             </div>
