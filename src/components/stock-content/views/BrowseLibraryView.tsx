@@ -101,7 +101,7 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
         body: {
           productName: `${selectedItem.title || 'Stock content'} — ${sel.licenseType} license`,
           amount: Math.round(sel.totalEur * 100),
-          successUrl: `${window.location.origin}/stock-content-library?purchase=success&session_id={CHECKOUT_SESSION_ID}`,
+          successUrl: `${window.location.origin}/stock-content-library?purchase=success&view=browse&session_id={CHECKOUT_SESSION_ID}`,
           cancelUrl: `${window.location.origin}/stock-content-library?purchase=cancelled`,
           metadata: {
             type: 'stock_content_purchase',
