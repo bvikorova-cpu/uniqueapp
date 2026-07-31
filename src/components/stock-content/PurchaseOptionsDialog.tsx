@@ -198,9 +198,10 @@ export function PurchaseOptionsDialog({ open, onOpenChange, item, onConfirm }: P
               </div>
               <div className="flex items-center justify-between gap-2">
                 <span className="text-muted-foreground">
-                  Asset price ({RESOLUTIONS[resolution].label})
+                  Asset price (fixed by seller)
                 </span>
                 <span className="font-semibold whitespace-nowrap">€{assetPrice.toFixed(2)}</span>
+
               </div>
               <Separator />
               <div className="flex items-center justify-between gap-2 text-base">
