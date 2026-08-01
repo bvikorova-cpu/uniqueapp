@@ -1322,7 +1322,7 @@ async function handler(req: Request): Promise<Response> {
       string,
       { priceId: string; successPath: string; cancelPath: string; type: string; allowPromo?: boolean }
     > = { decor_pro_sub: {
-        priceId: "price_1SVAKhGaXSfGtYFtK1yiOMde",
+        priceId: "price_1TzccgGaXSfGtYFttUjk8ZG4",
         successPath: "/home-decor?success=true",
         cancelPath: "/home-decor?canceled=true",
         type: "decor_pro_subscription" },
