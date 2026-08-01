@@ -100,8 +100,19 @@ Return ONLY valid JSON with this exact shape (5 platforms):
       await supabase.rpc("deduct_ai_credits_atomic", { _user_id: user.id, _amount: 8 });
 
       setKit(platforms);
+
+      const { error: saveError } = await supabase.from("brand_social_media_kits").insert({
+        user_id: user.id,
+        brand_name: brandName,
+        industry,
+        platforms,
+        credits_used: 10,
+      });
+      if (saveError) console.error("Failed to save social kit:", saveError);
+      loadSaved();
+
       onCreditsUsed();
-      toast({ title: "📱 Social Kit Ready!", description: "Complete social media strategy for 5 platforms." });
+      toast({ title: "📱 Social Kit Ready!", description: "Saved to your kit history below." });
     } catch (e: any) {
       toast({ title: "Error", description: e?.message || "Generation failed", variant: "destructive" });
     } finally {
