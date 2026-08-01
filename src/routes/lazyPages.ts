@@ -244,7 +244,6 @@ export const DiscoverCreators = lazy(() => import("@/pages/DiscoverCreators"));
 export const BecomeCreator = lazy(() => import("@/pages/BecomeCreator"));
 export const CreatorsLanding = lazy(() => import("@/pages/CreatorsLanding"));
 export const BrandDashboard = lazy(() => import("@/pages/BrandDashboard"));
-export const VirtualInfluencerAgency = lazy(() => import("@/pages/VirtualInfluencerAgency"));
 export const InfluencerEarnings = lazy(() => import("@/pages/InfluencerEarnings"));
 export const CreatorStudio = lazy(() => import("@/pages/CreatorStudio"));
 
