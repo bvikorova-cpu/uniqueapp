@@ -2,7 +2,7 @@ import "../_shared/aiRedirect.ts";
 // Universal Vision Analyzer — handles all vision/image AI tasks via `task` param.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
-import { callUnifiedAI, UnifiedAIError } from "../_shared/unifiedAI.ts";
+import { callUnifiedAI, callUnifiedAIJSON, UnifiedAIError } from "../_shared/unifiedAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -119,14 +119,21 @@ serve(async (req) => {
     // this transparently falls back to the Lovable AI Gateway instead of
     // surfacing a 429 to the user.
     let result = "";
+    let paletteData: Record<string, unknown> | undefined;
     try {
-      result = await callUnifiedAI(
-        [
-          { role: "system", content: cfg.prompt },
-          { role: "user", content: userContent as any },
-        ],
-        { model: "gpt-4o-mini" },
-      );
+      const messages = [
+        { role: "system" as const, content: cfg.prompt },
+        { role: "user" as const, content: userContent as any },
+      ];
+      if (task === "home_palette") {
+        paletteData = await callUnifiedAIJSON<Record<string, unknown>>(
+          messages,
+          { model: "gpt-4o-mini", max_tokens: 1200 },
+        );
+        result = JSON.stringify(paletteData);
+      } else {
+        result = await callUnifiedAI(messages, { model: "gpt-4o-mini" });
+      }
     } catch (e) {
       const status = e instanceof UnifiedAIError ? e.status : 502;
       log("ai-error", { status, err: String(e) });
@@ -138,14 +145,11 @@ serve(async (req) => {
     try { await auth.deduct!(); } catch (e) { log("deduct-failed", { err: String(e) }); }
 
     if (task === "home_palette") {
-      try {
-        const cleaned = result.replace(/^```json\s*/i, "").replace(/\s*```$/i, "").trim();
-        const paletteData = JSON.parse(cleaned);
-        return json({ result, text: result, paletteData, task, creditsCharged: cost });
-      } catch (e) {
-        log("palette-parse-failed", { err: String(e) });
+      if (!paletteData || !Array.isArray(paletteData.palette)) {
+        log("palette-shape-invalid", { hasData: !!paletteData });
         return json({ error: "The palette response was invalid. Please try again." }, 502);
       }
+      return json({ result, text: result, paletteData, task, creditsCharged: cost });
     }
 
     return json({ result, text: result, task, creditsCharged: cost });
