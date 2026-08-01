@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Share2, Hash, Clock, Lightbulb, Copy, Check, ArrowLeft } from "lucide-react";
+import { Loader2, Share2, Hash, Clock, Lightbulb, Copy, Check, ArrowLeft, History, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -33,6 +33,26 @@ const SocialMediaKit = ({ credits, onBack, onCreditsUsed }: SocialMediaKitProps)
   const [targetAudience, setTargetAudience] = useState("");
   const [kit, setKit] = useState<any>(null);
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [saved, setSaved] = useState<any[]>([]);
+
+  const loadSaved = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("brand_social_media_kits")
+      .select("id, brand_name, industry, platforms, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    setSaved(data || []);
+  }, []);
+
+  useEffect(() => { loadSaved(); }, [loadSaved]);
+
+  const deleteSaved = async (id: string) => {
+    await supabase.from("brand_social_media_kits").delete().eq("id", id);
+    setSaved(prev => prev.filter(s => s.id !== id));
+  };
 
   const handleGenerate = async () => {
     if (!brandName || !industry) {
@@ -80,8 +100,19 @@ Return ONLY valid JSON with this exact shape (5 platforms):
       await supabase.rpc("deduct_ai_credits_atomic", { _user_id: user.id, _amount: 8 });
 
       setKit(platforms);
+
+      const { error: saveError } = await supabase.from("brand_social_media_kits").insert({
+        user_id: user.id,
+        brand_name: brandName,
+        industry,
+        platforms,
+        credits_used: 10,
+      });
+      if (saveError) console.error("Failed to save social kit:", saveError);
+      loadSaved();
+
       onCreditsUsed();
-      toast({ title: "📱 Social Kit Ready!", description: "Complete social media strategy for 5 platforms." });
+      toast({ title: "📱 Social Kit Ready!", description: "Saved to your kit history below." });
     } catch (e: any) {
       toast({ title: "Error", description: e?.message || "Generation failed", variant: "destructive" });
     } finally {
@@ -256,6 +287,34 @@ Return ONLY valid JSON with this exact shape (5 platforms):
             Generate Another Kit
           </Button>
         </motion.div>
+      )}
+
+      {saved.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <History className="h-4 w-4 text-blue-500" /> Saved social kits
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {saved.map(item => (
+              <div key={item.id} className="flex items-center justify-between gap-3 rounded-lg border p-3">
+                <div className="min-w-0">
+                  <p className="font-medium text-foreground truncate">{item.brand_name}</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {item.industry} · {new Date(item.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Button size="sm" variant="secondary" onClick={() => setKit(item.platforms)}>Load</Button>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => deleteSaved(item.id)}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       )}
     </div>
     </>
