@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Target, TrendingUp, Shield, Zap, ArrowLeft } from "lucide-react";
+import { Loader2, Target, TrendingUp, Shield, Zap, ArrowLeft, History, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -25,6 +25,30 @@ const CompetitorAnalyzer = ({ credits, onBack, onCreditsUsed }: CompetitorAnalyz
   const [industry, setIndustry] = useState("");
   const [description, setDescription] = useState("");
   const [analysis, setAnalysis] = useState<any>(null);
+  const [history, setHistory] = useState<any[]>([]);
+
+  const loadHistory = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("brand_competitor_analyses")
+      .select("id, business_name, industry, competitors, positioning, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    setHistory(data ?? []);
+  }, []);
+
+  useEffect(() => { void loadHistory(); }, [loadHistory]);
+
+  const deleteEntry = async (id: string) => {
+    const { error } = await supabase.from("brand_competitor_analyses").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    setHistory((h) => h.filter((x) => x.id !== id));
+  };
 
   const handleAnalyze = async () => {
     if (!businessName || !industry) {
@@ -114,6 +138,36 @@ Provide 4-6 realistic competitors.`;
         <p className="text-muted-foreground mt-2">AI identifies top competitors and creates your unique positioning strategy</p>
         <Badge variant="secondary" className="mt-2">Cost: 12 credits | Your Credits: {credits}</Badge>
       </motion.div>
+
+      {!analysis && history.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+          <div className="flex items-center gap-2">
+            <History className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-bold text-foreground">Saved analyses</h3>
+            <Badge variant="secondary">{history.length}</Badge>
+          </div>
+          {history.map((entry) => (
+            <Card key={entry.id}>
+              <CardContent className="pt-5 flex flex-wrap items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="font-semibold truncate">{entry.business_name} · {entry.industry}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(entry.created_at).toLocaleString()} · {(entry.competitors ?? []).length} competitors
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" onClick={() => setAnalysis({ competitors: entry.competitors, positioning: entry.positioning })}>
+                    Open
+                  </Button>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => deleteEntry(entry.id)}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </motion.div>
+      )}
 
       {!analysis && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
