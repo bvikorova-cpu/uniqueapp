@@ -229,8 +229,11 @@ serve(async (req) => {
         ? ((__style === "box_strategy" || reqBody.analysisType === "box_strategy") ? 8 : 10)
         : null;
       const __uniCost = __type === "uni_assistant" ? 5 : null;
-      const __cost = __uniCost ?? __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
-      const __usage = __type === "mystery_box_ai" ? "mystery_box_ai" : (__isLegacyGift ? "gift_message" : "ai_generic");
+      const __roomDesignCost = __type === "generate_ai_room_design" ? 30 : null;
+      const __cost = __roomDesignCost ?? __uniCost ?? __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
+      const __usage = __type === "mystery_box_ai"
+        ? "mystery_box_ai"
+        : (__type === "generate_ai_room_design" ? "ai_room_design" : (__isLegacyGift ? "gift_message" : "ai_generic"));
       const __auth = await requireAiCredits(req, corsHeaders, { credits: __cost, usageType: __usage });
       if (__auth.errorResponse) return __auth.errorResponse;
       __deduct = __auth.deduct!;
