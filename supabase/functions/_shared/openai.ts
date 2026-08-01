@@ -8,10 +8,8 @@
 //   const reply = await callOpenAI({ system: "...", user: "..." });
 
 import {
-  callUnifiedAI,
   callUnifiedAIEx,
   callUnifiedAIJSON,
-  UnifiedAIError,
 } from "./unifiedAI.ts";
 import type { UnifiedAIOptions, UnifiedMessage } from "./unifiedAI.ts";
 
@@ -118,4 +116,7 @@ export async function callOpenAIJSON<T = any>(opts: CallOptions): Promise<T> {
   }
 }
 
-export { callUnifiedAI, callUnifiedAIJSON, callUnifiedAIEx, UnifiedAIError };
+// Keep only function re-exports here. Re-exporting the error class caused an
+// undefined runtime binding in the deployed Deno bundle and blocked startup.
+export { callUnifiedAI } from "./unifiedAI.ts";
+export { callUnifiedAIJSON, callUnifiedAIEx };
