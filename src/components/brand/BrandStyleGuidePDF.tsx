@@ -171,7 +171,7 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
     }
 
     doc.save(`${kit.business_name?.replace(/\s+/g, "_") || "brand"}_style_guide.pdf`);
-    toast({ title: "📄 Downloaded!", description: "Brand style guide exported as PDF." });
+    toast({ title: "📄 Downloaded!", description: `Brand style guide exported as PDF. ${STYLE_GUIDE_COST} credits used.` });
   };
 
   return (
