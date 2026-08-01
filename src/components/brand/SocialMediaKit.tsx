@@ -33,6 +33,26 @@ const SocialMediaKit = ({ credits, onBack, onCreditsUsed }: SocialMediaKitProps)
   const [targetAudience, setTargetAudience] = useState("");
   const [kit, setKit] = useState<any>(null);
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [saved, setSaved] = useState<any[]>([]);
+
+  const loadSaved = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("brand_social_media_kits")
+      .select("id, brand_name, industry, platforms, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    setSaved(data || []);
+  }, []);
+
+  useEffect(() => { loadSaved(); }, [loadSaved]);
+
+  const deleteSaved = async (id: string) => {
+    await supabase.from("brand_social_media_kits").delete().eq("id", id);
+    setSaved(prev => prev.filter(s => s.id !== id));
+  };
 
   const handleGenerate = async () => {
     if (!brandName || !industry) {
