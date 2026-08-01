@@ -245,6 +245,7 @@ serve(async (req) => {
     const type = __type;
     const customPrompt = reqBody.customPrompt || reqBody.prompt || reqBody.input || reqBody.message || reqBody.query;
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     // Auth (credit check already performed above via requireAiCredits)
     const supabase = createClient(
@@ -596,23 +597,29 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
       generate_image:     "High-quality photorealistic image as described." };
 
     if (IMAGE_TYPES[type]) {
-      if (!OPENAI_API_KEY) {
+      if (!LOVABLE_API_KEY && !OPENAI_API_KEY) {
         return new Response(JSON.stringify({ error: "Image generation is temporarily unavailable." }), {
           status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-      // OpenAI image generation (gpt-image-1) — same OPENAI_API_KEY as text branch.
       const stylePrefix = IMAGE_TYPES[type];
       const subject = customPrompt || reqBody.title || reqBody.description || `a ${type.replace(/_/g, " ")}`;
-      const imgPrompt = `${stylePrefix} Subject: ${subject}`;
+      const sourceImage = typeof reqBody.originalImageUrl === "string" ? reqBody.originalImageUrl : "";
+      const imgPrompt = `${stylePrefix} Subject: ${subject}${sourceImage ? `. Preserve the room's architecture and redesign the uploaded room shown here: ${sourceImage}` : ""}`;
 
-      const imgResp = await fetch("https://api.openai.com/v1/images/generations", {
+      const useGateway = Boolean(LOVABLE_API_KEY);
+      const imgResp = await fetch(
+        useGateway
+          ? "https://ai.gateway.lovable.dev/v1/images/generations"
+          : "https://api.openai.com/v1/images/generations",
+        {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "gpt-image-1",
+        headers: useGateway
+          ? { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" }
+          : { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: useGateway ? "openai/gpt-image-2" : "gpt-image-1",
           prompt: imgPrompt,
           size: "1024x1024",
+          quality: "low",
           n: 1 }) });
 
       if (!imgResp.ok) {
@@ -621,9 +628,9 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
             status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         }
         const errText = await imgResp.text();
-        console.error("OpenAI image gen error:", errText);
-        return new Response(JSON.stringify({ error: "Image generation failed" }), {
-          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        console.error("Room image generation error:", imgResp.status, errText);
+        return new Response(JSON.stringify({ error: imgResp.status === 402 ? "AI credits are unavailable." : "Image generation failed. Please try again." }), {
+          status: imgResp.status === 402 ? 402 : 502, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       const imgData = await imgResp.json();
