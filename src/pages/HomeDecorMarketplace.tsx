@@ -166,9 +166,11 @@ const HomeDecorMarketplace = () => {
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke('create-decor-subscription');
-      if (error) throw error;
-      
+      const { data, error } = await safeInvoke<{ url?: string }>('create-checkout', {
+        body: { product: 'decor_pro_sub' },
+      });
+      if (error) throw new Error(error);
+
       if (data?.url) {
         window.open(data.url, '_blank');
       }
