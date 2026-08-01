@@ -38,21 +38,62 @@ const CompetitorAnalyzer = ({ credits, onBack, onCreditsUsed }: CompetitorAnalyz
 
     try {
       setLoading(true);
-      const res = await supabase.functions.invoke("brand-ai", {
-        body: { action: "competitor-analyzer", businessName, industry, description } });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please sign in first");
+
+      const prompt = `You are a market analyst. Analyze the competitive landscape.
+Business: ${businessName}
+Industry: ${industry}
+Description: ${description || "not provided"}
+
+Return ONLY valid JSON:
+{"competitors":[{"name":"","market_position":"","estimated_market_share":"20%","strengths":"","weaknesses":""}],
+"positioning":{"unique_value_proposition":"","differentiators":["",""],"target_niche":"","pricing_strategy":"","market_gaps":["","",""]}}
+Provide 4-6 realistic competitors.`;
+
+      const res = await supabase.functions.invoke("forge-ai-tools", {
+        body: { action: "cowriter", text: prompt, extra: { category: "competitor_analysis", history: [{ role: "user", content: prompt }] } } });
 
       if (res.error) throw res.error;
+      if (res.data?.error === "INSUFFICIENT_CREDITS") throw new Error("Insufficient credits");
       if (res.data?.error) throw new Error(res.data.error);
 
-      setAnalysis(res.data);
+      const raw = String(res.data?.content ?? "");
+      let parsed: any = null;
+      try {
+        const match = raw.match(/\{[\s\S]*\}/);
+        parsed = match ? JSON.parse(match[0]) : null;
+      } catch { parsed = null; }
+      if (!parsed?.competitors?.length || !parsed?.positioning) {
+        throw new Error("AI could not complete the analysis right now. Please try again.");
+      }
+
+      // Charge the remainder so the total matches the advertised 12 credits (cowriter charges 2)
+      await supabase.rpc("deduct_ai_credits_atomic", { _user_id: user.id, _amount: 10 });
+
+      const { error: saveError } = await supabase.from("brand_competitor_analyses").insert({
+        user_id: user.id,
+        business_name: businessName,
+        industry,
+        competitors: parsed.competitors,
+        positioning: parsed.positioning,
+        credits_used: 12 });
+
+      setAnalysis(parsed);
       onCreditsUsed();
-      toast({ title: "🎯 Analysis Complete!", description: "Competitor landscape mapped." });
+      void loadHistory();
+      toast({
+        title: "🎯 Analysis Complete!",
+        description: saveError
+          ? "Analysis ready, but saving to your history failed."
+          : "Competitor landscape mapped and saved to your history." });
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      toast({ title: "Error", description: e?.message ?? "Analysis failed", variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <>
