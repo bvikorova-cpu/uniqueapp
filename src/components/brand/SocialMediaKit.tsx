@@ -46,20 +46,48 @@ const SocialMediaKit = ({ credits, onBack, onCreditsUsed }: SocialMediaKitProps)
 
     try {
       setLoading(true);
-      const res = await supabase.functions.invoke("brand-ai", {
-        body: { action: "social-media-kit", brandName, industry, tone, targetAudience } });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please sign in first");
+
+      const prompt = `Create a complete social media kit for a brand.
+Brand: ${brandName}
+Industry: ${industry}
+Tone: ${tone || "professional"}
+Target audience: ${targetAudience || "general"}
+
+Return ONLY valid JSON with this exact shape (5 platforms):
+{"platforms":{"instagram":{"bio":"","handle_suggestions":["",""],"content_pillars":["","",""],"posting_schedule":"","tone_guidelines":"","hashtags":["",""],"content_ideas":["","",""]},"twitter":{...},"linkedin":{...},"tiktok":{...},"facebook":{...}}}`;
+
+      const res = await supabase.functions.invoke("forge-ai-tools", {
+        body: { action: "cowriter", text: prompt, extra: { category: "social_kit", history: [{ role: "user", content: prompt }] } } });
 
       if (res.error) throw res.error;
+      if (res.data?.error === "INSUFFICIENT_CREDITS") throw new Error("Insufficient credits");
       if (res.data?.error) throw new Error(res.data.error);
 
-      setKit(res.data.platforms);
+      const raw = String(res.data?.content ?? "");
+      let platforms: any = null;
+      try {
+        const match = raw.match(/\{[\s\S]*\}/);
+        const parsed = match ? JSON.parse(match[0]) : null;
+        platforms = parsed?.platforms ?? parsed ?? null;
+      } catch { platforms = null; }
+      if (!platforms || Object.keys(platforms).length === 0) {
+        throw new Error("AI could not generate the kit right now. Please try again.");
+      }
+
+      // cowriter charges 2 — charge the remainder for the advertised 10 credits
+      await supabase.rpc("deduct_ai_credits_atomic", { _user_id: user.id, _amount: 8 });
+
+      setKit(platforms);
       onCreditsUsed();
       toast({ title: "📱 Social Kit Ready!", description: "Complete social media strategy for 5 platforms." });
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      toast({ title: "Error", description: e?.message || "Generation failed", variant: "destructive" });
     } finally {
       setLoading(false);
     }
+
   };
 
   const copyText = (text: string) => {
