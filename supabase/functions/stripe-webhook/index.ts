@@ -1315,9 +1315,39 @@ serve(async (req) => {
           } catch (bfErr) {
             log("best friend messages webhook error", { err: (bfErr as Error).message });
           }
+
+          // ── Home Decor "Pro Designer" subscription fulfillment ──────────
+          try {
+            if (
+              session.metadata?.type === "decor_pro_subscription" ||
+              session.metadata?.product === "decor_pro_sub" ||
+              session.metadata?.product === "decor"
+            ) {
+              const userId = session.metadata?.user_id;
+              if (userId) {
+                const periodStart = new Date();
+                const periodEnd = new Date(periodStart.getTime() + 30 * 24 * 60 * 60 * 1000);
+                await supabase.from("decor_subscriptions").upsert({
+                  user_id: userId,
+                  stripe_customer_id: (session.customer as string) || null,
+                  stripe_subscription_id: (session.subscription as string) || null,
+                  plan_type: "pro",
+                  status: "active",
+                  designs_used: 0,
+                  designs_limit: 50,
+                  current_period_start: periodStart.toISOString(),
+                  current_period_end: periodEnd.toISOString(),
+                  updated_at: periodStart.toISOString() }, { onConflict: "user_id" });
+                log("decor pro subscription activated", { userId, sessionId: session.id });
+              }
+            }
+          } catch (dcErr) {
+            log("decor subscription webhook error", { err: (dcErr as Error).message });
+          }
         }
         break;
       }
+
 
       // ─── REFUND (manual via Stripe dashboard or admin button) ────────
       case "charge.refunded": {
