@@ -39,7 +39,7 @@ const HomeDecorSubscription = () => {
     setLoading(true);
     try {
       const { data, error } = await safeInvoke<{ url?: string }>('create-checkout', {
-        body: { product: 'decor' } });
+        body: { product: 'decor_pro_sub' } });
       if (error) throw new Error(error);
       if (data?.url) window.open(data.url, '_blank');
       else throw new Error("Checkout link unavailable. Please try again.");
