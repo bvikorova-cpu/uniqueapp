@@ -193,6 +193,11 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Export Your Brand Guidelines</h2>
         <p className="text-muted-foreground mt-2">Download professional brand style guides from your generated kits</p>
         <Badge variant="secondary" className="mt-2">{STYLE_GUIDE_COST} credits per export</Badge>
+        {!hasCredits && (
+          <p className="text-sm text-destructive mt-2">
+            You have {credits} credits. Top up to at least {STYLE_GUIDE_COST} credits to unlock downloads.
+          </p>
+        )}
       </motion.div>
 
       {loading ? (
