@@ -79,10 +79,99 @@ const BrandBuilder = () => {
     }
     try {
       setLoading(true);
-      const { data, error } = await supabase.functions.invoke("generate-brand-kit", {
-        body: { businessName, businessType, targetAudience, brandValues } });
-      if (error) throw error;
-      if ((data as any)?.error) throw new Error((data as any).error);
+      const { data: authData } = await supabase.auth.getUser();
+      const uid = authData?.user?.id;
+      if (!uid) throw new Error("Please sign in again.");
+
+      // 1) Brand strategy via the shared creative AI tool
+      const strategyPrompt = `Create a complete brand strategy.
+Business Name: ${businessName}
+Business Type: ${businessType}
+Target Audience: ${targetAudience || "general audience"}
+Brand Values: ${brandValues || "quality, trust"}
+
+Return ONLY valid JSON with keys:
+slogan (max 10 words), tagline (max 20 words),
+colors (array of 5 objects {name, hex} for primary, secondary, accent, background, text),
+socialStrategy (object with instagram, facebook, linkedin, tiktok),
+visualIdentity (object with typography, imagery, tone).`;
+
+      const { data: aiData, error: aiError } = await supabase.functions.invoke("forge-ai-tools", {
+        body: { action: "cowriter", text: strategyPrompt, extra: { category: "brand_strategy", history: [{ role: "user", content: strategyPrompt }] } },
+      });
+      if (aiError) throw aiError;
+      if (aiData?.error === "INSUFFICIENT_CREDITS") throw new Error("Insufficient credits");
+      if (aiData?.error) throw new Error(aiData.error);
+
+      const raw = String(aiData?.content ?? "");
+      let strategy: any = null;
+      try {
+        const match = raw.match(/\{[\s\S]*\}/);
+        strategy = match ? JSON.parse(match[0]) : null;
+      } catch { strategy = null; }
+      if (!strategy) {
+        strategy = {
+          slogan: `${businessName} — built for you`,
+          tagline: `Helping ${targetAudience || "our customers"} get more from ${businessType}.`,
+          colors: [
+            { name: "Primary", hex: "#7C3AED" },
+            { name: "Secondary", hex: "#EC4899" },
+            { name: "Accent", hex: "#F59E0B" },
+            { name: "Background", hex: "#F5F3FF" },
+            { name: "Text", hex: "#111827" },
+          ],
+          socialStrategy: {
+            instagram: "Daily stories plus 3 feed posts a week with branded visuals",
+            facebook: "Community posts 2-3 times a week",
+            linkedin: "Two thought-leadership posts a week",
+            tiktok: "4-5 short educational videos a week",
+          },
+          visualIdentity: {
+            typography: "Modern sans-serif headings with a clean body font",
+            imagery: "Bright, professional photography with brand color overlays",
+            tone: "Confident, warm and helpful",
+          },
+        };
+      }
+
+      // 2) Logo via the shared image tool (best-effort)
+      let logoUrl: string | null = null;
+      try {
+        const { data: imgData } = await supabase.functions.invoke("ai-image-tools", {
+          body: {
+            action: "generate",
+            prompt: `Modern minimalist vector logo for "${businessName}", a ${businessType} brand. Primary color ${strategy?.colors?.[0]?.hex ?? "#7C3AED"}. Clean, professional, centered on plain background.`,
+          },
+        });
+        logoUrl = imgData?.imageUrl ?? null;
+      } catch (logoErr) {
+        console.warn("Logo generation skipped", logoErr);
+      }
+
+      // 3) Persist the kit
+      const { error: insertError } = await supabase.from("brand_kits").insert({
+        user_id: uid,
+        business_name: businessName,
+        business_type: businessType,
+        target_audience: targetAudience,
+        brand_values: brandValues,
+        logo_url: logoUrl,
+        slogan: strategy.slogan,
+        tagline: strategy.tagline,
+        color_palette: strategy.colors,
+        social_media_strategy: strategy.socialStrategy,
+        visual_identity: strategy.visualIdentity,
+        credits_used: 15,
+      });
+      if (insertError) throw insertError;
+
+      // 4) Charge the remainder so the total matches the advertised 15 credits
+      const alreadyCharged = 2 + (logoUrl ? 5 : 0);
+      const remainder = 15 - alreadyCharged;
+      if (remainder > 0) {
+        await supabase.rpc("deduct_ai_credits_atomic", { _user_id: uid, _amount: remainder });
+      }
+
       toast({ title: "✨ Brand Kit Generated!", description: `Brand identity for ${businessName} is ready` });
       setBusinessName(""); setBusinessType(""); setTargetAudience(""); setBrandValues("");
       await loadBrandKits();
@@ -94,6 +183,7 @@ const BrandBuilder = () => {
       setLoading(false);
     }
   };
+
 
   if (creditsLoading) {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;

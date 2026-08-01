@@ -1,4 +1,5 @@
 import "../_shared/aiRedirect.ts";
+console.log("brand-kit-generate boot v1");
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
 
@@ -11,9 +12,8 @@ serve(async (req) => {
   }
 
   try {
-    console.log('brand-kit v4 request');
     const { businessName, businessType, targetAudience, brandValues } = await req.json();
-
+    
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return new Response(
@@ -24,18 +24,26 @@ serve(async (req) => {
 
     const token = authHeader.replace(/^Bearer\s+/i, '');
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
-    const anonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+    const anonKey =
+      Deno.env.get('SUPABASE_ANON_KEY') ??
+      Deno.env.get('SUPABASE_PUBLISHABLE_KEY') ??
+      '';
     const authSupabase = createClient(supabaseUrl, anonKey);
-    const { data: userData, error: userErr } = await authSupabase.auth.getUser(token);
-    const user = userData?.user ?? null;
-    if (userErr) console.error('getUser error:', userErr.message);
+    let user: { id: string } | null = null;
+    const { data: userData } = await authSupabase.auth.getUser(token);
+    if (userData?.user) {
+      user = userData.user;
+    } else {
+      const { data: claimsData } = await authSupabase.auth.getClaims(token);
+      const sub = (claimsData as any)?.claims?.sub;
+      if (sub) user = { id: sub };
+    }
     if (!user) {
       return new Response(
         JSON.stringify({ error: 'Not authenticated. Please sign in again.' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
 
 
     const supabase = createClient(
