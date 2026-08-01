@@ -195,7 +195,7 @@ visualIdentity (object with typography, imagery, tone).`;
     { id: "name-generator" as const, icon: Globe, title: "AI Name Generator", desc: "10 creative brand names with domains & taglines", cost: "8 Credits", color: "text-cyan-500" },
     { id: "competitor-analyzer" as const, icon: Target, title: "Competitor Analyzer", desc: "Map competitive landscape & find your positioning", cost: "12 Credits", color: "text-destructive" },
     { id: "social-kit" as const, icon: Share2, title: "Social Media Kit", desc: "Bios, hashtags, schedules for 5 platforms", cost: "10 Credits", color: "text-blue-500" },
-    { id: "style-guide" as const, icon: FileText, title: "Brand Style Guide", desc: "Export professional brand guidelines document", cost: "Free", color: "text-emerald-500" },
+    { id: "style-guide" as const, icon: FileText, title: "Brand Style Guide", desc: "Export professional brand guidelines document", cost: "2 Credits", color: "text-emerald-500" },
   ];
 
   const stats = [
