@@ -104,6 +104,12 @@ serve(async (req) => {
     log("invoke", { task, userId: auth.user!.id, cost, hasImage: !!imageUrl });
 
     const userContent: any[] = [];
+    if (task === "home_palette") {
+      userContent.push({
+        type: "text",
+        text: "Return only valid JSON with this exact shape: {\"mood\":\"short description\",\"palette\":[{\"name\":\"color name\",\"hex\":\"#RRGGBB\",\"usage\":\"where to use it\",\"percentage\":number}],\"complementary_materials\":[\"material\"],\"lighting_tips\":\"advice\",\"seasonal_variation\":\"advice\"}. Include exactly 4 coordinated colors and percentages totaling 100."
+      });
+    }
     if (userPrompt) userContent.push({ type: "text", text: userPrompt });
     if (extras) userContent.push({ type: "text", text: `Context: ${JSON.stringify(extras)}` });
     if (imageUrl) userContent.push({ type: "image_url", image_url: { url: imageUrl } });
@@ -130,6 +136,17 @@ serve(async (req) => {
 
     // Deduct only after successful AI response. Don't fail the user response if deduct logging fails.
     try { await auth.deduct!(); } catch (e) { log("deduct-failed", { err: String(e) }); }
+
+    if (task === "home_palette") {
+      try {
+        const cleaned = result.replace(/^```json\s*/i, "").replace(/\s*```$/i, "").trim();
+        const paletteData = JSON.parse(cleaned);
+        return json({ result, text: result, paletteData, task, creditsCharged: cost });
+      } catch (e) {
+        log("palette-parse-failed", { err: String(e) });
+        return json({ error: "The palette response was invalid. Please try again." }, 502);
+      }
+    }
 
     return json({ result, text: result, task, creditsCharged: cost });
   } catch (e: any) {
