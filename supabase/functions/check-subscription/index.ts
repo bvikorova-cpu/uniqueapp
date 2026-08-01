@@ -213,6 +213,39 @@ serve(async (req) => {
       if (hasAccess) break;
     }
 
+    // ─── Home Decor: keep the decor_subscriptions row in sync with Stripe ───
+    // generate-room-design gates on that row, so a paid checkout that never
+    // reached the webhook still unlocks design generation here.
+    if (tier === "decor" && hasAccess) {
+      const { data: existing } = await supabaseClient
+        .from("decor_subscriptions")
+        .select("designs_used, designs_limit")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!existing) {
+        await supabaseClient.from("decor_subscriptions").upsert({
+          user_id: user.id,
+          stripe_customer_id: customerId,
+          plan_type: "pro",
+          status: "active",
+          designs_used: 0,
+          designs_limit: 50,
+          current_period_start: new Date().toISOString(),
+          current_period_end: subscriptionEnd,
+          updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+      } else {
+        await supabaseClient.from("decor_subscriptions")
+          .update({ status: "active", current_period_end: subscriptionEnd, updated_at: new Date().toISOString() })
+          .eq("user_id", user.id);
+      }
+      return json({ subscribed: true,
+        tier,
+        product_id: matchedProduct,
+        subscription_end: subscriptionEnd,
+        designs_used: existing?.designs_used ?? 0,
+        designs_limit: existing?.designs_limit ?? 50 }, 200);
+    }
+
     return json({ subscribed: hasAccess,
       tier,
       product_id: matchedProduct,
