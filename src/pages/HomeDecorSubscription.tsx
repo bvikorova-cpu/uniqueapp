@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Sparkles, Crown, Home } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import Navbar from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
