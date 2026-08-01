@@ -68,7 +68,6 @@ export function FurnitureRecommender({ subscription, onBack }: FurnitureRecommen
     }
   };
 
-  const hasSubscription = subscription?.subscribed || false;
   const priorityColors: Record<string, string> = { essential: "bg-red-500/10 text-red-500",
     recommended: "bg-yellow-500/10 text-yellow-500",
     optional: "bg-green-500/10 text-green-500" };
@@ -157,17 +156,9 @@ export function FurnitureRecommender({ subscription, onBack }: FurnitureRecommen
             </div>
           </div>
 
-          {!hasSubscription ? (
-            <Card className="bg-muted/50 p-6 text-center">
-              <Armchair className="h-10 w-10 mx-auto mb-3 text-primary" />
-              <h3 className="text-lg font-semibold mb-2">Pro Designer Required</h3>
-              <p className="text-muted-foreground text-sm">Subscribe to get AI furniture recommendations</p>
-            </Card>
-          ) : (
-            <Button onClick={handleGenerate} disabled={loading} className="w-full" size="lg">
+          <Button onClick={handleGenerate} disabled={loading} className="w-full" size="lg">
               {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Analyzing Room...</> : <><Armchair className="mr-2 h-5 w-5" /> Get Recommendations</>}
             </Button>
-          )}
         </CardContent>
       </Card>
 

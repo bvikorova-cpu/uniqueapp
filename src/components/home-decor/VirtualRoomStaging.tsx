@@ -67,7 +67,6 @@ export function VirtualRoomStaging({ subscription, onBack }: VirtualRoomStagingP
     }
   };
 
-  const hasSubscription = subscription?.subscribed || false;
   const plan = result?.staging_plan;
 
   return (
@@ -156,17 +155,9 @@ export function VirtualRoomStaging({ subscription, onBack }: VirtualRoomStagingP
             </div>
           </div>
 
-          {!hasSubscription ? (
-            <Card className="bg-muted/50 p-6 text-center">
-              <Building className="h-10 w-10 mx-auto mb-3 text-primary" />
-              <h3 className="text-lg font-semibold mb-2">Pro Designer Required</h3>
-              <p className="text-muted-foreground text-sm">Subscribe to access virtual staging</p>
-            </Card>
-          ) : (
-            <Button onClick={handleGenerate} disabled={loading} className="w-full" size="lg">
+          <Button onClick={handleGenerate} disabled={loading} className="w-full" size="lg">
               {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Creating Staging Plan...</> : <><Building className="mr-2 h-5 w-5" /> Generate Staging Plan</>}
             </Button>
-          )}
         </CardContent>
       </Card>
 
