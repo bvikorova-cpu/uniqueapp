@@ -288,6 +288,34 @@ Return ONLY valid JSON with this exact shape (5 platforms):
           </Button>
         </motion.div>
       )}
+
+      {saved.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <History className="h-4 w-4 text-blue-500" /> Saved social kits
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {saved.map(item => (
+              <div key={item.id} className="flex items-center justify-between gap-3 rounded-lg border p-3">
+                <div className="min-w-0">
+                  <p className="font-medium text-foreground truncate">{item.brand_name}</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {item.industry} · {new Date(item.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Button size="sm" variant="secondary" onClick={() => setKit(item.platforms)}>Load</Button>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => deleteSaved(item.id)}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
     </div>
     </>
   );
