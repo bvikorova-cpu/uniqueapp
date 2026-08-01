@@ -56,7 +56,7 @@ const LISTING_PACKAGES = [
   }
 ];
 
-const ADDITIONAL_SERVICES = [
+const ADDITIONAL_SERVICES: Array<{ id: string; name: string; price: number; description: string; icon: any; active?: boolean; isSubscription?: boolean; link?: string }> = [
   { id: "virtual_tour", name: "Virtual Tour Hosting", price: 99, description: "Add interactive 3D virtual tours to your property listings", icon: Video, active: true },
   { id: "lead_boost", name: "Lead Boost", price: 19, description: "Push listing to 1000+ potential buyers via email", icon: TrendingUp, active: true },
 ];
