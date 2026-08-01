@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Share2, Hash, Clock, Lightbulb, Copy, Check, ArrowLeft } from "lucide-react";
+import { Loader2, Share2, Hash, Clock, Lightbulb, Copy, Check, ArrowLeft, History, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
