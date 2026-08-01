@@ -232,8 +232,15 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
                     <span className="flex items-center gap-1"><Share2 className="h-3 w-3" /> Social</span>
                     <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> Visual</span>
                   </div>
-                  <Button onClick={() => downloadPDF(kit)} className="w-full gap-2" variant="outline">
-                    <Download className="h-4 w-4" /> Download Style Guide
+                  <Button
+                    onClick={() => downloadPDF(kit)}
+                    disabled={!hasCredits}
+                    className="w-full gap-2"
+                    variant="outline"
+                    title={hasCredits ? undefined : `You need ${STYLE_GUIDE_COST} credits to export`}
+                  >
+                    {hasCredits ? <Download className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                    {hasCredits ? "Download Style Guide" : `Need ${STYLE_GUIDE_COST} credits`}
                   </Button>
                 </CardContent>
               </Card>
