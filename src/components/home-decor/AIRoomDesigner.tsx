@@ -77,8 +77,9 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
 
       const promptText = `Redesign this ${roomType.replace(/-/g, " ")} in ${stylePreference} style. ${customPrompt || ""}`.trim();
 
-      const { data, error } = await safeInvoke("generate-ai-room-design", {
+      const { data, error } = await safeInvoke("generate-gift-message", {
         body: {
+          type: "generate_ai_room_design",
           originalImageUrl: publicUrl,
           roomType,
           stylePreference,
