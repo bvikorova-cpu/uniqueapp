@@ -69481,6 +69481,15 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_my_active_subscriptions: {
+        Args: never
+        Returns: {
+          expires_at: string
+          module: string
+          status: string
+          tier: string
+        }[]
+      }
       get_my_brand_api_key: {
         Args: never
         Returns: {
