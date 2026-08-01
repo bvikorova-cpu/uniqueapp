@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, FileText, Download, ArrowLeft, Palette, Type, Share2, Eye } from "lucide-react";
+import { Loader2, FileText, Download, ArrowLeft, Palette, Type, Share2, Eye, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -19,6 +19,7 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
   const { toast } = useToast();
   const [brandKits, setBrandKits] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const hasCredits = credits >= STYLE_GUIDE_COST;
 
   useEffect(() => {
     loadBrandKits();
@@ -192,6 +193,11 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Export Your Brand Guidelines</h2>
         <p className="text-muted-foreground mt-2">Download professional brand style guides from your generated kits</p>
         <Badge variant="secondary" className="mt-2">{STYLE_GUIDE_COST} credits per export</Badge>
+        {!hasCredits && (
+          <p className="text-sm text-destructive mt-2">
+            You have {credits} credits. Top up to at least {STYLE_GUIDE_COST} credits to unlock downloads.
+          </p>
+        )}
       </motion.div>
 
       {loading ? (
@@ -232,8 +238,15 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
                     <span className="flex items-center gap-1"><Share2 className="h-3 w-3" /> Social</span>
                     <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> Visual</span>
                   </div>
-                  <Button onClick={() => downloadPDF(kit)} className="w-full gap-2" variant="outline">
-                    <Download className="h-4 w-4" /> Download Style Guide
+                  <Button
+                    onClick={() => downloadPDF(kit)}
+                    disabled={!hasCredits}
+                    className="w-full gap-2"
+                    variant="outline"
+                    title={hasCredits ? undefined : `You need ${STYLE_GUIDE_COST} credits to export`}
+                  >
+                    {hasCredits ? <Download className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                    {hasCredits ? "Download Style Guide" : `Need ${STYLE_GUIDE_COST} credits`}
                   </Button>
                 </CardContent>
               </Card>
