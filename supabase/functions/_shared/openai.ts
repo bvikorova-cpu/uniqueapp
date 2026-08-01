@@ -116,8 +116,7 @@ export async function callOpenAIJSON<T = any>(opts: CallOptions): Promise<T> {
   }
 }
 
-// Re-export directly from the source module. Deno's edge bundler can remove
-// imports that are used only in a later export list, leaving an undefined
-// runtime binding and preventing every dependent function from booting.
-export { callUnifiedAI, UnifiedAIError } from "./unifiedAI.ts";
+// Keep only function re-exports here. Re-exporting the error class caused an
+// undefined runtime binding in the deployed Deno bundle and blocked startup.
+export { callUnifiedAI } from "./unifiedAI.ts";
 export { callUnifiedAIJSON, callUnifiedAIEx };
