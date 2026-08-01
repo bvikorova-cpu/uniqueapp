@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Target, TrendingUp, Shield, Zap, ArrowLeft } from "lucide-react";
+import { Loader2, Target, TrendingUp, Shield, Zap, ArrowLeft, History, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -25,6 +25,30 @@ const CompetitorAnalyzer = ({ credits, onBack, onCreditsUsed }: CompetitorAnalyz
   const [industry, setIndustry] = useState("");
   const [description, setDescription] = useState("");
   const [analysis, setAnalysis] = useState<any>(null);
+  const [history, setHistory] = useState<any[]>([]);
+
+  const loadHistory = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("brand_competitor_analyses")
+      .select("id, business_name, industry, competitors, positioning, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    setHistory(data ?? []);
+  }, []);
+
+  useEffect(() => { void loadHistory(); }, [loadHistory]);
+
+  const deleteEntry = async (id: string) => {
+    const { error } = await supabase.from("brand_competitor_analyses").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    setHistory((h) => h.filter((x) => x.id !== id));
+  };
 
   const handleAnalyze = async () => {
     if (!businessName || !industry) {
@@ -38,21 +62,62 @@ const CompetitorAnalyzer = ({ credits, onBack, onCreditsUsed }: CompetitorAnalyz
 
     try {
       setLoading(true);
-      const res = await supabase.functions.invoke("brand-ai", {
-        body: { action: "competitor-analyzer", businessName, industry, description } });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please sign in first");
+
+      const prompt = `You are a market analyst. Analyze the competitive landscape.
+Business: ${businessName}
+Industry: ${industry}
+Description: ${description || "not provided"}
+
+Return ONLY valid JSON:
+{"competitors":[{"name":"","market_position":"","estimated_market_share":"20%","strengths":"","weaknesses":""}],
+"positioning":{"unique_value_proposition":"","differentiators":["",""],"target_niche":"","pricing_strategy":"","market_gaps":["","",""]}}
+Provide 4-6 realistic competitors.`;
+
+      const res = await supabase.functions.invoke("forge-ai-tools", {
+        body: { action: "cowriter", text: prompt, extra: { category: "competitor_analysis", history: [{ role: "user", content: prompt }] } } });
 
       if (res.error) throw res.error;
+      if (res.data?.error === "INSUFFICIENT_CREDITS") throw new Error("Insufficient credits");
       if (res.data?.error) throw new Error(res.data.error);
 
-      setAnalysis(res.data);
+      const raw = String(res.data?.content ?? "");
+      let parsed: any = null;
+      try {
+        const match = raw.match(/\{[\s\S]*\}/);
+        parsed = match ? JSON.parse(match[0]) : null;
+      } catch { parsed = null; }
+      if (!parsed?.competitors?.length || !parsed?.positioning) {
+        throw new Error("AI could not complete the analysis right now. Please try again.");
+      }
+
+      // Charge the remainder so the total matches the advertised 12 credits (cowriter charges 2)
+      await supabase.rpc("deduct_ai_credits_atomic", { _user_id: user.id, _amount: 10 });
+
+      const { error: saveError } = await supabase.from("brand_competitor_analyses").insert({
+        user_id: user.id,
+        business_name: businessName,
+        industry,
+        competitors: parsed.competitors,
+        positioning: parsed.positioning,
+        credits_used: 12 });
+
+      setAnalysis(parsed);
       onCreditsUsed();
-      toast({ title: "🎯 Analysis Complete!", description: "Competitor landscape mapped." });
+      void loadHistory();
+      toast({
+        title: "🎯 Analysis Complete!",
+        description: saveError
+          ? "Analysis ready, but saving to your history failed."
+          : "Competitor landscape mapped and saved to your history." });
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      toast({ title: "Error", description: e?.message ?? "Analysis failed", variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <>
@@ -73,6 +138,36 @@ const CompetitorAnalyzer = ({ credits, onBack, onCreditsUsed }: CompetitorAnalyz
         <p className="text-muted-foreground mt-2">AI identifies top competitors and creates your unique positioning strategy</p>
         <Badge variant="secondary" className="mt-2">Cost: 12 credits | Your Credits: {credits}</Badge>
       </motion.div>
+
+      {!analysis && history.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+          <div className="flex items-center gap-2">
+            <History className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-bold text-foreground">Saved analyses</h3>
+            <Badge variant="secondary">{history.length}</Badge>
+          </div>
+          {history.map((entry) => (
+            <Card key={entry.id}>
+              <CardContent className="pt-5 flex flex-wrap items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="font-semibold truncate">{entry.business_name} · {entry.industry}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(entry.created_at).toLocaleString()} · {(entry.competitors ?? []).length} competitors
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" onClick={() => setAnalysis({ competitors: entry.competitors, positioning: entry.positioning })}>
+                    Open
+                  </Button>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => deleteEntry(entry.id)}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </motion.div>
+      )}
 
       {!analysis && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
