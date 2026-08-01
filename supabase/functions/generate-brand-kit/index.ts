@@ -15,20 +15,35 @@ serve(async (req) => {
     
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      throw new Error('No authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Please sign in to generate a brand kit.' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const token = authHeader.replace(/^Bearer\s+/i, '');
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
-    const authSupabase = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY') ?? '');
-    const { data: userData, error: userErr } = await authSupabase.auth.getUser(token);
-    const user = userData?.user;
-    if (userErr || !user) {
+    const anonKey =
+      Deno.env.get('SUPABASE_ANON_KEY') ??
+      Deno.env.get('SUPABASE_PUBLISHABLE_KEY') ??
+      '';
+    const authSupabase = createClient(supabaseUrl, anonKey);
+    let user: { id: string } | null = null;
+    const { data: userData } = await authSupabase.auth.getUser(token);
+    if (userData?.user) {
+      user = userData.user;
+    } else {
+      const { data: claimsData } = await authSupabase.auth.getClaims(token);
+      const sub = (claimsData as any)?.claims?.sub;
+      if (sub) user = { id: sub };
+    }
+    if (!user) {
       return new Response(
         JSON.stringify({ error: 'Not authenticated. Please sign in again.' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
 
     const supabase = createClient(
       supabaseUrl,
