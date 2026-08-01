@@ -8,6 +8,8 @@ import { Loader2, FileText, Download, ArrowLeft, Palette, Type, Share2, Eye } fr
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
+const STYLE_GUIDE_COST = 2;
+
 interface BrandStyleGuidePDFProps {
   credits: number;
   onBack: () => void;
