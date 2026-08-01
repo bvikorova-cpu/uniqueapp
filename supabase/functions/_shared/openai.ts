@@ -11,7 +11,6 @@ import {
   callUnifiedAI,
   callUnifiedAIEx,
   callUnifiedAIJSON,
-  UnifiedAIError,
   UnifiedAIOptions,
   UnifiedMessage,
 } from "./unifiedAI.ts";
@@ -119,4 +118,4 @@ export async function callOpenAIJSON<T = any>(opts: CallOptions): Promise<T> {
   }
 }
 
-export { callUnifiedAI, callUnifiedAIJSON, callUnifiedAIEx, UnifiedAIError };
+export { callUnifiedAI, callUnifiedAIJSON, callUnifiedAIEx };

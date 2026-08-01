@@ -1,11 +1,12 @@
+console.log("brand-ai-v4");
 import { requireAiCredits } from "../_shared/credit-check.ts";
-import { callOpenAIJSON } from "../_shared/openai.ts";
+import { callUnifiedAIJSON } from "../_shared/unifiedAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 async function callAI(messages: any[]) {
-  return callOpenAIJSON({ messages, model: "gpt-4o-mini", max_completion_tokens: 1000 });
+  return callUnifiedAIJSON(messages as any, { model: "gpt-4o-mini", max_tokens: 1000 } as any);
 }
 
 Deno.serve(async (req) => {

@@ -38,14 +38,36 @@ const BrandNameGenerator = ({ credits, onBack, onCreditsUsed }: BrandNameGenerat
 
     try {
       setLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      const res = await supabase.functions.invoke("brand-ai", {
-        body: { action: "name-generator", industry, style, keywords } });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please sign in first");
+
+      const prompt = `Generate exactly 10 creative, memorable brand names.
+Industry: ${industry}
+Style: ${style}
+Keywords / values: ${keywords || "none"}
+
+Return ONLY valid JSON: {"names":[{"name":"","meaning":"","domain_suggestion":"","tagline":""}]}`;
+
+      const res = await supabase.functions.invoke("forge-ai-tools", {
+        body: { action: "cowriter", text: prompt, extra: { category: "brand_names", history: [{ role: "user", content: prompt }] } } });
 
       if (res.error) throw res.error;
+      if (res.data?.error === "INSUFFICIENT_CREDITS") throw new Error("Insufficient credits");
       if (res.data?.error) throw new Error(res.data.error);
 
-      setResults(res.data.names || []);
+      const raw = String(res.data?.content ?? "");
+      let names: any[] = [];
+      try {
+        const match = raw.match(/\{[\s\S]*\}/);
+        const parsed = match ? JSON.parse(match[0]) : null;
+        names = Array.isArray(parsed?.names) ? parsed.names.slice(0, 10) : [];
+      } catch { names = []; }
+      if (names.length === 0) throw new Error("AI could not generate names right now. Please try again.");
+
+      // Charge the remainder so the total matches the advertised 8 credits (cowriter charges 2)
+      await supabase.rpc("deduct_ai_credits_atomic", { _user_id: user.id, _amount: 6 });
+
+      setResults(names);
       onCreditsUsed();
       toast({ title: "✨ Names Generated!", description: "10 creative brand names ready." });
     } catch (e: any) {
