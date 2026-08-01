@@ -118,7 +118,6 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "80", title: "Auctions", category: "Commerce", path: "/auction" },
   { id: "81", title: "Secret Santa", category: "Commerce", path: "/secret-santa" },
   { id: "82", title: "Antique Appraisal", category: "Commerce", path: "/antique-appraisal" },
-  { id: "83", title: "Home Decor", category: "Commerce", path: "/home-decor-subscription" },
   { id: "84", title: "Property Marketplace", category: "Commerce", path: "/property-marketplace" },
   { id: "85", title: "Stock Content Library", category: "Commerce", path: "/stock-content-library" },
   { id: "86", title: "Coupon Marketplace", category: "Commerce", path: "/coupon-marketplace" },
