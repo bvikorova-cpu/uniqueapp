@@ -72,22 +72,30 @@ const CreateInfluencer = ({ open, onOpenChange }: CreateInfluencerProps) => {
     try {
       const prompt = `Create a professional, realistic virtual influencer portrait photo for ${formData.name}, specialized in ${formData.niche} with a ${formData.personality} personality. High-quality headshot, Instagram influencer style, professional lighting, 4K quality.`;
 
-      const { data, error } = await supabase.functions.invoke("ai-image-generation", {
-        body: { prompt } });
+      const { data, error } = await supabase.functions.invoke("ai-image-tools", {
+        body: { action: "generate", prompt, aspectRatio: "1:1" } });
 
       if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
 
-      setFormData({ ...formData, avatarUrl: data.imageUrl });
+      const url = (data as any)?.imageUrl || (data as any)?.imageUrls?.[0];
+      if (!url) throw new Error("No image returned");
+
+      setFormData({ ...formData, avatarUrl: url });
       toast({ title: "Avatar Generated!",
         description: "Your influencer's avatar is ready" });
-    } catch (error) { console.error("Error generating avatar:", error);
+    } catch (error: any) { console.error("Error generating avatar:", error);
+      const msg = String(error?.message || "");
       toast({
         title: "Generation Failed",
-        description: "Failed to generate avatar. Please try again.",
+        description: /credit/i.test(msg)
+          ? "Not enough AI credits. Top up in the AI Credits Store."
+          : msg || "Failed to generate avatar. Please try again.",
         variant: "destructive" });
     } finally {
       setIsGeneratingAvatar(false);
     }
+
   };
 
   const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
