@@ -59,7 +59,6 @@ const LISTING_PACKAGES = [
 const ADDITIONAL_SERVICES = [
   { id: "virtual_tour", name: "Virtual Tour Hosting", price: 99, description: "Add interactive 3D virtual tours to your property listings", icon: Video, active: true },
   { id: "lead_boost", name: "Lead Boost", price: 19, description: "Push listing to 1000+ potential buyers via email", icon: TrendingUp, active: true },
-  { id: "home_decor", name: "Home Decor Marketplace", price: 7.99, description: "AI-powered room design + marketplace for decorations with AR preview", icon: Sparkles, isSubscription: true, link: "/home-decor" }
 ];
 
 const FEATURE_CARDS = [

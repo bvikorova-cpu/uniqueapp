@@ -254,8 +254,6 @@ import { ResetPassword,
   PropertyMarketplace,
   PropertySubmission,
   MyProperties,
-  HomeDecorMarketplace,
-  HomeDecorSubscription,
   StockContentLibrary,
   CouponMarketplace,
   CouponBrandPage,
@@ -1305,7 +1303,6 @@ const App = () => {
                         <Route path="/proclasses/*" element={<ProClassRedirect />} />
                         <Route path="/time-capsule-subscription" element={<Navigate to="/time-capsule" replace />} />
                         <Route path="/time-capsule" element={<TimeCapsule />} />
-                        <Route path="/home-decor-subscription" element={<HomeDecorSubscription />} />
                        <Route path="/holographic-avatars" element={<HolographicAvatars />} />
                        <Route path="/about-platform" element={<AboutPlatform />} />
                        <Route path="/about" element={<Navigate to="/about-platform" replace />} />
@@ -1389,7 +1386,6 @@ const App = () => {
                         <Route path="/property-submission" element={<PropertySubmission />} />
                         <Route path="/my-properties" element={<ProtectedRoute><MyProperties /></ProtectedRoute>} />
                         <Route path="/property-favorites" element={<ProtectedRoute><PropertyFavorites /></ProtectedRoute>} />
-                        <Route path="/home-decor" element={<HomeDecorMarketplace />} />
                         
                         <Route path="/glamour-world" element={<GlamourWorld />} />
                         <Route path="/__e2e/anonymous-date-matches" element={<E2EAnonymousDateMatches />} />

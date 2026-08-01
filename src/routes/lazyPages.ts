@@ -387,8 +387,6 @@ export const CreateTalentCampaign = lazy(() => import("@/pages/fundraising/Creat
 export const TalentDetail = lazy(() => import("@/pages/fundraising/TalentDetail"));
 
 // Home Decor
-export const HomeDecorMarketplace = lazy(() => import("@/pages/HomeDecorMarketplace"));
-export const HomeDecorSubscription = lazy(() => import("@/pages/HomeDecorSubscription"));
 
 // Admin
 export const Admin = lazy(() => import("@/pages/Admin"));
