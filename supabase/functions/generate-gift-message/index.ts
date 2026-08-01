@@ -604,9 +604,28 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
       const stylePrefix = IMAGE_TYPES[type];
       const subject = customPrompt || reqBody.title || reqBody.description || `a ${type.replace(/_/g, " ")}`;
       const sourceImage = typeof reqBody.originalImageUrl === "string" ? reqBody.originalImageUrl : "";
-      const imgPrompt = `${stylePrefix} Subject: ${subject}${sourceImage ? `. Preserve the room's architecture and redesign the uploaded room shown here: ${sourceImage}` : ""}`;
+      const imgPrompt = `${stylePrefix} Subject: ${subject}${sourceImage ? ". Preserve the uploaded room's architecture, camera angle, doors and windows while applying the requested redesign." : ""}`;
 
       const useGateway = Boolean(LOVABLE_API_KEY);
+      const gatewayBody = sourceImage
+        ? {
+            model: "google/gemini-3.1-flash-image",
+            messages: [{
+              role: "user",
+              content: [
+                { type: "text", text: imgPrompt },
+                { type: "image_url", image_url: { url: sourceImage } },
+              ],
+            }],
+            modalities: ["image", "text"],
+          }
+        : {
+            model: "openai/gpt-image-2",
+            prompt: imgPrompt,
+            size: "1024x1024",
+            quality: "low",
+            n: 1,
+          };
       const imgResp = await fetch(
         useGateway
           ? "https://ai.gateway.lovable.dev/v1/images/generations"
@@ -616,11 +635,13 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
         headers: useGateway
           ? { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" }
           : { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model: useGateway ? "openai/gpt-image-2" : "gpt-image-1",
+        body: JSON.stringify(useGateway ? gatewayBody : {
+          model: "gpt-image-1",
           prompt: imgPrompt,
           size: "1024x1024",
           quality: "low",
-          n: 1 }) });
+          n: 1,
+        }) });
 
       if (!imgResp.ok) {
         if (imgResp.status === 429) {
