@@ -50,6 +50,12 @@ export function StockPayoutCard() {
       .limit(10);
     setHistory(withdrawals || []);
     setHistoryLoading(false);
+
+    // Funds already requested but not yet paid are reserved and cannot be requested again
+    const pending = (withdrawals || [])
+      .filter((w: any) => ["pending", "processing"].includes(String(w.status).toLowerCase()))
+      .reduce((sum: number, w: any) => sum + (Number(w.amount) || 0), 0);
+    setBalance(Math.max(0, Number(wallet?.balance ?? 0) - pending));
   }, [getStatus]);
 
   useEffect(() => {
