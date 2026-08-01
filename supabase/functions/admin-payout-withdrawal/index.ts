@@ -155,32 +155,91 @@ serve(async (req) => {
 
     if (!connectId) throw new Error("Creator has no connected Stripe account");
 
+    // For wallet-backed payouts (stock content) debit the EUR wallet BEFORE money moves,
+    // so the same balance can never be withdrawn twice.
+    const walletBacked = kind === "stock";
+    let walletDebited = false;
+    if (walletBacked) {
+      const { data: wallet } = await supabaseAdmin
+        .from("wallet_balances")
+        .select("id, balance")
+        .eq("user_id", userId)
+        .eq("currency", "EUR")
+        .maybeSingle();
+      const available = Number(wallet?.balance ?? 0);
+      if (!wallet || available < amount) {
+        throw new Error(`Insufficient wallet balance (available €${available.toFixed(2)}, requested €${amount.toFixed(2)})`);
+      }
+      const { error: debitError } = await supabaseAdmin
+        .from("wallet_balances")
+        .update({ balance: available - amount, updated_at: new Date().toISOString() })
+        .eq("id", wallet.id)
+        .eq("balance", wallet.balance);
+      if (debitError) throw new Error(`Could not reserve wallet balance: ${debitError.message}`);
+      walletDebited = true;
+    }
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
-    const transfer = await stripe.transfers.create({
-      amount: Math.round(amount * 100),
-      currency: meta.currency.toLowerCase(),
-      destination: connectId,
-      description: `Payout ${withdrawalId}`,
-      metadata: {
-        withdrawal_id: withdrawalId,
-        kind,
-        admin_id: adminId,
-        source: "admin_payout",
-      },
-    });
+    let transfer;
+    try {
+      transfer = await stripe.transfers.create({
+        amount: Math.round(amount * 100),
+        currency: meta.currency.toLowerCase(),
+        destination: connectId,
+        description: `Payout ${withdrawalId}`,
+        metadata: {
+          withdrawal_id: withdrawalId,
+          kind,
+          admin_id: adminId,
+          source: "admin_payout",
+        },
+      });
+    } catch (transferError) {
+      // Refund the reserved wallet amount if Stripe rejected the transfer
+      if (walletDebited) {
+        const { data: w } = await supabaseAdmin
+          .from("wallet_balances")
+          .select("id, balance")
+          .eq("user_id", userId)
+          .eq("currency", "EUR")
+          .maybeSingle();
+        if (w) {
+          await supabaseAdmin
+            .from("wallet_balances")
+            .update({ balance: Number(w.balance ?? 0) + amount, updated_at: new Date().toISOString() })
+            .eq("id", w.id);
+        }
+      }
+      throw transferError;
+    }
+
+    const updatePayload: Record<string, unknown> = {
+      [meta.statusColumn]: "completed",
+      [meta.transferIdColumn]: transfer.id,
+      processed_by: adminId,
+      processed_at: new Date().toISOString(),
+      admin_notes: adminNotes ?? null,
+      updated_at: new Date().toISOString(),
+    };
+    if (walletBacked) updatePayload.wallet_deducted = true;
 
     const { error: updateError } = await supabaseAdmin
       .from(meta.table)
-      .update({
-        [meta.statusColumn]: "completed",
-        [meta.transferIdColumn]: transfer.id,
-        processed_by: adminId,
-        admin_notes: adminNotes ?? null,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updatePayload)
       .eq("id", withdrawalId);
     if (updateError) throw updateError;
+
+    // Tell the creator the money is on its way
+    await supabaseAdmin.from("notifications").insert({
+      user_id: userId,
+      type: "payout_completed",
+      title: "Payout sent 💸",
+      message: `€${amount.toFixed(2)} was transferred to your Stripe account.`,
+      action_url: "/stock-content-library?view=earnings",
+      metadata: { withdrawal_id: withdrawalId, kind, transfer_id: transfer.id },
+    });
+
 
     return new Response(JSON.stringify({ success: true, transfer_id: transfer.id, status: "completed" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
