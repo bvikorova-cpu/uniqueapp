@@ -8,10 +8,8 @@
 //   const reply = await callOpenAI({ system: "...", user: "..." });
 
 import {
-  callUnifiedAI,
   callUnifiedAIEx,
   callUnifiedAIJSON,
-  UnifiedAIError,
 } from "./unifiedAI.ts";
 import type { UnifiedAIOptions, UnifiedMessage } from "./unifiedAI.ts";
 
@@ -118,4 +116,8 @@ export async function callOpenAIJSON<T = any>(opts: CallOptions): Promise<T> {
   }
 }
 
-export { callUnifiedAI, callUnifiedAIJSON, callUnifiedAIEx, UnifiedAIError };
+// Re-export directly from the source module. Deno's edge bundler can remove
+// imports that are used only in a later export list, leaving an undefined
+// runtime binding and preventing every dependent function from booting.
+export { callUnifiedAI, UnifiedAIError } from "./unifiedAI.ts";
+export { callUnifiedAIJSON, callUnifiedAIEx };
