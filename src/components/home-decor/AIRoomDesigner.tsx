@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Upload, Sparkles, Loader2, Download, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
+
 import { useNavigate } from "react-router-dom";
 
 const DESIGN_COST = 30;
