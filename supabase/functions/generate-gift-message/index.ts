@@ -633,7 +633,7 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
         {
         method: "POST",
         headers: useGateway
-          ? { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" }
+          ? { "Lovable-API-Key": LOVABLE_API_KEY as string, "Content-Type": "application/json" }
           : { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify(useGateway ? gatewayBody : {
           model: "gpt-image-1",
@@ -657,7 +657,8 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
       const imgData = await imgResp.json();
       const b64 = imgData.data?.[0]?.b64_json;
       const directUrl = imgData.data?.[0]?.url;
-      const imageUrl = b64 ? `data:image/png;base64,${b64}` : directUrl;
+      const gatewayImage = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      const imageUrl = b64 ? `data:image/png;base64,${b64}` : (directUrl || gatewayImage);
       if (!imageUrl) {
         return new Response(JSON.stringify({ error: "No image returned from OpenAI" }), {
           status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
