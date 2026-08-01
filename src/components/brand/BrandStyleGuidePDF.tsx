@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, FileText, Download, ArrowLeft, Palette, Type, Share2, Eye } from "lucide-react";
+import { Loader2, FileText, Download, ArrowLeft, Palette, Type, Share2, Eye, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
