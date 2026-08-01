@@ -82,12 +82,14 @@ const BrandBuilder = () => {
       const { data, error } = await supabase.functions.invoke("generate-brand-kit", {
         body: { businessName, businessType, targetAudience, brandValues } });
       if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
       toast({ title: "✨ Brand Kit Generated!", description: `Brand identity for ${businessName} is ready` });
       setBusinessName(""); setBusinessType(""); setTargetAudience(""); setBrandValues("");
       await loadBrandKits();
       await refreshCredits();
     } catch (error: any) {
-      toast({ title: "Error", description: "Failed to generate brand kit", variant: "destructive" });
+      const msg = error?.message || "Failed to generate brand kit";
+      toast({ title: "Error", description: msg, variant: "destructive" });
     } finally {
       setLoading(false);
     }
