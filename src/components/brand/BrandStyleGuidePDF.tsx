@@ -33,76 +33,125 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
     setLoading(false);
   };
 
-  const downloadPDF = (kit: any) => {
-    const content = `
-╔══════════════════════════════════════════════════════╗
-║               BRAND STYLE GUIDE                       ║
-║               ${kit.business_name?.toUpperCase() || "BRAND"}                    ║
-╚══════════════════════════════════════════════════════╝
+  const downloadPDF = async (kit: any) => {
+    const { default: jsPDF } = await import("jspdf");
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 48;
+    let y = 0;
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  1. BRAND OVERVIEW
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const ensureSpace = (needed: number) => {
+      if (y + needed > pageH - margin) {
+        doc.addPage();
+        y = margin;
+      }
+    };
 
-Business Name: ${kit.business_name || "N/A"}
-Business Type: ${kit.business_type || "N/A"}
-Slogan: "${kit.slogan || "N/A"}"
-Tagline: "${kit.tagline || "N/A"}"
+    const section = (title: string) => {
+      ensureSpace(48);
+      y += 18;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.setTextColor(29, 78, 216);
+      doc.text(title, margin, y);
+      y += 8;
+      doc.setDrawColor(226, 232, 240);
+      doc.line(margin, y, pageW - margin, y);
+      y += 16;
+      doc.setTextColor(17, 24, 39);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+    };
 
-Mission Statement:
-${kit.mission_statement || "Not specified"}
+    const para = (text: string) => {
+      const lines = doc.splitTextToSize(text || "Not specified", pageW - margin * 2);
+      lines.forEach((line: string) => {
+        ensureSpace(16);
+        doc.text(line, margin, y);
+        y += 16;
+      });
+    };
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  2. COLOR PALETTE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // Cover header
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 0, pageW, 130, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(26);
+    doc.text(String(kit.business_name || "Brand"), margin, 62);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(13);
+    doc.text("Brand Style Guide", margin, 88);
+    doc.setFontSize(10);
+    doc.text(new Date(kit.created_at).toLocaleDateString(), margin, 108);
+    y = 160;
+    doc.setTextColor(17, 24, 39);
 
-${kit.color_palette?.map((c: any) => `  ■ ${c.name}: ${c.hex} — ${c.usage || "General use"}`).join("\n") || "No colors defined"}
+    section("1. Brand Overview");
+    para(`Business name: ${kit.business_name || "N/A"}`);
+    para(`Business type: ${kit.business_type || "N/A"}`);
+    if (kit.slogan) para(`Slogan: "${kit.slogan}"`);
+    if (kit.tagline) para(`Tagline: "${kit.tagline}"`);
+    y += 6;
+    para(`Mission: ${kit.mission_statement || "Not specified"}`);
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  3. TYPOGRAPHY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    section("2. Color Palette");
+    const colors = Array.isArray(kit.color_palette) ? kit.color_palette : [];
+    if (colors.length === 0) {
+      para("No colors defined");
+    } else {
+      colors.forEach((c: any) => {
+        ensureSpace(30);
+        const hex = String(c?.hex || "#000000");
+        try {
+          doc.setFillColor(hex);
+          doc.setDrawColor(203, 213, 225);
+          doc.roundedRect(margin, y - 10, 22, 22, 3, 3, "FD");
+        } catch { /* invalid hex — skip swatch */ }
+        doc.text(`${c?.name || "Color"} — ${hex}${c?.usage ? ` (${c.usage})` : ""}`, margin + 34, y + 5);
+        y += 30;
+      });
+    }
 
-${kit.visual_identity?.typography || "Not specified"}
+    section("3. Typography");
+    para(kit.visual_identity?.typography);
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  4. BRAND TONE & VOICE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    section("4. Brand Tone & Voice");
+    para(kit.visual_identity?.tone);
 
-${kit.visual_identity?.tone || "Not specified"}
+    section("5. Imagery Style");
+    para(kit.visual_identity?.imagery);
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  5. IMAGERY STYLE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    section("6. Taglines");
+    const taglines = Array.isArray(kit.taglines) ? kit.taglines : [];
+    if (taglines.length === 0) para("No taglines");
+    else taglines.forEach((t: string, i: number) => para(`${i + 1}. "${t}"`));
 
-${kit.visual_identity?.imagery || "Not specified"}
+    section("7. Social Media Strategy");
+    const social = Object.entries(kit.social_media_strategy || {});
+    if (social.length === 0) para("Not specified");
+    else social.forEach(([p, s]) => {
+      doc.setFont("helvetica", "bold");
+      ensureSpace(16);
+      doc.text(String(p).toUpperCase(), margin, y);
+      y += 16;
+      doc.setFont("helvetica", "normal");
+      para(typeof s === "string" ? s : JSON.stringify(s));
+      y += 4;
+    });
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  6. TAGLINES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // Footer on every page
+    const pages = doc.getNumberOfPages();
+    for (let p = 1; p <= pages; p++) {
+      doc.setPage(p);
+      doc.setFontSize(9);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Generated by Brand Builder · page ${p}/${pages}`, margin, pageH - 24);
+    }
 
-${kit.taglines?.map((t: string, i: number) => `  ${i + 1}. "${t}"`).join("\n") || "No taglines"}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  7. SOCIAL MEDIA STRATEGY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-${Object.entries(kit.social_media_strategy || {}).map(([p, s]) => `  ${p.toUpperCase()}: ${s}`).join("\n\n") || "Not specified"}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Generated by Brand Builder | ${new Date(kit.created_at).toLocaleDateString()}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    `.trim();
-
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${kit.business_name?.replace(/\s+/g, "_") || "brand"}_style_guide.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast({ title: "📄 Downloaded!", description: "Brand style guide exported." });
+    doc.save(`${kit.business_name?.replace(/\s+/g, "_") || "brand"}_style_guide.pdf`);
+    toast({ title: "📄 Downloaded!", description: "Brand style guide exported as PDF." });
   };
 
   return (
