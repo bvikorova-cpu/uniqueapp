@@ -372,7 +372,6 @@ import { ResetPassword,
   Earnings,
   InfluencerEarnings,
   CreatorStudio,
-  VirtualInfluencerAgency,
   MembershipCommunity,
   CommunityDetail,
   CreatorDashboard,
@@ -1113,7 +1112,6 @@ const App = () => {
                         <Route path="/lottery-history" element={<LotteryHistory />} />
                         <Route path="/emotion-economy" element={<EmotionEconomy />} />
                         <Route path="/quantum-social" element={<QuantumSocial />} />
-                        <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
                         <Route path="/membership-community" element={<MembershipCommunity />} />
                         <Route path="/communities" element={<MembershipCommunity />} />
                         <Route path="/close-friends" element={<Friends />} />

@@ -157,7 +157,6 @@ const Navbar = () => {
         { path: "/future-face", label: "Future Face - Age Prediction", icon: Clock },
         { path: "/photo-restoration", label: "Photo Restoration", icon: Image },
         { path: "/stock-content-library", label: "Stock Content Library", icon: ImageIcon },
-        { path: "/virtual-influencer-agency", label: "Virtual Influencer Agency", icon: Users },
         { path: "/brand-builder", label: "Brand Builder", icon: Sparkles },
         { path: "/home-designer", label: "Home Designer", icon: Home },
         { path: "/beauty-studio", label: "Beauty Studio", icon: Sparkles },
