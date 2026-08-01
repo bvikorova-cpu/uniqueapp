@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, Globe, Copy, Check, ArrowLeft } from "lucide-react";
+import { Loader2, Sparkles, Globe, Copy, Check, ArrowLeft, History, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -25,6 +25,30 @@ const BrandNameGenerator = ({ credits, onBack, onCreditsUsed }: BrandNameGenerat
   const [keywords, setKeywords] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const [history, setHistory] = useState<any[]>([]);
+
+  const loadHistory = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("brand_name_suggestions")
+      .select("id, industry, style, keywords, suggestions, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    setHistory(data ?? []);
+  }, []);
+
+  useEffect(() => { void loadHistory(); }, [loadHistory]);
+
+  const deleteEntry = async (id: string) => {
+    const { error } = await supabase.from("brand_name_suggestions").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    setHistory((h) => h.filter((x) => x.id !== id));
+  };
 
   const handleGenerate = async () => {
     if (!industry || !style) {
@@ -67,9 +91,22 @@ Return ONLY valid JSON: {"names":[{"name":"","meaning":"","domain_suggestion":""
       // Charge the remainder so the total matches the advertised 8 credits (cowriter charges 2)
       await supabase.rpc("deduct_ai_credits_atomic", { _user_id: user.id, _amount: 6 });
 
+      const { error: saveError } = await supabase.from("brand_name_suggestions").insert({
+        user_id: user.id,
+        industry,
+        style,
+        keywords: keywords || null,
+        suggestions: names,
+        credits_used: 8 });
+
       setResults(names);
       onCreditsUsed();
-      toast({ title: "✨ Names Generated!", description: "10 creative brand names ready." });
+      void loadHistory();
+      toast({
+        title: "✨ Names Generated!",
+        description: saveError
+          ? "Names are ready, but saving to your history failed."
+          : "10 names ready and saved to your history below." });
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally {
@@ -164,6 +201,43 @@ Return ONLY valid JSON: {"names":[{"name":"","meaning":"","domain_suggestion":""
                 </CardContent>
               </Card>
             </motion.div>
+          ))}
+        </motion.div>
+      )}
+      {history.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+          <div className="flex items-center gap-2">
+            <History className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-bold text-foreground">Saved name sets</h3>
+            <Badge variant="secondary">{history.length}</Badge>
+          </div>
+          {history.map((entry) => (
+            <Card key={entry.id}>
+              <CardContent className="pt-5 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="font-semibold capitalize truncate">{entry.industry} · {entry.style}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(entry.created_at).toLocaleString()}
+                      {entry.keywords ? ` · ${entry.keywords}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" onClick={() => setResults(entry.suggestions ?? [])}>
+                      Load
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => deleteEntry(entry.id)}>
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(entry.suggestions ?? []).slice(0, 10).map((n: any, i: number) => (
+                    <Badge key={i} variant="outline">{n?.name}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </motion.div>
       )}
