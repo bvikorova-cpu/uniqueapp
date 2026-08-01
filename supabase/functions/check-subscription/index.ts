@@ -22,7 +22,8 @@ const TIER_PRODUCTS: Record<string, string[]> = { // generic — any active sub
   // Phase 2 — explicit product mapping
   best_friend:    ["prod_UNhZqCmnlvoxOc"],
   companions:     ["prod_UNhZr9gtoc34Tc"],
-  decor:          ["prod_UNhZNhxto4L3rY"],
+  // prod_UzbqtwCxUzH2q5 = Pro Designer €9.99/month (current price price_1Tzccg...)
+  decor:          ["prod_UNhZNhxto4L3rY", "prod_UzbqtwCxUzH2q5"],
   f1:             ["prod_UNhZ4YdjqCy4xv"],
   // Kids Gold Pass (prod_UbEDgqmGITgxMA) + monthly/annual Kids subscriptions
   // (prod_TPWmSQy8vJrtpe, prod_TPWmNY3AZcnjUH) unlock ALL Kids modules
