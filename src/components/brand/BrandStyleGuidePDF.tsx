@@ -19,6 +19,7 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
   const { toast } = useToast();
   const [brandKits, setBrandKits] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const hasCredits = credits >= STYLE_GUIDE_COST;
 
   useEffect(() => {
     loadBrandKits();
