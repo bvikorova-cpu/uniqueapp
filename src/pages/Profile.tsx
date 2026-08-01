@@ -17,6 +17,7 @@ import { ProfileVerificationCard } from "@/components/profile/ProfileVerificatio
 import { FanClubMembershipsCard } from "@/components/profile/FanClubMembershipsCard";
 import { ClubMembershipCard } from "@/components/profile/ClubMembershipCard";
 import { BillingOverviewCard } from "@/components/profile/BillingOverviewCard";
+import { ActiveSubscriptionsCard } from "@/components/profile/ActiveSubscriptionsCard";
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
 import { finishMeTrace,
   markMeFirstPaint,
