@@ -11,9 +11,9 @@ import {
   callUnifiedAI,
   callUnifiedAIEx,
   callUnifiedAIJSON,
-  UnifiedAIOptions,
-  UnifiedMessage,
+  UnifiedAIError,
 } from "./unifiedAI.ts";
+import type { UnifiedAIOptions, UnifiedMessage } from "./unifiedAI.ts";
 
 export const DEFAULT_MODEL = "gpt-4o";
 
@@ -118,4 +118,4 @@ export async function callOpenAIJSON<T = any>(opts: CallOptions): Promise<T> {
   }
 }
 
-export { callUnifiedAI, callUnifiedAIJSON, callUnifiedAIEx };
+export { callUnifiedAI, callUnifiedAIJSON, callUnifiedAIEx, UnifiedAIError };
