@@ -34,8 +34,26 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
   };
 
   const downloadPDF = async (kit: any) => {
+    // Charge 2 credits per exported style guide
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({ title: "Sign in required", description: "Please sign in to export your style guide.", variant: "destructive" });
+      return;
+    }
+    if (credits < STYLE_GUIDE_COST) {
+      toast({ title: "Not enough credits", description: `Exporting a style guide costs ${STYLE_GUIDE_COST} credits.`, variant: "destructive" });
+      return;
+    }
+    const { error: creditError } = await supabase.rpc("deduct_ai_credits_atomic", { _user_id: user.id, _amount: STYLE_GUIDE_COST });
+    if (creditError) {
+      toast({ title: "Not enough credits", description: `Exporting a style guide costs ${STYLE_GUIDE_COST} credits.`, variant: "destructive" });
+      return;
+    }
+    window.dispatchEvent(new Event("ai-credits-updated"));
+
     const { default: jsPDF } = await import("jspdf");
     const doc = new jsPDF({ unit: "pt", format: "a4" });
+
     const pageW = doc.internal.pageSize.getWidth();
     const pageH = doc.internal.pageSize.getHeight();
     const margin = 48;
