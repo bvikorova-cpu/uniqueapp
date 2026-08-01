@@ -37,9 +37,11 @@ const HomeDecorSubscription = () => {
     if (!user) { navigate("/auth"); return; }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-decor-checkout');
-      if (error) throw error;
+      const { data, error } = await safeInvoke<{ url?: string }>('create-checkout', {
+        body: { product: 'decor' } });
+      if (error) throw new Error(error);
       if (data?.url) window.open(data.url, '_blank');
+      else throw new Error("Checkout link unavailable. Please try again.");
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to create checkout", variant: "destructive" });
     } finally { setLoading(false); }
