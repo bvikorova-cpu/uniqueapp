@@ -52,11 +52,16 @@ export function ColorPaletteGenerator({ subscription, onBack }: ColorPaletteGene
 
       const { data: { publicUrl } } = supabase.storage.from('home-designs').getPublicUrl(fileName);
 
-      const { data, error } = await supabase.functions.invoke('home-color-palette', {
-        body: { roomImageUrl: publicUrl, roomType, mood }
+      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: {
+          task: 'home_palette',
+          imageUrl: publicUrl,
+          prompt: `Create a professional interior color palette for a ${roomType || 'room'} with a ${mood || 'balanced'} mood.`
+        }
       });
 
       if (error) throw error;
+      if (!data?.paletteData) throw new Error("The palette could not be generated. Please try again.");
       setResult(data.paletteData);
       toast({ title: "✨ Palette Generated!", description: "Your custom color palette is ready" });
     } catch (error: any) {
