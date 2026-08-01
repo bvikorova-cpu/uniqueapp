@@ -8,6 +8,8 @@ import { Loader2, FileText, Download, ArrowLeft, Palette, Type, Share2, Eye } fr
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
+const STYLE_GUIDE_COST = 2;
+
 interface BrandStyleGuidePDFProps {
   credits: number;
   onBack: () => void;
@@ -34,8 +36,26 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
   };
 
   const downloadPDF = async (kit: any) => {
+    // Charge 2 credits per exported style guide
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({ title: "Sign in required", description: "Please sign in to export your style guide.", variant: "destructive" });
+      return;
+    }
+    if (credits < STYLE_GUIDE_COST) {
+      toast({ title: "Not enough credits", description: `Exporting a style guide costs ${STYLE_GUIDE_COST} credits.`, variant: "destructive" });
+      return;
+    }
+    const { error: creditError } = await supabase.rpc("deduct_ai_credits_atomic", { _user_id: user.id, _amount: STYLE_GUIDE_COST });
+    if (creditError) {
+      toast({ title: "Not enough credits", description: `Exporting a style guide costs ${STYLE_GUIDE_COST} credits.`, variant: "destructive" });
+      return;
+    }
+    window.dispatchEvent(new Event("ai-credits-updated"));
+
     const { default: jsPDF } = await import("jspdf");
     const doc = new jsPDF({ unit: "pt", format: "a4" });
+
     const pageW = doc.internal.pageSize.getWidth();
     const pageH = doc.internal.pageSize.getHeight();
     const margin = 48;
@@ -151,7 +171,7 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
     }
 
     doc.save(`${kit.business_name?.replace(/\s+/g, "_") || "brand"}_style_guide.pdf`);
-    toast({ title: "📄 Downloaded!", description: "Brand style guide exported as PDF." });
+    toast({ title: "📄 Downloaded!", description: `Brand style guide exported as PDF. ${STYLE_GUIDE_COST} credits used.` });
   };
 
   return (
@@ -171,7 +191,7 @@ const BrandStyleGuidePDF = ({ credits, onBack }: BrandStyleGuidePDFProps) => {
         </div>
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Export Your Brand Guidelines</h2>
         <p className="text-muted-foreground mt-2">Download professional brand style guides from your generated kits</p>
-        <Badge variant="secondary" className="mt-2">Free — uses your existing brand kits</Badge>
+        <Badge variant="secondary" className="mt-2">{STYLE_GUIDE_COST} credits per export</Badge>
       </motion.div>
 
       {loading ? (
