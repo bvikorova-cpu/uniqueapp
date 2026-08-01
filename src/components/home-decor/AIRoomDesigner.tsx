@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Upload, Sparkles, Loader2, Download, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
+
 import { useNavigate } from "react-router-dom";
 
 const DESIGN_COST = 30;
@@ -75,7 +77,7 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
 
       const promptText = `Redesign this ${roomType.replace(/-/g, " ")} in ${stylePreference} style. ${customPrompt || ""}`.trim();
 
-      const { data, error } = await supabase.functions.invoke("generate-ai-room-design", {
+      const { data, error } = await safeInvoke("generate-ai-room-design", {
         body: {
           originalImageUrl: publicUrl,
           roomType,
@@ -83,8 +85,8 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
           customPrompt: promptText,
           prompt: promptText } });
 
-      if (error) throw error;
-      if ((data as any)?.error) throw new Error((data as any).error);
+      if (error) throw new Error(error);
+
 
       const imageUrl = (data as any)?.imageUrl || (data as any)?.url || (data as any)?.image;
       if (!imageUrl) throw new Error("No design returned, please try again");
