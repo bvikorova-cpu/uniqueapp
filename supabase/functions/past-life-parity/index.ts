@@ -48,9 +48,18 @@ serve(async (req) => {
 
     const token = authHeader.replace("Bearer ", "");
     const auth = createClient(supabaseUrl, anonKey);
-    const { data: userData, error: userErr } = await auth.auth.getUser(token);
-    if (userErr || !userData.user) return json({ error: "Not authenticated" }, 401);
-    const user = userData.user;
+    let userId: string | null = null;
+    try {
+      const { data: claims } = await (auth.auth as any).getClaims(token);
+      userId = claims?.claims?.sub ?? null;
+    } catch { /* fall through */ }
+    if (!userId) {
+      const { data: userData, error: userErr } = await auth.auth.getUser(token);
+      if (userErr || !userData.user) return json({ error: "Not authenticated" }, 401);
+      userId = userData.user.id;
+    }
+    const user = { id: userId };
+
 
     const body = (await req.json().catch(() => ({}))) as Partial<Body>;
     const action = body.action ?? "";
