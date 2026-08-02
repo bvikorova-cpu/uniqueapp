@@ -189,7 +189,7 @@ serve(async (req) => {
       const { error: deductErr } = await supabase.rpc("deduct_ai_credits", {
         p_user_id: user.id,
         p_amount: cost,
-          p_reason: `AI Image ${isBeautyEdit ? feature : action}`,
+          p_reason: `AI Image ${isBeautyEdit ? (featureStr || "beauty") : action}`,
         p_source: "ai-image-tools",
       });
       if (deductErr) return json({ error: "Failed to reserve credits" }, 500);
@@ -201,7 +201,7 @@ serve(async (req) => {
         await supabase.rpc("add_ai_credits", {
           p_user_id: user.id,
           p_amount: cost,
-          p_reason: `AI Image ${isBeautyEdit ? feature : action} refund`,
+          p_reason: `AI Image ${isBeautyEdit ? (featureStr || "beauty") : action} refund`,
           p_source: "ai-image-tools",
         });
       }
