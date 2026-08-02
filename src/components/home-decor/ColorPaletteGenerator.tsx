@@ -56,12 +56,13 @@ export function ColorPaletteGenerator({ subscription, onBack }: ColorPaletteGene
         body: {
           task: 'home_palette',
           imageUrl: publicUrl,
-          prompt: `Create a professional interior color palette for a ${roomType || 'room'} with a ${mood || 'balanced'} mood.`
+          prompt: `Create a professional interior color palette for a ${roomType || 'room'} with a ${mood || 'balanced'} mood.`,
+          extras: { roomType, mood }
         }
       });
 
       if (error) throw error;
-      if (!data?.paletteData) throw new Error("The palette could not be generated. Please try again.");
+      if (!data?.paletteData?.palette?.length) throw new Error(data?.error || "The palette could not be generated. Please try again.");
       setResult(data.paletteData);
       toast({ title: "✨ Palette Generated!", description: "Your custom color palette is ready" });
     } catch (error: any) {
@@ -94,7 +95,7 @@ export function ColorPaletteGenerator({ subscription, onBack }: ColorPaletteGene
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Palette className="h-5 w-5 text-primary" /> Generate Palette</CardTitle>
-          <CardDescription>8 credits per analysis</CardDescription>
+          <CardDescription>4 credits per analysis</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">

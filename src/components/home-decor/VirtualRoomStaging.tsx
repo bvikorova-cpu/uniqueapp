@@ -53,11 +53,17 @@ export function VirtualRoomStaging({ subscription, onBack }: VirtualRoomStagingP
 
       const { data: { publicUrl } } = supabase.storage.from('home-designs').getPublicUrl(fileName);
 
-      const { data, error } = await supabase.functions.invoke('home-virtual-staging', {
-        body: { originalImageUrl: publicUrl, roomType, stagingStyle, propertyType }
+      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: {
+          task: 'home_staging',
+          imageUrl: publicUrl,
+          prompt: `Create a ${stagingStyle || 'cohesive'} staging plan for this ${propertyType || 'property'} ${roomType || 'room'}.`,
+          extras: { roomType, stagingStyle, propertyType }
+        }
       });
 
       if (error) throw error;
+      if (!data?.stagingData?.staging_plan) throw new Error(data?.error || "The staging plan could not be generated. Please try again.");
       setResult(data.stagingData);
       toast({ title: "✨ Staging Plan Ready!", description: "Your virtual staging plan is complete" });
     } catch (error: any) {
@@ -91,7 +97,7 @@ export function VirtualRoomStaging({ subscription, onBack }: VirtualRoomStagingP
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Building className="h-5 w-5 text-primary" /> Create Staging Plan</CardTitle>
-          <CardDescription>12 credits per staging</CardDescription>
+          <CardDescription>4 credits per staging</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">

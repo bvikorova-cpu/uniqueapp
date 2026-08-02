@@ -54,12 +54,18 @@ export function FurnitureRecommender({ subscription, onBack }: FurnitureRecommen
 
       const { data: { publicUrl } } = supabase.storage.from('home-designs').getPublicUrl(fileName);
 
-      const { data, error } = await supabase.functions.invoke('home-furniture-recommender', {
-        body: { roomImageUrl: publicUrl, roomType, style, budget }
+      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: {
+          task: 'home_furniture',
+          imageUrl: publicUrl,
+          prompt: `Recommend furniture for a ${roomType || 'room'} in ${style || 'a cohesive'} style with a ${budget || 'flexible'} budget.`,
+          extras: { roomType, style, budget }
+        }
       });
 
       if (error) throw error;
-      setResult(data.recommendations);
+      if (!data?.recommendationsData?.recommendations?.length) throw new Error(data?.error || "Furniture recommendations could not be generated. Please try again.");
+      setResult(data.recommendationsData);
       toast({ title: "✨ Recommendations Ready!", description: "Your furniture picks are here" });
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -94,7 +100,7 @@ export function FurnitureRecommender({ subscription, onBack }: FurnitureRecommen
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Armchair className="h-5 w-5 text-primary" /> Get Recommendations</CardTitle>
-          <CardDescription>10 credits per analysis</CardDescription>
+          <CardDescription>4 credits per analysis</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
