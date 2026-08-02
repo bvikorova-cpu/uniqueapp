@@ -95,9 +95,10 @@ export const HairStyleGenerator = () => {
 
       const { data, error } = await supabase.functions.invoke('ai-image-tools', {
         body: {
-           action: 'beauty_hair',
+          action: 'edit',
+          feature: 'beauty_hair',
           imageUrl: finalImageUrl,
-           style: hairStyle
+          editPrompt: `Change only the person's hair to ${hairStyle}. Preserve their exact identity, facial features, makeup, clothing, pose, lighting, background and composition. Make the new hair photorealistic with natural strands, edges, shadows and highlights.`
         }
       });
 
