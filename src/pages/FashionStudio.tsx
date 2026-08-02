@@ -10,8 +10,6 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ActiveView = "hub" | "generator";
 
 export default function FashionStudio() {
-  const navigate = useNavigate();
-  const { credits, loading: creditsLoading } = useAICredits();
   const [activeView, setActiveView] = useState<ActiveView>("hub");
 
   const tools = [
