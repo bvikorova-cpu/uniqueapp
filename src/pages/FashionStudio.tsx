@@ -153,10 +153,10 @@ export default function FashionStudio() {
           <h2 className="text-xl sm:text-2xl font-black text-white mb-5">How Fashion Studio Works</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { n: "1", t: "Design", d: "Create AI-powered fashion designs" },
-              { n: "2", t: "Analyze", d: "Body shape & style insights" },
-              { n: "3", t: "Score", d: "Get AI ratings on your outfits" },
-              { n: "4", t: "Eco", d: "Build a sustainable wardrobe" },
+              { n: "1", t: "Describe", d: "Enter your design idea" },
+              { n: "2", t: "Customize", d: "Pick category, style & material" },
+              { n: "3", t: "Generate", d: "AI creates your unique design" },
+              { n: "4", t: "Download", d: "Save your fashion creation" },
             ].map((step, i) => (
               <motion.div
                 key={i}
