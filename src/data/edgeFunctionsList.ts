@@ -172,7 +172,7 @@ export const EDGE_FUNCTIONS: string[] = [
   "escrow-release",
   "experience-ai",
   "f1-customer-portal",
-  "fashion-studio-ai",
+  "fashion-ai",
   "fashion-battle-vote",
   "find-anonymous-match",
   "find-best-self",
