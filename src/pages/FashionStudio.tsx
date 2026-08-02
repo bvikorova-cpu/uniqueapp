@@ -4,18 +4,14 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
-  Sparkles, ArrowLeft, Zap, Gem, Crown, Leaf, Camera, Shirt
+  Sparkles, ArrowLeft, Zap, Gem, Crown, Shirt
 } from "lucide-react";
 import FashionGenerator from "@/components/fashion/FashionGenerator";
-import AIBodyShapeAnalyzer from "@/components/fashion/AIBodyShapeAnalyzer";
-import AISustainableFashion from "@/components/fashion/AISustainableFashion";
-import AIOotd from "@/components/fashion/AIOotd";
-import AICelebrityStyleClone from "@/components/fashion/AICelebrityStyleClone";
 import { useAICredits } from "@/hooks/useAICredits";
 import heroVideo from "@/assets/fashion-runway-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-type ActiveView = "hub" | "generator" | "body-shape" | "sustainable" | "ootd" | "celebrity-clone";
+type ActiveView = "hub" | "generator";
 
 export default function FashionStudio() {
   const navigate = useNavigate();
@@ -23,20 +19,12 @@ export default function FashionStudio() {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
 
   const tools = [
-    { id: "ootd", title: "AI Outfit of the Day", desc: "Daily AI scoring of your outfit", cost: "5 Credits", icon: Camera, gradient: "from-amber-500 to-orange-600" },
-    { id: "celebrity-clone", title: "Celebrity Style Clone", desc: "Recreate iconic looks with budget alternatives", cost: "15 Credits", icon: Crown, gradient: "from-yellow-500 to-amber-600" },
-    { id: "generator", title: "AI Dressing Generator", desc: "Create unique clothing designs with AI", cost: "50-400 Credits", icon: Sparkles, gradient: "from-fuchsia-500 to-pink-600" },
-    { id: "body-shape", title: "Body Shape Analyzer", desc: "AI styling tips for your body type", cost: "8 Credits", icon: Gem, gradient: "from-lime-500 to-green-600" },
-    { id: "sustainable", title: "Sustainable Fashion AI", desc: "Eco-friendly wardrobe plans", cost: "6 Credits", icon: Leaf, gradient: "from-green-500 to-emerald-600" },
+    { id: "generator", title: "AI Dressing Generator", desc: "Create unique clothing designs with AI", cost: "5 Credits", icon: Sparkles, gradient: "from-fuchsia-500 to-pink-600" },
   ];
 
   const renderView = () => {
     switch (activeView) {
       case "generator": return <FashionGenerator />;
-      case "body-shape": return <AIBodyShapeAnalyzer />;
-      case "sustainable": return <AISustainableFashion />;
-      case "ootd": return <AIOotd />;
-      case "celebrity-clone": return <AICelebrityStyleClone />;
       default: return null;
     }
   };
@@ -46,14 +34,13 @@ export default function FashionStudio() {
     return (
       <div className="min-h-screen bg-background pt-16 sm:pt-0">
         <FloatingHowItWorks
-          title="Fashion Studio"
-          intro="Try on outfits, mix styles and get AI stylist advice."
+          title="AI Dressing Generator"
+          intro="Describe your clothing idea and let AI create a unique fashion design."
           steps={[
-            { title: "Upload your photo", desc: "Full-body preferred." },
-            { title: "Try on outfits", desc: "AI dresses you in clothes from the catalog." },
-            { title: "Get a stylist review", desc: "AI suggests better matches." },
-            { title: "Shop the look", desc: "Direct links to retailers." },
-            { title: "Save looks", desc: "Build a lookbook for outfits you love." }
+            { title: "Describe", desc: "Name your design and add details." },
+            { title: "Customize", desc: "Choose category, style and material." },
+            { title: "Generate", desc: "AI creates the photorealistic design." },
+            { title: "Download", desc: "Save your fashion creation." }
           ]}
         />
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
@@ -102,11 +89,11 @@ export default function FashionStudio() {
               Design, compete & shop — powered by AI fashion intelligence
             </p>
 
-            {/* Stats Row */}
+             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-2xl">
               {[
                 { label: "AI Credits", value: creditsLoading ? "..." : credits?.credits_remaining || 0, icon: Zap },
-                { label: "Tools", value: "5", icon: Shirt },
+                { label: "Tools", value: "1", icon: Shirt },
                 { label: "Buy Credits", value: "Get More", icon: Gem, action: () => navigate('/ai-credits-store') },
               ].map((stat) => (
                 <div
@@ -165,10 +152,10 @@ export default function FashionStudio() {
           <h2 className="text-xl sm:text-2xl font-black text-white mb-5">How Fashion Studio Works</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { n: "1", t: "Design", d: "Create AI-powered fashion designs" },
-              { n: "2", t: "Analyze", d: "Body shape & style insights" },
-              { n: "3", t: "Score", d: "Get AI ratings on your outfits" },
-              { n: "4", t: "Eco", d: "Build a sustainable wardrobe" },
+              { n: "1", t: "Describe", d: "Enter your design idea" },
+              { n: "2", t: "Customize", d: "Pick category, style & material" },
+              { n: "3", t: "Generate", d: "AI creates your unique design" },
+              { n: "4", t: "Download", d: "Save your fashion creation" },
             ].map((step, i) => (
               <motion.div
                 key={i}
