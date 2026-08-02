@@ -55,7 +55,7 @@ const BeautyStudio = () => {
     { id: "makeup" as ActiveView, icon: Sparkles, title: "Virtual Makeup", desc: "AI makeup try-on", cost: "3 Credits", color: "text-pink-500" },
     { id: "hair" as ActiveView, icon: Palette, title: "Hair Styler", desc: "Try new hairstyles", cost: "3 Credits", color: "text-purple-500" },
     { id: "skin-analysis" as ActiveView, icon: Search, title: "Skin Analysis", desc: "AI skincare routine", cost: "3 Credits", color: "text-blue-500" },
-    { id: "nail-art" as ActiveView, icon: Paintbrush, title: "Nail Art Designer", desc: "Custom nail designs", cost: "3 Credits", color: "text-rose-500" },
+    { id: "nail-art" as ActiveView, icon: Paintbrush, title: "Nail Art Designer", desc: "Custom nail designs", cost: "5 Credits", color: "text-rose-500" },
     { id: "celebrity-match" as ActiveView, icon: Crown, title: "Celebrity Match", desc: "Find your twin", cost: "10 Credits", color: "text-yellow-500" },
     { id: "products" as ActiveView, icon: ShoppingBag, title: "Product Advisor", desc: "Personalized picks", cost: "3 Credits", color: "text-green-500" },
     { id: "tutorials" as ActiveView, icon: BookOpen, title: "Tutorials", desc: "Step-by-step guides", cost: "2 Credits", color: "text-indigo-500" },
