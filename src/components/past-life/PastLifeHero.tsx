@@ -96,14 +96,6 @@ export const PastLifeHero = () => {
           Discover who you were across centuries. AI-powered mystical readings reveal your karmic
           patterns, soul connections, and lives lived in ancient civilizations.
         </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="flex justify-center"
-        >
-        </motion.div>
       </div>
 
       {/* Video controls */}
