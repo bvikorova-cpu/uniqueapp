@@ -48,16 +48,25 @@ serve(async (req) => {
 
     const token = authHeader.replace("Bearer ", "");
     const auth = createClient(supabaseUrl, anonKey);
-    const { data: userData, error: userErr } = await auth.auth.getUser(token);
-    if (userErr || !userData.user) return json({ error: "Not authenticated" }, 401);
-    const user = userData.user;
+    let userId: string | null = null;
+    try {
+      const { data: claims } = await (auth.auth as any).getClaims(token);
+      userId = claims?.claims?.sub ?? null;
+    } catch { /* fall through */ }
+    if (!userId) {
+      const { data: userData, error: userErr } = await auth.auth.getUser(token);
+      if (userErr || !userData.user) return json({ error: "Not authenticated" }, 401);
+      userId = userData.user.id;
+    }
+    const user = { id: userId };
+
 
     const body = (await req.json().catch(() => ({}))) as Partial<Body>;
     const action = body.action ?? "";
     const table = ACTION_TABLE[action];
     const systemPrompt = SYSTEM_PROMPTS[action];
     if (!table || !systemPrompt) return json({ error: "Unknown action" }, 400);
-    if (!openaiKey) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+    if (!openaiKey && !Deno.env.get("LOVABLE_API_KEY")) return json({ error: "No AI provider configured" }, 500);
 
     const admin = createClient(supabaseUrl, serviceKey);
 
@@ -74,24 +83,15 @@ serve(async (req) => {
     const payload = body.payload ?? {};
     const userPrompt = `Generate the requested reading.\n\nUser context:\n${JSON.stringify(payload, null, 2)}`;
 
-    const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        response_format: { type: "json_object" },
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ] }) });
+    const aiResp = await callAI(systemPrompt, userPrompt, openaiKey);
 
     if (!aiResp.ok) {
       const errText = await aiResp.text();
       console.error("AI error", aiResp.status, errText);
-      if (aiResp.status === 429) return json({ error: "Rate limited" }, 429);
       if (aiResp.status === 402) return json({ error: "AI credits exhausted" }, 402);
-      return json({ error: "AI request failed" }, 500);
+      return json({ error: "AI is busy right now. Please try again in a few seconds." }, 503);
     }
+
 
     const aiData = await aiResp.json();
     const content = aiData.choices?.[0]?.message?.content ?? "{}";
@@ -138,4 +138,42 @@ function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
     status });
+}
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function callAI(systemPrompt: string, userPrompt: string, openaiKey?: string): Promise<Response> {
+  const messages = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt },
+  ];
+
+  // 1) OpenAI with exponential backoff on 429/5xx
+  if (openaiKey) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "gpt-4o-mini", response_format: { type: "json_object" }, messages }) });
+      if (res.ok || (res.status !== 429 && res.status < 500)) return res;
+      await res.body?.cancel().catch(() => {});
+      await sleep(600 * Math.pow(2, attempt));
+    }
+  }
+
+  // 2) Lovable AI Gateway fallback
+  const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+  if (lovableKey) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "google/gemini-2.5-flash", response_format: { type: "json_object" }, messages }) });
+      if (res.ok || (res.status !== 429 && res.status < 500)) return res;
+      await res.body?.cancel().catch(() => {});
+      await sleep(800 * (attempt + 1));
+    }
+  }
+
+  return new Response(JSON.stringify({ error: "All AI providers unavailable" }), { status: 503 });
 }
