@@ -34,16 +34,34 @@ const ACTION_COSTS: Record<string, number> = { "battle-score": 5,
   "capsule-wardrobe": 15,
   "street-style": 3 };
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function callAI(apiKey: string, apiUrl: string, model: string, messages: any[], tools?: any[], toolChoice?: any) {
   const body: any = { model, messages };
   if (tools) { body.tools = tools; body.tool_choice = toolChoice; }
-  const response = await fetch(apiUrl, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body) });
-  if (!response.ok) {
-    if (response.status === 429) throw { status: 429, message: "Rate limited" };
-    throw new Error("OpenAI API error");
+
+  // Retry on transient rate limits / upstream hiccups with exponential backoff.
+  const models = [model, "google/gemini-3.1-flash-lite"];
+  let response: Response | null = null;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    body.model = models[Math.min(attempt, models.length - 1)];
+    response = await fetch(apiUrl, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify(body) });
+    if (response.ok) break;
+    if (response.status === 429 || response.status >= 500) {
+      if (attempt < 3) { await sleep(800 * Math.pow(2, attempt)); continue; }
+    }
+    break;
+  }
+
+  if (!response || !response.ok) {
+    if (response?.status === 429) {
+      throw { status: 429, message: "AI service is busy right now. Please try again in a few seconds — no credits were used." };
+    }
+    if (response?.status === 402) throw { status: 402, message: "AI credits exhausted" };
+    throw new Error("AI service error");
   }
   const aiData = await response.json();
   const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
