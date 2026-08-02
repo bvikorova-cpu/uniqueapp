@@ -9,6 +9,8 @@ import RouteSEO from "@/components/RouteSEO";
 import ScrollToTop from "@/components/ScrollToTop";
 const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
 // LiveChatWidget removed from dock — Uni voice+text assistant replaces it
+const UniAssistant = lazy(() => import("@/components/assistant/UniAssistant"));
+const GoogleTranslateWidget = lazy(() => import("@/components/GoogleTranslateWidget"));
 const BazaarCreate = lazy(() => import("@/pages/BazaarCreate"));
 const BazaarSavedSearches = lazy(() => import("@/pages/BazaarSavedSearches"));
 const InvestmentPortfolio = lazy(() => import("@/pages/InvestmentPortfolio"));
