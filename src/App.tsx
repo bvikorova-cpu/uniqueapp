@@ -1414,6 +1414,13 @@ const App = () => {
                   <Suspense fallback={null}>
                     <MobileBottomNav />
                   </Suspense>
+                  <Suspense fallback={null}>
+                    <UniAssistant />
+                  </Suspense>
+                  <Suspense fallback={null}>
+                    <GoogleTranslateWidget />
+                  </Suspense>
+
                 </div>
               </TooltipProvider>
               </CurrencyProvider>
