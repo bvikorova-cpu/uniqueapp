@@ -348,9 +348,6 @@ verify_jwt = false
 [functions.fashion-forge-ai]
 verify_jwt = false
 
-[functions.ootd-style-score]
-verify_jwt = false
-
 [functions.comedy-battle-vote]
 verify_jwt = false
 
