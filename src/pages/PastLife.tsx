@@ -56,6 +56,7 @@ const PastLife = () => {
   const [activeView, setActiveView] = useState<ViewType>("hub");
   const [currentReading, setCurrentReading] = useState<any>(null);
   const { analyzePastLife, isAnalyzing } = usePastLifeCredits();
+  const { recordActivity } = usePastLifeStats();
 
   useEffect(() => {
     const payment = searchParams.get("payment");
@@ -72,11 +73,14 @@ const PastLife = () => {
   const handleAnalysisComplete = (result: any) => {
     setCurrentReading(result.reading);
     toast.success("Your past lives have been revealed!");
+    // Update the real engagement streak/progress/achievements.
+    recordActivity().catch(() => {});
   };
 
   const handleSubmit = (data: any) => {
     analyzePastLife(data, { onSuccess: handleAnalysisComplete });
   };
+
 
   const openTool = (toolId: string) => {
     setActiveView(toolId as ViewType);
