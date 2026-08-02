@@ -1,53 +1,14 @@
 import { motion } from "framer-motion";
-import { Clock, Users, BookOpen, Sparkles, Infinity as InfinityIcon, Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Sparkles, Infinity as InfinityIcon, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/past-life-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-
-const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (target === 0) return;
-    const duration = 1500;
-    const steps = 40;
-    const increment = target / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [target]);
-  return <span>{target === 0 ? "—" : `${count.toLocaleString()}${suffix}`}</span>;
-};
 
 export const PastLifeHero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-
-  const { stats: liveStats, loading } = useLiveStats([
-    { key: "explorers", table: "past_life_readings" },
-    { key: "lives", table: "past_life_readings" },
-    { key: "credits", table: "ai_credits" },
-  ]);
-
-  // Baselines so the hub feels alive even before community data accumulates
-  const explorers = Math.max(liveStats.explorers || 0, 1284);
-  const lives = Math.max(liveStats.lives || 0, 3471);
-  const heroStats = [
-    { icon: Users, label: "Soul Explorers", value: explorers, suffix: "+" },
-    { icon: BookOpen, label: "Lives Revealed", value: lives, suffix: "+" },
-    { icon: Clock, label: "Eras Explored", value: 47, suffix: "+" },
-    { icon: Sparkles, label: "Karmic Insights", value: lives * 3, suffix: "+" },
-  ];
 
   useEffect(() => {
     if (videoRef.current) {
