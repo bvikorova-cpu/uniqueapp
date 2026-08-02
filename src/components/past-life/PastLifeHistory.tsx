@@ -178,8 +178,9 @@ export const PastLifeHistory = () => {
 
                   <div className="mt-2 text-xs text-muted-foreground flex items-center justify-between">
                     <span>{new Date(reading.created_at).toLocaleDateString()}</span>
-                    <span>{reading.credits_used} credits</span>
+                    <span>{creditsFor(reading)} credits</span>
                   </div>
+
                 </div>
               </Card>
             </motion.div>
