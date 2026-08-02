@@ -16,11 +16,10 @@ import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const BEAUTY_HOW_IT_WORKS = [
-  { title: "Pick a tool", desc: "Choose from AI Virtual Makeup, Hair Styler, Skin Analysis, Nail Art, Celebrity Match, Product Advisor, Tutorials or the community Gallery." },
+  { title: "Pick a tool", desc: "Choose from AI Virtual Makeup, Hair Styler, Nail Art Designer or Celebrity Match." },
   { title: "Upload your photo", desc: "Most tools ask for a clear selfie or reference photo. Your images stay private to your account." },
-  { title: "Spend credits", desc: "Each tool costs 2–10 credits (shown on the tile). You get 10 free credits monthly; buy more anytime in the Credits Store." },
-  { title: "Save & share", desc: "Save transformations to your gallery, publish before/after to the community, and track your streaks and achievements." },
-  { title: "Learn as you go", desc: "Follow step-by-step Tutorials to master looks, then apply them with Virtual Makeup or Hair Styler." },
+  { title: "Spend credits", desc: "Each tool costs 3–5 credits (shown on the tile). You get 10 free credits monthly; buy more anytime in the Credits Store." },
+  { title: "Save & download", desc: "Download your generated looks to your phone or computer at any time." },
 ];
 
 type ActiveView = "hub" | "makeup" | "hair" | "products" | "tutorials" | "skin-analysis" | "nail-art" | "celebrity-match" | "gallery";
