@@ -77,13 +77,19 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-      setResult(data.matchResult);
+
+      const match = (data as any)?.matchResult ?? null;
+      const text = (data as any)?.text ?? (data as any)?.result ?? "";
+      setResult(match);
+      setRawText(match ? "" : (typeof text === "string" ? text : JSON.stringify(text, null, 2)));
       refresh();
       toast.success("Celebrity match found!");
+      setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
     } catch (error: any) {
       toast.error(error.message || "Match failed");
     } finally { setLoading(false); }
   };
+
 
   return (
     <>
