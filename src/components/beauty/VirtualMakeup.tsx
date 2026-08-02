@@ -133,7 +133,7 @@ export const VirtualMakeup = () => {
           Virtual Makeup Try-On
         </h2>
         <p className="text-muted-foreground mb-6">
-          Upload a selfie and AI will apply different makeup looks. Cost: 5 credits
+          Upload a selfie and AI will apply different makeup looks. Cost: 3 credits
         </p>
 
         <div className="space-y-4">
@@ -189,10 +189,10 @@ export const VirtualMakeup = () => {
 
           <Button 
             onClick={handleTransform} 
-            disabled={loading || uploading || (credits?.credits_remaining ?? 0) < 5}
+            disabled={loading || uploading || (credits?.credits_remaining ?? 0) < 3}
             className="w-full"
           >
-            {uploading ? "Uploading..." : loading ? "Applying makeup..." : "Apply Makeup (5 credits)"}
+            {uploading ? "Uploading..." : loading ? "Applying makeup..." : "Apply Makeup (3 credits)"}
           </Button>
 
           {credits && (
