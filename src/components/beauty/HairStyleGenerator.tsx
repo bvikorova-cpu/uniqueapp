@@ -93,27 +93,14 @@ export const HairStyleGenerator = () => {
         return;
       }
 
-      let { data, error } = await supabase.functions.invoke('ai-image-tools', {
+      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
         body: {
-          action: 'beauty_hair',
+          action: 'edit',
+          feature: 'beauty_hair',
           imageUrl: finalImageUrl,
-          style: hairStyle
+          editPrompt: `Change only the person's hair to ${hairStyle}. Preserve their exact identity, facial features, makeup, clothing, pose, lighting, background and composition. Make the new hair photorealistic with natural strands, edges, shadows and highlights.`
         }
       });
-
-      // Older edge isolates can briefly remain live after a deployment. Fall
-      // back to the long-supported edit action instead of failing the session.
-      if (error?.message?.includes('Unknown action: beauty_hair')) {
-        const fallback = await supabase.functions.invoke('ai-image-tools', {
-          body: {
-            action: 'edit',
-            imageUrl: finalImageUrl,
-            editPrompt: `Change only the person's hair to ${hairStyle}. Preserve their exact identity, facial features, makeup, clothing, pose, lighting, background and composition. Make the new hair photorealistic with natural strands, edges, shadows and highlights.`
-          }
-        });
-        data = fallback.data;
-        error = fallback.error;
-      }
 
       if (error) throw error;
       if (!data?.imageUrl) throw new Error(data?.error || "No hairstyle image was returned");

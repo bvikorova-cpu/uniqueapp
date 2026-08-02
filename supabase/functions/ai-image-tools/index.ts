@@ -160,13 +160,14 @@ serve(async (req) => {
     const { action, prompt, imageUrl, style, targetSize, editPrompt, region, variationIndex,
       // NEW params
       aspectRatio, negativePrompt, seed, referenceImageUrl, referencePrompt,
-      backgroundPrompt, logoText, brandName, sketchDescription, characterName,
+      backgroundPrompt, logoText, brandName, sketchDescription, characterName, feature,
       characterDescription, pose, patternType, count } = body ?? {};
 
     if (!action || typeof action !== "string") return json({ error: "Missing action" }, 400);
     if (!(action in TOOL_COSTS)) return json({ error: `Unknown action: ${action}` }, 400);
 
-    const cost = TOOL_COSTS[action] || 0;
+    const isBeautyEdit = action === "edit" && (feature === "beauty_makeup" || feature === "beauty_hair");
+    const cost = isBeautyEdit ? 5 : (TOOL_COSTS[action] || 0);
 
     let charged = false;
     if (cost > 0) {
@@ -181,7 +182,7 @@ serve(async (req) => {
       const { error: deductErr } = await supabase.rpc("deduct_ai_credits", {
         p_user_id: user.id,
         p_amount: cost,
-        p_reason: `AI Image ${action}`,
+          p_reason: `AI Image ${isBeautyEdit ? feature : action}`,
         p_source: "ai-image-tools",
       });
       if (deductErr) return json({ error: "Failed to reserve credits" }, 500);
@@ -193,7 +194,7 @@ serve(async (req) => {
         await supabase.rpc("add_ai_credits", {
           p_user_id: user.id,
           p_amount: cost,
-          p_reason: `AI Image ${action} refund`,
+          p_reason: `AI Image ${isBeautyEdit ? feature : action} refund`,
           p_source: "ai-image-tools",
         });
       }

@@ -94,27 +94,14 @@ export const VirtualMakeup = () => {
         return;
       }
 
-      let { data, error } = await supabase.functions.invoke('ai-image-tools', {
+      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
         body: {
-          action: 'beauty_makeup',
+          action: 'edit',
+          feature: 'beauty_makeup',
           imageUrl: finalImageUrl,
-          style: makeupStyle
+          editPrompt: `Apply a polished ${makeupStyle} makeup look. Preserve the person's exact identity, facial features, hairstyle, clothing, pose, lighting, background and composition. Make the makeup photorealistic and professionally blended.`
         }
       });
-
-      // Older edge isolates can briefly remain live after a deployment. Fall
-      // back to the long-supported edit action instead of failing the session.
-      if (error?.message?.includes('Unknown action: beauty_makeup')) {
-        const fallback = await supabase.functions.invoke('ai-image-tools', {
-          body: {
-            action: 'edit',
-            imageUrl: finalImageUrl,
-            editPrompt: `Apply a polished ${makeupStyle} makeup look. Preserve the person's exact identity, facial features, hairstyle, clothing, pose, lighting, background and composition. Make the makeup photorealistic and professionally blended.`
-          }
-        });
-        data = fallback.data;
-        error = fallback.error;
-      }
 
       if (error) throw error;
       if (!data?.imageUrl) throw new Error(data?.error || "No makeup image was returned");
