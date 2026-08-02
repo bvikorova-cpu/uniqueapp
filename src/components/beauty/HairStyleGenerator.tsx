@@ -93,17 +93,18 @@ export const HairStyleGenerator = () => {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('beauty-transformation', {
+      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
         body: {
+          action: 'beauty_hair',
           imageUrl: finalImageUrl,
-          transformationType: 'hair',
-          styleApplied: hairStyle
+          style: hairStyle
         }
       });
 
       if (error) throw error;
+      if (!data?.imageUrl) throw new Error(data?.error || "No hairstyle image was returned");
 
-      setResult(data.transformedImage);
+      setResult(data.imageUrl);
       refresh();
       toast.success("Hair style applied successfully!");
     } catch (error: any) {

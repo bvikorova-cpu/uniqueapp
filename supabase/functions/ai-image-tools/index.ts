@@ -8,6 +8,8 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 
 const TOOL_COSTS: Record<string, number> = { generate: 5,
   edit: 3,
+  beauty_makeup: 5,
+  beauty_hair: 5,
   style_transfer: 3,
   upscale: 2,
   prompt_gallery: 0,
@@ -350,6 +352,28 @@ serve(async (req) => {
           result = { imageUrl: await generateImage(`${prompt}. Based on the original image concept, create an edited version.`, size) };
           break;
 
+        }
+        case "beauty_makeup": {
+          if (!imageUrl || typeof imageUrl !== "string") throw new Error("Image is required");
+          const selectedStyle = typeof style === "string" && style.trim() ? style.trim() : "natural";
+          result = {
+            imageUrl: await editUploadedImage(
+              imageUrl,
+              `Apply a polished ${selectedStyle} makeup look to the person. Preserve their exact identity, facial features, hairstyle, clothing, pose, lighting, background and image composition. Make the makeup photorealistic and professionally blended.`,
+            ),
+          };
+          break;
+        }
+        case "beauty_hair": {
+          if (!imageUrl || typeof imageUrl !== "string") throw new Error("Image is required");
+          const selectedStyle = typeof style === "string" && style.trim() ? style.trim() : "natural";
+          result = {
+            imageUrl: await editUploadedImage(
+              imageUrl,
+              `Change only the person's hair to ${selectedStyle}. Preserve their exact identity, facial features, makeup, clothing, pose, lighting, background and image composition. Make the new hair photorealistic with natural strands, edges, shadows and highlights.`,
+            ),
+          };
+          break;
         }
         case "style_transfer": {
           if (!prompt?.trim() || !style) throw new Error("Prompt and style required");
