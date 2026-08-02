@@ -43,10 +43,29 @@ const numberOrZero = (value: unknown) => {
 };
 
 export async function getUnifiedAiCreditBalance(supabase: any, userId: string): Promise<UnifiedAiCreditBalance> {
-  const [{ data: paidRow, error: paidError }, { data: freeRow, error: freeError }] = await Promise.all([
-    supabase.from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle(),
-    supabase.from("free_tier_credits").select("balance").eq("user_id", userId).maybeSingle(),
-  ]);
+  // Keep these reads sequential. Sending both PostgREST requests at exactly the
+  // same time caused avoidable project-level 429s on busy mobile sessions.
+  // Read retries are safe; never apply this retry strategy to the debit RPC.
+  const readWithThrottleRetry = async (read: () => PromiseLike<any>) => {
+    let lastError: any;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const result = await read();
+      if (!result.error) return result;
+      lastError = result.error;
+      const status = Number(result.error?.status ?? result.error?.code);
+      const throttled = status === 429 || /rate limit|too many requests/i.test(String(result.error?.message ?? ""));
+      if (!throttled || attempt === 2) break;
+      await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)));
+    }
+    return { data: null, error: lastError };
+  };
+
+  const { data: paidRow, error: paidError } = await readWithThrottleRetry(() =>
+    supabase.from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle()
+  );
+  const { data: freeRow, error: freeError } = await readWithThrottleRetry(() =>
+    supabase.from("free_tier_credits").select("balance").eq("user_id", userId).maybeSingle()
+  );
 
   if (paidError) throw paidError;
   if (freeError) throw freeError;

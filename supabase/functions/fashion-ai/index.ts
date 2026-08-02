@@ -360,6 +360,10 @@ Deno.serve(async (req) => {
     if (isInsufficientCreditsError(e)) {
       return jsonResponse({ error: "INSUFFICIENT_CREDITS" }, 402);
     }
+    const throttled = Number(e?.status ?? e?.code) === 429 || /rate limit|too many requests/i.test(String(e?.message ?? ""));
+    if (throttled) {
+      return jsonResponse({ error: "Fashion AI is temporarily busy. Please try again shortly. No credits were used." }, 503);
+    }
     const status = typeof e?.status === "number" ? e.status : 500;
     return jsonResponse({ error: e?.message || "Internal error" }, status);
   }
