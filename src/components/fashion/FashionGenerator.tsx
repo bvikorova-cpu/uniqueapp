@@ -178,10 +178,6 @@ export default function FashionGenerator() {
                 Create unique clothing designs with AI
               </CardDescription>
             </div>
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <Sparkles className="h-4 w-4 text-primary" />
-              {credits ? `${credits.credits_remaining} AI credits` : 'Loading...'}
-            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
