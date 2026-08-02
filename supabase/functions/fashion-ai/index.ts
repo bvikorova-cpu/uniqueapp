@@ -97,9 +97,12 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       { auth: { persistSession: false } },
     );
-    const { data: userData } = await supabaseClient.auth.getUser(token);
-    const user = userData.user;
-    if (!user) {
+    // Verify the JWT without making a per-request Auth user lookup. The former
+    // getUser() network call was the only upstream reached by the failing 660ms
+    // request and could itself be throttled before the AI call began.
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+    const userId = typeof claimsData?.claims?.sub === "string" ? claimsData.claims.sub : "";
+    if (claimsError || !userId) {
       return jsonResponse({ error: "Unauthorized" }, 401);
     }
 
@@ -121,7 +124,7 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } },
     );
-    const balance = await getUnifiedAiCreditBalance(adminClient, user.id);
+    const balance = await getUnifiedAiCreditBalance(adminClient, userId);
     if (balance.total < cost) {
       return jsonResponse({ error: "INSUFFICIENT_CREDITS", required: cost, available: balance.total }, 402);
     }
@@ -347,7 +350,7 @@ Deno.serve(async (req) => {
     }
 
     // ── 5. Atomic credit deduction (race-safe, only on AI success) ──
-    const spend = await spendUnifiedAiCredits(adminClient, user.id, cost, `fashion_${action}`, "fashion-ai");
+    const spend = await spendUnifiedAiCredits(adminClient, userId, cost, `fashion_${action}`, "fashion-ai");
     return jsonResponse({
       ...result,
       credits_remaining: spend.total,
