@@ -13,7 +13,7 @@ const log = (s: string, d?: unknown) =>
 
 // Per-task credit cost. Vision tasks default to 3 credits; heavy/premium tasks 5.
 const TASK_COST: Record<string, number> = { antique_identify: 5, antique_forgery: 5, antique_provenance: 5, antique_certificate: 5,
-  beauty_skin: 4, beauty_transform: 4, beauty_celebrity: 4, beauty_tutorial: 4, beauty_nail_art: 4, beauty_recommend: 4,
+  beauty_skin: 4, beauty_transform: 4, beauty_celebrity: 4, beauty_tutorial: 4, beauty_nail_art: 3, beauty_recommend: 4,
   home_staging: 4, home_palette: 4, home_furniture: 4,
   wine_label: 4, car_identify: 4, coin_identify: 4, landmark_identify: 4,
   math_solve: 4, homework_help: 4 };

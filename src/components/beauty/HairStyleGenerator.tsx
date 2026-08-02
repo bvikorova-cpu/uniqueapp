@@ -132,7 +132,7 @@ export const HairStyleGenerator = () => {
           Hair Style Generator
         </h2>
         <p className="text-muted-foreground mb-6">
-          Try different hairstyles and hair colors. Cost: 5 credits
+          Try different hairstyles and hair colors. Cost: 3 credits
         </p>
 
         <div className="space-y-4">
@@ -192,10 +192,10 @@ export const HairStyleGenerator = () => {
 
           <Button 
             onClick={handleTransform} 
-            disabled={loading || uploading || (credits?.credits_remaining ?? 0) < 5}
+            disabled={loading || uploading || (credits?.credits_remaining ?? 0) < 3}
             className="w-full"
           >
-            {uploading ? "Uploading..." : loading ? "Transforming..." : "Transform Hair (5 credits)"}
+            {uploading ? "Uploading..." : loading ? "Transforming..." : "Transform Hair (3 credits)"}
           </Button>
 
           {credits && (

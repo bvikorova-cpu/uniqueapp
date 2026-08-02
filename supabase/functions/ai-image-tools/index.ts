@@ -8,8 +8,8 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 
 const TOOL_COSTS: Record<string, number> = { generate: 5,
   edit: 3,
-  beauty_makeup: 5,
-  beauty_hair: 5,
+  beauty_makeup: 3,
+  beauty_hair: 3,
   style_transfer: 3,
   upscale: 2,
   prompt_gallery: 0,
@@ -174,7 +174,7 @@ serve(async (req) => {
       (beautyFeatures.includes(featureStr) ||
         /\bmakeup\b/.test(promptStr) ||
         /\bhair\b/.test(promptStr));
-    const cost = isBeautyEdit ? 5 : (TOOL_COSTS[action] || 0);
+    const cost = isBeautyEdit ? 3 : (TOOL_COSTS[action] || 0);
 
     let charged = false;
     if (cost > 0) {
