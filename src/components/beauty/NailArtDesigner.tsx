@@ -28,10 +28,11 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
 
-      const { data, error } = await supabase.functions.invoke('beauty-nail-art', {
-        body: { style, occasion, shape }
+      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: { task: 'beauty_nail_art', extras: { style, occasion, shape } }
       });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       setResult(data.design);
       refresh();
       toast.success("Nail design created!");
