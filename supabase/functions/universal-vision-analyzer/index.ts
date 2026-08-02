@@ -42,7 +42,7 @@ const TASK_PROMPTS: Record<string, { prompt: string; visionRequired?: boolean }>
   plant_diagnose:        { prompt: "Diagnose the plant's health: pests, diseases, deficiencies, recommended treatment.", visionRequired: true },
   phobia_detect:         { prompt: "Detect potential phobia triggers in the image and rate severity 1-10.", visionRequired: true },
   food_scan:             { prompt: "Identify the food and provide nutritional breakdown: calories, protein, carbs, fats.", visionRequired: true },
-  beauty_skin:           { prompt: "You are a dermatologist. Analyze skin: type, concerns, recommended routine. Avoid medical claims.", visionRequired: true },
+  beauty_skin:           { prompt: "You are a dermatologist. Analyze the described skin: type, concerns, recommended routine. Avoid medical claims." },
   photo_damage:          { prompt: "Detect damage in old photos: scratches, fading, tears. Suggest restoration steps.", visionRequired: true },
   photo_upscale:         { prompt: "Describe upscaling recommendations and ideal output specs for this photo.", visionRequired: true },
   photo_bg_remove:       { prompt: "Confirm subject and describe background-removal output for this photo.", visionRequired: true },
