@@ -34,14 +34,13 @@ export default function FashionStudio() {
     return (
       <div className="min-h-screen bg-background pt-16 sm:pt-0">
         <FloatingHowItWorks
-          title="Fashion Studio"
-          intro="Try on outfits, mix styles and get AI stylist advice."
+          title="AI Dressing Generator"
+          intro="Describe your clothing idea and let AI create a unique fashion design."
           steps={[
-            { title: "Upload your photo", desc: "Full-body preferred." },
-            { title: "Try on outfits", desc: "AI dresses you in clothes from the catalog." },
-            { title: "Get a stylist review", desc: "AI suggests better matches." },
-            { title: "Shop the look", desc: "Direct links to retailers." },
-            { title: "Save looks", desc: "Build a lookbook for outfits you love." }
+            { title: "Describe", desc: "Name your design and add details." },
+            { title: "Customize", desc: "Choose category, style and material." },
+            { title: "Generate", desc: "AI creates the photorealistic design." },
+            { title: "Download", desc: "Save your fashion creation." }
           ]}
         />
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
