@@ -296,6 +296,7 @@ export const usePastLifeStats = () => {
   return {
     isLoading,
     error,
+    stats: data?.stats,
     streak: data?.stats?.streak_current || 0,
     livesCount: data?.livesCount || 0,
     erasCount: data?.erasCount || 0,
@@ -305,4 +306,5 @@ export const usePastLifeStats = () => {
     recordActivity: recordActivity.mutateAsync,
     claimVision: claimVision.mutateAsync,
   };
+
 };
