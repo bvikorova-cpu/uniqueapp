@@ -35,7 +35,7 @@ const ACTION_COSTS: Record<string, number> = { "battle-score": 5,
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-async function callAI(apiKey: string, model: string, messages: any[], tools?: any[], toolChoice?: any) {
+async function callAI(apiKey: string, _apiUrl: string, model: string, messages: any[], tools?: any[], toolChoice?: any) {
   const body: any = { model, messages, max_completion_tokens: 2048 };
   if (tools) { body.tools = tools; body.tool_choice = toolChoice; }
 
