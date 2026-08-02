@@ -33,41 +33,29 @@ const ACTION_COSTS: Record<string, number> = { "battle-score": 5,
   "capsule-wardrobe": 15,
   "street-style": 3 };
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
 async function callAI(apiKey: string, _apiUrl: string, model: string, messages: any[], tools?: any[], toolChoice?: any) {
-  const body: any = { model, messages, max_completion_tokens: 2048 };
+  // One user action must produce exactly one gateway request. Retrying a 429
+  // inside the function only consumes more of the same rate-limit window.
+  // Legacy callers still pass gpt-4o-mini, which is not a Gateway model id.
+  const gatewayModel = model.includes("/") ? model : "google/gemini-3.1-flash-lite";
+  const body: any = { model: gatewayModel, messages, max_tokens: 2048 };
   if (tools) { body.tools = tools; body.tool_choice = toolChoice; }
 
-  // Use one controlled retry sequence. The old OpenAI redirect plus this loop
-  // nested two retry layers and could turn one user action into many requests.
-  const models = [model, "google/gemini-3.1-flash-lite", "openai/gpt-5.4-mini"];
-  let response: Response | null = null;
-  for (let attempt = 0; attempt < models.length; attempt++) {
-    body.model = models[attempt];
-    response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { "Lovable-API-Key": apiKey, "Content-Type": "application/json" },
-      body: JSON.stringify(body) });
-    if (response.ok) break;
-    if (response.status === 429 || response.status >= 500) {
-      if (attempt < models.length - 1) {
-        const retryAfter = Number(response.headers.get("retry-after"));
-        await response.text();
-        await sleep(Number.isFinite(retryAfter) && retryAfter > 0
-          ? Math.min(retryAfter * 1000, 5000)
-          : 700 * (attempt + 1));
-        continue;
-      }
-    }
-    break;
-  }
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Lovable-API-Key": apiKey,
+      "X-Lovable-AIG-SDK": "fashion-ai-edge",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
 
-  if (!response || !response.ok) {
-    if (response?.status === 429) {
+  if (!response.ok) {
+    if (response.status === 429) {
       throw { status: 503, message: "Fashion AI is temporarily busy. Please try again shortly. No credits were used." };
     }
-    if (response?.status === 402) throw { status: 402, message: "AI credits exhausted" };
+    if (response.status === 402) throw { status: 402, message: "AI credits exhausted" };
     throw new Error("AI service error");
   }
   const aiData = await response.json();
