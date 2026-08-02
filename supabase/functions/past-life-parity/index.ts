@@ -139,3 +139,41 @@ function json(body: unknown, status: number) {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
     status });
 }
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function callAI(systemPrompt: string, userPrompt: string, openaiKey?: string): Promise<Response> {
+  const messages = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt },
+  ];
+
+  // 1) OpenAI with exponential backoff on 429/5xx
+  if (openaiKey) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "gpt-4o-mini", response_format: { type: "json_object" }, messages }) });
+      if (res.ok || (res.status !== 429 && res.status < 500)) return res;
+      await res.body?.cancel().catch(() => {});
+      await sleep(600 * Math.pow(2, attempt));
+    }
+  }
+
+  // 2) Lovable AI Gateway fallback
+  const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+  if (lovableKey) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "google/gemini-2.5-flash", response_format: { type: "json_object" }, messages }) });
+      if (res.ok || (res.status !== 429 && res.status < 500)) return res;
+      await res.body?.cancel().catch(() => {});
+      await sleep(800 * (attempt + 1));
+    }
+  }
+
+  return new Response(JSON.stringify({ error: "All AI providers unavailable" }), { status: 503 });
+}
