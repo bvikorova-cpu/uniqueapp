@@ -4,18 +4,14 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
-  Sparkles, ArrowLeft, Zap, Gem, Crown, Leaf, Camera, Shirt
+  Sparkles, ArrowLeft, Zap, Gem, Shirt
 } from "lucide-react";
 import FashionGenerator from "@/components/fashion/FashionGenerator";
-import AIBodyShapeAnalyzer from "@/components/fashion/AIBodyShapeAnalyzer";
-import AISustainableFashion from "@/components/fashion/AISustainableFashion";
-import AIOotd from "@/components/fashion/AIOotd";
-import AICelebrityStyleClone from "@/components/fashion/AICelebrityStyleClone";
 import { useAICredits } from "@/hooks/useAICredits";
 import heroVideo from "@/assets/fashion-runway-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-type ActiveView = "hub" | "generator" | "body-shape" | "sustainable" | "ootd" | "celebrity-clone";
+type ActiveView = "hub" | "generator";
 
 export default function FashionStudio() {
   const navigate = useNavigate();
@@ -23,20 +19,12 @@ export default function FashionStudio() {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
 
   const tools = [
-    { id: "ootd", title: "AI Outfit of the Day", desc: "Daily AI scoring of your outfit", cost: "5 Credits", icon: Camera, gradient: "from-amber-500 to-orange-600" },
-    { id: "celebrity-clone", title: "Celebrity Style Clone", desc: "Recreate iconic looks with budget alternatives", cost: "15 Credits", icon: Crown, gradient: "from-yellow-500 to-amber-600" },
-    { id: "generator", title: "AI Dressing Generator", desc: "Create unique clothing designs with AI", cost: "50-400 Credits", icon: Sparkles, gradient: "from-fuchsia-500 to-pink-600" },
-    { id: "body-shape", title: "Body Shape Analyzer", desc: "AI styling tips for your body type", cost: "8 Credits", icon: Gem, gradient: "from-lime-500 to-green-600" },
-    { id: "sustainable", title: "Sustainable Fashion AI", desc: "Eco-friendly wardrobe plans", cost: "6 Credits", icon: Leaf, gradient: "from-green-500 to-emerald-600" },
+    { id: "generator", title: "AI Dressing Generator", desc: "Create unique clothing designs with AI", cost: "5 Credits", icon: Sparkles, gradient: "from-fuchsia-500 to-pink-600" },
   ];
 
   const renderView = () => {
     switch (activeView) {
       case "generator": return <FashionGenerator />;
-      case "body-shape": return <AIBodyShapeAnalyzer />;
-      case "sustainable": return <AISustainableFashion />;
-      case "ootd": return <AIOotd />;
-      case "celebrity-clone": return <AICelebrityStyleClone />;
       default: return null;
     }
   };
