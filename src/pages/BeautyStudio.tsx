@@ -6,12 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Palette, ShoppingBag, BookOpen, Search, Paintbrush, Crown, ImageIcon, ArrowLeft, Flame, Trophy, TrendingUp } from "lucide-react";
 import { VirtualMakeup } from "@/components/beauty/VirtualMakeup";
 import { HairStyleGenerator } from "@/components/beauty/HairStyleGenerator";
-import { ProductRecommender } from "@/components/beauty/ProductRecommender";
-import { MakeupTutorials } from "@/components/beauty/MakeupTutorials";
-import { SkinAnalysis } from "@/components/beauty/SkinAnalysis";
 import { NailArtDesigner } from "@/components/beauty/NailArtDesigner";
 import { CelebrityLookMatch } from "@/components/beauty/CelebrityLookMatch";
-import { BeautyGallery } from "@/components/beauty/BeautyGallery";
+
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import heroVideo from "@/assets/beauty-studio-hero.mp4.asset.json";
