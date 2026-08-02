@@ -25,11 +25,16 @@ export default function AIBodyShapeAnalyzer() {
       const { data, error } = await supabase.functions.invoke("fashion-ai", {
         body: { action: "body-shape", height, bodyShape, styleGoal }
       });
-      if (error) throw error;
+      if (error) throw new Error((error as any)?.message || "Request failed");
+      if ((data as any)?.error) throw new Error((data as any).error);
       setResult(data);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Body shape analysis complete!");
     } catch (e: any) {
-      toast.error(e.message || "Analysis failed");
+      const msg = String(e?.message || "");
+      toast.error(/rate limit|Rate limited|429|busy/i.test(msg)
+        ? "AI is busy right now. Wait a few seconds and try again — no credits were used."
+        : msg || "Analysis failed");
     } finally {
       setLoading(false);
     }
