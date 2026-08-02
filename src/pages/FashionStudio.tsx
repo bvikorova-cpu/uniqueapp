@@ -1,13 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import {
-  Sparkles, ArrowLeft, Zap, Gem, Crown, Shirt
-} from "lucide-react";
+import { Sparkles, ArrowLeft, Crown } from "lucide-react";
 import FashionGenerator from "@/components/fashion/FashionGenerator";
-import { useAICredits } from "@/hooks/useAICredits";
 import heroVideo from "@/assets/fashion-runway-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
