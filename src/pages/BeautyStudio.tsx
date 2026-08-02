@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Palette, ShoppingBag, BookOpen, Search, Paintbrush, Crown, ImageIcon, ArrowLeft, Flame, Trophy, TrendingUp } from "lucide-react";
+import { Sparkles, Palette, Paintbrush, Crown, ArrowLeft, Flame, Trophy, TrendingUp } from "lucide-react";
 import { VirtualMakeup } from "@/components/beauty/VirtualMakeup";
 import { HairStyleGenerator } from "@/components/beauty/HairStyleGenerator";
 import { NailArtDesigner } from "@/components/beauty/NailArtDesigner";
@@ -22,26 +22,24 @@ const BEAUTY_HOW_IT_WORKS = [
   { title: "Save & download", desc: "Download your generated looks to your phone or computer at any time." },
 ];
 
-type ActiveView = "hub" | "makeup" | "hair" | "products" | "tutorials" | "skin-analysis" | "nail-art" | "celebrity-match" | "gallery";
+type ActiveView = "hub" | "makeup" | "hair" | "nail-art" | "celebrity-match";
 
 const BeautyStudio = () => {
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState<ActiveView>("hub");
-  const [stats, setStats] = useState({ transformations: 0, styles: 0, analyses: 0, designs: 0 });
+  const [stats, setStats] = useState({ transformations: 0, styles: 0, designs: 0 });
 
   useEffect(() => {
     const loadStats = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const [t, s, a, n] = await Promise.all([
+      const [t, s, n] = await Promise.all([
         supabase.from("beauty_transformations").select("id", { count: "exact", head: true }).eq("user_id", user.id),
         (supabase as any).from("beauty_celebrity_matches").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        (supabase as any).from("beauty_skin_analyses").select("id", { count: "exact", head: true }).eq("user_id", user.id),
         (supabase as any).from("beauty_nail_designs").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
       setStats({ transformations: t.count || 0,
         styles: s.count || 0,
-        analyses: a.count || 0,
         designs: n.count || 0 });
     };
     loadStats();
@@ -139,7 +137,7 @@ const BeautyStudio = () => {
           </Card>
           <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-purple-500/20">
             <TrendingUp className="h-6 w-6 text-primary mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{stats.transformations + stats.analyses}</p>
+            <p className="text-xl sm:text-2xl font-black">{stats.transformations + stats.designs}</p>
             <p className="text-xs text-muted-foreground">Total Uses</p>
           </Card>
           <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-yellow-500/20">
