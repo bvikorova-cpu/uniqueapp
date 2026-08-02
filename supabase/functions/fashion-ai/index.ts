@@ -155,7 +155,7 @@ Deno.serve(async (req) => {
 
       case "celebrity-clone":
         result = await callAI(OPENAI_KEY, openaiUrl, "gpt-4o-mini", [
-          { role: "system", content: "You are a celebrity fashion analyst. Break down celebrity looks and find budget alternatives. Return JSON with: celebrity, look_description, style_era, difficulty_to_recreate, items (array with original_item, brand, estimated_price, budget_alternative, budget_brand, budget_price, match_accuracy)." },
+          { role: "system", content: "You are a celebrity fashion analyst. Break down celebrity looks and find budget alternatives. Return only valid JSON with: celebrity, look_description, style_era, difficulty_to_recreate, items (array with original_item, brand, estimated_price, budget_alternative, budget_brand, budget_price, match_accuracy), total_original_cost, total_budget_cost, savings_percentage, styling_notes (array), and where_to_shop (array). Use EUR exclusively." },
           { role: "user", content: `Break down ${p.celebrity}'s most iconic recent look and find ${p.budget_level} budget alternatives.` }
         ]);
         break;
