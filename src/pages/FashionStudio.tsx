@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
-  Sparkles, ArrowLeft, Zap, Gem, Shirt
+  Sparkles, ArrowLeft, Zap, Gem, Crown, Shirt
 } from "lucide-react";
 import FashionGenerator from "@/components/fashion/FashionGenerator";
 import { useAICredits } from "@/hooks/useAICredits";
