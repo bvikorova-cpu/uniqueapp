@@ -26,35 +26,12 @@ type ActiveView = "hub" | "makeup" | "hair" | "nail-art" | "celebrity-match";
 const BeautyStudio = () => {
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState<ActiveView>("hub");
-  const [stats, setStats] = useState({ transformations: 0, styles: 0, designs: 0 });
-
-  useEffect(() => {
-    const loadStats = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const [t, s, n] = await Promise.all([
-        supabase.from("beauty_transformations").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        (supabase as any).from("beauty_celebrity_matches").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        (supabase as any).from("beauty_nail_designs").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-      ]);
-      setStats({ transformations: t.count || 0,
-        styles: s.count || 0,
-        designs: n.count || 0 });
-    };
-    loadStats();
-  }, []);
 
   const tools = [
     { id: "makeup" as ActiveView, icon: Sparkles, title: "Virtual Makeup", desc: "AI makeup try-on", cost: "3 Credits", color: "text-pink-500" },
     { id: "hair" as ActiveView, icon: Palette, title: "Hair Styler", desc: "Try new hairstyles", cost: "3 Credits", color: "text-purple-500" },
     { id: "nail-art" as ActiveView, icon: Paintbrush, title: "Nail Art Designer", desc: "Custom nail designs", cost: "5 Credits", color: "text-rose-500" },
     { id: "celebrity-match" as ActiveView, icon: Crown, title: "Celebrity Match", desc: "Find your twin", cost: "4 Credits", color: "text-yellow-500" },
-  ];
-
-  const statItems = [
-    { label: "Transformations", value: stats.transformations, icon: Sparkles },
-    { label: "Matches", value: stats.styles, icon: Crown },
-    { label: "Designs", value: stats.designs, icon: Paintbrush },
   ];
 
   if (activeView === "makeup") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><VirtualMakeup /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
