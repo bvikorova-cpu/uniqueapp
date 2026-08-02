@@ -68,12 +68,8 @@ const BeautyStudio = () => {
 
   if (activeView === "makeup") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><VirtualMakeup /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
   if (activeView === "hair") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><HairStyleGenerator /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
-  if (activeView === "products") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><ProductRecommender /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
-  if (activeView === "tutorials") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><MakeupTutorials /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
-  if (activeView === "skin-analysis") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><SkinAnalysis onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "nail-art") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><NailArtDesigner onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "celebrity-match") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><CelebrityLookMatch onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "gallery") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><BeautyGallery onBack={() => setActiveView("hub")} /></div></div>;
 
   return (
     <>
