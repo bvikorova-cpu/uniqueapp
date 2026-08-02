@@ -41,7 +41,7 @@ export default function AIOotd() {
       if ((credits?.credits_remaining || 0) < CREDIT_COST) throw new Error("Insufficient credits");
 
       // Credits are deducted atomically server-side (only on AI success).
-      const { data, error } = await safeInvoke<any>("fashion-stylist-ai", {
+      const { data, error } = await safeInvoke<any>("fashion-ai", {
         body: { action: "ootd-score", outfitDescription: description, occasion, season } });
       if (error) throw new Error(error);
 

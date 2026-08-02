@@ -342,9 +342,6 @@ verify_jwt = false
 [functions.fashion-battle-vote]
 verify_jwt = false
 
-[functions.fashion-stylist-ai]
-verify_jwt = false
-
 [functions.comedy-battle-vote]
 verify_jwt = false
 
