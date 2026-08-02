@@ -83,24 +83,15 @@ serve(async (req) => {
     const payload = body.payload ?? {};
     const userPrompt = `Generate the requested reading.\n\nUser context:\n${JSON.stringify(payload, null, 2)}`;
 
-    const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        response_format: { type: "json_object" },
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ] }) });
+    const aiResp = await callAI(systemPrompt, userPrompt, openaiKey);
 
     if (!aiResp.ok) {
       const errText = await aiResp.text();
       console.error("AI error", aiResp.status, errText);
-      if (aiResp.status === 429) return json({ error: "Rate limited" }, 429);
       if (aiResp.status === 402) return json({ error: "AI credits exhausted" }, 402);
-      return json({ error: "AI request failed" }, 500);
+      return json({ error: "AI is busy right now. Please try again in a few seconds." }, 503);
     }
+
 
     const aiData = await aiResp.json();
     const content = aiData.choices?.[0]?.message?.content ?? "{}";
