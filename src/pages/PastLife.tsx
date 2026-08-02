@@ -179,13 +179,8 @@ const PastLife = () => {
                       </div>
                     ))}
                   </div>
-
-                  {/* Expansion Pack */}
-                  <PastLifeParityPack />
-
-                  {/* Tips & Future Features */}
-                  <PastLifeIdeasShowcase />
                 </div>
+
 
                 {/* Sidebar */}
                 <div className="space-y-4">
