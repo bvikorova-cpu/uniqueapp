@@ -174,7 +174,11 @@ serve(async (req) => {
       (beautyFeatures.includes(featureStr) ||
         /\bmakeup\b/.test(promptStr) ||
         /\bhair\b/.test(promptStr));
-    const cost = isBeautyEdit ? 3 : (TOOL_COSTS[action] || 0);
+    // Beauty generations (e.g. nail art) are flat 3 credits like other beauty tools
+    const isBeautyGenerate =
+      action === "generate" &&
+      ["beauty_nail_art", "nail_art", "beauty_nails"].includes(featureStr);
+    const cost = (isBeautyEdit || isBeautyGenerate) ? 3 : (TOOL_COSTS[action] || 0);
 
     let charged = false;
     if (cost > 0) {

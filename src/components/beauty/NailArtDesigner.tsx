@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Paintbrush, ArrowLeft, Clock, Star } from "lucide-react";
+import { Paintbrush, ArrowLeft, Download } from "lucide-react";
+import { downloadImage } from "@/utils/downloadImage";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -18,30 +19,29 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
   const [style, setStyle] = useState("french");
   const [occasion, setOccasion] = useState("everyday");
   const [shape, setShape] = useState("almond");
-  const [result, setResult] = useState<any>(null);
-  const [rawText, setRawText] = useState<string>("");
+  const [image, setImage] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const { credits, refresh } = useAICredits();
 
   const handleDesign = async () => {
     setLoading(true);
+    setImage(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
 
-      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
-        body: { task: 'beauty_nail_art', extras: { style, occasion, shape } }
+      const prompt = `Ultra realistic close-up photograph of a manicured female hand showing a ${style} nail art design on ${shape}-shaped nails, styled for a ${occasion} occasion. Professional salon quality, glossy finish, detailed nail art on all five nails, soft studio lighting, clean neutral background, macro beauty photography.`;
+
+      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
+        body: { action: 'generate', feature: 'beauty_nail_art', prompt, aspectRatio: '1:1' }
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      const design = data?.design ?? null;
-      setResult(design);
-      setRawText(typeof data?.result === "string" ? data.result : "");
-      if (!design && !data?.result) {
-        toast.error("No design returned. Please try again.");
-        return;
-      }
+      const url = data?.imageUrl || data?.imageUrls?.[0];
+      if (!url) throw new Error("No design image returned. Please try again.");
+
+      setImage(url);
       refresh();
       toast.success("Nail design created!");
     } catch (error: any) {
@@ -52,10 +52,11 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
   };
 
   useEffect(() => {
-    if (result || rawText) {
+    if (image) {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, [result, rawText]);
+  }, [image]);
+
 
   return (
     <>
@@ -132,74 +133,29 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
         </Card>
       </motion.div>
 
-      {(result || rawText) && (
-        <div ref={resultRef} />
-      )}
+      <div ref={resultRef} />
 
-      {!result && rawText && (
-        <Card className="p-6 bg-card/80 backdrop-blur-xl border-pink-500/20">
-          <h3 className="text-lg font-bold mb-3">💅 Your Nail Design</h3>
-          <p className="text-sm whitespace-pre-wrap text-muted-foreground">{rawText}</p>
-        </Card>
-      )}
-
-      {result && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-          <Card className="p-6 bg-card/80 backdrop-blur-xl border-pink-500/20">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold">{result.designName}</h3>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> {result.estimatedTime}</span>
-                <span className="flex items-center gap-1"><Star className="h-4 w-4 text-yellow-500" /> {result.trendingScore}/10</span>
-              </div>
-            </div>
-            <p className="text-muted-foreground mb-4">{result.description}</p>
-            <span className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full">{result.difficulty}</span>
+      {image && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="p-4 bg-card/80 backdrop-blur-xl border-pink-500/20 space-y-4">
+            <h3 className="text-lg font-bold">💅 Your Nail Design</h3>
+            <img
+              src={image}
+              alt={`AI generated ${style} nail art design on ${shape} nails for ${occasion}`}
+              className="w-full rounded-xl border border-border"
+              loading="lazy"
+            />
+            <Button
+              variant="secondary"
+              className="w-full gap-2"
+              onClick={() => downloadImage(image, `nail-art-${style}-${Date.now()}.png`)}
+            >
+              <Download className="h-4 w-4" /> Download design
+            </Button>
           </Card>
-
-          {result.nailByNail?.length > 0 && (
-            <Card className="p-6 bg-card/80 backdrop-blur-xl">
-              <h3 className="text-lg font-bold mb-4">💅 Nail-by-Nail Design</h3>
-              <div className="space-y-3">
-                {result.nailByNail.map((nail: any, i: number) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
-                    <span className="font-bold text-pink-500 min-w-[60px]">{nail.finger}</span>
-                    <div className="flex-1">
-                      <p className="text-sm">{nail.design}</p>
-                      <p className="text-xs text-muted-foreground mt-1">Technique: {nail.technique}</p>
-                      {nail.colors?.length > 0 && (
-                        <div className="flex gap-1 mt-2">
-                          {nail.colors.map((c: string, ci: number) => (
-                            <div key={ci} className="w-5 h-5 rounded-full border border-border" style={{ backgroundColor: c }} title={c} />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          )}
-
-          {result.productsNeeded?.length > 0 && (
-            <Card className="p-6 bg-card/80 backdrop-blur-xl">
-              <h3 className="text-lg font-bold mb-3">🛍️ Products Needed</h3>
-              <ul className="space-y-2 text-sm">
-                {result.productsNeeded.map((p: any, i: number) => (
-                  <li key={i}><strong>{p.product}</strong> by {p.brand} <span className="text-muted-foreground">({p.priceRange})</span></li>
-                ))}
-              </ul>
-            </Card>
-          )}
-
-          {result.proTips?.length > 0 && (
-            <Card className="p-6 bg-card/80 backdrop-blur-xl">
-              <h3 className="text-lg font-bold mb-3">✨ Pro Tips</h3>
-              <ul className="space-y-1 text-sm">{result.proTips.map((t: string, i: number) => <li key={i}>• {t}</li>)}</ul>
-            </Card>
-          )}
         </motion.div>
       )}
+
     </div>
     </>
     );
