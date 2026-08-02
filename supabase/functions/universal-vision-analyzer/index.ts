@@ -13,7 +13,7 @@ const log = (s: string, d?: unknown) =>
 
 // Per-task credit cost. Vision tasks default to 3 credits; heavy/premium tasks 5.
 const TASK_COST: Record<string, number> = { antique_identify: 5, antique_forgery: 5, antique_provenance: 5, antique_certificate: 5,
-  beauty_skin: 4, beauty_transform: 4, beauty_celebrity: 4, beauty_tutorial: 4, beauty_nail_art: 3, beauty_recommend: 4,
+  beauty_skin: 3, beauty_transform: 4, beauty_celebrity: 4, beauty_tutorial: 4, beauty_nail_art: 3, beauty_recommend: 4,
   home_staging: 4, home_palette: 4, home_furniture: 4,
   wine_label: 4, car_identify: 4, coin_identify: 4, landmark_identify: 4,
   math_solve: 4, homework_help: 4 };
@@ -42,7 +42,7 @@ const TASK_PROMPTS: Record<string, { prompt: string; visionRequired?: boolean }>
   plant_diagnose:        { prompt: "Diagnose the plant's health: pests, diseases, deficiencies, recommended treatment.", visionRequired: true },
   phobia_detect:         { prompt: "Detect potential phobia triggers in the image and rate severity 1-10.", visionRequired: true },
   food_scan:             { prompt: "Identify the food and provide nutritional breakdown: calories, protein, carbs, fats.", visionRequired: true },
-  beauty_skin:           { prompt: "You are a dermatologist. Analyze skin: type, concerns, recommended routine. Avoid medical claims.", visionRequired: true },
+  beauty_skin:           { prompt: "You are a dermatologist. Analyze the described skin: type, concerns, recommended routine. Avoid medical claims." },
   photo_damage:          { prompt: "Detect damage in old photos: scratches, fading, tears. Suggest restoration steps.", visionRequired: true },
   photo_upscale:         { prompt: "Describe upscaling recommendations and ideal output specs for this photo.", visionRequired: true },
   photo_bg_remove:       { prompt: "Confirm subject and describe background-removal output for this photo.", visionRequired: true },
@@ -107,7 +107,8 @@ serve(async (req) => {
     const structuredInstructions: Partial<Record<string, string>> = {
       home_palette: "Return only valid JSON with this exact shape: {\"mood\":\"short description\",\"palette\":[{\"name\":\"color name\",\"hex\":\"#RRGGBB\",\"usage\":\"where to use it\",\"percentage\":number}],\"complementary_materials\":[\"material\"],\"lighting_tips\":\"advice\",\"seasonal_variation\":\"advice\"}. Include exactly 4 coordinated colors and percentages totaling 100.",
       home_furniture: "Return only valid JSON with this exact shape: {\"recommendations\":[{\"name\":\"item name\",\"category\":\"category\",\"priority\":\"essential|recommended|optional\",\"description\":\"why it fits\",\"estimated_price\":\"EUR range\",\"where_to_buy\":\"store type\",\"dimensions\":\"suggested size\"}],\"layout_tips\":\"placement advice\",\"space_optimization\":\"space advice\"}. Include 5 useful items and use EUR only.",
-      home_staging: "Return only valid JSON with this exact shape: {\"staging_plan\":{\"furniture_placement\":[{\"item\":\"item name\",\"position\":\"precise placement\",\"purpose\":\"reason\"}],\"lighting_plan\":\"lighting advice\",\"roi_estimate\":\"realistic benefit estimate\",\"estimated_staging_cost\":\"EUR range\",\"photography_tips\":\"listing photo advice\"}}. Include at least 4 furniture placements and use EUR only."
+      home_staging: "Return only valid JSON with this exact shape: {\"staging_plan\":{\"furniture_placement\":[{\"item\":\"item name\",\"position\":\"precise placement\",\"purpose\":\"reason\"}],\"lighting_plan\":\"lighting advice\",\"roi_estimate\":\"realistic benefit estimate\",\"estimated_staging_cost\":\"EUR range\",\"photography_tips\":\"listing photo advice\"}}. Include at least 4 furniture placements and use EUR only.",
+      beauty_skin: "Return only valid JSON with this exact shape: {\"skinAssessment\":\"2-3 sentence assessment\",\"skinScore\":number 0-100,\"morningRoutine\":[{\"step\":1,\"product\":\"product name\",\"type\":\"category\",\"why\":\"reason\",\"application\":\"how to apply\"}],\"eveningRoutine\":[{\"step\":1,\"product\":\"product name\",\"type\":\"category\",\"why\":\"reason\"}],\"ingredientsToSeek\":[\"ingredient\"],\"ingredientsToAvoid\":[\"ingredient\"],\"lifestyleTips\":[\"tip\"]}. Include 4-5 steps per routine and avoid medical claims."
     };
     const structuredInstruction = structuredInstructions[task];
     if (structuredInstruction) userContent.push({ type: "text", text: structuredInstruction });
@@ -166,6 +167,14 @@ serve(async (req) => {
       }
       return json({ result, text: result, stagingData: structuredData, task, creditsCharged: cost });
     }
+    if (task === "beauty_skin") {
+      if (!structuredData?.skinAssessment) {
+        log("skin-shape-invalid", { hasData: !!structuredData });
+        return json({ error: "The skin analysis response was invalid. Please try again." }, 502);
+      }
+      return json({ result, text: result, recommendations: structuredData, skinData: structuredData, task, creditsCharged: cost });
+    }
+
 
     return json({ result, text: result, task, creditsCharged: cost });
   } catch (e: any) {

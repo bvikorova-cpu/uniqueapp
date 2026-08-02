@@ -36,11 +36,18 @@ export const SkinAnalysis = ({ onBack }: SkinAnalysisProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
 
-      const { data, error } = await supabase.functions.invoke('beauty-skin-analysis', {
-        body: { skinType, age, concerns, currentRoutine }
+      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: {
+          task: 'beauty_skin',
+          prompt: `Skin type: ${skinType}. Age: ${age || 'unspecified'}. Concerns: ${concerns.length ? concerns.join(', ') : 'none listed'}. Current routine: ${currentRoutine || 'none'}.`,
+          extras: { skinType, age, concerns, currentRoutine }
+        }
       });
       if (error) throw error;
-      setResult(data.recommendations);
+      if (data?.error) throw new Error(data.error);
+      const parsed = data?.recommendations ?? data?.skinData ?? (typeof data?.result === 'string' ? JSON.parse(data.result) : null);
+      if (!parsed) throw new Error('Analysis failed');
+      setResult(parsed);
       refresh();
       toast.success("Skin analysis complete!");
     } catch (error: any) {
@@ -69,7 +76,7 @@ export const SkinAnalysis = ({ onBack }: SkinAnalysisProps) => {
             <Search className="h-6 w-6 text-pink-500" />
             AI Skin Analysis
           </h2>
-          <p className="text-muted-foreground mb-6">Get a personalized skincare routine & product recommendations • 8 Credits</p>
+          <p className="text-muted-foreground mb-6">Get a personalized skincare routine & product recommendations • 3 Credits</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -108,8 +115,8 @@ export const SkinAnalysis = ({ onBack }: SkinAnalysisProps) => {
             <Textarea placeholder="Describe your current routine..." value={currentRoutine} onChange={e => setCurrentRoutine(e.target.value)} />
           </div>
 
-          <Button onClick={handleAnalyze} disabled={loading || (credits?.credits_remaining ?? 0) < 8} className="w-full mt-4">
-            {loading ? "Analyzing..." : "Analyze My Skin (8 Credits)"}
+          <Button onClick={handleAnalyze} disabled={loading || (credits?.credits_remaining ?? 0) < 3} className="w-full mt-4">
+            {loading ? "Analyzing..." : "Analyze My Skin (3 Credits)"}
           </Button>
           {credits && <p className="text-sm text-muted-foreground mt-2">Credits: {credits.credits_remaining}</p>}
         </Card>
