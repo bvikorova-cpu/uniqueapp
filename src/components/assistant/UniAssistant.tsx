@@ -528,7 +528,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     </AnimatePresence>
   );
 
-  if (typeof document === "undefined" || isMobileViewport) return null;
+  if (typeof document === "undefined") return null;
   return (
     <>
       {docked ? fab : createPortal(fab, document.body)}
