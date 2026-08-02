@@ -253,36 +253,65 @@ serve(async (req) => {
       return `data:image/png;base64,${b64}`;
     };
 
+    // Robustly pull a base64 image out of any gateway response shape
+    const extractB64 = (data: any): string | null => {
+      const direct = data?.data?.[0]?.b64_json;
+      if (direct) return direct;
+      const msg = data?.choices?.[0]?.message;
+      const fromImages = msg?.images?.[0]?.image_url?.url || msg?.images?.[0]?.url;
+      if (typeof fromImages === "string") {
+        return fromImages.startsWith("data:") ? fromImages.split(",")[1] : fromImages;
+      }
+      const content = msg?.content;
+      if (Array.isArray(content)) {
+        for (const part of content) {
+          const url = part?.image_url?.url || part?.url;
+          if (typeof url === "string" && url.startsWith("data:")) return url.split(",")[1];
+          if (typeof part?.b64_json === "string") return part.b64_json;
+        }
+      }
+      const inline = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData?.data)?.inlineData?.data;
+      if (inline) return inline;
+      return null;
+    };
+
     // Real image-to-image edit: sends the uploaded image + instruction to a Gemini image model
     const editUploadedImage = async (sourceUrl: string, instruction: string) => {
       if (!LOVABLE_API_KEY) throw new Error("Image editing is not configured");
-      const res = await rawFetch(LOVABLE_IMAGE_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "google/gemini-3.1-flash-image",
-          messages: [
-            {
-              role: "user",
-              content: [
-                { type: "text", text: `Edit this image: ${instruction}. Keep the original subject, composition and identity intact unless the instruction says otherwise. Return only the edited image.` },
-                { type: "image_url", image_url: { url: sourceUrl } },
-              ],
-            },
-          ],
-          modalities: ["image", "text"],
-        }),
-      });
-      if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        console.error("Lovable image edit error:", res.status, text);
-        throw new Error(`Image editing failed (${res.status})`);
+      const models = ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"];
+      let lastErr = "";
+      for (const model of models) {
+        const res = await rawFetch(LOVABLE_IMAGE_URL, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model,
+            messages: [
+              {
+                role: "user",
+                content: [
+                  { type: "text", text: `Edit this image: ${instruction}. Keep the original subject, composition and identity intact unless the instruction says otherwise. Return only the edited image.` },
+                  { type: "image_url", image_url: { url: sourceUrl } },
+                ],
+              },
+            ],
+            modalities: ["image", "text"],
+          }),
+        });
+        if (!res.ok) {
+          lastErr = `status ${res.status}`;
+          console.error("Lovable image edit error:", model, res.status, await res.text().catch(() => ""));
+          continue;
+        }
+        const data = await res.json().catch(() => null);
+        const b64 = extractB64(data);
+        if (b64) return `data:image/png;base64,${b64}`;
+        lastErr = "no image in response";
+        console.error("Image edit returned no image:", model, JSON.stringify(data)?.slice(0, 600));
       }
-      const data = await res.json();
-      const b64 = data?.data?.[0]?.b64_json;
-      if (!b64) throw new Error("No edited image returned by AI");
-      return `data:image/png;base64,${b64}`;
+      throw new Error(`Image editing failed (${lastErr})`);
     };
+
 
 
 
