@@ -159,13 +159,22 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
               </div>
             </div>
 
-            <Button onClick={handleMatch} disabled={loading || uploading || (credits?.credits_remaining ?? 0) < 10} className="w-full">
+            <Button onClick={handleMatch} disabled={loading || uploading || (credits?.credits_remaining ?? 0) < 4} className="w-full">
               {uploading ? "Uploading..." : loading ? "Finding match..." : "Find My Celebrity Twin (4 Credits)"}
             </Button>
             {credits && <p className="text-sm text-muted-foreground">Credits: {credits.credits_remaining}</p>}
           </div>
         </Card>
       </motion.div>
+
+      <div ref={resultRef} />
+
+      {!result && rawText && (
+        <Card className="p-6 bg-card/80 backdrop-blur-xl">
+          <h3 className="text-lg font-bold mb-3">Your Celebrity Match</h3>
+          <p className="text-sm whitespace-pre-wrap text-muted-foreground">{rawText}</p>
+        </Card>
+      )}
 
       {result && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
@@ -184,7 +193,7 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
               <p className="text-muted-foreground mt-3">{result.topMatch.signatureLook}</p>
               <div className="flex flex-wrap gap-2 mt-3">
                 {result.topMatch.matchReasons?.map((r: string, i: number) => (
-                  <span key={i} className="text-xs bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded-full">{r}</span>
+                  <span key={i} className="text-xs bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded-full">{r}</span>
                 ))}
               </div>
             </Card>
@@ -207,14 +216,16 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
           {result.lookRecreation?.steps?.length > 0 && (
             <Card className="p-6 bg-card/80 backdrop-blur-xl">
               <h3 className="text-lg font-bold mb-3">💄 Recreate The Look</h3>
-              <p className="text-sm text-muted-foreground mb-4">{result.lookRecreation.overview}</p>
+              {result.lookRecreation.overview && (
+                <p className="text-sm text-muted-foreground mb-4">{result.lookRecreation.overview}</p>
+              )}
               <ol className="space-y-3">
-                {result.lookRecreation.steps.map((s: any) => (
-                  <li key={s.step} className="flex gap-3">
-                    <span className="font-bold text-pink-500">{s.step}</span>
+                {result.lookRecreation.steps.map((s: any, i: number) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="font-bold text-pink-500">{s.step ?? i + 1}</span>
                     <div>
-                      <p className="font-semibold">{s.area}</p>
-                      <p className="text-sm text-muted-foreground">{s.technique}</p>
+                      <p className="font-semibold">{s.title || s.area || `Step ${i + 1}`}</p>
+                      <p className="text-sm text-muted-foreground">{s.instruction || s.technique}</p>
                       {s.products?.length > 0 && (
                         <p className="text-xs text-primary mt-1">Products: {s.products.join(", ")}</p>
                       )}
@@ -242,6 +253,7 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
           )}
         </motion.div>
       )}
+
     </div>
     </>
     );
