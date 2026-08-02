@@ -124,7 +124,7 @@ serve(async (req) => {
       } catch (_) { /* swallow */ }
     };
 
-    const openaiKey = Deno.env.get('OPENAI_API_KEY');
+    const openaiKey = Deno.env.get('LOVABLE_API_KEY');
     const lovableKey = Deno.env.get('LOVABLE_API_KEY');
     if (!openaiKey && !lovableKey) { await refund(); throw new Error('AI not configured'); }
 
@@ -274,8 +274,8 @@ serve(async (req) => {
         break;
 
       case 'scenes': {
-        const openaiKey2 = Deno.env.get('OPENAI_API_KEY');
-        if (!openaiKey2) { await refund(); throw new Error('OPENAI_API_KEY not configured'); }
+        const openaiKey2 = Deno.env.get('LOVABLE_API_KEY');
+        if (!openaiKey2) { await refund(); throw new Error('LOVABLE_API_KEY not configured'); }
         const { scenes, aspectRatio } = params;
         if (!Array.isArray(scenes) || scenes.length < 1 || scenes.length > 8) {
           await refund();

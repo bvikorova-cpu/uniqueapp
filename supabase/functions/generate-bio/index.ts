@@ -4,15 +4,15 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
 async function openai(messages: any[], opts: { json?: boolean } = {}) {
-  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
+  if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
   const body: any = { model: "gpt-4o-mini", messages };
   if (opts.json) body.response_format = { type: "json_object" };
   const r = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(body) });
   if (!r.ok) {
     const t = await r.text();

@@ -41,7 +41,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return json({ error: "Not authenticated" }, 401);
@@ -57,7 +57,7 @@ serve(async (req) => {
     const table = ACTION_TABLE[action];
     const systemPrompt = SYSTEM_PROMPTS[action];
     if (!table || !systemPrompt) return json({ error: "Unknown action" }, 400);
-    if (!openaiKey) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+    if (!openaiKey) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
     const admin = createClient(supabaseUrl, serviceKey);
 

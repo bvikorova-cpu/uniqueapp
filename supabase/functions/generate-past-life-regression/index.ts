@@ -79,9 +79,9 @@ serve(async (req) => {
     }
 
     // Generate the AI reading.
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiKey) {
-      return jsonResponse({ error: "OPENAI_API_KEY not configured" }, 500);
+      return jsonResponse({ error: "LOVABLE_API_KEY not configured" }, 500);
     }
 
     const userContext = [

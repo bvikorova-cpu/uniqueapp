@@ -12,8 +12,8 @@ Deno.serve(async (req) => {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-    if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY missing');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY missing');
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${OPENAI_API_KEY}` },
+        Authorization: `Bearer ${LOVABLE_API_KEY}` },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [{

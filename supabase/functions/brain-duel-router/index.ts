@@ -58,7 +58,7 @@ async function callAI(
 
   // Vision (OCR): OpenAI primary, Lovable fallback for rate-limit/quota/server errors.
   const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-  const openaiKey = Deno.env.get("OPENAI_API_KEY");
+  const openaiKey = Deno.env.get("LOVABLE_API_KEY");
   if (!openaiKey && !lovableKey) {
     const e: any = new Error("AI is not configured. Please contact support.");
     e.status = 503;

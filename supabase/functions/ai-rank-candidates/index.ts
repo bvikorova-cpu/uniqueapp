@@ -43,8 +43,8 @@ Deno.serve(async (req) => {
       skills: Array.isArray(c.skills) ? c.skills.slice(0, 30) : [],
       experience: String(c.experience ?? "").slice(0, 1000) }));
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY missing");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY missing");
 
     const prompt = `You are an expert recruiter. Rank these candidates for the role.
 
@@ -60,7 +60,7 @@ Return ONLY a JSON array, sorted best→worst, each item:
     const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",

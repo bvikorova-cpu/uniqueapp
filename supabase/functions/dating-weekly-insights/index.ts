@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
       { title: "Send 3 openers today", action: "send_openers" },
     ];
 
-    const LOVABLE_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (LOVABLE_KEY) {
       try {
         const prompt = `User's dating week summary.

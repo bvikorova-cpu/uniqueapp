@@ -40,8 +40,8 @@ serve(async (req) => {
     const cfg = ACTIONS[action];
     if (!cfg) return new Response(JSON.stringify({ error: "Invalid action" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const aiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!aiKey) throw new Error("Missing OPENAI_API_KEY");
+    const aiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!aiKey) throw new Error("Missing LOVABLE_API_KEY");
     const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${aiKey}`, "Content-Type": "application/json" },

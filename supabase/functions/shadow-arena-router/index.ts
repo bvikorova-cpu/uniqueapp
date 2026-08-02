@@ -207,11 +207,11 @@ Deno.serve(async (req) => {
         if (!cur || cur.credits_remaining < REEL_COST) {
           return json({ error: `Need ${REEL_COST} credits.` }, 402);
         }
-        const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-        if (!OPENAI_API_KEY) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+        const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+        if (!LOVABLE_API_KEY) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
         const scriptRes = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_API_KEY}` },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
           body: JSON.stringify({
             model: "gpt-4o-mini",
             messages: [
@@ -267,8 +267,8 @@ Deno.serve(async (req) => {
       // ---- AI Story Generator (OpenAI gpt-4o + optional image, 4 credits) ----
       case "ai_story_generate": {
         const STORY_COST = 4;
-        const openaiKey = Deno.env.get("OPENAI_API_KEY");
-        if (!openaiKey) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+        const openaiKey = Deno.env.get("LOVABLE_API_KEY");
+        if (!openaiKey) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
         const { prompt, tone = "gothic", length = "medium", generateImage = true } = p;
         if (!prompt) return json({ error: "Missing prompt" }, 400);
         const { data: credits } = await supabase.from("shadow_arena_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
@@ -338,8 +338,8 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
       // ---- Battle Predictor (OpenAI gpt-4o-mini, 5 credits) ----
       case "battle_predict": {
         const PREDICT_COST = 5;
-        const openaiKey = Deno.env.get("OPENAI_API_KEY");
-        if (!openaiKey) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+        const openaiKey = Deno.env.get("LOVABLE_API_KEY");
+        if (!openaiKey) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
         const { battleId } = p;
         if (!battleId) return json({ error: "Missing battleId" }, 400);
         const { data: credits } = await supabase.from("shadow_arena_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
@@ -412,8 +412,8 @@ Return JSON: {
           cursed_doll: "Transform this person into a cursed porcelain doll: cracked porcelain skin, button-style eyes, Victorian dress collar, eerie smile, dim attic lighting, no text",
           shadow_being: "Transform this person into a shadow being: face fades into living darkness, glowing red eyes, smoke for hair, void background, no text",
           werewolf: "Transform this person mid-transformation into a werewolf: partial fur on face, glowing yellow eyes, sharp teeth visible, full moon backlight, cinematic, no text" };
-        const openaiKey = Deno.env.get("OPENAI_API_KEY");
-        if (!openaiKey) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+        const openaiKey = Deno.env.get("LOVABLE_API_KEY");
+        if (!openaiKey) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
         const { sourceImageUrl, style = "vampire" } = p;
         if (!sourceImageUrl) return json({ error: "Missing sourceImageUrl" }, 400);
         const stylePrompt = STYLE_PROMPTS[style] || STYLE_PROMPTS.vampire;

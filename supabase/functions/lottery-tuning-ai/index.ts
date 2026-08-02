@@ -55,8 +55,8 @@ Deno.serve(async (req) => {
         message: `You need ${cost} credits. You have ${have}.` }, 402);
     }
 
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) return json({ error: "MISSING_OPENAI_API_KEY" }, 500);
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!apiKey) return json({ error: "MISSING_LOVABLE_API_KEY" }, 500);
 
     let output: any = {};
 

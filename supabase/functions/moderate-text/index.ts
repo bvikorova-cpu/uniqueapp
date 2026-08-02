@@ -1,7 +1,7 @@
 import "../_shared/aiRedirect.ts";
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
 interface ModResult {
   allowed: boolean;
@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'text too long' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
-    if (!OPENAI_API_KEY) { // Fail-open with deny-list fallback if AI gateway unconfigured.
+    if (!LOVABLE_API_KEY) { // Fail-open with deny-list fallback if AI gateway unconfigured.
       const denylist = /\b(kill yourself|kys|n[i1]gg[ae3]r|f[a4]gg[o0]t|child porn|csam)\b/i;
       const allowed = !denylist.test(text);
       const result: ModResult = {
@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
 
     const resp = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [

@@ -20,7 +20,7 @@ const json = (b: unknown, status = 200) =>
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 const AI_URL = "https://api.openai.com/v1/chat/completions";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -28,7 +28,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 async function callAI(body: unknown, attempt = 0): Promise<string> {
   const res = await fetch(AI_URL, {
     method: "POST",
-    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(body) });
   if (res.status === 429 || res.status === 503) {
     if (attempt < 3) {

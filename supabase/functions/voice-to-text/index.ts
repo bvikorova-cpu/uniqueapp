@@ -20,8 +20,8 @@ Deno.serve(async (req) => {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const bytes = b64ToBytes(audio);
     const mime = format === "mp3" ? "audio/mpeg" : format === "wav" ? "audio/wav" : format === "m4a" ? "audio/mp4" : "audio/webm";
@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
 
     const r = await fetch("https://api.openai.com/v1/audio/transcriptions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}` },
       body: form });
 
     if (!r.ok) {

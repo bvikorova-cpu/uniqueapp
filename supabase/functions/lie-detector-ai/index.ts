@@ -9,7 +9,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 const json = (b: any, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-const OPENAI = () => Deno.env.get("OPENAI_API_KEY");
+const OPENAI = () => Deno.env.get("LOVABLE_API_KEY");
 const SUPA_URL = () => Deno.env.get("SUPABASE_URL")!;
 const SUPA_KEY = () => Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -36,7 +36,7 @@ async function deductCredits(supabase: any, userId: string, cr: any, cost: numbe
 
 async function callOpenAI(messages: any[], json_mode = true) {
   const key = OPENAI();
-  if (!key) return { err: json({ error: "OPENAI_API_KEY not configured" }, 500) };
+  if (!key) return { err: json({ error: "LOVABLE_API_KEY not configured" }, 500) };
   const resp = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
@@ -116,7 +116,7 @@ async function actionVoice(supabase: any, user: any, body: any) {
   const { audio_base64, audio_path, mime } = body;
   if (!audio_base64 && !audio_path) return json({ error: "audio required" }, 400);
   const cc = await checkCredits(supabase, user.id, COST); if (cc.err) return cc.err;
-  const key = OPENAI(); if (!key) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+  const key = OPENAI(); if (!key) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
   let audioBlob: Blob;
   let audioUrl: string | null = null;
@@ -163,7 +163,7 @@ async function actionVoiceHeatmap(supabase: any, user: any, body: any) {
   const { audio_base64, mime } = body;
   if (!audio_base64 || !mime) return json({ error: "audio_base64 and mime required" }, 400);
   const cc = await checkCredits(supabase, user.id, COST); if (cc.err) return cc.err;
-  const key = OPENAI(); if (!key) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+  const key = OPENAI(); if (!key) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
   const bin = Uint8Array.from(atob(audio_base64), (c) => c.charCodeAt(0));
   const fd = new FormData();
@@ -196,7 +196,7 @@ async function actionBodyLanguage(supabase: any, user: any, body: any) {
   if (!Array.isArray(frames_base64) || frames_base64.length < 2) return json({ error: "frames_base64 array (min 2 keyframes) required" }, 400);
   if (frames_base64.length > 8) return json({ error: "max 8 keyframes" }, 400);
   const cc = await checkCredits(supabase, user.id, COST); if (cc.err) return cc.err;
-  const key = OPENAI(); if (!key) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+  const key = OPENAI(); if (!key) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
   const imageMessages = frames_base64.map((b64: string) => ({
     type: "image_url",
@@ -250,7 +250,7 @@ async function actionBulk(supabase: any, user: any, body: any) {
   if (items.length > 200) return json({ error: "max 200 items per batch" }, 400);
   const COST = Math.max(items.length, 1);
   const cc = await checkCredits(supabase, user.id, COST); if (cc.err) return cc.err;
-  const key = OPENAI(); if (!key) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+  const key = OPENAI(); if (!key) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
   const { data: job } = await supabase.from("lie_bulk_jobs").insert({ user_id: user.id, job_type: job_type || "messages", total_items: items.length, status: "processing", credits_used: COST }).select().single();
 
@@ -343,7 +343,7 @@ async function actionScreenshot(supabase: any, user: any, body: any) {
   const { image_base64, mime } = body;
   if (!image_base64) return json({ error: "image_base64 required" }, 400);
   const cc = await checkCredits(supabase, user.id, COST); if (cc.err) return cc.err;
-  const key = OPENAI(); if (!key) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+  const key = OPENAI(); if (!key) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
   const resp = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -401,7 +401,7 @@ async function actionDeepfake(supabase: any, user: any, body: any) {
   const { image_base64, mime } = body;
   if (!image_base64) return json({ error: "image_base64 required" }, 400);
   const cc = await checkCredits(supabase, user.id, COST); if (cc.err) return cc.err;
-  const key = OPENAI(); if (!key) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+  const key = OPENAI(); if (!key) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
   const resp = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",

@@ -8,7 +8,7 @@ import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 const COSTS = { safetyCheck: 2, askScientist: 2, analyze: 4 } as const;
 type Action = keyof typeof COSTS;
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -17,7 +17,7 @@ async function callAI(system: string, user: string) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${OPENAI_API_KEY}` },
+      Authorization: `Bearer ${LOVABLE_API_KEY}` },
     body: JSON.stringify({
       model: "gpt-4o-mini",
       messages: [

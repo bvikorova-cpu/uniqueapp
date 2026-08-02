@@ -102,7 +102,7 @@ serve(async (req) => {
 
     // Generate AI content based on feature
     let generatedContent = null;
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
 
     if (openaiKey && (featureKey === "aiEnergyReading" || featureKey === "energyHealing")) { const prompts: Record<string, string> = {
         aiEnergyReading: `Generate a detailed AI energy reading report. Include:

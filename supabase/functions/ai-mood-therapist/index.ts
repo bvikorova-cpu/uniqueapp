@@ -3,7 +3,7 @@ import { requireAiCredits } from "../_shared/credit-check.ts";
 const corsHeaders = { 'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' }
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -41,7 +41,7 @@ Keep responses concise, engaging, and use emoji. Format advice with markdown. Be
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json' },
       body: JSON.stringify({ model: "gpt-4o-mini",
         messages: [systemMessage, ...messages.slice(-10)],

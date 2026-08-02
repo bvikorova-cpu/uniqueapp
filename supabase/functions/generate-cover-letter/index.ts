@@ -11,7 +11,7 @@ serve(async (req) => {
     const auth = await requireAiCredits(req, corsHeaders, { credits: 4, usageType: "ai_cover_letter" });
     if (auth.errorResponse) return auth.errorResponse;
     const { jobTitle, jobDescription, companyName, candidateSummary, candidateSkills, tone } = await req.json();
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiKey) throw new Error("AI not configured");
 
     const prompt = `Write a personalized cover letter (250-350 words, ${tone || "professional"} tone).

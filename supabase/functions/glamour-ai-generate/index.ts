@@ -45,7 +45,7 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiKey) throw new Error("AI service not configured");
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {

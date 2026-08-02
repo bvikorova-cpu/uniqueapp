@@ -12,7 +12,7 @@ const COST = 2;
 const MODEL = "dall-e-3";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 
 const STYLE_HINTS: Record<string, string> = { watercolor: "soft watercolor children's book illustration, gentle pastel colors",
   cartoon: "bright cheerful cartoon style, bold outlines, vivid colors",
@@ -78,7 +78,7 @@ Visual style: ${styleHint}. Age-appropriate for kids 4-10, friendly and safe, no
     const aiResp = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json" },
       body: JSON.stringify({ model: MODEL,
         prompt: prompt.slice(0, 4000),

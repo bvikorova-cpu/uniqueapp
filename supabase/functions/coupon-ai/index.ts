@@ -26,8 +26,8 @@ serve(async (req) => {
     }
 
     const { action, ...params } = await req.json();
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OpenAI API key not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("OpenAI API key not configured");
 
     const creditCosts: Record<string, number> = { "coupon-valuator": 3,
       "fraud-scanner": 4,
@@ -62,7 +62,7 @@ serve(async (req) => {
       const prompt = `You are a coupon stacking expert. Given these coupons: ${JSON.stringify(coupons)} and cart total ${cart_total ?? "unknown"} EUR, compute final price, identify conflicts (e.g. only one % discount allowed per order, gift cards stack with codes, BOGO can't combine with %), and return JSON: { final_price, total_savings, order: [coupon_id...], warnings: [string] }. Use EUR.`;
       const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_API_KEY}` },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
         body: JSON.stringify({ model: "gpt-4o", messages: [{ role: "user", content: prompt }], response_format: { type: "json_object" } }) });
       if (aiRes.status === 429) return new Response(JSON.stringify({ error: "rate_limited" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       if (aiRes.status === 401 || aiRes.status === 402) return new Response(JSON.stringify({ error: "ai_credits_exhausted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -80,7 +80,7 @@ serve(async (req) => {
       if (!receipt_url) return new Response(JSON.stringify({ error: "receipt_url required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_API_KEY}` },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
         body: JSON.stringify({
           model: "gpt-4o",
           messages: [{ role: "user", content: [
@@ -347,7 +347,7 @@ Provide:
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],

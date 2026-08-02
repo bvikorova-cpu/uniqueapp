@@ -7,7 +7,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
 const CREDIT_COSTS: Record<string, number> = { "ai.brandAnalyzer": 5,
   "ai.battlePredictor": 3,
@@ -44,10 +44,10 @@ async function spendCredits(admin: any, userId: string, amount: number) {
 }
 
 async function callAI(prompt: string, system = "You are a brand analyst. Reply with concise JSON.") {
-  if (!OPENAI_API_KEY) return { text: "AI unavailable" };
+  if (!LOVABLE_API_KEY) return { text: "AI unavailable" };
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "gpt-4o-mini",
       messages: [{ role: "system", content: system }, { role: "user", content: prompt }] }) });
