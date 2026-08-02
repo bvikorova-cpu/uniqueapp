@@ -61,7 +61,6 @@ export class UnifiedAIError extends Error {
   }
 }
 
-const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 
 const GATEWAY_MODEL_MAP: Record<string, string> = {
@@ -151,23 +150,19 @@ async function callProviderRaw(
   cheap: boolean,
 ): Promise<any> {
 
-  const key = useGateway
-    ? Deno.env.get("LOVABLE_API_KEY")
-    : Deno.env.get("OPENAI_API_KEY");
-  const providerName = useGateway ? "Lovable AI Gateway" : "OpenAI";
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  const providerName = "Lovable AI Gateway";
 
   if (!key) {
     throw new UnifiedAIError(500, `${providerName} key is not configured`, providerName);
   }
 
-  const headers = useGateway
-    ? { "Lovable-API-Key": key, "Content-Type": "application/json" }
-    : { Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
+  const headers = { "Lovable-API-Key": key, "Content-Type": "application/json" };
 
-  const res = await fetch(useGateway ? GATEWAY_URL : OPENAI_URL, {
+  const res = await fetch(GATEWAY_URL, {
     method: "POST",
     headers,
-    body: JSON.stringify(buildBody(messages, opts, useGateway, cheap)),
+    body: JSON.stringify(buildBody(messages, opts, true, cheap)),
   });
 
   if (!res.ok) {
@@ -206,7 +201,7 @@ async function callProvider(
 
   const content = message?.content?.toString().trim() || "";
   if (!content && !message?.tool_calls) {
-    throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", useGateway ? "Lovable AI Gateway" : "OpenAI");
+    throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", "Lovable AI Gateway");
   }
   return {
     content,
@@ -232,18 +227,13 @@ export async function callUnifiedAIEx(
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions = {},
 ): Promise<UnifiedAIResult> {
-  const openaiKey = Deno.env.get("OPENAI_API_KEY");
   const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-  if (!openaiKey && !lovableKey) {
+  if (!lovableKey) {
     throw new UnifiedAIError(500, "AI is not configured. Please add an API key.");
   }
 
-  // TEMPORARY PLATFORM-WIDE SWITCH: Lovable AI Gateway ONLY.
-  // OpenAI is not used at all unless the secret AI_PROVIDER=openai is set.
-  const openaiFirst = (Deno.env.get("AI_PROVIDER") ?? "").toLowerCase() === "openai";
-  const order: boolean[] = lovableKey
-    ? (openaiFirst && openaiKey ? [false, true] : [true])
-    : [false];
+  // PLATFORM-WIDE RULE: Lovable AI ONLY. OpenAI is never used.
+  const order: boolean[] = [true];
   let lastError: UnifiedAIError | undefined;
 
   // Pass 1: cheap model on every provider. Pass 2: escalate to the requested
@@ -324,12 +314,12 @@ export async function askAIJSON<T = any>(system: string, user: string, opts?: Om
 
 /** Image generation via OpenAI Images API (no gateway fallback for images). */
 export async function generateOpenAIImage(prompt: string, size: "1024x1024" | "1024x1536" | "1536x1024" = "1024x1024"): Promise<{ url?: string; b64_json?: string }> {
-  const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key && !Deno.env.get("LOVABLE_API_KEY")) throw new UnifiedAIError(500, "AI image generation is not configured");
-  const res = await fetch("https://api.openai.com/v1/images/generations", {
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) throw new UnifiedAIError(500, "AI image generation is not configured");
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
     method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "dall-e-3", prompt, n: 1, size, response_format: "b64_json" }),
+    headers: { "Lovable-API-Key": key, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: "openai/gpt-image-1-mini", prompt, n: 1, size, quality: "low" }),
   });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
@@ -342,12 +332,12 @@ export async function generateOpenAIImage(prompt: string, size: "1024x1024" | "1
 
 /** Text-to-speech via OpenAI TTS API (no gateway fallback for audio). */
 export async function generateOpenAITTS(text: string, voice: string = "nova", speed: number = 1.0): Promise<ArrayBuffer> {
-  const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key) throw new UnifiedAIError(500, "OPENAI_API_KEY is not configured for TTS");
-  const res = await fetch("https://api.openai.com/v1/audio/speech", {
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) throw new UnifiedAIError(500, "LOVABLE_API_KEY is not configured for TTS");
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
     method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "tts-1", voice, input: text.slice(0, 4000), response_format: "mp3", speed }),
+    headers: { "Lovable-API-Key": key, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: "openai/gpt-4o-mini-tts", voice, input: text.slice(0, 4000), response_format: "mp3", speed }),
   });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
