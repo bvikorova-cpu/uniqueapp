@@ -182,7 +182,6 @@ export const VirtualMakeup = () => {
               <SelectContent>
                 <SelectItem value="glam">💄 Glam (Dramatic)</SelectItem>
                 <SelectItem value="natural">🌸 Natural (Fresh)</SelectItem>
-                <SelectItem value="smokey">🖤 Smokey Eyes</SelectItem>
               </SelectContent>
             </Select>
           </div>
