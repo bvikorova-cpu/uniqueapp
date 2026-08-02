@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -46,19 +47,24 @@ export default function AICelebrityStyleClone() {
   const clone = useMutation({
     mutationFn: async () => {
       if ((credits?.credits_remaining || 0) < CREDIT_COST) throw new Error("Not enough credits");
-      const success = await spendCredit("custom_generation", "Celebrity Style Clone");
-      if (!success) throw new Error("Failed to use credits");
 
-      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+      // Credits are deducted atomically server-side (only on AI success).
+      const { data, error } = await safeInvoke<CloneResult>("fashion-ai", {
         body: { action: "celebrity-clone", celebrity, budget_level: budget } });
-      if (error) throw error;
+      if (error) throw new Error(error);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       return data as CloneResult;
     },
     onSuccess: (data) => {
       setResult(data);
       toast.success("Celebrity style breakdown ready!");
     },
-    onError: (e: Error) => toast.error(e.message) });
+    onError: (e: Error) => {
+      const msg = String(e?.message || "");
+      toast.error(/rate limit|Rate limited|429|busy/i.test(msg)
+        ? "AI is busy right now. Wait a few seconds and try again — no credits were used."
+        : msg || "Something went wrong");
+    } });
 
   return (
     <>
