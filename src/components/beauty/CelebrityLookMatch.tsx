@@ -64,10 +64,16 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
 
-      const { data, error } = await supabase.functions.invoke('beauty-celebrity-match', {
-        body: { imageUrl: finalUrl, gender, style }
+      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: {
+          task: 'beauty_celebrity',
+          imageUrl: finalUrl,
+          userPrompt: `Find the celebrity look-alike for this person. Gender: ${gender}. Preferred style: ${style}.`,
+          extras: { gender, style },
+        }
       });
       if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
       setResult(data.matchResult);
       refresh();
       toast.success("Celebrity match found!");
