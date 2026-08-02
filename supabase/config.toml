@@ -342,7 +342,7 @@ verify_jwt = false
 [functions.fashion-battle-vote]
 verify_jwt = false
 
-[functions.fashion-ai]
+[functions.fashion-stylist-ai]
 verify_jwt = false
 
 [functions.comedy-battle-vote]
