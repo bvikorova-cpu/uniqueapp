@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, Gift, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { usePastLifeStats } from "@/hooks/usePastLifeStats";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const VISIONS = [
@@ -15,19 +16,24 @@ const VISIONS = [
 ];
 
 export const PastLifeDailyVision = () => {
+  const { claimVision, claimedToday, isLoading } = usePastLifeStats();
   const [vision, setVision] = useState("");
-  const [claimed, setClaimed] = useState(false);
+  const [claiming, setClaiming] = useState(false);
 
   useEffect(() => {
     const today = new Date().toDateString();
     const idx = Math.abs(today.split("").reduce((a, c) => a + c.charCodeAt(0), 0)) % VISIONS.length;
     setVision(VISIONS[idx]);
-    setClaimed(localStorage.getItem(`pl-vision-${today}`) === "1");
   }, []);
 
-  const handleClaim = () => {
-    localStorage.setItem(`pl-vision-${new Date().toDateString()}`, "1");
-    setClaimed(true);
+  const handleClaim = async () => {
+    if (claimedToday || claiming) return;
+    setClaiming(true);
+    try {
+      await claimVision();
+    } finally {
+      setClaiming(false);
+    }
   };
 
   return (
@@ -62,12 +68,12 @@ export const PastLifeDailyVision = () => {
         </p>
         <Button
           size="sm"
-          variant={claimed ? "outline" : "default"}
+          variant={claimedToday ? "outline" : "default"}
           className="w-full text-xs gap-1.5"
           onClick={handleClaim}
-          disabled={claimed}
+          disabled={claimedToday || isLoading || claiming}
         >
-          {claimed ? (
+          {claimedToday ? (
             <>
               <Sparkles className="h-3 w-3" />
               Vision claimed today
@@ -75,7 +81,7 @@ export const PastLifeDailyVision = () => {
           ) : (
             <>
               <Gift className="h-3 w-3" />
-              Claim free glimpse
+              {claiming ? "Claiming..." : "Claim free glimpse"}
             </>
           )}
         </Button>

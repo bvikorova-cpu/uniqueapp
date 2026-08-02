@@ -1,11 +1,34 @@
 import { Card } from "@/components/ui/card";
 import { Flame } from "lucide-react";
+import { usePastLifeStats } from "@/hooks/usePastLifeStats";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
+const DAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
+
+const getPastWeekActivity = (lastDateStr: string | null | undefined, streak: number) => {
+  const today = new Date();
+  const activeDays: boolean[] = Array(7).fill(false);
+
+  // Mark today if there was activity today.
+  if (lastDateStr && new Date(lastDateStr).toDateString() === today.toDateString()) {
+    activeDays[6] = true;
+  }
+
+  // Mark the rest of the streak going backwards from yesterday.
+  let consecutive = streak;
+  if (activeDays[6]) consecutive -= 1;
+  for (let i = 5; i >= 0 && consecutive > 0; i--) {
+    activeDays[i] = true;
+    consecutive -= 1;
+  }
+
+  return activeDays;
+};
+
 export const PastLifeStreak = () => {
-  const days = ["M", "T", "W", "T", "F", "S", "S"];
-  const activeDays = [true, true, false, true, true, false, false];
-  const currentStreak = 4;
+  const { streak, isLoading, stats } = usePastLifeStats();
+  const activeDays = getPastWeekActivity(stats?.streak_last_date, streak || 0);
+  const displayStreak = isLoading ? "—" : (streak || 0);
 
   return (
     <>
@@ -22,10 +45,10 @@ export const PastLifeStreak = () => {
       <div className="flex items-center gap-2 mb-3">
         <Flame className="h-5 w-5 text-orange-500" />
         <h3 className="font-bold text-sm">Discovery Streak</h3>
-        <span className="ml-auto text-lg font-black text-primary">{currentStreak}</span>
+        <span className="ml-auto text-lg font-black text-primary">{displayStreak}</span>
       </div>
       <div className="grid grid-cols-7 gap-1.5">
-        {days.map((day, i) => (
+        {DAY_LABELS.map((day, i) => (
           <div key={i} className="text-center">
             <span className="text-[10px] text-muted-foreground">{day}</span>
             <div className={`w-7 h-7 rounded-full flex items-center justify-center mt-1 text-xs font-medium transition-all ${

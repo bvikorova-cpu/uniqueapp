@@ -1,12 +1,30 @@
 import { Card } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+import { usePastLifeStats } from "@/hooks/usePastLifeStats";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const PastLifeProgressPreview = () => {
+  const { livesCount, erasCount, creditsUsed, isLoading } = usePastLifeStats();
+
   const metrics = [
-    { label: "Lives Discovered", current: 7, max: 20, color: "bg-primary" },
-    { label: "Eras Explored", current: 4, max: 12, color: "bg-accent" },
-    { label: "Credits Used", current: 45, max: 100, color: "bg-chart-3" },
+    {
+      label: "Lives Discovered",
+      current: livesCount || 0,
+      max: Math.max(20, livesCount || 0),
+      color: "bg-primary",
+    },
+    {
+      label: "Eras Explored",
+      current: erasCount || 0,
+      max: Math.max(12, erasCount || 0),
+      color: "bg-accent",
+    },
+    {
+      label: "Credits Used",
+      current: creditsUsed || 0,
+      max: Math.max(100, creditsUsed || 0),
+      color: "bg-chart-3",
+    },
   ];
 
   return (
@@ -30,12 +48,12 @@ export const PastLifeProgressPreview = () => {
           <div key={m.label}>
             <div className="flex justify-between text-xs mb-1">
               <span className="text-muted-foreground">{m.label}</span>
-              <span className="font-medium">{m.current}/{m.max}</span>
+              <span className="font-medium">{isLoading ? "—" : `${m.current}/${m.max}`}</span>
             </div>
             <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden">
               <div
                 className={`h-full ${m.color} rounded-full transition-all duration-1000`}
-                style={{ width: `${(m.current / m.max) * 100}%` }}
+                style={{ width: `${m.max > 0 ? (m.current / m.max) * 100 : 0}%` }}
               />
             </div>
           </div>

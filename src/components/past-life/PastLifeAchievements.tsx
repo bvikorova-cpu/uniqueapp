@@ -1,18 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
 import { motion } from "framer-motion";
+import { usePastLifeStats, PAST_LIFE_BADGES } from "@/hooks/usePastLifeStats";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const badges = [
-  { icon: "🔮", label: "First Vision", unlocked: true },
-  { icon: "📜", label: "Time Scholar", unlocked: true },
-  { icon: "👑", label: "Royal Past", unlocked: false },
-  { icon: "💫", label: "Soul Seeker", unlocked: true },
-  { icon: "🌍", label: "World Explorer", unlocked: false },
-  { icon: "💕", label: "Twin Flame", unlocked: false },
-];
-
 export const PastLifeAchievements = () => {
+  const { unlockedBadges, isLoading } = usePastLifeStats();
+  const unlockedSet = new Set(unlockedBadges);
+
   return (
     <>
       <FloatingHowItWorks
@@ -29,24 +24,28 @@ export const PastLifeAchievements = () => {
         <Trophy className="h-5 w-5 text-yellow-500" />
         <h3 className="font-bold text-sm">Achievements</h3>
         <span className="ml-auto text-xs text-muted-foreground">
-          {badges.filter(b => b.unlocked).length}/{badges.length}
+          {isLoading ? "—" : `${unlockedBadges.length}/${PAST_LIFE_BADGES.length}`}
         </span>
       </div>
       <div className="grid grid-cols-3 gap-2">
-        {badges.map((badge, i) => (
-          <motion.div
-            key={badge.label}
-            whileHover={{ scale: 1.1 }}
-            className={`flex flex-col items-center p-2 rounded-lg text-center transition-all ${
-              badge.unlocked
-                ? "bg-primary/10 border border-primary/20"
-                : "bg-muted/20 opacity-40"
-            }`}
-          >
-            <span className="text-lg">{badge.icon}</span>
-            <span className="text-[9px] mt-1 text-muted-foreground leading-tight">{badge.label}</span>
-          </motion.div>
-        ))}
+        {PAST_LIFE_BADGES.map((badge) => {
+          const unlocked = unlockedSet.has(badge.id);
+          return (
+            <motion.div
+              key={badge.id}
+              whileHover={{ scale: 1.1 }}
+              title={badge.description}
+              className={`flex flex-col items-center p-2 rounded-lg text-center transition-all ${
+                unlocked
+                  ? "bg-primary/10 border border-primary/20"
+                  : "bg-muted/20 opacity-40"
+              }`}
+            >
+              <span className="text-lg">{badge.icon}</span>
+              <span className="text-[9px] mt-1 text-muted-foreground leading-tight">{badge.label}</span>
+            </motion.div>
+          );
+        })}
       </div>
     </Card>
     </>
