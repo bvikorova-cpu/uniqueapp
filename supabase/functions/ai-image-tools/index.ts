@@ -167,7 +167,13 @@ serve(async (req) => {
     if (!(action in TOOL_COSTS)) return json({ error: `Unknown action: ${action}` }, 400);
 
     const beautyFeatures = ["beauty_makeup", "beauty_hair", "makeup", "hair"];
-    const isBeautyEdit = action === "edit" && typeof feature === "string" && beautyFeatures.includes(feature);
+    const featureStr = typeof feature === "string" ? feature.toLowerCase() : "";
+    const promptStr = typeof editPrompt === "string" ? editPrompt.toLowerCase() : "";
+    const isBeautyEdit =
+      action === "edit" &&
+      (beautyFeatures.includes(featureStr) ||
+        /\bmakeup\b/.test(promptStr) ||
+        /\bhair\b/.test(promptStr));
     const cost = isBeautyEdit ? 5 : (TOOL_COSTS[action] || 0);
 
     let charged = false;
