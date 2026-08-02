@@ -77,7 +77,7 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
             <Paintbrush className="h-6 w-6 text-pink-500" />
             AI Nail Art Designer
           </h2>
-          <p className="text-muted-foreground mb-6">Generate custom nail art designs for any occasion • 3 Credits</p>
+          <p className="text-muted-foreground mb-6">Generate custom nail art designs for any occasion • 5 Credits</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
@@ -127,7 +127,7 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
           </div>
 
           <Button onClick={handleDesign} disabled={loading || (credits?.credits_remaining ?? 0) < 3} className="w-full mt-4">
-            {loading ? "Designing..." : "Generate Design (3 Credits)"}
+            {loading ? "Designing..." : "Generate Design (5 Credits)"}
           </Button>
           {credits && <p className="text-sm text-muted-foreground mt-2">Credits: {credits.credits_remaining}</p>}
         </Card>
