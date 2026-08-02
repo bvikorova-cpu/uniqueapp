@@ -175,6 +175,13 @@ serve(async (req) => {
       }
       return json({ result, text: result, recommendations: structuredData, skinData: structuredData, task, creditsCharged: cost });
     }
+    if (task === "beauty_nail_art") {
+      if (!structuredData?.designName) {
+        log("nail-shape-invalid", { hasData: !!structuredData });
+        return json({ error: "The nail design response was invalid. Please try again." }, 502);
+      }
+      return json({ result, text: result, design: structuredData, task, creditsCharged: cost });
+    }
 
 
     return json({ result, text: result, task, creditsCharged: cost });
