@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -19,6 +19,8 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
   const [occasion, setOccasion] = useState("everyday");
   const [shape, setShape] = useState("almond");
   const [result, setResult] = useState<any>(null);
+  const [rawText, setRawText] = useState<string>("");
+  const resultRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const { credits, refresh } = useAICredits();
 
@@ -33,7 +35,13 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      setResult(data.design);
+      const design = data?.design ?? null;
+      setResult(design);
+      setRawText(typeof data?.result === "string" ? data.result : "");
+      if (!design && !data?.result) {
+        toast.error("No design returned. Please try again.");
+        return;
+      }
       refresh();
       toast.success("Nail design created!");
     } catch (error: any) {
@@ -42,6 +50,12 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (result || rawText) {
+      resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result, rawText]);
 
   return (
     <>
@@ -117,6 +131,17 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
           {credits && <p className="text-sm text-muted-foreground mt-2">Credits: {credits.credits_remaining}</p>}
         </Card>
       </motion.div>
+
+      {(result || rawText) && (
+        <div ref={resultRef} />
+      )}
+
+      {!result && rawText && (
+        <Card className="p-6 bg-card/80 backdrop-blur-xl border-pink-500/20">
+          <h3 className="text-lg font-bold mb-3">💅 Your Nail Design</h3>
+          <p className="text-sm whitespace-pre-wrap text-muted-foreground">{rawText}</p>
+        </Card>
+      )}
 
       {result && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
