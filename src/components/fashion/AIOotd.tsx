@@ -37,15 +37,12 @@ export default function AIOotd() {
     mutationFn: async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
+      if ((credits?.credits_remaining || 0) < CREDIT_COST) throw new Error("Insufficient credits");
 
-      for (let i = 0; i < CREDIT_COST; i++) {
-        const ok = await spendCredit("custom_generation", "Outfit of the Day Score");
-        if (!ok && i === 0) throw new Error("Insufficient credits");
-      }
-
-      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+      // Credits are deducted atomically server-side (only on AI success).
+      const { data, error } = await safeInvoke<any>("fashion-ai", {
         body: { action: "ootd-score", outfitDescription: description, occasion, season } });
-      if (error) throw error;
+      if (error) throw new Error(error);
 
       await supabase.from("fashion_ootd").insert({ user_id: session.user.id,
         outfit_description: description,
@@ -54,13 +51,19 @@ export default function AIOotd() {
         style_tags: data.score?.style_tags || [],
         credits_used: CREDIT_COST });
 
+      window.dispatchEvent(new Event("ai-credits-updated"));
       return data.score;
     },
     onSuccess: (score) => {
       setResult(score);
       toast.success(`Your outfit scored ${score?.overall_score}/100!`);
     },
-    onError: (e: any) => toast.error(e.message) });
+    onError: (e: any) => {
+      const msg = String(e?.message || "");
+      toast.error(/rate limit|Rate limited|429|busy/i.test(msg)
+        ? "AI is busy right now. Wait a few seconds and try again — no credits were used."
+        : msg || "Something went wrong");
+    } });
 
   const ScoreBar = ({ label, value }: { label: string; value: number }) => (
     <div className="space-y-1">
