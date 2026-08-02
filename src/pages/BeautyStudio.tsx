@@ -58,7 +58,6 @@ const BeautyStudio = () => {
   const statItems = [
     { label: "Transformations", value: stats.transformations, icon: Sparkles },
     { label: "Matches", value: stats.styles, icon: Crown },
-    { label: "Analyses", value: stats.analyses, icon: Search },
     { label: "Designs", value: stats.designs, icon: Paintbrush },
   ];
 
