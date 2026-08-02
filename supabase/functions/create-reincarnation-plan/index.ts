@@ -40,7 +40,7 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .limit(5);
 
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiKey) throw new Error("OpenAI API key not configured");
 
     const debtsContext = (karmicDebts || []).map(d => d.debt_type).join(", ") || "None recorded";

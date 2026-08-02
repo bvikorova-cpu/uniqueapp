@@ -22,7 +22,7 @@ IMPORTANT SAFETY RULES (children ages 6-12):
 async function tryStreamAI(provider: "openai" | "lovable", messages: any[]) {
   const isLovable = provider === "lovable";
   const url = isLovable ? "https://ai.gateway.lovable.dev/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
-  const key = Deno.env.get(isLovable ? "LOVABLE_API_KEY" : "OPENAI_API_KEY");
+  const key = Deno.env.get(isLovable ? "LOVABLE_API_KEY" : "LOVABLE_API_KEY");
   if (!key) throw new Error(`${provider} key not configured`);
   const headers = isLovable ? { "Lovable-API-Key": key, "Content-Type": "application/json" } : { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" };
   const body = { model: isLovable ? "openai/gpt-5.4-mini" : "gpt-4o-mini", messages, stream: true };

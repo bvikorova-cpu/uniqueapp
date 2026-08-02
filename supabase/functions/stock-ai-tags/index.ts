@@ -13,9 +13,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) {
-      return new Response(JSON.stringify({ error: "OPENAI_API_KEY not configured" }), {
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
@@ -47,7 +47,7 @@ Output language for human-readable fields: ${language}. Tags & keywords always i
     const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",

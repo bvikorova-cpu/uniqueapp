@@ -22,10 +22,10 @@ serve(async (req) => {
 
   try {
     const { imageUrl } = await req.json();
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY is not configured");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     console.log("Removing text from image:", imageUrl);
@@ -50,7 +50,7 @@ serve(async (req) => {
     const response = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}` },
+        "Authorization": `Bearer ${LOVABLE_API_KEY}` },
       body: formData });
 
     if (!response.ok) {

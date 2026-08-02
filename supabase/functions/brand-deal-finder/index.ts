@@ -68,8 +68,8 @@ serve(async (req) => {
     }
 
     // ---- GENERATE (AI, costs credits) ----
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) throw new Error("OPENAI_API_KEY missing");
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!apiKey) throw new Error("LOVABLE_API_KEY missing");
 
     const { data: profile } = await admin
       .from("influencer_profiles")

@@ -19,7 +19,7 @@ serve(async (req) => {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiKey) throw new Error("AI service not configured");
 
     const sys = `You are a professional music producer. Return STRICT JSON only, no prose, no markdown, matching this TypeScript type:

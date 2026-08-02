@@ -8,8 +8,8 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const OPENAI = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI) throw new Error("OPENAI_API_KEY not configured");
+    const OPENAI = Deno.env.get("LOVABLE_API_KEY");
+    if (!OPENAI) throw new Error("LOVABLE_API_KEY not configured");
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
     const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;

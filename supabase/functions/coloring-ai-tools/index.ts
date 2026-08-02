@@ -15,7 +15,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
@@ -45,11 +45,11 @@ serve(async (req) => {
     };
 
     const callAI = async (systemPrompt: string, userPrompt: string) => {
-      if (!OPENAI_API_KEY) throw new Error("AI not configured");
+      if (!LOVABLE_API_KEY) throw new Error("AI not configured");
       const res = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
           "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "gpt-4o-mini",
@@ -65,11 +65,11 @@ serve(async (req) => {
     };
 
     const callAIWithImage = async (prompt: string) => {
-      if (!OPENAI_API_KEY) throw new Error("AI not configured");
+      if (!LOVABLE_API_KEY) throw new Error("AI not configured");
       const res = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
           "Content-Type": "application/json" },
         body: JSON.stringify({ model: "gpt-image-1",
           prompt: prompt,
@@ -95,11 +95,11 @@ serve(async (req) => {
     };
 
     const callAIStructured = async (systemPrompt: string, userPrompt: string, toolDef: any) => {
-      if (!OPENAI_API_KEY) throw new Error("AI not configured");
+      if (!LOVABLE_API_KEY) throw new Error("AI not configured");
       const res = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
           "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "gpt-4o-mini",

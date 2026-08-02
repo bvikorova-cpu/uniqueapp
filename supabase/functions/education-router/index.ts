@@ -11,7 +11,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -26,10 +26,10 @@ function rateLimit(key: string, max: number, windowMs: number) {
 }
 
 async function aiJsonOpenAI(system: string, user: string): Promise<any> {
-  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+  if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "gpt-4o-mini",
       messages: [{ role: "system", content: system }, { role: "user", content: user }],
@@ -48,11 +48,11 @@ function json(body: unknown, status = 200) {
 }
 
 async function callAI(messages: any[], opts: { model?: string; json?: boolean } = {}) {
-  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+  if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
+      Authorization: `Bearer ${LOVABLE_API_KEY}`,
       "Content-Type": "application/json" },
     body: JSON.stringify({
       model: opts.model ?? "gpt-4o-mini",

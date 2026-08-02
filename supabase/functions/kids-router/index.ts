@@ -14,7 +14,7 @@ const json = (body: unknown, status = 200) =>
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
-const AI_KEY = Deno.env.get("OPENAI_API_KEY");
+const AI_KEY = Deno.env.get("LOVABLE_API_KEY");
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });

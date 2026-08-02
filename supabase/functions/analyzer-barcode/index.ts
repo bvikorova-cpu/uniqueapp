@@ -41,7 +41,7 @@ serve(async (req) => {
 
     // 2) AI fallback when not found
     if (!product) {
-      const apiKey = Deno.env.get("OPENAI_API_KEY");
+      const apiKey = Deno.env.get("LOVABLE_API_KEY");
       if (apiKey) {
         const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",

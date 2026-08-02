@@ -226,7 +226,7 @@ Provide in Markdown: 1. **Team Assessment** 2. **Optimal Formation / Lead Order*
     const prompt = prompts[action];
     if (!prompt) throw new Error("Invalid action: " + action);
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     const messages = [
@@ -245,9 +245,9 @@ Provide in Markdown: 1. **Team Assessment** 2. **Optimal Formation / Lead Order*
     let aiResponse: Response | null = null;
 
     // 1) Try OpenAI with short backoff on 429
-    if (OPENAI_API_KEY) {
+    if (LOVABLE_API_KEY) {
       for (let attempt = 0; attempt < 2; attempt++) {
-        aiResponse = await callProvider("https://api.openai.com/v1/chat/completions", OPENAI_API_KEY, "gpt-4o-mini");
+        aiResponse = await callProvider("https://api.openai.com/v1/chat/completions", LOVABLE_API_KEY, "gpt-4o-mini");
         if (aiResponse.ok || (aiResponse.status !== 429 && aiResponse.status !== 402 && aiResponse.status < 500)) break;
         await sleep(800 * (attempt + 1));
       }

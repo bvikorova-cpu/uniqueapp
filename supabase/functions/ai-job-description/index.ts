@@ -10,8 +10,8 @@ serve(async (req) => {
     const { title, company, level, skills, tone = "professional", language = "English", remote = false } = await req.json();
     if (!title) return new Response(JSON.stringify({ error: "title required" }), { status: 400, headers: corsHeaders });
 
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) return new Response(JSON.stringify({ error: "OPENAI_API_KEY missing" }), { status: 500, headers: corsHeaders });
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!apiKey) return new Response(JSON.stringify({ error: "LOVABLE_API_KEY missing" }), { status: 500, headers: corsHeaders });
 
     const prompt = `Write a complete job description in ${language} for the role "${title}"${company ? ` at ${company}` : ""}.
 Level: ${level || "any"}. Remote: ${remote ? "yes" : "no/hybrid"}. Tone: ${tone}.

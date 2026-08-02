@@ -14,7 +14,7 @@ serve(async (req) => {
     if (!resumeText || resumeText.length < 30) {
       return new Response(JSON.stringify({ error: "Resume text too short" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiKey) throw new Error("AI not configured");
 
     const prompt = `Extract structured data from this resume. Return ONLY JSON, no markdown:

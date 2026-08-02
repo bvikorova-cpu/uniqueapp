@@ -6,7 +6,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type" };
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     const { data: userData } = await auth.auth.getUser();
     const user = userData?.user;
     if (!user) return json({ error: "Not authenticated" }, 401);
-    if (!OPENAI_API_KEY) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+    if (!LOVABLE_API_KEY) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
     const body = await req.json().catch(() => ({}));
     const { offspringId, message } = body || {};
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
 
     const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({ model: "gpt-4o-mini", messages }) });
     if (aiResp.status === 429) return json({ error: "Rate limited" }, 429);
     if (aiResp.status === 402) return json({ error: "AI credits exhausted" }, 402);

@@ -211,11 +211,11 @@ serve(async (req) => {
       }
     };
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const preferOpenAI = (Deno.env.get("AI_PROVIDER") ?? "").toLowerCase() === "openai";
     const rawFetch = ((globalThis as any).__ORIGINAL_FETCH__ as typeof fetch | undefined) ?? fetch;
-    if (!OPENAI_API_KEY && !LOVABLE_API_KEY) {
+    if (!LOVABLE_API_KEY && !LOVABLE_API_KEY) {
       await refund();
       return json({ error: "AI service is not configured" }, 500);
     }
@@ -234,22 +234,22 @@ serve(async (req) => {
       const finalPrompt = negativePrompt && typeof negativePrompt === "string" && negativePrompt.trim()
         ? `${p}\n\nDo NOT include: ${negativePrompt.trim()}.`
         : p;
-      const useLovable = Boolean(LOVABLE_API_KEY && (!preferOpenAI || !OPENAI_API_KEY));
+      const useLovable = Boolean(LOVABLE_API_KEY && (!preferOpenAI || !LOVABLE_API_KEY));
       const res = await rawFetch(useLovable ? LOVABLE_IMAGE_URL : OPENAI_IMAGE_URL, {
         method: "POST",
         headers: useLovable
           ? { Authorization: `Bearer ${LOVABLE_API_KEY ?? ""}`, "Content-Type": "application/json" }
-          : { Authorization: `Bearer ${OPENAI_API_KEY ?? ""}`, "Content-Type": "application/json" },
+          : { Authorization: `Bearer ${LOVABLE_API_KEY ?? ""}`, "Content-Type": "application/json" },
         body: JSON.stringify(useLovable
           ? { model: "openai/gpt-image-1-mini", prompt: finalPrompt, size, quality: "low" }
           : { model: "gpt-image-1", prompt: finalPrompt, n: 1, size, quality: "low" }) });
       if (!res.ok) {
         const text = await res.text();
         console.error(`${useLovable ? "Lovable" : "OpenAI"} image API error:`, res.status, text);
-        if (useLovable && OPENAI_API_KEY) {
+        if (useLovable && LOVABLE_API_KEY) {
           const fallback = await rawFetch(OPENAI_IMAGE_URL, {
             method: "POST",
-            headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+            headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
             body: JSON.stringify({ model: "gpt-image-1", prompt: finalPrompt, n: 1, size, quality: "low" }) });
           if (fallback.ok) {
             const data = await fallback.json();
@@ -361,12 +361,12 @@ serve(async (req) => {
     };
 
     const chatJSON = async (messages: any[]) => {
-      const useLovable = Boolean(LOVABLE_API_KEY && (!preferOpenAI || !OPENAI_API_KEY));
+      const useLovable = Boolean(LOVABLE_API_KEY && (!preferOpenAI || !LOVABLE_API_KEY));
       const call = async (lovable: boolean) => rawFetch(lovable ? LOVABLE_CHAT_URL : OPENAI_CHAT_URL, {
         method: "POST",
         headers: lovable
           ? { "Lovable-API-Key": LOVABLE_API_KEY ?? "", "Content-Type": "application/json" }
-          : { Authorization: `Bearer ${OPENAI_API_KEY ?? ""}`, "Content-Type": "application/json" },
+          : { Authorization: `Bearer ${LOVABLE_API_KEY ?? ""}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           model: lovable ? "google/gemini-3.6-flash" : "gpt-4o-mini",
           messages,
@@ -376,7 +376,7 @@ serve(async (req) => {
 
 
       let res = await call(useLovable);
-      if (!res.ok && useLovable && OPENAI_API_KEY) {
+      if (!res.ok && useLovable && LOVABLE_API_KEY) {
         const text = await res.text().catch(() => "");
         console.error("Lovable chat API error:", res.status, text);
         res = await call(false);

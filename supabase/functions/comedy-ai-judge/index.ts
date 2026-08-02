@@ -15,8 +15,8 @@ serve(async (req) => {
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
     const { type, target, content, style } = await req.json();
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openaiKey) throw new Error("OPENAI_API_KEY not configured");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!openaiKey) throw new Error("LOVABLE_API_KEY not configured");
 
     let systemPrompt = "";
     let userPrompt = "";

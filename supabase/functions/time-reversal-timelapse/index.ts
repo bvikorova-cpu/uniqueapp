@@ -37,7 +37,7 @@ serve(async (req) => {
       return json({ error: "imageUrl is required" }, 400);
     }
 
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiKey) return json({ error: "OpenAI API key not configured" }, 500);
 
     const numFrames = Number.isFinite(frames) && frames > 0 ? Math.min(frames, 8) : 8;

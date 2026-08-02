@@ -3,7 +3,7 @@ import "./aiRedirect.ts";
  * Centralized AI Provider Module (legacy compatibility wrapper)
  *
  * Single point of entry for all AI API calls. Now backed by unifiedAI.ts.
- * OpenAI is primary; Lovable AI Gateway is the fallback on 429/402/5xx.
+ * Lovable AI only. OpenAI is never called.
  */
 
 import { callUnifiedAI, callUnifiedAIJSON, UnifiedMessage } from "./unifiedAI.ts";
@@ -87,15 +87,15 @@ export async function chatCompletion(options: AIRequestOptions): Promise<AIRespo
  * for streaming is not yet implemented in the unified provider.
  */
 export async function streamChatCompletion(options: AIRequestOptions): Promise<Response> {
-  const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key && !Deno.env.get("LOVABLE_API_KEY")) throw new Error("AI is not configured");
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) throw new Error("AI is not configured");
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${key}`,
+      "Lovable-API-Key": key,
       "Content-Type": "application/json" },
-    body: JSON.stringify({ model: options.model || AI_CONFIG.defaultModel,
+    body: JSON.stringify({ model: "google/gemini-3.6-flash",
       messages: options.messages,
       stream: true }) });
 
@@ -193,16 +193,16 @@ export async function analyzeImage(
   prompt: string
 ): Promise<AIResponse> {
   // Vision is not yet supported in the unified fallback, so we try OpenAI directly.
-  const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key && !Deno.env.get("LOVABLE_API_KEY")) throw new Error("AI is not configured for vision");
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) throw new Error("AI is not configured for vision");
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${key}`,
+      "Lovable-API-Key": key,
       "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "gpt-4o-mini",
+      model: "google/gemini-3.6-flash",
       messages: [
         {
           role: "user",

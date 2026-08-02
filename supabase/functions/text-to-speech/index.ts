@@ -48,7 +48,7 @@ serve(async (req) => {
     const rawText = typeof body?.text === "string" ? body.text.trim() : "";
     if (!rawText) return json({ error: "Text required" }, 400);
 
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
     const lovableKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiKey && !lovableKey) return json({ error: "No AI provider configured" }, 500);
 

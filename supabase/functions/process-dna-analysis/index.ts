@@ -23,7 +23,7 @@ serve(async (req) => {
     if (!user) throw new Error("User not authenticated");
 
     const { sampleId } = await req.json();
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
 
     // Use OpenAI to generate personalized DNA analysis
     let analysis: any;

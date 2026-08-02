@@ -58,8 +58,8 @@ serve(async (req) => {
       documentary: "You are a calm, insightful documentary narrator analyzing a fascinating intellectual contest between two minds.",
       comedy: "You are a witty comedy commentator providing hilarious observations about the brain duel. Add funny remarks and unexpected metaphors." };
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     const prompt = `Here is a Brain Duel match to commentate:
 
@@ -78,7 +78,7 @@ Generate an engaging ${commentaryStyle}-style commentary of this match (200-400 
     const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",

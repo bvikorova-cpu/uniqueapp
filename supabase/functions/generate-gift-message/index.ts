@@ -70,8 +70,8 @@ serve(async (req) => {
 
     // ─── STORY VIDEO PIPELINE (multi-scene story + illustrations + TTS) ───
     if (reqBody.type === "story_video" || reqBody.type === "generate_story_video") {
-      const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-      if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
       const sb = createClient(
         Deno.env.get("SUPABASE_URL") ?? "",
@@ -126,7 +126,7 @@ serve(async (req) => {
       // 1) Scenes
       const scRes = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
-        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "gpt-4o-mini",
           messages: [
@@ -164,7 +164,7 @@ serve(async (req) => {
           try {
             const r = await fetch("https://api.openai.com/v1/images/generations", {
               method: "POST",
-              headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+              headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
               body: JSON.stringify(body) });
             if (!r.ok) { console.error("img fail", (body as any).model, r.status, await r.text()); continue; }
             const j = await r.json();
@@ -184,7 +184,7 @@ serve(async (req) => {
         try {
           const r = await fetch("https://api.openai.com/v1/audio/speech", {
             method: "POST",
-            headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+            headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
             body: JSON.stringify({ model: "tts-1", voice: "nova", input: scene.slice(0, 4000), response_format: "mp3", speed: 0.85 }) });
           if (!r.ok) { console.error("tts fail", r.status, await r.text()); return ""; }
           return `data:audio/mp3;base64,${arrayBufferToBase64(await r.arrayBuffer())}`;
@@ -244,7 +244,7 @@ serve(async (req) => {
     const recipientName = reqBody.recipientName;
     const type = __type;
     const customPrompt = reqBody.customPrompt || reqBody.prompt || reqBody.input || reqBody.message || reqBody.query;
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     // Auth (credit check already performed above via requireAiCredits)
@@ -597,7 +597,7 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
       generate_image:     "High-quality photorealistic image as described." };
 
     if (IMAGE_TYPES[type]) {
-      if (!LOVABLE_API_KEY && !OPENAI_API_KEY) {
+      if (!LOVABLE_API_KEY && !LOVABLE_API_KEY) {
         return new Response(JSON.stringify({ error: "Image generation is temporarily unavailable." }), {
           status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
@@ -634,7 +634,7 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
         method: "POST",
         headers: useGateway
           ? { "Lovable-API-Key": LOVABLE_API_KEY as string, "Content-Type": "application/json" }
-          : { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          : { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify(useGateway ? gatewayBody : {
           model: "gpt-image-1",
           prompt: imgPrompt,

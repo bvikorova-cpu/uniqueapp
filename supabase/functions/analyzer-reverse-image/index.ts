@@ -12,7 +12,7 @@ serve(async (req) => {
     const { imageUrl } = await req.json();
     if (!imageUrl) return json({ error: "Missing imageUrl" }, 400);
 
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
     let description = "";
     let keywords: string[] = [];
 

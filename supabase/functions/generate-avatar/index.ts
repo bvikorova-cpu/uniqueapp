@@ -28,10 +28,10 @@ serve(async (req) => {
     if (rateLimitResponse) return rateLimitResponse;
 
     const { description, style } = await req.json();
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY is not configured");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     const styleKey = (style || "realistic").toLowerCase();
@@ -44,7 +44,7 @@ serve(async (req) => {
     const response = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json" },
       body: JSON.stringify({ model: "gpt-image-1",
         prompt: prompt,

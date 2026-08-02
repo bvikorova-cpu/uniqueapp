@@ -15,10 +15,10 @@ serve(async (req) => {
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
     const { characterName, hairColor, eyeColor, costumeColor, superpower, ageGroup, personality, gender, skinColor, characterType } = await req.json();
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is not configured');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is not configured');
     }
 
     // Build a detailed prompt from all attributes
@@ -49,7 +49,7 @@ CRITICAL: Pay very close attention to the eye color (${eyeColor || "blue"}), cos
     const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json' },
       body: JSON.stringify({ model: "gpt-image-1", prompt: prompt, n: 1, size: "1024x1024" }) });
 

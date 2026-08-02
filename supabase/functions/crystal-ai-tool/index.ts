@@ -6,7 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
 const toolPrompts: Record<string, string> = { scanner: "You are a crystal identification expert. Analyze this crystal photo and identify: crystal name, type, color, estimated value range in EUR, healing properties, chakra association, geological origin, Mohs hardness, and care tips. Format with clear sections.",
   aura: "You are an aura reading expert. Analyze this person's photo and describe: dominant aura colors (with percentages), energy blocks detected, overall aura strength (1-100), emotional state indicators, recommended crystals for aura cleansing, and personalized guidance for energy balance.",
@@ -55,7 +55,7 @@ serve(async (req) => {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json" },
       body: JSON.stringify({ model: "gpt-4o-mini",
         messages,

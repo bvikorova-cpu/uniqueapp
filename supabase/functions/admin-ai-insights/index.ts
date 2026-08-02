@@ -70,8 +70,8 @@ Deno.serve(async (req) => {
     const monthlyRevenue = num(statsPayload["monthlyRevenue"]);
     const masterchefEarnings = num(statsPayload["masterchefEarnings"]);
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not set");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not set");
 
     const prompt = `Analyze this platform data and produce 4 sharp, actionable executive insights. Be specific, mention numbers, suggest concrete actions.
 
@@ -87,7 +87,7 @@ Return JSON only.`;
     const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",

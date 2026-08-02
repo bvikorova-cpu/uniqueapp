@@ -11,7 +11,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 const COST = 4;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 
 const STYLE_HINTS: Record<string, string> = { watercolor: "soft watercolor painting, gentle pastel colors, paper texture",
   cartoon: "bright cheerful cartoon style, bold clean outlines, vivid saturated colors",
@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
       const stepCount = difficulty === "hard" ? 6 : difficulty === "medium" ? 5 : 4;
       const tRes = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
-        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "gpt-4o-mini",
           response_format: { type: "json_object" },
@@ -162,7 +162,7 @@ Kid-friendly (ages 4-12), no text or letters, no scary or violent content, frien
 
     const aiResp = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}` },
       body: form });
 
     if (aiResp.status === 429) return json({ error: "Rate limited, try again shortly" }, 429);

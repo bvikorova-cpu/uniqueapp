@@ -70,9 +70,9 @@ Deno.serve(async (req) => {
     }
 
 
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) {
-      console.error("OPENAI_API_KEY not configured");
+      console.error("LOVABLE_API_KEY not configured");
       return new Response(
         JSON.stringify({ error: "TTS service not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },

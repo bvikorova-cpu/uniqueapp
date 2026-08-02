@@ -11,8 +11,8 @@ serve(async (req) => {
     const body = await req.json();
     const { action, ...params } = body;
     
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
     const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
     const OPENAI_MODEL = "gpt-4o-mini";
 
@@ -57,7 +57,7 @@ serve(async (req) => {
         
         const response = await fetch(OPENAI_URL, {
           method: "POST",
-          headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({ model: OPENAI_MODEL, messages: [{ role: "system", content: systemPrompt }, ...messages] }) });
         if (!response.ok) {
           const status = response.status;
@@ -172,7 +172,7 @@ serve(async (req) => {
 
     const response = await fetch(OPENAI_URL, {
       method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify(fetchBody) });
 
     if (!response.ok) {

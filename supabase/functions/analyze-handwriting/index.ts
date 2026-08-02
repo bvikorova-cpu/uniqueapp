@@ -67,9 +67,9 @@ serve(async (req) => {
     console.log("[HANDWRITING] Credits available:", creditsData.credits_remaining);
 
     // Perform AI analysis using OpenAI
-    const openaiApiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiApiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiApiKey) {
-      throw new Error("OPENAI_API_KEY not configured");
+      throw new Error("LOVABLE_API_KEY not configured");
     }
 
     const systemPrompt = getSystemPrompt(analysisType);

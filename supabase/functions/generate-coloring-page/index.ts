@@ -111,9 +111,9 @@ serve(async (req) => {
     const isUltraHD = creditsData.tier === 'premium';
     const resolution = isUltraHD ? 2048 : 1024;
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) {
-      console.error("OPENAI_API_KEY not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      console.error("LOVABLE_API_KEY not configured");
       return new Response(
         JSON.stringify({ error: "AI service not configured. Please contact support." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
@@ -148,13 +148,13 @@ serve(async (req) => {
 
       aiResponse = await fetch("https://api.openai.com/v1/images/edits", {
         method: "POST",
-        headers: { "Authorization": `Bearer ${OPENAI_API_KEY}` },
+        headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}` },
         body: formData });
     } else {
       aiResponse = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
           "Content-Type": "application/json" },
         body: JSON.stringify({
           model: 'gpt-image-1',

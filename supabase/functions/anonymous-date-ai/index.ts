@@ -91,8 +91,8 @@ const SYSTEM_PROMPTS: Record<Feature, string> = {
     "You are a compassionate coach for anonymous-match breakups. Output JSON: { stage: 'shock'|'grief'|'reflection'|'rebuild'|'growth', recovery_score: 0-100, daily_plan: [array of 7 short daily actions], affirmation: 1 sentence }." };
 
 async function callAI(system: string, userMsg: string, jsonMode = false): Promise<string> {
-  const apiKey = Deno.env.get("OPENAI_API_KEY");
-  if (!apiKey) throw new Error("OPENAI_API_KEY not configured");
+  const apiKey = Deno.env.get("LOVABLE_API_KEY");
+  if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
 
   const body: any = {
     model: "gpt-4o-mini",

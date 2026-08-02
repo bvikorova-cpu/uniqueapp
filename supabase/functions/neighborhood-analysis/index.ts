@@ -11,7 +11,7 @@ serve(async (req) => {
     const { address } = await req.json();
     if (!address) throw new Error("Address required");
 
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiKey) throw new Error("OpenAI API key not configured");
 
     const res = await fetch("https://api.openai.com/v1/chat/completions", {

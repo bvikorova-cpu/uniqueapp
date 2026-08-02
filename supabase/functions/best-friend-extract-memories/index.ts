@@ -14,7 +14,7 @@ serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return j({ error: "Unauthorized" }, 401);
-    const OPENAI = Deno.env.get("OPENAI_API_KEY");
+    const OPENAI = Deno.env.get("LOVABLE_API_KEY");
     if (!OPENAI) return j({ error: "no key" }, 500);
 
     const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!,

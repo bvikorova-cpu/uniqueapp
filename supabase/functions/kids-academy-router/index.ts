@@ -35,12 +35,12 @@ function rateLimit(key: string, max: number, windowMs: number): boolean {
   return true;
 }
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY") ?? "";
 
 async function callAI(messages: any[], json = true): Promise<any> {
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "gpt-4o-mini",
       messages,

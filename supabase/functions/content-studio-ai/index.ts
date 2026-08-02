@@ -315,7 +315,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
     const { action, templateType, topic, content, context, details, prompt, sourceContent, targetKeyword, count, contentType, platform, postCount, guidelines, systemPrompt, ...params } = await req.json();
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
 
     if (!action || !(action in ACTION_COST)) {
       return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
