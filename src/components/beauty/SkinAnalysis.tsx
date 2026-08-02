@@ -36,11 +36,18 @@ export const SkinAnalysis = ({ onBack }: SkinAnalysisProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
 
-      const { data, error } = await supabase.functions.invoke('beauty-skin-analysis', {
-        body: { skinType, age, concerns, currentRoutine }
+      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: {
+          task: 'beauty_skin',
+          prompt: `Skin type: ${skinType}. Age: ${age || 'unspecified'}. Concerns: ${concerns.length ? concerns.join(', ') : 'none listed'}. Current routine: ${currentRoutine || 'none'}.`,
+          extras: { skinType, age, concerns, currentRoutine }
+        }
       });
       if (error) throw error;
-      setResult(data.recommendations);
+      if (data?.error) throw new Error(data.error);
+      const parsed = data?.recommendations ?? data?.skinData ?? (typeof data?.result === 'string' ? JSON.parse(data.result) : null);
+      if (!parsed) throw new Error('Analysis failed');
+      setResult(parsed);
       refresh();
       toast.success("Skin analysis complete!");
     } catch (error: any) {
