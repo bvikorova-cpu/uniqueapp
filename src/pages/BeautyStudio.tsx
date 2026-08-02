@@ -3,15 +3,12 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Palette, ShoppingBag, BookOpen, Search, Paintbrush, Crown, ImageIcon, ArrowLeft, Flame, Trophy, TrendingUp } from "lucide-react";
+import { Sparkles, Palette, Paintbrush, Crown, ArrowLeft, Flame, Trophy, TrendingUp } from "lucide-react";
 import { VirtualMakeup } from "@/components/beauty/VirtualMakeup";
 import { HairStyleGenerator } from "@/components/beauty/HairStyleGenerator";
-import { ProductRecommender } from "@/components/beauty/ProductRecommender";
-import { MakeupTutorials } from "@/components/beauty/MakeupTutorials";
-import { SkinAnalysis } from "@/components/beauty/SkinAnalysis";
 import { NailArtDesigner } from "@/components/beauty/NailArtDesigner";
 import { CelebrityLookMatch } from "@/components/beauty/CelebrityLookMatch";
-import { BeautyGallery } from "@/components/beauty/BeautyGallery";
+
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import heroVideo from "@/assets/beauty-studio-hero.mp4.asset.json";
@@ -19,33 +16,30 @@ import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const BEAUTY_HOW_IT_WORKS = [
-  { title: "Pick a tool", desc: "Choose from AI Virtual Makeup, Hair Styler, Skin Analysis, Nail Art, Celebrity Match, Product Advisor, Tutorials or the community Gallery." },
+  { title: "Pick a tool", desc: "Choose from AI Virtual Makeup, Hair Styler, Nail Art Designer or Celebrity Match." },
   { title: "Upload your photo", desc: "Most tools ask for a clear selfie or reference photo. Your images stay private to your account." },
-  { title: "Spend credits", desc: "Each tool costs 2–10 credits (shown on the tile). You get 10 free credits monthly; buy more anytime in the Credits Store." },
-  { title: "Save & share", desc: "Save transformations to your gallery, publish before/after to the community, and track your streaks and achievements." },
-  { title: "Learn as you go", desc: "Follow step-by-step Tutorials to master looks, then apply them with Virtual Makeup or Hair Styler." },
+  { title: "Spend credits", desc: "Each tool costs 3–5 credits (shown on the tile). You get 10 free credits monthly; buy more anytime in the Credits Store." },
+  { title: "Save & download", desc: "Download your generated looks to your phone or computer at any time." },
 ];
 
-type ActiveView = "hub" | "makeup" | "hair" | "products" | "tutorials" | "skin-analysis" | "nail-art" | "celebrity-match" | "gallery";
+type ActiveView = "hub" | "makeup" | "hair" | "nail-art" | "celebrity-match";
 
 const BeautyStudio = () => {
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState<ActiveView>("hub");
-  const [stats, setStats] = useState({ transformations: 0, styles: 0, analyses: 0, designs: 0 });
+  const [stats, setStats] = useState({ transformations: 0, styles: 0, designs: 0 });
 
   useEffect(() => {
     const loadStats = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const [t, s, a, n] = await Promise.all([
+      const [t, s, n] = await Promise.all([
         supabase.from("beauty_transformations").select("id", { count: "exact", head: true }).eq("user_id", user.id),
         (supabase as any).from("beauty_celebrity_matches").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        (supabase as any).from("beauty_skin_analyses").select("id", { count: "exact", head: true }).eq("user_id", user.id),
         (supabase as any).from("beauty_nail_designs").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
       setStats({ transformations: t.count || 0,
         styles: s.count || 0,
-        analyses: a.count || 0,
         designs: n.count || 0 });
     };
     loadStats();
@@ -54,29 +48,20 @@ const BeautyStudio = () => {
   const tools = [
     { id: "makeup" as ActiveView, icon: Sparkles, title: "Virtual Makeup", desc: "AI makeup try-on", cost: "3 Credits", color: "text-pink-500" },
     { id: "hair" as ActiveView, icon: Palette, title: "Hair Styler", desc: "Try new hairstyles", cost: "3 Credits", color: "text-purple-500" },
-    { id: "skin-analysis" as ActiveView, icon: Search, title: "Skin Analysis", desc: "AI skincare routine", cost: "3 Credits", color: "text-blue-500" },
     { id: "nail-art" as ActiveView, icon: Paintbrush, title: "Nail Art Designer", desc: "Custom nail designs", cost: "5 Credits", color: "text-rose-500" },
     { id: "celebrity-match" as ActiveView, icon: Crown, title: "Celebrity Match", desc: "Find your twin", cost: "4 Credits", color: "text-yellow-500" },
-    { id: "products" as ActiveView, icon: ShoppingBag, title: "Product Advisor", desc: "Personalized picks", cost: "3 Credits", color: "text-green-500" },
-    { id: "tutorials" as ActiveView, icon: BookOpen, title: "Tutorials", desc: "Step-by-step guides", cost: "2 Credits", color: "text-indigo-500" },
-    { id: "gallery" as ActiveView, icon: ImageIcon, title: "Before/After", desc: "Community gallery", cost: "Free", color: "text-orange-500" },
   ];
 
   const statItems = [
     { label: "Transformations", value: stats.transformations, icon: Sparkles },
     { label: "Matches", value: stats.styles, icon: Crown },
-    { label: "Analyses", value: stats.analyses, icon: Search },
     { label: "Designs", value: stats.designs, icon: Paintbrush },
   ];
 
   if (activeView === "makeup") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><VirtualMakeup /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
   if (activeView === "hair") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><HairStyleGenerator /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
-  if (activeView === "products") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><ProductRecommender /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
-  if (activeView === "tutorials") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><MakeupTutorials /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
-  if (activeView === "skin-analysis") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><SkinAnalysis onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "nail-art") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><NailArtDesigner onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "celebrity-match") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><CelebrityLookMatch onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "gallery") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><BeautyGallery onBack={() => setActiveView("hub")} /></div></div>;
 
   return (
     <>
@@ -152,7 +137,7 @@ const BeautyStudio = () => {
           </Card>
           <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-purple-500/20">
             <TrendingUp className="h-6 w-6 text-primary mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{stats.transformations + stats.analyses}</p>
+            <p className="text-xl sm:text-2xl font-black">{stats.transformations + stats.designs}</p>
             <p className="text-xs text-muted-foreground">Total Uses</p>
           </Card>
           <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-yellow-500/20">
