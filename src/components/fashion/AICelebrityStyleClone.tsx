@@ -49,7 +49,7 @@ export default function AICelebrityStyleClone() {
       if ((credits?.credits_remaining || 0) < CREDIT_COST) throw new Error("Not enough credits");
 
       // Credits are deducted atomically server-side (only on AI success).
-      const { data, error } = await safeInvoke<CloneResult & { parsed?: CloneResult }>("forge-ai-tools", {
+      const { data, error } = await safeInvoke<CloneResult & { parsed?: CloneResult }>("fashion-forge-ai", {
         body: { action: "fashion_celebrity_clone", text: celebrity, extra: { celebrity, budget_level: budget } } });
       if (error) throw new Error(error);
       window.dispatchEvent(new Event("ai-credits-updated"));
