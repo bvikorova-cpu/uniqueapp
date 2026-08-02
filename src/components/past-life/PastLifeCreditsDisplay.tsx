@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,7 @@ import { Dialog,
 export const PastLifeCreditsDisplay = () => {
   const { credits, isLoading, purchaseCredits } = usePastLifeCredits();
   const [showBuyDialog, setShowBuyDialog] = useState(false);
+  const navigate = useNavigate();
   const [isPurchasing, setIsPurchasing] = useState(false);
 
   const handlePurchase = async (amount: number) => {
@@ -62,7 +64,7 @@ export const PastLifeCreditsDisplay = () => {
                 </p>
               </div>
             </div>
-            <Button onClick={() => setShowBuyDialog(true)} className="gap-2 w-full sm:w-auto">
+            <Button onClick={() => navigate("/ai-credits")} className="gap-2 w-full sm:w-auto">
               <Plus className="h-4 w-4" />
               Buy Credits
             </Button>

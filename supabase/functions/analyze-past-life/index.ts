@@ -8,7 +8,9 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
     "authorization, x-client-info, apikey, content-type" };
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-const COST = 1;
+const COSTS: Record<string, number> = { basic: 5, full: 15, soulmate: 20 };
+const costFor = (t: string) => COSTS[t] ?? 15;
+// v2: per-reading-type pricing
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -40,6 +42,7 @@ Deno.serve(async (req) => {
       partnerBirthDate,
       partnerInfo } = body || {};
     if (!birthDate) return json({ error: "birthDate required" }, 400);
+    const COST = costFor(String(readingType));
 
     const admin = createClient(supabaseUrl, serviceKey);
     const balanceInfo = await getUnifiedAiCreditBalance(admin, user.id);
