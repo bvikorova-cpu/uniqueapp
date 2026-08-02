@@ -166,7 +166,8 @@ serve(async (req) => {
     if (!action || typeof action !== "string") return json({ error: "Missing action" }, 400);
     if (!(action in TOOL_COSTS)) return json({ error: `Unknown action: ${action}` }, 400);
 
-    const isBeautyEdit = action === "edit" && (feature === "beauty_makeup" || feature === "beauty_hair");
+    const beautyFeatures = ["beauty_makeup", "beauty_hair", "makeup", "hair"];
+    const isBeautyEdit = action === "edit" && typeof feature === "string" && beautyFeatures.includes(feature);
     const cost = isBeautyEdit ? 5 : (TOOL_COSTS[action] || 0);
 
     let charged = false;
