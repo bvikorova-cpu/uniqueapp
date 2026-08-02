@@ -93,7 +93,7 @@ export const HairStyleGenerator = () => {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
+      const { data, error } = await supabase.functions.invoke('beauty-image-tools', {
         body: {
           action: 'beauty_hair',
           imageUrl: finalImageUrl,
