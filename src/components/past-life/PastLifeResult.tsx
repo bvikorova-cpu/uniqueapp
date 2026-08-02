@@ -18,13 +18,40 @@ interface PastLife {
 
 interface PastLifeResultProps {
   reading: {
-    pastLives: PastLife[];
-    overallKarmicTheme: string;
-    soulmateConnection?: string;
-  };
+    pastLives?: PastLife[] | null;
+    past_lives?: unknown;
+    overallKarmicTheme?: string | null;
+    karmic_lessons?: string | null;
+    soulmateConnection?: string | null;
+    soulmate_analysis?: string | null;
+  } | null;
 }
 
+// Edge functions / DB rows return either camelCase or snake_case shapes.
+const normalizeLife = (raw: Record<string, unknown>): PastLife => ({
+  period: String(raw.period ?? raw.era ?? raw.life_era ?? "Unknown era"),
+  location: String(raw.location ?? raw.life_location ?? "Unknown location"),
+  profession: String(raw.profession ?? raw.role ?? raw.life_role ?? "Unknown"),
+  name: String(raw.name ?? raw.life_name ?? "Unnamed soul"),
+  story: String(raw.story ?? raw.summary ?? ""),
+  karmicLesson: String(raw.karmicLesson ?? raw.karmic_lesson ?? raw.karmic_lessons ?? ""),
+  illustration: (raw.illustration ?? raw.image_url) as string | undefined,
+});
+
 export const PastLifeResult = ({ reading }: PastLifeResultProps) => {
+  if (!reading) return null;
+
+  const rawLives = Array.isArray(reading.pastLives)
+    ? reading.pastLives
+    : Array.isArray(reading.past_lives)
+      ? reading.past_lives
+      : [];
+  const pastLives = (rawLives as Record<string, unknown>[]).map(normalizeLife);
+  const karmicTheme =
+    reading.overallKarmicTheme ?? reading.karmic_lessons ?? "Your karmic theme is still unfolding.";
+  const soulmateConnection = reading.soulmateConnection ?? reading.soulmate_analysis ?? null;
+
+
   return (
     <>
       <FloatingHowItWorks
@@ -49,14 +76,14 @@ export const PastLifeResult = ({ reading }: PastLifeResultProps) => {
               <h3 className="text-lg sm:text-xl font-black">Your Karmic Theme</h3>
             </div>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              {reading.overallKarmicTheme}
+              {karmicTheme}
             </p>
           </div>
         </Card>
       </motion.div>
 
       {/* Soulmate Connection */}
-      {reading.soulmateConnection && (
+      {soulmateConnection && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
             <div className="h-1.5 bg-gradient-to-r from-pink-500 to-rose-500" />
@@ -68,7 +95,7 @@ export const PastLifeResult = ({ reading }: PastLifeResultProps) => {
                 <h3 className="text-lg sm:text-xl font-black">Soul Mate Connection</h3>
               </div>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                {reading.soulmateConnection}
+                {soulmateConnection}
               </p>
             </div>
           </Card>
@@ -77,7 +104,7 @@ export const PastLifeResult = ({ reading }: PastLifeResultProps) => {
 
       {/* Past Lives */}
       <div className="space-y-6">
-        {reading.pastLives.map((life, index) => (
+        {pastLives.map((life, index) => (
           <motion.div
             key={index}
             initial={{ opacity: 0, y: 20 }}
@@ -151,7 +178,7 @@ export const PastLifeResult = ({ reading }: PastLifeResultProps) => {
         <h3 className="text-base sm:text-lg font-bold mb-4 text-center">Share Your Past Life Journey</h3>
         <SocialShareButtons
           title="I Discovered My Past Lives!"
-          description={`I was ${reading.pastLives[0]?.name || "someone fascinating"} in ${reading.pastLives[0]?.period || "a past life"}! My karmic theme: ${reading.overallKarmicTheme.slice(0, 100)}... Discover your own past lives!`}
+          description={`I was ${pastLives[0]?.name || "someone fascinating"} in ${pastLives[0]?.period || "a past life"}! My karmic theme: ${String(karmicTheme).slice(0, 100)}... Discover your own past lives!`}
           hashtags={["PastLife", "Reincarnation", "KarmicJourney", "SpiritualDiscovery"]}
         />
       </Card>
