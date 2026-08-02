@@ -20,10 +20,12 @@ import { PastLifeEraWheel } from "@/components/past-life/PastLifeEraWheel";
 import { PastLifeDailyVision } from "@/components/past-life/PastLifeDailyVision";
 import { PastLifeEraQuiz } from "@/components/past-life/PastLifeEraQuiz";
 import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
+import { usePastLifeStats } from "@/hooks/usePastLifeStats";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "basic" | "full" | "soulmate" | "history" | "credits";
+
 
 const PAST_LIFE_TOOLS = [
   { id: "basic",
@@ -54,6 +56,7 @@ const PastLife = () => {
   const [activeView, setActiveView] = useState<ViewType>("hub");
   const [currentReading, setCurrentReading] = useState<any>(null);
   const { analyzePastLife, isAnalyzing } = usePastLifeCredits();
+  const { recordActivity } = usePastLifeStats();
 
   useEffect(() => {
     const payment = searchParams.get("payment");
@@ -70,11 +73,14 @@ const PastLife = () => {
   const handleAnalysisComplete = (result: any) => {
     setCurrentReading(result.reading);
     toast.success("Your past lives have been revealed!");
+    // Update the real engagement streak/progress/achievements.
+    recordActivity().catch(() => {});
   };
 
   const handleSubmit = (data: any) => {
     analyzePastLife(data, { onSuccess: handleAnalysisComplete });
   };
+
 
   const openTool = (toolId: string) => {
     setActiveView(toolId as ViewType);

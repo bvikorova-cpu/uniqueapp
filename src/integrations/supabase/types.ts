@@ -44617,6 +44617,39 @@ export type Database = {
         }
         Relationships: []
       }
+      past_life_user_stats: {
+        Row: {
+          achievements_unlocked: string[]
+          created_at: string
+          id: string
+          streak_current: number
+          streak_last_date: string | null
+          updated_at: string
+          user_id: string
+          visions_claimed: string[]
+        }
+        Insert: {
+          achievements_unlocked?: string[]
+          created_at?: string
+          id?: string
+          streak_current?: number
+          streak_last_date?: string | null
+          updated_at?: string
+          user_id: string
+          visions_claimed?: string[]
+        }
+        Update: {
+          achievements_unlocked?: string[]
+          created_at?: string
+          id?: string
+          streak_current?: number
+          streak_last_date?: string | null
+          updated_at?: string
+          user_id?: string
+          visions_claimed?: string[]
+        }
+        Relationships: []
+      }
       payment_records: {
         Row: {
           amount_cents: number
