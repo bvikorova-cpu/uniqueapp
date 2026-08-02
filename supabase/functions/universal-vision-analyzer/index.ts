@@ -167,6 +167,14 @@ serve(async (req) => {
       }
       return json({ result, text: result, stagingData: structuredData, task, creditsCharged: cost });
     }
+    if (task === "beauty_skin") {
+      if (!structuredData?.skinAssessment) {
+        log("skin-shape-invalid", { hasData: !!structuredData });
+        return json({ error: "The skin analysis response was invalid. Please try again." }, 502);
+      }
+      return json({ result, text: result, recommendations: structuredData, skinData: structuredData, task, creditsCharged: cost });
+    }
+
 
     return json({ result, text: result, task, creditsCharged: cost });
   } catch (e: any) {
