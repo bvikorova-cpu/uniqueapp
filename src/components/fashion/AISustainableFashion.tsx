@@ -23,12 +23,12 @@ export default function AISustainableFashion() {
     if ((credits?.credits_remaining || 0) < 6) { toast.error("You need 6 credits"); return; }
     setLoading(true);
     try {
-      const { data, error } = await safeInvoke("fashion-ai", {
-        body: { action: "sustainable", wardrobe, budget }
+      const { data, error } = await safeInvoke("forge-ai-tools", {
+        body: { action: "fashion_sustainable", text: wardrobe, extra: { wardrobe, budget } }
       });
       if (error) throw new Error(error);
       if ((data as any)?.error) throw new Error((data as any).error);
-      setResult(data);
+      setResult((data as any)?.parsed ?? data);
       window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Sustainable fashion report ready!");
     } catch (e: any) {

@@ -23,12 +23,12 @@ export default function AIBodyShapeAnalyzer() {
     if ((credits?.credits_remaining || 0) < 8) { toast.error("You need 8 credits"); return; }
     setLoading(true);
     try {
-      const { data, error } = await safeInvoke("fashion-ai", {
-        body: { action: "body-shape", height, bodyShape, styleGoal }
+      const { data, error } = await safeInvoke("forge-ai-tools", {
+        body: { action: "fashion_body_shape", text: bodyShape, extra: { height, bodyShape, styleGoal } }
       });
       if (error) throw new Error(error);
       if ((data as any)?.error) throw new Error((data as any).error);
-      setResult(data);
+      setResult((data as any)?.parsed ?? data);
       window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success("Body shape analysis complete!");
     } catch (e: any) {

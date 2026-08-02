@@ -9,7 +9,13 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
     "authorization, x-client-info, apikey, content-type" };
 
 const CREDIT_COST = 6;
-const COST_OVERRIDES: Record<string, number> = { cowriter: 2 };
+const COST_OVERRIDES: Record<string, number> = {
+  cowriter: 2,
+  fashion_ootd: 5,
+  fashion_celebrity_clone: 15,
+  fashion_body_shape: 8,
+  fashion_sustainable: 6,
+};
 const MODEL = "gpt-4o-mini";
 
 type Action =
@@ -22,7 +28,11 @@ type Action =
   | "plagiarism_check"
   | "translate"
   | "score_content"
-  | "cowriter";
+  | "cowriter"
+  | "fashion_ootd"
+  | "fashion_celebrity_clone"
+  | "fashion_body_shape"
+  | "fashion_sustainable";
 
 const SYSTEM_PROMPTS: Record<Action, string> = {
   brainstorm:
@@ -43,6 +53,14 @@ const SYSTEM_PROMPTS: Record<Action, string> = {
     "You are a literary translator. Translate the text to the target language preserving voice, style and cultural nuance. Return only the translation.",
   cowriter:
     "You are an elite AI Co-Writer. Suggest sentences, polish prose, brainstorm ideas, fix dialogue and break writer's block. Be concise, concrete and stay in the user's voice. Use markdown when helpful.",
+  fashion_ootd:
+    "You are an elite fashion critic. Return only valid JSON with overall_score, style_score, color_harmony_score, occasion_appropriateness_score, trend_relevance_score (all 1-100), strengths (array), improvements (array), styling_tips (array), style_tags (array), celebrity_match, and confidence_boost.",
+  fashion_celebrity_clone:
+    "You are a celebrity fashion analyst. Return only valid JSON with celebrity, look_description, style_era, difficulty_to_recreate, items (array containing original_item, brand, estimated_price, budget_alternative, budget_brand, budget_price, match_accuracy), total_original_cost, total_budget_cost, savings_percentage, styling_notes (array), and where_to_shop (array). Use EUR exclusively.",
+  fashion_body_shape:
+    "You are a body-positive fashion stylist. Return only valid JSON with shapeAnalysis, bestStyles, avoidStyles, and shoppingGuide. Never shame the user or make medical claims.",
+  fashion_sustainable:
+    "You are a sustainable fashion expert. Return only valid JSON with sustainabilityScore, swapSuggestions, ecoAlternatives, and actionPlan.",
   score_content:
     "You are a literary critic. Score the text on quality, readability, emotional resonance and structure. Return JSON: {\"overall\":0-100,\"breakdown\":{\"quality\":0-100,\"readability\":0-100,\"emotion\":0-100,\"structure\":0-100},\"suggestions\":[\"...\"]}" };
 
@@ -86,6 +104,14 @@ serve(async (req) => {
       userPrompt = `Target language: ${extra.language ?? "Spanish"}\n\nText:\n${text}`;
     } else if (action === "seo_optimize") {
       userPrompt = `Target keywords: ${(extra.keywords ?? []).join(", ")}\n\nText:\n${text}`;
+    } else if (action === "fashion_ootd") {
+      userPrompt = `Outfit: ${extra.outfitDescription ?? text}\nOccasion: ${extra.occasion ?? "Casual"}\nSeason: ${extra.season ?? "All-season"}`;
+    } else if (action === "fashion_celebrity_clone") {
+      userPrompt = `Celebrity: ${extra.celebrity ?? text}\nBudget level: ${extra.budget_level ?? "medium"}`;
+    } else if (action === "fashion_body_shape") {
+      userPrompt = `Height: ${extra.height ?? "not specified"} cm\nBody shape: ${extra.bodyShape ?? "not sure"}\nStyle goal: ${extra.styleGoal ?? "balanced"}`;
+    } else if (action === "fashion_sustainable") {
+      userPrompt = `Current wardrobe: ${extra.wardrobe ?? text}\nBudget preference: ${extra.budget ?? "moderate"}`;
     } else {
       userPrompt = text;
     }
@@ -120,7 +146,16 @@ serve(async (req) => {
 
     // Try parse JSON for structured actions
     let parsed: any = null;
-    if (["seo_optimize", "plagiarism_check", "score_content"].includes(action)) {
+    const structuredActions = [
+      "seo_optimize",
+      "plagiarism_check",
+      "score_content",
+      "fashion_ootd",
+      "fashion_celebrity_clone",
+      "fashion_body_shape",
+      "fashion_sustainable",
+    ];
+    if (structuredActions.includes(action)) {
       try {
         const match = content.match(/\{[\s\S]*\}$/m) || content.match(/\{[\s\S]*\}/);
         parsed = match ? JSON.parse(match[0]) : null;
@@ -148,6 +183,7 @@ serve(async (req) => {
       JSON.stringify({ action,
         content,
         parsed,
+        ...(parsed && action.startsWith("fashion_") ? parsed : {}),
         creditsUsed: cost,
         creditsRemaining: spendResult.total,
         freeCreditsRemaining: spendResult.free,
