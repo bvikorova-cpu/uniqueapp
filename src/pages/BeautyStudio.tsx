@@ -1,16 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Palette, Paintbrush, Crown, ArrowLeft, Flame, Trophy, TrendingUp } from "lucide-react";
+import { Sparkles, Palette, Paintbrush, Crown, ArrowLeft } from "lucide-react";
 import { VirtualMakeup } from "@/components/beauty/VirtualMakeup";
 import { HairStyleGenerator } from "@/components/beauty/HairStyleGenerator";
 import { NailArtDesigner } from "@/components/beauty/NailArtDesigner";
 import { CelebrityLookMatch } from "@/components/beauty/CelebrityLookMatch";
 
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import heroVideo from "@/assets/beauty-studio-hero.mp4.asset.json";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -27,35 +26,12 @@ type ActiveView = "hub" | "makeup" | "hair" | "nail-art" | "celebrity-match";
 const BeautyStudio = () => {
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState<ActiveView>("hub");
-  const [stats, setStats] = useState({ transformations: 0, styles: 0, designs: 0 });
-
-  useEffect(() => {
-    const loadStats = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const [t, s, n] = await Promise.all([
-        supabase.from("beauty_transformations").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        (supabase as any).from("beauty_celebrity_matches").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        (supabase as any).from("beauty_nail_designs").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-      ]);
-      setStats({ transformations: t.count || 0,
-        styles: s.count || 0,
-        designs: n.count || 0 });
-    };
-    loadStats();
-  }, []);
 
   const tools = [
     { id: "makeup" as ActiveView, icon: Sparkles, title: "Virtual Makeup", desc: "AI makeup try-on", cost: "3 Credits", color: "text-pink-500" },
     { id: "hair" as ActiveView, icon: Palette, title: "Hair Styler", desc: "Try new hairstyles", cost: "3 Credits", color: "text-purple-500" },
     { id: "nail-art" as ActiveView, icon: Paintbrush, title: "Nail Art Designer", desc: "Custom nail designs", cost: "5 Credits", color: "text-rose-500" },
     { id: "celebrity-match" as ActiveView, icon: Crown, title: "Celebrity Match", desc: "Find your twin", cost: "4 Credits", color: "text-yellow-500" },
-  ];
-
-  const statItems = [
-    { label: "Transformations", value: stats.transformations, icon: Sparkles },
-    { label: "Matches", value: stats.styles, icon: Crown },
-    { label: "Designs", value: stats.designs, icon: Paintbrush },
   ];
 
   if (activeView === "makeup") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><VirtualMakeup /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
@@ -109,44 +85,10 @@ const BeautyStudio = () => {
             </p>
           </motion.div>
 
-          {/* Stats Overlay */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, type: "spring" }}
-            className="grid grid-cols-4 gap-2 sm:gap-4 mt-4 max-w-2xl"
-          >
-            {statItems.map((s, i) => (
-              <motion.div key={i} initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
-                className="bg-black/40 backdrop-blur-xl rounded-xl p-2 sm:p-3 border border-white/10 text-center">
-                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 mx-auto mb-1" />
-                <p className="text-lg sm:text-2xl font-black text-white">{s.value}</p>
-                <p className="text-[10px] sm:text-xs text-white/60">{s.label}</p>
-              </motion.div>
-            ))}
-          </motion.div>
         </div>
       </div>
 
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10">
-        {/* Engagement Row */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-          className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-pink-500/20">
-            <Flame className="h-6 w-6 text-orange-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">7</p>
-            <p className="text-xs text-muted-foreground">Day Streak</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-purple-500/20">
-            <TrendingUp className="h-6 w-6 text-primary mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{stats.transformations + stats.designs}</p>
-            <p className="text-xs text-muted-foreground">Total Uses</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-yellow-500/20">
-            <Trophy className="h-6 w-6 text-yellow-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">3</p>
-            <p className="text-xs text-muted-foreground">Achievements</p>
-          </Card>
-        </motion.div>
-
         {/* Tools Grid */}
         <h2 className="text-2xl sm:text-3xl font-black mb-4"
           style={{ 
