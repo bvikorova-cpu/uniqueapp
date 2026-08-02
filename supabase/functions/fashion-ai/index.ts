@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { getUnifiedAiCreditBalance, isInsufficientCreditsError, spendUnifiedAiCredits } from "../_shared/creativeAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -120,14 +121,9 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } },
     );
-    const { data: creditsRow } = await adminClient
-      .from("ai_credits")
-      .select("credits_remaining")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    const remaining = creditsRow?.credits_remaining ?? 0;
-    if (remaining < cost) {
-      return jsonResponse({ error: "Insufficient credits", required: cost, remaining }, 402);
+    const balance = await getUnifiedAiCreditBalance(adminClient, user.id);
+    if (balance.total < cost) {
+      return jsonResponse({ error: "INSUFFICIENT_CREDITS", required: cost, available: balance.total }, 402);
     }
 
     // ── 4. AI call ─────────────────────────────────────────
@@ -351,24 +347,19 @@ Deno.serve(async (req) => {
     }
 
     // ── 5. Atomic credit deduction (race-safe, only on AI success) ──
-    const { data: newRemaining, error: dedErr } = await adminClient.rpc(
-      "deduct_ai_credits_atomic",
-      { _user_id: user.id, _amount: cost },
-    );
-    if (dedErr) {
-      if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
-        return jsonResponse({ error: "Insufficient credits", required: cost }, 402);
-      }
-      throw dedErr;
-    }
-    await adminClient.from("ai_credits")
-      .update({ last_used_at: new Date().toISOString() })
-      .eq("user_id", user.id);
-
-    return jsonResponse({ ...result, credits_remaining: newRemaining });
+    const spend = await spendUnifiedAiCredits(adminClient, user.id, cost, `fashion_${action}`, "fashion-ai");
+    return jsonResponse({
+      ...result,
+      credits_remaining: spend.total,
+      free_credits_remaining: spend.free,
+      paid_credits_remaining: spend.paid,
+    });
 
 
   } catch (e: any) {
+    if (isInsufficientCreditsError(e)) {
+      return jsonResponse({ error: "INSUFFICIENT_CREDITS" }, 402);
+    }
     const status = typeof e?.status === "number" ? e.status : 500;
     return jsonResponse({ error: e?.message || "Internal error" }, status);
   }
