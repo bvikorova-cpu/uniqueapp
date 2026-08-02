@@ -20,10 +20,12 @@ import { PastLifeEraWheel } from "@/components/past-life/PastLifeEraWheel";
 import { PastLifeDailyVision } from "@/components/past-life/PastLifeDailyVision";
 import { PastLifeEraQuiz } from "@/components/past-life/PastLifeEraQuiz";
 import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
+import { usePastLifeStats } from "@/hooks/usePastLifeStats";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "basic" | "full" | "soulmate" | "history" | "credits";
+
 
 const PAST_LIFE_TOOLS = [
   { id: "basic",
