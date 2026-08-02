@@ -101,7 +101,7 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
             <Crown className="h-6 w-6 text-yellow-500" />
             Celebrity Look Match
           </h2>
-          <p className="text-muted-foreground mb-6">Find your celebrity twin & recreate their signature look • 10 Credits</p>
+          <p className="text-muted-foreground mb-6">Find your celebrity twin & recreate their signature look • 4 Credits</p>
 
           <div className="space-y-4">
             <div>
@@ -151,7 +151,7 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
             </div>
 
             <Button onClick={handleMatch} disabled={loading || uploading || (credits?.credits_remaining ?? 0) < 10} className="w-full">
-              {uploading ? "Uploading..." : loading ? "Finding match..." : "Find My Celebrity Twin (10 Credits)"}
+              {uploading ? "Uploading..." : loading ? "Finding match..." : "Find My Celebrity Twin (4 Credits)"}
             </Button>
             {credits && <p className="text-sm text-muted-foreground">Credits: {credits.credits_remaining}</p>}
           </div>
