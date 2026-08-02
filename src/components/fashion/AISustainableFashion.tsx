@@ -23,7 +23,7 @@ export default function AISustainableFashion() {
     if ((credits?.credits_remaining || 0) < 6) { toast.error("You need 6 credits"); return; }
     setLoading(true);
     try {
-      const { data, error } = await safeInvoke("fashion-stylist-ai", {
+      const { data, error } = await safeInvoke("fashion-ai", {
         body: { action: "sustainable", wardrobe, budget }
       });
       if (error) throw new Error(error);

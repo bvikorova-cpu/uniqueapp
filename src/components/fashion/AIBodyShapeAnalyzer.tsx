@@ -23,7 +23,7 @@ export default function AIBodyShapeAnalyzer() {
     if ((credits?.credits_remaining || 0) < 8) { toast.error("You need 8 credits"); return; }
     setLoading(true);
     try {
-      const { data, error } = await safeInvoke("fashion-stylist-ai", {
+      const { data, error } = await safeInvoke("fashion-ai", {
         body: { action: "body-shape", height, bodyShape, styleGoal }
       });
       if (error) throw new Error(error);
