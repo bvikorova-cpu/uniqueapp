@@ -211,7 +211,7 @@ export default function GoogleTranslateWidget({ docked = false }: GoogleTranslat
     />
   );
 
-  if (isMobileViewport) return null;
+  // Translate button stays available on mobile too (user request)
 
   if (docked) {
     return (
