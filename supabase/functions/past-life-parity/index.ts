@@ -66,7 +66,7 @@ serve(async (req) => {
     const table = ACTION_TABLE[action];
     const systemPrompt = SYSTEM_PROMPTS[action];
     if (!table || !systemPrompt) return json({ error: "Unknown action" }, 400);
-    if (!openaiKey) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+    if (!openaiKey && !Deno.env.get("LOVABLE_API_KEY")) return json({ error: "No AI provider configured" }, 500);
 
     const admin = createClient(supabaseUrl, serviceKey);
 
