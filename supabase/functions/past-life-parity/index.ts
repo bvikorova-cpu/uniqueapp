@@ -1,4 +1,4 @@
-// Past Life Explorer parity pack router.
+// Past Life Explorer parity pack router. build: gateway-only v3
 // 8 actions, fixed cost 6 credits each, deducted from past_life_credits.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
