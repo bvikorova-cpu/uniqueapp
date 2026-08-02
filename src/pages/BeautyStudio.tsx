@@ -85,44 +85,10 @@ const BeautyStudio = () => {
             </p>
           </motion.div>
 
-          {/* Stats Overlay */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, type: "spring" }}
-            className="grid grid-cols-4 gap-2 sm:gap-4 mt-4 max-w-2xl"
-          >
-            {statItems.map((s, i) => (
-              <motion.div key={i} initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
-                className="bg-black/40 backdrop-blur-xl rounded-xl p-2 sm:p-3 border border-white/10 text-center">
-                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 mx-auto mb-1" />
-                <p className="text-lg sm:text-2xl font-black text-white">{s.value}</p>
-                <p className="text-[10px] sm:text-xs text-white/60">{s.label}</p>
-              </motion.div>
-            ))}
-          </motion.div>
         </div>
       </div>
 
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10">
-        {/* Engagement Row */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-          className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-pink-500/20">
-            <Flame className="h-6 w-6 text-orange-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">7</p>
-            <p className="text-xs text-muted-foreground">Day Streak</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-purple-500/20">
-            <TrendingUp className="h-6 w-6 text-primary mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{stats.transformations + stats.designs}</p>
-            <p className="text-xs text-muted-foreground">Total Uses</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-yellow-500/20">
-            <Trophy className="h-6 w-6 text-yellow-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">3</p>
-            <p className="text-xs text-muted-foreground">Achievements</p>
-          </Card>
-        </motion.div>
-
         {/* Tools Grid */}
         <h2 className="text-2xl sm:text-3xl font-black mb-4"
           style={{ 
