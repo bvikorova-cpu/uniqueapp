@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Leaf, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -22,10 +23,10 @@ export default function AISustainableFashion() {
     if ((credits?.credits_remaining || 0) < 6) { toast.error("You need 6 credits"); return; }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+      const { data, error } = await safeInvoke("fashion-ai", {
         body: { action: "sustainable", wardrobe, budget }
       });
-      if (error) throw new Error((error as any)?.message || "Request failed");
+      if (error) throw new Error(error);
       if ((data as any)?.error) throw new Error((data as any).error);
       setResult(data);
       window.dispatchEvent(new Event("ai-credits-updated"));

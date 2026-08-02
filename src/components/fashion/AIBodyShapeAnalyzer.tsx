@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Target, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -22,10 +23,10 @@ export default function AIBodyShapeAnalyzer() {
     if ((credits?.credits_remaining || 0) < 8) { toast.error("You need 8 credits"); return; }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+      const { data, error } = await safeInvoke("fashion-ai", {
         body: { action: "body-shape", height, bodyShape, styleGoal }
       });
-      if (error) throw new Error((error as any)?.message || "Request failed");
+      if (error) throw new Error(error);
       if ((data as any)?.error) throw new Error((data as any).error);
       setResult(data);
       window.dispatchEvent(new Event("ai-credits-updated"));
