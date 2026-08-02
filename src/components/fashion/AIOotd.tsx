@@ -20,7 +20,7 @@ export default function AIOotd() {
   const [occasion, setOccasion] = useState("");
   const [season, setSeason] = useState("");
   const [result, setResult] = useState<any>(null);
-  const { credits, spendCredit } = useAICredits();
+  const { credits } = useAICredits();
 
   const { data: history } = useQuery({
     queryKey: ["ootd-history"],

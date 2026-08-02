@@ -39,7 +39,7 @@ interface CloneResult {
 }
 
 export default function AICelebrityStyleClone() {
-  const { credits, spendCredit } = useAICredits();
+  const { credits } = useAICredits();
   const [celebrity, setCelebrity] = useState("");
   const [budget, setBudget] = useState("medium");
   const [result, setResult] = useState<CloneResult | null>(null);
