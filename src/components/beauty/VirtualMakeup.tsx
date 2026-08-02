@@ -94,11 +94,11 @@ export const VirtualMakeup = () => {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('beauty-image-tools', {
+      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
         body: {
-          action: 'beauty_makeup',
+          action: 'edit',
           imageUrl: finalImageUrl,
-          style: makeupStyle
+          editPrompt: `Apply a polished ${makeupStyle} makeup look to the person. Preserve their exact identity, facial features, hairstyle, clothing, pose, lighting, background and image composition. Make the makeup photorealistic and professionally blended.`
         }
       });
 
