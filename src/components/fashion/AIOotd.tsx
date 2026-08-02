@@ -41,11 +41,11 @@ export default function AIOotd() {
       if ((credits?.credits_remaining || 0) < CREDIT_COST) throw new Error("Insufficient credits");
 
       // Credits are deducted atomically server-side (only on AI success).
-      const { data, error } = await safeInvoke<any>("forge-ai-tools", {
-        body: { action: "fashion_ootd", text: description, extra: { outfitDescription: description, occasion, season } } });
+      const { data, error } = await safeInvoke<any>("fashion-ai", {
+        body: { action: "ootd-score", outfitDescription: description, occasion, season } });
       if (error) throw new Error(error);
 
-      const score = data?.parsed ?? data;
+      const score = data;
 
       await supabase.from("fashion_ootd").insert({ user_id: session.user.id,
         outfit_description: description,
