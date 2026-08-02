@@ -49,7 +49,8 @@ export default function AICelebrityStyleClone() {
 
       // Credits are deducted atomically server-side (only on AI success).
       const { data, error } = await safeInvoke<CloneResult>("fashion-ai", {
-        body: { action: "celebrity-clone", celebrity, budget_level: budget } });
+        body: { action: "celebrity-clone", celebrity, budget_level: budget },
+      });
       if (error) throw new Error(error);
       window.dispatchEvent(new Event("ai-credits-updated"));
       return data as CloneResult;
