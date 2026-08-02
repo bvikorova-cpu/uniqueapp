@@ -263,10 +263,11 @@ export default function FashionGenerator() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="basic">Basic (50 credits)</SelectItem>
-                <SelectItem value="detailed">Detailed (100 credits)</SelectItem>
-                <SelectItem value="premium">Premium (200 credits)</SelectItem>
-                <SelectItem value="collection">Collection (400 credits)</SelectItem>
+                <SelectItem value="basic">Basic (5 credits)</SelectItem>
+                <SelectItem value="detailed">Detailed (5 credits)</SelectItem>
+                <SelectItem value="premium">Premium (5 credits)</SelectItem>
+                <SelectItem value="collection">Collection (5 credits)</SelectItem>
+
               </SelectContent>
             </Select>
           </div>
