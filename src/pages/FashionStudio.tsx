@@ -85,26 +85,6 @@ export default function FashionStudio() {
               Design, compete & shop — powered by AI fashion intelligence
             </p>
 
-             {/* Stats Row */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-2xl">
-              {[
-                { label: "AI Credits", value: creditsLoading ? "..." : credits?.credits_remaining || 0, icon: Zap },
-                { label: "Tools", value: "1", icon: Shirt },
-                { label: "Buy Credits", value: "Get More", icon: Gem, action: () => navigate('/ai-credits-store') },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  onClick={stat.action}
-                  className={`bg-black/30 backdrop-blur-xl rounded-lg p-2 sm:p-3 border border-white/10 ${stat.action ? 'cursor-pointer hover:bg-black/40' : ''}`}
-                >
-                  <div className="flex items-center gap-1.5">
-                    <stat.icon className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-                    <span className="text-xs text-white/60 truncate">{stat.label}</span>
-                  </div>
-                  <p className="text-lg sm:text-xl font-black text-white">{stat.value ?? "—"}</p>
-                </div>
-              ))}
-            </div>
           </motion.div>
         </div>
       </div>
