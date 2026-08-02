@@ -345,6 +345,9 @@ verify_jwt = false
 [functions.fashion-ai]
 verify_jwt = false
 
+[functions.fashion-forge-ai]
+verify_jwt = false
+
 [functions.comedy-battle-vote]
 verify_jwt = false
 
