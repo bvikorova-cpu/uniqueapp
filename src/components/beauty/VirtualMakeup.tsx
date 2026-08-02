@@ -211,6 +211,18 @@ export const VirtualMakeup = () => {
             alt="Makeup transformation" 
             className="w-full rounded-lg"
           />
+          <Button
+            variant="secondary"
+            className="w-full mt-4"
+            onClick={async () => {
+              const outcome = await downloadImage(result, `makeup-${makeupStyle}-${Date.now()}.png`);
+              if (outcome === "downloaded") toast.success("Image downloaded");
+              if (outcome === "shared") toast.success("Image saved");
+              if (outcome === "opened") toast.info("Image opened — long press or right click to save");
+            }}
+          >
+            <Download className="h-4 w-4 mr-2" /> Download image
+          </Button>
         </Card>
       )}
     </div>
