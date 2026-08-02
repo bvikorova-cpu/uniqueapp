@@ -1,6 +1,7 @@
 import "../_shared/aiRedirect.ts";
 // Past-life analysis: deducts 1 past_life_credit, calls OpenAI, inserts past_life_readings.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { getUnifiedAiCreditBalance, spendUnifiedAiCredits, isInsufficientCreditsError } from "../_shared/creativeAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -41,12 +42,8 @@ Deno.serve(async (req) => {
     if (!birthDate) return json({ error: "birthDate required" }, 400);
 
     const admin = createClient(supabaseUrl, serviceKey);
-    const { data: credits } = await admin
-      .from("past_life_credits")
-      .select("credits_remaining")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    const balance = credits?.credits_remaining ?? 0;
+    const balanceInfo = await getUnifiedAiCreditBalance(admin, user.id);
+    const balance = balanceInfo.total;
     if (balance < COST) {
       return json({ requiresPayment: true, error: "Insufficient credits", needed: COST, balance }, 402);
     }
@@ -86,11 +83,15 @@ Partner info: ${partnerInfo || "(none)"}`;
     let parsed: any = {};
     try { parsed = JSON.parse(content); } catch { parsed = {}; }
 
-    // Deduct credit
-    await admin
-      .from("past_life_credits")
-      .update({ credits_remaining: balance - COST, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    // Deduct credits from the unified AI credit pool (+ ledger entry)
+    try {
+      await spendUnifiedAiCredits(admin, user.id, COST, "past_life_reading", "analyze-past-life");
+    } catch (e) {
+      if (isInsufficientCreditsError(e)) {
+        return json({ requiresPayment: true, error: "Insufficient credits", needed: COST, balance }, 402);
+      }
+      throw e;
+    }
 
     // Insert reading
     const { data: inserted } = await admin
