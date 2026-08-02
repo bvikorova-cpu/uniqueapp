@@ -103,6 +103,27 @@ const hasRoyalLife = (readings: PastLifeReadingRow[]) => {
   );
 };
 
+const coerceReadings = (rows: any[] | null): PastLifeReadingRow[] => {
+  return (rows || []).map((r) => ({
+    id: r.id,
+    reading_type: r.reading_type as PastLifeReadingRow["reading_type"],
+    past_lives: Array.isArray(r.past_lives) ? r.past_lives : [],
+    credits_used: r.credits_used || 0,
+    created_at: r.created_at,
+  }));
+};
+
+const emptyStats = (userId: string): PastLifeStatsRecord => ({
+  id: "",
+  user_id: userId,
+  streak_current: 0,
+  streak_last_date: null,
+  visions_claimed: [],
+  achievements_unlocked: [],
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+});
+
 export const usePastLifeStats = () => {
   const queryClient = useQueryClient();
 
@@ -122,16 +143,11 @@ export const usePastLifeStats = () => {
 
       if (statsError && statsError.code !== "PGRST116") throw statsError;
 
-      const statsRecord: PastLifeStatsRecord = stats || {
-        id: "",
-        user_id: user.id,
-        streak_current: 0,
-        streak_last_date: null,
-        visions_claimed: [],
-        achievements_unlocked: [],
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+      const statsRecord: PastLifeStatsRecord = (stats as PastLifeStatsRecord | null) || emptyStats(user.id);
+      // Re-cast achievements in case the DB stores them generically as strings.
+      statsRecord.achievements_unlocked = (statsRecord.achievements_unlocked || []).filter(
+        (b): b is PastLifeBadgeId => PAST_LIFE_BADGES.some((badge) => badge.id === b)
+      );
 
       const { data: readings, error: readingsError } = await supabase
         .from("past_life_readings")
@@ -141,23 +157,17 @@ export const usePastLifeStats = () => {
 
       if (readingsError) throw readingsError;
 
-      const allLives = (readings || []).flatMap(
-        (r) => r.past_lives?.filter(Boolean) || []
-      );
-      const livesCount = allLives.length || (readings || []).length;
-      const eras = new Set(
-        allLives.map(extractEra).filter(Boolean)
-      );
-      const creditsUsed = (readings || []).reduce(
-        (sum, r) => sum + (r.credits_used || 0),
-        0
-      );
-      const readingTypes = new Set((readings || []).map((r) => r.reading_type));
+      const readingsTyped = coerceReadings(readings);
+      const allLives = readingsTyped.flatMap((r) => r.past_lives?.filter(Boolean) || []);
+      const livesCount = allLives.length || readingsTyped.length;
+      const eras = new Set(allLives.map(extractEra).filter(Boolean));
+      const creditsUsed = readingsTyped.reduce((sum, r) => sum + (r.credits_used || 0), 0);
+      const readingTypes = new Set(readingsTyped.map((r) => r.reading_type));
 
       const unlocked: PastLifeBadgeId[] = [
-        ...(readings?.length ? (["first_vision"] as PastLifeBadgeId[]) : []),
-        ...((readings?.length || 0) >= 5 ? (["time_scholar"] as PastLifeBadgeId[]) : []),
-        ...(hasRoyalLife(readings || []) ? (["royal_past"] as PastLifeBadgeId[]) : []),
+        ...(readingsTyped.length ? (["first_vision"] as PastLifeBadgeId[]) : []),
+        ...((readingsTyped.length || 0) >= 5 ? (["time_scholar"] as PastLifeBadgeId[]) : []),
+        ...(hasRoyalLife(readingsTyped) ? (["royal_past"] as PastLifeBadgeId[]) : []),
         ...(readingTypes.size >= 3 ? (["soul_seeker"] as PastLifeBadgeId[]) : []),
         ...(eras.size >= 5 ? (["world_explorer"] as PastLifeBadgeId[]) : []),
         ...(readingTypes.has("soulmate") ? (["twin_flame"] as PastLifeBadgeId[]) : []),
@@ -171,7 +181,7 @@ export const usePastLifeStats = () => {
       return {
         userId: user.id,
         stats: statsRecord,
-        readings: readings || [],
+        readings: readingsTyped,
         livesCount,
         erasCount: eras.size,
         creditsUsed,
@@ -181,7 +191,7 @@ export const usePastLifeStats = () => {
     },
   });
 
-  const ensureStatsRow = async (userId: string) => {
+  const ensureStatsRow = async (userId: string): Promise<PastLifeStatsRecord> => {
     const { data: existing } = await supabase
       .from("past_life_user_stats")
       .select("id")
@@ -200,9 +210,9 @@ export const usePastLifeStats = () => {
         .select()
         .single();
       if (error) throw error;
-      return inserted as PastLifeStatsRecord;
+      return (inserted as PastLifeStatsRecord) || emptyStats(userId);
     }
-    return data?.stats as PastLifeStatsRecord;
+    return (data?.stats as PastLifeStatsRecord) || emptyStats(userId);
   };
 
   const recordActivity = useMutation({
