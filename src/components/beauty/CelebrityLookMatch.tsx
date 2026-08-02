@@ -64,10 +64,16 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
 
-      const { data, error } = await supabase.functions.invoke('beauty-celebrity-match', {
-        body: { imageUrl: finalUrl, gender, style }
+      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: {
+          task: 'beauty_celebrity',
+          imageUrl: finalUrl,
+          userPrompt: `Find the celebrity look-alike for this person. Gender: ${gender}. Preferred style: ${style}.`,
+          extras: { gender, style },
+        }
       });
       if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
       setResult(data.matchResult);
       refresh();
       toast.success("Celebrity match found!");
@@ -95,7 +101,7 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
             <Crown className="h-6 w-6 text-yellow-500" />
             Celebrity Look Match
           </h2>
-          <p className="text-muted-foreground mb-6">Find your celebrity twin & recreate their signature look • 10 Credits</p>
+          <p className="text-muted-foreground mb-6">Find your celebrity twin & recreate their signature look • 4 Credits</p>
 
           <div className="space-y-4">
             <div>
@@ -145,7 +151,7 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
             </div>
 
             <Button onClick={handleMatch} disabled={loading || uploading || (credits?.credits_remaining ?? 0) < 10} className="w-full">
-              {uploading ? "Uploading..." : loading ? "Finding match..." : "Find My Celebrity Twin (10 Credits)"}
+              {uploading ? "Uploading..." : loading ? "Finding match..." : "Find My Celebrity Twin (4 Credits)"}
             </Button>
             {credits && <p className="text-sm text-muted-foreground">Credits: {credits.credits_remaining}</p>}
           </div>

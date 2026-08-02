@@ -109,7 +109,8 @@ serve(async (req) => {
       home_furniture: "Return only valid JSON with this exact shape: {\"recommendations\":[{\"name\":\"item name\",\"category\":\"category\",\"priority\":\"essential|recommended|optional\",\"description\":\"why it fits\",\"estimated_price\":\"EUR range\",\"where_to_buy\":\"store type\",\"dimensions\":\"suggested size\"}],\"layout_tips\":\"placement advice\",\"space_optimization\":\"space advice\"}. Include 5 useful items and use EUR only.",
       home_staging: "Return only valid JSON with this exact shape: {\"staging_plan\":{\"furniture_placement\":[{\"item\":\"item name\",\"position\":\"precise placement\",\"purpose\":\"reason\"}],\"lighting_plan\":\"lighting advice\",\"roi_estimate\":\"realistic benefit estimate\",\"estimated_staging_cost\":\"EUR range\",\"photography_tips\":\"listing photo advice\"}}. Include at least 4 furniture placements and use EUR only.",
       beauty_skin: "Return only valid JSON with this exact shape: {\"skinAssessment\":\"2-3 sentence assessment\",\"skinScore\":number 0-100,\"morningRoutine\":[{\"step\":1,\"product\":\"product name\",\"type\":\"category\",\"why\":\"reason\",\"application\":\"how to apply\"}],\"eveningRoutine\":[{\"step\":1,\"product\":\"product name\",\"type\":\"category\",\"why\":\"reason\"}],\"ingredientsToSeek\":[\"ingredient\"],\"ingredientsToAvoid\":[\"ingredient\"],\"lifestyleTips\":[\"tip\"]}. Include 4-5 steps per routine and avoid medical claims.",
-      beauty_nail_art: "Return only valid JSON with this exact shape: {\"designName\":\"name\",\"description\":\"2-3 sentences\",\"difficulty\":\"Beginner|Intermediate|Advanced\",\"estimatedTime\":\"e.g. 45 min\",\"trendingScore\":number 1-10,\"nailByNail\":[{\"finger\":\"Thumb\",\"design\":\"design description\",\"technique\":\"technique\",\"colors\":[\"#RRGGBB\"]}],\"productsNeeded\":[{\"product\":\"product\",\"brand\":\"brand\",\"priceRange\":\"EUR range\"}],\"proTips\":[\"tip\"]}. Include all 5 fingers, 4-5 products, 4 pro tips, hex colors only and EUR prices only."
+      beauty_nail_art: "Return only valid JSON with this exact shape: {\"designName\":\"name\",\"description\":\"2-3 sentences\",\"difficulty\":\"Beginner|Intermediate|Advanced\",\"estimatedTime\":\"e.g. 45 min\",\"trendingScore\":number 1-10,\"nailByNail\":[{\"finger\":\"Thumb\",\"design\":\"design description\",\"technique\":\"technique\",\"colors\":[\"#RRGGBB\"]}],\"productsNeeded\":[{\"product\":\"product\",\"brand\":\"brand\",\"priceRange\":\"EUR range\"}],\"proTips\":[\"tip\"]}. Include all 5 fingers, 4-5 products, 4 pro tips, hex colors only and EUR prices only.",
+      beauty_celebrity: "Return only valid JSON with this exact shape: {\"topMatch\":{\"celebrity\":\"name\",\"similarityScore\":number 0-100,\"signatureLook\":\"2-3 sentences\",\"matchReasons\":[\"reason\"]},\"alternativeMatches\":[{\"celebrity\":\"name\",\"similarityScore\":number 0-100}],\"lookRecreation\":{\"overview\":\"2 sentences\",\"steps\":[{\"step\":1,\"title\":\"step title\",\"instruction\":\"how to do it\",\"products\":[\"product\"]}]}}. Include 3 alternative matches, 3 match reasons and 5 recreation steps."
     };
     const structuredInstruction = structuredInstructions[task];
     if (structuredInstruction) userContent.push({ type: "text", text: structuredInstruction });
@@ -181,6 +182,13 @@ serve(async (req) => {
         return json({ error: "The nail design response was invalid. Please try again." }, 502);
       }
       return json({ result, text: result, design: structuredData, task, creditsCharged: cost });
+    }
+    if (task === "beauty_celebrity") {
+      if (!structuredData?.topMatch?.celebrity) {
+        log("celebrity-shape-invalid", { hasData: !!structuredData });
+        return json({ error: "The celebrity match response was invalid. Please try again." }, 502);
+      }
+      return json({ result, text: result, matchResult: structuredData, task, creditsCharged: cost });
     }
 
 
