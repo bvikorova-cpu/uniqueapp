@@ -29,6 +29,15 @@ export const PastLifeHistory = () => {
       return data;
     } });
 
+  // Real per-reading-type pricing (legacy rows stored a placeholder of 1)
+  const READING_COSTS: Record<string, number> = { basic: 5, full: 15, soulmate: 20 };
+  const creditsFor = (r: any) => {
+    const used = Number(r?.credits_used ?? 0);
+    if (used > 1) return used;
+    return READING_COSTS[r?.reading_type] ?? 15;
+  };
+
+
   const getTypeConfig = (type: string) => {
     const configs: Record<string, { label: string; gradient: string; icon: any }> = {
       basic: { label: "Basic", gradient: "from-blue-500 to-cyan-500", icon: Clock },
