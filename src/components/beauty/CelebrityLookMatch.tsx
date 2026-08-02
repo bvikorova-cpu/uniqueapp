@@ -22,9 +22,12 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
   const [gender, setGender] = useState("female");
   const [style, setStyle] = useState("glamorous");
   const [result, setResult] = useState<any>(null);
+  const [rawText, setRawText] = useState("");
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const resultRef = useRef<HTMLDivElement | null>(null);
   const { credits, refresh } = useAICredits();
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
