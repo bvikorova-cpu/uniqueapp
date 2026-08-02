@@ -3,7 +3,6 @@ import { Sparkles, Infinity as InfinityIcon, Play, Pause, Volume2, VolumeX } fro
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import heroVideo from "@/assets/past-life-hero.mp4.asset.json";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const PastLifeHero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
