@@ -65,16 +65,15 @@
 
 
 @media (max-width: 767px) {
-  [aria-label="Assistant dock"],
-  [aria-label="Open Uni — voice AI assistant (like Siri)"],
-  [aria-label="Enable 'Hey Uni' wake word"],
-  [aria-label="Disable 'Hey Uni' wake word"],
-  [aria-label="Translate page"],
-  [aria-label="Hide translator"] {
+  /* Uni assistant + translator stay visible on mobile (user request).
+     Only the desktop-only dock wrapper stays hidden. */
+  [aria-label="Assistant dock"] {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
   }
+
+
 
   .ai-generation-active-shell,
   .ai-generation-active-shell > div,
