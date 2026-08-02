@@ -1,15 +1,13 @@
 /**
- * TEMPORARY PLATFORM-WIDE SWITCH: OpenAI -> Lovable AI Gateway.
+ * PLATFORM-WIDE RULE: Lovable AI ONLY. OpenAI is never called.
  *
- * Importing this module patches `globalThis.fetch` so that any direct call to
- * `api.openai.com` made by an edge function is transparently rerouted to the
- * Lovable AI Gateway (chat completions + image generation).
+ * Importing this module patches `globalThis.fetch` so that ANY call to
+ * `api.openai.com` made by an edge function is rerouted to the Lovable AI
+ * Gateway (chat completions, image generation, embeddings, TTS, transcriptions).
  *
- * Nothing else in the function code has to change: the gateway is
- * OpenAI-compatible, so the response shape stays identical.
- *
- * To go back to OpenAI later, set the secret AI_PROVIDER=openai (or delete the
- * `import "../_shared/aiRedirect.ts";` lines).
+ * The gateway is OpenAI-compatible, so response shapes stay identical and no
+ * other function code has to change. If a request cannot be rerouted, it fails
+ * with a clear error instead of reaching OpenAI.
  */
 
 const GATEWAY_BASE = "https://ai.gateway.lovable.dev/v1";
@@ -32,6 +30,8 @@ const MODEL_MAP: Record<string, string> = {
 
 const DEFAULT_CHAT_MODEL = "google/gemini-3.6-flash";
 const DEFAULT_IMAGE_MODEL = "openai/gpt-image-1-mini";
+const DEFAULT_TTS_MODEL = "openai/gpt-4o-mini-tts";
+const DEFAULT_STT_MODEL = "openai/gpt-4o-mini-transcribe";
 
 function mapChatModel(model: unknown): string {
   if (typeof model !== "string" || !model) return DEFAULT_CHAT_MODEL;
@@ -39,9 +39,17 @@ function mapChatModel(model: unknown): string {
   return MODEL_MAP[model] ?? DEFAULT_CHAT_MODEL;
 }
 
-function isDisabled() {
-  return (Deno.env.get("AI_PROVIDER") ?? "").toLowerCase() === "openai" ||
-    !Deno.env.get("LOVABLE_API_KEY");
+function gatewayAudioModel(model: unknown, fallback: string): string {
+  if (typeof model === "string" && model.includes("/")) return model;
+  return fallback;
+}
+
+function blocked(reason: string): Response {
+  console.error(`[aiRedirect] blocked OpenAI call: ${reason}`);
+  return new Response(
+    JSON.stringify({ error: { message: "AI service unavailable", type: "ai_unavailable", reason } }),
+    { status: 503, headers: { "Content-Type": "application/json" } },
+  );
 }
 
 // deno-lint-ignore no-explicit-any
@@ -55,32 +63,20 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
   (globalThis as any).__AI_REDIRECT_INSTALLED__ = true;
 
   globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = typeof input === "string"
+      ? input
+      : input instanceof URL
+      ? input.toString()
+      : (input as Request).url;
+
+    // Anything that is not OpenAI passes straight through.
+    if (!url.includes("api.openai.com")) {
+      return await originalFetch(input as any, init);
+    }
+
     try {
-      const url = typeof input === "string"
-        ? input
-        : input instanceof URL
-        ? input.toString()
-        : (input as Request).url;
-
-      if (!url.includes("api.openai.com") || isDisabled()) {
-        return await originalFetch(input as any, init);
-      }
-
-        const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-        if (!lovableKey) return await originalFetch(input as any, init);
-
-      // Only JSON bodies from plain fetch calls can be rewritten safely.
-      const rawBody = init?.body;
-      if (typeof rawBody !== "string") {
-        return await originalFetch(input as any, init);
-      }
-
-      let body: Record<string, unknown>;
-      try {
-        body = JSON.parse(rawBody);
-      } catch {
-        return await originalFetch(input as any, init);
-      }
+      const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+      if (!lovableKey) return blocked("LOVABLE_API_KEY is not configured");
 
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
@@ -111,6 +107,40 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
         return last!;
       };
 
+      // ---- multipart endpoints (audio transcriptions / translations) ----
+      const rawBody = init?.body;
+      if (url.includes("/audio/transcriptions") || url.includes("/audio/translations")) {
+        let form: FormData | null = null;
+        if (rawBody instanceof FormData) form = rawBody;
+        else if (input instanceof Request) form = await input.clone().formData().catch(() => null);
+        if (!form) return blocked("unsupported transcription payload");
+
+        const out = new FormData();
+        for (const [k, v] of form.entries()) {
+          if (k === "model") continue;
+          out.append(k, v as any);
+        }
+        out.append("model", gatewayAudioModel(form.get("model"), DEFAULT_STT_MODEL));
+        return await originalFetch(`${GATEWAY_BASE}/audio/transcriptions`, {
+          method: "POST",
+          headers: { "Lovable-API-Key": lovableKey },
+          body: out,
+        });
+      }
+
+      // ---- JSON endpoints ----
+      let body: Record<string, unknown> | null = null;
+      if (typeof rawBody === "string") {
+        try {
+          body = JSON.parse(rawBody);
+        } catch {
+          body = null;
+        }
+      } else if (input instanceof Request) {
+        body = await input.clone().json().catch(() => null);
+      }
+      if (!body) return blocked("unsupported OpenAI request payload");
+
       if (url.includes("/chat/completions")) {
         const model = mapChatModel(body.model);
         body.model = model;
@@ -122,15 +152,13 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
         if (/gpt-5/i.test(model)) delete body.temperature;
         if (/gpt-5\.6/i.test(model)) body.reasoning_effort = "none";
 
-        // Lovable-only: never fall back to OpenAI.
         return await postWithRetry(`${GATEWAY_BASE}/chat/completions`, body, [
           "google/gemini-3.1-flash-lite",
           "google/gemini-3.5-flash",
-          "openai/gpt-5.4-mini",
         ]);
       }
 
-      if (url.includes("/images/generations")) {
+      if (url.includes("/images/generations") || url.includes("/images/edits")) {
         const gwBody = {
           model: DEFAULT_IMAGE_MODEL,
           prompt: body.prompt,
@@ -138,7 +166,6 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
           ...(body.size ? { size: body.size } : {}),
           quality: "low",
         };
-        // Lovable-only: never fall back to OpenAI.
         return await postWithRetry(`${GATEWAY_BASE}/images/generations`, gwBody, [
           "google/gemini-3-pro-image",
         ]);
@@ -154,12 +181,22 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
         return await postWithRetry(`${GATEWAY_BASE}/embeddings`, gwBody);
       }
 
-      // Anything else (audio/speech, transcriptions, embeddings...) stays on OpenAI.
-      return await originalFetch(input as any, init);
+      if (url.includes("/audio/speech")) {
+        const gwBody = {
+          ...body,
+          model: gatewayAudioModel(body.model, DEFAULT_TTS_MODEL),
+        };
+        const res = await originalFetch(`${GATEWAY_BASE}/audio/speech`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(gwBody),
+        });
+        return res;
+      }
 
+      return blocked(`unsupported OpenAI endpoint: ${url}`);
     } catch (e) {
-      console.error("[aiRedirect] error, falling back to original fetch:", e);
-      return await originalFetch(input as any, init);
+      return blocked(`redirect error: ${e instanceof Error ? e.message : String(e)}`);
     }
   }) as typeof fetch;
 }
