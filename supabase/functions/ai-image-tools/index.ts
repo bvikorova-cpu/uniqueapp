@@ -294,51 +294,6 @@ serve(async (req) => {
       return `data:${blob.type || "image/jpeg"};base64,${btoa(binary)}`;
     };
 
-    const readStreamedImage = async (res: Response): Promise<string | null> => {
-      if (!res.body) return null;
-      const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
-      let buffer = "";
-      let completedImage: string | null = null;
-      let streamError = "";
-
-      const consumeEvent = (eventBlock: string) => {
-        const dataText = eventBlock
-          .split(/\r?\n/)
-          .filter((line) => line.startsWith("data:"))
-          .map((line) => line.slice(5).trimStart())
-          .join("\n");
-        if (!dataText || dataText === "[DONE]") return;
-        try {
-          const payload = JSON.parse(dataText);
-          if (payload?.type === "error") {
-            streamError = payload?.error?.message || "Image editing failed";
-            return;
-          }
-          if (payload?.type === "image_generation.completed" && typeof payload?.b64_json === "string") {
-            completedImage = `data:image/png;base64,${payload.b64_json}`;
-          }
-        } catch {
-          // Ignore heartbeats and non-JSON provider sentinels.
-        }
-      };
-
-      try {
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) break;
-          buffer += value;
-          const blocks = buffer.split(/\r?\n\r?\n/);
-          buffer = blocks.pop() || "";
-          blocks.forEach(consumeEvent);
-        }
-        if (buffer.trim()) consumeEvent(buffer);
-      } finally {
-        reader.cancel().catch(() => {});
-      }
-      if (streamError) throw new Error(streamError);
-      return completedImage;
-    };
-
     // Real image-to-image edit: sends the uploaded image + instruction to a Gemini image model
     const editUploadedImage = async (sourceUrl: string, instruction: string) => {
       if (!LOVABLE_API_KEY) throw new Error("Image editing is not configured");
@@ -361,7 +316,6 @@ serve(async (req) => {
               },
             ],
             modalities: ["image", "text"],
-             stream: true,
           }),
         });
         if (!res.ok) {
@@ -369,13 +323,13 @@ serve(async (req) => {
           console.error("Lovable image edit error:", model, res.status, await res.text().catch(() => ""));
           continue;
         }
-        const contentType = res.headers.get("content-type") || "";
-        const editedImageUrl = contentType.includes("text/event-stream")
-          ? await readStreamedImage(res)
-          : extractImageUrl(await res.json().catch(() => null));
+        const responseData = await res.json().catch(() => null);
+        const editedImageUrl = extractImageUrl(responseData);
         if (editedImageUrl) return editedImageUrl;
-        lastErr = "stream ended without a completed image";
-        console.error("Image edit returned no completed image:", model);
+        lastErr = responseData?.data === null
+          ? "model completed without generating an image"
+          : "response did not contain an image";
+        console.error("Image edit returned no image:", model, JSON.stringify(responseData).slice(0, 500));
       }
       throw new Error(`Image editing failed (${lastErr})`);
     };
