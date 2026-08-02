@@ -54,6 +54,9 @@ export const usePastLifeCredits = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["past-life-credits"] });
       queryClient.invalidateQueries({ queryKey: ["past-life-readings"] });
+      queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
     },
     onError: (error: Error) => {
       if (error.message === "INSUFFICIENT_CREDITS") {
