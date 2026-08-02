@@ -104,12 +104,13 @@ serve(async (req) => {
     log("invoke", { task, userId: auth.user!.id, cost, hasImage: !!imageUrl });
 
     const userContent: any[] = [];
-    if (task === "home_palette") {
-      userContent.push({
-        type: "text",
-        text: "Return only valid JSON with this exact shape: {\"mood\":\"short description\",\"palette\":[{\"name\":\"color name\",\"hex\":\"#RRGGBB\",\"usage\":\"where to use it\",\"percentage\":number}],\"complementary_materials\":[\"material\"],\"lighting_tips\":\"advice\",\"seasonal_variation\":\"advice\"}. Include exactly 4 coordinated colors and percentages totaling 100."
-      });
-    }
+    const structuredInstructions: Partial<Record<string, string>> = {
+      home_palette: "Return only valid JSON with this exact shape: {\"mood\":\"short description\",\"palette\":[{\"name\":\"color name\",\"hex\":\"#RRGGBB\",\"usage\":\"where to use it\",\"percentage\":number}],\"complementary_materials\":[\"material\"],\"lighting_tips\":\"advice\",\"seasonal_variation\":\"advice\"}. Include exactly 4 coordinated colors and percentages totaling 100.",
+      home_furniture: "Return only valid JSON with this exact shape: {\"recommendations\":[{\"name\":\"item name\",\"category\":\"category\",\"priority\":\"essential|recommended|optional\",\"description\":\"why it fits\",\"estimated_price\":\"EUR range\",\"where_to_buy\":\"store type\",\"dimensions\":\"suggested size\"}],\"layout_tips\":\"placement advice\",\"space_optimization\":\"space advice\"}. Include 5 useful items and use EUR only.",
+      home_staging: "Return only valid JSON with this exact shape: {\"staging_plan\":{\"furniture_placement\":[{\"item\":\"item name\",\"position\":\"precise placement\",\"purpose\":\"reason\"}],\"lighting_plan\":\"lighting advice\",\"roi_estimate\":\"realistic benefit estimate\",\"estimated_staging_cost\":\"EUR range\",\"photography_tips\":\"listing photo advice\"}}. Include at least 4 furniture placements and use EUR only."
+    };
+    const structuredInstruction = structuredInstructions[task];
+    if (structuredInstruction) userContent.push({ type: "text", text: structuredInstruction });
     if (userPrompt) userContent.push({ type: "text", text: userPrompt });
     if (extras) userContent.push({ type: "text", text: `Context: ${JSON.stringify(extras)}` });
     if (imageUrl) userContent.push({ type: "image_url", image_url: { url: imageUrl } });
@@ -119,18 +120,18 @@ serve(async (req) => {
     // this transparently falls back to the Lovable AI Gateway instead of
     // surfacing a 429 to the user.
     let result = "";
-    let paletteData: Record<string, unknown> | undefined;
+    let structuredData: Record<string, any> | undefined;
     try {
       const messages = [
         { role: "system" as const, content: cfg.prompt },
         { role: "user" as const, content: userContent as any },
       ];
-      if (task === "home_palette") {
-        paletteData = await callUnifiedAIJSON<Record<string, unknown>>(
+      if (structuredInstruction) {
+        structuredData = await callUnifiedAIJSON<Record<string, any>>(
           messages,
           { model: "gpt-4o-mini", max_tokens: 1200 },
         );
-        result = JSON.stringify(paletteData);
+        result = JSON.stringify(structuredData);
       } else {
         result = await callUnifiedAI(messages, { model: "gpt-4o-mini" });
       }
@@ -145,11 +146,25 @@ serve(async (req) => {
     try { await auth.deduct!(); } catch (e) { log("deduct-failed", { err: String(e) }); }
 
     if (task === "home_palette") {
-      if (!paletteData || !Array.isArray(paletteData.palette)) {
-        log("palette-shape-invalid", { hasData: !!paletteData });
+      if (!structuredData || !Array.isArray(structuredData.palette)) {
+        log("palette-shape-invalid", { hasData: !!structuredData });
         return json({ error: "The palette response was invalid. Please try again." }, 502);
       }
-      return json({ result, text: result, paletteData, task, creditsCharged: cost });
+      return json({ result, text: result, paletteData: structuredData, task, creditsCharged: cost });
+    }
+    if (task === "home_furniture") {
+      if (!structuredData || !Array.isArray(structuredData.recommendations)) {
+        log("furniture-shape-invalid", { hasData: !!structuredData });
+        return json({ error: "The furniture response was invalid. Please try again." }, 502);
+      }
+      return json({ result, text: result, recommendationsData: structuredData, task, creditsCharged: cost });
+    }
+    if (task === "home_staging") {
+      if (!structuredData?.staging_plan || !Array.isArray(structuredData.staging_plan.furniture_placement)) {
+        log("staging-shape-invalid", { hasData: !!structuredData });
+        return json({ error: "The staging response was invalid. Please try again." }, 502);
+      }
+      return json({ result, text: result, stagingData: structuredData, task, creditsCharged: cost });
     }
 
     return json({ result, text: result, task, creditsCharged: cost });
