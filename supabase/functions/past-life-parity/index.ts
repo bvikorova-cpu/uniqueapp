@@ -1,4 +1,3 @@
-import "../_shared/aiRedirect.ts";
 // Past Life Explorer parity pack router.
 // 8 actions, fixed cost 6 credits each, deducted from past_life_credits.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
@@ -41,7 +40,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return json({ error: "Not authenticated" }, 401);
@@ -66,7 +65,7 @@ serve(async (req) => {
     const table = ACTION_TABLE[action];
     const systemPrompt = SYSTEM_PROMPTS[action];
     if (!table || !systemPrompt) return json({ error: "Unknown action" }, 400);
-    if (!openaiKey && !Deno.env.get("LOVABLE_API_KEY")) return json({ error: "No AI provider configured" }, 500);
+    if (!lovableKey) return json({ error: "AI service is not configured" }, 500);
 
     const admin = createClient(supabaseUrl, serviceKey);
 
@@ -83,7 +82,7 @@ serve(async (req) => {
     const payload = body.payload ?? {};
     const userPrompt = `Generate the requested reading.\n\nUser context:\n${JSON.stringify(payload, null, 2)}`;
 
-    const aiResp = await callAI(systemPrompt, userPrompt, openaiKey);
+    const aiResp = await callAI(systemPrompt, userPrompt, lovableKey);
 
     if (!aiResp.ok) {
       const errText = await aiResp.text();
@@ -140,40 +139,26 @@ function json(body: unknown, status: number) {
     status });
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-async function callAI(systemPrompt: string, userPrompt: string, openaiKey?: string): Promise<Response> {
+async function callAI(systemPrompt: string, userPrompt: string, lovableKey: string): Promise<Response> {
   const messages = [
     { role: "system", content: systemPrompt },
     { role: "user", content: userPrompt },
   ];
 
-  // 1) OpenAI with exponential backoff on 429/5xx
-  if (openaiKey) {
-    for (let attempt = 0; attempt < 3; attempt++) {
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "gpt-4o-mini", response_format: { type: "json_object" }, messages }) });
-      if (res.ok || (res.status !== 429 && res.status < 500)) return res;
-      await res.body?.cancel().catch(() => {});
-      await sleep(600 * Math.pow(2, attempt));
-    }
-  }
-
-  // 2) Lovable AI Gateway fallback
-  const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-  if (lovableKey) {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "google/gemini-2.5-flash", response_format: { type: "json_object" }, messages }) });
-      if (res.ok || (res.status !== 429 && res.status < 500)) return res;
-      await res.body?.cancel().catch(() => {});
-      await sleep(800 * (attempt + 1));
-    }
-  }
-
-  return new Response(JSON.stringify({ error: "All AI providers unavailable" }), { status: 503 });
+  // Use Lovable AI directly. The previous OpenAI-first path exhausted its
+  // provider balance and the fallback used the wrong Authorization header.
+  // Do not retry terminal quota failures: one user action must make one call.
+  return fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Lovable-API-Key": lovableKey,
+      "X-Lovable-AIG-SDK": "vercel-ai-sdk",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "google/gemini-3.6-flash",
+      response_format: { type: "json_object" },
+      messages,
+    }),
+  });
 }
