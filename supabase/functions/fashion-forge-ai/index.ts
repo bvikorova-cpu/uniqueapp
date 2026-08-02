@@ -40,14 +40,17 @@ serve(async (req) => {
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!supabaseUrl || !serviceRoleKey) throw new Error("Server configuration unavailable");
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    if (!supabaseUrl || !anonKey || !serviceRoleKey) throw new Error("Server configuration unavailable");
+    const authClient = createClient(supabaseUrl, anonKey, { auth: { persistSession: false } });
+    const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
-    const { data: { user } } = await supabase.auth.getUser(authHeader.slice(7));
-    if (!user) throw new Error("Unauthorized");
+    const { data: claimsData, error: claimsError } = await authClient.auth.getClaims(authHeader.slice(7));
+    const userId = typeof claimsData?.claims?.sub === "string" ? claimsData.claims.sub : "";
+    if (claimsError || !userId) throw new Error("Unauthorized");
 
     const body = await req.json();
     const action = body.action as FashionAction;
@@ -67,7 +70,7 @@ serve(async (req) => {
       });
     }
     const extra = body.extra && typeof body.extra === "object" ? body.extra as Record<string, unknown> : {};
-    const current = await getUnifiedAiCreditBalance(supabase, user.id);
+    const current = await getUnifiedAiCreditBalance(supabase, userId);
     if (current.total < config.cost) {
       return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS", required: config.cost, available: current.total }), {
         status: 402,
@@ -97,7 +100,7 @@ serve(async (req) => {
       parsed = null;
     }
 
-    const spendResult = await spendUnifiedAiCredits(supabase, user.id, config.cost, `creative_forge_${action}`, "fashion-forge-ai");
+    const spendResult = await spendUnifiedAiCredits(supabase, userId, config.cost, `creative_forge_${action}`, "fashion-forge-ai");
     return new Response(JSON.stringify({
       action,
       content,
@@ -112,8 +115,12 @@ serve(async (req) => {
     if (isInsufficientCreditsError(error)) {
       return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    const message = error instanceof Error ? error.message : "Internal error";
+    const errorDetails = error as { status?: number; code?: number | string; message?: string };
+    const message = errorDetails?.message ?? "Internal error";
     console.error("fashion-forge-ai error", message);
-    return new Response(JSON.stringify({ error: message }), { status: message === "Unauthorized" ? 401 : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const throttled = Number(errorDetails?.status ?? errorDetails?.code) === 429 || /rate limit|too many requests/i.test(message);
+    const status = message === "Unauthorized" ? 401 : throttled ? 503 : 500;
+    const responseMessage = throttled ? "Fashion AI is temporarily busy. Please try again shortly. No credits were used." : message;
+    return new Response(JSON.stringify({ error: responseMessage }), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
