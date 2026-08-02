@@ -1,16 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Palette, Paintbrush, Crown, ArrowLeft, Flame, Trophy, TrendingUp } from "lucide-react";
+import { Sparkles, Palette, Paintbrush, Crown, ArrowLeft } from "lucide-react";
 import { VirtualMakeup } from "@/components/beauty/VirtualMakeup";
 import { HairStyleGenerator } from "@/components/beauty/HairStyleGenerator";
 import { NailArtDesigner } from "@/components/beauty/NailArtDesigner";
 import { CelebrityLookMatch } from "@/components/beauty/CelebrityLookMatch";
 
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import heroVideo from "@/assets/beauty-studio-hero.mp4.asset.json";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
