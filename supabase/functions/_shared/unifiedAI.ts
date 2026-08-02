@@ -3,7 +3,7 @@ import "./aiRedirect.ts";
  * Unified AI provider for all Supabase Edge Functions.
  *
  * Behavior:
- *  - OpenAI is preferred if OPENAI_API_KEY is configured.
+ *  - Lovable AI Gateway is the only provider (OpenAI is never called).
  *  - If OpenAI fails with 429, 402, or >=500, we immediately switch to Lovable AI Gateway.
  *  - If Lovable fails with 429, 402, or >=500, we retry the other provider with backoff.
  *  - All provider errors are normalized to a small set of friendly statuses.
