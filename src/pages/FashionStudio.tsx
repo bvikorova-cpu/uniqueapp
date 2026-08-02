@@ -90,11 +90,11 @@ export default function FashionStudio() {
               Design, compete & shop — powered by AI fashion intelligence
             </p>
 
-            {/* Stats Row */}
+             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-2xl">
               {[
                 { label: "AI Credits", value: creditsLoading ? "..." : credits?.credits_remaining || 0, icon: Zap },
-                { label: "Tools", value: "5", icon: Shirt },
+                { label: "Tools", value: "1", icon: Shirt },
                 { label: "Buy Credits", value: "Get More", icon: Gem, action: () => navigate('/ai-credits-store') },
               ].map((stat) => (
                 <div
