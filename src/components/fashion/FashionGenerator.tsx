@@ -68,30 +68,41 @@ export default function FashionGenerator() {
     }
   });
 
+  const CREDIT_COST = 5;
   const creditsMap = {
-    basic: 50,
-    detailed: 100,
-    premium: 200,
-    collection: 400
+    basic: CREDIT_COST,
+    detailed: CREDIT_COST,
+    premium: CREDIT_COST,
+    collection: CREDIT_COST
   };
 
   const generateMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('generate-fashion-design', {
-        body: {
-          title,
-          description,
-          categoryId,
-          styleId,
-          materialId,
-          colors,
-          qualityLevel,
-          isPublic
-        }
+      const categoryName = categories?.find((c: any) => c.id === categoryId)?.name || "";
+      const styleName = styles?.find((s: any) => s.id === styleId)?.name || "";
+      const materialName = materials?.find((m: any) => m.id === materialId)?.name || "";
+
+      const prompt = [
+        `High-end fashion design photograph of ${title}.`,
+        categoryName && `Garment category: ${categoryName}.`,
+        styleName && `Style: ${styleName}.`,
+        materialName && `Material: ${materialName}.`,
+        colors.length > 0 && `Color palette: ${colors.join(", ")}.`,
+        description && `Details: ${description}.`,
+        `Quality level: ${qualityLevel}. Studio lighting, clean background, editorial fashion lookbook, photorealistic, highly detailed fabric texture.`
+      ].filter(Boolean).join(" ");
+
+      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
+        body: { action: 'generate', prompt, aspectRatio: '1:1' }
       });
 
       if (error) throw error;
-      return data;
+      if (data?.error) throw new Error(data.error);
+
+      const imageUrl = data?.imageUrl || data?.result?.imageUrl;
+      if (!imageUrl) throw new Error("No image returned by AI");
+
+      return { design: { title, description, image_url: imageUrl } };
     },
     onSuccess: (data) => {
       setGeneratedDesign(data.design);
@@ -111,16 +122,14 @@ export default function FashionGenerator() {
       return;
     }
 
-    const creditsNeeded = creditsMap[qualityLevel];
-    const hasAICredits = credits && credits.credits_remaining >= creditsNeeded;
-    
-    if (!hasAICredits) {
-      toast.error(`You need ${creditsNeeded} AI credits to generate this design. Please purchase credits.`);
+    if (!credits || credits.credits_remaining < CREDIT_COST) {
+      toast.error(`You need ${CREDIT_COST} AI credits to generate this design. Please purchase credits.`);
       return;
     }
 
     generateMutation.mutate();
   };
+
 
   const handleAddColor = () => {
     if (colorInput && !colors.includes(colorInput)) {
@@ -254,10 +263,11 @@ export default function FashionGenerator() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="basic">Basic (50 credits)</SelectItem>
-                <SelectItem value="detailed">Detailed (100 credits)</SelectItem>
-                <SelectItem value="premium">Premium (200 credits)</SelectItem>
-                <SelectItem value="collection">Collection (400 credits)</SelectItem>
+                <SelectItem value="basic">Basic (5 credits)</SelectItem>
+                <SelectItem value="detailed">Detailed (5 credits)</SelectItem>
+                <SelectItem value="premium">Premium (5 credits)</SelectItem>
+                <SelectItem value="collection">Collection (5 credits)</SelectItem>
+
               </SelectContent>
             </Select>
           </div>
