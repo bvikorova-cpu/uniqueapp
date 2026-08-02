@@ -18,30 +18,29 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
   const [style, setStyle] = useState("french");
   const [occasion, setOccasion] = useState("everyday");
   const [shape, setShape] = useState("almond");
-  const [result, setResult] = useState<any>(null);
-  const [rawText, setRawText] = useState<string>("");
+  const [image, setImage] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const { credits, refresh } = useAICredits();
 
   const handleDesign = async () => {
     setLoading(true);
+    setImage(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
 
-      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
-        body: { task: 'beauty_nail_art', extras: { style, occasion, shape } }
+      const prompt = `Ultra realistic close-up photograph of a manicured female hand showing a ${style} nail art design on ${shape}-shaped nails, styled for a ${occasion} occasion. Professional salon quality, glossy finish, detailed nail art on all five nails, soft studio lighting, clean neutral background, macro beauty photography.`;
+
+      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
+        body: { action: 'generate', feature: 'beauty_nail_art', prompt, aspectRatio: '1:1' }
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      const design = data?.design ?? null;
-      setResult(design);
-      setRawText(typeof data?.result === "string" ? data.result : "");
-      if (!design && !data?.result) {
-        toast.error("No design returned. Please try again.");
-        return;
-      }
+      const url = data?.imageUrl || data?.imageUrls?.[0];
+      if (!url) throw new Error("No design image returned. Please try again.");
+
+      setImage(url);
       refresh();
       toast.success("Nail design created!");
     } catch (error: any) {
@@ -52,10 +51,11 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
   };
 
   useEffect(() => {
-    if (result || rawText) {
+    if (image) {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, [result, rawText]);
+  }, [image]);
+
 
   return (
     <>
