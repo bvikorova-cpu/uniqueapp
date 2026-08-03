@@ -40,6 +40,8 @@ const LOTTERY_TYPES = [
   { id: "megamillions", name: "Mega Millions", maxNumber: 70, bonusBalls: 25, mainBalls: 5, bonusCount: 1 },
 ];
 
+const GENERATION_COST = 3;
+
 const SUBSCRIPTION_TIERS = {
   basic: { price_id: "price_1STrLuGaXSfGtYFtgA9rNDxL", product_id: "prod_TQinlyjGo50cTk" },
   pro: { price_id: "price_1STrLwGaXSfGtYFtdbmjAGKA", product_id: "prod_TQinw9pUYC81T8" } };
