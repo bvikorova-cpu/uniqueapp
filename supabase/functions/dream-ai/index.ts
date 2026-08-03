@@ -178,12 +178,23 @@ Deno.serve(async (req) => {
           { role: "user", content: `Create a dream soundscape for theme: "${dreamTheme}". Desired mood: ${mood}.` }
         ]);
         break;
-      case "visualizer":
-        result = await aiChat([
-          { role: "system", content: "You are a dream visualization expert. Create a vivid visual description of the dream that could be used as an art prompt. Include colors, atmosphere, key imagery, and emotional tone. Use markdown." },
-          { role: "user", content: `Visualize this dream: ${params.dreamDescription || ""}` }
-        ]);
+      case "visualizer": {
+        const desc = params.dreamDescription || "";
+        const style = params.artStyle || "surrealist";
+        const styleHints: Record<string, string> = {
+          "surrealist": "surrealist oil painting in the style of Salvador Dalí, dreamlike distortions",
+          "watercolor": "ethereal soft watercolor painting, delicate washes, glowing light",
+          "digital-fantasy": "highly detailed digital fantasy concept art, cinematic lighting",
+          "abstract": "abstract expressionist painting, bold gestural brushstrokes, emotive color fields",
+          "anime": "anime / manga illustration, vibrant cel shading, expressive composition",
+          "dark-gothic": "dark gothic art, moody chiaroscuro, ominous atmosphere",
+        };
+        const imageUrl = await aiImage(
+          `Create a stunning dream visualization artwork. Dream: ${desc}. Style: ${styleHints[style] || style}. High detail, rich atmosphere, no text or watermarks. Return only the image.`,
+        );
+        result = { imageUrl, image_url: imageUrl, artStyle: style };
         break;
+      }
     }
 
     // ── Deduct credits AFTER successful AI call (atomic + ledger row) ──
