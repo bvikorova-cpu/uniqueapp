@@ -103,8 +103,8 @@ Deno.serve(async (req) => {
     let output: any = {};
 
     if (feature === "dream_decoder") {
-      const dream = String(payload.dream ?? "").slice(0, 2000);
-      const lotteryMax = Number(payload.maxNumber ?? 50);
+      const dream = String(payload.dream ?? payload.dream_text ?? "").slice(0, 2000);
+      const lotteryMax = Number(payload.maxNumber ?? payload.max_number ?? 50);
       const count = Number(payload.count ?? 6);
       if (!dream) return json({ error: "DREAM_REQUIRED" }, 400);
 
@@ -140,13 +140,13 @@ Deno.serve(async (req) => {
         symbols: output.symbols,
         interpretation: output.interpretation,
         suggested_numbers: output.numbers,
-        lottery_type: payload.lotteryType ?? null,
+        lottery_type: payload.lotteryType ?? payload.lottery ?? null,
         credits_used: cost,
       });
     } else if (feature === "numerology") {
-      const fullName = String(payload.fullName ?? "").trim();
-      const birthDate = String(payload.birthDate ?? "");
-      const lotteryMax = Number(payload.maxNumber ?? 50);
+      const fullName = String(payload.fullName ?? payload.full_name ?? "").trim();
+      const birthDate = String(payload.birthDate ?? payload.birth_date ?? "");
+      const lotteryMax = Number(payload.maxNumber ?? payload.max_number ?? 50);
       if (!fullName || !birthDate) return json({ error: "FIELDS_REQUIRED" }, 400);
 
       const reduce = (n: number): number => {
@@ -192,8 +192,8 @@ Deno.serve(async (req) => {
         lucky_numbers: lucky, power_days: powerDays, reading, credits_used: cost,
       });
     } else if (feature === "heatmap_analysis") {
-      const lotteryType = String(payload.lotteryType ?? "eurojackpot");
-      const maxNumber = Number(payload.maxNumber ?? 50);
+      const lotteryType = String(payload.lotteryType ?? payload.lottery ?? "eurojackpot");
+      const maxNumber = Number(payload.maxNumber ?? payload.max_number ?? 50);
       const { data: recent } = await admin
         .from("lottery_generations")
         .select("main_numbers, bonus_numbers")
