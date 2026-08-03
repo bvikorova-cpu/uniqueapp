@@ -1,14 +1,22 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
 
-/**
- * Universal astrology AI handler.
- * Accepts: { type, data } (current frontend) or legacy { action, ...fields }.
- * Server-side credit deduction — single source of truth.
- */
+// Self-contained astrology/numerology AI handler.
+// Lovable AI Gateway only. Unified ai_credits ledger.
 
-const CREDIT_COSTS: Record<string, number> = { daily_horoscope: 1,
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+
+const CREDIT_COSTS: Record<string, number> = {
+  daily_horoscope: 1,
   horoscope: 1,
   weekly_horoscope: 3,
   monthly_horoscope: 8,
@@ -19,7 +27,7 @@ const CREDIT_COSTS: Record<string, number> = { daily_horoscope: 1,
   tarot_10: 10,
   tarot_premium: 15,
   dream: 5,
-  numerology: 5,
+  numerology: 3,
   palmistry: 10,
   compatibility: 7,
   yes_no: 2,
@@ -27,7 +35,8 @@ const CREDIT_COSTS: Record<string, number> = { daily_horoscope: 1,
   birth_chart: 20,
   daily_ritual: 1,
   natal_chart: 20,
-  transit: 3 };
+  transit: 3,
+};
 
 const SYSTEMS: Record<string, { system: string; json: boolean }> = {
   daily_horoscope: { system: "You are an expert astrologer. Give a vivid daily horoscope (4-6 sentences) covering love, career, energy, lucky color & number.", json: false },
@@ -39,29 +48,79 @@ const SYSTEMS: Record<string, { system: string; json: boolean }> = {
   compatibility: { system: "You are a relationship astrologer. Analyze compatibility between two signs. Return JSON: {score_0_100, emotional, intellectual, physical, long_term_potential, advice}.", json: true },
   transit: { system: "You are a transit astrologer. Describe current planetary transits and their effects. 4-6 sentences.", json: false },
   tarot: { system: "You are a tarot reader. Draw 3 cards (past/present/future) and interpret. Return JSON: {cards:[{name, position, meaning}], overall_message}.", json: true },
-  numerology: { system: "You are a numerologist. Calculate life path and meaning. Return JSON: {life_path_number, soul_urge, personality, destiny, lucky_numbers[], summary}.", json: true },
+  numerology: { system: "You are an expert numerologist. Using the provided numbers, write a warm, detailed reading. Return JSON: {interpretation, life_path_meaning, destiny_meaning, soul_urge_meaning, personality_meaning, lucky_numbers:[numbers], summary}. 'interpretation' must be 6-10 sentences of flowing text in English.", json: true },
   dream: { system: "You are a dream interpreter combining Jungian and mystical traditions. Interpret the dream symbolically. Return JSON: {symbols:[{symbol,meaning}], emotional_theme, message, advice}.", json: true },
-  palmistry: { system: "You are a palmistry reader. Interpret palm lines from the image (or generic if no image). Return JSON: {life_line, heart_line, head_line, fate_line, summary}.", json: true },
+  palmistry: { system: "You are a palmistry reader. Interpret palm lines. Return JSON: {life_line, heart_line, head_line, fate_line, summary}.", json: true },
   yes_no: { system: "You are a mystical oracle. Answer YES or NO with a 1-2 sentence cosmic reasoning. Return JSON: {answer:'yes'|'no'|'maybe', reasoning, confidence_0_100}.", json: true },
   rune: { system: "You are a Norse rune reader. Draw 1 rune and interpret. Return JSON: {rune_name, symbol, meaning, advice}.", json: true },
-  daily_ritual: { system: "You are a mystical guide. Suggest a short daily ritual (3-5 sentences) including a mantra, color, and crystal.", json: false } };
+  daily_ritual: { system: "You are a mystical guide. Suggest a short daily ritual (3-5 sentences) including a mantra, color, and crystal.", json: false },
+};
+
+async function callGateway(system: string, user: string, wantJson: boolean): Promise<string> {
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) throw new Error("Missing LOVABLE_API_KEY");
+
+  let lastErr = "";
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Lovable-API-Key": key,
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3.6-flash",
+        messages: [
+          { role: "system", content: wantJson ? `${system}\nRespond with valid JSON only.` : system },
+          { role: "user", content: user },
+        ],
+        ...(wantJson ? { response_format: { type: "json_object" } } : {}),
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const content = data?.choices?.[0]?.message?.content;
+      if (content) return content as string;
+      lastErr = "Empty AI response";
+    } else {
+      lastErr = await res.text();
+      if (res.status === 402) throw new Error("AI credits exhausted. Please add credits.");
+      if (res.status !== 429 && res.status < 500) throw new Error(lastErr || "AI request failed");
+    }
+    await new Promise((r) => setTimeout(r, 700 * (attempt + 1)));
+  }
+  throw new Error(lastErr || "AI request failed");
+}
+
+function safeJson(s: string) {
+  try {
+    return JSON.parse(s);
+  } catch {
+    const m = s.match(/\{[\s\S]*\}/);
+    if (m) { try { return JSON.parse(m[0]); } catch { /* ignore */ } }
+    return null;
+  }
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
   try {
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return errorResponse("Missing authorization", 401);
+    if (!authHeader) return json({ error: "Missing authorization" }, 401);
 
-    const userClient = createClient(
+    const admin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } },
     );
-    const { data: { user } } = await userClient.auth.getUser();
-    if (!user) return errorResponse("Not authenticated", 401);
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authErr } = await admin.auth.getUser(token);
+    if (authErr || !user) return json({ error: "Not authenticated" }, 401);
 
     const body = await req.json();
-    // Support both { type, data } and legacy { action, ...fields }
     const rawType = String(body.type || body.action || "daily_horoscope");
     const type = rawType.replace(/-/g, "_");
     const data = body.data || body;
@@ -69,28 +128,17 @@ serve(async (req) => {
     const cost = CREDIT_COSTS[type] ?? 1;
     const config = SYSTEMS[type] || SYSTEMS.daily_horoscope;
 
-    // ── Server-side credit check & deduct via service-role ──
-    const adminClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
-    );
-
-    const { data: row } = await adminClient
-      .from("astrology_credits")
-      .select("*")
+    const { data: creditRow } = await admin
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    const remaining = row?.credits_remaining ?? 0;
+    const remaining = creditRow?.credits_remaining ?? 0;
     if (remaining < cost) {
-      return new Response(
-        JSON.stringify({ error: "Insufficient credits", required: cost, remaining }),
-        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return json({ error: "Insufficient credits", required: cost, remaining }, 402);
     }
 
-    // Build context from data fields
     const sign = data.sign || data.zodiacSign || data.sunSign;
     const contextParts = [
       sign && `Sun sign: ${sign}`,
@@ -102,37 +150,50 @@ serve(async (req) => {
       data.partner_sign && `Partner sign: ${data.partner_sign}`,
       data.sign1 && data.sign2 && `Person A: ${data.sign1}, Person B: ${data.sign2}`,
       data.fullName && `Name: ${data.fullName}`,
+      data.lifePathNumber && `Life path number: ${data.lifePathNumber}`,
+      data.destinyNumber && `Destiny number: ${data.destinyNumber}`,
+      data.soulUrgeNumber && `Soul urge number: ${data.soulUrgeNumber}`,
+      data.personalityNumber && `Personality number: ${data.personalityNumber}`,
       data.dreamDescription && `Dream: ${data.dreamDescription}`,
       data.question && `Question: ${data.question}`,
       data.cards && `Cards: ${JSON.stringify(data.cards)}`,
       data.prompt && `Prompt: ${data.prompt}`,
     ].filter(Boolean).join("\n");
 
-    const result = await callOpenAI({ system: config.system,
-      user: contextParts || "Give me a reading",
-      json: config.json,
-      temperature: 0.85 });
+    const raw = await callGateway(config.system, contextParts || "Give me a reading", config.json);
+    const parsed = config.json ? safeJson(raw) : null;
 
-    // Deduct credits AFTER successful AI call
-    if (row) {
-      await adminClient
-        .from("astrology_credits")
-        .update({ credits_remaining: remaining - cost })
-        .eq("user_id", user.id);
+    // Deduct AFTER a successful AI call (atomic, race-safe)
+    const { error: deductErr } = await admin.rpc("deduct_ai_credits_atomic", {
+      _user_id: user.id,
+      _amount: cost,
+    });
+    if (deductErr) {
+      const msg = deductErr.message || "";
+      return json({ error: msg }, msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500);
     }
 
-    return jsonResponse({ success: true,
+    const interpretation =
+      parsed?.interpretation ?? parsed?.summary ?? (typeof raw === "string" ? raw : "");
+    const luckyNumbers = parsed?.lucky_numbers ?? parsed?.luckyNumbers ?? [];
+
+    return json({
+      success: true,
       type,
       action: type,
       cost,
-      remaining: remaining - cost,
-      result: config.json ? safeJson(result) : result,
-      reading: result,
-      text: result,
-      response: result });
-  } catch (e: any) {
-    return errorResponse(e?.message || "Astrology reading failed");
+      credits_used: cost,
+      remaining: Math.max(0, remaining - cost),
+      result: parsed,
+      interpretation,
+      luckyNumbers,
+      reading: raw,
+      text: raw,
+      response: raw,
+    });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Astrology reading failed";
+    console.error("astrology-reading error:", message);
+    return json({ error: message }, 500);
   }
 });
-
-function safeJson(s: string) { try { return JSON.parse(s); } catch { return null; } }
