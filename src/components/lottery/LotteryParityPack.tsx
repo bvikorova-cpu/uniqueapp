@@ -151,10 +151,11 @@ export function LotteryParityPack() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <pre className="text-xs whitespace-pre-wrap break-words font-mono text-foreground/90 max-h-96 overflow-auto">
-                        {JSON.stringify((result as any).result, null, 2)}
-                      </pre>
+                      <div className="max-h-96 overflow-auto">
+                        <ResultView value={result} />
+                      </div>
                     </CardContent>
+
                   </Card>
                 </motion.div>
               )}
@@ -167,7 +168,70 @@ export function LotteryParityPack() {
   );
 }
 
+const titleize = (k: string) =>
+  k.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+function ResultView({ value, depth = 0 }: { value: unknown; depth?: number }) {
+  if (value === null || value === undefined || value === "") return null;
+
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    return <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground/90">{String(value)}</p>;
+  }
+
+  if (Array.isArray(value)) {
+    const scalars = value.every((v) => typeof v !== "object" || v === null);
+    if (scalars) {
+      const numeric = value.every((v) => typeof v === "number" || (typeof v === "string" && /^\d+$/.test(v)));
+      if (numeric) {
+        return (
+          <div className="flex flex-wrap gap-2">
+            {value.map((n, i) => (
+              <span
+                key={i}
+                className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 flex items-center justify-center text-sm font-black text-black"
+              >
+                {String(n)}
+              </span>
+            ))}
+          </div>
+        );
+      }
+      return (
+        <ul className="list-disc pl-5 space-y-1 text-sm text-foreground/90">
+          {value.map((v, i) => (
+            <li key={i} className="whitespace-pre-wrap">{String(v)}</li>
+          ))}
+        </ul>
+      );
+    }
+    return (
+      <div className="space-y-3">
+        {value.map((v, i) => (
+          <div key={i} className="rounded-lg border border-amber-400/20 bg-background/40 p-3">
+            <ResultView value={v} depth={depth + 1} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {Object.entries(value as Record<string, unknown>).map(([k, v]) => {
+        if (v === null || v === undefined || v === "") return null;
+        return (
+          <div key={k} className="space-y-1.5">
+            <p className="text-[11px] uppercase tracking-wide font-bold text-amber-500/90">{titleize(k)}</p>
+            <ResultView value={v} depth={depth + 1} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function ToolForm({ children, onRun }: { children: React.ReactNode; onRun: () => void }) {
+
   return (
     <div className="space-y-3">
       {children}
