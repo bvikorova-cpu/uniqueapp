@@ -34,15 +34,34 @@ export const CompatibilityChecker = () => {
         body: { type: 'compatibility', data: { sign1, sign2 } }
       });
       if (error) throw error;
+      const raw = (data?.result && typeof data.result === 'object') ? { ...data, ...data.result } : (data || {});
+      const toList = (v: any): string[] => {
+        if (Array.isArray(v)) return v.map((x) => typeof x === 'string' ? x : (x?.text || x?.title || JSON.stringify(x)));
+        if (typeof v === 'string' && v.trim()) return v.split(/\n|•|;/).map((s) => s.trim()).filter(Boolean);
+        return [];
+      };
+      const parsed = {
+        compatibilityScore: Number(raw.compatibilityScore ?? raw.score_0_100 ?? raw.score ?? 0),
+        analysis: raw.analysis || raw.summary || raw.overview || '',
+        strengths: toList(raw.strengths),
+        challenges: toList(raw.challenges),
+        emotional: raw.emotional || '',
+        intellectual: raw.intellectual || '',
+        physical: raw.physical || '',
+        communication: raw.communication || '',
+        longTermPotential: raw.longTermPotential || raw.long_term_potential || '',
+        advice: raw.advice || '',
+      };
       await supabase.from('compatibility_readings').insert([{
-        user_id: user.id, sign1, sign2, compatibility_score: data.compatibilityScore,
-        analysis: data.analysis, strengths: data.strengths, challenges: data.challenges, advice: data.advice, is_premium: false
+        user_id: user.id, sign1, sign2, compatibility_score: parsed.compatibilityScore,
+        analysis: parsed.analysis, strengths: parsed.strengths, challenges: parsed.challenges, advice: parsed.advice, is_premium: false
       }]);
-      return data;
+      return parsed;
     },
     onSuccess: (data) => { setResult(data); toast.success('Compatibility revealed! 💕'); },
     onError: (error: any) => { toast.error(error.message || 'Failed to analyze'); }
   });
+
 
   const s1 = ZODIAC_SIGNS.find(s => s.value === sign1);
   const s2 = ZODIAC_SIGNS.find(s => s.value === sign2);
@@ -112,23 +131,38 @@ export const CompatibilityChecker = () => {
 
             <p className="text-sm text-foreground leading-relaxed">{result.analysis}</p>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="bg-emerald-500/5 rounded-xl p-3 border border-emerald-500/20">
                 <h4 className="text-xs font-black text-emerald-600 dark:text-emerald-400 mb-2">💪 Strengths</h4>
-                <ul className="space-y-1">
+                <ul className="space-y-1.5">
                   {result.strengths?.map((s: string, i: number) => (
-                    <li key={i} className="text-xs text-foreground flex items-start gap-1"><span className="text-emerald-500">✓</span>{s}</li>
+                    <li key={i} className="text-xs text-foreground flex items-start gap-1.5 leading-relaxed"><span className="text-emerald-500">✓</span><span>{s}</span></li>
                   ))}
                 </ul>
               </div>
               <div className="bg-amber-500/5 rounded-xl p-3 border border-amber-500/20">
                 <h4 className="text-xs font-black text-amber-600 dark:text-amber-400 mb-2">⚠️ Challenges</h4>
-                <ul className="space-y-1">
+                <ul className="space-y-1.5">
                   {result.challenges?.map((c: string, i: number) => (
-                    <li key={i} className="text-xs text-foreground flex items-start gap-1"><span className="text-amber-500">!</span>{c}</li>
+                    <li key={i} className="text-xs text-foreground flex items-start gap-1.5 leading-relaxed"><span className="text-amber-500">!</span><span>{c}</span></li>
                   ))}
                 </ul>
               </div>
+            </div>
+
+            <div className="space-y-3">
+              {[
+                { key: 'emotional', icon: '💗', label: 'Emotional connection' },
+                { key: 'intellectual', icon: '🧠', label: 'Intellectual bond' },
+                { key: 'physical', icon: '🔥', label: 'Physical chemistry' },
+                { key: 'communication', icon: '🗣️', label: 'Communication' },
+                { key: 'longTermPotential', icon: '💍', label: 'Long-term potential' },
+              ].filter((s) => result[s.key]).map((s) => (
+                <div key={s.key} className="p-3 bg-muted/30 rounded-xl border border-border/30">
+                  <h4 className="text-xs font-black text-foreground mb-1">{s.icon} {s.label}</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{result[s.key]}</p>
+                </div>
+              ))}
             </div>
 
             {result.advice && (
@@ -137,6 +171,7 @@ export const CompatibilityChecker = () => {
                 <p className="text-xs text-muted-foreground leading-relaxed">{result.advice}</p>
               </div>
             )}
+
           </Card>
         </motion.div>
       )}
