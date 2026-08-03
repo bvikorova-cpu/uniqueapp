@@ -66,7 +66,17 @@ serve(async (req) => {
     try { result = JSON.parse(content); } catch { result = { raw: content }; }
 
     await supabaseAdmin.from(cfg.table).insert({ user_id: user.id, input: payload ?? {}, result });
-    await supabaseAdmin.from("crystal_parity_credits").insert({ user_id: user.id, action, credits_spent: PARITY_COST });
+
+    const { error: deductErr } = await supabaseAdmin.rpc("deduct_ai_credits_atomic", {
+      _user_id: user.id,
+      _amount: PARITY_COST,
+    });
+    if (deductErr) {
+      const msg = deductErr.message || "";
+      return new Response(JSON.stringify({ error: msg }), {
+        status: msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     return new Response(JSON.stringify({ result, cost: PARITY_COST }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
