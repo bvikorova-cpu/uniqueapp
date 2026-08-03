@@ -19,7 +19,7 @@ interface JournalEntryFormProps {
 const JournalEntryForm = ({ onSuccess }: JournalEntryFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { credits, spendCredit } = useAICredits();
+  const { credits, refresh } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -46,7 +46,7 @@ const JournalEntryForm = ({ onSuccess }: JournalEntryFormProps) => {
         return;
       }
 
-      await spendCredit("effect");
+      // Credits are deducted server-side (atomic, after successful AI call)
 
       const { data: { session } } = await supabase.auth.getSession();
       const insightsResponse = await supabase.functions.invoke("analyze-journal", {

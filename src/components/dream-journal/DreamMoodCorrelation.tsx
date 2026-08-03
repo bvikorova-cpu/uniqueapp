@@ -17,7 +17,7 @@ interface DreamMoodCorrelationProps {
 
 const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
   const navigate = useNavigate();
-  const { credits, spendCredit } = useAICredits();
+  const { credits, refresh } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
@@ -28,8 +28,7 @@ const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
     }
     setLoading(true);
     try {
-      const used = await spendCredit("effect", "Dream-Mood Correlation Analysis");
-      if (!used) throw new Error("Failed to use credit");
+      // Credits are deducted server-side (atomic, after successful AI call)
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
