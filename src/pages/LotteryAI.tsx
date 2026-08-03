@@ -571,27 +571,30 @@ export default function LotteryAI() {
                 <div className="space-y-4">
                   <Card className="bg-card/80 backdrop-blur-xl border-border/50">
                     <CardHeader>
-                      <CardTitle className="font-black">Historical Frequency Analysis</CardTitle>
+                      <CardTitle className="font-black">Your Frequency Analysis</CardTitle>
+                      <CardDescription>
+                        {lotteryStats?.total
+                          ? `Based on your last ${lotteryStats.total} generated sets`
+                          : "Generate numbers to build your personal statistics"}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
-                        {[
-                          { num: 7, freq: 42, color: "bg-red-500" },
-                          { num: 14, freq: 38, color: "bg-orange-500" },
-                          { num: 21, freq: 35, color: "bg-yellow-500" },
-                          { num: 28, freq: 31, color: "bg-green-500" },
-                          { num: 35, freq: 28, color: "bg-blue-500" },
-                        ].map((item) => (
-                          <div key={item.num} className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-black text-sm">{item.num}</div>
-                            <div className="flex-1 h-6 bg-muted rounded-full overflow-hidden">
-                              <motion.div initial={{ width: 0 }} whileInView={{ width: `${item.freq}%` }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.2 }}
-                                className={`h-full ${item.color} rounded-full`} />
+                      {!lotteryStats?.topNumbers?.length ? (
+                        <p className="text-sm text-muted-foreground text-center py-6">No data yet — generate your first set.</p>
+                      ) : (
+                        <div className="space-y-3">
+                          {lotteryStats.topNumbers.map((item) => (
+                            <div key={item.num} className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-black text-sm">{item.num}</div>
+                              <div className="flex-1 h-6 bg-muted rounded-full overflow-hidden">
+                                <motion.div initial={{ width: 0 }} animate={{ width: `${item.pct}%` }} transition={{ duration: 0.8 }}
+                                  className="h-full bg-gradient-to-r from-primary to-accent rounded-full" />
+                              </div>
+                              <div className="w-14 text-right text-sm font-bold">{item.count}×</div>
                             </div>
-                            <div className="w-12 text-right text-sm font-bold">{item.freq}%</div>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
 
@@ -600,16 +603,21 @@ export default function LotteryAI() {
                       <CardTitle className="font-black">Pattern Analysis</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      {[
-                        { label: "Odd/Even Ratio", value: "3:3 Optimal", variant: "default" as const },
-                        { label: "High/Low Balance", value: "Balanced", variant: "default" as const },
-                        { label: "Consecutive Numbers", value: "Low Probability", variant: "outline" as const },
-                      ].map(item => (
-                        <div key={item.label} className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/30">
-                          <span className="font-bold text-sm">{item.label}</span>
-                          <Badge variant={item.variant} className={item.variant === "default" ? "bg-primary/20 text-primary border-primary/30" : ""}>{item.value}</Badge>
-                        </div>
-                      ))}
+                      {!lotteryStats?.total ? (
+                        <p className="text-sm text-muted-foreground text-center py-6">Patterns appear once you have generated sets.</p>
+                      ) : (
+                        [
+                          { label: "Odd / Even", value: `${lotteryStats.oddEven.odd} : ${lotteryStats.oddEven.even}` },
+                          { label: "High / Low", value: `${lotteryStats.highLow.high} : ${lotteryStats.highLow.low}` },
+                          { label: "Sets with consecutive numbers", value: `${lotteryStats.consecutivePct}%` },
+                          { label: "Lottery types played", value: `${lotteryStats.lotteryTypes}` },
+                        ].map(item => (
+                          <div key={item.label} className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/30">
+                            <span className="font-bold text-sm">{item.label}</span>
+                            <Badge variant="default" className="bg-primary/20 text-primary border-primary/30">{item.value}</Badge>
+                          </div>
+                        ))
+                      )}
                     </CardContent>
                   </Card>
 
@@ -617,6 +625,7 @@ export default function LotteryAI() {
                   <LotteryQuestionnaire />
                 </div>
               </TabsContent>
+
 
               {/* Saved Tab */}
               <TabsContent value="saved">
