@@ -30,7 +30,7 @@ const tools = [
   { icon: Globe, name: "Crystal Origin Map", description: "Interactive global crystal origin explorer", gradient: "from-blue-500 to-teal-400", bgGlow: "bg-blue-500/10" },
   { icon: MessageCircle, name: "Crystal Community", description: "Social network for crystal healers", gradient: "from-pink-500 to-fuchsia-400", bgGlow: "bg-pink-500/10" },
   { icon: Trophy, name: "Energy Leaderboard", description: "Gamified rankings & energy achievements", gradient: "from-yellow-500 to-orange-400", bgGlow: "bg-yellow-500/10" },
-  { icon: Package, name: "Crystal Sub Box", description: "Monthly AI-curated crystal subscription", gradient: "from-emerald-500 to-teal-400", bgGlow: "bg-emerald-500/10", isPaid: true },
+  { icon: Package, name: "Crystal Box Curation", description: "AI-curated crystal box for 15 credits", gradient: "from-emerald-500 to-teal-400", bgGlow: "bg-emerald-500/10", isPaid: true },
 ];
 
 interface CrystalToolCardsProps {
