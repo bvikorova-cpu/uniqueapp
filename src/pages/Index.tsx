@@ -75,7 +75,6 @@ const services = [
   { title: "Property Marketplace", icon: Building2, path: "/property-marketplace", badge: "Real Estate", gradient: "from-sky-600 to-blue-500", category: "shopping" },
   { title: "Membership Community", icon: Users, path: "/membership-community", badge: "Community", gradient: "from-rose-600 to-pink-500", category: "social" },
   { title: "Crystal Energy", icon: Sparkles, path: "/crystal-energy", badge: "Wellness", gradient: "from-violet-600 to-purple-500", category: "wellness" },
-  { title: "DNA Memory Network", icon: Brain, path: "/dna-memory", badge: "Heritage", gradient: "from-cyan-600 to-teal-500", category: "wellness" },
   { title: "Blockchain Confessions", icon: Ghost, path: "/blockchain-confessions", badge: "Anonymous", gradient: "from-slate-600 to-gray-500", category: "social" },
   { title: "Phobia Trading", icon: Ghost, path: "/phobia-trading", badge: "Therapy", gradient: "from-orange-600 to-amber-500", category: "wellness" },
   { title: "Multiverse Network", icon: Sparkles, path: "/multiverse-network", badge: "Exploration", gradient: "from-indigo-600 to-violet-500", category: "entertainment" },

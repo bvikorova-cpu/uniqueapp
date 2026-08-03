@@ -64,7 +64,6 @@ const advancedModules = [
   { name: "Property Marketplace", path: "/property-marketplace", icon: Building2, color: "text-sky-500" },
   { name: "Membership Community", path: "/membership-community", icon: Users, color: "text-rose-500" },
   { name: "Crystal Energy", path: "/crystal-energy", icon: Gem, color: "text-violet-500" },
-  { name: "DNA Memory", path: "/dna-memory", icon: Dna, color: "text-cyan-500" },
   { name: "Blockchain Confessions", path: "/blockchain-confessions", icon: Link2, color: "text-slate-400" },
   { name: "Phobia Trading", path: "/phobia-trading", icon: Bug, color: "text-orange-500" },
   { name: "Multiverse Network", path: "/multiverse-network", icon: SparklesIcon, color: "text-indigo-500" },
