@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Loader2, Check, Coins } from "lucide-react";
+import { Sparkles, Loader2, Coins } from "lucide-react";
 import { useCrystalParity, CRYSTAL_PARITY_COST, type CrystalParityAction } from "@/hooks/useCrystalParity";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
