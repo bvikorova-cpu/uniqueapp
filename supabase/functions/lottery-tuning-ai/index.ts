@@ -231,9 +231,12 @@ Deno.serve(async (req) => {
       p_feature: `lottery_${feature}`,
     });
     if (deductError) {
+      // Pass all args to disambiguate between the two deduct_ai_credits overloads
       const { error: fallbackError } = await admin.rpc("deduct_ai_credits", {
         p_user_id: userId,
         p_amount: cost,
+        p_reason: `lottery_${feature}`,
+        p_source: "lottery-tuning-ai",
       });
       if (fallbackError) {
         console.error("Credit deduction failed:", deductError, fallbackError);
