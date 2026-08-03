@@ -515,7 +515,7 @@ export default function LotteryAI() {
                   </Card>
 
                   {/* Generated Numbers */}
-                  <Card className="bg-card/80 backdrop-blur-xl border-2 border-primary/20">
+                  <Card data-lottery-generator className="bg-card/80 backdrop-blur-xl border-2 border-primary/20">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2 font-black">
                         <Sparkles className="h-5 w-5 text-primary" />

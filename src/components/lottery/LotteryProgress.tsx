@@ -47,7 +47,15 @@ export const LotteryProgress = () => {
             </div>
           </div>
 
-          <Button className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground" size="sm" onClick={() => { window.location.href = "/lottery?tool=quick-generate"; }}>
+          <Button
+            className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground"
+            size="sm"
+            onClick={() => {
+              const el = document.querySelector('[data-lottery-generator]') as HTMLElement | null;
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+              else window.location.href = "/lottery-ai";
+            }}
+          >
             <Zap className="w-4 h-4 mr-2" />
             Generate Now
           </Button>
