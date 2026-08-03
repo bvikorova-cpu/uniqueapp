@@ -263,6 +263,8 @@ export default function LotteryAI() {
         bonus_numbers: generatedData.bonusNumbers?.length > 0 ? generatedData.bonusNumbers : null });
       if (insErr) throw insErr;
       await loadHistory();
+      refetchStats();
+
       setIsGenerating(false);
       toast({ title: "Numbers Generated! 🎰", description: "Saved to your history." });
     } catch (error: any) {
