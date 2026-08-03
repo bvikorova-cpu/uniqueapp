@@ -312,7 +312,7 @@ export default function LotteryAI() {
         .update({ is_favorite: true })
         .eq("id", match.id);
       if (updErr) throw updErr;
-      await loadHistory();
+      await loadHistory(); refetchStats();
       toast({ title: "Combination Saved! 💾", description: "Marked as favorite in your history." });
     } catch (error: any) {
       console.error("Error saving combination:", error);
