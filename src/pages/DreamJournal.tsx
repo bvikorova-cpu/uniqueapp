@@ -216,10 +216,10 @@ const DreamJournal = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-muted-foreground">
             <div className="flex gap-2"><span className="text-primary font-bold">1.</span> Record dreams within 5 minutes of waking for best recall</div>
             <div className="flex gap-2"><span className="text-primary font-bold">2.</span> Track mood daily to discover emotional-dream connections</div>
-            <div className="flex gap-2"><span className="text-primary font-bold">3.</span> Use the Pattern Timeline after 5+ entries for deep insights</div>
+            <div className="flex gap-2"><span className="text-primary font-bold">3.</span> Check the Dream Dictionary for recurring symbols</div>
             <div className="flex gap-2"><span className="text-primary font-bold">4.</span> Practice reality checks from the Lucid Coach throughout the day</div>
             <div className="flex gap-2"><span className="text-primary font-bold">5.</span> Generate Dream Visualizations to reinforce dream memory</div>
-            <div className="flex gap-2"><span className="text-primary font-bold">6.</span> Build a Sleep Ritual to improve dream vividness consistently</div>
+            <div className="flex gap-2"><span className="text-primary font-bold">6.</span> Use the Sleep Quality Analyzer weekly for better dream vividness</div>
           </div>
         </Card>
       </main>
