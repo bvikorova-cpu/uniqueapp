@@ -4,21 +4,8 @@ import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
-// Functional tool components
 import { CrystalAIAnalysis } from "./tools/CrystalAIAnalysis";
-import { CrystalTimerTool } from "./tools/CrystalTimerTool";
-import { CrystalSoundBathTool } from "./tools/CrystalSoundBathTool";
-import { CrystalCollectionTool } from "./tools/CrystalCollectionTool";
 import { CrystalOracleTool } from "./tools/CrystalOracleTool";
-import { CrystalEncyclopediaTool } from "./tools/CrystalEncyclopediaTool";
-import { CrystalGuidesTool } from "./tools/CrystalGuidesTool";
-import { CrystalMoonPhaseTool } from "./tools/CrystalMoonPhaseTool";
-import { CrystalOriginMapTool } from "./tools/CrystalOriginMapTool";
-import { CrystalCommunityTool } from "./tools/CrystalCommunityTool";
-import { CrystalLeaderboardTool } from "./tools/CrystalLeaderboardTool";
-import { CrystalAnalyticsTool } from "./tools/CrystalAnalyticsTool";
-import { CrystalChakraBalancingTool } from "./tools/CrystalChakraBalancingTool";
-import { CrystalSubBoxTool } from "./tools/CrystalSubBoxTool";
 import CrystalEnergyUpload from "./CrystalEnergyUpload";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
