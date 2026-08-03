@@ -18,16 +18,9 @@ import { LotteryProgress } from "@/components/lottery/LotteryProgress";
 import { LotteryAchievements } from "@/components/lottery/LotteryAchievements";
 import { LotterySidebar } from "@/components/lottery/LotterySidebar";
 import { LotteryQuestionnaire } from "@/components/lottery/LotteryQuestionnaire";
-import { LotteryPushNotifications } from "@/components/lottery/LotteryPushNotifications";
-import { LotterySocialSharing } from "@/components/lottery/LotterySocialSharing";
-import { LotteryWinTracker } from "@/components/lottery/LotteryWinTracker";
-import { LotterySmartPicks } from "@/components/lottery/LotterySmartPicks";
-import { LotteryLiveDraws } from "@/components/lottery/LotteryLiveDraws";
-import { LotteryLeaderboard } from "@/components/lottery/LotteryLeaderboard";
 import { LotteryDreamDecoder } from "@/components/lottery/LotteryDreamDecoder";
 import { LotteryNumerology } from "@/components/lottery/LotteryNumerology";
 import { LotteryHeatmapLab } from "@/components/lottery/LotteryHeatmapLab";
-import { LotterySyndicate } from "@/components/lottery/LotterySyndicate";
 import { LotteryParityPack } from "@/components/lottery/LotteryParityPack";
 import { Moon, Hash, Activity, Users } from "lucide-react";
 
@@ -71,7 +64,7 @@ export default function LotteryAI() {
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [checkingSubscription, setCheckingSubscription] = useState(false);
-  const [activeView, setActiveView] = useState<"hub" | "notifications" | "sharing" | "wintracker" | "smartpicks" | "livedraws" | "leaderboard" | "dream" | "numerology" | "heatmap" | "syndicate">("hub");
+  const [activeView, setActiveView] = useState<"hub" | "dream" | "numerology" | "heatmap">("hub");
 
   const [selectedLottery, setSelectedLottery] = useState(LOTTERY_TYPES[0]);
   const [generatedNumbers, setGeneratedNumbers] = useState<number[]>([]);
