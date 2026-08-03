@@ -53,11 +53,16 @@ export const DailyHoroscope = () => {
         body: { type: 'daily_horoscope', data: { zodiacSign: selectedSign, date: today } }
       });
       if (error) throw error;
+      const content = data?.content || data?.interpretation || data?.reading || data?.text;
+      if (!content) throw new Error('AI returned no horoscope, please try again');
+      const rnd = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
       const horoscopeData = {
-        user_id: user.id, zodiac_sign: selectedSign, date: today, content: data.content,
-        lucky_numbers: data.luckyNumbers, lucky_colors: data.luckyColors,
-        compatibility_signs: data.compatibilitySigns?.map((s: string) => s.toLowerCase()),
-        mood_score: data.moodScore, love_score: data.loveScore, career_score: data.careerScore, health_score: data.healthScore, is_premium: false
+        user_id: user.id, zodiac_sign: selectedSign, date: today, content,
+        lucky_numbers: data.luckyNumbers ?? data.lucky_numbers ?? [rnd(1, 49), rnd(1, 49), rnd(1, 49)],
+        lucky_colors: data.luckyColors ?? data.lucky_colors ?? [],
+        compatibility_signs: (data.compatibilitySigns ?? data.compatibility_signs ?? []).map((s: string) => String(s).toLowerCase()),
+        mood_score: data.moodScore ?? rnd(60, 95), love_score: data.loveScore ?? rnd(60, 95),
+        career_score: data.careerScore ?? rnd(60, 95), health_score: data.healthScore ?? rnd(60, 95), is_premium: false
       };
       const { data: saved, error: saveError } = await supabase.from('daily_horoscopes').insert([horoscopeData]).select().single();
       if (saveError) throw saveError;
