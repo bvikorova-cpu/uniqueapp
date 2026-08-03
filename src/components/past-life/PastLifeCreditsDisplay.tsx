@@ -128,6 +128,5 @@ export const PastLifeCreditsDisplay = () => {
         </DialogContent>
       </Dialog>
     </>
-    </>
   );
 };
