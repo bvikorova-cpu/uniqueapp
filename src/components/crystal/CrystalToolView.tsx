@@ -1,8 +1,6 @@
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 
 import { CrystalAIAnalysis } from "./tools/CrystalAIAnalysis";
 import { CrystalOracleTool } from "./tools/CrystalOracleTool";
@@ -15,14 +13,6 @@ interface CrystalToolViewProps {
 }
 
 export const CrystalToolView = ({ toolName, onBack }: CrystalToolViewProps) => {
-  const navigate = useNavigate();
-
-  // Side-effect navigation for tools that route to standalone pages
-  useEffect(() => {
-    if (toolName === "Crystal Marketplace") {
-      navigate("/crystal-marketplace");
-    }
-  }, [toolName, navigate]);
 
   const renderTool = () => {
     switch (toolName) {
