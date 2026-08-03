@@ -56,16 +56,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const supported = typeof window !== "undefined" &&
     ("webkitSpeechRecognition" in window || "SpeechRecognition" in window);
 
-  useEffect(() => {
-    const updateViewport = () => setIsMobileViewport(window.innerWidth < 768);
-    updateViewport();
-    window.addEventListener("resize", updateViewport);
-    window.addEventListener("orientationchange", updateViewport);
-    return () => {
-      window.removeEventListener("resize", updateViewport);
-      window.removeEventListener("orientationchange", updateViewport);
-    };
-  }, []);
 
   useEffect(() => {
     return () => {
