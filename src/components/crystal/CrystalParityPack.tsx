@@ -109,9 +109,9 @@ export default function CrystalParityPack() {
               </Button>
 
               {data && (
-                <div className="mt-4 p-4 rounded-lg bg-muted/50 border border-border/60">
-                  <h4 className="font-semibold mb-2 text-sm">Result</h4>
-                  <pre className="text-xs whitespace-pre-wrap break-words overflow-auto max-h-96">{JSON.stringify(data, null, 2)}</pre>
+                <div className="mt-4 p-4 rounded-lg bg-muted/50 border border-border/60 space-y-4">
+                  <h4 className="font-semibold text-sm">Result</h4>
+                  <ResultView value={data} />
                 </div>
               )}
             </TabsContent>
