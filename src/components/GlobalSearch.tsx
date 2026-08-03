@@ -170,8 +170,6 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   
   { id: "125", title: "Future Face", category: "Mystical", path: "/future-face" },
   
-  { id: "127", title: "Reincarnation Social", category: "Mystical", path: "/reincarnation-social" },
-  { id: "128", title: "DNA Memory Network", category: "Mystical", path: "/dna-memory-network" },
   { id: "129", title: "Crystal Energy Network", category: "Mystical", path: "/crystal-energy-network" },
   { id: "130", title: "Holographic Avatars", category: "Mystical", path: "/holographic-avatars" },
   { id: "131", title: "Quantum Social", category: "Mystical", path: "/quantum-social" },

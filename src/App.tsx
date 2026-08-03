@@ -441,8 +441,6 @@ import { ResetPassword,
   DigitalOffspring,
   CrystalEnergyNetwork,
   CrystalMarketplace,
-  DNAMemoryNetwork,
-  ReincarnationSocial,
   BlockchainConfessions,
   PhobiaTrading,
   MultiverseNetwork,
@@ -1314,11 +1312,6 @@ const App = () => {
                         <Route path="/crystal-energy-network" element={<CrystalEnergyNetwork />} />
                         <Route path="/crystal-energy" element={<CrystalEnergyNetwork />} />
                         <Route path="/crystal-marketplace" element={<CrystalMarketplace />} />
-                        {/* DNA Memory Network */}
-                        <Route path="/dna-memory-network" element={<DNAMemoryNetwork />} />
-                        <Route path="/dna-memory" element={<DNAMemoryNetwork />} />
-                        {/* Reincarnation Social */}
-                        <Route path="/reincarnation-social" element={<ReincarnationSocial />} />
                         {/* Blockchain Confessions */}
                         <Route path="/blockchain-confessions" element={<BlockchainConfessions />} />
                         <Route path="/confessions" element={<BlockchainConfessions />} />

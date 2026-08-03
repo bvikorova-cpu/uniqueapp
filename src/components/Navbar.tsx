@@ -170,8 +170,6 @@ const Navbar = () => {
         { path: "/astrology", label: "Astrology", icon: Star },
         { path: "/dream-journal", label: "Dream Analyzer", icon: Brain },
         { path: "/crystal-energy-network", label: "Crystal & Energy Network", icon: Gem },
-        { path: "/dna-memory-network", label: "DNA Social Memory Network", icon: Dna },
-        { path: "/reincarnation-social", label: "Reincarnation Social", icon: Sparkles },
         { path: "/blockchain-confessions", label: "Blockchain Confessions", icon: Scale },
         { path: "/multiverse-network", label: "Multiverse Profile Network", icon: Globe },
         { path: "/quantum-social", label: "Quantum Social Network", icon: Zap },
