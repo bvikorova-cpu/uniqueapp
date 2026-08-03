@@ -80,20 +80,20 @@ export const CrystalOracleTool = () => {
       <CardContent>
         {todayDraw ? (
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-4">
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
-              <div className="text-5xl mb-3">🔮</div>
-              <h3 className="text-2xl font-black text-foreground mb-1">{todayDraw.crystal_name}</h3>
+            <div className="text-center p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 overflow-hidden">
+              <div className="text-4xl sm:text-5xl mb-3">🔮</div>
+              <h3 className="text-xl sm:text-2xl font-black text-foreground mb-2 break-words">{todayDraw.crystal_name}</h3>
               {crystalInfo && (
-                <div className="flex flex-wrap gap-2 justify-center mb-3">
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{crystalInfo.chakra}</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent-foreground">{crystalInfo.element}</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{crystalInfo.color}</span>
+                <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1.5 sm:gap-2 items-center justify-center mb-3">
+                  <span className="max-w-full text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary break-words text-center">{crystalInfo.chakra}</span>
+                  <span className="max-w-full text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-accent/10 text-accent-foreground break-words text-center">{crystalInfo.element}</span>
+                  <span className="max-w-full text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-muted text-muted-foreground break-words text-center">{crystalInfo.color}</span>
                 </div>
               )}
               <div className="p-3 rounded-xl bg-card/60 border border-border/30 mb-3">
-                <p className="text-sm font-semibold italic text-primary">"{todayDraw.mantra}"</p>
+                <p className="text-sm font-semibold italic text-primary break-words">"{String(todayDraw.mantra ?? '').replace(/[*#]/g, '')}"</p>
               </div>
-              <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{todayDraw.guidance}</p>
+              <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed break-words text-left sm:text-center">{String(todayDraw.guidance ?? '').replace(/\*\*?/g, '').replace(/^#+\s*/gm, '').replace(/^\s*\*\*\*\s*$/gm, '').trim()}</p>
             </div>
             <p className="text-xs text-center text-muted-foreground">Come back tomorrow for a new crystal oracle card ✨</p>
           </motion.div>
