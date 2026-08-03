@@ -331,7 +331,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     <div className={cn(
       "flex flex-col items-end gap-2",
       docked && "hidden md:flex",
-      !docked && "fixed bottom-24 right-4 md:right-6 z-[9998]"
+      !docked && "fixed bottom-24 right-4 md:right-6 z-40"
     )}>
       {supported && !docked && (
         <button
@@ -359,7 +359,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-end md:items-center justify-center bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/50 backdrop-blur-sm"
           onClick={() => setOpen(false)}
         >
           <motion.div
