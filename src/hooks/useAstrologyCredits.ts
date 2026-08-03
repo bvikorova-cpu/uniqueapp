@@ -60,6 +60,8 @@ export const useAstrologyCredits = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["astrology-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
     },
     onError: (error: Error) => {
       if (error.message.includes('credits') || error.message.includes('Insufficient')) {
