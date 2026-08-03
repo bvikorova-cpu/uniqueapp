@@ -53,6 +53,31 @@ export const useAstrologyCredits = () => {
       } as AstrologyCredits;
     } });
 
+  // Keep the displayed balance in sync with the unified credit pool
+  useEffect(() => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let active = true;
+
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !active) return;
+      channel = supabase
+        .channel(`astrology-ai-credits-${user.id}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "ai_credits", filter: `user_id=eq.${user.id}` },
+          () => queryClient.invalidateQueries({ queryKey: ["astrology-credits"] })
+        )
+        .subscribe();
+    })();
+
+    return () => {
+      active = false;
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
+
   const performReading = useMutation({
     mutationFn: async ({ readingType, data }: { readingType: string; data: Record<string, unknown> }) => {
       return invokeOrThrow('astrology-reading', {
