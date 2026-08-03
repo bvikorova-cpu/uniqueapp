@@ -108,9 +108,17 @@ Return ONLY a valid JSON object:
       };
     }
 
-    // Deduct credit after successful analysis
-    await adminClient.from("ai_credits").update({ credits_remaining: remaining - 1,
-      last_used_at: new Date().toISOString() }).eq("user_id", user.id);
+    // Deduct credit after successful analysis (atomic + ledger row)
+    const { error: deductErr } = await adminClient.rpc("deduct_ai_credits_atomic", {
+      _user_id: user.id,
+      _amount: 1,
+    });
+    if (deductErr) {
+      const msg = deductErr.message || "";
+      return new Response(JSON.stringify({ error: msg }), {
+        status: msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     return new Response(
       JSON.stringify({ ...insightsData, credits_remaining: remaining - 1 }),

@@ -134,12 +134,17 @@ Deno.serve(async (req) => {
         break;
     }
 
-    // ── Deduct credits AFTER successful AI call ──
-    await adminClient
-      .from("ai_credits")
-      .update({ credits_remaining: remaining - cost,
-        last_used_at: new Date().toISOString() })
-      .eq("user_id", userId);
+    // ── Deduct credits AFTER successful AI call (atomic + ledger row) ──
+    const { error: deductErr } = await adminClient.rpc("deduct_ai_credits_atomic", {
+      _user_id: userId,
+      _amount: cost,
+    });
+    if (deductErr) {
+      const msg = deductErr.message || "";
+      return new Response(JSON.stringify({ error: msg }), {
+        status: msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     return new Response(JSON.stringify({ ...result, credits_used: cost, credits_remaining: remaining - cost }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
