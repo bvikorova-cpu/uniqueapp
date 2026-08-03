@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import { CREDIT_COSTS } from "@/hooks/useAstrologyCredits";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
+import { useMysticalStats } from "@/hooks/useMysticalStats";
+
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
