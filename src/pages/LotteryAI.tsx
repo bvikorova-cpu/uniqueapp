@@ -225,29 +225,21 @@ export default function LotteryAI() {
       savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
-    if (!subscription?.subscribed) {
-      toast({ title: "Subscription Required", description: "Subscribe to Basic or Pro to generate AI lucky numbers.", variant: "destructive" });
-      return;
-    }
     if (!selectedLottery?.id) {
       toast({ title: "Invalid Input", description: "Please select a lottery type first.", variant: "destructive" });
       return;
     }
-    if (subscription.isBasic && !subscription.isPro) {
-      const now = new Date();
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const { count, error: countError } = await supabase
-        .from("lottery_generations").select("*", { count: 'exact', head: true })
-        .eq("user_id", user.id).gte("created_at", monthStart);
-      if (countError) {
-        console.error("Error checking generation count:", countError);
-        toast({ title: "Could Not Verify Limit", description: "We couldn't check your monthly usage. Try again.", variant: "destructive" });
-        return;
-      }
-      if (count !== null && count >= 10) {
-        toast({ title: "Monthly Limit Reached", description: "You've used 10/10 generations this month. Upgrade to Pro for more.", variant: "destructive" });
-        return;
-      }
+
+    // Credit-based access: 3 AI credits per generation (no subscription required)
+    const { error: creditError } = await supabase.rpc("deduct_ai_credits_atomic", {
+      _user_id: user.id,
+      _amount: GENERATION_COST });
+    if (creditError) {
+      toast({ title: "Not Enough Credits",
+        description: `You need ${GENERATION_COST} AI credits to generate numbers. Tap to top up.`,
+        variant: "destructive" });
+      navigate("/ai-credits");
+      return;
     }
 
     setIsGenerating(true);
