@@ -18,16 +18,9 @@ import { LotteryProgress } from "@/components/lottery/LotteryProgress";
 import { LotteryAchievements } from "@/components/lottery/LotteryAchievements";
 import { LotterySidebar } from "@/components/lottery/LotterySidebar";
 import { LotteryQuestionnaire } from "@/components/lottery/LotteryQuestionnaire";
-import { LotteryPushNotifications } from "@/components/lottery/LotteryPushNotifications";
-import { LotterySocialSharing } from "@/components/lottery/LotterySocialSharing";
-import { LotteryWinTracker } from "@/components/lottery/LotteryWinTracker";
-import { LotterySmartPicks } from "@/components/lottery/LotterySmartPicks";
-import { LotteryLiveDraws } from "@/components/lottery/LotteryLiveDraws";
-import { LotteryLeaderboard } from "@/components/lottery/LotteryLeaderboard";
 import { LotteryDreamDecoder } from "@/components/lottery/LotteryDreamDecoder";
 import { LotteryNumerology } from "@/components/lottery/LotteryNumerology";
 import { LotteryHeatmapLab } from "@/components/lottery/LotteryHeatmapLab";
-import { LotterySyndicate } from "@/components/lottery/LotterySyndicate";
 import { LotteryParityPack } from "@/components/lottery/LotteryParityPack";
 import { Moon, Hash, Activity, Users } from "lucide-react";
 
@@ -71,7 +64,7 @@ export default function LotteryAI() {
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [checkingSubscription, setCheckingSubscription] = useState(false);
-  const [activeView, setActiveView] = useState<"hub" | "notifications" | "sharing" | "wintracker" | "smartpicks" | "livedraws" | "leaderboard" | "dream" | "numerology" | "heatmap" | "syndicate">("hub");
+  const [activeView, setActiveView] = useState<"hub" | "dream" | "numerology" | "heatmap">("hub");
 
   const [selectedLottery, setSelectedLottery] = useState(LOTTERY_TYPES[0]);
   const [generatedNumbers, setGeneratedNumbers] = useState<number[]>([]);
@@ -81,17 +74,11 @@ export default function LotteryAI() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const FEATURE_CARDS = [
-    { id: "notifications" as const, icon: Bell, label: "Push Notifications", desc: "Lucky day alerts", color: "from-violet-500 to-purple-600" },
-    { id: "sharing" as const, icon: Share2, label: "Social Sharing", desc: "Share combos with friends", color: "from-blue-500 to-cyan-500" },
-    { id: "wintracker" as const, icon: Target, label: "Win Tracker", desc: "Track your results", color: "from-emerald-500 to-green-600" },
-    { id: "smartpicks" as const, icon: Zap, label: "Smart Picks", desc: "AI top 3 combos", color: "from-orange-500 to-red-500" },
-    { id: "livedraws" as const, icon: Radio, label: "Live Draws", desc: "Real-time results", color: "from-red-500 to-pink-500" },
-    { id: "leaderboard" as const, icon: Trophy, label: "Leaderboard", desc: "Top players ranking", color: "from-yellow-500 to-amber-500" },
     { id: "dream" as const, icon: Moon, label: "Dream Decoder", desc: "Numbers from dreams · 5 cr", color: "from-purple-600 to-amber-500" },
     { id: "numerology" as const, icon: Hash, label: "Numerology", desc: "Personal numbers · 3 cr", color: "from-indigo-500 to-amber-500" },
     { id: "heatmap" as const, icon: Activity, label: "Heatmap Lab", desc: "Hot/cold AI map · 4 cr", color: "from-rose-500 to-amber-500" },
-    { id: "syndicate" as const, icon: Users, label: "Squad Play", desc: "Pool & split winnings", color: "from-emerald-500 to-amber-500" },
   ];
+
 
   useEffect(() => {
     checkAuth();
@@ -360,37 +347,8 @@ export default function LotteryAI() {
     );
   }
 
-  if (activeView === "notifications") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotteryPushNotifications onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
-  if (activeView === "sharing") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotterySocialSharing onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
-  if (activeView === "wintracker") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotteryWinTracker onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
-  if (activeView === "smartpicks") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotterySmartPicks onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
-  if (activeView === "livedraws") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotteryLiveDraws onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
-  if (activeView === "leaderboard") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotteryLeaderboard onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
   if (activeView === "dream") return (
+
     <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
       <LotteryDreamDecoder onBack={() => setActiveView("hub")} />
     </div></div>
@@ -405,11 +363,8 @@ export default function LotteryAI() {
       <LotteryHeatmapLab onBack={() => setActiveView("hub")} />
     </div></div>
   );
-  if (activeView === "syndicate") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotterySyndicate onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
+
+
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
