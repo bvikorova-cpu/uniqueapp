@@ -33,6 +33,58 @@ async function aiChat(messages: any[]) {
   try { return JSON.parse(content); } catch { return { result: content }; }
 }
 
+function extractImageUrl(data: any): string | null {
+  const b64 = data?.data?.[0]?.b64_json;
+  if (typeof b64 === "string" && b64) return `data:image/png;base64,${b64}`;
+  const directUrl = data?.data?.[0]?.url;
+  if (typeof directUrl === "string" && directUrl) return directUrl;
+  const msg = data?.choices?.[0]?.message;
+  const fromImages = msg?.images?.[0]?.image_url?.url || msg?.images?.[0]?.url;
+  if (typeof fromImages === "string" && fromImages) return fromImages;
+  const content = msg?.content;
+  if (Array.isArray(content)) {
+    for (const part of content) {
+      const url = part?.image_url?.url || part?.url;
+      if (typeof url === "string" && url) return url;
+      if (typeof part?.b64_json === "string" && part.b64_json) return `data:image/png;base64,${part.b64_json}`;
+    }
+  }
+  const inline = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData?.data)?.inlineData?.data;
+  if (typeof inline === "string" && inline) return `data:image/png;base64,${inline}`;
+  return null;
+}
+
+async function aiImage(prompt: string) {
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) throw new Error("AI not configured");
+  const models = ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"];
+  let lastErr = "";
+  for (const model of models) {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Lovable-API-Key": key },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: [{ type: "text", text: prompt }] }],
+        modalities: ["image", "text"],
+      }),
+    });
+    if (res.status === 429) throw new Error("Rate limit reached, please try again shortly");
+    if (res.status === 402) throw new Error("Insufficient AI credits on the platform");
+    if (!res.ok) {
+      lastErr = `status ${res.status}`;
+      console.error("image gateway error", model, res.status, await res.text().catch(() => ""));
+      continue;
+    }
+    const json = await res.json().catch(() => null);
+    const url = extractImageUrl(json);
+    if (url) return url;
+    lastErr = "response did not contain an image";
+    console.error("no image returned", model, JSON.stringify(json).slice(0, 500));
+  }
+  throw new Error(`Image generation failed (${lastErr})`);
+}
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
