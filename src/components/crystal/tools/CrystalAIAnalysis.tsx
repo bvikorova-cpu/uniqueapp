@@ -32,8 +32,10 @@ export const CrystalAIAnalysis = ({ toolType, title, description, needsImage = t
     if (!file.type.startsWith("image/")) { toast.error("Please upload an image"); return; }
     setUploading(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { toast.error("Please sign in to upload a photo"); setUploading(false); return; }
       const ext = file.name.split(".").pop();
-      const path = `crystal-analysis/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const path = `${user.id}/crystal-analysis/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
       const { error } = await supabase.storage.from("user-uploads").upload(path, file);
       if (error) throw error;
       const { data: { publicUrl } } = supabase.storage.from("user-uploads").getPublicUrl(path);

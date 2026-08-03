@@ -26,9 +26,15 @@ export default function CrystalEnergyUpload() {
 
     setUploading(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Please sign in to upload a photo");
+        setUploading(false);
+        return;
+      }
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `crystal-photos/${fileName}`;
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
+      const filePath = `${user.id}/crystal-photos/${fileName}`;
 
       const { error: uploadError, data } = await supabase.storage
         .from('user-uploads')
