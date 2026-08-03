@@ -345,20 +345,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                {docked && supported && (
-                  <button
-                    onClick={toggleWakeWord}
-                    aria-label={wakeEnabled ? "Disable 'Hey Uni' wake word" : "Enable 'Hey Uni' wake word"}
-                    title={wakeEnabled ? "Wake word ON — say “Hey Uni”" : "Enable “Hey Uni” wake word"}
-                    className={`p-1.5 rounded-full transition-all ${
-                      wakeEnabled
-                        ? "bg-primary text-primary-foreground animate-pulse"
-                        : "hover:bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {wakeEnabled ? <Ear className="h-4 w-4" /> : <EarOff className="h-4 w-4" />}
-                  </button>
-                )}
                 <button onClick={() => setOpen(false)} className="p-1 hover:bg-muted rounded">
                   <X className="h-4 w-4" />
                 </button>
