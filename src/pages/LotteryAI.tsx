@@ -535,7 +535,7 @@ export default function LotteryAI() {
                           <p className="text-muted-foreground mb-4">Click "Generate" to get your AI predictions</p>
                           <Button onClick={generateNumbers} size="lg" disabled={isGenerating} className="bg-gradient-to-r from-primary to-accent text-primary-foreground">
                             <Sparkles className="mr-2 h-5 w-5" />
-                            {isGenerating ? "Analyzing..." : "Generate Now"}
+                            {isGenerating ? "Analyzing..." : `Generate Now · ${GENERATION_COST} credits`}
                           </Button>
                         </div>
                       ) : (
@@ -597,7 +597,7 @@ export default function LotteryAI() {
                             <div className="flex gap-3 pt-4">
                               <Button onClick={generateNumbers} className="flex-1 bg-gradient-to-r from-primary to-accent text-primary-foreground" disabled={isGenerating}>
                                 <Sparkles className="mr-2 h-4 w-4" />
-                                {isGenerating ? "Analyzing..." : "Generate New"}
+                                {isGenerating ? "Analyzing..." : `Generate New · ${GENERATION_COST} credits`}
                               </Button>
                               <Button onClick={saveCombination} variant="outline" className="border-border/50">
                                 <Save className="mr-2 h-4 w-4" /> Save
