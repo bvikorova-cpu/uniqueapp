@@ -45,7 +45,7 @@ export const CrystalAbout = () => {
                 How to Use This Service
               </h3>
               <ol className="list-decimal list-inside space-y-1.5 text-xs text-muted-foreground">
-                <li><strong>Choose Your Service:</strong> AI Energy Reading (3 credits), Healing Session (10 credits), Chakra Balancing (8 credits), or Encyclopedia (2 credits)</li>
+                <li><strong>Choose Your Service:</strong> AI tools (3 credits each), Parity Pack (5 credits/run), or Crystal Box Curation (15 credits)</li>
                 <li><strong>Upload Your Photo:</strong> Share a clear photo of yourself or your crystals for AI analysis</li>
                 <li><strong>Receive AI Analysis:</strong> Advanced AI examines your energy levels, aura patterns, and chakra alignment</li>
                 <li><strong>Get Recommendations:</strong> Receive crystal suggestions tailored to your energy needs</li>

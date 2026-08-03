@@ -4,10 +4,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { Upload, Sparkles, CheckCircle } from "lucide-react";
+import { Upload, Sparkles, CheckCircle, Coins } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const ENERGY_ANALYSIS_COST = 3;
 
 export default function CrystalEnergyUpload() {
   const [uploading, setUploading] = useState(false);
@@ -87,7 +89,7 @@ export default function CrystalEnergyUpload() {
         energy_level: Number.isFinite(level) ? Math.max(1, Math.min(100, Math.round(level))) : 75,
         energy_analysis: parsed?.energy_analysis || String(raw) || "No analysis available.",
         recommended_crystals: Array.isArray(parsed?.recommended_crystals) ? parsed.recommended_crystals : [] });
-      toast.success("Energy analysis complete!");
+      toast.success(`Energy analysis complete! ${ENERGY_ANALYSIS_COST} credits used`);
     } catch (error: any) {
       toast.error(error.message || "Failed to analyze crystal");
     } finally {
@@ -114,7 +116,7 @@ export default function CrystalEnergyUpload() {
             Crystal Energy Analysis
           </CardTitle>
           <CardDescription>
-            Upload a photo of your crystal to receive an AI-powered energy reading
+            Upload a photo of your crystal to receive an AI-powered energy reading. Cost: {ENERGY_ANALYSIS_COST} credits.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -134,7 +136,7 @@ export default function CrystalEnergyUpload() {
               </Button>
             </div>
             {uploading && <p className="text-sm text-muted-foreground">Uploading photo...</p>}
-            {analyzing && <p className="text-sm text-muted-foreground">Analyzing energy patterns...</p>}
+            {analyzing && <p className="text-sm text-muted-foreground">Analyzing energy patterns... <Coins className="inline w-3.5 h-3.5 ml-1" /> {ENERGY_ANALYSIS_COST} credits</p>}
           </div>
 
           {imageUrl && (

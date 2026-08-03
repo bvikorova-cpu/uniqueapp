@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Loader2, Upload } from "lucide-react";
+import { Sparkles, Loader2, Upload, Coins } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+
+const AI_ANALYSIS_COST = 3;
 
 interface Props {
   toolType: string;
@@ -58,7 +60,7 @@ export const CrystalAIAnalysis = ({ toolType, title, description, needsImage = t
         body: { toolType, imageUrl, textInput } });
       if (error) throw error;
       setResult(data.analysis);
-      toast.success("Analysis complete!");
+      toast.success(`Analysis complete! ${AI_ANALYSIS_COST} credits used`);
     } catch (err: any) {
       toast.error(err.message || "Analysis failed");
     } finally {
@@ -94,7 +96,7 @@ export const CrystalAIAnalysis = ({ toolType, title, description, needsImage = t
           </div>
         )}
         <Button onClick={analyze} disabled={loading || !canAnalyze} className="w-full gap-2">
-          {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing...</> : <><Sparkles className="w-4 h-4" /> Start AI Analysis</>}
+          {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing...</> : <><Sparkles className="w-4 h-4" /> Start AI Analysis · {AI_ANALYSIS_COST} <Coins className="w-3.5 h-3.5" /></>}
         </Button>
         {result && (
           <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-2">
