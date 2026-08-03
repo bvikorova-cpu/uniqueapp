@@ -21,7 +21,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "crystal_ai" });
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 3, usageType: "crystal_ai" });
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
     const supabase = createClient(

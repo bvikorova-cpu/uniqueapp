@@ -81,7 +81,7 @@ export const CrystalToolView = ({ toolName, onBack }: CrystalToolViewProps) => {
         return <CrystalCommunityTool />;
       case "Energy Leaderboard":
         return <CrystalLeaderboardTool />;
-      case "Crystal Sub Box":
+      case "Crystal Box Curation":
         return <CrystalSubBoxTool />;
       default:
         return <div className="text-center py-8 text-muted-foreground">Tool not found</div>;

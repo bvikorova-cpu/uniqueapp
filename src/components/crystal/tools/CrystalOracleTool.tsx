@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sun, Sparkles, Loader2 } from "lucide-react";
+import { Sun, Sparkles, Loader2, Coins } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CRYSTAL_DATABASE } from "../crystalData";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+
+const ORACLE_COST = 3;
 
 export const CrystalOracleTool = () => {
   const [todayDraw, setTodayDraw] = useState<any>(null);
@@ -46,7 +48,7 @@ export const CrystalOracleTool = () => {
         drawn_at: today }).select().single();
 
       setTodayDraw(draw || { crystal_name: crystal.name, mantra: crystal.mantra, guidance });
-      toast.success("Your daily crystal has been revealed! ✨");
+      toast.success(`Your daily crystal has been revealed! ${ORACLE_COST} credits used ✨`);
     } catch {
       // Fallback without AI
       const today = new Date().toISOString().split("T")[0];
@@ -73,7 +75,7 @@ export const CrystalOracleTool = () => {
         <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
           <Sun className="w-5 h-5" /> Daily Crystal Oracle
         </CardTitle>
-        <p className="text-sm text-muted-foreground">Receive your daily crystal guidance and mantra</p>
+        <p className="text-sm text-muted-foreground">Receive your daily crystal guidance and mantra. Cost: {ORACLE_COST} credits per draw.</p>
       </CardHeader>
       <CardContent>
         {todayDraw ? (
@@ -102,7 +104,7 @@ export const CrystalOracleTool = () => {
             <p className="text-sm text-muted-foreground max-w-sm mx-auto">Draw your crystal oracle card to receive today's guidance, mantra, and energy focus.</p>
             <Button onClick={drawCard} disabled={drawing} className="gap-2">
               {drawing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              {drawing ? "Channeling..." : "Draw Today's Crystal"}
+              {drawing ? "Channeling..." : <>Draw Today's Crystal · {ORACLE_COST} <Coins className="w-3.5 h-3.5" /></>}
             </Button>
           </div>
         )}
