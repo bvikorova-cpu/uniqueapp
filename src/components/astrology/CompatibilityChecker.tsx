@@ -34,15 +34,34 @@ export const CompatibilityChecker = () => {
         body: { type: 'compatibility', data: { sign1, sign2 } }
       });
       if (error) throw error;
+      const raw = (data?.result && typeof data.result === 'object') ? { ...data, ...data.result } : (data || {});
+      const toList = (v: any): string[] => {
+        if (Array.isArray(v)) return v.map((x) => typeof x === 'string' ? x : (x?.text || x?.title || JSON.stringify(x)));
+        if (typeof v === 'string' && v.trim()) return v.split(/\n|•|;/).map((s) => s.trim()).filter(Boolean);
+        return [];
+      };
+      const parsed = {
+        compatibilityScore: Number(raw.compatibilityScore ?? raw.score_0_100 ?? raw.score ?? 0),
+        analysis: raw.analysis || raw.summary || raw.overview || '',
+        strengths: toList(raw.strengths),
+        challenges: toList(raw.challenges),
+        emotional: raw.emotional || '',
+        intellectual: raw.intellectual || '',
+        physical: raw.physical || '',
+        communication: raw.communication || '',
+        longTermPotential: raw.longTermPotential || raw.long_term_potential || '',
+        advice: raw.advice || '',
+      };
       await supabase.from('compatibility_readings').insert([{
-        user_id: user.id, sign1, sign2, compatibility_score: data.compatibilityScore,
-        analysis: data.analysis, strengths: data.strengths, challenges: data.challenges, advice: data.advice, is_premium: false
+        user_id: user.id, sign1, sign2, compatibility_score: parsed.compatibilityScore,
+        analysis: parsed.analysis, strengths: parsed.strengths, challenges: parsed.challenges, advice: parsed.advice, is_premium: false
       }]);
-      return data;
+      return parsed;
     },
     onSuccess: (data) => { setResult(data); toast.success('Compatibility revealed! 💕'); },
     onError: (error: any) => { toast.error(error.message || 'Failed to analyze'); }
   });
+
 
   const s1 = ZODIAC_SIGNS.find(s => s.value === sign1);
   const s2 = ZODIAC_SIGNS.find(s => s.value === sign2);
