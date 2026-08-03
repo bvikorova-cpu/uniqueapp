@@ -17,7 +17,7 @@ interface SleepQualityAnalyzerProps {
 }
 
 const SleepQualityAnalyzer = ({ onBack }: SleepQualityAnalyzerProps) => {
-  const { credits, spendCredit } = useAICredits();
+  const { credits } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [sleepHours, setSleepHours] = useState([7]);
   const [quality, setQuality] = useState("moderate");
