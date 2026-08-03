@@ -39,7 +39,7 @@ const CREDIT_COSTS: Record<string, number> = {
 };
 
 const SYSTEMS: Record<string, { system: string; json: boolean }> = {
-  daily_horoscope: { system: "You are an expert astrologer. Give a vivid daily horoscope (4-6 sentences) covering love, career, energy, lucky color & number.", json: false },
+  daily_horoscope: { system: "You are an expert astrologer. Return JSON with EXACTLY these keys: {\"content\":string (a vivid daily horoscope, 5-7 sentences covering love, career and energy), \"luckyNumbers\":[number] (3 numbers 1-99), \"luckyColors\":[string] (2-3 color names), \"compatibilitySigns\":[string] (2-3 zodiac sign names), \"moodScore\":number 1-100, \"loveScore\":number 1-100, \"careerScore\":number 1-100, \"healthScore\":number 1-100}. English only.", json: true },
   weekly_horoscope: { system: "You are an expert astrologer. Give a 7-day weekly horoscope (6-10 sentences). Cover love, career, health, advice.", json: false },
   monthly_horoscope: { system: "You are an expert astrologer. Give a 30-day monthly horoscope (8-12 sentences). Phases, milestones, advice.", json: false },
   yearly_horoscope: { system: "You are an expert astrologer. Give a yearly forecast (10-15 sentences). Major themes per quarter, love, career, health.", json: false },
