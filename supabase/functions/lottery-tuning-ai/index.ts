@@ -1,19 +1,52 @@
-import "../_shared/aiRedirect.ts";
 // Lottery AI tuning features: dream decoder, numerology, heatmap analysis
-// Uses OpenAI. Credits deducted atomically via deduct_ai_credits RPC.
+// Self-contained: Lovable AI Gateway only, no shared imports (avoids boot errors).
+// v2026-08-03-gateway
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = { "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type" };
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
 type Feature = "dream_decoder" | "numerology" | "heatmap_analysis";
-const COSTS: Record<Feature, number> = { dream_decoder: 5,
+const COSTS: Record<Feature, number> = {
+  dream_decoder: 5,
   numerology: 3,
-  heatmap_analysis: 4 };
+  heatmap_analysis: 4,
+};
 
-const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-const MODEL = "gpt-4o-mini";
+const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+const MODEL = "google/gemini-3.6-flash";
+
+async function callAI(apiKey: string, messages: any[], jsonMode = false) {
+  let lastErr = "";
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const resp = await fetch(GATEWAY_URL, {
+      method: "POST",
+      headers: {
+        "Lovable-API-Key": apiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages,
+        ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
+      }),
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      return { ok: true as const, content: data.choices?.[0]?.message?.content ?? "" };
+    }
+    if (resp.status === 402) return { ok: false as const, status: 402, error: "AI_CREDITS_EXHAUSTED" };
+    lastErr = await resp.text();
+    if (resp.status === 429 || resp.status >= 500) {
+      await new Promise((r) => setTimeout(r, 700 * (attempt + 1)));
+      continue;
+    }
+    return { ok: false as const, status: 400, error: lastErr };
+  }
+  return { ok: false as const, status: 429, error: lastErr || "RATE_LIMITED" };
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -32,8 +65,17 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return json({ error: "UNAUTHORIZED" }, 401);
+    const token = auth.replace("Bearer ", "");
+    let userId: string | null = null;
+    try {
+      const { data: claimsData } = await (supabase.auth as any).getClaims(token);
+      userId = claimsData?.claims?.sub ?? null;
+    } catch (_) { /* fall through */ }
+    if (!userId) {
+      const { data: { user } } = await supabase.auth.getUser();
+      userId = user?.id ?? null;
+    }
+    if (!userId) return json({ error: "UNAUTHORIZED" }, 401);
 
     const body = await req.json();
     const feature = body.feature as Feature;
@@ -41,18 +83,18 @@ Deno.serve(async (req) => {
     const cost = COSTS[feature];
     if (!cost) return json({ error: "UNKNOWN_FEATURE" }, 400);
 
-    // Pre-check credits (informational; real deduction is atomic via RPC after AI call)
     const { data: credits } = await admin
       .from("ai_credits")
       .select("credits_remaining")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle();
 
     const have = credits?.credits_remaining ?? 0;
     if (have < cost) {
       return json({
         error: "INSUFFICIENT_CREDITS",
-        message: `You need ${cost} credits. You have ${have}.` }, 402);
+        message: `You need ${cost} credits. You have ${have}.`,
+      }, 402);
     }
 
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
@@ -66,40 +108,41 @@ Deno.serve(async (req) => {
       const count = Number(payload.count ?? 6);
       if (!dream) return json({ error: "DREAM_REQUIRED" }, 400);
 
-      const resp = await fetch(OPENAI_API_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: MODEL,
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a dream symbol interpreter. Given a dream description, identify key symbols, give a brief interpretation, and suggest lucky numbers between 1 and the given max. Return ONLY valid JSON: { \"symbols\": string[], \"interpretation\": string, \"numbers\": number[] }. Numbers must be unique and within range." },
-            { role: "user", content: `Dream: ${dream}\nMax number: ${lotteryMax}\nHow many numbers: ${count}` },
-          ],
-          response_format: { type: "json_object" } }) });
-      if (resp.status === 429) return json({ error: "RATE_LIMITED" }, 429);
-      if (resp.status === 402) return json({ error: "AI_CREDITS_EXHAUSTED" }, 402);
-      if (!resp.ok) return json({ error: "AI_ERROR", details: await resp.text() }, 500);
-      const data = await resp.json();
-      const content = data.choices?.[0]?.message?.content ?? "{}";
+      const ai = await callAI(apiKey, [
+        {
+          role: "system",
+          content:
+            "You are a dream symbol interpreter. Given a dream description, identify key symbols, give a brief interpretation, and suggest lucky numbers between 1 and the given max. Return ONLY valid JSON: { \"symbols\": string[], \"interpretation\": string, \"numbers\": number[] }. Numbers must be unique and within range.",
+        },
+        { role: "user", content: `Dream: ${dream}\nMax number: ${lotteryMax}\nHow many numbers: ${count}` },
+      ], true);
+      if (!ai.ok) return json({ error: ai.error }, ai.status);
+
       let parsed: any = {};
-      try { parsed = JSON.parse(content); } catch { parsed = { interpretation: content, numbers: [], symbols: [] }; }
-      const nums: number[] = (parsed.numbers ?? []).filter((n: number) => Number.isInteger(n) && n >= 1 && n <= lotteryMax).slice(0, count);
+      try {
+        parsed = JSON.parse(ai.content.replace(/```json|```/g, "").trim());
+      } catch {
+        parsed = { interpretation: ai.content, numbers: [], symbols: [] };
+      }
+      const nums: number[] = (parsed.numbers ?? [])
+        .map((n: any) => Number(n))
+        .filter((n: number) => Number.isInteger(n) && n >= 1 && n <= lotteryMax)
+        .slice(0, count);
       while (nums.length < count) {
         const r = Math.floor(Math.random() * lotteryMax) + 1;
         if (!nums.includes(r)) nums.push(r);
       }
       output = { symbols: parsed.symbols ?? [], interpretation: parsed.interpretation ?? "", numbers: nums };
 
-      await admin.from("lottery_dream_decoder").insert({ user_id: user.id,
+      await admin.from("lottery_dream_decoder").insert({
+        user_id: userId,
         dream_text: dream,
         symbols: output.symbols,
         interpretation: output.interpretation,
         suggested_numbers: output.numbers,
         lottery_type: payload.lotteryType ?? null,
-        credits_used: cost });
+        credits_used: cost,
+      });
     } else if (feature === "numerology") {
       const fullName = String(payload.fullName ?? "").trim();
       const birthDate = String(payload.birthDate ?? "");
@@ -113,8 +156,10 @@ Deno.serve(async (req) => {
         return n;
       };
       const lifePath = reduce(birthDate.replace(/\D/g, "").split("").reduce((a, b) => a + parseInt(b, 10), 0));
-      const letterMap: Record<string, number> = { a:1,j:1,s:1, b:2,k:2,t:2, c:3,l:3,u:3, d:4,m:4,v:4, e:5,n:5,w:5,
-        f:6,o:6,x:6, g:7,p:7,y:7, h:8,q:8,z:8, i:9,r:9 };
+      const letterMap: Record<string, number> = {
+        a:1,j:1,s:1, b:2,k:2,t:2, c:3,l:3,u:3, d:4,m:4,v:4, e:5,n:5,w:5,
+        f:6,o:6,x:6, g:7,p:7,y:7, h:8,q:8,z:8, i:9,r:9,
+      };
       const isVowel = (c: string) => "aeiou".includes(c);
       const letters = fullName.toLowerCase().replace(/[^a-z]/g, "").split("");
       const destiny = reduce(letters.reduce((s, c) => s + (letterMap[c] ?? 0), 0));
@@ -132,31 +177,27 @@ Deno.serve(async (req) => {
         if (!lucky.includes(c)) lucky.push(c);
       }
 
-      const resp = await fetch(OPENAI_API_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: MODEL,
-          messages: [
-            { role: "system", content: "You are a numerology reader. Provide a short, encouraging 4-sentence reading. No medical or financial advice." },
-            { role: "user", content: `Name: ${fullName}\nBirth: ${birthDate}\nLife Path: ${lifePath}\nDestiny: ${destiny}\nSoul: ${soul}` },
-          ] }) });
-      if (resp.status === 429) return json({ error: "RATE_LIMITED" }, 429);
-      if (resp.status === 402) return json({ error: "AI_CREDITS_EXHAUSTED" }, 402);
-      const reading = resp.ok ? (await resp.json()).choices?.[0]?.message?.content ?? "" : "Numerology reading unavailable.";
+      const ai = await callAI(apiKey, [
+        { role: "system", content: "You are a numerology reader. Provide a short, encouraging 4-sentence reading. No medical or financial advice." },
+        { role: "user", content: `Name: ${fullName}\nBirth: ${birthDate}\nLife Path: ${lifePath}\nDestiny: ${destiny}\nSoul: ${soul}` },
+      ]);
+      if (!ai.ok) return json({ error: ai.error }, ai.status);
+      const reading = ai.content || "Numerology reading unavailable.";
       const powerDays = ["Monday", "Wednesday", "Friday"];
       output = { life_path_number: lifePath, destiny_number: destiny, soul_number: soul, lucky_numbers: lucky, power_days: powerDays, reading };
 
-      await admin.from("lottery_numerology").insert({ user_id: user.id, full_name: fullName, birth_date: birthDate,
+      await admin.from("lottery_numerology").insert({
+        user_id: userId, full_name: fullName, birth_date: birthDate,
         life_path_number: lifePath, destiny_number: destiny, soul_number: soul,
-        lucky_numbers: lucky, power_days: powerDays, reading, credits_used: cost });
+        lucky_numbers: lucky, power_days: powerDays, reading, credits_used: cost,
+      });
     } else if (feature === "heatmap_analysis") {
       const lotteryType = String(payload.lotteryType ?? "eurojackpot");
       const maxNumber = Number(payload.maxNumber ?? 50);
       const { data: recent } = await admin
         .from("lottery_generations")
         .select("main_numbers, bonus_numbers")
-        .eq("user_id", user.id)
+        .eq("user_id", userId)
         .order("created_at", { ascending: false })
         .limit(100);
 
@@ -177,22 +218,33 @@ Deno.serve(async (req) => {
       const topPairs = Object.entries(pairs).sort((a, b) => b[1] - a[1]).slice(0, 10);
 
       output = { hot_numbers: hot, cold_numbers: cold, frequency_data: freq, pair_affinity: Object.fromEntries(topPairs), sample_size: recent?.length ?? 0 };
-      await admin.from("lottery_heatmap_snapshots").insert({ user_id: user.id, lottery_type: lotteryType,
-        hot_numbers: hot, cold_numbers: cold, frequency_data: freq, pair_affinity: Object.fromEntries(topPairs) });
+      await admin.from("lottery_heatmap_snapshots").insert({
+        user_id: userId, lottery_type: lotteryType,
+        hot_numbers: hot, cold_numbers: cold, frequency_data: freq, pair_affinity: Object.fromEntries(topPairs),
+      });
     }
 
-    // Atomic credit deduction (race-safe)
-    const { error: deductError } = await admin.rpc("deduct_ai_credits", { p_user_id: user.id,
-      p_amount: cost });
+    // Atomic credit deduction (race-safe) — unified ai_credits ledger
+    const { error: deductError } = await admin.rpc("deduct_ai_credits_atomic", {
+      p_user_id: userId,
+      p_amount: cost,
+      p_feature: `lottery_${feature}`,
+    });
     if (deductError) {
-      console.error("Credit deduction failed:", deductError);
-      return json({ error: "DEDUCTION_FAILED", message: deductError.message }, 500);
+      const { error: fallbackError } = await admin.rpc("deduct_ai_credits", {
+        p_user_id: userId,
+        p_amount: cost,
+      });
+      if (fallbackError) {
+        console.error("Credit deduction failed:", deductError, fallbackError);
+        return json({ error: "DEDUCTION_FAILED", message: fallbackError.message }, 500);
+      }
     }
 
     const { data: after } = await admin
       .from("ai_credits")
       .select("credits_remaining")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle();
 
     return json({ feature, output, credits_remaining: after?.credits_remaining ?? 0 });
@@ -205,5 +257,6 @@ Deno.serve(async (req) => {
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 }
