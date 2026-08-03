@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Moon, BookOpen, TrendingUp, Sparkles, Brain, GitBranch, Users, Coins, CreditCard, Flame, Trophy, BarChart3, Palette, Volume2, Map, Swords } from "lucide-react";
+import { Moon, BookOpen, TrendingUp, Sparkles, Brain, Coins, CreditCard, Flame, Trophy, BarChart3, Palette } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAICredits } from "@/hooks/useAICredits";
 import Navbar from "@/components/Navbar";
