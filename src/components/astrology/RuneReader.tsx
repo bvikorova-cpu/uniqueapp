@@ -25,10 +25,22 @@ export const RuneReader = () => {
         body: { type: 'rune', data: {} }
       });
       if (error) throw error;
+      const normalized = {
+        runeName: data.rune_name ?? data.runeName ?? "Rune",
+        runeMeaning: data.meaning ?? data.runeMeaning ?? "",
+        description: data.description ?? "",
+        keywords: Array.isArray(data.keywords) ? data.keywords : [],
+        element: data.element ?? "",
+        deity: data.deity ?? "",
+        guidance: data.guidance ?? data.advice ?? "",
+        reversedMeaning: data.reversed_meaning ?? "",
+        affirmation: data.affirmation ?? "",
+      };
+      if (data.symbol) setRuneSymbol(String(data.symbol).slice(0, 2));
       await supabase.from('rune_readings').insert({
-        user_id: user.id, rune_name: data.runeName, rune_meaning: data.runeMeaning, guidance: data.guidance, credits_used: CREDIT_COSTS.rune
+        user_id: user.id, rune_name: normalized.runeName, rune_meaning: normalized.runeMeaning, guidance: normalized.guidance, credits_used: CREDIT_COSTS.rune
       });
-      return data;
+      return normalized;
     },
     onSuccess: (data) => { setResult(data); toast.success("Rune revealed! 🗿"); },
     onError: (error: Error) => { toast.error(error.message); }
