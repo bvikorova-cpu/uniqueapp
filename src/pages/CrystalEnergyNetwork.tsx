@@ -31,6 +31,7 @@ export default function CrystalEnergyNetwork() {
           <>
             <CrystalProgressPanel />
             <CrystalToolCards onSelectTool={setSelectedTool} />
+            <CrystalParityPack />
             <CrystalAbout />
 
             {/* CTA */}
