@@ -19,7 +19,7 @@ import { motion } from "framer-motion";
 import heroVideo from "@/assets/dream-journal-hero-v2.mp4.asset.json";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-type ActiveView = "hub" | "dreams" | "journal" | "mood" | "trends" | "lucid-coach" | "pattern-timeline" | "sleep-analyzer" | "community" | "visualizer" | "soundscapes" | "dictionary" | "ritual-builder" | "interpretation-battles" | "mood-correlation";
+type ActiveView = "hub" | "dreams" | "journal" | "mood" | "trends" | "lucid-coach" | "sleep-analyzer" | "visualizer" | "dictionary";
 
 const DreamJournal = () => {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
@@ -35,23 +35,11 @@ const DreamJournal = () => {
     { id: "mood" as const, title: "Mood Tracker", desc: "Track mood, energy & stress", icon: Sparkles, cost: "Free", color: "from-emerald-500 to-teal-600" },
     { id: "trends" as const, title: "Mental Health Trends", desc: "30-day pattern analysis", icon: TrendingUp, cost: "1 Credit", color: "from-amber-500 to-orange-600" },
     { id: "lucid-coach" as const, title: "AI Lucid Dream Coach", desc: "Personalized lucid dreaming guidance", icon: Brain, cost: "1 Credit", color: "from-pink-500 to-rose-600" },
-    { id: "pattern-timeline" as const, title: "Dream Pattern Timeline", desc: "Discover recurring dream themes", icon: GitBranch, cost: "1 Credit", color: "from-cyan-500 to-blue-600" },
     { id: "sleep-analyzer" as const, title: "Sleep Quality Analyzer", desc: "AI sleep analysis & recommendations", icon: Moon, cost: "1 Credit", color: "from-indigo-500 to-violet-600" },
-    { id: "community" as const, title: "Dream Community", desc: "Share & discuss dreams", icon: Users, cost: "Free", color: "from-fuchsia-500 to-pink-600" },
     { id: "visualizer" as const, title: "AI Dream Visualizer", desc: "Turn dreams into stunning artwork", icon: Palette, cost: "3 Credits", color: "from-rose-500 to-red-600" },
-    { id: "soundscapes" as const, title: "Dream Soundscapes", desc: "AI ambient audio for dream recreation", icon: Volume2, cost: "2 Credits", color: "from-teal-500 to-emerald-600" },
     { id: "dictionary" as const, title: "AI Dream Dictionary", desc: "Personalized symbol interpretations", icon: BookOpen, cost: "1 Credit", color: "from-orange-500 to-amber-600" },
-    { id: "ritual-builder" as const, title: "Sleep Ritual Builder", desc: "Custom bedtime routines by AI", icon: Moon, cost: "1 Credit", color: "from-purple-500 to-indigo-600" },
-    { id: "interpretation-battles" as const, title: "Interpretation Battles", desc: "Community dream interpretation contests", icon: Swords, cost: "Free", color: "from-red-500 to-pink-600" },
-    { id: "mood-correlation" as const, title: "Dream-Mood Correlation", desc: "AI maps dream-emotion connections", icon: Map, cost: "1 Credit", color: "from-sky-500 to-cyan-600" },
   ];
 
-  const stats = [
-    { label: "Dreams", value: "—", icon: Moon },
-    { label: "Entries", value: "—", icon: BookOpen },
-    { label: "Moods", value: "—", icon: Sparkles },
-    { label: "Insights", value: "—", icon: Brain },
-  ];
 
   // Sub-view wrapper
   const SubView = ({ children }: { children: React.ReactNode }) => (
