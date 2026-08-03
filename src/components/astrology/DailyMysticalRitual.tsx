@@ -36,7 +36,9 @@ export const DailyMysticalRitual = () => {
       });
 
       if (error) throw error;
-      return data as RitualResult;
+      if (data?.error) throw new Error(data.error);
+      const payload = (data?.result && typeof data.result === "object") ? { ...data.result, ...data } : data;
+      return payload as RitualResult;
     },
     onSuccess: (data) => {
       setResult(data);

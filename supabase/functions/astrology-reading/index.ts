@@ -33,7 +33,7 @@ const CREDIT_COSTS: Record<string, number> = {
   yes_no: 2,
   rune: 1,
   birth_chart: 20,
-  daily_ritual: 1,
+  daily_ritual: 3,
   natal_chart: 20,
   transit: 3,
 };
@@ -53,7 +53,7 @@ const SYSTEMS: Record<string, { system: string; json: boolean }> = {
   palmistry: { system: "You are a palmistry reader. Interpret palm lines. Return JSON: {life_line, heart_line, head_line, fate_line, summary}.", json: true },
   yes_no: { system: "You are a mystical oracle. Answer YES or NO with a 1-2 sentence cosmic reasoning. Return JSON: {answer:'yes'|'no'|'maybe', reasoning, confidence_0_100}.", json: true },
   rune: { system: "You are a Norse rune reader. Draw 1 rune and interpret. Return JSON: {rune_name, symbol, meaning, advice}.", json: true },
-  daily_ritual: { system: "You are a mystical guide. Suggest a short daily ritual (3-5 sentences) including a mantra, color, and crystal.", json: false },
+  daily_ritual: { system: "You are a mystical guide creating a daily ritual. Return JSON with EXACTLY these keys: {\"cardOfTheDay\":{\"name\":string,\"meaning\":string},\"luckyNumber\":number,\"affirmation\":string,\"cosmicEnergy\":string,\"elementOfTheDay\":string,\"moonPhase\":string}. cosmicEnergy is 1-3 words (e.g. 'High & Expansive'), moonPhase is the real current moon phase name, affirmation is one inspiring sentence.", json: true },
 };
 
 async function callGateway(system: string, user: string, wantJson: boolean): Promise<string> {
@@ -178,6 +178,7 @@ serve(async (req) => {
     const luckyNumbers = parsed?.lucky_numbers ?? parsed?.luckyNumbers ?? [];
 
     return json({
+      ...(parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {}),
       success: true,
       type,
       action: type,
