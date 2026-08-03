@@ -5,15 +5,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useHolographicCredits, HOLO_COSTS } from "@/hooks/useHolographicCredits";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
 const BATTLE_MODES = [
-  { id: "1v1", name: "1v1 Duel", icon: Swords, desc: "Classic one-on-one combat", entry: 2, prize: "€3.50" },
-  { id: "tournament", name: "Tournament", icon: Trophy, desc: "8-player bracket elimination", entry: 5, prize: "€30" },
-  { id: "survival", name: "Survival", icon: Flame, desc: "Last avatar standing wins all", entry: 3, prize: "€15" },
+  { id: "1v1", name: "1v1 Duel", icon: Swords, desc: "Classic one-on-one combat", entry: HOLO_COSTS.battle_1v1, prize: "+4 credits" },
+  { id: "tournament", name: "Tournament", icon: Trophy, desc: "8-player bracket elimination", entry: HOLO_COSTS.battle_tournament, prize: "+30 credits" },
+  { id: "survival", name: "Survival", icon: Flame, desc: "Last avatar standing wins all", entry: HOLO_COSTS.battle_survival, prize: "+15 credits" },
 ];
 
 const LEADERBOARD = [
@@ -28,17 +29,23 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [isJoining, setIsJoining] = useState(false);
   const { toast } = useToast();
+  const { balance, spend } = useHolographicCredits();
 
   const handleJoinBattle = async (mode: typeof BATTLE_MODES[0]) => {
     setIsJoining(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-holographic-avatar-checkout", {
-        body: { priceId: "price_1SPjGQGaXSfGtYFtDYtm4aC2", featureName: `Battle Entry: ${mode.name}`, metadata: { mode: mode.id } } });
+      const paid = await spend(mode.entry, `battle_${mode.id}`);
+      if (!paid) return;
+      const { data, error } = await supabase.functions.invoke("holographic-battle-simulate", {
+        body: { mode: mode.id } });
       if (error) throw error;
-      if (data?.url) {
-        try { localStorage.setItem("pendingHoloAction", JSON.stringify({ kind: "battle", mode: mode.id })); } catch {}
-        window.open(data.url, "_blank");
-        toast({ title: "Battle Entry!", description: `Joining ${mode.name} arena...` });
+      const r = data?.result;
+      if (r) {
+        const emoji = r.outcome === "win" ? "🏆" : r.outcome === "loss" ? "💀" : "🤝";
+        toast({ title: `${emoji} Battle vs ${r.opponent_name}: ${String(r.outcome).toUpperCase()}`,
+          description: `Power ${r.user_power} vs ${r.opponent_power}` });
+      } else {
+        toast({ title: "Battle entered", description: `${mode.name} — ${mode.entry} credits used.` });
       }
     } catch { toast({ title: "Error", description: "Failed to join battle", variant: "destructive" }); }
     finally { setIsJoining(false); }
@@ -64,6 +71,8 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
         </div>
       </div>
 
+      <p className="text-sm text-muted-foreground">Your balance: <strong className="text-foreground">{balance} credits</strong></p>
+
       {/* Battle Modes */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {BATTLE_MODES.map((mode, i) => (
@@ -75,7 +84,7 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
                 <h3 className="font-black text-lg">{mode.name}</h3>
                 <p className="text-xs text-muted-foreground mb-3">{mode.desc}</p>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Entry: <strong className="text-foreground">€{mode.entry}</strong></span>
+                  <span className="text-muted-foreground">Entry: <strong className="text-foreground">{mode.entry} cr</strong></span>
                   <span className="text-muted-foreground">Prize: <strong className="text-emerald-500">{mode.prize}</strong></span>
                 </div>
                 <Button onClick={(e) => { e.stopPropagation(); handleJoinBattle(mode); }} disabled={isJoining} className="w-full mt-3" size="sm">
