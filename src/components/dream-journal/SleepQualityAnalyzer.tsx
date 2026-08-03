@@ -17,7 +17,7 @@ interface SleepQualityAnalyzerProps {
 }
 
 const SleepQualityAnalyzer = ({ onBack }: SleepQualityAnalyzerProps) => {
-  const { credits, spendCredit } = useAICredits();
+  const { credits } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [sleepHours, setSleepHours] = useState([7]);
   const [quality, setQuality] = useState("moderate");
@@ -32,15 +32,15 @@ const SleepQualityAnalyzer = ({ onBack }: SleepQualityAnalyzerProps) => {
     }
     setLoading(true);
     try {
-      const used = await spendCredit("effect", "Sleep Quality Analysis");
-      if (!used) throw new Error("Failed to use credit");
-
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("dream-ai", {
         body: { action: "sleep-analyzer", sleepHours: sleepHours[0], quality, wakeUps: wakeUps[0], notes },
         headers: { Authorization: `Bearer ${session?.access_token}` } });
       if (error) throw error;
-      setResult(data.analysis);
+      if (data?.error) throw new Error(data.error);
+      const text = data?.analysis ?? data?.result ?? data?.content ?? "";
+      if (!text) throw new Error("No analysis returned");
+      setResult(typeof text === "string" ? text : JSON.stringify(text, null, 2));
       toast.success("Sleep analysis complete!");
     } catch (err: any) {
       toast.error(err.message || "Error analyzing sleep");
@@ -48,6 +48,7 @@ const SleepQualityAnalyzer = ({ onBack }: SleepQualityAnalyzerProps) => {
       setLoading(false);
     }
   };
+
 
   return (
     <>
