@@ -81,17 +81,11 @@ export default function LotteryAI() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const FEATURE_CARDS = [
-    { id: "notifications" as const, icon: Bell, label: "Push Notifications", desc: "Lucky day alerts", color: "from-violet-500 to-purple-600" },
-    { id: "sharing" as const, icon: Share2, label: "Social Sharing", desc: "Share combos with friends", color: "from-blue-500 to-cyan-500" },
-    { id: "wintracker" as const, icon: Target, label: "Win Tracker", desc: "Track your results", color: "from-emerald-500 to-green-600" },
-    { id: "smartpicks" as const, icon: Zap, label: "Smart Picks", desc: "AI top 3 combos", color: "from-orange-500 to-red-500" },
-    { id: "livedraws" as const, icon: Radio, label: "Live Draws", desc: "Real-time results", color: "from-red-500 to-pink-500" },
-    { id: "leaderboard" as const, icon: Trophy, label: "Leaderboard", desc: "Top players ranking", color: "from-yellow-500 to-amber-500" },
     { id: "dream" as const, icon: Moon, label: "Dream Decoder", desc: "Numbers from dreams · 5 cr", color: "from-purple-600 to-amber-500" },
     { id: "numerology" as const, icon: Hash, label: "Numerology", desc: "Personal numbers · 3 cr", color: "from-indigo-500 to-amber-500" },
     { id: "heatmap" as const, icon: Activity, label: "Heatmap Lab", desc: "Hot/cold AI map · 4 cr", color: "from-rose-500 to-amber-500" },
-    { id: "syndicate" as const, icon: Users, label: "Squad Play", desc: "Pool & split winnings", color: "from-emerald-500 to-amber-500" },
   ];
+
 
   useEffect(() => {
     checkAuth();
