@@ -6,6 +6,7 @@ import { CrystalToolCards } from "@/components/crystal/CrystalToolCards";
 import { CrystalToolView } from "@/components/crystal/CrystalToolView";
 import { CrystalAbout } from "@/components/crystal/CrystalAbout";
 import { CrystalProgressPanel } from "@/components/crystal/CrystalProgressPanel";
+import CrystalParityPack from "@/components/crystal/CrystalParityPack";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
