@@ -47,7 +47,6 @@ export const PastLifeCreditsDisplay = () => {
           { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
         ]}
       />
-    <>
       <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
         <div className="h-1.5 bg-gradient-to-r from-primary to-accent" />
         <div className="p-5 sm:p-8">
