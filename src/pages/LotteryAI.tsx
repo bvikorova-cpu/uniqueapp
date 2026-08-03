@@ -40,6 +40,8 @@ const LOTTERY_TYPES = [
   { id: "megamillions", name: "Mega Millions", maxNumber: 70, bonusBalls: 25, mainBalls: 5, bonusCount: 1 },
 ];
 
+const GENERATION_COST = 3;
+
 const SUBSCRIPTION_TIERS = {
   basic: { price_id: "price_1STrLuGaXSfGtYFtgA9rNDxL", product_id: "prod_TQinlyjGo50cTk" },
   pro: { price_id: "price_1STrLwGaXSfGtYFtdbmjAGKA", product_id: "prod_TQinw9pUYC81T8" } };
@@ -225,29 +227,21 @@ export default function LotteryAI() {
       savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
-    if (!subscription?.subscribed) {
-      toast({ title: "Subscription Required", description: "Subscribe to Basic or Pro to generate AI lucky numbers.", variant: "destructive" });
-      return;
-    }
     if (!selectedLottery?.id) {
       toast({ title: "Invalid Input", description: "Please select a lottery type first.", variant: "destructive" });
       return;
     }
-    if (subscription.isBasic && !subscription.isPro) {
-      const now = new Date();
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const { count, error: countError } = await supabase
-        .from("lottery_generations").select("*", { count: 'exact', head: true })
-        .eq("user_id", user.id).gte("created_at", monthStart);
-      if (countError) {
-        console.error("Error checking generation count:", countError);
-        toast({ title: "Could Not Verify Limit", description: "We couldn't check your monthly usage. Try again.", variant: "destructive" });
-        return;
-      }
-      if (count !== null && count >= 10) {
-        toast({ title: "Monthly Limit Reached", description: "You've used 10/10 generations this month. Upgrade to Pro for more.", variant: "destructive" });
-        return;
-      }
+
+    // Credit-based access: 3 AI credits per generation (no subscription required)
+    const { error: creditError } = await supabase.rpc("deduct_ai_credits_atomic", {
+      _user_id: user.id,
+      _amount: GENERATION_COST });
+    if (creditError) {
+      toast({ title: "Not Enough Credits",
+        description: `You need ${GENERATION_COST} AI credits to generate numbers. Tap to top up.`,
+        variant: "destructive" });
+      navigate("/ai-credits");
+      return;
     }
 
     setIsGenerating(true);
@@ -541,7 +535,7 @@ export default function LotteryAI() {
                           <p className="text-muted-foreground mb-4">Click "Generate" to get your AI predictions</p>
                           <Button onClick={generateNumbers} size="lg" disabled={isGenerating} className="bg-gradient-to-r from-primary to-accent text-primary-foreground">
                             <Sparkles className="mr-2 h-5 w-5" />
-                            {isGenerating ? "Analyzing..." : "Generate Now"}
+                            {isGenerating ? "Analyzing..." : `Generate Now · ${GENERATION_COST} credits`}
                           </Button>
                         </div>
                       ) : (
@@ -603,7 +597,7 @@ export default function LotteryAI() {
                             <div className="flex gap-3 pt-4">
                               <Button onClick={generateNumbers} className="flex-1 bg-gradient-to-r from-primary to-accent text-primary-foreground" disabled={isGenerating}>
                                 <Sparkles className="mr-2 h-4 w-4" />
-                                {isGenerating ? "Analyzing..." : "Generate New"}
+                                {isGenerating ? "Analyzing..." : `Generate New · ${GENERATION_COST} credits`}
                               </Button>
                               <Button onClick={saveCombination} variant="outline" className="border-border/50">
                                 <Save className="mr-2 h-4 w-4" /> Save
@@ -724,61 +718,43 @@ export default function LotteryAI() {
           />
         </div>
 
-        {/* Pricing Section */}
+        {/* Credits Section */}
         <div className="mt-12" id="pricing">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Choose Your Plan</h2>
-            <p className="text-sm text-muted-foreground">Unlock advanced AI predictions and analytics</p>
+            <h2 className="text-2xl sm:text-3xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Pay With AI Credits</h2>
+            <p className="text-sm text-muted-foreground">No subscription needed — every generation costs {GENERATION_COST} AI credits</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {PRICING_TIERS.map((tier, i) => {
-              const Icon = tier.icon;
-              const isCurrentPlan = subscription?.tier === tier.tier;
-              return (
-                <motion.div key={tier.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                  <Card className={`relative bg-card/80 backdrop-blur-xl ${tier.popular ? "border-2 border-primary shadow-xl shadow-primary/10" : "border-border/50"} ${isCurrentPlan ? "border-2 border-green-500" : ""}`}>
-                    {tier.popular && !isCurrentPlan && (
-                      <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-accent text-primary-foreground">Most Popular</Badge>
-                    )}
-                    {isCurrentPlan && (
-                      <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500 text-white">Current Plan</Badge>
-                    )}
-                    <CardHeader>
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tier.color} flex items-center justify-center mb-4`}>
-                        <Icon className="h-6 w-6 text-white" />
-                      </div>
-                      <CardTitle className="font-black">{tier.name}</CardTitle>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-black">€{tier.price}</span>
-                        <span className="text-muted-foreground">/{tier.period}</span>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-3">
-                        {tier.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                            <span className="text-sm">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <Button
-                        className={`w-full mt-6 ${tier.popular ? "bg-gradient-to-r from-primary to-accent text-primary-foreground" : ""}`}
-                        variant={tier.popular ? "default" : "outline"}
-                        onClick={() => handleSubscribe(tier.tier as "basic" | "pro")}
-                        disabled={isCurrentPlan}
-                      >
-                        {isCurrentPlan ? "Current Plan" : "Subscribe Now"}
-                        {!isCurrentPlan && <ArrowRight className="ml-2 h-4 w-4" />}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
+          <div className="max-w-xl mx-auto">
+            <Card className="bg-card/80 backdrop-blur-xl border-2 border-primary shadow-xl shadow-primary/10">
+              <CardHeader>
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-4">
+                  <Coins className="h-6 w-6 text-primary-foreground" />
+                </div>
+                <CardTitle className="font-black">AI Credits</CardTitle>
+                <CardDescription>Use credits across the whole platform — they never expire.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {[`AI lucky numbers · ${GENERATION_COST} credits`, "Dream Decoder · 5 credits", "Numerology · 3 credits", "Heatmap Lab · 4 credits"].map((feature) => (
+                    <li key={feature} className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  className="w-full mt-6 bg-gradient-to-r from-primary to-accent text-primary-foreground"
+                  onClick={() => navigate("/ai-credits")}
+                >
+                  Get AI Credits
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
+
 
         {/* Disclaimer */}
         <div className="mt-12">
