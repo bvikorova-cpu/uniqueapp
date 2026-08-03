@@ -287,31 +287,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     }
   };
 
-  // Auto-start wake word if user previously enabled it
-  useEffect(() => {
-    if (isMobileViewport) {
-      stopWakeWord();
-      return;
-    }
-    if (wakeEnabled && supported && !wakeRef.current && !listening) {
-      startWakeWord();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wakeEnabled, supported, isMobileViewport]);
-
-  // Pause wake recognizer while actively listening; resume after
-  useEffect(() => {
-    if (isMobileViewport) return;
-    if (listening && wakeRef.current) {
-      try { wakeRef.current.stop(); } catch {}
-      wakeRef.current = null;
-    } else if (!listening && wakeEnabled && !wakeRef.current) {
-      // brief delay so the previous SR fully releases the mic
-      const t = setTimeout(() => startWakeWord(), 400);
-      return () => clearTimeout(t);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listening, wakeEnabled, isMobileViewport]);
 
   const uniButton = (
     <button
