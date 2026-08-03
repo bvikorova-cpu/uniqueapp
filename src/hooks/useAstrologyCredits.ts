@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -30,35 +31,52 @@ export const useAstrologyCredits = () => {
 
   const { data: credits, isLoading } = useQuery<AstrologyCredits>({
     queryKey: ["astrology-credits"],
+    staleTime: 0,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Unified AI credit pool is the single source of truth
       const { data, error } = await supabase
-        .from("astrology_credits")
-        .select("*")
+        .from("ai_credits")
+        .select("credits_remaining, total_credits_purchased")
         .eq("user_id", user.id)
         .maybeSingle();
 
       if (error) throw error;
-      
-      if (!data) {
-        const { data: newData, error: insertError } = await supabase
-          .from("astrology_credits")
-          .insert({
-            user_id: user.id,
-            credits_remaining: 0,
-            total_credits_purchased: 0
-          })
-          .select()
-          .single();
 
-        if (insertError) throw insertError;
-        return newData;
-      }
-
-      return data;
+      return {
+        user_id: user.id,
+        credits_remaining: data?.credits_remaining ?? 0,
+        total_credits_purchased: data?.total_credits_purchased ?? 0,
+      } as AstrologyCredits;
     } });
+
+  // Keep the displayed balance in sync with the unified credit pool
+  useEffect(() => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let active = true;
+
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !active) return;
+      channel = supabase
+        .channel(`astrology-ai-credits-${user.id}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "ai_credits", filter: `user_id=eq.${user.id}` },
+          () => queryClient.invalidateQueries({ queryKey: ["astrology-credits"] })
+        )
+        .subscribe();
+    })();
+
+    return () => {
+      active = false;
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
 
   const performReading = useMutation({
     mutationFn: async ({ readingType, data }: { readingType: string; data: Record<string, unknown> }) => {
@@ -68,6 +86,8 @@ export const useAstrologyCredits = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["astrology-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["unified-credits"] });
     },
     onError: (error: Error) => {
       if (error.message.includes('credits') || error.message.includes('Insufficient')) {
