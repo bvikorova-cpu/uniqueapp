@@ -43,6 +43,56 @@ const TOOLS: { id: CrystalParityAction; label: string; description: string; fiel
   ]},
 ];
 
+const humanize = (key: string) =>
+  key.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+function ResultView({ value }: { value: unknown }) {
+  if (value === null || value === undefined || value === "") return null;
+
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    return <p className="text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap">{String(value)}</p>;
+  }
+
+  if (Array.isArray(value)) {
+    const allScalar = value.every((v) => typeof v !== "object" || v === null);
+    if (allScalar) {
+      return (
+        <div className="flex flex-wrap gap-2">
+          {value.map((v, i) => (
+            <span key={i} className="rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-medium">
+              {String(v)}
+            </span>
+          ))}
+        </div>
+      );
+    }
+    return (
+      <div className="space-y-3">
+        {value.map((v, i) => (
+          <div key={i} className="rounded-lg border border-border/50 bg-background/60 p-3">
+            <ResultView value={v} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (typeof value === "object") {
+    return (
+      <div className="space-y-3">
+        {Object.entries(value as Record<string, unknown>).map(([k, v]) => (
+          <div key={k} className="space-y-1.5">
+            <h5 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{humanize(k)}</h5>
+            <ResultView value={v} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+}
+
 export default function CrystalParityPack() {
   const { run, isLoading, data } = useCrystalParity();
   const [activeTool, setActiveTool] = useState<CrystalParityAction>(TOOLS[0].id);
@@ -109,9 +159,9 @@ export default function CrystalParityPack() {
               </Button>
 
               {data && (
-                <div className="mt-4 p-4 rounded-lg bg-muted/50 border border-border/60">
-                  <h4 className="font-semibold mb-2 text-sm">Result</h4>
-                  <pre className="text-xs whitespace-pre-wrap break-words overflow-auto max-h-96">{JSON.stringify(data, null, 2)}</pre>
+                <div className="mt-4 p-4 rounded-lg bg-muted/50 border border-border/60 space-y-4">
+                  <h4 className="font-semibold text-sm">Result</h4>
+                  <ResultView value={data} />
                 </div>
               )}
             </TabsContent>
