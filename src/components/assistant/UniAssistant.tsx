@@ -308,21 +308,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       docked && "hidden md:flex",
       !docked && "fixed bottom-24 right-4 md:right-6 z-40"
     )}>
-      {supported && !docked && (
-        <button
-          onClick={toggleWakeWord}
-          aria-label={wakeEnabled ? "Disable 'Hey Uni' wake word" : "Enable 'Hey Uni' wake word"}
-          title={wakeEnabled ? "Wake word ON — say “Hey Uni”" : "Enable “Hey Uni” wake word"}
-          className={`h-9 px-2.5 rounded-full shadow-lg backdrop-blur-md border flex items-center gap-1.5 text-[10px] font-bold transition-all ${
-            wakeEnabled
-              ? "bg-primary text-primary-foreground border-primary animate-pulse"
-              : "bg-background/90 text-muted-foreground border-border hover:text-foreground"
-          }`}
-        >
-          {wakeEnabled ? <Ear className="h-3.5 w-3.5" /> : <EarOff className="h-3.5 w-3.5" />}
-          Hey Uni
-        </button>
-      )}
       {uniButton}
     </div>
   );
