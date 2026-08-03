@@ -57,12 +57,9 @@ serve(async (req) => {
 
     const admin = createClient(supabaseUrl, serviceKey);
 
-    await admin
-      .from("lottery_parity_credits")
-      .upsert({ user_id: user.id }, { onConflict: "user_id", ignoreDuplicates: true });
-
+    // Unified AI credit pool (ai_credits) — no per-module credit tables
     const { data: creditsRow } = await admin
-      .from("lottery_parity_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
@@ -74,14 +71,14 @@ serve(async (req) => {
     const payload = body.payload ?? {};
     const userPrompt = `Generate the requested output.\n\nUser context:\n${JSON.stringify(payload, null, 2)}`;
 
-    const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
+    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         response_format: { type: "json_object" },
         messages: [
-          { role: "system", content: systemPrompt },
+          { role: "system", content: `${systemPrompt}\n\nAlways reply with valid JSON.` },
           { role: "user", content: userPrompt },
         ] }) });
 
@@ -110,10 +107,21 @@ serve(async (req) => {
       return json({ error: "Failed to save result" }, 500);
     }
 
-    await admin
-      .from("lottery_parity_credits")
-      .update({ credits_remaining: balance - PARITY_COST, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    // Atomic deduction from the unified ledger
+    const { error: deductError } = await admin.rpc("deduct_ai_credits_atomic", {
+      p_user_id: user.id,
+      p_amount: PARITY_COST,
+      p_feature: `lottery_${action}`,
+    });
+    if (deductError) {
+      const { error: fallbackError } = await admin.rpc("deduct_ai_credits", {
+        p_user_id: user.id,
+        p_amount: PARITY_COST,
+        p_reason: `lottery_${action}`,
+        p_source: "lottery-parity",
+      });
+      if (fallbackError) console.error("Credit deduction failed:", deductError, fallbackError);
+    }
 
     return json({ success: true, result: inserted, creditsRemaining: balance - PARITY_COST }, 200);
   } catch (e) {
