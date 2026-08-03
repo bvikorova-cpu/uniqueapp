@@ -144,19 +144,8 @@ const DreamJournal = () => {
       </section>
 
       <main className="flex-1 container mx-auto px-3 sm:px-4 py-8 max-w-7xl space-y-8">
-        {/* Credits & Engagement Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50 h-full">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-orange-500/10"><Flame className="h-5 w-5 text-orange-500" /></div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Daily Streak</p>
-                  <p className="text-2xl font-bold">0 Days</p>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
+        {/* Credits Row */}
+        <div className="grid grid-cols-1 gap-4 max-w-md">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50 h-full">
               <div className="flex items-center gap-3">
@@ -171,18 +160,8 @@ const DreamJournal = () => {
               </div>
             </Card>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50 h-full">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10"><Trophy className="h-5 w-5 text-primary" /></div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Dream Explorer</p>
-                  <p className="text-2xl font-bold">Level 1</p>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
         </div>
+
 
         {/* Tool Grid */}
         <div>
