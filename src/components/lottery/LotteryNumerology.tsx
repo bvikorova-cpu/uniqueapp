@@ -97,7 +97,7 @@ export function LotteryNumerology({ onBack }: Props) {
                     >{n}</motion.div>
                   ))}
                 </div>
-                {result.summary && <p className="text-sm text-muted-foreground mt-4 text-center max-w-xl mx-auto">{result.summary}</p>}
+                {(result.summary || result.reading) && <p className="text-sm text-muted-foreground mt-4 text-center max-w-xl mx-auto whitespace-pre-wrap">{result.summary || result.reading}</p>}
               </CardContent>
             </Card>
           )}
