@@ -1,0 +1,173 @@
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sparkles, Loader2, Coins } from "lucide-react";
+import { useCrystalParity, CRYSTAL_PARITY_COST, type CrystalParityAction } from "@/hooks/useCrystalParity";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const TOOLS: { id: CrystalParityAction; label: string; description: string; fields: { key: string; label: string; placeholder?: string; type?: "text" | "textarea" }[] }[] = [
+  { id: "birth-chart-crystals", label: "Birth Chart Crystals", description: "Crystals aligned with your astrological chart.", fields: [
+    { key: "birth_date", label: "Birth date", placeholder: "1990-05-12" },
+    { key: "birth_time", label: "Birth time", placeholder: "07:30" },
+    { key: "birth_place", label: "Birth place", placeholder: "City, Country" },
+  ]},
+  { id: "ritual-designer", label: "Ritual Designer", description: "Custom crystal ritual for your intention.", fields: [
+    { key: "intention", label: "Intention", placeholder: "Release self-doubt" },
+    { key: "available_crystals", label: "Crystals you have", placeholder: "Amethyst, Rose Quartz, Citrine" },
+  ]},
+  { id: "grid-layout", label: "Grid Layout", description: "Sacred-geometry crystal grid plan.", fields: [
+    { key: "goal", label: "Goal", placeholder: "Abundance" },
+    { key: "available_crystals", label: "Crystals available", placeholder: "Citrine, Clear Quartz, Pyrite" },
+  ]},
+  { id: "dream-decoder", label: "Dream Decoder", description: "Decode dreams via crystal symbolism.", fields: [
+    { key: "dream", label: "Describe your dream", type: "textarea", placeholder: "I was walking through a cave..." },
+  ]},
+  { id: "affirmation-pack", label: "Affirmation Pack", description: "7-day affirmation pack tied to a crystal.", fields: [
+    { key: "crystal", label: "Crystal", placeholder: "Rose Quartz" },
+    { key: "theme", label: "Theme", placeholder: "Self-love" },
+  ]},
+  { id: "intention-setter", label: "Intention Setter", description: "Structured manifestation plan.", fields: [
+    { key: "desire", label: "What do you want to manifest?", type: "textarea", placeholder: "A new creative career..." },
+  ]},
+  { id: "aura-color-coach", label: "Aura Color Coach", description: "Coaching for your dominant aura color.", fields: [
+    { key: "aura_color", label: "Aura color", placeholder: "Indigo" },
+    { key: "current_state", label: "Current state", placeholder: "Feeling foggy and overstimulated" },
+  ]},
+  { id: "space-clearing", label: "Space Clearing", description: "Crystal plan to cleanse your home/office.", fields: [
+    { key: "space_type", label: "Space type", placeholder: "1-bedroom apartment" },
+    { key: "issues", label: "Energetic issues", type: "textarea", placeholder: "Heavy energy in bedroom, arguments in kitchen" },
+  ]},
+];
+
+const humanize = (key: string) =>
+  key.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+function ResultView({ value }: { value: unknown }) {
+  if (value === null || value === undefined || value === "") return null;
+
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    return <p className="text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap">{String(value)}</p>;
+  }
+
+  if (Array.isArray(value)) {
+    const allScalar = value.every((v) => typeof v !== "object" || v === null);
+    if (allScalar) {
+      return (
+        <div className="flex flex-wrap gap-2">
+          {value.map((v, i) => (
+            <span key={i} className="rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-medium">
+              {String(v)}
+            </span>
+          ))}
+        </div>
+      );
+    }
+    return (
+      <div className="space-y-3">
+        {value.map((v, i) => (
+          <div key={i} className="rounded-lg border border-border/50 bg-background/60 p-3">
+            <ResultView value={v} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (typeof value === "object") {
+    return (
+      <div className="space-y-3">
+        {Object.entries(value as Record<string, unknown>).map(([k, v]) => (
+          <div key={k} className="space-y-1.5">
+            <h5 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{humanize(k)}</h5>
+            <ResultView value={v} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+}
+
+export default function CrystalParityPack() {
+  const { run, isLoading, data } = useCrystalParity();
+  const [activeTool, setActiveTool] = useState<CrystalParityAction>(TOOLS[0].id);
+  const [inputs, setInputs] = useState<Record<string, Record<string, string>>>({});
+  const update = (toolId: string, key: string, value: string) => {
+    setInputs((prev) => ({ ...prev, [toolId]: { ...(prev[toolId] ?? {}), [key]: value } }));
+  };
+
+  return (
+    <Card className="my-8 border-primary/30 bg-gradient-to-br from-card to-card/60">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-primary" />
+          Crystal & Energy AI Parity Pack
+          <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-primary/15 text-primary px-2 py-0.5 text-[11px] font-semibold">
+            <Coins className="h-3 w-3" /> {CRYSTAL_PARITY_COST} credits / run
+          </span>
+        </CardTitle>
+        <CardDescription>
+          8 specialized AI tools · {CRYSTAL_PARITY_COST} credits per run · no subscription needed
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Tabs value={activeTool} onValueChange={(v) => setActiveTool(v as CrystalParityAction)}>
+          <TabsList className="grid grid-cols-2 md:grid-cols-4 h-auto">
+            {TOOLS.map((t) => (
+              <TabsTrigger key={t.id} value={t.id} className="text-xs whitespace-normal py-2">{t.label}</TabsTrigger>
+            ))}
+          </TabsList>
+
+          {TOOLS.map((tool) => (
+            <TabsContent key={tool.id} value={tool.id} className="space-y-4 mt-4">
+              <p className="text-sm text-muted-foreground">{tool.description}</p>
+              <div className="space-y-3">
+                {tool.fields.map((f) => (
+                  <div key={f.key} className="space-y-1.5">
+                    <Label htmlFor={`${tool.id}-${f.key}`}>{f.label}</Label>
+                    {f.type === "textarea" ? (
+                      <Textarea
+                        id={`${tool.id}-${f.key}`}
+                        placeholder={f.placeholder}
+                        value={inputs[tool.id]?.[f.key] ?? ""}
+                        onChange={(e) => update(tool.id, f.key, e.target.value)}
+                        rows={3}
+                      />
+                    ) : (
+                      <Input
+                        id={`${tool.id}-${f.key}`}
+                        placeholder={f.placeholder}
+                        value={inputs[tool.id]?.[f.key] ?? ""}
+                        onChange={(e) => update(tool.id, f.key, e.target.value)}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+              <Button
+                disabled={isLoading}
+                onClick={() => run({ action: tool.id, payload: inputs[tool.id] ?? {} })}
+                className="w-full sm:w-auto gap-2"
+              >
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                Run · {CRYSTAL_PARITY_COST} credits
+              </Button>
+
+              {data && (
+                <div className="mt-4 p-4 rounded-lg bg-muted/50 border border-border/60 space-y-4">
+                  <h4 className="font-semibold text-sm">Result</h4>
+                  <ResultView value={data} />
+                </div>
+              )}
+            </TabsContent>
+          ))}
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+}
