@@ -135,7 +135,7 @@ export const MysticalProfile = () => {
           </div>
 
           {readingHistory && totalReadings > 0 && (
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 pr-16 sm:pr-0">
               <p className="text-xs font-semibold text-muted-foreground">Reading History</p>
               {[
                 { label: "Tarot", count: readingHistory.tarot, color: "bg-amber-500" },
