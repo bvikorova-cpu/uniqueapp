@@ -67,12 +67,26 @@ export default function CrystalEnergyUpload() {
         return;
       }
 
-      const response = await supabase.functions.invoke('analyze-crystal-energy', {
-        body: { imageUrl: url } });
+      const response = await supabase.functions.invoke('crystal-ai-tool', {
+        body: { toolType: 'energy-reading', imageUrl: url } });
 
       if (response.error) throw response.error;
+      if (response.data?.error) throw new Error(response.data.error);
 
-      setReading(response.data.reading);
+      const raw = response.data?.analysis ?? "";
+      let parsed: any = null;
+      try {
+        parsed = JSON.parse(raw);
+      } catch {
+        const match = String(raw).match(/\{[\s\S]*\}/);
+        if (match) { try { parsed = JSON.parse(match[0]); } catch { /* ignore */ } }
+      }
+
+      const level = Number(parsed?.energy_level);
+      setReading({
+        energy_level: Number.isFinite(level) ? Math.max(1, Math.min(100, Math.round(level))) : 75,
+        energy_analysis: parsed?.energy_analysis || String(raw) || "No analysis available.",
+        recommended_crystals: Array.isArray(parsed?.recommended_crystals) ? parsed.recommended_crystals : [] });
       toast.success("Energy analysis complete!");
     } catch (error: any) {
       toast.error(error.message || "Failed to analyze crystal");
