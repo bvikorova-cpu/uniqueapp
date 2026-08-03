@@ -17,10 +17,6 @@ interface UniAssistantProps {
 }
 
 export function UniAssistant({ docked = false }: UniAssistantProps) {
-  const [isMobileViewport, setIsMobileViewport] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.innerWidth < 768;
-  });
   const [open, setOpen] = useState(false);
   const [listening, setListening] = useState(false);
   const [thinking, setThinking] = useState(false);
