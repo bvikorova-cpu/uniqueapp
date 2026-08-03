@@ -42,7 +42,14 @@ const DreamDictionary = ({ onBack }: DreamDictionaryProps) => {
         body: { action: "dictionary", symbol, context },
         headers: { Authorization: `Bearer ${session?.access_token}` } });
       if (error) throw error;
-      setResult(data.interpretation);
+      const text =
+        data?.interpretation ||
+        data?.result ||
+        data?.analysis ||
+        data?.content ||
+        (typeof data === "string" ? data : null);
+      if (!text) throw new Error("No interpretation returned. Please try again.");
+      setResult(typeof text === "string" ? text : JSON.stringify(text, null, 2));
       toast.success("Symbol interpretation ready!");
     } catch (err: any) {
       toast.error(err.message || "Error analyzing symbol");
