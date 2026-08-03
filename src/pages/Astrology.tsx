@@ -42,7 +42,9 @@ const TOOLS = [
 
 const Astrology = () => {
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
+  const { streak, achievements, unlockedCount, totalAchievements, rank, isLoading } = useMysticalStats();
   usePaymentVerification();
+
 
   const renderToolView = () => {
     switch (activeView) {
