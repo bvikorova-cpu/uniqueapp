@@ -72,12 +72,13 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    await adminClient.from("crystal_energy_readings").insert({
+    const insertRes = await adminClient.from("crystal_energy_readings").insert({
       user_id: user.id,
-      tool_type: toolType,
-      analysis_text: analysis,
-      image_url: imageUrl || null,
-      metadata: { textInput } });
+      image_url: imageUrl || "",
+      energy_analysis: { tool_type: toolType, analysis, textInput: textInput || null } as any,
+      energy_level: Math.floor(60 + Math.random() * 35),
+    });
+    if (insertRes.error) console.error("[crystal-ai-tool] reading insert failed:", insertRes.error.message);
 
     // Update stats
     await adminClient.rpc("increment_crystal_stat", { p_user_id: user.id,

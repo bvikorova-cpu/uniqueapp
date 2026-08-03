@@ -5,6 +5,7 @@ import { CrystalHero } from "@/components/crystal/CrystalHero";
 import { CrystalToolCards } from "@/components/crystal/CrystalToolCards";
 import { CrystalToolView } from "@/components/crystal/CrystalToolView";
 import { CrystalAbout } from "@/components/crystal/CrystalAbout";
+import { CrystalProgressPanel } from "@/components/crystal/CrystalProgressPanel";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -27,6 +28,7 @@ export default function CrystalEnergyNetwork() {
           <CrystalToolView toolName={selectedTool} onBack={() => setSelectedTool(null)} />
         ) : (
           <>
+            <CrystalProgressPanel />
             <CrystalToolCards onSelectTool={setSelectedTool} />
             <CrystalAbout />
 
