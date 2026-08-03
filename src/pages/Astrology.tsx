@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import { CREDIT_COSTS } from "@/hooks/useAstrologyCredits";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
+import { useMysticalStats } from "@/hooks/useMysticalStats";
+
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -42,7 +44,9 @@ const TOOLS = [
 
 const Astrology = () => {
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
+  const { streak, achievements, unlockedCount, totalAchievements, rank, isLoading } = useMysticalStats();
   usePaymentVerification();
+
 
   const renderToolView = () => {
     switch (activeView) {
@@ -108,8 +112,12 @@ const Astrology = () => {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Mystical Streak</p>
-                <p className="text-2xl font-black text-foreground">7 Days</p>
-                <p className="text-[10px] text-amber-500 font-medium">🔥 Keep it going!</p>
+                <p className="text-2xl font-black text-foreground">
+                  {isLoading ? "—" : `${streak} Day${streak === 1 ? "" : "s"}`}
+                </p>
+                <p className="text-[10px] text-amber-500 font-medium">
+                  {streak > 0 ? "🔥 Keep it going!" : "Do a reading today to start"}
+                </p>
               </div>
             </div>
           </Card>
@@ -124,14 +132,42 @@ const Astrology = () => {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-purple-500/30">
                 <Trophy className="w-6 h-6 text-purple-500" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">Achievements</p>
-                <p className="text-2xl font-black text-foreground">3 / 15</p>
-                <p className="text-[10px] text-purple-500 font-medium">⭐ Mystic Explorer</p>
+                <p className="text-2xl font-black text-foreground">
+                  {isLoading ? "—" : `${unlockedCount} / ${totalAchievements}`}
+                </p>
+                <p className="text-[10px] text-purple-500 font-medium">⭐ {rank}</p>
               </div>
             </div>
           </Card>
         </div>
+
+        {/* Achievement badges */}
+        <Card className="p-4 mb-6 bg-card/90 backdrop-blur-xl border-border/30">
+          <div className="flex items-center gap-2 mb-3">
+            <Trophy className="w-4 h-4 text-purple-500" />
+            <h3 className="text-sm font-bold text-foreground">Mystical Achievements</h3>
+            <span className="ml-auto text-xs text-muted-foreground">
+              {isLoading ? "—" : `${unlockedCount}/${totalAchievements}`}
+            </span>
+          </div>
+          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 gap-2">
+            {achievements.map((a) => (
+              <div
+                key={a.id}
+                title={a.label}
+                className={`flex flex-col items-center gap-1 p-2 rounded-lg text-center transition-all ${
+                  a.unlocked ? "bg-primary/10 border border-primary/20" : "bg-muted/20 opacity-40"
+                }`}
+              >
+                <span className="text-lg leading-none">{a.icon}</span>
+                <span className="text-[9px] text-muted-foreground leading-tight">{a.label}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+
 
         {/* Sidebar + Tools Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
