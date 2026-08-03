@@ -56,13 +56,22 @@ export const DailyHoroscope = () => {
       const content = data?.content || data?.interpretation || data?.reading || data?.text;
       if (!content) throw new Error('AI returned no horoscope, please try again');
       const rnd = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+      // DB constraint: scores must be 1..10. AI may return 0-100 or 0-10.
+      const toScore = (raw: unknown, fallback: number) => {
+        const n = Number(raw);
+        if (!Number.isFinite(n) || n <= 0) return fallback;
+        const scaled = n > 10 ? Math.round(n / 10) : Math.round(n);
+        return Math.min(10, Math.max(1, scaled));
+      };
       const horoscopeData = {
         user_id: user.id, zodiac_sign: selectedSign, date: today, content,
         lucky_numbers: data.luckyNumbers ?? data.lucky_numbers ?? [rnd(1, 49), rnd(1, 49), rnd(1, 49)],
         lucky_colors: data.luckyColors ?? data.lucky_colors ?? [],
         compatibility_signs: (data.compatibilitySigns ?? data.compatibility_signs ?? []).map((s: string) => String(s).toLowerCase()),
-        mood_score: data.moodScore ?? rnd(60, 95), love_score: data.loveScore ?? rnd(60, 95),
-        career_score: data.careerScore ?? rnd(60, 95), health_score: data.healthScore ?? rnd(60, 95), is_premium: false
+        mood_score: toScore(data.moodScore ?? data.mood_score, rnd(6, 9)),
+        love_score: toScore(data.loveScore ?? data.love_score, rnd(6, 9)),
+        career_score: toScore(data.careerScore ?? data.career_score, rnd(6, 9)),
+        health_score: toScore(data.healthScore ?? data.health_score, rnd(6, 9)), is_premium: false
       };
       const { data: saved, error: saveError } = await supabase.from('daily_horoscopes').insert([horoscopeData]).select().single();
       if (saveError) throw saveError;
