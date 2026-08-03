@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Gem, Sparkles, Heart, TrendingUp, Play, Pause, Volume2, VolumeX, Users } from "lucide-react";
+import { Gem, Sparkles, Users } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLiveStats } from "@/hooks/useLiveStats";
@@ -25,21 +25,15 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
 
 export const CrystalHero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
 
   const { stats, loading } = useLiveStats([
     { key: "users", table: "crystal_user_stats" },
     { key: "readings", table: "crystal_energy_readings" },
-    { key: "collections", table: "crystal_user_collections" },
-    { key: "meditations", table: "crystal_meditation_sessions" },
   ]);
 
   const heroStats = [
     { icon: Users, label: "Active Users", value: stats.users || 0, suffix: "+" },
     { icon: Sparkles, label: "Energy Readings", value: stats.readings || 0, suffix: "+" },
-    { icon: Heart, label: "Crystal Collections", value: stats.collections || 0, suffix: "+" },
-    { icon: TrendingUp, label: "Meditation Sessions", value: stats.meditations || 0, suffix: "+" },
   ];
 
   useEffect(() => {
