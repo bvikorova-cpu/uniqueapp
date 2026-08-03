@@ -19,7 +19,7 @@ interface AILucidDreamCoachProps {
 
 const AILucidDreamCoach = ({ onBack }: AILucidDreamCoachProps) => {
   const navigate = useNavigate();
-  const { credits, spendCredit } = useAICredits();
+  const { credits } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [experience, setExperience] = useState("beginner");
   const [goal, setGoal] = useState("");
