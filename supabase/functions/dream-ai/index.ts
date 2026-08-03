@@ -1,5 +1,4 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { callOpenAI } from "../_shared/openai.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -15,9 +14,25 @@ const ACTION_COSTS: Record<string, number> = { "dictionary": 1,
   "visualizer": 3 };
 
 async function aiChat(messages: any[]) {
-  const content = await callOpenAI({ messages, model: "gpt-4o-mini", max_completion_tokens: 1200 });
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) throw new Error("AI not configured");
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Lovable-API-Key": key },
+    body: JSON.stringify({ model: "google/gemini-3.6-flash", messages }),
+  });
+  if (res.status === 429) throw new Error("Rate limit reached, please try again shortly");
+  if (res.status === 402) throw new Error("Insufficient AI credits on the platform");
+  if (!res.ok) {
+    const t = await res.text();
+    console.error("gateway error", res.status, t);
+    throw new Error("AI service temporarily unavailable");
+  }
+  const json = await res.json();
+  const content = json?.choices?.[0]?.message?.content ?? "";
   try { return JSON.parse(content); } catch { return { result: content }; }
 }
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
