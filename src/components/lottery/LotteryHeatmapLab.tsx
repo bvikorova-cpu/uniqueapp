@@ -27,12 +27,13 @@ export function LotteryHeatmapLab({ onBack }: Props) {
   };
 
   const heatFor = (n: number): string => {
-    const hot = (result?.hot ?? []) as number[];
-    const cold = (result?.cold ?? []) as number[];
+    const hot = (result?.hot_numbers ?? result?.hot ?? []) as number[];
+    const cold = (result?.cold_numbers ?? result?.cold ?? []) as number[];
     if (hot.includes(n)) return "bg-gradient-to-br from-red-500/80 to-orange-500/60 text-white border-red-400/50 shadow-[0_0_15px_rgba(239,68,68,0.4)]";
     if (cold.includes(n)) return "bg-gradient-to-br from-blue-500/70 to-cyan-500/50 text-white border-blue-400/50";
     return "bg-muted/30 border-border/30 text-muted-foreground";
   };
+
 
   return (
     <>
