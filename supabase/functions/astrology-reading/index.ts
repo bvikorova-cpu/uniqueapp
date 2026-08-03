@@ -50,13 +50,13 @@ const SYSTEMS: Record<string, { system: string; json: boolean }> = {
   tarot: { system: "You are a tarot reader. Draw 3 cards (past/present/future) and interpret. Return JSON: {cards:[{name, position, meaning}], overall_message}.", json: true },
   numerology: { system: "You are an expert numerologist. Using the provided numbers, write a warm, detailed reading. Return JSON: {interpretation, life_path_meaning, destiny_meaning, soul_urge_meaning, personality_meaning, lucky_numbers:[numbers], summary}. 'interpretation' must be 6-10 sentences of flowing text in English.", json: true },
   dream: { system: "You are a dream interpreter combining Jungian and mystical traditions. Interpret the dream symbolically. Return JSON: {symbols:[{symbol,meaning}], emotional_theme, message, advice}.", json: true },
-  palmistry: { system: "You are a palmistry reader. Interpret palm lines. Return JSON: {life_line, heart_line, head_line, fate_line, summary}.", json: true },
+  palmistry: { system: "You are a palmistry reader. Look carefully at the provided palm photo and interpret the visible lines. Return JSON: {life_line, heart_line, head_line, fate_line, summary}.", json: true },
   yes_no: { system: "You are a mystical oracle. Answer YES or NO with a 1-2 sentence cosmic reasoning. Return JSON: {answer:'yes'|'no'|'maybe', reasoning, confidence_0_100}.", json: true },
   rune: { system: "You are a Norse rune reader. Draw 1 rune and interpret. Return JSON: {rune_name, symbol, meaning, advice}.", json: true },
   daily_ritual: { system: "You are a mystical guide creating a daily ritual. Return JSON with EXACTLY these keys: {\"cardOfTheDay\":{\"name\":string,\"meaning\":string},\"luckyNumber\":number,\"affirmation\":string,\"cosmicEnergy\":string,\"elementOfTheDay\":string,\"moonPhase\":string}. cosmicEnergy is 1-3 words (e.g. 'High & Expansive'), moonPhase is the real current moon phase name, affirmation is one inspiring sentence.", json: true },
 };
 
-async function callGateway(system: string, user: string, wantJson: boolean): Promise<string> {
+async function callGateway(system: string, user: string, wantJson: boolean, imageUrl?: string): Promise<string> {
   const key = Deno.env.get("LOVABLE_API_KEY");
   if (!key) throw new Error("Missing LOVABLE_API_KEY");
 
@@ -72,7 +72,15 @@ async function callGateway(system: string, user: string, wantJson: boolean): Pro
         model: "google/gemini-3.6-flash",
         messages: [
           { role: "system", content: wantJson ? `${system}\nRespond with valid JSON only.` : system },
-          { role: "user", content: user },
+          imageUrl
+            ? {
+                role: "user",
+                content: [
+                  { type: "text", text: user },
+                  { type: "image_url", image_url: { url: imageUrl } },
+                ],
+              }
+            : { role: "user", content: user },
         ],
         ...(wantJson ? { response_format: { type: "json_object" } } : {}),
       }),
@@ -160,7 +168,16 @@ serve(async (req) => {
       data.prompt && `Prompt: ${data.prompt}`,
     ].filter(Boolean).join("\n");
 
-    const raw = await callGateway(config.system, contextParts || "Give me a reading", config.json);
+    const palmImage = typeof data.imageBase64 === "string" && data.imageBase64.startsWith("data:")
+      ? data.imageBase64
+      : (typeof data.imageUrl === "string" && /^https?:\/\//.test(data.imageUrl) ? data.imageUrl : undefined);
+
+    const raw = await callGateway(
+      config.system,
+      contextParts || (palmImage ? "Read this palm photo." : "Give me a reading"),
+      config.json,
+      type === "palmistry" ? palmImage : undefined,
+    );
     const parsed = config.json ? safeJson(raw) : null;
 
     // Deduct AFTER a successful AI call (atomic, race-safe)
