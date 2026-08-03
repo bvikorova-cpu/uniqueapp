@@ -36,7 +36,7 @@ const SelectScrollUpButton = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.ScrollUpButton
     ref={ref}
-    className={cn("flex cursor-default items-center justify-center py-1", className)}
+    className={cn("sticky top-0 z-10 flex cursor-default items-center justify-center bg-background py-1", className)}
     {...props}
   >
     <ChevronUp className="h-4 w-4" />
