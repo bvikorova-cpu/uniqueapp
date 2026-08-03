@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useHolographicCredits, HOLO_COSTS } from "@/hooks/useHolographicCredits";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -22,6 +23,7 @@ export const AvatarBreeding = ({ onBack }: Props) => {
   const [parent2, setParent2] = useState<number | null>(null);
   const [isBreeding, setIsBreeding] = useState(false);
   const { toast } = useToast();
+  const { balance, spend } = useHolographicCredits();
 
   const handleBreed = async () => {
     if (parent1 === null || parent2 === null) {
@@ -30,15 +32,19 @@ export const AvatarBreeding = ({ onBack }: Props) => {
     }
     setIsBreeding(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-holographic-avatar-checkout", {
-        body: { priceId: "price_1SPjGzGaXSfGtYFtTGxQm0hM", featureName: "Avatar Breeding", metadata: { parent1, parent2 } } });
+      const paid = await spend(HOLO_COSTS.breeding, "breeding");
+      if (!paid) return;
+      const { data, error } = await supabase.functions.invoke("holographic-breeding-simulate", {
+        body: { parent1, parent2 } });
       if (error) throw error;
-      if (data?.url) {
-        try { localStorage.setItem("pendingHoloAction", JSON.stringify({ kind: "breeding", parent1, parent2 })); } catch {}
-        window.open(data.url, "_blank");
-        toast({ title: "Breeding Started!", description: "Complete payment to breed your avatars" });
+      const r = data?.result;
+      if (r) {
+        toast({ title: `👶 New offspring: ${r.offspring_name}`,
+          description: `${r.offspring_style} · ${r.rarity} · traits: ${(r.offspring_traits ?? []).join(", ")}` });
+      } else {
+        toast({ title: "Breeding complete", description: `${HOLO_COSTS.breeding} credits used.` });
       }
-    } catch { toast({ title: "Error", description: "Failed to start breeding", variant: "destructive" }); }
+    } catch { toast({ title: "Error", description: "Failed to breed avatars", variant: "destructive" }); }
     finally { setIsBreeding(false); }
   };
 
@@ -107,9 +113,11 @@ export const AvatarBreeding = ({ onBack }: Props) => {
             </motion.div>
           )}
 
+          <p className="text-xs text-muted-foreground text-center mb-3">Your balance: <strong className="text-foreground">{balance} credits</strong></p>
+
           <Button onClick={handleBreed} disabled={isBreeding || parent1 === null || parent2 === null} className="w-full" size="lg">
             {isBreeding ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Baby className="w-4 h-4 mr-2" />}
-            Breed Avatars — €10
+            {`Breed Avatars — ${HOLO_COSTS.breeding} credits`}
           </Button>
         </CardContent>
       </Card>

@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useHolographicCredits, HOLO_COSTS } from "@/hooks/useHolographicCredits";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -30,6 +31,7 @@ export const AvatarCreator = ({ onBack }: Props) => {
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
   const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
+  const { balance, spend } = useHolographicCredits();
 
   const toggleTrait = (trait: string) => {
     setSelectedTraits(prev =>
@@ -44,16 +46,23 @@ export const AvatarCreator = ({ onBack }: Props) => {
     }
     setIsCreating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-holographic-avatar-checkout", {
-        body: { priceId: "price_1SPjFEGaXSfGtYFtBjeXRVkk", featureName: "Premium AI Avatar", metadata: { name, style: selectedStyle, traits: selectedTraits } } });
-      if (error) throw error;
-      if (data?.url) {
-        window.open(data.url, "_blank");
-        toast({ title: "Redirecting to Payment", description: "Complete payment to create your avatar" });
+      const paid = await spend(HOLO_COSTS.avatar_create, "avatar_create");
+      if (!paid) return;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("holographic_purchases").insert({
+          user_id: user.id,
+          service_type: "avatar_create",
+          amount: HOLO_COSTS.avatar_create,
+          status: "completed",
+          metadata: { name, style: selectedStyle, traits: selectedTraits, paid_with: "credits" },
+        } as any);
       }
+      toast({ title: "Avatar created!", description: `${name} is now live — ${HOLO_COSTS.avatar_create} credits used.` });
+      setName(""); setSelectedStyle(""); setSelectedTraits([]);
     } catch (err) {
       console.error(err);
-      toast({ title: "Error", description: "Failed to start creation", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to create avatar", variant: "destructive" });
     } finally { setIsCreating(false); }
   };
 
@@ -112,9 +121,11 @@ export const AvatarCreator = ({ onBack }: Props) => {
             </div>
           </div>
 
+          <p className="text-xs text-muted-foreground text-center">Your balance: <strong className="text-foreground">{balance} credits</strong></p>
+
           <Button onClick={handleCreate} disabled={isCreating || !name.trim() || !selectedStyle || selectedTraits.length === 0} className="w-full" size="lg">
             {isCreating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Crown className="w-4 h-4 mr-2" />}
-            Create Avatar — €7/month
+            {`Create Avatar — ${HOLO_COSTS.avatar_create} credits`}
           </Button>
         </CardContent>
       </Card>
