@@ -2,22 +2,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Flame, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useLotteryStats } from "@/hooks/useLotteryStats";
 
 export const LotteryStreak = () => {
   const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   const today = new Date().getDay();
   const adjustedToday = today === 0 ? 6 : today - 1;
-  const currentStreak = 0;
+  const { data: stats } = useLotteryStats();
+  const currentStreak = stats?.currentStreak ?? 0;
+  const bestStreak = stats?.bestStreak ?? 0;
+  const weekActivity = stats?.weekActivity ?? [];
 
   return (
     <>
       <FloatingHowItWorks
         title='Lottery Streak'
         steps={[
-          { title: 'Open the tool', desc: 'Launch the Lottery Streak panel from this page.' },
-          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
-          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
-          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+          { title: 'Generate daily', desc: 'Every day you generate numbers extends your streak.' },
+          { title: 'Watch the week', desc: 'Filled days show when you generated this week.' },
+          { title: 'Keep it alive', desc: 'Miss a day and the current streak resets to zero.' },
+          { title: 'Beat your best', desc: 'Your longest run is stored as your best streak.' }
         ]}
       />
     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
@@ -39,6 +43,7 @@ export const LotteryStreak = () => {
           <div className="flex gap-1 mb-3">
             {days.map((day, i) => {
               const isToday = i === adjustedToday;
+              const active = weekActivity[i];
               return (
                 <motion.div
                   key={day}
@@ -49,7 +54,11 @@ export const LotteryStreak = () => {
                 >
                   <div
                     className={`w-full aspect-square rounded-xl flex items-center justify-center text-xs font-bold transition-all
-                      ${isToday ? "bg-orange-500/20 border-2 border-dashed border-orange-400 text-orange-500" : "bg-muted/30 text-muted-foreground border border-border/20"}
+                      ${active
+                        ? "bg-gradient-to-br from-orange-500 to-red-500 text-white border border-orange-400"
+                        : isToday
+                          ? "bg-orange-500/20 border-2 border-dashed border-orange-400 text-orange-500"
+                          : "bg-muted/30 text-muted-foreground border border-border/20"}
                     `}
                   >
                     {day}
@@ -62,10 +71,10 @@ export const LotteryStreak = () => {
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
-              Best: 0 days
+              Best: {bestStreak} days
             </span>
-            <span className="text-orange-500 font-semibold animate-pulse">
-              Start generating! 🎰
+            <span className="text-orange-500 font-semibold">
+              {currentStreak > 0 ? `${currentStreak}-day run 🔥` : "Start generating! 🎰"}
             </span>
           </div>
         </CardContent>
