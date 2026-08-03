@@ -16,7 +16,7 @@ interface DreamDictionaryProps {
 }
 
 const DreamDictionary = ({ onBack }: DreamDictionaryProps) => {
-  const { credits, spendCredit } = useAICredits();
+  const { credits, refresh } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [symbol, setSymbol] = useState("");
   const [context, setContext] = useState("");
@@ -35,8 +35,7 @@ const DreamDictionary = ({ onBack }: DreamDictionaryProps) => {
     }
     setLoading(true);
     try {
-      const used = await spendCredit("effect", "Dream Dictionary Lookup");
-      if (!used) throw new Error("Failed to use credit");
+      // Credits are deducted server-side (atomic, after successful AI call)
 
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("dream-ai", {

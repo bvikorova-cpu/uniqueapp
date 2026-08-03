@@ -15,7 +15,7 @@ interface DreamPatternTimelineProps {
 }
 
 const DreamPatternTimeline = ({ onBack }: DreamPatternTimelineProps) => {
-  const { credits, spendCredit } = useAICredits();
+  const { credits, refresh } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [dreams, setDreams] = useState<any[]>([]);
   const [analysis, setAnalysis] = useState<string | null>(null);
@@ -49,8 +49,7 @@ const DreamPatternTimeline = ({ onBack }: DreamPatternTimelineProps) => {
     }
     setLoading(true);
     try {
-      const used = await spendCredit("effect", "Dream Pattern Analysis");
-      if (!used) throw new Error("Failed to use credit");
+      // Credits are deducted server-side (atomic, after successful AI call)
 
       const { data: { session } } = await supabase.auth.getSession();
       const dreamSummaries = dreams.map(d => ({ title: d.title,

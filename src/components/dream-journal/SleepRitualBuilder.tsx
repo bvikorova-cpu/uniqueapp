@@ -16,7 +16,7 @@ interface SleepRitualBuilderProps {
 }
 
 const SleepRitualBuilder = ({ onBack }: SleepRitualBuilderProps) => {
-  const { credits, spendCredit } = useAICredits();
+  const { credits, refresh } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [sleepGoal, setSleepGoal] = useState("lucid-dreams");
   const [challenges, setChallenges] = useState("");
@@ -39,8 +39,7 @@ const SleepRitualBuilder = ({ onBack }: SleepRitualBuilderProps) => {
     }
     setLoading(true);
     try {
-      const used = await spendCredit("effect", "Sleep Ritual Builder");
-      if (!used) throw new Error("Failed to use credit");
+      // Credits are deducted server-side (atomic, after successful AI call)
 
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("dream-ai", {
