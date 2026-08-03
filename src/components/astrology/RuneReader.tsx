@@ -25,10 +25,22 @@ export const RuneReader = () => {
         body: { type: 'rune', data: {} }
       });
       if (error) throw error;
+      const normalized = {
+        runeName: data.rune_name ?? data.runeName ?? "Rune",
+        runeMeaning: data.meaning ?? data.runeMeaning ?? "",
+        description: data.description ?? "",
+        keywords: Array.isArray(data.keywords) ? data.keywords : [],
+        element: data.element ?? "",
+        deity: data.deity ?? "",
+        guidance: data.guidance ?? data.advice ?? "",
+        reversedMeaning: data.reversed_meaning ?? "",
+        affirmation: data.affirmation ?? "",
+      };
+      if (data.symbol) setRuneSymbol(String(data.symbol).slice(0, 2));
       await supabase.from('rune_readings').insert({
-        user_id: user.id, rune_name: data.runeName, rune_meaning: data.runeMeaning, guidance: data.guidance, credits_used: CREDIT_COSTS.rune
+        user_id: user.id, rune_name: normalized.runeName, rune_meaning: normalized.runeMeaning, guidance: normalized.guidance, credits_used: CREDIT_COSTS.rune
       });
-      return data;
+      return normalized;
     },
     onSuccess: (data) => { setResult(data); toast.success("Rune revealed! 🗿"); },
     onError: (error: Error) => { toast.error(error.message); }
@@ -78,7 +90,42 @@ export const RuneReader = () => {
               <h3 className="text-xl font-black text-foreground">{result.runeName}</h3>
               <p className="text-sm text-muted-foreground">{result.runeMeaning}</p>
             </div>
-            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap text-left">{result.guidance}</p>
+
+            {(result.keywords?.length > 0 || result.element || result.deity) && (
+              <div className="flex flex-wrap justify-center gap-2">
+                {result.keywords?.map((k: string) => (
+                  <span key={k} className="text-xs px-2 py-1 rounded-full bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">{k}</span>
+                ))}
+                {result.element && <span className="text-xs px-2 py-1 rounded-full bg-violet-500/10 text-violet-600 border border-violet-500/20">Element: {result.element}</span>}
+                {result.deity && <span className="text-xs px-2 py-1 rounded-full bg-blue-500/10 text-blue-600 border border-blue-500/20">Deity: {result.deity}</span>}
+              </div>
+            )}
+
+            {result.description && (
+              <div className="text-left rounded-xl border border-border/30 bg-muted/30 p-3">
+                <h4 className="text-xs font-bold uppercase tracking-wide text-muted-foreground mb-1">Description</h4>
+                <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{result.description}</p>
+              </div>
+            )}
+
+            {result.guidance && (
+              <div className="text-left rounded-xl border border-border/30 bg-muted/30 p-3">
+                <h4 className="text-xs font-bold uppercase tracking-wide text-muted-foreground mb-1">Guidance</h4>
+                <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{result.guidance}</p>
+              </div>
+            )}
+
+            {result.reversedMeaning && (
+              <div className="text-left rounded-xl border border-border/30 bg-muted/30 p-3">
+                <h4 className="text-xs font-bold uppercase tracking-wide text-muted-foreground mb-1">If reversed</h4>
+                <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{result.reversedMeaning}</p>
+              </div>
+            )}
+
+            {result.affirmation && (
+              <p className="text-sm italic text-indigo-600">"{result.affirmation}"</p>
+            )}
+
             <Button variant="outline" onClick={() => { setResult(null); setRuneSymbol(""); }} className="border-border/30">Draw Another</Button>
           </motion.div>
         )}
