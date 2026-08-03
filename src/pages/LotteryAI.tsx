@@ -718,61 +718,43 @@ export default function LotteryAI() {
           />
         </div>
 
-        {/* Pricing Section */}
+        {/* Credits Section */}
         <div className="mt-12" id="pricing">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Choose Your Plan</h2>
-            <p className="text-sm text-muted-foreground">Unlock advanced AI predictions and analytics</p>
+            <h2 className="text-2xl sm:text-3xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Pay With AI Credits</h2>
+            <p className="text-sm text-muted-foreground">No subscription needed — every generation costs {GENERATION_COST} AI credits</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {PRICING_TIERS.map((tier, i) => {
-              const Icon = tier.icon;
-              const isCurrentPlan = subscription?.tier === tier.tier;
-              return (
-                <motion.div key={tier.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                  <Card className={`relative bg-card/80 backdrop-blur-xl ${tier.popular ? "border-2 border-primary shadow-xl shadow-primary/10" : "border-border/50"} ${isCurrentPlan ? "border-2 border-green-500" : ""}`}>
-                    {tier.popular && !isCurrentPlan && (
-                      <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-accent text-primary-foreground">Most Popular</Badge>
-                    )}
-                    {isCurrentPlan && (
-                      <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500 text-white">Current Plan</Badge>
-                    )}
-                    <CardHeader>
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tier.color} flex items-center justify-center mb-4`}>
-                        <Icon className="h-6 w-6 text-white" />
-                      </div>
-                      <CardTitle className="font-black">{tier.name}</CardTitle>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-black">€{tier.price}</span>
-                        <span className="text-muted-foreground">/{tier.period}</span>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-3">
-                        {tier.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                            <span className="text-sm">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <Button
-                        className={`w-full mt-6 ${tier.popular ? "bg-gradient-to-r from-primary to-accent text-primary-foreground" : ""}`}
-                        variant={tier.popular ? "default" : "outline"}
-                        onClick={() => handleSubscribe(tier.tier as "basic" | "pro")}
-                        disabled={isCurrentPlan}
-                      >
-                        {isCurrentPlan ? "Current Plan" : "Subscribe Now"}
-                        {!isCurrentPlan && <ArrowRight className="ml-2 h-4 w-4" />}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
+          <div className="max-w-xl mx-auto">
+            <Card className="bg-card/80 backdrop-blur-xl border-2 border-primary shadow-xl shadow-primary/10">
+              <CardHeader>
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-4">
+                  <Coins className="h-6 w-6 text-primary-foreground" />
+                </div>
+                <CardTitle className="font-black">AI Credits</CardTitle>
+                <CardDescription>Use credits across the whole platform — they never expire.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {[`AI lucky numbers · ${GENERATION_COST} credits`, "Dream Decoder · 5 credits", "Numerology · 3 credits", "Heatmap Lab · 4 credits"].map((feature) => (
+                    <li key={feature} className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  className="w-full mt-6 bg-gradient-to-r from-primary to-accent text-primary-foreground"
+                  onClick={() => navigate("/ai-credits")}
+                >
+                  Get AI Credits
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
+
 
         {/* Disclaimer */}
         <div className="mt-12">
