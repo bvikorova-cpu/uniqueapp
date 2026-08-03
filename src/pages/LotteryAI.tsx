@@ -70,6 +70,8 @@ export default function LotteryAI() {
   const [generatedNumbers, setGeneratedNumbers] = useState<number[]>([]);
   const [bonusNumbers, setBonusNumbers] = useState<number[]>([]);
   const [savedCombinations, setSavedCombinations] = useState<any[]>([]);
+  const { data: lotteryStats } = useLotteryStats();
+
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
