@@ -46,7 +46,7 @@ export function LotteryHeatmapLab({ onBack }: Props) {
           { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
         ]}
       />
-    <div className="space-y-6">
+    <div className="space-y-6 pb-28">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
         <div>
