@@ -1,59 +1,26 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { Gem } from "lucide-react";
 import { CrystalHero } from "@/components/crystal/CrystalHero";
-import { CrystalEngagementRow } from "@/components/crystal/CrystalEngagementRow";
 import { CrystalToolCards } from "@/components/crystal/CrystalToolCards";
 import { CrystalToolView } from "@/components/crystal/CrystalToolView";
 import { CrystalAbout } from "@/components/crystal/CrystalAbout";
-import CrystalParityPack from "@/components/crystal/CrystalParityPack";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function CrystalEnergyNetwork() {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const [searchParams] = useSearchParams();
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-
-  useEffect(() => {
-    const sessionId = searchParams.get("session_id");
-    const success = searchParams.get("success");
-    if (success === "true" && sessionId) {
-      supabase.functions.invoke("verify-crystal-payment", {
-        body: { sessionId } }).then(({ error }) => {
-        if (error) {
-          toast({ title: "Verification failed", description: "Please contact support.", variant: "destructive" });
-        } else {
-          toast({ title: "Payment successful!", description: "Your service has been activated." });
-        }
-      });
-      window.history.replaceState({}, "", "/crystal-energy-network");
-    } else if (searchParams.get("canceled") === "true") {
-      toast({ title: "Payment canceled", description: "No charges were made." });
-      window.history.replaceState({}, "", "/crystal-energy-network");
-    }
-  }, [searchParams, toast]);
 
   return (
     
     <>
-      <FloatingHowItWorks title="Crystal & Energy Network" steps={[{ title: "Pick a crystal", desc: "Browse the library by intention or chakra." }, { title: "Use a tool", desc: "Sound bath, cleansing, or grid builder (costs credits)." }, { title: "Join the network", desc: "Connect with others working the same energy." }, { title: "Track your practice", desc: "Log sessions and see energetic progress." }]} />
+      <FloatingHowItWorks title="Crystal & Energy Network" steps={[{ title: "Pick a tool", desc: "Choose AI Energy Reading, Energy Healing, Daily Crystal Oracle, or Aura Analysis." }, { title: "Provide input", desc: "Upload a photo or describe your energy concerns." }, { title: "AI analysis", desc: "Receive personalized crystal guidance and recommendations." }, { title: "Daily guidance", desc: "Return each day for a fresh crystal oracle card." }]} />
       <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-24 pb-8">
         {/* Hero */}
         <CrystalHero />
 
         <HeroRewardedAd sectionKey="page_crystalenergynetwork" />
-
-        {/* Engagement Row */}
-        <CrystalEngagementRow />
-
-        {/* AI Parity Pack */}
-        <CrystalParityPack />
 
         {/* Tool Cards or Tool View */}
         {selectedTool ? (
