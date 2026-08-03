@@ -102,6 +102,26 @@ export function LotteryHeatmapLab({ onBack }: Props) {
                 <span className="flex items-center gap-1.5"><div className="w-3 h-3 rounded bg-gradient-to-br from-blue-500 to-cyan-500" /> Cold</span>
                 <span className="flex items-center gap-1.5"><div className="w-3 h-3 rounded bg-muted/50 border border-border" /> Neutral</span>
               </div>
+              {typeof result.sample_size === "number" && (
+                <p className="text-xs text-center text-muted-foreground mt-3">
+                  {result.sample_size === 0
+                    ? "No history yet — generate some number sets first, then run the analysis to see hot and cold numbers."
+                    : `Based on your last ${result.sample_size} generated sets.`}
+                </p>
+              )}
+              {result.pair_affinity && Object.keys(result.pair_affinity).length > 0 && (
+                <div className="mt-4">
+                  <p className="text-xs font-bold mb-2">Frequent pairs</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {Object.entries(result.pair_affinity as Record<string, number>).map(([pair, count]) => (
+                      <span key={pair} className="px-2 py-1 rounded-md bg-amber-500/10 border border-amber-400/30 text-xs font-semibold">
+                        {pair.replace("-", " + ")} · {count}x
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
             </CardContent>
           </Card>
 
