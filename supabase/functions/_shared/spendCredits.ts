@@ -25,8 +25,10 @@ export async function spendAiCredits(
   if (remaining < amount) return { ok: false, remaining, error: "Insufficient credits" };
 
   // Tag the update so the ledger trigger records reason/source
-  await admin.rpc("set_config", { setting_name: "app.credit_reason", new_value: reason, is_local: true } as any).catch(() => {});
-  await admin.rpc("set_config", { setting_name: "app.credit_source", new_value: source, is_local: true } as any).catch(() => {});
+  try {
+    await admin.rpc("set_config", { setting_name: "app.credit_reason", new_value: reason, is_local: true } as any);
+    await admin.rpc("set_config", { setting_name: "app.credit_source", new_value: source, is_local: true } as any);
+  } catch { /* best-effort tagging */ }
 
   const { error: updErr } = await admin
     .from("ai_credits")
@@ -35,10 +37,13 @@ export async function spendAiCredits(
     .eq("user_id", userId);
   if (updErr) return { ok: false, remaining, error: updErr.message };
 
-  await admin.from("ai_usage_history").insert({ user_id: userId,
-    usage_type: "custom_generation",
-    credits_used: amount,
-    description: reason }).catch(() => {});
+  try {
+    await admin.from("ai_usage_history").insert({ user_id: userId,
+      usage_type: "custom_generation",
+      credits_used: amount,
+      description: reason });
+  } catch { /* non-fatal */ }
+
 
   return { ok: true, remaining: remaining - amount };
 }
