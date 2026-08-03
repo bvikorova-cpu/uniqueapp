@@ -72,9 +72,9 @@ export function LotteryNumerology({ onBack }: Props) {
       {result && (
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
-            { label: "Life Path", value: result.life_path },
-            { label: "Destiny", value: result.destiny },
-            { label: "Soul Number", value: result.soul },
+            { label: "Life Path", value: result.life_path_number ?? result.life_path },
+            { label: "Destiny", value: result.destiny_number ?? result.destiny },
+            { label: "Soul Number", value: result.soul_number ?? result.soul },
           ].map((c, i) => (
             <Card key={i} className="bg-card/80 backdrop-blur-xl border-amber-400/30 text-center">
               <CardContent className="pt-6">
@@ -97,7 +97,7 @@ export function LotteryNumerology({ onBack }: Props) {
                     >{n}</motion.div>
                   ))}
                 </div>
-                {result.summary && <p className="text-sm text-muted-foreground mt-4 text-center max-w-xl mx-auto">{result.summary}</p>}
+                {(result.summary || result.reading) && <p className="text-sm text-muted-foreground mt-4 text-center max-w-xl mx-auto whitespace-pre-wrap">{result.summary || result.reading}</p>}
               </CardContent>
             </Card>
           )}
