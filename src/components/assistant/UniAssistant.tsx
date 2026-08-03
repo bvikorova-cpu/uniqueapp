@@ -223,7 +223,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const uniButton = (
     <button
       aria-label="Open Uni — voice AI assistant (like Siri)"
-      title="Uni · Voice AI assistant (like Siri) — tap or say “Hey Uni”"
+      title="Uni · Voice AI assistant (like Siri) — tap to talk"
       onClick={() => setOpen(true)}
       className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
     >
