@@ -115,32 +115,14 @@ const DreamJournal = () => {
   if (activeView === "lucid-coach") return (
     <SubView><AILucidDreamCoach onBack={() => setActiveView("hub")} /></SubView>
   );
-  if (activeView === "pattern-timeline") return (
-    <SubView><DreamPatternTimeline onBack={() => setActiveView("hub")} /></SubView>
-  );
   if (activeView === "sleep-analyzer") return (
     <SubView><SleepQualityAnalyzer onBack={() => setActiveView("hub")} /></SubView>
-  );
-  if (activeView === "community") return (
-    <SubView><DreamSharingCommunity onBack={() => setActiveView("hub")} /></SubView>
   );
   if (activeView === "visualizer") return (
     <SubView><AIDreamVisualizer onBack={() => setActiveView("hub")} /></SubView>
   );
-  if (activeView === "soundscapes") return (
-    <SubView><DreamSoundscapes onBack={() => setActiveView("hub")} /></SubView>
-  );
   if (activeView === "dictionary") return (
     <SubView><DreamDictionary onBack={() => setActiveView("hub")} /></SubView>
-  );
-  if (activeView === "ritual-builder") return (
-    <SubView><SleepRitualBuilder onBack={() => setActiveView("hub")} /></SubView>
-  );
-  if (activeView === "interpretation-battles") return (
-    <SubView><DreamInterpretationBattles onBack={() => setActiveView("hub")} /></SubView>
-  );
-  if (activeView === "mood-correlation") return (
-    <SubView><DreamMoodCorrelation onBack={() => setActiveView("hub")} /></SubView>
   );
 
   return (
