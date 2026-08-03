@@ -51,18 +51,13 @@ export const PastLifeCreditsDisplay = () => {
       <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
         <div className="h-1.5 bg-gradient-to-r from-primary to-accent" />
         <div className="p-5 sm:p-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-primary/10">
-                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Reading Credits</p>
-                <p className="text-3xl sm:text-4xl font-black">{credits?.credits_remaining || 0}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Total purchased: {credits?.total_credits_purchased || 0}
-                </p>
-              </div>
+          <div className="flex flex-col items-center text-center gap-4">
+            <div className="p-3 rounded-xl bg-primary/10">
+              <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold">Past Life Reading Credits</p>
+              <p className="text-xs text-muted-foreground mt-1">Managed in your AI Credits wallet</p>
             </div>
             <Button onClick={() => navigate("/ai-credits")} className="gap-2 w-full sm:w-auto">
               <Plus className="h-4 w-4" />
