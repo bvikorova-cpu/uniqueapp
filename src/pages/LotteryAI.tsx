@@ -354,37 +354,8 @@ export default function LotteryAI() {
     );
   }
 
-  if (activeView === "notifications") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotteryPushNotifications onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
-  if (activeView === "sharing") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotterySocialSharing onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
-  if (activeView === "wintracker") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotteryWinTracker onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
-  if (activeView === "smartpicks") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotterySmartPicks onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
-  if (activeView === "livedraws") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotteryLiveDraws onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
-  if (activeView === "leaderboard") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
-      <LotteryLeaderboard onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
   if (activeView === "dream") return (
+
     <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
       <LotteryDreamDecoder onBack={() => setActiveView("hub")} />
     </div></div>
