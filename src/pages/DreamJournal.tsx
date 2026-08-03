@@ -140,20 +140,6 @@ const DreamJournal = () => {
             className="text-sm sm:text-base text-muted-foreground max-w-xl mb-6 drop-shadow-md">
             Unlock your subconscious with AI-powered dream analysis, lucid coaching, visualization, and sleep optimization
           </motion.p>
-
-          {/* Stats Row */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 max-w-2xl">
-            {stats.map((stat, i) => (
-              <div key={i} className="flex items-center gap-2 rounded-xl bg-card/60 backdrop-blur-md border border-border/30 px-3 py-2">
-                <stat.icon className="h-4 w-4 text-primary flex-shrink-0" />
-                <div>
-                  <p className="text-lg font-bold leading-none">{stat.value}</p>
-                  <p className="text-[10px] text-muted-foreground">{stat.label}</p>
-                </div>
-              </div>
-            ))}
-          </motion.div>
         </div>
       </section>
 
