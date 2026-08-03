@@ -151,10 +151,11 @@ export function LotteryParityPack() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <pre className="text-xs whitespace-pre-wrap break-words font-mono text-foreground/90 max-h-96 overflow-auto">
-                        {JSON.stringify((result as any).result, null, 2)}
-                      </pre>
+                      <div className="max-h-96 overflow-auto">
+                        <ResultView value={result} />
+                      </div>
                     </CardContent>
+
                   </Card>
                 </motion.div>
               )}
