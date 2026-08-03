@@ -36,9 +36,6 @@ const AILucidDreamCoach = ({ onBack }: AILucidDreamCoachProps) => {
     }
     setLoading(true);
     try {
-      const used = await spendCredit("effect", "Lucid Dream Coaching");
-      if (!used) throw new Error("Failed to use credit");
-
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         handleEdgeError({ status: 401 }, { navigate, context: "Lucid Dream Coach" });
@@ -48,8 +45,9 @@ const AILucidDreamCoach = ({ onBack }: AILucidDreamCoachProps) => {
         body: { action: "lucid-coach", experience, goal },
         headers: { Authorization: `Bearer ${session.access_token}` } });
       const data = throwIfInvokeError(res);
-      setResult(data.coaching);
+      setResult(data.coaching ?? data.result ?? data.content ?? "");
       toast.success("Lucid dream coaching ready!");
+
     } catch (err: any) {
       if (!handleEdgeError(err, { navigate, context: "Lucid Dream Coach" })) {
         toast.error(err.message || "Error generating coaching plan");
