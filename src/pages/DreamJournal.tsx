@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Moon, BookOpen, TrendingUp, Sparkles, Brain, GitBranch, Users, Coins, CreditCard, Flame, Trophy, BarChart3, Palette, Volume2, Map, Swords } from "lucide-react";
+import { Moon, BookOpen, TrendingUp, Sparkles, Brain, Coins, CreditCard, Flame, Trophy, BarChart3, Palette } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAICredits } from "@/hooks/useAICredits";
 import Navbar from "@/components/Navbar";
@@ -12,20 +12,14 @@ import JournalList from "@/components/dream-journal/JournalList";
 import MoodTracker from "@/components/dream-journal/MoodTracker";
 import TrendsAnalysis from "@/components/dream-journal/TrendsAnalysis";
 import AILucidDreamCoach from "@/components/dream-journal/AILucidDreamCoach";
-import DreamPatternTimeline from "@/components/dream-journal/DreamPatternTimeline";
 import SleepQualityAnalyzer from "@/components/dream-journal/SleepQualityAnalyzer";
-import DreamSharingCommunity from "@/components/dream-journal/DreamSharingCommunity";
 import AIDreamVisualizer from "@/components/dream-journal/AIDreamVisualizer";
-import DreamSoundscapes from "@/components/dream-journal/DreamSoundscapes";
 import DreamDictionary from "@/components/dream-journal/DreamDictionary";
-import SleepRitualBuilder from "@/components/dream-journal/SleepRitualBuilder";
-import DreamInterpretationBattles from "@/components/dream-journal/DreamInterpretationBattles";
-import DreamMoodCorrelation from "@/components/dream-journal/DreamMoodCorrelation";
 import { motion } from "framer-motion";
 import heroVideo from "@/assets/dream-journal-hero-v2.mp4.asset.json";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-type ActiveView = "hub" | "dreams" | "journal" | "mood" | "trends" | "lucid-coach" | "pattern-timeline" | "sleep-analyzer" | "community" | "visualizer" | "soundscapes" | "dictionary" | "ritual-builder" | "interpretation-battles" | "mood-correlation";
+type ActiveView = "hub" | "dreams" | "journal" | "mood" | "trends" | "lucid-coach" | "sleep-analyzer" | "visualizer" | "dictionary";
 
 const DreamJournal = () => {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
@@ -41,23 +35,11 @@ const DreamJournal = () => {
     { id: "mood" as const, title: "Mood Tracker", desc: "Track mood, energy & stress", icon: Sparkles, cost: "Free", color: "from-emerald-500 to-teal-600" },
     { id: "trends" as const, title: "Mental Health Trends", desc: "30-day pattern analysis", icon: TrendingUp, cost: "1 Credit", color: "from-amber-500 to-orange-600" },
     { id: "lucid-coach" as const, title: "AI Lucid Dream Coach", desc: "Personalized lucid dreaming guidance", icon: Brain, cost: "1 Credit", color: "from-pink-500 to-rose-600" },
-    { id: "pattern-timeline" as const, title: "Dream Pattern Timeline", desc: "Discover recurring dream themes", icon: GitBranch, cost: "1 Credit", color: "from-cyan-500 to-blue-600" },
     { id: "sleep-analyzer" as const, title: "Sleep Quality Analyzer", desc: "AI sleep analysis & recommendations", icon: Moon, cost: "1 Credit", color: "from-indigo-500 to-violet-600" },
-    { id: "community" as const, title: "Dream Community", desc: "Share & discuss dreams", icon: Users, cost: "Free", color: "from-fuchsia-500 to-pink-600" },
     { id: "visualizer" as const, title: "AI Dream Visualizer", desc: "Turn dreams into stunning artwork", icon: Palette, cost: "3 Credits", color: "from-rose-500 to-red-600" },
-    { id: "soundscapes" as const, title: "Dream Soundscapes", desc: "AI ambient audio for dream recreation", icon: Volume2, cost: "2 Credits", color: "from-teal-500 to-emerald-600" },
     { id: "dictionary" as const, title: "AI Dream Dictionary", desc: "Personalized symbol interpretations", icon: BookOpen, cost: "1 Credit", color: "from-orange-500 to-amber-600" },
-    { id: "ritual-builder" as const, title: "Sleep Ritual Builder", desc: "Custom bedtime routines by AI", icon: Moon, cost: "1 Credit", color: "from-purple-500 to-indigo-600" },
-    { id: "interpretation-battles" as const, title: "Interpretation Battles", desc: "Community dream interpretation contests", icon: Swords, cost: "Free", color: "from-red-500 to-pink-600" },
-    { id: "mood-correlation" as const, title: "Dream-Mood Correlation", desc: "AI maps dream-emotion connections", icon: Map, cost: "1 Credit", color: "from-sky-500 to-cyan-600" },
   ];
 
-  const stats = [
-    { label: "Dreams", value: "—", icon: Moon },
-    { label: "Entries", value: "—", icon: BookOpen },
-    { label: "Moods", value: "—", icon: Sparkles },
-    { label: "Insights", value: "—", icon: Brain },
-  ];
 
   // Sub-view wrapper
   const SubView = ({ children }: { children: React.ReactNode }) => (
@@ -115,32 +97,14 @@ const DreamJournal = () => {
   if (activeView === "lucid-coach") return (
     <SubView><AILucidDreamCoach onBack={() => setActiveView("hub")} /></SubView>
   );
-  if (activeView === "pattern-timeline") return (
-    <SubView><DreamPatternTimeline onBack={() => setActiveView("hub")} /></SubView>
-  );
   if (activeView === "sleep-analyzer") return (
     <SubView><SleepQualityAnalyzer onBack={() => setActiveView("hub")} /></SubView>
-  );
-  if (activeView === "community") return (
-    <SubView><DreamSharingCommunity onBack={() => setActiveView("hub")} /></SubView>
   );
   if (activeView === "visualizer") return (
     <SubView><AIDreamVisualizer onBack={() => setActiveView("hub")} /></SubView>
   );
-  if (activeView === "soundscapes") return (
-    <SubView><DreamSoundscapes onBack={() => setActiveView("hub")} /></SubView>
-  );
   if (activeView === "dictionary") return (
     <SubView><DreamDictionary onBack={() => setActiveView("hub")} /></SubView>
-  );
-  if (activeView === "ritual-builder") return (
-    <SubView><SleepRitualBuilder onBack={() => setActiveView("hub")} /></SubView>
-  );
-  if (activeView === "interpretation-battles") return (
-    <SubView><DreamInterpretationBattles onBack={() => setActiveView("hub")} /></SubView>
-  );
-  if (activeView === "mood-correlation") return (
-    <SubView><DreamMoodCorrelation onBack={() => setActiveView("hub")} /></SubView>
   );
 
   return (
@@ -176,20 +140,6 @@ const DreamJournal = () => {
             className="text-sm sm:text-base text-muted-foreground max-w-xl mb-6 drop-shadow-md">
             Unlock your subconscious with AI-powered dream analysis, lucid coaching, visualization, and sleep optimization
           </motion.p>
-
-          {/* Stats Row */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 max-w-2xl">
-            {stats.map((stat, i) => (
-              <div key={i} className="flex items-center gap-2 rounded-xl bg-card/60 backdrop-blur-md border border-border/30 px-3 py-2">
-                <stat.icon className="h-4 w-4 text-primary flex-shrink-0" />
-                <div>
-                  <p className="text-lg font-bold leading-none">{stat.value}</p>
-                  <p className="text-[10px] text-muted-foreground">{stat.label}</p>
-                </div>
-              </div>
-            ))}
-          </motion.div>
         </div>
       </section>
 
@@ -266,10 +216,10 @@ const DreamJournal = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-muted-foreground">
             <div className="flex gap-2"><span className="text-primary font-bold">1.</span> Record dreams within 5 minutes of waking for best recall</div>
             <div className="flex gap-2"><span className="text-primary font-bold">2.</span> Track mood daily to discover emotional-dream connections</div>
-            <div className="flex gap-2"><span className="text-primary font-bold">3.</span> Use the Pattern Timeline after 5+ entries for deep insights</div>
+            <div className="flex gap-2"><span className="text-primary font-bold">3.</span> Check the Dream Dictionary for recurring symbols</div>
             <div className="flex gap-2"><span className="text-primary font-bold">4.</span> Practice reality checks from the Lucid Coach throughout the day</div>
             <div className="flex gap-2"><span className="text-primary font-bold">5.</span> Generate Dream Visualizations to reinforce dream memory</div>
-            <div className="flex gap-2"><span className="text-primary font-bold">6.</span> Build a Sleep Ritual to improve dream vividness consistently</div>
+            <div className="flex gap-2"><span className="text-primary font-bold">6.</span> Use the Sleep Quality Analyzer weekly for better dream vividness</div>
           </div>
         </Card>
       </main>
