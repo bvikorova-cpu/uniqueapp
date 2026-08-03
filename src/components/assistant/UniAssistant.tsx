@@ -218,66 +218,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     try { localStorage.setItem("uni-onboarding-seen", "1"); } catch {}
   };
 
-  const stopWakeWord = () => {
-    wakeActiveRef.current = false;
-    try { wakeRef.current?.stop?.(); } catch {}
-    wakeRef.current = null;
-  };
-
-  const startWakeWord = () => {
-    if (!supported || wakeRef.current) return;
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const rec = new SR();
-    rec.continuous = true;
-    rec.interimResults = true;
-    rec.lang = navigator.language || "en-US";
-    wakeActiveRef.current = true;
-    rec.onresult = (e: any) => {
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        const text = (e.results[i][0]?.transcript || "").toLowerCase().trim();
-        if (!text) continue;
-        // Match "hey uni", "hej uni", "hi uni", "ok uni"
-        if (/\b(hey|hej|hi|ok|okay)\s+u+ni+\b/.test(text) || /\buni\b.*(wake|start|listen)/.test(text)) {
-          stopWakeWord();
-          setOpen(true);
-          // small delay so wake recognizer fully releases mic
-          setTimeout(() => { startListening(); }, 250);
-          return;
-        }
-      }
-    };
-    rec.onerror = (ev: any) => {
-      // On permission denial, disable persistently
-      if (ev?.error === "not-allowed" || ev?.error === "service-not-allowed") {
-        wakeActiveRef.current = false;
-        setWakeEnabled(false);
-        localStorage.setItem("uni-wake-word", "0");
-        toast({ title: "Mic permission needed", description: "Allow microphone to use 'Hey Uni'.", variant: "destructive" });
-      }
-    };
-    rec.onend = () => {
-      // Auto-restart if still enabled and not currently in active listen
-      if (wakeActiveRef.current && !listening) {
-        try { rec.start(); } catch {
-          setTimeout(() => { try { rec.start(); } catch {} }, 500);
-        }
-      }
-    };
-    wakeRef.current = rec;
-    try { rec.start(); } catch {}
-  };
-
-  const toggleWakeWord = () => {
-    const next = !wakeEnabled;
-    setWakeEnabled(next);
-    localStorage.setItem("uni-wake-word", next ? "1" : "0");
-    if (next) {
-      startWakeWord();
-      toast({ title: "Wake word on", description: "Say “Hey Uni” anytime." });
-    } else {
-      stopWakeWord();
-    }
-  };
 
 
   const uniButton = (
