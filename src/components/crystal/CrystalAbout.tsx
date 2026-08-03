@@ -45,7 +45,7 @@ export const CrystalAbout = () => {
                 How to Use This Service
               </h3>
               <ol className="list-decimal list-inside space-y-1.5 text-xs text-muted-foreground">
-                <li><strong>Choose Your Service:</strong> AI Energy Reading (€3), Healing Session (€20), Chakra Balancing (€30), or Encyclopedia (€7/mo)</li>
+                <li><strong>Choose Your Service:</strong> AI Energy Reading (3 credits), Healing Session (10 credits), Chakra Balancing (8 credits), or Encyclopedia (2 credits)</li>
                 <li><strong>Upload Your Photo:</strong> Share a clear photo of yourself or your crystals for AI analysis</li>
                 <li><strong>Receive AI Analysis:</strong> Advanced AI examines your energy levels, aura patterns, and chakra alignment</li>
                 <li><strong>Get Recommendations:</strong> Receive crystal suggestions tailored to your energy needs</li>
@@ -77,16 +77,16 @@ export const CrystalAbout = () => {
       <Card className="bg-card/80 backdrop-blur-xl border-border/50 hover:border-primary/20 transition-all">
         <CardHeader>
           <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Service Pricing
+            Credit Pricing
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[
-              { icon: Sparkles, title: "AI Energy Reading", price: "€3", desc: "One-time photo-based energy analysis", gradient: "from-violet-500 to-purple-400" },
-              { icon: Heart, title: "Healing Session", price: "€20", desc: "1-hour guided healing with AI assessment", gradient: "from-pink-500 to-rose-400" },
-              { icon: Gem, title: "Chakra Program", price: "€30", desc: "7-day complete chakra alignment", gradient: "from-indigo-500 to-violet-400", popular: true },
-              { icon: Brain, title: "Encyclopedia", price: "€7/mo", desc: "500+ crystal profiles & daily insights", gradient: "from-cyan-500 to-blue-400" },
+              { icon: Sparkles, title: "AI Energy Reading", price: "3 credits", desc: "Photo-based energy analysis", gradient: "from-violet-500 to-purple-400" },
+              { icon: Heart, title: "Healing Session", price: "10 credits", desc: "Guided healing with AI assessment", gradient: "from-pink-500 to-rose-400" },
+              { icon: Gem, title: "Chakra Program", price: "8 credits", desc: "7-day complete chakra alignment", gradient: "from-indigo-500 to-violet-400", popular: true },
+              { icon: Brain, title: "Encyclopedia", price: "2 credits", desc: "500+ crystal profiles & daily insights", gradient: "from-cyan-500 to-blue-400" },
             ].map((item) => (
               <div key={item.title} className={`p-4 rounded-xl bg-muted/30 border ${item.popular ? "border-primary/40 ring-1 ring-primary/20" : "border-border/30"} space-y-2 hover:border-primary/20 transition-all relative`}>
                 {item.popular && (
