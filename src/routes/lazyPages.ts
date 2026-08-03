@@ -348,8 +348,6 @@ export const HolographicHistory = lazy(() => import("@/pages/HolographicHistory"
 export const DigitalOffspring = lazy(() => import("@/pages/DigitalOffspring"));
 export const CrystalEnergyNetwork = lazy(() => import("@/pages/CrystalEnergyNetwork"));
 export const CrystalMarketplace = lazy(() => import("@/pages/CrystalMarketplace"));
-export const DNAMemoryNetwork = lazy(() => import("@/pages/DNAMemoryNetwork"));
-export const ReincarnationSocial = lazy(() => import("@/pages/ReincarnationSocial"));
 export const BlockchainConfessions = lazy(() => import("@/pages/BlockchainConfessions"));
 export const PhobiaTrading = lazy(() => import("@/pages/PhobiaTrading"));
 export const MultiverseNetwork = lazy(() => import("@/pages/MultiverseNetwork"));
