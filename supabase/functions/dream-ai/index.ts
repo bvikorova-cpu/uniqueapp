@@ -33,6 +33,58 @@ async function aiChat(messages: any[]) {
   try { return JSON.parse(content); } catch { return { result: content }; }
 }
 
+function extractImageUrl(data: any): string | null {
+  const b64 = data?.data?.[0]?.b64_json;
+  if (typeof b64 === "string" && b64) return `data:image/png;base64,${b64}`;
+  const directUrl = data?.data?.[0]?.url;
+  if (typeof directUrl === "string" && directUrl) return directUrl;
+  const msg = data?.choices?.[0]?.message;
+  const fromImages = msg?.images?.[0]?.image_url?.url || msg?.images?.[0]?.url;
+  if (typeof fromImages === "string" && fromImages) return fromImages;
+  const content = msg?.content;
+  if (Array.isArray(content)) {
+    for (const part of content) {
+      const url = part?.image_url?.url || part?.url;
+      if (typeof url === "string" && url) return url;
+      if (typeof part?.b64_json === "string" && part.b64_json) return `data:image/png;base64,${part.b64_json}`;
+    }
+  }
+  const inline = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData?.data)?.inlineData?.data;
+  if (typeof inline === "string" && inline) return `data:image/png;base64,${inline}`;
+  return null;
+}
+
+async function aiImage(prompt: string) {
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) throw new Error("AI not configured");
+  const models = ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"];
+  let lastErr = "";
+  for (const model of models) {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Lovable-API-Key": key },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: [{ type: "text", text: prompt }] }],
+        modalities: ["image", "text"],
+      }),
+    });
+    if (res.status === 429) throw new Error("Rate limit reached, please try again shortly");
+    if (res.status === 402) throw new Error("Insufficient AI credits on the platform");
+    if (!res.ok) {
+      lastErr = `status ${res.status}`;
+      console.error("image gateway error", model, res.status, await res.text().catch(() => ""));
+      continue;
+    }
+    const json = await res.json().catch(() => null);
+    const url = extractImageUrl(json);
+    if (url) return url;
+    lastErr = "response did not contain an image";
+    console.error("no image returned", model, JSON.stringify(json).slice(0, 500));
+  }
+  throw new Error(`Image generation failed (${lastErr})`);
+}
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -126,12 +178,23 @@ Deno.serve(async (req) => {
           { role: "user", content: `Create a dream soundscape for theme: "${dreamTheme}". Desired mood: ${mood}.` }
         ]);
         break;
-      case "visualizer":
-        result = await aiChat([
-          { role: "system", content: "You are a dream visualization expert. Create a vivid visual description of the dream that could be used as an art prompt. Include colors, atmosphere, key imagery, and emotional tone. Use markdown." },
-          { role: "user", content: `Visualize this dream: ${params.dreamDescription || ""}` }
-        ]);
+      case "visualizer": {
+        const desc = params.dreamDescription || "";
+        const style = params.artStyle || "surrealist";
+        const styleHints: Record<string, string> = {
+          "surrealist": "surrealist oil painting in the style of Salvador Dalí, dreamlike distortions",
+          "watercolor": "ethereal soft watercolor painting, delicate washes, glowing light",
+          "digital-fantasy": "highly detailed digital fantasy concept art, cinematic lighting",
+          "abstract": "abstract expressionist painting, bold gestural brushstrokes, emotive color fields",
+          "anime": "anime / manga illustration, vibrant cel shading, expressive composition",
+          "dark-gothic": "dark gothic art, moody chiaroscuro, ominous atmosphere",
+        };
+        const imageUrl = await aiImage(
+          `Create a stunning dream visualization artwork. Dream: ${desc}. Style: ${styleHints[style] || style}. High detail, rich atmosphere, no text or watermarks. Return only the image.`,
+        );
+        result = { imageUrl, image_url: imageUrl, artStyle: style };
         break;
+      }
     }
 
     // ── Deduct credits AFTER successful AI call (atomic + ledger row) ──
