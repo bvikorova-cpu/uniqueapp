@@ -6,7 +6,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const TimeCapsuleHowItWorks = ({ onBack }: { onBack: () => void }) => {
   const steps = [
-    { icon: Clock, title: "1. Choose Your Plan", desc: "Select a time capsule plan based on how far into the future you want your message delivered — from 1 year to 20+ years." },
+    { icon: Clock, title: "1. Choose Your Duration", desc: "Pick how far into the future your capsule opens — 1 year (12 credits), 5 years (25), 10 years (50) or 20+ years (125). No subscription needed." },
     { icon: Video, title: "2. Create Your Content", desc: "Write a letter, record a video message, attach photos, or combine multiple formats. Express yourself freely." },
     { icon: Mail, title: "3. Set the Recipient", desc: "Send the capsule to yourself or specify a loved one's email. Set specific delivery conditions if needed." },
     { icon: Brain, title: "4. AI-Powered Timing", desc: "Our AI analyzes your content and suggests the perfect delivery moment for maximum emotional impact." },
@@ -17,7 +17,7 @@ export const TimeCapsuleHowItWorks = ({ onBack }: { onBack: () => void }) => {
   const features = [
     { icon: Video, title: "Multiple Formats", desc: "Text, video, photos, letters, and file attachments" },
     { icon: Shield, title: "Secure Storage", desc: "Military-grade encryption for decades of protection" },
-    { icon: Calendar, title: "Flexible Delivery", desc: "From 1 year to 20+ years into the future" },
+    { icon: Calendar, title: "Pay With Credits", desc: "One-off credit cost per capsule, refunded if creation fails" },
     { icon: Brain, title: "AI-Powered Timing", desc: "Smart suggestions for perfect delivery moments" },
     { icon: Users, title: "Collaborative Capsules", desc: "Group capsules with multiple contributors" },
     { icon: Sparkles, title: "Community Gallery", desc: "Browse and share public capsule stories" },
