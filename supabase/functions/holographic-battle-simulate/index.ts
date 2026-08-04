@@ -30,8 +30,9 @@ const OPPONENTS = [
 // Chance of winning per mode — losses are the norm, wins happen now and then.
 const WIN_CHANCE: Record<string, number> = { "1v1": 0.35, survival: 0.3, tournament: 0.25 };
 
-// Credit payout on a win (entry costs: 1v1 = 2, survival = 3, tournament = 5 credits).
-const PRIZES: Record<string, number> = { "1v1": 4, tournament: 30, survival: 15 };
+// XP payout on a win (entry costs: 1v1 = 2, survival = 3, tournament = 5 credits).
+// Prizes are paid in XP — never in credits.
+const PRIZES: Record<string, number> = { "1v1": 80, tournament: 600, survival: 300 };
 
 
 function json(body: unknown, status = 200) {
@@ -295,16 +296,17 @@ Deno.serve(async (req) => {
 
 
 
-    // Pay the win prize in real credits into the unified ai_credits pool.
-    let creditsAwarded = 0;
+    // Pay the win prize in XP (unified XP ledger) — no credit payouts.
+    const xpSource = String(body?.xpSource ?? "holographic_battle");
+    let xpAwarded = 0;
     if (rewards > 0) {
-      const { error: awardError } = await admin.rpc("add_ai_credits", {
-        p_user_id: user.id,
-        p_amount: rewards,
-        p_reason: `holographic_battle_win_${mode}`,
-        p_source: "holographic_avatars" });
-      if (awardError) console.error("battle prize award failed", awardError);
-      else creditsAwarded = rewards;
+      const { error: awardError } = await admin.rpc("award_xp", {
+        _user_id: user.id,
+        _amount: rewards,
+        _source: `${xpSource}_win_${mode}`,
+        _ref_id: null });
+      if (awardError) console.error("battle XP award failed", awardError);
+      else xpAwarded = rewards;
     }
 
     const { data: result, error } = await admin
@@ -380,7 +382,7 @@ Deno.serve(async (req) => {
     const roundsWon = flags.filter(Boolean).length;
     const summary =
       outcome === "win"
-        ? `Victory in the ${arena}. You closed out ${roundsWon} of ${roundCount} rounds against ${opponent.name}, finishing with ${userHp}% integrity.${creditsAwarded ? ` Prize paid out: +${creditsAwarded} credits.` : ""}`
+        ? `Victory in the ${arena}. You closed out ${roundsWon} of ${roundCount} rounds against ${opponent.name}, finishing with ${userHp}% integrity.${xpAwarded ? ` Prize paid out: +${xpAwarded} XP.` : ""}`
         : outcome === "loss"
         ? `Defeat in the ${arena}. ${opponent.name} took ${roundCount - roundsWon} of ${roundCount} rounds; your hologram destabilised at ${userHp}% integrity.`
         : `A dead heat in the ${arena}. You and ${opponent.name} split the rounds ${roundsWon}-${roundCount - roundsWon}.`;
@@ -392,7 +394,8 @@ Deno.serve(async (req) => {
         rounds_total: roundCount,
         final_user_hp: userHp,
         final_opponent_hp: oppHp,
-        credits_awarded: creditsAwarded,
+        xp_awarded: xpAwarded,
+        credits_awarded: 0,
         summary } });
 
   } catch (e) {
