@@ -65,17 +65,7 @@ export default function TimeReversalSocial() {
       case "feed": return <SocialReverseFeed onBack={goBack} />;
       case "story": return <ReverseLifeStory onBack={goBack} />;
       case "plans": return <TimeReversalPlans onBack={goBack} />;
-      case "profile": return <TimeReversalProfile onBack={goBack} />;
       case "how-it-works": return <TimeReversalHowItWorks onBack={goBack} />;
-      case "timeline": {
-        // Lazy load existing TimeReversalTimeline inline
-        navigate("/time-reversal/timeline");
-        return null;
-      }
-      case "dashboard": {
-        navigate("/time-reversal/dashboard");
-        return null;
-      }
       default: return null;
     }
   };
