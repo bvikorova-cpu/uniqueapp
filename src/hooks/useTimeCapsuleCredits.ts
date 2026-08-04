@@ -5,10 +5,9 @@ import { toast } from "sonner";
 /**
  * Credit costs for Time Capsule (unified `ai_credits` pool).
  * Priced to match the previous EUR plans at ~€0.40 / credit:
- *  < 1 month  →  3 credits
- *  1-3 months →  5 credits
- *  3-6 months →  8 credits
- *  6-12 months → 10 credits
+ *  < 3 months  →  3 credits
+ *  3-6 months  →  5 credits
+ *  6-12 months →  8 credits
  *  1 year  ≈ €4.99  → 12 credits
  *  5 years ≈ €9.99  → 25 credits
  * 10 years ≈ €19.99 → 50 credits
