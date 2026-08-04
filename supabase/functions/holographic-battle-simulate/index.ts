@@ -274,7 +274,6 @@ Deno.serve(async (req) => {
     const pool = OPPONENTS.filter((o) => !recentNames.has(o.name));
     const candidates = pool.length ? pool : OPPONENTS;
 
-    const userPower = 180 + Math.floor((await rng()) * 100);
     const opponent = candidates[Math.floor((await rng()) * candidates.length)];
 
     // Outcome is chance-driven per mode: mostly losses, occasional wins.
@@ -285,7 +284,15 @@ Deno.serve(async (req) => {
     else if (roll < winChance + 0.08) outcome = "draw";
     else outcome = "loss";
 
+    // Power values stay consistent with the outcome shown to the player.
+    const margin = 4 + Math.floor((await rng()) * 26);
+    const userPower =
+      outcome === "win" ? opponent.power + margin
+      : outcome === "loss" ? opponent.power - margin
+      : opponent.power + (margin % 3) - 1;
+
     const rewards = outcome === "win" ? PRIZES[mode] ?? 0 : 0;
+
 
 
     // Pay the win prize in real credits into the unified ai_credits pool.
