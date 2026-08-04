@@ -119,7 +119,7 @@ export default function HolographicAvatars() {
       case "battle": return <AvatarBattleArena onBack={goBack} />;
       case "breeding": return <AvatarBreeding onBack={goBack} />;
       case "emotion-sync": return <EmotionSync onBack={goBack} />;
-      case "marketplace": return <AvatarMarketplace onBack={goBack} />;
+      
       case "gallery": return <HolographicGallery onBack={goBack} onCreate={() => setActiveView("creator")} />;
       case "evolution": return <EvolutionLab onBack={goBack} />;
       case "how-it-works": return <HolographicHowItWorks onBack={goBack} />;
