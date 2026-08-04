@@ -14,10 +14,25 @@ const OPPONENTS = [
   { name: "ShadowKing", power: 231 },
   { name: "CosmicVoid", power: 227 },
   { name: "BioHunter", power: 220 },
+  { name: "PrismFang", power: 252 },
+  { name: "VoidHalo", power: 243 },
+  { name: "EchoSpectre", power: 236 },
+  { name: "AuroraTitan", power: 229 },
+  { name: "NullSeraph", power: 248 },
+  { name: "GlitchOracle", power: 224 },
+  { name: "IonReaper", power: 234 },
+  { name: "QuantumMirage", power: 241 },
+  { name: "HexNomad", power: 218 },
+  { name: "StarlitHollow", power: 233 },
+  { name: "PlasmaMonk", power: 226 },
 ];
+
+// Chance of winning per mode — losses are the norm, wins happen now and then.
+const WIN_CHANCE: Record<string, number> = { "1v1": 0.35, survival: 0.3, tournament: 0.25 };
 
 // Credit payout on a win (entry costs: 1v1 = 2, survival = 3, tournament = 5 credits).
 const PRIZES: Record<string, number> = { "1v1": 4, tournament: 30, survival: 15 };
+
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -242,17 +257,43 @@ Deno.serve(async (req) => {
     //    Legacy Stripe purchase/subscription gate removed.
 
 
-    // 3) Deterministic outcome from (user, session, mode).
-    const rng = await makeSeededRng(`battle|${user.id}|${sessionId ?? "no-session"}|${mode}`);
-    const userPower = 180 + Math.floor((await rng()) * 100);
-    const opponent = OPPONENTS[Math.floor((await rng()) * OPPONENTS.length)];
-    const diff = userPower - opponent.power;
+    // 3) Fresh matchup per battle. With a Stripe sessionId the result stays
+    //    reproducible; without one, every battle gets its own seed so the
+    //    opponent and outcome change each time.
+    const battleSeed = sessionId ?? `${Date.now()}-${crypto.randomUUID()}`;
+    const rng = await makeSeededRng(`battle|${user.id}|${battleSeed}|${mode}`);
+
+    // Avoid repeating the last few opponents this user faced.
+    const { data: recent } = await admin
+      .from("holographic_battle_results")
+      .select("opponent_name")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(4);
+    const recentNames = new Set((recent ?? []).map((r: any) => r.opponent_name));
+    const pool = OPPONENTS.filter((o) => !recentNames.has(o.name));
+    const candidates = pool.length ? pool : OPPONENTS;
+
+    const opponent = candidates[Math.floor((await rng()) * candidates.length)];
+
+    // Outcome is chance-driven per mode: mostly losses, occasional wins.
+    const roll = await rng();
+    const winChance = WIN_CHANCE[mode] ?? 0.3;
     let outcome: "win" | "loss" | "draw";
-    if (diff > 10) outcome = "win";
-    else if (diff < -10) outcome = "loss";
-    else outcome = (await rng()) > 0.5 ? "win" : "loss";
+    if (roll < winChance) outcome = "win";
+    else if (roll < winChance + 0.08) outcome = "draw";
+    else outcome = "loss";
+
+    // Power values stay consistent with the outcome shown to the player.
+    const margin = 4 + Math.floor((await rng()) * 26);
+    const userPower =
+      outcome === "win" ? opponent.power + margin
+      : outcome === "loss" ? opponent.power - margin
+      : opponent.power + (margin % 3) - 1;
 
     const rewards = outcome === "win" ? PRIZES[mode] ?? 0 : 0;
+
+
 
     // Pay the win prize in real credits into the unified ai_credits pool.
     let creditsAwarded = 0;
