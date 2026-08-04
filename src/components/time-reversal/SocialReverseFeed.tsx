@@ -24,6 +24,7 @@ export function SocialReverseFeed({ onBack }: Props) {
       const { data, error } = await supabase
         .from("time_reversal_posts")
         .select("*")
+        .like("image_url", "%/time-reversal/collage/%")
         .order("created_at", { ascending: false })
         .limit(30);
       if (error) throw error;
