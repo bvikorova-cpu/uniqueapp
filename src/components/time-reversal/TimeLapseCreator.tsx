@@ -19,7 +19,7 @@ export function TimeLapseCreator({ onBack }: Props) {
   const [startAge, setStartAge] = useState([80]);
   const [endAge, setEndAge] = useState([20]);
   const [generating, setGenerating] = useState(false);
-  const [generatedFrames, setGeneratedFrames] = useState<string[]>([]);
+  const [generatedFrames, setGeneratedFrames] = useState<{ url: string; age: number }[]>([]);
   const [currentFrame, setCurrentFrame] = useState(0);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
