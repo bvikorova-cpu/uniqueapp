@@ -76,7 +76,8 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
-      const path = `time-capsule-videos/${session.user.id}/${Date.now()}-${file.name}`;
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `${session.user.id}/time-capsule-videos/${Date.now()}-${safeName}`;
       const { error } = await supabase.storage.from("user-uploads").upload(path, file);
       if (error) throw error;
       const { data: urlData } = supabase.storage.from("user-uploads").getPublicUrl(path);
