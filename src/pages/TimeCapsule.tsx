@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Clock, Send, Brain, CreditCard, Info, Loader2, Shield, Sparkles, Mail
+  Clock, Send, Brain, Calendar, CreditCard, Info, Loader2, Shield, Sparkles, Mail
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
