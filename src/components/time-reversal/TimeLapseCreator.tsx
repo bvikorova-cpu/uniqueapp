@@ -225,8 +225,8 @@ export function TimeLapseCreator({ onBack }: Props) {
       setStage("done");
       toast({ title: "Time-Lapse Generated!", description: `${normalized.length} age frames created.` });
 
-      // Publish the youngest generated frame into the Social Reverse Feed
-      await publishToFeed(normalized[normalized.length - 1], normalized.length, true);
+      // No auto-post: the user shares the full progression collage (2 credits) or a single frame.
+
 
     } catch (e: any) {
       console.error(e);
