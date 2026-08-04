@@ -14,7 +14,7 @@ import { AvatarCustomization } from "@/components/holographic/AvatarCustomizatio
 import { AvatarBattleArena } from "@/components/holographic/AvatarBattleArena";
 import { AvatarBreeding } from "@/components/holographic/AvatarBreeding";
 import { EmotionSync } from "@/components/holographic/EmotionSync";
-import { AvatarMarketplace } from "@/components/holographic/AvatarMarketplace";
+import { useHolographicStats } from "@/hooks/useHolographicStats";
 import { HolographicGallery } from "@/components/holographic/HolographicGallery";
 import { EvolutionLab } from "@/components/holographic/EvolutionLab";
 import { HolographicHowItWorks } from "@/components/holographic/HolographicHowItWorks";
