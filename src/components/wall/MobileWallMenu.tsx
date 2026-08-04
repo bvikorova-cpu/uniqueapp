@@ -64,9 +64,7 @@ const advancedModules = [
   { name: "Property Marketplace", path: "/property-marketplace", icon: Building2, color: "text-sky-500" },
   { name: "Membership Community", path: "/membership-community", icon: Users, color: "text-rose-500" },
   { name: "Crystal Energy", path: "/crystal-energy", icon: Gem, color: "text-violet-500" },
-  { name: "Blockchain Confessions", path: "/blockchain-confessions", icon: Link2, color: "text-slate-400" },
   { name: "Phobia Trading", path: "/phobia-trading", icon: Bug, color: "text-orange-500" },
-  { name: "Multiverse Network", path: "/multiverse-network", icon: SparklesIcon, color: "text-indigo-500" },
   { name: "Live Concerts", path: "/live-concerts", icon: Music, color: "text-red-500" },
 ];
 
@@ -97,7 +95,6 @@ const visionaryModules = [
   { name: "AI Clone", path: "/ai-clone", icon: Bot, color: "text-purple-500" },
   { name: "Glamour World", path: "/glamour-world", icon: Crown, color: "text-pink-500" },
   { name: "Emotion Economy", path: "/emotion-economy", icon: Heart, color: "text-pink-500" },
-  { name: "Quantum Social", path: "/quantum-social", icon: Atom, color: "text-cyan-500" },
 ];
 
 interface ModuleSectionProps {

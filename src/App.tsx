@@ -434,16 +434,13 @@ import { ResetPassword,
   CoffeeBuddy,
   
   EmotionEconomy,
-  QuantumSocial,
   HolographicAvatars,
   AboutPlatform,
   HolographicHistory,
   DigitalOffspring,
   CrystalEnergyNetwork,
   CrystalMarketplace,
-  BlockchainConfessions,
   PhobiaTrading,
-  MultiverseNetwork,
   SecretSanta,
   SkillSwap,
   SkillSwapProfile,
@@ -1109,7 +1106,6 @@ const App = () => {
                         
                         <Route path="/lottery-history" element={<LotteryHistory />} />
                         <Route path="/emotion-economy" element={<EmotionEconomy />} />
-                        <Route path="/quantum-social" element={<QuantumSocial />} />
                         <Route path="/membership-community" element={<MembershipCommunity />} />
                         <Route path="/communities" element={<MembershipCommunity />} />
                         <Route path="/close-friends" element={<Friends />} />
@@ -1312,14 +1308,8 @@ const App = () => {
                         <Route path="/crystal-energy-network" element={<CrystalEnergyNetwork />} />
                         <Route path="/crystal-energy" element={<CrystalEnergyNetwork />} />
                         <Route path="/crystal-marketplace" element={<CrystalMarketplace />} />
-                        {/* Blockchain Confessions */}
-                        <Route path="/blockchain-confessions" element={<BlockchainConfessions />} />
-                        <Route path="/confessions" element={<BlockchainConfessions />} />
                         {/* Phobia Trading */}
                         <Route path="/phobia-trading" element={<PhobiaTrading />} />
-                        {/* Multiverse Network */}
-                        <Route path="/multiverse-network" element={<MultiverseNetwork />} />
-                        <Route path="/multiverse" element={<MultiverseNetwork />} />
                         {/* Live Concerts */}
                         <Route path="/live-concerts" element={<LiveConcerts />} />
                         <Route path="/concert-watch/:id" element={<ProtectedRoute><ConcertWatch /></ProtectedRoute>} />
