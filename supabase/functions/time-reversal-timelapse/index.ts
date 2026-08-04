@@ -59,6 +59,7 @@ serve(async (req) => {
     const callModel = async (model: string, age: number) =>
       await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
+        signal: AbortSignal.timeout(55_000),
         headers: {
           "Lovable-API-Key": lovableKey,
           "Content-Type": "application/json" },
@@ -72,14 +73,18 @@ serve(async (req) => {
               { type: "image_url", image_url: { url: imageUrl } },
             ] }] }) });
 
-    for (let i = 0; i < count; i++) {
-      const age = Math.round(sAge + step * i);
+    // Frames are generated in PARALLEL — sequential generation of 4-6 frames
+    // exceeded the 150s edge idle timeout (504 IDLE_TIMEOUT).
+    let rateLimited = false;
+    let creditsExhausted = false;
+
+    const genFrame = async (age: number) => {
       for (const model of ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"]) {
         try {
           const res = await callModel(model, age);
 
-          if (res.status === 429) return json({ error: "rate_limited", message: "AI is busy, please retry in a moment." }, 429);
-          if (res.status === 402) return json({ error: "credits_exhausted", message: "AI credits exhausted." }, 402);
+          if (res.status === 429) { rateLimited = true; await res.text(); return null; }
+          if (res.status === 402) { creditsExhausted = true; await res.text(); return null; }
 
           if (!res.ok) {
             lastError = `${model} ${res.status}: ${(await res.text()).slice(0, 500)}`;
@@ -89,7 +94,7 @@ serve(async (req) => {
 
           const data = await res.json();
           const url = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-          if (url) { generated.push({ age, url }); break; }
+          if (url) return { age, url };
           lastError = `${model}: no image in response ${JSON.stringify(data).slice(0, 500)}`;
           console.error(lastError);
         } catch (err) {
@@ -97,7 +102,16 @@ serve(async (req) => {
           console.error("frame generation failed", age, lastError);
         }
       }
-    }
+      return null;
+    };
+
+    const ages = Array.from({ length: count }, (_, i) => Math.round(sAge + step * i));
+    const results = await Promise.all(ages.map((age) => genFrame(age)));
+    for (const r of results) if (r) generated.push(r);
+    generated.sort((a, b) => a.age - b.age);
+
+    if (!generated.length && rateLimited) return json({ error: "rate_limited", message: "AI is busy, please retry in a moment." }, 429);
+    if (!generated.length && creditsExhausted) return json({ error: "credits_exhausted", message: "AI credits exhausted." }, 402);
 
     if (!generated.length) {
       return json({ error: "generation_failed", message: "Could not generate frames. Please try again.", detail: lastError.slice(0, 300) }, 502);
