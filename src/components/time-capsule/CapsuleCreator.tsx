@@ -17,6 +17,8 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
   const { balance, loading: creditsLoading, spend, refund } = useTimeCapsuleCredits();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [videoFile, setVideoFile] = useState<{ url: string; type: string; size: number; name: string } | null>(null);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [capsuleType, setCapsuleType] = useState<"text" | "video" | "letter">("text");
@@ -27,6 +29,14 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
   const handleSubmit = async () => {
     if (!title || !deliveryDate) {
       toast({ title: "Missing Information", description: "Please fill in title and delivery date.", variant: "destructive" });
+      return;
+    }
+    if (uploading) {
+      toast({ title: "Upload in progress", description: "Please wait until the video finishes uploading.", variant: "destructive" });
+      return;
+    }
+    if (capsuleType === "video" && !videoFile) {
+      toast({ title: "No video attached", description: "Upload a video or switch to Text/Letter.", variant: "destructive" });
       return;
     }
     const now = new Date();
@@ -47,10 +57,14 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
 
     try {
       const { error } = await supabase.functions.invoke("save-time-capsule", {
-        body: { title, message, capsuleType, deliveryDate, recipientEmail, recipientName, durationMonths, durationYears: Math.max(1, Math.ceil(durationMonths / 12)), pricePaid: null, stripePaymentId: null } });
+        body: {
+          title, message, capsuleType, deliveryDate, recipientEmail, recipientName, durationMonths,
+          durationYears: Math.max(1, Math.ceil(durationMonths / 12)), pricePaid: null, stripePaymentId: null,
+          files: videoFile ? [{ url: videoFile.url, type: videoFile.type, size: videoFile.size }] : [],
+        } });
       if (error) throw error;
       toast({ title: "Time Capsule Created!", description: `${credits} credits used — delivery on ${delivery.toLocaleDateString()}.` });
-      setTitle(""); setMessage(""); setDeliveryDate(""); setRecipientEmail(""); setRecipientName("");
+      setTitle(""); setMessage(""); setDeliveryDate(""); setRecipientEmail(""); setRecipientName(""); setVideoFile(null);
     } catch (error: any) {
       await refund(action, `refund:time-capsule:create:${durationMonths}m`);
       toast({ title: "Error", description: error.message || "Failed to create time capsule", variant: "destructive" });
@@ -58,6 +72,7 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
   };
 
   const handleVideoUpload = async (file: File) => {
+    setUploading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
@@ -65,12 +80,14 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
       const { error } = await supabase.storage.from("user-uploads").upload(path, file);
       if (error) throw error;
       const { data: urlData } = supabase.storage.from("user-uploads").getPublicUrl(path);
-      setMessage(prev => prev + `\n[Video: ${urlData.publicUrl}]`);
+      setVideoFile({ url: urlData.publicUrl, type: file.type || "video/mp4", size: file.size, name: file.name });
       toast({ title: "Video uploaded!", description: "It will be included in your time capsule." });
     } catch (err: any) {
+      setVideoFile(null);
       toast({ title: "Upload failed", description: err.message, variant: "destructive" });
-    }
+    } finally { setUploading(false); }
   };
+
 
   return (
     <>
@@ -120,9 +137,18 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
             </TabsContent>
             <TabsContent value="video" className="space-y-3">
               <Label>Upload Video</Label>
-              <Input type="file" accept="video/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleVideoUpload(f); }} />
+              <Input type="file" accept="video/*" disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; if (f) handleVideoUpload(f); }} />
+              {uploading && <p className="text-xs text-muted-foreground flex items-center gap-2"><Loader2 className="h-3 w-3 animate-spin" /> Uploading video…</p>}
+              {videoFile && !uploading && (
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
+                  <p className="text-xs font-medium truncate">🎬 {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(1)} MB)</p>
+                  <video src={videoFile.url} controls className="w-full rounded-md max-h-48" />
+                  <Button variant="ghost" size="sm" onClick={() => setVideoFile(null)}>Remove video</Button>
+                </div>
+              )}
               <Textarea placeholder="Add a note to your video..." value={message} onChange={(e) => setMessage(e.target.value)} rows={3} />
             </TabsContent>
+
             <TabsContent value="letter" className="space-y-3">
               <Label>Write Your Letter</Label>
               <Textarea placeholder="Dear future me..." value={message} onChange={(e) => setMessage(e.target.value)} rows={8} />
@@ -145,9 +171,10 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
             <Input type="email" placeholder="their@email.com" value={recipientEmail} onChange={(e) => setRecipientEmail(e.target.value)} />
           </div>
 
-          <Button className="w-full" size="lg" onClick={handleSubmit} disabled={loading}>
-            {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Creating...</> : <><Send className="mr-2 h-5 w-5" /> Create Time Capsule</>}
+          <Button className="w-full" size="lg" onClick={handleSubmit} disabled={loading || uploading}>
+            {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Creating...</> : uploading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Uploading video...</> : <><Send className="mr-2 h-5 w-5" /> Create Time Capsule</>}
           </Button>
+
         </CardContent>
       </Card>
     </div>
