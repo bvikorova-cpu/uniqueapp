@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Timer, TrendingDown, Swords, Film, BookOpen, Users, CreditCard, Info, Loader2, Shield, Sparkles, MessageCircle, User, Eye
+  Timer, TrendingDown, Swords, Film, BookOpen, Users, CreditCard, Info, Loader2, Shield, Sparkles, Images, User, Eye
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
