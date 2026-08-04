@@ -87,14 +87,15 @@ serve(async (req) => {
     // Explicit, age-specific instructions — generic "appears N years old" prompts are
     // routinely ignored by image models, which is why frame labels did not match faces.
     const ageBrief = (age: number) => {
-      if (age <= 6) return "a small young child (kindergarten age), round soft baby-like face, chubby cheeks, very smooth skin, small childlike facial proportions, no makeup, no facial hair";
-      if (age <= 12) return "a pre-teen child, clearly childlike face with large eyes relative to the face, soft round cheeks, flawless smooth skin, no makeup, no wrinkles, thin childlike neck";
-      if (age <= 17) return "a teenager, youthful slim face, smooth skin, slightly childlike proportions, minimal or no makeup, no wrinkles";
-      if (age <= 29) return "a young adult in their twenties, fully smooth taut skin, no wrinkles, firm jawline, youthful glow";
-      if (age <= 44) return "an adult in their thirties or early forties, healthy skin with only very faint expression lines";
-      if (age <= 59) return "middle aged, visible forehead and eye wrinkles, slightly softer jawline, some grey strands in the hair";
-      if (age <= 74) return "elderly, clearly wrinkled skin, deep nasolabial folds, sagging cheeks, mostly grey or white hair";
-      return "very elderly (80+), deeply wrinkled thin skin, age spots, hollow cheeks, white hair, drooping eyelids";
+      if (age <= 3) return "a toddler: very large forehead relative to the face, tiny nose and chin, huge round eyes, extremely chubby cheeks, baby-soft flawless skin, sparse fine baby hair, no makeup, no jaw definition, baby body proportions";
+      if (age <= 6) return "a small kindergarten child around 5 years old: childlike skull proportions (large forehead, small lower face), very chubby round cheeks, small button nose, big round eyes, tiny mouth, milk teeth, completely flawless baby-smooth skin, short fine child hair, absolutely no makeup, no eyebrows shaping, no jawline definition, child-size shoulders and neck, child clothing";
+      if (age <= 12) return "a pre-teen child around 10: clearly childlike face, large eyes relative to the face, soft round cheeks, undeveloped jawline, flawless smooth skin, thin childlike neck and narrow shoulders, simple child hairstyle, no makeup, no wrinkles";
+      if (age <= 17) return "a teenager: youthful slim face, still-soft features, smooth skin, minimal or no makeup, no wrinkles";
+      if (age <= 29) return "a young adult in their twenties: fully smooth taut skin, no wrinkles, firm defined jawline, youthful glow";
+      if (age <= 44) return "an adult in their thirties to early forties: healthy skin with only very faint expression lines";
+      if (age <= 59) return "middle aged: visible forehead and eye wrinkles, softer jawline, some grey strands in the hair";
+      if (age <= 74) return "elderly: clearly wrinkled skin, deep nasolabial folds, sagging cheeks, thinner mostly grey or white hair";
+      return "very elderly (80+): deeply wrinkled thin skin, age spots, hollow cheeks, thin white hair, drooping eyelids, frail neck";
     };
 
     const callModel = async (model: string, age: number) =>
@@ -110,9 +111,10 @@ serve(async (req) => {
           messages: [{
             role: "user",
             content: [
-              { type: "text", text: `Re-render this portrait of the SAME person at EXACTLY ${age} years old. The result must unmistakably read as ${age} years old: ${ageBrief(age)}. Keep the same identity, ethnicity, eye colour, pose, framing and lighting. Photorealistic portrait photo, natural anatomically correct aging for age ${age}. Do NOT keep the current apparent age.` },
+              { type: "text", text: `Create a photorealistic portrait of the SAME PERSON as in the reference photo, but at EXACTLY ${age} years old. Age transformation is the PRIMARY goal: the face, skull proportions, skin, hair and body MUST be fully rebuilt to match ${age} years of age — ${ageBrief(age)}. Keep only the identity cues (ethnicity, eye colour, hair colour family, general likeness) and a similar background style. It is WRONG to reuse the adult face, adult makeup, adult hairstyle, adult clothing or adult body from the reference; redraw them age-appropriately. A viewer must instantly guess the age as about ${age} without a caption. Natural, anatomically correct human anatomy for ${age} years old. No text, no watermark, no collage.` },
               { type: "image_url", image_url: { url: imageUrl } },
             ] }] }) });
+
 
     // Frames are generated in PARALLEL — sequential generation of 4-6 frames
     // exceeded the 150s edge idle timeout (504 IDLE_TIMEOUT).
