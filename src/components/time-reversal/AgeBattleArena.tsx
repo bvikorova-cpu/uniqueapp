@@ -97,19 +97,40 @@ export function AgeBattleArena({ onBack }: Props) {
   };
 
 
+  // One vote per person — the RPC toggles a unique like row and keeps the counter correct.
   const handleVote = async (postId: string) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-      
-      const { data: post } = await supabase.from("time_reversal_posts").select("likes_count").eq("id", postId).single();
-      if (post) {
-        await supabase.from("time_reversal_posts").update({ likes_count: (post.likes_count || 0) + 1 }).eq("id", postId);
-        toast({ title: "Vote Cast! ⚔️" });
-        loadBattles();
-      }
-    } catch (e) { console.error(e); }
+      if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
+      const { data, error } = await supabase.rpc("toggle_time_reversal_like", { _post_id: postId });
+      if (error) throw error;
+      const liked = (data as any)?.liked ?? (data as any)?.[0]?.liked;
+      toast({ title: liked === false ? "Vote removed" : "Vote cast! ⚔️" });
+      loadBattles();
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Error", description: e?.message || "Could not vote", variant: "destructive" });
+    }
   };
+
+  const handleFight = async (mode: typeof BATTLE_MODES[0]) => {
+    setFighting(mode.id);
+    try {
+      const paid = await spend(mode.entry, `age_battle_${mode.id}`);
+      if (!paid) return;
+      const { data, error } = await supabase.functions.invoke("holographic-battle-simulate", {
+        body: { mode: mode.id },
+      });
+      if (error) throw error;
+      const r = data?.result;
+      if (r) { setReport({ result: r as BattleResult, mode }); await refresh(); }
+      else toast({ title: "Battle entered", description: `${mode.name} — ${mode.entry} credits used.` });
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Error", description: e?.message || "Battle failed", variant: "destructive" });
+    } finally { setFighting(null); }
+  };
+
 
   return (
     <>
