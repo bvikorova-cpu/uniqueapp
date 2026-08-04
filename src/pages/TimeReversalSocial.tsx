@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Timer, TrendingDown, Swords, Film, BookOpen, Users, CreditCard, Info, Loader2, Shield, Sparkles, Images, User, Eye
+  Timer, TrendingDown, Swords, Film, BookOpen, Users, CreditCard, Info, Loader2, Sparkles, Images, Upload
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -13,21 +13,17 @@ import { TimeLapseCreator } from "@/components/time-reversal/TimeLapseCreator";
 import { SocialReverseFeed } from "@/components/time-reversal/SocialReverseFeed";
 import { ReverseLifeStory } from "@/components/time-reversal/ReverseLifeStory";
 import { TimeReversalPlans } from "@/components/time-reversal/TimeReversalPlans";
-import { TimeReversalProfile } from "@/components/time-reversal/TimeReversalProfile";
 import { TimeReversalHowItWorks } from "@/components/time-reversal/TimeReversalHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ViewType = "hub" | "battle" | "timelapse" | "feed" | "story" | "plans" | "profile" | "how-it-works" | "timeline" | "dashboard";
+type ViewType = "hub" | "battle" | "timelapse" | "feed" | "story" | "plans" | "how-it-works";
 
 const tools = [
   { id: "feed" as ViewType, icon: Images, title: "Public Gallery", description: "Browse every AI age-progression collage", color: "purple", badge: "Gallery" },
-  { id: "battle" as ViewType, icon: Swords, title: "Age Battle Arena", description: "Compare reverse-aging & vote for the best", color: "red", badge: "Battle" },
-  { id: "timelapse" as ViewType, icon: Film, title: "Time-Lapse Creator", description: "Generate reverse-aging timelapse videos", color: "violet", badge: "New" },
+  { id: "battle" as ViewType, icon: Swords, title: "Age Battle Arena", description: "Battle AI opponents and earn XP", color: "red", badge: "Battle" },
+  { id: "timelapse" as ViewType, icon: Film, title: "Time-Lapse Creator", description: "Generate an AI age-progression collage", color: "violet", badge: "New" },
   { id: "story" as ViewType, icon: BookOpen, title: "Reverse Life Story", description: "AI writes your biography backwards", color: "amber", badge: "AI" },
-  { id: "profile" as ViewType, icon: User, title: "My Profile", description: "Manage your reverse aging journey", color: "blue" },
-  { id: "timeline" as ViewType, icon: TrendingDown, title: "My Timeline", description: "View your reverse age progression", color: "emerald" },
-  { id: "dashboard" as ViewType, icon: Eye, title: "Time Powers", description: "Use credit-based time powers", color: "cyan" },
   { id: "plans" as ViewType, icon: CreditCard, title: "Credit Costs", description: "See how many credits each tool costs", color: "orange", badge: "Credits" },
   { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Complete guide to Time Reversal", color: "rose" },
 ];
@@ -68,17 +64,7 @@ export default function TimeReversalSocial() {
       case "feed": return <SocialReverseFeed onBack={goBack} />;
       case "story": return <ReverseLifeStory onBack={goBack} />;
       case "plans": return <TimeReversalPlans onBack={goBack} />;
-      case "profile": return <TimeReversalProfile onBack={goBack} />;
       case "how-it-works": return <TimeReversalHowItWorks onBack={goBack} />;
-      case "timeline": {
-        // Lazy load existing TimeReversalTimeline inline
-        navigate("/time-reversal/timeline");
-        return null;
-      }
-      case "dashboard": {
-        navigate("/time-reversal/dashboard");
-        return null;
-      }
       default: return null;
     }
   };
@@ -144,10 +130,10 @@ export default function TimeReversalSocial() {
                 <h3 className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">How It Works</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {[
-                    { icon: User, title: "1. Upload Photo", desc: "Our AI transforms you into your 80-year-old self to begin" },
-                    { icon: TrendingDown, title: "2. Get Younger", desc: "Every day AI makes you younger automatically through time" },
-                    { icon: Swords, title: "3. Battle & Share", desc: "Enter battles, post updates, and build your following" },
-                    { icon: Shield, title: "4. Spend Credits", desc: "Pay-per-use credits for speed boosts, age locks and paradox posts" },
+                    { icon: Upload, title: "1. Upload a photo", desc: "Add one clear face photo in Time-Lapse Creator" },
+                    { icon: Film, title: "2. Generate a collage", desc: "AI builds your age-progression frames into one collage" },
+                    { icon: Images, title: "3. Public gallery", desc: "Your collage is published automatically for everyone to see" },
+                    { icon: Swords, title: "4. Battle for XP", desc: "Spend credits to battle AI opponents and earn XP" },
                   ].map((step, i) => (
                     <div key={i} className="text-center space-y-2">
                       <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 border border-primary/20">
