@@ -22,15 +22,14 @@ import { HolographicHowItWorks } from "@/components/holographic/HolographicHowIt
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "creator" | "customize" | "battle" | "breeding" |
-  "emotion-sync" | "marketplace" | "gallery" | "evolution" | "how-it-works";
+  "emotion-sync" | "gallery" | "evolution" | "how-it-works";
 
 const tools = [
   { id: "creator" as ViewType, icon: Crown, title: "Avatar Creator", description: "Design your unique AI-powered holographic avatar", color: "violet", badge: "10 credits" },
   { id: "customize" as ViewType, icon: Palette, title: "Avatar Restyle", description: "Give a saved avatar a new style, outfit and accessory", color: "blue", badge: "5 credits" },
   { id: "battle" as ViewType, icon: Swords, title: "Battle Arena", description: "PvP combat between holographic avatars", color: "red", badge: "2-5 credits" },
   { id: "breeding" as ViewType, icon: Heart, title: "Avatar Breeding", description: "Combine avatars to create unique offspring", color: "pink", badge: "10 credits" },
-  { id: "emotion-sync" as ViewType, icon: Camera, title: "Emotion Sync", description: "Avatar mirrors your real-time emotions", color: "cyan", badge: "New" },
-  { id: "marketplace" as ViewType, icon: ShoppingBag, title: "Avatar Marketplace", description: "Buy & sell custom skins and accessories", color: "orange", badge: "3-12 credits" },
+  { id: "emotion-sync" as ViewType, icon: Camera, title: "Emotion Sync", description: "Avatar mirrors your real-time emotions", color: "cyan", badge: "1 credit" },
   { id: "gallery" as ViewType, icon: Eye, title: "My Avatars", description: "All avatars you have created", color: "indigo" },
   { id: "evolution" as ViewType, icon: TrendingUp, title: "Evolution Lab", description: "Track growth and AI development stages", color: "emerald" },
   { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Complete guide to the avatar universe", color: "purple" },
