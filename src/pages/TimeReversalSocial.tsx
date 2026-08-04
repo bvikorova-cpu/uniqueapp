@@ -18,16 +18,13 @@ import { TimeReversalHowItWorks } from "@/components/time-reversal/TimeReversalH
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ViewType = "hub" | "battle" | "timelapse" | "feed" | "story" | "plans" | "profile" | "how-it-works" | "timeline" | "dashboard";
+type ViewType = "hub" | "battle" | "timelapse" | "feed" | "story" | "plans" | "how-it-works";
 
 const tools = [
   { id: "feed" as ViewType, icon: Images, title: "Public Gallery", description: "Browse every AI age-progression collage", color: "purple", badge: "Gallery" },
-  { id: "battle" as ViewType, icon: Swords, title: "Age Battle Arena", description: "Compare reverse-aging & vote for the best", color: "red", badge: "Battle" },
-  { id: "timelapse" as ViewType, icon: Film, title: "Time-Lapse Creator", description: "Generate reverse-aging timelapse videos", color: "violet", badge: "New" },
+  { id: "battle" as ViewType, icon: Swords, title: "Age Battle Arena", description: "Battle AI opponents and earn XP", color: "red", badge: "Battle" },
+  { id: "timelapse" as ViewType, icon: Film, title: "Time-Lapse Creator", description: "Generate an AI age-progression collage", color: "violet", badge: "New" },
   { id: "story" as ViewType, icon: BookOpen, title: "Reverse Life Story", description: "AI writes your biography backwards", color: "amber", badge: "AI" },
-  { id: "profile" as ViewType, icon: User, title: "My Profile", description: "Manage your reverse aging journey", color: "blue" },
-  { id: "timeline" as ViewType, icon: TrendingDown, title: "My Timeline", description: "View your reverse age progression", color: "emerald" },
-  { id: "dashboard" as ViewType, icon: Eye, title: "Time Powers", description: "Use credit-based time powers", color: "cyan" },
   { id: "plans" as ViewType, icon: CreditCard, title: "Credit Costs", description: "See how many credits each tool costs", color: "orange", badge: "Credits" },
   { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Complete guide to Time Reversal", color: "rose" },
 ];
