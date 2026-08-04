@@ -239,6 +239,14 @@ export function TimeLapseCreator({ onBack }: Props) {
                 <div className="text-center text-sm text-muted-foreground">
                   Age: {generatedFrames[currentFrame]?.age} years
                 </div>
+                <Button
+                  variant="secondary"
+                  className="w-full"
+                  onClick={() => publishToFeed(generatedFrames[currentFrame], generatedFrames.length)}
+                >
+                  <Sparkles className="h-4 w-4 mr-2" /> Share this frame to feed
+                </Button>
+
                 <Button variant="outline" className="w-full" onClick={async () => {
                   try {
                     const src = generatedFrames[currentFrame]?.url;
