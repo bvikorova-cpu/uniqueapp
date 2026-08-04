@@ -37,11 +37,24 @@ serve(async (req) => {
     const numFrames = Number.isFinite(frames) && frames > 0 ? Math.min(Number(frames), 6) : 4;
     const sAge = Number.isFinite(startAge) ? Number(startAge) : 20;
     const eAge = Number.isFinite(endAge) ? Number(endAge) : 80;
-    const count = Math.min(numFrames, 4);
+    const count = Math.min(numFrames, 6);
     const step = count > 1 ? (eAge - sAge) / (count - 1) : 0;
 
     const generated: Array<{ age: number; url: string }> = [];
     let lastError = "";
+
+    // Explicit, age-specific instructions — generic "appears N years old" prompts are
+    // routinely ignored by image models, which is why frame labels did not match faces.
+    const ageBrief = (age: number) => {
+      if (age <= 6) return "a small young child (kindergarten age), round soft baby-like face, chubby cheeks, very smooth skin, small childlike facial proportions, no makeup, no facial hair";
+      if (age <= 12) return "a pre-teen child, clearly childlike face with large eyes relative to the face, soft round cheeks, flawless smooth skin, no makeup, no wrinkles, thin childlike neck";
+      if (age <= 17) return "a teenager, youthful slim face, smooth skin, slightly childlike proportions, minimal or no makeup, no wrinkles";
+      if (age <= 29) return "a young adult in their twenties, fully smooth taut skin, no wrinkles, firm jawline, youthful glow";
+      if (age <= 44) return "an adult in their thirties or early forties, healthy skin with only very faint expression lines";
+      if (age <= 59) return "middle aged, visible forehead and eye wrinkles, slightly softer jawline, some grey strands in the hair";
+      if (age <= 74) return "elderly, clearly wrinkled skin, deep nasolabial folds, sagging cheeks, mostly grey or white hair";
+      return "very elderly (80+), deeply wrinkled thin skin, age spots, hollow cheeks, white hair, drooping eyelids";
+    };
 
     const callModel = async (model: string, age: number) =>
       await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -55,13 +68,13 @@ serve(async (req) => {
           messages: [{
             role: "user",
             content: [
-              { type: "text", text: `Edit this portrait so the same person appears to be ${age} years old. Keep identity, pose, hair style and framing. Photorealistic, natural aging, neutral background.` },
+              { type: "text", text: `Re-render this portrait of the SAME person at EXACTLY ${age} years old. The result must unmistakably read as ${age} years old: ${ageBrief(age)}. Keep the same identity, ethnicity, eye colour, pose, framing and lighting. Photorealistic portrait photo, natural anatomically correct aging for age ${age}. Do NOT keep the current apparent age.` },
               { type: "image_url", image_url: { url: imageUrl } },
             ] }] }) });
 
     for (let i = 0; i < count; i++) {
       const age = Math.round(sAge + step * i);
-      for (const model of ["google/gemini-2.5-flash-image", "google/gemini-3.1-flash-image"]) {
+      for (const model of ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"]) {
         try {
           const res = await callModel(model, age);
 
