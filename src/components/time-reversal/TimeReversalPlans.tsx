@@ -1,102 +1,83 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Check, Clock, Lock, Eye, Sparkles, Zap } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Clock, Lock, Eye, Sparkles, Zap, BookOpen, Film, Coins } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useTimeReversalCredits, TIME_REVERSAL_COSTS } from "@/hooks/useTimeReversalCredits";
 
 interface Props { onBack: () => void; }
 
-const PLANS = {
-  timeSpeed: { name: "Time Travel Speed", price: "€6.99", priceId: "price_1SPitHGaXSfGtYFtD5qWM26P", icon: Zap, popular: false, description: "Age backwards faster than ever", features: ["2x faster aging reversal", "Custom speed settings", "Fast-forward through decades", "Priority timeline updates"] },
-  ageLocks: { name: "Age Locks", price: "€4.99", priceId: "price_1SPitb0QTWhd4oRpSUpKFiYN", icon: Lock, popular: false, description: "Freeze time at your perfect age", features: ["Unlimited age lock points", "Pause at any age you want", "Create custom milestones", "Resume aging anytime"] },
-  futureGlimpse: { name: "Future Glimpse", price: "€2.99", priceId: "price_1SPitv0QTWhd4oRpT3MCvpTR", icon: Eye, popular: false, description: "See your future self", features: ["Preview any future age", "AI-generated future photos", "Timeline exploration", "What-if scenarios"] },
-  paradoxPosts: { name: "Time Paradox Posts", price: "€1.99", priceId: "price_1SPiuHGaXSfGtYFtJQmIpTBa", icon: Sparkles, popular: false, description: "Post across different timelines", features: ["Post from any age", "Create time paradoxes", "Cross-timeline content", "Special paradox badges"] },
-  masterBundle: { name: "Time Master Bundle", price: "€12.99", priceId: "price_1SPiudGaXSfGtYFttW8NCjDx", icon: Clock, popular: true, description: "All features unlocked", features: ["All features included", "Exclusive Time Master badge", "Priority support", "Early access to new features", "Save €2 per month"] } };
+const ITEMS = [
+  { key: "speed_boost", name: "Time Travel Speed", icon: Zap, cost: TIME_REVERSAL_COSTS.speed_boost, description: "2x faster aging reversal for your next transformation" },
+  { key: "age_lock", name: "Age Lock", icon: Lock, cost: TIME_REVERSAL_COSTS.age_lock, description: "Freeze your timeline at the age you love" },
+  { key: "future_glimpse", name: "Future Glimpse", icon: Eye, cost: TIME_REVERSAL_COSTS.future_glimpse, description: "AI preview of any future age" },
+  { key: "paradox_post", name: "Time Paradox Post", icon: Sparkles, cost: TIME_REVERSAL_COSTS.paradox_post, description: "Post across different timelines" },
+  { key: "life_story", name: "Reverse Life Story", icon: BookOpen, cost: TIME_REVERSAL_COSTS.life_story, description: "AI writes your biography backwards" },
+  { key: "timelapse", name: "Time-Lapse Creator", icon: Film, cost: TIME_REVERSAL_COSTS.timelapse, description: "Generate a reverse-aging timelapse" },
+] as const;
 
 export function TimeReversalPlans({ onBack }: Props) {
-  const [loading, setLoading] = useState<string | null>(null);
-  const { toast } = useToast();
   const navigate = useNavigate();
-
-  const handleSubscribe = async (planKey: keyof typeof PLANS) => {
-    try {
-      setLoading(planKey);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({ title: "Login Required", variant: "destructive" }); navigate("/auth"); return; }
-
-      const plan = PLANS[planKey];
-      const { data, error } = await supabase.functions.invoke("create-time-reversal-checkout", {
-        body: { priceId: plan.priceId, featureName: plan.name } });
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (e) {
-      console.error(e);
-      toast({ title: "Error", description: "Failed to start payment.", variant: "destructive" });
-    } finally { setLoading(null); }
-  };
+  const { balance, loading } = useTimeReversalCredits();
 
   return (
     <>
-      <FloatingHowItWorks
-        title='Time Reversal Plans'
-        steps={[
-          { title: 'Open the tool', desc: 'Launch the Time Reversal Plans panel from this page.' },
-          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
-          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
-          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
-        ]}
-      />
-    <div className="space-y-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
-        <div>
-          <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Plans & Pricing</h2>
-          <p className="text-sm text-muted-foreground">Choose your time manipulation powers</p>
+      <FloatingHowItWorks title="Time Reversal Credits" steps={[
+        { title: "No subscription", desc: "Everything is pay-per-use with AI credits." },
+        { title: "Check the cost", desc: "Each tool shows its credit price." },
+        { title: "Credits are deducted after success", desc: "Failed generations are not charged." },
+        { title: "Top up anytime", desc: "Buy credits in the AI Credits store." },
+      ]} />
+      <div className="space-y-6">
+        <div className="flex items-center justify-between gap-3">
+          <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
+          <Badge variant="secondary" className="text-sm">
+            <Coins className="w-3.5 h-3.5 mr-1" />
+            {loading ? "…" : balance} credits
+          </Badge>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {(Object.keys(PLANS) as Array<keyof typeof PLANS>).map((key) => {
-          const plan = PLANS[key];
-          const Icon = plan.icon;
-          return (
-            <Card key={key} className={`relative ${plan.popular ? "border-purple-500 shadow-lg shadow-purple-500/20 md:col-span-2 lg:col-span-3" : ""}`}>
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-purple-500 text-white px-4 py-1 rounded-full text-xs font-semibold">Best Value</span>
-                </div>
-              )}
-              <CardHeader>
-                <div className="flex items-center justify-between mb-2">
-                  <Icon className="h-7 w-7 text-purple-500" />
-                  <div className="text-right">
-                    <div className="text-2xl font-bold">{plan.price}</div>
-                    <div className="text-xs text-muted-foreground">/month</div>
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20">
+            <Clock className="w-7 h-7 text-primary" />
+          </div>
+          <h2 className="text-3xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            Credit Costs
+          </h2>
+          <p className="text-muted-foreground max-w-xl mx-auto">
+            Time Reversal is fully credit-based — no monthly subscription. Pay only for the time powers you actually use.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {ITEMS.map((item) => (
+            <Card key={item.key} className="border-border/50 bg-card/80">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <item.icon className="w-5 h-5 text-primary" />
                   </div>
+                  <Badge className="bg-primary/15 text-primary border border-primary/30">{item.cost} credits</Badge>
                 </div>
-                <CardTitle className="text-xl">{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
+                <CardTitle className="text-base mt-2">{item.name}</CardTitle>
+                <CardDescription className="text-xs">{item.description}</CardDescription>
               </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 mb-4">
-                  {plan.features.map((f, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm">
-                      <Check className="h-4 w-4 text-purple-500 shrink-0 mt-0.5" /><span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Button className="w-full" variant={plan.popular ? "default" : "outline"} onClick={() => handleSubscribe(key)} disabled={loading === key}>
-                  {loading === key ? "Loading..." : "Subscribe Now"}
-                </Button>
-              </CardContent>
+              <CardContent />
             </Card>
-          );
-        })}
+          ))}
+        </div>
+
+        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+          <CardContent className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h3 className="font-bold">Need more credits?</h3>
+              <p className="text-sm text-muted-foreground">Top up once and use them across every AI tool on the platform.</p>
+            </div>
+            <Button onClick={() => navigate("/ai-credits")}>Buy credits</Button>
+          </CardContent>
+        </Card>
       </div>
-    </div>
     </>
   );
 }

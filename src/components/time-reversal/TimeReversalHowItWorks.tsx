@@ -41,7 +41,7 @@ export function TimeReversalHowItWorks({ onBack }: Props) {
           { icon: Swords, title: "5. Battle Other Users", desc: "Enter the Age Battle Arena to compare transformations. Vote on the most impressive reverse-aging results." },
           { icon: Film, title: "6. Create Time-Lapses", desc: "Generate stunning reverse-aging timelapse videos from your photos to share with friends." },
           { icon: BookOpen, title: "7. Generate Your Story", desc: "Let AI write your complete reverse biography — from wise elder back to innocent child." },
-          { icon: CreditCard, title: "8. Unlock Premium Features", desc: "Speed up aging reversal, lock at your perfect age, preview future selves, or create time paradox posts." },
+          { icon: CreditCard, title: "8. Credit-Based Time Powers", desc: "No subscription — spend AI credits for speed boosts (5), age locks (3), future glimpse (5), paradox posts (2), life story (5) and time-lapse (5)." },
         ].map((step, i) => (
           <Card key={i} className="border-border/40 hover:border-purple-500/30 transition-all">
             <CardContent className="pt-4 flex gap-3">

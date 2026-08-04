@@ -7,11 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useTimeReversalCredits, TIME_REVERSAL_COSTS } from "@/hooks/useTimeReversalCredits";
 
 interface Props { onBack: () => void; }
 
 export function TimeLapseCreator({ onBack }: Props) {
   const { toast } = useToast();
+  const { spend } = useTimeReversalCredits();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [startAge, setStartAge] = useState([80]);
@@ -39,6 +41,8 @@ export function TimeLapseCreator({ onBack }: Props) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
+      const paid = await spend("timelapse");
+      if (!paid) return;
 
       // Upload original photo
       const ext = selectedFile.name.split(".").pop();
