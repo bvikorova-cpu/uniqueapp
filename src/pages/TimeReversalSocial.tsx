@@ -21,7 +21,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "battle" | "timelapse" | "feed" | "story" | "plans" | "profile" | "how-it-works" | "timeline" | "dashboard";
 
 const tools = [
-  { id: "feed" as ViewType, icon: MessageCircle, title: "Social Feed", description: "Share your daily 'younger self' updates", color: "purple", badge: "Social" },
+  { id: "feed" as ViewType, icon: Images, title: "Public Gallery", description: "Browse every AI age-progression collage", color: "purple", badge: "Gallery" },
   { id: "battle" as ViewType, icon: Swords, title: "Age Battle Arena", description: "Compare reverse-aging & vote for the best", color: "red", badge: "Battle" },
   { id: "timelapse" as ViewType, icon: Film, title: "Time-Lapse Creator", description: "Generate reverse-aging timelapse videos", color: "violet", badge: "New" },
   { id: "story" as ViewType, icon: BookOpen, title: "Reverse Life Story", description: "AI writes your biography backwards", color: "amber", badge: "AI" },
