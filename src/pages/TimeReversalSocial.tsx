@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Timer, TrendingDown, Swords, Film, BookOpen, Users, CreditCard, Info, Loader2, Shield, Sparkles, Images, User, Eye
+  Timer, TrendingDown, Swords, Film, BookOpen, Users, CreditCard, Info, Loader2, Sparkles, Images, Upload
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -13,7 +13,6 @@ import { TimeLapseCreator } from "@/components/time-reversal/TimeLapseCreator";
 import { SocialReverseFeed } from "@/components/time-reversal/SocialReverseFeed";
 import { ReverseLifeStory } from "@/components/time-reversal/ReverseLifeStory";
 import { TimeReversalPlans } from "@/components/time-reversal/TimeReversalPlans";
-import { TimeReversalProfile } from "@/components/time-reversal/TimeReversalProfile";
 import { TimeReversalHowItWorks } from "@/components/time-reversal/TimeReversalHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -131,10 +130,10 @@ export default function TimeReversalSocial() {
                 <h3 className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">How It Works</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {[
-                    { icon: User, title: "1. Upload Photo", desc: "Our AI transforms you into your 80-year-old self to begin" },
-                    { icon: TrendingDown, title: "2. Get Younger", desc: "Every day AI makes you younger automatically through time" },
-                    { icon: Swords, title: "3. Battle & Share", desc: "Enter battles, post updates, and build your following" },
-                    { icon: Shield, title: "4. Spend Credits", desc: "Pay-per-use credits for speed boosts, age locks and paradox posts" },
+                    { icon: Upload, title: "1. Upload a photo", desc: "Add one clear face photo in Time-Lapse Creator" },
+                    { icon: Film, title: "2. Generate a collage", desc: "AI builds your age-progression frames into one collage" },
+                    { icon: Images, title: "3. Public gallery", desc: "Your collage is published automatically for everyone to see" },
+                    { icon: Swords, title: "4. Battle for XP", desc: "Spend credits to battle AI opponents and earn XP" },
                   ].map((step, i) => (
                     <div key={i} className="text-center space-y-2">
                       <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 border border-primary/20">
