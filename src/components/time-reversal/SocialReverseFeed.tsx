@@ -115,9 +115,8 @@ export function SocialReverseFeed({ onBack }: Props) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-semibold text-sm truncate">{post.author?.full_name || "Time Traveler"}</span>
-                      <Badge variant="outline" className="text-[10px] border-purple-500/30 text-purple-400">Age {Math.floor(post.age_at_post)}</Badge>
                       {post.is_paradox && <Badge className="text-[10px] bg-purple-500/20 text-purple-400 border-purple-500/30">Paradox</Badge>}
-                      <TrendingDown className="h-3 w-3 text-purple-400" />
+
                     </div>
                     <span className="text-xs text-muted-foreground">{new Date(post.created_at).toLocaleDateString()}</span>
                   </div>
