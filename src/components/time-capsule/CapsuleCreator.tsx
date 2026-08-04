@@ -137,9 +137,18 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
             </TabsContent>
             <TabsContent value="video" className="space-y-3">
               <Label>Upload Video</Label>
-              <Input type="file" accept="video/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleVideoUpload(f); }} />
+              <Input type="file" accept="video/*" disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; if (f) handleVideoUpload(f); }} />
+              {uploading && <p className="text-xs text-muted-foreground flex items-center gap-2"><Loader2 className="h-3 w-3 animate-spin" /> Uploading video…</p>}
+              {videoFile && !uploading && (
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
+                  <p className="text-xs font-medium truncate">🎬 {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(1)} MB)</p>
+                  <video src={videoFile.url} controls className="w-full rounded-md max-h-48" />
+                  <Button variant="ghost" size="sm" onClick={() => setVideoFile(null)}>Remove video</Button>
+                </div>
+              )}
               <Textarea placeholder="Add a note to your video..." value={message} onChange={(e) => setMessage(e.target.value)} rows={3} />
             </TabsContent>
+
             <TabsContent value="letter" className="space-y-3">
               <Label>Write Your Letter</Label>
               <Textarea placeholder="Dear future me..." value={message} onChange={(e) => setMessage(e.target.value)} rows={8} />
