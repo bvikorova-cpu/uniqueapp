@@ -334,12 +334,25 @@ export function TimeLapseCreator({ onBack }: Props) {
                   Age: {generatedFrames[currentFrame]?.age} years
                 </div>
                 <Button
+                  className="w-full bg-gradient-to-r from-purple-600 to-violet-600"
+                  disabled={collageBusy || generatedFrames.length < 2}
+                  onClick={shareCollageToFeed}
+                >
+                  {collageBusy
+                    ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Building collage...</>
+                    : <><Sparkles className="h-4 w-4 mr-2" /> Share full progression collage ({TIME_REVERSAL_COSTS.timelapse_collage} credits)</>}
+                </Button>
+                {collagePreview && (
+                  <img src={collagePreview} alt="Time-lapse collage shared to feed" className="w-full rounded-xl border border-purple-500/30" loading="lazy" />
+                )}
+                <Button
                   variant="secondary"
                   className="w-full"
                   onClick={() => publishToFeed(generatedFrames[currentFrame], generatedFrames.length)}
                 >
                   <Sparkles className="h-4 w-4 mr-2" /> Share this frame to feed
                 </Button>
+
 
                 <Button variant="outline" className="w-full" onClick={async () => {
                   try {
