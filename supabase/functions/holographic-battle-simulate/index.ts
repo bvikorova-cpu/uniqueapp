@@ -257,17 +257,36 @@ Deno.serve(async (req) => {
     //    Legacy Stripe purchase/subscription gate removed.
 
 
-    // 3) Deterministic outcome from (user, session, mode).
-    const rng = await makeSeededRng(`battle|${user.id}|${sessionId ?? "no-session"}|${mode}`);
+    // 3) Fresh matchup per battle. With a Stripe sessionId the result stays
+    //    reproducible; without one, every battle gets its own seed so the
+    //    opponent and outcome change each time.
+    const battleSeed = sessionId ?? `${Date.now()}-${crypto.randomUUID()}`;
+    const rng = await makeSeededRng(`battle|${user.id}|${battleSeed}|${mode}`);
+
+    // Avoid repeating the last few opponents this user faced.
+    const { data: recent } = await admin
+      .from("holographic_battle_results")
+      .select("opponent_name")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(4);
+    const recentNames = new Set((recent ?? []).map((r: any) => r.opponent_name));
+    const pool = OPPONENTS.filter((o) => !recentNames.has(o.name));
+    const candidates = pool.length ? pool : OPPONENTS;
+
     const userPower = 180 + Math.floor((await rng()) * 100);
-    const opponent = OPPONENTS[Math.floor((await rng()) * OPPONENTS.length)];
-    const diff = userPower - opponent.power;
+    const opponent = candidates[Math.floor((await rng()) * candidates.length)];
+
+    // Outcome is chance-driven per mode: mostly losses, occasional wins.
+    const roll = await rng();
+    const winChance = WIN_CHANCE[mode] ?? 0.3;
     let outcome: "win" | "loss" | "draw";
-    if (diff > 10) outcome = "win";
-    else if (diff < -10) outcome = "loss";
-    else outcome = (await rng()) > 0.5 ? "win" : "loss";
+    if (roll < winChance) outcome = "win";
+    else if (roll < winChance + 0.08) outcome = "draw";
+    else outcome = "loss";
 
     const rewards = outcome === "win" ? PRIZES[mode] ?? 0 : 0;
+
 
     // Pay the win prize in real credits into the unified ai_credits pool.
     let creditsAwarded = 0;
