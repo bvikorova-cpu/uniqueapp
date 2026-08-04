@@ -57,8 +57,20 @@ export const AvatarCreator = ({ onBack }: Props) => {
       if (error || !data?.imageUrl) throw new Error(error?.message || data?.error || "No image returned");
 
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("holographic_avatars").insert({
+          user_id: user.id,
+          name,
+          style: selectedStyle,
+          traits: selectedTraits,
+          image_url: data.imageUrl,
+        });
+      }
+
       setCreatedAvatar({ name, style: selectedStyle, traits: selectedTraits, imageUrl: data.imageUrl });
-      toast({ title: "Avatar created!", description: `${name} is now live — ${HOLO_COSTS.avatar_create} credits used.` });
+      toast({ title: "Avatar created!", description: `${name} is saved in My Avatars — ${HOLO_COSTS.avatar_create} credits used.` });
+
       setName(""); setSelectedStyle(""); setSelectedTraits([]);
     } catch (err) {
       console.error(err);

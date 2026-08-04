@@ -31,7 +31,7 @@ const tools = [
   { id: "breeding" as ViewType, icon: Heart, title: "Avatar Breeding", description: "Combine avatars to create unique offspring", color: "pink", badge: "10 credits" },
   { id: "emotion-sync" as ViewType, icon: Camera, title: "Emotion Sync", description: "Avatar mirrors your real-time emotions", color: "cyan", badge: "New" },
   { id: "marketplace" as ViewType, icon: ShoppingBag, title: "Avatar Marketplace", description: "Buy & sell custom skins and accessories", color: "orange", badge: "3-12 credits" },
-  { id: "gallery" as ViewType, icon: Eye, title: "Holographic Gallery", description: "Browse stunning avatar creations", color: "indigo" },
+  { id: "gallery" as ViewType, icon: Eye, title: "My Avatars", description: "All avatars you have created", color: "indigo" },
   { id: "evolution" as ViewType, icon: TrendingUp, title: "Evolution Lab", description: "Track growth and AI development stages", color: "emerald" },
   { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Complete guide to the avatar universe", color: "purple" },
 ];
@@ -120,7 +120,7 @@ export default function HolographicAvatars() {
       case "breeding": return <AvatarBreeding onBack={goBack} />;
       case "emotion-sync": return <EmotionSync onBack={goBack} />;
       case "marketplace": return <AvatarMarketplace onBack={goBack} />;
-      case "gallery": return <HolographicGallery onBack={goBack} />;
+      case "gallery": return <HolographicGallery onBack={goBack} onCreate={() => setActiveView("creator")} />;
       case "evolution": return <EvolutionLab onBack={goBack} />;
       case "how-it-works": return <HolographicHowItWorks onBack={goBack} />;
       default: return null;
