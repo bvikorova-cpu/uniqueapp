@@ -82,14 +82,24 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
         ]}
       />
     <div className="space-y-6">
-      <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
+      <div className="flex items-center justify-between gap-3">
+        <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
+        <Badge variant="secondary" className="text-sm">
+          <Coins className="w-3.5 h-3.5 mr-1" />
+          {creditsLoading ? "…" : balance} credits
+        </Badge>
+      </div>
 
       <Card className="border-primary/20">
         <CardHeader>
           <CardTitle className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Create New Time Capsule
           </CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Credit cost by delivery date: 1 year · 12 · 5 years · 25 · 10 years · 50 · 20+ years · 125 credits
+          </p>
         </CardHeader>
+
         <CardContent className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="title">Capsule Title</Label>
