@@ -3,12 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Swords, Trophy, ThumbsUp, Upload, Loader2, Check } from "lucide-react";
+import { ArrowLeft, Swords, Trophy, ThumbsUp, Upload, Loader2, Check, Flame, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useHolographicCredits, HOLO_COSTS } from "@/hooks/useHolographicCredits";
+import { BattleResultDialog, type BattleResult } from "@/components/holographic/BattleResultDialog";
 
 interface Props { onBack: () => void; }
+
+const BATTLE_MODES = [
+  { id: "1v1", name: "1v1 Duel", icon: Swords, desc: "One AI opponent, 3 rounds", entry: HOLO_COSTS.battle_1v1, prize: "+4 credits" },
+  { id: "survival", name: "Survival", icon: Flame, desc: "Endurance run, 4 rounds", entry: HOLO_COSTS.battle_survival, prize: "+15 credits" },
+  { id: "tournament", name: "Tournament", icon: Trophy, desc: "Toughest opponents, 5 rounds", entry: HOLO_COSTS.battle_tournament, prize: "+30 credits" },
+];
 
 type EntryStage = "idle" | "auth" | "upload" | "publish" | "done";
 
