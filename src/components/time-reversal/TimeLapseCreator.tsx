@@ -160,6 +160,31 @@ export function TimeLapseCreator({ onBack }: Props) {
             <Button onClick={handleGenerate} disabled={generating || !selectedFile} className="w-full bg-gradient-to-r from-purple-600 to-violet-600">
               {generating ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Generating...</> : <><Sparkles className="h-4 w-4 mr-2" /> Generate Time-Lapse</>}
             </Button>
+
+            {stage !== "idle" && (
+              <div className="space-y-3 rounded-xl border border-purple-500/30 bg-purple-500/5 p-4">
+                <div className="flex items-center justify-between text-xs font-medium">
+                  <span>{stage === "done" ? "Completed" : "Working..."}</span>
+                  <span className="text-muted-foreground">{progressPct}%</span>
+                </div>
+                <Progress value={progressPct} className="h-2" />
+                <ul className="space-y-1.5">
+                  {STAGE_STEPS.map((s, i) => {
+                    const active = i === stageIndex;
+                    const done = i < stageIndex;
+                    return (
+                      <li key={s.key} className={`flex items-center gap-2 text-xs ${active ? "text-foreground font-medium" : done ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
+                        {done ? <Check className="h-3.5 w-3.5 text-purple-400" />
+                          : active ? <Loader2 className="h-3.5 w-3.5 animate-spin text-purple-400" />
+                          : <span className="h-3.5 w-3.5 rounded-full border border-current" />}
+                        {s.label}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+
           </CardContent>
         </Card>
 
