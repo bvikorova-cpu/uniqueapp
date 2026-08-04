@@ -51,10 +51,11 @@ export const AvatarCreator = ({ onBack }: Props) => {
       const paid = await spend(HOLO_COSTS.avatar_create, "avatar_create");
       if (!paid) return;
 
-      const { data, error } = await supabase.functions.invoke("holographic-avatar-image", {
-        body: { name, style: selectedStyle, traits: selectedTraits },
+      const { data, error } = await supabase.functions.invoke("holographic-battle-simulate", {
+        body: { mode: "avatar_image", name, style: selectedStyle, traits: selectedTraits },
       });
-      if (error || !data?.imageUrl) throw new Error(error?.message || "No image returned");
+      if (error || !data?.imageUrl) throw new Error(error?.message || data?.error || "No image returned");
+
 
       setCreatedAvatar({ name, style: selectedStyle, traits: selectedTraits, imageUrl: data.imageUrl });
       toast({ title: "Avatar created!", description: `${name} is now live — ${HOLO_COSTS.avatar_create} credits used.` });
