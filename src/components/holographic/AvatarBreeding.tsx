@@ -18,12 +18,30 @@ const SAMPLE_AVATARS = [
   { id: 4, name: "CosmicVoid", style: "Cosmic", traits: ["Charismatic", "Energetic", "Playful"], level: 35 },
 ];
 
+interface Offspring {
+  offspring_name: string;
+  offspring_style: string;
+  offspring_traits: string[] | null;
+  offspring_level: number | null;
+  rarity: string | null;
+}
+
+const RARITY_STYLES: Record<string, string> = {
+  common: "bg-slate-500/15 text-slate-600 border-slate-500/30",
+  rare: "bg-sky-500/15 text-sky-600 border-sky-500/30",
+  epic: "bg-violet-500/15 text-violet-600 border-violet-500/30",
+  legendary: "bg-amber-500/15 text-amber-600 border-amber-500/30",
+};
+
 export const AvatarBreeding = ({ onBack }: Props) => {
   const [parent1, setParent1] = useState<number | null>(null);
   const [parent2, setParent2] = useState<number | null>(null);
   const [isBreeding, setIsBreeding] = useState(false);
+  const [offspring, setOffspring] = useState<Offspring | null>(null);
+  const [offspringImage, setOffspringImage] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(false);
   const { toast } = useToast();
-  const { balance, spend } = useHolographicCredits();
+  const { balance, spend, refresh } = useHolographicCredits();
 
   const handleBreed = async () => {
     if (parent1 === null || parent2 === null) {
@@ -31,16 +49,26 @@ export const AvatarBreeding = ({ onBack }: Props) => {
       return;
     }
     setIsBreeding(true);
+    setOffspring(null);
+    setOffspringImage(null);
     try {
       const paid = await spend(HOLO_COSTS.breeding, "breeding");
       if (!paid) return;
       const { data, error } = await supabase.functions.invoke("holographic-breeding-simulate", {
         body: { parent1, parent2 } });
       if (error) throw error;
-      const r = data?.result;
+      const r = data?.result as Offspring | undefined;
       if (r) {
-        toast({ title: `👶 New offspring: ${r.offspring_name}`,
-          description: `${r.offspring_style} · ${r.rarity} · traits: ${(r.offspring_traits ?? []).join(", ")}` });
+        setOffspring(r);
+        await refresh();
+        setImageLoading(true);
+        try {
+          const { data: img } = await supabase.functions.invoke("holographic-avatar-image", {
+            body: { name: r.offspring_name, style: r.offspring_style, traits: r.offspring_traits ?? [] } });
+          const url = img?.imageUrl || img?.image || img?.url;
+          if (url) setOffspringImage(url);
+        } catch { /* image is optional */ }
+        finally { setImageLoading(false); }
       } else {
         toast({ title: "Breeding complete", description: `${HOLO_COSTS.breeding} credits used.` });
       }
