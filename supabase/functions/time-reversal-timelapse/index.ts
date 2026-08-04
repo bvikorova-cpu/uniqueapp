@@ -56,7 +56,7 @@ serve(async (req) => {
       const collageUrl = admin.storage.from("media").getPublicUrl(path).data.publicUrl;
       const { error: postError } = await admin.from("time_reversal_posts").insert({
         user_id: userData.user.id,
-        content: `🎞️ My full reverse-aging journey: ${publishStartAge} → ${publishEndAge} years (${frameCount} AI frames collage).`,
+        content: "Time-Lapse age progression collage",
         image_url: collageUrl,
         age_at_post: publishEndAge,
         likes_count: 0,
