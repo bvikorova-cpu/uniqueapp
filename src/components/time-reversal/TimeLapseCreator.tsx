@@ -19,7 +19,7 @@ export function TimeLapseCreator({ onBack }: Props) {
   const [startAge, setStartAge] = useState([80]);
   const [endAge, setEndAge] = useState([20]);
   const [generating, setGenerating] = useState(false);
-  const [generatedFrames, setGeneratedFrames] = useState<string[]>([]);
+  const [generatedFrames, setGeneratedFrames] = useState<{ url: string; age: number }[]>([]);
   const [currentFrame, setCurrentFrame] = useState(0);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,23 +56,23 @@ export function TimeLapseCreator({ onBack }: Props) {
 
       if (error) throw error;
 
-      if (data?.frames && data.frames.length > 0) {
-        setGeneratedFrames(data.frames);
-        toast({ title: "Time-Lapse Generated!", description: `${data.frames.length} age frames created.` });
-      } else {
-        // Simulate frames for demo
-        const frames: string[] = [];
-        const step = (startAge[0] - endAge[0]) / 7;
-        for (let i = 0; i < 8; i++) {
-          frames.push(publicUrl);
-        }
-        setGeneratedFrames(frames);
-        toast({ title: "Time-Lapse Created!", description: "Your reverse aging timelapse is ready." });
-      }
-    } catch (e) {
+      const list = Array.isArray(data?.frames) ? data.frames : [];
+      const normalized = list
+        .map((f: any, i: number) => ({
+          url: typeof f === "string" ? f : f?.url,
+          age: typeof f?.age === "number"
+            ? f.age
+            : Math.round(startAge[0] + ((endAge[0] - startAge[0]) * i) / Math.max(list.length - 1, 1)) }))
+        .filter((f: any) => typeof f.url === "string" && f.url.length > 0);
+
+      if (!normalized.length) throw new Error(data?.message || "Could not generate frames. Please try again.");
+
+      setGeneratedFrames(normalized);
+      setCurrentFrame(0);
+      toast({ title: "Time-Lapse Generated!", description: `${normalized.length} age frames created.` });
+    } catch (e: any) {
       console.error(e);
-      toast({ title: "Generated!", description: "Your time-lapse preview is ready." });
-      if (preview) setGeneratedFrames([preview]);
+      toast({ title: "Generation failed", description: e?.message || "Please try again.", variant: "destructive" });
     } finally { setGenerating(false); }
   };
 
@@ -139,18 +139,18 @@ export function TimeLapseCreator({ onBack }: Props) {
             {generatedFrames.length > 0 ? (
               <div className="space-y-4">
                 <div className="aspect-square rounded-xl overflow-hidden bg-black/20 flex items-center justify-center">
-                  <img src={generatedFrames[currentFrame]} alt={`Frame ${currentFrame + 1}`} className="w-full h-full object-cover" />
+                  <img src={generatedFrames[currentFrame]?.url} alt={`Age ${generatedFrames[currentFrame]?.age} frame`} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">Frame {currentFrame + 1}/{generatedFrames.length}</span>
-                  <Slider value={[currentFrame]} onValueChange={(v) => setCurrentFrame(v[0])} min={0} max={generatedFrames.length - 1} step={1} className="flex-1" />
+                  <Slider value={[currentFrame]} onValueChange={(v) => setCurrentFrame(v[0])} min={0} max={Math.max(generatedFrames.length - 1, 0)} step={1} className="flex-1" />
                 </div>
                 <div className="text-center text-sm text-muted-foreground">
-                  Age: {Math.round(startAge[0] - (startAge[0] - endAge[0]) * (currentFrame / Math.max(generatedFrames.length - 1, 1)))} years
+                  Age: {generatedFrames[currentFrame]?.age} years
                 </div>
                 <Button variant="outline" className="w-full" onClick={async () => {
                   try {
-                    const src = generatedFrames[currentFrame];
+                    const src = generatedFrames[currentFrame]?.url;
                     const res = await fetch(src);
                     const blob = await res.blob();
                     const url = URL.createObjectURL(blob);
