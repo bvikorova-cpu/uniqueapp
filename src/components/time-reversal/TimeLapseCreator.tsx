@@ -23,7 +23,7 @@ const STAGE_STEPS: { key: Stage; label: string; pct: number }[] = [
 
 export function TimeLapseCreator({ onBack }: Props) {
   const { toast } = useToast();
-  const { spend } = useTimeReversalCredits();
+  const { spend, refund } = useTimeReversalCredits();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [startAge, setStartAge] = useState([80]);
@@ -116,12 +116,14 @@ export function TimeLapseCreator({ onBack }: Props) {
     }
     setGenerating(true);
     setStage("credits");
+    let charged = false;
     setCollagePreview(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast({ title: "Login required", variant: "destructive" }); setStage("idle"); return; }
       const paid = await spend("timelapse", "time-reversal:timelapse_collage");
       if (!paid) { setStage("idle"); return; }
+      charged = true;
 
       // Upload original photo, fall back to the inline data URL for generation.
       setStage("upload");
@@ -166,8 +168,11 @@ export function TimeLapseCreator({ onBack }: Props) {
     } catch (e: any) {
       console.error(e);
       setStage("idle");
-      toast({ title: "Generation failed", description: e?.message || "Please try again.", variant: "destructive" });
+      // The generation failed after credits were reserved — give them back.
+      if (charged) await refund("timelapse", "refund:time-reversal:timelapse_collage");
+      toast({ title: "Generation failed", description: e?.message || "Please try again. Your credits were refunded.", variant: "destructive" });
     } finally { setGenerating(false); }
+
   };
 
   return (

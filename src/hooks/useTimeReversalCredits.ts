@@ -82,5 +82,30 @@ export function useTimeReversalCredits() {
     [balance, refresh]
   );
 
-  return { balance, loading, spend, refresh, costs: TIME_REVERSAL_COSTS };
+  /** Refund credits after a failed generation. Returns true when the refund was written. */
+  const refund = useCallback(
+    async (action: TimeReversalAction, description?: string): Promise<boolean> => {
+      const amount = TIME_REVERSAL_COSTS[action];
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+      const { error } = await supabase.rpc("add_ai_credits", {
+        p_user_id: user.id,
+        p_amount: amount,
+        p_reason: description || `refund:time-reversal:${action}`,
+        p_source: "auto_refund",
+      });
+      if (error) {
+        console.error("Time Reversal credit refund failed", error);
+        return false;
+      }
+      await refresh();
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast.success("Credits refunded", { description: `${amount} credits were returned to your balance.` });
+      return true;
+    },
+    [refresh]
+  );
+
+  return { balance, loading, spend, refund, refresh, costs: TIME_REVERSAL_COSTS };
 }
+
