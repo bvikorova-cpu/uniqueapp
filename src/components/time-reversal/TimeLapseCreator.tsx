@@ -139,18 +139,18 @@ export function TimeLapseCreator({ onBack }: Props) {
             {generatedFrames.length > 0 ? (
               <div className="space-y-4">
                 <div className="aspect-square rounded-xl overflow-hidden bg-black/20 flex items-center justify-center">
-                  <img src={generatedFrames[currentFrame]} alt={`Frame ${currentFrame + 1}`} className="w-full h-full object-cover" />
+                  <img src={generatedFrames[currentFrame]?.url} alt={`Age ${generatedFrames[currentFrame]?.age} frame`} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">Frame {currentFrame + 1}/{generatedFrames.length}</span>
-                  <Slider value={[currentFrame]} onValueChange={(v) => setCurrentFrame(v[0])} min={0} max={generatedFrames.length - 1} step={1} className="flex-1" />
+                  <Slider value={[currentFrame]} onValueChange={(v) => setCurrentFrame(v[0])} min={0} max={Math.max(generatedFrames.length - 1, 0)} step={1} className="flex-1" />
                 </div>
                 <div className="text-center text-sm text-muted-foreground">
-                  Age: {Math.round(startAge[0] - (startAge[0] - endAge[0]) * (currentFrame / Math.max(generatedFrames.length - 1, 1)))} years
+                  Age: {generatedFrames[currentFrame]?.age} years
                 </div>
                 <Button variant="outline" className="w-full" onClick={async () => {
                   try {
-                    const src = generatedFrames[currentFrame];
+                    const src = generatedFrames[currentFrame]?.url;
                     const res = await fetch(src);
                     const blob = await res.blob();
                     const url = URL.createObjectURL(blob);
