@@ -66,16 +66,24 @@ serve(async (req) => {
       const res = await fetch(LOVABLE_IMAGE_URL, {
         method: "POST",
         headers: { "Lovable-API-Key": LOVABLE_API_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({ model, prompt, n: 1, size: "1024x1024" }),
+        // Gemini image models use the chat-shape body on /v1/images/generations.
+        body: JSON.stringify({
+          model,
+          messages: [{ role: "user", content: prompt }],
+          modalities: ["image", "text"],
+        }),
       });
       if (!res.ok) {
         lastErr = `${res.status} ${await res.text()}`;
+        console.error("image gen failed", model, lastErr);
         continue;
       }
       imageData = extractImage(await res.json());
       if (imageData) break;
+      lastErr = `${model}: no image in response`;
     }
     if (!imageData) throw new Error(`Image generation failed: ${lastErr || "no image returned"}`);
+
 
     // Persist to public storage so the avatar image is permanently viewable.
     let publicUrl = imageData;
