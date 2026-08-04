@@ -194,10 +194,10 @@ export default function HolographicAvatars() {
                 <h3 className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">How It Works</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {[
-                    { icon: Crown, title: "1. Create Avatar", desc: "Design your unique 3D holographic avatar with AI personality" },
-                    { icon: Brain, title: "2. Watch It Evolve", desc: "Your avatar learns, gains XP, and develops autonomous behaviors" },
-                    { icon: Swords, title: "3. Battle & Breed", desc: "Compete in PvP battles or breed unique offspring with combined traits" },
-                    { icon: ShoppingBag, title: "4. Trade & Collect", desc: "Buy and sell skins, accessories, and rare items on the marketplace" },
+                    { icon: Crown, title: "1. Create Avatar", desc: `Generate an AI avatar for 10 credits (you have ${stats.avatars} saved)` },
+                    { icon: Palette, title: "2. Restyle It", desc: "Re-generate a saved avatar with a new style, outfit and accessory for 5 credits" },
+                    { icon: Swords, title: "3. Battle & Breed", desc: `Battles pay credits back on a win — your win rate is ${stats.winRate}%` },
+                    { icon: TrendingUp, title: "4. Track Evolution", desc: `XP comes from your real activity — currently ${stats.xp.toLocaleString()} XP` },
                   ].map((step, i) => (
                     <div key={i} className="text-center space-y-2">
                       <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 border border-primary/20">
