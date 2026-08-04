@@ -46,7 +46,7 @@ export function TimeReversalPlans({ onBack }: Props) {
             Credit Costs
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Time Reversal is fully credit-based — no monthly subscription. Pay only for the time powers you actually use.
+            Time Reversal is fully credit-based — no monthly subscription. Pay only for what you generate. Browsing the public gallery is always free.
           </p>
         </div>
 
