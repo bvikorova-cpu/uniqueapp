@@ -47,6 +47,37 @@ export function TimeLapseCreator({ onBack }: Props) {
     }
   };
 
+  const publishToFeed = async (
+    frame: { url: string; age: number } | undefined,
+    frameCount: number,
+    silent = false,
+  ) => {
+    if (!frame?.url) return;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        if (!silent) toast({ title: "Login required", variant: "destructive" });
+        return;
+      }
+
+      await supabase.from("time_reversal_posts").insert({
+        user_id: session.user.id,
+        content: `🎞️ New reverse-aging time-lapse: ${startAge[0]} → ${endAge[0]} years (${frameCount} AI frames).`,
+        image_url: frame.url,
+        age_at_post: frame.age ?? endAge[0],
+        post_type: "timelapse",
+        likes_count: 0,
+        comments_count: 0,
+      } as any);
+
+      toast({ title: "Shared to feed", description: "Your time-lapse is live in the Social Reverse Feed." });
+    } catch (e) {
+      console.error("timelapse feed publish failed", e);
+      if (!silent) toast({ title: "Could not share to feed", variant: "destructive" });
+    }
+  };
+
+
   const handleGenerate = async () => {
     if (!selectedFile) {
       toast({ title: "Upload a photo first", variant: "destructive" });
@@ -99,6 +130,10 @@ export function TimeLapseCreator({ onBack }: Props) {
       setCurrentFrame(0);
       setStage("done");
       toast({ title: "Time-Lapse Generated!", description: `${normalized.length} age frames created.` });
+
+      // Publish the youngest generated frame into the Social Reverse Feed
+      await publishToFeed(normalized[normalized.length - 1], normalized.length, true);
+
     } catch (e: any) {
       console.error(e);
       setStage("idle");
@@ -204,6 +239,14 @@ export function TimeLapseCreator({ onBack }: Props) {
                 <div className="text-center text-sm text-muted-foreground">
                   Age: {generatedFrames[currentFrame]?.age} years
                 </div>
+                <Button
+                  variant="secondary"
+                  className="w-full"
+                  onClick={() => publishToFeed(generatedFrames[currentFrame], generatedFrames.length)}
+                >
+                  <Sparkles className="h-4 w-4 mr-2" /> Share this frame to feed
+                </Button>
+
                 <Button variant="outline" className="w-full" onClick={async () => {
                   try {
                     const src = generatedFrames[currentFrame]?.url;
