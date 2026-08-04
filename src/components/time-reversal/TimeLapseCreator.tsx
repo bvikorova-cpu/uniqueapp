@@ -166,8 +166,11 @@ export function TimeLapseCreator({ onBack }: Props) {
     } catch (e: any) {
       console.error(e);
       setStage("idle");
-      toast({ title: "Generation failed", description: e?.message || "Please try again.", variant: "destructive" });
+      // The generation failed after credits were reserved — give them back.
+      if (charged) await refund("timelapse", "refund:time-reversal:timelapse_collage");
+      toast({ title: "Generation failed", description: e?.message || "Please try again. Your credits were refunded.", variant: "destructive" });
     } finally { setGenerating(false); }
+
   };
 
   return (
