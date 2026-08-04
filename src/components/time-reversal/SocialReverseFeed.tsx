@@ -100,9 +100,20 @@ export function SocialReverseFeed({ onBack }: Props) {
     } finally { setPosting(false); }
   };
 
-  const handleLike = async (postId: string, currentLikes: number) => {
-    await supabase.from("time_reversal_posts").update({ likes_count: currentLikes + 1 }).eq("id", postId);
-    loadPosts();
+  const handleLike = async (postId: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
+
+    const { data, error } = await supabase.rpc("toggle_time_reversal_like" as any, { _post_id: postId });
+    if (error) { toast({ title: "Error", description: "Could not update the like", variant: "destructive" }); return; }
+
+    const res = data as any;
+    setLikedIds((prev) => {
+      const next = new Set(prev);
+      if (res?.liked) next.add(postId); else next.delete(postId);
+      return next;
+    });
+    setPosts((prev) => prev.map((p) => (p.id === postId ? { ...p, likes_count: res?.likes_count ?? p.likes_count } : p)));
   };
 
   return (
