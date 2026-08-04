@@ -106,15 +106,18 @@ export function TimeLapseCreator({ onBack }: Props) {
     const collageUrl = pub?.publicUrl;
     if (!collageUrl) throw new Error("Could not publish collage");
 
-    await supabase.from("time_reversal_posts").insert({
+    const { error: postError } = await supabase.from("time_reversal_posts").insert({
       user_id: userId,
       content: `🎞️ My full reverse-aging journey: ${startAge[0]} → ${endAge[0]} years (${frames.length} AI frames collage).`,
       image_url: collageUrl,
       age_at_post: frames[frames.length - 1]?.age ?? endAge[0],
-      post_type: "timelapse_collage",
       likes_count: 0,
       comments_count: 0,
-    } as any);
+    });
+    if (postError) {
+      await supabase.storage.from("media").remove([path]);
+      throw postError;
+    }
 
     return collageUrl;
   };
