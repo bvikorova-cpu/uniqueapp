@@ -14,10 +14,25 @@ const OPPONENTS = [
   { name: "ShadowKing", power: 231 },
   { name: "CosmicVoid", power: 227 },
   { name: "BioHunter", power: 220 },
+  { name: "PrismFang", power: 252 },
+  { name: "VoidHalo", power: 243 },
+  { name: "EchoSpectre", power: 236 },
+  { name: "AuroraTitan", power: 229 },
+  { name: "NullSeraph", power: 248 },
+  { name: "GlitchOracle", power: 224 },
+  { name: "IonReaper", power: 234 },
+  { name: "QuantumMirage", power: 241 },
+  { name: "HexNomad", power: 218 },
+  { name: "StarlitHollow", power: 233 },
+  { name: "PlasmaMonk", power: 226 },
 ];
+
+// Chance of winning per mode — losses are the norm, wins happen now and then.
+const WIN_CHANCE: Record<string, number> = { "1v1": 0.35, survival: 0.3, tournament: 0.25 };
 
 // Credit payout on a win (entry costs: 1v1 = 2, survival = 3, tournament = 5 credits).
 const PRIZES: Record<string, number> = { "1v1": 4, tournament: 30, survival: 15 };
+
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
