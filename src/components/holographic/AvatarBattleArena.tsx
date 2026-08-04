@@ -108,7 +108,7 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
 
       <BattleResultDialog
         open={!!report}
-        onOpenChange={(v) => { if (!v) setReport(null); }}
+        onOpenChange={(v) => { if (!v) { setReport(null); setBoardKey((k) => k + 1); } }}
         result={report?.result ?? null}
         modeName={report?.mode.name}
         prizeLabel={report?.mode.prize}
