@@ -36,7 +36,7 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
       return;
     }
 
-    const durationYears = Math.floor((delivery.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 365));
+    const durationYears = Math.max(1, Math.round((delivery.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 365)));
     const { action, credits } = costForDuration(durationYears);
 
     setLoading(true);
