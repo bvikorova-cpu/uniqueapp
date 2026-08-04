@@ -147,7 +147,17 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
           </div>
         </CardContent>
       </Card>
+
+      <BattleResultDialog
+        open={!!report}
+        onOpenChange={(v) => { if (!v) setReport(null); }}
+        result={report?.result ?? null}
+        modeName={report?.mode.name}
+        prizeLabel={report?.mode.prize}
+        entryCost={report?.mode.entry}
+      />
     </div>
+
     </>
   );
 };
