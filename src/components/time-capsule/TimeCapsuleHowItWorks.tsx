@@ -20,7 +20,6 @@ export const TimeCapsuleHowItWorks = ({ onBack }: { onBack: () => void }) => {
     { icon: Calendar, title: "Pay With Credits", desc: "One-off credit cost per capsule, refunded if creation fails" },
     { icon: Brain, title: "AI-Powered Timing", desc: "Smart suggestions for perfect delivery moments" },
     { icon: Users, title: "Collaborative Capsules", desc: "Group capsules with multiple contributors" },
-    { icon: Sparkles, title: "Community Gallery", desc: "Browse and share public capsule stories" },
   ];
 
   return (
