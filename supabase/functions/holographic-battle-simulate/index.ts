@@ -159,33 +159,9 @@ Deno.serve(async (req) => {
       if (existing) return json({ result: existing, cached: true });
     }
 
-    // 2) Verify purchase / subscription before unlocking outcome.
-    let purchaseOk = false;
-    if (sessionId) {
-      const { data: purchase } = await admin
-        .from("holographic_purchases")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("stripe_session_id", sessionId)
-        .eq("status", "active")
-        .maybeSingle();
-      purchaseOk = !!purchase;
-    }
-    if (!purchaseOk) {
-      const { data: sub } = await admin
-        .from("holographic_purchases")
-        .select("id, expires_at")
-        .eq("user_id", user.id)
-        .eq("service_type", "battle")
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      purchaseOk = !!sub && (!sub.expires_at || new Date(sub.expires_at) > new Date());
-    }
-    if (!purchaseOk) {
-      return json({ error: "purchase_required", message: "Active battle purchase required." }, 402);
-    }
+    // 2) Access model: credit-based (credits are deducted before this call).
+    //    Legacy Stripe purchase/subscription gate removed.
+
 
     // 3) Deterministic outcome from (user, session, mode).
     const rng = await makeSeededRng(`battle|${user.id}|${sessionId ?? "no-session"}|${mode}`);
