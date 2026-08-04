@@ -166,11 +166,15 @@ export function SocialReverseFeed({ onBack }: Props) {
               <CardContent className="pt-4">
                 <div className="flex items-center gap-3 mb-3">
                   <Avatar className="h-10 w-10 border-2 border-purple-500/30">
-                    <AvatarFallback className="text-xs font-bold bg-purple-500/20">{Math.floor(post.age_at_post)}</AvatarFallback>
+                    {post.author?.avatar_url && <AvatarImage src={post.author.avatar_url} alt={post.author?.full_name || "User"} />}
+                    <AvatarFallback className="text-xs font-bold bg-purple-500/20">
+                      {(post.author?.full_name?.[0] || "U").toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm">Age {Math.floor(post.age_at_post)}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-sm truncate">{post.author?.full_name || "Time Traveler"}</span>
+                      <Badge variant="outline" className="text-[10px] border-purple-500/30 text-purple-400">Age {Math.floor(post.age_at_post)}</Badge>
                       {post.is_paradox && <Badge className="text-[10px] bg-purple-500/20 text-purple-400 border-purple-500/30">Paradox</Badge>}
                       <TrendingDown className="h-3 w-3 text-purple-400" />
                     </div>
@@ -178,11 +182,12 @@ export function SocialReverseFeed({ onBack }: Props) {
                   </div>
                 </div>
                 <p className="text-sm mb-3">{post.content}</p>
-                {post.image_url && <img src={post.image_url} alt="Post" className="rounded-xl w-full mb-3 max-h-80 object-cover" />}
+                {post.image_url && <img src={post.image_url} alt="Post" loading="lazy" className="rounded-xl w-full mb-3 max-h-80 object-cover" />}
                 <div className="flex items-center gap-4 text-muted-foreground">
-                  <button onClick={() => handleLike(post.id, post.likes_count || 0)} className="flex items-center gap-1 hover:text-red-400 transition-colors text-sm">
-                    <Heart className="h-4 w-4" /> {post.likes_count || 0}
+                  <button onClick={() => handleLike(post.id)} className={`flex items-center gap-1 transition-colors text-sm ${likedIds.has(post.id) ? "text-red-500" : "hover:text-red-400"}`}>
+                    <Heart className={`h-4 w-4 ${likedIds.has(post.id) ? "fill-current" : ""}`} /> {post.likes_count || 0}
                   </button>
+
                   <button className="flex items-center gap-1 hover:text-blue-400 transition-colors text-sm">
                     <MessageCircle className="h-4 w-4" /> {post.comments_count || 0}
                   </button>
