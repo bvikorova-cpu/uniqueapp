@@ -37,6 +37,7 @@ const tools = [
 
 export default function HolographicAvatars() {
   const [activeView, setActiveView] = useState<ViewType>("hub");
+  const { stats, loading: statsLoading } = useHolographicStats();
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
