@@ -34,6 +34,9 @@ export function AgeBattleArena({ onBack }: Props) {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [entryStage, setEntryStage] = useState<EntryStage>("idle");
+  const [fighting, setFighting] = useState<string | null>(null);
+  const [report, setReport] = useState<{ result: BattleResult; mode: typeof BATTLE_MODES[0] } | null>(null);
+  const { balance, spend, refresh } = useHolographicCredits();
 
   const entryIndex = ENTRY_STEPS.findIndex((s) => s.key === entryStage);
   const entryPct = entryIndex >= 0 ? ENTRY_STEPS[entryIndex].pct : 0;
