@@ -8,19 +8,21 @@ import { useHolographicCredits, HOLO_COSTS } from "@/hooks/useHolographicCredits
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { BattleResultDialog, type BattleResult } from "@/components/holographic/BattleResultDialog";
+import { XpLeaderboard } from "@/components/common/XpLeaderboard";
 
 
 interface Props { onBack: () => void; }
 
 const BATTLE_MODES = [
-  { id: "1v1", name: "1v1 Duel", icon: Swords, desc: "One AI opponent, 3 rounds", entry: HOLO_COSTS.battle_1v1, prize: "+4 credits" },
-  { id: "tournament", name: "Tournament", icon: Trophy, desc: "Toughest AI opponents, 5 rounds", entry: HOLO_COSTS.battle_tournament, prize: "+30 credits" },
-  { id: "survival", name: "Survival", icon: Flame, desc: "Endurance run, 4 rounds", entry: HOLO_COSTS.battle_survival, prize: "+15 credits" },
+  { id: "1v1", name: "1v1 Duel", icon: Swords, desc: "One AI opponent, 3 rounds", entry: HOLO_COSTS.battle_1v1, prize: "+80 XP" },
+  { id: "tournament", name: "Tournament", icon: Trophy, desc: "Toughest AI opponents, 5 rounds", entry: HOLO_COSTS.battle_tournament, prize: "+600 XP" },
+  { id: "survival", name: "Survival", icon: Flame, desc: "Endurance run, 4 rounds", entry: HOLO_COSTS.battle_survival, prize: "+300 XP" },
 ];
 
 export const AvatarBattleArena = ({ onBack }: Props) => {
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [isJoining, setIsJoining] = useState(false);
+  const [boardKey, setBoardKey] = useState(0);
   const [report, setReport] = useState<{ result: BattleResult; mode: typeof BATTLE_MODES[0] } | null>(null);
   const { toast } = useToast();
   const { balance, spend, refresh } = useHolographicCredits();
@@ -31,11 +33,12 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
       const paid = await spend(mode.entry, `battle_${mode.id}`);
       if (!paid) return;
       const { data, error } = await supabase.functions.invoke("holographic-battle-simulate", {
-        body: { mode: mode.id } });
+        body: { mode: mode.id, xpSource: "holographic_battle" } });
       if (error) throw error;
       const r = data?.result;
       if (r) {
         setReport({ result: r as BattleResult, mode });
+        setBoardKey((k) => k + 1);
         await refresh();
       } else {
         toast({ title: "Battle entered", description: `${mode.name} — ${mode.entry} credits used.` });
@@ -72,7 +75,7 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
             <li>Pick a mode — the entry fee in credits is charged once.</li>
             <li>The server simulates a round-by-round fight against an <strong>AI opponent</strong> (this is not live PvP against other users).</li>
             <li>You get a full combat report: arena, power, HP bars, every move and the verdict.</li>
-            <li>If you win, the prize is paid straight into your credit balance. A loss pays nothing.</li>
+            <li>If you win, the prize is paid out as <strong>XP</strong> on your profile (no credit payouts). A loss pays nothing.</li>
           </ol>
           <p className="text-xs text-muted-foreground">Your balance: <strong className="text-foreground">{balance} credits</strong></p>
         </CardContent>
@@ -100,6 +103,8 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
           </motion.div>
         ))}
       </div>
+
+      <XpLeaderboard sourcePrefix="holographic_battle" title="Battle XP Leaderboard" reloadKey={boardKey} />
 
       <BattleResultDialog
         open={!!report}
