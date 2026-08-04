@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, Send, Loader2, TrendingDown, Image } from "lucide-react";
+import { ArrowLeft, Heart, Loader2, TrendingDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -15,9 +14,6 @@ export function SocialReverseFeed({ onBack }: Props) {
   const { toast } = useToast();
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newPost, setNewPost] = useState("");
-  const [posting, setPosting] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => { loadPosts(); }, []);
@@ -64,42 +60,6 @@ export function SocialReverseFeed({ onBack }: Props) {
     finally { setLoading(false); }
   };
 
-  const handlePost = async () => {
-    if (!newPost.trim()) return;
-    setPosting(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
-
-      let imageUrl = null;
-      if (selectedImage) {
-        const ext = selectedImage.name.split(".").pop();
-        const path = `time-reversal/feed/${session.user.id}/${Date.now()}.${ext}`;
-        await supabase.storage.from("media").upload(path, selectedImage);
-        const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(path);
-        imageUrl = publicUrl;
-      }
-
-      const { data: profile } = await supabase.from("time_reversal_profiles").select("current_age").eq("user_id", session.user.id).maybeSingle();
-
-      await supabase.from("time_reversal_posts").insert({ user_id: session.user.id,
-        content: newPost,
-        image_url: imageUrl,
-        age_at_post: profile?.current_age || 80,
-        post_type: "social",
-        likes_count: 0,
-        comments_count: 0 } as any);
-
-      setNewPost("");
-      setSelectedImage(null);
-      toast({ title: "Posted! 🔄", description: "Your reverse journey update is live." });
-      loadPosts();
-    } catch (e) {
-      console.error(e);
-      toast({ title: "Error", description: "Failed to post", variant: "destructive" });
-    } finally { setPosting(false); }
-  };
-
   const handleLike = async (postId: string) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
@@ -121,10 +81,10 @@ export function SocialReverseFeed({ onBack }: Props) {
       <FloatingHowItWorks
         title='Social Reverse Feed'
         steps={[
-          { title: 'Open the tool', desc: 'Launch the Social Reverse Feed panel from this page.' },
-          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
-          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
-          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+          { title: 'Create a collage', desc: 'Generate a complete age progression in Time-Lapse Creator.' },
+          { title: 'Automatic publishing', desc: 'The finished collage appears here automatically.' },
+          { title: 'Browse journeys', desc: 'View age-progression collages created by the community.' },
+          { title: 'Like a collage', desc: 'Tap the heart once to like or unlike a journey.' }
         ]}
       />
     <div className="space-y-6">
@@ -132,33 +92,15 @@ export function SocialReverseFeed({ onBack }: Props) {
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
         <div>
           <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Social Reverse Feed</h2>
-          <p className="text-sm text-muted-foreground">Share your daily 'younger self' updates</p>
+          <p className="text-sm text-muted-foreground">Community Time-Lapse collages — like your favourites</p>
         </div>
       </div>
-
-      {/* Create Post */}
-      <Card className="border-purple-500/30 bg-gradient-to-br from-purple-500/5 to-background">
-        <CardContent className="pt-6 space-y-4">
-          <Textarea value={newPost} onChange={(e) => setNewPost(e.target.value)} placeholder="Share your reverse aging journey today..." className="min-h-[80px] resize-none" />
-          <div className="flex items-center justify-between">
-            <div className="flex gap-2">
-              <input type="file" accept="image/*" onChange={(e) => setSelectedImage(e.target.files?.[0] || null)} className="hidden" id="feed-image" />
-              <Button variant="ghost" size="sm" onClick={() => document.getElementById("feed-image")?.click()}>
-                <Image className="h-4 w-4 mr-1" /> {selectedImage ? "Photo Added ✓" : "Add Photo"}
-              </Button>
-            </div>
-            <Button onClick={handlePost} disabled={posting || !newPost.trim()} size="sm" className="bg-gradient-to-r from-purple-600 to-violet-600">
-              {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Send className="h-4 w-4 mr-1" /> Post</>}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Feed */}
       {loading ? (
         <div className="py-12 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto text-purple-400" /></div>
       ) : posts.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-muted-foreground">No posts yet. Be the first to share!</CardContent></Card>
+          <Card><CardContent className="py-12 text-center text-muted-foreground">No collages yet. Create one in Time-Lapse Creator.</CardContent></Card>
       ) : (
         <div className="space-y-4">
           {posts.map((post) => (
