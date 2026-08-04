@@ -3,22 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Film, Upload, Loader2, Download, Sparkles, Check } from "lucide-react";
+import { ArrowLeft, Film, Upload, Loader2, Sparkles, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useTimeReversalCredits, TIME_REVERSAL_COSTS } from "@/hooks/useTimeReversalCredits";
 
 interface Props { onBack: () => void; }
 
-type Stage = "idle" | "credits" | "upload" | "generate" | "done";
+type Stage = "idle" | "credits" | "upload" | "generate" | "collage" | "done";
 
 const STAGE_STEPS: { key: Stage; label: string; pct: number }[] = [
-  { key: "credits", label: "Reserving credits", pct: 15 },
-  { key: "upload", label: "Uploading your photo", pct: 35 },
-  { key: "generate", label: "Generating age frames with AI", pct: 80 },
-  { key: "done", label: "Frames ready", pct: 100 },
+  { key: "credits", label: "Reserving credits", pct: 10 },
+  { key: "upload", label: "Uploading your photo", pct: 25 },
+  { key: "generate", label: "Generating age frames with AI", pct: 65 },
+  { key: "collage", label: "Building collage & posting to feed", pct: 90 },
+  { key: "done", label: "Collage published to the Social Reverse Feed", pct: 100 },
 ];
 
 export function TimeLapseCreator({ onBack }: Props) {
@@ -30,14 +30,10 @@ export function TimeLapseCreator({ onBack }: Props) {
   const [endAge, setEndAge] = useState([20]);
   const [generating, setGenerating] = useState(false);
   const [stage, setStage] = useState<Stage>("idle");
-  const [generatedFrames, setGeneratedFrames] = useState<{ url: string; age: number }[]>([]);
-  const [currentFrame, setCurrentFrame] = useState(0);
-  const [collageBusy, setCollageBusy] = useState(false);
   const [collagePreview, setCollagePreview] = useState<string | null>(null);
 
   const stageIndex = STAGE_STEPS.findIndex((s) => s.key === stage);
   const progressPct = stageIndex >= 0 ? STAGE_STEPS[stageIndex].pct : 0;
-
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -46,36 +42,6 @@ export function TimeLapseCreator({ onBack }: Props) {
       const reader = new FileReader();
       reader.onload = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
-    }
-  };
-
-  const publishToFeed = async (
-    frame: { url: string; age: number } | undefined,
-    frameCount: number,
-    silent = false,
-  ) => {
-    if (!frame?.url) return;
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        if (!silent) toast({ title: "Login required", variant: "destructive" });
-        return;
-      }
-
-      await supabase.from("time_reversal_posts").insert({
-        user_id: session.user.id,
-        content: `🎞️ New reverse-aging time-lapse: ${startAge[0]} → ${endAge[0]} years (${frameCount} AI frames).`,
-        image_url: frame.url,
-        age_at_post: frame.age ?? endAge[0],
-        post_type: "timelapse",
-        likes_count: 0,
-        comments_count: 0,
-      } as any);
-
-      toast({ title: "Shared to feed", description: "Your time-lapse is live in the Social Reverse Feed." });
-    } catch (e) {
-      console.error("timelapse feed publish failed", e);
-      if (!silent) toast({ title: "Could not share to feed", variant: "destructive" });
     }
   };
 
@@ -88,89 +54,70 @@ export function TimeLapseCreator({ onBack }: Props) {
       img.src = src;
     });
 
-  /** Build a labelled grid collage of every generated frame and publish it to the feed (2 credits). */
-  const shareCollageToFeed = async () => {
-    if (generatedFrames.length < 2) {
-      toast({ title: "Generate a time-lapse first", variant: "destructive" });
-      return;
-    }
-    setCollageBusy(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
+  /** Build a labelled grid collage of all frames, upload it and auto-publish it to the feed. */
+  const buildAndPublishCollage = async (
+    frames: { url: string; age: number }[],
+    userId: string,
+  ) => {
+    const imgs = await Promise.all(frames.map((f) => loadImage(f.url)));
+    const cols = imgs.length <= 4 ? 2 : imgs.length <= 9 ? 3 : 4;
+    const rows = Math.ceil(imgs.length / cols);
+    const cell = 420;
+    const label = 56;
+    const gap = 10;
 
-      const paid = await spend("timelapse_collage", "time-reversal:timelapse_collage");
-      if (!paid) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = cols * cell + (cols + 1) * gap;
+    canvas.height = rows * (cell + label) + (rows + 1) * gap;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas unavailable");
 
-      const imgs = await Promise.all(generatedFrames.map((f) => loadImage(f.url)));
-      const cols = imgs.length <= 4 ? 2 : imgs.length <= 9 ? 3 : 4;
-      const rows = Math.ceil(imgs.length / cols);
-      const cell = 420;
-      const label = 56;
-      const gap = 10;
+    ctx.fillStyle = "#140b22";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const canvas = document.createElement("canvas");
-      canvas.width = cols * cell + (cols + 1) * gap;
-      canvas.height = rows * (cell + label) + (rows + 1) * gap;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Canvas unavailable");
+    imgs.forEach((img, i) => {
+      const c = i % cols;
+      const r = Math.floor(i / cols);
+      const x = gap + c * (cell + gap);
+      const y = gap + r * (cell + label + gap);
 
-      ctx.fillStyle = "#140b22";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const side = Math.min(img.width, img.height);
+      ctx.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, x, y, cell, cell);
 
-      imgs.forEach((img, i) => {
-        const c = i % cols;
-        const r = Math.floor(i / cols);
-        const x = gap + c * (cell + gap);
-        const y = gap + r * (cell + label + gap);
+      ctx.fillStyle = "rgba(255,255,255,0.08)";
+      ctx.fillRect(x, y + cell, cell, label);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 30px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(`Age ${frames[i].age}`, x + cell / 2, y + cell + label / 2);
+    });
 
-        // cover-crop the source frame into the square cell
-        const side = Math.min(img.width, img.height);
-        ctx.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, x, y, cell, cell);
+    const blob: Blob = await new Promise((resolve, reject) =>
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Collage export failed"))), "image/jpeg", 0.9),
+    );
 
-        ctx.fillStyle = "rgba(255,255,255,0.08)";
-        ctx.fillRect(x, y + cell, cell, label);
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 30px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(`Age ${generatedFrames[i].age}`, x + cell / 2, y + cell + label / 2);
-      });
+    const path = `time-reversal/collage/${userId}/${Date.now()}.jpg`;
+    const { error: upErr } = await supabase.storage
+      .from("media")
+      .upload(path, blob, { contentType: "image/jpeg", upsert: true });
+    if (upErr) throw upErr;
+    const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+    const collageUrl = pub?.publicUrl;
+    if (!collageUrl) throw new Error("Could not publish collage");
 
-      const blob: Blob = await new Promise((resolve, reject) =>
-        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Collage export failed"))), "image/jpeg", 0.9),
-      );
+    await supabase.from("time_reversal_posts").insert({
+      user_id: userId,
+      content: `🎞️ My full reverse-aging journey: ${startAge[0]} → ${endAge[0]} years (${frames.length} AI frames collage).`,
+      image_url: collageUrl,
+      age_at_post: frames[frames.length - 1]?.age ?? endAge[0],
+      post_type: "timelapse_collage",
+      likes_count: 0,
+      comments_count: 0,
+    } as any);
 
-      const path = `time-reversal/collage/${session.user.id}/${Date.now()}.jpg`;
-      const { error: upErr } = await supabase.storage
-        .from("media")
-        .upload(path, blob, { contentType: "image/jpeg", upsert: true });
-      if (upErr) throw upErr;
-      const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
-      const collageUrl = pub?.publicUrl;
-      if (!collageUrl) throw new Error("Could not publish collage");
-
-      await supabase.from("time_reversal_posts").insert({
-        user_id: session.user.id,
-        content: `🎞️ My full reverse-aging journey: ${startAge[0]} → ${endAge[0]} years (${generatedFrames.length} AI frames collage).`,
-        image_url: collageUrl,
-        age_at_post: generatedFrames[generatedFrames.length - 1]?.age ?? endAge[0],
-        post_type: "timelapse_collage",
-        likes_count: 0,
-        comments_count: 0,
-      } as any);
-
-      setCollagePreview(collageUrl);
-      toast({ title: "Collage shared", description: "Your whole progression is live in the Social Reverse Feed." });
-    } catch (e: any) {
-      console.error("collage failed", e);
-      toast({ title: "Collage failed", description: e?.message || "Please try again.", variant: "destructive" });
-    } finally {
-      setCollageBusy(false);
-    }
+    return collageUrl;
   };
-
-
 
   const handleGenerate = async () => {
     if (!selectedFile) {
@@ -179,21 +126,21 @@ export function TimeLapseCreator({ onBack }: Props) {
     }
     setGenerating(true);
     setStage("credits");
+    setCollagePreview(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
-      const paid = await spend("timelapse");
-      if (!paid) return;
+      if (!session) { toast({ title: "Login required", variant: "destructive" }); setStage("idle"); return; }
+      const paid = await spend("timelapse", "time-reversal:timelapse_collage");
+      if (!paid) { setStage("idle"); return; }
 
-      // Upload original photo (best-effort archive) and prefer a public URL,
-      // but fall back to the inline data URL so generation never depends on storage.
+      // Upload original photo, fall back to the inline data URL for generation.
       setStage("upload");
       const ext = (selectedFile.name.split(".").pop() || "jpg").toLowerCase();
       const path = `time-reversal/timelapse/${session.user.id}/${Date.now()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("media")
         .upload(path, selectedFile, { contentType: selectedFile.type || "image/jpeg", upsert: true });
-      let sourceUrl = preview as string; // data URL from FileReader
+      let sourceUrl = preview as string;
       if (!upErr) {
         const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
         if (pub?.publicUrl) sourceUrl = pub.publicUrl;
@@ -201,11 +148,9 @@ export function TimeLapseCreator({ onBack }: Props) {
         console.error("timelapse upload failed", upErr);
       }
 
-      // Generate AI frames via edge function
       setStage("generate");
       const { data, error } = await supabase.functions.invoke("time-reversal-timelapse", {
         body: { imageUrl: sourceUrl, startAge: startAge[0], endAge: endAge[0], frames: 8 } });
-
 
       if (error) throw error;
 
@@ -220,20 +165,19 @@ export function TimeLapseCreator({ onBack }: Props) {
 
       if (!normalized.length) throw new Error(data?.message || "Could not generate frames. Please try again.");
 
-      setGeneratedFrames(normalized);
-      setCurrentFrame(0);
+      setStage("collage");
+      const collageUrl = await buildAndPublishCollage(normalized, session.user.id);
+      setCollagePreview(collageUrl);
       setStage("done");
-      toast({ title: "Time-Lapse Generated!", description: `${normalized.length} age frames created.` });
-
-      // No auto-post: the user shares the full progression collage (2 credits) or a single frame.
-
-
+      toast({
+        title: "Collage published! 🎞️",
+        description: "Your progression collage is live in the Social Reverse Feed.",
+      });
     } catch (e: any) {
       console.error(e);
       setStage("idle");
       toast({ title: "Generation failed", description: e?.message || "Please try again.", variant: "destructive" });
     } finally { setGenerating(false); }
-
   };
 
   return (
@@ -241,25 +185,25 @@ export function TimeLapseCreator({ onBack }: Props) {
       <FloatingHowItWorks
         title='Time Lapse Creator'
         steps={[
-          { title: 'Open the tool', desc: 'Launch the Time Lapse Creator panel from this page.' },
-          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
-          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
-          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+          { title: 'Upload a photo', desc: 'Pick a clear face photo to build your progression from.' },
+          { title: 'Set the age range', desc: 'Choose your starting age and the target younger age.' },
+          { title: `Generate (${TIME_REVERSAL_COSTS.timelapse} credits)`, desc: 'AI creates the age frames and merges them into one collage.' },
+          { title: 'It posts itself', desc: 'The collage is published automatically to the Social Reverse Feed, where anyone can like it.' }
         ]}
       />
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
         <div>
-          <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Time-Lapse Video Creator</h2>
-          <p className="text-sm text-muted-foreground">Generate reverse-aging timelapse from your photos</p>
+          <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Time-Lapse Collage Creator</h2>
+          <p className="text-sm text-muted-foreground">One collage of your reverse-aging journey — auto-posted to the feed</p>
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Upload & Settings */}
         <Card className="border-purple-500/30">
-          <CardHeader><CardTitle className="flex items-center gap-2"><Film className="h-5 w-5 text-purple-400" /> Create Time-Lapse</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2"><Film className="h-5 w-5 text-purple-400" /> Create Collage</CardTitle></CardHeader>
           <CardContent className="space-y-6">
             <div className="border-2 border-dashed border-purple-500/30 rounded-xl p-6 text-center">
               <input type="file" accept="image/*" onChange={handleFileSelect} className="hidden" id="timelapse-upload" />
@@ -287,7 +231,9 @@ export function TimeLapseCreator({ onBack }: Props) {
             </div>
 
             <Button onClick={handleGenerate} disabled={generating || !selectedFile} className="w-full bg-gradient-to-r from-purple-600 to-violet-600">
-              {generating ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Generating...</> : <><Sparkles className="h-4 w-4 mr-2" /> Generate Time-Lapse</>}
+              {generating
+                ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Generating...</>
+                : <><Sparkles className="h-4 w-4 mr-2" /> Generate Collage ({TIME_REVERSAL_COSTS.timelapse} credits)</>}
             </Button>
 
             {stage !== "idle" && (
@@ -313,65 +259,23 @@ export function TimeLapseCreator({ onBack }: Props) {
                 </ul>
               </div>
             )}
-
           </CardContent>
         </Card>
 
-        {/* Preview */}
+        {/* Collage result */}
         <Card className="border-purple-500/30">
-          <CardHeader><CardTitle>Preview</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Your Collage</CardTitle></CardHeader>
           <CardContent>
-            {generatedFrames.length > 0 ? (
-              <div className="space-y-4">
-                <div className="aspect-square rounded-xl overflow-hidden bg-black/20 flex items-center justify-center">
-                  <img src={generatedFrames[currentFrame]?.url} alt={`Age ${generatedFrames[currentFrame]?.age} frame`} className="w-full h-full object-cover" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">Frame {currentFrame + 1}/{generatedFrames.length}</span>
-                  <Slider value={[currentFrame]} onValueChange={(v) => setCurrentFrame(v[0])} min={0} max={Math.max(generatedFrames.length - 1, 0)} step={1} className="flex-1" />
-                </div>
-                <div className="text-center text-sm text-muted-foreground">
-                  Age: {generatedFrames[currentFrame]?.age} years
-                </div>
-                <Button
-                  className="w-full bg-gradient-to-r from-purple-600 to-violet-600"
-                  disabled={collageBusy || generatedFrames.length < 2}
-                  onClick={shareCollageToFeed}
-                >
-                  {collageBusy
-                    ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Building collage...</>
-                    : <><Sparkles className="h-4 w-4 mr-2" /> Share full progression collage ({TIME_REVERSAL_COSTS.timelapse_collage} credits)</>}
-                </Button>
-                {collagePreview && (
-                  <img src={collagePreview} alt="Time-lapse collage shared to feed" className="w-full rounded-xl border border-purple-500/30" loading="lazy" />
-                )}
-                <Button
-                  variant="secondary"
-                  className="w-full"
-                  onClick={() => publishToFeed(generatedFrames[currentFrame], generatedFrames.length)}
-                >
-                  <Sparkles className="h-4 w-4 mr-2" /> Share this frame to feed
-                </Button>
-
-
-                <Button variant="outline" className="w-full" onClick={async () => {
-                  try {
-                    const src = generatedFrames[currentFrame]?.url;
-                    const res = await fetch(src);
-                    const blob = await res.blob();
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url; a.download = `timelapse-frame-${currentFrame + 1}.jpg`; a.click();
-                    URL.revokeObjectURL(url);
-                    toast({ title: "Frame downloaded", description: `Frame ${currentFrame + 1} saved.` });
-                  } catch {
-                    toast({ title: "Download failed", variant: "destructive" });
-                  }
-                }}><Download className="h-4 w-4 mr-2" /> Download Current Frame</Button>
+            {collagePreview ? (
+              <div className="space-y-3">
+                <img src={collagePreview} alt="Reverse-aging progression collage" className="w-full rounded-xl border border-purple-500/30" loading="lazy" />
+                <p className="text-xs text-muted-foreground text-center">
+                  Published to the Social Reverse Feed — other users can like it there.
+                </p>
               </div>
             ) : (
               <div className="aspect-square rounded-xl bg-card/50 border border-border/40 flex items-center justify-center">
-                <p className="text-muted-foreground text-sm text-center px-4">Upload a photo and generate to see your reverse aging time-lapse</p>
+                <p className="text-muted-foreground text-sm text-center px-4">Upload a photo and generate to create your reverse-aging collage</p>
               </div>
             )}
           </CardContent>
