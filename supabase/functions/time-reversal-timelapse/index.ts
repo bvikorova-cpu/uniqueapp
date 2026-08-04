@@ -1,4 +1,3 @@
-import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
@@ -14,11 +13,9 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    // ---- Auth guard ----
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return json({ error: "Unauthorized" }, 401);
-    }
+    if (!authHeader?.startsWith("Bearer ")) return json({ error: "Unauthorized" }, 401);
+
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_ANON_KEY")!,
@@ -29,40 +26,54 @@ serve(async (req) => {
     );
     if (userErr || !userData?.user) return json({ error: "Unauthorized" }, 401);
 
-    // ---- Body parsing ----
     let body: any;
     try { body = await req.json(); } catch { return json({ error: "Invalid JSON body" }, 400); }
     const { imageUrl, startAge, endAge, frames } = body ?? {};
-    if (!imageUrl || typeof imageUrl !== "string") {
-      return json({ error: "imageUrl is required" }, 400);
+    if (!imageUrl || typeof imageUrl !== "string") return json({ error: "imageUrl is required" }, 400);
+
+    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!lovableKey) return json({ error: "AI is not configured" }, 500);
+
+    const numFrames = Number.isFinite(frames) && frames > 0 ? Math.min(Number(frames), 6) : 4;
+    const sAge = Number.isFinite(startAge) ? Number(startAge) : 20;
+    const eAge = Number.isFinite(endAge) ? Number(endAge) : 80;
+    const count = Math.min(numFrames, 4);
+    const step = count > 1 ? (eAge - sAge) / (count - 1) : 0;
+
+    const generated: Array<{ age: number; url: string }> = [];
+
+    for (let i = 0; i < count; i++) {
+      const age = Math.round(sAge + step * i);
+      try {
+        const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Lovable-API-Key": lovableKey,
+            "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash-image",
+            modalities: ["image", "text"],
+            messages: [{
+              role: "user",
+              content: [
+                { type: "text", text: `Edit this portrait so the same person appears to be ${age} years old. Keep identity, pose, hair style and framing. Photorealistic, natural aging, neutral background.` },
+                { type: "image_url", image_url: { url: imageUrl } },
+              ] }] }) });
+
+        if (res.status === 429) return json({ error: "rate_limited", message: "AI is busy, please retry in a moment." }, 429);
+        if (res.status === 402) return json({ error: "credits_exhausted", message: "AI credits exhausted." }, 402);
+
+        const data = await res.json();
+        const url = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        if (url) generated.push({ age, url });
+      } catch (err) {
+        console.error("frame generation failed", age, err);
+      }
     }
 
-    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!openaiKey) return json({ error: "OpenAI API key not configured" }, 500);
+    if (!generated.length) return json({ error: "generation_failed", message: "Could not generate frames. Please try again." }, 502);
 
-    const numFrames = Number.isFinite(frames) && frames > 0 ? Math.min(frames, 8) : 8;
-    const sAge = Number.isFinite(startAge) ? startAge : 20;
-    const eAge = Number.isFinite(endAge) ? endAge : 80;
-    const ageStep = (eAge - sAge) / (numFrames - 1);
-    const generatedFrames: Array<{ age: number; url: string }> = [];
-
-    for (let i = 0; i < Math.min(numFrames, 4); i++) {
-      const age = Math.round(sAge + ageStep * i * (numFrames / 4));
-
-      const res = await fetch("https://api.openai.com/v1/images/generations", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "dall-e-3",
-          prompt: `Portrait photo of a person at age ${age}. Professional headshot, neutral background, natural aging progression. Photorealistic.`,
-          n: 1,
-          size: "1024x1024" }) });
-
-      const data = await res.json();
-      if (data.data?.[0]?.url) generatedFrames.push({ age, url: data.data[0].url });
-    }
-
-    return json({ frames: generatedFrames, startAge: sAge, endAge: eAge });
+    return json({ frames: generated, startAge: sAge, endAge: eAge });
   } catch (e: any) {
     const msg = e?.message || String(e);
     const status = /unauth/i.test(msg) ? 401 : /required|invalid/i.test(msg) ? 400 : 500;
