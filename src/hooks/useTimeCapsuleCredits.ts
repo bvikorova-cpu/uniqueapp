@@ -5,12 +5,19 @@ import { toast } from "sonner";
 /**
  * Credit costs for Time Capsule (unified `ai_credits` pool).
  * Priced to match the previous EUR plans at ~€0.40 / credit:
+ *  < 1 month  →  3 credits
+ *  1-3 months →  5 credits
+ *  3-6 months →  8 credits
+ *  6-12 months → 10 credits
  *  1 year  ≈ €4.99  → 12 credits
  *  5 years ≈ €9.99  → 25 credits
  * 10 years ≈ €19.99 → 50 credits
  * 20 years ≈ €49.99 → 125 credits
  */
 export const TIME_CAPSULE_COSTS = {
+  capsule_1m: 3,
+  capsule_3m: 5,
+  capsule_6m: 8,
   capsule_1y: 12,
   capsule_5y: 25,
   capsule_10y: 50,
@@ -19,12 +26,20 @@ export const TIME_CAPSULE_COSTS = {
 
 export type TimeCapsuleAction = keyof typeof TIME_CAPSULE_COSTS;
 
-/** Maps a capsule duration (in years) to the matching credit tier. */
+/** Maps a capsule duration (in months) to the matching credit tier. */
+export function costForDurationMonths(months: number): { action: TimeCapsuleAction; credits: number } {
+  if (months >= 240) return { action: "capsule_20y", credits: TIME_CAPSULE_COSTS.capsule_20y };
+  if (months >= 120) return { action: "capsule_10y", credits: TIME_CAPSULE_COSTS.capsule_10y };
+  if (months >= 60) return { action: "capsule_5y", credits: TIME_CAPSULE_COSTS.capsule_5y };
+  if (months >= 12) return { action: "capsule_1y", credits: TIME_CAPSULE_COSTS.capsule_1y };
+  if (months >= 6) return { action: "capsule_6m", credits: TIME_CAPSULE_COSTS.capsule_6m };
+  if (months >= 3) return { action: "capsule_3m", credits: TIME_CAPSULE_COSTS.capsule_3m };
+  return { action: "capsule_1m", credits: TIME_CAPSULE_COSTS.capsule_1m };
+}
+
+/** @deprecated kept for any legacy callers that pass years */
 export function costForDuration(years: number): { action: TimeCapsuleAction; credits: number } {
-  if (years >= 20) return { action: "capsule_20y", credits: TIME_CAPSULE_COSTS.capsule_20y };
-  if (years >= 10) return { action: "capsule_10y", credits: TIME_CAPSULE_COSTS.capsule_10y };
-  if (years >= 5) return { action: "capsule_5y", credits: TIME_CAPSULE_COSTS.capsule_5y };
-  return { action: "capsule_1y", credits: TIME_CAPSULE_COSTS.capsule_1y };
+  return costForDurationMonths(years * 12);
 }
 
 export function useTimeCapsuleCredits() {

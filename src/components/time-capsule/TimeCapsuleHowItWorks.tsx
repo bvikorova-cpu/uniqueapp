@@ -6,7 +6,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const TimeCapsuleHowItWorks = ({ onBack }: { onBack: () => void }) => {
   const steps = [
-    { icon: Clock, title: "1. Choose Your Duration", desc: "Pick how far into the future your capsule opens — 1 year (12 credits), 5 years (25), 10 years (50) or 20+ years (125). No subscription needed." },
+    { icon: Clock, title: "1. Choose Your Duration", desc: "Pick how far into the future your capsule opens — 1 month (3 credits), 3 months (5), 6 months (8), 1 year (12), 5 years (25), 10 years (50) or 20+ years (125). No subscription needed." },
     { icon: Video, title: "2. Create Your Content", desc: "Write a letter, record a video message, attach photos, or combine multiple formats. Express yourself freely." },
     { icon: Mail, title: "3. Set the Recipient", desc: "Send the capsule to yourself or specify a loved one's email. Set specific delivery conditions if needed." },
     { icon: Brain, title: "4. AI-Powered Timing", desc: "Our AI analyzes your content and suggests the perfect delivery moment for maximum emotional impact." },
