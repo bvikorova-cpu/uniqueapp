@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft, Film, Upload, Loader2, Download, Sparkles } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { ArrowLeft, Film, Upload, Loader2, Download, Sparkles, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
@@ -10,6 +11,15 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useTimeReversalCredits, TIME_REVERSAL_COSTS } from "@/hooks/useTimeReversalCredits";
 
 interface Props { onBack: () => void; }
+
+type Stage = "idle" | "credits" | "upload" | "generate" | "done";
+
+const STAGE_STEPS: { key: Stage; label: string; pct: number }[] = [
+  { key: "credits", label: "Reserving credits", pct: 15 },
+  { key: "upload", label: "Uploading your photo", pct: 35 },
+  { key: "generate", label: "Generating age frames with AI", pct: 80 },
+  { key: "done", label: "Frames ready", pct: 100 },
+];
 
 export function TimeLapseCreator({ onBack }: Props) {
   const { toast } = useToast();
@@ -19,8 +29,13 @@ export function TimeLapseCreator({ onBack }: Props) {
   const [startAge, setStartAge] = useState([80]);
   const [endAge, setEndAge] = useState([20]);
   const [generating, setGenerating] = useState(false);
+  const [stage, setStage] = useState<Stage>("idle");
   const [generatedFrames, setGeneratedFrames] = useState<{ url: string; age: number }[]>([]);
   const [currentFrame, setCurrentFrame] = useState(0);
+
+  const stageIndex = STAGE_STEPS.findIndex((s) => s.key === stage);
+  const progressPct = stageIndex >= 0 ? STAGE_STEPS[stageIndex].pct : 0;
+
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -38,6 +53,7 @@ export function TimeLapseCreator({ onBack }: Props) {
       return;
     }
     setGenerating(true);
+    setStage("credits");
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
@@ -46,6 +62,7 @@ export function TimeLapseCreator({ onBack }: Props) {
 
       // Upload original photo (best-effort archive) and prefer a public URL,
       // but fall back to the inline data URL so generation never depends on storage.
+      setStage("upload");
       const ext = (selectedFile.name.split(".").pop() || "jpg").toLowerCase();
       const path = `time-reversal/timelapse/${session.user.id}/${Date.now()}.${ext}`;
       const { error: upErr } = await supabase.storage
@@ -60,6 +77,7 @@ export function TimeLapseCreator({ onBack }: Props) {
       }
 
       // Generate AI frames via edge function
+      setStage("generate");
       const { data, error } = await supabase.functions.invoke("time-reversal-timelapse", {
         body: { imageUrl: sourceUrl, startAge: startAge[0], endAge: endAge[0], frames: 8 } });
 
@@ -79,11 +97,14 @@ export function TimeLapseCreator({ onBack }: Props) {
 
       setGeneratedFrames(normalized);
       setCurrentFrame(0);
+      setStage("done");
       toast({ title: "Time-Lapse Generated!", description: `${normalized.length} age frames created.` });
     } catch (e: any) {
       console.error(e);
+      setStage("idle");
       toast({ title: "Generation failed", description: e?.message || "Please try again.", variant: "destructive" });
     } finally { setGenerating(false); }
+
   };
 
   return (
@@ -139,6 +160,31 @@ export function TimeLapseCreator({ onBack }: Props) {
             <Button onClick={handleGenerate} disabled={generating || !selectedFile} className="w-full bg-gradient-to-r from-purple-600 to-violet-600">
               {generating ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Generating...</> : <><Sparkles className="h-4 w-4 mr-2" /> Generate Time-Lapse</>}
             </Button>
+
+            {stage !== "idle" && (
+              <div className="space-y-3 rounded-xl border border-purple-500/30 bg-purple-500/5 p-4">
+                <div className="flex items-center justify-between text-xs font-medium">
+                  <span>{stage === "done" ? "Completed" : "Working..."}</span>
+                  <span className="text-muted-foreground">{progressPct}%</span>
+                </div>
+                <Progress value={progressPct} className="h-2" />
+                <ul className="space-y-1.5">
+                  {STAGE_STEPS.map((s, i) => {
+                    const active = i === stageIndex;
+                    const done = i < stageIndex;
+                    return (
+                      <li key={s.key} className={`flex items-center gap-2 text-xs ${active ? "text-foreground font-medium" : done ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
+                        {done ? <Check className="h-3.5 w-3.5 text-purple-400" />
+                          : active ? <Loader2 className="h-3.5 w-3.5 animate-spin text-purple-400" />
+                          : <span className="h-3.5 w-3.5 rounded-full border border-current" />}
+                        {s.label}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+
           </CardContent>
         </Card>
 
