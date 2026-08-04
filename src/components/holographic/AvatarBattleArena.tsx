@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useHolographicCredits, HOLO_COSTS } from "@/hooks/useHolographicCredits";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { BattleResultDialog, type BattleResult } from "@/components/holographic/BattleResultDialog";
+
 
 interface Props { onBack: () => void; }
 
