@@ -61718,6 +61718,7 @@ export type Database = {
           capsule_type: string
           created_at: string
           delivery_date: string
+          duration_months: number | null
           duration_years: number
           id: string
           is_delivered: boolean | null
@@ -61737,6 +61738,7 @@ export type Database = {
           capsule_type: string
           created_at?: string
           delivery_date: string
+          duration_months?: number | null
           duration_years: number
           id?: string
           is_delivered?: boolean | null
@@ -61756,6 +61758,7 @@ export type Database = {
           capsule_type?: string
           created_at?: string
           delivery_date?: string
+          duration_months?: number | null
           duration_years?: number
           id?: string
           is_delivered?: boolean | null

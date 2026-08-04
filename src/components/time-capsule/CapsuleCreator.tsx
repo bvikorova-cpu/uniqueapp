@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { Badge } from "@/components/ui/badge";
 import { Coins } from "lucide-react";
-import { useTimeCapsuleCredits, costForDuration } from "@/hooks/useTimeCapsuleCredits";
+import { useTimeCapsuleCredits, costForDurationMonths } from "@/hooks/useTimeCapsuleCredits";
 
 export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
   const { balance, loading: creditsLoading, spend, refund } = useTimeCapsuleCredits();
@@ -36,21 +36,23 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
       return;
     }
 
-    const durationYears = Math.max(1, Math.round((delivery.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 365)));
-    const { action, credits } = costForDuration(durationYears);
+    const durationMs = delivery.getTime() - now.getTime();
+    const durationDays = Math.max(1, Math.ceil(durationMs / (1000 * 60 * 60 * 24)));
+    const durationMonths = Math.max(1, Math.ceil(durationDays / 30));
+    const { action, credits } = costForDurationMonths(durationMonths);
 
     setLoading(true);
-    const paid = await spend(action, `time-capsule:create:${durationYears}y`);
+    const paid = await spend(action, `time-capsule:create:${durationMonths}m`);
     if (!paid) { setLoading(false); return; }
 
     try {
       const { error } = await supabase.functions.invoke("save-time-capsule", {
-        body: { title, message, capsuleType, deliveryDate, recipientEmail, recipientName, durationYears, pricePaid: null, stripePaymentId: null } });
+        body: { title, message, capsuleType, deliveryDate, recipientEmail, recipientName, durationMonths, durationYears: Math.max(1, Math.ceil(durationMonths / 12)), pricePaid: null, stripePaymentId: null } });
       if (error) throw error;
       toast({ title: "Time Capsule Created!", description: `${credits} credits used — delivery on ${delivery.toLocaleDateString()}.` });
       setTitle(""); setMessage(""); setDeliveryDate(""); setRecipientEmail(""); setRecipientName("");
     } catch (error: any) {
-      await refund(action, `refund:time-capsule:create:${durationYears}y`);
+      await refund(action, `refund:time-capsule:create:${durationMonths}m`);
       toast({ title: "Error", description: error.message || "Failed to create time capsule", variant: "destructive" });
     } finally { setLoading(false); }
   };
@@ -96,7 +98,7 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
             Create New Time Capsule
           </CardTitle>
           <p className="text-xs text-muted-foreground">
-            Credit cost by delivery date: 1 year · 12 · 5 years · 25 · 10 years · 50 · 20+ years · 125 credits
+            Credit cost by delivery date: 1 mo · 3 · 3 mo · 5 · 6 mo · 8 · 1 yr · 12 · 5 yr · 25 · 10 yr · 50 · 20+ yr · 125 credits
           </p>
         </CardHeader>
 

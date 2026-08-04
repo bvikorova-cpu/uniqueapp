@@ -36,11 +36,25 @@ serve(async (req) => {
       recipientEmail,
       recipientName,
       durationYears,
+      durationMonths,
       pricePaid,
       stripePaymentId,
       files } = await req.json();
 
-    if (!title || !deliveryDate || !durationYears) {
+    // Compute duration in months and years from the delivery date if needed
+    let months = durationMonths ? Number(durationMonths) : 0;
+    let years = durationYears ? Number(durationYears) : 0;
+    if (!months && !years && deliveryDate) {
+      const now = new Date();
+      const delivery = new Date(deliveryDate);
+      const diffMs = delivery.getTime() - now.getTime();
+      const diffDays = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+      months = Math.max(1, Math.ceil(diffDays / 30));
+    }
+    if (!months && years) months = years * 12;
+    if (!years && months) years = Math.max(1, Math.ceil(months / 12));
+
+    if (!title || !deliveryDate || (!months && !years)) {
       return new Response(JSON.stringify({ error: "Title, delivery date, and duration are required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -55,7 +69,8 @@ serve(async (req) => {
         delivery_date: deliveryDate,
         recipient_email: recipientEmail,
         recipient_name: recipientName,
-        duration_years: durationYears,
+        duration_years: years,
+        duration_months: months,
         price_paid: pricePaid,
         payment_status: stripePaymentId ? 'paid' : 'pending',
         stripe_payment_id: stripePaymentId })

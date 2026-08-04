@@ -8,6 +8,9 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useTimeCapsuleCredits, TIME_CAPSULE_COSTS } from "@/hooks/useTimeCapsuleCredits";
 
 const PLANS = [
+  { key: "capsule_1m", name: "1 Month Capsule", cost: TIME_CAPSULE_COSTS.capsule_1m, icon: Clock, popular: false, features: ["Text, video, or letter format", "Automatic delivery in 1 month", "Email notifications", "Secure encrypted storage"] },
+  { key: "capsule_3m", name: "3 Months Capsule", cost: TIME_CAPSULE_COSTS.capsule_3m, icon: Clock, popular: false, features: ["All formats supported", "Delivery in 3 months", "Standard storage", "Video support"] },
+  { key: "capsule_6m", name: "6 Months Capsule", cost: TIME_CAPSULE_COSTS.capsule_6m, icon: Clock, popular: false, features: ["All formats supported", "Delivery in 6 months", "Priority storage", "HD video support"] },
   { key: "capsule_1y", name: "1 Year Capsule", cost: TIME_CAPSULE_COSTS.capsule_1y, icon: Clock, popular: false, features: ["Text, video, or letter format", "Automatic delivery in 1 year", "Email notifications", "Secure encrypted storage"] },
   { key: "capsule_5y", name: "5 Years Capsule", cost: TIME_CAPSULE_COSTS.capsule_5y, icon: Clock, popular: true, features: ["All formats supported", "Delivery in 5 years", "Priority storage", "HD video support"] },
   { key: "capsule_10y", name: "10 Years Capsule", cost: TIME_CAPSULE_COSTS.capsule_10y, icon: Clock, popular: false, features: ["All formats + attachments", "Delivery in 10 years", "Premium storage", "HD video support"] },
@@ -47,7 +50,7 @@ export const CapsulePlans = ({ onBack }: { onBack: () => void }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {PLANS.map((plan, i) => (
             <motion.div key={plan.key} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
               <Card className={`relative h-full ${plan.popular ? 'border-primary shadow-lg shadow-primary/20' : 'border-border/40'}`}>
