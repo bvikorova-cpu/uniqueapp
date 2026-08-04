@@ -44,15 +44,25 @@ export function TimeLapseCreator({ onBack }: Props) {
       const paid = await spend("timelapse");
       if (!paid) return;
 
-      // Upload original photo
-      const ext = selectedFile.name.split(".").pop();
+      // Upload original photo (best-effort archive) and prefer a public URL,
+      // but fall back to the inline data URL so generation never depends on storage.
+      const ext = (selectedFile.name.split(".").pop() || "jpg").toLowerCase();
       const path = `time-reversal/timelapse/${session.user.id}/${Date.now()}.${ext}`;
-      await supabase.storage.from("media").upload(path, selectedFile);
-      const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(path);
+      const { error: upErr } = await supabase.storage
+        .from("media")
+        .upload(path, selectedFile, { contentType: selectedFile.type || "image/jpeg", upsert: true });
+      let sourceUrl = preview as string; // data URL from FileReader
+      if (!upErr) {
+        const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+        if (pub?.publicUrl) sourceUrl = pub.publicUrl;
+      } else {
+        console.error("timelapse upload failed", upErr);
+      }
 
       // Generate AI frames via edge function
       const { data, error } = await supabase.functions.invoke("time-reversal-timelapse", {
-        body: { imageUrl: publicUrl, startAge: startAge[0], endAge: endAge[0], frames: 8 } });
+        body: { imageUrl: sourceUrl, startAge: startAge[0], endAge: endAge[0], frames: 8 } });
+
 
       if (error) throw error;
 

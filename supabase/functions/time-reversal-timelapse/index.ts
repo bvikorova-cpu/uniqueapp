@@ -41,37 +41,55 @@ serve(async (req) => {
     const step = count > 1 ? (eAge - sAge) / (count - 1) : 0;
 
     const generated: Array<{ age: number; url: string }> = [];
+    let lastError = "";
+
+    const callModel = async (model: string, age: number) =>
+      await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Lovable-API-Key": lovableKey,
+          "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model,
+          modalities: ["image", "text"],
+          messages: [{
+            role: "user",
+            content: [
+              { type: "text", text: `Edit this portrait so the same person appears to be ${age} years old. Keep identity, pose, hair style and framing. Photorealistic, natural aging, neutral background.` },
+              { type: "image_url", image_url: { url: imageUrl } },
+            ] }] }) });
 
     for (let i = 0; i < count; i++) {
       const age = Math.round(sAge + step * i);
-      try {
-        const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Lovable-API-Key": lovableKey,
-            "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "google/gemini-2.5-flash-image",
-            modalities: ["image", "text"],
-            messages: [{
-              role: "user",
-              content: [
-                { type: "text", text: `Edit this portrait so the same person appears to be ${age} years old. Keep identity, pose, hair style and framing. Photorealistic, natural aging, neutral background.` },
-                { type: "image_url", image_url: { url: imageUrl } },
-              ] }] }) });
+      for (const model of ["google/gemini-2.5-flash-image", "google/gemini-3.1-flash-image"]) {
+        try {
+          const res = await callModel(model, age);
 
-        if (res.status === 429) return json({ error: "rate_limited", message: "AI is busy, please retry in a moment." }, 429);
-        if (res.status === 402) return json({ error: "credits_exhausted", message: "AI credits exhausted." }, 402);
+          if (res.status === 429) return json({ error: "rate_limited", message: "AI is busy, please retry in a moment." }, 429);
+          if (res.status === 402) return json({ error: "credits_exhausted", message: "AI credits exhausted." }, 402);
 
-        const data = await res.json();
-        const url = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-        if (url) generated.push({ age, url });
-      } catch (err) {
-        console.error("frame generation failed", age, err);
+          if (!res.ok) {
+            lastError = `${model} ${res.status}: ${(await res.text()).slice(0, 500)}`;
+            console.error("gateway error", lastError);
+            continue;
+          }
+
+          const data = await res.json();
+          const url = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          if (url) { generated.push({ age, url }); break; }
+          lastError = `${model}: no image in response ${JSON.stringify(data).slice(0, 500)}`;
+          console.error(lastError);
+        } catch (err) {
+          lastError = `${model}: ${String((err as any)?.message ?? err)}`;
+          console.error("frame generation failed", age, lastError);
+        }
       }
     }
 
-    if (!generated.length) return json({ error: "generation_failed", message: "Could not generate frames. Please try again." }, 502);
+    if (!generated.length) {
+      return json({ error: "generation_failed", message: "Could not generate frames. Please try again.", detail: lastError.slice(0, 300) }, 502);
+    }
+
 
     return json({ frames: generated, startAge: sAge, endAge: eAge });
   } catch (e: any) {
