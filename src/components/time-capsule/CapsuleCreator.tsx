@@ -36,15 +36,21 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
       return;
     }
 
+    const durationYears = Math.floor((delivery.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 365));
+    const { action, credits } = costForDuration(durationYears);
+
     setLoading(true);
+    const paid = await spend(action, `time-capsule:create:${durationYears}y`);
+    if (!paid) { setLoading(false); return; }
+
     try {
-      const durationYears = Math.floor((delivery.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 365));
       const { error } = await supabase.functions.invoke("save-time-capsule", {
         body: { title, message, capsuleType, deliveryDate, recipientEmail, recipientName, durationYears, pricePaid: null, stripePaymentId: null } });
       if (error) throw error;
-      toast({ title: "Time Capsule Created!", description: `Your message will be delivered on ${delivery.toLocaleDateString()}.` });
+      toast({ title: "Time Capsule Created!", description: `${credits} credits used — delivery on ${delivery.toLocaleDateString()}.` });
       setTitle(""); setMessage(""); setDeliveryDate(""); setRecipientEmail(""); setRecipientName("");
     } catch (error: any) {
+      await refund(action, `refund:time-capsule:create:${durationYears}y`);
       toast({ title: "Error", description: error.message || "Failed to create time capsule", variant: "destructive" });
     } finally { setLoading(false); }
   };
