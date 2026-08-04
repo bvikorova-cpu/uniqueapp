@@ -300,14 +300,27 @@ Deno.serve(async (req) => {
     const xpSource = String(body?.xpSource ?? "holographic_battle");
     let xpAwarded = 0;
     if (rewards > 0) {
+      const source = `${xpSource}_win_${mode}`;
+      const refId = `${Date.now()}-${crypto.randomUUID()}`;
       const { error: awardError } = await admin.rpc("award_xp", {
         _user_id: user.id,
         _amount: rewards,
-        _source: `${xpSource}_win_${mode}`,
-        _ref_id: null });
-      if (awardError) console.error("battle XP award failed", awardError);
-      else xpAwarded = rewards;
+        _source: source,
+        _ref_id: refId,
+      });
+      if (awardError) {
+        console.error("battle XP award rpc failed, falling back", awardError);
+        const { error: insErr } = await admin
+          .from("xp_events")
+          .insert({ user_id: user.id, source, amount: rewards, ref_id: refId });
+        if (insErr) console.error("battle XP fallback insert failed", insErr);
+        else xpAwarded = rewards;
+      } else {
+        xpAwarded = rewards;
+      }
+      console.log("battle XP result", { user: user.id, source, rewards, xpAwarded });
     }
+
 
     const { data: result, error } = await admin
       .from("holographic_battle_results")
