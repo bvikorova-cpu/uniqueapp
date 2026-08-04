@@ -32,6 +32,8 @@ export function TimeLapseCreator({ onBack }: Props) {
   const [stage, setStage] = useState<Stage>("idle");
   const [generatedFrames, setGeneratedFrames] = useState<{ url: string; age: number }[]>([]);
   const [currentFrame, setCurrentFrame] = useState(0);
+  const [collageBusy, setCollageBusy] = useState(false);
+  const [collagePreview, setCollagePreview] = useState<string | null>(null);
 
   const stageIndex = STAGE_STEPS.findIndex((s) => s.key === stage);
   const progressPct = stageIndex >= 0 ? STAGE_STEPS[stageIndex].pct : 0;
