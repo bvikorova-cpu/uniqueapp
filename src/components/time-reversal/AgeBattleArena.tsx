@@ -9,13 +9,14 @@ import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useHolographicCredits, HOLO_COSTS } from "@/hooks/useHolographicCredits";
 import { BattleResultDialog, type BattleResult } from "@/components/holographic/BattleResultDialog";
+import { XpLeaderboard } from "@/components/common/XpLeaderboard";
 
 interface Props { onBack: () => void; }
 
 const BATTLE_MODES = [
-  { id: "1v1", name: "1v1 Duel", icon: Swords, desc: "One AI opponent, 3 rounds", entry: HOLO_COSTS.battle_1v1, prize: "+4 credits" },
-  { id: "survival", name: "Survival", icon: Flame, desc: "Endurance run, 4 rounds", entry: HOLO_COSTS.battle_survival, prize: "+15 credits" },
-  { id: "tournament", name: "Tournament", icon: Trophy, desc: "Toughest opponents, 5 rounds", entry: HOLO_COSTS.battle_tournament, prize: "+30 credits" },
+  { id: "1v1", name: "1v1 Duel", icon: Swords, desc: "One AI opponent, 3 rounds", entry: HOLO_COSTS.battle_1v1, prize: "+80 XP" },
+  { id: "survival", name: "Survival", icon: Flame, desc: "Endurance run, 4 rounds", entry: HOLO_COSTS.battle_survival, prize: "+300 XP" },
+  { id: "tournament", name: "Tournament", icon: Trophy, desc: "Toughest opponents, 5 rounds", entry: HOLO_COSTS.battle_tournament, prize: "+600 XP" },
 ];
 
 type EntryStage = "idle" | "auth" | "upload" | "publish" | "done";
@@ -35,6 +36,7 @@ export function AgeBattleArena({ onBack }: Props) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [entryStage, setEntryStage] = useState<EntryStage>("idle");
   const [fighting, setFighting] = useState<string | null>(null);
+  const [boardKey, setBoardKey] = useState(0);
   const [report, setReport] = useState<{ result: BattleResult; mode: typeof BATTLE_MODES[0] } | null>(null);
   const { balance, spend, refresh } = useHolographicCredits();
 
@@ -122,11 +124,11 @@ export function AgeBattleArena({ onBack }: Props) {
       const paid = await spend(mode.entry, `age_battle_${mode.id}`);
       if (!paid) return;
       const { data, error } = await supabase.functions.invoke("holographic-battle-simulate", {
-        body: { mode: mode.id },
+        body: { mode: mode.id, xpSource: "time_reversal_battle" },
       });
       if (error) throw error;
       const r = data?.result;
-      if (r) { setReport({ result: r as BattleResult, mode }); await refresh(); }
+      if (r) { setReport({ result: r as BattleResult, mode }); setBoardKey((k) => k + 1); await refresh(); }
       else toast({ title: "Battle entered", description: `${mode.name} — ${mode.entry} credits used.` });
     } catch (e: any) {
       console.error(e);
@@ -238,7 +240,7 @@ export function AgeBattleArena({ onBack }: Props) {
             <li>Pick a mode — the entry fee in credits is charged once.</li>
             <li>You fight a random AI opponent round by round (this is not live PvP).</li>
             <li>You get a full combat report with every move and the verdict.</li>
-            <li>A win pays the prize straight into your credit balance; a loss pays nothing.</li>
+            <li>A win pays the prize as <strong>XP</strong> on your profile (no credit payouts); a loss pays nothing.</li>
           </ol>
           <p className="text-xs text-muted-foreground">Your balance: <strong className="text-foreground">{balance} credits</strong></p>
         </CardContent>
@@ -262,6 +264,8 @@ export function AgeBattleArena({ onBack }: Props) {
           </Card>
         ))}
       </div>
+
+      <XpLeaderboard sourcePrefix="time_reversal_battle" title="Age Battle XP Leaderboard" reloadKey={boardKey} />
 
       <BattleResultDialog
         open={!!report}

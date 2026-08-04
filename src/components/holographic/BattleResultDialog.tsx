@@ -35,6 +35,7 @@ export interface BattleResult {
   summary?: string;
   rewards_eur?: number;
   credits_awarded?: number;
+  xp_awarded?: number;
 }
 
 interface Props {
@@ -175,9 +176,9 @@ export const BattleResultDialog = ({ open, onOpenChange, result, modeName, prize
                 <p className="text-xs text-muted-foreground">Rounds won {result.rounds_won ?? 0} / {result.rounds_total}</p>
               )}
               {result.summary && <p className="text-sm leading-relaxed">{result.summary}</p>}
-              {outcome === "win" && (result.credits_awarded ?? 0) > 0 ? (
+              {outcome === "win" && (result.xp_awarded ?? 0) > 0 ? (
                 <Badge className="bg-emerald-500/15 text-emerald-600 border-emerald-500/30">
-                  +{result.credits_awarded} credits added to your balance
+                  +{result.xp_awarded} XP added to your profile
                 </Badge>
               ) : outcome === "win" && prizeLabel ? (
                 <Badge className="bg-emerald-500/15 text-emerald-600 border-emerald-500/30">Prize {prizeLabel}</Badge>
