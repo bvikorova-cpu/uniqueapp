@@ -143,13 +143,13 @@ export default function HolographicAvatars() {
 
             <HeroRewardedAd sectionKey="page_holographicavatars" />
 
-            {/* Compact Engagement Row */}
+            {/* Real per-user stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
               {[
-                { icon: Crown, label: "Total Avatars", value: "847", color: "text-violet-500" },
-                { icon: Cpu, label: "AI Interactions", value: "124K", color: "text-cyan-500" },
-                { icon: Brain, label: "Evolution Score", value: "92%", color: "text-emerald-500" },
-                { icon: Sparkles, label: "XP Earned", value: "58K", color: "text-amber-500" },
+                { icon: Crown, label: "My Avatars", value: statsLoading ? "…" : String(stats.avatars), color: "text-violet-500" },
+                { icon: Cpu, label: "My Actions", value: statsLoading ? "…" : String(stats.interactions), color: "text-cyan-500" },
+                { icon: Brain, label: "Battle Win Rate", value: statsLoading ? "…" : `${stats.winRate}%`, color: "text-emerald-500" },
+                { icon: Sparkles, label: "XP Earned", value: statsLoading ? "…" : stats.xp.toLocaleString(), color: "text-amber-500" },
               ].map((stat, i) => (
                 <Card key={i} className="border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all">
                   <CardContent className="p-3 flex items-center gap-3">
@@ -164,6 +164,7 @@ export default function HolographicAvatars() {
                 </Card>
               ))}
             </div>
+
 
             {/* Tool Cards Grid */}
             <div className="mb-8">
