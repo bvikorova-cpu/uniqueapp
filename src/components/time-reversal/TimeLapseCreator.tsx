@@ -93,8 +93,9 @@ export function TimeLapseCreator({ onBack }: Props) {
     });
 
     const imageData = canvas.toDataURL("image/jpeg", 0.82);
-    const { data, error } = await supabase.functions.invoke("publish-time-reversal-collage", {
+    const { data, error } = await supabase.functions.invoke("time-reversal-timelapse", {
       body: {
+        action: "publish_collage",
         imageData,
         startAge: startAge[0],
         endAge: endAge[0],
