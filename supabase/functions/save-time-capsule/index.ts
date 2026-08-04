@@ -83,7 +83,7 @@ serve(async (req) => {
     if (files && files.length > 0) { const fileRecords = files.map((file: any) => ({
         capsule_id: capsule.id,
         file_url: file.url,
-        file_type: file.type,
+        file_type: (() => { const t = String(file.type || ''); if (t.startsWith('video')) return 'video'; if (t.startsWith('image')) return 'image'; if (t.startsWith('audio')) return 'audio'; return 'document'; })(),
         file_size: file.size }));
 
       const { error: filesError } = await supabaseClient
