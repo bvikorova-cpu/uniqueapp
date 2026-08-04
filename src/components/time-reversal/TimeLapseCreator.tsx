@@ -32,6 +32,8 @@ export function TimeLapseCreator({ onBack }: Props) {
   const [stage, setStage] = useState<Stage>("idle");
   const [generatedFrames, setGeneratedFrames] = useState<{ url: string; age: number }[]>([]);
   const [currentFrame, setCurrentFrame] = useState(0);
+  const [collageBusy, setCollageBusy] = useState(false);
+  const [collagePreview, setCollagePreview] = useState<string | null>(null);
 
   const stageIndex = STAGE_STEPS.findIndex((s) => s.key === stage);
   const progressPct = stageIndex >= 0 ? STAGE_STEPS[stageIndex].pct : 0;
@@ -76,6 +78,98 @@ export function TimeLapseCreator({ onBack }: Props) {
       if (!silent) toast({ title: "Could not share to feed", variant: "destructive" });
     }
   };
+
+  const loadImage = (src: string) =>
+    new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("Could not load frame"));
+      img.src = src;
+    });
+
+  /** Build a labelled grid collage of every generated frame and publish it to the feed (2 credits). */
+  const shareCollageToFeed = async () => {
+    if (generatedFrames.length < 2) {
+      toast({ title: "Generate a time-lapse first", variant: "destructive" });
+      return;
+    }
+    setCollageBusy(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
+
+      const paid = await spend("timelapse_collage", "time-reversal:timelapse_collage");
+      if (!paid) return;
+
+      const imgs = await Promise.all(generatedFrames.map((f) => loadImage(f.url)));
+      const cols = imgs.length <= 4 ? 2 : imgs.length <= 9 ? 3 : 4;
+      const rows = Math.ceil(imgs.length / cols);
+      const cell = 420;
+      const label = 56;
+      const gap = 10;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = cols * cell + (cols + 1) * gap;
+      canvas.height = rows * (cell + label) + (rows + 1) * gap;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas unavailable");
+
+      ctx.fillStyle = "#140b22";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      imgs.forEach((img, i) => {
+        const c = i % cols;
+        const r = Math.floor(i / cols);
+        const x = gap + c * (cell + gap);
+        const y = gap + r * (cell + label + gap);
+
+        // cover-crop the source frame into the square cell
+        const side = Math.min(img.width, img.height);
+        ctx.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, x, y, cell, cell);
+
+        ctx.fillStyle = "rgba(255,255,255,0.08)";
+        ctx.fillRect(x, y + cell, cell, label);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 30px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`Age ${generatedFrames[i].age}`, x + cell / 2, y + cell + label / 2);
+      });
+
+      const blob: Blob = await new Promise((resolve, reject) =>
+        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Collage export failed"))), "image/jpeg", 0.9),
+      );
+
+      const path = `time-reversal/collage/${session.user.id}/${Date.now()}.jpg`;
+      const { error: upErr } = await supabase.storage
+        .from("media")
+        .upload(path, blob, { contentType: "image/jpeg", upsert: true });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
+      const collageUrl = pub?.publicUrl;
+      if (!collageUrl) throw new Error("Could not publish collage");
+
+      await supabase.from("time_reversal_posts").insert({
+        user_id: session.user.id,
+        content: `🎞️ My full reverse-aging journey: ${startAge[0]} → ${endAge[0]} years (${generatedFrames.length} AI frames collage).`,
+        image_url: collageUrl,
+        age_at_post: generatedFrames[generatedFrames.length - 1]?.age ?? endAge[0],
+        post_type: "timelapse_collage",
+        likes_count: 0,
+        comments_count: 0,
+      } as any);
+
+      setCollagePreview(collageUrl);
+      toast({ title: "Collage shared", description: "Your whole progression is live in the Social Reverse Feed." });
+    } catch (e: any) {
+      console.error("collage failed", e);
+      toast({ title: "Collage failed", description: e?.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setCollageBusy(false);
+    }
+  };
+
 
 
   const handleGenerate = async () => {
@@ -131,8 +225,8 @@ export function TimeLapseCreator({ onBack }: Props) {
       setStage("done");
       toast({ title: "Time-Lapse Generated!", description: `${normalized.length} age frames created.` });
 
-      // Publish the youngest generated frame into the Social Reverse Feed
-      await publishToFeed(normalized[normalized.length - 1], normalized.length, true);
+      // No auto-post: the user shares the full progression collage (2 credits) or a single frame.
+
 
     } catch (e: any) {
       console.error(e);
@@ -240,12 +334,25 @@ export function TimeLapseCreator({ onBack }: Props) {
                   Age: {generatedFrames[currentFrame]?.age} years
                 </div>
                 <Button
+                  className="w-full bg-gradient-to-r from-purple-600 to-violet-600"
+                  disabled={collageBusy || generatedFrames.length < 2}
+                  onClick={shareCollageToFeed}
+                >
+                  {collageBusy
+                    ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Building collage...</>
+                    : <><Sparkles className="h-4 w-4 mr-2" /> Share full progression collage ({TIME_REVERSAL_COSTS.timelapse_collage} credits)</>}
+                </Button>
+                {collagePreview && (
+                  <img src={collagePreview} alt="Time-lapse collage shared to feed" className="w-full rounded-xl border border-purple-500/30" loading="lazy" />
+                )}
+                <Button
                   variant="secondary"
                   className="w-full"
                   onClick={() => publishToFeed(generatedFrames[currentFrame], generatedFrames.length)}
                 >
                   <Sparkles className="h-4 w-4 mr-2" /> Share this frame to feed
                 </Button>
+
 
                 <Button variant="outline" className="w-full" onClick={async () => {
                   try {
