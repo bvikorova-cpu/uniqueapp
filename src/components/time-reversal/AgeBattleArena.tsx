@@ -3,12 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Swords, Trophy, ThumbsUp, Upload, Loader2, Check } from "lucide-react";
+import { ArrowLeft, Swords, Trophy, ThumbsUp, Upload, Loader2, Check, Flame, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useHolographicCredits, HOLO_COSTS } from "@/hooks/useHolographicCredits";
+import { BattleResultDialog, type BattleResult } from "@/components/holographic/BattleResultDialog";
 
 interface Props { onBack: () => void; }
+
+const BATTLE_MODES = [
+  { id: "1v1", name: "1v1 Duel", icon: Swords, desc: "One AI opponent, 3 rounds", entry: HOLO_COSTS.battle_1v1, prize: "+4 credits" },
+  { id: "survival", name: "Survival", icon: Flame, desc: "Endurance run, 4 rounds", entry: HOLO_COSTS.battle_survival, prize: "+15 credits" },
+  { id: "tournament", name: "Tournament", icon: Trophy, desc: "Toughest opponents, 5 rounds", entry: HOLO_COSTS.battle_tournament, prize: "+30 credits" },
+];
 
 type EntryStage = "idle" | "auth" | "upload" | "publish" | "done";
 
@@ -26,6 +34,9 @@ export function AgeBattleArena({ onBack }: Props) {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [entryStage, setEntryStage] = useState<EntryStage>("idle");
+  const [fighting, setFighting] = useState<string | null>(null);
+  const [report, setReport] = useState<{ result: BattleResult; mode: typeof BATTLE_MODES[0] } | null>(null);
+  const { balance, spend, refresh } = useHolographicCredits();
 
   const entryIndex = ENTRY_STEPS.findIndex((s) => s.key === entryStage);
   const entryPct = entryIndex >= 0 ? ENTRY_STEPS[entryIndex].pct : 0;
@@ -89,19 +100,40 @@ export function AgeBattleArena({ onBack }: Props) {
   };
 
 
+  // One vote per person — the RPC toggles a unique like row and keeps the counter correct.
   const handleVote = async (postId: string) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-      
-      const { data: post } = await supabase.from("time_reversal_posts").select("likes_count").eq("id", postId).single();
-      if (post) {
-        await supabase.from("time_reversal_posts").update({ likes_count: (post.likes_count || 0) + 1 }).eq("id", postId);
-        toast({ title: "Vote Cast! ⚔️" });
-        loadBattles();
-      }
-    } catch (e) { console.error(e); }
+      if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
+      const { data, error } = await supabase.rpc("toggle_time_reversal_like", { _post_id: postId });
+      if (error) throw error;
+      const liked = (data as any)?.liked ?? (data as any)?.[0]?.liked;
+      toast({ title: liked === false ? "Vote removed" : "Vote cast! ⚔️" });
+      loadBattles();
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Error", description: e?.message || "Could not vote", variant: "destructive" });
+    }
   };
+
+  const handleFight = async (mode: typeof BATTLE_MODES[0]) => {
+    setFighting(mode.id);
+    try {
+      const paid = await spend(mode.entry, `age_battle_${mode.id}`);
+      if (!paid) return;
+      const { data, error } = await supabase.functions.invoke("holographic-battle-simulate", {
+        body: { mode: mode.id },
+      });
+      if (error) throw error;
+      const r = data?.result;
+      if (r) { setReport({ result: r as BattleResult, mode }); await refresh(); }
+      else toast({ title: "Battle entered", description: `${mode.name} — ${mode.entry} credits used.` });
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Error", description: e?.message || "Battle failed", variant: "destructive" });
+    } finally { setFighting(null); }
+  };
+
 
   return (
     <>
@@ -197,6 +229,48 @@ export function AgeBattleArena({ onBack }: Props) {
           )}
         </CardContent>
       </Card>
+
+      {/* Credit battles — same model as Holographic Avatars */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardContent className="p-4 space-y-2 text-sm">
+          <h3 className="font-bold flex items-center gap-2"><Info className="w-4 h-4 text-primary" /> How credit battles work</h3>
+          <ol className="list-decimal pl-5 space-y-1 text-muted-foreground">
+            <li>Pick a mode — the entry fee in credits is charged once.</li>
+            <li>You fight a random AI opponent round by round (this is not live PvP).</li>
+            <li>You get a full combat report with every move and the verdict.</li>
+            <li>A win pays the prize straight into your credit balance; a loss pays nothing.</li>
+          </ol>
+          <p className="text-xs text-muted-foreground">Your balance: <strong className="text-foreground">{balance} credits</strong></p>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {BATTLE_MODES.map((mode) => (
+          <Card key={mode.id} className="border-border">
+            <CardContent className="p-5 text-center">
+              <mode.icon className="w-8 h-8 text-primary mx-auto mb-2" />
+              <h3 className="font-black text-lg">{mode.name}</h3>
+              <p className="text-xs text-muted-foreground mb-3">{mode.desc}</p>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Entry: <strong className="text-foreground">{mode.entry} cr</strong></span>
+                <span className="text-muted-foreground">Prize: <strong className="text-emerald-500">{mode.prize}</strong></span>
+              </div>
+              <Button onClick={() => handleFight(mode)} disabled={!!fighting} className="w-full mt-3" size="sm">
+                {fighting === mode.id ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Swords className="w-3 h-3 mr-1" />} Fight
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <BattleResultDialog
+        open={!!report}
+        onOpenChange={(v) => { if (!v) setReport(null); }}
+        result={report?.result ?? null}
+        modeName={report?.mode.name}
+        prizeLabel={report?.mode.prize}
+        entryCost={report?.mode.entry}
+      />
     </div>
     </>
   );
