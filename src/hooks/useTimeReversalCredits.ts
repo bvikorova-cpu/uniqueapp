@@ -9,8 +9,7 @@ export const TIME_REVERSAL_COSTS = {
   future_glimpse: 5,
   paradox_post: 2,
   life_story: 5,
-  timelapse: 5,
-  timelapse_collage: 2,
+  timelapse: 11,
 } as const;
 
 export type TimeReversalAction = keyof typeof TIME_REVERSAL_COSTS;
