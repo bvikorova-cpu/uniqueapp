@@ -53,6 +53,7 @@ export function TimeLapseCreator({ onBack }: Props) {
       return;
     }
     setGenerating(true);
+    setStage("credits");
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
@@ -61,6 +62,7 @@ export function TimeLapseCreator({ onBack }: Props) {
 
       // Upload original photo (best-effort archive) and prefer a public URL,
       // but fall back to the inline data URL so generation never depends on storage.
+      setStage("upload");
       const ext = (selectedFile.name.split(".").pop() || "jpg").toLowerCase();
       const path = `time-reversal/timelapse/${session.user.id}/${Date.now()}.${ext}`;
       const { error: upErr } = await supabase.storage
@@ -75,6 +77,7 @@ export function TimeLapseCreator({ onBack }: Props) {
       }
 
       // Generate AI frames via edge function
+      setStage("generate");
       const { data, error } = await supabase.functions.invoke("time-reversal-timelapse", {
         body: { imageUrl: sourceUrl, startAge: startAge[0], endAge: endAge[0], frames: 8 } });
 
@@ -94,11 +97,14 @@ export function TimeLapseCreator({ onBack }: Props) {
 
       setGeneratedFrames(normalized);
       setCurrentFrame(0);
+      setStage("done");
       toast({ title: "Time-Lapse Generated!", description: `${normalized.length} age frames created.` });
     } catch (e: any) {
       console.error(e);
+      setStage("idle");
       toast({ title: "Generation failed", description: e?.message || "Please try again.", variant: "destructive" });
     } finally { setGenerating(false); }
+
   };
 
   return (
