@@ -54,10 +54,9 @@ export function TimeLapseCreator({ onBack }: Props) {
       img.src = src;
     });
 
-  /** Build a labelled grid collage of all frames, upload it and auto-publish it to the feed. */
+  /** Build a labelled grid collage and publish it through the authenticated server action. */
   const buildAndPublishCollage = async (
     frames: { url: string; age: number }[],
-    userId: string,
   ) => {
     const imgs = await Promise.all(frames.map((f) => loadImage(f.url)));
     const cols = imgs.length <= 4 ? 2 : imgs.length <= 9 ? 3 : 4;
@@ -93,34 +92,21 @@ export function TimeLapseCreator({ onBack }: Props) {
       ctx.fillText(`Age ${frames[i].age}`, x + cell / 2, y + cell + label / 2);
     });
 
-    const blob: Blob = await new Promise((resolve, reject) =>
-      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Collage export failed"))), "image/jpeg", 0.9),
-    );
-
-    // The media bucket RLS requires the authenticated user id as the first folder.
-    const path = `${userId}/time-reversal/collage/${Date.now()}.jpg`;
-    const { error: upErr } = await supabase.storage
-      .from("media")
-      .upload(path, blob, { contentType: "image/jpeg", upsert: true });
-    if (upErr) throw upErr;
-    const { data: pub } = supabase.storage.from("media").getPublicUrl(path);
-    const collageUrl = pub?.publicUrl;
-    if (!collageUrl) throw new Error("Could not publish collage");
-
-    const { error: postError } = await supabase.from("time_reversal_posts").insert({
-      user_id: userId,
-      content: `🎞️ My full reverse-aging journey: ${startAge[0]} → ${endAge[0]} years (${frames.length} AI frames collage).`,
-      image_url: collageUrl,
-      age_at_post: frames[frames.length - 1]?.age ?? endAge[0],
-      likes_count: 0,
-      comments_count: 0,
+    const imageData = canvas.toDataURL("image/jpeg", 0.82);
+    const { data, error } = await supabase.functions.invoke("time-reversal-timelapse", {
+      body: {
+        action: "publish_collage",
+        imageData,
+        startAge: startAge[0],
+        endAge: endAge[0],
+        frameCount: frames.length,
+      },
     });
-    if (postError) {
-      await supabase.storage.from("media").remove([path]);
-      throw postError;
-    }
+    if (error) throw error;
+    if (data?.error) throw new Error(data.error);
+    if (typeof data?.url !== "string") throw new Error("Could not publish collage");
 
-    return collageUrl;
+    return data.url;
   };
 
   const handleGenerate = async () => {
@@ -170,7 +156,7 @@ export function TimeLapseCreator({ onBack }: Props) {
       if (!normalized.length) throw new Error(data?.message || "Could not generate frames. Please try again.");
 
       setStage("collage");
-      const collageUrl = await buildAndPublishCollage(normalized, session.user.id);
+       const collageUrl = await buildAndPublishCollage(normalized);
       setCollagePreview(collageUrl);
       setStage("done");
       toast({

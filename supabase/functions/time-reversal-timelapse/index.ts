@@ -28,6 +28,47 @@ serve(async (req) => {
 
     let body: any;
     try { body = await req.json(); } catch { return json({ error: "Invalid JSON body" }, 400); }
+    if (body?.action === "publish_collage") {
+      const imageData = body?.imageData;
+      const publishStartAge = Number(body?.startAge);
+      const publishEndAge = Number(body?.endAge);
+      const frameCount = Number(body?.frameCount);
+      if (typeof imageData !== "string" || !/^data:image\/jpeg;base64,/.test(imageData)) {
+        return json({ error: "A JPEG collage is required" }, 400);
+      }
+      if (![publishStartAge, publishEndAge, frameCount].every(Number.isFinite) || frameCount < 1 || frameCount > 6) {
+        return json({ error: "Invalid collage metadata" }, 400);
+      }
+      const encoded = imageData.slice(imageData.indexOf(",") + 1);
+      if (encoded.length > 10_000_000) return json({ error: "Collage is too large" }, 413);
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (!serviceKey) return json({ error: "Server configuration error" }, 500);
+      const admin = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      const bytes = Uint8Array.from(atob(encoded), (char) => char.charCodeAt(0));
+      const path = `${userData.user.id}/time-reversal/collage/${crypto.randomUUID()}.jpg`;
+      const { error: uploadError } = await admin.storage
+        .from("media")
+        .upload(path, bytes, { contentType: "image/jpeg", upsert: false });
+      if (uploadError) return json({ error: `Collage upload failed: ${uploadError.message}` }, 500);
+
+      const collageUrl = admin.storage.from("media").getPublicUrl(path).data.publicUrl;
+      const { error: postError } = await admin.from("time_reversal_posts").insert({
+        user_id: userData.user.id,
+        content: `🎞️ My full reverse-aging journey: ${publishStartAge} → ${publishEndAge} years (${frameCount} AI frames collage).`,
+        image_url: collageUrl,
+        age_at_post: publishEndAge,
+        likes_count: 0,
+        comments_count: 0,
+      });
+      if (postError) {
+        await admin.storage.from("media").remove([path]);
+        return json({ error: `Feed publishing failed: ${postError.message}` }, 500);
+      }
+      return json({ url: collageUrl });
+    }
+
     const { imageUrl, startAge, endAge, frames } = body ?? {};
     if (!imageUrl || typeof imageUrl !== "string") return json({ error: "imageUrl is required" }, 400);
 
