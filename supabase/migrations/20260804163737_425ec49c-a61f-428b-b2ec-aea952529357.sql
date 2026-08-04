@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.has_applied_to_job(uuid, uuid) FROM anon;
