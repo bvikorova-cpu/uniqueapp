@@ -97,7 +97,8 @@ export function TimeLapseCreator({ onBack }: Props) {
       canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Collage export failed"))), "image/jpeg", 0.9),
     );
 
-    const path = `time-reversal/collage/${userId}/${Date.now()}.jpg`;
+    // The media bucket RLS requires the authenticated user id as the first folder.
+    const path = `${userId}/time-reversal/collage/${Date.now()}.jpg`;
     const { error: upErr } = await supabase.storage
       .from("media")
       .upload(path, blob, { contentType: "image/jpeg", upsert: true });
@@ -139,7 +140,7 @@ export function TimeLapseCreator({ onBack }: Props) {
       // Upload original photo, fall back to the inline data URL for generation.
       setStage("upload");
       const ext = (selectedFile.name.split(".").pop() || "jpg").toLowerCase();
-      const path = `time-reversal/timelapse/${session.user.id}/${Date.now()}.${ext}`;
+      const path = `${session.user.id}/time-reversal/timelapse/${Date.now()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("media")
         .upload(path, selectedFile, { contentType: selectedFile.type || "image/jpeg", upsert: true });
