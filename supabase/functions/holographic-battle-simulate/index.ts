@@ -66,6 +66,88 @@ Deno.serve(async (req) => {
 
     const admin = createClient(supabaseUrl, serviceKey);
 
+    // ---- Avatar image generation mode (credits already spent client-side) ----
+    if (mode === "avatar_image") {
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "LOVABLE_API_KEY missing" }, 500);
+
+      const STYLE_PROMPTS: Record<string, string> = {
+        cyber: "neon cyberpunk holographic avatar, glowing cyan and magenta rim light, futuristic visor, volumetric light rays",
+        mystic: "ancient ethereal mystic being, glowing runes, soft golden aura, translucent holographic shimmer",
+        cosmic: "cosmic space-born entity, nebula skin, starfield glow, iridescent holographic particles",
+        nature: "bio-organic living holographic being made of glowing flora, vines and luminous leaves, emerald light",
+        crystal: "crystalline light form, prismatic refractions, faceted translucent body, icy blue-violet glow",
+        shadow: "dark matter construct, shadow silhouette with violet edge glow, smoky holographic wisps",
+      };
+      const name = String(body?.name ?? "Avatar");
+      const style = String(body?.style ?? "cyber").toLowerCase();
+      const traits: string[] = Array.isArray(body?.traits) ? body.traits.map(String) : [];
+      const prompt =
+        `Holographic 3D avatar portrait of a character named "${name}". ` +
+        `${STYLE_PROMPTS[style] ?? STYLE_PROMPTS.cyber}. ` +
+        `Personality expressed through pose and expression: ${traits.join(", ") || "bold, creative"}. ` +
+        `Centered bust portrait, dark background, glowing holographic scanlines, highly detailed, square 1:1.`;
+
+      const extractImage = (d: any): string | null => {
+        const b64 = d?.data?.[0]?.b64_json;
+        if (typeof b64 === "string" && b64) return `data:image/png;base64,${b64}`;
+        const url = d?.data?.[0]?.url;
+        if (typeof url === "string" && url) return url;
+        const msg = d?.choices?.[0]?.message;
+        const fromImages = msg?.images?.[0]?.image_url?.url || msg?.images?.[0]?.url;
+        if (typeof fromImages === "string" && fromImages) return fromImages;
+        return null;
+      };
+
+      let imageData: string | null = null;
+      let lastErr = "";
+      for (const model of ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"]) {
+        const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+          method: "POST",
+          headers: { "Lovable-API-Key": LOVABLE_API_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model,
+            messages: [{ role: "user", content: prompt }],
+            modalities: ["image", "text"],
+          }),
+        });
+        if (!res.ok) {
+          lastErr = `${model}: ${res.status} ${await res.text()}`;
+          console.error("avatar image gen failed", lastErr);
+          continue;
+        }
+        imageData = extractImage(await res.json());
+        if (imageData) break;
+        lastErr = `${model}: no image in response`;
+      }
+      if (!imageData) return json({ error: `Image generation failed. ${lastErr}` }, 500);
+
+      let publicUrl = imageData;
+      if (imageData.startsWith("data:")) {
+        const base64 = imageData.split(",")[1] ?? "";
+        const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+        const path = `${user.id}/holographic/${crypto.randomUUID()}.png`;
+        const { error: upErr } = await admin.storage
+          .from("animated-avatars")
+          .upload(path, bytes, { contentType: "image/png", upsert: true });
+        if (!upErr) {
+          publicUrl = admin.storage.from("animated-avatars").getPublicUrl(path).data.publicUrl;
+        } else {
+          console.error("avatar upload failed", upErr);
+        }
+      }
+
+      const { data: row, error: insErr } = await admin
+        .from("holographic_avatars")
+        .insert({ user_id: user.id, name, style, traits, image_url: publicUrl })
+        .select()
+        .maybeSingle();
+      if (insErr) console.error("avatar insert failed", insErr);
+
+      return json({ imageUrl: publicUrl, avatar: row ?? null });
+    }
+
+
     // 1) Cache: same session → same result, never re-simulate.
     if (sessionId) {
       const { data: existing } = await admin
