@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
-  Crown, Palette, Swords, Heart, Sparkles, Eye, ShoppingBag,
+  Crown, Palette, Swords, Heart, Sparkles, Eye,
   Camera, TrendingUp, Info, Loader2, Brain, Cpu
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +14,7 @@ import { AvatarCustomization } from "@/components/holographic/AvatarCustomizatio
 import { AvatarBattleArena } from "@/components/holographic/AvatarBattleArena";
 import { AvatarBreeding } from "@/components/holographic/AvatarBreeding";
 import { EmotionSync } from "@/components/holographic/EmotionSync";
-import { AvatarMarketplace } from "@/components/holographic/AvatarMarketplace";
+import { useHolographicStats } from "@/hooks/useHolographicStats";
 import { HolographicGallery } from "@/components/holographic/HolographicGallery";
 import { EvolutionLab } from "@/components/holographic/EvolutionLab";
 import { HolographicHowItWorks } from "@/components/holographic/HolographicHowItWorks";
@@ -22,15 +22,14 @@ import { HolographicHowItWorks } from "@/components/holographic/HolographicHowIt
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "creator" | "customize" | "battle" | "breeding" |
-  "emotion-sync" | "marketplace" | "gallery" | "evolution" | "how-it-works";
+  "emotion-sync" | "gallery" | "evolution" | "how-it-works";
 
 const tools = [
   { id: "creator" as ViewType, icon: Crown, title: "Avatar Creator", description: "Design your unique AI-powered holographic avatar", color: "violet", badge: "10 credits" },
   { id: "customize" as ViewType, icon: Palette, title: "Avatar Restyle", description: "Give a saved avatar a new style, outfit and accessory", color: "blue", badge: "5 credits" },
   { id: "battle" as ViewType, icon: Swords, title: "Battle Arena", description: "PvP combat between holographic avatars", color: "red", badge: "2-5 credits" },
   { id: "breeding" as ViewType, icon: Heart, title: "Avatar Breeding", description: "Combine avatars to create unique offspring", color: "pink", badge: "10 credits" },
-  { id: "emotion-sync" as ViewType, icon: Camera, title: "Emotion Sync", description: "Avatar mirrors your real-time emotions", color: "cyan", badge: "New" },
-  { id: "marketplace" as ViewType, icon: ShoppingBag, title: "Avatar Marketplace", description: "Buy & sell custom skins and accessories", color: "orange", badge: "3-12 credits" },
+  { id: "emotion-sync" as ViewType, icon: Camera, title: "Emotion Sync", description: "Avatar mirrors your real-time emotions", color: "cyan", badge: "1 credit" },
   { id: "gallery" as ViewType, icon: Eye, title: "My Avatars", description: "All avatars you have created", color: "indigo" },
   { id: "evolution" as ViewType, icon: TrendingUp, title: "Evolution Lab", description: "Track growth and AI development stages", color: "emerald" },
   { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Complete guide to the avatar universe", color: "purple" },
@@ -38,6 +37,7 @@ const tools = [
 
 export default function HolographicAvatars() {
   const [activeView, setActiveView] = useState<ViewType>("hub");
+  const { stats, loading: statsLoading } = useHolographicStats();
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
@@ -119,7 +119,7 @@ export default function HolographicAvatars() {
       case "battle": return <AvatarBattleArena onBack={goBack} />;
       case "breeding": return <AvatarBreeding onBack={goBack} />;
       case "emotion-sync": return <EmotionSync onBack={goBack} />;
-      case "marketplace": return <AvatarMarketplace onBack={goBack} />;
+      
       case "gallery": return <HolographicGallery onBack={goBack} onCreate={() => setActiveView("creator")} />;
       case "evolution": return <EvolutionLab onBack={goBack} />;
       case "how-it-works": return <HolographicHowItWorks onBack={goBack} />;
@@ -144,13 +144,13 @@ export default function HolographicAvatars() {
 
             <HeroRewardedAd sectionKey="page_holographicavatars" />
 
-            {/* Compact Engagement Row */}
+            {/* Real per-user stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
               {[
-                { icon: Crown, label: "Total Avatars", value: "847", color: "text-violet-500" },
-                { icon: Cpu, label: "AI Interactions", value: "124K", color: "text-cyan-500" },
-                { icon: Brain, label: "Evolution Score", value: "92%", color: "text-emerald-500" },
-                { icon: Sparkles, label: "XP Earned", value: "58K", color: "text-amber-500" },
+                { icon: Crown, label: "My Avatars", value: statsLoading ? "…" : String(stats.avatars), color: "text-violet-500" },
+                { icon: Cpu, label: "My Actions", value: statsLoading ? "…" : String(stats.interactions), color: "text-cyan-500" },
+                { icon: Brain, label: "Battle Win Rate", value: statsLoading ? "…" : `${stats.winRate}%`, color: "text-emerald-500" },
+                { icon: Sparkles, label: "XP Earned", value: statsLoading ? "…" : stats.xp.toLocaleString(), color: "text-amber-500" },
               ].map((stat, i) => (
                 <Card key={i} className="border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all">
                   <CardContent className="p-3 flex items-center gap-3">
@@ -165,6 +165,7 @@ export default function HolographicAvatars() {
                 </Card>
               ))}
             </div>
+
 
             {/* Tool Cards Grid */}
             <div className="mb-8">
@@ -193,10 +194,10 @@ export default function HolographicAvatars() {
                 <h3 className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">How It Works</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {[
-                    { icon: Crown, title: "1. Create Avatar", desc: "Design your unique 3D holographic avatar with AI personality" },
-                    { icon: Brain, title: "2. Watch It Evolve", desc: "Your avatar learns, gains XP, and develops autonomous behaviors" },
-                    { icon: Swords, title: "3. Battle & Breed", desc: "Compete in PvP battles or breed unique offspring with combined traits" },
-                    { icon: ShoppingBag, title: "4. Trade & Collect", desc: "Buy and sell skins, accessories, and rare items on the marketplace" },
+                    { icon: Crown, title: "1. Create Avatar", desc: `Generate an AI avatar for 10 credits (you have ${stats.avatars} saved)` },
+                    { icon: Palette, title: "2. Restyle It", desc: "Re-generate a saved avatar with a new style, outfit and accessory for 5 credits" },
+                    { icon: Swords, title: "3. Battle & Breed", desc: `Battles pay credits back on a win — your win rate is ${stats.winRate}%` },
+                    { icon: TrendingUp, title: "4. Track Evolution", desc: `XP comes from your real activity — currently ${stats.xp.toLocaleString()} XP` },
                   ].map((step, i) => (
                     <div key={i} className="text-center space-y-2">
                       <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 border border-primary/20">
