@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { Clock, Heart, MessageCircle, Users, Sparkles, TrendingDown, Calendar, Maximize2 } from "lucide-react";
+import { Clock, Heart, Users, Sparkles, TrendingDown, Calendar, Maximize2, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -160,18 +160,15 @@ export default function TimeReversalTimeline() {
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="relative">
                 <Avatar className="h-32 w-32 border-4 border-purple-500">
-                  <AvatarImage src={profile?.profile_image_url} />
+                  {author?.avatar_url && <AvatarImage src={author.avatar_url} alt={author.full_name || "Unique user"} />}
                   <AvatarFallback className="text-4xl">
-                    {profile?.current_age ? Math.floor(profile.current_age) : 80}
+                    {author?.full_name?.[0]?.toUpperCase() || <User className="h-10 w-10" />}
                   </AvatarFallback>
                 </Avatar>
-                <div className="absolute -bottom-2 -right-2 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                  Age {profile?.current_age ? Math.floor(profile.current_age) : 80}
-                </div>
               </div>
 
               <div className="flex-1 text-center md:text-left">
-                <h1 className="text-3xl font-black mb-2">Your Reverse Life</h1>
+                <h1 className="text-3xl font-black mb-2">{author?.full_name || "Unique user"}</h1>
                 <p className="text-muted-foreground mb-4">{profile?.bio || "Living life backwards..."}</p>
                 
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start">
@@ -204,10 +201,6 @@ export default function TimeReversalTimeline() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => navigate("/time-reversal/create-post")}>
-            <MessageCircle className="h-5 w-5" />
-            <span className="text-sm">Create Post</span>
-          </Button>
           <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => navigate("/time-reversal/dashboard")}>
             <TrendingDown className="h-5 w-5" />
             <span className="text-sm">Age Progress</span>
@@ -235,8 +228,8 @@ export default function TimeReversalTimeline() {
             <Card>
               <CardContent className="py-12 text-center">
                 <p className="text-muted-foreground mb-4">No posts yet. Start your reverse journey!</p>
-                <Button onClick={() => navigate("/time-reversal/create-post")}>
-                  Create Your First Post
+                <Button onClick={() => navigate("/time-reversal")}>
+                  Create a Time-Lapse Collage
                 </Button>
               </CardContent>
             </Card>
