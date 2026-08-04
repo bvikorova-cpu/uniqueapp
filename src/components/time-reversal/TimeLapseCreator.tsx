@@ -99,6 +99,10 @@ export function TimeLapseCreator({ onBack }: Props) {
       setCurrentFrame(0);
       setStage("done");
       toast({ title: "Time-Lapse Generated!", description: `${normalized.length} age frames created.` });
+
+      // Publish the youngest generated frame into the Social Reverse Feed
+      await publishToFeed(normalized[normalized.length - 1], normalized.length, true);
+
     } catch (e: any) {
       console.error(e);
       setStage("idle");
