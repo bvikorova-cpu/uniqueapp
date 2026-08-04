@@ -341,16 +341,13 @@ export const TimeCapsule = lazy(() => import("@/pages/TimeCapsule"));
 // Experimental & Future
 
 export const EmotionEconomy = lazy(() => import("@/pages/EmotionEconomy"));
-export const QuantumSocial = lazy(() => import("@/pages/QuantumSocial"));
 export const HolographicAvatars = lazy(() => import("@/pages/HolographicAvatars"));
 export const AboutPlatform = lazy(() => import("@/pages/AboutPlatform"));
 export const HolographicHistory = lazy(() => import("@/pages/HolographicHistory"));
 export const DigitalOffspring = lazy(() => import("@/pages/DigitalOffspring"));
 export const CrystalEnergyNetwork = lazy(() => import("@/pages/CrystalEnergyNetwork"));
 export const CrystalMarketplace = lazy(() => import("@/pages/CrystalMarketplace"));
-export const BlockchainConfessions = lazy(() => import("@/pages/BlockchainConfessions"));
 export const PhobiaTrading = lazy(() => import("@/pages/PhobiaTrading"));
-export const MultiverseNetwork = lazy(() => import("@/pages/MultiverseNetwork"));
 
 // Fundraising
 export const FundraisingHub = lazy(() => import("@/pages/fundraising/FundraisingHub"));

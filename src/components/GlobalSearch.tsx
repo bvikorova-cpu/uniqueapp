@@ -42,7 +42,6 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   // Social & Dating
   { id: "8", title: "Dating", category: "Social", path: "/dating" },
   { id: "9", title: "Anonymous Date", category: "Social", path: "/anonymous-date" },
-  { id: "10", title: "Blockchain Confessions", category: "Social", path: "/blockchain-confessions" },
   
   // Games & Entertainment
   { id: "11", title: "Games", category: "Entertainment", path: "/games" },
@@ -172,10 +171,8 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   
   { id: "129", title: "Crystal Energy Network", category: "Mystical", path: "/crystal-energy-network" },
   { id: "130", title: "Holographic Avatars", category: "Mystical", path: "/holographic-avatars" },
-  { id: "131", title: "Quantum Social", category: "Mystical", path: "/quantum-social" },
   { id: "132", title: "Emotion Economy", category: "Mystical", path: "/emotion-economy" },
   { id: "133", title: "Phobia Trading", category: "Mystical", path: "/phobia-trading" },
-  { id: "134", title: "Multiverse Network", category: "Mystical", path: "/multiverse-network" },
   { id: "135", title: "Time Capsule", category: "Mystical", path: "/time-capsule" },
   { id: "136", title: "Time Reversal", category: "Mystical", path: "/time-reversal" },
   
