@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
-  Crown, Palette, Swords, Heart, Sparkles, Eye, ShoppingBag,
+  Crown, Palette, Swords, Heart, Sparkles, Eye,
   Camera, TrendingUp, Info, Loader2, Brain, Cpu
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
