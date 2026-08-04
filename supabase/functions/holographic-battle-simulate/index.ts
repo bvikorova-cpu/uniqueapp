@@ -189,7 +189,79 @@ Deno.serve(async (req) => {
       .single();
     if (error) throw error;
 
-    return json({ result });
+    // 4) Deterministic round-by-round combat log (presentation detail only).
+    const MOVES = [
+      { name: "Photon Lance", type: "attack" },
+      { name: "Prism Shield", type: "defense" },
+      { name: "Quantum Feint", type: "tactic" },
+      { name: "Nova Overdrive", type: "ultimate" },
+      { name: "Void Step", type: "evasion" },
+      { name: "Resonance Blast", type: "attack" },
+      { name: "Hologram Split", type: "tactic" },
+      { name: "Ion Barrage", type: "attack" },
+    ];
+    const ARENAS = ["Neon Spire", "Crystal Vault", "Void Coliseum", "Aurora Grid", "Data Cathedral"];
+    const roundCount = mode === "tournament" ? 5 : mode === "survival" ? 4 : 3;
+    const arena = ARENAS[Math.floor((await rng()) * ARENAS.length)];
+
+    // Pre-decide round winners so the log always matches the final outcome.
+    const winsNeeded =
+      outcome === "win" ? Math.ceil((roundCount + 1) / 2)
+      : outcome === "loss" ? Math.floor(roundCount / 2)
+      : Math.floor(roundCount / 2);
+    const flags: boolean[] = [];
+    for (let i = 0; i < roundCount; i++) flags.push(i < winsNeeded);
+    // Deterministic shuffle so the winning rounds are not always first.
+    for (let i = flags.length - 1; i > 0; i--) {
+      const j = Math.floor((await rng()) * (i + 1));
+      [flags[i], flags[j]] = [flags[j], flags[i]];
+    }
+
+    let userHp = 100;
+    let oppHp = 100;
+    const rounds: unknown[] = [];
+    for (let i = 0; i < roundCount; i++) {
+      const userMove = MOVES[Math.floor((await rng()) * MOVES.length)];
+      const oppMove = MOVES[Math.floor((await rng()) * MOVES.length)];
+      const userWon = flags[i];
+      const dmg = 12 + Math.floor((await rng()) * 16);
+      const chip = 3 + Math.floor((await rng()) * 6);
+      const critical = (await rng()) > 0.78;
+      const finalDmg = critical ? Math.round(dmg * 1.5) : dmg;
+      if (userWon) { oppHp = Math.max(1, oppHp - finalDmg); userHp = Math.max(1, userHp - chip); }
+      else { userHp = Math.max(1, userHp - finalDmg); oppHp = Math.max(1, oppHp - chip); }
+      rounds.push({ round: i + 1,
+        user_move: userMove.name,
+        user_move_type: userMove.type,
+        opponent_move: oppMove.name,
+        opponent_move_type: oppMove.type,
+        winner: userWon ? "user" : "opponent",
+        damage: finalDmg,
+        critical,
+        user_hp: userHp,
+        opponent_hp: oppHp,
+        commentary: userWon
+          ? `Your avatar channels ${userMove.name}${critical ? " for a devastating critical" : ""}, breaking through ${oppMove.name}.`
+          : `${opponent.name} counters with ${oppMove.name}${critical ? " — a critical hit" : ""}, punishing your ${userMove.name}.` });
+    }
+
+    const roundsWon = flags.filter(Boolean).length;
+    const summary =
+      outcome === "win"
+        ? `Victory in the ${arena}. You closed out ${roundsWon} of ${roundCount} rounds against ${opponent.name}, finishing with ${userHp}% integrity.`
+        : outcome === "loss"
+        ? `Defeat in the ${arena}. ${opponent.name} took ${roundCount - roundsWon} of ${roundCount} rounds; your hologram destabilised at ${userHp}% integrity.`
+        : `A dead heat in the ${arena}. You and ${opponent.name} split the rounds ${roundsWon}-${roundCount - roundsWon}.`;
+
+    return json({ result: { ...result,
+        arena,
+        rounds,
+        rounds_won: roundsWon,
+        rounds_total: roundCount,
+        final_user_hp: userHp,
+        final_opponent_hp: oppHp,
+        summary } });
+
   } catch (e) {
     console.error(e);
     return json({ error: String((e as Error).message ?? e) }, 500);

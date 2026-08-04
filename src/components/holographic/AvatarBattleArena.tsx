@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useHolographicCredits, HOLO_COSTS } from "@/hooks/useHolographicCredits";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { BattleResultDialog, type BattleResult } from "@/components/holographic/BattleResultDialog";
+
 
 interface Props { onBack: () => void; }
 
@@ -28,6 +30,7 @@ const LEADERBOARD = [
 export const AvatarBattleArena = ({ onBack }: Props) => {
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [isJoining, setIsJoining] = useState(false);
+  const [report, setReport] = useState<{ result: BattleResult; mode: typeof BATTLE_MODES[0] } | null>(null);
   const { toast } = useToast();
   const { balance, spend } = useHolographicCredits();
 
@@ -41,15 +44,14 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
       if (error) throw error;
       const r = data?.result;
       if (r) {
-        const emoji = r.outcome === "win" ? "🏆" : r.outcome === "loss" ? "💀" : "🤝";
-        toast({ title: `${emoji} Battle vs ${r.opponent_name}: ${String(r.outcome).toUpperCase()}`,
-          description: `Power ${r.user_power} vs ${r.opponent_power}` });
+        setReport({ result: r as BattleResult, mode });
       } else {
         toast({ title: "Battle entered", description: `${mode.name} — ${mode.entry} credits used.` });
       }
     } catch { toast({ title: "Error", description: "Failed to join battle", variant: "destructive" }); }
     finally { setIsJoining(false); }
   };
+
 
   return (
     <>
@@ -145,7 +147,17 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
           </div>
         </CardContent>
       </Card>
+
+      <BattleResultDialog
+        open={!!report}
+        onOpenChange={(v) => { if (!v) setReport(null); }}
+        result={report?.result ?? null}
+        modeName={report?.mode.name}
+        prizeLabel={report?.mode.prize}
+        entryCost={report?.mode.entry}
+      />
     </div>
+
     </>
   );
 };
