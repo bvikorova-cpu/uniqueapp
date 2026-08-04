@@ -9,8 +9,12 @@ import { ArrowLeft, FileText, Video, Mail, Calendar, Send, Loader2, Upload } fro
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { Badge } from "@/components/ui/badge";
+import { Coins } from "lucide-react";
+import { useTimeCapsuleCredits, costForDuration } from "@/hooks/useTimeCapsuleCredits";
 
 export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
+  const { balance, loading: creditsLoading, spend, refund } = useTimeCapsuleCredits();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
