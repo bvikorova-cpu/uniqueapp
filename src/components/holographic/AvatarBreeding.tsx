@@ -150,6 +150,58 @@ export const AvatarBreeding = ({ onBack }: Props) => {
         </CardContent>
       </Card>
 
+      {offspring && (
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="border-pink-500/30 bg-gradient-to-br from-pink-500/10 via-violet-500/5 to-background">
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <Baby className="w-5 h-5 text-pink-500" />
+                <h3 className="font-black text-lg">New offspring created</h3>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start">
+                <div className="w-40 h-40 shrink-0 rounded-xl overflow-hidden border border-pink-500/30 bg-muted/40 flex items-center justify-center">
+                  {offspringImage ? (
+                    <img src={offspringImage} alt={`Holographic offspring avatar ${offspring.offspring_name}`} className="w-full h-full object-cover" loading="lazy" />
+                  ) : imageLoading ? (
+                    <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                  ) : (
+                    <Shuffle className="w-8 h-8 text-muted-foreground" />
+                  )}
+                </div>
+
+                <div className="flex-1 space-y-3 text-center sm:text-left">
+                  <div>
+                    <p className="text-2xl font-black bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent break-words">
+                      {offspring.offspring_name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">{offspring.offspring_style} • Level {offspring.offspring_level ?? 1}</p>
+                  </div>
+
+                  <Badge variant="outline" className={`capitalize ${RARITY_STYLES[String(offspring.rarity ?? "common").toLowerCase()] ?? RARITY_STYLES.common}`}>
+                    {offspring.rarity ?? "common"}
+                  </Badge>
+
+                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                    {(offspring.offspring_traits ?? []).map((t) => (
+                      <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
+                    ))}
+                  </div>
+
+                  {offspringImage && (
+                    <Button asChild variant="outline" size="sm">
+                      <a href={offspringImage} download={`${offspring.offspring_name}.png`}>Download image</a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+
+
       <Card>
         <CardContent className="p-6">
           <h3 className="font-bold mb-3">How Breeding Works</h3>
