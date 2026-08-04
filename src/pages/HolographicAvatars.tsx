@@ -26,7 +26,7 @@ type ViewType = "hub" | "creator" | "customize" | "battle" | "breeding" |
 
 const tools = [
   { id: "creator" as ViewType, icon: Crown, title: "Avatar Creator", description: "Design your unique AI-powered holographic avatar", color: "violet", badge: "10 credits" },
-  { id: "customize" as ViewType, icon: Palette, title: "Customization Packs", description: "Unlock appearance options and personality traits", color: "blue", badge: "5-15 credits" },
+  { id: "customize" as ViewType, icon: Palette, title: "Avatar Restyle", description: "Give a saved avatar a new style, outfit and accessory", color: "blue", badge: "5 credits" },
   { id: "battle" as ViewType, icon: Swords, title: "Battle Arena", description: "PvP combat between holographic avatars", color: "red", badge: "2-5 credits" },
   { id: "breeding" as ViewType, icon: Heart, title: "Avatar Breeding", description: "Combine avatars to create unique offspring", color: "pink", badge: "10 credits" },
   { id: "emotion-sync" as ViewType, icon: Camera, title: "Emotion Sync", description: "Avatar mirrors your real-time emotions", color: "cyan", badge: "New" },
