@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Clock, Send, FolderOpen, Users, Brain, Calendar, Eye, CreditCard, Info, Loader2, Shield, Sparkles, Mail
+  Clock, Send, Brain, CreditCard, Info, Loader2, Shield, Sparkles, Mail
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -10,26 +10,18 @@ import { TimeCapsuleHero } from "@/components/time-capsule/TimeCapsuleHero";
 import { TimeCapsuleToolCard } from "@/components/time-capsule/TimeCapsuleToolCard";
 import { CapsuleCreator } from "@/components/time-capsule/CapsuleCreator";
 import { MyCapsules } from "@/components/time-capsule/MyCapsules";
-import { CapsuleGallery } from "@/components/time-capsule/CapsuleGallery";
 import { AITimingPredictor } from "@/components/time-capsule/AITimingPredictor";
-import { MemoryVault } from "@/components/time-capsule/MemoryVault";
-import { CollaborativeCapsule } from "@/components/time-capsule/CollaborativeCapsule";
-import { CapsuleTimeline } from "@/components/time-capsule/CapsuleTimeline";
 import { CapsulePlans } from "@/components/time-capsule/CapsulePlans";
 import { TimeCapsuleHowItWorks } from "@/components/time-capsule/TimeCapsuleHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ViewType = "hub" | "creator" | "my-capsules" | "gallery" | "ai-predictor" | "vault" | "collaborative" | "timeline" | "plans" | "how-it-works";
+type ViewType = "hub" | "creator" | "my-capsules" | "ai-predictor" | "plans" | "how-it-works";
 
 const tools = [
   { id: "creator" as ViewType, icon: Send, title: "Create Capsule", description: "Write messages, record videos, or letters for the future", color: "blue", badge: "12+ credits" },
   { id: "my-capsules" as ViewType, icon: Clock, title: "My Capsules", description: "View and manage all your time capsules", color: "amber" },
-  { id: "vault" as ViewType, icon: FolderOpen, title: "Memory Vault", description: "Upload and store photos, videos, and documents", color: "violet", badge: "New" },
   { id: "ai-predictor" as ViewType, icon: Brain, title: "AI Timing", description: "AI predicts the perfect delivery moment", color: "emerald", badge: "AI" },
-  { id: "collaborative" as ViewType, icon: Users, title: "Group Capsule", description: "Create collaborative capsules with friends", color: "pink", badge: "New" },
-  { id: "timeline" as ViewType, icon: Calendar, title: "Timeline", description: "Visualize your capsules on a timeline", color: "cyan" },
-  { id: "gallery" as ViewType, icon: Eye, title: "Community Gallery", description: "Browse public capsule stories", color: "indigo" },
   { id: "plans" as ViewType, icon: CreditCard, title: "Credit Costs", description: "See how many credits each capsule duration costs", color: "orange", badge: "Credits" },
   { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Complete guide to Time Capsule 2.0", color: "rose" },
 ];
@@ -68,11 +60,7 @@ export default function TimeCapsule() {
     switch (activeView) {
       case "creator": return <CapsuleCreator onBack={goBack} />;
       case "my-capsules": return <MyCapsules onBack={goBack} />;
-      case "gallery": return <CapsuleGallery onBack={goBack} />;
       case "ai-predictor": return <AITimingPredictor onBack={goBack} />;
-      case "vault": return <MemoryVault onBack={goBack} />;
-      case "collaborative": return <CollaborativeCapsule onBack={goBack} />;
-      case "timeline": return <CapsuleTimeline onBack={goBack} />;
       case "plans": return <CapsulePlans onBack={goBack} />;
       case "how-it-works": return <TimeCapsuleHowItWorks onBack={goBack} />;
       default: return null;
