@@ -69534,6 +69534,16 @@ export type Database = {
           total_tips: number
         }[]
       }
+      get_module_xp_leaderboard: {
+        Args: { _limit?: number; _source_prefix: string }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          entries: number
+          total_xp: number
+          user_id: string
+        }[]
+      }
       get_multiverse_explorers: {
         Args: { limit_count?: number }
         Returns: {
