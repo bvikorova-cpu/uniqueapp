@@ -18,12 +18,30 @@ const SAMPLE_AVATARS = [
   { id: 4, name: "CosmicVoid", style: "Cosmic", traits: ["Charismatic", "Energetic", "Playful"], level: 35 },
 ];
 
+interface Offspring {
+  offspring_name: string;
+  offspring_style: string;
+  offspring_traits: string[] | null;
+  offspring_level: number | null;
+  rarity: string | null;
+}
+
+const RARITY_STYLES: Record<string, string> = {
+  common: "bg-slate-500/15 text-slate-600 border-slate-500/30",
+  rare: "bg-sky-500/15 text-sky-600 border-sky-500/30",
+  epic: "bg-violet-500/15 text-violet-600 border-violet-500/30",
+  legendary: "bg-amber-500/15 text-amber-600 border-amber-500/30",
+};
+
 export const AvatarBreeding = ({ onBack }: Props) => {
   const [parent1, setParent1] = useState<number | null>(null);
   const [parent2, setParent2] = useState<number | null>(null);
   const [isBreeding, setIsBreeding] = useState(false);
+  const [offspring, setOffspring] = useState<Offspring | null>(null);
+  const [offspringImage, setOffspringImage] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(false);
   const { toast } = useToast();
-  const { balance, spend } = useHolographicCredits();
+  const { balance, spend, refresh } = useHolographicCredits();
 
   const handleBreed = async () => {
     if (parent1 === null || parent2 === null) {
@@ -31,16 +49,26 @@ export const AvatarBreeding = ({ onBack }: Props) => {
       return;
     }
     setIsBreeding(true);
+    setOffspring(null);
+    setOffspringImage(null);
     try {
       const paid = await spend(HOLO_COSTS.breeding, "breeding");
       if (!paid) return;
       const { data, error } = await supabase.functions.invoke("holographic-breeding-simulate", {
         body: { parent1, parent2 } });
       if (error) throw error;
-      const r = data?.result;
+      const r = data?.result as Offspring | undefined;
       if (r) {
-        toast({ title: `👶 New offspring: ${r.offspring_name}`,
-          description: `${r.offspring_style} · ${r.rarity} · traits: ${(r.offspring_traits ?? []).join(", ")}` });
+        setOffspring(r);
+        await refresh();
+        setImageLoading(true);
+        try {
+          const { data: img } = await supabase.functions.invoke("holographic-avatar-image", {
+            body: { name: r.offspring_name, style: r.offspring_style, traits: r.offspring_traits ?? [] } });
+          const url = img?.imageUrl || img?.image || img?.url;
+          if (url) setOffspringImage(url);
+        } catch { /* image is optional */ }
+        finally { setImageLoading(false); }
       } else {
         toast({ title: "Breeding complete", description: `${HOLO_COSTS.breeding} credits used.` });
       }
@@ -121,6 +149,58 @@ export const AvatarBreeding = ({ onBack }: Props) => {
           </Button>
         </CardContent>
       </Card>
+
+      {offspring && (
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="border-pink-500/30 bg-gradient-to-br from-pink-500/10 via-violet-500/5 to-background">
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <Baby className="w-5 h-5 text-pink-500" />
+                <h3 className="font-black text-lg">New offspring created</h3>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start">
+                <div className="w-40 h-40 shrink-0 rounded-xl overflow-hidden border border-pink-500/30 bg-muted/40 flex items-center justify-center">
+                  {offspringImage ? (
+                    <img src={offspringImage} alt={`Holographic offspring avatar ${offspring.offspring_name}`} className="w-full h-full object-cover" loading="lazy" />
+                  ) : imageLoading ? (
+                    <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                  ) : (
+                    <Shuffle className="w-8 h-8 text-muted-foreground" />
+                  )}
+                </div>
+
+                <div className="flex-1 space-y-3 text-center sm:text-left">
+                  <div>
+                    <p className="text-2xl font-black bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent break-words">
+                      {offspring.offspring_name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">{offspring.offspring_style} • Level {offspring.offspring_level ?? 1}</p>
+                  </div>
+
+                  <Badge variant="outline" className={`capitalize ${RARITY_STYLES[String(offspring.rarity ?? "common").toLowerCase()] ?? RARITY_STYLES.common}`}>
+                    {offspring.rarity ?? "common"}
+                  </Badge>
+
+                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                    {(offspring.offspring_traits ?? []).map((t) => (
+                      <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
+                    ))}
+                  </div>
+
+                  {offspringImage && (
+                    <Button asChild variant="outline" size="sm">
+                      <a href={offspringImage} download={`${offspring.offspring_name}.png`}>Download image</a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+
 
       <Card>
         <CardContent className="p-6">
