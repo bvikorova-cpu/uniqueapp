@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, MessageCircle, Share, Send, Upload, Loader2, TrendingDown, Image } from "lucide-react";
+import { ArrowLeft, Heart, Send, Loader2, TrendingDown, Image } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -187,14 +187,8 @@ export function SocialReverseFeed({ onBack }: Props) {
                   <button onClick={() => handleLike(post.id)} className={`flex items-center gap-1 transition-colors text-sm ${likedIds.has(post.id) ? "text-red-500" : "hover:text-red-400"}`}>
                     <Heart className={`h-4 w-4 ${likedIds.has(post.id) ? "fill-current" : ""}`} /> {post.likes_count || 0}
                   </button>
-
-                  <button className="flex items-center gap-1 hover:text-blue-400 transition-colors text-sm">
-                    <MessageCircle className="h-4 w-4" /> {post.comments_count || 0}
-                  </button>
-                  <button className="flex items-center gap-1 hover:text-purple-400 transition-colors text-sm">
-                    <Share className="h-4 w-4" /> Share
-                  </button>
                 </div>
+
               </CardContent>
             </Card>
           ))}
