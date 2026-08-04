@@ -30,6 +30,7 @@ export const AvatarCreator = ({ onBack }: Props) => {
   const [selectedStyle, setSelectedStyle] = useState("");
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
   const [isCreating, setIsCreating] = useState(false);
+  const [createdAvatar, setCreatedAvatar] = useState<{ name: string; style: string; traits: string[]; imageUrl: string } | null>(null);
   const { toast } = useToast();
   const { balance, spend } = useHolographicCredits();
 
@@ -45,26 +46,25 @@ export const AvatarCreator = ({ onBack }: Props) => {
       return;
     }
     setIsCreating(true);
+    setCreatedAvatar(null);
     try {
       const paid = await spend(HOLO_COSTS.avatar_create, "avatar_create");
       if (!paid) return;
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from("holographic_purchases").insert({
-          user_id: user.id,
-          service_type: "avatar_create",
-          amount: HOLO_COSTS.avatar_create,
-          status: "completed",
-          metadata: { name, style: selectedStyle, traits: selectedTraits, paid_with: "credits" },
-        } as any);
-      }
+
+      const { data, error } = await supabase.functions.invoke("holographic-avatar-image", {
+        body: { name, style: selectedStyle, traits: selectedTraits },
+      });
+      if (error || !data?.imageUrl) throw new Error(error?.message || "No image returned");
+
+      setCreatedAvatar({ name, style: selectedStyle, traits: selectedTraits, imageUrl: data.imageUrl });
       toast({ title: "Avatar created!", description: `${name} is now live — ${HOLO_COSTS.avatar_create} credits used.` });
       setName(""); setSelectedStyle(""); setSelectedTraits([]);
     } catch (err) {
       console.error(err);
-      toast({ title: "Error", description: "Failed to create avatar", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to create avatar image. Please try again.", variant: "destructive" });
     } finally { setIsCreating(false); }
   };
+
 
   return (
     <>
@@ -129,6 +129,43 @@ export const AvatarCreator = ({ onBack }: Props) => {
           </Button>
         </CardContent>
       </Card>
+
+      {isCreating && (
+        <Card className="border-primary/20">
+          <CardContent className="p-6 flex flex-col items-center gap-3">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Rendering your holographic avatar…</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {createdAvatar && (
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="border-primary/30 overflow-hidden">
+            <CardContent className="p-6 space-y-4">
+              <h3 className="font-black text-lg">{createdAvatar.name}</h3>
+              <img
+                src={createdAvatar.imageUrl}
+                alt={`Holographic avatar ${createdAvatar.name}`}
+                className="w-full max-w-sm mx-auto rounded-2xl border border-primary/20 shadow-lg"
+                loading="lazy"
+              />
+              <div className="flex flex-wrap gap-2 justify-center">
+                {createdAvatar.traits.map(t => (
+                  <span key={t} className="px-3 py-1 rounded-full bg-primary/10 text-xs font-medium">{t}</span>
+                ))}
+              </div>
+              <Button asChild variant="outline" className="w-full">
+                <a href={createdAvatar.imageUrl} download={`${createdAvatar.name}.png`} target="_blank" rel="noreferrer">
+                  Download image
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+
 
       <Card>
         <CardContent className="p-6">

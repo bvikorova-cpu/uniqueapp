@@ -29480,6 +29480,36 @@ export type Database = {
           },
         ]
       }
+      holographic_avatars: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          name: string
+          style: string
+          traits: string[]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          style: string
+          traits?: string[]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          style?: string
+          traits?: string[]
+          user_id?: string
+        }
+        Relationships: []
+      }
       holographic_battle_results: {
         Row: {
           created_at: string
