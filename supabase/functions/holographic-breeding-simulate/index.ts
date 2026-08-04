@@ -76,33 +76,9 @@ Deno.serve(async (req) => {
       if (existing) return json({ result: existing, cached: true });
     }
 
-    // Verify purchase
-    let purchaseOk = false;
-    if (sessionId) {
-      const { data: purchase } = await admin
-        .from("holographic_purchases")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("stripe_session_id", sessionId)
-        .eq("status", "active")
-        .maybeSingle();
-      purchaseOk = !!purchase;
-    }
-    if (!purchaseOk) {
-      const { data: sub } = await admin
-        .from("holographic_purchases")
-        .select("id, expires_at")
-        .eq("user_id", user.id)
-        .eq("service_type", "breeding")
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      purchaseOk = !!sub && (!sub.expires_at || new Date(sub.expires_at) > new Date());
-    }
-    if (!purchaseOk) {
-      return json({ error: "purchase_required", message: "Active breeding purchase required." }, 402);
-    }
+    // Credits-based module — credits are deducted client-side via
+    // deduct_ai_credits_atomic; no Stripe purchase gate here.
+
 
     // Deterministic offspring — order parents so (a,b) == (b,a).
     const [p1, p2] = parent1 < parent2 ? [parent1, parent2] : [parent2, parent1];
