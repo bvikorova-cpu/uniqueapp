@@ -70744,6 +70744,7 @@ export type Database = {
           suggested_id: string
         }[]
       }
+      toggle_time_reversal_like: { Args: { _post_id: string }; Returns: Json }
       top_games: {
         Args: { _category?: string; _limit?: number; _period?: string }
         Returns: {
