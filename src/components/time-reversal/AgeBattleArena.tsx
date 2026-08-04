@@ -21,7 +21,12 @@ export function AgeBattleArena({ onBack }: Props) {
   const loadBattles = async () => {
     setLoading(true);
     try {
-      const { data } = await supabase.from("time_reversal_posts").select("*").order("likes_count", { ascending: false }).limit(10);
+      const { data } = await supabase
+        .from("time_reversal_posts")
+        .select("*")
+        .ilike("content", "%Battle entry%")
+        .order("likes_count", { ascending: false })
+        .limit(10);
       setBattles(data || []);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
@@ -37,29 +42,33 @@ export function AgeBattleArena({ onBack }: Props) {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
 
-      const ext = selectedFile.name.split(".").pop();
-      const path = `time-reversal/${session.user.id}/${Date.now()}.${ext}`;
-      const { error: uploadError } = await supabase.storage.from("media").upload(path, selectedFile);
+      const ext = (selectedFile.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `${session.user.id}/time-reversal/${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("media")
+        .upload(path, selectedFile, { contentType: selectedFile.type || "image/jpeg", upsert: false });
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(path);
 
-      await supabase.from("time_reversal_posts").insert({ user_id: session.user.id,
+      const { error: insertError } = await supabase.from("time_reversal_posts").insert({
+        user_id: session.user.id,
         content: "Battle entry - My reverse aging transformation! 🔄",
         image_url: publicUrl,
         age_at_post: 30,
-        post_type: "battle",
         likes_count: 0,
         comments_count: 0 } as any);
+      if (insertError) throw insertError;
 
       toast({ title: "Entry Submitted!", description: "Your battle entry is now live. Good luck!" });
       setSelectedFile(null);
       loadBattles();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      toast({ title: "Error", description: "Failed to submit entry", variant: "destructive" });
+      toast({ title: "Error", description: e?.message || "Failed to submit entry", variant: "destructive" });
     } finally { setUploading(false); }
   };
+
 
   const handleVote = async (postId: string) => {
     try {
