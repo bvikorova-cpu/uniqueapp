@@ -34,14 +34,12 @@ export function SocialReverseFeed({ onBack }: Props) {
 
       let authors: Record<string, { full_name: string | null; avatar_url: string | null }> = {};
       if (userIds.length) {
-        const { data: profs } = await supabase
-          .from("public_profiles")
-          .select("id, full_name, avatar_url")
-          .in("id", userIds);
-        (profs || []).forEach((p: any) => {
-          authors[p.id] = { full_name: p.full_name, avatar_url: p.avatar_url };
+        const { data: profs } = await supabase.rpc("get_profiles_basic" as any, { _ids: userIds });
+        ((profs as any[]) || []).forEach((p: any) => {
+          authors[p.id] = { full_name: p.full_name || p.username, avatar_url: p.avatar_url };
         });
       }
+
 
       setPosts(rows.map((p: any) => ({ ...p, author: authors[p.user_id] })));
 
