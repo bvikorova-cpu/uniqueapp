@@ -433,3 +433,7 @@ verify_jwt = true
 
 [functions.holographic-avatar-image]
 verify_jwt = true
+
+[functions.holographic-emotion-sync]
+verify_jwt = true
+
