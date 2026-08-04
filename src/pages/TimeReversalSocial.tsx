@@ -27,8 +27,8 @@ const tools = [
   { id: "story" as ViewType, icon: BookOpen, title: "Reverse Life Story", description: "AI writes your biography backwards", color: "amber", badge: "AI" },
   { id: "profile" as ViewType, icon: User, title: "My Profile", description: "Manage your reverse aging journey", color: "blue" },
   { id: "timeline" as ViewType, icon: TrendingDown, title: "My Timeline", description: "View your reverse age progression", color: "emerald" },
-  { id: "dashboard" as ViewType, icon: Eye, title: "Dashboard", description: "Active features & subscription status", color: "cyan" },
-  { id: "plans" as ViewType, icon: CreditCard, title: "Plans & Pricing", description: "Unlock premium time powers (€1.99+)", color: "orange", badge: "€1.99+" },
+  { id: "dashboard" as ViewType, icon: Eye, title: "Time Powers", description: "Use credit-based time powers", color: "cyan" },
+  { id: "plans" as ViewType, icon: CreditCard, title: "Credit Costs", description: "See how many credits each tool costs", color: "orange", badge: "Credits" },
   { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Complete guide to Time Reversal", color: "rose" },
 ];
 
@@ -53,7 +53,7 @@ export default function TimeReversalSocial() {
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('success') === 'true') toast({ title: "Payment Successful!", description: "Your Time Reversal feature is now active." });
+    if (searchParams.get('success') === 'true') toast({ title: "Credits added!", description: "Your AI credits are ready to use." });
   }, [searchParams]);
 
   if (checkingAuth) return <div className="min-h-screen bg-background flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
@@ -147,7 +147,7 @@ export default function TimeReversalSocial() {
                     { icon: User, title: "1. Upload Photo", desc: "Our AI transforms you into your 80-year-old self to begin" },
                     { icon: TrendingDown, title: "2. Get Younger", desc: "Every day AI makes you younger automatically through time" },
                     { icon: Swords, title: "3. Battle & Share", desc: "Enter battles, post updates, and build your following" },
-                    { icon: Shield, title: "4. Go Premium", desc: "Unlock speed boosts, age locks, and time paradox posts" },
+                    { icon: Shield, title: "4. Spend Credits", desc: "Pay-per-use credits for speed boosts, age locks and paradox posts" },
                   ].map((step, i) => (
                     <div key={i} className="text-center space-y-2">
                       <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 border border-primary/20">

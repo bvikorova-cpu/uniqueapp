@@ -8,11 +8,13 @@ import { ArrowLeft, BookOpen, Sparkles, Loader2, Copy, Download } from "lucide-r
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useTimeReversalCredits, TIME_REVERSAL_COSTS } from "@/hooks/useTimeReversalCredits";
 
 interface Props { onBack: () => void; }
 
 export function ReverseLifeStory({ onBack }: Props) {
   const { toast } = useToast();
+  const { spend } = useTimeReversalCredits();
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [tone, setTone] = useState("cinematic");
@@ -28,6 +30,8 @@ export function ReverseLifeStory({ onBack }: Props) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast({ title: "Login required", variant: "destructive" }); return; }
+      const paid = await spend("life_story");
+      if (!paid) return;
 
       const { data, error } = await supabase.functions.invoke("ai-text-generator", {
         body: {

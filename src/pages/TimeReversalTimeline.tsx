@@ -147,10 +147,10 @@ export default function TimeReversalTimeline() {
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                onClick={() => navigate("/time-reversal-subscription")}
+                onClick={() => navigate("/time-reversal/dashboard")}
               >
                 <Sparkles className="mr-2 h-5 w-5" />
-                Upgrade Features
+                Time Powers (credits)
               </Button>
             </div>
           </CardContent>
@@ -162,7 +162,7 @@ export default function TimeReversalTimeline() {
             <MessageCircle className="h-5 w-5" />
             <span className="text-sm">Create Post</span>
           </Button>
-          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => navigate("/time-reversal-subscription")}>
+          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => navigate("/time-reversal/dashboard")}>
             <TrendingDown className="h-5 w-5" />
             <span className="text-sm">Age Progress</span>
           </Button>
