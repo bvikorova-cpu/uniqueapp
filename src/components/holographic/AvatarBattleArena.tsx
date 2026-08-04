@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { ArrowLeft, Swords, Trophy, Flame, Shield, Zap, Crown, Timer, Loader2 } from "lucide-react";
+import { ArrowLeft, Swords, Trophy, Flame, Loader2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useHolographicCredits, HOLO_COSTS } from "@/hooks/useHolographicCredits";
@@ -14,17 +13,9 @@ import { BattleResultDialog, type BattleResult } from "@/components/holographic/
 interface Props { onBack: () => void; }
 
 const BATTLE_MODES = [
-  { id: "1v1", name: "1v1 Duel", icon: Swords, desc: "Classic one-on-one combat", entry: HOLO_COSTS.battle_1v1, prize: "+4 credits" },
-  { id: "tournament", name: "Tournament", icon: Trophy, desc: "8-player bracket elimination", entry: HOLO_COSTS.battle_tournament, prize: "+30 credits" },
-  { id: "survival", name: "Survival", icon: Flame, desc: "Last avatar standing wins all", entry: HOLO_COSTS.battle_survival, prize: "+15 credits" },
-];
-
-const LEADERBOARD = [
-  { rank: 1, name: "NeonWraith", wins: 342, style: "Cyberpunk", elo: 2450 },
-  { rank: 2, name: "CrystalSage", wins: 298, style: "Crystal", elo: 2380 },
-  { rank: 3, name: "ShadowKing", wins: 276, style: "Shadow", elo: 2310 },
-  { rank: 4, name: "CosmicVoid", wins: 251, style: "Cosmic", elo: 2270 },
-  { rank: 5, name: "BioHunter", wins: 234, style: "Bio-Organic", elo: 2200 },
+  { id: "1v1", name: "1v1 Duel", icon: Swords, desc: "One AI opponent, 3 rounds", entry: HOLO_COSTS.battle_1v1, prize: "+4 credits" },
+  { id: "tournament", name: "Tournament", icon: Trophy, desc: "Toughest AI opponents, 5 rounds", entry: HOLO_COSTS.battle_tournament, prize: "+30 credits" },
+  { id: "survival", name: "Survival", icon: Flame, desc: "Endurance run, 4 rounds", entry: HOLO_COSTS.battle_survival, prize: "+15 credits" },
 ];
 
 export const AvatarBattleArena = ({ onBack }: Props) => {
@@ -32,7 +23,7 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
   const [isJoining, setIsJoining] = useState(false);
   const [report, setReport] = useState<{ result: BattleResult; mode: typeof BATTLE_MODES[0] } | null>(null);
   const { toast } = useToast();
-  const { balance, spend } = useHolographicCredits();
+  const { balance, spend, refresh } = useHolographicCredits();
 
   const handleJoinBattle = async (mode: typeof BATTLE_MODES[0]) => {
     setIsJoining(true);
@@ -45,6 +36,7 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
       const r = data?.result;
       if (r) {
         setReport({ result: r as BattleResult, mode });
+        await refresh();
       } else {
         toast({ title: "Battle entered", description: `${mode.name} — ${mode.entry} credits used.` });
       }
@@ -73,7 +65,18 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
         </div>
       </div>
 
-      <p className="text-sm text-muted-foreground">Your balance: <strong className="text-foreground">{balance} credits</strong></p>
+      <Card className="border-primary/20 bg-primary/5">
+        <CardContent className="p-4 space-y-2 text-sm">
+          <h3 className="font-bold flex items-center gap-2"><Info className="w-4 h-4 text-primary" /> How the Arena works</h3>
+          <ol className="list-decimal pl-5 space-y-1 text-muted-foreground">
+            <li>Pick a mode — the entry fee in credits is charged once.</li>
+            <li>The server simulates a round-by-round fight against an <strong>AI opponent</strong> (this is not live PvP against other users).</li>
+            <li>You get a full combat report: arena, power, HP bars, every move and the verdict.</li>
+            <li>If you win, the prize is paid straight into your credit balance. A loss pays nothing.</li>
+          </ol>
+          <p className="text-xs text-muted-foreground">Your balance: <strong className="text-foreground">{balance} credits</strong></p>
+        </CardContent>
+      </Card>
 
       {/* Battle Modes */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -97,56 +100,6 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
           </motion.div>
         ))}
       </div>
-
-      {/* Live Battles */}
-      <Card className="border-red-500/20 bg-gradient-to-br from-red-500/5 to-background">
-        <CardContent className="p-6">
-          <h3 className="font-bold flex items-center gap-2 mb-4"><Flame className="w-5 h-5 text-red-500" /> Live Battles
-            <Badge className="bg-red-500/20 text-red-500 border-red-500/30 animate-pulse">LIVE</Badge>
-          </h3>
-          <div className="space-y-3">
-            {[
-              { a1: "NeonWraith", a2: "CrystalSage", mode: "1v1 Duel", viewers: 124 },
-              { a1: "ShadowKing", a2: "BioHunter", mode: "Survival", viewers: 89 },
-            ].map((battle, i) => (
-              <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                <div className="flex items-center gap-2">
-                  <Swords className="w-4 h-4 text-red-400" />
-                  <span className="font-bold text-sm">{battle.a1}</span>
-                  <span className="text-xs text-muted-foreground">vs</span>
-                  <span className="font-bold text-sm">{battle.a2}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs">{battle.mode}</Badge>
-                  <span className="text-xs text-muted-foreground flex items-center gap-1"><Shield className="w-3 h-3" />{battle.viewers}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Leaderboard */}
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="font-bold flex items-center gap-2 mb-4"><Trophy className="w-5 h-5 text-amber-500" /> Arena Leaderboard</h3>
-          <div className="space-y-2">
-            {LEADERBOARD.map((player, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <span className={`text-lg font-black w-6 ${i === 0 ? "text-amber-500" : i === 1 ? "text-gray-400" : i === 2 ? "text-amber-700" : "text-muted-foreground"}`}>#{player.rank}</span>
-                  <div>
-                    <p className="font-bold text-sm">{player.name}</p>
-                    <p className="text-xs text-muted-foreground">{player.style} • {player.wins} wins</p>
-                  </div>
-                </div>
-                <Badge variant="outline" className="text-xs"><Zap className="w-3 h-3 mr-1" />{player.elo} ELO</Badge>
-              </motion.div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
 
       <BattleResultDialog
         open={!!report}
