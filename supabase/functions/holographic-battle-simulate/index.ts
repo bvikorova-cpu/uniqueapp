@@ -16,7 +16,8 @@ const OPPONENTS = [
   { name: "BioHunter", power: 220 },
 ];
 
-const PRIZES: Record<string, number> = { "1v1": 3.5, tournament: 30, survival: 15 };
+// Credit payout on a win (entry costs: 1v1 = 2, survival = 3, tournament = 5 credits).
+const PRIZES: Record<string, number> = { "1v1": 4, tournament: 30, survival: 15 };
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -175,6 +176,18 @@ Deno.serve(async (req) => {
 
     const rewards = outcome === "win" ? PRIZES[mode] ?? 0 : 0;
 
+    // Pay the win prize in real credits into the unified ai_credits pool.
+    let creditsAwarded = 0;
+    if (rewards > 0) {
+      const { error: awardError } = await admin.rpc("add_ai_credits", {
+        p_user_id: user.id,
+        p_amount: rewards,
+        p_reason: `holographic_battle_win_${mode}`,
+        p_source: "holographic_avatars" });
+      if (awardError) console.error("battle prize award failed", awardError);
+      else creditsAwarded = rewards;
+    }
+
     const { data: result, error } = await admin
       .from("holographic_battle_results")
       .insert({ user_id: user.id,
@@ -248,7 +261,7 @@ Deno.serve(async (req) => {
     const roundsWon = flags.filter(Boolean).length;
     const summary =
       outcome === "win"
-        ? `Victory in the ${arena}. You closed out ${roundsWon} of ${roundCount} rounds against ${opponent.name}, finishing with ${userHp}% integrity.`
+        ? `Victory in the ${arena}. You closed out ${roundsWon} of ${roundCount} rounds against ${opponent.name}, finishing with ${userHp}% integrity.${creditsAwarded ? ` Prize paid out: +${creditsAwarded} credits.` : ""}`
         : outcome === "loss"
         ? `Defeat in the ${arena}. ${opponent.name} took ${roundCount - roundsWon} of ${roundCount} rounds; your hologram destabilised at ${userHp}% integrity.`
         : `A dead heat in the ${arena}. You and ${opponent.name} split the rounds ${roundsWon}-${roundCount - roundsWon}.`;
@@ -260,6 +273,7 @@ Deno.serve(async (req) => {
         rounds_total: roundCount,
         final_user_hp: userHp,
         final_opponent_hp: oppHp,
+        credits_awarded: creditsAwarded,
         summary } });
 
   } catch (e) {
