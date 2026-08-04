@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft, Film, Upload, Loader2, Download, Sparkles } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { ArrowLeft, Film, Upload, Loader2, Download, Sparkles, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
@@ -10,6 +11,15 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useTimeReversalCredits, TIME_REVERSAL_COSTS } from "@/hooks/useTimeReversalCredits";
 
 interface Props { onBack: () => void; }
+
+type Stage = "idle" | "credits" | "upload" | "generate" | "done";
+
+const STAGE_STEPS: { key: Stage; label: string; pct: number }[] = [
+  { key: "credits", label: "Reserving credits", pct: 15 },
+  { key: "upload", label: "Uploading your photo", pct: 35 },
+  { key: "generate", label: "Generating age frames with AI", pct: 80 },
+  { key: "done", label: "Frames ready", pct: 100 },
+];
 
 export function TimeLapseCreator({ onBack }: Props) {
   const { toast } = useToast();
@@ -19,8 +29,13 @@ export function TimeLapseCreator({ onBack }: Props) {
   const [startAge, setStartAge] = useState([80]);
   const [endAge, setEndAge] = useState([20]);
   const [generating, setGenerating] = useState(false);
+  const [stage, setStage] = useState<Stage>("idle");
   const [generatedFrames, setGeneratedFrames] = useState<{ url: string; age: number }[]>([]);
   const [currentFrame, setCurrentFrame] = useState(0);
+
+  const stageIndex = STAGE_STEPS.findIndex((s) => s.key === stage);
+  const progressPct = stageIndex >= 0 ? STAGE_STEPS[stageIndex].pct : 0;
+
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
