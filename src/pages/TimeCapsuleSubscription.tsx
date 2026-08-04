@@ -1,134 +1,34 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Clock, Zap, AlertCircle, Sparkles, Shield } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { Check, Clock, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-const CAPSULE_PLANS = { oneYear: {
-    name: "1 Year Capsule",
-    price: "€4.99",
-    priceId: "price_1SQAOcGaXSfGtYFtunvQGLzb",
-    icon: Clock,
-    popular: false,
-    duration: 1,
+const CAPSULE_PLANS = {
+  oneYear: { name: "1 Year Capsule", price: "12 credits", icon: Clock, popular: false, duration: 1,
     description: "Send a message to yourself or loved ones 1 year into the future",
-    features: [
-      "Text, video, or letter format",
-      "Automatic delivery in 1 year",
-      "Email notifications",
-      "Secure encrypted storage",
-    ] },
-  fiveYears: { name: "5 Years Capsule",
-    price: "€9.99",
-    priceId: "price_1SQAOwGaXSfGtYFtn0rkkTSB",
-    icon: Clock,
-    popular: true,
-    duration: 5,
+    features: ["Text, video, or letter format", "Automatic delivery in 1 year", "Email notifications", "Secure encrypted storage"] },
+  fiveYears: { name: "5 Years Capsule", price: "25 credits", icon: Clock, popular: true, duration: 5,
     description: "Create a time capsule to be opened 5 years from now",
-    features: [
-      "All formats supported",
-      "Delivery in 5 years",
-      "Priority storage",
-      "HD video support (up to 500MB)",
-    ] },
-  tenYears: { name: "10 Years Capsule",
-    price: "€19.99",
-    priceId: "price_1SQAPFGaXSfGtYFtSHQvDsqK",
-    icon: Clock,
-    popular: false,
-    duration: 10,
+    features: ["All formats supported", "Delivery in 5 years", "Priority storage", "HD video support"] },
+  tenYears: { name: "10 Years Capsule", price: "50 credits", icon: Clock, popular: false, duration: 10,
     description: "A decade-long message for major life milestones",
-    features: [
-      "All formats + attachments",
-      "Delivery in 10 years",
-      "Premium storage",
-      "HD video support (up to 1GB)",
-    ] },
-  twentyYears: { name: "20 Years Capsule",
-    price: "€49.99",
-    priceId: "price_1SQAPXGaXSfGtYFtLUC7c9DS",
-    icon: Sparkles,
-    popular: false,
-    duration: 20,
+    features: ["All formats + attachments", "Delivery in 10 years", "Premium storage", "HD video support"] },
+  twentyYears: { name: "20 Years Capsule", price: "125 credits", icon: Sparkles, popular: false, duration: 20,
     description: "Legacy messages for the next generation",
-    features: [
-      "Unlimited formats & files",
-      "Delivery in 20 years",
-      "Lifetime storage guarantee",
-      "4K video support (up to 5GB)",
-    ] },
-  premium: { name: "Premium Unlimited",
-    price: "€19.99/month",
-    priceId: "price_1SQAPtGaXSfGtYFtuhuiyuUV",
-    icon: Shield,
-    popular: false,
-    duration: 0,
-    description: "Unlimited capsules with premium features",
-    features: [
-      "Unlimited time capsules",
-      "Any delivery date",
-      "Priority support 24/7",
-      "Advanced scheduling & reminders",
-      "Cancel anytime",
-    ] } };
+    features: ["Unlimited formats & files", "Delivery in 20+ years", "Lifetime storage guarantee", "4K video support"] },
+};
 
 export default function TimeCapsuleSubscription() {
-  const [loading, setLoading] = useState<string | null>(null);
-  const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handlePurchase = async (planKey: keyof typeof CAPSULE_PLANS) => {
-    try {
-      setLoading(planKey);
-
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({
-          title: "Login Required",
-          description: "Please sign in to continue",
-          variant: "destructive" });
-        navigate("/auth");
-        return;
-      }
-
-      const plan = CAPSULE_PLANS[planKey];
-      
-      // Premium subscription uses different endpoint
-      if (planKey === 'premium') {
-        const { data, error } = await supabase.functions.invoke("create-time-capsule-premium-subscription");
-        if (error) throw error;
-        if (data?.url) {
-          window.open(data.url, "_blank");
-        }
-      } else {
-        // Regular capsule payment
-        const { data, error } = await supabase.functions.invoke("create-time-capsule-payment", { body: {
-            priceId: plan.priceId,
-            durationYears: plan.duration } });
-
-        if (error) throw error;
-
-        if (data?.url) {
-          window.open(data.url, "_blank");
-        }
-      }
-    } catch (error) { console.error("Purchase error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to start payment. Please try again.",
-        variant: "destructive" });
-    } finally {
-      setLoading(null);
-    }
-  };
+  const handleStart = () => navigate("/time-capsule");
 
   return (
     
     <>
-      <FloatingHowItWorks title="Time Capsule Subscription" steps={[{ title: "Choose a plan", desc: "More capsules and longer storage." }, { title: "Checkout with Stripe", desc: "EUR pricing, secure payment." }, { title: "Create unlimited", desc: "No caps on capsule count or size." }, { title: "Cancel anytime", desc: "Billing portal in one click." }]} />
+      <FloatingHowItWorks title="Time Capsule Subscription" steps={[{ title: "Pick a duration", desc: "Longer delivery windows cost more credits." }, { title: "Pay with credits", desc: "12 / 25 / 50 / 125 credits per capsule." }, { title: "Create the capsule", desc: "Credits are deducted once when sealed." }, { title: "Refund on failure", desc: "Credits return automatically if creation fails." }]} />
       <div className="min-h-screen relative overflow-hidden">
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-background to-cyan-500/10" />
@@ -159,7 +59,7 @@ export default function TimeCapsuleSubscription() {
           <ul className="text-gray-200 space-y-3 mb-6">
             <li className="flex items-start gap-2">
               <span className="text-blue-400 font-bold">1.</span>
-              <span><strong>Choose Your Capsule:</strong> Select a time capsule plan based on how far into the future you want your message delivered - from 1 year to 20 years, or get unlimited capsules with Premium.</span>
+              <span><strong>Choose Your Capsule:</strong> Pick how far into the future your message is delivered - from 1 year to 20+ years. Each capsule is paid once with AI credits, no subscription.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-blue-400 font-bold">2.</span>
@@ -219,7 +119,7 @@ export default function TimeCapsuleSubscription() {
                     <div className="text-right">
                       <div className="text-3xl font-bold">{plan.price}</div>
                       <div className="text-sm text-muted-foreground">
-                        {planKey === "premium" ? "subscription" : "one-time"}
+                        {"per capsule"}
                       </div>
                     </div>
                   </div>
@@ -239,10 +139,9 @@ export default function TimeCapsuleSubscription() {
                     className="w-full"
                     size="lg"
                     variant={plan.popular ? "default" : "outline"}
-                    onClick={() => handlePurchase(planKey)}
-                    disabled={loading === planKey}
+                    onClick={handleStart}
                   >
-                    {loading === planKey ? "Loading..." : planKey === "premium" ? "Subscribe" : "Create Capsule"}
+                    {"Create Capsule"}
                   </Button>
                 </CardContent>
               </Card>

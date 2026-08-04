@@ -9,8 +9,12 @@ import { ArrowLeft, FileText, Video, Mail, Calendar, Send, Loader2, Upload } fro
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { Badge } from "@/components/ui/badge";
+import { Coins } from "lucide-react";
+import { useTimeCapsuleCredits, costForDuration } from "@/hooks/useTimeCapsuleCredits";
 
 export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
+  const { balance, loading: creditsLoading, spend, refund } = useTimeCapsuleCredits();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
@@ -32,15 +36,21 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
       return;
     }
 
+    const durationYears = Math.floor((delivery.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 365));
+    const { action, credits } = costForDuration(durationYears);
+
     setLoading(true);
+    const paid = await spend(action, `time-capsule:create:${durationYears}y`);
+    if (!paid) { setLoading(false); return; }
+
     try {
-      const durationYears = Math.floor((delivery.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 365));
       const { error } = await supabase.functions.invoke("save-time-capsule", {
         body: { title, message, capsuleType, deliveryDate, recipientEmail, recipientName, durationYears, pricePaid: null, stripePaymentId: null } });
       if (error) throw error;
-      toast({ title: "Time Capsule Created!", description: `Your message will be delivered on ${delivery.toLocaleDateString()}.` });
+      toast({ title: "Time Capsule Created!", description: `${credits} credits used — delivery on ${delivery.toLocaleDateString()}.` });
       setTitle(""); setMessage(""); setDeliveryDate(""); setRecipientEmail(""); setRecipientName("");
     } catch (error: any) {
+      await refund(action, `refund:time-capsule:create:${durationYears}y`);
       toast({ title: "Error", description: error.message || "Failed to create time capsule", variant: "destructive" });
     } finally { setLoading(false); }
   };
@@ -72,14 +82,24 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
         ]}
       />
     <div className="space-y-6">
-      <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
+      <div className="flex items-center justify-between gap-3">
+        <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
+        <Badge variant="secondary" className="text-sm">
+          <Coins className="w-3.5 h-3.5 mr-1" />
+          {creditsLoading ? "…" : balance} credits
+        </Badge>
+      </div>
 
       <Card className="border-primary/20">
         <CardHeader>
           <CardTitle className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Create New Time Capsule
           </CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Credit cost by delivery date: 1 year · 12 · 5 years · 25 · 10 years · 50 · 20+ years · 125 credits
+          </p>
         </CardHeader>
+
         <CardContent className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="title">Capsule Title</Label>
