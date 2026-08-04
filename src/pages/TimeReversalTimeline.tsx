@@ -2,19 +2,23 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Clock, Heart, MessageCircle, Users, Sparkles, TrendingDown, Calendar } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Clock, Heart, MessageCircle, Users, Sparkles, TrendingDown, Calendar, Maximize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function TimeReversalTimeline() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [profile, setProfile] = useState<any>(null);
+  const [author, setAuthor] = useState<{ full_name: string | null; avatar_url: string | null } | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
+  const [likingIds, setLikingIds] = useState<Set<string>>(new Set());
+  const [expandedPost, setExpandedPost] = useState<any | null>(null);
 
   useEffect(() => {
     checkAuthAndLoad();
@@ -31,8 +35,7 @@ export default function TimeReversalTimeline() {
         return;
       }
 
-      await loadProfile(session.user.id);
-      await loadPosts();
+       await Promise.all([loadProfile(session.user.id), loadAuthor(session.user.id), loadPosts(session.user.id)]);
     } catch (error) {
       console.error("Error loading data:", error);
     } finally {
@@ -72,16 +75,59 @@ export default function TimeReversalTimeline() {
     }
   };
 
-  const loadPosts = async () => {
+  const loadAuthor = async (userId: string) => {
+    const { data, error } = await supabase.rpc("get_profiles_basic" as any, { _ids: [userId] });
+    if (error) {
+      console.error("Error loading timeline author:", error);
+      return;
+    }
+    const row = ((data as any[]) || [])[0];
+    if (row) setAuthor({ full_name: row.full_name || row.username, avatar_url: row.avatar_url });
+  };
+
+  const loadPosts = async (userId: string) => {
     const { data, error } = await supabase
       .from("time_reversal_posts")
       .select("*")
+      .eq("user_id", userId)
+      .like("image_url", "%/time-reversal/collage/%")
       .order("created_at", { ascending: false })
       .limit(20);
 
     if (!error) {
-      setPosts(data || []);
+      const rows = data || [];
+      setPosts(rows);
+      if (rows.length) {
+        const { data: likes } = await supabase
+          .from("time_reversal_likes")
+          .select("post_id")
+          .eq("user_id", userId)
+          .in("post_id", rows.map((post: any) => post.id));
+        setLikedIds(new Set((likes || []).map((like: any) => like.post_id)));
+      }
     }
+  };
+
+  const handleLike = async (postId: string) => {
+    if (likingIds.has(postId)) return;
+    setLikingIds((prev) => new Set(prev).add(postId));
+    const { data, error } = await supabase.rpc("toggle_time_reversal_like" as any, { _post_id: postId });
+    setLikingIds((prev) => {
+      const next = new Set(prev);
+      next.delete(postId);
+      return next;
+    });
+    if (error) {
+      toast({ title: "Error", description: error.message || "Could not update the like", variant: "destructive" });
+      return;
+    }
+    const result = data as any;
+    setLikedIds((prev) => {
+      const next = new Set(prev);
+      if (result?.liked) next.add(postId); else next.delete(postId);
+      return next;
+    });
+    setPosts((prev) => prev.map((post) => post.id === postId ? { ...post, likes_count: result?.likes_count ?? post.likes_count } : post));
   };
 
   const calculateDaysToYoung = () => {
@@ -196,45 +242,48 @@ export default function TimeReversalTimeline() {
             </Card>
           ) : (
             posts.map((post) => (
-              <Card key={post.id} className={post.is_paradox ? "border-purple-500" : ""}>
+              <Card key={post.id}>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarFallback>{Math.floor(post.age_at_post)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="font-semibold">Age {Math.floor(post.age_at_post)}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {new Date(post.created_at).toLocaleDateString()}
-                        </div>
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      {author?.avatar_url && <AvatarImage src={author.avatar_url} alt={author.full_name || "Unique user"} />}
+                      <AvatarFallback>{(author?.full_name?.[0] || "U").toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <div className="truncate font-semibold">{author?.full_name || "Unique user"}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {new Date(post.created_at).toLocaleDateString()}
                       </div>
                     </div>
-                    {post.is_paradox && (
-                      <div className="px-3 py-1 bg-purple-500/20 text-purple-600 rounded-full text-xs font-semibold">
-                        Time Paradox
-                      </div>
-                    )}
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="mb-4">{post.content}</p>
                   {post.image_url && (
-                    <img 
-                      src={post.image_url} 
-                      alt="Post" 
-                      className="rounded-lg w-full mb-4"
-                    />
+                    <button
+                      type="button"
+                      onClick={() => setExpandedPost(post)}
+                      className="group relative mb-4 block w-full overflow-hidden rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      aria-label="Enlarge collage"
+                    >
+                      <img src={post.image_url} alt={`${author?.full_name || "Unique user"}'s age progression collage`} className="max-h-[32rem] w-full object-contain transition-transform duration-200 group-hover:scale-[1.01]" />
+                      <span className="absolute bottom-2 right-2 grid h-9 w-9 place-items-center rounded-lg bg-background/90 text-foreground shadow-sm" aria-hidden="true">
+                        <Maximize2 className="h-4 w-4" />
+                      </span>
+                    </button>
                   )}
                   <div className="flex items-center gap-4 text-muted-foreground">
-                    <button className="flex items-center gap-1 hover:text-red-500 transition-colors">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={likingIds.has(post.id)}
+                      onClick={() => handleLike(post.id)}
+                      aria-label={likedIds.has(post.id) ? "Unlike collage" : "Like collage"}
+                      className={`px-2 ${likedIds.has(post.id) ? "text-destructive" : "hover:text-destructive"}`}
+                    >
                       <Heart className="h-4 w-4" />
                       <span className="text-sm">{post.likes_count}</span>
-                    </button>
-                    <button className="flex items-center gap-1 hover:text-blue-500 transition-colors">
-                      <MessageCircle className="h-4 w-4" />
-                      <span className="text-sm">{post.comments_count}</span>
-                    </button>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -242,6 +291,13 @@ export default function TimeReversalTimeline() {
           )}
         </div>
       </div>
+      <Dialog open={Boolean(expandedPost)} onOpenChange={(open) => { if (!open) setExpandedPost(null); }}>
+        <DialogContent className="h-[92dvh] w-[96vw] max-w-6xl border-0 bg-background/95 p-2 sm:p-4">
+          <DialogTitle className="sr-only">Age progression collage</DialogTitle>
+          <DialogDescription className="sr-only">Enlarged collage by {author?.full_name || "Unique user"}</DialogDescription>
+          {expandedPost?.image_url && <img src={expandedPost.image_url} alt={`${author?.full_name || "Unique user"}'s enlarged age progression collage`} className="h-full w-full object-contain" />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
