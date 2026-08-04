@@ -162,7 +162,10 @@ Deno.serve(async (req) => {
         `Holographic 3D avatar portrait of a character named "${name}". ` +
         `${STYLE_PROMPTS[style] ?? STYLE_PROMPTS.cyber}. ` +
         `Personality expressed through pose and expression: ${traits.join(", ") || "bold, creative"}. ` +
+        (body?.outfit ? `Wearing: ${String(body.outfit)}. ` : "") +
+        (body?.accessory ? `Accessory detail: ${String(body.accessory)}. ` : "") +
         `Centered bust portrait, dark background, glowing holographic scanlines, highly detailed, square 1:1.`;
+
 
       const extractImage = (d: any): string | null => {
         const b64 = d?.data?.[0]?.b64_json;
