@@ -1,20 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Clock, Lock, Eye, Sparkles, Zap, BookOpen, Film, Coins } from "lucide-react";
+import { ArrowLeft, Clock, Swords, Flame, Trophy, BookOpen, Film, Coins } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useTimeReversalCredits, TIME_REVERSAL_COSTS } from "@/hooks/useTimeReversalCredits";
+import { HOLO_COSTS } from "@/hooks/useHolographicCredits";
 
 interface Props { onBack: () => void; }
 
 const ITEMS = [
-  { key: "speed_boost", name: "Time Travel Speed", icon: Zap, cost: TIME_REVERSAL_COSTS.speed_boost, description: "2x faster aging reversal for your next transformation" },
-  { key: "age_lock", name: "Age Lock", icon: Lock, cost: TIME_REVERSAL_COSTS.age_lock, description: "Freeze your timeline at the age you love" },
-  { key: "future_glimpse", name: "Future Glimpse", icon: Eye, cost: TIME_REVERSAL_COSTS.future_glimpse, description: "AI preview of any future age" },
-  { key: "paradox_post", name: "Time Paradox Post", icon: Sparkles, cost: TIME_REVERSAL_COSTS.paradox_post, description: "Post across different timelines" },
+  { key: "timelapse", name: "Time-Lapse Creator", icon: Film, cost: TIME_REVERSAL_COSTS.timelapse, description: "Generate the full AI age-progression collage, published to the public gallery" },
   { key: "life_story", name: "Reverse Life Story", icon: BookOpen, cost: TIME_REVERSAL_COSTS.life_story, description: "AI writes your biography backwards" },
-  { key: "timelapse", name: "Time-Lapse Creator", icon: Film, cost: TIME_REVERSAL_COSTS.timelapse, description: "Generate a reverse-aging timelapse" },
+  { key: "battle_1v1", name: "Age Battle — 1v1 Duel", icon: Swords, cost: HOLO_COSTS.battle_1v1, description: "One AI opponent, 3 rounds, +80 XP for a win" },
+  { key: "battle_survival", name: "Age Battle — Survival", icon: Flame, cost: HOLO_COSTS.battle_survival, description: "Endurance run, 4 rounds, +300 XP for a win" },
+  { key: "battle_tournament", name: "Age Battle — Tournament", icon: Trophy, cost: HOLO_COSTS.battle_tournament, description: "Toughest opponents, 5 rounds, +600 XP for a win" },
 ] as const;
 
 export function TimeReversalPlans({ onBack }: Props) {
