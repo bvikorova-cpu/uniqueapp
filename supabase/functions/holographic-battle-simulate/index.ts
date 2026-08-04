@@ -67,8 +67,83 @@ Deno.serve(async (req) => {
 
     const admin = createClient(supabaseUrl, serviceKey);
 
+    // ---- Emotion Sync mode: real facial emotion analysis (1 credit) ----
+    if (mode === "emotion_sync") {
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "LOVABLE_API_KEY missing" }, 500);
+      const image = String(body?.image ?? "");
+      if (!image.startsWith("data:image")) return json({ error: "IMAGE_REQUIRED" }, 400);
+
+      const avatarName = String(body?.avatarName ?? "their avatar");
+      const avatarStyle = String(body?.avatarStyle ?? "cyber");
+      const prompt =
+        `You are an emotion recognition engine for a holographic avatar app. ` +
+        `Look at the person's face in this photo and detect their current emotion. ` +
+        `Allowed emotions: Happy, Sad, Angry, Neutral, Love, Surprised. ` +
+        `The user's avatar is named "${avatarName}" with a ${avatarStyle} holographic style. ` +
+        `Reply ONLY with strict JSON: {"emotion":"<one of allowed>","confidence":<0-100 integer>,` +
+        `"facial_cues":"<short observation of eyes/mouth/brows>",` +
+        `"avatar_reaction":"<1-2 sentences describing how the holographic avatar mirrors this emotion>",` +
+        `"suggestion":"<one short friendly tip>"}. No markdown, no extra text. ` +
+        `If no face is visible, use emotion "Neutral", confidence 0 and say so in facial_cues.`;
+
+      let parsed: Record<string, unknown> | null = null;
+      let aiErr = "";
+      for (const model of ["google/gemini-3.6-flash", "google/gemini-2.5-flash"]) {
+        const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { "Lovable-API-Key": LOVABLE_API_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model,
+            messages: [{
+              role: "user",
+              content: [
+                { type: "text", text: prompt },
+                { type: "image_url", image_url: { url: image } },
+              ],
+            }],
+          }),
+        });
+        if (!res.ok) {
+          aiErr = `${model}: ${res.status} ${await res.text()}`;
+          console.error("emotion sync ai failed", aiErr);
+          continue;
+        }
+        const d = await res.json();
+        const raw = String(d?.choices?.[0]?.message?.content ?? "");
+        const m = raw.match(/\{[\s\S]*\}/);
+        if (!m) { aiErr = `${model}: no JSON`; continue; }
+        try { parsed = JSON.parse(m[0]); break; } catch { aiErr = `${model}: invalid JSON`; }
+      }
+      if (!parsed) return json({ error: `Emotion analysis failed. ${aiErr}` }, 502);
+
+      // Charge 1 credit only after a successful analysis.
+      const { data: bal, error: spendErr } = await admin.rpc("deduct_ai_credits_atomic", {
+        _user_id: user.id,
+        _amount: 1,
+      });
+      if (spendErr) {
+        console.error("emotion sync credit deduction failed", spendErr);
+        return json({ error: "INSUFFICIENT_CREDITS", message: "Not enough credits (1 credit per scan)." }, 402);
+      }
+
+      const allowed = ["Happy", "Sad", "Angry", "Neutral", "Love", "Surprised"];
+      const emotion = allowed.find((e) => e.toLowerCase() === String(parsed!.emotion ?? "").toLowerCase()) || "Neutral";
+      const confidence = Math.max(0, Math.min(100, Math.round(Number(parsed!.confidence) || 0)));
+
+      return json({
+        emotion,
+        confidence,
+        facialCues: String(parsed!.facial_cues ?? ""),
+        avatarReaction: String(parsed!.avatar_reaction ?? ""),
+        suggestion: String(parsed!.suggestion ?? ""),
+        creditsRemaining: typeof bal === "number" ? bal : null,
+      });
+    }
+
     // ---- Avatar image generation mode (credits already spent client-side) ----
     if (mode === "avatar_image") {
+
       const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
       if (!LOVABLE_API_KEY) return json({ error: "LOVABLE_API_KEY missing" }, 500);
 

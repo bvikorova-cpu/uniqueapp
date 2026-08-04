@@ -95,9 +95,10 @@ export const EmotionSync = ({ onBack }: Props) => {
       canvas.getContext("2d")!.drawImage(video, 0, 0, w, h);
       const image = canvas.toDataURL("image/jpeg", 0.8);
 
-      const { data, error } = await supabase.functions.invoke("holographic-emotion-sync", {
-        body: { image, avatarName: avatar?.name, avatarStyle: avatar?.style },
+      const { data, error } = await supabase.functions.invoke("holographic-battle-simulate", {
+        body: { mode: "emotion_sync", image, avatarName: avatar?.name, avatarStyle: avatar?.style },
       });
+
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).message || (data as any).error);
 
