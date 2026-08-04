@@ -35,6 +35,7 @@ export interface BattleResult {
   summary?: string;
   rewards_eur?: number;
   credits_awarded?: number;
+  xp_awarded?: number;
 }
 
 interface Props {
