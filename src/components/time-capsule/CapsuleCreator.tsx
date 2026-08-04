@@ -171,9 +171,10 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
             <Input type="email" placeholder="their@email.com" value={recipientEmail} onChange={(e) => setRecipientEmail(e.target.value)} />
           </div>
 
-          <Button className="w-full" size="lg" onClick={handleSubmit} disabled={loading}>
-            {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Creating...</> : <><Send className="mr-2 h-5 w-5" /> Create Time Capsule</>}
+          <Button className="w-full" size="lg" onClick={handleSubmit} disabled={loading || uploading}>
+            {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Creating...</> : uploading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Uploading video...</> : <><Send className="mr-2 h-5 w-5" /> Create Time Capsule</>}
           </Button>
+
         </CardContent>
       </Card>
     </div>
