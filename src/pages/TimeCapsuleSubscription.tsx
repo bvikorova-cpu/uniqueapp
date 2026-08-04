@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Clock, Zap, AlertCircle, Sparkles, Shield } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { Check, Clock, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -23,7 +21,6 @@ const CAPSULE_PLANS = {
 };
 
 export default function TimeCapsuleSubscription() {
-    const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleStart = () => navigate("/time-capsule");
