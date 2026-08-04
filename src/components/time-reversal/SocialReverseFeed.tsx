@@ -18,15 +18,49 @@ export function SocialReverseFeed({ onBack }: Props) {
   const [newPost, setNewPost] = useState("");
   const [posting, setPosting] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => { loadPosts(); }, []);
 
   const loadPosts = async () => {
     setLoading(true);
     try {
-      const { data } = await supabase.from("time_reversal_posts").select("*").order("created_at", { ascending: false }).limit(30);
-      setPosts(data || []);
-    } catch (e) { console.error(e); }
+      const { data, error } = await supabase
+        .from("time_reversal_posts")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(30);
+      if (error) throw error;
+
+      const rows = data || [];
+      const userIds = [...new Set(rows.map((p: any) => p.user_id).filter(Boolean))];
+
+      let authors: Record<string, { full_name: string | null; avatar_url: string | null }> = {};
+      if (userIds.length) {
+        const { data: profs } = await supabase
+          .from("public_profiles")
+          .select("id, full_name, avatar_url")
+          .in("id", userIds);
+        (profs || []).forEach((p: any) => {
+          authors[p.id] = { full_name: p.full_name, avatar_url: p.avatar_url };
+        });
+      }
+
+      setPosts(rows.map((p: any) => ({ ...p, author: authors[p.user_id] })));
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session && rows.length) {
+        const { data: likes } = await supabase
+          .from("time_reversal_likes")
+          .select("post_id")
+          .eq("user_id", session.user.id)
+          .in("post_id", rows.map((p: any) => p.id));
+        setLikedIds(new Set((likes || []).map((l: any) => l.post_id)));
+      }
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "Could not load the feed", variant: "destructive" });
+    }
     finally { setLoading(false); }
   };
 
