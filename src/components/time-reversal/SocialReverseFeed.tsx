@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, Loader2, TrendingDown } from "lucide-react";
+import { ArrowLeft, Heart, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -34,14 +34,12 @@ export function SocialReverseFeed({ onBack }: Props) {
 
       let authors: Record<string, { full_name: string | null; avatar_url: string | null }> = {};
       if (userIds.length) {
-        const { data: profs } = await supabase
-          .from("public_profiles")
-          .select("id, full_name, avatar_url")
-          .in("id", userIds);
-        (profs || []).forEach((p: any) => {
-          authors[p.id] = { full_name: p.full_name, avatar_url: p.avatar_url };
+        const { data: profs } = await supabase.rpc("get_profiles_basic" as any, { _ids: userIds });
+        ((profs as any[]) || []).forEach((p: any) => {
+          authors[p.id] = { full_name: p.full_name || p.username, avatar_url: p.avatar_url };
         });
       }
+
 
       setPosts(rows.map((p: any) => ({ ...p, author: authors[p.user_id] })));
 
@@ -117,9 +115,8 @@ export function SocialReverseFeed({ onBack }: Props) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-semibold text-sm truncate">{post.author?.full_name || "Time Traveler"}</span>
-                      <Badge variant="outline" className="text-[10px] border-purple-500/30 text-purple-400">Age {Math.floor(post.age_at_post)}</Badge>
                       {post.is_paradox && <Badge className="text-[10px] bg-purple-500/20 text-purple-400 border-purple-500/30">Paradox</Badge>}
-                      <TrendingDown className="h-3 w-3 text-purple-400" />
+
                     </div>
                     <span className="text-xs text-muted-foreground">{new Date(post.created_at).toLocaleDateString()}</span>
                   </div>
