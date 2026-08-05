@@ -939,9 +939,6 @@ const Dating = () => {
               <Eye className="h-4 w-4" /><span className="hidden sm:inline">Likes</span>
               {likesYouCount > 0 && <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">{likesYouCount}</span>}
             </TabsTrigger>
-            <TabsTrigger value="community" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <Sparkles className="h-4 w-4" /><span className="hidden sm:inline">Community</span>
-            </TabsTrigger>
             <TabsTrigger value="notifs" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Info className="h-4 w-4" /><span className="hidden sm:inline">Alerts</span>
             </TabsTrigger>
@@ -1195,12 +1192,6 @@ const Dating = () => {
               <p className="text-sm text-muted-foreground mb-6">See who's interested and make the first move</p>
               <Button onClick={viewLikesYou} className="bg-gradient-to-r from-primary to-accent hover:opacity-90 gap-2"><Eye className="h-4 w-4" />View Likes</Button>
             </Card>
-          </TabsContent>
-
-          {/* ==================== COMMUNITY TAB ==================== */}
-          <TabsContent value="community">
-            <div className="max-w-3xl mx-auto space-y-8">
-            </div>
           </TabsContent>
 
           {/* ==================== PREMIUM TAB ==================== */}
