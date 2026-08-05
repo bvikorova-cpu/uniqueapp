@@ -49,6 +49,9 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     }
   };
   const recognitionRef = useRef<any>(null);
+  const latestHeardRef = useRef<string>("");
+  const sentRef = useRef(false);
+  const silenceTimerRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
