@@ -22,12 +22,8 @@ import { AIDateIdeas } from "@/components/dating/AIDateIdeas";
 import { AIProfileOptimizer } from "@/components/dating/AIProfileOptimizer";
 import { FiltersDialog, type DatingFilters } from "@/components/dating/FiltersDialog";
 import { BlockReportMenu } from "@/components/dating/BlockReportMenu";
-import { PromptsEditor, type Prompt } from "@/components/dating/PromptsEditor";
-import { VoiceIntroRecorder } from "@/components/dating/VoiceIntroRecorder";
-import { SocialEmbedsCard } from "@/components/dating/SocialEmbedsCard";
-import { PhotoVerificationCard } from "@/components/dating/PhotoVerificationCard";
 import { PhotoLikeButton } from "@/components/dating/PhotoLikeButton";
-import { ProfileExtrasDisplay } from "@/components/dating/ProfileExtrasDisplay";
+
 import { SafetyCenter } from "@/components/dating/SafetyCenter";
 import { DemoProfilesWall } from "@/components/dating/DemoProfilesWall";
 import { SafetyTipsBanner } from "@/components/dating/SafetyTipsBanner";
@@ -35,11 +31,8 @@ import { MessageActions } from "@/components/dating/MessageActions";
 import { EmojiPicker } from "@/components/dating/EmojiPicker";
 import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/CompatibilityQuiz";
 import { OpeningMoveEditor } from "@/components/dating/OpeningMoveEditor";
-import { PassportDialog } from "@/components/dating/PassportDialog";
-import { SnoozeButton } from "@/components/dating/SnoozeButton";
 import { MatchExpiryBadge } from "@/components/dating/MatchExpiryBadge";
 import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/DiscoveryTabs";
-import { VideoPromptRecorder, type VideoPrompt } from "@/components/dating/VideoPromptRecorder";
 import { VoiceNoteRecorder } from "@/components/dating/VoiceNoteRecorder";
 import { DatePlanCard } from "@/components/dating/DatePlanCard";
 import { MatchPollCard } from "@/components/dating/MatchPollCard";
@@ -48,7 +41,6 @@ import { DatingNotificationsCenter } from "@/components/dating/DatingNotificatio
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
 import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal";
 import { AIStarterButton } from "@/components/dating/AIStarterButton";
-import { AIBioCoach } from "@/components/dating/AIBioCoach";
 import { Dating16Gate } from "@/components/dating/Dating16Gate";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -167,7 +159,6 @@ const Dating = () => {
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
   const [showSafety, setShowSafety] = useState(false);
-  const [showPassport, setShowPassport] = useState(false);
   const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("deck");
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [pendingStarterExperiment, setPendingStarterExperiment] = useState<string | null>(null);
@@ -1072,15 +1063,8 @@ const Dating = () => {
                         <PhotoLikeButton fromUserId={user.id} toUserId={currentCard.user_id} photoUrl={cardPhotos[activePhotoIndex]} />
                       )}
                     </div>
-                    <ProfileExtrasDisplay
-                      prompts={(currentCard.prompts as Prompt[] | null) || null}
-                      voiceUrl={currentCard.voice_intro_url}
-                      voiceDuration={currentCard.voice_intro_duration}
-                      spotifyUrl={currentCard.spotify_url}
-                      instagramUrl={currentCard.instagram_url}
-                      verified={!!currentCard.photo_verified}
-                      videoPrompts={(currentCard.video_prompts as VideoPrompt[] | null) || null}
-                    />
+
+
                     {currentCard.bio && <div className="px-5 py-3 border-b border-border/50"><p className="text-sm text-muted-foreground line-clamp-2">{currentCard.bio}</p></div>}
                     {currentCard.interests && currentCard.interests.length > 0 && (
                       <div className="px-5 py-3 border-b border-border/50">
@@ -1336,74 +1320,19 @@ const Dating = () => {
               </Card>
               {user && (
                 <>
-                  <PhotoVerificationCard
-                    profileId={currentProfile.id}
-                    userId={user.id}
-                    status={currentProfile.verification_status || "unverified"}
-                    verified={!!currentProfile.photo_verified}
-                    onChange={(status) => setCurrentProfile({ ...currentProfile, verification_status: status })}
-                  />
-                  <PromptsEditor
-                    profileId={currentProfile.id}
-                    value={((currentProfile.prompts as Prompt[] | null) || [])}
-                    onChange={(next) => setCurrentProfile({ ...currentProfile, prompts: next })}
-                  />
-                  <VoiceIntroRecorder
-                    profileId={currentProfile.id}
-                    userId={user.id}
-                    url={currentProfile.voice_intro_url || null}
-                    duration={currentProfile.voice_intro_duration || null}
-                    onChange={(url, dur) => setCurrentProfile({ ...currentProfile, voice_intro_url: url, voice_intro_duration: dur })}
-                  />
-                  <SocialEmbedsCard
-                    profileId={currentProfile.id}
-                    spotifyUrl={currentProfile.spotify_url || null}
-                    instagramUrl={currentProfile.instagram_url || null}
-                    onChange={(sp, ig) => setCurrentProfile({ ...currentProfile, spotify_url: sp, instagram_url: ig })}
-                  />
-                  <VideoPromptRecorder
-                    userId={user.id}
-                    value={(currentProfile.video_prompts as VideoPrompt[] | null) || []}
-                    onChange={(next) => setCurrentProfile({ ...currentProfile, video_prompts: next })}
-                  />
                   <CompatibilityQuiz
                     userId={user.id}
                     initial={(currentProfile.compatibility_quiz as any) || {}}
                     onSaved={(q) => setCurrentProfile({ ...currentProfile, compatibility_quiz: q })}
-                  />
-                  <AIBioCoach
-                    profile={currentProfile}
-                    onApply={async (newBio) => {
-                      const { error } = await supabase.from("dating_profiles").update({ bio: newBio }).eq("id", currentProfile.id);
-                      if (error) toast({ title: "Update failed", description: error.message, variant: "destructive" });
-                      else { setCurrentProfile({ ...currentProfile, bio: newBio }); setEditForm({ ...editForm, bio: newBio }); toast({ title: "Bio updated ✨" }); }
-                    }}
                   />
                   <OpeningMoveEditor
                     userId={user.id}
                     initial={currentProfile.opening_move || ""}
                     onSaved={(v) => setCurrentProfile({ ...currentProfile, opening_move: v })}
                   />
-                  <Card className="p-4 flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium flex items-center gap-2">Passport {currentProfile.passport_location && <Badge variant="secondary" className="text-[10px]">{currentProfile.passport_location}</Badge>}</p>
-                      <p className="text-xs text-muted-foreground">Match anywhere in the world.</p>
-                    </div>
-                    <Button variant="outline" size="sm" onClick={() => setShowPassport(true)}>Change</Button>
-                  </Card>
-                  <Card className="p-4 flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium">Snooze profile</p>
-                      <p className="text-xs text-muted-foreground">Hide yourself from the deck temporarily.</p>
-                    </div>
-                    <SnoozeButton
-                      userId={user.id}
-                      snoozedUntil={currentProfile.snoozed_until || null}
-                      onChange={(v) => setCurrentProfile({ ...currentProfile, snoozed_until: v })}
-                    />
-                  </Card>
                 </>
               )}
+
               <Button variant="outline" onClick={() => setShowSafety(true)} className="w-full gap-2"><Shield className="h-4 w-4" />Safety Center</Button>
               <div className="grid grid-cols-2 gap-3">
                 <Button variant="outline" onClick={() => setShowEditDialog(true)} className="gap-2"><Settings className="h-4 w-4" />Edit Profile</Button>
@@ -1433,15 +1362,8 @@ const Dating = () => {
           onOpenBlocked={() => { setShowSafety(false); navigate("/settings/blocked"); }}
         />
       )}
-      {user && currentProfile && (
-        <PassportDialog
-          open={showPassport}
-          onOpenChange={setShowPassport}
-          userId={user.id}
-          current={currentProfile.passport_location || null}
-          onSaved={(v) => setCurrentProfile({ ...currentProfile, passport_location: v })}
-        />
-      )}
+
+
 
       {/* Edit Profile Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
