@@ -139,20 +139,21 @@ export const DatingPremiumPanel = ({ userId, isSubscribed, likesYouCount, onSubs
       {/* Boost packs */}
       <section>
         <h2 className="text-xl font-bold mb-3 flex items-center gap-2"><Flame className="h-5 w-5 text-orange-500" /> Boost packs</h2>
-        <p className="text-sm text-muted-foreground mb-3">Be a top profile for 30 minutes. 10× more views.</p>
+        <p className="text-sm text-muted-foreground mb-3">Be a top profile for 30 minutes. 10× more views. You own <strong>{perks.boosts}</strong> boost{perks.boosts === 1 ? "" : "s"}.</p>
         <div className="grid sm:grid-cols-3 gap-3">
-          {BOOST_PACKS.map(p => <PackCard key={p.key} pack={p} onBuy={goTopUp} />)}
+          {BOOST_PACKS.map(p => <PackCard key={p.key} pack={p} busy={buying === p.key} onBuy={() => buyPack(p, "boost")} />)}
         </div>
       </section>
 
       {/* Super Like packs */}
       <section>
         <h2 className="text-xl font-bold mb-3 flex items-center gap-2"><Star className="h-5 w-5 text-blue-500" /> Super Like packs</h2>
-        <p className="text-sm text-muted-foreground mb-3">Stand out. Super Likes are 3× more likely to match.</p>
+        <p className="text-sm text-muted-foreground mb-3">Stand out. Super Likes are 3× more likely to match. You own <strong>{perks.super_likes}</strong> extra.</p>
         <div className="grid sm:grid-cols-3 gap-3">
-          {SUPER_PACKS.map(p => <PackCard key={p.key} pack={p} onBuy={goTopUp} />)}
+          {SUPER_PACKS.map(p => <PackCard key={p.key} pack={p} busy={buying === p.key} onBuy={() => buyPack(p, "super_like")} />)}
         </div>
       </section>
+
 
       {/* Daily credit access */}
       {!isSubscribed && (
