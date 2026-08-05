@@ -166,14 +166,14 @@ Deno.serve(async (req) => {
 
     const cost = COSTS[feature];
 
-    // ── Atomic deduction (prevents double-spend on parallel requests) ──
+    // ── Atomic deduction from the UNIFIED ai_credits pool ──
     const { error: deductErr } = await admin.rpc(
-      "deduct_anonymous_dating_credits",
-      { p_user_id: user.id, p_amount: cost },
+      "deduct_ai_credits",
+      { p_user_id: user.id, p_amount: cost, p_reason: `anonymous_date_${feature}`, p_source: "dating" },
     );
     if (deductErr) {
       const msg = deductErr.message || "";
-      if (msg.includes("INSUFFICIENT_CREDITS")) {
+      if (msg.includes("Insufficient credits") || msg.includes("No credit balance") || msg.includes("INSUFFICIENT_CREDITS")) {
         return errorResponse(
           "INSUFFICIENT_CREDITS",
           `You need ${cost} credits for this feature.`,
@@ -183,6 +183,7 @@ Deno.serve(async (req) => {
       }
       return errorResponse("CREDIT_DEDUCTION_FAILED", msg, 500);
     }
+
 
     // Build user message from payload
     const userMsg = JSON.stringify(payload ?? {});
@@ -196,7 +197,7 @@ Deno.serve(async (req) => {
       aiText = await callAI(SYSTEM_PROMPTS[feature], userMsg, jsonMode);
     } catch (e: any) {
       // Refund credits on AI failure
-      await admin.rpc("grant_anonymous_dating_credits", { p_user_id: user.id, p_amount: cost });
+      await admin.rpc("add_ai_credits", { p_user_id: user.id, p_amount: cost, p_reason: `refund_anonymous_date_${feature}`, p_source: "dating" });
       const msg = e?.message ?? "AI_ERROR";
       const status = msg === "RATE_LIMITED" ? 429 : msg === "AI_CREDITS_EXHAUSTED" ? 402 : 500;
       return errorResponse(msg, "AI provider call failed; credits refunded.", status);
@@ -259,7 +260,7 @@ Deno.serve(async (req) => {
 
     // Read current balance for response
     const { data: bal } = await admin
-      .from("anonymous_dating_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
