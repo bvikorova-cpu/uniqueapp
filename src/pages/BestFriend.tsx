@@ -321,21 +321,21 @@ const BestFriend = () => {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
                   <Heart className="h-6 w-6 text-pink-400 mx-auto mb-2" />
-                  <div className="text-2xl font-black">{credits}</div>
+                  <div className="text-2xl font-black">{creditsLoading ? "…" : credits}</div>
                   <p className="text-xs text-muted-foreground">AI Credits</p>
                 </Card>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
                 <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
                   <MessageCircle className="h-6 w-6 text-purple-400 mx-auto mb-2" />
-                  <div className="text-2xl font-black">{messages.length}</div>
+                  <div className="text-2xl font-black">{loadingHistory ? "…" : messageCount}</div>
                   <p className="text-xs text-muted-foreground">Messages Exchanged</p>
                 </Card>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
                 <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
                   <Sparkles className="h-6 w-6 text-blue-400 mx-auto mb-2" />
-                  <div className="text-2xl font-black">16</div>
+                  <div className="text-2xl font-black">{tools.length}</div>
                   <p className="text-xs text-muted-foreground">AI Tools Available</p>
                 </Card>
               </motion.div>
