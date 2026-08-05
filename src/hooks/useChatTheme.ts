@@ -65,6 +65,14 @@ export const useChatTheme = (userId?: string) => {
   const [state, setState] = useState<ChatThemeState>(DEFAULTS);
   const [loading, setLoading] = useState(true);
 
+  const [version, setVersion] = useState(0);
+
+  useEffect(() => {
+    const onUpdate = () => setVersion((v) => v + 1);
+    window.addEventListener("chat-theme-updated", onUpdate);
+    return () => window.removeEventListener("chat-theme-updated", onUpdate);
+  }, []);
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
@@ -88,7 +96,7 @@ export const useChatTheme = (userId?: string) => {
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [userId, version]);
 
   const save = useCallback(
     async (patch: Partial<ChatThemeState>) => {
