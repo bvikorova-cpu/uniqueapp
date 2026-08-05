@@ -637,7 +637,7 @@ const Dating = () => {
     }
 
     const { error } = await supabase.from("dating_messages").insert([{ match_id: selectedMatch.id, sender_id: user.id, content }]);
-    if (error) { toast({ title: "Error", description: "Failed to send message", variant: "destructive" }); }
+    if (error) { toast({ title: "Error", description: error.message || "Failed to send message", variant: "destructive" }); }
     else {
       await supabase.rpc("send_user_notification", { _user_id: otherId, _type: "dating_message", _title: "New Message 💌", _message: `${currentProfile?.display_name || "Someone"} sent you a message`, _related_id: selectedMatch.id, _action_url: "/dating" });
       // A/B conversion tracking: mark experiment as used + led_to_message
