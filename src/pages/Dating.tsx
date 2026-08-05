@@ -180,7 +180,7 @@ const Dating = () => {
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
   const [showSafety, setShowSafety] = useState(false);
-  const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("deck");
+  const [searchQuery, setSearchQuery] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [pendingStarterExperiment, setPendingStarterExperiment] = useState<string | null>(null);
   const [matchCelebration, setMatchCelebration] = useState<{ match: Match; partner: DatingProfile } | null>(null);
