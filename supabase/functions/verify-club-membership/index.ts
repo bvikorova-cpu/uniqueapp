@@ -30,7 +30,8 @@ serve(async (req) => {
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["subscription", "customer", "shipping_details", "line_items", "customer_details"] });
+    // NOTE: shipping_details / customer_details are NOT expandable — they are returned inline.
+    const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["subscription", "customer", "line_items"] });
 
     if (session.payment_status !== "paid" && session.status !== "complete") {
       return new Response(
