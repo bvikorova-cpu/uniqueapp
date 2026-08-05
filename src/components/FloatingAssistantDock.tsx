@@ -45,7 +45,7 @@ export function FloatingAssistantDock({ children, className }: FloatingAssistant
       data-floating-assistant-dock="true"
       className={cn(
         "hidden lg:fixed lg:bottom-6 lg:right-6 lg:z-[9990] lg:flex",
-        "flex-col-reverse items-end gap-1.5 md:gap-3 scale-75 origin-bottom-right md:scale-100",
+        "flex-col-reverse items-end gap-3 md:gap-4 scale-75 origin-bottom-right md:scale-100",
         className
       )}
       aria-label="Assistant dock"
