@@ -29,6 +29,8 @@ import { DailyQuestion } from "./DailyQuestion";
 import { ConversationCoach } from "./ConversationCoach";
 import { RevealLock } from "./RevealLock";
 import { PhotoReveal } from "./PhotoReveal";
+import { PrivatePhotoUpload } from "./PrivatePhotoUpload";
+
 import { SafeWordSettings } from "./SafeWordSettings";
 import { exportChatToPDF } from "@/lib/exportChatPDF";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
