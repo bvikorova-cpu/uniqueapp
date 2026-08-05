@@ -242,8 +242,14 @@ serve(async (req) => {
 
     if (matchError) {
       // Refund on failure
-      await supabaseClient.rpc("grant_anonymous_dating_credits", { p_user_id: user.id, p_amount: MATCH_COST });
+      await supabaseClient.rpc("add_ai_credits", {
+        p_user_id: user.id,
+        p_amount: MATCH_COST,
+        p_reason: "Refund: Anonymous Date match failed",
+        p_source: "find-anonymous-match",
+      });
       throw matchError;
+
     }
 
     return json({ match: newMatch,
