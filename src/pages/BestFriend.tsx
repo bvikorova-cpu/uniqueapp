@@ -182,34 +182,23 @@ const BestFriend = () => {
 
   const renderChat = () => (
     <div className="max-w-4xl mx-auto">
-      {/* Subscription status */}
+      {/* Credit balance */}
       <div className="mb-4 text-center">
-        {subscription.subscribed ? (
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
-            <Crown className="w-4 h-4 text-emerald-400" />
-            <span className="text-sm text-emerald-400">
-              Premium Active • {subscription.monthlyMessagesUsed}/{subscription.monthlyMessagesLimit} msgs
-              {subscription.bonusMessages > 0 && ` (+${subscription.bonusMessages} bonus)`}
+        <div className="flex flex-col items-center gap-3">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-lg">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm text-primary">
+              {creditsLoading ? "Loading credits…" : `${credits} credits • ${BEST_FRIEND_CHAT_COST} credit per message`}
             </span>
-            <Button variant="ghost" size="sm" onClick={manageSubscription} className="ml-2 text-xs">Manage</Button>
           </div>
-        ) : (
-          <div className="flex flex-col items-center gap-3">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-              <Sparkles className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm text-yellow-400">{messagesLeft} free messages remaining</span>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={() => createCheckout()} size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600">
-                <Crown className="w-4 h-4 mr-1" /> Subscribe €9.99/mo
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => purchaseMessages()}>
-                <CreditCard className="w-4 h-4 mr-1" /> +100 msgs €4.99
-              </Button>
-            </div>
-          </div>
-        )}
+          {!creditsLoading && !canSendMessage && (
+            <Button onClick={() => navigate("/ai-credits")} size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600">
+              <CreditCard className="w-4 h-4 mr-1" /> Top up credits
+            </Button>
+          )}
+        </div>
       </div>
+
 
       <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 shadow-lg">
         <CardHeader className="border-b border-border/50">
