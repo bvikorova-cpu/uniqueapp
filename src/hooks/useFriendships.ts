@@ -87,8 +87,21 @@ export function useFriendships(userId: string | undefined) {
         .eq("user_id", userId!)
         .eq("status", "pending");
       if (error) throw error;
-      return data ?? [];
+      const ids = (data ?? []).map((r) => r.friend_id);
+      if (ids.length === 0) return [] as (Friendship & { profile?: FriendProfile })[];
+      const { data: profs } = await publicProfiles()
+        .select("id, full_name, avatar_url, username")
+        .in("id", ids);
+      const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
+      return (data ?? []).map((r) => ({
+        id: r.id,
+        user_id: userId!,
+        friend_id: r.friend_id,
+        status: "pending" as const,
+        created_at: r.created_at,
+        profile: map.get(r.friend_id) as FriendProfile | undefined }));
     } });
+
 
   // ---- People you may know (mutual-friend RPC)
   const suggestions = useQuery({
