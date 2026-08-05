@@ -983,11 +983,31 @@ const Messenger = () => {
   const renderToolView = () => {
     if (!user) return null;
     switch (activeView) {
-      case "analytics": return <ChatAnalyticsDashboard onBack={goToHub} userId={user.id} />;
-      case "themes": return <AIChatThemes onBack={goToHub} userId={user.id} />;
-      case "mood": return <AIMoodDetection onBack={goToHub} userId={user.id} />;
-      case "emoji": return <CustomEmojiCreator onBack={goToHub} userId={user.id} />;
-      case "games": return <ChatGames onBack={goToHub} userId={user.id} />;
+      case "analytics": return (
+        <MessengerToolGate tool="analytics" title="Chat Analytics" description="Message stats, patterns & insights from your real conversations." userId={user.id} onBack={goToHub}>
+          <ChatAnalyticsDashboard onBack={goToHub} userId={user.id} />
+        </MessengerToolGate>
+      );
+      case "themes": return (
+        <MessengerToolGate tool="themes" title="Chat Themes" description="AI-generated themes & wallpapers for your chats." userId={user.id} onBack={goToHub}>
+          <AIChatThemes onBack={goToHub} userId={user.id} />
+        </MessengerToolGate>
+      );
+      case "mood": return (
+        <MessengerToolGate tool="mood" title="Mood Detection" description="AI analysis of your emotional tone across chats." userId={user.id} onBack={goToHub}>
+          <AIMoodDetection onBack={goToHub} userId={user.id} />
+        </MessengerToolGate>
+      );
+      case "emoji": return (
+        <MessengerToolGate tool="emoji" title="Emoji Creator" description="Design custom emoji combos for your chats." userId={user.id} onBack={goToHub}>
+          <CustomEmojiCreator onBack={goToHub} userId={user.id} />
+        </MessengerToolGate>
+      );
+      case "games": return (
+        <MessengerToolGate tool="games" title="Chat Games" description="Trivia, RPS & more mini-games with your friends." userId={user.id} onBack={goToHub}>
+          <ChatGames onBack={goToHub} userId={user.id} />
+        </MessengerToolGate>
+      );
 
       default: return null;
     }
