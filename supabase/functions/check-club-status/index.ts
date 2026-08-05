@@ -85,14 +85,32 @@ serve(async (req) => {
       if (userIds.length) {
         const { data: profiles } = await admin
           .from("profiles")
-          .select("id, email, display_name, username")
+          .select("id, email, full_name, username")
           .in("id", userIds);
         profileByUser = Object.fromEntries(
           (profiles ?? []).map((profile) => [
             profile.id,
-            { email: profile.email ?? null, name: profile.display_name ?? profile.username ?? null },
+            { email: profile.email ?? null, name: profile.full_name ?? profile.username ?? null },
           ]),
         );
+        // Fill in missing emails/names straight from auth.users
+        for (const uid of userIds) {
+          const entry = profileByUser[uid];
+          if (entry?.email && entry?.name) continue;
+          try {
+            const { data: authUser } = await admin.auth.admin.getUserById(uid);
+            const meta = (authUser?.user?.user_metadata ?? {}) as Record<string, unknown>;
+            profileByUser[uid] = {
+              email: entry?.email ?? authUser?.user?.email ?? null,
+              name:
+                entry?.name ??
+                (typeof meta.full_name === "string" ? meta.full_name : null) ??
+                (typeof meta.name === "string" ? meta.name : null),
+            };
+          } catch (_e) {
+            // ignore lookup failures
+          }
+        }
       }
       const items = (data ?? []).map((membership) => ({
         ...membership,
