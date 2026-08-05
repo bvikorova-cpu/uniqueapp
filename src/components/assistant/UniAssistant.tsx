@@ -49,6 +49,9 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     }
   };
   const recognitionRef = useRef<any>(null);
+  const latestHeardRef = useRef<string>("");
+  const sentRef = useRef(false);
+  const silenceTimerRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -204,37 +207,83 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const rec = new SR();
-    rec.continuous = false;
+    // Continuous + interim keeps the session alive on mobile, where a short pause
+    // otherwise ends recognition before any final result is emitted.
+    rec.continuous = true;
     rec.interimResults = true;
+    rec.maxAlternatives = 1;
     rec.lang = navigator.language || "en-US";
+
+    // Buffer everything we hear; we finalise ourselves after a short silence so
+    // nothing is lost when the engine never flags a result as final.
+    latestHeardRef.current = "";
+    sentRef.current = false;
+
+    const clearSilence = () => {
+      if (silenceTimerRef.current) {
+        window.clearTimeout(silenceTimerRef.current);
+        silenceTimerRef.current = null;
+      }
+    };
+
+    const finalise = (reason: "silence" | "end") => {
+      clearSilence();
+      const heard = latestHeardRef.current.trim();
+      if (sentRef.current) return;
+      if (heard) {
+        sentRef.current = true;
+        try { rec.stop(); } catch { /* noop */ }
+        setListening(false);
+        send(heard);
+      } else if (reason === "end") {
+        setListening(false);
+        toast({
+          title: "I didn't catch that",
+          description: "Speak a bit closer to the mic, or type your question below.",
+        });
+      }
+    };
+
     rec.onresult = (e: any) => {
       let interim = "";
       let final = "";
-      for (let i = e.resultIndex; i < e.results.length; i++) {
+      for (let i = 0; i < e.results.length; i++) {
         const r = e.results[i];
-        if (r.isFinal) final += r[0].transcript;
-        else interim += r[0].transcript;
+        if (r.isFinal) final += r[0].transcript + " ";
+        else interim += r[0].transcript + " ";
       }
-      const live = final || interim;
-      setTranscript(live);
-      if (live) showCaption("user", live);
-      if (final) send(final);
+      const live = (final + interim).trim();
+      if (live) {
+        latestHeardRef.current = live;
+        setTranscript(live);
+        showCaption("user", live);
+      }
+      clearSilence();
+      silenceTimerRef.current = window.setTimeout(() => finalise("silence"), 1300);
+    };
+    rec.onspeechend = () => {
+      clearSilence();
+      silenceTimerRef.current = window.setTimeout(() => finalise("silence"), 800);
     };
     rec.onerror = (e: any) => {
-      setListening(false);
       const code = String(e?.error ?? "");
       if (code === "aborted") return;
+      if (code === "no-speech") {
+        // Not fatal in continuous mode — keep whatever we already heard.
+        finalise("end");
+        return;
+      }
+      clearSilence();
+      setListening(false);
       const description =
         code === "not-allowed" || code === "service-not-allowed"
           ? "Microphone access was denied. Allow it in your browser settings and try again."
-          : code === "no-speech"
-            ? "I didn't hear anything — tap the mic and speak again."
-            : code === "network"
-              ? "Speech recognition needs an internet connection."
-              : "Voice input failed. You can type your question below.";
+          : code === "network"
+            ? "Speech recognition needs an internet connection."
+            : "Voice input failed. You can type your question below.";
       toast({ title: "Voice call failed", description, variant: "destructive" });
     };
-    rec.onend = () => setListening(false);
+    rec.onend = () => finalise("end");
     recognitionRef.current = rec;
     setListening(true);
     setTranscript("");
@@ -249,6 +298,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       });
     }
   };
+
 
 
   const stopListening = () => {
