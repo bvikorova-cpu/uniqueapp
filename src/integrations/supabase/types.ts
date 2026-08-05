@@ -42092,6 +42092,36 @@ export type Database = {
         }
         Relationships: []
       }
+      messenger_chat_themes: {
+        Row: {
+          created_at: string
+          custom_themes: Json
+          owned_themes: string[]
+          theme_id: string
+          updated_at: string
+          user_id: string
+          wallpaper_id: string
+        }
+        Insert: {
+          created_at?: string
+          custom_themes?: Json
+          owned_themes?: string[]
+          theme_id?: string
+          updated_at?: string
+          user_id: string
+          wallpaper_id?: string
+        }
+        Update: {
+          created_at?: string
+          custom_themes?: Json
+          owned_themes?: string[]
+          theme_id?: string
+          updated_at?: string
+          user_id?: string
+          wallpaper_id?: string
+        }
+        Relationships: []
+      }
       mock_interview_sessions: {
         Row: {
           created_at: string
