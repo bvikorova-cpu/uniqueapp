@@ -19519,27 +19519,45 @@ export type Database = {
           additional_photos: string[] | null
           age: number
           bio: string | null
+          company: string | null
           compatibility_quiz: Json | null
           created_at: string
+          diet: string | null
           display_name: string
+          drinking: string | null
+          education: string | null
+          exercise: string | null
+          favorite_books: string | null
+          favorite_movies: string | null
+          favorite_quote: string | null
           gender: string
+          height_cm: number | null
           id: string
           incognito: boolean
           instagram_url: string | null
           interests: string[] | null
           is_active: boolean | null
           is_shadow_banned: boolean
+          job_title: string | null
+          kids: string | null
+          languages: string[] | null
           location: string | null
           looking_for: string
+          music_taste: string | null
           opening_move: string | null
           passport_location: string | null
+          personality_type: string | null
+          pets: string | null
           photo_verified: boolean
           profile_photo_url: string | null
           prompts: Json
           read_receipts_enabled: boolean
+          relationship_goal: string | null
           shadow_banned_at: string | null
+          smoking: string | null
           snoozed_until: string | null
           spotify_url: string | null
+          travel_style: string | null
           updated_at: string
           user_id: string
           verification_selfie_url: string | null
@@ -19548,32 +19566,51 @@ export type Database = {
           video_prompts: Json | null
           voice_intro_duration: number | null
           voice_intro_url: string | null
+          zodiac: string | null
         }
         Insert: {
           additional_photos?: string[] | null
           age: number
           bio?: string | null
+          company?: string | null
           compatibility_quiz?: Json | null
           created_at?: string
+          diet?: string | null
           display_name: string
+          drinking?: string | null
+          education?: string | null
+          exercise?: string | null
+          favorite_books?: string | null
+          favorite_movies?: string | null
+          favorite_quote?: string | null
           gender: string
+          height_cm?: number | null
           id?: string
           incognito?: boolean
           instagram_url?: string | null
           interests?: string[] | null
           is_active?: boolean | null
           is_shadow_banned?: boolean
+          job_title?: string | null
+          kids?: string | null
+          languages?: string[] | null
           location?: string | null
           looking_for: string
+          music_taste?: string | null
           opening_move?: string | null
           passport_location?: string | null
+          personality_type?: string | null
+          pets?: string | null
           photo_verified?: boolean
           profile_photo_url?: string | null
           prompts?: Json
           read_receipts_enabled?: boolean
+          relationship_goal?: string | null
           shadow_banned_at?: string | null
+          smoking?: string | null
           snoozed_until?: string | null
           spotify_url?: string | null
+          travel_style?: string | null
           updated_at?: string
           user_id: string
           verification_selfie_url?: string | null
@@ -19582,32 +19619,51 @@ export type Database = {
           video_prompts?: Json | null
           voice_intro_duration?: number | null
           voice_intro_url?: string | null
+          zodiac?: string | null
         }
         Update: {
           additional_photos?: string[] | null
           age?: number
           bio?: string | null
+          company?: string | null
           compatibility_quiz?: Json | null
           created_at?: string
+          diet?: string | null
           display_name?: string
+          drinking?: string | null
+          education?: string | null
+          exercise?: string | null
+          favorite_books?: string | null
+          favorite_movies?: string | null
+          favorite_quote?: string | null
           gender?: string
+          height_cm?: number | null
           id?: string
           incognito?: boolean
           instagram_url?: string | null
           interests?: string[] | null
           is_active?: boolean | null
           is_shadow_banned?: boolean
+          job_title?: string | null
+          kids?: string | null
+          languages?: string[] | null
           location?: string | null
           looking_for?: string
+          music_taste?: string | null
           opening_move?: string | null
           passport_location?: string | null
+          personality_type?: string | null
+          pets?: string | null
           photo_verified?: boolean
           profile_photo_url?: string | null
           prompts?: Json
           read_receipts_enabled?: boolean
+          relationship_goal?: string | null
           shadow_banned_at?: string | null
+          smoking?: string | null
           snoozed_until?: string | null
           spotify_url?: string | null
+          travel_style?: string | null
           updated_at?: string
           user_id?: string
           verification_selfie_url?: string | null
@@ -19616,6 +19672,7 @@ export type Database = {
           video_prompts?: Json | null
           voice_intro_duration?: number | null
           voice_intro_url?: string | null
+          zodiac?: string | null
         }
         Relationships: []
       }
@@ -67096,82 +67153,139 @@ export type Database = {
           additional_photos: string[] | null
           age: number | null
           bio: string | null
+          company: string | null
           compatibility_quiz: Json | null
           created_at: string | null
+          diet: string | null
           display_name: string | null
+          drinking: string | null
+          education: string | null
+          exercise: string | null
+          favorite_books: string | null
+          favorite_movies: string | null
+          favorite_quote: string | null
           gender: string | null
+          height_cm: number | null
           id: string | null
           instagram_url: string | null
           interests: string[] | null
           is_active: boolean | null
+          job_title: string | null
+          kids: string | null
+          languages: string[] | null
           location: string | null
           looking_for: string | null
+          music_taste: string | null
           opening_move: string | null
           passport_location: string | null
+          personality_type: string | null
+          pets: string | null
           photo_verified: boolean | null
           profile_photo_url: string | null
           prompts: Json | null
           read_receipts_enabled: boolean | null
+          relationship_goal: string | null
+          smoking: string | null
           spotify_url: string | null
+          travel_style: string | null
           updated_at: string | null
           user_id: string | null
           video_prompts: Json | null
           voice_intro_duration: number | null
           voice_intro_url: string | null
+          zodiac: string | null
         }
         Insert: {
           additional_photos?: string[] | null
           age?: number | null
           bio?: string | null
+          company?: string | null
           compatibility_quiz?: Json | null
           created_at?: string | null
+          diet?: string | null
           display_name?: string | null
+          drinking?: string | null
+          education?: string | null
+          exercise?: string | null
+          favorite_books?: string | null
+          favorite_movies?: string | null
+          favorite_quote?: string | null
           gender?: string | null
+          height_cm?: number | null
           id?: string | null
           instagram_url?: string | null
           interests?: string[] | null
           is_active?: boolean | null
+          job_title?: string | null
+          kids?: string | null
+          languages?: string[] | null
           location?: string | null
           looking_for?: string | null
+          music_taste?: string | null
           opening_move?: string | null
           passport_location?: string | null
+          personality_type?: string | null
+          pets?: string | null
           photo_verified?: boolean | null
           profile_photo_url?: string | null
           prompts?: Json | null
           read_receipts_enabled?: boolean | null
+          relationship_goal?: string | null
+          smoking?: string | null
           spotify_url?: string | null
+          travel_style?: string | null
           updated_at?: string | null
           user_id?: string | null
           video_prompts?: Json | null
           voice_intro_duration?: number | null
           voice_intro_url?: string | null
+          zodiac?: string | null
         }
         Update: {
           additional_photos?: string[] | null
           age?: number | null
           bio?: string | null
+          company?: string | null
           compatibility_quiz?: Json | null
           created_at?: string | null
+          diet?: string | null
           display_name?: string | null
+          drinking?: string | null
+          education?: string | null
+          exercise?: string | null
+          favorite_books?: string | null
+          favorite_movies?: string | null
+          favorite_quote?: string | null
           gender?: string | null
+          height_cm?: number | null
           id?: string | null
           instagram_url?: string | null
           interests?: string[] | null
           is_active?: boolean | null
+          job_title?: string | null
+          kids?: string | null
+          languages?: string[] | null
           location?: string | null
           looking_for?: string | null
+          music_taste?: string | null
           opening_move?: string | null
           passport_location?: string | null
+          personality_type?: string | null
+          pets?: string | null
           photo_verified?: boolean | null
           profile_photo_url?: string | null
           prompts?: Json | null
           read_receipts_enabled?: boolean | null
+          relationship_goal?: string | null
+          smoking?: string | null
           spotify_url?: string | null
+          travel_style?: string | null
           updated_at?: string | null
           user_id?: string | null
           video_prompts?: Json | null
           voice_intro_duration?: number | null
           voice_intro_url?: string | null
+          zodiac?: string | null
         }
         Relationships: []
       }
