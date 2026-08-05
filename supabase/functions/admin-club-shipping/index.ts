@@ -38,34 +38,61 @@ serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const action = body?.action ?? "list";
 
-    if (action === "list") {
-      const { data, error } = await admin
-        .from("club_memberships")
-        .select(
-          "id, user_id, member_number, tier, status, is_founding, recipient_name, phone, shipping_address, shipping_note, shipping_status, tracking_number, shipped_at, delivered_at, started_at, current_period_end",
-        )
-        .eq("tier", "physical")
-        .in("shipping_status", body?.status ?? ["pending", "shipped"])
-        .order("started_at", { ascending: true });
+    if (action === "list" || action === "list_members") {
+      const columns =
+        "id, user_id, member_number, tier, status, is_founding, recipient_name, phone, shipping_address, shipping_note, shipping_status, tracking_number, shipped_at, delivered_at, started_at, current_period_end";
+
+      let query = admin.from("club_memberships").select(columns);
+
+      if (action === "list") {
+        // Legacy shipping queue: physical cards only
+        query = query
+          .eq("tier", "physical")
+          .in("shipping_status", body?.status ?? ["pending", "shipped"]);
+      } else {
+        // Full members overview: optional tier / status filters
+        if (body?.tier === "digital" || body?.tier === "physical") {
+          query = query.eq("tier", body.tier);
+        }
+        if (Array.isArray(body?.shippingStatus) && body.shippingStatus.length) {
+          query = query.in("shipping_status", body.shippingStatus);
+        }
+      }
+
+      const { data, error } = await query.order("started_at", { ascending: false });
       if (error) throw error;
 
       // Best-effort attach emails
       const userIds = (data ?? []).map((m: any) => m.user_id);
-      let emailByUser: Record<string, string> = {};
+      let profileByUser: Record<string, { email: string | null; name: string | null }> = {};
       if (userIds.length) {
         const { data: profs } = await admin
           .from("profiles")
-          .select("id, email, display_name")
+          .select("id, email, display_name, username")
           .in("id", userIds);
-        emailByUser = Object.fromEntries(
-          (profs ?? []).map((p: any) => [p.id, p.email ?? p.display_name ?? ""]),
+        profileByUser = Object.fromEntries(
+          (profs ?? []).map((p: any) => [
+            p.id,
+            { email: p.email ?? null, name: p.display_name ?? p.username ?? null },
+          ]),
         );
       }
       const enriched = (data ?? []).map((m: any) => ({ ...m,
-        user_email: emailByUser[m.user_id] ?? null }));
-      return new Response(JSON.stringify({ items: enriched }), {
+        user_email: profileByUser[m.user_id]?.email ?? null,
+        user_name: profileByUser[m.user_id]?.name ?? null }));
+
+      const counts = {
+        total: enriched.length,
+        digital: enriched.filter((m: any) => m.tier === "digital").length,
+        physical: enriched.filter((m: any) => m.tier === "physical").length,
+        pending_shipping: enriched.filter(
+          (m: any) => m.tier === "physical" && m.shipping_status === "pending",
+        ).length };
+
+      return new Response(JSON.stringify({ items: enriched, counts }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
 
     if (action === "mark_shipped") {
       const { membershipId, trackingNumber } = body;
