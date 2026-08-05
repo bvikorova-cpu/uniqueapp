@@ -57,15 +57,6 @@ const tools = [
   { id: "friendship_games", icon: Gamepad2, title: "Friendship Mini-Games", description: "Quizzes & fun challenges", badge: "AI", credits: 3, gradient: "from-green-500/10 to-emerald-500/5" },
   { id: "dream_companion", icon: Moon, title: "Dream Companion", description: "Dream sharing & interpretation", badge: "AI", credits: 4, gradient: "from-indigo-500/10 to-violet-500/5" },
   { id: "memory_scrapbook", icon: Camera, title: "Memory Scrapbook", description: "Digital scrapbook of memories", badge: "AI", credits: 3, gradient: "from-rose-500/10 to-red-500/5" },
-  { id: "persona", icon: User, title: "Customize Friend", description: "Name, gender, personality, language", badge: "Setup", credits: 0, gradient: "from-purple-500/10 to-pink-500/5" },
-  
-  { id: "voice_journal", icon: Mic, title: "Voice Journal", description: "Speak, AI analyzes", badge: "AI", credits: 3, gradient: "from-rose-500/10 to-pink-500/5" },
-  { id: "photo_share", icon: Camera, title: "Share a Photo", description: "AI reacts to your photos", badge: "AI", credits: 2, gradient: "from-fuchsia-500/10 to-pink-500/5" },
-  { id: "memory_vault", icon: Brain, title: "Memory Vault", description: "What AI remembers about you", badge: "AI", credits: 0, gradient: "from-violet-500/10 to-purple-500/5" },
-  { id: "roleplay", icon: Drama, title: "Roleplay Scenarios", description: "Practice tough conversations", badge: "AI", credits: 0, gradient: "from-orange-500/10 to-red-500/5" },
-  { id: "memory_timeline", icon: Clock, title: "Our Timeline", description: "Every shared moment", badge: "View", credits: 0, gradient: "from-cyan-500/10 to-blue-500/5" },
-  { id: "year_report", icon: FileText, title: "Year in Review", description: "AI-generated summary", badge: "AI", credits: 5, gradient: "from-amber-500/10 to-orange-500/5" },
-  { id: "crisis_help", icon: AlertTriangle, title: "Crisis Help", description: "Hotlines & safety resources", badge: "Free", credits: 0, gradient: "from-red-500/10 to-rose-500/5" },
 ];
 
 const BestFriend = () => {
