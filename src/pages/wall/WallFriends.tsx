@@ -91,25 +91,11 @@ export default function WallFriends() {
 
 
 
-  const { data: friends = [], refetch: refetchFriends } = useQuery({
-    queryKey: ["friends", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      // Server-side, RLS-proof: always returns the full real friend list.
-      const { data, error } = await (supabase as any).rpc("get_my_friends");
-      if (error) throw error;
-      const seen = new Set<string>();
-      return ((data as any[]) ?? []).filter((p: any) => {
-        if (!p?.id || seen.has(p.id)) return false;
-        seen.add(p.id);
-        return true;
-      });
-    },
-    enabled: !!user });
-
+  const { data: friends = [], refetch: refetchFriends } = useMyFriends(user?.id);
 
   const { data: requests = [], refetch: refetchRequests } = useQuery({
-    queryKey: ["friend-requests", user?.id, friends.map(f => f.id).join(",")],
+    queryKey: ["friend-requests", user?.id],
+
     queryFn: async () => {
       if (!user) return [];
       const { data: friendships } = await supabase
