@@ -270,7 +270,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     <div className={cn(
       "flex flex-col items-end gap-2",
       docked && "hidden md:flex",
-      !docked && "fixed bottom-24 right-4 md:right-6 z-40"
+      !docked && "fixed bottom-28 right-4 md:bottom-24 md:right-6 z-[9991]"
     )}>
       {uniButton}
     </div>
