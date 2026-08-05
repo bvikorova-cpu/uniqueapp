@@ -45,7 +45,7 @@ import ReactMarkdown from "react-markdown";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-chat`;
+const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-ai`;
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -120,7 +120,7 @@ const BestFriend = () => {
       const response = await fetch(CHAT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ messages: [...messages, { role: "user", content: userMessage }] }) });
+        body: JSON.stringify({ action: "chat", messages: [...messages, { role: "user", content: userMessage }] }) });
       if (!response.ok) {
         if (response.status === 402) {
           const data = await response.json();
