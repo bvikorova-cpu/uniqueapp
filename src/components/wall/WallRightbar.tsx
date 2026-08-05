@@ -70,7 +70,12 @@ export function WallRightbar() {
       <BirthdaysWidget />
 
       {/* Friend Requests + People You May Know */}
+      {/* Friend Requests (received + sent) */}
+      <FriendRequestsSection />
+
+      {/* Friend Requests + People You May Know */}
       <FriendsHubWidget />
+
 
       {/* Streaks & Challenges */}
       <StreaksAndChallenges />
