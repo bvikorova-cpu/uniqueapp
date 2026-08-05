@@ -341,32 +341,31 @@ export default function AnonymousDate() {
 
               <HeroRewardedAd sectionKey="page_anonymousdate" />
 
-              {/* Subscription Status */}
-              {subscriptionEnd && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <Card className="p-4 bg-card/60 backdrop-blur-sm border border-border/50">
-                    <div className="flex items-center justify-between flex-wrap gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <div>
-                          <p className="font-bold text-sm">Active Subscription</p>
-                          <p className="text-xs text-muted-foreground">
-                            Renews {new Date(subscriptionEnd).toLocaleDateString()} •
-                            <span className="font-bold text-primary ml-1">{credits} credits remaining</span>
-                          </p>
-                        </div>
+              {/* Access status */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <Card className="p-4 bg-card/60 backdrop-blur-sm border border-border/50">
+                  <div className="flex items-center justify-between flex-wrap gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <div>
+                        <p className="font-bold text-sm">Access unlocked for this session</p>
+                        <p className="text-xs text-muted-foreground">
+                          {ENTRY_CREDIT_COST} credits per entry •
+                          <span className="font-bold text-primary ml-1">{credits} credits remaining</span>
+                        </p>
                       </div>
-                      <Button variant="outline" size="sm" onClick={handleManageSubscription} className="text-xs">
-                        Manage Subscription
-                      </Button>
                     </div>
-                  </Card>
-                </motion.div>
-              )}
+                    <Button variant="outline" size="sm" onClick={() => navigate("/ai-credits")} className="text-xs">
+                      Top up credits
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+
 
               {/* Engagement Row */}
               <motion.div
