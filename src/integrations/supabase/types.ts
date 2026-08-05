@@ -68575,6 +68575,10 @@ export type Database = {
       anon_date_cancel_reveal: { Args: { _match_id: string }; Returns: Json }
       anon_date_photo_state: { Args: { _match_id: string }; Returns: Json }
       anon_date_request_reveal: { Args: { _match_id: string }; Returns: Json }
+      anon_date_send_gift: {
+        Args: { _gift: string; _match_id: string }
+        Returns: Json
+      }
       anon_date_swipe: {
         Args: { _direction: string; _target: string }
         Returns: Json
