@@ -82,16 +82,9 @@ export const LikesYouList = ({ userId, currentProfile, onMatch, onLikesSeen }: P
           [{ swiper_id: userId, swiped_id: profile.user_id, action: "like" }],
           { onConflict: "swiper_id,swiped_id" }
         );
-
-
       if (error) throw error;
 
-      await supabase
-        .from("dating_likes_you")
-        .upsert(
-          [{ liker_id: userId, liked_id: profile.user_id }],
-          { onConflict: "liker_id,liked_id", ignoreDuplicates: true }
-        );
+
 
       const { data: match } = await supabase
         .from("dating_matches")
