@@ -138,23 +138,6 @@ export default function Club() {
             One card. Every perk on Unique. And <strong className="text-pink-600 dark:text-pink-400">10% of every payment</strong> goes to real people in real need.
           </motion.p>
 
-          {/* Good fund live counter */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
-            className="mt-10 inline-flex flex-col sm:flex-row items-center gap-6 bg-white/70 dark:bg-black/40 backdrop-blur-xl border border-pink-500/30 rounded-3xl px-8 py-6 shadow-xl"
-          >
-            <HandHeart className="h-12 w-12 text-pink-500 shrink-0" />
-            <div className="text-left">
-              <div className="text-4xl md:text-5xl font-black text-pink-600 dark:text-pink-400">
-                €{total.toFixed(2)}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                already given to good causes by <strong>{members}</strong> members
-              </div>
-            </div>
-          </motion.div>
         </div>
       </section>
 
@@ -168,7 +151,7 @@ export default function Club() {
                   <Crown className="h-3 w-3 mr-1" /> Active member
                 </Badge>
                 <h2 className="text-2xl font-black">
-                  You are Member #{String(membership.member_number).padStart(4, "0")}
+                  Your Unique VIP Club card is active
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   {membership.tier === "physical" ? "Physical NFC card" : "Digital card"}
@@ -189,31 +172,6 @@ export default function Club() {
               </div>
             </div>
 
-            {/* Referral link */}
-            <div className="mt-6 pt-6 border-t border-amber-500/30">
-              <div className="text-sm font-semibold mb-1">🎁 Invite friends — earn €5 credit each</div>
-              <div className="flex gap-2">
-                <input
-                  readOnly
-                  value={`${window.location.origin}/club?ref=${membership.id}`}
-                  className="flex-1 text-xs px-3 py-2 rounded-md bg-white/70 dark:bg-black/30 border border-white/40"
-                  onFocus={(e) => e.currentTarget.select()}
-                />
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    navigator.clipboard.writeText(`${window.location.origin}/club?ref=${membership.id}`);
-                    toast({ title: "Referral link copied" });
-                  }}
-                >
-                  Copy
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                You get €5 credit whenever a friend joins the VIP Club through your link.
-              </p>
-            </div>
           </Card>
         </section>
       )}
