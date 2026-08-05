@@ -793,17 +793,18 @@ const Dating = () => {
   // Credit-based access — nothing to cancel.
 
 
-  const loadLikesYou = async (userId: string) => {
-    const { data } = await supabase.from("dating_likes_you").select("*").eq("liked_id", userId).eq("seen", false);
-    setLikesYouCount(data?.length || 0);
+  const loadLikesYou = async (_userId: string) => {
+    const { data } = await supabase.rpc("get_dating_likes_you" as any);
+    setLikesYouCount(((data as any[]) || []).length);
   };
 
   const viewLikesYou = async () => {
     if (!user) return;
-    const { data } = await supabase.from("dating_likes_you").select("*").eq("liked_id", user.id).eq("seen", false);
-    if (data && data.length > 0) {
-      await supabase.from("dating_likes_you").update({ seen: true }).eq("liked_id", user.id);
-      toast({ title: `${data.length} people liked you!` }); setLikesYouCount(0);
+    const { data } = await supabase.rpc("get_dating_likes_you" as any);
+    const count = ((data as any[]) || []).length;
+    if (count > 0) {
+      toast({ title: `${count} people liked you!`, description: "Open the Likes tab to like them back." });
+      setLikesYouCount(count);
     } else { toast({ title: "No Likes Yet", description: "Keep swiping!" }); }
   };
 
