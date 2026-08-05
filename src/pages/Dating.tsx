@@ -427,20 +427,33 @@ const Dating = () => {
     toast({ title: "Privacy updated" });
   };
 
-  const handleSubscribe = async (planType: 'monthly' | 'yearly') => {
+  const handlePayEntry = async () => {
     if (!user) { toast({ title: "Login Required", description: "You must log in to access", variant: "destructive" }); return; }
-    if (subscribing) return; // double-submit guard
-    setSubscribing(true);
+    if (payingAccess) return;
+    setPayingAccess(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { product: planType === 'monthly' ? 'dating_monthly' : 'dating_yearly' } });
-      if (error || !data?.url) throw error || new Error("No checkout URL");
-      window.location.href = data.url;
+      const { data: ok, error } = await supabase.rpc("deduct_ai_credits", {
+        p_user_id: user.id,
+        p_amount: ENTRY_CREDIT_COST,
+        p_reason: "dating_daily_entry",
+        p_source: "dating" });
+      if (error) throw error;
+      if (ok === false) {
+        toast({ title: "Not enough credits", description: `Daily entry costs ${ENTRY_CREDIT_COST} credits. Please top up.`, variant: "destructive" });
+        navigate("/ai-credits");
+        return;
+      }
+      localStorage.setItem(dailyStorageKey(user.id), todayKey());
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast({ title: "Access unlocked for today", description: `${ENTRY_CREDIT_COST} credits used for today's entry` });
+      await checkSubscription(user.id);
     } catch (e: any) {
-      toast({ title: "Error", description: e?.message || "Failed to start checkout", variant: "destructive" });
-      setSubscribing(false);
+      toast({ title: "Error", description: e?.message || "Failed to spend credits", variant: "destructive" });
+    } finally {
+      setPayingAccess(false);
     }
   };
+
 
   const handleCreateProfile = async () => {
     if (!user || !profileForm.display_name || !profileForm.bio) { toast({ title: "Incomplete Data", description: "Fill in all fields", variant: "destructive" }); return; }
