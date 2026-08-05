@@ -1702,7 +1702,7 @@ const Messenger = () => {
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-80 p-2">
-                        <EmojiPicker onSelect={(emoji) => setNewMessage((prev) => prev + emoji)} />
+                        <EmojiPicker userId={user.id} onSelect={(emoji) => setNewMessage((prev) => prev + emoji)} />
                       </PopoverContent>
                     </Popover>
 
