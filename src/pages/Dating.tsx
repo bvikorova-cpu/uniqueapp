@@ -323,45 +323,75 @@ const Dating = () => {
 
       const myQuiz = (currentProfile?.compatibility_quiz as any) || null;
       const myInterests = new Set(currentProfile?.interests || []);
+      const myAge = currentProfile?.age ?? 30;
+      const richness = (p: any) => {
+        let s = 0;
+        if (hasRealLocation(p.location)) s += 25;
+        if (p.profile_photo_url) s += 20;
+        if (Array.isArray(p.additional_photos) && p.additional_photos.length > 0) s += p.additional_photos.length * 5;
+        if (p.bio && p.bio.length > 30) s += 15;
+        if (Array.isArray(p.interests)) s += p.interests.length * 5;
+        if (p.voice_intro_url) s += 15;
+        if (Array.isArray(p.prompts) && p.prompts.length > 0) s += 10;
+        if (Array.isArray(p.video_prompts) && p.video_prompts.length > 0) s += 15;
+        if (p.spotify_url || p.instagram_url) s += 5;
+        return s;
+      };
       const score = (p: any) => {
         let s = 0;
         if (boostedSet.has(p.user_id)) s += 1000;
         if (p.photo_verified) s += 80;
-        const compat = computeCompatibility(myQuiz, p.compatibility_quiz);
-        s += compat * 2;
-        const shared = (p.interests || []).filter((i: string) => myInterests.has(i)).length;
-        s += shared * 15;
-        if (p.voice_intro_url) s += 10;
-        if (Array.isArray(p.prompts) && p.prompts.length > 0) s += 10;
+        s += computeCompatibility(myQuiz, p.compatibility_quiz) * 2;
+        s += (p.interests || []).filter((i: string) => myInterests.has(i)).length * 15;
+        s += richness(p);
         return s;
       };
+      const freshness = (p: any) => new Date(p.updated_at || p.created_at || 0).getTime();
 
       if (discoveryMode === "most_compatible") {
-        ranked = [...ranked].sort((a, b) =>
-          computeCompatibility(myQuiz, b.compatibility_quiz) - computeCompatibility(myQuiz, a.compatibility_quiz)
-        );
+        // Highest compatibility, then closest age, then shared interests.
+        ranked = [...ranked].sort((a, b) => {
+          const c = computeCompatibility(myQuiz, b.compatibility_quiz) - computeCompatibility(myQuiz, a.compatibility_quiz);
+          if (c !== 0) return c;
+          const shared = (p: any) => (p.interests || []).filter((i: string) => myInterests.has(i)).length;
+          if (shared(b) !== shared(a)) return shared(b) - shared(a);
+          return Math.abs((a.age ?? myAge) - myAge) - Math.abs((b.age ?? myAge) - myAge);
+        }).slice(0, 25);
       } else if (discoveryMode === "top_picks") {
-        ranked = [...ranked].sort((a, b) => score(b) - score(a)).slice(0, 10);
+        // Small hand-picked set: best overall score, newest first on ties.
+        ranked = [...ranked].sort((a, b) => (score(b) - score(a)) || (freshness(b) - freshness(a))).slice(0, 10);
       } else if (discoveryMode === "standouts") {
-        ranked = ranked.filter(p => p.photo_verified || (Array.isArray(p.prompts) && p.prompts.length >= 2) || p.voice_intro_url);
-        ranked = [...ranked].sort((a, b) => score(b) - score(a)).slice(0, 12);
+        // Only genuinely complete profiles (photos, bio, interests, location...).
+        const standouts = ranked.filter(p => p.photo_verified || richness(p) >= 55);
+        ranked = (standouts.length > 0 ? standouts : [...ranked].sort((a, b) => richness(b) - richness(a)).slice(0, 12))
+          .sort((a, b) => (richness(b) - richness(a)) || (freshness(b) - freshness(a)))
+          .slice(0, 12);
       } else if (discoveryMode === "ai_smart") {
         try {
           const { data: rerank } = await supabase.functions.invoke("dating-ai-coach", {
             body: { action: "rerank_discovery", me: currentProfile, candidates: ranked.slice(0, 40) } });
           const scoreMap = new Map<string, number>();
           (rerank?.scores || []).forEach((s: any) => scoreMap.set(s.id, s.p));
+          const hasScores = scoreMap.size > 0;
           ranked = [...ranked].sort((a, b) => (scoreMap.get(b.user_id) ?? -1) - (scoreMap.get(a.user_id) ?? -1));
+          if (!hasScores) {
+            // No AI signal yet: rank by richness + compatibility so it differs from the raw deck.
+            ranked = [...ranked].sort((a, b) => (score(b) + richness(b)) - (score(a) + richness(a)));
+          }
+          ranked = ranked.slice(0, 20);
         } catch (e) {
           console.warn("AI rerank failed, fallback to heuristic", e);
-          ranked = [...ranked].sort((a, b) => score(b) - score(a));
+          ranked = [...ranked].sort((a, b) => (score(b) + richness(b)) - (score(a) + richness(a))).slice(0, 20);
         }
       } else {
-        ranked = [...ranked.filter(p => boostedSet.has(p.user_id)), ...ranked.filter(p => !boostedSet.has(p.user_id))];
+        // Deck: boosted first, then a randomized mix so it never mirrors the ranked tabs.
+        const shuffled = [...ranked].sort(() => Math.random() - 0.5);
+        ranked = [...shuffled.filter(p => boostedSet.has(p.user_id)), ...shuffled.filter(p => !boostedSet.has(p.user_id))].slice(0, 25);
       }
     }
-    setProfiles(ranked.slice(0, 25));
+    setProfiles(ranked);
   };
+
 
   useEffect(() => { if (user?.id) { setCurrentIndex(0); setActivePhotoIndex(0); loadProfiles(); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [discoveryMode]);
 
