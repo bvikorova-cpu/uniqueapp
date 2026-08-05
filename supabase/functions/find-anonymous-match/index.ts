@@ -55,16 +55,17 @@ serve(async (req) => {
     const { mode, targetUserId, filters } = parsedBody.data;
 
 
-    // Credit check is only required when actually creating a match
+    // Credit check is only required when actually creating a match (unified ai_credits)
     const { data: creditsData } = await supabaseClient
-      .from("anonymous_dating_credits")
-      .select("*")
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (mode === "match" && (!creditsData || creditsData.credits_remaining < MATCH_COST)) {
       return errorResponse("INSUFFICIENT_CREDITS", "Not enough credits to start a match.", 402, { required: MATCH_COST });
     }
+
 
     // Get user profile
     const { data: userProfile } = await supabaseClient
@@ -141,8 +142,11 @@ serve(async (req) => {
     }
 
     if (!potentialMatches || potentialMatches.length === 0) {
+      // Preview is a read-only browse: an empty pool is a normal empty state, not an error.
+      if (mode === "preview") return json({ candidates: [], cost: MATCH_COST });
       return errorResponse("NO_MATCHES", "No compatible matches found at the moment. Try again later!", 404);
     }
+
 
     // Multi-axis compatibility scoring (0-100)
     const myInterests: string[] = userProfile.interests ?? [];
@@ -205,11 +209,17 @@ serve(async (req) => {
 
     const matchedProfile = chosen.profile;
 
-    // ── Atomic credit deduction first (prevents double-spend) ──
+    // ── Atomic credit deduction first (prevents double-spend) — unified ai_credits ──
     const { error: deductErr } = await supabaseClient.rpc(
-      "deduct_anonymous_dating_credits",
-      { p_user_id: user.id, p_amount: MATCH_COST },
+      "deduct_ai_credits",
+      {
+        p_user_id: user.id,
+        p_amount: MATCH_COST,
+        p_reason: "Anonymous Date match",
+        p_source: "find-anonymous-match",
+      },
     );
+
     if (deductErr) {
       const msg = deductErr.message || "";
       if (msg.includes("INSUFFICIENT_CREDITS")) {
@@ -232,8 +242,14 @@ serve(async (req) => {
 
     if (matchError) {
       // Refund on failure
-      await supabaseClient.rpc("grant_anonymous_dating_credits", { p_user_id: user.id, p_amount: MATCH_COST });
+      await supabaseClient.rpc("add_ai_credits", {
+        p_user_id: user.id,
+        p_amount: MATCH_COST,
+        p_reason: "Refund: Anonymous Date match failed",
+        p_source: "find-anonymous-match",
+      });
       throw matchError;
+
     }
 
     return json({ match: newMatch,
