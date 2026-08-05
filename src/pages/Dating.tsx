@@ -225,10 +225,11 @@ const Dating = () => {
     if (user) await checkSubscription(user.id);
   };
 
+  // Entry is credit-based: 2 credits per day (resets at local midnight).
   const checkSubscription = async (userId: string) => {
-    const { data } = await supabase.from("dating_subscriptions").select("*").eq("user_id", userId).eq("status", "active").maybeSingle();
-    if (data) {
-      setIsSubscribed(true);
+    const hasAccess = localStorage.getItem(dailyStorageKey(userId)) === todayKey();
+    setIsSubscribed(hasAccess);
+    if (hasAccess) {
       await loadUserProfile(userId);
       await loadFilters(userId);
       await loadBlocked(userId);
@@ -241,6 +242,7 @@ const Dating = () => {
       await loadSuperLikesRemaining(userId);
     }
   };
+
 
   const loadFilters = async (userId: string) => {
     const { data } = await supabase.from("dating_filters").select("*").eq("user_id", userId).maybeSingle();
