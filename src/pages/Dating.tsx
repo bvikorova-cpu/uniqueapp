@@ -43,7 +43,6 @@ import { VideoPromptRecorder, type VideoPrompt } from "@/components/dating/Video
 import { VoiceNoteRecorder } from "@/components/dating/VoiceNoteRecorder";
 import { DatePlanCard } from "@/components/dating/DatePlanCard";
 import { MatchPollCard } from "@/components/dating/MatchPollCard";
-import { FriendCirclesPanel } from "@/components/dating/FriendCirclesPanel";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
@@ -679,7 +678,7 @@ const Dating = () => {
     if (currentProfile.display_name) score += 15;
     if (currentProfile.bio) score += 20;
     if (currentProfile.age) score += 10;
-    if (currentProfile.location) score += 15;
+    if (hasRealLocation(currentProfile.location)) score += 15;
     if (currentProfile.profile_photo_url) score += 25;
     if (currentProfile.additional_photos && currentProfile.additional_photos.length > 0) score += 15;
     return score;
@@ -997,7 +996,7 @@ const Dating = () => {
                         <div className="flex items-end justify-between">
                           <div>
                             <h2 className="text-2xl font-bold text-white">{currentCard.display_name}, {currentCard.age}</h2>
-                            {currentCard.location && <p className="text-white/80 text-sm flex items-center gap-1 mt-0.5"><MapPin className="h-3.5 w-3.5" />{currentCard.location}</p>}
+                            {realLocation(currentCard.location) && <p className="text-white/80 text-sm flex items-center gap-1 mt-0.5"><MapPin className="h-3.5 w-3.5" />{realLocation(currentCard.location)}</p>}
                           </div>
                           <button onClick={() => setLightboxImage(cardPhotos[activePhotoIndex] || null)} className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors">
                             <Info className="h-4 w-4" />
@@ -1077,7 +1076,7 @@ const Dating = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-sm truncate">{selectedMatch.profile?.display_name}</h3>
-                    {selectedMatch.profile?.location && <p className="text-xs text-muted-foreground truncate">{selectedMatch.profile.location}</p>}
+                    {realLocation(selectedMatch.profile?.location) && <p className="text-xs text-muted-foreground truncate">{realLocation(selectedMatch.profile?.location)}</p>}
                   </div>
                   <Button variant="ghost" size="icon" onClick={() => setShowGiftDialog(true)} className="h-9 w-9 text-primary"><Gift className="h-5 w-5" /></Button>
                   {selectedMatch.profile?.user_id && (
@@ -1168,7 +1167,7 @@ const Dating = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap"><h3 className="font-semibold truncate">{match.profile?.display_name}</h3><span className="text-xs text-muted-foreground">{match.profile?.age}</span><MatchExpiryBadge expiresAt={(match as any).expires_at ?? null} /></div>
-                            <p className="text-sm text-muted-foreground truncate">{match.profile?.location || "Tap to start chatting"}</p>
+                            <p className="text-sm text-muted-foreground truncate">{realLocation(match.profile?.location) || "Tap to start chatting"}</p>
                           </div>
                           <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                         </CardContent>
@@ -1201,7 +1200,6 @@ const Dating = () => {
           {/* ==================== COMMUNITY TAB ==================== */}
           <TabsContent value="community">
             <div className="max-w-3xl mx-auto space-y-8">
-              {user && <FriendCirclesPanel userId={user.id} />}
             </div>
           </TabsContent>
 
@@ -1246,14 +1244,14 @@ const Dating = () => {
                 </div>
                 <CardContent className="pt-16 pb-6 px-6 text-center">
                   <h2 className="text-xl font-bold">{currentProfile.display_name}, {currentProfile.age}</h2>
-                  {currentProfile.location && <p className="text-sm text-muted-foreground flex items-center justify-center gap-1 mt-1"><MapPin className="h-3.5 w-3.5" />{currentProfile.location}</p>}
+                  {realLocation(currentProfile.location) && <p className="text-sm text-muted-foreground flex items-center justify-center gap-1 mt-1"><MapPin className="h-3.5 w-3.5" />{realLocation(currentProfile.location)}</p>}
                   {currentProfile.bio && <p className="text-sm text-muted-foreground mt-3 max-w-sm mx-auto">{currentProfile.bio}</p>}
                 </CardContent>
               </Card>
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-2"><p className="text-sm font-medium">Profile Completeness</p><span className="text-sm font-bold text-primary">{completeness}%</span></div>
                 <Progress value={completeness} className="h-2" />
-                {completeness < 100 && <p className="text-xs text-muted-foreground mt-2">{!currentProfile.profile_photo_url ? "Add a profile photo to get 25% more views" : !currentProfile.additional_photos?.length ? "Add more photos to boost visibility" : !currentProfile.location ? "Add your location for better matches" : "Complete your bio for better matches"}</p>}
+                {completeness < 100 && <p className="text-xs text-muted-foreground mt-2">{!currentProfile.profile_photo_url ? "Add a profile photo to get 25% more views" : !currentProfile.additional_photos?.length ? "Add more photos to boost visibility" : !hasRealLocation(currentProfile.location) ? "Add your location for better matches" : "Complete your bio for better matches"}</p>}
               </Card>
               <Card className="p-5">
                 <div className="flex items-center justify-between mb-4">
