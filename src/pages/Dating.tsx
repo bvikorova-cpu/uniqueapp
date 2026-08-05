@@ -339,8 +339,20 @@ const Dating = () => {
     const swipedIds = swipedProfiles?.map(s => s.swiped_id) || [];
     const excludeIds = [...new Set([...swipedIds, ...blockedIds, user.id])];
 
+    const term = searchQuery.trim();
     let q = supabase.from("dating_profiles_browse").select("*");
     if (excludeIds.length > 0) q = q.not("user_id", "in", `(${excludeIds.join(",")})`);
+    if (term) {
+      const like = `%${term.replace(/[%,]/g, "")}%`;
+      q = q.or(
+        [
+          `display_name.ilike.${like}`,
+          `location.ilike.${like}`,
+          `job_title.ilike.${like}`,
+          `bio.ilike.${like}`,
+        ].join(",")
+      );
+    }
     if (filters) {
       q = q.gte("age", filters.min_age).lte("age", filters.max_age);
       if (filters.preferred_genders.length > 0 && filters.preferred_genders.length < 3) {
@@ -350,7 +362,8 @@ const Dating = () => {
         q = q.eq("photo_verified", true);
       }
     }
-    const { data } = await q.limit(80);
+    const { data } = await q.limit(term ? 200 : 80);
+
 
 
     let ranked = data || [];
