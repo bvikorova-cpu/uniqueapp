@@ -54,7 +54,26 @@ export function useAnonymousDateAI() {
       }
 
       setResult({ feature, output: data.output });
-      toast({ title: "Done!", description: `Used ${AI_COSTS[feature]} credits. ${data.credits_remaining} left.` });
+      const { data: { user } } = await supabase.auth.getUser();
+      let currentBalance: number | null = null;
+
+      if (user) {
+        const { data: creditRow, error: creditError } = await supabase
+          .from("ai_credits")
+          .select("credits_remaining")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (!creditError) currentBalance = creditRow?.credits_remaining ?? 0;
+      }
+
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast({
+        title: "Done!",
+        description: currentBalance === null
+          ? `Used ${AI_COSTS[feature]} credits.`
+          : `Used ${AI_COSTS[feature]} credits. ${currentBalance} left.`,
+      });
       return data;
     } catch (e: any) {
       toast({ title: "Error", description: e?.message ?? "Failed", variant: "destructive" });
