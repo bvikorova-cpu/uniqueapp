@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Sparkles, MessageSquareHeart, Brain, Wand2, Mic, MapPin, ScrollText, Loader2, Coins } from "lucide-react";
 import { useAnonymousDateAI, AI_COSTS, type AIFeature } from "@/hooks/useAnonymousDateAI";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useLiveAiCredits } from "@/hooks/useLiveAiCredits";
 
 const FEATURES: Array<{
   id: AIFeature;
@@ -191,7 +192,8 @@ function renderOutput(feature: AIFeature, output: any) {
   );
 }
 
-export const AnonymousDateAIToolbox = ({ credits }: { credits: number }) => {
+export const AnonymousDateAIToolbox = ({ credits: creditsProp }: { credits: number }) => {
+  const { credits } = useLiveAiCredits(creditsProp);
   const [active, setActive] = useState<AIFeature | null>(null);
   const [formValues, setFormValues] = useState<Record<string, string>>({});
   const { run, loading, result, setResult } = useAnonymousDateAI();

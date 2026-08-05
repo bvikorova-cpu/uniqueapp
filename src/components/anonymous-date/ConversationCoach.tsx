@@ -7,6 +7,7 @@ import { Brain, Loader2, Coins, AlertTriangle, ArrowRight } from "lucide-react";
 import { useAnonymousDateAI } from "@/hooks/useAnonymousDateAI";
 import type { ChatMessage } from "@/hooks/useAnonymousChat";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useLiveAiCredits } from "@/hooks/useLiveAiCredits";
 
 interface Props {
   matchId: string;
@@ -16,7 +17,8 @@ interface Props {
   credits: number;
 }
 
-export const ConversationCoach = ({ matchId, messages, currentUserId, partnerName, credits }: Props) => {
+export const ConversationCoach = ({ matchId, messages, currentUserId, partnerName, credits: creditsProp }: Props) => {
+  const { credits } = useLiveAiCredits(creditsProp);
   const { run, loading } = useAnonymousDateAI();
   const [analysis, setAnalysis] = useState<any>(null);
 
