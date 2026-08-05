@@ -81,7 +81,7 @@ const HOW_IT_WORKS = [
   { step: "1", title: "Create Profile", desc: "Set up your anonymous identity with interests and traits", icon: "🎭" },
   { step: "2", title: "Find Match", desc: "Our AI pairs you based on shared interests and compatibility", icon: "🔍" },
   { step: "3", title: "Chat 7 Days", desc: "Get to know each other through personality, not photos", icon: "💬" },
-  { step: "4", title: "Reveal", desc: "Discover each other after building a real connection", icon: "👀" },
+  { step: "4", title: "Reveal", desc: "Photo unlocks free after 7 days — or earlier for 5 credits", icon: "👀" },
 ];
 
 const ENTRY_CREDIT_COST = 2;
