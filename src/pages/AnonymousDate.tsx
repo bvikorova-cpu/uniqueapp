@@ -147,39 +147,41 @@ export default function AnonymousDate() {
     if (hasAccess) checkProfile();
   }, [hasAccess]);
 
+  // Entry is credit-based: 2 credits per entry (per browsing session).
   const checkAccess = async () => {
     try {
       setCheckingAccess(true);
-      const { data, error } = await supabase.functions.invoke("check-anonymous-date-access");
-      if (error) throw error;
-      setHasAccess(data.hasAccess);
-      setSubscriptionEnd(data.subscriptionEnd);
-    } catch (error) {
-      console.error("Error checking access:", error);
-      toast({ title: "Error", description: "Failed to verify subscription", variant: "destructive" });
+      const paidThisSession = sessionStorage.getItem("anonymous_date_entry_paid") === "true";
+      setHasAccess(paidThisSession);
     } finally {
       setCheckingAccess(false);
-    }
-  };
-
-  const handleManageSubscription = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal-anonymous-date");
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Failed to open portal", variant: "destructive" });
     }
   };
 
   const handlePayAccess = async () => {
     try {
       setPayingAccess(true);
-      const { data, error } = await supabase.functions.invoke("pay-anonymous-date-access");
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({ title: "Sign in required", description: "Please log in to continue", variant: "destructive" });
+        return;
+      }
+      const { data: ok, error } = await supabase.rpc("deduct_ai_credits", { p_user_id: user.id,
+        p_amount: ENTRY_CREDIT_COST,
+        p_reason: "anonymous_date_entry",
+        p_source: "dating" });
       if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
+      if (ok === false) {
+        toast({ title: "Not enough credits", description: `Entry costs ${ENTRY_CREDIT_COST} credits. Please top up.`, variant: "destructive" });
+        navigate("/ai-credits");
+        return;
+      }
+      sessionStorage.setItem("anonymous_date_entry_paid", "true");
+      setHasAccess(true);
+      fetchCredits();
+      toast({ title: "Access unlocked", description: `${ENTRY_CREDIT_COST} credits used for this entry` });
     } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Failed to process payment", variant: "destructive" });
+      toast({ title: "Error", description: error.message || "Failed to spend credits", variant: "destructive" });
     } finally {
       setPayingAccess(false);
     }
