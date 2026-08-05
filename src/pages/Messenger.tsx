@@ -51,11 +51,11 @@ type MessengerView = "hub" | "chat" | "analytics" | "themes" | "mood" | "emoji" 
 
 const messengerTools = [
   { id: "chat" as MessengerView, icon: MessageCircle, title: "Open Chat", description: "Real-time messaging with all features", color: "cyan", badge: "Core" },
-  { id: "analytics" as MessengerView, icon: BarChart3, title: "Chat Analytics", description: "Message stats, patterns & insights", color: "blue", badge: "New" },
-  { id: "themes" as MessengerView, icon: Palette, title: "Chat Themes", description: "AI-generated themes & wallpapers", color: "purple", badge: "AI" },
-  { id: "mood" as MessengerView, icon: Brain, title: "Mood Detection", description: "AI analysis of your emotional tone", color: "rose", badge: "AI" },
-  { id: "emoji" as MessengerView, icon: Smile, title: "Emoji Creator", description: "Design custom emojis for chats", color: "pink", badge: "New" },
-  { id: "games" as MessengerView, icon: Gamepad2, title: "Chat Games", description: "Trivia, RPS & more mini-games", color: "indigo", badge: "Fun" },
+  { id: "analytics" as MessengerView, icon: BarChart3, title: "Chat Analytics", description: "Message stats, patterns & insights", color: "blue", badge: "3 credits" },
+  { id: "themes" as MessengerView, icon: Palette, title: "Chat Themes", description: "AI-generated themes & wallpapers", color: "purple", badge: "4 credits" },
+  { id: "mood" as MessengerView, icon: Brain, title: "Mood Detection", description: "AI analysis of your emotional tone", color: "rose", badge: "3 credits" },
+  { id: "emoji" as MessengerView, icon: Smile, title: "Emoji Creator", description: "Design custom emojis for chats", color: "pink", badge: "3 credits" },
+  { id: "games" as MessengerView, icon: Gamepad2, title: "Chat Games", description: "Trivia, RPS & more mini-games", color: "indigo", badge: "4 credits" },
 ];
 
 
