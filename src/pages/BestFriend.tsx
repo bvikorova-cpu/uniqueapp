@@ -378,21 +378,21 @@ const BestFriend = () => {
           </>
         )}
 
-        {/* Subscription Dialog */}
-        <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
+        {/* Credits Dialog */}
+        <Dialog open={showCreditsDialog} onOpenChange={setShowCreditsDialog}>
           <DialogContent className="bg-card/95 backdrop-blur-xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <Crown className="w-5 h-5 text-purple-400" /> Subscribe to Continue
+                <Sparkles className="w-5 h-5 text-primary" /> Not enough credits
               </DialogTitle>
               <DialogDescription>
-                You've used all free messages. Subscribe for €15/month to enjoy 1000 conversations.
+                Best Friend Chat costs {BEST_FRIEND_CHAT_COST} credit per message. Top up to keep chatting.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="flex items-start gap-3">
                 <Heart className="w-5 h-5 text-pink-400 mt-0.5" />
-                <div><p className="font-medium">1000 Messages/Month</p><p className="text-sm text-muted-foreground">Reset every billing period</p></div>
+                <div><p className="font-medium">Pay only for what you use</p><p className="text-sm text-muted-foreground">No subscription, credits never expire</p></div>
               </div>
               <div className="flex items-start gap-3">
                 <Sparkles className="w-5 h-5 text-purple-400 mt-0.5" />
@@ -400,9 +400,9 @@ const BestFriend = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setShowSubscriptionDialog(false)} className="flex-1">Maybe Later</Button>
-              <Button onClick={() => createCheckout()} className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600">
-                <Crown className="w-4 h-4 mr-2" /> Subscribe Now
+              <Button variant="outline" onClick={() => setShowCreditsDialog(false)} className="flex-1">Maybe Later</Button>
+              <Button onClick={() => navigate("/ai-credits")} className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600">
+                <CreditCard className="w-4 h-4 mr-2" /> Top up credits
               </Button>
             </div>
           </DialogContent>
