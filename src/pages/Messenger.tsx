@@ -182,7 +182,7 @@ const Messenger = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
-  const attachmentInputsDisabled = uploadingAttachment || isRecording;
+  const attachmentInputsDisabled = uploadingAttachment;
   const attachmentUrls = useMemo(() => messages.map((message) => message.attachment_url || null), [messages]);
   const resolvedAttachmentUrls = useResolvedStorageUrls(attachmentUrls);
 
