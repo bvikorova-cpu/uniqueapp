@@ -68571,7 +68571,10 @@ export type Database = {
         Args: { _amount: number; _reason?: string }
         Returns: number
       }
+      anon_date_accept_reveal: { Args: { _match_id: string }; Returns: Json }
+      anon_date_cancel_reveal: { Args: { _match_id: string }; Returns: Json }
       anon_date_photo_state: { Args: { _match_id: string }; Returns: Json }
+      anon_date_request_reveal: { Args: { _match_id: string }; Returns: Json }
       anon_date_swipe: {
         Args: { _direction: string; _target: string }
         Returns: Json
