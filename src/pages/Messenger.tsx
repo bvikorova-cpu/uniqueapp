@@ -1778,6 +1778,8 @@ const Messenger = () => {
                         <MessengerAIFeatures
                           userId={user.id}
                           selectedText={selectedMessageText}
+                          recipientId={otherUser?.id}
+                          recipientName={otherUser?.full_name || undefined}
                           messages={ messages.map(m => ({
                             sender_id: m.sender_id,
                             content: m.content,
