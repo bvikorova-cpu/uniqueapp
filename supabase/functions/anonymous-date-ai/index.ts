@@ -260,7 +260,7 @@ Deno.serve(async (req) => {
 
     // Read current balance for response
     const { data: bal } = await admin
-      .from("anonymous_dating_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
