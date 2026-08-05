@@ -1093,7 +1093,24 @@ const Dating = () => {
           {/* ==================== DISCOVER TAB ==================== */}
           <TabsContent value="swipe" className="flex flex-col items-center gap-3">
             <div className="w-full max-w-sm">
-              <DatingSearch value={searchQuery} onChange={setSearchQuery} onOpenFilters={() => setShowFilters(true)} resultCount={profiles.length} />
+              <DatingSearch
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onOpenFilters={() => setShowFilters(true)}
+                resultCount={profiles.length}
+                suggestions={profiles.slice(0, 8).map((p: any) => ({
+                  user_id: p.user_id,
+                  display_name: p.display_name,
+                  age: p.age,
+                  location: hasRealLocation(p.location) ? p.location : null,
+                  profile_photo_url: p.profile_photo_url,
+                }))}
+                onSelectSuggestion={(uid) => {
+                  const idx = profiles.findIndex((p: any) => p.user_id === uid);
+                  if (idx >= 0) { setCurrentIndex(idx); setActivePhotoIndex(0); }
+                }}
+              />
+
             </div>
             <div className="w-full flex justify-center">
             <AnimatePresence mode="wait">
