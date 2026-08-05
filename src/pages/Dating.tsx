@@ -1167,7 +1167,6 @@ const Dating = () => {
           {/* ==================== COMMUNITY TAB ==================== */}
           <TabsContent value="community">
             <div className="max-w-3xl mx-auto space-y-8">
-              {user && <DatingEventsList userId={user.id} />}
               {user && <FriendCirclesPanel userId={user.id} />}
             </div>
           </TabsContent>
@@ -1178,15 +1177,9 @@ const Dating = () => {
           </TabsContent>
 
           <TabsContent value="insights" className="space-y-4">
-            <WeeklyInsightsCard onAction={(a) => {
-              if (a === "bio_coach" || a === "add_photo" || a === "update_prompts" || a === "try_video") {
-                setActiveTab("profile");
-              } else if (a === "send_openers") {
-                setActiveTab("matches");
-              }
-            }} />
             <DatingAnalyticsPanel />
           </TabsContent>
+
 
 
 
