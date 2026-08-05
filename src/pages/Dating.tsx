@@ -616,11 +616,37 @@ const Dating = () => {
       const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
-      await supabase.from('dating_profiles').update({ profile_photo_url: publicUrl }).eq('id', currentProfile.id);
-      toast({ title: "Success", description: "Profile photo uploaded" }); await loadUserProfile(user.id);
-    } catch { toast({ title: "Error", description: "Failed to upload photo", variant: "destructive" }); }
-    finally { setUploadingPhoto(false); }
+      const { data: updated, error: updateError } = await supabase
+        .from('dating_profiles')
+        .update({ profile_photo_url: publicUrl })
+        .eq('id', currentProfile.id)
+        .eq('user_id', user.id)
+        .select('id')
+        .maybeSingle();
+      if (updateError) throw updateError;
+      if (!updated) throw new Error("Profile not updated");
+      toast({ title: "Success", description: "Profile photo updated" }); await loadUserProfile(user.id);
+    } catch (e: any) { toast({ title: "Error", description: e?.message || "Failed to upload photo", variant: "destructive" }); }
+    finally { setUploadingPhoto(false); event.target.value = ""; }
   };
+
+  const handleSetAsMain = async (photoUrl: string) => {
+    if (!user || !currentProfile) return;
+    const previousMain = currentProfile.profile_photo_url;
+    const rest = (currentProfile.additional_photos || []).filter((u) => u !== photoUrl);
+    const nextAdditional = previousMain ? [previousMain, ...rest] : rest;
+    const { data, error } = await supabase
+      .from('dating_profiles')
+      .update({ profile_photo_url: photoUrl, additional_photos: nextAdditional })
+      .eq('id', currentProfile.id)
+      .eq('user_id', user.id)
+      .select('id')
+      .maybeSingle();
+    if (error || !data) { toast({ title: "Error", description: error?.message || "Could not set main photo", variant: "destructive" }); return; }
+    toast({ title: "Main photo updated" });
+    await loadUserProfile(user.id);
+  };
+
 
   const handleUploadAdditionalPhotos = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -637,11 +663,21 @@ const Dating = () => {
         const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
         uploadedUrls.push(publicUrl);
       }
-      const newPhotos = [...(currentProfile.additional_photos || []), ...uploadedUrls];
-      await supabase.from('dating_profiles').update({ additional_photos: newPhotos }).eq('id', currentProfile.id);
-      toast({ title: "Success", description: `${uploadedUrls.length} files uploaded` }); await loadUserProfile(user.id);
-    } catch { toast({ title: "Error", description: "Failed to upload", variant: "destructive" }); }
-    finally { setUploadingAdditional(false); }
+      const noMain = !currentProfile.profile_photo_url;
+      const mainUrl = noMain ? uploadedUrls[0] : null;
+      const newPhotos = [...(currentProfile.additional_photos || []), ...(mainUrl ? uploadedUrls.slice(1) : uploadedUrls)];
+      const { data: updated, error: updateError } = await supabase
+        .from('dating_profiles')
+        .update({ additional_photos: newPhotos, ...(mainUrl ? { profile_photo_url: mainUrl } : {}) })
+        .eq('id', currentProfile.id)
+        .eq('user_id', user.id)
+        .select('id')
+        .maybeSingle();
+      if (updateError) throw updateError;
+      if (!updated) throw new Error("Profile not updated");
+      toast({ title: "Success", description: mainUrl ? "Photo uploaded and set as main" : `${uploadedUrls.length} files uploaded` }); await loadUserProfile(user.id);
+    } catch (e: any) { toast({ title: "Error", description: e?.message || "Failed to upload", variant: "destructive" }); }
+    finally { setUploadingAdditional(false); event.target.value = ""; }
   };
 
   const handleRemoveAdditionalPhoto = async (photoUrl: string) => {
@@ -1286,8 +1322,12 @@ const Dating = () => {
                   {(currentProfile.additional_photos || []).map((url, i) => (
                     <div key={i} className="aspect-square rounded-lg overflow-hidden bg-muted relative group">
                       {isVideoUrl(url) ? <video src={url} className="w-full h-full object-cover" muted /> : <img src={url} alt="" className="w-full h-full object-cover" onClick={() => setLightboxImage(url)} />}
-                      <button onClick={() => handleRemoveAdditionalPhoto(url)} className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><X className="h-3 w-3" /></button>
+                      <button onClick={() => handleRemoveAdditionalPhoto(url)} className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center transition-opacity"><X className="h-3 w-3" /></button>
+                      {!isVideoUrl(url) && (
+                        <button onClick={() => handleSetAsMain(url)} className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] py-1 font-medium">Set as main</button>
+                      )}
                     </div>
+
                   ))}
                   <label className="aspect-square rounded-lg border-2 border-dashed border-border hover:border-primary/50 flex items-center justify-center cursor-pointer transition-colors">
                     <input type="file" className="hidden" onChange={handleUploadAdditionalPhotos} accept="image/*,video/*" multiple disabled={uploadingAdditional} /><Plus className="h-6 w-6 text-muted-foreground" />
