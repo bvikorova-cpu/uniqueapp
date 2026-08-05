@@ -166,10 +166,8 @@ export default function Club() {
                 <Button onClick={() => navigate("/club/card")} className="bg-gradient-to-r from-amber-500 to-pink-500">
                   <CreditCard className="h-4 w-4 mr-2" /> View my card
                 </Button>
-                <Button variant="outline" onClick={openBillingPortal}>
-                  Manage billing
-                </Button>
               </div>
+
             </div>
 
           </Card>
