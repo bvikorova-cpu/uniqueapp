@@ -1825,7 +1825,7 @@ serve(async (req) => {
           const subObj = await stripe.subscriptions.retrieve(subId);
           const meta = (subObj.metadata ?? {}) as Record<string, string>;
           if (meta.product === "unique_club") {
-            const { CLUB_MONTHLY_AI_CREDITS, CLUB_MONTHLY_GOOD_FUND_EUR, contributeToGoodFund, grantClubAiCredits } =
+            const { CLUB_MONTHLY_GOOD_FUND_EUR, contributeToGoodFund } =
               await import("../_shared/club-perks.ts");
 
             const { data: mem } = await supabase
@@ -1841,20 +1841,15 @@ serve(async (req) => {
                 .from("club_memberships")
                 .update({
                   status: "active",
-                  current_period_end: periodEndTs,
-                  monthly_credits_granted_at: new Date().toISOString() })
+                  current_period_end: periodEndTs })
                 .eq("id", (mem as any).id);
 
               const periodKey = (inv as any).period_end
                 ? String((inv as any).period_end)
                 : inv.id ?? String(Date.now());
 
-              await grantClubAiCredits(supabase as any, { userId: (mem as any).user_id,
-                membershipId: (mem as any).id,
-                perk: "monthly_ai_credits",
-                periodKey,
-                amount: CLUB_MONTHLY_AI_CREDITS,
-                stripeEventId: inv.id ?? undefined });
+              // Monthly AI credits perk removed — no free credits granted.
+
               await contributeToGoodFund(supabase as any, {
                 membershipId: (mem as any).id,
                 amountEur: CLUB_MONTHLY_GOOD_FUND_EUR,
