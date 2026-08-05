@@ -400,7 +400,27 @@ export const MessengerAIFeatures = ({ userId,
 
       if (handleAIError(error, data)) return;
 
-      setGeneratedCompliment(data);
+      // The edge function returns { result: "<json string>" }
+      let parsed: any = data?.compliment ? data : (data?.result ?? null);
+      if (typeof parsed === "string") {
+        try {
+          parsed = JSON.parse(parsed.replace(/^```json\s*|```$/g, "").trim());
+        } catch {
+          parsed = { compliment: parsed };
+        }
+      }
+      const compliment =
+        parsed?.compliment || parsed?.message || parsed?.text || "";
+      if (!compliment) {
+        toast({ title: "No compliment returned", description: "Please try again.", variant: "destructive" });
+        return;
+      }
+
+      setGeneratedCompliment({
+        compliment,
+        emoji: parsed?.emoji || "💜",
+        category: parsed?.category || "",
+      });
       await fetchCredits();
       toast({ title: "Compliment ready!", description: `${data.creditsUsed} credits used` });
     } catch (error: any) {
