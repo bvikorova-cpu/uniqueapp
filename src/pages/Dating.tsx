@@ -1339,6 +1339,12 @@ const Dating = () => {
                   </label>
                 </div>
               </Card>
+              <DatingProfileDetailsCard
+                profileId={currentProfile.id}
+                details={currentProfile as any}
+                onSaved={(patch) => setCurrentProfile({ ...currentProfile, ...(patch as any) })}
+              />
+
               {user && (
                 <>
                   <CompatibilityQuiz
