@@ -94,6 +94,25 @@ Rules:
       }
       const lastUserMessage = [...history].reverse().find((m) => m.role === "user")?.content ?? "";
 
+      // ── Credit gate: chat costs 1 credit per message (paid-only model) ──
+      const CHAT_COST = 1;
+      const { data: chatCredits } = await supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      const chatRemaining = chatCredits?.credits_remaining || 0;
+      if (chatRemaining < CHAT_COST) {
+        return new Response(JSON.stringify({
+          error: "Insufficient credits",
+          insufficientCredits: true,
+          credits_remaining: chatRemaining,
+          cost: CHAT_COST,
+        }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+
+
       const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Lovable-API-Key": LOVABLE_API_KEY },
