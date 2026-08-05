@@ -702,8 +702,9 @@ const Dating = () => {
                 ))}
               </div>
               <div className="bg-muted/50 border border-border/50 rounded-xl p-3 text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">💡 Tip:</span> AI tools (Icebreaker, Compatibility, Date Ideas & Profile Optimizer) cost 3 credits each. Subscribe to get started!
+                <span className="font-semibold text-foreground">💡 Tip:</span> Entry costs {ENTRY_CREDIT_COST} credits per day. AI tools (Icebreaker, Compatibility, Date Ideas & Profile Optimizer) cost 3 credits each.
               </div>
+
             </CardContent>
           </Card>
 
