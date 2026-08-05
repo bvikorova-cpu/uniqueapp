@@ -258,7 +258,7 @@ const BestFriend = () => {
     </div>
   );
 
-  if (loadingHistory || subscription.loading) {
+  if (loadingHistory || creditsLoading) {
     return (
       <div className="min-h-screen bg-background pt-20 pb-8 flex items-center justify-center">
         <Heart className="w-12 h-12 text-purple-400 animate-pulse mx-auto" />
