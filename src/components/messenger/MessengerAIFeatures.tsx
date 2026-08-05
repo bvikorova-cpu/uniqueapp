@@ -175,10 +175,11 @@ export const MessengerAIFeatures = ({ userId,
       /insufficient credits/i.test(msg) ||
       /402/.test(msg);
     if (isCredits) {
-      setCredits(0);
+      // Re-read the true balance instead of assuming zero.
+      fetchCredits();
       setShowCreditsDialog(true);
       toast({
-        title: "AI credits depleted",
+        title: "Not enough AI credits",
         description: "Buy more credits to continue using AI features.",
         variant: "destructive" });
       return true;
