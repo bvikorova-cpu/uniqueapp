@@ -33,6 +33,7 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
   const typingTimeoutRef = useRef<number | null>(null);
   const lastTypingSentRef = useRef<number>(0);
   const typingDebounceRef = useRef<number | null>(null);
+  const lastNotifiedRef = useRef<number>(0);
 
 
   // Fetch messages + reactions
