@@ -59,56 +59,34 @@ export const RevealLock = ({ matchId, currentUserId, partnerName, revealRequestA
 
   const requestReveal = async () => {
     setBusy(true);
-    // Optimistic lock: only succeeds if nobody else has an active request.
-    // Treats requests older than REVEAL_WINDOW as stale and overwritable.
-    const staleCutoff = new Date(Date.now() - REVEAL_WINDOW_MS).toISOString();
-    const { data, error } = await supabase
-      .from("anonymous_dating_matches")
-      .update({ reveal_request_at: new Date().toISOString(), reveal_request_by: currentUserId })
-      .eq("id", matchId)
-      .eq("status", "active")
-      .or(`reveal_request_at.is.null,reveal_request_at.lt.${staleCutoff}`)
-      .select("id")
-      .maybeSingle();
+    const { data, error } = await supabase.rpc("anon_date_request_reveal", { _match_id: matchId });
     setBusy(false);
+    const res = data as { ok?: boolean; reason?: string } | null;
     if (error) toast({ title: "Failed", description: error.message, variant: "destructive" });
-    else if (!data) toast({ title: "Already requested", description: `${partnerName} just sent a request — confirm it instead.` });
+    else if (!res?.ok) toast({ title: "Already requested", description: `${partnerName} just sent a request — confirm it instead.` });
     else toast({ title: "Reveal requested", description: `Waiting 60s for ${partnerName} to confirm…` });
   };
 
   const acceptReveal = async () => {
-    setBusy(true);
-    // DB trigger enforces mutual reveal; we also guard client-side to avoid
-    // self-accept races (only the *other* user may accept).
     if (revealRequestBy === currentUserId) {
-      setBusy(false);
       toast({ title: "Waiting", description: "Only the other person can confirm your request." });
       return;
     }
-    const { error } = await supabase
-      .from("anonymous_dating_matches")
-      .update({ status: "revealed",
-        revealed_at: new Date().toISOString(),
-        user1_revealed: true,
-        user2_revealed: true })
-      .eq("id", matchId)
-      .eq("status", "active")
-      .neq("reveal_request_by", currentUserId);
+    setBusy(true);
+    const { data, error } = await supabase.rpc("anon_date_accept_reveal", { _match_id: matchId });
     setBusy(false);
+    const res = data as { ok?: boolean; reason?: string } | null;
     if (error) toast({ title: "Failed", description: error.message, variant: "destructive" });
+    else if (!res?.ok) toast({ title: "No active request", description: "The reveal request expired — ask again.", variant: "destructive" });
     else { toast({ title: "Revealed!", description: "Both identities are now visible." }); onRevealed?.(); }
   };
 
   const cancelReveal = async () => {
     setBusy(true);
-    // Only the requester may clear their own pending request.
-    await supabase
-      .from("anonymous_dating_matches")
-      .update({ reveal_request_at: null, reveal_request_by: null })
-      .eq("id", matchId)
-      .eq("reveal_request_by", currentUserId);
+    await supabase.rpc("anon_date_cancel_reveal", { _match_id: matchId });
     setBusy(false);
   };
+
 
 
   return (
