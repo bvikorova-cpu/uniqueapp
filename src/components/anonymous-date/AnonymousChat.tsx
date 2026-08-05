@@ -526,15 +526,6 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
         />
       </div>
 
-      {/* Reveal lock */}
-      <RevealLock
-        matchId={match.id}
-        currentUserId={currentUserId}
-        partnerName={partnerName}
-        revealRequestAt={matchState.reveal_request_at}
-        revealRequestBy={matchState.reveal_request_by}
-        status={matchState.status ?? "active"}
-      />
 
       {/* Timed photo reveal — free after 7 days, or earlier for credits */}
       <PhotoReveal matchId={match.id} partnerName={partnerName} />
