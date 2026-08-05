@@ -281,14 +281,67 @@ export async function callUnifiedAIJSON<T = any>(
   messages: UnifiedMessage[],
   opts: Omit<UnifiedAIOptions, "json" | "response_format"> = {},
 ): Promise<T> {
-  const text = await callUnifiedAI(messages, { ...opts, json: true });
-  const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
-  try {
-    return JSON.parse(cleaned) as T;
-  } catch {
-    throw new UnifiedAIError(502, "AI returned invalid JSON. Please try again.");
+  let lastRaw = "";
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const text = await callUnifiedAI(messages, { ...opts, json: true });
+    lastRaw = text;
+    const parsed = tryParseLooseJSON<T>(text);
+    if (parsed !== undefined) return parsed;
   }
+  console.error("UnifiedAI invalid JSON response:", lastRaw.slice(0, 500));
+  throw new UnifiedAIError(502, "AI returned invalid JSON. Please try again.");
 }
+
+/** Best-effort JSON extraction: strips fences, finds the JSON block, repairs truncation. */
+function tryParseLooseJSON<T>(raw: string): T | undefined {
+  if (!raw) return undefined;
+  let s = raw.replace(/^\s*```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
+
+  const start = s.search(/[{[]/);
+  if (start > 0) s = s.slice(start);
+
+  const candidates = [s, repairTruncatedJSON(s)];
+  for (const c of candidates) {
+    if (!c) continue;
+    try {
+      return JSON.parse(c) as T;
+    } catch { /* try next */ }
+  }
+  return undefined;
+}
+
+/** Closes unterminated strings/brackets so a truncated response can still parse. */
+function repairTruncatedJSON(s: string): string | null {
+  const stack: string[] = [];
+  let inString = false;
+  let escaped = false;
+  let lastSafe = -1;
+
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === "{" || ch === "[") stack.push(ch === "{" ? "}" : "]");
+    else if (ch === "}" || ch === "]") stack.pop();
+    else if (ch === "," || ch === "}" || ch === "]") lastSafe = i;
+    if (!inString && (ch === "}" || ch === "]" || ch === "," )) lastSafe = i;
+  }
+
+  let out = s;
+  if (inString) out += '"';
+  // Drop a dangling trailing comma or partial key/value
+  out = out.replace(/,\s*$/, "");
+  if (/:\s*$/.test(out)) out += "null";
+  out = out.replace(/,\s*("(?:[^"\\]|\\.)*")\s*$/, "");
+  while (stack.length) out += stack.pop();
+  return out === s ? null : out;
+}
+
 
 /** Convenience one-shot system+user call. */
 export async function askAI(system: string, user: string, opts?: UnifiedAIOptions): Promise<string> {
