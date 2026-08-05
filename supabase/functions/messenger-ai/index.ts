@@ -124,7 +124,7 @@ Deno.serve(async (req) => {
       case "what-if": {
         const json = await callOpenAIJSON({
           system: `You are a creative "What If" life story generator. Create an engaging alternative life story (300-400 words). Return a JSON object with: "title", "story", "keyMoments" (array of 3).`,
-          user: text || context || "",
+          user: params.scenario || text || context || "",
           model: "gpt-4o-mini",
         });
         result = JSON.stringify(json);
