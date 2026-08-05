@@ -18,16 +18,24 @@ export const MyCapsules = ({ onBack }: { onBack: () => void }) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
-      const { data, error } = await supabase
-        .from("time_capsules")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      setCapsules(data || []);
+      const email = session.user.email ?? "";
+      const [own, received] = await Promise.all([
+        supabase.from("time_capsules").select("*").eq("user_id", session.user.id),
+        email
+          ? supabase.from("time_capsules").select("*").ilike("recipient_email", email).eq("is_delivered", true)
+          : Promise.resolve({ data: [], error: null } as any),
+      ]);
+      if (own.error) throw own.error;
+      const mine = (own.data || []).map((c: any) => ({ ...c, received: false }));
+      const inbox = (received.data || [])
+        .filter((c: any) => c.user_id !== session.user.id)
+        .map((c: any) => ({ ...c, received: true }));
+      setCapsules([...inbox, ...mine].sort((a: any, b: any) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   };
+
 
   const formatDate = (d: string) => new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
