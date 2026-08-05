@@ -273,18 +273,18 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     <div className="space-y-3">
       <Card className={`flex flex-col h-anon-chat overflow-hidden bg-gradient-to-br ${themeGradient(theme)} backdrop-blur-xl border-primary/20 shadow-2xl`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-3 border-b border-white/10 bg-black/25 backdrop-blur-md">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-y-2 p-3 border-b border-white/10 bg-black/25 backdrop-blur-md">
+          <div className="flex items-center gap-2 min-w-0">
             <AnonymousAvatar seed={partnerName} size={36} online={partnerOnline} />
-            <div>
-              <p className="font-bold text-sm leading-tight text-white">{partnerName}</p>
-              <p className="text-[10px] text-white/70">
+            <div className="min-w-0">
+              <p className="font-bold text-sm leading-tight text-white truncate">{partnerName}</p>
+              <p className="text-[10px] text-white/70 truncate">
                 {partnerOnline ? "Online" : "Offline"}
                 {partnerMeta?.mood && ` · ${partnerMeta.mood}`}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 w-full sm:w-auto">
             <Badge
               variant={urgent ? "destructive" : "outline"}
               className={`text-[10px] gap-1 ${urgent ? "" : "border-white/30 text-white"}`}
