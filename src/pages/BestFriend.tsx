@@ -142,7 +142,7 @@ const BestFriend = () => {
         }
       }
     } catch (e: any) { toast.error("Error communicating"); setMessages(p => p.slice(0, -1)); }
-    finally { setIsLoading(false); refreshSubscription(); }
+    finally { setIsLoading(false); refreshCredits(); }
   };
 
   const handleSend = async () => {
