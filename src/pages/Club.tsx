@@ -305,7 +305,7 @@ export default function Club() {
             <li><strong>2.</strong> Your gold ring and member perks activate instantly.</li>
             <li><strong>3.</strong> Physical cardholders receive a laser-engraved NFC card in the mail.</li>
             <li><strong>4.</strong> Every month, €0.15 from your fee goes to the Unique Good Fund.</li>
-            <li><strong>5.</strong> Cancel any time via the billing portal — no strings attached.</li>
+            <li><strong>5.</strong> Cancel any time by contacting support — no strings attached.</li>
           </ol>
         </Card>
       </section>
