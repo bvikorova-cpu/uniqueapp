@@ -186,7 +186,10 @@ export default function WallFriends() {
         mutual_count: mutualCountMap[p.id] || 0
       })).sort((a: any, b: any) => b.mutual_count - a.mutual_count) as FriendSuggestion[];
     },
-    enabled: !!user });
+    enabled: !!user && friends.length > 0,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false });
+
 
   const { data: outgoing = [] } = useQuery({
     queryKey: ["friend-outgoing", user?.id],
