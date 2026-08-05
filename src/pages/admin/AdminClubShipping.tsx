@@ -86,8 +86,8 @@ export default function AdminClubShipping() {
   const markShipped = async (row: MemberRow) => {
     try {
       const t = (tracking[row.id] ?? "").trim();
-      const { error } = await supabase.functions.invoke("admin-club-shipping", {
-        body: { action: "mark_shipped", membershipId: row.id, trackingNumber: t || null } });
+      const { error } = await supabase.functions.invoke("check-club-status", {
+        body: { action: "admin_mark_shipped", membershipId: row.id, trackingNumber: t || null } });
       if (error) throw error;
       toast({ title: "Marked as shipped" });
       load();
@@ -98,8 +98,8 @@ export default function AdminClubShipping() {
 
   const markDelivered = async (row: MemberRow) => {
     try {
-      const { error } = await supabase.functions.invoke("admin-club-shipping", {
-        body: { action: "mark_delivered", membershipId: row.id } });
+      const { error } = await supabase.functions.invoke("check-club-status", {
+        body: { action: "admin_mark_delivered", membershipId: row.id } });
       if (error) throw error;
       toast({ title: "Marked as delivered" });
       load();

@@ -27,7 +27,7 @@ serve(async (req) => {
     );
 
     const body = await req.json().catch(() => ({}));
-    if (body?.action === "admin_list_members") {
+    if (["admin_list_members", "admin_mark_shipped", "admin_mark_delivered"].includes(body?.action)) {
       const { data: roleRow } = await admin
         .from("user_roles")
         .select("role")
@@ -35,6 +35,40 @@ serve(async (req) => {
         .eq("role", "admin")
         .maybeSingle();
       if (!roleRow) throw new Error("Admin only");
+
+      if (body.action === "admin_mark_shipped" || body.action === "admin_mark_delivered") {
+        if (!body?.membershipId) throw new Error("membershipId required");
+        const shipped = body.action === "admin_mark_shipped";
+        const changes = shipped
+          ? {
+              shipping_status: "shipped",
+              tracking_number: body?.trackingNumber ?? null,
+              shipped_at: new Date().toISOString(),
+            }
+          : { shipping_status: "delivered", delivered_at: new Date().toISOString() };
+        const { data: membership, error } = await admin
+          .from("club_memberships")
+          .update(changes)
+          .eq("id", body.membershipId)
+          .select("user_id")
+          .maybeSingle();
+        if (error) throw error;
+        if (membership) {
+          await admin.from("notifications").insert({
+            user_id: membership.user_id,
+            type: shipped ? "club_card_shipped" : "club_card_delivered",
+            title: shipped ? "📮 Your Unique VIP card is on the way!" : "🎉 Your VIP card was delivered",
+            message: shipped
+              ? body?.trackingNumber
+                ? `Tracking: ${body.trackingNumber}`
+                : "Your card should arrive within 5–21 business days."
+              : "Tap it to any NFC phone to open your Unique profile.",
+          });
+        }
+        return new Response(JSON.stringify({ ok: true }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
 
       const columns =
         "id, user_id, member_number, tier, status, is_founding, recipient_name, phone, shipping_address, shipping_note, shipping_status, tracking_number, shipped_at, delivered_at, started_at, current_period_end";
