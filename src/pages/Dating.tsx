@@ -657,7 +657,7 @@ const Dating = () => {
     return score;
   };
 
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('monthly');
+  
 
   // AI Tool views
   if (activeView === "icebreaker") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIIcebreaker onBack={() => setActiveView("hub")} /></div></div>;
