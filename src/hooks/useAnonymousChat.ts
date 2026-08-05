@@ -33,6 +33,7 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
   const typingTimeoutRef = useRef<number | null>(null);
   const lastTypingSentRef = useRef<number>(0);
   const typingDebounceRef = useRef<number | null>(null);
+  const lastNotifiedRef = useRef<number>(0);
 
 
   // Fetch messages + reactions
@@ -149,8 +150,20 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
       message_type: messageType,
       voice_url: voiceUrl ?? null,
       is_read: false });
-    if (error) toast({ title: "Send failed", description: error.message, variant: "destructive" });
-  }, [matchId, currentUserId, toast]);
+    if (error) { toast({ title: "Send failed", description: error.message, variant: "destructive" }); return; }
+
+    // Bell notification for the partner — throttled to 1 per 2 minutes per match.
+    if (partnerId && Date.now() - lastNotifiedRef.current > 120_000) {
+      lastNotifiedRef.current = Date.now();
+      await supabase.from("notifications").insert({
+        user_id: partnerId,
+        title: "New anonymous message",
+        message: messageType === "voice" ? "You received a voice message." : "Your anonymous match sent you a message.",
+        type: "anonymous_date_message",
+        related_id: matchId }).then(({ error: nErr }) => { if (nErr) console.warn("notify failed", nErr.message); });
+    }
+  }, [matchId, currentUserId, partnerId, toast]);
+
 
   const broadcastTyping = useCallback(() => {
     // Throttle: max 1 broadcast / 1500 ms. Debounce: also batch fast keystrokes
