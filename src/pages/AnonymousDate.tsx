@@ -165,8 +165,14 @@ export default function AnonymousDate() {
         setHasAccess(false);
         return;
       }
-      const paidDay = localStorage.getItem(dailyStorageKey(user.id));
-      setHasAccess(paidDay === todayKey());
+      const { data: paidToday, error } = await supabase.rpc("has_paid_daily_entry", { p_reason: "anonymous_date_daily_entry" });
+      if (error) {
+        // Fallback to local marker if the check fails
+        setHasAccess(localStorage.getItem(dailyStorageKey(user.id)) === todayKey());
+        return;
+      }
+      if (paidToday) localStorage.setItem(dailyStorageKey(user.id), todayKey());
+      setHasAccess(!!paidToday);
     } finally {
       setCheckingAccess(false);
     }
@@ -180,12 +186,13 @@ export default function AnonymousDate() {
         toast({ title: "Sign in required", description: "Please log in to continue", variant: "destructive" });
         return;
       }
-      const { data: ok, error } = await supabase.rpc("deduct_ai_credits", { p_user_id: user.id,
-        p_amount: ENTRY_CREDIT_COST,
+      const { data: res, error } = await supabase.rpc("pay_daily_entry", {
         p_reason: "anonymous_date_daily_entry",
-        p_source: "dating" });
+        p_amount: ENTRY_CREDIT_COST,
+      });
       if (error) throw error;
-      if (ok === false) {
+      const status = (res as any)?.status;
+      if (status === "insufficient_credits") {
         toast({ title: "Not enough credits", description: `Daily entry costs ${ENTRY_CREDIT_COST} credits. Please top up.`, variant: "destructive" });
         navigate("/ai-credits");
         return;
@@ -194,7 +201,12 @@ export default function AnonymousDate() {
       setHasAccess(true);
       fetchCredits();
       window.dispatchEvent(new Event("ai-credits-updated"));
-      toast({ title: "Access unlocked for today", description: `${ENTRY_CREDIT_COST} credits used for today's entry` });
+      toast({
+        title: "Access unlocked for today",
+        description: status === "already_paid"
+          ? "Today's entry is already paid — no credits used"
+          : `${ENTRY_CREDIT_COST} credits used for today's entry`,
+      });
 
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to spend credits", variant: "destructive" });

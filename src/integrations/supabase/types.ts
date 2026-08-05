@@ -70305,6 +70305,7 @@ export type Database = {
         Args: { service_type_param: string; user_id_param: string }
         Returns: boolean
       }
+      has_paid_daily_entry: { Args: { p_reason: string }; Returns: boolean }
       has_phobia_access: {
         Args: { service_type_param: string; user_id_param: string }
         Returns: boolean
@@ -70588,6 +70589,10 @@ export type Database = {
       }
       notify_upcoming_scheduled_streams: { Args: never; Returns: undefined }
       open_mystery_box: { Args: { p_user_box_id: string }; Returns: Json }
+      pay_daily_entry: {
+        Args: { p_amount?: number; p_reason: string }
+        Returns: Json
+      }
       payout_requires_review: {
         Args: {
           _amount_cents: number
