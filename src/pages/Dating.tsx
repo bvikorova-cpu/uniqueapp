@@ -32,7 +32,7 @@ import { EmojiPicker } from "@/components/dating/EmojiPicker";
 import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/CompatibilityQuiz";
 import { OpeningMoveEditor } from "@/components/dating/OpeningMoveEditor";
 import { MatchExpiryBadge } from "@/components/dating/MatchExpiryBadge";
-import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/DiscoveryTabs";
+import { DatingSearch } from "@/components/dating/DatingSearch";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
@@ -180,7 +180,7 @@ const Dating = () => {
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
   const [showSafety, setShowSafety] = useState(false);
-  const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("deck");
+  const [searchQuery, setSearchQuery] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [pendingStarterExperiment, setPendingStarterExperiment] = useState<string | null>(null);
   const [matchCelebration, setMatchCelebration] = useState<{ match: Match; partner: DatingProfile } | null>(null);
@@ -387,52 +387,35 @@ const Dating = () => {
       };
       const freshness = (p: any) => new Date(p.updated_at || p.created_at || 0).getTime();
 
-      if (discoveryMode === "most_compatible") {
-        // Highest compatibility, then closest age, then shared interests.
-        ranked = [...ranked].sort((a, b) => {
-          const c = computeCompatibility(myQuiz, b.compatibility_quiz) - computeCompatibility(myQuiz, a.compatibility_quiz);
-          if (c !== 0) return c;
-          const shared = (p: any) => (p.interests || []).filter((i: string) => myInterests.has(i)).length;
-          if (shared(b) !== shared(a)) return shared(b) - shared(a);
-          return Math.abs((a.age ?? myAge) - myAge) - Math.abs((b.age ?? myAge) - myAge);
-        }).slice(0, 25);
-      } else if (discoveryMode === "top_picks") {
-        // Small hand-picked set: best overall score, newest first on ties.
-        ranked = [...ranked].sort((a, b) => (score(b) - score(a)) || (freshness(b) - freshness(a))).slice(0, 10);
-      } else if (discoveryMode === "standouts") {
-        // Only genuinely complete profiles (photos, bio, interests, location...).
-        const standouts = ranked.filter(p => p.photo_verified || richness(p) >= 55);
-        ranked = (standouts.length > 0 ? standouts : [...ranked].sort((a, b) => richness(b) - richness(a)).slice(0, 12))
-          .sort((a, b) => (richness(b) - richness(a)) || (freshness(b) - freshness(a)))
-          .slice(0, 12);
-      } else if (discoveryMode === "ai_smart") {
-        try {
-          const { data: rerank } = await supabase.functions.invoke("dating-ai-coach", {
-            body: { action: "rerank_discovery", me: currentProfile, candidates: ranked.slice(0, 40) } });
-          const scoreMap = new Map<string, number>();
-          (rerank?.scores || []).forEach((s: any) => scoreMap.set(s.id, s.p));
-          const hasScores = scoreMap.size > 0;
-          ranked = [...ranked].sort((a, b) => (scoreMap.get(b.user_id) ?? -1) - (scoreMap.get(a.user_id) ?? -1));
-          if (!hasScores) {
-            // No AI signal yet: rank by richness + compatibility so it differs from the raw deck.
-            ranked = [...ranked].sort((a, b) => (score(b) + richness(b)) - (score(a) + richness(a)));
-          }
-          ranked = ranked.slice(0, 20);
-        } catch (e) {
-          console.warn("AI rerank failed, fallback to heuristic", e);
-          ranked = [...ranked].sort((a, b) => (score(b) + richness(b)) - (score(a) + richness(a))).slice(0, 20);
-        }
-      } else {
-        // Deck: boosted first, then a randomized mix so it never mirrors the ranked tabs.
-        const shuffled = [...ranked].sort(() => Math.random() - 0.5);
-        ranked = [...shuffled.filter(p => boostedSet.has(p.user_id)), ...shuffled.filter(p => !boostedSet.has(p.user_id))].slice(0, 25);
+      // Single smart search: boosted first, then best overall match score, newest on ties.
+      ranked = [...ranked].sort((a, b) => (score(b) - score(a)) || (freshness(b) - freshness(a)));
+
+      const q = searchQuery.trim().toLowerCase();
+      if (q) {
+        ranked = ranked.filter((p: any) => {
+          const haystack = [
+            p.display_name,
+            p.location,
+            p.job_title,
+            p.bio,
+            ...(Array.isArray(p.interests) ? p.interests : []),
+          ].filter(Boolean).join(" ").toLowerCase();
+          return haystack.includes(q);
+        });
       }
+
+      ranked = ranked.slice(0, 40);
     }
     setProfiles(ranked);
   };
 
 
-  useEffect(() => { if (user?.id) { setCurrentIndex(0); setActivePhotoIndex(0); loadProfiles(); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [discoveryMode]);
+  useEffect(() => {
+    if (!user?.id) return;
+    const t = setTimeout(() => { setCurrentIndex(0); setActivePhotoIndex(0); loadProfiles(); }, 350);
+    return () => clearTimeout(t);
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [searchQuery]);
 
   const loadMatches = async (userId: string) => {
     const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
@@ -1095,7 +1078,9 @@ const Dating = () => {
 
           {/* ==================== DISCOVER TAB ==================== */}
           <TabsContent value="swipe" className="flex flex-col items-center gap-3">
-            <div className="w-full max-w-sm"><DiscoveryTabs mode={discoveryMode} onChange={setDiscoveryMode} /></div>
+            <div className="w-full max-w-sm">
+              <DatingSearch value={searchQuery} onChange={setSearchQuery} onOpenFilters={() => setShowFilters(true)} resultCount={profiles.length} />
+            </div>
             <div className="w-full flex justify-center">
             <AnimatePresence mode="wait">
               {currentCard ? (
