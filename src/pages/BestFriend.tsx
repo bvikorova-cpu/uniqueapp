@@ -67,11 +67,23 @@ const BestFriend = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showCreditsDialog, setShowCreditsDialog] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(true);
+  const [messageCount, setMessageCount] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { credits, loading: creditsLoading, canSendMessage, refresh: refreshCredits } = useBestFriendChatCredits();
 
   useEffect(() => { loadHistory(); }, []);
+
+  // Keep credits + message count in sync with reality when the tab regains focus
+  useEffect(() => {
+    const onFocus = () => { refreshCredits(); loadHistory(); };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
+  }, [refreshCredits]);
 
   const loadHistory = async () => {
     try {
