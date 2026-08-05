@@ -1088,78 +1088,95 @@ const Dating = () => {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: swipeDirection ? 0 : 1, scale: swipeDirection ? 0.9 : 1, x: swipeDirection === "left" ? -200 : swipeDirection === "right" ? 200 : 0, y: swipeDirection === "up" ? -200 : 0, rotate: swipeDirection === "left" ? -15 : swipeDirection === "right" ? 15 : 0 }}
                   exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="w-full max-w-sm">
-                  <Card className="overflow-hidden shadow-xl border-0 bg-card">
-                    <div className="relative aspect-[3/4] bg-muted overflow-hidden">
-                      {cardPhotos.length > 0 ? (
-                        <>
-                          {isVideoUrl(cardPhotos[activePhotoIndex]) ? (
-                            <video src={cardPhotos[activePhotoIndex]} className="w-full h-full object-cover" autoPlay loop muted playsInline />
-                          ) : (
-                            <img src={cardPhotos[activePhotoIndex]} alt={currentCard.display_name} className="w-full h-full object-cover" onClick={() => setLightboxImage(cardPhotos[activePhotoIndex])} />
-                          )}
-                          {cardPhotos.length > 1 && (
-                            <div className="absolute top-3 left-3 right-3 flex gap-1">
-                              {cardPhotos.map((_, i) => (
-                                <button key={i} onClick={() => setActivePhotoIndex(i)} className={`flex-1 h-1 rounded-full transition-all ${i === activePhotoIndex ? 'bg-white' : 'bg-white/40'}`} />
-                              ))}
-                            </div>
-                          )}
-                          {cardPhotos.length > 1 && (
-                            <><button className="absolute left-0 top-0 w-1/3 h-full" onClick={() => setActivePhotoIndex(Math.max(0, activePhotoIndex - 1))} />
-                            <button className="absolute right-0 top-0 w-1/3 h-full" onClick={() => setActivePhotoIndex(Math.min(cardPhotos.length - 1, activePhotoIndex + 1))} /></>
-                          )}
-                        </>
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
-                          <User className="h-24 w-24 text-muted-foreground/50" />
-                        </div>
-                      )}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-5">
-                        <div className="flex items-end justify-between">
-                          <div>
-                            <h2 className="text-2xl font-bold text-white">{currentCard.display_name}, {currentCard.age}</h2>
-                            {realLocation(currentCard.location) && <p className="text-white/80 text-sm flex items-center gap-1 mt-0.5"><MapPin className="h-3.5 w-3.5" />{realLocation(currentCard.location)}</p>}
+                  <div className="relative pb-12">
+                    <Card className="overflow-hidden rounded-[2rem] shadow-2xl border-0 bg-card">
+                      <div className="relative aspect-[3/4.2] bg-muted overflow-hidden">
+                        {cardPhotos.length > 0 ? (
+                          <>
+                            {isVideoUrl(cardPhotos[activePhotoIndex]) ? (
+                              <video src={cardPhotos[activePhotoIndex]} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+                            ) : (
+                              <img src={cardPhotos[activePhotoIndex]} alt={currentCard.display_name} className="w-full h-full object-cover" onClick={() => setLightboxImage(cardPhotos[activePhotoIndex])} />
+                            )}
+                            {cardPhotos.length > 1 && (
+                              <div className="absolute top-3 left-3 right-3 flex gap-1">
+                                {cardPhotos.map((_, i) => (
+                                  <button key={i} onClick={() => setActivePhotoIndex(i)} className={`flex-1 h-1 rounded-full transition-all ${i === activePhotoIndex ? 'bg-white' : 'bg-white/40'}`} />
+                                ))}
+                              </div>
+                            )}
+                            {cardPhotos.length > 1 && (
+                              <><button className="absolute left-0 top-0 w-1/3 h-full" onClick={() => setActivePhotoIndex(Math.max(0, activePhotoIndex - 1))} />
+                              <button className="absolute right-0 top-0 w-1/3 h-full" onClick={() => setActivePhotoIndex(Math.min(cardPhotos.length - 1, activePhotoIndex + 1))} /></>
+                            )}
+                          </>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
+                            <User className="h-24 w-24 text-muted-foreground/50" />
                           </div>
-                          <button onClick={() => setLightboxImage(cardPhotos[activePhotoIndex] || null)} className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors">
-                            <Info className="h-4 w-4" />
+                        )}
+
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent px-5 pb-8 pt-14">
+                          <div className="flex items-end justify-between gap-3">
+                            <div className="min-w-0">
+                              <h2 className="truncate text-[26px] font-bold leading-tight text-white">{currentCard.display_name}, {currentCard.age}</h2>
+                              {realLocation(currentCard.location) && <p className="mt-1 flex items-center gap-1 text-sm text-white/80"><MapPin className="h-3.5 w-3.5" />{realLocation(currentCard.location)}</p>}
+                              {currentCard.bio && <p className="mt-1.5 line-clamp-2 text-xs text-white/70">{currentCard.bio}</p>}
+                            </div>
+                            <button onClick={() => setLightboxImage(cardPhotos[activePhotoIndex] || null)} aria-label="View photo" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30">
+                              <Info className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {swipeDirection === "right" && <div className="absolute top-8 left-6 rotate-[-20deg]"><Badge className="bg-emerald-500 text-white text-2xl px-6 py-2 border-4 border-emerald-400">LIKE</Badge></div>}
+                        {swipeDirection === "left" && <div className="absolute top-8 right-6 rotate-[20deg]"><Badge className="bg-red-500 text-white text-2xl px-6 py-2 border-4 border-red-400">NOPE</Badge></div>}
+                        {swipeDirection === "up" && <div className="absolute top-8 left-1/2 -translate-x-1/2"><Badge className="bg-blue-500 text-white text-2xl px-6 py-2 border-4 border-blue-400">SUPER LIKE</Badge></div>}
+                        {user && cardPhotos[activePhotoIndex] && !isVideoUrl(cardPhotos[activePhotoIndex]) && (
+                          <PhotoLikeButton fromUserId={user.id} toUserId={currentCard.user_id} photoUrl={cardPhotos[activePhotoIndex]} />
+                        )}
+                      </div>
+
+                      <div className="px-5 pb-5 pt-8">
+                        <DatingDetailsGrid details={currentCard as any} compact />
+                        <div className="mt-3 flex items-center justify-center gap-2">
+                          <button disabled={!canRewind} onClick={handleRewind} title="Rewind last swipe" className="flex h-9 items-center gap-1.5 rounded-full border border-border px-3 text-xs text-muted-foreground transition-colors hover:text-foreground disabled:opacity-30"><RotateCcw className="h-3.5 w-3.5 text-amber-500" />Rewind</button>
+                          <button onClick={handleBoost} disabled={boosting || !!boostActive} title={boostActive ? "Boost active" : "Boost profile (20 credits)"} className={`flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs transition-colors disabled:opacity-50 ${boostActive ? "border-transparent bg-gradient-to-br from-orange-500 to-pink-500 text-primary-foreground" : "border-border text-muted-foreground hover:text-foreground"}`}><Flame className={`h-3.5 w-3.5 ${boostActive ? "" : "text-orange-500"}`} />Boost</button>
+                          <button onClick={viewLikesYou} title="Likes you" className="relative flex h-9 items-center gap-1.5 rounded-full border border-border px-3 text-xs text-muted-foreground transition-colors hover:text-foreground">
+                            <Eye className="h-3.5 w-3.5 text-purple-500" />Likes
+                            {likesYouCount > 0 && <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">{likesYouCount}</span>}
                           </button>
                         </div>
                       </div>
-                      {swipeDirection === "right" && <div className="absolute top-8 left-6 rotate-[-20deg]"><Badge className="bg-emerald-500 text-white text-2xl px-6 py-2 border-4 border-emerald-400">LIKE</Badge></div>}
-                      {swipeDirection === "left" && <div className="absolute top-8 right-6 rotate-[20deg]"><Badge className="bg-red-500 text-white text-2xl px-6 py-2 border-4 border-red-400">NOPE</Badge></div>}
-                      {swipeDirection === "up" && <div className="absolute top-8 left-1/2 -translate-x-1/2"><Badge className="bg-blue-500 text-white text-2xl px-6 py-2 border-4 border-blue-400">SUPER LIKE</Badge></div>}
-                      {user && cardPhotos[activePhotoIndex] && !isVideoUrl(cardPhotos[activePhotoIndex]) && (
-                        <PhotoLikeButton fromUserId={user.id} toUserId={currentCard.user_id} photoUrl={cardPhotos[activePhotoIndex]} />
-                      )}
-                    </div>
+                    </Card>
 
-
-                    {currentCard.bio && <div className="px-5 py-3 border-b border-border/50"><p className="text-sm text-muted-foreground">{currentCard.bio}</p></div>}
-                    <div className="px-5 py-3 border-b border-border/50">
-                      <DatingDetailsGrid details={currentCard as any} compact />
+                    {/* Floating circular actions (mockup style) */}
+                    <div className="absolute bottom-0 left-1/2 flex -translate-x-1/2 items-center gap-4">
+                      <button
+                        onClick={() => handleSwipe("dislike")}
+                        aria-label="Pass"
+                        className="flex h-16 w-16 items-center justify-center rounded-full bg-card shadow-xl ring-1 ring-border transition-transform hover:scale-110 active:scale-95"
+                      >
+                        <X className="h-7 w-7 text-muted-foreground" />
+                      </button>
+                      <button
+                        onClick={() => handleSwipe("like", true)}
+                        title={superLikesRemaining > 0 ? `Super Like (${superLikesRemaining} left)` : "No Super Likes left today"}
+                        aria-label="Super like"
+                        className={`relative flex h-12 w-12 items-center justify-center rounded-full bg-card shadow-lg ring-1 ring-border transition-transform hover:scale-110 active:scale-95 ${superLikesRemaining > 0 ? "" : "opacity-60"}`}
+                      >
+                        <Star className="h-5 w-5 text-blue-500" />
+                        {superLikesRemaining > 0 && <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 text-[10px] text-white">{superLikesRemaining}</span>}
+                      </button>
+                      <button
+                        onClick={() => handleSwipe("like")}
+                        aria-label="Like"
+                        className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-xl transition-transform hover:scale-110 active:scale-95"
+                      >
+                        <Heart className="h-7 w-7 fill-current" />
+                      </button>
                     </div>
-
-                    <div className="p-5">
-                      <div className="flex gap-3 justify-center items-center">
-                        <button disabled={!canRewind} onClick={handleRewind} title="Rewind last swipe" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:border-amber-400 transition-all disabled:opacity-30"><RotateCcw className="h-5 w-5 text-amber-500" /></button>
-                        <button onClick={() => handleSwipe("dislike")} className="h-14 w-14 rounded-full border-2 border-red-200 dark:border-red-800 flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-400 hover:scale-110 transition-all shadow-sm"><X className="h-7 w-7 text-red-500" /></button>
-                        <button onClick={() => handleSwipe("like", true)} title={superLikesRemaining > 0 ? `Super Like (${superLikesRemaining} left)` : "No Super Likes left today"} className={`h-11 w-11 rounded-full border flex items-center justify-center transition-all relative ${superLikesRemaining > 0 ? "border-border hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-400" : "border-border opacity-60"}`}><Star className="h-5 w-5 text-blue-500" />{superLikesRemaining > 0 && <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-blue-500 text-white text-[10px] flex items-center justify-center">{superLikesRemaining}</span>}</button>
-                        <button onClick={() => handleSwipe("like")} className="h-14 w-14 rounded-full border-2 border-emerald-200 dark:border-emerald-800 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:border-emerald-400 hover:scale-110 transition-all shadow-sm"><Heart className="h-7 w-7 text-emerald-500" /></button>
-                        <button onClick={handleBoost} disabled={boosting || !!boostActive} title={boostActive ? "Boost active" : "Boost profile (20 credits)"} className={`h-11 w-11 rounded-full border flex items-center justify-center transition-all disabled:opacity-50 ${boostActive ? "bg-gradient-to-br from-orange-500 to-pink-500 border-transparent text-white" : "border-border hover:bg-orange-50 dark:hover:bg-orange-950/20 hover:border-orange-400"}`}>
-                          <Flame className={`h-5 w-5 ${boostActive ? "text-white" : "text-orange-500"}`} />
-                        </button>
-                        <button onClick={viewLikesYou} title="Likes you" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-purple-50 dark:hover:bg-purple-950/20 hover:border-purple-400 transition-all relative">
-                          <Eye className="h-5 w-5 text-purple-500" />
-                          {likesYouCount > 0 && <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">{likesYouCount}</span>}
-                        </button>
-                      </div>
-                      <div className="flex justify-center mt-3">
-                        <Button variant="ghost" size="sm" onClick={() => setShowFilters(true)} className="text-xs gap-1.5 text-muted-foreground hover:text-foreground">
-                          <Settings className="h-3.5 w-3.5" />Filters
-                        </Button>
-                      </div>
-                    </div>
-                  </Card>
+                  </div>
                 </motion.div>
               ) : (
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
