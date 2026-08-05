@@ -40,6 +40,7 @@ import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
 import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal";
+import { LikesYouList } from "@/components/dating/LikesYouList";
 import { AIStarterButton } from "@/components/dating/AIStarterButton";
 import { Dating16Gate } from "@/components/dating/Dating16Gate";
 
@@ -1279,14 +1280,17 @@ const Dating = () => {
 
           {/* ==================== LIKES TAB ==================== */}
           <TabsContent value="likes">
-            <Card className="max-w-md mx-auto p-8 text-center">
-              <div className="h-20 w-20 mx-auto rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-4 shadow-lg">
-                <Eye className="h-10 w-10 text-primary-foreground" />
-              </div>
-              <h2 className="text-2xl font-black mb-1">{likesYouCount} {likesYouCount === 1 ? "Person" : "People"} Like You</h2>
-              <p className="text-sm text-muted-foreground mb-6">See who's interested and make the first move</p>
-              <Button onClick={viewLikesYou} className="bg-gradient-to-r from-primary to-accent hover:opacity-90 gap-2"><Eye className="h-4 w-4" />View Likes</Button>
-            </Card>
+            {user && (
+              <LikesYouList
+                userId={user.id}
+                currentProfile={currentProfile || undefined}
+                onMatch={(match, partner) => {
+                  loadMatches(user.id);
+                  setMatchCelebration({ match, partner });
+                }}
+                onLikesSeen={(count) => setLikesYouCount(Math.max(0, likesYouCount - count))}
+              />
+            )}
           </TabsContent>
 
           {/* ==================== PREMIUM TAB ==================== */}
