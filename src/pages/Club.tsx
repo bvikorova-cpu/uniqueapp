@@ -6,14 +6,11 @@ import { Crown,
   Heart,
   Gift,
   ShieldCheck,
-  Zap,
   Users,
   BadgeCheck,
   CreditCard,
   Truck,
-  Percent,
   ArrowRight,
-  Trophy,
   HandHeart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import clubCardPreview from "@/assets/club-card-preview.png.asset.json";
@@ -23,7 +20,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Accordion,
   AccordionContent,
   AccordionItem,
@@ -31,13 +27,10 @@ import { Accordion,
 import { Helmet } from "react-helmet-async";
 
 const PERKS = [
-  { icon: Percent, title: "-15% everywhere on Unique", desc: "Auto-applied to every AI credit pack, Verified badge, Fan Club, Bazaar fee, job listing, concert, course, PPV, and gift." },
-  { icon: Zap, title: "+50 AI credits every month", desc: "Free credits topped up automatically on each renewal — burn them on any Unique AI tool." },
   { icon: Crown, title: "Gold Unique VIP Club ring", desc: "Your avatar gets a glowing gold ring everywhere on the platform. Everyone sees you're part of the club." },
   { icon: Sparkles, title: "Priority access to new modules", desc: "You get every new Unique module 7 days before the public launch." },
   { icon: Gift, title: "Member-only monthly drop", desc: "One exclusive perk every single month — extra wheel spin, free coloring pack, private livestream, and more." },
   { icon: Users, title: "Refer-a-friend €5 credit", desc: "Every friend who joins the club with your link earns you €5 in Unique credits. Forever." },
-  { icon: Trophy, title: "Founding-1000 bonus", desc: "The first 1,000 members keep a permanent 2× vote weight in Megatalent and a lifetime Founding badge." },
   { icon: ShieldCheck, title: "Physical NFC card", desc: "Laser-engraved plastic card with your member number and NFC that opens your Unique profile when tapped." },
 ];
 
@@ -56,25 +49,13 @@ function useGoodFund() {
   return { total, members };
 }
 
-function useFoundingProgress() {
-  const [taken, setTaken] = useState(0);
-  useEffect(() => {
-    supabase.rpc("get_club_founding_progress").then(({ data }) => {
-      const row = Array.isArray(data) ? data[0] : (data as any);
-      if (row) setTaken(Number(row.founding_taken ?? 0));
-    });
-  }, []);
-  return { taken, total: 1000 };
-}
-
 export default function Club() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { membership, isMember, isFounding, openBillingPortal, refresh } =
+  const { membership, isMember, openBillingPortal, refresh } =
     useClubMembership();
   const { total, members } = useGoodFund();
-  const { taken, total: foundingTotal } = useFoundingProgress();
   const [verifying, setVerifying] = useState(false);
 
   // Verify checkout after redirect
@@ -88,7 +69,7 @@ export default function Club() {
         if ((data as any)?.status === "active") {
           toast({
             title: "🎉 Welcome to the Unique VIP Club!",
-            description: "Your card is active. Gold ring unlocked. 15% discount active platform-wide." });
+            description: "Your card is active. Gold ring unlocked." });
           refresh();
         }
       })
@@ -102,7 +83,7 @@ export default function Club() {
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-pink-50 to-amber-50 dark:from-purple-950 dark:via-pink-950 dark:to-amber-950 pb-24">
       <Helmet>
         <title>Unique VIP Club — Join the movement that supports good</title>
-        <meta name="description" content="Get your Unique VIP Club membership card. €20 digital or €30 physical, then just €1.50/month. 15% off everything, 50 free AI credits monthly, and 10% of every payment supports good causes." />
+        <meta name="description" content="Get your Unique VIP Club membership card. €20 digital or €30 physical, then €1.50/month. 10% of every payment supports good causes." />
       </Helmet>
 
       {/* HERO VIDEO */}
@@ -130,7 +111,7 @@ export default function Club() {
                 Join the VIP Club <span className="bg-gradient-to-r from-amber-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">that supports good</span>
               </h1>
               <p className="text-white/90 text-xs sm:text-base font-semibold mt-1 drop-shadow">
-                €20 or €30 · then just €1.50/month · 10% goes to good causes
+                €20 or €30 · then €1.50/month · 10% goes to good causes
               </p>
             </motion.div>
           </div>
@@ -190,27 +171,6 @@ export default function Club() {
               </div>
             </div>
           </motion.div>
-
-          {/* Founding progress */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-8 max-w-lg mx-auto"
-          >
-            <div className="flex items-center justify-between text-sm mb-2">
-              <span className="font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                <Trophy className="h-4 w-4" /> Founding 1,000
-              </span>
-              <span className="text-muted-foreground">
-                {taken} / {foundingTotal} claimed
-              </span>
-            </div>
-            <Progress value={(taken / foundingTotal) * 100} className="h-3" />
-            <p className="text-xs text-muted-foreground mt-2">
-              First 1,000 members get a lifetime Founding badge + permanent 2× Megatalent votes.
-            </p>
-          </motion.div>
         </div>
       </section>
 
@@ -228,7 +188,6 @@ export default function Club() {
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   {membership.tier === "physical" ? "Physical NFC card" : "Digital card"}
-                  {isFounding && " · 🏆 Founding member"}
                 </p>
                 {membership.current_period_end && (
                   <p className="text-xs text-muted-foreground mt-1">
@@ -368,7 +327,7 @@ export default function Club() {
         <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
           Every perk is real, active on day one, and yours for as long as you're a member.
         </p>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
           {PERKS.map((perk, i) => (
             <motion.div
               key={i}
@@ -395,7 +354,7 @@ export default function Club() {
           </h2>
           <ol className="space-y-3 text-sm md:text-base">
             <li><strong>1.</strong> Pick Digital (€20) or Physical (€30). Pay once + €1.50/month.</li>
-            <li><strong>2.</strong> Your gold ring, discount, and 50 monthly AI credits activate instantly.</li>
+            <li><strong>2.</strong> Your gold ring and member perks activate instantly.</li>
             <li><strong>3.</strong> Physical cardholders receive a laser-engraved NFC card in the mail.</li>
             <li><strong>4.</strong> Every month, €0.15 from your fee is added to the public Good Fund counter above.</li>
             <li><strong>5.</strong> Cancel any time via the billing portal — no strings attached.</li>
@@ -426,12 +385,6 @@ export default function Club() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="q4" className="border rounded-lg px-4">
-            <AccordionTrigger>What's the 15% discount for?</AccordionTrigger>
-            <AccordionContent>
-              It auto-applies at Stripe checkout for AI credits, Verified badges, Fan Club subscriptions, Bazaar fees, job listings, concerts, courses, PPV posts and platform gifts. Basically everything paid on Unique.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="q5" className="border rounded-lg px-4">
             <AccordionTrigger>What if I lose the physical card?</AccordionTrigger>
             <AccordionContent>
               Order a replacement for €10 from your member page. Digital card is always available in-app.
@@ -447,7 +400,7 @@ export default function Club() {
             <BadgeCheck className="h-12 w-12 mx-auto mb-3" />
             <h3 className="text-3xl font-black mb-2">Ready to join?</h3>
             <p className="mb-6 opacity-90">
-              Founding spots are filling fast. Get yours before they're gone.
+              Join the club that supports good.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
               <Button

@@ -21,7 +21,7 @@ export function ClubHomepageBanner() {
             <div className="flex-1 min-w-0 text-white">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[10px] md:text-xs uppercase tracking-widest font-bold text-amber-300">
-                  NEW · Limited founding spots
+                  NEW · VIP Club
                 </span>
               </div>
               <h3 className="text-lg md:text-2xl font-black leading-tight">
@@ -29,7 +29,7 @@ export function ClubHomepageBanner() {
               </h3>
               <p className="text-xs md:text-sm text-white/80 mt-1 flex items-center gap-1.5">
                 <HandHeart className="h-3.5 w-3.5 text-pink-300 shrink-0" />
-                15% off everything, 50 free AI credits/month, and 10% supports good causes.
+                10% of every payment supports good causes. Gold ring, priority access, monthly drops.
               </p>
             </div>
             <div className="shrink-0 w-full md:w-auto">

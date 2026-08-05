@@ -49,7 +49,7 @@ const fmtMoney = (a: number, c: string) =>
  * - Deep link to /account/subscriptions for full management
  */
 export function BillingOverviewCard() {
-  const { membership, loading: clubLoading, isMember, isFounding } = useClubMembership();
+  const { membership, loading: clubLoading, isMember, openBillingPortal } = useClubMembership();
   const [subs, setSubs] = useState<Sub[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -107,11 +107,6 @@ export function BillingOverviewCard() {
               <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
             ) : isMember ? (
               <div className="flex items-center gap-1.5">
-                {isFounding && (
-                  <Badge className="bg-gradient-to-r from-amber-400 to-yellow-600 text-white border-0 text-[10px]">
-                    Founding
-                  </Badge>
-                )}
                 <Badge className="bg-emerald-600 text-white border-0">
                   <CheckCircle2 className="h-3 w-3 mr-1" />
                   Active
