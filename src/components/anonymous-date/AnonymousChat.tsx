@@ -524,6 +524,10 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
       {/* Timed photo reveal — free after 7 days, or earlier for credits */}
       <PhotoReveal matchId={match.id} partnerName={partnerName} />
 
+      {/* Upload / replace your own hidden reveal photo */}
+      <PrivatePhotoUpload />
+
+
 
 
       {/* Daily AI question */}
