@@ -14,4 +14,6 @@ export async function spendDatingCredits(amount: number, reason: string): Promis
     p_source: "dating" });
   if (error) throw new Error(error.message || "Credit deduction failed");
   if (ok === false) throw new Error(`Not enough credits. This tool costs ${amount} credits.`);
+  // Notify every credit display (Anonymous Date hub, header, etc.) to refresh.
+  window.dispatchEvent(new Event("ai-credits-updated"));
 }
