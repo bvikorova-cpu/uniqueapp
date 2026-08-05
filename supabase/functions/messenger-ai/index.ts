@@ -4,18 +4,18 @@ import { callOpenAI, callOpenAIJSON } from "../_shared/openai.ts";
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-// Unified AI credit costs per Messenger action (matches the UI labels).
+// Unified AI credit costs per Messenger action (3-5 credits, matches the UI labels).
 const ACTION_COSTS: Record<string, number> = {
-  translate: 2,
-  "smart-reply": 2,
-  summarize: 5,
-  "time-capsule": 5,
+  translate: 3,
+  "smart-reply": 3,
+  summarize: 4,
+  "time-capsule": 4,
   "emotional-weather": 3,
-  "quantum-message": 10,
-  "anonymous-compliment": 2,
-  "what-if": 15,
+  "quantum-message": 5,
+  "anonymous-compliment": 3,
+  "what-if": 5,
 };
-const DEFAULT_COST = 2;
+const DEFAULT_COST = 3;
 
 const styles: Record<string, string> = { heartfelt: "Write with genuine warmth and emotional depth.",
   poetic: "Use poetic language and metaphors.",
