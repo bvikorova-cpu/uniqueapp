@@ -523,31 +523,43 @@ const Dating = () => {
   const handleSwipe = async (action: "like" | "dislike", isSuper = false) => {
     if (!user || currentIndex >= profiles.length) return;
     const currentCard = profiles[currentIndex];
+    if (isSuper && superLikesRemaining <= 0) {
+      toast({ title: "No Super Likes left", description: "You've used all 5 free Super Likes today. Buy a Super Like pack in the Premium tab or come back tomorrow.", variant: "destructive" });
+      return;
+    }
     setSwipeDirection(action === "like" ? (isSuper ? "up" : "right") : "left");
-    await supabase.from("dating_last_swipe").upsert({ user_id: user.id, swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action });
+    await supabase.from("dating_last_swipe").upsert(
+      { user_id: user.id, swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action },
+      { onConflict: "user_id" }
+    );
     setCanRewind(true);
     setLastSwipe({ swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action });
     if (isSuper) {
       if (freeSuperLikesLeft <= 0) {
         const { data: usedPerk } = await supabase.rpc("consume_dating_perk", { p_kind: "super_like" });
-        if (!usedPerk) { toast({ title: "No Super Likes left", description: "Buy a Super Like pack in Premium.", variant: "destructive" }); setSwipeDirection(null); return; }
+        if (!usedPerk) { toast({ title: "No Super Likes left", description: "Buy a Super Like pack in the Premium tab.", variant: "destructive" }); setSwipeDirection(null); return; }
       } else {
         setFreeSuperLikesLeft(n => Math.max(0, n - 1));
       }
-      const { error: superError } = await supabase.from("dating_super_likes").insert([{ swiper_id: user.id, swiped_id: currentCard.user_id }]);
-      if (superError) { toast({ title: "Error", description: "Failed to send Super Like", variant: "destructive" }); setSwipeDirection(null); return; }
+      const { error: superError } = await supabase
+        .from("dating_super_likes")
+        .upsert([{ swiper_id: user.id, swiped_id: currentCard.user_id }], { onConflict: "swiper_id,swiped_id", ignoreDuplicates: true });
+      if (superError) { toast({ title: "Super Like failed", description: superError.message, variant: "destructive" }); setSwipeDirection(null); return; }
       toast({ title: "⭐ Super Like!", description: `${currentCard.display_name} will be notified!` });
-      setSuperLikesRemaining(superLikesRemaining - 1);
+      setSuperLikesRemaining(Math.max(0, superLikesRemaining - 1));
 
     }
     const { rateLimit } = await import("@/lib/scaleGuards");
     const okSwipe = await rateLimit("swipe.dating", 200, 60);
     if (!okSwipe) { toast({ title: "Slow down", description: "Too many swipes. Try again in a minute.", variant: "destructive" }); setSwipeDirection(null); return; }
-    const { error } = await supabase.from("dating_swipes").insert([{ swiper_id: user.id, swiped_id: currentCard.user_id, action: isSuper ? "like" : action }]);
-    if (error) { toast({ title: "Error", description: "Failed to save swipe", variant: "destructive" }); setSwipeDirection(null); return; }
+    const { error } = await supabase
+      .from("dating_swipes")
+      .upsert([{ swiper_id: user.id, swiped_id: currentCard.user_id, action: isSuper ? "like" : action }], { onConflict: "swiper_id,swiped_id" });
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); setSwipeDirection(null); return; }
 
     if (action === "like" || isSuper) {
-      await supabase.from("dating_likes_you").insert([{ liker_id: user.id, liked_id: currentCard.user_id }]);
+      await supabase.from("dating_likes_you").upsert([{ liker_id: user.id, liked_id: currentCard.user_id }], { onConflict: "liker_id,liked_id", ignoreDuplicates: true });
+
       const { data } = await supabase.from("dating_matches").select("*").or(`and(user1_id.eq.${user.id},user2_id.eq.${currentCard.user_id}),and(user1_id.eq.${currentCard.user_id},user2_id.eq.${user.id})`).maybeSingle();
       if (data) {
         await supabase.rpc("send_user_notification", {
