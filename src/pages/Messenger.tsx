@@ -23,6 +23,7 @@ import { EncryptionBadge } from "@/components/messaging/EncryptionBadge";
 import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
 import { MessengerAIFeatures } from "@/components/messenger/MessengerAIFeatures";
 import { MessengerHero } from "@/components/messenger/MessengerHero";
+import { useChatTheme, chatBackgroundStyle } from "@/hooks/useChatTheme";
 import PushOptInButton from "@/components/notifications/PushOptInButton";
 import { ChatAnalyticsDashboard } from "@/components/messenger/ChatAnalyticsDashboard";
 import { AIChatThemes } from "@/components/messenger/AIChatThemes";
@@ -136,6 +137,7 @@ const Messenger = () => {
   const { toast } = useToast();
   const [activeView, setActiveView] = useState<MessengerView>("hub");
   const [user, setUser] = useState<any>(null);
+  const { state: chatTheme } = useChatTheme(user?.id);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messages, setMessages] = useState<MessageWithProfile[]>([]);
@@ -1384,7 +1386,7 @@ const Messenger = () => {
                   </div>
                 )}
 
-                <ScrollArea className="flex-1 py-4">
+                <ScrollArea className="flex-1 py-4" style={chatBackgroundStyle(chatTheme)}>
                   {loadingMessages && messages.length === 0 ? (
                     <div className="flex items-center justify-center py-12 text-sm text-muted-foreground gap-2">
                       <Loader2 className="h-4 w-4 animate-spin" />
