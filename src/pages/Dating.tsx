@@ -281,22 +281,32 @@ const Dating = () => {
     if (boosting || boostActive || !user) return;
     setBoosting(true);
     try {
-      const { data: ok, error: deductErr } = await supabase.rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: 20, p_reason: "dating_boost_30min", p_source: "dating" });
-      if (deductErr || ok === false) {
-        toast({ title: "Not enough credits", description: "Boost costs 20 credits.", variant: "destructive" });
-        return;
+      // Use a purchased boost from a pack first, otherwise pay 20 credits.
+      const { data: usedPerk } = await supabase.rpc("consume_dating_perk", { p_kind: "boost" });
+      let creditsSpent = 0;
+      if (!usedPerk) {
+        const { data: ok, error: deductErr } = await supabase.rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: 20, p_reason: "dating_boost_30min", p_source: "dating" });
+        if (deductErr || ok === false) {
+          toast({ title: "Not enough credits", description: "Boost costs 20 credits.", variant: "destructive" });
+          return;
+        }
+        creditsSpent = 20;
+      } else {
+        setPurchasedBoosts(p => Math.max(0, p - 1));
       }
       const expiresAt = new Date(Date.now() + 30 * 60_000).toISOString();
-      const { error: insErr } = await supabase.from("dating_boosts").insert({ user_id: user.id, expires_at: expiresAt, credits_spent: 20 });
+      const { error: insErr } = await supabase.from("dating_boosts").insert({ user_id: user.id, expires_at: expiresAt, credits_spent: creditsSpent });
       if (insErr) throw insErr;
       setBoostActive(expiresAt);
-      toast({ title: "🔥 Boost active!", description: "You're a top profile for 30 minutes." });
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast({ title: "🔥 Boost active!", description: creditsSpent ? "You're a top profile for 30 minutes." : "Used 1 boost from your pack — active for 30 minutes." });
     } catch (e: any) {
       toast({ title: "Boost failed", description: e?.message || "Try again", variant: "destructive" });
     } finally {
       setBoosting(false);
     }
   };
+
 
   const loadUserProfile = async (userId: string) => {
     const { data } = await supabase.from("dating_profiles").select("*").eq("user_id", userId).maybeSingle();
