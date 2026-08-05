@@ -69004,6 +69004,7 @@ export type Database = {
         Returns: number
       }
       delete_auction_if_safe: { Args: { p_auction_id: string }; Returns: Json }
+      deliver_due_time_capsules: { Args: never; Returns: number }
       dequeue_async_jobs: {
         Args: { _batch?: number; _queue: string; _worker: string }
         Returns: {
