@@ -119,6 +119,12 @@ const todayKey = () =>
   new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 const dailyStorageKey = (userId: string) => `dating_entry_paid:${userId}`;
 
+/** Placeholder locations ("City, Country", "-", empty) are not shown in the UI. */
+const PLACEHOLDER_LOCATIONS = new Set(["city, country", "city", "country", "-", "n/a", "unknown"]);
+const hasRealLocation = (loc?: string | null) =>
+  !!loc && loc.trim().length > 1 && !PLACEHOLDER_LOCATIONS.has(loc.trim().toLowerCase());
+const realLocation = (loc?: string | null) => (hasRealLocation(loc) ? loc!.trim() : null);
+
 const Dating = () => {
 
   const { toast } = useToast();
