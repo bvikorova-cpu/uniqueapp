@@ -126,7 +126,7 @@ export default function AdminClubShipping() {
   const q = search.trim().toLowerCase();
   const visible = q
     ? rows.filter((r) =>
-        [r.user_email, r.user_name, r.recipientNameSafe(), r.phone]
+        [r.user_email, r.user_name, r.recipient_name, r.phone]
           .filter(Boolean)
           .some((v) => String(v).toLowerCase().includes(q)),
       )
