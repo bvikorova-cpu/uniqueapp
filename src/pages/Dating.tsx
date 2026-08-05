@@ -43,12 +43,10 @@ import { VideoPromptRecorder, type VideoPrompt } from "@/components/dating/Video
 import { VoiceNoteRecorder } from "@/components/dating/VoiceNoteRecorder";
 import { DatePlanCard } from "@/components/dating/DatePlanCard";
 import { MatchPollCard } from "@/components/dating/MatchPollCard";
-import { DatingEventsList } from "@/components/dating/DatingEventsList";
 import { FriendCirclesPanel } from "@/components/dating/FriendCirclesPanel";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
-import { WeeklyInsightsCard } from "@/components/dating/WeeklyInsightsCard";
 import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal";
 import { AIStarterButton } from "@/components/dating/AIStarterButton";
 import { AIBioCoach } from "@/components/dating/AIBioCoach";
