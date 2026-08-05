@@ -37,8 +37,9 @@ export default function Club() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { membership, isMember, openBillingPortal, refresh } =
+  const { membership, isMember, refresh } =
     useClubMembership();
+
   
   const [verifying, setVerifying] = useState(false);
 
@@ -166,10 +167,8 @@ export default function Club() {
                 <Button onClick={() => navigate("/club/card")} className="bg-gradient-to-r from-amber-500 to-pink-500">
                   <CreditCard className="h-4 w-4 mr-2" /> View my card
                 </Button>
-                <Button variant="outline" onClick={openBillingPortal}>
-                  Manage billing
-                </Button>
               </div>
+
             </div>
 
           </Card>
@@ -234,8 +233,9 @@ export default function Club() {
           </div>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
-            Cancel any time from your billing portal. 10% of every payment goes to the Unique Good Fund.
+            Cancel any time by contacting support. 10% of every payment goes to the Unique Good Fund.
           </p>
+
 
           {/* Card preview */}
           <div className="mt-12 flex flex-col items-center">
@@ -305,7 +305,7 @@ export default function Club() {
             <li><strong>2.</strong> Your gold ring and member perks activate instantly.</li>
             <li><strong>3.</strong> Physical cardholders receive a laser-engraved NFC card in the mail.</li>
             <li><strong>4.</strong> Every month, €0.15 from your fee goes to the Unique Good Fund.</li>
-            <li><strong>5.</strong> Cancel any time via the billing portal — no strings attached.</li>
+            <li><strong>5.</strong> Cancel any time by contacting support — no strings attached.</li>
           </ol>
         </Card>
       </section>
@@ -323,7 +323,7 @@ export default function Club() {
           <AccordionItem value="q2" className="border rounded-lg px-4">
             <AccordionTrigger>Can I cancel?</AccordionTrigger>
             <AccordionContent>
-              Yes, any time. Click "Manage billing" on your member card and cancel with one click. You keep member perks until the end of the current period.
+              Yes, any time — just contact support and we'll cancel your membership. You keep member perks until the end of the current period.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="q3" className="border rounded-lg px-4">
