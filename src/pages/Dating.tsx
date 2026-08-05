@@ -747,18 +747,35 @@ const Dating = () => {
   };
 
   const loadGifts = async () => {
-    const { data } = await supabase.from("dating_gifts").select("*").order("price", { ascending: true });
+    const { data } = await supabase.from("dating_gifts").select("*").order("credit_cost", { ascending: true });
     setAvailableGifts(data || []);
   };
 
   const handleSendGift = async (giftId: string) => {
     if (!selectedMatch || !user) return;
     try {
-      const { data, error } = await supabase.functions.invoke('send-dating-gift', { body: { matchId: selectedMatch.id, giftId, message: newMessage || "" } });
+      const { data, error } = await supabase.rpc("dating_send_gift_credits" as any, {
+        _match_id: selectedMatch.id,
+        _gift_id: giftId,
+        _message: newMessage || "",
+      });
       if (error) throw error;
-      if (data?.url) { window.open(data.url, '_blank'); toast({ title: "Opening Checkout 🎁" }); setShowGiftDialog(false); }
+      const res: any = data;
+      if (!res?.success) {
+        toast({
+          title: res?.error === "Not enough credits" ? "Not enough credits" : "Error",
+          description: res?.error === "Not enough credits" ? `You need ${res?.needed} credits for this gift.` : (res?.error || "Failed to process gift"),
+          variant: "destructive",
+        });
+        return;
+      }
+      toast({ title: "Gift sent 🎁", description: `-${res.credits_spent} credits` });
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      setShowGiftDialog(false);
+      loadGiftsForMatch(selectedMatch.id);
     } catch { toast({ title: "Error", description: "Failed to process gift", variant: "destructive" }); }
   };
+
 
   const handleRewind = async () => {
     if (!user || !lastSwipe || !canRewind) return;
