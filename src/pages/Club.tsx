@@ -29,25 +29,9 @@ import { Helmet } from "react-helmet-async";
 const PERKS = [
   { icon: Crown, title: "Gold Unique VIP Club ring", desc: "Your avatar gets a glowing gold ring everywhere on the platform. Everyone sees you're part of the club." },
   { icon: Sparkles, title: "Priority access to new modules", desc: "You get every new Unique module 7 days before the public launch." },
-  { icon: Gift, title: "Member-only monthly drop", desc: "One exclusive perk every single month — extra wheel spin, free coloring pack, private livestream, and more." },
-  { icon: Users, title: "Refer-a-friend €5 credit", desc: "Every friend who joins the club with your link earns you €5 in Unique credits. Forever." },
-  { icon: ShieldCheck, title: "Physical NFC card", desc: "Laser-engraved plastic card with your member number and NFC that opens your Unique profile when tapped." },
+  { icon: ShieldCheck, title: "Physical NFC card", desc: "Laser-engraved plastic card with NFC that opens your Unique profile when tapped." },
 ];
 
-function useGoodFund() {
-  const [total, setTotal] = useState<number>(0);
-  const [members, setMembers] = useState<number>(0);
-  useEffect(() => {
-    supabase.rpc("get_club_good_fund_total").then(({ data }) => {
-      const row = Array.isArray(data) ? data[0] : (data as any);
-      if (row) {
-        setTotal(Number(row.total_eur ?? 0));
-        setMembers(Number(row.member_count ?? 0));
-      }
-    });
-  }, []);
-  return { total, members };
-}
 
 export default function Club() {
   const navigate = useNavigate();
