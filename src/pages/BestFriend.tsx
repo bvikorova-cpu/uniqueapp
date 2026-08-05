@@ -12,7 +12,8 @@ import { Send, Heart, Sparkles, CreditCard, Crown, ArrowLeft,
   User, Brain, Drama, Mic, FileText, Clock, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useBestFriendSubscription } from "@/hooks/useBestFriendSubscription";
+import { useBestFriendChatCredits, BEST_FRIEND_CHAT_COST } from "@/hooks/useBestFriendChatCredits";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BestFriendHero } from "@/components/best-friend/BestFriendHero";
