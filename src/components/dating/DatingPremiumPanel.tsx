@@ -176,23 +176,5 @@ const PackCard = ({ pack, onBuy }: { pack: Pack; onBuy: () => void }) => {
   );
 };
 
-const TierCard = ({ name, price, features, gradient, highlight, onClick }: {
-  name: string; price: string; features: string[]; gradient: string; highlight?: boolean; onClick: () => void;
-}) => (
-  <Card className={`relative ${highlight ? "border-2 border-yellow-500/50 shadow-xl" : "border"}`}>
-    {highlight && <Badge className="absolute -top-2 right-3 bg-yellow-500 text-yellow-950"><Sparkles className="h-3 w-3 mr-1" /> Popular</Badge>}
-    <CardHeader>
-      <CardTitle className={`text-2xl bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>{name}</CardTitle>
-      <p className="text-3xl font-bold">{price}<span className="text-sm font-normal text-muted-foreground">{price === "€20" ? "/year" : "/month"}</span></p>
-    </CardHeader>
-    <CardContent className="space-y-2">
-      {features.map(f => (
-        <div key={f} className="flex items-start gap-2 text-sm">
-          <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-          <span>{f}</span>
-        </div>
-      ))}
-      <Button className={`w-full mt-3 bg-gradient-to-r ${gradient}`} onClick={onClick}>Subscribe</Button>
-    </CardContent>
-  </Card>
-);
+
+
