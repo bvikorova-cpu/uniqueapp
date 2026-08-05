@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.push_notification(uuid, uuid, text, text, text, text, uuid);
