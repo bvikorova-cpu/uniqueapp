@@ -33,6 +33,101 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
+    // ───────── Free streaming best-friend chat ─────────
+    if (action === "chat") {
+      const CHAT_SYSTEM = `You are the user's warm, caring best friend. You listen with empathy, ask gentle follow-up questions and celebrate their wins.
+Rules:
+- Be natural, warm and human, never a corporate assistant.
+- Keep replies short (2-5 sentences) unless they ask for depth.
+- A few fitting emojis, never spam.
+- You are not a therapist; if the user is in crisis, gently encourage professional help.
+- Always reply in the language the user writes in.`;
+
+      const incoming: Array<{ role: string; content: string }> = Array.isArray(params.messages) ? params.messages : [];
+      const history = incoming
+        .filter((m) => m && typeof m.content === "string" && m.content.trim())
+        .filter((m) => m.role === "user" || m.role === "assistant")
+        .slice(-20);
+      if (history.length === 0) {
+        return new Response(JSON.stringify({ error: "No message provided" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const lastUserMessage = [...history].reverse().find((m) => m.role === "user")?.content ?? "";
+
+      const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Lovable-API-Key": LOVABLE_API_KEY },
+        body: JSON.stringify({
+          model: "google/gemini-3.6-flash",
+          stream: true,
+          messages: [{ role: "system", content: CHAT_SYSTEM }, ...history],
+        }),
+      });
+
+      if (!aiRes.ok || !aiRes.body) {
+        const detail = await aiRes.text().catch(() => "");
+        console.error("best-friend chat gateway error", aiRes.status, detail);
+        const status = aiRes.status === 429 ? 429 : aiRes.status === 402 ? 402 : 502;
+        return new Response(JSON.stringify({ error: status === 429 ? "Too many requests, try again shortly." : "AI request failed" }), {
+          status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      const admin = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+        { auth: { persistSession: false } }
+      );
+      if (lastUserMessage) {
+        const { error: uErr } = await admin.from("best_friend_conversations")
+          .insert({ user_id: user.id, role: "user", content: lastUserMessage });
+        if (uErr) console.error("save user message failed", uErr.message);
+      }
+
+      let assistant = "";
+      let buffer = "";
+      const decoder = new TextDecoder();
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        async start(controller) {
+          const reader = aiRes.body!.getReader();
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              controller.enqueue(value);
+              buffer += decoder.decode(value, { stream: true });
+              let nl: number;
+              while ((nl = buffer.indexOf("\n")) !== -1) {
+                const line = buffer.slice(0, nl).replace(/\r$/, "");
+                buffer = buffer.slice(nl + 1);
+                if (!line.startsWith("data: ")) continue;
+                const payload = line.slice(6).trim();
+                if (!payload || payload === "[DONE]") continue;
+                try {
+                  const delta = JSON.parse(payload)?.choices?.[0]?.delta?.content;
+                  if (typeof delta === "string") assistant += delta;
+                } catch { /* partial chunk */ }
+              }
+            }
+          } catch (e) { console.error("chat stream error", e); }
+          finally {
+            controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+            controller.close();
+            if (assistant.trim()) {
+              const { error } = await admin.from("best_friend_conversations")
+                .insert({ user_id: user.id, role: "assistant", content: assistant.trim() });
+              if (error) console.error("save assistant message failed", error.message);
+            }
+          }
+        },
+      });
+
+      return new Response(stream, {
+        headers: { ...corsHeaders, "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" },
+      });
+    }
+
+
     const creditCosts: Record<string, number> = { mood_journal: 3,
       conversation_starters: 2,
       encouragement_cards: 3,
