@@ -1753,7 +1753,7 @@ const Messenger = () => {
                           variant="ghost"
                           size="icon"
                           className="h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full"
-                          disabled={isRecording}
+                          aria-label="Emoji picker"
                           aria-label="Emoji picker"
                         >
                           <Smile className="h-4 w-4" />
