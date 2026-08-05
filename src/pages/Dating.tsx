@@ -735,57 +735,39 @@ const Dating = () => {
             ))}
           </div>
 
-          {/* Pricing */}
+          {/* Credit-based entry */}
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2">Choose Your Plan</h2>
-            <p className="text-muted-foreground text-center mb-8">Start your journey today</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-              <Card className={`relative cursor-pointer transition-all duration-300 overflow-hidden ${selectedPlan === 'monthly' ? 'ring-2 ring-primary shadow-lg shadow-primary/10' : 'hover:border-primary/30'}`} onClick={() => setSelectedPlan('monthly')}>
-                <CardContent className="p-6 sm:p-8">
-                  <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-4xl sm:text-5xl font-bold">€2</span>
-                    <span className="text-muted-foreground">/month</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-6">Flexible monthly plan</p>
-                  <div className="space-y-3">
-                    {["Unlimited swipes", "Send messages", "5 Super Likes daily", "Photo & video profiles", "See who likes you", "Rewind last swipe", "Send virtual gifts", "AI Tools (3 credits each)"].map(feat => (
-                      <div key={feat} className="flex items-center gap-2.5">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                        <span className="text-sm">{feat}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className={`relative cursor-pointer transition-all duration-300 overflow-hidden ${selectedPlan === 'yearly' ? 'ring-2 ring-accent shadow-lg shadow-accent/10' : 'hover:border-accent/30'}`} onClick={() => setSelectedPlan('yearly')}>
-                <div className="absolute top-0 right-0">
-                  <Badge className="bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-none rounded-bl-lg px-3 py-1 text-xs font-semibold">SAVE 17%</Badge>
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2">Daily Credit Access</h2>
+            <p className="text-muted-foreground text-center mb-8">No subscription — pay only for the days you use</p>
+            <Card className="max-w-md mx-auto ring-2 ring-primary shadow-lg shadow-primary/10">
+              <CardContent className="p-6 sm:p-8 text-center">
+                <div className="flex items-baseline justify-center gap-1 mb-1">
+                  <span className="text-4xl sm:text-5xl font-bold">{ENTRY_CREDIT_COST}</span>
+                  <span className="text-muted-foreground">credits / day</span>
                 </div>
-                <CardContent className="p-6 sm:p-8">
-                  <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-4xl sm:text-5xl font-bold">€20</span>
-                    <span className="text-muted-foreground">/year</span>
-                  </div>
-                  <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium mb-6">Only €1.67/month</p>
-                  <div className="space-y-3">
-                    {["Everything in Monthly", "Priority in discovery", "10 Super Likes daily", "Advanced filters", "Read receipts", "Profile boost weekly", "Premium badge", "Double AI credits"].map(feat => (
-                      <div key={feat} className="flex items-center gap-2.5">
-                        <Check className="h-4 w-4 text-accent flex-shrink-0" />
-                        <span className="text-sm">{feat}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                <p className="text-sm text-muted-foreground mb-6">Unlocks Dating until midnight</p>
+                <div className="space-y-3 text-left">
+                  {["Unlimited swipes", "Send messages", "Super Likes", "Photo & video profiles", "See who likes you", "Rewind last swipe", "Send virtual gifts", "AI Tools (3 credits each)"].map(feat => (
+                    <div key={feat} className="flex items-center gap-2.5">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                      <span className="text-sm">{feat}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
             <div className="text-center mt-8 space-y-4">
-              <Button onClick={() => handleSubscribe(selectedPlan)} disabled={subscribing} size="lg" className="w-full max-w-md mx-auto text-base py-6 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white shadow-lg disabled:opacity-60">
+              <Button onClick={handlePayEntry} disabled={payingAccess} size="lg" className="w-full max-w-md mx-auto text-base py-6 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white shadow-lg disabled:opacity-60">
                 <Heart className="mr-2 h-5 w-5" />
-                {subscribing ? "Redirecting to Stripe…" : `Get Started — ${selectedPlan === 'monthly' ? '€2/month' : '€20/year'}`}
+                {payingAccess ? "Unlocking…" : `Unlock today — ${ENTRY_CREDIT_COST} credits`}
               </Button>
-              <p className="text-xs text-muted-foreground">Cancel anytime • Secure payment • 100% satisfaction guarantee</p>
+              <Button variant="outline" onClick={() => navigate("/ai-credits")} className="w-full max-w-md mx-auto">
+                Top up credits
+              </Button>
+              <p className="text-xs text-muted-foreground">Resets every day at midnight • Credits are deducted only on entry</p>
             </div>
           </motion.div>
+
 
           {/* Safety Section */}
           <div className="mt-16 border-t border-border/50 pt-12">
