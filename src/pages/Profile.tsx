@@ -702,7 +702,7 @@ const Profile = () => {
             <ProfileMilestones userId={userId} />
             {/* FreeTierBalanceWidget removed — paid-only model */}
             {currentUserId === userId && <StreakMultiplierCard />}
-            {currentUserId === userId && <FreeTierHistory />}
+            {/* FreeTierHistory removed — free credits discontinued (paid-only model) */}
             {currentUserId === userId && <VictoryCardGenerator username={profile?.username ?? null} avatarUrl={profile?.avatar_url ?? null} />}
             {currentUserId === userId && <CreatorAnalyticsWidget userId={userId} />}
           </div>
