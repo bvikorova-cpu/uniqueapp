@@ -125,14 +125,14 @@ export default function ClubCard() {
         </motion.div>
       </div>
 
-      <div className="mt-8 flex gap-2 flex-wrap justify-center">
-        <Button variant="secondary" onClick={() => setFlipped((f) => !f)}>
+      <div className="mt-8 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full max-w-md px-4 sm:px-0">
+        <Button variant="secondary" onClick={() => setFlipped((f) => !f)} className="w-full sm:w-auto">
           <RotateCw className="h-4 w-4 mr-2" /> Flip card
         </Button>
         <Button
           onClick={() => handleExport("png")}
           disabled={exporting !== null}
-          className="bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 text-white"
+          className="w-full sm:w-auto bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 text-white"
         >
           <Download className="h-4 w-4 mr-2" />
           {exporting === "png" ? "Preparing…" : "Download PNG"}
@@ -141,7 +141,7 @@ export default function ClubCard() {
           onClick={() => handleExport("pdf")}
           disabled={exporting !== null}
           variant="outline"
-          className="text-white border-white/40 bg-white/10 hover:bg-white/20"
+          className="w-full sm:w-auto text-white border-white/40 bg-white/10 hover:bg-white/20"
         >
           <FileDown className="h-4 w-4 mr-2" />
           {exporting === "pdf" ? "Preparing…" : "Download PDF"}
