@@ -562,12 +562,12 @@ export const MessengerAIFeatures = ({ userId,
       {/* Translate */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} disabled={isLoading} aria-label="Translate" title="Translate (2 credits)">
+          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} disabled={isLoading} aria-label="Translate" title="Translate (3 credits)">
             <Languages className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <p className="px-2 py-1 text-xs text-muted-foreground">Translate to (2 credits)</p>
+          <p className="px-2 py-1 text-xs text-muted-foreground">Translate to (3 credits)</p>
           {LANGUAGES.map((lang) => (
             <DropdownMenuItem key={lang} onClick={() => handleTranslate(lang)}>
               {lang}
@@ -586,7 +586,7 @@ export const MessengerAIFeatures = ({ userId,
           onClick={handleSummarize}
           disabled={isLoading}
           aria-label="Summarize conversation"
-          title="Summarize (5 credits)"
+          title="Summarize (4 credits)"
         >
           {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
         </Button>
@@ -608,7 +608,7 @@ export const MessengerAIFeatures = ({ userId,
           onClick={handleSmartReply}
           disabled={isLoading}
           aria-label="Smart reply"
-          title="Smart Reply (1 credit)"
+          title="Smart Reply (3 credits)"
         >
           <Sparkles className="h-4 w-4" />
         </Button>
@@ -640,7 +640,7 @@ export const MessengerAIFeatures = ({ userId,
       {/* Time Capsule */}
       <Dialog open={showTimeCapsule} onOpenChange={setShowTimeCapsule}>
         <DialogTrigger asChild>
-          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="Time capsule" title="Time Capsule (5 credits)">
+          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="Time capsule" title="Time Capsule (4 credits)">
             <Clock className="h-4 w-4" />
           </Button>
         </DialogTrigger>
@@ -672,7 +672,7 @@ export const MessengerAIFeatures = ({ userId,
             </div>
             <Button onClick={handleTimeCapsule} disabled={isLoading} className="w-full">
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Create Time Capsule (5 credits)
+              Create Time Capsule (4 credits)
             </Button>
           </div>
         </DialogContent>
@@ -739,7 +739,7 @@ export const MessengerAIFeatures = ({ userId,
       {/* Quantum Message */}
       <Dialog open={showQuantumMessage} onOpenChange={setShowQuantumMessage}>
         <DialogTrigger asChild>
-          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="Quantum message" title="Quantum Message (10 credits)">
+          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="Quantum message" title="Quantum Message (5 credits)">
             <Zap className="h-4 w-4" />
           </Button>
         </DialogTrigger>
@@ -775,7 +775,7 @@ export const MessengerAIFeatures = ({ userId,
             </div>
             <Button onClick={handleQuantumMessage} disabled={isLoading} className="w-full">
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Generate Variations (10 credits)
+              Generate Variations (5 credits)
             </Button>
             {quantumVariations.length > 0 && (
               <ScrollArea className="h-48">
@@ -807,7 +807,7 @@ export const MessengerAIFeatures = ({ userId,
       {/* Anonymous Compliment */}
       <Dialog open={showCompliment} onOpenChange={setShowCompliment}>
         <DialogTrigger asChild>
-          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="Anonymous compliment" title="Anonymous Compliment (2 credits)">
+          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="Anonymous compliment" title="Anonymous Compliment (3 credits)">
             <Heart className="h-4 w-4" />
           </Button>
         </DialogTrigger>
@@ -844,7 +844,7 @@ export const MessengerAIFeatures = ({ userId,
             </div>
             <Button onClick={handleAnonymousCompliment} disabled={isLoading} className="w-full">
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Generate Compliment (2 credits)
+              Generate Compliment (3 credits)
             </Button>
             {generatedCompliment && (
               <div className="p-4 bg-primary/5 rounded-lg space-y-2">
@@ -868,7 +868,7 @@ export const MessengerAIFeatures = ({ userId,
       {/* What If Story */}
       <Dialog open={showWhatIf} onOpenChange={setShowWhatIf}>
         <DialogTrigger asChild>
-          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="What if story" title="What If Story (15 credits)">
+          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="What if story" title="What If Story (5 credits)">
             <Wand2 className="h-4 w-4" />
           </Button>
         </DialogTrigger>
@@ -892,7 +892,7 @@ export const MessengerAIFeatures = ({ userId,
               </div>
               <Button onClick={handleWhatIf} disabled={isLoading} className="w-full">
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Generate Story (15 credits)
+                Generate Story (5 credits)
               </Button>
               {whatIfStory && (
                 <div className="space-y-4">
