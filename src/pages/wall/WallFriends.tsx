@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMyFriends } from "@/hooks/useMyFriends";
+
 
 
 interface Profile {
@@ -91,25 +93,11 @@ export default function WallFriends() {
 
 
 
-  const { data: friends = [], refetch: refetchFriends } = useQuery({
-    queryKey: ["friends", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      // Server-side, RLS-proof: always returns the full real friend list.
-      const { data, error } = await (supabase as any).rpc("get_my_friends");
-      if (error) throw error;
-      const seen = new Set<string>();
-      return ((data as any[]) ?? []).filter((p: any) => {
-        if (!p?.id || seen.has(p.id)) return false;
-        seen.add(p.id);
-        return true;
-      });
-    },
-    enabled: !!user });
-
+  const { data: friends = [], refetch: refetchFriends } = useMyFriends(user?.id);
 
   const { data: requests = [], refetch: refetchRequests } = useQuery({
-    queryKey: ["friend-requests", user?.id, friends.map(f => f.id).join(",")],
+    queryKey: ["friend-requests", user?.id],
+
     queryFn: async () => {
       if (!user) return [];
       const { data: friendships } = await supabase
@@ -150,11 +138,14 @@ export default function WallFriends() {
         return { ...f, profile: profiles?.find((p: any) => p.id === f.user_id) || null, mutual_count: mutualCount };
       }) as FriendRequest[];
     },
-    enabled: !!user });
+    enabled: !!user,
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false });
 
   const { data: suggestions = [] } = useQuery({
-    queryKey: ["friend-suggestions", user?.id, friends.map(f => f.id).join(",")],
+    queryKey: ["friend-suggestions", user?.id],
     queryFn: async () => {
+
       if (!user || friends.length === 0) return [];
       const friendIds = friends.map(f => f.id);
 
@@ -195,7 +186,10 @@ export default function WallFriends() {
         mutual_count: mutualCountMap[p.id] || 0
       })).sort((a: any, b: any) => b.mutual_count - a.mutual_count) as FriendSuggestion[];
     },
-    enabled: !!user });
+    enabled: !!user && friends.length > 0,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false });
+
 
   const { data: outgoing = [] } = useQuery({
     queryKey: ["friend-outgoing", user?.id],
