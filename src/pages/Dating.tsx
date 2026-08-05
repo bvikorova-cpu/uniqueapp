@@ -616,11 +616,37 @@ const Dating = () => {
       const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
-      await supabase.from('dating_profiles').update({ profile_photo_url: publicUrl }).eq('id', currentProfile.id);
-      toast({ title: "Success", description: "Profile photo uploaded" }); await loadUserProfile(user.id);
-    } catch { toast({ title: "Error", description: "Failed to upload photo", variant: "destructive" }); }
-    finally { setUploadingPhoto(false); }
+      const { data: updated, error: updateError } = await supabase
+        .from('dating_profiles')
+        .update({ profile_photo_url: publicUrl })
+        .eq('id', currentProfile.id)
+        .eq('user_id', user.id)
+        .select('id')
+        .maybeSingle();
+      if (updateError) throw updateError;
+      if (!updated) throw new Error("Profile not updated");
+      toast({ title: "Success", description: "Profile photo updated" }); await loadUserProfile(user.id);
+    } catch (e: any) { toast({ title: "Error", description: e?.message || "Failed to upload photo", variant: "destructive" }); }
+    finally { setUploadingPhoto(false); event.target.value = ""; }
   };
+
+  const handleSetAsMain = async (photoUrl: string) => {
+    if (!user || !currentProfile) return;
+    const previousMain = currentProfile.profile_photo_url;
+    const rest = (currentProfile.additional_photos || []).filter((u) => u !== photoUrl);
+    const nextAdditional = previousMain ? [previousMain, ...rest] : rest;
+    const { data, error } = await supabase
+      .from('dating_profiles')
+      .update({ profile_photo_url: photoUrl, additional_photos: nextAdditional })
+      .eq('id', currentProfile.id)
+      .eq('user_id', user.id)
+      .select('id')
+      .maybeSingle();
+    if (error || !data) { toast({ title: "Error", description: error?.message || "Could not set main photo", variant: "destructive" }); return; }
+    toast({ title: "Main photo updated" });
+    await loadUserProfile(user.id);
+  };
+
 
   const handleUploadAdditionalPhotos = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
