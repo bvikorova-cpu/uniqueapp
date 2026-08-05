@@ -143,15 +143,28 @@ export const MessengerAIFeatures = ({ userId,
 
   useEffect(() => {
     fetchCredits();
+    if (!userId) return;
+    // Keep the balance real-time so every user always sees their true credits.
+    const channel = supabase
+      .channel(`messenger-ai-credits-${userId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "ai_credits", filter: `user_id=eq.${userId}` },
+        (payload: any) => setCredits(payload.new?.credits_remaining ?? 0),
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, [userId]);
 
+  // Unified platform AI credits (ai_credits) — never a module-local mock balance.
   const fetchCredits = async () => {
+    if (!userId) { setCredits(0); return; }
     const { data } = await supabase
-      .from("messenger_ai_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", userId)
-      .single();
-    setCredits(data?.credits_remaining || 0);
+      .maybeSingle();
+    setCredits(data?.credits_remaining ?? 0);
   };
 
   /** Returns true if it handled the error (caller should bail). */
