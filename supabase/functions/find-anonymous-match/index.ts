@@ -209,11 +209,17 @@ serve(async (req) => {
 
     const matchedProfile = chosen.profile;
 
-    // ── Atomic credit deduction first (prevents double-spend) ──
+    // ── Atomic credit deduction first (prevents double-spend) — unified ai_credits ──
     const { error: deductErr } = await supabaseClient.rpc(
-      "deduct_anonymous_dating_credits",
-      { p_user_id: user.id, p_amount: MATCH_COST },
+      "deduct_ai_credits",
+      {
+        p_user_id: user.id,
+        p_amount: MATCH_COST,
+        p_reason: "Anonymous Date match",
+        p_source: "find-anonymous-match",
+      },
     );
+
     if (deductErr) {
       const msg = deductErr.message || "";
       if (msg.includes("INSUFFICIENT_CREDITS")) {
