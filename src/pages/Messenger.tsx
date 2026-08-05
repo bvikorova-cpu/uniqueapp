@@ -29,6 +29,7 @@ import { AIChatThemes } from "@/components/messenger/AIChatThemes";
 import { AIMoodDetection } from "@/components/messenger/AIMoodDetection";
 import { CustomEmojiCreator } from "@/components/messenger/CustomEmojiCreator";
 import { ChatGames } from "@/components/messenger/ChatGames";
+import { MessengerToolGate } from "@/components/messenger/MessengerToolGate";
 
 import { motion } from "framer-motion";
 import { playMessageChime } from "@/lib/messageChime";
