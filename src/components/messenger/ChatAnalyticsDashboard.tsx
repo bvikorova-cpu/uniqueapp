@@ -258,6 +258,29 @@ export const ChatAnalyticsDashboard = ({ onBack, userId }: ChatAnalyticsDashboar
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Top Contacts */}
+      {stats.topContacts.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
+          <Card className="border-border/40 bg-card/80 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg font-black">
+                <TrendingUp className="h-5 w-5 text-primary" /> Top Contacts
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {stats.topContacts.map((c, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="text-xs font-bold w-4 text-muted-foreground">{i + 1}</span>
+                  <span className="text-sm font-semibold truncate flex-1">{c.name}</span>
+                  <span className="text-xs font-bold text-primary">{c.count} msgs</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
     </div>
   );
 };
