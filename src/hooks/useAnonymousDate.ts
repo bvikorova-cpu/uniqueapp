@@ -42,31 +42,20 @@ export function useAnonymousDate() {
     return userIdRef.current;
   }, []);
 
+  /** Unified platform credits (ai_credits) — the same balance every tool spends from. */
   const fetchCredits = useCallback(async () => {
     try {
       const userId = await getUserId();
       if (!userId) return;
 
       const { data, error } = await supabase
-        .from("anonymous_dating_credits")
-        .select("*")
+        .from("ai_credits")
+        .select("credits_remaining")
         .eq("user_id", userId)
         .maybeSingle();
 
       if (error && error.code !== "PGRST116") throw error;
-
-      if (!data) {
-        const { data: newCredits, error: insertError } = await supabase
-          .from("anonymous_dating_credits")
-          .insert({ user_id: userId, credits_remaining: 0 })
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        setCredits(newCredits.credits_remaining);
-      } else {
-        setCredits(data.credits_remaining);
-      }
+      setCredits(data?.credits_remaining ?? 0);
     } catch (error) { console.error("Error fetching credits:", error);
       toast({
         title: "Error",
