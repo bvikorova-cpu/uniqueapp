@@ -19200,6 +19200,7 @@ export type Database = {
       dating_gifts: {
         Row: {
           created_at: string
+          credit_cost: number
           icon: string
           id: string
           name: string
@@ -19207,6 +19208,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          credit_cost: number
           icon: string
           id?: string
           name: string
@@ -19214,6 +19216,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          credit_cost?: number
           icon?: string
           id?: string
           name?: string
@@ -69147,6 +69150,10 @@ export type Database = {
       create_payout_batch: { Args: { p_batch_date: string }; Returns: string }
       create_weekly_iq_tournament: { Args: never; Returns: string }
       current_user_email: { Args: never; Returns: string }
+      dating_send_gift_credits: {
+        Args: { _gift_id: string; _match_id: string; _message?: string }
+        Returns: Json
+      }
       deactivate_expired_job_listings: { Args: never; Returns: undefined }
       deactivate_expired_listings: { Args: never; Returns: undefined }
       deduct_ai_credits:
