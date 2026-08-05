@@ -43,12 +43,10 @@ import { VideoPromptRecorder, type VideoPrompt } from "@/components/dating/Video
 import { VoiceNoteRecorder } from "@/components/dating/VoiceNoteRecorder";
 import { DatePlanCard } from "@/components/dating/DatePlanCard";
 import { MatchPollCard } from "@/components/dating/MatchPollCard";
-import { DatingEventsList } from "@/components/dating/DatingEventsList";
 import { FriendCirclesPanel } from "@/components/dating/FriendCirclesPanel";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
-import { WeeklyInsightsCard } from "@/components/dating/WeeklyInsightsCard";
 import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal";
 import { AIStarterButton } from "@/components/dating/AIStarterButton";
 import { AIBioCoach } from "@/components/dating/AIBioCoach";
@@ -1167,7 +1165,6 @@ const Dating = () => {
           {/* ==================== COMMUNITY TAB ==================== */}
           <TabsContent value="community">
             <div className="max-w-3xl mx-auto space-y-8">
-              {user && <DatingEventsList userId={user.id} />}
               {user && <FriendCirclesPanel userId={user.id} />}
             </div>
           </TabsContent>
@@ -1178,15 +1175,9 @@ const Dating = () => {
           </TabsContent>
 
           <TabsContent value="insights" className="space-y-4">
-            <WeeklyInsightsCard onAction={(a) => {
-              if (a === "bio_coach" || a === "add_photo" || a === "update_prompts" || a === "try_video") {
-                setActiveTab("profile");
-              } else if (a === "send_openers") {
-                setActiveTab("matches");
-              }
-            }} />
             <DatingAnalyticsPanel />
           </TabsContent>
+
 
 
 
