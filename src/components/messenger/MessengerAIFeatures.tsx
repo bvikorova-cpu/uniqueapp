@@ -743,7 +743,7 @@ export const MessengerAIFeatures = ({ userId,
                     <Button
                       key={i}
                       variant="outline"
-                      className="w-full justify-start text-left h-auto py-2"
+                      className="w-full justify-start text-left h-auto py-2 whitespace-normal break-words"
                       onClick={() => {
                         onInsertText(v.message);
                         setShowQuantumMessage(false);
