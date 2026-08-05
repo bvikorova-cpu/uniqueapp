@@ -17,6 +17,8 @@ import { useMatchMeta } from "@/hooks/useMatchMeta";
 import { TypingIndicator } from "./TypingIndicator";
 import { MessageReactions } from "./MessageReactions";
 import { VoiceRecorderButton } from "./VoiceRecorderButton";
+import { GiftPicker } from "./GiftPicker";
+
 import { AnonymousAvatar } from "./AnonymousAvatar";
 import { CompatibilityMeter } from "./CompatibilityMeter";
 import { StreakBadge } from "./StreakBadge";
