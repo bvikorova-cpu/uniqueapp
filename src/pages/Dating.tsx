@@ -152,6 +152,8 @@ const Dating = () => {
   const [lastSwipe, setLastSwipe] = useState<{ swiped_profile_id: string; action: string } | null>(null);
   const [likesYouCount, setLikesYouCount] = useState(0);
   const [superLikesRemaining, setSuperLikesRemaining] = useState(5);
+  const [freeSuperLikesLeft, setFreeSuperLikesLeft] = useState(5);
+
   const [payingAccess, setPayingAccess] = useState(false);
 
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | "up" | null>(null);
@@ -159,6 +161,8 @@ const Dating = () => {
   const [filters, setFilters] = useState<DatingFilters | null>(null);
   const [boostActive, setBoostActive] = useState<string | null>(null);
   const [boosting, setBoosting] = useState(false);
+  const [purchasedBoosts, setPurchasedBoosts] = useState(0);
+
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
@@ -245,14 +249,22 @@ const Dating = () => {
 
   const loadSuperLikesRemaining = async (userId: string) => {
     const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
-    const { count } = await supabase.from("dating_super_likes")
-      .select("id", { count: "exact", head: true })
-      .eq("swiper_id", userId)
-      .gte("created_at", startOfDay.toISOString());
-    // Default cap 5/day; yearly plan = 10. We do not have plan tier locally, so default to 5 — server enforces.
+    const [{ count }, { data: perks }] = await Promise.all([
+      supabase.from("dating_super_likes")
+        .select("id", { count: "exact", head: true })
+        .eq("swiper_id", userId)
+        .gte("created_at", startOfDay.toISOString()),
+      supabase.from("dating_perk_balances").select("super_likes, boosts").eq("user_id", userId).maybeSingle(),
+    ]);
+    // Default cap 5/day + any purchased Super Likes from packs.
     const used = count || 0;
-    setSuperLikesRemaining(Math.max(0, 5 - used));
+    const free = Math.max(0, 5 - used);
+    setFreeSuperLikesLeft(free);
+    setPurchasedBoosts(perks?.boosts ?? 0);
+    setSuperLikesRemaining(free + (perks?.super_likes ?? 0));
+
   };
+
 
   const loadBlocked = async (userId: string) => {
     const [{ data: a }, { data: b }] = await Promise.all([
@@ -274,22 +286,32 @@ const Dating = () => {
     if (boosting || boostActive || !user) return;
     setBoosting(true);
     try {
-      const { data: ok, error: deductErr } = await supabase.rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: 20, p_reason: "dating_boost_30min", p_source: "dating" });
-      if (deductErr || ok === false) {
-        toast({ title: "Not enough credits", description: "Boost costs 20 credits.", variant: "destructive" });
-        return;
+      // Use a purchased boost from a pack first, otherwise pay 20 credits.
+      const { data: usedPerk } = await supabase.rpc("consume_dating_perk", { p_kind: "boost" });
+      let creditsSpent = 0;
+      if (!usedPerk) {
+        const { data: ok, error: deductErr } = await supabase.rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: 20, p_reason: "dating_boost_30min", p_source: "dating" });
+        if (deductErr || ok === false) {
+          toast({ title: "Not enough credits", description: "Boost costs 20 credits.", variant: "destructive" });
+          return;
+        }
+        creditsSpent = 20;
+      } else {
+        setPurchasedBoosts(p => Math.max(0, p - 1));
       }
       const expiresAt = new Date(Date.now() + 30 * 60_000).toISOString();
-      const { error: insErr } = await supabase.from("dating_boosts").insert({ user_id: user.id, expires_at: expiresAt, credits_spent: 20 });
+      const { error: insErr } = await supabase.from("dating_boosts").insert({ user_id: user.id, expires_at: expiresAt, credits_spent: creditsSpent });
       if (insErr) throw insErr;
       setBoostActive(expiresAt);
-      toast({ title: "🔥 Boost active!", description: "You're a top profile for 30 minutes." });
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast({ title: "🔥 Boost active!", description: creditsSpent ? "You're a top profile for 30 minutes." : "Used 1 boost from your pack — active for 30 minutes." });
     } catch (e: any) {
       toast({ title: "Boost failed", description: e?.message || "Try again", variant: "destructive" });
     } finally {
       setBoosting(false);
     }
   };
+
 
   const loadUserProfile = async (userId: string) => {
     const { data } = await supabase.from("dating_profiles").select("*").eq("user_id", userId).maybeSingle();
@@ -493,10 +515,17 @@ const Dating = () => {
     setCanRewind(true);
     setLastSwipe({ swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action });
     if (isSuper) {
+      if (freeSuperLikesLeft <= 0) {
+        const { data: usedPerk } = await supabase.rpc("consume_dating_perk", { p_kind: "super_like" });
+        if (!usedPerk) { toast({ title: "No Super Likes left", description: "Buy a Super Like pack in Premium.", variant: "destructive" }); setSwipeDirection(null); return; }
+      } else {
+        setFreeSuperLikesLeft(n => Math.max(0, n - 1));
+      }
       const { error: superError } = await supabase.from("dating_super_likes").insert([{ swiper_id: user.id, swiped_id: currentCard.user_id }]);
       if (superError) { toast({ title: "Error", description: "Failed to send Super Like", variant: "destructive" }); setSwipeDirection(null); return; }
       toast({ title: "⭐ Super Like!", description: `${currentCard.display_name} will be notified!` });
       setSuperLikesRemaining(superLikesRemaining - 1);
+
     }
     const { rateLimit } = await import("@/lib/scaleGuards");
     const okSwipe = await rateLimit("swipe.dating", 200, 60);
