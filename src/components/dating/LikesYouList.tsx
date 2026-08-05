@@ -41,8 +41,8 @@ export const LikesYouList = ({ userId, currentProfile, onMatch, onLikesSeen }: P
   const [processing, setProcessing] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const loadLikers = async () => {
-    setLoading(true);
+  const loadLikers = async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       // Server-side function: returns everyone who liked me and whom I haven't
       // answered yet (RLS prevents reading other people's swipes directly).
@@ -129,6 +129,32 @@ export const LikesYouList = ({ userId, currentProfile, onMatch, onLikesSeen }: P
   useEffect(() => {
     loadLikers();
   }, [userId]);
+
+  // Real-time: refresh the list when someone likes/unlikes me or a match is created.
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel(`dating_likes_you_${userId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dating_swipes", filter: `swiped_id=eq.${userId}` },
+        () => { loadLikers(true); }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dating_matches", filter: `user1_id=eq.${userId}` },
+        () => { loadLikers(true); }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dating_matches", filter: `user2_id=eq.${userId}` },
+        () => { loadLikers(true); }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
 
   if (loading) {
     return (
