@@ -50,7 +50,7 @@ export const CustomEmojiCreator = ({ onBack, userId }: CustomEmojiCreatorProps) 
     }
     setGenerating(true);
     const styleEmojis: Record<string, string> = {
-      pixel: "\u2b1b", kawaii: "\U0001f338", neon: "\u2728", sketch: "\u3030\ufe0f", "3d": "\U0001f4ab", retro: "\U0001f579\ufe0f" };
+      pixel: "⬛", kawaii: "🌸", neon: "✨", sketch: "〰️", "3d": "💫", retro: "🕹️" };
     const combo = `${selectedBase}${styleEmojis[selectedStyle] || ""}`;
     const name = emojiName.trim();
     try {
