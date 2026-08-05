@@ -245,14 +245,19 @@ const Dating = () => {
 
   const loadSuperLikesRemaining = async (userId: string) => {
     const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
-    const { count } = await supabase.from("dating_super_likes")
-      .select("id", { count: "exact", head: true })
-      .eq("swiper_id", userId)
-      .gte("created_at", startOfDay.toISOString());
-    // Default cap 5/day; yearly plan = 10. We do not have plan tier locally, so default to 5 — server enforces.
+    const [{ count }, { data: perks }] = await Promise.all([
+      supabase.from("dating_super_likes")
+        .select("id", { count: "exact", head: true })
+        .eq("swiper_id", userId)
+        .gte("created_at", startOfDay.toISOString()),
+      supabase.from("dating_perk_balances").select("super_likes, boosts").eq("user_id", userId).maybeSingle(),
+    ]);
+    // Default cap 5/day + any purchased Super Likes from packs.
     const used = count || 0;
-    setSuperLikesRemaining(Math.max(0, 5 - used));
+    setPurchasedBoosts(perks?.boosts ?? 0);
+    setSuperLikesRemaining(Math.max(0, 5 - used) + (perks?.super_likes ?? 0));
   };
+
 
   const loadBlocked = async (userId: string) => {
     const [{ data: a }, { data: b }] = await Promise.all([
