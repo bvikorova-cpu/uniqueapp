@@ -152,6 +152,8 @@ const Dating = () => {
   const [lastSwipe, setLastSwipe] = useState<{ swiped_profile_id: string; action: string } | null>(null);
   const [likesYouCount, setLikesYouCount] = useState(0);
   const [superLikesRemaining, setSuperLikesRemaining] = useState(5);
+  const [freeSuperLikesLeft, setFreeSuperLikesLeft] = useState(5);
+
   const [payingAccess, setPayingAccess] = useState(false);
 
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | "up" | null>(null);
