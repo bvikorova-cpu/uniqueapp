@@ -72,11 +72,6 @@ serve(async (req) => {
             phone_number_collection: { enabled: true },
             custom_fields: [
               {
-                key: "recipient_name",
-                label: { type: "custom", custom: "Recipient full name (as printed on the card)" },
-                type: "text",
-                optional: false },
-              {
                 key: "delivery_note",
                 label: { type: "custom", custom: "Delivery note (buzzer, floor…)" },
                 type: "text",
