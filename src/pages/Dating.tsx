@@ -1322,8 +1322,12 @@ const Dating = () => {
                   {(currentProfile.additional_photos || []).map((url, i) => (
                     <div key={i} className="aspect-square rounded-lg overflow-hidden bg-muted relative group">
                       {isVideoUrl(url) ? <video src={url} className="w-full h-full object-cover" muted /> : <img src={url} alt="" className="w-full h-full object-cover" onClick={() => setLightboxImage(url)} />}
-                      <button onClick={() => handleRemoveAdditionalPhoto(url)} className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><X className="h-3 w-3" /></button>
+                      <button onClick={() => handleRemoveAdditionalPhoto(url)} className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center transition-opacity"><X className="h-3 w-3" /></button>
+                      {!isVideoUrl(url) && (
+                        <button onClick={() => handleSetAsMain(url)} className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] py-1 font-medium">Set as main</button>
+                      )}
                     </div>
+
                   ))}
                   <label className="aspect-square rounded-lg border-2 border-dashed border-border hover:border-primary/50 flex items-center justify-center cursor-pointer transition-colors">
                     <input type="file" className="hidden" onChange={handleUploadAdditionalPhotos} accept="image/*,video/*" multiple disabled={uploadingAdditional} /><Plus className="h-6 w-6 text-muted-foreground" />
