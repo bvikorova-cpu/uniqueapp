@@ -197,7 +197,7 @@ Deno.serve(async (req) => {
       aiText = await callAI(SYSTEM_PROMPTS[feature], userMsg, jsonMode);
     } catch (e: any) {
       // Refund credits on AI failure
-      await admin.rpc("grant_anonymous_dating_credits", { p_user_id: user.id, p_amount: cost });
+      await admin.rpc("add_ai_credits", { p_user_id: user.id, p_amount: cost, p_reason: `refund_anonymous_date_${feature}`, p_source: "dating" });
       const msg = e?.message ?? "AI_ERROR";
       const status = msg === "RATE_LIMITED" ? 429 : msg === "AI_CREDITS_EXHAUSTED" ? 402 : 500;
       return errorResponse(msg, "AI provider call failed; credits refunded.", status);
