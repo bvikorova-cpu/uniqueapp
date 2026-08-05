@@ -16,7 +16,6 @@ import { useAnonymousChat } from "@/hooks/useAnonymousChat";
 import { useMatchMeta } from "@/hooks/useMatchMeta";
 import { TypingIndicator } from "./TypingIndicator";
 import { MessageReactions } from "./MessageReactions";
-import { VoiceRecorderButton } from "./VoiceRecorderButton";
 import { GiftPicker } from "./GiftPicker";
 
 import { AnonymousAvatar } from "./AnonymousAvatar";
@@ -27,7 +26,6 @@ import { MoodSelector } from "./MoodSelector";
 import { ChatThemePicker, themeGradient } from "./ChatThemePicker";
 import { DailyQuestion } from "./DailyQuestion";
 import { ConversationCoach } from "./ConversationCoach";
-import { RevealLock } from "./RevealLock";
 import { PhotoReveal } from "./PhotoReveal";
 import { PrivatePhotoUpload } from "./PrivatePhotoUpload";
 
@@ -219,7 +217,6 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
   };
 
   const theme = myMeta?.theme ?? "midnight";
-  const voiceMessageSent = messages.some(m => m.message_type === "voice");
   const matchAgeHours = match.created_at ? (Date.now() - new Date(match.created_at).getTime()) / 3600000 : 0;
   const sharedStreak = Math.max(myMeta?.streak_count ?? 0, partnerMeta?.streak_count ?? 0);
 
@@ -409,9 +406,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
                       : "bg-card/80 backdrop-blur-md border border-border/40 rounded-bl-sm"
                   }`}
                 >
-                  {m.message_type === "voice" && m.voice_url ? (
-                    <audio controls src={m.voice_url} className="max-w-full h-10" />
-                  ) : m.message_type === "gift" ? (
+                  {m.message_type === "gift" ? (
                     <div className="flex flex-col items-center gap-0.5 py-1">
                       <span className="text-3xl leading-none">{m.content.split(" ")[0]}</span>
                       <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">
@@ -518,7 +513,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
         <ConversationMilestones
           messageCount={messages.length}
           matchAgeHours={matchAgeHours}
-          voiceMessageSent={voiceMessageSent}
+          voiceMessageSent={false}
         />
       </div>
 
