@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMyFriends } from "@/hooks/useMyFriends";
+
 
 
 interface Profile {
