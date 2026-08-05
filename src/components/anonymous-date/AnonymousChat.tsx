@@ -26,6 +26,7 @@ import { ChatThemePicker, themeGradient } from "./ChatThemePicker";
 import { DailyQuestion } from "./DailyQuestion";
 import { ConversationCoach } from "./ConversationCoach";
 import { RevealLock } from "./RevealLock";
+import { PhotoReveal } from "./PhotoReveal";
 import { SafeWordSettings } from "./SafeWordSettings";
 import { exportChatToPDF } from "@/lib/exportChatPDF";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -500,6 +501,11 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
         revealRequestBy={matchState.reveal_request_by}
         status={matchState.status ?? "active"}
       />
+
+      {/* Timed photo reveal — free after 7 days, or earlier for credits */}
+      <PhotoReveal matchId={match.id} partnerName={partnerName} />
+
+
 
       {/* Daily AI question */}
       <DailyQuestion
