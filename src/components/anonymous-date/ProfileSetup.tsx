@@ -56,7 +56,40 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingExisting, setLoadingExisting] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
+
+  // Prefill with the user's current anonymous dating profile (edit mode)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data } = await supabase
+          .from("anonymous_dating_profiles")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (cancelled || !data) return;
+        setIsEditing(true);
+        setAnonymousName(data.anonymous_name ?? "");
+        setAgeRange(data.age_range ?? "");
+        setLookingFor(data.looking_for ?? "");
+        setLocation(data.location ?? "");
+        setGender(data.gender ?? "");
+        setPreferredGender(data.preferred_gender ?? "");
+        setRelationshipGoal(data.relationship_goal ?? "");
+        setSelectedLanguages(data.languages ?? []);
+        setSelectedInterests(data.interests ?? []);
+        setSelectedTraits(data.personality_traits ?? []);
+      } finally {
+        if (!cancelled) setLoadingExisting(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests(prev =>
