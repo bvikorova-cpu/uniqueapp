@@ -19390,6 +19390,30 @@ export type Database = {
           },
         ]
       }
+      dating_perk_balances: {
+        Row: {
+          boosts: number
+          created_at: string
+          super_likes: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          boosts?: number
+          created_at?: string
+          super_likes?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          boosts?: number
+          created_at?: string
+          super_likes?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       dating_photo_likes: {
         Row: {
           comment: string | null
@@ -68845,6 +68869,7 @@ export type Database = {
       compute_donor_badge_tier: { Args: { _total: number }; Returns: string }
       compute_spam_score: { Args: { _user_id: string }; Returns: number }
       compute_xp_streak: { Args: { p_user_id: string }; Returns: number }
+      consume_dating_perk: { Args: { p_kind: string }; Returns: boolean }
       consume_free_tier_credits: {
         Args: { p_amount: number; p_reason: string }
         Returns: {
@@ -70543,6 +70568,10 @@ export type Database = {
       purchase_brain_duel_powerup: {
         Args: { p_powerup_type: string; p_price: number }
         Returns: undefined
+      }
+      purchase_dating_perk: {
+        Args: { p_count: number; p_credits: number; p_kind: string }
+        Returns: Json
       }
       purchase_horse_from_market: {
         Args: { buyer_id: string; listing_id: string }
