@@ -200,7 +200,7 @@ export const DatingPremiumPanel = ({ userId, isSubscribed, likesYouCount, onSubs
   );
 };
 
-const PackCard = ({ pack, onBuy }: { pack: Pack; onBuy: () => void }) => {
+const PackCard = ({ pack, onBuy, busy }: { pack: Pack; onBuy: () => void; busy?: boolean }) => {
   const Icon = pack.icon;
   return (
     <Card className={`relative border-2 ${pack.popular ? "border-primary shadow-lg" : "border-border"}`}>
@@ -212,7 +212,8 @@ const PackCard = ({ pack, onBuy }: { pack: Pack; onBuy: () => void }) => {
         <p className="font-bold">{pack.label}</p>
         <p className="text-2xl font-bold">{pack.credits}<span className="text-sm font-normal text-muted-foreground"> cr</span></p>
         <p className="text-xs text-muted-foreground">{pack.perUnit} cr each</p>
-        <Button size="sm" className="w-full" onClick={onBuy}>Get</Button>
+        <Button size="sm" className="w-full" onClick={onBuy} disabled={busy}>{busy ? "Buying…" : "Buy"}</Button>
+
       </CardContent>
     </Card>
   );
