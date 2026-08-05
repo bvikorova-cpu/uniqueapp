@@ -128,14 +128,8 @@ serve(async (req) => {
         stripeEventId: session.id });
     }
 
-    // ── Perk 2: welcome AI credits (idempotent per membership) ───────────────
-    await grantClubAiCredits(admin, {
-      userId: user.id,
-      membershipId,
-      perk: "signup_ai_credits",
-      periodKey: `signup:${membershipId}`,
-      amount: CLUB_SIGNUP_AI_CREDITS,
-      stripeEventId: session.id });
+    // ── Welcome AI credits perk removed (no free credits on the platform) ────
+
 
     // ── Perk 3: referral reward (€5 credit to referrer) ──────────────────────
     if (referralCode) {
