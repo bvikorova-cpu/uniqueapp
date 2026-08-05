@@ -134,10 +134,8 @@ const safeAttachmentName = (name: string) =>
     .replace(/[^a-zA-Z0-9._-]+/g, "-")
     .replace(/^-+|-+$/g, "") || "attachment";
 
-const getRecordingMimeType = () => {
-  if (typeof MediaRecorder === "undefined") return "";
-  return ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"].find((type) => MediaRecorder.isTypeSupported(type)) || "";
-};
+
+
 
 
 const Messenger = () => {
