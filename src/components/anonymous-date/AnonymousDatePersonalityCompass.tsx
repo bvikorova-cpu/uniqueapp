@@ -73,29 +73,34 @@ export const AnonymousDatePersonalityCompass = () => {
         <h3 className="font-black text-base">Personality Compass</h3>
       </div>
       <p className="text-xs text-muted-foreground mb-4">
-        Tap a trait to preview compatible matches ✨
+        Live trait map of active anonymous members {isLoading && <Loader2 className="inline h-3 w-3 animate-spin ml-1" />}
       </p>
 
       <div className="grid grid-cols-4 gap-2">
-        {TRAITS.map((t, i) => (
-          <motion.button
-            key={t.id}
-            whileTap={{ scale: 0.93 }}
-            whileHover={{ y: -2 }}
-            onClick={() => setSelected(t.id === selected ? null : t.id)}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.04 }}
-            className={`relative aspect-square rounded-xl flex flex-col items-center justify-center gap-1 border transition-all ${
-              selected === t.id
-                ? `bg-gradient-to-br ${t.color} text-white border-transparent shadow-lg`
-                : "bg-muted/20 border-border/40 hover:border-primary/40"
-            }`}
-          >
-            <span className="text-xl">{t.emoji}</span>
-            <span className="text-[9px] font-bold leading-tight text-center px-1">{t.label}</span>
-          </motion.button>
-        ))}
+        {TRAITS.map((t, i) => {
+          const count = counts?.[t.id] ?? 0;
+          const mine = myTraits.includes(t.id);
+          return (
+            <motion.button
+              key={t.id}
+              whileTap={{ scale: 0.93 }}
+              whileHover={{ y: -2 }}
+              onClick={() => setSelected(t.id === selected ? null : t.id)}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 }}
+              className={`relative aspect-square rounded-xl flex flex-col items-center justify-center gap-1 border transition-all ${
+                selected === t.id
+                  ? `bg-gradient-to-br ${t.color} text-white border-transparent shadow-lg`
+                  : "bg-muted/20 border-border/40 hover:border-primary/40"
+              } ${mine && selected !== t.id ? "ring-1 ring-primary/50" : ""}`}
+            >
+              <span className="text-xl">{t.emoji}</span>
+              <span className="text-[9px] font-bold leading-tight text-center px-1">{t.label}</span>
+              <span className="text-[9px] font-black opacity-80">{count}</span>
+            </motion.button>
+          );
+        })}
       </div>
 
       {selected && (
@@ -105,11 +110,14 @@ export const AnonymousDatePersonalityCompass = () => {
           className="mt-4 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-pink-500/10 border border-primary/20"
         >
           <p className="text-xs">
-            <span className="font-bold text-primary">~{Math.floor(Math.random() * 80 + 40)} active users</span>{" "}
-            share this trait. Start a search to meet them anonymously.
+            <span className="font-bold text-primary">
+              {counts?.[selected] ?? 0} active {(counts?.[selected] ?? 0) === 1 ? "member" : "members"}
+            </span>{" "}
+            share this trait{myTraits.includes(selected) ? " — including you" : ""}. Start a search to meet them anonymously.
           </p>
         </motion.div>
       )}
+
     </Card>
   );
 };
