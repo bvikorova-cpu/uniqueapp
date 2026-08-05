@@ -90,11 +90,13 @@ const BestFriend = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setMessages([{ role: "assistant", content: "Hi! I'm here for you. How are you? 😊" }]);
+        setMessageCount(0);
         setLoadingHistory(false);
         return;
       }
       const { data } = await supabase.from('best_friend_conversations').select('*')
         .eq('user_id', user.id).order('created_at', { ascending: true });
+      setMessageCount(data?.length ?? 0);
       if (data && data.length > 0) {
         setMessages(data.map(msg => ({ role: msg.role as "user" | "assistant", content: msg.content })));
       } else {
