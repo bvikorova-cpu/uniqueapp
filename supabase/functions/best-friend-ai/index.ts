@@ -368,25 +368,39 @@ Rules:
       }
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      headers: { "Lovable-API-Key": LOVABLE_API_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-4o",
+        model: "google/gemini-2.5-flash",
         messages: [
-          { role: "system", content: systemPrompt },
+          { role: "system", content: `${systemPrompt}\n\nReturn ONLY valid, complete minified JSON. No markdown fences, no commentary.` },
           { role: "user", content: userPrompt },
         ],
         response_format: { type: "json_object" } }) });
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error("OpenAI error:", errText);
+      console.error("AI gateway error:", response.status, errText);
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: "Rate limit reached. Please try again in a moment." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ error: "AI credits exhausted." }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
       throw new Error("AI service error");
     }
 
     const aiData = await response.json();
-    const result = JSON.parse(aiData.choices[0].message.content);
+    const rawContent: string = aiData?.choices?.[0]?.message?.content ?? "";
+    const result = safeParseJson(rawContent);
+    if (!result) {
+      console.error("best-friend-ai unparsable AI output", rawContent.slice(0, 500));
+      return new Response(JSON.stringify({ error: "The AI reply was incomplete. Please try again." }), {
+        status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     // Deduct credits
     await supabase.from("ai_credits").update({ credits_remaining: remaining - cost }).eq("user_id", user.id);
