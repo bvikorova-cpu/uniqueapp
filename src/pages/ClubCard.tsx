@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Crown, Download, FileDown, RotateCw, Trophy } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import clubCardPreview from "@/assets/club-card-preview.png.asset.json";
 import { useClubMembership } from "@/hooks/useClubMembership";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
