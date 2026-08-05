@@ -478,6 +478,25 @@ const Dating = () => {
     }
   };
 
+  // Open a specific conversation inside the app (Matches tab) and load its messages
+  const openMatchChat = async (match: Match, partner?: DatingProfile | null) => {
+    if (!match?.id) return;
+    let resolved: Match = match.profile ? match : ({ ...match, profile: partner || undefined } as Match);
+    if (!resolved.profile && user) {
+      const otherId = match.user1_id === user.id ? match.user2_id : match.user1_id;
+      const { data: p } = await supabase.from("dating_profiles_browse").select("*").eq("user_id", otherId).maybeSingle();
+      if (p) resolved = { ...match, profile: p as any } as Match;
+    }
+    setMessages([]);
+    setSentGifts([]);
+    setSelectedMatch(resolved);
+    setActiveTab("matches");
+    await loadMessages(match.id);
+    if (user) await loadMatches(user.id);
+    setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 80);
+  };
+
+
   const handleTogglePrivacy = async (patch: { incognito?: boolean; read_receipts_enabled?: boolean }) => {
     if (!currentProfile) return;
     const { error } = await supabase.from("dating_profiles").update(patch).eq("id", currentProfile.id);
