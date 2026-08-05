@@ -179,7 +179,9 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({ result, creditsUsed: cost, creditsRemaining: after?.credits_remaining ?? 0 }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
+    console.error("messenger-ai failed", e?.message, e?.status);
     const status = e.message === "Unauthorized" ? 401 : e.message?.includes("credits") ? 402 : 500;
-    return new Response(JSON.stringify({ error: e.message }), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ error: e.message || "AI request failed" }), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
+
