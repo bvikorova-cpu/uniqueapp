@@ -339,8 +339,20 @@ const Dating = () => {
     const swipedIds = swipedProfiles?.map(s => s.swiped_id) || [];
     const excludeIds = [...new Set([...swipedIds, ...blockedIds, user.id])];
 
+    const term = searchQuery.trim();
     let q = supabase.from("dating_profiles_browse").select("*");
     if (excludeIds.length > 0) q = q.not("user_id", "in", `(${excludeIds.join(",")})`);
+    if (term) {
+      const like = `%${term.replace(/[%,]/g, "")}%`;
+      q = q.or(
+        [
+          `display_name.ilike.${like}`,
+          `location.ilike.${like}`,
+          `job_title.ilike.${like}`,
+          `bio.ilike.${like}`,
+        ].join(",")
+      );
+    }
     if (filters) {
       q = q.gte("age", filters.min_age).lte("age", filters.max_age);
       if (filters.preferred_genders.length > 0 && filters.preferred_genders.length < 3) {
@@ -350,7 +362,8 @@ const Dating = () => {
         q = q.eq("photo_verified", true);
       }
     }
-    const { data } = await q.limit(80);
+    const { data } = await q.limit(term ? 200 : 80);
+
 
 
     let ranked = data || [];
@@ -387,22 +400,22 @@ const Dating = () => {
       };
       const freshness = (p: any) => new Date(p.updated_at || p.created_at || 0).getTime();
 
-      // Single smart search: boosted first, then best overall match score, newest on ties.
-      ranked = [...ranked].sort((a, b) => (score(b) - score(a)) || (freshness(b) - freshness(a)));
+      const qq = searchQuery.trim().toLowerCase();
+      const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      const searchBoost = (p: any) => {
+        if (!qq) return 0;
+        const name = norm(p.display_name || "");
+        const nq = norm(qq);
+        if (name.startsWith(nq)) return 5000;
+        if (name.includes(nq)) return 3000;
+        const rest = norm([p.location, p.job_title, p.bio, ...(Array.isArray(p.interests) ? p.interests : [])].filter(Boolean).join(" "));
+        return rest.includes(nq) ? 1500 : 0;
+      };
 
-      const q = searchQuery.trim().toLowerCase();
-      if (q) {
-        ranked = ranked.filter((p: any) => {
-          const haystack = [
-            p.display_name,
-            p.location,
-            p.job_title,
-            p.bio,
-            ...(Array.isArray(p.interests) ? p.interests : []),
-          ].filter(Boolean).join(" ").toLowerCase();
-          return haystack.includes(q);
-        });
-      }
+      // Single smart search: search relevance first, then boosted, then match score, newest on ties.
+      ranked = [...ranked].sort(
+        (a, b) => (searchBoost(b) - searchBoost(a)) || (score(b) - score(a)) || (freshness(b) - freshness(a))
+      );
 
       ranked = ranked.slice(0, 40);
     }
@@ -412,10 +425,11 @@ const Dating = () => {
 
   useEffect(() => {
     if (!user?.id) return;
-    const t = setTimeout(() => { setCurrentIndex(0); setActivePhotoIndex(0); loadProfiles(); }, 350);
+    const t = setTimeout(() => { setCurrentIndex(0); setActivePhotoIndex(0); loadProfiles(); }, 150);
     return () => clearTimeout(t);
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [searchQuery]);
+
 
   const loadMatches = async (userId: string) => {
     const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
@@ -1079,7 +1093,24 @@ const Dating = () => {
           {/* ==================== DISCOVER TAB ==================== */}
           <TabsContent value="swipe" className="flex flex-col items-center gap-3">
             <div className="w-full max-w-sm">
-              <DatingSearch value={searchQuery} onChange={setSearchQuery} onOpenFilters={() => setShowFilters(true)} resultCount={profiles.length} />
+              <DatingSearch
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onOpenFilters={() => setShowFilters(true)}
+                resultCount={profiles.length}
+                suggestions={profiles.slice(0, 8).map((p: any) => ({
+                  user_id: p.user_id,
+                  display_name: p.display_name,
+                  age: p.age,
+                  location: hasRealLocation(p.location) ? p.location : null,
+                  profile_photo_url: p.profile_photo_url,
+                }))}
+                onSelectSuggestion={(uid) => {
+                  const idx = profiles.findIndex((p: any) => p.user_id === uid);
+                  if (idx >= 0) { setCurrentIndex(idx); setActivePhotoIndex(0); }
+                }}
+              />
+
             </div>
             <div className="w-full flex justify-center">
             <AnimatePresence mode="wait">
