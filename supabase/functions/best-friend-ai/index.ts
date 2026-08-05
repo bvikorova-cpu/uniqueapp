@@ -29,7 +29,19 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) throw new Error("Unauthorized");
 
-    const { action, ...params } = await req.json();
+    // Read the body as text first: a truncated/partial upload makes req.json()
+    // throw a SyntaxError ("Unterminated string in JSON...") that would surface
+    // as a confusing 500. Return a clear 400 instead.
+    const rawBody = await req.text();
+    let parsedBody: Record<string, any>;
+    try {
+      parsedBody = rawBody ? JSON.parse(rawBody) : {};
+    } catch (_e) {
+      console.error("best-friend-ai invalid JSON body", rawBody.length);
+      return new Response(JSON.stringify({ error: "Invalid or incomplete request. Please try again." }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const { action, ...params } = parsedBody;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
