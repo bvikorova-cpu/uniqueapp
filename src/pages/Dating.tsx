@@ -71,7 +71,27 @@ interface DatingProfile {
   passport_location?: string | null;
   video_prompts?: any;
   snoozed_until?: string | null;
+  height_cm?: number | null;
+  job_title?: string | null;
+  company?: string | null;
+  education?: string | null;
+  relationship_goal?: string | null;
+  kids?: string | null;
+  pets?: string | null;
+  smoking?: string | null;
+  drinking?: string | null;
+  exercise?: string | null;
+  diet?: string | null;
+  languages?: string[] | null;
+  zodiac?: string | null;
+  personality_type?: string | null;
+  music_taste?: string | null;
+  favorite_movies?: string | null;
+  favorite_books?: string | null;
+  travel_style?: string | null;
+  favorite_quote?: string | null;
 }
+
 
 interface Match {
   id: string;
