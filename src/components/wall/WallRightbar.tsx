@@ -30,31 +30,13 @@ export function WallRightbar() {
       return user;
     } });
 
-  // Get online friends
+  // Get online friends (real data via server-side RPC)
   const { data: onlineFriends = [] } = useQuery({
     queryKey: ["online-friends", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      
-      const { data: friendships } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
-        .eq("status", "accepted");
-
-      const friendIds = friendships?.map((f) =>
-        f.user_id === user.id ? f.friend_id : f.user_id
-      ) || [];
-
-      if (friendIds.length === 0) return [];
-
-      const { data: profiles } = await (supabase as any)
-        .from("public_profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", friendIds)
-        .limit(10);
-
-      return profiles || [];
+      const { data } = await (supabase as any).rpc("get_my_friends");
+      return ((data as any[]) || []).slice(0, 10);
     },
     enabled: !!user });
 
@@ -63,28 +45,11 @@ export function WallRightbar() {
     queryKey: ["upcoming-birthdays", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      
-      const { data: friendships } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
-        .eq("status", "accepted");
-
-      const friendIds = friendships?.map((f) =>
-        f.user_id === user.id ? f.friend_id : f.user_id
-      ) || [];
-
-      if (friendIds.length === 0) return [];
-
-      const { data: profiles } = await (supabase as any)
-        .from("public_profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", friendIds)
-        .limit(5);
-
-      return profiles || [];
+      const { data } = await (supabase as any).rpc("get_my_friends");
+      return ((data as any[]) || []).slice(0, 5);
     },
     enabled: !!user });
+
 
   return (
     <div className="w-full md:w-64 xl:w-80 md:h-[calc(100vh-112px)] md:sticky md:top-0 p-2 xl:p-4 pt-6 space-y-4 md:overflow-y-auto touch-auto -webkit-overflow-scrolling-touch">

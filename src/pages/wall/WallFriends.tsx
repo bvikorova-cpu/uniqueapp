@@ -95,30 +95,18 @@ export default function WallFriends() {
     queryKey: ["friends", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data: friendships, error: friendshipsError } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
-        .eq("status", "accepted");
-      if (friendshipsError) throw friendshipsError;
-      const friendIds = Array.from(new Set(
-        (friendships ?? [])
-          .map((f) => (f.user_id === user.id ? f.friend_id : f.user_id))
-          .filter(Boolean)
-      ));
-      if (friendIds.length === 0) return [];
-      const { data: profiles, error: profilesError } = await publicProfiles()
-        .select("id, full_name, avatar_url")
-        .in("id", friendIds);
-      if (profilesError) throw profilesError;
+      // Server-side, RLS-proof: always returns the full real friend list.
+      const { data, error } = await (supabase as any).rpc("get_my_friends");
+      if (error) throw error;
       const seen = new Set<string>();
-      return (profiles ?? []).filter((p: any) => {
+      return ((data as any[]) ?? []).filter((p: any) => {
         if (!p?.id || seen.has(p.id)) return false;
         seen.add(p.id);
         return true;
       });
     },
     enabled: !!user });
+
 
   const { data: requests = [], refetch: refetchRequests } = useQuery({
     queryKey: ["friend-requests", user?.id, friends.map(f => f.id).join(",")],

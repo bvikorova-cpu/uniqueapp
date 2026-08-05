@@ -69893,6 +69893,15 @@ export type Database = {
         }[]
       }
       get_my_conversations_v1: { Args: { _limit?: number }; Returns: Json }
+      get_my_friends: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          full_name: string
+          id: string
+          username: string
+        }[]
+      }
       get_my_hub_xp: {
         Args: never
         Returns: {
