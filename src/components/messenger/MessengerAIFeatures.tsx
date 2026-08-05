@@ -351,7 +351,34 @@ export const MessengerAIFeatures = ({ userId,
 
       if (handleAIError(error, data)) return;
 
-      setQuantumVariations(data.variations?.variations || []);
+      // The edge function returns { result: "<json string>" }
+      let parsed: any = data?.variations ?? data?.result ?? null;
+      if (typeof parsed === "string") {
+        try {
+          parsed = JSON.parse(parsed.replace(/^```json\s*|```$/g, "").trim());
+        } catch {
+          parsed = null;
+        }
+      }
+      const list = Array.isArray(parsed)
+        ? parsed
+        : Array.isArray(parsed?.variations)
+          ? parsed.variations
+          : [];
+      const normalized = list
+        .map((v: any) => ({
+          type: v?.type || v?.tone || v?.label || "variation",
+          message: v?.message || v?.text || v?.content || (typeof v === "string" ? v : ""),
+          emoji: v?.emoji || "✨",
+        }))
+        .filter((v: any) => v.message);
+
+      if (normalized.length === 0) {
+        toast({ title: "No variations returned", description: "Try again with a longer message.", variant: "destructive" });
+        return;
+      }
+
+      setQuantumVariations(normalized);
       await fetchCredits();
       toast({ title: "Variations ready!", description: `${data.creditsUsed} credits used` });
     } catch (error: any) {
