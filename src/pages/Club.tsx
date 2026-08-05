@@ -323,7 +323,7 @@ export default function Club() {
           <AccordionItem value="q2" className="border rounded-lg px-4">
             <AccordionTrigger>Can I cancel?</AccordionTrigger>
             <AccordionContent>
-              Yes, any time. Click "Manage billing" on your member card and cancel with one click. You keep member perks until the end of the current period.
+              Yes, any time — just contact support and we'll cancel your membership. You keep member perks until the end of the current period.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="q3" className="border rounded-lg px-4">
