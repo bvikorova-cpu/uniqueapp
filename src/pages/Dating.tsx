@@ -567,7 +567,11 @@ const Dating = () => {
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); setSwipeDirection(null); return; }
 
     if (action === "like" || isSuper) {
-      await supabase.from("dating_likes_you").upsert([{ liker_id: user.id, liked_id: currentCard.user_id }], { onConflict: "liker_id,liked_id", ignoreDuplicates: true });
+      const { error: likeErr } = await supabase.from("dating_likes_you").upsert([{ liker_id: user.id, liked_id: currentCard.user_id }], { onConflict: "liker_id,liked_id", ignoreDuplicates: true });
+      if (likeErr) { toast({ title: "Like failed", description: likeErr.message, variant: "destructive" }); setSwipeDirection(null); return; }
+      if (!isSuper) toast({ title: "❤️ Liked", description: `You liked ${currentCard.display_name}. If they like you back, it's a match!` });
+
+
 
       const { data } = await supabase.from("dating_matches").select("*").or(`and(user1_id.eq.${user.id},user2_id.eq.${currentCard.user_id}),and(user1_id.eq.${currentCard.user_id},user2_id.eq.${user.id})`).maybeSingle();
       if (data) {
