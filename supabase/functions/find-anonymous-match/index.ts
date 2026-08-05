@@ -142,8 +142,11 @@ serve(async (req) => {
     }
 
     if (!potentialMatches || potentialMatches.length === 0) {
+      // Preview is a read-only browse: an empty pool is a normal empty state, not an error.
+      if (mode === "preview") return json({ candidates: [], cost: MATCH_COST });
       return errorResponse("NO_MATCHES", "No compatible matches found at the moment. Try again later!", 404);
     }
+
 
     // Multi-axis compatibility scoring (0-100)
     const myInterests: string[] = userProfile.interests ?? [];
