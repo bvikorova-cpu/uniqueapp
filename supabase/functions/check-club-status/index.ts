@@ -26,6 +26,58 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
+    const body = await req.json().catch(() => ({}));
+    if (body?.action === "admin_list_members") {
+      const { data: roleRow } = await admin
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (!roleRow) throw new Error("Admin only");
+
+      const columns =
+        "id, user_id, member_number, tier, status, is_founding, recipient_name, phone, shipping_address, shipping_note, shipping_status, tracking_number, shipped_at, delivered_at, started_at, current_period_end";
+      let query = admin.from("club_memberships").select(columns);
+      if (body?.tier === "digital" || body?.tier === "physical") query = query.eq("tier", body.tier);
+      if (Array.isArray(body?.shippingStatus) && body.shippingStatus.length) {
+        query = query.in("shipping_status", body.shippingStatus);
+      }
+      const { data, error } = await query.order("started_at", { ascending: false });
+      if (error) throw error;
+
+      const userIds = (data ?? []).map((membership) => membership.user_id);
+      let profileByUser: Record<string, { email: string | null; name: string | null }> = {};
+      if (userIds.length) {
+        const { data: profiles } = await admin
+          .from("profiles")
+          .select("id, email, display_name, username")
+          .in("id", userIds);
+        profileByUser = Object.fromEntries(
+          (profiles ?? []).map((profile) => [
+            profile.id,
+            { email: profile.email ?? null, name: profile.display_name ?? profile.username ?? null },
+          ]),
+        );
+      }
+      const items = (data ?? []).map((membership) => ({
+        ...membership,
+        user_email: profileByUser[membership.user_id]?.email ?? null,
+        user_name: profileByUser[membership.user_id]?.name ?? null,
+      }));
+      const counts = {
+        total: items.length,
+        digital: items.filter((membership) => membership.tier === "digital").length,
+        physical: items.filter((membership) => membership.tier === "physical").length,
+        pending_shipping: items.filter(
+          (membership) => membership.tier === "physical" && membership.shipping_status === "pending",
+        ).length,
+      };
+      return new Response(JSON.stringify({ items, counts }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data: m } = await admin
       .from("club_memberships")
       .select("*")
