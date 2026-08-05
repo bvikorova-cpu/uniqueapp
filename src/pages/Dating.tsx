@@ -612,17 +612,8 @@ const Dating = () => {
     if (data) { setCanRewind(true); setLastSwipe(data); }
   };
 
-  const handleCancelSubscription = async () => {
-    if (!user) return;
-    if (cancelingSubscription) return; // double-submit guard
-    setCancelingSubscription(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('cancel-subscription', { body: { subscriptionType: 'dating' } });
-      if (error) throw error;
-      toast({ title: "Subscription Cancelled", description: data.message || "Cancelled at end of period" }); await checkSubscription(user.id);
-    } catch { toast({ title: "Error", variant: "destructive" }); }
-    finally { setCancelingSubscription(false); }
-  };
+  // Credit-based access — nothing to cancel.
+
 
   const loadLikesYou = async (userId: string) => {
     const { data } = await supabase.from("dating_likes_you").select("*").eq("liked_id", userId).eq("seen", false);
