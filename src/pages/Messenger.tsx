@@ -50,21 +50,17 @@ import { Popover,
   PopoverContent,
   PopoverTrigger } from "@/components/ui/popover";
 
-type MessengerView = "hub" | "chat" | "analytics" | "themes" | "voice" | "scheduler" | "receipts" | "backup" | "mood" | "emoji" | "games" | "notifications";
+type MessengerView = "hub" | "chat" | "analytics" | "themes" | "mood" | "emoji" | "games";
 
 const messengerTools = [
   { id: "chat" as MessengerView, icon: MessageCircle, title: "Open Chat", description: "Real-time messaging with all features", color: "cyan", badge: "Core" },
   { id: "analytics" as MessengerView, icon: BarChart3, title: "Chat Analytics", description: "Message stats, patterns & insights", color: "blue", badge: "New" },
   { id: "themes" as MessengerView, icon: Palette, title: "Chat Themes", description: "AI-generated themes & wallpapers", color: "purple", badge: "AI" },
-  { id: "voice" as MessengerView, icon: Radio, title: "Voice Rooms", description: "Drop-in live audio conversations", color: "emerald", badge: "Live" },
-  { id: "scheduler" as MessengerView, icon: Clock, title: "Message Scheduler", description: "Schedule messages for later delivery", color: "amber", badge: "New" },
-  { id: "receipts" as MessengerView, icon: CheckCheck, title: "Read Receipts", description: "Who reads your messages fastest?", color: "teal", badge: "New" },
-  { id: "backup" as MessengerView, icon: Download, title: "Backup & Export", description: "Download chats as TXT, JSON or PDF", color: "slate", badge: "New" },
   { id: "mood" as MessengerView, icon: Brain, title: "Mood Detection", description: "AI analysis of your emotional tone", color: "rose", badge: "AI" },
   { id: "emoji" as MessengerView, icon: Smile, title: "Emoji Creator", description: "Design custom emojis for chats", color: "pink", badge: "New" },
   { id: "games" as MessengerView, icon: Gamepad2, title: "Chat Games", description: "Trivia, RPS & more mini-games", color: "indigo", badge: "Fun" },
-  { id: "notifications" as MessengerView, icon: Bell, title: "Smart Notifications", description: "AI-powered notification management", color: "lime", badge: "AI" },
 ];
+
 
 interface Profile {
   id: string;
