@@ -663,11 +663,21 @@ const Dating = () => {
         const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
         uploadedUrls.push(publicUrl);
       }
-      const newPhotos = [...(currentProfile.additional_photos || []), ...uploadedUrls];
-      await supabase.from('dating_profiles').update({ additional_photos: newPhotos }).eq('id', currentProfile.id);
-      toast({ title: "Success", description: `${uploadedUrls.length} files uploaded` }); await loadUserProfile(user.id);
-    } catch { toast({ title: "Error", description: "Failed to upload", variant: "destructive" }); }
-    finally { setUploadingAdditional(false); }
+      const noMain = !currentProfile.profile_photo_url;
+      const mainUrl = noMain ? uploadedUrls[0] : null;
+      const newPhotos = [...(currentProfile.additional_photos || []), ...(mainUrl ? uploadedUrls.slice(1) : uploadedUrls)];
+      const { data: updated, error: updateError } = await supabase
+        .from('dating_profiles')
+        .update({ additional_photos: newPhotos, ...(mainUrl ? { profile_photo_url: mainUrl } : {}) })
+        .eq('id', currentProfile.id)
+        .eq('user_id', user.id)
+        .select('id')
+        .maybeSingle();
+      if (updateError) throw updateError;
+      if (!updated) throw new Error("Profile not updated");
+      toast({ title: "Success", description: mainUrl ? "Photo uploaded and set as main" : `${uploadedUrls.length} files uploaded` }); await loadUserProfile(user.id);
+    } catch (e: any) { toast({ title: "Error", description: e?.message || "Failed to upload", variant: "destructive" }); }
+    finally { setUploadingAdditional(false); event.target.value = ""; }
   };
 
   const handleRemoveAdditionalPhoto = async (photoUrl: string) => {
