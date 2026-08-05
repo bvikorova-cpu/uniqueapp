@@ -1087,12 +1087,11 @@ const Dating = () => {
                     </div>
 
 
-                    {currentCard.bio && <div className="px-5 py-3 border-b border-border/50"><p className="text-sm text-muted-foreground line-clamp-2">{currentCard.bio}</p></div>}
-                    {currentCard.interests && currentCard.interests.length > 0 && (
-                      <div className="px-5 py-3 border-b border-border/50">
-                        <div className="flex flex-wrap gap-1.5">{currentCard.interests.slice(0, 5).map(interest => <Badge key={interest} variant="secondary" className="text-xs font-normal">{interest}</Badge>)}</div>
-                      </div>
-                    )}
+                    {currentCard.bio && <div className="px-5 py-3 border-b border-border/50"><p className="text-sm text-muted-foreground">{currentCard.bio}</p></div>}
+                    <div className="px-5 py-3 border-b border-border/50">
+                      <DatingDetailsGrid details={currentCard as any} compact />
+                    </div>
+
                     <div className="p-5">
                       <div className="flex gap-3 justify-center items-center">
                         <button disabled={!canRewind} onClick={handleRewind} title="Rewind last swipe" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:border-amber-400 transition-all disabled:opacity-30"><RotateCcw className="h-5 w-5 text-amber-500" /></button>
