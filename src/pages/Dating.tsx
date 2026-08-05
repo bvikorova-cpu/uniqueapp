@@ -1272,7 +1272,7 @@ const Dating = () => {
                 {matches.length > 0 ? (
                   <div className="space-y-3">
                     {matches.map((match) => (
-                      <Card key={match.id} className="cursor-pointer hover:bg-muted/30 transition-colors border-border/50" onClick={() => { setSelectedMatch(match); loadMessages(match.id); }}>
+                      <Card key={match.id} className="cursor-pointer hover:bg-muted/30 transition-colors border-border/50" onClick={() => { void openMatchChat(match); }}>
                         <CardContent className="p-4 flex items-center gap-4">
                           <div className="h-14 w-14 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent flex-shrink-0">
                             {match.profile?.profile_photo_url ? <img src={match.profile.profile_photo_url} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">{match.profile?.display_name?.charAt(0) || "?"}</div>}
