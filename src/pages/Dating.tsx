@@ -400,22 +400,22 @@ const Dating = () => {
       };
       const freshness = (p: any) => new Date(p.updated_at || p.created_at || 0).getTime();
 
-      // Single smart search: boosted first, then best overall match score, newest on ties.
-      ranked = [...ranked].sort((a, b) => (score(b) - score(a)) || (freshness(b) - freshness(a)));
+      const qq = searchQuery.trim().toLowerCase();
+      const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      const searchBoost = (p: any) => {
+        if (!qq) return 0;
+        const name = norm(p.display_name || "");
+        const nq = norm(qq);
+        if (name.startsWith(nq)) return 5000;
+        if (name.includes(nq)) return 3000;
+        const rest = norm([p.location, p.job_title, p.bio, ...(Array.isArray(p.interests) ? p.interests : [])].filter(Boolean).join(" "));
+        return rest.includes(nq) ? 1500 : 0;
+      };
 
-      const q = searchQuery.trim().toLowerCase();
-      if (q) {
-        ranked = ranked.filter((p: any) => {
-          const haystack = [
-            p.display_name,
-            p.location,
-            p.job_title,
-            p.bio,
-            ...(Array.isArray(p.interests) ? p.interests : []),
-          ].filter(Boolean).join(" ").toLowerCase();
-          return haystack.includes(q);
-        });
-      }
+      // Single smart search: search relevance first, then boosted, then match score, newest on ties.
+      ranked = [...ranked].sort(
+        (a, b) => (searchBoost(b) - searchBoost(a)) || (score(b) - score(a)) || (freshness(b) - freshness(a))
+      );
 
       ranked = ranked.slice(0, 40);
     }
@@ -425,10 +425,11 @@ const Dating = () => {
 
   useEffect(() => {
     if (!user?.id) return;
-    const t = setTimeout(() => { setCurrentIndex(0); setActivePhotoIndex(0); loadProfiles(); }, 350);
+    const t = setTimeout(() => { setCurrentIndex(0); setActivePhotoIndex(0); loadProfiles(); }, 150);
     return () => clearTimeout(t);
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [searchQuery]);
+
 
   const loadMatches = async (userId: string) => {
     const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
