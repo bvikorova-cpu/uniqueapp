@@ -258,8 +258,11 @@ const Dating = () => {
     ]);
     // Default cap 5/day + any purchased Super Likes from packs.
     const used = count || 0;
+    const free = Math.max(0, 5 - used);
+    setFreeSuperLikesLeft(free);
     setPurchasedBoosts(perks?.boosts ?? 0);
-    setSuperLikesRemaining(Math.max(0, 5 - used) + (perks?.super_likes ?? 0));
+    setSuperLikesRemaining(free + (perks?.super_likes ?? 0));
+
   };
 
 
