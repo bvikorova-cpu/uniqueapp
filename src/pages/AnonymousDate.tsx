@@ -82,6 +82,8 @@ const HOW_IT_WORKS = [
   { step: "4", title: "Reveal", desc: "Discover each other after building a real connection", icon: "👀" },
 ];
 
+const ENTRY_CREDIT_COST = 2;
+
 export default function AnonymousDate() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
