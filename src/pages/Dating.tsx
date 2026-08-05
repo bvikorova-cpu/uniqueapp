@@ -1501,12 +1501,11 @@ const Dating = () => {
         theirName={matchCelebration?.partner.display_name}
         location={matchCelebration?.partner.location}
         onStartChat={() => {
-          if (matchCelebration) {
-            setSelectedMatch(matchCelebration.match);
-            setActiveTab("matches");
-          }
+          const c = matchCelebration;
           setMatchCelebration(null);
+          if (c) void openMatchChat(c.match, c.partner);
         }}
+
         onFindAnother={() => setMatchCelebration(null)}
         onViewMatches={() => {
           setMatchCelebration(null);
