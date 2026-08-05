@@ -95,7 +95,7 @@ export default function AnonymousDate() {
   const [checkingAccess, setCheckingAccess] = useState(true);
   const [payingAccess, setPayingAccess] = useState(false);
   const [activeView, setActiveView] = useState<ViewType>("hub");
-  const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
+  
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<MatchCandidate[]>([]);
