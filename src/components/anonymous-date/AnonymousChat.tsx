@@ -489,6 +489,8 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
               userId={currentUserId}
               onUploaded={(url) => { sendMessage("🎤 Voice message", "voice", url); bumpStreak(); }}
             />
+            <GiftPicker matchId={match.id} />
+
             <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-anon-date-gradient">
               <Send className="h-4 w-4" />
             </Button>
