@@ -69474,6 +69474,22 @@ export type Database = {
         Returns: number
       }
       get_current_user_id: { Args: never; Returns: string }
+      get_dating_likes_you: {
+        Args: never
+        Returns: {
+          additional_photos: string[]
+          age: number
+          bio: string
+          display_name: string
+          gender: string
+          interests: string[]
+          liked_at: string
+          location: string
+          looking_for: string
+          profile_photo_url: string
+          user_id: string
+        }[]
+      }
       get_dau_series: {
         Args: { p_days?: number }
         Returns: {

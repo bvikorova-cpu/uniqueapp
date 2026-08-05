@@ -587,9 +587,10 @@ const Dating = () => {
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); setSwipeDirection(null); return; }
 
     if (action === "like" || isSuper) {
-      const { error: likeErr } = await supabase.from("dating_likes_you").upsert([{ liker_id: user.id, liked_id: currentCard.user_id }], { onConflict: "liker_id,liked_id", ignoreDuplicates: true });
-      if (likeErr) { toast({ title: "Like failed", description: likeErr.message, variant: "destructive" }); setSwipeDirection(null); return; }
+      // Legacy mirror table — best-effort only, must never block match creation.
+      void supabase.from("dating_likes_you").upsert([{ liker_id: user.id, liked_id: currentCard.user_id }], { onConflict: "liker_id,liked_id", ignoreDuplicates: true });
       if (!isSuper) toast({ title: "❤️ Liked", description: `You liked ${currentCard.display_name}. If they like you back, it's a match!` });
+
 
 
 
