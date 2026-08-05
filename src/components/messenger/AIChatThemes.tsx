@@ -60,8 +60,12 @@ export const AIChatThemes = ({ onBack, userId }: AIChatThemesProps) => {
       const ok = await purchase(id, price, name);
       if (!ok) return;
     }
-    await save({ themeId: id });
-    toast({ title: "Theme applied", description: `${name} is now your chat theme.` });
+    try {
+      await save({ themeId: id });
+      toast({ title: "Theme applied", description: `${name} is now your chat theme.` });
+    } catch (e: any) {
+      toast({ title: "Could not save theme", description: e?.message || "Please try again.", variant: "destructive" });
+    }
   };
 
   const applyWallpaper = async (id: string, price: number, name: string) => {
@@ -69,8 +73,12 @@ export const AIChatThemes = ({ onBack, userId }: AIChatThemesProps) => {
       const ok = await purchase(id, price, name);
       if (!ok) return;
     }
-    await save({ wallpaperId: id });
-    toast({ title: "Wallpaper applied", description: `${name} is now your chat background.` });
+    try {
+      await save({ wallpaperId: id });
+      toast({ title: "Wallpaper applied", description: `${name} is now your chat background.` });
+    } catch (e: any) {
+      toast({ title: "Could not save wallpaper", description: e?.message || "Please try again.", variant: "destructive" });
+    }
   };
 
   const generateTheme = async () => {
