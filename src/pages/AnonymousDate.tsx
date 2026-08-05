@@ -181,6 +181,7 @@ export default function AnonymousDate() {
       sessionStorage.setItem("anonymous_date_entry_paid", "true");
       setHasAccess(true);
       fetchCredits();
+      window.dispatchEvent(new Event("ai-credits-updated"));
       toast({ title: "Access unlocked", description: `${ENTRY_CREDIT_COST} credits used for this entry` });
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to spend credits", variant: "destructive" });
