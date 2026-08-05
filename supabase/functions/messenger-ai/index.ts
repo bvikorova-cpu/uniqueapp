@@ -133,12 +133,29 @@ Deno.serve(async (req) => {
       default: throw new Error(`Unknown action: ${action}`);
     }
 
-    await supabase
-      .from("messenger_ai_credits")
-      .update({ credits_remaining: credits.credits_remaining - CREDIT_COST })
-      .eq("user_id", user.id);
+    const { error: deductErr } = await admin.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: cost,
+      p_reason: `messenger_${String(action).replace(/-/g, "_")}`,
+      p_source: "messenger",
+    });
+    if (deductErr) {
+      const msg = deductErr.message || "";
+      if (/insufficient|no credit/i.test(msg)) {
+        return new Response(JSON.stringify({ error: "Insufficient credits", required: cost }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+      console.error("messenger-ai deduct failed", msg);
+    }
 
-    return new Response(JSON.stringify({ result }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const { data: after } = await admin
+      .from("ai_credits")
+      .select("credits_remaining")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    return new Response(JSON.stringify({ result, creditsUsed: cost, creditsRemaining: after?.credits_remaining ?? 0 }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     const status = e.message === "Unauthorized" ? 401 : e.message?.includes("credits") ? 402 : 500;
     return new Response(JSON.stringify({ error: e.message }), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
