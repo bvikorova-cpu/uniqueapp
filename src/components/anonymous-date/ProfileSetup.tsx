@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,7 +56,40 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingExisting, setLoadingExisting] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
+
+  // Prefill with the user's current anonymous dating profile (edit mode)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data } = await supabase
+          .from("anonymous_dating_profiles")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (cancelled || !data) return;
+        setIsEditing(true);
+        setAnonymousName(data.anonymous_name ?? "");
+        setAgeRange(data.age_range ?? "");
+        setLookingFor(data.looking_for ?? "");
+        setLocation(data.location ?? "");
+        setGender(data.gender ?? "");
+        setPreferredGender(data.preferred_gender ?? "");
+        setRelationshipGoal(data.relationship_goal ?? "");
+        setSelectedLanguages(data.languages ?? []);
+        setSelectedInterests(data.interests ?? []);
+        setSelectedTraits(data.personality_traits ?? []);
+      } finally {
+        if (!cancelled) setLoadingExisting(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests(prev =>
@@ -117,10 +150,10 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
           preferred_gender: v.preferred_gender || null,
           relationship_goal: v.relationship_goal || null,
           languages: v.languages.length ? v.languages : null,
-          is_active: true });
+          is_active: true }, { onConflict: "user_id" });
 
       if (error) throw error;
-      toast({ title: "Profile Created!", description: "You can now start finding matches" });
+      toast({ title: isEditing ? "Profile Updated!" : "Profile Created!", description: isEditing ? "Your changes were saved" : "You can now start finding matches" });
       onComplete();
     } catch (error: any) {
       console.error("Error creating profile:", error);
@@ -329,7 +362,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
                 <div className="flex items-center gap-2 mb-1">
                   <UserPlus className="h-5 w-5 text-primary" />
                   <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-                    Create Your Anonymous Profile
+                    {isEditing ? "Edit Your Anonymous Profile" : "Create Your Anonymous Profile"}
                   </h2>
                 </div>
                 <p className="text-sm text-muted-foreground">Your real identity stays completely hidden until you choose to reveal it</p>
@@ -516,11 +549,11 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" size="lg" disabled={loading}>
+              <Button type="submit" className="w-full" size="lg" disabled={loading || loadingExisting}>
                 {loading ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating Profile...</>
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {isEditing ? "Saving..." : "Creating Profile..."}</>
                 ) : (
-                  <><Sparkles className="mr-2 h-4 w-4" /> Create Profile & Start Matching</>
+                  <><Sparkles className="mr-2 h-4 w-4" /> {isEditing ? "Save Changes" : "Create Profile & Start Matching"}</>
                 )}
               </Button>
             </form>
