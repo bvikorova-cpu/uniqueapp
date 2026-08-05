@@ -5,6 +5,34 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
+// AI output can arrive wrapped in markdown fences or truncated mid-object.
+// Strip fences, then progressively trim from the end until it parses.
+function safeParseJson(raw: string): any | null {
+  if (!raw) return null;
+  let text = raw.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
+  const start = text.indexOf("{");
+  if (start > 0) text = text.slice(start);
+  try { return JSON.parse(text); } catch { /* try repair below */ }
+  // Drop the trailing (incomplete) fragment and close open brackets.
+  for (let end = text.length; end > 1; end--) {
+    const ch = text[end - 1];
+    if (ch !== "}" && ch !== "]" && ch !== '"' && !/[\w.]/.test(ch)) continue;
+    let candidate = text.slice(0, end).replace(/,\s*$/, "");
+    const stack: string[] = [];
+    let inStr = false, esc = false;
+    for (const c of candidate) {
+      if (inStr) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') inStr = false; continue; }
+      if (c === '"') inStr = true;
+      else if (c === "{" || c === "[") stack.push(c);
+      else if (c === "}" || c === "]") stack.pop();
+    }
+    if (inStr) continue;
+    while (stack.length) candidate += stack.pop() === "{" ? "}" : "]";
+    try { return JSON.parse(candidate); } catch { /* keep trimming */ }
+  }
+  return null;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
