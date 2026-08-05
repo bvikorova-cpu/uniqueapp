@@ -39,7 +39,7 @@ export default function Club() {
   const { toast } = useToast();
   const { membership, isMember, openBillingPortal, refresh } =
     useClubMembership();
-  const { total, members } = useGoodFund();
+  
   const [verifying, setVerifying] = useState(false);
 
   // Verify checkout after redirect
