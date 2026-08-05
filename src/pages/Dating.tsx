@@ -1260,7 +1260,7 @@ const Dating = () => {
                   <div className="flex gap-2">
 
                     <EmojiPicker onSelect={(e) => setNewMessage(newMessage + e)} />
-                    {user && <VoiceNoteRecorder userId={user.id} matchId={selectedMatch.id} onSent={() => loadMessages(selectedMatch.id)} />}
+                    
                     <AIStarterButton
                       matchId={selectedMatch.id}
                       matchProfile={selectedMatch.profile}
