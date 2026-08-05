@@ -36,17 +36,36 @@ export function useAnonymousDateAI() {
         body: { feature, payload, matchId } });
 
       if (error) {
-        // Try to read structured error
-        const msg = (error as any)?.message ?? "";
+        // Read the real server payload (FunctionsHttpError hides it in .context)
+        let code = "";
+        let detail = "";
+        try {
+          const res = (error as any)?.context;
+          if (res && typeof res.json === "function") {
+            const body = await res.clone().json();
+            code = body?.error ?? "";
+            detail = body?.message ?? "";
+          }
+        } catch { /* ignore body parse issues */ }
+
+        const msg = `${code} ${detail} ${(error as any)?.message ?? ""}`;
         if (msg.includes("402") || msg.includes("INSUFFICIENT")) {
-          toast({ title: "Not enough credits", description: "Please buy more credits to use this AI feature.", variant: "destructive" });
-        } else if (msg.includes("429")) {
-          toast({ title: "AI is busy", description: "Try again in a moment.", variant: "destructive" });
+          toast({ title: "Not enough credits", description: detail || "Please buy more credits to use this AI feature.", variant: "destructive" });
+        } else if (msg.includes("429") || msg.includes("RATE_LIMITED")) {
+          toast({ title: "AI is busy", description: detail || "Try again in a moment.", variant: "destructive" });
+        } else if (msg.includes("UNAUTHORIZED")) {
+          toast({ title: "Session expired", description: "Please sign in again to use AI features.", variant: "destructive" });
         } else {
-          toast({ title: "AI error", description: msg || "Try again later.", variant: "destructive" });
+          toast({
+            title: "AI error",
+            description: [code, detail].filter(Boolean).join(": ") || (error as any)?.message || "Try again later.",
+            variant: "destructive",
+          });
         }
+        console.error("anonymous-date-ai failed", { feature, code, detail });
         return null;
       }
+
 
       if (data?.error) {
         toast({ title: "AI error", description: data.message ?? data.error, variant: "destructive" });
