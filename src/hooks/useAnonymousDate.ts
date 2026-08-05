@@ -188,11 +188,18 @@ export function useAnonymousDate() {
   useEffect(() => {
     fetchCredits();
     fetchActiveMatches();
+    // Keep in sync when any other tool spends/tops up unified credits.
+    const onCreditsUpdated = () => { void fetchCredits(); };
+    window.addEventListener("ai-credits-updated", onCreditsUpdated);
     // Reset cached user when auth changes so a fresh sign-in is picked up.
     const { data: sub } = supabase.auth.onAuthStateChange(() => {
       userIdRef.current = null;
+      void fetchCredits();
     });
-    return () => { sub.subscription.unsubscribe(); };
+    return () => {
+      window.removeEventListener("ai-credits-updated", onCreditsUpdated);
+      sub.subscription.unsubscribe();
+    };
   }, [fetchCredits, fetchActiveMatches]);
 
   return { credits,
