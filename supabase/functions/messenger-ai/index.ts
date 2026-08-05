@@ -4,7 +4,18 @@ import { callOpenAI, callOpenAIJSON } from "../_shared/openai.ts";
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const CREDIT_COST = 1;
+// Unified AI credit costs per Messenger action (matches the UI labels).
+const ACTION_COSTS: Record<string, number> = {
+  translate: 2,
+  "smart-reply": 2,
+  summarize: 5,
+  "time-capsule": 5,
+  "emotional-weather": 3,
+  "quantum-message": 10,
+  "anonymous-compliment": 2,
+  "what-if": 15,
+};
+const DEFAULT_COST = 2;
 
 const styles: Record<string, string> = { heartfelt: "Write with genuine warmth and emotional depth.",
   poetic: "Use poetic language and metaphors.",
