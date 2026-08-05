@@ -26,11 +26,12 @@ Deno.serve(async (req) => {
     const description = String(body?.description || "").slice(0, 400) ||
       "kind warm best friend, soft smile, expressive eyes, neutral background";
 
-    const imgRes = await fetch("https://api.openai.com/v1/images/generations", {
+    const imgRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${OPENAI}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-image-1",
+        model: "google/gemini-2.5-flash-image",
+        modalities: ["image", "text"],
         messages: [{ role: "user", content:
           `Pixar 3D portrait of: ${description}. Friendly, glowing, cinematic studio lighting, square crop, no text, no real person.` }] }) });
     if (!imgRes.ok) {
