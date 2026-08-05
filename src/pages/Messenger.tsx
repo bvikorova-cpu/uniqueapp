@@ -157,8 +157,8 @@ const Messenger = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [otherUserTyping, setOtherUserTyping] = useState(false);
   const [replyingTo, setReplyingTo] = useState<MessageWithProfile | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingDuration, setRecordingDuration] = useState(0);
+
+
   
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
