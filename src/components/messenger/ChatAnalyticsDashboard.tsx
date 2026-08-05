@@ -233,11 +233,12 @@ export const ChatAnalyticsDashboard = ({ onBack, userId }: ChatAnalyticsDashboar
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-6 gap-1">
-              {Array.from({ length: 24 }, (_, h) => {
-                const intensity = Math.random();
+              {stats.hourCounts.map((count, h) => {
+                const intensity = count / maxHour;
                 return (
                   <div
                     key={h}
+                    title={`${count} message(s) at ${h}:00`}
                     className="aspect-square rounded-md flex items-center justify-center text-[9px] font-bold"
                     style={{
                       backgroundColor: `hsl(190 ${60 + intensity * 40}% ${20 + intensity * 30}%)`,
@@ -249,8 +250,11 @@ export const ChatAnalyticsDashboard = ({ onBack, userId }: ChatAnalyticsDashboar
               })}
             </div>
             <p className="text-xs text-muted-foreground mt-2 text-center">
-              Your peak messaging hour is <span className="font-bold text-primary">{stats.mostActiveHour}:00</span>
+              {stats.totalMessages === 0
+                ? "No messages yet — your activity will appear here."
+                : <>Your peak messaging hour is <span className="font-bold text-primary">{stats.mostActiveHour}:00</span></>}
             </p>
+
           </CardContent>
         </Card>
       </motion.div>
