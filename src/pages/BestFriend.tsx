@@ -180,15 +180,6 @@ const BestFriend = () => {
       case "conflict_resolver": return <ConflictResolverView />;
       case "bucket_list": return <BucketListView />;
       case "self_care_planner": return <SelfCarePlannerView />;
-      case "persona": return <PersonaSettingsView />;
-      case "memory_vault": return <MemoryVaultView />;
-      case "roleplay": return <RoleplayScenariosView />;
-      case "voice_journal": return <VoiceJournalView />;
-      
-      case "photo_share": return <PhotoShareView />;
-      case "year_report": return <YearReportView />;
-      case "memory_timeline": return <MemoryTimelineView />;
-      case "crisis_help": return <CrisisResourcesView />;
       case "chat": return renderChat();
       default: return null;
     }
