@@ -14,18 +14,30 @@ const TABS: { id: DiscoveryMode; label: string; icon: any }[] = [
 
 export const DiscoveryTabs = ({ mode, onChange }: { mode: DiscoveryMode; onChange: (m: DiscoveryMode) => void }) => (
   <div className="flex gap-1 overflow-x-auto pb-1">
-    {TABS.map(t => {
+    {TABS.map((t) => {
       const Icon = t.icon;
       const active = mode === t.id;
       return (
-    <>
-      <FloatingHowItWorks title={"Discovery Tabs - How it works"} steps={[{ title: 'Open', desc: 'Access the Discovery Tabs section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Discovery Tabs.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <Button key={t.id} variant={active ? "default" : "outline"} size="sm"
-          onClick={() => onChange(t.id)} className="gap-1 whitespace-nowrap flex-shrink-0">
+        <Button
+          key={t.id}
+          type="button"
+          variant={active ? "default" : "outline"}
+          size="sm"
+          onClick={() => onChange(t.id)}
+          className="gap-1 whitespace-nowrap flex-shrink-0"
+        >
           <Icon className="h-3 w-3" /> {t.label}
         </Button>
-    </>
-  );
+      );
     })}
+    <FloatingHowItWorks
+      title="Discovery Tabs - How it works"
+      steps={[
+        { title: "Deck", desc: "Browse all nearby profiles one card at a time." },
+        { title: "AI Smart", desc: "AI ranks profiles by your swiping behaviour." },
+        { title: "Compatible", desc: "Profiles with the highest compatibility score." },
+        { title: "Top Picks / Standouts", desc: "Highlighted and most popular profiles of the day." },
+      ]}
+    />
   </div>
 );
