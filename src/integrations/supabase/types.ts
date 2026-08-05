@@ -70738,6 +70738,17 @@ export type Database = {
         }
         Returns: string
       }
+      send_user_notification: {
+        Args: {
+          _action_url?: string
+          _message: string
+          _related_id?: string
+          _title: string
+          _type: string
+          _user_id: string
+        }
+        Returns: string
+      }
       share_secret_santa_gift_to_story: {
         Args: { p_gift_id: string }
         Returns: {

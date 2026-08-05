@@ -472,10 +472,17 @@ const Dating = () => {
       await supabase.from("dating_likes_you").insert([{ liker_id: user.id, liked_id: currentCard.user_id }]);
       const { data } = await supabase.from("dating_matches").select("*").or(`and(user1_id.eq.${user.id},user2_id.eq.${currentCard.user_id}),and(user1_id.eq.${currentCard.user_id},user2_id.eq.${user.id})`).maybeSingle();
       if (data) {
+        await supabase.rpc("send_user_notification", {
+          _user_id: currentCard.user_id,
+          _type: "dating_match",
+          _title: "🎉 New Match!",
+          _message: `You matched with ${currentProfile?.display_name || "someone"}!`,
+          _related_id: data.id,
+          _action_url: "/dating" });
         await supabase.from("notifications").insert([
-          { user_id: currentCard.user_id, type: "dating_match", title: "🎉 New Match!", message: `You matched with ${currentProfile?.display_name || "someone"}!`, related_id: data.id },
           { user_id: user.id, type: "dating_match", title: "🎉 New Match!", message: `You matched with ${currentCard.display_name}!`, related_id: data.id }
         ]);
+
         await loadMatches(user.id);
         setMatchCelebration({ match: { ...(data as any), profile: currentCard } as Match, partner: currentCard });
       }
@@ -507,7 +514,7 @@ const Dating = () => {
     const { error } = await supabase.from("dating_messages").insert([{ match_id: selectedMatch.id, sender_id: user.id, content }]);
     if (error) { toast({ title: "Error", description: "Failed to send message", variant: "destructive" }); }
     else {
-      await supabase.from("notifications").insert([{ user_id: otherId, type: "dating_message", title: "New Message 💌", message: `${currentProfile?.display_name || "Someone"} sent you a message`, related_id: selectedMatch.id }]);
+      await supabase.rpc("send_user_notification", { _user_id: otherId, _type: "dating_message", _title: "New Message 💌", _message: `${currentProfile?.display_name || "Someone"} sent you a message`, _related_id: selectedMatch.id, _action_url: "/dating" });
       // A/B conversion tracking: mark experiment as used + led_to_message
       if (pendingStarterExperiment) {
         supabase.functions.invoke("dating-ai-coach", {
