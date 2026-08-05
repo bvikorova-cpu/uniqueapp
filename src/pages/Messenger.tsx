@@ -1090,14 +1090,10 @@ const Messenger = () => {
     switch (activeView) {
       case "analytics": return <ChatAnalyticsDashboard onBack={goToHub} userId={user.id} />;
       case "themes": return <AIChatThemes onBack={goToHub} userId={user.id} />;
-      case "voice": return <VoiceRoom onBack={goToHub} userId={user.id} />;
-      case "scheduler": return <MessageScheduler onBack={goToHub} userId={user.id} />;
-      case "receipts": return <ReadReceiptsAnalytics onBack={goToHub} userId={user.id} />;
-      case "backup": return <ChatBackupExport onBack={goToHub} userId={user.id} />;
       case "mood": return <AIMoodDetection onBack={goToHub} userId={user.id} />;
       case "emoji": return <CustomEmojiCreator onBack={goToHub} userId={user.id} />;
       case "games": return <ChatGames onBack={goToHub} userId={user.id} />;
-      case "notifications": return <SmartNotifications onBack={goToHub} userId={user.id} />;
+
       default: return null;
     }
   };
