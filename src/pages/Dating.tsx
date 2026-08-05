@@ -120,6 +120,7 @@ interface GiftType {
   name: string;
   icon: string;
   price: number;
+  credit_cost?: number;
 }
 
 interface SentGift {
