@@ -317,8 +317,21 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
               onBlock={safety.block}
               onUnblock={safety.unblock}
             />
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Badge
+              variant={urgent ? "destructive" : "outline"}
+              className={`text-[10px] gap-1 ${urgent ? "" : "border-white/30 text-white"}`}
+            >
+              <Timer className="h-3 w-3" />
+              {timeLeft || "—"}
+            </Badge>
+            <StreakBadge days={sharedStreak} />
+            <Badge variant="outline" className="text-[10px] border-white/30 text-white">Anon</Badge>
           </div>
         </div>
+
 
         {/* Expiry banner: 24h warning + post-expiry CTA */}
         {expired ? (
