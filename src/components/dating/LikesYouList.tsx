@@ -130,6 +130,32 @@ export const LikesYouList = ({ userId, currentProfile, onMatch, onLikesSeen }: P
     loadLikers();
   }, [userId]);
 
+  // Real-time: refresh the list when someone likes/unlikes me or a match is created.
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel(`dating_likes_you_${userId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dating_swipes", filter: `swiped_id=eq.${userId}` },
+        () => { loadLikers(); }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dating_matches", filter: `user1_id=eq.${userId}` },
+        () => { loadLikers(); }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dating_matches", filter: `user2_id=eq.${userId}` },
+        () => { loadLikers(); }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
