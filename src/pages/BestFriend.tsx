@@ -156,7 +156,7 @@ const BestFriend = () => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
-  const messagesLeft = !subscription.subscribed ? Math.max(0, subscription.freeMessagesLimit - subscription.freeMessagesUsed) : null;
+  const messagesLeft = credits;
 
   const renderToolView = () => {
     switch (activeView) {
