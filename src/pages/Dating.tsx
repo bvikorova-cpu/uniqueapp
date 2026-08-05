@@ -116,8 +116,13 @@ interface SentGift {
   gift: GiftType;
   created_at: string;
 }
+const ENTRY_CREDIT_COST = 2;
+const todayKey = () =>
+  new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+const dailyStorageKey = (userId: string) => `dating_entry_paid:${userId}`;
 
 const Dating = () => {
+
   const { toast } = useToast();
   const navigate = useNavigate();
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
