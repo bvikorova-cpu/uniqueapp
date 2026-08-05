@@ -432,7 +432,12 @@ const Dating = () => {
   };
 
 
-  useEffect(() => { if (user?.id) { setCurrentIndex(0); setActivePhotoIndex(0); loadProfiles(); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [discoveryMode]);
+  useEffect(() => {
+    if (!user?.id) return;
+    const t = setTimeout(() => { setCurrentIndex(0); setActivePhotoIndex(0); loadProfiles(); }, 350);
+    return () => clearTimeout(t);
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [searchQuery]);
 
   const loadMatches = async (userId: string) => {
     const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
