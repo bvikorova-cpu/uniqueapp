@@ -946,13 +946,14 @@ async function handler(req: Request): Promise<Response> {
     }> = {
       messenger_ai: {
         packages: {
-          "20":  { amount: 500,  credits: 20,  name: "20 Messenger AI Credits" },
-          "50":  { amount: 1000, credits: 50,  name: "50 Messenger AI Credits" },
-          "150": { amount: 2500, credits: 150, name: "150 Messenger AI Credits" } },
+          "20":  { amount: 500,  credits: 20,  name: "20 AI Credits" },
+          "50":  { amount: 1000, credits: 50,  name: "50 AI Credits" },
+          "150": { amount: 2500, credits: 150, name: "150 AI Credits" } },
         mode: "payment",
-        successPath: "/messenger?payment=success&credits={CREDITS}",
-        cancelPath: "/messenger?payment=cancelled",
-        type: "messenger_ai_credits" },
+        successPath: "/il?payment=success&credits={CREDITS}",
+        cancelPath: "/il?payment=cancelled",
+        // Credits land in the unified `ai_credits` balance.
+        type: "ai_credits" },
       coloring_pay_per_use: {
         packages: {
           "1": { amount: 200, credits: 1, name: "1 Coloring Page Credit" } },
