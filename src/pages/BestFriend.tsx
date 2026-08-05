@@ -31,15 +31,6 @@ import { FriendshipHoroscopeView } from "@/components/best-friend/FriendshipHoro
 import { ConflictResolverView } from "@/components/best-friend/ConflictResolverView";
 import { BucketListView } from "@/components/best-friend/BucketListView";
 import { SelfCarePlannerView } from "@/components/best-friend/SelfCarePlannerView";
-import { PersonaSettingsView } from "@/components/best-friend/PersonaSettingsView";
-import { MemoryVaultView } from "@/components/best-friend/MemoryVaultView";
-import { RoleplayScenariosView } from "@/components/best-friend/RoleplayScenariosView";
-import { VoiceJournalView } from "@/components/best-friend/VoiceJournalView";
-import { PhotoShareView } from "@/components/best-friend/PhotoShareView";
-import { YearReportView } from "@/components/best-friend/YearReportView";
-import { MemoryTimelineView } from "@/components/best-friend/MemoryTimelineView";
-
-import { CrisisResourcesView } from "@/components/best-friend/CrisisResourcesView";
 import { FriendshipHUD } from "@/components/best-friend/FriendshipHUD";
 import ReactMarkdown from "react-markdown";
 
