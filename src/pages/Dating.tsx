@@ -515,10 +515,17 @@ const Dating = () => {
     setCanRewind(true);
     setLastSwipe({ swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action });
     if (isSuper) {
+      if (freeSuperLikesLeft <= 0) {
+        const { data: usedPerk } = await supabase.rpc("consume_dating_perk", { p_kind: "super_like" });
+        if (!usedPerk) { toast({ title: "No Super Likes left", description: "Buy a Super Like pack in Premium.", variant: "destructive" }); setSwipeDirection(null); return; }
+      } else {
+        setFreeSuperLikesLeft(n => Math.max(0, n - 1));
+      }
       const { error: superError } = await supabase.from("dating_super_likes").insert([{ swiper_id: user.id, swiped_id: currentCard.user_id }]);
       if (superError) { toast({ title: "Error", description: "Failed to send Super Like", variant: "destructive" }); setSwipeDirection(null); return; }
       toast({ title: "⭐ Super Like!", description: `${currentCard.display_name} will be notified!` });
       setSuperLikesRemaining(superLikesRemaining - 1);
+
     }
     const { rateLimit } = await import("@/lib/scaleGuards");
     const okSwipe = await rateLimit("swipe.dating", 200, 60);
