@@ -388,7 +388,7 @@ const CATEGORIES: Category[] = [
         path: "/club", title: "Unique VIP Club", icon: Crown,
         blurb: "Digital or physical membership card with exclusive perks and Good Fund support.",
         features: ["Digital €20 / Physical €30", "€1.50/mo recurring", "10% Good Fund", "Gold ring badge"],
-        details: "Join the Unique VIP Club with a one-time entry fee (€20 digital, €30 physical shipped card) plus €1.50/month recurring. 10% of every payment funds the Unique Good Fund supporting community causes. Members get a gold-ring MemberBadge visible across the platform, priority support, member-only drops and exclusive access.",
+        details: "Join the Unique VIP Club with a one-time entry fee (€20 digital, €30 physical shipped card) plus €1.50/month recurring. 10% of every payment funds the Unique Good Fund supporting community causes. Members get a gold-ring MemberBadge visible across the platform and priority access to new modules 7 days before public launch.",
         pricing: "€20 (digital) or €30 (physical) entry + €1.50/mo • 30-day trial on recurring • 10% to Good Fund",
         capabilities: ["Digital or shipped physical card", "Gold-ring MemberBadge everywhere", "Shipping address management", "Good Fund contribution tracking", "Stripe Billing Portal access"] },
       { path: "/verified", title: "Unique Verified", icon: Shield,

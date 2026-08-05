@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Crown, Download, FileDown, RotateCw, Trophy } from "lucide-react";
+import { ArrowLeft, Crown, Download, FileDown, RotateCw } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import clubCardPreview from "@/assets/club-card-preview.png.asset.json";
 import { useClubMembership } from "@/hooks/useClubMembership";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -93,45 +94,16 @@ export default function ClubCard() {
           transition={{ duration: 0.7, type: "spring" }}
           onClick={() => setFlipped((f) => !f)}
         >
-          {/* FRONT */}
+          {/* FRONT — the official Unique VIP Club card design */}
           <div
-            className="absolute inset-0 rounded-3xl p-6 flex flex-col justify-between shadow-2xl"
-            style={ {
-              backfaceVisibility: "hidden",
-              background:
-                "linear-gradient(135deg, #7c3aed 0%, #ec4899 45%, #f59e0b 100%)" }}
+            className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl"
+            style={{ backfaceVisibility: "hidden" }}
           >
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="text-white/70 text-xs uppercase tracking-widest">Unique VIP Club</div>
-                <div className="text-white text-2xl font-black" style={{ fontFamily: "Lobster Two, cursive" }}>
-                  Unique
-                </div>
-              </div>
-              <Crown className="h-8 w-8 text-yellow-300 drop-shadow" />
-            </div>
-
-            <div className="text-white">
-              <div className="text-white/70 text-[10px] uppercase tracking-widest">Member №</div>
-              <div className="text-3xl md:text-4xl font-black tracking-wider">#{memberNum}</div>
-            </div>
-
-            <div className="flex justify-between items-end text-white text-xs">
-              <div>
-                <div className="text-white/60 uppercase text-[9px]">Holder</div>
-                <div className="font-semibold truncate max-w-[10rem]">{email ?? "—"}</div>
-              </div>
-              <div className="text-right">
-                <div className="text-white/60 uppercase text-[9px]">
-                  {membership.tier === "physical" ? "Physical NFC" : "Digital"}
-                </div>
-                {membership.is_founding && (
-                  <div className="flex items-center gap-1 text-yellow-300 font-bold">
-                    <Trophy className="h-3 w-3" /> FOUNDING
-                  </div>
-                )}
-              </div>
-            </div>
+            <img
+              src={clubCardPreview.url}
+              alt="Unique VIP Club card"
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* BACK */}
@@ -141,7 +113,8 @@ export default function ClubCard() {
           >
             <div className="h-10 bg-black -mx-6 my-2" />
             <div className="text-white/80 text-xs space-y-1">
-              <div>Member: <strong className="text-white">#{memberNum}</strong></div>
+              <div>Holder: <strong className="text-white">{email ?? "—"}</strong></div>
+              <div>{membership.tier === "physical" ? "Physical NFC" : "Digital"}</div>
               <div>Since: {new Date(membership.started_at).toLocaleDateString()}</div>
               <div>Renews: {membership.current_period_end ? new Date(membership.current_period_end).toLocaleDateString() : "—"}</div>
             </div>
@@ -182,58 +155,21 @@ export default function ClubCard() {
       )}
 
 
-      {/* Hidden high-res capture surface (not flipped, positioned off-screen) */}
+      {/* Hidden high-res capture surface */}
       <div style={{ position: "fixed", left: "-10000px", top: 0, pointerEvents: "none" }} aria-hidden>
         <div
           ref={frontRef}
-          style={ {
-            width: 856,
-            height: 540,
-            borderRadius: 48,
-            padding: 48,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            background:
-              "linear-gradient(135deg, #7c3aed 0%, #ec4899 45%, #f59e0b 100%)",
-            color: "white",
-            fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif" }}
+          style={{ width: 856, height: 540, borderRadius: 48, overflow: "hidden" }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <div>
-              <div style={{ fontSize: 18, letterSpacing: 4, textTransform: "uppercase", opacity: 0.75 }}>
-                Unique VIP Club
-              </div>
-              <div style={{ fontFamily: "'Lobster Two', cursive", fontSize: 56, fontWeight: 700, lineHeight: 1 }}>
-                Unique
-              </div>
-            </div>
-            <div style={{ fontSize: 64 }}>👑</div>
-          </div>
-          <div>
-            <div style={{ fontSize: 14, letterSpacing: 4, textTransform: "uppercase", opacity: 0.75 }}>
-              Member №
-            </div>
-            <div style={{ fontSize: 96, fontWeight: 900, letterSpacing: 6, lineHeight: 1 }}>
-              #{memberNum}
-            </div>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", fontSize: 18 }}>
-            <div>
-              <div style={{ fontSize: 12, opacity: 0.7, textTransform: "uppercase", letterSpacing: 2 }}>Holder</div>
-              <div style={{ fontWeight: 600 }}>{email ?? "—"}</div>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 12, opacity: 0.7, textTransform: "uppercase", letterSpacing: 2 }}>
-                {membership.tier === "physical" ? "Physical NFC" : "Digital"}
-              </div>
-              {membership.is_founding && (
-                <div style={{ color: "#fde047", fontWeight: 700, letterSpacing: 2 }}>★ FOUNDING</div>
-              )}
-            </div>
-          </div>
+          <img
+            src={clubCardPreview.url}
+            alt=""
+            crossOrigin="anonymous"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
         </div>
       </div>
     </div>
   );
 }
+
