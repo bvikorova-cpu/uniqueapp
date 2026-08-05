@@ -42,7 +42,7 @@ const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-fri
 type Message = { role: "user" | "assistant"; content: string };
 
 const tools = [
-  { id: "chat", icon: MessageCircle, title: "Best Friend Chat", description: "Talk to your AI best friend", badge: "Subscription", credits: 0, gradient: "from-purple-500/10 to-blue-500/5" },
+  { id: "chat", icon: MessageCircle, title: "Best Friend Chat", description: "Talk to your AI best friend", badge: "AI", credits: 1, gradient: "from-purple-500/10 to-blue-500/5" },
   { id: "mood_journal", icon: BookHeart, title: "AI Mood Journal", description: "Track emotions & get insights", badge: "AI", credits: 3, gradient: "from-purple-500/10 to-indigo-500/5" },
   { id: "conversation_starters", icon: MessageSquarePlus, title: "Conversation Starters", description: "AI-generated icebreakers", badge: "AI", credits: 2, gradient: "from-indigo-500/10 to-purple-500/5" },
   { id: "encouragement_cards", icon: HeartHandshake, title: "Encouragement Cards", description: "Personalized motivational cards", badge: "AI", credits: 3, gradient: "from-pink-500/10 to-rose-500/5" },
