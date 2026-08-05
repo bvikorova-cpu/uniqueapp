@@ -189,7 +189,7 @@ export const DatingPremiumPanel = ({ userId, isSubscribed, likesYouCount, onSubs
                 <CardContent className="p-3 text-center">
                   <div className="text-4xl mb-1">{g.icon}</div>
                   <p className="text-xs font-semibold truncate">{g.name}</p>
-                  <p className="text-xs text-muted-foreground">{g.price} cr</p>
+                  <p className="text-xs text-muted-foreground">{g.credit_cost ?? g.price} credits</p>
                 </CardContent>
               </Card>
             ))}
