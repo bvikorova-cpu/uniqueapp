@@ -1,10 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
-import { CLUB_SIGNUP_AI_CREDITS,
-  CLUB_REFERRAL_CREDIT_EUR,
-  contributeToGoodFund,
-  grantClubAiCredits } from "../_shared/club-perks.ts";
+import { CLUB_REFERRAL_CREDIT_EUR, contributeToGoodFund } from "../_shared/club-perks.ts";
+
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -128,14 +126,8 @@ serve(async (req) => {
         stripeEventId: session.id });
     }
 
-    // ── Perk 2: welcome AI credits (idempotent per membership) ───────────────
-    await grantClubAiCredits(admin, {
-      userId: user.id,
-      membershipId,
-      perk: "signup_ai_credits",
-      periodKey: `signup:${membershipId}`,
-      amount: CLUB_SIGNUP_AI_CREDITS,
-      stripeEventId: session.id });
+    // ── Welcome AI credits perk removed (no free credits on the platform) ────
+
 
     // ── Perk 3: referral reward (€5 credit to referrer) ──────────────────────
     if (referralCode) {
