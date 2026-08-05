@@ -120,7 +120,12 @@ const BestFriend = () => {
       const response = await fetch(CHAT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ action: "chat", messages: [...messages, { role: "user", content: userMessage }] }) });
+        body: JSON.stringify({
+          action: "chat",
+          messages: [...messages, { role: "user", content: userMessage }]
+            .filter(m => m.content?.trim())
+            .slice(-12)
+            .map(m => ({ role: m.role, content: m.content.slice(0, 4000) })) }) });
       if (!response.ok) {
         if (response.status === 402) {
           const data = await response.json();
