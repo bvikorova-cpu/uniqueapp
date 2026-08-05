@@ -523,31 +523,52 @@ const Dating = () => {
   const handleSwipe = async (action: "like" | "dislike", isSuper = false) => {
     if (!user || currentIndex >= profiles.length) return;
     const currentCard = profiles[currentIndex];
+    if (isSuper && superLikesRemaining <= 0) {
+      toast({ title: "No Super Likes left", description: "You've used all 5 free Super Likes today. Buy a Super Like pack in the Premium tab or come back tomorrow.", variant: "destructive" });
+      return;
+    }
     setSwipeDirection(action === "like" ? (isSuper ? "up" : "right") : "left");
-    await supabase.from("dating_last_swipe").upsert({ user_id: user.id, swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action });
+    await supabase.from("dating_last_swipe").upsert(
+      { user_id: user.id, swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action },
+      { onConflict: "user_id" }
+    );
     setCanRewind(true);
     setLastSwipe({ swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action });
     if (isSuper) {
       if (freeSuperLikesLeft <= 0) {
         const { data: usedPerk } = await supabase.rpc("consume_dating_perk", { p_kind: "super_like" });
-        if (!usedPerk) { toast({ title: "No Super Likes left", description: "Buy a Super Like pack in Premium.", variant: "destructive" }); setSwipeDirection(null); return; }
+        if (!usedPerk) { toast({ title: "No Super Likes left", description: "Buy a Super Like pack in the Premium tab.", variant: "destructive" }); setSwipeDirection(null); return; }
       } else {
         setFreeSuperLikesLeft(n => Math.max(0, n - 1));
       }
-      const { error: superError } = await supabase.from("dating_super_likes").insert([{ swiper_id: user.id, swiped_id: currentCard.user_id }]);
-      if (superError) { toast({ title: "Error", description: "Failed to send Super Like", variant: "destructive" }); setSwipeDirection(null); return; }
+      const { error: superError } = await supabase
+        .from("dating_super_likes")
+        .upsert([{ swiper_id: user.id, swiped_id: currentCard.user_id }], { onConflict: "swiper_id,swiped_id", ignoreDuplicates: true });
+      if (superError) { toast({ title: "Super Like failed", description: superError.message, variant: "destructive" }); setSwipeDirection(null); return; }
+      await supabase.rpc("send_user_notification", {
+        _user_id: currentCard.user_id,
+        _type: "dating_super_like",
+        _title: "⭐ Someone Super Liked you!",
+        _message: `${currentProfile?.display_name || "Someone"} sent you a Super Like`,
+        _related_id: null,
+        _action_url: "/dating",
+      });
       toast({ title: "⭐ Super Like!", description: `${currentCard.display_name} will be notified!` });
-      setSuperLikesRemaining(superLikesRemaining - 1);
+      setSuperLikesRemaining(Math.max(0, superLikesRemaining - 1));
+
 
     }
     const { rateLimit } = await import("@/lib/scaleGuards");
     const okSwipe = await rateLimit("swipe.dating", 200, 60);
     if (!okSwipe) { toast({ title: "Slow down", description: "Too many swipes. Try again in a minute.", variant: "destructive" }); setSwipeDirection(null); return; }
-    const { error } = await supabase.from("dating_swipes").insert([{ swiper_id: user.id, swiped_id: currentCard.user_id, action: isSuper ? "like" : action }]);
-    if (error) { toast({ title: "Error", description: "Failed to save swipe", variant: "destructive" }); setSwipeDirection(null); return; }
+    const { error } = await supabase
+      .from("dating_swipes")
+      .upsert([{ swiper_id: user.id, swiped_id: currentCard.user_id, action: isSuper ? "like" : action }], { onConflict: "swiper_id,swiped_id" });
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); setSwipeDirection(null); return; }
 
     if (action === "like" || isSuper) {
-      await supabase.from("dating_likes_you").insert([{ liker_id: user.id, liked_id: currentCard.user_id }]);
+      await supabase.from("dating_likes_you").upsert([{ liker_id: user.id, liked_id: currentCard.user_id }], { onConflict: "liker_id,liked_id", ignoreDuplicates: true });
+
       const { data } = await supabase.from("dating_matches").select("*").or(`and(user1_id.eq.${user.id},user2_id.eq.${currentCard.user_id}),and(user1_id.eq.${currentCard.user_id},user2_id.eq.${user.id})`).maybeSingle();
       if (data) {
         await supabase.rpc("send_user_notification", {
@@ -1096,7 +1117,7 @@ const Dating = () => {
                       <div className="flex gap-3 justify-center items-center">
                         <button disabled={!canRewind} onClick={handleRewind} title="Rewind last swipe" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:border-amber-400 transition-all disabled:opacity-30"><RotateCcw className="h-5 w-5 text-amber-500" /></button>
                         <button onClick={() => handleSwipe("dislike")} className="h-14 w-14 rounded-full border-2 border-red-200 dark:border-red-800 flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-400 hover:scale-110 transition-all shadow-sm"><X className="h-7 w-7 text-red-500" /></button>
-                        <button onClick={() => handleSwipe("like", true)} disabled={superLikesRemaining === 0} title="Super Like" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-400 transition-all disabled:opacity-30"><Star className="h-5 w-5 text-blue-500" /></button>
+                        <button onClick={() => handleSwipe("like", true)} title={superLikesRemaining > 0 ? `Super Like (${superLikesRemaining} left)` : "No Super Likes left today"} className={`h-11 w-11 rounded-full border flex items-center justify-center transition-all relative ${superLikesRemaining > 0 ? "border-border hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-400" : "border-border opacity-60"}`}><Star className="h-5 w-5 text-blue-500" />{superLikesRemaining > 0 && <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-blue-500 text-white text-[10px] flex items-center justify-center">{superLikesRemaining}</span>}</button>
                         <button onClick={() => handleSwipe("like")} className="h-14 w-14 rounded-full border-2 border-emerald-200 dark:border-emerald-800 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:border-emerald-400 hover:scale-110 transition-all shadow-sm"><Heart className="h-7 w-7 text-emerald-500" /></button>
                         <button onClick={handleBoost} disabled={boosting || !!boostActive} title={boostActive ? "Boost active" : "Boost profile (20 credits)"} className={`h-11 w-11 rounded-full border flex items-center justify-center transition-all disabled:opacity-50 ${boostActive ? "bg-gradient-to-br from-orange-500 to-pink-500 border-transparent text-white" : "border-border hover:bg-orange-50 dark:hover:bg-orange-950/20 hover:border-orange-400"}`}>
                           <Flame className={`h-5 w-5 ${boostActive ? "text-white" : "text-orange-500"}`} />
