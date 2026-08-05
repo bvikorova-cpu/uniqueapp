@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { ToastAction } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
 type Turn = { role: "user" | "assistant"; content: string };
@@ -175,17 +176,27 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
     // Ask for the microphone explicitly first: on mobile, SpeechRecognition
     // often fails silently ("not-allowed") when permission was never granted.
+    const inIframe = typeof window !== "undefined" && window.self !== window.top;
     try {
-      const stream = await navigator.mediaDevices?.getUserMedia?.({ audio: true });
-      stream?.getTracks().forEach((t) => t.stop());
+      if (!navigator.mediaDevices?.getUserMedia) throw new Error("unsupported");
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((t) => t.stop());
     } catch {
       toast({
         title: "Microphone blocked",
-        description: "Allow microphone access in your browser settings, then tap the mic again.",
+        description: inIframe
+          ? "The preview window can't use the microphone. Open the app in its own browser tab (or install the app) and tap the mic again."
+          : "Allow microphone access in your browser settings, then tap the mic again.",
         variant: "destructive",
+        action: inIframe ? (
+          <ToastAction altText="Open in new tab" onClick={() => window.open(window.location.href, "_blank", "noopener")}>
+            Open app
+          </ToastAction>
+        ) : undefined,
       });
       return;
     }
+
 
     // Speaking output would be picked up by the mic — stop it before listening.
     stopSpeaking();
