@@ -92,7 +92,7 @@ export function ChatSafetyMenu({ blockedByMe,
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-100 border border-emerald-400/40 text-[10px] font-semibold uppercase tracking-wide ${className ?? ""}`}
+            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-100 border border-emerald-400/40 text-[10px] font-semibold uppercase ${className ?? ""}`}
             title="Safety tools"
             aria-label="Open safety menu"
           >

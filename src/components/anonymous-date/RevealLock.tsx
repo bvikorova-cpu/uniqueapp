@@ -23,13 +23,41 @@ export const RevealLock = ({ matchId, currentUserId, partnerName, revealRequestA
   const { toast } = useToast();
   const [now, setNow] = useState(Date.now());
   const [busy, setBusy] = useState(false);
+  const [liveRequestAt, setLiveRequestAt] = useState(revealRequestAt);
+  const [liveRequestBy, setLiveRequestBy] = useState(revealRequestBy);
+  const [liveStatus, setLiveStatus] = useState(status);
+
+  useEffect(() => setLiveRequestAt(revealRequestAt), [revealRequestAt]);
+  useEffect(() => setLiveRequestBy(revealRequestBy), [revealRequestBy]);
+  useEffect(() => setLiveStatus(status), [status]);
+
+  useEffect(() => {
+    const refresh = async () => {
+      const { data } = await supabase
+        .from("anonymous_dating_matches")
+        .select("reveal_request_at, reveal_request_by, status")
+        .eq("id", matchId)
+        .maybeSingle();
+      if (!data) return;
+      setLiveRequestAt(data.reveal_request_at);
+      setLiveRequestBy(data.reveal_request_by);
+      setLiveStatus(data.status ?? "active");
+    };
+
+    refresh();
+    const channel = supabase
+      .channel(`reveal-lock:${matchId}`)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "anonymous_dating_matches", filter: `id=eq.${matchId}` }, refresh)
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [matchId]);
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 500);
     return () => clearInterval(t);
   }, []);
 
-  if (status === "revealed") {
+  if (liveStatus === "revealed") {
     return (
       <Card className="p-3 bg-gradient-to-br from-emerald-500/15 to-primary/15 border-emerald-500/40 text-center">
       <FloatingHowItWorks
@@ -50,25 +78,61 @@ export const RevealLock = ({ matchId, currentUserId, partnerName, revealRequestA
     );
   }
 
-  const reqAt = revealRequestAt ? new Date(revealRequestAt).getTime() : null;
+  const reqAt = liveRequestAt ? new Date(liveRequestAt).getTime() : null;
   const elapsed = reqAt ? now - reqAt : Infinity;
   const active = reqAt && elapsed < REVEAL_WINDOW_MS;
   const remaining = active ? Math.ceil((REVEAL_WINDOW_MS - elapsed) / 1000) : 0;
-  const iRequested = revealRequestBy === currentUserId;
+  const iRequested = liveRequestBy === currentUserId;
   const partnerRequested = active && !iRequested;
 
   const requestReveal = async () => {
     setBusy(true);
+    const { data: current, error: stateError } = await supabase
+      .from("anonymous_dating_matches")
+      .select("reveal_request_at, reveal_request_by, status")
+      .eq("id", matchId)
+      .maybeSingle();
+
+    if (stateError) {
+      setBusy(false);
+      toast({ title: "Reveal unavailable", description: stateError.message, variant: "destructive" });
+      return;
+    }
+
+    const currentRequestTime = current?.reveal_request_at ? new Date(current.reveal_request_at).getTime() : 0;
+    const partnerHasActiveRequest = current?.reveal_request_by
+      && current.reveal_request_by !== currentUserId
+      && Date.now() - currentRequestTime < REVEAL_WINDOW_MS;
+
+    if (partnerHasActiveRequest) {
+      const { data, error } = await supabase.rpc("anon_date_accept_reveal", { _match_id: matchId });
+      setBusy(false);
+      const res = data as { ok?: boolean; reason?: string } | null;
+      if (error || !res?.ok) {
+        toast({ title: "Reveal failed", description: error?.message ?? "The request expired. Please try again.", variant: "destructive" });
+        return;
+      }
+      setLiveStatus("revealed");
+      toast({ title: "Revealed!", description: "Both identities are now visible." });
+      onRevealed?.();
+      return;
+    }
+
     const { data, error } = await supabase.rpc("anon_date_request_reveal", { _match_id: matchId });
     setBusy(false);
     const res = data as { ok?: boolean; reason?: string } | null;
     if (error) toast({ title: "Failed", description: error.message, variant: "destructive" });
-    else if (!res?.ok) toast({ title: "Already requested", description: `${partnerName} just sent a request — confirm it instead.` });
-    else toast({ title: "Reveal requested", description: `Waiting 60s for ${partnerName} to confirm…` });
+    else if (!res?.ok) toast({ title: "Request changed", description: "Please tap once more to confirm the current reveal request." });
+    else {
+      const requestedAt = new Date().toISOString();
+      setLiveRequestAt(requestedAt);
+      setLiveRequestBy(currentUserId);
+      toast({ title: "Reveal requested", description: `Waiting 60s for ${partnerName} to confirm…` });
+    }
   };
 
   const acceptReveal = async () => {
-    if (revealRequestBy === currentUserId) {
+    if (liveRequestBy === currentUserId) {
       toast({ title: "Waiting", description: "Only the other person can confirm your request." });
       return;
     }
@@ -78,13 +142,15 @@ export const RevealLock = ({ matchId, currentUserId, partnerName, revealRequestA
     const res = data as { ok?: boolean; reason?: string } | null;
     if (error) toast({ title: "Failed", description: error.message, variant: "destructive" });
     else if (!res?.ok) toast({ title: "No active request", description: "The reveal request expired — ask again.", variant: "destructive" });
-    else { toast({ title: "Revealed!", description: "Both identities are now visible." }); onRevealed?.(); }
+    else { setLiveStatus("revealed"); toast({ title: "Revealed!", description: "Both identities are now visible." }); onRevealed?.(); }
   };
 
   const cancelReveal = async () => {
     setBusy(true);
     await supabase.rpc("anon_date_cancel_reveal", { _match_id: matchId });
     setBusy(false);
+    setLiveRequestAt(null);
+    setLiveRequestBy(null);
   };
 
 
