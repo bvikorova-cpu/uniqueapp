@@ -549,11 +549,11 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" size="lg" disabled={loading}>
+              <Button type="submit" className="w-full" size="lg" disabled={loading || loadingExisting}>
                 {loading ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating Profile...</>
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {isEditing ? "Saving..." : "Creating Profile..."}</>
                 ) : (
-                  <><Sparkles className="mr-2 h-4 w-4" /> Create Profile & Start Matching</>
+                  <><Sparkles className="mr-2 h-4 w-4" /> {isEditing ? "Save Changes" : "Create Profile & Start Matching"}</>
                 )}
               </Button>
             </form>
