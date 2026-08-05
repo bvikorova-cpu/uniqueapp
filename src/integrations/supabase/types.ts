@@ -69137,6 +69137,13 @@ export type Database = {
       generate_referral_code: { Args: never; Returns: string }
       generate_story_share_code: { Args: never; Returns: string }
       get_affiliate_reward_eur: { Args: { _user_id: string }; Returns: number }
+      get_anon_date_trait_counts: {
+        Args: never
+        Returns: {
+          trait: string
+          user_count: number
+        }[]
+      }
       get_approved_safety_stories: {
         Args: { _limit?: number; _offset?: number }
         Returns: {
