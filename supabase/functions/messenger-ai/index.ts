@@ -154,8 +154,21 @@ Deno.serve(async (req) => {
         break;
       }
 
+      case "chat-theme": {
+        const desc = params.description || text || context || "a calm modern chat theme";
+        const json = await callOpenAIJSON({
+          system: `You are a UI theme designer. Create a chat theme from the user's description. Return ONLY a JSON object with: "name" (short catchy theme name, max 24 chars), "colors" (array of exactly 3 hex color strings from darkest background to brightest accent, e.g. "#0a1628"), "wallpaper" (array of exactly 3 hex colors for a soft background gradient), "description" (max 12 words).`,
+          user: `Theme description: ${desc}`,
+          model: "gpt-4o-mini",
+          max_completion_tokens: 900,
+        });
+        result = JSON.stringify(json);
+        break;
+      }
+
       default: throw new Error(`Unknown action: ${action}`);
     }
+
 
     const { error: deductErr } = await admin.rpc("deduct_ai_credits", {
       p_user_id: user.id,
